@@ -1,0 +1,1 @@
+type CoordinatePair = [number, number]

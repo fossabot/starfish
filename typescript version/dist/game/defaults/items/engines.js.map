@@ -1,0 +1,1 @@
+{"version":3,"file":"engines.js","sourceRoot":"","sources":["../../../../src/game/defaults/items/engines.ts"],"names":[],"mappings":";;;AAAa,QAAA,OAAO,GAAsC,EAAE,CAAA;AAC5D,eAAO,CAAC,OAAO,GAAG;IAChB,EAAE,EAAE,SAAS;IACb,WAAW,EAAE,gBAAgB;IAC7B,WAAW,EAAE,8BAA8B;IAC3C,mBAAmB,EAAE,CAAC;CACvB,CAAA"}

@@ -1,0 +1,12 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": ["javascript", "svelte"],
+  "eslint.run": "onSave",
+  "eslint.format.enable": true,
+  "eslint.alwaysShowStatus": true,
+  "mochaExplorer.mochaPath": "node_modules/mocha",
+  "mochaExplorer.parallel": true
+}
