@@ -39,9 +39,9 @@ function unitVectorFromThisPointToThatPoint(thisPoint, thatPoint) {
     const angleBetween = angleFromAToB(thisPoint, thatPoint);
     return degreesToUnitVector(angleBetween);
 }
-function pointIsInsideCircle(centerX, centerY, pointX, pointY, radius) {
-    return ((pointX - centerX) * (pointX - centerX) +
-        (pointY - centerY) * (pointY - centerY) <
+function pointIsInsideCircle(center, point, radius) {
+    return ((point[0] - center[0]) * (point[0] - center[0]) +
+        (point[1] - center[1]) * (point[1] - center[1]) <
         radius * radius);
 }
 exports.default = {

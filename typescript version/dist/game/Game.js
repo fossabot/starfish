@@ -14,7 +14,7 @@ const planets_1 = __importDefault(require("./presets/planets"));
 const factions_1 = __importDefault(require("./presets/factions"));
 class Game {
     constructor() {
-        // ------------- game loop --------------
+        // ----- game loop -----
         this.tickCount = 0;
         this.startTime = new Date();
         this.ships = [];
@@ -43,7 +43,18 @@ class Game {
         this.tickCount++;
         this.ships.forEach((s) => s.tick());
     }
-    // ------------- entity functions --------------
+    // ----- scan function -----
+    scanCircle(center, radius, type) {
+        let ships = [], planets = [], caches = [];
+        if (!type || type === `ship`)
+            ships = this.ships.filter((s) => common_1.default.pointIsInsideCircle(center, s.location, radius));
+        if (!type || type === `planet`)
+            planets = this.planets.filter((p) => common_1.default.pointIsInsideCircle(center, p.location, radius));
+        if (!type || type === `cache`)
+            caches = this.caches.filter((k) => common_1.default.pointIsInsideCircle(center, k.location, radius));
+        return { ships, planets, caches };
+    }
+    // ----- entity functions -----
     addHumanShip(data) {
         const newShip = new HumanShip_1.HumanShip(data, this);
         common_1.default.log(`Adding human ship ${newShip.name} to game`);

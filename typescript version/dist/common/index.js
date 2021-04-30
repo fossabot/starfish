@@ -6,6 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const globals_1 = __importDefault(require("./globals"));
 const math_1 = __importDefault(require("./math"));
 const text_1 = __importDefault(require("./text"));
+const misc_1 = __importDefault(require("./misc"));
 const log_1 = __importDefault(require("./log"));
-exports.default = { ...globals_1.default, ...math_1.default, ...text_1.default, log: log_1.default };
+exports.default = {
+    ...globals_1.default,
+    ...math_1.default,
+    ...text_1.default,
+    ...misc_1.default,
+    log: log_1.default,
+};
 //# sourceMappingURL=index.js.map

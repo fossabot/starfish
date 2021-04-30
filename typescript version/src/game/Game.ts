@@ -51,7 +51,7 @@ export class Game {
     setInterval(() => this.tick(), c.TICK_INTERVAL)
   }
 
-  // ------------- game loop --------------
+  // ----- game loop -----
 
   tickCount = 0
   tick() {
@@ -59,7 +59,36 @@ export class Game {
     this.ships.forEach((s) => s.tick())
   }
 
-  // ------------- entity functions --------------
+  // ----- scan function -----
+
+  scanCircle(
+    center: CoordinatePair,
+    radius: number,
+    type?: `ship` | `planet` | `cache`,
+  ): {
+    ships: Ship[]
+    planets: Planet[]
+    caches: Cache[]
+  } {
+    let ships: Ship[] = [],
+      planets: Planet[] = [],
+      caches: Cache[] = []
+    if (!type || type === `ship`)
+      ships = this.ships.filter((s) =>
+        c.pointIsInsideCircle(center, s.location, radius),
+      )
+    if (!type || type === `planet`)
+      planets = this.planets.filter((p) =>
+        c.pointIsInsideCircle(center, p.location, radius),
+      )
+    if (!type || type === `cache`)
+      caches = this.caches.filter((k) =>
+        c.pointIsInsideCircle(center, k.location, radius),
+      )
+    return { ships, planets, caches }
+  }
+
+  // ----- entity functions -----
 
   addHumanShip(data: BaseHumanShipData): HumanShip {
     const newShip = new HumanShip(data, this)

@@ -32,6 +32,7 @@ export class Ship {
   location: CoordinatePair = [0, 0]
   velocity: CoordinatePair = [0, 0]
   human = false
+  attackable = false
   hp = 10
   obeysGravity = true
 
@@ -80,18 +81,16 @@ export class Ship {
 
   // ----- ranges -----
 
-  get attackRange(): number {
-    return this.weapons.reduce(
-      (highest: number, curr: Weapon): number =>
-        Math.max(curr.range, highest),
-      0,
-    )
-  }
-
   // ----- movement -----
 
   move = move
   stop = stop
   thrust = thrust
   applyTickOfGravity = applyTickOfGravity
+
+  // ----- combat -----
+
+  canAttack(s: any): boolean {
+    return false
+  }
 }

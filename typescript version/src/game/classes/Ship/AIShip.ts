@@ -22,5 +22,13 @@ export class AIShip extends CombatShip {
   tick() {
     super.tick()
     // attack human in range
+    const weapons = this.availableWeapons
+    if (!weapons) return
+    const enemies = this.enemiesInAttackRange
+    if (enemies.length) {
+      const randomEnemy = c.randomFromArray(enemies)
+      const randomWeapon = c.randomFromArray(weapons)
+      this.attack(randomEnemy, randomWeapon)
+    }
   }
 }

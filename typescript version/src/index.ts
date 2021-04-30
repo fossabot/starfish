@@ -1,5 +1,4 @@
 import c from './common'
-import { Ship } from './game/classes/Ship/Ship'
 import { Game } from './game/Game'
 
 const g = new Game()

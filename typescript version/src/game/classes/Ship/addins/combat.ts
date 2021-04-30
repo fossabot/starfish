@@ -1,41 +1,73 @@
 import c from '../../../../common'
 import { Item } from '../../Item/Item'
 import { Ship } from '../Ship'
+import { CombatShip } from '../CombatShip'
+import { Weapon } from '../../Item/Weapon'
+
+export function canAttack(
+  this: CombatShip,
+  otherShip: Ship,
+): boolean {
+  if (!otherShip?.attackable) return false
+  if (
+    otherShip.faction &&
+    otherShip.faction.color === this.faction?.color
+  )
+    return false
+  if (
+    c.distance(otherShip.location, this.location) >
+    this.attackRange
+  )
+    return false
+  if (!this.availableWeapons.length) return false
+  return true
+}
 
 interface DamageResult {
   damage: number
-  weapon: Item
+  weapon: Weapon
+}
+export function attack(
+  this: CombatShip,
+  target: CombatShip,
+  weapon: Weapon,
+): TakenDamageResult {
+  if (!this.canAttack(target))
+    return { damageTaken: 0, didDie: false, weapon }
+
+  weapon.lastUse = Date.now()
+  const damageResult = {
+    damage: 1,
+    weapon,
+  }
+  const attackResult = target.takeDamage(this, damageResult)
+  return attackResult
 }
 
 interface TakenDamageResult {
   damageTaken: number
   didDie: boolean
+  weapon: Weapon
 }
-
-export function attack(
-  this: Ship,
-  target: Ship,
-  weapon: Item,
-): DamageResult {
-  c.log(`Attacking`)
-  return {
-    damage: 1,
-    weapon: weapon,
-  }
-}
-
 export function takeDamage(
-  this: Ship,
-  attacker: Ship,
+  this: CombatShip,
+  attacker: CombatShip,
   damage: DamageResult,
 ): TakenDamageResult {
-  c.log(
-    `Taking ${damage.damage} damage from ${attacker.name}'s ${damage.weapon.displayName}`,
-  )
+  const previousHp = this.hp
   this.hp -= damage.damage
-  const didDie = this.hp <= 0
+  const didDie = previousHp > 0 && this.hp <= 0
+  if (didDie) this.dead = true
+  c.log(
+    `${this.name} takes ${damage.damage} damage from ${
+      attacker.name
+    }'s ${damage.weapon.displayName}, and ${
+      didDie ? `died` : `has ${this.hp} hp left`
+    }.`,
+  )
   return {
     damageTaken: damage.damage,
     didDie: didDie,
+    weapon: damage.weapon,
   }
 }

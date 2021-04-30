@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AIShip = void 0;
+const common_1 = __importDefault(require("../../../common"));
 const CombatShip_1 = require("./CombatShip");
 class AIShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
@@ -17,6 +21,15 @@ class AIShip extends CombatShip_1.CombatShip {
     tick() {
         super.tick();
         // attack human in range
+        const weapons = this.availableWeapons;
+        if (!weapons)
+            return;
+        const enemies = this.enemiesInAttackRange;
+        if (enemies.length) {
+            const randomEnemy = common_1.default.randomFromArray(enemies);
+            const randomWeapon = common_1.default.randomFromArray(weapons);
+            this.attack(randomEnemy, randomWeapon);
+        }
     }
 }
 exports.AIShip = AIShip;

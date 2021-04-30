@@ -16,6 +16,7 @@ class Ship {
         this.location = [0, 0];
         this.velocity = [0, 0];
         this.human = false;
+        this.attackable = false;
         this.hp = 10;
         this.obeysGravity = true;
         // ----- item mgmt -----
@@ -23,6 +24,7 @@ class Ship {
         this.addEngine = items_1.addEngine;
         this.removeItem = items_1.removeItem;
         this.equipLoadout = items_1.equipLoadout;
+        // ----- ranges -----
         // ----- movement -----
         this.move = movement_1.move;
         this.stop = movement_1.stop;
@@ -57,9 +59,9 @@ class Ship {
         ];
         return items;
     }
-    // ----- ranges -----
-    get attackRange() {
-        return this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);
+    // ----- combat -----
+    canAttack(s) {
+        return false;
     }
 }
 exports.Ship = Ship;

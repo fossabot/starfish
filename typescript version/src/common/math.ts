@@ -57,15 +57,13 @@ function unitVectorFromThisPointToThatPoint(
 }
 
 function pointIsInsideCircle(
-  centerX: number,
-  centerY: number,
-  pointX: number,
-  pointY: number,
+  center: CoordinatePair,
+  point: CoordinatePair,
   radius: number,
 ): boolean {
   return (
-    (pointX - centerX) * (pointX - centerX) +
-      (pointY - centerY) * (pointY - centerY) <
+    (point[0] - center[0]) * (point[0] - center[0]) +
+      (point[1] - center[1]) * (point[1] - center[1]) <
     radius * radius
   )
 }
