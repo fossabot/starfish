@@ -1,10 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const dist_1 = __importDefault(require("../../common/dist"));
-dist_1.default.log(dist_1.default.GAME_NAME);
 const Game_1 = require("./game/Game");
 const g = new Game_1.Game();
 const human1 = g.addHumanShip({

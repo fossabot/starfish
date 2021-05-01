@@ -5,6 +5,7 @@
     "./server/src/**/*",
     "./discord/src/**/*",
     "./common/src/**/*",
+    "./common/dist/**/*",
     "@types"
   ] /* compilerOptions still needs to be here because that's what vs code looks at for general settings*/,
   "compilerOptions": {

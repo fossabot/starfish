@@ -5,7 +5,8 @@
     "../frontend/**/*",
     "../discord/**/*",
     "../web/**/*",
-    "../common/**/*"
+    "../common/**/*",
+    "../server/**/*"
   ],
   "compilerOptions": {
     "outDir": "./dist" /* Redirect output structure to the directory. */,

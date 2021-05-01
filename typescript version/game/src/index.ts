@@ -1,5 +1,4 @@
 import c from '../../common/dist'
-c.log(c.GAME_NAME)
 import { Game } from './game/Game'
 
 const g = new Game()

@@ -81,9 +81,7 @@ function capitalize(string: string): string {
     .join(` `)
 }
 
-function checkUserInputForBadWords(
-  string: string,
-): SanitizeResult {
+function sanitize(string: string): SanitizeResult {
   const cleaned = filter.clean(string)
   return {
     ok: string === cleaned,
@@ -168,7 +166,7 @@ export default {
   numberToEmoji,
   emojiToNumber,
   capitalize,
-  checkUserInputForBadWords,
+  sanitize,
   msToTimeString,
   garble,
 }

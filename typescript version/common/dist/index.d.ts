@@ -7,7 +7,7 @@ declare const _default: {
     numberToEmoji: (number: number) => string;
     emojiToNumber: (emoji: string) => number;
     capitalize: (string: string) => string;
-    checkUserInputForBadWords: (string: string) => SanitizeResult;
+    sanitize: (string: string) => SanitizeResult;
     msToTimeString: (ms: number) => string;
     garble: (string: string, percent?: number) => string;
     radiansToDegrees: (radians: number) => number;

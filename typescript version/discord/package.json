@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "tsc --project ./tsconfig.discord.json -w",
+    "dev": "nodemon dist/index.js"
+  },
+  "dependencies": {
+    "discord.js-light": "^3.5.9"
+  }
+}

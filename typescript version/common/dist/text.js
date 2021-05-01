@@ -69,7 +69,7 @@ function capitalize(string) {
         s.substring(1).toLowerCase())
         .join(` `);
 }
-function checkUserInputForBadWords(string) {
+function sanitize(string) {
     const cleaned = filter.clean(string);
     return {
         ok: string === cleaned,
@@ -133,7 +133,7 @@ exports.default = {
     numberToEmoji,
     emojiToNumber,
     capitalize,
-    checkUserInputForBadWords,
+    sanitize,
     msToTimeString,
     garble,
 };
