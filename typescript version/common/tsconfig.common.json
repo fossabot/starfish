@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig",
+  "include": ["../@types", "./src"],
+  "exclude": [
+    "../frontend/**/*",
+    "../discord/**/*",
+    "../web/**/*",
+    "../game/**/*"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist" /* Redirect output structure to the directory. */,
+    "rootDir": "./src" /* Specify the root directory of input files. */,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false
+  }
+}

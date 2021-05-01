@@ -3,11 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "ts": "tsc -w",
-    "dev": "nodemon dist/index.js"
-  },
-  "dependencies": {
-    "bad-words": "^3.0.4"
+    "common-build": "tsc --project ./common/tsconfig.common.json -w",
+    "game-build": "tsc --project ./game/tsconfig.game.json -w",
+    "game": "nodemon game/dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",

@@ -7,5 +7,10 @@ interface BaseShipData {
 }
 interface BaseHumanShipData extends BaseShipData {
   id: string
-  faction?: string
+}
+
+interface TakenDamageResult {
+  damageTaken: number
+  didDie: boolean
+  weapon: Weapon
 }
