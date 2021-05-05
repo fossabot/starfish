@@ -30,6 +30,7 @@ export function connected(): Promise<boolean> {
     }
 
     c.log(
+      'yellow',
       `Attempted to access io before socket was connected.`,
     )
     resolve(false)

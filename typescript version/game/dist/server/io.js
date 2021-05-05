@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dist_1 = __importDefault(require("../../common/dist"));
+const dist_1 = __importDefault(require("../../../common/dist"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
-const dist_2 = require("../../game/dist");
+const __1 = require("../");
 const httpServer = http_1.createServer();
 const io = new socket_io_1.Server(httpServer, {
     cors: {
@@ -18,7 +18,7 @@ ioFrontend.on(`connection`, (socket) => {
     dist_1.default.log(`Frontend client connected to io`);
     socket.emit(`hello`);
     socket.on(`ship:get`, (id, callback) => {
-        const foundShip = dist_2.game.ships.find((s) => s.id === id);
+        const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {
             const stub = stubify(foundShip);
             callback({
@@ -34,7 +34,7 @@ ioDiscord.on(`connection`, (socket) => {
     dist_1.default.log(`Discord process connected to io`);
     socket.emit(`hello`);
     socket.on(`ship:get`, (id, callback) => {
-        const foundShip = dist_2.game.ships.find((s) => s.id === id);
+        const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {
             const stub = stubify(foundShip);
             callback({
@@ -45,7 +45,7 @@ ioDiscord.on(`connection`, (socket) => {
             callback({ error: `No ship found by that ID.` });
     });
     socket.on(`ship:create`, (data, callback) => {
-        const foundShip = dist_2.game.ships.find((s) => s.id === data.id);
+        const foundShip = __1.game.ships.find((s) => s.id === data.id);
         if (foundShip) {
             dist_1.default.log(`Call to create existing ship, returning existing`);
             const stub = stubify(foundShip);
@@ -54,7 +54,7 @@ ioDiscord.on(`connection`, (socket) => {
             });
         }
         else {
-            const ship = dist_2.game.addHumanShip(data);
+            const ship = __1.game.addHumanShip(data);
             const stub = stubify(ship);
             callback({
                 data: stub,
@@ -62,7 +62,7 @@ ioDiscord.on(`connection`, (socket) => {
         }
     });
     socket.on(`ship:thrust`, (data, callback) => {
-        const foundShip = dist_2.game.ships.find((s) => s.id === data.id);
+        const foundShip = __1.game.ships.find((s) => s.id === data.id);
         if (!foundShip) {
             dist_1.default.log(`Call to thrust nonexistant ship`);
             callback({
@@ -77,8 +77,8 @@ ioDiscord.on(`connection`, (socket) => {
         }
     });
     socket.on(`ship:attack`, (data, callback) => {
-        const foundShip = dist_2.game.ships.find((s) => s.id === data.id);
-        const enemyShip = dist_2.game.ships.find((s) => s.id === data.enemyId);
+        const foundShip = __1.game.ships.find((s) => s.id === data.id);
+        const enemyShip = __1.game.ships.find((s) => s.id === data.enemyId);
         const weapon = foundShip.weapons.find((w) => w.id === data.weaponId);
         if (!foundShip || !enemyShip) {
             dist_1.default.log(`Call to attack nonexistant ship`);

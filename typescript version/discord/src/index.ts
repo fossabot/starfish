@@ -3,10 +3,14 @@ dotEnvConfig({ path: `../.env` })
 
 import c from '../../common/dist'
 import io from './ioInterface'
-import { client, awaitLogin } from './discordClient'
+import * as discord from './discordClient'
 
 async function start() {
-  await awaitLogin().catch((e) => c.log(`red`, e))
+  await discord.awaitLogin().catch((e) => c.log(`red`, e))
+  if (!(await io.connected())) {
+    c.log('red', 'Failed to connect to game server')
+    return
+  }
   c.log((await io.ship.get(`123`))?.name)
   c.log(
     (

@@ -47,7 +47,7 @@ function connected() {
             }
             timeout++;
         }
-        dist_1.default.log(`Attempted to access io before socket was connected.`);
+        dist_1.default.log('yellow', `Attempted to access io before socket was connected.`);
         resolve(false);
     });
 }
