@@ -13,6 +13,6 @@ exports.default = {
     ...math_1.default,
     ...text_1.default,
     ...misc_1.default,
-    log: log_1.default,
+    ...log_1.default,
 };
 //# sourceMappingURL=index.js.map

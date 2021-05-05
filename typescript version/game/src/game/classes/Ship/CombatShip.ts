@@ -41,6 +41,10 @@ export class CombatShip extends Ship {
     )
   }
 
+  get alive(): boolean {
+    return this.hp >= 0
+  }
+
   attack = attack
   takeDamage = takeDamage
   canAttack = canAttack

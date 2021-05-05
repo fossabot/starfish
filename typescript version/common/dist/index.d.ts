@@ -1,5 +1,7 @@
 declare const _default: {
     log: (...args: any[]) => void;
+    error: (...args: any[]) => void;
+    sleep: (ms: number) => Promise<void>;
     randomFromArray: (array: any[]) => any;
     degreesToArrow: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;
@@ -19,9 +21,10 @@ declare const _default: {
     pointIsInsideCircle: (center: CoordinatePair, point: CoordinatePair, radius: number) => boolean;
     coordPairToDegrees: (coordPair: CoordinatePair) => number;
     coordPairToRadians: (coordPair: CoordinatePair) => number;
+    vectorToMagnitude: (vector: CoordinatePair) => number;
     GAME_NAME: string;
     TICK_INTERVAL: number;
-    TEST: number;
+    deltaTime: number;
 };
 export default _default;
 //# sourceMappingURL=index.d.ts.map

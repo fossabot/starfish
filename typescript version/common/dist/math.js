@@ -39,6 +39,9 @@ function unitVectorFromThisPointToThatPoint(thisPoint, thatPoint) {
     const angleBetween = angleFromAToB(thisPoint, thatPoint);
     return degreesToUnitVector(angleBetween);
 }
+function vectorToMagnitude(vector) {
+    return Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+}
 function pointIsInsideCircle(center, point, radius) {
     return ((point[0] - center[0]) * (point[0] - center[0]) +
         (point[1] - center[1]) * (point[1] - center[1]) <=
@@ -54,5 +57,6 @@ exports.default = {
     pointIsInsideCircle,
     coordPairToDegrees,
     coordPairToRadians,
+    vectorToMagnitude,
 };
 //# sourceMappingURL=math.js.map

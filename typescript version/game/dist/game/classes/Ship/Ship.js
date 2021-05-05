@@ -52,11 +52,6 @@ class Ship {
         if (this.obeysGravity)
             this.applyTickOfGravity();
     }
-    //   export(): any {
-    // const exportData = {...this}
-    // delete exportData.game
-    // exportData.planet = exportData.planet?.name
-    //   }
     // ----- item mgmt -----
     get items() {
         const items = [...this.weapons, ...this.engines];
@@ -74,6 +69,9 @@ class Ship {
     // ----- combat -----
     canAttack(s) {
         return false;
+    }
+    get alive() {
+        return true;
     }
 }
 exports.Ship = Ship;

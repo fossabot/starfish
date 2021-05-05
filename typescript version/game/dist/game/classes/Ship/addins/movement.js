@@ -24,14 +24,16 @@ function thrust(angle, force) {
     dist_1.default.log(`thrusting`, angle, force);
     return {
         angle,
-        velocity: this.velocity,
+        velocity: dist_1.default.vectorToMagnitude(this.velocity),
+        message: `hiiii`,
     };
 }
 exports.thrust = thrust;
 function applyTickOfGravity() {
     if (!this.canMove)
         return;
-    dist_1.default.log(`gravity`);
+    // todo
+    // c.log(`gravity`)
 }
 exports.applyTickOfGravity = applyTickOfGravity;
 //# sourceMappingURL=movement.js.map

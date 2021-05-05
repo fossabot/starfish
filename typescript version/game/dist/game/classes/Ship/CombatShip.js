@@ -24,6 +24,9 @@ class CombatShip extends Ship_1.Ship {
         const combatShipsInRange = allShipsInRange.filter((s) => s instanceof CombatShip);
         return combatShipsInRange.filter((s) => this.canAttack(s));
     }
+    get alive() {
+        return this.hp >= 0;
+    }
 }
 exports.CombatShip = CombatShip;
 //# sourceMappingURL=CombatShip.js.map

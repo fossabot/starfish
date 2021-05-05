@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
+const events_1 = __importDefault(require("events"));
 const Planet_1 = require("./classes/Planet");
 const Cache_1 = require("./classes/Cache");
 const Faction_1 = require("./classes/Faction");
@@ -13,9 +14,11 @@ const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = __importDefault(require("./presets/planets"));
 const factions_1 = __importDefault(require("./presets/factions"));
-class Game {
+class Game extends events_1.default {
     constructor() {
+        super();
         this.attackRemnants = [];
+        this.lastTickTime = Date.now();
         // ----- game loop -----
         this.tickCount = 0;
         this.startTime = new Date();
@@ -27,6 +30,7 @@ class Game {
         this.startGame();
     }
     startGame() {
+        this.emit('beforeStart');
         dist_1.default.log(`----- Starting Game -----`);
         planets_1.default.forEach((p) => {
             this.addPlanet(p);
@@ -47,10 +51,18 @@ class Game {
         const startTime = Date.now();
         this.tickCount++;
         this.ships.forEach((s) => s.tick());
-        const elapsedTime = Date.now() - startTime;
-        if (elapsedTime > 10)
-            dist_1.default.log(`Tick took ${elapsedTime} ms`);
-        setTimeout(() => this.tick(), Math.max(100, dist_1.default.TICK_INTERVAL - elapsedTime));
+        this.emit('tick');
+        // ----- timing
+        const elapsedTimeInMs = Date.now() - startTime;
+        if (elapsedTimeInMs > 10) {
+            if (elapsedTimeInMs < 30)
+                dist_1.default.log(`Tick took`, 'yellow', elapsedTimeInMs + ` ms`);
+            else
+                dist_1.default.log(`Tick took`, 'red', elapsedTimeInMs + ` ms`);
+        }
+        dist_1.default.deltaTime = Date.now() - this.lastTickTime;
+        this.lastTickTime = startTime;
+        setTimeout(() => this.tick(), Math.min(dist_1.default.TICK_INTERVAL, Math.max(1, dist_1.default.TICK_INTERVAL - (dist_1.default.deltaTime - dist_1.default.TICK_INTERVAL))));
     }
     // ----- scan function -----
     scanCircle(center, radius, type) {

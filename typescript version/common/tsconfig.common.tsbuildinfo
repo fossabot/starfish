@@ -251,14 +251,24 @@
         "signature": "61e802ab010ad0bdd3700fac04e9850bcf959e452e8a8b3a109f31d36e4b4acb",
         "affectsGlobalScope": true
       },
+      "../@types/crew.d.ts": {
+        "version": "e41bfdc6fc5b8d74ee5e86c74b392b69b4d0885d653fab7ff942990287d2c030",
+        "signature": "e41bfdc6fc5b8d74ee5e86c74b392b69b4d0885d653fab7ff942990287d2c030",
+        "affectsGlobalScope": true
+      },
       "../@types/faction.d.ts": {
         "version": "eab4bf078dfedb3d74d2254103daba7d919742d3dd0291250e699e454a58a61b",
         "signature": "eab4bf078dfedb3d74d2254103daba7d919742d3dd0291250e699e454a58a61b",
         "affectsGlobalScope": true
       },
       "../@types/generic.d.ts": {
-        "version": "2bd63d0454d074f2b99b2ffe85e627446a67758ecea8df7a566b01136eaeea89",
-        "signature": "2bd63d0454d074f2b99b2ffe85e627446a67758ecea8df7a566b01136eaeea89",
+        "version": "b4fee16440bf7506b6a80941f5fdbc21e5e3d8af5e9cdf4ac20a8dece62e861f",
+        "signature": "b4fee16440bf7506b6a80941f5fdbc21e5e3d8af5e9cdf4ac20a8dece62e861f",
+        "affectsGlobalScope": true
+      },
+      "../@types/io.d.ts": {
+        "version": "1bbb424692aed10b3c33a4fa1e77e0f9b7b2266e058b802c39f9259c395c35b6",
+        "signature": "1bbb424692aed10b3c33a4fa1e77e0f9b7b2266e058b802c39f9259c395c35b6",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -272,18 +282,23 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "be3c2f5cb240a78e14329303c22e8a01840011fdd19d7e28cc44377eee6ace16",
-        "signature": "be3c2f5cb240a78e14329303c22e8a01840011fdd19d7e28cc44377eee6ace16",
+        "version": "1a63727c93b6e8ea5c57a8a9ad9ff4c38fc227f2ce1999d9d7d9feeb03bc5b1a",
+        "signature": "1a63727c93b6e8ea5c57a8a9ad9ff4c38fc227f2ce1999d9d7d9feeb03bc5b1a",
+        "affectsGlobalScope": true
+      },
+      "../@types/stubs.d.ts": {
+        "version": "f62e311e01c4c1400b2aa01b87327b326685e5b9f8cf7195eaef618f0804c2d2",
+        "signature": "f62e311e01c4c1400b2aa01b87327b326685e5b9f8cf7195eaef618f0804c2d2",
         "affectsGlobalScope": true
       },
       "./src/globals.ts": {
-        "version": "da81cab9e0889d6076bb0cab262676e5c0f8be80ceb2f8e9d75b090fd4329c3b",
-        "signature": "aecd67d219a75af55abcf93d915a05000d96bc900efe585f5cdfe25d0ae6b94e",
+        "version": "4043aa6bf75f0bc9af898a1fe10f18c9037ca7c5ab0eaf0e6d6c82a3ba7ba992",
+        "signature": "c1088b42913db7b6bd0dc32f8b147802136287c70901a4e33e528bbfc5d2e545",
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
-        "version": "0a04241b43178e27b9ff11bf48faf9692e1fa9c2f8dcf24ce7c2408fefaec8bd",
-        "signature": "d9ddcced12889fa1a6ae564ec98fa23cf1a21754918004062aba9ee69c98acf0",
+        "version": "0247a4896d74f847a2b6a042600c3136b10f6b3488cdcdb54dbe1524fad35355",
+        "signature": "8a5e4d372714e7eaebb9e99e633430f493f733090769cc256943ed109817610a",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -292,18 +307,18 @@
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
-        "version": "a69813954167055e6aade550b4cfe8d4f41fb80fd45625cca7cfcf55aae5b0af",
-        "signature": "77237cfbcaa6fcc67e588de110b72f2ea21ac69ac8bc991df994dfaae5c062d5",
+        "version": "8c296670cc3a0d7e6ea484c0db29ca97e27d56e9a553650a9997a533f7252400",
+        "signature": "4faf37c43e58782e8eb7832a47d46f55c9fc125ce88fc2204c8148064a1df6e5",
         "affectsGlobalScope": false
       },
       "./src/log.ts": {
-        "version": "68def52084b6d148ddeef7e974900989175bfbc9ea3389aa7188f279c5fe580c",
-        "signature": "b60ce4dcc97899dbc6da333c34eb5f40f0460605357ed4bf1d9bb8e0b3aa5479",
+        "version": "c6f7d79b95df2597ef0a71fc29932a8d85a45db6d86ded304fc29131d7a7fb72",
+        "signature": "f2b2576e07e4ba23ea1261a068cf8f343fbfd58360709fa54a7307b9b0d0cab3",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "79e751115d550593eabca5c7a4d8f7d685ed4132d8a416f9a696cc1501a2732e",
-        "signature": "be777fe26656b3c4edbeaecf28d4ca958e160d2599ab6949ad2d2624a5bdb51c",
+        "version": "20977412f3c9b75937f6e7571958082be21e51edda46d010bb32bb112f8e8b36",
+        "signature": "93fcac65a940be499df0108a9ab4fae8ae1de6bbc42511b2f3c0cb132f49a019",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -1096,11 +1111,14 @@
       "../@types/attackremnant.d.ts",
       "../@types/cache.d.ts",
       "../@types/common.d.ts",
+      "../@types/crew.d.ts",
       "../@types/faction.d.ts",
       "../@types/generic.d.ts",
+      "../@types/io.d.ts",
       "../@types/item.d.ts",
       "../@types/planet.d.ts",
       "../@types/ship.d.ts",
+      "../@types/stubs.d.ts",
       "./src/globals.ts",
       "./src/index.ts",
       "./src/log.ts",

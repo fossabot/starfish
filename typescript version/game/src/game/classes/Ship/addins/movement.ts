@@ -20,10 +20,6 @@ export function stop(this: Ship) {
   this.velocity = [0, 0]
 }
 
-interface ThrustResult {
-  angle: number
-  velocity: CoordinatePair
-}
 export function thrust(
   this: Ship,
   angle: number,
@@ -32,11 +28,13 @@ export function thrust(
   c.log(`thrusting`, angle, force)
   return {
     angle,
-    velocity: this.velocity,
+    velocity: c.vectorToMagnitude(this.velocity),
+    message: `hiiii`,
   }
 }
 
 export function applyTickOfGravity(this: Ship): void {
   if (!this.canMove) return
-  c.log(`gravity`)
+  // todo
+  // c.log(`gravity`)
 }

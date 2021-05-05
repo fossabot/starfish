@@ -6,6 +6,7 @@ declare function distance(a: CoordinatePair, b: CoordinatePair): number;
 declare function angleFromAToB(a: CoordinatePair, b: CoordinatePair): number;
 declare function degreesToUnitVector(degrees: number): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint: CoordinatePair, thatPoint: CoordinatePair): CoordinatePair;
+declare function vectorToMagnitude(vector: CoordinatePair): number;
 declare function pointIsInsideCircle(center: CoordinatePair, point: CoordinatePair, radius: number): boolean;
 declare const _default: {
     radiansToDegrees: typeof radiansToDegrees;
@@ -17,6 +18,7 @@ declare const _default: {
     pointIsInsideCircle: typeof pointIsInsideCircle;
     coordPairToDegrees: typeof coordPairToDegrees;
     coordPairToRadians: typeof coordPairToRadians;
+    vectorToMagnitude: typeof vectorToMagnitude;
 };
 export default _default;
 //# sourceMappingURL=math.d.ts.map

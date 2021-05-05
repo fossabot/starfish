@@ -1,0 +1,41 @@
+import { Game } from '../../Game';
+import { Faction } from '../Faction';
+import { Engine } from '../Item/Engine';
+import { Item } from '../Item/Item';
+import { Weapon } from '../Item/Weapon';
+import { Planet } from '../Planet';
+import { addWeapon, addEngine, removeItem, equipLoadout } from './addins/items';
+import { move, stop, thrust, applyTickOfGravity } from './addins/movement';
+export declare class Ship {
+    readonly name: string;
+    planet: Planet | null;
+    readonly faction: Faction | null;
+    readonly game: Game;
+    readonly weapons: Weapon[];
+    readonly engines: Engine[];
+    readonly previousLocations: CoordinatePair[];
+    id: string;
+    location: CoordinatePair;
+    velocity: CoordinatePair;
+    human: boolean;
+    attackable: boolean;
+    dead: boolean;
+    hp: number;
+    obeysGravity: boolean;
+    constructor({ name, planet, faction, loadout }: BaseShipData, game: Game);
+    identify(): void;
+    tick(): void;
+    get items(): Item[];
+    addWeapon: typeof addWeapon;
+    addEngine: typeof addEngine;
+    removeItem: typeof removeItem;
+    equipLoadout: typeof equipLoadout;
+    get canMove(): boolean;
+    move: typeof move;
+    stop: typeof stop;
+    thrust: typeof thrust;
+    applyTickOfGravity: typeof applyTickOfGravity;
+    canAttack(s: any): boolean;
+    get alive(): boolean;
+}
+//# sourceMappingURL=Ship.d.ts.map

@@ -57,6 +57,12 @@ function unitVectorFromThisPointToThatPoint(
   return degreesToUnitVector(angleBetween)
 }
 
+function vectorToMagnitude(vector: CoordinatePair): number {
+  return Math.sqrt(
+    vector[0] * vector[0] + vector[1] * vector[1],
+  )
+}
+
 function pointIsInsideCircle(
   center: CoordinatePair,
   point: CoordinatePair,
@@ -79,4 +85,5 @@ export default {
   pointIsInsideCircle,
   coordPairToDegrees,
   coordPairToRadians,
+  vectorToMagnitude,
 }

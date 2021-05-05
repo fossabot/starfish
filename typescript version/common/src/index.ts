@@ -9,5 +9,5 @@ export default {
   ...math,
   ...text,
   ...misc,
-  log,
+  ...log,
 }

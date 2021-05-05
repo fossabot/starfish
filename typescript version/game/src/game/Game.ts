@@ -1,4 +1,6 @@
 import c from '../../../common/dist'
+import EventEmitter from 'events'
+
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet'
 import { Cache } from './classes/Cache'
@@ -11,7 +13,7 @@ import { AIShip } from './classes/Ship/AIShip'
 import defaultPlanets from './presets/planets'
 import defaultFactions from './presets/factions'
 
-export class Game {
+export class Game extends EventEmitter {
   readonly startTime: Date
   readonly ships: Ship[]
   readonly planets: Planet[]
@@ -19,7 +21,10 @@ export class Game {
   readonly factions: Faction[]
   readonly attackRemnants: AttackRemnant[] = []
 
+  lastTickTime: number = Date.now()
+
   constructor() {
+    super()
     this.startTime = new Date()
     this.ships = []
     this.planets = []
@@ -31,6 +36,7 @@ export class Game {
   }
 
   startGame() {
+    this.emit('beforeStart')
     c.log(`----- Starting Game -----`)
 
     defaultPlanets.forEach((p) => {
@@ -65,13 +71,34 @@ export class Game {
     this.tickCount++
     this.ships.forEach((s) => s.tick())
 
-    const elapsedTime = Date.now() - startTime
-    if (elapsedTime > 10)
-      c.log(`Tick took ${elapsedTime} ms`)
+    this.emit('tick')
+
+    // ----- timing
+
+    const elapsedTimeInMs = Date.now() - startTime
+    if (elapsedTimeInMs > 10) {
+      if (elapsedTimeInMs < 30)
+        c.log(
+          `Tick took`,
+          'yellow',
+          elapsedTimeInMs + ` ms`,
+        )
+      else
+        c.log(`Tick took`, 'red', elapsedTimeInMs + ` ms`)
+    }
+
+    c.deltaTime = Date.now() - this.lastTickTime
+    this.lastTickTime = startTime
 
     setTimeout(
       () => this.tick(),
-      Math.max(100, c.TICK_INTERVAL - elapsedTime),
+      Math.min(
+        c.TICK_INTERVAL,
+        Math.max(
+          1,
+          c.TICK_INTERVAL - (c.deltaTime - c.TICK_INTERVAL),
+        ),
+      ),
     )
   }
 

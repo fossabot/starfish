@@ -1,0 +1,1 @@
+{"version":3,"file":"Weapon.d.ts","sourceRoot":"","sources":["../../../../src/game/classes/Item/Weapon.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,MAAM,cAAc,CAAA;AAEnC,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAA;AAE7B,qBAAa,MAAO,SAAQ,IAAI;IAC9B,QAAQ,CAAC,KAAK,EAAE,MAAM,CAAA;IACtB,OAAO,EAAE,MAAM,CAAI;IACnB,YAAY,EAAE,MAAM,CAAA;gBAER,IAAI,EAAE,cAAc,EAAE,IAAI,EAAE,IAAI;CAK7C"}

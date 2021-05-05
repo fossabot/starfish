@@ -1,22 +1,36 @@
 import c from '../../common/dist'
 import { Game } from './game/Game'
 
-const g = new Game()
+export const game = new Game()
 
-const human1 = g.addHumanShip({
+game.on('tick', () => {
+  c.log('woaahhhh')
+})
+
+const human1 = game.addHumanShip({
   name: `human1`,
   id: `123`,
   planet: `Origin`,
   faction: `green`,
   loadout: `human_default`,
+  crewMembers: [
+    { id: 'cm1', name: 'bonzo', skills: [], stamina: 0.5 },
+    {
+      id: 'cm2',
+      name: 'bubbs',
+      skills: [{ level: 2, xp: 200, skill: 'stamina' }],
+      stamina: 0.5,
+    },
+  ],
 })
 
-const ai1 = g.addAIShip({
+const ai1 = game.addAIShip({
   name: `ai1`,
   loadout: `ai_default`,
   planet: `Hera`,
 })
 
-// g.identify()
-// c.log(g.ships)
+// game.identify()
+// c.log(game.ships)
 // c.log(ai1)
+// c.log(human1)

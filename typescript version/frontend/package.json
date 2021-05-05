@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.1",
+    "bufferutil": "^4.0.3",
+    "core-js": "^3.9.1",
+    "nuxt": "^2.15.3",
+    "nuxt-socket-io": "^1.1.17",
+    "utf-8-validate": "^5.0.4"
+  },
+  "devDependencies": {
+    "nuxt-vite": "^0.0.37"
+  }
+}

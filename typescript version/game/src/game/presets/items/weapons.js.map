@@ -1,0 +1,1 @@
+{"version":3,"file":"weapons.js","sourceRoot":"","sources":["weapons.ts"],"names":[],"mappings":";;;AAAa,QAAA,OAAO,GAAsC,EAAE,CAAA;AAC5D,eAAO,CAAC,MAAM,GAAG;IACf,EAAE,EAAE,QAAQ;IACZ,WAAW,EAAE,mBAAmB;IAChC,WAAW,EAAE,8BAA8B;IAC3C,KAAK,EAAE,CAAC;IACR,YAAY,EAAE,CAAC,GAAG,IAAI;CACvB,CAAA"}

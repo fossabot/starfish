@@ -5,6 +5,7 @@ import { Faction } from '../Faction'
 import { Engine } from '../Item/Engine'
 import { Item } from '../Item/Item'
 import { Weapon } from '../Item/Weapon'
+import { Planet } from '../Planet'
 
 import {
   addWeapon,
@@ -21,9 +22,9 @@ import {
 
 export class Ship {
   readonly name: string
-  planet: BasePlanetData | null
-  readonly game: Game
+  planet: Planet | null
   readonly faction: Faction | null
+  readonly game: Game
 
   readonly weapons: Weapon[] = []
   readonly engines: Engine[] = []
@@ -67,12 +68,6 @@ export class Ship {
     if (this.obeysGravity) this.applyTickOfGravity()
   }
 
-  //   export(): any {
-  // const exportData = {...this}
-  // delete exportData.game
-  // exportData.planet = exportData.planet?.name
-  //   }
-
   // ----- item mgmt -----
 
   get items(): Item[] {
@@ -104,5 +99,9 @@ export class Ship {
 
   canAttack(s: any): boolean {
     return false
+  }
+
+  get alive(): boolean {
+    return true
   }
 }
