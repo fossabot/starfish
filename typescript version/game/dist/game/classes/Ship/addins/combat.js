@@ -3,17 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.takeDamage = exports.attack = exports.canAttack = void 0;
+exports.die = exports.takeDamage = exports.attack = exports.canAttack = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
+const io_1 = require("../../../../server/io");
 function canAttack(otherShip) {
-    if (!otherShip?.attackable)
+    if (otherShip.planet || this.planet)
         return false;
-    if (otherShip.hp <= 0)
+    if (otherShip.dead || this.dead)
+        return false;
+    if (!otherShip?.attackable)
         return false;
     if (otherShip.faction &&
         otherShip.faction.color === this.faction?.color)
-        return false;
-    if (otherShip.planet)
         return false;
     if (dist_1.default.distance(otherShip.location, this.location) >
         this.attackRange)
@@ -40,8 +41,13 @@ function takeDamage(attacker, damage) {
     this.hp -= damage.damage;
     const didDie = previousHp > 0 && this.hp <= 0;
     if (didDie)
-        this.dead = true;
-    dist_1.default.log(`${this.name} takes ${damage.damage} damage from ${attacker.name}'s ${damage.weapon.displayName}, and ${didDie ? `died` : `has ${this.hp} hp left`}.`);
+        this.die();
+    dist_1.default.log(`${this.name} takes ${damage.damage} damage from ${attacker.name}'s ${damage.weapon.displayName}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
+    // ----- notify listeners -----
+    io_1.io.to(`ship:${this.id}`).emit('ship:update', {
+        id: this.id,
+        updates: { dead: this.dead, hp: this.hp },
+    });
     return {
         damageTaken: damage.damage,
         didDie: didDie,
@@ -49,4 +55,13 @@ function takeDamage(attacker, damage) {
     };
 }
 exports.takeDamage = takeDamage;
+function die() {
+    if (this.dead)
+        return;
+    this.dead = true;
+    // ----- notify listeners -----
+    io_1.io.to(`ship:${this.id}`).emit('ship:die', io_1.stubify(this));
+    this.emit('ship:die', { shipId: this.id });
+}
+exports.die = die;
 //# sourceMappingURL=combat.js.map

@@ -4,19 +4,32 @@ import { Engine } from '../Item/Engine';
 import { Item } from '../Item/Item';
 import { Weapon } from '../Item/Weapon';
 import { Planet } from '../Planet';
+import { Cache } from '../Cache';
+import { AttackRemnant } from '../AttackRemnant';
+import type { CrewMember } from '../CrewMember/CrewMember';
+import type { CombatShip } from './CombatShip';
 import { addWeapon, addEngine, removeItem, equipLoadout } from './addins/items';
-import { move, stop, thrust, applyTickOfGravity } from './addins/movement';
+import { move, stop, applyTickOfGravity } from './addins/motion';
 export declare class Ship {
+    static maxPreviousLocations: number;
     readonly name: string;
     planet: Planet | null;
     readonly faction: Faction | null;
     readonly game: Game;
+    toUpdate: Partial<ShipStub>;
+    visible: {
+        ships: Ship[];
+        planets: Planet[];
+        caches: Cache[];
+        attackRemnants: AttackRemnant[];
+    };
     readonly weapons: Weapon[];
     readonly engines: Engine[];
     readonly previousLocations: CoordinatePair[];
     id: string;
     location: CoordinatePair;
     velocity: CoordinatePair;
+    targetLocation: CoordinatePair;
     human: boolean;
     attackable: boolean;
     dead: boolean;
@@ -30,12 +43,15 @@ export declare class Ship {
     addEngine: typeof addEngine;
     removeItem: typeof removeItem;
     equipLoadout: typeof equipLoadout;
+    get sightRange(): number;
+    lastMoveAngle: number;
     get canMove(): boolean;
+    get atTargetLocation(): boolean;
     move: typeof move;
     stop: typeof stop;
-    thrust: typeof thrust;
     applyTickOfGravity: typeof applyTickOfGravity;
-    canAttack(s: any): boolean;
+    membersIn(l: CrewLocation): CrewMember[];
+    canAttack(s: CombatShip): boolean;
     get alive(): boolean;
 }
 //# sourceMappingURL=Ship.d.ts.map

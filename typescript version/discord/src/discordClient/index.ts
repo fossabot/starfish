@@ -1,4 +1,4 @@
-import c from '../../common/dist'
+import c from '../../../common/dist'
 import Discord from 'discord.js-light'
 export const client = new Discord.Client({
   cacheGuilds: true,
@@ -69,26 +69,24 @@ client.on(`ready`, async () => {
 })
 client.login(process.env.DISCORD_TOKEN)
 
-export async function awaitLogin(): Promise<void> {
+export async function connected(): Promise<boolean> {
   return new Promise(async (resolve, reject) => {
-    if (didError)
-      reject(Error(`Failed to log in to Discord`))
+    if (didError) resolve(false)
     if (client.readyAt) {
-      resolve()
+      resolve(true)
       return
     }
     let timeout = 0
     while (timeout < 200) {
       // 20 seconds
       await c.sleep(100)
-      if (didError)
-        reject(Error(`Failed to log in to Discord`))
+      if (didError) resolve(false)
       if (client.readyAt) {
-        resolve()
+        resolve(true)
         return
       }
       timeout++
     }
-    reject(Error(`Failed to log in to Discord`))
+    resolve(false)
   })
 }

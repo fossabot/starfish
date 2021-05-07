@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+function lerp(v0, v1, t) {
+    return v0 * (1 - t) + v1 * t;
+}
 function radiansToDegrees(radians) {
     return (180 * radians) / Math.PI;
 }
@@ -48,6 +51,7 @@ function pointIsInsideCircle(center, point, radius) {
         radius * radius);
 }
 exports.default = {
+    lerp,
     radiansToDegrees,
     degreesToRadians,
     distance,

@@ -10,10 +10,11 @@
     "bufferutil": "^4.0.3",
     "core-js": "^3.9.1",
     "nuxt": "^2.15.3",
-    "nuxt-socket-io": "^1.1.17",
+    "socket.io-client": "^4.0.2",
     "utf-8-validate": "^5.0.4"
   },
   "devDependencies": {
+    "@nuxt/types": "^2.15.4",
     "nuxt-vite": "^0.0.37"
   }
 }

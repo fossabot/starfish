@@ -32,13 +32,13 @@ export default {
 
   css: [],
 
-  plugins: [],
+  plugins: [{ src: '~/plugins/socket.js' }],
 
   components: true,
 
   buildModules: [`nuxt-vite`],
 
-  modules: [`@nuxtjs/axios`, `nuxt-socket-io`],
+  modules: [`@nuxtjs/axios`],
   io: {
     sockets: [
       {

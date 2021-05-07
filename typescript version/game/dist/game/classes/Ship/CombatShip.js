@@ -11,6 +11,7 @@ class CombatShip extends Ship_1.Ship {
         this.attack = combat_1.attack;
         this.takeDamage = combat_1.takeDamage;
         this.canAttack = combat_1.canAttack;
+        this.die = combat_1.die;
     }
     get attackRange() {
         return this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);

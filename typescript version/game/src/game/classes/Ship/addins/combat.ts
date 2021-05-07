@@ -1,4 +1,6 @@
 import c from '../../../../../../common/dist'
+import { io, stubify } from '../../../../server/io'
+
 import { Item } from '../../Item/Item'
 import { Ship } from '../Ship'
 import { CombatShip } from '../CombatShip'
@@ -8,14 +10,14 @@ export function canAttack(
   this: CombatShip,
   otherShip: Ship,
 ): boolean {
+  if (otherShip.planet || this.planet) return false
+  if (otherShip.dead || this.dead) return false
   if (!otherShip?.attackable) return false
-  if (otherShip.hp <= 0) return false
   if (
     otherShip.faction &&
     otherShip.faction.color === this.faction?.color
   )
     return false
-  if (otherShip.planet) return false
   if (
     c.distance(otherShip.location, this.location) >
     this.attackRange
@@ -54,17 +56,36 @@ export function takeDamage(
   const previousHp = this.hp
   this.hp -= damage.damage
   const didDie = previousHp > 0 && this.hp <= 0
-  if (didDie) this.dead = true
+  if (didDie) this.die()
   c.log(
     `${this.name} takes ${damage.damage} damage from ${
       attacker.name
     }'s ${damage.weapon.displayName}, and ${
-      didDie ? `died` : `has ${this.hp} hp left`
+      didDie ? `dies` : `has ${this.hp} hp left`
     }.`,
   )
+
+  // ----- notify listeners -----
+  io.to(`ship:${this.id}`).emit('ship:update', {
+    id: this.id,
+    updates: { dead: this.dead, hp: this.hp },
+  })
+
   return {
     damageTaken: damage.damage,
     didDie: didDie,
     weapon: damage.weapon,
   }
+}
+
+export function die(this: CombatShip) {
+  if (this.dead) return
+  this.dead = true
+
+  // ----- notify listeners -----
+  io.to(`ship:${this.id}`).emit(
+    'ship:die',
+    stubify<Ship, ShipStub>(this),
+  )
+  this.emit('ship:die', { shipId: this.id })
 }

@@ -1,3 +1,7 @@
+function lerp(v0: number, v1: number, t: number) {
+  return v0 * (1 - t) + v1 * t
+}
+
 function radiansToDegrees(radians: number) {
   return (180 * radians) / Math.PI
 }
@@ -76,6 +80,7 @@ function pointIsInsideCircle(
 }
 
 export default {
+  lerp,
   radiansToDegrees,
   degreesToRadians,
   distance,

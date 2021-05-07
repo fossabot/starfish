@@ -28,7 +28,10 @@ const dist_1 = __importDefault(require("../../common/dist"));
 const ioInterface_1 = __importDefault(require("./ioInterface"));
 const discord = __importStar(require("./discordClient"));
 async function start() {
-    await discord.awaitLogin().catch((e) => dist_1.default.log(`red`, e));
+    if (!(await discord.connected())) {
+        dist_1.default.log('red', 'Failed to connect to discord');
+        return;
+    }
     if (!(await ioInterface_1.default.connected())) {
         dist_1.default.log('red', 'Failed to connect to game server');
         return;
@@ -38,12 +41,8 @@ async function start() {
         id: `456`,
         name: `human2`,
         crewMembers: [],
+        planet: 'Origin',
     }))?.name);
-    dist_1.default.log(await ioInterface_1.default.ship.thrust({
-        id: `456`,
-        angle: 45,
-        powerPercent: 1,
-    }));
 }
 start();
 //# sourceMappingURL=index.js.map

@@ -54,32 +54,32 @@ export async function create(
   return shipStub
 }
 
-export async function thrust(
-  data: ThrustRequest,
-): Promise<ThrustResult | null> {
-  if (!(await connected())) return null
+// export async function thrust(
+//   data: ThrustRequest,
+// ): Promise<ThrustResult | null> {
+//   if (!(await connected())) return null
 
-  const res: ThrustResult | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:thrust`,
-        data,
-        ({
-          data: thrustResult,
-          error,
-        }: IOResponseReceived<ThrustResult>) => {
-          if (!thrustResult || error) {
-            c.log(error)
-            resolve(null)
-            return
-          }
-          resolve(thrustResult)
-        },
-      )
-    },
-  )
-  return res
-}
+//   const res: ThrustResult | null = await new Promise(
+//     (resolve) => {
+//       io.emit(
+//         `ship:thrust`,
+//         data,
+//         ({
+//           data: thrustResult,
+//           error,
+//         }: IOResponseReceived<ThrustResult>) => {
+//           if (!thrustResult || error) {
+//             c.log(error)
+//             resolve(null)
+//             return
+//           }
+//           resolve(thrustResult)
+//         },
+//       )
+//     },
+//   )
+//   return res
+// }
 
 export async function attack(
   data: AttackRequest,

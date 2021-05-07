@@ -12,6 +12,7 @@ declare const _default: {
     sanitize: (string: string) => SanitizeResult;
     msToTimeString: (ms: number) => string;
     garble: (string: string, percent?: number) => string;
+    lerp: (v0: number, v1: number, t: number) => number;
     radiansToDegrees: (radians: number) => number;
     degreesToRadians: (degrees: number) => number;
     distance: (a: CoordinatePair, b: CoordinatePair) => number;

@@ -1,5 +1,7 @@
 import c from '../../../common/dist'
-import EventEmitter from 'events'
+import { EventEmitter2 } from 'eventemitter2'
+
+import { io, stubify } from '../server/io'
 
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet'
@@ -13,7 +15,7 @@ import { AIShip } from './classes/Ship/AIShip'
 import defaultPlanets from './presets/planets'
 import defaultFactions from './presets/factions'
 
-export class Game extends EventEmitter {
+export class Game {
   readonly startTime: Date
   readonly ships: Ship[]
   readonly planets: Planet[]
@@ -21,10 +23,7 @@ export class Game extends EventEmitter {
   readonly factions: Faction[]
   readonly attackRemnants: AttackRemnant[] = []
 
-  lastTickTime: number = Date.now()
-
   constructor() {
-    super()
     this.startTime = new Date()
     this.ships = []
     this.planets = []
@@ -36,7 +35,6 @@ export class Game extends EventEmitter {
   }
 
   startGame() {
-    this.emit('beforeStart')
     c.log(`----- Starting Game -----`)
 
     defaultPlanets.forEach((p) => {
@@ -64,14 +62,15 @@ export class Game extends EventEmitter {
 
   // ----- game loop -----
 
-  tickCount = 0
+  private tickCount = 0
+  private lastTickTime: number = Date.now()
+  private lastTickExpectedTime: number = 0
+  private averageTickLag: number = 0
   tick() {
     const startTime = Date.now()
 
     this.tickCount++
     this.ships.forEach((s) => s.tick())
-
-    this.emit('tick')
 
     // ----- timing
 
@@ -88,18 +87,27 @@ export class Game extends EventEmitter {
     }
 
     c.deltaTime = Date.now() - this.lastTickTime
-    this.lastTickTime = startTime
 
-    setTimeout(
-      () => this.tick(),
-      Math.min(
-        c.TICK_INTERVAL,
-        Math.max(
-          1,
-          c.TICK_INTERVAL - (c.deltaTime - c.TICK_INTERVAL),
-        ),
-      ),
+    const thisTickLag =
+      c.deltaTime - this.lastTickExpectedTime
+    this.averageTickLag = c.lerp(
+      this.averageTickLag,
+      thisTickLag,
+      0.3,
     )
+    const nextTickTime = Math.min(
+      c.TICK_INTERVAL,
+      c.TICK_INTERVAL - this.averageTickLag,
+    )
+    this.lastTickTime = startTime
+    this.lastTickExpectedTime = nextTickTime
+
+    setTimeout(() => this.tick(), nextTickTime)
+
+    io.to('game').emit('game:tick', {
+      deltaTime: c.deltaTime,
+      game: stubify<Game, GameStub>(this),
+    })
   }
 
   // ----- scan function -----
@@ -107,18 +115,23 @@ export class Game extends EventEmitter {
   scanCircle(
     center: CoordinatePair,
     radius: number,
-    type?: `ship` | `planet` | `cache`,
+    ignoreSelf: string | null,
+    type?: `ship` | `planet` | `cache` | 'attackRemnant',
   ): {
     ships: Ship[]
     planets: Planet[]
     caches: Cache[]
+    attackRemnants: AttackRemnant[]
   } {
     let ships: Ship[] = [],
       planets: Planet[] = [],
-      caches: Cache[] = []
+      caches: Cache[] = [],
+      attackRemnants: AttackRemnant[] = []
     if (!type || type === `ship`)
-      ships = this.ships.filter((s) =>
-        c.pointIsInsideCircle(center, s.location, radius),
+      ships = this.ships.filter(
+        (s) =>
+          s.id !== ignoreSelf &&
+          c.pointIsInsideCircle(center, s.location, radius),
       )
     if (!type || type === `planet`)
       planets = this.planets.filter((p) =>
@@ -128,21 +141,27 @@ export class Game extends EventEmitter {
       caches = this.caches.filter((k) =>
         c.pointIsInsideCircle(center, k.location, radius),
       )
-    return { ships, planets, caches }
+    if (!type || type === `attackRemnant`)
+      attackRemnants = this.attackRemnants.filter(
+        (a) =>
+          c.pointIsInsideCircle(center, a.start, radius) ||
+          c.pointIsInsideCircle(center, a.end, radius),
+      )
+    return { ships, planets, caches, attackRemnants }
   }
 
   // ----- entity functions -----
 
   addHumanShip(data: BaseHumanShipData): HumanShip {
+    c.log(`Adding human ship ${data.name} to game`)
     const newShip = new HumanShip(data, this)
-    c.log(`Adding human ship ${newShip.name} to game`)
     this.ships.push(newShip)
     return newShip
   }
 
   addAIShip(data: BaseShipData): AIShip {
+    c.log(`Adding AI ship ${data.name} to game`)
     const newShip = new AIShip(data, this)
-    c.log(`Adding AI ship ${newShip.name} to game`)
     this.ships.push(newShip)
     return newShip
   }

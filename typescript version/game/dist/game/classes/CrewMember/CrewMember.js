@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
+const io_1 = require("../../../server/io");
 class CrewMember {
     constructor(data, ship) {
         this.id = data.id;
@@ -21,6 +22,9 @@ class CrewMember {
         this.location = location;
     }
     tick() {
+        // ----- test notify listeners -----
+        io_1.io.to(`ship:${this.ship.id}`).emit('crew:tired', io_1.stubify(this));
+        // ----- bunk -----
         if (this.location === `bunk`) {
             this.stamina +=
                 (dist_1.default.deltaTime / 1000 / 60 / 60) *
@@ -29,6 +33,7 @@ class CrewMember {
                 this.stamina = this.maxStamina;
             return;
         }
+        // ----- stamina check/use -----
         if (this.tired)
             return;
         this.stamina -=
@@ -36,14 +41,19 @@ class CrewMember {
                 (dist_1.default.deltaTime / 1000);
         if (this.tired) {
             this.stamina = 0;
+            // ----- notify listeners -----
+            io_1.io.to(`ship:${this.ship.id}`).emit('crew:tired', io_1.stubify(this));
             return;
         }
+        // ----- cockpit -----
         if (this.location === `cockpit`) {
-            dist_1.default.log(`cockpit`);
+            // c.log(`cockpit`)
         }
+        // ----- repair -----
         else if (this.location === `repair`) {
             dist_1.default.log(`repair`);
         }
+        // ----- weapons -----
         else if (this.location === `weapons`) {
             dist_1.default.log(`weapons`);
         }

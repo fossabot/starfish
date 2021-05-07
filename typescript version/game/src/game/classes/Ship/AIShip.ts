@@ -28,6 +28,7 @@ export class AIShip extends CombatShip {
     if (enemies.length) {
       const randomEnemy = c.randomFromArray(enemies)
       const randomWeapon = c.randomFromArray(weapons)
+      c.log(weapons.length, !!randomWeapon)
       this.attack(randomEnemy, randomWeapon)
     }
   }

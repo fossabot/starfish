@@ -1,4 +1,17 @@
-interface ShipStub {
+interface BaseStub {
+  lastUpdated: number
+}
+
+interface GameStub extends BaseStub {
+  ships: ShipStub[]
+  planets: PlanetStub[]
+  factions: FactionStub[]
+  caches: CacheStub[]
+  attackRemnants: AttackRemnantStub[]
+  [key: string]: any
+}
+
+interface ShipStub extends BaseStub {
   id: string
   name: string
   weapons: WeaponStub[]
@@ -6,6 +19,8 @@ interface ShipStub {
   previousLocations: CoordinatePair[]
   location: CoordinatePair
   velocity: CoordinatePair
+  targetLocation: CoordinatePair
+  visible: VisibleStub
   human: boolean
   attackable: boolean
   dead: boolean
@@ -13,20 +28,41 @@ interface ShipStub {
   obeysGravity: boolean
   planet: PlanetStub
   faction: FactionStub
+  crewMembers: CrewMemberStub[]
+  [key: string]: any
+}
+interface VisibleStub extends BaseStub {
+  ships: ShipStub[]
+  planets: PlanetStub[]
+  caches: CacheStub[]
+  attackRemnants: AttackRemnantStub[]
+}
+
+interface CrewMemberStub extends BaseStub {
+  id: string
+  name: string
+  skills: XPData[]
+  location?: CrewLocation
+  stamina: number
   [key: string]: any
 }
 
-interface PlanetStub {
+interface PlanetStub extends BaseStub {
+  [key: string]: any
+}
+interface CacheStub extends BaseStub {
+  [key: string]: any
+}
+interface AttackRemnantStub extends BaseStub {
+  [key: string]: any
+}
+interface FactionStub extends BaseStub {
   [key: string]: any
 }
 
-interface FactionStub {
+interface WeaponStub extends BaseStub {
   [key: string]: any
 }
-
-interface WeaponStub {
-  [key: string]: any
-}
-interface EngineStub {
+interface EngineStub extends BaseStub {
   [key: string]: any
 }

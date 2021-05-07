@@ -8,5 +8,6 @@ interface DamageResult {
 }
 export declare function attack(this: CombatShip, target: CombatShip, weapon: Weapon): TakenDamageResult;
 export declare function takeDamage(this: CombatShip, attacker: CombatShip, damage: DamageResult): TakenDamageResult;
+export declare function die(this: CombatShip): void;
 export {};
 //# sourceMappingURL=combat.d.ts.map

@@ -6,6 +6,7 @@ import {
   attack,
   takeDamage,
   canAttack,
+  die,
 } from './addins/combat'
 
 export class CombatShip extends Ship {
@@ -48,4 +49,5 @@ export class CombatShip extends Ship {
   attack = attack
   takeDamage = takeDamage
   canAttack = canAttack
+  die = die
 }

@@ -1,5 +1,3 @@
-/// <reference types="node" />
-import EventEmitter from 'events';
 import { Ship } from './classes/Ship/Ship';
 import { Planet } from './classes/Planet';
 import { Cache } from './classes/Cache';
@@ -7,23 +5,26 @@ import { Faction } from './classes/Faction';
 import { AttackRemnant } from './classes/AttackRemnant';
 import { HumanShip } from './classes/Ship/HumanShip';
 import { AIShip } from './classes/Ship/AIShip';
-export declare class Game extends EventEmitter {
+export declare class Game {
     readonly startTime: Date;
     readonly ships: Ship[];
     readonly planets: Planet[];
     readonly caches: Cache[];
     readonly factions: Faction[];
     readonly attackRemnants: AttackRemnant[];
-    lastTickTime: number;
     constructor();
     startGame(): void;
     identify(): void;
-    tickCount: number;
+    private tickCount;
+    private lastTickTime;
+    private lastTickExpectedTime;
+    private averageTickLag;
     tick(): void;
-    scanCircle(center: CoordinatePair, radius: number, type?: `ship` | `planet` | `cache`): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, type?: `ship` | `planet` | `cache` | 'attackRemnant'): {
         ships: Ship[];
         planets: Planet[];
         caches: Cache[];
+        attackRemnants: AttackRemnant[];
     };
     addHumanShip(data: BaseHumanShipData): HumanShip;
     addAIShip(data: BaseShipData): AIShip;

@@ -1,4 +1,6 @@
+import { EventEmitter2 } from 'eventemitter2'
 import c from '../../../../../common/dist'
+import { io, stubify } from '../../../server/io'
 import { HumanShip } from '../Ship/HumanShip'
 
 export class CrewMember {
@@ -29,6 +31,13 @@ export class CrewMember {
   }
 
   tick() {
+    // ----- test notify listeners -----
+    io.to(`ship:${this.ship.id}`).emit(
+      'crew:tired',
+      stubify<CrewMember, CrewMemberStub>(this),
+    )
+
+    // ----- bunk -----
     if (this.location === `bunk`) {
       this.stamina +=
         (c.deltaTime / 1000 / 60 / 60) *
@@ -39,6 +48,7 @@ export class CrewMember {
       return
     }
 
+    // ----- stamina check/use -----
     if (this.tired) return
 
     this.stamina -=
@@ -46,14 +56,28 @@ export class CrewMember {
       (c.deltaTime / 1000)
     if (this.tired) {
       this.stamina = 0
+
+      // ----- notify listeners -----
+      io.to(`ship:${this.ship.id}`).emit(
+        'crew:tired',
+        stubify<CrewMember, CrewMemberStub>(this),
+      )
+
       return
     }
 
+    // ----- cockpit -----
     if (this.location === `cockpit`) {
-      c.log(`cockpit`)
-    } else if (this.location === `repair`) {
+      // c.log(`cockpit`)
+    }
+
+    // ----- repair -----
+    else if (this.location === `repair`) {
       c.log(`repair`)
-    } else if (this.location === `weapons`) {
+    }
+
+    // ----- weapons -----
+    else if (this.location === `weapons`) {
       c.log(`weapons`)
     }
   }

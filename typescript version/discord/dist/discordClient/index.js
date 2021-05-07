@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.awaitLogin = exports.rawWatchers = exports.client = void 0;
-const dist_1 = __importDefault(require("../../common/dist"));
+exports.connected = exports.rawWatchers = exports.client = void 0;
+const dist_1 = __importDefault(require("../../../common/dist"));
 const discord_js_light_1 = __importDefault(require("discord.js-light"));
 exports.client = new discord_js_light_1.default.Client({
     cacheGuilds: true,
@@ -65,12 +65,12 @@ exports.client.on(`ready`, async () => {
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });
 });
 exports.client.login(process.env.DISCORD_TOKEN);
-async function awaitLogin() {
+async function connected() {
     return new Promise(async (resolve, reject) => {
         if (didError)
-            reject(Error(`Failed to log in to Discord`));
+            resolve(false);
         if (exports.client.readyAt) {
-            resolve();
+            resolve(true);
             return;
         }
         let timeout = 0;
@@ -78,15 +78,15 @@ async function awaitLogin() {
             // 20 seconds
             await dist_1.default.sleep(100);
             if (didError)
-                reject(Error(`Failed to log in to Discord`));
+                resolve(false);
             if (exports.client.readyAt) {
-                resolve();
+                resolve(true);
                 return;
             }
             timeout++;
         }
-        reject(Error(`Failed to log in to Discord`));
+        resolve(false);
     });
 }
-exports.awaitLogin = awaitLogin;
-//# sourceMappingURL=discordClient.js.map
+exports.connected = connected;
+//# sourceMappingURL=index.js.map

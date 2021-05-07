@@ -1,25 +1,50 @@
 // const path = require(`path`)
 
-const reset = `\x1b[0m`
+const fillCharacter = '.'
+
+let longest = 0
+
+const reset = `\x1b[0m`,
+  dim = `\x1b[2m`,
+  bright = `\x1b[1m`
+
 const colors: any = {
-  dim: `\x1b[2m`,
   gray: `\x1b[2m`,
-  bright: `\x1b[1m`,
   red: `\x1b[31m`,
   green: `\x1b[32m`,
   yellow: `\x1b[33m`,
   blue: `\x1b[34m`,
-  magenta: `\x1b[35m`,
   pink: `\x1b[35m`,
   cyan: `\x1b[36m`,
   white: `\x1b[37m`,
-  reset,
 }
 
+const dirColors: any = {
+  red: `\x1b[31m`,
+  green: `\x1b[32m`,
+  yellow: `\x1b[33m`,
+  blue: `\x1b[34m`,
+  pink: `\x1b[35m`,
+  cyan: `\x1b[36m`,
+}
+
+const mainDirs = [
+  'common',
+  'db',
+  'discord',
+  'frontend',
+  'game',
+]
+
 const log = (...args: any[]): void => {
-  const pathName = /log\.[jt]s[^\n]*\n[^\n]*\/([^/]+\/[^/]+\/[^/:]+)\.[^:]+/gi.exec(
+  const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/:]+))\.[^:]+/gi.exec(
     `${new Error().stack}`,
-  )?.[1]
+  )
+  const fullPath: string = regexResult?.[1] || ''
+  const mainDir = mainDirs.find(
+    (d) => fullPath.indexOf(`/${d}/`) !== -1,
+  )
+  const pathName = regexResult?.[2]
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]
@@ -41,19 +66,39 @@ const log = (...args: any[]): void => {
     }
   }
 
-  console.log(
+  let mainDirColor = !mainDir
+    ? ''
+    : Object.values(dirColors)[
+        mainDir
+          .split('')
+          .map((c) => c.charCodeAt(0))
+          .reduce((total, curr) => curr + total, 0) %
+          Object.values(dirColors).length
+      ]
+
+  let prefix =
     reset +
-      colors.dim +
-      `[${new Date().toLocaleTimeString(undefined, {
-        hour12: false,
-        hour: `2-digit`,
-        minute: `2-digit`,
-      })}][` +
-      pathName +
-      `]` +
-      reset,
-    ...args,
-  )
+    dim +
+    `[${new Date().toLocaleTimeString(undefined, {
+      hour12: false,
+      hour: `2-digit`,
+      minute: `2-digit`,
+    })}]` +
+    (mainDir
+      ? reset +
+        mainDirColor +
+        mainDir +
+        colors.white +
+        dim +
+        ':'
+      : '') +
+    pathName +
+    ``
+
+  if (prefix.length > longest) longest = prefix.length
+  prefix = prefix.padEnd(longest, fillCharacter) + reset
+
+  console.log(prefix, ...args)
 }
 
 const error = (...args: any[]): void => {

@@ -1,7 +1,7 @@
 {
   "include": [
     "./game/src/**/*",
-    "./frontend/src/**/*",
+    "./frontend/**/*",
     "./server/src/**/*",
     "./discord/src/**/*",
     "./common/src/**/*",

@@ -1,34 +1,41 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.applyTickOfGravity = exports.thrust = exports.stop = exports.move = void 0;
-const dist_1 = __importDefault(require("../../../../../../common/dist"));
+exports.applyTickOfGravity = exports.stop = exports.move = void 0;
+const io_1 = require("../../../../server/io");
 function move(toLocation) {
     if (toLocation) {
         this.location = toLocation;
-        return;
     }
-    if (!this.canMove)
-        return;
-    this.location[0] += this.velocity[0];
-    this.location[1] += this.velocity[1];
+    else {
+        if (!this.canMove ||
+            (this.velocity[0] === 0 && this.velocity[1] === 0))
+            return;
+        this.location[0] += this.velocity[0];
+        this.location[1] += this.velocity[1];
+    }
+    // ----- notify listeners -----
+    io_1.io.to(`ship:${this.id}`).emit('ship:update', {
+        id: this.id,
+        updates: { location: this.location },
+    });
 }
 exports.move = move;
 function stop() {
     this.velocity = [0, 0];
 }
 exports.stop = stop;
-function thrust(angle, force) {
-    dist_1.default.log(`thrusting`, angle, force);
-    return {
-        angle,
-        velocity: dist_1.default.vectorToMagnitude(this.velocity),
-        message: `hiiii`,
-    };
-}
-exports.thrust = thrust;
+// export function thrust(
+//   this: Ship,
+//   angle: number,
+//   force: number,
+// ): ThrustResult {
+//   c.log(`thrusting`, angle, force)
+//   return {
+//     angle,
+//     velocity: c.vectorToMagnitude(this.velocity),
+//     message: `hiiii`,
+//   }
+// }
 function applyTickOfGravity() {
     if (!this.canMove)
         return;

@@ -1,0 +1,1 @@
+{"version":3,"file":"discordEvents.d.ts","sourceRoot":"","sources":["../../../src/server/events/discordEvents.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,MAAM,EAAE,MAAM,WAAW,CAAA;AASlC,MAAM,CAAC,OAAO,WACZ,MAAM,EAAE,MAAM,CAAC,cAAc,EAAE,cAAc,CAAC,QAyE/C"}

@@ -6,15 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ship = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const items_1 = require("./addins/items");
-const movement_1 = require("./addins/movement");
+const motion_1 = require("./addins/motion");
+const io_1 = require("../../../server/io");
 class Ship {
     constructor({ name, planet, faction, loadout }, game) {
+        this.toUpdate = {};
+        this.visible = {
+            ships: [],
+            planets: [],
+            caches: [],
+            attackRemnants: [],
+        };
         this.weapons = [];
         this.engines = [];
         this.previousLocations = [];
         this.id = `${Math.random()}`.substring(2); // re-set in subclasses
         this.location = [0, 0];
         this.velocity = [0, 0];
+        this.targetLocation = [0, 0];
         this.human = false;
         this.attackable = false;
         this.dead = false;
@@ -24,10 +33,12 @@ class Ship {
         this.addEngine = items_1.addEngine;
         this.removeItem = items_1.removeItem;
         this.equipLoadout = items_1.equipLoadout;
-        this.move = movement_1.move;
-        this.stop = movement_1.stop;
-        this.thrust = movement_1.thrust;
-        this.applyTickOfGravity = movement_1.applyTickOfGravity;
+        // ----- movement -----
+        this.lastMoveAngle = 0;
+        this.move = motion_1.move;
+        this.stop = motion_1.stop;
+        // thrust = thrust
+        this.applyTickOfGravity = motion_1.applyTickOfGravity;
         this.game = game;
         this.name = name;
         this.planet =
@@ -47,10 +58,20 @@ class Ship {
             dist_1.default.log(`      velocity: ${this.velocity}`);
     }
     tick() {
-        if (this.planet !== null)
+        this.visible = this.game.scanCircle(this.location, this.sightRange, this.id);
+        this.toUpdate.visible = io_1.stubify(this.visible);
+        if (!this.planet)
             this.move();
         if (this.obeysGravity)
             this.applyTickOfGravity();
+        // ----- send update to listeners -----
+        if (!Object.keys(this.toUpdate).length)
+            return;
+        io_1.io.to(`ship:${this.id}`).emit('ship:update', {
+            id: this.id,
+            updates: this.toUpdate,
+        });
+        this.toUpdate = {};
     }
     // ----- item mgmt -----
     get items() {
@@ -58,13 +79,25 @@ class Ship {
         return items;
     }
     // ----- ranges -----
-    // ----- movement -----
+    get sightRange() {
+        return 2;
+    }
     get canMove() {
-        if (this.planet)
+        if (!!this.planet)
             return false;
-        if (this.dead)
+        if (!!this.dead)
             return false;
         return true;
+    }
+    get atTargetLocation() {
+        return (Math.abs(this.location[0] - this.targetLocation[0]) <
+            0.000001 &&
+            Math.abs(this.location[1] - this.targetLocation[1]) <
+                0.000001);
+    }
+    // ----- crew -----
+    membersIn(l) {
+        return [];
     }
     // ----- combat -----
     canAttack(s) {
@@ -75,4 +108,5 @@ class Ship {
     }
 }
 exports.Ship = Ship;
+Ship.maxPreviousLocations = 10;
 //# sourceMappingURL=Ship.js.map

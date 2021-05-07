@@ -3,6 +3,9 @@ import { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import { CombatShip } from './CombatShip'
 
+import { membersIn } from './addins/crew'
+import { stubify } from '../../../server/io'
+
 export class HumanShip extends CombatShip {
   readonly human: boolean
   readonly id: string
@@ -15,18 +18,22 @@ export class HumanShip extends CombatShip {
     //* id matches discord guildId here
 
     data.crewMembers.forEach((cm) => {
-      this.crewMembers.push(new CrewMember(cm, this))
+      this.addCrewMember(cm)
     })
   }
 
   tick() {
-    super.tick()
-
     this.crewMembers.forEach((cm) => cm.tick())
+    this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
+      stubify<CrewMember, CrewMemberStub>(cm),
+    )
+    super.tick()
   }
 
   addCrewMember(data: BaseCrewMemberData) {
-    this.crewMembers.push(new CrewMember(data, this))
+    const cm = new CrewMember(data, this)
+    this.crewMembers.push(cm)
+    c.log('Added crew member', cm.name, 'to', this.name)
   }
 
   removeCrewMember(id: string) {
@@ -37,7 +44,7 @@ export class HumanShip extends CombatShip {
     if (index === -1) {
       c.log(
         'red',
-        'attempted to remove crew member that did not exist',
+        'Attempted to remove crew member that did not exist',
         id,
         'from ship',
         this.id,
@@ -47,4 +54,6 @@ export class HumanShip extends CombatShip {
 
     this.crewMembers.splice(index, 1)
   }
+
+  membersIn = membersIn
 }

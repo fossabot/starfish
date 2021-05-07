@@ -3,117 +3,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.stubify = exports.io = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
-const __1 = require("../");
+const frontend_1 = __importDefault(require("./events/frontend"));
+const discord_1 = __importDefault(require("./events/discord"));
+const general_1 = __importDefault(require("./events/general"));
+const combat_1 = __importDefault(require("./events/combat"));
+const motion_1 = __importDefault(require("./events/motion"));
+const crew_1 = __importDefault(require("./events/crew"));
 const httpServer = http_1.createServer();
-const io = new socket_io_1.Server(httpServer, {
+exports.io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: `*`,
     },
 });
-const ioFrontend = io.of(`/frontend`);
-ioFrontend.on(`connection`, (socket) => {
-    dist_1.default.log(`Frontend client connected to io`);
-    socket.emit(`hello`);
-    socket.on(`ship:get`, (id, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === id);
-        if (foundShip) {
-            const stub = stubify(foundShip);
-            callback({
-                data: stub,
-            });
-        }
-        else
-            callback({ error: `No ship found by that ID.` });
-    });
-});
-const ioDiscord = io.of(`/discord`);
-ioDiscord.on(`connection`, (socket) => {
-    dist_1.default.log(`Discord process connected to io`);
-    socket.emit(`hello`);
-    socket.on(`ship:get`, (id, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === id);
-        if (foundShip) {
-            const stub = stubify(foundShip);
-            callback({
-                data: stub,
-            });
-        }
-        else
-            callback({ error: `No ship found by that ID.` });
-    });
-    socket.on(`ship:create`, (data, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === data.id);
-        if (foundShip) {
-            dist_1.default.log(`Call to create existing ship, returning existing`);
-            const stub = stubify(foundShip);
-            callback({
-                data: stub,
-            });
-        }
-        else {
-            const ship = __1.game.addHumanShip(data);
-            const stub = stubify(ship);
-            callback({
-                data: stub,
-            });
-        }
-    });
-    socket.on(`ship:thrust`, (data, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === data.id);
-        if (!foundShip) {
-            dist_1.default.log(`Call to thrust nonexistant ship`);
-            callback({
-                error: `No ship found by id ${data.id}.`,
-            });
-        }
-        else {
-            const res = foundShip.thrust(data.angle, data.powerPercent);
-            callback({
-                data: res,
-            });
-        }
-    });
-    socket.on(`ship:attack`, (data, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === data.id);
-        const enemyShip = __1.game.ships.find((s) => s.id === data.enemyId);
-        const weapon = foundShip.weapons.find((w) => w.id === data.weaponId);
-        if (!foundShip || !enemyShip) {
-            dist_1.default.log(`Call to attack nonexistant ship`);
-            callback({
-                error: `No ship found! ${data.id} ${data.enemyId}`,
-            });
-        }
-        else if (!(`attack` in foundShip) ||
-            !(`attack` in enemyShip)) {
-            dist_1.default.log(`Call to attack pacifist ship`);
-            callback({
-                error: `Ship not combat ready! ${data.id} ${data.enemyId}`,
-            });
-        }
-        else if (!weapon) {
-            dist_1.default.log(`Call to attack without valid weapon id`);
-            callback({
-                error: `No weapon! ${data.weaponId}`,
-            });
-        }
-        else {
-            const res = foundShip.attack(enemyShip, weapon);
-            callback({
-                data: res,
-            });
-        }
-    });
+exports.io.on(`connection`, (socket) => {
+    frontend_1.default(socket);
+    discord_1.default(socket);
+    general_1.default(socket);
+    combat_1.default(socket);
+    motion_1.default(socket);
+    crew_1.default(socket);
 });
 function stubify(prop) {
     const circularReferencesRemoved = JSON.parse(JSON.stringify(prop, (key, value) => {
         if ([`game`, `ship`].includes(key))
-            return;
+            return value.id;
+        if ([`ships`].includes(key) && Array.isArray(value))
+            return value.map((v) => stubify({
+                ...v,
+                visible: null,
+            }));
         return value;
     }));
+    circularReferencesRemoved.lastUpdated = Date.now();
     return circularReferencesRemoved;
 }
+exports.stubify = stubify;
 httpServer.listen(4200);
+dist_1.default.log('io server listening on port 4200');
 //# sourceMappingURL=io.js.map

@@ -28,6 +28,7 @@ class AIShip extends CombatShip_1.CombatShip {
         if (enemies.length) {
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const randomWeapon = dist_1.default.randomFromArray(weapons);
+            dist_1.default.log(weapons.length, !!randomWeapon);
             this.attack(randomEnemy, randomWeapon);
         }
     }

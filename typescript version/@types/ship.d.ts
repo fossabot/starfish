@@ -5,6 +5,7 @@ interface BaseShipData {
   faction?: string
   loadout?: string
 }
+
 interface BaseHumanShipData extends BaseShipData {
   id: string
   crewMembers: BaseCrewMemberData[]

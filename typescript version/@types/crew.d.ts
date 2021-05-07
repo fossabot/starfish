@@ -4,6 +4,8 @@ type CrewLocation =
   | `repair`
   | `weapons`
 
+type SkillName = 'stamina'
+
 interface BaseCrewMemberData {
   name: string
   id: string
@@ -13,7 +15,7 @@ interface BaseCrewMemberData {
 }
 
 interface XPData {
-  skill: string
+  skill: SkillName
   level: number
   xp: number
 }

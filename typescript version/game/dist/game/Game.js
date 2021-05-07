@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
-const events_1 = __importDefault(require("events"));
+const io_1 = require("../server/io");
 const Planet_1 = require("./classes/Planet");
 const Cache_1 = require("./classes/Cache");
 const Faction_1 = require("./classes/Faction");
@@ -14,13 +14,14 @@ const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = __importDefault(require("./presets/planets"));
 const factions_1 = __importDefault(require("./presets/factions"));
-class Game extends events_1.default {
+class Game {
     constructor() {
-        super();
         this.attackRemnants = [];
-        this.lastTickTime = Date.now();
         // ----- game loop -----
         this.tickCount = 0;
+        this.lastTickTime = Date.now();
+        this.lastTickExpectedTime = 0;
+        this.averageTickLag = 0;
         this.startTime = new Date();
         this.ships = [];
         this.planets = [];
@@ -30,7 +31,6 @@ class Game extends events_1.default {
         this.startGame();
     }
     startGame() {
-        this.emit('beforeStart');
         dist_1.default.log(`----- Starting Game -----`);
         planets_1.default.forEach((p) => {
             this.addPlanet(p);
@@ -51,7 +51,6 @@ class Game extends events_1.default {
         const startTime = Date.now();
         this.tickCount++;
         this.ships.forEach((s) => s.tick());
-        this.emit('tick');
         // ----- timing
         const elapsedTimeInMs = Date.now() - startTime;
         if (elapsedTimeInMs > 10) {
@@ -61,30 +60,42 @@ class Game extends events_1.default {
                 dist_1.default.log(`Tick took`, 'red', elapsedTimeInMs + ` ms`);
         }
         dist_1.default.deltaTime = Date.now() - this.lastTickTime;
+        const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
+        this.averageTickLag = dist_1.default.lerp(this.averageTickLag, thisTickLag, 0.3);
+        const nextTickTime = Math.min(dist_1.default.TICK_INTERVAL, dist_1.default.TICK_INTERVAL - this.averageTickLag);
         this.lastTickTime = startTime;
-        setTimeout(() => this.tick(), Math.min(dist_1.default.TICK_INTERVAL, Math.max(1, dist_1.default.TICK_INTERVAL - (dist_1.default.deltaTime - dist_1.default.TICK_INTERVAL))));
+        this.lastTickExpectedTime = nextTickTime;
+        setTimeout(() => this.tick(), nextTickTime);
+        io_1.io.to('game').emit('game:tick', {
+            deltaTime: dist_1.default.deltaTime,
+            game: io_1.stubify(this),
+        });
     }
     // ----- scan function -----
-    scanCircle(center, radius, type) {
-        let ships = [], planets = [], caches = [];
+    scanCircle(center, radius, ignoreSelf, type) {
+        let ships = [], planets = [], caches = [], attackRemnants = [];
         if (!type || type === `ship`)
-            ships = this.ships.filter((s) => dist_1.default.pointIsInsideCircle(center, s.location, radius));
+            ships = this.ships.filter((s) => s.id !== ignoreSelf &&
+                dist_1.default.pointIsInsideCircle(center, s.location, radius));
         if (!type || type === `planet`)
             planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
         if (!type || type === `cache`)
             caches = this.caches.filter((k) => dist_1.default.pointIsInsideCircle(center, k.location, radius));
-        return { ships, planets, caches };
+        if (!type || type === `attackRemnant`)
+            attackRemnants = this.attackRemnants.filter((a) => dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
+                dist_1.default.pointIsInsideCircle(center, a.end, radius));
+        return { ships, planets, caches, attackRemnants };
     }
     // ----- entity functions -----
     addHumanShip(data) {
+        dist_1.default.log(`Adding human ship ${data.name} to game`);
         const newShip = new HumanShip_1.HumanShip(data, this);
-        dist_1.default.log(`Adding human ship ${newShip.name} to game`);
         this.ships.push(newShip);
         return newShip;
     }
     addAIShip(data) {
+        dist_1.default.log(`Adding AI ship ${data.name} to game`);
         const newShip = new AIShip_1.AIShip(data, this);
-        dist_1.default.log(`Adding AI ship ${newShip.name} to game`);
         this.ships.push(newShip);
         return newShip;
     }

@@ -6,7 +6,10 @@ import io from './ioInterface'
 import * as discord from './discordClient'
 
 async function start() {
-  await discord.awaitLogin().catch((e) => c.log(`red`, e))
+  if (!(await discord.connected())) {
+    c.log('red', 'Failed to connect to discord')
+    return
+  }
   if (!(await io.connected())) {
     c.log('red', 'Failed to connect to game server')
     return
@@ -18,15 +21,9 @@ async function start() {
         id: `456`,
         name: `human2`,
         crewMembers: [],
+        planet: 'Origin',
       })
     )?.name,
-  )
-  c.log(
-    await io.ship.thrust({
-      id: `456`,
-      angle: 45,
-      powerPercent: 1,
-    }),
   )
 }
 
