@@ -1,6 +1,5 @@
 declare const _default: {
     log: (...args: any[]) => void;
-    error: (...args: any[]) => void;
     sleep: (ms: number) => Promise<void>;
     randomFromArray: (array: any[]) => any;
     degreesToArrow: (angle: number) => string;

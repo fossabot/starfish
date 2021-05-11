@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig",
-  "include": ["../@types", "./src"],
+  "include": ["../@types", "./@types", "./src"],
   "exclude": [
     "../frontend/**/*",
     "../game/**/*",

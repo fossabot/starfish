@@ -18,7 +18,7 @@ export class CrewMember {
     this.ship = ship
     this.name = data.name
     this.location = data.location || `bunk`
-    this.skills = data.skills
+    this.skills = data.skills || []
     this.stamina = data.stamina || this.maxStamina
   }
 

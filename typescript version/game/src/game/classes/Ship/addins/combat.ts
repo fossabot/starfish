@@ -87,5 +87,4 @@ export function die(this: CombatShip) {
     'ship:die',
     stubify<Ship, ShipStub>(this),
   )
-  this.emit('ship:die', { shipId: this.id })
 }

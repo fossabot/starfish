@@ -1,14 +1,15 @@
 interface BaseShipData {
   name: string
   id?: string
-  planet?: string
-  faction?: string
+  planet?: PlanetKey
+  faction?: FactionKey
   loadout?: string
 }
 
 interface BaseHumanShipData extends BaseShipData {
   id: string
-  crewMembers: BaseCrewMemberData[]
+  crewMembers?: BaseCrewMemberData[]
+  captain?: string
 }
 
 interface TakenDamageResult extends ResponseWithMessage {

@@ -5,7 +5,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
+const io_1 = require("../io");
 function default_1(socket) {
+    socket.on(`crew:add`, (shipId, crewMemberBaseData, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({
+                error: 'No ship found by that id.',
+            });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewMemberBaseData.id);
+        if (crewMember)
+            return callback({
+                error: 'Crew member already exists on this ship.',
+            });
+        const addedCrewMember = ship.addCrewMember(crewMemberBaseData);
+        const stub = io_1.stubify(addedCrewMember);
+        callback({ data: stub });
+    });
     socket.on(`crew:move`, (shipId, crewId, target) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

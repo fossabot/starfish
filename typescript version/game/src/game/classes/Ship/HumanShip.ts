@@ -10,14 +10,16 @@ export class HumanShip extends CombatShip {
   readonly human: boolean
   readonly id: string
   crewMembers: CrewMember[] = []
+  captain: string | null = null
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
     this.human = true
     this.id = data.id
     //* id matches discord guildId here
+    this.captain = data.captain || null
 
-    data.crewMembers.forEach((cm) => {
+    data.crewMembers?.forEach((cm) => {
       this.addCrewMember(cm)
     })
   }
@@ -30,10 +32,12 @@ export class HumanShip extends CombatShip {
     super.tick()
   }
 
-  addCrewMember(data: BaseCrewMemberData) {
+  addCrewMember(data: BaseCrewMemberData): CrewMember {
     const cm = new CrewMember(data, this)
     this.crewMembers.push(cm)
+    if (!this.captain) this.captain = cm.id
     c.log('Added crew member', cm.name, 'to', this.name)
+    return cm
   }
 
   removeCrewMember(id: string) {

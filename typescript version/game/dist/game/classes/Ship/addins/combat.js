@@ -61,7 +61,6 @@ function die() {
     this.dead = true;
     // ----- notify listeners -----
     io_1.io.to(`ship:${this.id}`).emit('ship:die', io_1.stubify(this));
-    this.emit('ship:die', { shipId: this.id });
 }
 exports.die = die;
 //# sourceMappingURL=combat.js.map

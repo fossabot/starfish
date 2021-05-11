@@ -4,7 +4,7 @@
     "dev": "nodemon dist/index.js"
   },
   "dependencies": {
-    "discord.js-light": "^3.5.9",
+    "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "socket.io-client": "^4.0.1"
   }

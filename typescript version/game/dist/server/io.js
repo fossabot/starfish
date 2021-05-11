@@ -29,6 +29,8 @@ exports.io.on(`connection`, (socket) => {
 });
 function stubify(prop) {
     const circularReferencesRemoved = JSON.parse(JSON.stringify(prop, (key, value) => {
+        if ([`toUpdate`].includes(key))
+            return;
         if ([`game`, `ship`].includes(key))
             return value.id;
         if ([`ships`].includes(key) && Array.isArray(value))

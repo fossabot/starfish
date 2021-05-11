@@ -40,6 +40,7 @@ export function stubify<
 >(prop: BaseType): StubType {
   const circularReferencesRemoved = JSON.parse(
     JSON.stringify(prop, (key: string, value: any) => {
+      if ([`toUpdate`].includes(key)) return
       if ([`game`, `ship`].includes(key)) return value.id
       if ([`ships`].includes(key) && Array.isArray(value))
         return value.map((v: Ship) =>

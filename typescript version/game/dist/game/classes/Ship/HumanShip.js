@@ -13,11 +13,13 @@ class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
         this.crewMembers = [];
+        this.captain = null;
         this.membersIn = crew_1.membersIn;
         this.human = true;
         this.id = data.id;
         //* id matches discord guildId here
-        data.crewMembers.forEach((cm) => {
+        this.captain = data.captain || null;
+        data.crewMembers?.forEach((cm) => {
             this.addCrewMember(cm);
         });
     }
@@ -29,7 +31,10 @@ class HumanShip extends CombatShip_1.CombatShip {
     addCrewMember(data) {
         const cm = new CrewMember_1.CrewMember(data, this);
         this.crewMembers.push(cm);
+        if (!this.captain)
+            this.captain = cm.id;
         dist_1.default.log('Added crew member', cm.name, 'to', this.name);
+        return cm;
     }
     removeCrewMember(id) {
         const index = this.crewMembers.findIndex((cm) => cm.id === id);

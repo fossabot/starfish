@@ -9,9 +9,9 @@ type SkillName = 'stamina'
 interface BaseCrewMemberData {
   name: string
   id: string
-  skills: XPData[]
+  skills?: XPData[]
   location?: CrewLocation
-  stamina: number
+  stamina?: number
 }
 
 interface XPData {

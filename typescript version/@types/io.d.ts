@@ -22,6 +22,11 @@ interface IOServerEvents {
 
 interface IOClientEvents {
   [`hello`]: () => void
+  [`ships:forUser:fromIdArray`]: (
+    shipIds: Array,
+    userId: string,
+    callback: (res: IOResponse<ShipStub[]>) => void,
+  ) => void
   [`ship:get`]: (
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
@@ -43,6 +48,11 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     target: CrewLocation,
+  ) => void
+  [`crew:add`]: (
+    shipId: string,
+    data: BaseCrewMemberData,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
 
   // Discord

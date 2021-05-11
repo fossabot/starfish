@@ -1,6 +1,9 @@
+import * as storage from '../assets/scripts/storage'
 import Vue from 'vue'
 
 export const state = () => ({
+  userId: null,
+  shipIds: [],
   ship: null,
 })
 
@@ -25,13 +28,16 @@ export const mutations = {
 }
 
 export const actions = {
-  async socketSetup({ commit }) {
+  async socketSetup({ commit }, shipId) {
+    this.$socket.removeAllListeners()
+
     this.$socket.on('disconnect', () => {
+      console.log('dc')
       commit('set', { ship: null })
     })
 
     const connected = () => {
-      this.$socket?.emit('ship:listen', '123', (res) => {
+      this.$socket?.emit('ship:listen', shipId, (res) => {
         if ('error' in res) return console.log(res.error)
         commit('set', { ship: res.data })
       })
@@ -42,5 +48,12 @@ export const actions = {
     this.$socket.on('ship:update', ({ id, updates }) => {
       commit('updateShip', { ...updates })
     })
+  },
+
+  logout({ commit }) {
+    this.$socket.removeAllListeners()
+    commit('set', { shipIds: [], userId: null })
+    storage.remove('userId')
+    storage.remove('shipIds')
   },
 }

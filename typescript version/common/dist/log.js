@@ -84,8 +84,5 @@ const log = (...args) => {
     prefix = prefix.padEnd(longest, fillCharacter) + reset;
     console.log(prefix, ...args);
 };
-const error = (...args) => {
-    log(`red`, ...args);
-};
-exports.default = { log, error };
+exports.default = { log };
 //# sourceMappingURL=log.js.map

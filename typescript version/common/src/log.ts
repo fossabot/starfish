@@ -101,8 +101,4 @@ const log = (...args: any[]): void => {
   console.log(prefix, ...args)
 }
 
-const error = (...args: any[]): void => {
-  log(`red`, ...args)
-}
-
-export default { log, error }
+export default { log }
