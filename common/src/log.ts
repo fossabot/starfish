@@ -28,16 +28,12 @@ const dirColors: any = {
   cyan: `\x1b[36m`,
 }
 
-const mainDirs = [
-  'common',
-  'db',
-  'discord',
-  'frontend',
-  'game',
+const mainDirs: string[] = [
+  // 'common', 'discord', 'frontend', 'game'
 ]
 
 const log = (...args: any[]): void => {
-  const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/:]+))\.[^:]+/gi.exec(
+  const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(
     `${new Error().stack}`,
   )
   const fullPath: string = regexResult?.[1] || ''

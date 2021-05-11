@@ -1,22 +1,30 @@
 <template>
   <div class="container">
-    <button @click="setTarget([0, 0])">0,0</button>
-    <button @click="setTarget([1, 1])">1,1</button>
+    <div v-if="ship">
+      <h1>{{ ship.name }}</h1>
+      <button @click="setTarget([0, 0])">0,0</button>
+      <button @click="setTarget([1, 1])">1,1</button>
 
-    <br />
-    <br />
+      <br />
+      <br />
 
-    <button @click="setRoom('bunk')">bunk</button>
-    <button @click="setRoom('cockpit')">
-      cockpit
-    </button>
+      <button @click="setRoom('bunk')">bunk</button>
+      <button @click="setRoom('cockpit')">
+        cockpit
+      </button>
 
-    <br />
-    <br />
+      <br />
+      <br />
 
-    <div>me: {{ JSON.stringify(crewMember) }}</div>
+      <div>me: {{ JSON.stringify(crewMember) }}</div>
 
-    <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
+      <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
+    </div>
+    <div v-if="!ship">
+      No ship found by the ID(s) you have saved! Try logging
+      out and back in. If that doesn't fix it, please reach
+      out on the support server.
+    </div>
   </div>
 </template>
 
@@ -63,7 +71,10 @@ export default {
 
   methods: {
     changeShip(this: ComponentShape, index: number) {
-      if (this.shipIds[index])
+      if (
+        this.shipIds[index] &&
+        (!this.ship || this.ship.id !== this.shipIds[index])
+      )
         this.$store.dispatch(
           'socketSetup',
           this.shipIds[index],
@@ -91,6 +102,7 @@ export default {
         id: this.userId,
         location: target,
       }
+      if (!this.ship) return
       this.$store.commit('updateCrewMember', updates)
       this.$socket?.emit(
         'crew:move',

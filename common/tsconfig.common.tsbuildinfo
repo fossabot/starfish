@@ -256,6 +256,11 @@
         "signature": "b8e4f07bb06d8a46168ccfe86a856e02a783f9940d120f4140b8cc3057946ffe",
         "affectsGlobalScope": true
       },
+      "../@types/db.d.ts": {
+        "version": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "signature": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "affectsGlobalScope": false
+      },
       "../@types/faction.d.ts": {
         "version": "7ee4dea838f38b9d31c0e9ef9cccdbada08e109395ab2870e2ab1c832a3fc016",
         "signature": "7ee4dea838f38b9d31c0e9ef9cccdbada08e109395ab2870e2ab1c832a3fc016",
@@ -312,7 +317,7 @@
         "affectsGlobalScope": false
       },
       "./src/log.ts": {
-        "version": "e235b9776ac909d98365d650aa683a551d4b98cbb74cb01a563eb05b3db656b9",
+        "version": "94693526afc0d3acbb5fbbfdc19e3f692c0cacfe165780d3dc26615411a9d65f",
         "signature": "3eeda938f263f502224c7dab5b1ef676625324ad4ecb064fb6ad330c6134bf91",
         "affectsGlobalScope": false
       },
@@ -1112,6 +1117,7 @@
       "../@types/cache.d.ts",
       "../@types/common.d.ts",
       "../@types/crew.d.ts",
+      "../@types/db.d.ts",
       "../@types/faction.d.ts",
       "../@types/generic.d.ts",
       "../@types/io.d.ts",

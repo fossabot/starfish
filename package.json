@@ -2,14 +2,20 @@
   "name": "spacecrab",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "dev": "npm run dcu",
+    "up": "npm run dcu",
+    "dcu": "docker-compose up",
+    "down": "docker-compose down",
+    "hard-restart": "docker-compose down --remove-orphans --volumes && docker-compose up -d",
+    "restart": "docker-compose down --remove-orphans && docker-compose up -d"
+  },
   "devDependencies": {
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "nodemon": "^2.0.7",
     "prettier-plugin-svelte": "^2.2.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"

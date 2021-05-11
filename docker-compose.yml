@@ -1,0 +1,73 @@
+version: '3.7'
+services:
+  mongodb:
+    image: 'mongo:4.0'
+    restart: always
+    volumes:
+      - db_data:/data/db
+      - ./db/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: spacecord
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    logging:
+      driver: none
+
+  mongo-express:
+    image: 'mongo-express:0.54.0'
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      ME_CONFIG_MONGODB_AUTH_DATABASE: spacecord
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+      ME_CONFIG_BASICAUTH_USERNAME: spacecord
+      ME_CONFIG_BASICAUTH_PASSWORD: spacecord321
+    depends_on:
+      - mongodb
+    ports:
+      - '8081:8081'
+    logging:
+      driver: none
+
+  game-server:
+    image: 'node:15.7.0'
+    user: 'node'
+    working_dir: /home/node/app/game
+    ports:
+      - 4200:4200
+    volumes:
+      - ./common:/home/node/app/common
+      - ./game:/home/node/app/game
+    command: 'npm run dev'
+    environment:
+      MONGODB_ADMINUSERNAME: spacecord
+      MONGODB_ADMINPASSWORD: spacecord123
+    depends_on:
+      - mongodb
+
+  frontend:
+    image: 'node:15.7.0'
+    user: 'node'
+    working_dir: /home/node/app/frontend
+    ports:
+      - 4300:4300
+    volumes:
+      - ./common:/home/node/app/common
+      - ./frontend:/home/node/app/frontend
+    command: 'npm run dev'
+
+  discord:
+    image: 'node:15.7.0'
+    user: 'node'
+    working_dir: /home/node/app/discord
+    volumes:
+      - ./common:/home/node/app/common
+      - ./discord:/home/node/app/discord
+    command: 'npm run dev'
+
+volumes:
+  db_data:

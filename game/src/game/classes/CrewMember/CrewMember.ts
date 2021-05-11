@@ -12,6 +12,7 @@ export class CrewMember {
   location: CrewLocation
   skills: XPData[]
   stamina: number
+  lastActive: number
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     this.id = data.id
@@ -20,6 +21,7 @@ export class CrewMember {
     this.location = data.location || `bunk`
     this.skills = data.skills || []
     this.stamina = data.stamina || this.maxStamina
+    this.lastActive = Date.now()
   }
 
   rename(newName: string) {
@@ -28,6 +30,7 @@ export class CrewMember {
 
   goTo(location: CrewLocation) {
     this.location = location
+    this.lastActive = Date.now()
   }
 
   tick() {

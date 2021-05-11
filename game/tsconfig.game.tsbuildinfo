@@ -256,6 +256,11 @@
         "signature": "b8e4f07bb06d8a46168ccfe86a856e02a783f9940d120f4140b8cc3057946ffe",
         "affectsGlobalScope": true
       },
+      "../@types/db.d.ts": {
+        "version": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "signature": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "affectsGlobalScope": false
+      },
       "../@types/faction.d.ts": {
         "version": "7ee4dea838f38b9d31c0e9ef9cccdbada08e109395ab2870e2ab1c832a3fc016",
         "signature": "7ee4dea838f38b9d31c0e9ef9cccdbada08e109395ab2870e2ab1c832a3fc016",
@@ -662,8 +667,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/crewmember.ts": {
-        "version": "77d9a51a28131078405bd4f5a6cd9b4b6239759d8f7be9dd8c71dc6846cd1f6d",
-        "signature": "689270a68eef6fb4be57d5362bb965f9543b29dfdb190255b706f0b89cb4e6a5",
+        "version": "a78ed6735c6f24b1b43008adfd9bdea69c39179f9d19d26f184ebb082349faeb",
+        "signature": "33de9e85331b4522f8671f5856f330b26caaef2ab84e5f1b05e1165e727aeea2",
         "affectsGlobalScope": false
       },
       "./src/game/presets/items/engines.ts": {
@@ -756,8 +761,33 @@
         "signature": "09311c71815cbdf81dab179dc2fbe0495c8554ec8cee5c5586ba0487c04c6ab6",
         "affectsGlobalScope": false
       },
+      "./node_modules/dotenv/types/index.d.ts": {
+        "version": "40b741dd397d635ee3df8b4880f30f15fa7394b9da31d4454805e47692438ff3",
+        "signature": "40b741dd397d635ee3df8b4880f30f15fa7394b9da31d4454805e47692438ff3",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/bson/index.d.ts": {
+        "version": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "signature": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/mongodb/index.d.ts": {
+        "version": "257890b41dbcade5cf8f05a666513de9999cd9b53259242581c76e31156c5f53",
+        "signature": "257890b41dbcade5cf8f05a666513de9999cd9b53259242581c76e31156c5f53",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/mongoose/index.d.ts": {
+        "version": "75047af822ab362fcb445165d31a2fbb6d74d77f53a89e86fcd8377ba422ccbb",
+        "signature": "75047af822ab362fcb445165d31a2fbb6d74d77f53a89e86fcd8377ba422ccbb",
+        "affectsGlobalScope": false
+      },
+      "./src/db/index.ts": {
+        "version": "6738018ee6de92d28f554b79eed7ba730864965afba7c082998ecbf4048b7f0b",
+        "signature": "1ada4def6cf11ee426243d1011e532a2380504dd4242801e3d884b1e53ccd329",
+        "affectsGlobalScope": false
+      },
       "./src/index.ts": {
-        "version": "5be6a696b1b0e00cfa148dcfd27981d7285e5c12b3565386aadc0247d79c1aa1",
+        "version": "f36fb0e308332fe97274b167e4a8be59b80bd625da86ea5b7c901c3b13840398",
         "signature": "ad55138fcff7c310cf2d46ef4eaec62e618eb7e600339b12f539780bd6f14941",
         "affectsGlobalScope": false
       },
@@ -786,8 +816,18 @@
       "configFilePath": "./tsconfig.game.json"
     },
     "referencedMap": {
+      "./node_modules/@types/bson/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
       "./node_modules/@types/cors/index.d.ts": [
         "./node_modules/@types/node/http.d.ts"
+      ],
+      "./node_modules/@types/mongodb/index.d.ts": [
+        "./node_modules/@types/bson/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts"
       ],
       "./node_modules/@types/node/assert.d.ts": [
         "./node_modules/@types/node/assert.d.ts"
@@ -1038,6 +1078,15 @@
         "./node_modules/@types/node/stream.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/dotenv/types/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/mongoose/index.d.ts": [
+        "./node_modules/@types/mongodb/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
       "./node_modules/socket.io-adapter/dist/index.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
@@ -1092,6 +1141,11 @@
       "./node_modules/socket.io/dist/typed-events.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
+      ],
+      "./src/db/index.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/dotenv/types/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
       ],
       "./src/game/classes/attackremnant.ts": [
         "../common/dist/index.d.ts",
@@ -1221,6 +1275,7 @@
       ],
       "./src/index.ts": [
         "../common/dist/index.d.ts",
+        "./src/db/index.ts",
         "./src/game/game.ts",
         "./src/server/io.ts"
       ],
@@ -1287,8 +1342,18 @@
       ]
     },
     "exportedModulesMap": {
+      "./node_modules/@types/bson/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
       "./node_modules/@types/cors/index.d.ts": [
         "./node_modules/@types/node/http.d.ts"
+      ],
+      "./node_modules/@types/mongodb/index.d.ts": [
+        "./node_modules/@types/bson/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts"
       ],
       "./node_modules/@types/node/assert.d.ts": [
         "./node_modules/@types/node/assert.d.ts"
@@ -1539,9 +1604,18 @@
         "./node_modules/@types/node/stream.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/dotenv/types/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
       "./node_modules/eventemitter2/eventemitter2.d.ts": [
         "./node_modules/@types/node/assert.d.ts",
         "./node_modules/@types/node/ts3.6/assert.d.ts"
+      ],
+      "./node_modules/mongoose/index.d.ts": [
+        "./node_modules/@types/mongodb/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
       ],
       "./node_modules/socket.io-adapter/dist/index.d.ts": [
         "./node_modules/@types/node/events.d.ts",
@@ -1712,6 +1786,7 @@
       "../@types/cache.d.ts",
       "../@types/common.d.ts",
       "../@types/crew.d.ts",
+      "../@types/db.d.ts",
       "../@types/faction.d.ts",
       "../@types/generic.d.ts",
       "../@types/io.d.ts",
@@ -1720,9 +1795,11 @@
       "../@types/ship.d.ts",
       "../@types/stubs.d.ts",
       "../common/dist/index.d.ts",
+      "./node_modules/@types/bson/index.d.ts",
       "./node_modules/@types/component-emitter/index.d.ts",
       "./node_modules/@types/cookie/index.d.ts",
       "./node_modules/@types/cors/index.d.ts",
+      "./node_modules/@types/mongodb/index.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/assert/strict.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -1773,7 +1850,9 @@
       "./node_modules/@types/node/wasi.d.ts",
       "./node_modules/@types/node/worker_threads.d.ts",
       "./node_modules/@types/node/zlib.d.ts",
+      "./node_modules/dotenv/types/index.d.ts",
       "./node_modules/eventemitter2/eventemitter2.d.ts",
+      "./node_modules/mongoose/index.d.ts",
       "./node_modules/socket.io-adapter/dist/index.d.ts",
       "./node_modules/socket.io-parser/dist/index.d.ts",
       "./node_modules/socket.io/dist/broadcast-operator.d.ts",
@@ -1782,6 +1861,7 @@
       "./node_modules/socket.io/dist/namespace.d.ts",
       "./node_modules/socket.io/dist/socket.d.ts",
       "./node_modules/socket.io/dist/typed-events.d.ts",
+      "./src/db/index.ts",
       "./src/game/classes/attackremnant.ts",
       "./src/game/classes/cache.ts",
       "./src/game/classes/crewmember/crewmember.ts",

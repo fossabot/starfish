@@ -7,6 +7,7 @@ export declare class CrewMember {
     location: CrewLocation;
     skills: XPData[];
     stamina: number;
+    lastActive: number;
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): void;

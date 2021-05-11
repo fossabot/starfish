@@ -1,5 +1,5 @@
 import { config as dotEnvConfig } from 'dotenv'
-dotEnvConfig({ path: `../.env` })
+dotEnvConfig()
 
 import c from '../../common/dist'
 import io from './ioInterface'

@@ -14,12 +14,14 @@ class CrewMember {
         this.location = data.location || `bunk`;
         this.skills = data.skills || [];
         this.stamina = data.stamina || this.maxStamina;
+        this.lastActive = Date.now();
     }
     rename(newName) {
         this.name = newName;
     }
     goTo(location) {
         this.location = location;
+        this.lastActive = Date.now();
     }
     tick() {
         // ----- test notify listeners -----

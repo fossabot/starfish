@@ -1,6 +1,9 @@
 import c from '../../common/dist'
 import { Game } from './game/Game'
 import './server/io'
+import * as db from './db'
+
+db.init({})
 
 export const game = new Game()
 

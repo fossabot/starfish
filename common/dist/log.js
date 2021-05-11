@@ -23,14 +23,10 @@ const dirColors = {
     cyan: `\x1b[36m`,
 };
 const mainDirs = [
-    'common',
-    'db',
-    'discord',
-    'frontend',
-    'game',
+// 'common', 'discord', 'frontend', 'game'
 ];
 const log = (...args) => {
-    const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/:]+))\.[^:]+/gi.exec(`${new Error().stack}`);
+    const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || '';
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
     const pathName = regexResult?.[2];
