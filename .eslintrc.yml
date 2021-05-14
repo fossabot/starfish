@@ -5,7 +5,8 @@ env:
 ignorePatterns:
   - '*.svelte'
   - '**/dist'
-extends: 'eslint:recommended'
+extends:
+  - 'eslint:recommended'
 parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaVersion: 2021
@@ -32,7 +33,7 @@ rules:
   block-spacing:
     - error
     - always
-  brace-style: 'stroustrup'
+  brace-style: 'off'
   camelcase: error
   capitalized-comments:
     - error
@@ -94,7 +95,7 @@ rules:
   linebreak-style:
     - error
     - unix
-  lines-around-comment: error
+  lines-around-comment: 'off'
   lines-between-class-members:
     - error
     - always

@@ -4,7 +4,12 @@ type CrewLocation =
   | `repair`
   | `weapons`
 
-type SkillName = 'stamina'
+type SkillName =
+  | 'stamina'
+  | 'piloting'
+  | 'munitions'
+  | 'mechanics'
+  | 'linguistics'
 
 interface BaseCrewMemberData {
   name: string
@@ -12,6 +17,8 @@ interface BaseCrewMemberData {
   skills?: XPData[]
   location?: CrewLocation
   stamina?: number
+  inventory?: Cargo[]
+  credits?: number
 }
 
 interface XPData {

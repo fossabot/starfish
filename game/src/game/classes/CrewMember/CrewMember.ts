@@ -1,4 +1,3 @@
-import { EventEmitter2 } from 'eventemitter2'
 import c from '../../../../../common/dist'
 import { io, stubify } from '../../../server/io'
 import { HumanShip } from '../Ship/HumanShip'
@@ -13,15 +12,26 @@ export class CrewMember {
   skills: XPData[]
   stamina: number
   lastActive: number
+  targetLocation: CoordinatePair | null = null
+  inventory: Cargo[]
+  credits: number
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     this.id = data.id
     this.ship = ship
     this.name = data.name
     this.location = data.location || `bunk`
-    this.skills = data.skills || []
     this.stamina = data.stamina || this.maxStamina
     this.lastActive = Date.now()
+    this.inventory = data.inventory || []
+    this.credits = data.credits || 10
+    this.skills = data.skills || [
+      { skill: 'stamina', level: 1, xp: 0 },
+      { skill: 'piloting', level: 1, xp: 0 },
+      { skill: 'munitions', level: 1, xp: 0 },
+      { skill: 'mechanics', level: 1, xp: 0 },
+      { skill: 'linguistics', level: 1, xp: 0 },
+    ]
   }
 
   rename(newName: string) {
@@ -29,6 +39,8 @@ export class CrewMember {
   }
 
   goTo(location: CrewLocation) {
+    if (this.location === 'cockpit')
+      this.targetLocation = null
     this.location = location
     this.lastActive = Date.now()
   }
@@ -59,6 +71,7 @@ export class CrewMember {
       (c.deltaTime / 1000)
     if (this.tired) {
       this.stamina = 0
+      this.goTo('bunk')
 
       // ----- notify listeners -----
       io.to(`ship:${this.ship.id}`).emit(
@@ -71,18 +84,33 @@ export class CrewMember {
 
     // ----- cockpit -----
     if (this.location === `cockpit`) {
-      // c.log(`cockpit`)
+      if (
+        this.ship.canMove &&
+        this.targetLocation &&
+        !this.ship.isAt(this.targetLocation)
+      )
+        this.addXp('piloting')
     }
 
     // ----- repair -----
     else if (this.location === `repair`) {
-      c.log(`repair`)
+      this.addXp('mechanics')
     }
 
     // ----- weapons -----
     else if (this.location === `weapons`) {
-      c.log(`weapons`)
+      this.addXp('munitions')
     }
+  }
+
+  addXp(skill: SkillName, xp?: number) {
+    if (!xp) xp = c.deltaTime / 1000
+    const skillElement = this.skills.find(
+      (s) => s.skill === skill,
+    )
+    if (!skillElement)
+      this.skills.push({ skill, level: 1, xp })
+    else skillElement.xp += xp
   }
 
   get tired() {
@@ -91,7 +119,7 @@ export class CrewMember {
 
   get maxStamina() {
     return (
-      this.skills.find((s) => s.skill === `stamina`)
+      this.skills?.find((s) => s.skill === `stamina`)
         ?.level || 1
     )
   }

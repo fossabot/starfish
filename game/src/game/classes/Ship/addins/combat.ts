@@ -15,7 +15,8 @@ export function canAttack(
   if (!otherShip?.attackable) return false
   if (
     otherShip.faction &&
-    otherShip.faction.color === this.faction?.color
+    this.faction &&
+    otherShip.faction.color === this.faction.color
   )
     return false
   if (

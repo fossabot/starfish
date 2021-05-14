@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.attack = exports.create = exports.get = void 0;
+exports.create = exports.get = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function get(id) {
@@ -63,20 +63,29 @@ exports.create = create;
 //   )
 //   return res
 // }
-async function attack(data) {
-    if (!(await index_1.connected()))
-        return null;
-    const res = await new Promise((resolve) => {
-        index_1.io.emit(`ship:attack`, data, ({ data: attackResult, error, }) => {
-            if (!attackResult || error) {
-                dist_1.default.log(error);
-                resolve(null);
-                return;
-            }
-            resolve(attackResult);
-        });
-    });
-    return res;
-}
-exports.attack = attack;
+// export async function attack(
+//   data: AttackRequest,
+// ): Promise<TakenDamageResult | null> {
+//   if (!(await connected())) return null
+//   const res: TakenDamageResult | null = await new Promise(
+//     (resolve) => {
+//       io.emit(
+//         `ship:attack`,
+//         data,
+//         ({
+//           data: attackResult,
+//           error,
+//         }: IOResponseReceived<TakenDamageResult>) => {
+//           if (!attackResult || error) {
+//             c.log(error)
+//             resolve(null)
+//             return
+//           }
+//           resolve(attackResult)
+//         },
+//       )
+//     },
+//   )
+//   return res
+// }
 //# sourceMappingURL=ship.js.map

@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class Planet {
-    constructor({ name, color, location }, game) {
+    constructor({ name, color, location, vendor }, game) {
         this.game = game;
         this.name = name;
         this.color = color;
         this.location = location;
+        this.vendor = vendor || null;
     }
     identify() {
         dist_1.default.log(`Planet: ${this.name} (${this.color}) at ${this.location}`);

@@ -11,7 +11,7 @@ class Faction {
         this.game = game;
     }
     get members() {
-        return this.game.ships.filter((s) => s.faction?.color === this.color);
+        return this.game.ships.filter((s) => s.faction && s.faction.color === this.color);
     }
 }
 exports.Faction = Faction;

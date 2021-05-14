@@ -6,6 +6,6 @@ interface BaseCacheData {
 }
 
 interface CacheContents {
-  type: string
+  type: CargoType
   amount: number
 }

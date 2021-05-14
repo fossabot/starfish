@@ -8,10 +8,14 @@ export declare class CrewMember {
     skills: XPData[];
     stamina: number;
     lastActive: number;
+    targetLocation: CoordinatePair | null;
+    inventory: Cargo[];
+    credits: number;
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): void;
     tick(): void;
+    addXp(skill: SkillName, xp?: number): void;
     get tired(): boolean;
     get maxStamina(): number;
     get staminaRefillPerHour(): number;

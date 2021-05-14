@@ -1,3 +1,5 @@
+type ItemType = 'weapon' | 'engine'
+
 interface BaseItemData {
   id: string
   displayName: string

@@ -1,26 +1,27 @@
 <template>
-  <div class="container">
-    <div v-if="ship">
-      <h1>{{ ship.name }}</h1>
-      <button @click="setTarget([0, 0])">0,0</button>
-      <button @click="setTarget([1, 1])">1,1</button>
+  <div>
+    <div class="container" v-if="ship && crewMember">
+      <Ship />
+
+      <ShipMap />
+      <ShipVisible />
+
+      <ShipPlanet v-if="ship.planet" />
+
+      <ShipMember />
+      <ShipRoom />
+
+      <!-- <CanvasTest /> -->
+      <!-- <SvgTest /> -->
+      <!-- <FabricTest /> -->
+      <!-- <CanvasObject /> -->
 
       <br />
       <br />
-
-      <button @click="setRoom('bunk')">bunk</button>
-      <button @click="setRoom('cockpit')">
-        cockpit
-      </button>
-
-      <br />
-      <br />
-
-      <div>me: {{ JSON.stringify(crewMember) }}</div>
 
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
     </div>
-    <div v-if="!ship">
+    <div class="box" v-if="!ship || !crewMember">
       No ship found by the ID(s) you have saved! Try logging
       out and back in. If that doesn't fix it, please reach
       out on the support server.
@@ -42,12 +43,12 @@ export default {
   },
 
   computed: {
-    ...mapState(['ship', 'userId', 'shipIds']),
-    crewMember(this: ComponentShape) {
-      return this.ship?.crewMembers?.find(
-        (cm: CrewMemberStub) => cm.id === this.userId,
-      )
-    },
+    ...mapState([
+      'ship',
+      'userId',
+      'shipIds',
+      'crewMember',
+    ]),
   },
 
   watch: {
@@ -80,39 +81,8 @@ export default {
           this.shipIds[index],
         )
     },
-
-    setTarget(
-      this: ComponentShape,
-      target: CoordinatePair,
-    ) {
-      if (!this.ship) return
-      const updates: Partial<ShipStub> = {
-        targetLocation: target,
-      }
-      this.$store.commit('updateShip', updates)
-      this.$socket?.emit(
-        'ship:targetLocation',
-        this.ship.id,
-        target,
-      )
-    },
-
-    setRoom(this: ComponentShape, target: CrewLocation) {
-      const updates: Partial<CrewMemberStub> = {
-        id: this.userId,
-        location: target,
-      }
-      if (!this.ship) return
-      this.$store.commit('updateCrewMember', updates)
-      this.$socket?.emit(
-        'crew:move',
-        this.ship.id,
-        this.userId,
-        target,
-      )
-    },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

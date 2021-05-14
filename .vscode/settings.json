@@ -6,7 +6,5 @@
   "eslint.validate": ["javascript", "svelte"],
   "eslint.run": "onSave",
   "eslint.format.enable": true,
-  "eslint.alwaysShowStatus": true,
-  "mochaExplorer.mochaPath": "node_modules/mocha",
-  "mochaExplorer.parallel": true
+  "eslint.alwaysShowStatus": true
 }

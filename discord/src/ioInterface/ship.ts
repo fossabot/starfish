@@ -81,29 +81,29 @@ export async function create(
 //   return res
 // }
 
-export async function attack(
-  data: AttackRequest,
-): Promise<TakenDamageResult | null> {
-  if (!(await connected())) return null
+// export async function attack(
+//   data: AttackRequest,
+// ): Promise<TakenDamageResult | null> {
+//   if (!(await connected())) return null
 
-  const res: TakenDamageResult | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:attack`,
-        data,
-        ({
-          data: attackResult,
-          error,
-        }: IOResponseReceived<TakenDamageResult>) => {
-          if (!attackResult || error) {
-            c.log(error)
-            resolve(null)
-            return
-          }
-          resolve(attackResult)
-        },
-      )
-    },
-  )
-  return res
-}
+//   const res: TakenDamageResult | null = await new Promise(
+//     (resolve) => {
+//       io.emit(
+//         `ship:attack`,
+//         data,
+//         ({
+//           data: attackResult,
+//           error,
+//         }: IOResponseReceived<TakenDamageResult>) => {
+//           if (!attackResult || error) {
+//             c.log(error)
+//             resolve(null)
+//             return
+//           }
+//           resolve(attackResult)
+//         },
+//       )
+//     },
+//   )
+//   return res
+// }

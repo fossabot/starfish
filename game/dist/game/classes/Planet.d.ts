@@ -4,7 +4,8 @@ export declare class Planet {
     readonly color: string;
     readonly location: CoordinatePair;
     readonly game: Game;
-    constructor({ name, color, location }: BasePlanetData, game: Game);
+    readonly vendor: Vendor | null;
+    constructor({ name, color, location, vendor }: BasePlanetData, game: Game);
     identify(): void;
 }
 //# sourceMappingURL=Planet.d.ts.map

@@ -6,7 +6,7 @@ import { CombatShip } from './CombatShip'
 export class AIShip extends CombatShip {
   readonly human: boolean
   readonly id: string
-  readonly faction: Faction | null
+  readonly faction: Faction | false
 
   obeysGravity = false
 
@@ -16,7 +16,7 @@ export class AIShip extends CombatShip {
     if (data.id) this.id = data.id
     else this.id = `${Math.random()}`.substring(2)
     this.faction =
-      game.factions.find((f) => f.ai === true) || null
+      game.factions.find((f) => f.ai === true) || false
   }
 
   tick() {

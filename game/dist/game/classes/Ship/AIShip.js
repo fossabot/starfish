@@ -16,7 +16,7 @@ class AIShip extends CombatShip_1.CombatShip {
         else
             this.id = `${Math.random()}`.substring(2);
         this.faction =
-            game.factions.find((f) => f.ai === true) || null;
+            game.factions.find((f) => f.ai === true) || false;
     }
     tick() {
         super.tick();

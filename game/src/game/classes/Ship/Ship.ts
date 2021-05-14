@@ -1,4 +1,3 @@
-import { EventEmitter2 } from 'eventemitter2'
 import c from '../../../../../common/dist'
 
 import { Game } from '../../Game'
@@ -21,6 +20,7 @@ import {
 import {
   move,
   stop,
+  isAt,
   // thrust,
   applyTickOfGravity,
 } from './addins/motion'
@@ -30,8 +30,8 @@ export class Ship {
   static maxPreviousLocations: number = 10
 
   readonly name: string
-  planet: Planet | null
-  readonly faction: Faction | null
+  planet: Planet | false
+  readonly faction: Faction | false
   readonly game: Game
 
   toUpdate: Partial<ShipStub> = {}
@@ -52,7 +52,7 @@ export class Ship {
   id = `${Math.random()}`.substring(2) // re-set in subclasses
   location: CoordinatePair = [0, 0]
   velocity: CoordinatePair = [0, 0]
-  targetLocation: CoordinatePair = [0, 0]
+  // targetLocation: CoordinatePair = [0, 0]
   human = false
   attackable = false
   dead = false
@@ -66,11 +66,12 @@ export class Ship {
     this.game = game
     this.name = name
     this.planet =
-      game.planets.find((p) => p.name === planet) || null
+      game.planets.find((p) => p.name === planet) || false
     if (this.planet)
       this.location = [...this.planet.location]
     this.faction =
-      game.factions.find((f) => f.color === faction) || null
+      game.factions.find((f) => f.color === faction) ||
+      false
 
     if (loadout) this.equipLoadout(loadout)
   }
@@ -94,7 +95,7 @@ export class Ship {
       this.visible,
     )
 
-    if (!this.planet) this.move()
+    this.move()
     if (this.obeysGravity) this.applyTickOfGravity()
 
     // ----- send update to listeners -----
@@ -129,22 +130,22 @@ export class Ship {
   lastMoveAngle = 0
 
   get canMove(): boolean {
-    if (!!this.planet) return false
     if (!!this.dead) return false
     return true
   }
 
-  get atTargetLocation(): boolean {
-    return (
-      Math.abs(this.location[0] - this.targetLocation[0]) <
-        0.000001 &&
-      Math.abs(this.location[1] - this.targetLocation[1]) <
-        0.000001
-    )
-  }
+  // get atTargetLocation(): boolean {
+  //   return (
+  //     Math.abs(this.location[0] - this.targetLocation[0]) <
+  //       0.000001 &&
+  //     Math.abs(this.location[1] - this.targetLocation[1]) <
+  //       0.000001
+  //   )
+  // }
 
   move = move
   stop = stop
+  isAt = isAt
   // thrust = thrust
   applyTickOfGravity = applyTickOfGravity
 

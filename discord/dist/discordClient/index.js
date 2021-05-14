@@ -56,7 +56,6 @@ exports.client.on(`error`, (e) => {
 exports.client.on(`message`, async (msg) => {
     if (!msg.author || msg.author.bot)
         return;
-    dist_1.default.log(`gray`, msg.content);
     commandHandler.handleMessage(msg);
 });
 exports.client.on(`raw`, async (event) => {

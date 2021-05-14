@@ -14,17 +14,6 @@ async function start() {
     c.log('red', 'Failed to connect to game server')
     return
   }
-  c.log((await io.ship.get(`123`))?.name)
-  c.log(
-    (
-      await io.ship.create({
-        id: `456`,
-        name: `human2`,
-        crewMembers: [],
-        planet: 'Origin',
-      })
-    )?.name,
-  )
 }
 
 start()

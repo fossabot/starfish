@@ -40,7 +40,8 @@ const log = (...args: any[]): void => {
   const mainDir = mainDirs.find(
     (d) => fullPath.indexOf(`/${d}/`) !== -1,
   )
-  const pathName = regexResult?.[2]
+  const pathName: string =
+    regexResult?.[2]?.replace(/(dist\/|src\/)/gi, '') || ''
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]

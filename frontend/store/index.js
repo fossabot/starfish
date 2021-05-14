@@ -5,6 +5,7 @@ export const state = () => ({
   userId: null,
   shipIds: [],
   ship: null,
+  crewMember: null,
 })
 
 export const mutations = {
@@ -16,14 +17,28 @@ export const mutations = {
     if (!state.ship) return
     for (let prop in updates)
       Vue.set(state.ship, prop, updates[prop])
-    Vue.set(state.ship, 'lastUpdated', Date.now())
+    Vue.set(state.ship, `lastUpdated`, Date.now())
+    state.crewMember = state.ship?.crewMembers?.find(
+      (cm) => cm.id === state.userId,
+    )
   },
-  updateCrewMember(state, updates) {
+  updateACrewMember(state, updates) {
     const crewMember = state.ship?.crewMembers?.find(
       (c) => c.id === updates?.id,
     )
     for (let prop in updates)
       Vue.set(crewMember, prop, updates[prop])
+  },
+
+  setRoom(state, target) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, 'location', target)
+    this.$socket?.emit(
+      'crew:move',
+      state.ship.id,
+      state.userId,
+      target,
+    )
   },
 }
 
@@ -31,29 +46,29 @@ export const actions = {
   async socketSetup({ commit }, shipId) {
     this.$socket.removeAllListeners()
 
-    this.$socket.on('disconnect', () => {
-      console.log('dc')
-      commit('set', { ship: null })
+    this.$socket.on(`disconnect`, () => {
+      commit(`set`, { ship: null })
     })
 
     const connected = () => {
-      this.$socket?.emit('ship:listen', shipId, (res) => {
-        if ('error' in res) return console.log(res.error)
-        commit('set', { ship: res.data })
+      this.$socket?.emit(`ship:listen`, shipId, (res) => {
+        if (`error` in res) return console.log(res.error)
+        commit(`set`, { ship: res.data })
       })
     }
     if (this.$socket.connected) connected()
-    this.$socket.on('connect', connected)
+    this.$socket.on(`connect`, connected)
 
-    this.$socket.on('ship:update', ({ id, updates }) => {
-      commit('updateShip', { ...updates })
+    this.$socket.on(`ship:update`, ({ id, updates }) => {
+      console.log(updates)
+      commit(`updateShip`, { ...updates })
     })
   },
 
   logout({ commit }) {
     this.$socket.removeAllListeners()
-    commit('set', { shipIds: [], userId: null })
-    storage.remove('userId')
-    storage.remove('shipIds')
+    commit(`set`, { shipIds: [], userId: null })
+    storage.remove(`userId`)
+    storage.remove(`shipIds`)
   },
 }

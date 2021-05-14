@@ -4,7 +4,7 @@ import { CombatShip } from './CombatShip';
 export declare class AIShip extends CombatShip {
     readonly human: boolean;
     readonly id: string;
-    readonly faction: Faction | null;
+    readonly faction: Faction | false;
     obeysGravity: boolean;
     constructor(data: BaseShipData, game: Game);
     tick(): void;

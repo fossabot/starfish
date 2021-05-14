@@ -40,8 +40,8 @@ const init = ({ hostname = `mongodb`, port = 27017, dbName = `spacecord`, userna
                 useUnifiedTopology: true,
                 useFindAndModify: false,
             })
-                .catch((error) => dist_1.default.log(error));
-            mongoose_1.default.connection.on(`error`, (error) => dist_1.default.log(error));
+                .catch(() => { });
+            mongoose_1.default.connection.on(`error`, (error) => dist_1.default.log(`red`, error.message));
             mongoose_1.default.connection.once(`open`, () => {
                 onReady();
             });

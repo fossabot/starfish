@@ -7,15 +7,17 @@ export class Planet {
   readonly color: string
   readonly location: CoordinatePair
   readonly game: Game
+  readonly vendor: Vendor | null
 
   constructor(
-    { name, color, location }: BasePlanetData,
+    { name, color, location, vendor }: BasePlanetData,
     game: Game,
   ) {
     this.game = game
     this.name = name
     this.color = color
     this.location = location
+    this.vendor = vendor || null
   }
 
   identify() {

@@ -1,5 +1,7 @@
 import c from '../../../../../../common/dist'
-import { io } from '../../../../server/io'
+import { stubify } from '../../../../server/io'
+import { Planet } from '../../Planet'
+import { HumanShip } from '../HumanShip'
 import { Ship } from '../Ship'
 
 export function move(
@@ -14,31 +16,60 @@ export function move(
     this.location = toLocation
   } else {
     if (!this.canMove) return
-    if (this.atTargetLocation) return
 
     const membersInCockpit = this.membersIn('cockpit')
     if (!membersInCockpit.length) return
 
-    // ----- calculate new location -----
-    const unitVectorToTarget = c.degreesToUnitVector(
-      c.angleFromAToB(this.location, this.targetLocation),
-    )
+    // ----- calculate new location based on target of each member in cockpit -----
+    for (let member of membersInCockpit) {
+      if (!member.targetLocation) continue
 
-    const thrustMagnitude =
-      0.00001 * membersInCockpit.length // todo
+      // already there, so stop
+      if (
+        Math.abs(
+          this.location[0] - member.targetLocation[0],
+        ) < 0.000001 &&
+        Math.abs(
+          this.location[1] - member.targetLocation[1],
+        ) < 0.000001
+      )
+        continue
 
-    this.location[0] +=
-      unitVectorToTarget[0] *
-      thrustMagnitude *
-      (c.deltaTime / 1000)
-    this.location[1] +=
-      unitVectorToTarget[1] *
-      thrustMagnitude *
-      (c.deltaTime / 1000)
+      const unitVectorToTarget = c.degreesToUnitVector(
+        c.angleFromAToB(
+          this.location,
+          member.targetLocation,
+        ),
+      )
+
+      const thrustMagnitude =
+        0.00001 *
+        (member.skills.find((s) => s.skill === 'piloting')
+          ?.level || 1)
+
+      this.location[0] +=
+        unitVectorToTarget[0] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+      this.location[1] +=
+        unitVectorToTarget[1] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+    }
   }
   this.toUpdate.location = this.location
 
-  // ----- add previousLocations -----
+  // ----- update planet -----
+  const previousPlanet = this.planet
+  this.planet =
+    this.game.planets.find((p) => this.isAt(p.location)) ||
+    false
+  if (previousPlanet !== this.planet)
+    this.toUpdate.planet = this.planet
+      ? stubify<Planet, PlanetStub>(this.planet)
+      : false
+
+  // ----- add previousLocation -----
   const newAngle = c.angleFromAToB(
     this.location,
     previousLocation,
@@ -53,6 +84,13 @@ export function move(
     this.toUpdate.previousLocations = this.previousLocations
   }
   this.lastMoveAngle = newAngle
+}
+
+export function isAt(this: Ship, coords: CoordinatePair) {
+  return (
+    Math.abs(coords[0] - this.location[0]) < 0.00001 &&
+    Math.abs(coords[1] - this.location[1]) < 0.00001
+  )
 }
 
 export function stop(this: Ship) {

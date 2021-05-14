@@ -1,7 +1,7 @@
 interface BaseShipData {
   name: string
   id?: string
-  planet?: PlanetKey
+  planet?: PlanetName
   faction?: FactionKey
   loadout?: string
 }

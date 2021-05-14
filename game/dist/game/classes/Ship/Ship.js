@@ -23,7 +23,7 @@ class Ship {
         this.id = `${Math.random()}`.substring(2); // re-set in subclasses
         this.location = [0, 0];
         this.velocity = [0, 0];
-        this.targetLocation = [0, 0];
+        // targetLocation: CoordinatePair = [0, 0]
         this.human = false;
         this.attackable = false;
         this.dead = false;
@@ -35,18 +35,28 @@ class Ship {
         this.equipLoadout = items_1.equipLoadout;
         // ----- movement -----
         this.lastMoveAngle = 0;
+        // get atTargetLocation(): boolean {
+        //   return (
+        //     Math.abs(this.location[0] - this.targetLocation[0]) <
+        //       0.000001 &&
+        //     Math.abs(this.location[1] - this.targetLocation[1]) <
+        //       0.000001
+        //   )
+        // }
         this.move = motion_1.move;
         this.stop = motion_1.stop;
+        this.isAt = motion_1.isAt;
         // thrust = thrust
         this.applyTickOfGravity = motion_1.applyTickOfGravity;
         this.game = game;
         this.name = name;
         this.planet =
-            game.planets.find((p) => p.name === planet) || null;
+            game.planets.find((p) => p.name === planet) || false;
         if (this.planet)
             this.location = [...this.planet.location];
         this.faction =
-            game.factions.find((f) => f.color === faction) || null;
+            game.factions.find((f) => f.color === faction) ||
+                false;
         if (loadout)
             this.equipLoadout(loadout);
     }
@@ -60,8 +70,7 @@ class Ship {
     tick() {
         this.visible = this.game.scanCircle(this.location, this.sightRange, this.id);
         this.toUpdate.visible = io_1.stubify(this.visible);
-        if (!this.planet)
-            this.move();
+        this.move();
         if (this.obeysGravity)
             this.applyTickOfGravity();
         // ----- send update to listeners -----
@@ -83,17 +92,9 @@ class Ship {
         return 2;
     }
     get canMove() {
-        if (!!this.planet)
-            return false;
         if (!!this.dead)
             return false;
         return true;
-    }
-    get atTargetLocation() {
-        return (Math.abs(this.location[0] - this.targetLocation[0]) <
-            0.000001 &&
-            Math.abs(this.location[1] - this.targetLocation[1]) <
-                0.000001);
     }
     // ----- crew -----
     membersIn(l) {

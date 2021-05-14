@@ -14,6 +14,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         super(data, game);
         this.crewMembers = [];
         this.captain = null;
+        this.availableRooms = [
+            `bunk`,
+            `cockpit`,
+            `repair`,
+            `weapons`,
+        ];
         this.membersIn = crew_1.membersIn;
         this.human = true;
         this.id = data.id;
@@ -27,6 +33,15 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.crewMembers.forEach((cm) => cm.tick());
         this.toUpdate.crewMembers = this.crewMembers.map((cm) => io_1.stubify(cm));
         super.tick();
+    }
+    addRoom(room) {
+        if (!this.availableRooms.includes(room))
+            this.availableRooms.push(room);
+    }
+    removeRoom(room) {
+        const index = this.availableRooms.findIndex((r) => r === room);
+        if (index !== -1)
+            this.availableRooms.splice(index, 1);
     }
     addCrewMember(data) {
         const cm = new CrewMember_1.CrewMember(data, this);

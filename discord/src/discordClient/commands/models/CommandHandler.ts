@@ -1,10 +1,13 @@
 import c from '../../../../../common/dist'
 import { Message } from 'discord.js'
-import { StartCommand } from '../start'
-// import { HelpCommand } from './commands/help'
 import { CommandContext } from './CommandContext'
 import type { Command } from './Command'
 import { reactor } from '../../reactions/reactor'
+import { get } from '../../../ioInterface/ship'
+
+import { StartCommand } from '../Start'
+import { InviteCommand } from '../Invite'
+import { LinkCommand } from '../Link'
 
 export class CommandHandler {
   private commands: Command[]
@@ -12,7 +15,11 @@ export class CommandHandler {
   private readonly prefix: string
 
   constructor(prefix: string) {
-    const commandClasses = [StartCommand]
+    const commandClasses = [
+      StartCommand,
+      InviteCommand,
+      LinkCommand,
+    ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
     )
@@ -27,22 +34,26 @@ export class CommandHandler {
     ) {
       return
     }
+
     // ignore DMs for now
-    if (message.channel.type === 'dm') {
+    if (message.channel.type === `dm`) {
       return
     }
 
+    // initialize command context
     const commandContext = new CommandContext(
       message,
       this.prefix,
     )
 
+    // find matched command
     const matchedCommand = this.commands.find((command) =>
       command.commandNames.includes(
-        commandContext.parsedCommandName,
+        commandContext.commandName,
       ),
     )
 
+    // handle prefix but no valid command case
     if (!matchedCommand) {
       await message.reply(
         `I don't recognize that command. Try ${this.prefix}help.`,
@@ -51,26 +62,38 @@ export class CommandHandler {
       return
     }
 
-    // at this point, we need game data to determine which commands a user should be able to run.
+    // get ship data to determine which commands a user should be able to run.
+    const ship = await get(message.guild?.id || ``)
+    commandContext.ship = ship
+    const crewMember =
+      ship?.crewMembers.find(
+        (cm) => cm.id === message.author.id,
+      ) || null
+    commandContext.crewMember = crewMember
 
-    const allowedCommands = this.commands.filter(
-      (command) =>
-        command.hasPermissionToRun(commandContext),
+    // check run permissions and get error message if relevant
+    const permissionRes = matchedCommand.hasPermissionToRun(
+      commandContext,
     )
-    if (!allowedCommands.includes(matchedCommand)) {
-      await message.reply(
-        `You aren't allowed to use that command. Try ${this.prefix}help.`,
-      )
+    if (permissionRes !== true) {
+      await message.channel.send(permissionRes)
       await reactor.failure(message)
       return
     }
 
+    c.log(`gray`, message.content)
+
+    // run command
     await matchedCommand
       .run(commandContext)
       .then(() => {
         reactor.success(message)
       })
       .catch((reason) => {
+        c.log(
+          `red`,
+          `Failed to run command ${commandContext.commandName}: ${reason}`,
+        )
         reactor.failure(message)
       })
   }

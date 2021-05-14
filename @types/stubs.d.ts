@@ -26,8 +26,8 @@ interface ShipStub extends BaseStub {
   dead: boolean
   hp: number
   obeysGravity: boolean
-  planet: PlanetStub
-  faction: FactionStub
+  planet: PlanetStub | false
+  faction: FactionStub | false
   crewMembers: CrewMemberStub[]
   [key: string]: any
 }

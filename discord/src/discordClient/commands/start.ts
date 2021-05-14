@@ -1,12 +1,11 @@
 import c from '../../../../common/dist'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
-import { io } from '../../ioInterface'
 import { create } from '../../ioInterface/ship'
 import { add } from '../../ioInterface/crew'
 
 export class StartCommand implements Command {
-  commandNames = ['start', 'spawn', 'begin', 'init']
+  commandNames = [`start`, `spawn`, `begin`, `init`]
 
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []
@@ -14,45 +13,47 @@ export class StartCommand implements Command {
   }
 
   async run({
-    receivedDiscordMessage,
+    initialMessage,
   }: CommandContext): Promise<void> {
     // add ship
     const createdShip = await create({
-      id: receivedDiscordMessage.guild!.id,
-      name: receivedDiscordMessage.guild!.name,
-      planet: 'Origin',
-      faction: 'green',
+      id: initialMessage.guild!.id,
+      name: initialMessage.guild!.name,
+      planet: `Origin`,
+      faction: `green`,
     })
     if (!createdShip) {
-      await receivedDiscordMessage.channel.send(
-        'Failed to start your server in the game.',
+      await initialMessage.channel.send(
+        `Failed to start your server in the game.`,
       )
       return
     }
 
-    await receivedDiscordMessage.channel.send(
-      'Started your server in the game.',
+    await initialMessage.channel.send(
+      `Started your server in the game.`,
     )
 
     const addedCrewMember = await add(createdShip.id, {
-      name: receivedDiscordMessage.author.username,
-      id: receivedDiscordMessage.author.id,
+      name: initialMessage.author.username,
+      id: initialMessage.author.id,
     })
     // add crew member
     if (!addedCrewMember) {
-      await receivedDiscordMessage.channel.send(
-        'Failed to add you as a member of the crew.',
+      await initialMessage.channel.send(
+        `Failed to add you as a member of the crew.`,
       )
       return
     }
-    await receivedDiscordMessage.channel.send(
-      'Added you to the crew.',
+    await initialMessage.channel.send(
+      `Added you to the crew.`,
     )
   }
 
   hasPermissionToRun(
-    parsedUserCommand: CommandContext,
-  ): boolean {
+    commandContext: CommandContext,
+  ): string | true {
+    if (commandContext.ship)
+      return `Your server already has a ship! It's called ${commandContext.ship.name}.`
     return true
   }
 }

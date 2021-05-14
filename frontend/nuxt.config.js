@@ -30,9 +30,9 @@ export default {
     ],
   },
 
-  css: ['~/assets/styles/main.scss'],
+  css: [`~/assets/styles/main.scss`],
 
-  plugins: [{ src: '~/plugins/socket.js' }],
+  plugins: [{ src: `~/plugins/socket.js` }],
 
   components: true,
 

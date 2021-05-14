@@ -14,7 +14,8 @@ function canAttack(otherShip) {
     if (!otherShip?.attackable)
         return false;
     if (otherShip.faction &&
-        otherShip.faction.color === this.faction?.color)
+        this.faction &&
+        otherShip.faction.color === this.faction.color)
         return false;
     if (dist_1.default.distance(otherShip.location, this.location) >
         this.attackRange)

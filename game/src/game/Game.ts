@@ -1,5 +1,4 @@
 import c from '../../../common/dist'
-import { EventEmitter2 } from 'eventemitter2'
 
 import { io, stubify } from '../server/io'
 

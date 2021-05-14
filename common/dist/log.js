@@ -29,7 +29,7 @@ const log = (...args) => {
     const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || '';
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
-    const pathName = regexResult?.[2];
+    const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, '') || '';
     for (let index = 0; index < args.length; index++) {
         const arg = args[index];
         if (arg in colors) {

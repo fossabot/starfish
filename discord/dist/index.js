@@ -36,13 +36,6 @@ async function start() {
         dist_1.default.log('red', 'Failed to connect to game server');
         return;
     }
-    dist_1.default.log((await ioInterface_1.default.ship.get(`123`))?.name);
-    dist_1.default.log((await ioInterface_1.default.ship.create({
-        id: `456`,
-        name: `human2`,
-        crewMembers: [],
-        planet: 'Origin',
-    }))?.name);
 }
 start();
 //# sourceMappingURL=index.js.map

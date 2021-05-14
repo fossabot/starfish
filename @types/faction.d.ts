@@ -1,4 +1,4 @@
-type FactionKey = 'green' | 'gray'
+type FactionKey = `green` | `gray`
 
 interface BaseFactionData {
   name: string

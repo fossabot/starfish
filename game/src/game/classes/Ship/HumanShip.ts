@@ -11,6 +11,12 @@ export class HumanShip extends CombatShip {
   readonly id: string
   crewMembers: CrewMember[] = []
   captain: string | null = null
+  availableRooms: CrewLocation[] = [
+    `bunk`,
+    `cockpit`,
+    `repair`,
+    `weapons`,
+  ]
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
@@ -30,6 +36,17 @@ export class HumanShip extends CombatShip {
       stubify<CrewMember, CrewMemberStub>(cm),
     )
     super.tick()
+  }
+
+  addRoom(room: CrewLocation) {
+    if (!this.availableRooms.includes(room))
+      this.availableRooms.push(room)
+  }
+  removeRoom(room: CrewLocation) {
+    const index = this.availableRooms.findIndex(
+      (r) => r === room,
+    )
+    if (index !== -1) this.availableRooms.splice(index, 1)
   }
 
   addCrewMember(data: BaseCrewMemberData): CrewMember {

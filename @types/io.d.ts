@@ -40,18 +40,36 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:unlisten`]: (id: string) => void
-  [`ship:targetLocation`]: (
-    id: string,
-    target: CoordinatePair,
-  ) => void
+
   ['crew:move']: (
     shipId: string,
     crewId: string,
     target: CrewLocation,
   ) => void
+  ['crew:targetLocation']: (
+    shipId: string,
+    crewId: string,
+    targetLocation: CoordinatePair,
+  ) => void
   [`crew:add`]: (
     shipId: string,
     data: BaseCrewMemberData,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
+  [`crew:buy`]: (
+    shipId: string,
+    crewId: string,
+    cargoType: CargoType,
+    amount: number,
+    vendorLocation: PlanetName,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
+  [`crew:sell`]: (
+    shipId: string,
+    crewId: string,
+    cargoType: CargoType,
+    amount: number,
+    vendorLocation: PlanetName,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
 
@@ -62,10 +80,10 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 
-  [`ship:attack`]: (
-    data: AttackRequest,
-    callback: (res: IOResponse<TakenDamageResult>) => void,
-  ) => void
+  // [`ship:attack`]: (
+  //   data: AttackRequest,
+  //   callback: (res: IOResponse<TakenDamageResult>) => void,
+  // ) => void
 }
 
 interface IOError {

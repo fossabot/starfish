@@ -9,12 +9,12 @@ import { AttackRemnant } from '../AttackRemnant';
 import type { CrewMember } from '../CrewMember/CrewMember';
 import type { CombatShip } from './CombatShip';
 import { addWeapon, addEngine, removeItem, equipLoadout } from './addins/items';
-import { move, stop, applyTickOfGravity } from './addins/motion';
+import { move, stop, isAt, applyTickOfGravity } from './addins/motion';
 export declare class Ship {
     static maxPreviousLocations: number;
     readonly name: string;
-    planet: Planet | null;
-    readonly faction: Faction | null;
+    planet: Planet | false;
+    readonly faction: Faction | false;
     readonly game: Game;
     toUpdate: Partial<ShipStub>;
     visible: {
@@ -29,7 +29,6 @@ export declare class Ship {
     id: string;
     location: CoordinatePair;
     velocity: CoordinatePair;
-    targetLocation: CoordinatePair;
     human: boolean;
     attackable: boolean;
     dead: boolean;
@@ -46,9 +45,9 @@ export declare class Ship {
     get sightRange(): number;
     lastMoveAngle: number;
     get canMove(): boolean;
-    get atTargetLocation(): boolean;
     move: typeof move;
     stop: typeof stop;
+    isAt: typeof isAt;
     applyTickOfGravity: typeof applyTickOfGravity;
     membersIn(l: CrewLocation): CrewMember[];
     canAttack(s: CombatShip): boolean;

@@ -25,7 +25,7 @@ export class Faction {
 
   get members(): Ship[] {
     return this.game.ships.filter(
-      (s) => s.faction?.color === this.color,
+      (s) => s.faction && s.faction.color === this.color,
     )
   }
 }

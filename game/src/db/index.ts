@@ -53,10 +53,10 @@ export const init = ({
           useUnifiedTopology: true,
           useFindAndModify: false,
         })
-        .catch((error) => c.log(error))
+        .catch(() => {})
 
       mongoose.connection.on(`error`, (error) =>
-        c.log(error),
+        c.log(`red`, error.message),
       )
       mongoose.connection.once(`open`, () => {
         onReady()

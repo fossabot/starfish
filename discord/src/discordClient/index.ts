@@ -55,7 +55,6 @@ client.on(`error`, (e) => {
 })
 client.on(`message`, async (msg) => {
   if (!msg.author || msg.author.bot) return
-  c.log(`gray`, msg.content)
   commandHandler.handleMessage(msg)
 })
 client.on(`raw`, async (event) => {
