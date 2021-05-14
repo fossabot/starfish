@@ -29,19 +29,20 @@ services:
     depends_on:
       - mongodb
     ports:
-      - '8081:8081'
+      - 8081:8081
     logging:
       driver: none
 
-  game-server:
-    image: 'node:15.7.0'
+  game:
+    image: 'spacecrab.local/game:latest'
     user: 'node'
-    working_dir: /home/node/app/game
+    working_dir: /usr/app/game
     ports:
       - 4200:4200
     volumes:
-      - ./common:/home/node/app/common
-      - ./game:/home/node/app/game
+      - ./common:/usr/app/common
+      - ./game/dist:/usr/app/game/dist
+      - ./game/src:/usr/app/game/src
     command: 'npm run dev'
     environment:
       MONGODB_ADMINUSERNAME: spacecord
@@ -50,23 +51,32 @@ services:
       - mongodb
 
   frontend:
-    image: 'node:15.7.0'
+    image: 'spacecrab.local/frontend:latest'
     user: 'node'
-    working_dir: /home/node/app/frontend
+    working_dir: /usr/app/frontend
     ports:
       - 4300:4300
     volumes:
-      - ./common:/home/node/app/common
-      - ./frontend:/home/node/app/frontend
+      - ./common:/usr/app/common
+      - ./frontend/.nuxt:/usr/app/frontend/.nuxt
+      - ./frontend/assets:/usr/app/frontend/assets
+      - ./frontend/components:/usr/app/frontend/components
+      - ./frontend/layouts:/usr/app/frontend/layouts
+      - ./frontend/middleware:/usr/app/frontend/middleware
+      - ./frontend/pages:/usr/app/frontend/pages
+      - ./frontend/plugins:/usr/app/frontend/plugins
+      - ./frontend/static:/usr/app/frontend/static
+      - ./frontend/store:/usr/app/frontend/store
     command: 'npm run dev'
 
   discord:
-    image: 'node:15.7.0'
+    image: 'spacecrab.local/discord:latest'
     user: 'node'
-    working_dir: /home/node/app/discord
+    working_dir: /usr/app/discord
     volumes:
-      - ./common:/home/node/app/common
-      - ./discord:/home/node/app/discord
+      - ./common:/usr/app/common
+      - ./discord/dist:/usr/app/discord/dist
+      - ./discord/.env:/usr/app/discord/.env
     command: 'npm run dev'
 
 volumes:
