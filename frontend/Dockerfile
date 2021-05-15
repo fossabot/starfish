@@ -1,16 +1,14 @@
 FROM node:16-alpine3.11 as base
 
-WORKDIR /usr/app
-RUN chown node /usr/app
+WORKDIR /usr/app/frontend
+RUN chown node /usr/app/frontend
 COPY package.json .
 
 FROM base AS dependencies
-WORKDIR /usr/app
-RUN npm set progress=false && \
-    npm config set depth 0 && \
-    npm install --only=production
+WORKDIR /usr/app/frontend
+RUN npm install
 
 FROM base as release
-COPY --from=dependencies /usr/app/node_modules /usr/app/node_modules
+COPY --from=dependencies /usr/app/frontend/node_modules /usr/app/frontend/node_modules
 
 CMD ["npm", "run", "dev"]

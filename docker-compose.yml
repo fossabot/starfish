@@ -67,6 +67,7 @@ services:
       - ./frontend/plugins:/usr/app/frontend/plugins
       - ./frontend/static:/usr/app/frontend/static
       - ./frontend/store:/usr/app/frontend/store
+      - ./frontend/nuxt.config.js:/usr/app/frontend/nuxt.config.js
     command: 'npm run dev'
 
   discord:
