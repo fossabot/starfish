@@ -36,7 +36,8 @@ export default {
 
   components: true,
 
-  buildModules: [`nuxt-vite`],
+  buildModules: ['@nuxt/typescript-build'],
+  // `nuxt-vite`
 
   modules: [`@nuxtjs/axios`],
   io: {

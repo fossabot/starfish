@@ -1,0 +1,11 @@
+{
+  "include": ["../@types", "./"],
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "references": [
+    {
+      "path": "../common/tsconfig.common.json"
+    }
+  ]
+}

@@ -38,7 +38,9 @@ services:
     user: 'node'
     working_dir: /usr/app/game
     ports:
-      - 4200:4200
+      - '4200:4200'
+    expose:
+      - '4200'
     volumes:
       - ./common:/usr/app/common
       - ./game/dist:/usr/app/game/dist
@@ -55,19 +57,11 @@ services:
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
-      - 4300:4300
+      - '4300:4300'
     volumes:
+      - ./@types:/usr/app/@types
       - ./common:/usr/app/common
-      - ./frontend/.nuxt:/usr/app/frontend/.nuxt
-      - ./frontend/assets:/usr/app/frontend/assets
-      - ./frontend/components:/usr/app/frontend/components
-      - ./frontend/layouts:/usr/app/frontend/layouts
-      - ./frontend/middleware:/usr/app/frontend/middleware
-      - ./frontend/pages:/usr/app/frontend/pages
-      - ./frontend/plugins:/usr/app/frontend/plugins
-      - ./frontend/static:/usr/app/frontend/static
-      - ./frontend/store:/usr/app/frontend/store
-      - ./frontend/nuxt.config.js:/usr/app/frontend/nuxt.config.js
+      - ./frontend:/usr/app/frontend/
     command: 'npm run dev'
 
   discord:

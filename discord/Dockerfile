@@ -1,5 +1,7 @@
 FROM node:16-alpine3.11 as base
 
+ENV HOST 0.0.0.0
+
 WORKDIR /usr/app/discord
 COPY package.json .
 

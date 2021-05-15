@@ -1,4 +1,4 @@
-let localStorageAvailable
+let localStorageAvailable: boolean
 
 function storageCheck() {
   if (typeof localStorage === `object`) {
@@ -15,27 +15,27 @@ function storageCheck() {
   } else localStorageAvailable = false
 }
 
-export function set(key, value) {
+export function set(key: string, value: string) {
   if (localStorageAvailable === undefined) storageCheck()
   if (localStorageAvailable)
     localStorage.setItem(key, value)
   else setCookie(key, value)
 }
 
-export function remove(key) {
+export function remove(key: string) {
   if (localStorageAvailable === undefined) storageCheck()
   if (localStorageAvailable) localStorage.removeItem(key)
   else setCookie(key, ``, true)
 }
 
-export function get(key) {
+export function get(key: string) {
   if (localStorageAvailable === undefined) storageCheck()
   if (localStorageAvailable)
     return localStorage.getItem(key)
   return getCookie(key)
 }
 
-function getCookie(key) {
+function getCookie(key: string) {
   const name = key + `=`
   const decodedCookie = decodeURIComponent(document.cookie)
   const ca = decodedCookie.split(`;`)
@@ -48,7 +48,11 @@ function getCookie(key) {
   return ``
 }
 
-function setCookie(key, value, remove = false) {
+function setCookie(
+  key: string,
+  value: string,
+  remove = false,
+) {
   const d = new Date()
   d.setTime(
     d.getTime() +
