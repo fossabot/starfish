@@ -33,7 +33,7 @@ const init = ({ hostname = `mongodb`, port = 27017, dbName = `spacecord`, userna
         };
         if (mongoose_1.default.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
-            dist_1.default.log(`No existing db connection, creating with`, uri);
+            dist_1.default.log(`No existing db connection, creating...`);
             mongoose_1.default
                 .connect(uri, {
                 useNewUrlParser: true,

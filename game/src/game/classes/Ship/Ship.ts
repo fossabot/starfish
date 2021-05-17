@@ -25,6 +25,7 @@ import {
   applyTickOfGravity,
 } from './addins/motion'
 import { io, stubify } from '../../../server/io'
+import { HumanShip } from './HumanShip'
 
 export class Ship {
   static maxPreviousLocations: number = 10
@@ -46,32 +47,59 @@ export class Ship {
     caches: [],
     attackRemnants: [],
   }
+
+  readonly seenPlanets: Planet[] = []
   readonly weapons: Weapon[] = []
   readonly engines: Engine[] = []
   readonly previousLocations: CoordinatePair[] = []
   id = `${Math.random()}`.substring(2) // re-set in subclasses
   location: CoordinatePair = [0, 0]
   velocity: CoordinatePair = [0, 0]
+  speed: number = 0 // just for frontend reference
+  direction: number = 0 // just for frontend reference
   // targetLocation: CoordinatePair = [0, 0]
   human = false
   attackable = false
-  dead = false
-  hp = 10
+  _hp = 10 // set in hp setter below
+  _maxHp = 10
+  dead = false // set in hp setter below
   obeysGravity = true
 
   constructor(
-    { name, planet, faction, loadout }: BaseShipData,
+    {
+      name,
+      faction,
+      loadout,
+      seenPlanets,
+      location,
+    }: BaseShipData,
     game: Game,
   ) {
     this.game = game
     this.name = name
-    this.planet =
-      game.planets.find((p) => p.name === planet) || false
-    if (this.planet)
-      this.location = [...this.planet.location]
+
     this.faction =
       game.factions.find((f) => f.color === faction) ||
       false
+
+    if (location) this.location = location
+    else if (this.faction) {
+      this.location = [
+        ...(this.faction.homeworld?.location || [0, 0]),
+      ]
+    } else this.location = [0, 0]
+
+    this.planet =
+      this.game.planets.find((p) =>
+        this.isAt(p.location),
+      ) || false
+
+    if (seenPlanets)
+      this.seenPlanets = seenPlanets
+        .map((name) =>
+          this.game.planets.find((p) => p.name === name),
+        )
+        .filter((p) => p) as Planet[]
 
     if (loadout) this.equipLoadout(loadout)
   }
@@ -88,19 +116,35 @@ export class Ship {
   tick() {
     this.visible = this.game.scanCircle(
       this.location,
-      this.sightRange,
+      this.sightRadius,
       this.id,
     )
+    const newPlanets = this.visible.planets.filter(
+      (p) => !this.seenPlanets.includes(p),
+    )
+    if (newPlanets.length) {
+      this.seenPlanets.push(...newPlanets)
+      // todo alert ship
+    }
+
+    // ----- updates for frontend -----
     this.toUpdate.visible = stubify<any, VisibleStub>(
       this.visible,
     )
+    this.toUpdate.weapons = this.weapons.map((w) =>
+      stubify<Weapon, WeaponStub>(w),
+    )
+    this.toUpdate.engines = this.engines.map((e) =>
+      stubify<Engine, EngineStub>(e),
+    )
 
+    // ----- move -----
     this.move()
     if (this.obeysGravity) this.applyTickOfGravity()
 
     // ----- send update to listeners -----
     if (!Object.keys(this.toUpdate).length) return
-    io.to(`ship:${this.id}`).emit('ship:update', {
+    io.to(`ship:${this.id}`).emit(`ship:update`, {
       id: this.id,
       updates: this.toUpdate,
     })
@@ -119,26 +163,24 @@ export class Ship {
   removeItem = removeItem
   equipLoadout = equipLoadout
 
-  // ----- ranges -----
+  // ----- radii -----
 
-  get sightRange() {
-    return 2
-  }
+  sightRadius = 1
 
   // ----- movement -----
 
   lastMoveAngle = 0
 
   get canMove(): boolean {
-    if (!!this.dead) return false
+    if (this.dead) return false
     return true
   }
 
   // get atTargetLocation(): boolean {
   //   return (
-  //     Math.abs(this.location[0] - this.targetLocation[0]) <
+  //     math.abs(this.location[0] - this.targetLocation[0]) <
   //       0.000001 &&
-  //     Math.abs(this.location[1] - this.targetLocation[1]) <
+  //     math.abs(this.location[1] - this.targetLocation[1]) <
   //       0.000001
   //   )
   // }
@@ -155,13 +197,44 @@ export class Ship {
     return []
   }
 
+  cumulativeSkillIn(l: CrewLocation, s: SkillName) {
+    return 1
+  }
+
   // ----- combat -----
 
   canAttack(s: CombatShip): boolean {
     return false
   }
 
-  get alive(): boolean {
-    return true
+  get hp() {
+    return this._hp
+  }
+
+  set hp(newValue) {
+    this._hp = newValue
+    if (this._hp < 0) this._hp = 0
+    if (this._hp > this._maxHp) this._hp = this._maxHp
+    this.toUpdate._hp = this._hp
+
+    const didDie = !this.dead && newValue <= 0
+    if (didDie) {
+      // ----- notify listeners -----
+      io.to(`ship:${this.id}`).emit(
+        `ship:die`,
+        stubify<Ship, ShipStub>(this),
+      )
+
+      this.dead = true
+    } else this.dead = false
+  }
+
+  respawn() {
+    this.hp = this._maxHp
+    if (this.faction) {
+      this.location = [
+        ...(this.faction.homeworld?.location || [0, 0]),
+      ]
+    } else this.location = [0, 0]
   }
 }

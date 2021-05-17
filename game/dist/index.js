@@ -41,9 +41,9 @@ exports.game = new Game_1.Game();
 //     },
 //   ],
 // })
-// const ai1 = game.addAIShip({
-//   name: `ai1`,
-//   loadout: `ai_default`,
-//   planet: `Hera`,
-// })
+const ai1 = exports.game.addAIShip({
+    name: `ai1`,
+    loadout: `ai_default`,
+    location: [-0.5, 0.2],
+});
 //# sourceMappingURL=index.js.map

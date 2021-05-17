@@ -48,7 +48,7 @@ function degreesToArrow(angle) {
     return directionArrows[arrayIndex];
 }
 function coordPairToArrow(coordPair) {
-    return degreesToArrow(math_1.default.coordPairToDegrees(coordPair));
+    return degreesToArrow(math_1.default.vectorToDegrees(coordPair));
 }
 function percentToTextBars(percent, barCount = 10) {
     const bars = [];

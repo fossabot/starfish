@@ -6,5 +6,6 @@ export declare class Item {
     repair: number;
     readonly ship: Ship;
     constructor({ id, displayName, description, repair }: BaseItemData, ship: Ship);
+    use(): void;
 }
 //# sourceMappingURL=Item.d.ts.map

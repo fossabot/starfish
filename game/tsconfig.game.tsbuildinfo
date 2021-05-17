@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "463db0544de85fcb5222125460c49fa65bb382e642cbc91850d5c8b74f1629f7",
-        "signature": "463db0544de85fcb5222125460c49fa65bb382e642cbc91850d5c8b74f1629f7",
+        "version": "29aa78936e00eab9be5e670522eaa365b65fb5876630c4d4f709070f835b79a1",
+        "signature": "29aa78936e00eab9be5e670522eaa365b65fb5876630c4d4f709070f835b79a1",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -272,13 +272,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "9dcc4fc763ca58dfc61f66efcdd9980f2b5d2c9463db48b9ea39ddab76fd8601",
-        "signature": "9dcc4fc763ca58dfc61f66efcdd9980f2b5d2c9463db48b9ea39ddab76fd8601",
+        "version": "e4507cb6d9c2b66d950f83aa96ea81ab1b4fc328b9e3be0a875d1487c8867ece",
+        "signature": "e4507cb6d9c2b66d950f83aa96ea81ab1b4fc328b9e3be0a875d1487c8867ece",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "2de14ab10f4fc83e785251f990a40a8653db82bd5671d013950887e76c589ba5",
-        "signature": "2de14ab10f4fc83e785251f990a40a8653db82bd5671d013950887e76c589ba5",
+        "version": "9c6e514d4d716680d106dad60619584bdf7dfeb57654ce6c91e49610965d6ec6",
+        "signature": "9c6e514d4d716680d106dad60619584bdf7dfeb57654ce6c91e49610965d6ec6",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -287,8 +287,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "8e5fad847195fba91871f19c26ff7de091d92646c7e2b2b114c408e8987def05",
-        "signature": "8e5fad847195fba91871f19c26ff7de091d92646c7e2b2b114c408e8987def05",
+        "version": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
+        "signature": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -297,8 +297,8 @@
         "affectsGlobalScope": true
       },
       "../common/dist/index.d.ts": {
-        "version": "35fde242db567f3465526404903ac2ed87f60954f8a00bba25b3b77b5c3f9b9a",
-        "signature": "35fde242db567f3465526404903ac2ed87f60954f8a00bba25b3b77b5c3f9b9a",
+        "version": "a9e17f6483be959bbd37860d1ba71fa5c548a74372f454149ea2a4d9c4852563",
+        "signature": "a9e17f6483be959bbd37860d1ba71fa5c548a74372f454149ea2a4d9c4852563",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -617,8 +617,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
-        "version": "83cb6e892d393db90cccba9ed0b9848a92bedc3a5f3336afd67506804c841cc2",
-        "signature": "8283053112a8fcf8b4e5045afdf82c85f335a625d95d872d6fcfb4f3d3fac972",
+        "version": "374c4bc6ca5b954e15555c1730896c604ac9c3cf5e53c8551432e6eaf42ef99c",
+        "signature": "cdd046d88a52589e16bd68f62fb39e37681ed595f79381d662cfcd383e3c0b81",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/engine.ts": {
@@ -627,8 +627,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/weapon.ts": {
-        "version": "f0c4e9adf69e0f4284f95649681b1949db9b5963b5263681f35261d6194bd953",
-        "signature": "a3751471e15eae1cd1ae01e8989cc5f53f819be03393a7300f3ed96df6ad39d7",
+        "version": "f142e674856e5db44808458329638647515d2ae293dd2928b4a94fe940746b36",
+        "signature": "29ae41319397ffbbe41cbf891e6c996ef65a45aa2dfb56d235065cf6cbbf9fbd",
         "affectsGlobalScope": false
       },
       "./src/game/classes/cache.ts": {
@@ -637,33 +637,38 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/combat.ts": {
-        "version": "1cc6a30b86e75d1f924a50a2bada8f9e3b4b61da1da0c7d36d97a99dc990582e",
-        "signature": "6665e01f67875970683644e46a6e7cc3d16b4bf9a2443af521b953bf3ef12e4b",
+        "version": "6bf8c8dc0236dfe02aa8674e50970a91fddd04925fa8d931ad31b42f8fd1e30b",
+        "signature": "330d1206ec89db2528e6064dc28c6b239f5114fe76ac9928218d080c4692f4aa",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "e47b4e90095b2255f7ab4c7c8078f0f5950073e6bba23e913e96de7a4cc1c7a9",
-        "signature": "0eedace2dc0336004390c3b39046400fd7f8021181a3f0fc2dbdf2ca2cc1f168",
+        "version": "90bf49152ab99e24701f0e19cb8def3fe7601e5aaa7277c6226cc5e13f3a000c",
+        "signature": "424e135571683b4d8fed4a3898b139a4981c8eab158cacf42c180498a5c81410",
         "affectsGlobalScope": false
       },
       "./src/game/classes/attackremnant.ts": {
-        "version": "1271009fe3e5472da16b47d5fb0c6019c02592b61e41efc99c270b1ad8524c6f",
-        "signature": "59c177a6dd4f0008af53ae78a53f4498fb26e70a415bf132a2e7d619c6c4d06c",
+        "version": "3b7bd67fad3e855f8189685629d092ed4ac3f2210513166fa5ff0cae2ce46f8f",
+        "signature": "cf8e94cd0b21412694fa1714916abc95c427b0045ab586e8783a12163fd22999",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/crewmember/addins/rooms.ts": {
+        "version": "577130eac3aef1cd5fcd43f7b63e081050595738d15c1de9faa2a3db84ff49b9",
+        "signature": "91463aad8bf3a89fc0ff5a807efde3cbb84f17794c96ea37e6a5cc96e100a660",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/crew.ts": {
-        "version": "7cd80c08483b0723a0251a7e2c0afb2bdedee984e73814d72d093f0cc9aabf55",
-        "signature": "65c0ae1418cc576a81274a18ba8d4ec9b8a6f117b8a5bae7ae43f550a5695dae",
+        "version": "bc8ddcc9f9485e46e716f9c67ed7433dea97ef91c7e20320fb34897adb56ebc4",
+        "signature": "a0fc6bc73c661247bf36c9a7e3a9d084fd6030e3da95923b5751188e25e2d0dc",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "150436e7a0d191414657a437fc5487a6a0857d34cb0c618ec41b1cf6992d9ed9",
-        "signature": "4b2e85f67d3948c6a0e924e8f149d08fa678c902ee0081ae015ba4994bf96f72",
+        "version": "24fad725513981133cd1758958f82c54f336c6b4ab5e1eca6e9f5e0ef5d0aa59",
+        "signature": "b20269475f71c1ac4832a272e8169f4f7f6ea19408df96db91668b7ac1d25873",
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/crewmember.ts": {
-        "version": "677f36c2a24e396a337a82864630432350049c5fbab6efec2f526f294cfe76f6",
-        "signature": "6eab6fe703c05ce11bca9d7f5cdeb24ad28339a2f50306ec3ca69393156ec74e",
+        "version": "f27dedf4483c344aa4c2a66a212a84abf0b5a196439f96f942e1dca6a1ef146a",
+        "signature": "4763e6dea22a1c51a7075d6ca37527b8171d19ea7b593ab671e5b097f2e52e4f",
         "affectsGlobalScope": false
       },
       "./src/game/presets/items/engines.ts": {
@@ -672,7 +677,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/presets/items/weapons.ts": {
-        "version": "51c6ce5fed0d396be64f8588426dfb5c8b0057c867ff6c4e305534d85641b733",
+        "version": "a06cd96510d99f2032d75f67089751f9ca6e51fb4b1ca937bafcd9a71f1e76d0",
         "signature": "47636cb9df4a0c8e3046094c3492cab49faaefc096ea6b9f7071c608577f6bab",
         "affectsGlobalScope": false
       },
@@ -692,22 +697,22 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/motion.ts": {
-        "version": "161caacce388227413d827e3f08ca02455b57b0b0f31bb07b4e5e18026c2d320",
+        "version": "1f879f19bc6f2f3f22585bc4328c3744df3c4c1cae086e5fc482baae063f2c05",
         "signature": "9f9bc1df47e497e907607b16a879ad8a0fbf632daa56e41cf4b5b4cd02495d46",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "c1bf5c8966f46353553d8d9eefec8fef40ae6ff4d0379c41c9f721dc724fb627",
-        "signature": "49cfc585643372f61a4eb5c20f596885f687d32f82fe57c4cf12d232912cd723",
+        "version": "cc94bada99211771a163829e69d1c522adc15b71ce544e473d0559e656dc63a4",
+        "signature": "f8232d920f53535d469d430e951eaab5c7238506ff85525235b426aea5a30695",
         "affectsGlobalScope": false
       },
       "./src/server/events/frontend.ts": {
-        "version": "98cfe1a28f418dc541b069edeaad0d81d4632d26d6e27b2f18a7567e70c9d07a",
+        "version": "da3f94ec0ae8589a02785ffa8a10d5db29f598047fb34d0765fb7bac239562dc",
         "signature": "8ff20149da40afb83512b62bea2427c94c788f63d8be335f86ce1a0ee6968e29",
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "a58fadcc2ceb2f01588f0cd98c92d46df321e1a2093e5d621d10f412ae775add",
+        "version": "a864f95de660f6208b4a7bdbce123a03cd8f0c8aa169d36f0aa1502eec7245b7",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },
@@ -721,24 +726,19 @@
         "signature": "50f54db09cb7e72269b7f2520f2ad3996a05a5c159ec4bfa8015cb170879772c",
         "affectsGlobalScope": false
       },
-      "./src/server/events/motion.ts": {
-        "version": "6028d99d22f82d315fa6b69ec043db2bd8387df47923942afe750d6ac4408666",
-        "signature": "503e89bb0a5974b8e17449187f5d3ac1d0339762fd77b6691fe73ef477c784d0",
-        "affectsGlobalScope": false
-      },
       "./src/server/events/crew.ts": {
-        "version": "342337ded8d7829f250f1d2266f091a1254c112005f52b3ced547dd3fabd5ac3",
+        "version": "25a73946d701928f00ed595b4f16956782dbca769c90134ce3c22dfc99b7df6e",
         "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
         "affectsGlobalScope": false
       },
       "./src/server/io.ts": {
-        "version": "001b631adcf871e1596d24987981a01029d9c2378ecb56b7c16b746e997abdc7",
+        "version": "540dc18baaf9fc089fe525946531742b4702458bda6d6013c7bb1c19c23b0e65",
         "signature": "4456b71bcc3558864205f80e35644fe164da7fb700d1599003a25a5a0449a2be",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/aiship.ts": {
-        "version": "ba7ad028bf89281ca96574a09e84d9735edde4cba64740e297c74e0d8a86ad95",
-        "signature": "5caad584f1e58d436f3cd6a21c33a42eea2c292dbb59dadd2aa92355d0363d47",
+        "version": "6a9a0c186b5bdc4e4bcf61560ba995f90c44fe0ab8f764ada822f70d5bece696",
+        "signature": "14432c17a9594d79e62000dc9a3a53c453549667d2115de57b7178d6862687d1",
         "affectsGlobalScope": false
       },
       "./src/game/presets/cargo.ts": {
@@ -757,7 +757,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/game.ts": {
-        "version": "a3cae8bb82d4a48860af9a5b5d0d33def77b0f63923aea3abbd9683e99f7494f",
+        "version": "3714d03a797e92a4ac38bcdea0a5747148795a906e0bfe26e4d16943818628ba",
         "signature": "09311c71815cbdf81dab179dc2fbe0495c8554ec8cee5c5586ba0487c04c6ab6",
         "affectsGlobalScope": false
       },
@@ -782,18 +782,128 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "b16f5df0d0f54562cad963bb0802b21009216c43b1c7d4589622e6b7d4e82847",
+        "version": "477870a4bd80bcf6852656143449a69491b3d9bbd64be1cb8394d44bd88299f2",
         "signature": "1ada4def6cf11ee426243d1011e532a2380504dd4242801e3d884b1e53ccd329",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "6a910d4b443e3f2be9c2b901871dbfd246a96b79cfaf66adfa62f1cc5a22aceb",
+        "version": "ab0bb6e1840408d87e84c4012700ecccfaf8ce0b8c458943f8e0ad877025c6fa",
         "signature": "ad55138fcff7c310cf2d46ef4eaec62e618eb7e600339b12f539780bd6f14941",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/anymatch/index.d.ts": {
+        "version": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76",
+        "signature": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/html-minifier-terser/index.d.ts": {
+        "version": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
+        "signature": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
         "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
         "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/q/index.d.ts": {
+        "version": "f9a2dd6a6084665f093ed0e9664b8e673be2a45e342a59dd4e0e4e552e68a9ad",
+        "signature": "f9a2dd6a6084665f093ed0e9664b8e673be2a45e342a59dd4e0e4e552e68a9ad",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/source-list-map/index.d.ts": {
+        "version": "67fc055eb86a0632e2e072838f889ffe1754083cb13c8c80a06a7d895d877aae",
+        "signature": "67fc055eb86a0632e2e072838f889ffe1754083cb13c8c80a06a7d895d877aae",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/tapable/index.d.ts": {
+        "version": "d558a0fe921ebcc88d3212c2c42108abf9f0d694d67ebdeba37d7728c044f579",
+        "signature": "d558a0fe921ebcc88d3212c2c42108abf9f0d694d67ebdeba37d7728c044f579",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/source-map/source-map.d.ts": {
+        "version": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579",
+        "signature": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/uglify-js/index.d.ts": {
+        "version": "bee79f5862fe1278d2ba275298862bce3f7abf1e59d9c669c4b9a4b2bba96956",
+        "signature": "bee79f5862fe1278d2ba275298862bce3f7abf1e59d9c669c4b9a4b2bba96956",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/anymatch/index.d.ts": {
+        "version": "4fb0b7d532aa6fb850b6cd2f1ee4f00802d877b5c66a51903bc1fb0624126349",
+        "signature": "4fb0b7d532aa6fb850b6cd2f1ee4f00802d877b5c66a51903bc1fb0624126349",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts": {
+        "version": "b90c59ac4682368a01c83881b814738eb151de8a58f52eb7edadea2bcffb11b9",
+        "signature": "b90c59ac4682368a01c83881b814738eb151de8a58f52eb7edadea2bcffb11b9",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/source.d.ts": {
+        "version": "8560a87b2e9f8e2c3808c8f6172c9b7eb6c9b08cb9f937db71c285ecf292c81d",
+        "signature": "8560a87b2e9f8e2c3808c8f6172c9b7eb6c9b08cb9f937db71c285ecf292c81d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts": {
+        "version": "ffe3931ff864f28d80ae2f33bd11123ad3d7bad9896b910a1e61504cc093e1f5",
+        "signature": "ffe3931ff864f28d80ae2f33bd11123ad3d7bad9896b910a1e61504cc093e1f5",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts": {
+        "version": "083c1bd82f8dc3a1ed6fc9e8eaddf141f7c05df418eca386598821e045253af9",
+        "signature": "083c1bd82f8dc3a1ed6fc9e8eaddf141f7c05df418eca386598821e045253af9",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts": {
+        "version": "274ebe605bd7f71ce161f9f5328febc7d547a2929f803f04b44ec4a7d8729517",
+        "signature": "274ebe605bd7f71ce161f9f5328febc7d547a2929f803f04b44ec4a7d8729517",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts": {
+        "version": "6ca0207e70d985a24396583f55836b10dc181063ab6069733561bfde404d1bad",
+        "signature": "6ca0207e70d985a24396583f55836b10dc181063ab6069733561bfde404d1bad",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts": {
+        "version": "5908142efeaab38ffdf43927ee0af681ae77e0d7672b956dfb8b6c705dbfe106",
+        "signature": "5908142efeaab38ffdf43927ee0af681ae77e0d7672b956dfb8b6c705dbfe106",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts": {
+        "version": "f772b188b943549b5c5eb803133314b8aa7689eced80eed0b70e2f30ca07ab9c",
+        "signature": "f772b188b943549b5c5eb803133314b8aa7689eced80eed0b70e2f30ca07ab9c",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts": {
+        "version": "0026b816ef05cfbf290e8585820eef0f13250438669107dfc44482bac007b14f",
+        "signature": "0026b816ef05cfbf290e8585820eef0f13250438669107dfc44482bac007b14f",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts": {
+        "version": "8ef5aad624890acfe0fa48230edce255f00934016d16acb8de0edac0ea5b21bb",
+        "signature": "8ef5aad624890acfe0fa48230edce255f00934016d16acb8de0edac0ea5b21bb",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/index.d.ts": {
+        "version": "9af6248ff4baf0c1ddc62bb0bc43197437bd5fb2c95ff8e10e4cf2e699ea45c1",
+        "signature": "9af6248ff4baf0c1ddc62bb0bc43197437bd5fb2c95ff8e10e4cf2e699ea45c1",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts": {
+        "version": "d84398556ba4595ee6be554671da142cfe964cbdebb2f0c517a10f76f2b016c0",
+        "signature": "d84398556ba4595ee6be554671da142cfe964cbdebb2f0c517a10f76f2b016c0",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack-sources/index.d.ts": {
+        "version": "89b42f8ee5d387a39db85ee2c7123a391c3ede266a2bcd502c85ad55626c3b2b",
+        "signature": "89b42f8ee5d387a39db85ee2c7123a391c3ede266a2bcd502c85ad55626c3b2b",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/webpack/index.d.ts": {
+        "version": "99c7f3bbc03f6eb3e663c26c104d639617620c2925e76fc284f7bedf1877fa2b",
+        "signature": "99c7f3bbc03f6eb3e663c26c104d639617620c2925e76fc284f7bedf1877fa2b",
         "affectsGlobalScope": false
       }
     },
@@ -1156,8 +1266,15 @@
         "../common/dist/index.d.ts",
         "./src/game/game.ts"
       ],
+      "./src/game/classes/crewmember/addins/rooms.ts": [
+        "../common/dist/index.d.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/item/weapon.ts",
+        "./src/server/io.ts"
+      ],
       "./src/game/classes/crewmember/crewmember.ts": [
         "../common/dist/index.d.ts",
+        "./src/game/classes/crewmember/addins/rooms.ts",
         "./src/game/classes/ship/humanship.ts",
         "./src/server/io.ts"
       ],
@@ -1210,7 +1327,6 @@
       "./src/game/classes/ship/addins/motion.ts": [
         "../common/dist/index.d.ts",
         "./src/game/classes/planet.ts",
-        "./src/game/classes/ship/humanship.ts",
         "./src/game/classes/ship/ship.ts",
         "./src/server/io.ts"
       ],
@@ -1224,7 +1340,8 @@
         "../common/dist/index.d.ts",
         "./src/game/classes/item/weapon.ts",
         "./src/game/classes/ship/addins/combat.ts",
-        "./src/game/classes/ship/ship.ts"
+        "./src/game/classes/ship/ship.ts",
+        "./src/server/io.ts"
       ],
       "./src/game/classes/ship/humanship.ts": [
         "../common/dist/index.d.ts",
@@ -1247,6 +1364,7 @@
         "./src/game/classes/ship/addins/items.ts",
         "./src/game/classes/ship/addins/motion.ts",
         "./src/game/classes/ship/combatship.ts",
+        "./src/game/classes/ship/humanship.ts",
         "./src/game/game.ts",
         "./src/server/io.ts"
       ],
@@ -1309,6 +1427,7 @@
       "./src/server/events/frontend.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
+        "./src/game/classes/ship/combatship.ts",
         "./src/game/classes/ship/ship.ts",
         "./src/index.ts",
         "./src/server/io.ts"
@@ -1317,13 +1436,6 @@
         "../common/dist/index.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
         "./src/game/classes/ship/humanship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/motion.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
         "./src/game/classes/ship/ship.ts",
         "./src/index.ts",
         "./src/server/io.ts"
@@ -1339,8 +1451,92 @@
         "./src/server/events/crew.ts",
         "./src/server/events/discord.ts",
         "./src/server/events/frontend.ts",
-        "./src/server/events/general.ts",
-        "./src/server/events/motion.ts"
+        "./src/server/events/general.ts"
+      ],
+      "../node_modules/@types/uglify-js/index.d.ts": [
+        "../node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/source.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/node/crypto.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack/index.d.ts": [
+        "../node_modules/@types/tapable/index.d.ts",
+        "../node_modules/@types/uglify-js/index.d.ts",
+        "../node_modules/@types/webpack-sources/index.d.ts",
+        "../node_modules/anymatch/index.d.ts",
+        "../node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/index.d.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1676,7 +1872,11 @@
       "./src/game/classes/cache.ts": [
         "./src/game/game.ts"
       ],
+      "./src/game/classes/crewmember/addins/rooms.ts": [
+        "./src/game/classes/crewmember/crewmember.ts"
+      ],
       "./src/game/classes/crewmember/crewmember.ts": [
+        "./src/game/classes/crewmember/addins/rooms.ts",
         "./src/game/classes/ship/humanship.ts"
       ],
       "./src/game/classes/faction.ts": [
@@ -1772,11 +1972,93 @@
       "./src/server/events/general.ts": [
         "./node_modules/socket.io/dist/index.d.ts"
       ],
-      "./src/server/events/motion.ts": [
-        "./node_modules/socket.io/dist/index.d.ts"
-      ],
       "./src/server/io.ts": [
         "./node_modules/socket.io/dist/index.d.ts"
+      ],
+      "../node_modules/@types/uglify-js/index.d.ts": [
+        "../node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/source.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/source.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/node/crypto.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
+      ],
+      "../node_modules/@types/webpack/index.d.ts": [
+        "../node_modules/@types/tapable/index.d.ts",
+        "../node_modules/@types/uglify-js/index.d.ts",
+        "../node_modules/@types/webpack-sources/index.d.ts",
+        "../node_modules/anymatch/index.d.ts",
+        "../node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/index.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -1861,6 +2143,7 @@
       "./src/db/index.ts",
       "./src/game/classes/attackremnant.ts",
       "./src/game/classes/cache.ts",
+      "./src/game/classes/crewmember/addins/rooms.ts",
       "./src/game/classes/crewmember/crewmember.ts",
       "./src/game/classes/faction.ts",
       "./src/game/classes/item/engine.ts",
@@ -1889,9 +2172,30 @@
       "./src/server/events/discord.ts",
       "./src/server/events/frontend.ts",
       "./src/server/events/general.ts",
-      "./src/server/events/motion.ts",
       "./src/server/io.ts",
+      "../node_modules/@types/anymatch/index.d.ts",
+      "../node_modules/@types/html-minifier-terser/index.d.ts",
       "../node_modules/@types/json-schema/index.d.ts",
+      "../node_modules/@types/q/index.d.ts",
+      "../node_modules/@types/source-list-map/index.d.ts",
+      "../node_modules/@types/tapable/index.d.ts",
+      "../node_modules/@types/uglify-js/index.d.ts",
+      "../node_modules/@types/webpack-sources/index.d.ts",
+      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/index.d.ts",
+      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+      "../node_modules/@types/webpack-sources/lib/source.d.ts",
+      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+      "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+      "../node_modules/@types/webpack/index.d.ts",
+      "../node_modules/anymatch/index.d.ts",
+      "../node_modules/source-map/source-map.d.ts",
       "../node_modules/typescript/lib/lib.dom.d.ts",
       "../node_modules/typescript/lib/lib.dom.iterable.d.ts",
       "../node_modules/typescript/lib/lib.es2015.collection.d.ts",

@@ -1,8 +1,9 @@
 import c from '../../../../../../common/dist'
 import { stubify } from '../../../../server/io'
 import { Planet } from '../../Planet'
-import { HumanShip } from '../HumanShip'
 import { Ship } from '../Ship'
+
+const arrivalThreshold = 0.001
 
 export function move(
   this: Ship,
@@ -12,52 +13,67 @@ export function move(
     ...this.location,
   ]
 
-  if (toLocation) {
-    this.location = toLocation
-  } else {
-    if (!this.canMove) return
+  const startingLocation = [...this.location]
+  const membersInCockpit = this.membersIn(`cockpit`)
+  if (!this.canMove || !membersInCockpit.length) {
+    this.speed = 0
+    this.velocity = [0, 0]
+    this.toUpdate.speed = this.speed
+    this.toUpdate.velocity = this.velocity
+    return
+  }
 
-    const membersInCockpit = this.membersIn('cockpit')
-    if (!membersInCockpit.length) return
+  // ----- calculate new location based on target of each member in cockpit -----
+  for (let member of membersInCockpit) {
+    if (!member.targetLocation) continue
 
-    // ----- calculate new location based on target of each member in cockpit -----
-    for (let member of membersInCockpit) {
-      if (!member.targetLocation) continue
+    // already there, so stop
+    if (
+      Math.abs(
+        this.location[0] - member.targetLocation[0],
+      ) < arrivalThreshold &&
+      Math.abs(
+        this.location[1] - member.targetLocation[1],
+      ) < arrivalThreshold
+    )
+      continue
 
-      // already there, so stop
-      if (
-        Math.abs(
-          this.location[0] - member.targetLocation[0],
-        ) < 0.000001 &&
-        Math.abs(
-          this.location[1] - member.targetLocation[1],
-        ) < 0.000001
-      )
-        continue
+    this.engines.forEach((e) => e.use())
 
-      const unitVectorToTarget = c.degreesToUnitVector(
-        c.angleFromAToB(
-          this.location,
-          member.targetLocation,
-        ),
-      )
+    const unitVectorToTarget = c.degreesToUnitVector(
+      c.angleFromAToB(this.location, member.targetLocation),
+    )
 
-      const thrustMagnitude =
-        0.00001 *
-        (member.skills.find((s) => s.skill === 'piloting')
-          ?.level || 1)
+    const skill =
+      member.skills.find((s) => s.skill === `piloting`)
+        ?.level || 1
+    const thrustMagnitude = c.lerp(
+      0.00001,
+      0.0001,
+      skill / 100,
+    )
 
-      this.location[0] +=
-        unitVectorToTarget[0] *
-        thrustMagnitude *
-        (c.deltaTime / 1000)
-      this.location[1] +=
-        unitVectorToTarget[1] *
-        thrustMagnitude *
-        (c.deltaTime / 1000)
-    }
+    this.location[0] +=
+      unitVectorToTarget[0] *
+      thrustMagnitude *
+      (c.deltaTime / 1000)
+    this.location[1] +=
+      unitVectorToTarget[1] *
+      thrustMagnitude *
+      (c.deltaTime / 1000)
   }
   this.toUpdate.location = this.location
+
+  this.velocity = [
+    this.location[0] - startingLocation[0],
+    this.location[1] - startingLocation[1],
+  ]
+  this.toUpdate.velocity = this.velocity
+  this.speed = c.vectorToMagnitude(this.velocity)
+  this.toUpdate.speed =
+    this.speed * (c.deltaTime / c.TICK_INTERVAL)
+  this.direction = c.vectorToDegrees(this.velocity)
+  this.toUpdate.direction = this.direction
 
   // ----- update planet -----
   const previousPlanet = this.planet
@@ -75,21 +91,33 @@ export function move(
     previousLocation,
   )
   if (Math.abs(newAngle - this.lastMoveAngle) > 8) {
-    this.previousLocations.push(previousLocation)
-    while (
-      this.previousLocations.length >
-      Ship.maxPreviousLocations
-    )
-      this.previousLocations.shift()
-    this.toUpdate.previousLocations = this.previousLocations
+    const lastPrevLoc =
+      this.previousLocations[
+        this.previousLocations.length - 1
+      ]
+    if (
+      !lastPrevLoc ||
+      c.distance(this.location, lastPrevLoc) > 0.0001
+    ) {
+      this.previousLocations.push(previousLocation)
+      while (
+        this.previousLocations.length >
+        Ship.maxPreviousLocations
+      )
+        this.previousLocations.shift()
+      this.toUpdate.previousLocations =
+        this.previousLocations
+    }
   }
   this.lastMoveAngle = newAngle
 }
 
 export function isAt(this: Ship, coords: CoordinatePair) {
   return (
-    Math.abs(coords[0] - this.location[0]) < 0.00001 &&
-    Math.abs(coords[1] - this.location[1]) < 0.00001
+    Math.abs(coords[0] - this.location[0]) <
+      arrivalThreshold &&
+    Math.abs(coords[1] - this.location[1]) <
+      arrivalThreshold
   )
 }
 
@@ -97,21 +125,7 @@ export function stop(this: Ship) {
   this.velocity = [0, 0]
 }
 
-// export function thrust(
-//   this: Ship,
-//   angle: number,
-//   force: number,
-// ): ThrustResult {
-//   c.log(`thrusting`, angle, force)
-//   return {
-//     angle,
-//     velocity: c.vectorToMagnitude(this.velocity),
-//     message: `hiiii`,
-//   }
-// }
-
 export function applyTickOfGravity(this: Ship): void {
-  if (!this.canMove) return
+  // if (!this.canMove) return
   // todo
-  // c.log(`gravity`)
 }

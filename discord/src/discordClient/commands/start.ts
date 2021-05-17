@@ -5,7 +5,7 @@ import { create } from '../../ioInterface/ship'
 import { add } from '../../ioInterface/crew'
 
 export class StartCommand implements Command {
-  commandNames = [`start`, `spawn`, `begin`, `init`]
+  commandNames = [`s`, `start`, `spawn`, `begin`, `init`]
 
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []
@@ -19,7 +19,6 @@ export class StartCommand implements Command {
     const createdShip = await create({
       id: initialMessage.guild!.id,
       name: initialMessage.guild!.name,
-      planet: `Origin`,
       faction: `green`,
     })
     if (!createdShip) {

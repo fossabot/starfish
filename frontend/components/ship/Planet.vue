@@ -78,9 +78,10 @@ export default {
         .map((c: any) => {
           const pricePerUnit =
             c.cargoData.basePrice * c.sellMultiplier
-          const heldAmount = this.crewMember.inventory.find(
-            (i: any) => i.type === c.cargoData.type,
-          )?.amount
+          const heldAmount =
+            this.crewMember.inventory.find(
+              (i: any) => i.type === c.cargoData.type,
+            )?.amount || 0
           return {
             ...c,
             pricePerUnit,
@@ -166,5 +167,7 @@ export default {
 <style lang="scss" scoped>
 .planet {
   position: relative;
+  grid-column: span 2;
+  width: 400px;
 }
 </style>

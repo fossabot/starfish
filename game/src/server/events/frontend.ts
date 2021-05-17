@@ -4,6 +4,7 @@ import { Socket } from 'socket.io'
 import { game } from '../..'
 import { stubify } from '../io'
 import { Ship } from '../../game/classes/Ship/Ship'
+import { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -18,7 +19,9 @@ export default function (
 
     const foundShip = game.ships.find((s) => s.id === id)
     if (foundShip) {
-      const stub = stubify<Ship, ShipStub>(foundShip)
+      const stub = stubify<CombatShip, ShipStub>(
+        foundShip as CombatShip,
+      )
       callback({ data: stub })
     } else callback({ error: `No ship found by that ID.` })
   })

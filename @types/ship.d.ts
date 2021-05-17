@@ -1,9 +1,10 @@
 interface BaseShipData {
   name: string
   id?: string
-  planet?: PlanetName
+  location?: CoordinatePair
   faction?: FactionKey
   loadout?: string
+  seenPlanets?: PlanetName[]
 }
 
 interface BaseHumanShipData extends BaseShipData {

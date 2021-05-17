@@ -10,3 +10,17 @@ export function membersIn(
     (cm) => cm.stamina > 0 && cm.location === location,
   )
 }
+
+export function cumulativeSkillIn(
+  this: HumanShip,
+  l: CrewLocation,
+  s: SkillName,
+): number {
+  return this.membersIn(l).reduce((total, m) => {
+    return (
+      total +
+      (m.skills.find((skill) => skill.skill === s)?.level ||
+        0)
+    )
+  }, 0)
+}

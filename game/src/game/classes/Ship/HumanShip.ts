@@ -3,7 +3,7 @@ import { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import { CombatShip } from './CombatShip'
 
-import { membersIn } from './addins/crew'
+import { membersIn, cumulativeSkillIn } from './addins/crew'
 import { stubify } from '../../../server/io'
 
 export class HumanShip extends CombatShip {
@@ -42,6 +42,7 @@ export class HumanShip extends CombatShip {
     if (!this.availableRooms.includes(room))
       this.availableRooms.push(room)
   }
+
   removeRoom(room: CrewLocation) {
     const index = this.availableRooms.findIndex(
       (r) => r === room,
@@ -53,7 +54,7 @@ export class HumanShip extends CombatShip {
     const cm = new CrewMember(data, this)
     this.crewMembers.push(cm)
     if (!this.captain) this.captain = cm.id
-    c.log('Added crew member', cm.name, 'to', this.name)
+    c.log(`Added crew member`, cm.name, `to`, this.name)
     return cm
   }
 
@@ -64,10 +65,10 @@ export class HumanShip extends CombatShip {
 
     if (index === -1) {
       c.log(
-        'red',
-        'Attempted to remove crew member that did not exist',
+        `red`,
+        `Attempted to remove crew member that did not exist`,
         id,
-        'from ship',
+        `from ship`,
         this.id,
       )
       return
@@ -77,4 +78,14 @@ export class HumanShip extends CombatShip {
   }
 
   membersIn = membersIn
+  cumulativeSkillIn = cumulativeSkillIn
+
+  respawn() {
+    super.respawn()
+
+    this.crewMembers.forEach((cm) => {
+      cm.inventory = []
+      cm.credits *= 0.5
+    })
+  }
 }

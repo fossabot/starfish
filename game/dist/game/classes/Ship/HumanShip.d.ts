@@ -1,7 +1,7 @@
 import { Game } from '../../Game';
 import { CrewMember } from '../CrewMember/CrewMember';
 import { CombatShip } from './CombatShip';
-import { membersIn } from './addins/crew';
+import { membersIn, cumulativeSkillIn } from './addins/crew';
 export declare class HumanShip extends CombatShip {
     readonly human: boolean;
     readonly id: string;
@@ -15,5 +15,7 @@ export declare class HumanShip extends CombatShip {
     addCrewMember(data: BaseCrewMemberData): CrewMember;
     removeCrewMember(id: string): void;
     membersIn: typeof membersIn;
+    cumulativeSkillIn: typeof cumulativeSkillIn;
+    respawn(): void;
 }
 //# sourceMappingURL=HumanShip.d.ts.map

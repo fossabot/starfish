@@ -1,4 +1,4 @@
-type ItemType = 'weapon' | 'engine'
+type ItemType = `weapon` | `engine`
 
 interface BaseItemData {
   id: string
@@ -15,7 +15,8 @@ interface Loadout {
 
 interface BaseWeaponData extends BaseItemData {
   range: number
-  cooldownInMs: number
+  damage: number
+  baseCooldown: number
 }
 
 interface BaseEngineData extends BaseItemData {

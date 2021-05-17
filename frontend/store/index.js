@@ -22,6 +22,7 @@ export const mutations = {
       (cm) => cm.id === state.userId,
     )
   },
+
   updateACrewMember(state, updates) {
     const crewMember = state.ship?.crewMembers?.find(
       (c) => c.id === updates?.id,
@@ -40,10 +41,21 @@ export const mutations = {
       target,
     )
   },
+
+  setTarget(state, target) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, 'targetLocation', target)
+    this.$socket?.emit(
+      'crew:targetLocation',
+      state.ship.id,
+      state.userId,
+      target,
+    )
+  },
 }
 
 export const actions = {
-  async socketSetup({ commit }, shipId) {
+  async socketSetup({ state, commit }, shipId) {
     this.$socket.removeAllListeners()
 
     this.$socket.on(`disconnect`, () => {
@@ -60,8 +72,9 @@ export const actions = {
     this.$socket.on(`connect`, connected)
 
     this.$socket.on(`ship:update`, ({ id, updates }) => {
-      console.log(updates)
-      commit(`updateShip`, { ...updates })
+      if (state.ship === null) connected()
+      // console.log(updates)
+      else commit(`updateShip`, { ...updates })
     })
   },
 

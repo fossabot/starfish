@@ -1,5 +1,6 @@
 import { CombatShip } from './Ship/CombatShip';
 export declare class AttackRemnant {
+    static readonly expireTime: number;
     readonly attacker: CombatShip;
     readonly defender: CombatShip;
     readonly damageTaken: TakenDamageResult;

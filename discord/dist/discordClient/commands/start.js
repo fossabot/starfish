@@ -5,7 +5,7 @@ const ship_1 = require("../../ioInterface/ship");
 const crew_1 = require("../../ioInterface/crew");
 class StartCommand {
     constructor() {
-        this.commandNames = [`start`, `spawn`, `begin`, `init`];
+        this.commandNames = [`s`, `start`, `spawn`, `begin`, `init`];
     }
     getHelpMessage(commandPrefix) {
         this.commandNames = [];
@@ -16,7 +16,6 @@ class StartCommand {
         const createdShip = await ship_1.create({
             id: initialMessage.guild.id,
             name: initialMessage.guild.name,
-            planet: `Origin`,
             faction: `green`,
         });
         if (!createdShip) {

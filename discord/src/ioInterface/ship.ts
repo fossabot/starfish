@@ -54,6 +54,33 @@ export async function create(
   return shipStub
 }
 
+export async function respawn(
+  id: string,
+): Promise<ShipStub | null> {
+  if (!(await connected())) return null
+
+  const shipStub: ShipStub | null = await new Promise(
+    (resolve) => {
+      io.emit(
+        `ship:respawn`,
+        id,
+        ({
+          data: ship,
+          error,
+        }: IOResponseReceived<ShipStub>) => {
+          if (!ship || error) {
+            c.log(error)
+            resolve(null)
+            return
+          }
+          resolve(ship)
+        },
+      )
+    },
+  )
+  return shipStub
+}
+
 // export async function thrust(
 //   data: ThrustRequest,
 // ): Promise<ThrustResult | null> {

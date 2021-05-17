@@ -17,7 +17,7 @@ function coordPairToRadians(
   const angle = Math.atan2(y, x)
   return angle
 }
-function coordPairToDegrees(
+function vectorToDegrees(
   coordPair: CoordinatePair,
 ): number {
   const angle = coordPairToRadians(coordPair)
@@ -88,7 +88,7 @@ export default {
   degreesToUnitVector,
   unitVectorFromThisPointToThatPoint,
   pointIsInsideCircle,
-  coordPairToDegrees,
+  vectorToDegrees,
   coordPairToRadians,
   vectorToMagnitude,
 }

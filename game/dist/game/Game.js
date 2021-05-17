@@ -51,6 +51,12 @@ class Game {
         const startTime = Date.now();
         this.tickCount++;
         this.ships.forEach((s) => s.tick());
+        const attackRemnantExpirationTime = Date.now() - AttackRemnant_1.AttackRemnant.expireTime;
+        this.attackRemnants.forEach((ar, index) => {
+            if (attackRemnantExpirationTime > ar.time) {
+                this.attackRemnants.splice(index, 1);
+            }
+        });
         // ----- timing
         const elapsedTimeInMs = Date.now() - startTime;
         if (elapsedTimeInMs > 10) {

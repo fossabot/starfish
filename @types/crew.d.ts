@@ -5,11 +5,10 @@ type CrewLocation =
   | `weapons`
 
 type SkillName =
-  | 'stamina'
-  | 'piloting'
-  | 'munitions'
-  | 'mechanics'
-  | 'linguistics'
+  | `piloting`
+  | `munitions`
+  | `mechanics`
+  | `linguistics`
 
 interface BaseCrewMemberData {
   name: string

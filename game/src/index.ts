@@ -25,8 +25,8 @@ export const game = new Game()
 //   ],
 // })
 
-// const ai1 = game.addAIShip({
-//   name: `ai1`,
-//   loadout: `ai_default`,
-//   planet: `Hera`,
-// })
+const ai1 = game.addAIShip({
+  name: `ai1`,
+  loadout: `ai_default`,
+  location: [-0.5, 0.2] as CoordinatePair,
+})

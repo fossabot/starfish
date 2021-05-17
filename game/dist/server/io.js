@@ -11,7 +11,6 @@ const frontend_1 = __importDefault(require("./events/frontend"));
 const discord_1 = __importDefault(require("./events/discord"));
 const general_1 = __importDefault(require("./events/general"));
 const combat_1 = __importDefault(require("./events/combat"));
-const motion_1 = __importDefault(require("./events/motion"));
 const crew_1 = __importDefault(require("./events/crew"));
 const httpServer = http_1.createServer();
 exports.io = new socket_io_1.Server(httpServer, {
@@ -24,14 +23,23 @@ exports.io.on(`connection`, (socket) => {
     discord_1.default(socket);
     general_1.default(socket);
     combat_1.default(socket);
-    motion_1.default(socket);
     crew_1.default(socket);
 });
 function stubify(prop) {
-    const circularReferencesRemoved = JSON.parse(JSON.stringify(prop, (key, value) => {
+    const gettersIncluded = { ...prop };
+    const proto = Object.getPrototypeOf(prop);
+    const getKeyValue = (key) => (obj) => obj[key];
+    for (const key of Object.getOwnPropertyNames(proto)) {
+        const desc = Object.getOwnPropertyDescriptor(proto, key);
+        const hasGetter = desc && typeof desc.get === `function`;
+        if (hasGetter) {
+            gettersIncluded[key] = getKeyValue(key)(prop);
+        }
+    }
+    const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
         if ([`toUpdate`].includes(key))
             return;
-        if ([`game`, `ship`].includes(key))
+        if ([`game`, `ship`, `attacker`, `defender`].includes(key))
             return value.id;
         if ([`ships`].includes(key) && Array.isArray(value))
             return value.map((v) => stubify({
@@ -45,5 +53,5 @@ function stubify(prop) {
 }
 exports.stubify = stubify;
 httpServer.listen(4200);
-dist_1.default.log('io server listening on port 4200');
+dist_1.default.log(`io server listening on port 4200`);
 //# sourceMappingURL=io.js.map

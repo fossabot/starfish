@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+
 :root {
-  --font-stack: 'Fira Code', 'Monaco', monospace;
+  --font-stack: 'Source Code Pro', 'Monaco', 'Fira Code',
+    monospace;
 
   --text: #eee;
   --bg: #111;

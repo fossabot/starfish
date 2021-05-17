@@ -21,6 +21,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             `weapons`,
         ];
         this.membersIn = crew_1.membersIn;
+        this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
         this.human = true;
         this.id = data.id;
         //* id matches discord guildId here
@@ -48,16 +49,23 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.crewMembers.push(cm);
         if (!this.captain)
             this.captain = cm.id;
-        dist_1.default.log('Added crew member', cm.name, 'to', this.name);
+        dist_1.default.log(`Added crew member`, cm.name, `to`, this.name);
         return cm;
     }
     removeCrewMember(id) {
         const index = this.crewMembers.findIndex((cm) => cm.id === id);
         if (index === -1) {
-            dist_1.default.log('red', 'Attempted to remove crew member that did not exist', id, 'from ship', this.id);
+            dist_1.default.log(`red`, `Attempted to remove crew member that did not exist`, id, `from ship`, this.id);
             return;
         }
         this.crewMembers.splice(index, 1);
+    }
+    respawn() {
+        super.respawn();
+        this.crewMembers.forEach((cm) => {
+            cm.inventory = [];
+            cm.credits *= 0.5;
+        });
     }
 }
 exports.HumanShip = HumanShip;

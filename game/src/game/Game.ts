@@ -65,11 +65,19 @@ export class Game {
   private lastTickTime: number = Date.now()
   private lastTickExpectedTime: number = 0
   private averageTickLag: number = 0
+
   tick() {
     const startTime = Date.now()
 
     this.tickCount++
     this.ships.forEach((s) => s.tick())
+    const attackRemnantExpirationTime =
+      Date.now() - AttackRemnant.expireTime
+    this.attackRemnants.forEach((ar, index) => {
+      if (attackRemnantExpirationTime > ar.time) {
+        this.attackRemnants.splice(index, 1)
+      }
+    })
 
     // ----- timing
 

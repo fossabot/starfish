@@ -37,3 +37,4 @@ Crustacean Cannon
 Bubblebeam
 The Grappler
 Exoskeleton
+Scuttle Shuttle

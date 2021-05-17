@@ -18,7 +18,7 @@ export default function (
       ) as HumanShip
       if (!ship)
         return callback({
-          error: 'No ship found by that id.',
+          error: `No ship found by that id.`,
         })
 
       const crewMember = ship.crewMembers?.find(
@@ -26,7 +26,7 @@ export default function (
       )
       if (crewMember)
         return callback({
-          error: 'Crew member already exists on this ship.',
+          error: `That crew member already exists on this ship.`,
         })
 
       const addedCrewMember = ship.addCrewMember(
@@ -50,17 +50,17 @@ export default function (
 
     crewMember.goTo(target)
     c.log(
-      'Set crew member',
+      `Set crew member`,
       crewMember.name,
-      'on ship',
+      `on ship`,
       ship.name,
-      'location to',
+      `location to`,
       target,
     )
   })
 
   socket.on(
-    'crew:targetLocation',
+    `crew:targetLocation`,
     (shipId, crewId, targetLocation) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
@@ -77,25 +77,25 @@ export default function (
         targetLocation.find((l: any) => isNaN(parseInt(l)))
       )
         return c.log(
-          'Invalid call to set crew targetLocation:',
+          `Invalid call to set crew targetLocation:`,
           shipId,
           crewId,
           targetLocation,
         )
       crewMember.targetLocation = targetLocation
       c.log(
-        'Set',
+        `Set`,
         crewId,
-        'on',
+        `on`,
         shipId,
-        'targetLocation to',
+        `targetLocation to`,
         targetLocation,
       )
     },
   )
 
   socket.on(
-    'crew:buy',
+    `crew:buy`,
     (
       shipId,
       crewId,
@@ -108,12 +108,12 @@ export default function (
         (s) => s.id === shipId,
       ) as HumanShip
       if (!ship)
-        return callback({ error: 'No ship found.' })
+        return callback({ error: `No ship found.` })
       const crewMember = ship.crewMembers?.find(
         (cm) => cm.id === crewId,
       )
       if (!crewMember)
-        return callback({ error: 'No crew member found.' })
+        return callback({ error: `No crew member found.` })
 
       const cargoForSale = ship.game.planets
         .find((p) => p.name === vendorLocation)
@@ -124,7 +124,7 @@ export default function (
         )
       if (!cargoForSale)
         return callback({
-          error: 'That cargo is not for sale here.',
+          error: `That cargo is not for sale here.`,
         })
 
       const price =
@@ -132,7 +132,7 @@ export default function (
         cargoForSale.buyMultiplier *
         amount
       if (price > crewMember.credits)
-        return callback({ error: 'Insufficient funds.' })
+        return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
       const existingStock = crewMember.inventory.find(
@@ -152,17 +152,17 @@ export default function (
 
       c.log(
         crewId,
-        'bought',
+        `bought`,
         amount,
         cargoType,
-        'from',
+        `from`,
         vendorLocation,
       )
     },
   )
 
   socket.on(
-    'crew:sell',
+    `crew:sell`,
     (
       shipId,
       crewId,
@@ -175,19 +175,19 @@ export default function (
         (s) => s.id === shipId,
       ) as HumanShip
       if (!ship)
-        return callback({ error: 'No ship found.' })
+        return callback({ error: `No ship found.` })
       const crewMember = ship.crewMembers?.find(
         (cm) => cm.id === crewId,
       )
       if (!crewMember)
-        return callback({ error: 'No crew member found.' })
+        return callback({ error: `No crew member found.` })
 
       const existingStock = crewMember.inventory.find(
         (cargo) => cargo.type === cargoType,
       )
       if (!existingStock || existingStock.amount < amount)
         return callback({
-          error: 'Not enough stock of that cargo found.',
+          error: `Not enough stock of that cargo found.`,
         })
 
       const cargoBeingBought = ship.game.planets
@@ -199,7 +199,7 @@ export default function (
         )
       if (!cargoBeingBought)
         return callback({
-          error: 'The vendor does not buy that.',
+          error: `The vendor does not buy that.`,
         })
 
       const price =
@@ -217,10 +217,10 @@ export default function (
 
       c.log(
         crewId,
-        'sold',
+        `sold`,
         amount,
         cargoType,
-        'to',
+        `to`,
         vendorLocation,
       )
     },

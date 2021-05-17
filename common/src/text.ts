@@ -49,7 +49,7 @@ function degreesToArrow(angle: number): string {
 }
 
 function coordPairToArrow(coordPair: CoordinatePair) {
-  return degreesToArrow(math.coordPairToDegrees(coordPair))
+  return degreesToArrow(math.vectorToDegrees(coordPair))
 }
 
 function percentToTextBars(

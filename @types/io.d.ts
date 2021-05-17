@@ -1,8 +1,8 @@
 interface IOServerEvents {
-  ['connect']: () => void
-  ['disconnect']: () => void
+  [`connect`]: () => void
+  [`disconnect`]: () => void
   [`hello`]: () => void
-  ['game:tick']: ({
+  [`game:tick`]: ({
     deltaTime,
     game,
   }: {
@@ -11,7 +11,7 @@ interface IOServerEvents {
   }) => void
   [`crew:tired`]: (crewMember: CrewMemberStub) => void
   [`ship:die`]: (ship: ShipStub) => void
-  ['ship:update']: ({
+  [`ship:update`]: ({
     id,
     props,
   }: {
@@ -32,21 +32,21 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 
-  // Client
+  // client
 
-  ['god']: () => void
+  [`god`]: () => void
   [`ship:listen`]: (
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:unlisten`]: (id: string) => void
 
-  ['crew:move']: (
+  [`crew:move`]: (
     shipId: string,
     crewId: string,
     target: CrewLocation,
   ) => void
-  ['crew:targetLocation']: (
+  [`crew:targetLocation`]: (
     shipId: string,
     crewId: string,
     targetLocation: CoordinatePair,
@@ -73,10 +73,14 @@ interface IOClientEvents {
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
 
-  // Discord
-  ['discord']: () => void
+  // discord
+  [`discord`]: () => void
   [`ship:create`]: (
     data: BaseHumanShipData,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:respawn`]: (
+    id: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 

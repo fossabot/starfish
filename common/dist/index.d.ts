@@ -19,12 +19,13 @@ declare const _default: {
     degreesToUnitVector: (degrees: number) => CoordinatePair;
     unitVectorFromThisPointToThatPoint: (thisPoint: CoordinatePair, thatPoint: CoordinatePair) => CoordinatePair;
     pointIsInsideCircle: (center: CoordinatePair, point: CoordinatePair, radius: number) => boolean;
-    coordPairToDegrees: (coordPair: CoordinatePair) => number;
+    vectorToDegrees: (coordPair: CoordinatePair) => number;
     coordPairToRadians: (coordPair: CoordinatePair) => number;
     vectorToMagnitude: (vector: CoordinatePair) => number;
     GAME_NAME: string;
     TICK_INTERVAL: number;
     deltaTime: number;
+    levels: number[];
 };
 export default _default;
 //# sourceMappingURL=index.d.ts.map

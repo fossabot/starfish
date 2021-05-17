@@ -1,19 +1,28 @@
 <template>
-  <div class="member box">
-    <h4>{{ crewMember.name }}</h4>
-
+  <div class="member">
     <div class="box">
-      <div>Location: {{ crewMember.location }}</div>
-    </div>
+      <h4>{{ crewMember.name }}</h4>
 
-    <div class="box">
-      <div>
-        Stamina:
-        {{ Math.round(crewMember.stamina * 1000) / 1000 }}
+      <div class="box">
+        <div>Location: {{ crewMember.location }}</div>
       </div>
-    </div>
 
-    <div class="box">
+      <ProgressBar
+        :percent="
+          crewMember.stamina / crewMember.maxStamina
+        "
+      >
+        <div>
+          Stamina:
+          {{ Math.round(crewMember.stamina * 1000) / 1000 }}
+          /
+          {{
+            Math.round(crewMember.maxStamina * 1000) / 1000
+          }}
+        </div>
+      </ProgressBar>
+
+      <!-- <div class="box">
       <b>Go to</b>
       <div>
         <span
@@ -27,11 +36,12 @@
           </button>
         </span>
       </div>
+    </div> -->
+
+      <ShipMemberInventory />
+
+      <ShipMemberSkills />
     </div>
-
-    <ShipMemberInventory />
-
-    <ShipMemberSkills />
   </div>
 </template>
 
@@ -57,5 +67,10 @@ export default {
 <style lang="scss" scoped>
 .member {
   position: relative;
+  grid-column: span 2;
+  width: 250px;
+}
+.box {
+  width: 100%;
 }
 </style>

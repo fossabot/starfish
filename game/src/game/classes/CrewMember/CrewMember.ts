@@ -1,9 +1,11 @@
 import c from '../../../../../common/dist'
 import { io, stubify } from '../../../server/io'
+import * as roomActions from './addins/rooms'
 import { HumanShip } from '../Ship/HumanShip'
 
 export class CrewMember {
   static readonly passiveStaminaLossPerSecond = 0.0001
+  static readonly levelXPNumbers = c.levels
 
   readonly id: string
   readonly ship: HumanShip
@@ -26,11 +28,10 @@ export class CrewMember {
     this.inventory = data.inventory || []
     this.credits = data.credits || 10
     this.skills = data.skills || [
-      { skill: 'stamina', level: 1, xp: 0 },
-      { skill: 'piloting', level: 1, xp: 0 },
-      { skill: 'munitions', level: 1, xp: 0 },
-      { skill: 'mechanics', level: 1, xp: 0 },
-      { skill: 'linguistics', level: 1, xp: 0 },
+      { skill: `piloting`, level: 1, xp: 0 },
+      { skill: `munitions`, level: 1, xp: 0 },
+      { skill: `mechanics`, level: 1, xp: 0 },
+      { skill: `linguistics`, level: 1, xp: 0 },
     ]
   }
 
@@ -39,27 +40,27 @@ export class CrewMember {
   }
 
   goTo(location: CrewLocation) {
-    if (this.location === 'cockpit')
-      this.targetLocation = null
+    // if (this.location === `cockpit`)
+    //   this.targetLocation = null
     this.location = location
     this.lastActive = Date.now()
   }
 
+  cockpitAction = roomActions.cockpit
+  repairAction = roomActions.repair
+  weaponsAction = roomActions.weapons
+  bunkAction = roomActions.bunk
+
   tick() {
     // ----- test notify listeners -----
     io.to(`ship:${this.ship.id}`).emit(
-      'crew:tired',
+      `crew:tired`,
       stubify<CrewMember, CrewMemberStub>(this),
     )
 
     // ----- bunk -----
     if (this.location === `bunk`) {
-      this.stamina +=
-        (c.deltaTime / 1000 / 60 / 60) *
-        this.staminaRefillPerHour
-
-      if (this.stamina > this.maxStamina)
-        this.stamina = this.maxStamina
+      this.bunkAction()
       return
     }
 
@@ -71,11 +72,11 @@ export class CrewMember {
       (c.deltaTime / 1000)
     if (this.tired) {
       this.stamina = 0
-      this.goTo('bunk')
+      this.goTo(`bunk`)
 
       // ----- notify listeners -----
       io.to(`ship:${this.ship.id}`).emit(
-        'crew:tired',
+        `crew:tired`,
         stubify<CrewMember, CrewMemberStub>(this),
       )
 
@@ -83,34 +84,32 @@ export class CrewMember {
     }
 
     // ----- cockpit -----
-    if (this.location === `cockpit`) {
-      if (
-        this.ship.canMove &&
-        this.targetLocation &&
-        !this.ship.isAt(this.targetLocation)
-      )
-        this.addXp('piloting')
-    }
-
+    if (this.location === `cockpit`) this.cockpitAction()
     // ----- repair -----
-    else if (this.location === `repair`) {
-      this.addXp('mechanics')
-    }
-
+    else if (this.location === `repair`) this.repairAction()
     // ----- weapons -----
-    else if (this.location === `weapons`) {
-      this.addXp('munitions')
-    }
+    else if (this.location === `weapons`)
+      this.weaponsAction()
   }
 
   addXp(skill: SkillName, xp?: number) {
     if (!xp) xp = c.deltaTime / 1000
-    const skillElement = this.skills.find(
+    let skillElement = this.skills.find(
       (s) => s.skill === skill,
     )
-    if (!skillElement)
-      this.skills.push({ skill, level: 1, xp })
-    else skillElement.xp += xp
+    if (!skillElement) {
+      const index = this.skills.push({
+        skill,
+        level: 1,
+        xp,
+      })
+      skillElement = this.skills[index - 1]
+    } else skillElement.xp += xp
+
+    skillElement.level =
+      CrewMember.levelXPNumbers.findIndex(
+        (l) => (skillElement?.xp || 0) <= l,
+      )
   }
 
   get tired() {
@@ -118,13 +117,28 @@ export class CrewMember {
   }
 
   get maxStamina() {
-    return (
-      this.skills?.find((s) => s.skill === `stamina`)
-        ?.level || 1
-    )
+    return 1
   }
 
   get staminaRefillPerHour() {
     return 0.3
+  }
+
+  get piloting() {
+    return this.skills.find((s) => s.skill === `piloting`)
+  }
+
+  get linguistics() {
+    return this.skills.find(
+      (s) => s.skill === `linguistics`,
+    )
+  }
+
+  get munitions() {
+    return this.skills.find((s) => s.skill === `munitions`)
+  }
+
+  get mechanics() {
+    return this.skills.find((s) => s.skill === `mechanics`)
   }
 }

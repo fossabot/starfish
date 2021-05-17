@@ -6,14 +6,13 @@ import {
   attack,
   takeDamage,
   canAttack,
-  die,
 } from './addins/combat'
+import { io, stubify } from '../../../server/io'
 
 export class CombatShip extends Ship {
   attackable = true
-  hp = 10
 
-  get attackRange(): number {
+  attackRange(): number {
     return this.weapons.reduce(
       (highest: number, curr: Weapon): number =>
         Math.max(curr.range, highest),
@@ -21,17 +20,18 @@ export class CombatShip extends Ship {
     )
   }
 
-  get availableWeapons(): Weapon[] {
+  availableWeapons(): Weapon[] {
     const now = Date.now()
     return this.weapons.filter(
-      (w) => now - w.lastUse > w.cooldownInMs,
+      (w) => now - w.lastUse > w.baseCooldown,
     )
   }
 
-  get enemiesInAttackRange(): CombatShip[] {
+  enemiesInAttackRange(): CombatShip[] {
     const allShipsInRange = this.game.scanCircle(
       this.location,
-      this.attackRange,
+      this.attackRange(),
+      this.id,
       `ship`,
     ).ships
     const combatShipsInRange = allShipsInRange.filter(
@@ -42,12 +42,7 @@ export class CombatShip extends Ship {
     )
   }
 
-  get alive(): boolean {
-    return this.hp >= 0
-  }
-
   attack = attack
   takeDamage = takeDamage
   canAttack = canAttack
-  die = die
 }

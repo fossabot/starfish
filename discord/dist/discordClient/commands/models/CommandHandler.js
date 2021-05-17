@@ -11,12 +11,16 @@ const ship_1 = require("../../../ioInterface/ship");
 const Start_1 = require("../Start");
 const Invite_1 = require("../Invite");
 const Link_1 = require("../Link");
+const Join_1 = require("../Join");
+const Respawn_1 = require("../Respawn");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
             Start_1.StartCommand,
             Invite_1.InviteCommand,
             Link_1.LinkCommand,
+            Join_1.JoinCommand,
+            Respawn_1.RespawnCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         // this.commands.push(new HelpCommand(this.commands))

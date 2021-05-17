@@ -7,7 +7,15 @@ class Weapon extends Item_1.Item {
         super(data, ship);
         this.lastUse = 0;
         this.range = data.range;
-        this.cooldownInMs = data.cooldownInMs;
+        this.damage = data.damage;
+        this.baseCooldown = data.baseCooldown;
+        this.cooldownRemaining = data.baseCooldown;
+    }
+    use() {
+        super.use();
+        this.repair -= 0.01;
+        this.lastUse = Date.now();
+        this.cooldownRemaining = this.baseCooldown;
     }
 }
 exports.Weapon = Weapon;

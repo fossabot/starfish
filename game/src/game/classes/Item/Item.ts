@@ -19,4 +19,8 @@ export class Item {
     this.repair = repair ?? 1
     this.ship = ship
   }
+
+  use() {
+    this.repair -= 0.00005
+  }
 }

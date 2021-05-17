@@ -8,6 +8,8 @@ import { get } from '../../../ioInterface/ship'
 import { StartCommand } from '../Start'
 import { InviteCommand } from '../Invite'
 import { LinkCommand } from '../Link'
+import { JoinCommand } from '../Join'
+import { RespawnCommand } from '../Respawn'
 
 export class CommandHandler {
   private commands: Command[]
@@ -19,6 +21,8 @@ export class CommandHandler {
       StartCommand,
       InviteCommand,
       LinkCommand,
+      JoinCommand,
+      RespawnCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -72,9 +76,8 @@ export class CommandHandler {
     commandContext.crewMember = crewMember
 
     // check run permissions and get error message if relevant
-    const permissionRes = matchedCommand.hasPermissionToRun(
-      commandContext,
-    )
+    const permissionRes =
+      matchedCommand.hasPermissionToRun(commandContext)
     if (permissionRes !== true) {
       await message.channel.send(permissionRes)
       await reactor.failure(message)

@@ -9,8 +9,9 @@ const CombatShip_1 = require("./CombatShip");
 class AIShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
-        this.obeysGravity = false;
         this.human = false;
+        this.level = 1;
+        this.obeysGravity = false;
         if (data.id)
             this.id = data.id;
         else
@@ -21,16 +22,18 @@ class AIShip extends CombatShip_1.CombatShip {
     tick() {
         super.tick();
         // attack human in range
-        const weapons = this.availableWeapons;
-        if (!weapons)
+        const weapons = this.availableWeapons();
+        if (!weapons.length)
             return;
-        const enemies = this.enemiesInAttackRange;
+        const enemies = this.enemiesInAttackRange();
         if (enemies.length) {
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const randomWeapon = dist_1.default.randomFromArray(weapons);
-            dist_1.default.log(weapons.length, !!randomWeapon);
             this.attack(randomEnemy, randomWeapon);
         }
+    }
+    cumulativeSkillIn(l, s) {
+        return this.level;
     }
 }
 exports.AIShip = AIShip;

@@ -23,18 +23,22 @@ export declare class Ship {
         caches: Cache[];
         attackRemnants: AttackRemnant[];
     };
+    readonly seenPlanets: Planet[];
     readonly weapons: Weapon[];
     readonly engines: Engine[];
     readonly previousLocations: CoordinatePair[];
     id: string;
     location: CoordinatePair;
     velocity: CoordinatePair;
+    speed: number;
+    direction: number;
     human: boolean;
     attackable: boolean;
+    _hp: number;
+    _maxHp: number;
     dead: boolean;
-    hp: number;
     obeysGravity: boolean;
-    constructor({ name, planet, faction, loadout }: BaseShipData, game: Game);
+    constructor({ name, faction, loadout, seenPlanets, location, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     get items(): Item[];
@@ -42,7 +46,7 @@ export declare class Ship {
     addEngine: typeof addEngine;
     removeItem: typeof removeItem;
     equipLoadout: typeof equipLoadout;
-    get sightRange(): number;
+    sightRadius: number;
     lastMoveAngle: number;
     get canMove(): boolean;
     move: typeof move;
@@ -50,7 +54,10 @@ export declare class Ship {
     isAt: typeof isAt;
     applyTickOfGravity: typeof applyTickOfGravity;
     membersIn(l: CrewLocation): CrewMember[];
+    cumulativeSkillIn(l: CrewLocation, s: SkillName): number;
     canAttack(s: CombatShip): boolean;
-    get alive(): boolean;
+    get hp(): number;
+    set hp(newValue: number);
+    respawn(): void;
 }
 //# sourceMappingURL=Ship.d.ts.map

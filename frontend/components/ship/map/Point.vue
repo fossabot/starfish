@@ -7,25 +7,31 @@
   >
     <circle
       v-if="circle"
-      :cx="location[0]"
-      :cy="location[1]"
+      :cx="location[0] * FLAT_SCALE"
+      :cy="location[1] * FLAT_SCALE"
       :r="scaledRadius"
       :fill="color || 'white'"
     />
     <rect
       v-else
-      :x="location[0] - scaledRadius"
-      :y="location[1] - scaledRadius"
+      :x="location[0] * FLAT_SCALE - scaledRadius"
+      :y="location[1] * FLAT_SCALE - scaledRadius"
       :width="scaledRadius * 2"
       :height="scaledRadius * 2"
       :fill="color || 'white'"
     />
     <text
       v-if="label"
-      :x="location[0]"
-      :y="location[1] + scaledRadius * -1 - 0.03"
+      :x="location[0] * FLAT_SCALE"
+      :y="
+        location[1] * FLAT_SCALE +
+          scaledRadius * -1 -
+          view.height * 0.005
+      "
       text-anchor="middle"
-      :font-size="0.03 / zoom"
+      :font-size="
+        (0.05 * FLAT_SCALE * containerSizeMultiplier) / zoom
+      "
       :fill="color || 'white'"
     >
       {{ label }}
@@ -41,6 +47,9 @@ interface ComponentShape {
 
 export default {
   props: {
+    containerSizeMultiplier: {},
+    view: {},
+    FLAT_SCALE: {},
     location: {},
     radius: { default: 0.00001 },
     minSize: { default: 3 },
@@ -54,9 +63,12 @@ export default {
     return {}
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState([]),
     scaledRadius(this: ComponentShape) {
-      return Math.max(this.minSize / this.zoom, this.radius)
+      return (
+        Math.max(this.minSize / this.zoom, this.radius) *
+        this.FLAT_SCALE
+      )
     },
   },
   watch: {},
@@ -66,17 +78,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-g {
-  position: relative;
-}
-text {
-  text-transform: uppercase;
-  font-weight: bold;
-  opacity: 0.5;
-}
-</style>
-
-<style>
 g {
   position: relative;
 }

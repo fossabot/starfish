@@ -2,13 +2,19 @@
   <div class="cockpit box">
     <div>
       Target destination:
-      {{ crewMember.targetLocation || 'none' }}
+      {{
+        crewMember.targetLocation
+          ? crewMember.targetLocation.map(
+              (tl) => Math.round(tl * 10000) / 10000,
+            )
+          : 'none'
+      }}
     </div>
 
-    <div v-if="ship.visible.planets.length">
+    <div v-if="planetsToShow.length">
       <h5>Planets</h5>
       <div
-        v-for="planet in ship.visible.planets"
+        v-for="planet in planetsToShow"
         :key="'gotoplanet' + planet.name"
       >
         <button @click="setTarget(planet.location)">
@@ -61,6 +67,14 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    planetsToShow(this: ComponentShape) {
+      const p = [...(this.ship.visible.planets || [])]
+      for (let seen of this.ship.seenPlanets) {
+        if (!p.find((pl) => pl.name === seen.name))
+          p.push(seen)
+      }
+      return p
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},
@@ -69,18 +83,7 @@ export default {
       this: ComponentShape,
       target: CoordinatePair,
     ) {
-      if (!this.crewMember) return
-      const updates: Partial<ShipStub> = {
-        id: this.crewMember.id,
-        targetLocation: target,
-      }
-      this.$store.commit('updateACrewMember', updates)
-      this.$socket?.emit(
-        'crew:targetLocation',
-        this.ship.id,
-        this.crewMember.id,
-        target,
-      )
+      this.$store.commit('setTarget', target)
     },
   },
 }

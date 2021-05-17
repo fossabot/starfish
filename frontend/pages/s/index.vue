@@ -1,26 +1,32 @@
 <template>
   <div>
-    <div class="container" v-if="ship && crewMember">
-      <Ship />
+    <div
+      class="container"
+      ref="container"
+      v-if="ship && crewMember && !ship.dead"
+    >
+      <Ship class="grid-item" />
 
-      <ShipMap />
-      <ShipVisible />
+      <ShipMapPlayermap class="grid-item" />
+      <ShipVisible class="grid-item" />
 
-      <ShipPlanet v-if="ship.planet" />
+      <ShipPlanet v-if="ship.planet" class="grid-item" />
 
-      <ShipMember />
-      <ShipRoom />
+      <ShipMember class="grid-item" />
+      <ShipDiagram class="grid-item" />
+      <ShipRoom class="grid-item" />
 
-      <!-- <CanvasTest /> -->
-      <!-- <SvgTest /> -->
-      <!-- <FabricTest /> -->
-      <!-- <CanvasObject /> -->
-
-      <br />
-      <br />
-
-      <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
+      <ShipItems class="grid-item" />
+      <ShipCrewRank class="grid-item" />
     </div>
+    <div class="box" v-if="ship && ship.dead">
+      <h5>U dead</h5>
+    </div>
+
+    <pre v-if="ship">{{
+      JSON.stringify(ship, null, 2)
+    }}</pre>
+
     <div class="box" v-if="!ship || !crewMember">
       No ship found by the ID(s) you have saved! Try logging
       out and back in. If that doesn't fix it, please reach
@@ -49,6 +55,9 @@ export default {
       'shipIds',
       'crewMember',
     ]),
+    planet(this: ComponentShape) {
+      return this.ship?.planet
+    },
   },
 
   watch: {
@@ -60,6 +69,12 @@ export default {
     currentShipIndex(this: ComponentShape) {
       this.changeShip(this.currentShipIndex)
     },
+    ship() {
+      this.resetMasonry()
+    },
+    planet() {
+      this.resetMasonry()
+    },
   },
 
   mounted(this: ComponentShape) {
@@ -68,6 +83,7 @@ export default {
       return
     }
     this.changeShip(this.currentShipIndex)
+    this.$nextTick(this.resetMasonry)
   },
 
   methods: {
@@ -81,8 +97,57 @@ export default {
           this.shipIds[index],
         )
     },
+    async resetMasonry(this: ComponentShape) {
+      await this.$nextTick()
+      if (
+        !this.$refs.container ||
+        !this.$masonry ||
+        !window
+      )
+        return setTimeout(this.resetMasonry, 500)
+      new this.$masonry(this.$refs.container, {
+        itemSelector: '.grid-item',
+        columnWidth: 1,
+        gutter: 10,
+        fitWidth: true,
+        transitionDuration: 0,
+      })
+
+      setTimeout(
+        () =>
+          new this.$masonry(this.$refs.container, {
+            itemSelector: '.grid-item',
+            columnWidth: 1,
+            gutter: 10,
+            fitWidth: true,
+            transitionDuration: 0,
+          }),
+        1000,
+      )
+
+      setTimeout(
+        () =>
+          new this.$masonry(this.$refs.container, {
+            itemSelector: '.grid-item',
+            columnWidth: 1,
+            gutter: 0,
+            fitWidth: true,
+            transitionDuration: 0,
+          }),
+        2000,
+      )
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  position: relative;
+  margin: 2em auto;
+
+  .grid-item {
+    margin-bottom: 0px;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="bunk box">
-    zzzzzzzz.....
+    <div>zzzzzzzz.....</div>
   </div>
 </template>
 

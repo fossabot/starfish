@@ -2,7 +2,7 @@ declare function lerp(v0: number, v1: number, t: number): number;
 declare function radiansToDegrees(radians: number): number;
 declare function degreesToRadians(degrees: number): number;
 declare function coordPairToRadians(coordPair: CoordinatePair): number;
-declare function coordPairToDegrees(coordPair: CoordinatePair): number;
+declare function vectorToDegrees(coordPair: CoordinatePair): number;
 declare function distance(a: CoordinatePair, b: CoordinatePair): number;
 declare function angleFromAToB(a: CoordinatePair, b: CoordinatePair): number;
 declare function degreesToUnitVector(degrees: number): CoordinatePair;
@@ -18,7 +18,7 @@ declare const _default: {
     degreesToUnitVector: typeof degreesToUnitVector;
     unitVectorFromThisPointToThatPoint: typeof unitVectorFromThisPointToThatPoint;
     pointIsInsideCircle: typeof pointIsInsideCircle;
-    coordPairToDegrees: typeof coordPairToDegrees;
+    vectorToDegrees: typeof vectorToDegrees;
     coordPairToRadians: typeof coordPairToRadians;
     vectorToMagnitude: typeof vectorToMagnitude;
 };

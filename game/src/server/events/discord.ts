@@ -9,7 +9,7 @@ import { CombatShip } from '../../game/classes/Ship/CombatShip'
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
-  socket.on('discord', () => {
+  socket.on(`discord`, () => {
     c.log(`Discord process connected to io`)
     socket.join([`discord`])
   })
@@ -27,11 +27,32 @@ export default function (
         data: stub,
       })
     } else {
-      const ship = game.addHumanShip(data)
+      const ship = game.addHumanShip({
+        ...data,
+        loadout: `human_default`,
+      })
       const stub = stubify<Ship, ShipStub>(ship)
       callback({
         data: stub,
       })
     }
+  })
+
+  socket.on(`ship:respawn`, (id, callback) => {
+    const foundShip = game.ships.find((s) => s.id === id)
+    if (!foundShip) {
+      callback({ error: `That ship doesn't exist yet!` })
+      return
+    }
+    if (!foundShip.dead) {
+      callback({ error: `That ship isn't dead!` })
+      return
+    }
+
+    foundShip.respawn()
+    const stub = stubify<Ship, ShipStub>(foundShip)
+    callback({
+      data: stub,
+    })
   })
 }

@@ -7,7 +7,7 @@ const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
 const io_1 = require("../io");
 function default_1(socket) {
-    socket.on('discord', () => {
+    socket.on(`discord`, () => {
         dist_1.default.log(`Discord process connected to io`);
         socket.join([`discord`]);
     });
@@ -21,12 +21,31 @@ function default_1(socket) {
             });
         }
         else {
-            const ship = __1.game.addHumanShip(data);
+            const ship = __1.game.addHumanShip({
+                ...data,
+                loadout: `human_default`,
+            });
             const stub = io_1.stubify(ship);
             callback({
                 data: stub,
             });
         }
+    });
+    socket.on(`ship:respawn`, (id, callback) => {
+        const foundShip = __1.game.ships.find((s) => s.id === id);
+        if (!foundShip) {
+            callback({ error: `That ship doesn't exist yet!` });
+            return;
+        }
+        if (!foundShip.dead) {
+            callback({ error: `That ship isn't dead!` });
+            return;
+        }
+        foundShip.respawn();
+        const stub = io_1.stubify(foundShip);
+        callback({
+            data: stub,
+        });
     });
 }
 exports.default = default_1;

@@ -4,6 +4,8 @@ import { Game } from '../Game'
 import { CombatShip } from './Ship/CombatShip'
 
 export class AttackRemnant {
+  static readonly expireTime = 1000 * 60 * 60 * 1
+
   readonly attacker: CombatShip
   readonly defender: CombatShip
   readonly damageTaken: TakenDamageResult

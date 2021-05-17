@@ -12,10 +12,14 @@
     >
       <ShipMapPoint
         :location="location"
-        :minSize="minSizeAdjustedForActualSize * 4"
+        :minSize="minSizeAdjustedForActualSize * 8"
         :radius="radius * 4"
         :color="`url('#${name}')`"
         :z="1"
+        :zoom="zoom"
+        :view="view"
+        :FLAT_SCALE="FLAT_SCALE"
+        :containerSizeMultiplier="containerSizeMultiplier"
       />
     </g>
 
@@ -27,8 +31,11 @@
       :label="name"
       :z="2"
       :zoom="zoom"
+      :view="view"
+      :FLAT_SCALE="FLAT_SCALE"
       @enter="enter"
       @leave="leave"
+      :containerSizeMultiplier="containerSizeMultiplier"
     />
   </g>
 </template>
@@ -41,26 +48,32 @@ interface ComponentShape {
 
 export default {
   props: {
+    containerSizeMultiplier: {},
+    view: {},
+    FLAT_SCALE: {},
     zoom: {},
     location: {},
     radius: { default: 0.000001 },
-    minSize: { default: 0.001 },
+    minSize: { default: 0.007 },
     color: {},
     name: {},
   },
   data(): ComponentShape {
-    return { hovering: false }
+    return {
+      hovering: false,
+      earthRadiusInAU: 6371 / 149597900,
+    }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState([]),
     minSizeAdjustedForActualSize(this: ComponentShape) {
-      const earthRadiusInAU = 6371 / 149597900
       return (
-        (((this.radius - earthRadiusInAU) /
-          earthRadiusInAU) *
+        (((this.radius - this.earthRadiusInAU) /
+          this.earthRadiusInAU) *
           0.5 +
           1) *
-        this.minSize
+        this.minSize *
+        this.containerSizeMultiplier
       )
     },
   },
