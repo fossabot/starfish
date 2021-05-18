@@ -1,7 +1,7 @@
 "use strict";
 // const path = require(`path`)
 Object.defineProperty(exports, "__esModule", { value: true });
-const fillCharacter = '.';
+const fillCharacter = `.`;
 let longest = 0;
 const reset = `\x1b[0m`, dim = `\x1b[2m`, bright = `\x1b[1m`;
 const colors = {
@@ -27,9 +27,9 @@ const mainDirs = [
 ];
 const log = (...args) => {
     const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(`${new Error().stack}`);
-    const fullPath = regexResult?.[1] || '';
+    const fullPath = regexResult?.[1] || ``;
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
-    const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, '') || '';
+    const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``;
     for (let index = 0; index < args.length; index++) {
         const arg = args[index];
         if (arg in colors) {
@@ -52,13 +52,13 @@ const log = (...args) => {
         }
     }
     let mainDirColor = !mainDir
-        ? ''
+        ? ``
         : Object.values(dirColors)[mainDir
-            .split('')
+            .split(``)
             .map((c) => c.charCodeAt(0))
             .reduce((total, curr) => curr + total, 0) %
             Object.values(dirColors).length];
-    let prefix = reset +
+    let prefix = String(reset +
         dim +
         `[${new Date().toLocaleTimeString(undefined, {
             hour12: false,
@@ -71,10 +71,9 @@ const log = (...args) => {
                 mainDir +
                 colors.white +
                 dim +
-                ':'
-            : '') +
-        pathName +
-        ``;
+                `:`
+            : ``) +
+        pathName);
     if (prefix.length > longest)
         longest = prefix.length;
     prefix = prefix.padEnd(longest, fillCharacter) + reset;

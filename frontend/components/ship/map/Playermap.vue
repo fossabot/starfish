@@ -1,10 +1,15 @@
 <template>
-  <div class="box">
-    <ShipMap
-      :data="data"
-      @mouseup="$store.commit('setTarget', arguments[0])"
-    />
-  </div>
+  <Box class="map">
+    <template #title>
+      <span class="sectionemoji">🗺</span>Area Scan
+    </template>
+    <div class="panesection pad-none">
+      <ShipMap
+        :data="data"
+        @mouseup="$store.commit('setTarget', arguments[0])"
+      />
+    </div>
+  </Box>
 </template>
 
 <script lang="ts">
@@ -62,11 +67,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div {
-  padding: 0;
+.panesection {
   width: 500px;
-  grid-column: span 3;
-  position: relative;
-  display: inline-flex;
 }
 </style>

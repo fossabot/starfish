@@ -12,10 +12,10 @@ class Weapon extends Item_1.Item {
         this.cooldownRemaining = data.baseCooldown;
     }
     use() {
-        super.use();
         this.repair -= 0.01;
         this.lastUse = Date.now();
         this.cooldownRemaining = this.baseCooldown;
+        super.use();
     }
 }
 exports.Weapon = Weapon;

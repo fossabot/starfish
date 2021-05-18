@@ -25,7 +25,7 @@ exports.io.on(`connection`, (socket) => {
     combat_1.default(socket);
     crew_1.default(socket);
 });
-function stubify(prop) {
+function stubify(prop, disallowPropName) {
     const gettersIncluded = { ...prop };
     const proto = Object.getPrototypeOf(prop);
     const getKeyValue = (key) => (obj) => obj[key];
@@ -39,16 +39,25 @@ function stubify(prop) {
     const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
         if ([`toUpdate`].includes(key))
             return;
-        if ([`game`, `ship`, `attacker`, `defender`].includes(key))
-            return value.id;
+        if ([
+            `game`,
+            `ship`,
+            `attacker`,
+            `defender`,
+            `crewMember`,
+        ].includes(key))
+            return value?.id || null;
+        if (disallowPropName?.includes(key))
+            return value?.id || null;
         if ([`ships`].includes(key) && Array.isArray(value))
-            return value.map((v) => stubify({
-                ...v,
-                visible: null,
-            }));
+            return value.map((v) => stubify(v, [
+                `visible`,
+                `seenPlanets`,
+                `enemiesInAttackRange`,
+            ]));
         return value;
     }));
-    circularReferencesRemoved.lastUpdated = Date.now();
+    // circularReferencesRemoved.lastUpdated = Date.now()
     return circularReferencesRemoved;
 }
 exports.stubify = stubify;

@@ -25,8 +25,14 @@ export const game = new Game()
 //   ],
 // })
 
-const ai1 = game.addAIShip({
+game.addAIShip({
   name: `ai1`,
   loadout: `ai_default`,
   location: [-0.5, 0.2] as CoordinatePair,
+})
+
+game.addAIShip({
+  name: `ai2`,
+  loadout: `ai_default`,
+  location: [0.5, 0.2] as CoordinatePair,
 })

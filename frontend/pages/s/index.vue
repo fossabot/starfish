@@ -1,6 +1,8 @@
 <template>
   <div>
+    <Starfield />
     <div
+      id="masonrycontainer"
       class="container"
       ref="container"
       v-if="ship && crewMember && !ship.dead"
@@ -28,9 +30,10 @@
     }}</pre>
 
     <div class="box" v-if="!ship || !crewMember">
-      No ship found by the ID(s) you have saved! Try logging
-      out and back in. If that doesn't fix it, please reach
-      out on the support server.
+      No ship found by the ID(s) you have saved! If you're
+      sure that your server still has a ship in the game,
+      try logging out and back in. If that doesn't fix it,
+      please reach out on the support server.
     </div>
   </div>
 </template>
@@ -58,6 +61,9 @@ export default {
     planet(this: ComponentShape) {
       return this.ship?.planet
     },
+    room(this: ComponentShape) {
+      return this.crewMember?.location
+    },
   },
 
   watch: {
@@ -73,6 +79,9 @@ export default {
       this.resetMasonry()
     },
     planet() {
+      this.resetMasonry()
+    },
+    room() {
       this.resetMasonry()
     },
   },
@@ -105,36 +114,33 @@ export default {
         !window
       )
         return setTimeout(this.resetMasonry, 500)
-      new this.$masonry(this.$refs.container, {
+      new this.$masonry('#masonrycontainer', {
         itemSelector: '.grid-item',
         columnWidth: 1,
-        gutter: 10,
+        gutter: 0,
         fitWidth: true,
-        transitionDuration: 0,
       })
 
       setTimeout(
         () =>
-          new this.$masonry(this.$refs.container, {
-            itemSelector: '.grid-item',
-            columnWidth: 1,
-            gutter: 10,
-            fitWidth: true,
-            transitionDuration: 0,
-          }),
-        1000,
-      )
-
-      setTimeout(
-        () =>
-          new this.$masonry(this.$refs.container, {
+          new this.$masonry('#masonrycontainer', {
             itemSelector: '.grid-item',
             columnWidth: 1,
             gutter: 0,
             fitWidth: true,
-            transitionDuration: 0,
           }),
-        2000,
+        500,
+      )
+
+      setTimeout(
+        () =>
+          new this.$masonry('#masonrycontainer', {
+            itemSelector: '.grid-item',
+            columnWidth: 1,
+            gutter: 0,
+            fitWidth: true,
+          }),
+        1000,
       )
     },
   },

@@ -2,6 +2,8 @@ import c from '../../../../../common/dist'
 import { io, stubify } from '../../../server/io'
 import * as roomActions from './addins/rooms'
 import { HumanShip } from '../Ship/HumanShip'
+import { Active } from './Active'
+import { CombatShip } from '../Ship/CombatShip'
 
 export class CrewMember {
   static readonly passiveStaminaLossPerSecond = 0.0001
@@ -11,12 +13,16 @@ export class CrewMember {
   readonly ship: HumanShip
   name: string
   location: CrewLocation
-  skills: XPData[]
+  readonly skills: XPData[]
   stamina: number
   lastActive: number
   targetLocation: CoordinatePair | null = null
-  inventory: Cargo[]
+  tactic: Tactic = `defensive`
+  attackFactions: FactionKey[] = []
+  attackTarget: CombatShip | null = null
+  readonly inventory: Cargo[]
   credits: number
+  readonly actives: Active[]
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     this.id = data.id
@@ -33,6 +39,14 @@ export class CrewMember {
       { skill: `mechanics`, level: 1, xp: 0 },
       { skill: `linguistics`, level: 1, xp: 0 },
     ]
+    this.actives = []
+    if (data.actives)
+      for (let a of data.actives)
+        this.actives.push(new Active(a, this))
+
+    if (data.tactic) this.tactic = data.tactic
+    if (data.attackFactions)
+      this.attackFactions = data.attackFactions
   }
 
   rename(newName: string) {
@@ -40,8 +54,6 @@ export class CrewMember {
   }
 
   goTo(location: CrewLocation) {
-    // if (this.location === `cockpit`)
-    //   this.targetLocation = null
     this.location = location
     this.lastActive = Date.now()
   }
@@ -53,10 +65,21 @@ export class CrewMember {
 
   tick() {
     // ----- test notify listeners -----
+    // todo
     io.to(`ship:${this.ship.id}`).emit(
       `crew:tired`,
       stubify<CrewMember, CrewMemberStub>(this),
     )
+
+    // ----- reset attack target if out of vision range -----
+    if (
+      this.attackTarget &&
+      !this.ship.visible.ships.includes(this.attackTarget)
+    )
+      this.attackTarget = null
+
+    // ----- actives -----
+    this.actives.forEach((a) => a.tick())
 
     // ----- bunk -----
     if (this.location === `bunk`) {

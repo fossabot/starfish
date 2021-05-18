@@ -1,22 +1,34 @@
 <template>
   <div class="items" v-if="ship">
-    <div class="box">
-      <h4>Ship Equipment</h4>
+    <Box>
+      <template #title>
+        <span class="sectionemoji">🛠</span>Ship Equipment
+      </template>
 
-      <div class="box" v-if="ship.weapons">
+      <div class="panesection" v-if="ship.weapons">
         <h5>Weapons</h5>
         <div v-for="i in ship.weapons">
           {{ i.displayName }}
           <div>
-            <ProgressBar :percent="i.repair">
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
               <div>
-                Repair:
-                {{ Math.round(i.repair * 1000) / 10 }}%
+                HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 10) / 10
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
               </div>
             </ProgressBar>
           </div>
           <div>
             <ProgressBar
+              :mini="true"
               :percent="
                 (i.baseCooldown - i.cooldownRemaining) /
                   i.baseCooldown
@@ -39,21 +51,30 @@
         </div>
       </div>
 
-      <div class="box" v-if="ship.engines">
+      <div class="panesection" v-if="ship.engines">
         <h5>Engines</h5>
         <div v-for="i in ship.engines">
           {{ i.displayName }}
           <div>
-            <ProgressBar :percent="i.repair">
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
               <div>
-                Repair:
-                {{ Math.round(i.repair * 1000) / 10 }}%
+                HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 10) / 10
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
               </div>
             </ProgressBar>
           </div>
         </div>
       </div>
-    </div>
+    </Box>
   </div>
 </template>
 
@@ -78,12 +99,8 @@ export default {
 
 <style lang="scss" scoped>
 .items {
-  width: 200px;
+  width: 240px;
   position: relative;
   grid-column: span 2;
-}
-
-.box {
-  width: 100%;
 }
 </style>

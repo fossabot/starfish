@@ -19,9 +19,9 @@ export class Weapon extends Item {
   }
 
   use() {
-    super.use()
     this.repair -= 0.01
     this.lastUse = Date.now()
     this.cooldownRemaining = this.baseCooldown
+    super.use()
   }
 }

@@ -51,6 +51,16 @@ interface IOClientEvents {
     crewId: string,
     targetLocation: CoordinatePair,
   ) => void
+  [`crew:tactic`]: (
+    shipId: string,
+    crewId: string,
+    tactic: Tactic,
+  ) => void
+  [`crew:attackTarget`]: (
+    shipId: string,
+    crewId: string,
+    targetId: string,
+  ) => void
   [`crew:add`]: (
     shipId: string,
     data: BaseCrewMemberData,

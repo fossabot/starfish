@@ -14,6 +14,27 @@ export function move(
   ]
 
   const startingLocation = [...this.location]
+
+  if (toLocation) {
+    this.location = toLocation
+    this.speed = 0
+    this.velocity = [0, 0]
+    this.toUpdate.location = this.location
+    this.toUpdate.speed = this.speed
+    this.toUpdate.velocity = this.velocity
+
+    // ----- update planet -----
+    const previousPlanet = this.planet
+    this.planet =
+      this.game.planets.find((p) =>
+        this.isAt(p.location),
+      ) || false
+    if (previousPlanet !== this.planet)
+      this.toUpdate.planet = this.planet
+        ? stubify<Planet, PlanetStub>(this.planet)
+        : false
+  }
+
   const membersInCockpit = this.membersIn(`cockpit`)
   if (!this.canMove || !membersInCockpit.length) {
     this.speed = 0
@@ -22,6 +43,14 @@ export function move(
     this.toUpdate.velocity = this.velocity
     return
   }
+
+  const engineThrustMultiplier = this.engines
+    .filter((e) => e.repair > 0)
+    .reduce(
+      (total, e) =>
+        total + e.thrustAmplification * e.repair,
+      0,
+    )
 
   // ----- calculate new location based on target of each member in cockpit -----
   for (let member of membersInCockpit) {
@@ -40,17 +69,17 @@ export function move(
 
     this.engines.forEach((e) => e.use())
 
-    const unitVectorToTarget = c.degreesToUnitVector(
-      c.angleFromAToB(this.location, member.targetLocation),
-    )
-
     const skill =
       member.skills.find((s) => s.skill === `piloting`)
         ?.level || 1
-    const thrustMagnitude = c.lerp(
-      0.00001,
-      0.0001,
-      skill / 100,
+    const thrustMagnitude =
+      c.getThrustMagnitudeForSingleCrewMember(
+        skill,
+        engineThrustMultiplier,
+      )
+
+    const unitVectorToTarget = c.degreesToUnitVector(
+      c.angleFromAToB(this.location, member.targetLocation),
     )
 
     this.location[0] +=
@@ -86,27 +115,28 @@ export function move(
       : false
 
   // ----- add previousLocation -----
+  const lastPrevLoc =
+    this.previousLocations[
+      this.previousLocations.length - 1
+    ]
   const newAngle = c.angleFromAToB(
     this.location,
     previousLocation,
   )
-  if (Math.abs(newAngle - this.lastMoveAngle) > 8) {
-    const lastPrevLoc =
-      this.previousLocations[
-        this.previousLocations.length - 1
-      ]
-    if (
-      !lastPrevLoc ||
-      c.distance(this.location, lastPrevLoc) > 0.0001
-    ) {
-      this.previousLocations.push(previousLocation)
-      while (
-        this.previousLocations.length >
-        Ship.maxPreviousLocations
-      )
-        this.previousLocations.shift()
-      this.toUpdate.previousLocations =
-        this.previousLocations
+  if (!lastPrevLoc) {
+    if (Math.abs(newAngle - this.lastMoveAngle) > 8) {
+      if (
+        c.distance(this.location, lastPrevLoc) > 0.00001
+      ) {
+        this.previousLocations.push(previousLocation)
+        while (
+          this.previousLocations.length >
+          Ship.maxPreviousLocations
+        )
+          this.previousLocations.shift()
+        this.toUpdate.previousLocations =
+          this.previousLocations
+      }
     }
   }
   this.lastMoveAngle = newAngle

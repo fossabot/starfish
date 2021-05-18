@@ -26,13 +26,13 @@ exports.connected = exports.io = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const socket_io_client_1 = __importDefault(require("socket.io-client"));
 // connect to server
-const client = socket_io_client_1.default(`http://localhost:4200`);
+const client = socket_io_client_1.default(`http://game:4200`);
 exports.io = client.connect();
 exports.io.on(`connect`, () => {
     dist_1.default.log(`Connected to game server.`);
 });
 exports.io.on(`disconnect`, () => {
-    dist_1.default.log('red', `Lost connection to game server.`);
+    dist_1.default.log(`red`, `Lost connection to game server.`);
 });
 function connected() {
     return new Promise(async (resolve) => {
@@ -50,7 +50,7 @@ function connected() {
             }
             timeout++;
         }
-        dist_1.default.log('yellow', `Attempted to access game server io while socket was disconnected.`);
+        dist_1.default.log(`yellow`, `Attempted to access game server io while socket was disconnected.`);
         resolve(false);
     });
 }

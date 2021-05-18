@@ -1,5 +1,7 @@
 import * as roomActions from './addins/rooms';
 import { HumanShip } from '../Ship/HumanShip';
+import { Active } from './Active';
+import { CombatShip } from '../Ship/CombatShip';
 export declare class CrewMember {
     static readonly passiveStaminaLossPerSecond = 0.0001;
     static readonly levelXPNumbers: number[];
@@ -7,12 +9,16 @@ export declare class CrewMember {
     readonly ship: HumanShip;
     name: string;
     location: CrewLocation;
-    skills: XPData[];
+    readonly skills: XPData[];
     stamina: number;
     lastActive: number;
     targetLocation: CoordinatePair | null;
-    inventory: Cargo[];
+    tactic: Tactic;
+    attackFactions: FactionKey[];
+    attackTarget: CombatShip | null;
+    readonly inventory: Cargo[];
     credits: number;
+    readonly actives: Active[];
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): void;

@@ -19,7 +19,8 @@ function repair() {
         const amountToRepair = ((this.mechanics?.level || 1) * dist_1.default.deltaTime) /
             repairableItems.length /
             1000 /
-            100;
+            10000;
+        dist_1.default.log(amountToRepair);
         repairableItems.forEach((ri) => {
             ri.repair += amountToRepair;
             if (ri.repair > 1)
@@ -30,14 +31,15 @@ function repair() {
 }
 exports.repair = repair;
 function weapons() {
-    // todo auto attack in CombatShip based on crew's targets/strategies
-    // charge weapons
+    // ----- charge weapons -----
     const chargeableWeapons = this.ship.weapons.filter((w) => w.cooldownRemaining > 0);
     if (chargeableWeapons.length) {
         const amountToReduceCooldowns = ((this.munitions?.level || 1) * dist_1.default.deltaTime) /
             chargeableWeapons.length;
         chargeableWeapons.forEach((cw) => {
             cw.cooldownRemaining -= amountToReduceCooldowns;
+            if (cw.cooldownRemaining < 0)
+                cw.cooldownRemaining = 0;
         });
         this.addXp(`munitions`);
     }

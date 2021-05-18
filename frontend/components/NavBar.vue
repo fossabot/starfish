@@ -1,5 +1,5 @@
 <template>
-  <nav class="box">
+  <nav class="pad-pane">
     <nuxt-link to="/">Home</nuxt-link>
 
     <button v-if="userId" @click="logout">Log out</button>
@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-nav.box {
+nav {
   width: 100%;
   height: 3em;
   display: flex;

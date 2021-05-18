@@ -1,10 +1,10 @@
 <template>
-  <div class="bar">
+  <div class="progressbar" :class="{ mini }">
     <div class="bg"></div>
     <div
       class="fill"
       :style="{
-        width: percent * 100 + '%',
+        width: Math.min(percent, 1) * 100 + '%',
         background:
           percent <= dangerZone
             ? 'rgba(255,0,0,.4)'
@@ -12,7 +12,7 @@
       }"
     ></div>
     <div
-      class="label box"
+      class="label pad-pane"
       :style="{
         color:
           percent <= dangerZone
@@ -33,6 +33,7 @@ interface ComponentShape {
 
 export default {
   props: {
+    mini: {},
     percent: { default: 1 },
     color: { default: '#333' },
     dangerZone: { default: 0.2 },
@@ -50,11 +51,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bar {
+.progressbar {
+  width: 100%;
   position: relative;
-  padding: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  border: 1px solid var(--text);
+  border-bottom: 0;
+  box-shadow: 0 1px 0 0 var(--text), 0.5px 0 0 0 var(--text);
+
+  &.mini .label {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+  }
 
   .bg {
     position: absolute;

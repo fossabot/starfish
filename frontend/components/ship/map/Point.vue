@@ -21,7 +21,7 @@
       :fill="color || 'white'"
     />
     <text
-      v-if="label"
+      v-if="label && zoom > 1"
       :x="location[0] * FLAT_SCALE"
       :y="
         location[1] * FLAT_SCALE +

@@ -76,6 +76,7 @@ class Ship {
                 .filter((p) => p);
         if (loadout)
             this.equipLoadout(loadout);
+        this.hp = this.maxHp;
     }
     identify() {
         dist_1.default.log(`Ship: ${this.name} (${this.id}) at ${this.location}`);
@@ -92,7 +93,7 @@ class Ship {
             // todo alert ship
         }
         // ----- updates for frontend -----
-        this.toUpdate.visible = io_1.stubify(this.visible);
+        this.toUpdate.visible = io_1.stubify(this.visible, [`visible`, `seenPlanets`]);
         this.toUpdate.weapons = this.weapons.map((w) => io_1.stubify(w));
         this.toUpdate.engines = this.engines.map((e) => io_1.stubify(e));
         // ----- move -----
@@ -129,8 +130,14 @@ class Ship {
     canAttack(s) {
         return false;
     }
+    get maxHp() {
+        return this._maxHp;
+    }
+    recalculateMaxHp() {
+        this._maxHp = this.items.reduce((total, i) => i.maxHp + total, 0);
+    }
     get hp() {
-        return this._hp;
+        return this.items.reduce((total, i) => i.maxHp * i.repair + total, 0);
     }
     set hp(newValue) {
         this._hp = newValue;
@@ -139,24 +146,6 @@ class Ship {
         if (this._hp > this._maxHp)
             this._hp = this._maxHp;
         this.toUpdate._hp = this._hp;
-        const didDie = !this.dead && newValue <= 0;
-        if (didDie) {
-            // ----- notify listeners -----
-            io_1.io.to(`ship:${this.id}`).emit(`ship:die`, io_1.stubify(this));
-            this.dead = true;
-        }
-        else
-            this.dead = false;
-    }
-    respawn() {
-        this.hp = this._maxHp;
-        if (this.faction) {
-            this.location = [
-                ...(this.faction.homeworld?.location || [0, 0]),
-            ];
-        }
-        else
-            this.location = [0, 0];
     }
 }
 exports.Ship = Ship;

@@ -21,11 +21,13 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     tick() {
         super.tick();
+        // recharge weapons
+        this.weapons.forEach((w) => (w.cooldownRemaining -= dist_1.default.deltaTime * this.level));
         // attack human in range
         const weapons = this.availableWeapons();
         if (!weapons.length)
             return;
-        const enemies = this.enemiesInAttackRange();
+        const enemies = this.getEnemiesInAttackRange();
         if (enemies.length) {
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const randomWeapon = dist_1.default.randomFromArray(weapons);

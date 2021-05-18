@@ -6,6 +6,7 @@ import { stubify } from '../io'
 import { Ship } from '../../game/classes/Ship/Ship'
 import { HumanShip } from '../../game/classes/Ship/HumanShip'
 import { CrewMember } from '../../game/classes/CrewMember/CrewMember'
+import { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -90,6 +91,49 @@ export default function (
         shipId,
         `targetLocation to`,
         targetLocation,
+      )
+    },
+  )
+
+  socket.on(`crew:tactic`, (shipId, crewId, tactic) => {
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship) return
+    const crewMember = ship.crewMembers?.find(
+      (cm) => cm.id === crewId,
+    )
+    if (!crewMember) return
+
+    crewMember.tactic = tactic
+    c.log(`Set`, crewId, `on`, shipId, `tactic to`, tactic)
+  })
+
+  socket.on(
+    `crew:attackTarget`,
+    (shipId, crewId, targetId) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      const targetShip =
+        (game.ships.find(
+          (s) => s.id === targetId,
+        ) as CombatShip) || null
+
+      crewMember.attackTarget = targetShip
+      c.log(
+        `Set`,
+        crewId,
+        `on`,
+        shipId,
+        `attack target to`,
+        targetShip?.name,
       )
     },
   )

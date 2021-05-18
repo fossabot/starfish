@@ -8,6 +8,7 @@ export declare class HumanShip extends CombatShip {
     crewMembers: CrewMember[];
     captain: string | null;
     availableRooms: CrewLocation[];
+    mainTactic: Tactic | undefined;
     constructor(data: BaseHumanShipData, game: Game);
     tick(): void;
     addRoom(room: CrewLocation): void;

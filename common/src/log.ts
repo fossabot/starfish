@@ -1,6 +1,6 @@
 // const path = require(`path`)
 
-const fillCharacter = '.'
+const fillCharacter = `.`
 
 let longest = 0
 
@@ -33,15 +33,16 @@ const mainDirs: string[] = [
 ]
 
 const log = (...args: any[]): void => {
-  const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(
-    `${new Error().stack}`,
-  )
-  const fullPath: string = regexResult?.[1] || ''
+  const regexResult =
+    /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(
+      `${new Error().stack}`,
+    )
+  const fullPath: string = regexResult?.[1] || ``
   const mainDir = mainDirs.find(
     (d) => fullPath.indexOf(`/${d}/`) !== -1,
   )
   const pathName: string =
-    regexResult?.[2]?.replace(/(dist\/|src\/)/gi, '') || ''
+    regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]
@@ -64,33 +65,33 @@ const log = (...args: any[]): void => {
   }
 
   let mainDirColor = !mainDir
-    ? ''
+    ? ``
     : Object.values(dirColors)[
         mainDir
-          .split('')
+          .split(``)
           .map((c) => c.charCodeAt(0))
           .reduce((total, curr) => curr + total, 0) %
           Object.values(dirColors).length
       ]
 
-  let prefix =
+  let prefix = String(
     reset +
-    dim +
-    `[${new Date().toLocaleTimeString(undefined, {
-      hour12: false,
-      hour: `2-digit`,
-      minute: `2-digit`,
-    })}]` +
-    (mainDir
-      ? reset +
-        mainDirColor +
-        mainDir +
-        colors.white +
-        dim +
-        ':'
-      : '') +
-    pathName +
-    ``
+      dim +
+      `[${new Date().toLocaleTimeString(undefined, {
+        hour12: false,
+        hour: `2-digit`,
+        minute: `2-digit`,
+      })}]` +
+      (mainDir
+        ? reset +
+          mainDirColor +
+          mainDir +
+          colors.white +
+          dim +
+          `:`
+        : ``) +
+      pathName,
+  )
 
   if (prefix.length > longest) longest = prefix.length
   prefix = prefix.padEnd(longest, fillCharacter) + reset

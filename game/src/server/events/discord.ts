@@ -39,7 +39,9 @@ export default function (
   })
 
   socket.on(`ship:respawn`, (id, callback) => {
-    const foundShip = game.ships.find((s) => s.id === id)
+    const foundShip = game.ships.find(
+      (s) => s.id === id,
+    ) as CombatShip
     if (!foundShip) {
       callback({ error: `That ship doesn't exist yet!` })
       return

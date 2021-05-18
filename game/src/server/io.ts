@@ -35,7 +35,7 @@ io.on(
 export function stubify<
   BaseType,
   StubType extends BaseStub,
->(prop: BaseType): StubType {
+>(prop: BaseType, disallowPropName?: string[]): StubType {
   const gettersIncluded: any = { ...prop }
   const proto = Object.getPrototypeOf(prop)
   const getKeyValue =
@@ -54,23 +54,30 @@ export function stubify<
       (key: string, value: any) => {
         if ([`toUpdate`].includes(key)) return
         if (
-          [`game`, `ship`, `attacker`, `defender`].includes(
-            key,
-          )
+          [
+            `game`,
+            `ship`,
+            `attacker`,
+            `defender`,
+            `crewMember`,
+          ].includes(key)
         )
-          return value.id
+          return value?.id || null
+        if (disallowPropName?.includes(key))
+          return value?.id || null
         if ([`ships`].includes(key) && Array.isArray(value))
           return value.map((v: Ship) =>
-            stubify({
-              ...v,
-              visible: null,
-            }),
+            stubify(v, [
+              `visible`,
+              `seenPlanets`,
+              `enemiesInAttackRange`,
+            ]),
           )
         return value
       },
     ),
   ) as StubType
-  circularReferencesRemoved.lastUpdated = Date.now()
+  // circularReferencesRemoved.lastUpdated = Date.now()
   return circularReferencesRemoved
 }
 

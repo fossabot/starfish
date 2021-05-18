@@ -1,6 +1,4 @@
-interface BaseStub {
-  lastUpdated: number
-}
+interface BaseStub {}
 
 interface GameStub extends BaseStub {
   ships: ShipStub[]

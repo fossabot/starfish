@@ -1,9 +1,12 @@
 <template>
   <div class="visiblepane">
-    <div class=" box">
-      <h4>Visible</h4>
+    <Box>
+      <template #title
+        ><span class="sectionemoji">📡</span
+        >Visible</template
+      >
       <div
-        class="box"
+        class="panesection"
         v-if="
           !ship.visible.ships.length &&
             !ship.visible.planets.length &&
@@ -12,8 +15,11 @@
       >
         <div class="sub">Nothing on scanners.</div>
       </div>
-      <div class="box" v-if="ship.visible.ships.length">
-        <h5>Ships</h5>
+      <div
+        class="panesection"
+        v-if="ship.visible.ships.length"
+      >
+        <div class="panesubhead">Ships</div>
         <div
           v-for="visibleShip in ship.visible.ships"
           :key="'visibleShip' + visibleShip.id"
@@ -23,8 +29,11 @@
         </div>
       </div>
 
-      <div class="box" v-if="ship.visible.planets.length">
-        <h5>Planets</h5>
+      <div
+        class="panesection"
+        v-if="ship.visible.planets.length"
+      >
+        <div class="panesubhead">Planets</div>
         <div
           v-for="visiblePlanet in ship.visible.planets"
           :key="'visiblePlanet' + visiblePlanet.name"
@@ -34,8 +43,11 @@
         </div>
       </div>
 
-      <div class="box" v-if="ship.visible.caches.length">
-        <h5>Caches</h5>
+      <div
+        class="panesection"
+        v-if="ship.visible.caches.length"
+      >
+        <div class="panesubhead">Caches</div>
         <div
           v-for="visibleCache in ship.visible.caches"
           :key="'visibleCache' + visibleCache.id"
@@ -45,10 +57,10 @@
       </div>
 
       <!-- <div
-      class="box"
+      class="panesection"
       v-if="ship.visible.attackRemnants.length"
     >
-      <h5>Attack Remnants</h5>
+      <div class="panesubhead">Attack Remnants</div>
       <div
         v-for="visibleAttackRemnant in ship.visible
           .attackRemnants"
@@ -60,7 +72,7 @@
         {{ visibleAttackRemnant.start }}
       </div>
     </div> -->
-    </div>
+    </Box>
   </div>
 </template>
 
@@ -87,8 +99,5 @@ export default {
 .visiblepane {
   position: relative;
   width: 200px;
-}
-.box {
-  width: 100%;
 }
 </style>

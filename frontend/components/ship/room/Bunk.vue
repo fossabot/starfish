@@ -1,7 +1,10 @@
 <template>
-  <div class="bunk box">
-    <div>zzzzzzzz.....</div>
-  </div>
+  <Box class="bunk">
+    <template #title
+      ><span class="sectionemoji">🛌</span>Bunk</template
+    >
+    <div class="panesection">zzzzzzzz.....</div>
+  </Box>
 </template>
 
 <script lang="ts">
@@ -26,5 +29,6 @@ export default {
 <style lang="scss" scoped>
 .bunk {
   position: relative;
+  width: 300px;
 }
 </style>

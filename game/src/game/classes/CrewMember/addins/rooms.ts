@@ -23,7 +23,9 @@ export function repair(this: CrewMember): void {
       ((this.mechanics?.level || 1) * c.deltaTime) /
       repairableItems.length /
       1000 /
-      100
+      10000
+
+    c.log(amountToRepair)
     repairableItems.forEach((ri) => {
       ri.repair += amountToRepair
       if (ri.repair > 1) ri.repair = 1
@@ -33,9 +35,7 @@ export function repair(this: CrewMember): void {
 }
 
 export function weapons(this: CrewMember): void {
-  // todo auto attack in CombatShip based on crew's targets/strategies
-
-  // charge weapons
+  // ----- charge weapons -----
   const chargeableWeapons = this.ship.weapons.filter(
     (w) => w.cooldownRemaining > 0,
   )
@@ -45,6 +45,7 @@ export function weapons(this: CrewMember): void {
       chargeableWeapons.length
     chargeableWeapons.forEach((cw) => {
       cw.cooldownRemaining -= amountToReduceCooldowns
+      if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
     })
     this.addXp(`munitions`)
   }

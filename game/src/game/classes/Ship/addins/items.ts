@@ -12,6 +12,7 @@ export function addWeapon(this: Ship, id: string): boolean {
   if (!baseData) return false
   const item = new Weapon(baseData, this)
   this.weapons.push(item)
+  this.recalculateMaxHp()
   return true
 }
 
@@ -20,6 +21,7 @@ export function addEngine(this: Ship, id: string): boolean {
   if (!baseData) return false
   const item = new Engine(baseData, this)
   this.engines.push(item)
+  this.recalculateMaxHp()
   return true
 }
 
@@ -41,6 +43,7 @@ export function removeItem(
     this.engines.splice(engineIndex, 1)
     return true
   }
+  this.recalculateMaxHp()
   return false
 }
 

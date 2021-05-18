@@ -56,8 +56,9 @@ export declare class Ship {
     membersIn(l: CrewLocation): CrewMember[];
     cumulativeSkillIn(l: CrewLocation, s: SkillName): number;
     canAttack(s: CombatShip): boolean;
+    get maxHp(): number;
+    recalculateMaxHp(): void;
     get hp(): number;
     set hp(newValue: number);
-    respawn(): void;
 }
 //# sourceMappingURL=Ship.d.ts.map

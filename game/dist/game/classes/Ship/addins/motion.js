@@ -13,6 +13,22 @@ function move(toLocation) {
         ...this.location,
     ];
     const startingLocation = [...this.location];
+    if (toLocation) {
+        this.location = toLocation;
+        this.speed = 0;
+        this.velocity = [0, 0];
+        this.toUpdate.location = this.location;
+        this.toUpdate.speed = this.speed;
+        this.toUpdate.velocity = this.velocity;
+        // ----- update planet -----
+        const previousPlanet = this.planet;
+        this.planet =
+            this.game.planets.find((p) => this.isAt(p.location)) || false;
+        if (previousPlanet !== this.planet)
+            this.toUpdate.planet = this.planet
+                ? io_1.stubify(this.planet)
+                : false;
+    }
     const membersInCockpit = this.membersIn(`cockpit`);
     if (!this.canMove || !membersInCockpit.length) {
         this.speed = 0;
@@ -21,6 +37,9 @@ function move(toLocation) {
         this.toUpdate.velocity = this.velocity;
         return;
     }
+    const engineThrustMultiplier = this.engines
+        .filter((e) => e.repair > 0)
+        .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
     // ----- calculate new location based on target of each member in cockpit -----
     for (let member of membersInCockpit) {
         if (!member.targetLocation)
@@ -30,10 +49,10 @@ function move(toLocation) {
             Math.abs(this.location[1] - member.targetLocation[1]) < arrivalThreshold)
             continue;
         this.engines.forEach((e) => e.use());
-        const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, member.targetLocation));
         const skill = member.skills.find((s) => s.skill === `piloting`)
             ?.level || 1;
-        const thrustMagnitude = dist_1.default.lerp(0.00001, 0.0001, skill / 100);
+        const thrustMagnitude = dist_1.default.getThrustMagnitudeForSingleCrewMember(skill, engineThrustMultiplier);
+        const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, member.targetLocation));
         this.location[0] +=
             unitVectorToTarget[0] *
                 thrustMagnitude *
@@ -64,17 +83,18 @@ function move(toLocation) {
             ? io_1.stubify(this.planet)
             : false;
     // ----- add previousLocation -----
+    const lastPrevLoc = this.previousLocations[this.previousLocations.length - 1];
     const newAngle = dist_1.default.angleFromAToB(this.location, previousLocation);
-    if (Math.abs(newAngle - this.lastMoveAngle) > 8) {
-        const lastPrevLoc = this.previousLocations[this.previousLocations.length - 1];
-        if (!lastPrevLoc ||
-            dist_1.default.distance(this.location, lastPrevLoc) > 0.0001) {
-            this.previousLocations.push(previousLocation);
-            while (this.previousLocations.length >
-                Ship_1.Ship.maxPreviousLocations)
-                this.previousLocations.shift();
-            this.toUpdate.previousLocations =
-                this.previousLocations;
+    if (!lastPrevLoc) {
+        if (Math.abs(newAngle - this.lastMoveAngle) > 8) {
+            if (dist_1.default.distance(this.location, lastPrevLoc) > 0.00001) {
+                this.previousLocations.push(previousLocation);
+                while (this.previousLocations.length >
+                    Ship_1.Ship.maxPreviousLocations)
+                    this.previousLocations.shift();
+                this.toUpdate.previousLocations =
+                    this.previousLocations;
+            }
         }
     }
     this.lastMoveAngle = newAngle;

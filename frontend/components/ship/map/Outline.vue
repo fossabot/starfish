@@ -7,7 +7,8 @@
       :stroke="color"
       :stroke-width="(0.0025 * FLAT_SCALE) / zoom"
       :stroke-dasharray="dash ? dash + ' ' + dash : ''"
-      :fill="blackout ? 'black' : 'none'"
+      :fill="blackout ? 'var(--bg)' : 'none'"
+      :class="{ blackout }"
     />
     <text
       :x="location[0] * FLAT_SCALE"
@@ -62,6 +63,10 @@ export default {
 <style lang="scss" scoped>
 circle {
   opacity: 0.6;
+
+  &.blackout {
+    opacity: 1;
+  }
 }
 text {
   text-transform: uppercase;

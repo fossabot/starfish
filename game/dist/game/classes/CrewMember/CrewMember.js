@@ -26,9 +26,13 @@ exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const io_1 = require("../../../server/io");
 const roomActions = __importStar(require("./addins/rooms"));
+const Active_1 = require("./Active");
 class CrewMember {
     constructor(data, ship) {
         this.targetLocation = null;
+        this.tactic = `defensive`;
+        this.attackFactions = [];
+        this.attackTarget = null;
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
@@ -47,19 +51,32 @@ class CrewMember {
             { skill: `mechanics`, level: 1, xp: 0 },
             { skill: `linguistics`, level: 1, xp: 0 },
         ];
+        this.actives = [];
+        if (data.actives)
+            for (let a of data.actives)
+                this.actives.push(new Active_1.Active(a, this));
+        if (data.tactic)
+            this.tactic = data.tactic;
+        if (data.attackFactions)
+            this.attackFactions = data.attackFactions;
     }
     rename(newName) {
         this.name = newName;
     }
     goTo(location) {
-        // if (this.location === `cockpit`)
-        //   this.targetLocation = null
         this.location = location;
         this.lastActive = Date.now();
     }
     tick() {
         // ----- test notify listeners -----
+        // todo
         io_1.io.to(`ship:${this.ship.id}`).emit(`crew:tired`, io_1.stubify(this));
+        // ----- reset attack target if out of vision range -----
+        if (this.attackTarget &&
+            !this.ship.visible.ships.includes(this.attackTarget))
+            this.attackTarget = null;
+        // ----- actives -----
+        this.actives.forEach((a) => a.tick());
         // ----- bunk -----
         if (this.location === `bunk`) {
             this.bunkAction();

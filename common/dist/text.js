@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
-const Filter = require(`bad-words`);
-const filter = new Filter();
+const badwords_1 = require("./badwords");
+const filter = new badwords_1.LanguageFilter();
 const numberEmojis = [
     `0️⃣`,
     `1️⃣`,
@@ -50,26 +50,31 @@ function degreesToArrow(angle) {
 function coordPairToArrow(coordPair) {
     return degreesToArrow(math_1.default.vectorToDegrees(coordPair));
 }
-function percentToTextBars(percent, barCount = 10) {
+function percentToTextBars(percent = 0, barCount = 10) {
     const bars = [];
     for (let i = 0; i < 1; i += 1 / barCount)
         bars.push(i < percent ? `▓` : `░`);
     return `\`` + bars.join(``) + `\``;
 }
-function numberToEmoji(number) {
+function numberToEmoji(number = 0) {
     return numberEmojis[number] || `❓`;
 }
-function emojiToNumber(emoji) {
+function emojiToNumber(emoji = ``) {
     return numberEmojis.findIndex((e) => e === emoji);
 }
-function capitalize(string) {
+const skipWords = [`a`, `an`, `the`, `of`, `in`];
+function capitalize(string = ``) {
     return (string || ``)
         .split(` `)
-        .map((s) => s.substring(0, 1).toUpperCase() +
-        s.substring(1).toLowerCase())
+        .map((s, index) => {
+        if (skipWords.includes(s) && index > 0)
+            return s;
+        return (s.substring(0, 1).toUpperCase() +
+            s.substring(1).toLowerCase());
+    })
         .join(` `);
 }
-function sanitize(string) {
+function sanitize(string = ``) {
     const cleaned = filter.clean(string);
     return {
         ok: string === cleaned,
@@ -79,7 +84,7 @@ function sanitize(string) {
             : `Sorry, you can't use language like that here.`,
     };
 }
-function msToTimeString(ms) {
+function msToTimeString(ms = 0) {
     let seconds = `${Math.round((ms % (60 * 1000)) / 1000)}`;
     if (seconds <= `9`)
         seconds = `0` + seconds;
@@ -87,7 +92,7 @@ function msToTimeString(ms) {
     return `${minutes}:${seconds}`;
 }
 const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 `;
-function garble(string, percent = 0) {
+function garble(string = ``, percent = 0) {
     if (percent > 0.98)
         percent = 0.98;
     let splitString = string.split(` `);
@@ -118,6 +123,8 @@ function garble(string, percent = 0) {
     return splitString.join(` `);
 }
 function arrayMove(arr, oldIndex, newIndex) {
+    if (!Array.isArray(arr) || !arr.length)
+        return;
     if (newIndex >= arr.length) {
         let k = newIndex - arr.length + 1;
         while (k--) {

@@ -1,8 +1,10 @@
 <template>
   <div class="ship" v-if="ship">
-    <div class="box" v-if="ship">
-      <h4>{{ ship.name }}</h4>
-      <div class="box">
+    <Box v-if="ship">
+      <template #title>
+        <span class="sectionemoji">🚀</span>{{ ship.name }}
+      </template>
+      <!-- <div class="panesection">
         <div>
           Location:
           <br />
@@ -12,16 +14,18 @@
               .join(', ')
           }}
         </div>
-      </div>
+      </div> -->
 
-      <div class="box pad-none">
+      <div class="panesection">
         <div class="arrow">
           <div>
             Speed: <br />
             {{
-              Math.round(ship && ship.speed * 1000000) /
-                1000000
-            }}AU/s
+              Math.round(
+                ship && ship.speed * 60 * 60 * 10000,
+              ) / 10000
+            }}
+            AU/hr
             <br />
             Angle: <br />
             {{
@@ -76,7 +80,11 @@
         </div>
       </ProgressBar>
 
-      <div class="box">
+      <div class="panesection">
+        <div>
+          Sight Radius:
+          {{ ship && ship.sightRadius }} AU
+        </div>
         <div>
           Captain:
           {{
@@ -97,14 +105,23 @@
         </div>
         <div>
           Faction:
-          {{
-            ship && ship.faction
-              ? ship.faction.name
-              : 'No Faction'
-          }}
+          <span
+            :style="{
+              color:
+                ship && ship.faction
+                  ? ship.faction.color
+                  : '',
+            }"
+          >
+            {{
+              ship && ship.faction
+                ? ship.faction.name
+                : 'No Faction'
+            }}
+          </span>
         </div>
       </div>
-    </div>
+    </Box>
   </div>
 </template>
 
@@ -150,27 +167,21 @@ export default {
 
 <style lang="scss" scoped>
 .ship {
-  width: 200px;
+  width: 220px;
   position: relative;
-  grid-column: span 2;
-}
-
-.box {
-  width: 100%;
 }
 
 .arrow {
-  height: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 0.5em !important;
-  padding-right: 1.5em !important;
 
   svg {
-    transition: transform 0.5s;
     margin-left: 1em;
+    margin-right: 0em;
+    transition: transform 0.5s;
     width: 35%;
+    height: 50px;
   }
 }
 </style>

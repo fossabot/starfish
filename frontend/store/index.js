@@ -33,9 +33,9 @@ export const mutations = {
 
   setRoom(state, target) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, 'location', target)
+    Vue.set(state.crewMember, `location`, target)
     this.$socket?.emit(
-      'crew:move',
+      `crew:move`,
       state.ship.id,
       state.userId,
       target,
@@ -44,9 +44,33 @@ export const mutations = {
 
   setTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, 'targetLocation', target)
+    Vue.set(state.crewMember, `targetLocation`, target)
     this.$socket?.emit(
-      'crew:targetLocation',
+      `crew:targetLocation`,
+      state.ship.id,
+      state.userId,
+      target,
+    )
+  },
+
+  setTactic(state, tactic) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, `tactic`, tactic)
+    this.$socket?.emit(
+      `crew:tactic`,
+      state.ship.id,
+      state.userId,
+      tactic,
+    )
+  },
+
+  setAttackTarget(state, target) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, `attackTarget`, {
+      id: target,
+    })
+    this.$socket?.emit(
+      `crew:attackTarget`,
       state.ship.id,
       state.userId,
       target,
@@ -59,6 +83,7 @@ export const actions = {
     this.$socket.removeAllListeners()
 
     this.$socket.on(`disconnect`, () => {
+      console.log(`dc`)
       commit(`set`, { ship: null })
     })
 
@@ -72,9 +97,9 @@ export const actions = {
     this.$socket.on(`connect`, connected)
 
     this.$socket.on(`ship:update`, ({ id, updates }) => {
-      if (state.ship === null) connected()
+      if (state.ship === null) return connected()
       // console.log(updates)
-      else commit(`updateShip`, { ...updates })
+      commit(`updateShip`, { ...updates })
     })
   },
 

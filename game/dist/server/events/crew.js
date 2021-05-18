@@ -46,6 +46,27 @@ function default_1(socket) {
         crewMember.targetLocation = targetLocation;
         dist_1.default.log(`Set`, crewId, `on`, shipId, `targetLocation to`, targetLocation);
     });
+    socket.on(`crew:tactic`, (shipId, crewId, tactic) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        crewMember.tactic = tactic;
+        dist_1.default.log(`Set`, crewId, `on`, shipId, `tactic to`, tactic);
+    });
+    socket.on(`crew:attackTarget`, (shipId, crewId, targetId) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        const targetShip = __1.game.ships.find((s) => s.id === targetId) || null;
+        crewMember.attackTarget = targetShip;
+        dist_1.default.log(`Set`, crewId, `on`, shipId, `attack target to`, targetShip?.name);
+    });
     socket.on(`crew:buy`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

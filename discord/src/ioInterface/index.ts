@@ -2,18 +2,16 @@ import c from '../../../common/dist'
 import socketIo, { Socket } from 'socket.io-client'
 
 // connect to server
-const client = socketIo(`http://localhost:4200`)
-export const io: Socket<
-  IOServerEvents,
-  IOClientEvents
-> = client.connect()
+const client = socketIo(`http://game:4200`)
+export const io: Socket<IOServerEvents, IOClientEvents> =
+  client.connect()
 
 io.on(`connect`, () => {
   c.log(`Connected to game server.`)
 })
 
 io.on(`disconnect`, () => {
-  c.log('red', `Lost connection to game server.`)
+  c.log(`red`, `Lost connection to game server.`)
 })
 
 export function connected(): Promise<boolean> {
@@ -33,7 +31,7 @@ export function connected(): Promise<boolean> {
       timeout++
     }
     c.log(
-      'yellow',
+      `yellow`,
       `Attempted to access game server io while socket was disconnected.`,
     )
     resolve(false)

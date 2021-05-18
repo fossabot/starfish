@@ -1,10 +1,13 @@
 type ItemType = `weapon` | `engine`
 
 interface BaseItemData {
+  type: ItemType
   id: string
   displayName: string
   description: string
   repair?: number
+  hp?: number
+  maxHp: number
 }
 
 interface Loadout {

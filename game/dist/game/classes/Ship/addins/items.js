@@ -14,6 +14,7 @@ function addWeapon(id) {
         return false;
     const item = new Weapon_1.Weapon(baseData, this);
     this.weapons.push(item);
+    this.recalculateMaxHp();
     return true;
 }
 exports.addWeapon = addWeapon;
@@ -23,6 +24,7 @@ function addEngine(id) {
         return false;
     const item = new Engine_1.Engine(baseData, this);
     this.engines.push(item);
+    this.recalculateMaxHp();
     return true;
 }
 exports.addEngine = addEngine;
@@ -37,6 +39,7 @@ function removeItem(item) {
         this.engines.splice(engineIndex, 1);
         return true;
     }
+    this.recalculateMaxHp();
     return false;
 }
 exports.removeItem = removeItem;

@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "29aa78936e00eab9be5e670522eaa365b65fb5876630c4d4f709070f835b79a1",
-        "signature": "29aa78936e00eab9be5e670522eaa365b65fb5876630c4d4f709070f835b79a1",
+        "version": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
+        "signature": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -272,13 +272,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "e4507cb6d9c2b66d950f83aa96ea81ab1b4fc328b9e3be0a875d1487c8867ece",
-        "signature": "e4507cb6d9c2b66d950f83aa96ea81ab1b4fc328b9e3be0a875d1487c8867ece",
+        "version": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
+        "signature": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "9c6e514d4d716680d106dad60619584bdf7dfeb57654ce6c91e49610965d6ec6",
-        "signature": "9c6e514d4d716680d106dad60619584bdf7dfeb57654ce6c91e49610965d6ec6",
+        "version": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
+        "signature": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -292,13 +292,13 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "dfe39c4934d8ca29f735a19f47c98633fe4295c4061425f31b8b3d831ade21fa",
-        "signature": "dfe39c4934d8ca29f735a19f47c98633fe4295c4061425f31b8b3d831ade21fa",
+        "version": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
+        "signature": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
         "affectsGlobalScope": true
       },
       "../common/dist/index.d.ts": {
-        "version": "a9e17f6483be959bbd37860d1ba71fa5c548a74372f454149ea2a4d9c4852563",
-        "signature": "a9e17f6483be959bbd37860d1ba71fa5c548a74372f454149ea2a4d9c4852563",
+        "version": "6e6616b57e6b1749199e586eedd3f80b50d6f43793d17952da3c1ee07165b9a5",
+        "signature": "6e6616b57e6b1749199e586eedd3f80b50d6f43793d17952da3c1ee07165b9a5",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -617,8 +617,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
-        "version": "374c4bc6ca5b954e15555c1730896c604ac9c3cf5e53c8551432e6eaf42ef99c",
-        "signature": "cdd046d88a52589e16bd68f62fb39e37681ed595f79381d662cfcd383e3c0b81",
+        "version": "aaf6c4f78f8847e91c4816e8984318d0f6301fc491512527ebf9a714ee36171b",
+        "signature": "d6394d23cdc282615bfb3360b8eb9625ee674b0b7a4c11d15b42d2a5153455ca",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/engine.ts": {
@@ -627,7 +627,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/weapon.ts": {
-        "version": "f142e674856e5db44808458329638647515d2ae293dd2928b4a94fe940746b36",
+        "version": "b1baa3f84cbf903f7fd28cad5d90a407093fb094a6d7f12a0cce9018795d0652",
         "signature": "29ae41319397ffbbe41cbf891e6c996ef65a45aa2dfb56d235065cf6cbbf9fbd",
         "affectsGlobalScope": false
       },
@@ -636,14 +636,9 @@
         "signature": "5dc76d28b65c7a6d3e8e6807ab68e71d8ab38755590b86232c4723f2fca8fde6",
         "affectsGlobalScope": false
       },
-      "./src/game/classes/ship/addins/combat.ts": {
-        "version": "6bf8c8dc0236dfe02aa8674e50970a91fddd04925fa8d931ad31b42f8fd1e30b",
-        "signature": "330d1206ec89db2528e6064dc28c6b239f5114fe76ac9928218d080c4692f4aa",
-        "affectsGlobalScope": false
-      },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "90bf49152ab99e24701f0e19cb8def3fe7601e5aaa7277c6226cc5e13f3a000c",
-        "signature": "424e135571683b4d8fed4a3898b139a4981c8eab158cacf42c180498a5c81410",
+        "version": "eb8efa127aceec2b64b3a020b1d860de69a440723cf18764eeea1317a612baaa",
+        "signature": "6b135fa0e9cfa7b601c93e6e62ba81164b787141fa7f955e54849c28c0ca4cc9",
         "affectsGlobalScope": false
       },
       "./src/game/classes/attackremnant.ts": {
@@ -652,7 +647,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/addins/rooms.ts": {
-        "version": "577130eac3aef1cd5fcd43f7b63e081050595738d15c1de9faa2a3db84ff49b9",
+        "version": "aba4b60033379fb8f71c693682d1888c77393f41e4cfd209bf567751d4dea25d",
         "signature": "91463aad8bf3a89fc0ff5a807efde3cbb84f17794c96ea37e6a5cc96e100a660",
         "affectsGlobalScope": false
       },
@@ -662,22 +657,27 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "24fad725513981133cd1758958f82c54f336c6b4ab5e1eca6e9f5e0ef5d0aa59",
-        "signature": "b20269475f71c1ac4832a272e8169f4f7f6ea19408df96db91668b7ac1d25873",
+        "version": "220d776565b765681a9bae482094d6aa051adba0e5ea26978a037ff6cff82f46",
+        "signature": "7230b04abf5d05a373d725ac8be514e5c52aaa843aa233cd12d3cc69bf368250",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/crewmember/active.ts": {
+        "version": "4f7d1bd97b8c8caac502b03cbb483011ce4783968e594d19b27b2af9435c179c",
+        "signature": "a8e065bc62bcc9f5af7c12876121239008dd4ac3cbfb27755fec6a67404adf63",
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/crewmember.ts": {
-        "version": "f27dedf4483c344aa4c2a66a212a84abf0b5a196439f96f942e1dca6a1ef146a",
-        "signature": "4763e6dea22a1c51a7075d6ca37527b8171d19ea7b593ab671e5b097f2e52e4f",
+        "version": "0d783b7a4b2dccbdd7f0edce0c38f4192e6ce8e4911c64f13cb84f9b2589f71e",
+        "signature": "87920eeaa7ad479e166b955aade8291f36e532c8551f8140a189f6532242dbed",
         "affectsGlobalScope": false
       },
       "./src/game/presets/items/engines.ts": {
-        "version": "8fb034bc96bd20350a32242bf9d7e06b4215017e93e0088d805e017dec1f3c0c",
+        "version": "17e42db1448a3f29206fd513a8b97be12d227b8de0314dced838bba32adc701e",
         "signature": "9978c6cbea2662edbc3f35ec739e00df27ec42a811042376b4353d97d68ee7ca",
         "affectsGlobalScope": false
       },
       "./src/game/presets/items/weapons.ts": {
-        "version": "a06cd96510d99f2032d75f67089751f9ca6e51fb4b1ca937bafcd9a71f1e76d0",
+        "version": "3ba25478667742c836c5ec47138917b95c2c6a4a53287aeb1319641d5cecf2a8",
         "signature": "47636cb9df4a0c8e3046094c3492cab49faaefc096ea6b9f7071c608577f6bab",
         "affectsGlobalScope": false
       },
@@ -692,18 +692,18 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/items.ts": {
-        "version": "b1e8f000530124e47ed0d0ed91b175da427e62c52c4b415353e3fe33449a0848",
+        "version": "d5662b4c409d95d0a6d2b2178f9f254cc84db70be79d45a86877efd86517fc64",
         "signature": "7d59b2b38b11c16bcbc7bf01989b48cc8a7df13b86b9b78c39f0913b4feeb3f8",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/motion.ts": {
-        "version": "1f879f19bc6f2f3f22585bc4328c3744df3c4c1cae086e5fc482baae063f2c05",
+        "version": "c0c5fc8568b53a751dcdd00e7db7be9d1bcb5d575f88e531ab0b4ffc3450fbc5",
         "signature": "9f9bc1df47e497e907607b16a879ad8a0fbf632daa56e41cf4b5b4cd02495d46",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "cc94bada99211771a163829e69d1c522adc15b71ce544e473d0559e656dc63a4",
-        "signature": "f8232d920f53535d469d430e951eaab5c7238506ff85525235b426aea5a30695",
+        "version": "5a5f6c68b3aa737ff150963f45b074500d873ec109eac9fac43285403295b80f",
+        "signature": "2c7343f215c1e47c3fe8390145110ca2dc4cbb18e9c2c285bcb44ede022d7011",
         "affectsGlobalScope": false
       },
       "./src/server/events/frontend.ts": {
@@ -712,7 +712,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "a864f95de660f6208b4a7bdbce123a03cd8f0c8aa169d36f0aa1502eec7245b7",
+        "version": "608540dc7552bc9b6a098917a34ba09e5b13ae42d213e8aed9dfc1bd1ba4ce57",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },
@@ -727,17 +727,17 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/crew.ts": {
-        "version": "25a73946d701928f00ed595b4f16956782dbca769c90134ce3c22dfc99b7df6e",
+        "version": "22f5710f998952cdbbfcf944a7ee4415cb8f7694b503dd77e72b24c5ae882e6b",
         "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
         "affectsGlobalScope": false
       },
       "./src/server/io.ts": {
-        "version": "540dc18baaf9fc089fe525946531742b4702458bda6d6013c7bb1c19c23b0e65",
-        "signature": "4456b71bcc3558864205f80e35644fe164da7fb700d1599003a25a5a0449a2be",
+        "version": "82bc56fef048f24cc1cba6a16bce5acca242e9d6ec391359372f24e79a8398af",
+        "signature": "d67e603d94f507db9e079bc964c58fc5772788080c013e302c63e4551383f75e",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/aiship.ts": {
-        "version": "6a9a0c186b5bdc4e4bcf61560ba995f90c44fe0ab8f764ada822f70d5bece696",
+        "version": "f135e06326f0535fe03e8cf3b4f72e1ce726631d7bcf5ef1ce54a72f83e0704e",
         "signature": "14432c17a9594d79e62000dc9a3a53c453549667d2115de57b7178d6862687d1",
         "affectsGlobalScope": false
       },
@@ -787,7 +787,7 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "ab0bb6e1840408d87e84c4012700ecccfaf8ce0b8c458943f8e0ad877025c6fa",
+        "version": "7d028b342d4f2509e376dea7c3f1ec69834d6caf0b0451b82ca9f783b4742369",
         "signature": "ad55138fcff7c310cf2d46ef4eaec62e618eb7e600339b12f539780bd6f14941",
         "affectsGlobalScope": false
       },
@@ -1266,6 +1266,10 @@
         "../common/dist/index.d.ts",
         "./src/game/game.ts"
       ],
+      "./src/game/classes/crewmember/active.ts": [
+        "../common/dist/index.d.ts",
+        "./src/game/classes/crewmember/crewmember.ts"
+      ],
       "./src/game/classes/crewmember/addins/rooms.ts": [
         "../common/dist/index.d.ts",
         "./src/game/classes/crewmember/crewmember.ts",
@@ -1274,7 +1278,9 @@
       ],
       "./src/game/classes/crewmember/crewmember.ts": [
         "../common/dist/index.d.ts",
+        "./src/game/classes/crewmember/active.ts",
         "./src/game/classes/crewmember/addins/rooms.ts",
+        "./src/game/classes/ship/combatship.ts",
         "./src/game/classes/ship/humanship.ts",
         "./src/server/io.ts"
       ],
@@ -1301,14 +1307,6 @@
       "./src/game/classes/planet.ts": [
         "../common/dist/index.d.ts",
         "./src/game/game.ts"
-      ],
-      "./src/game/classes/ship/addins/combat.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/item.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/server/io.ts"
       ],
       "./src/game/classes/ship/addins/crew.ts": [
         "../common/dist/index.d.ts",
@@ -1338,13 +1336,15 @@
       ],
       "./src/game/classes/ship/combatship.ts": [
         "../common/dist/index.d.ts",
+        "./src/game/classes/item/engine.ts",
+        "./src/game/classes/item/item.ts",
         "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/addins/combat.ts",
         "./src/game/classes/ship/ship.ts",
         "./src/server/io.ts"
       ],
       "./src/game/classes/ship/humanship.ts": [
         "../common/dist/index.d.ts",
+        "./src/game/classes/attackremnant.ts",
         "./src/game/classes/crewmember/crewmember.ts",
         "./src/game/classes/ship/addins/crew.ts",
         "./src/game/classes/ship/combatship.ts",
@@ -1411,6 +1411,7 @@
         "../common/dist/index.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
         "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/ship/combatship.ts",
         "./src/game/classes/ship/humanship.ts",
         "./src/game/classes/ship/ship.ts",
         "./src/index.ts",
@@ -1872,11 +1873,16 @@
       "./src/game/classes/cache.ts": [
         "./src/game/game.ts"
       ],
+      "./src/game/classes/crewmember/active.ts": [
+        "./src/game/classes/crewmember/crewmember.ts"
+      ],
       "./src/game/classes/crewmember/addins/rooms.ts": [
         "./src/game/classes/crewmember/crewmember.ts"
       ],
       "./src/game/classes/crewmember/crewmember.ts": [
+        "./src/game/classes/crewmember/active.ts",
         "./src/game/classes/crewmember/addins/rooms.ts",
+        "./src/game/classes/ship/combatship.ts",
         "./src/game/classes/ship/humanship.ts"
       ],
       "./src/game/classes/faction.ts": [
@@ -1898,11 +1904,6 @@
       "./src/game/classes/planet.ts": [
         "./src/game/game.ts"
       ],
-      "./src/game/classes/ship/addins/combat.ts": [
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts"
-      ],
       "./src/game/classes/ship/addins/crew.ts": [
         "./src/game/classes/crewmember/crewmember.ts",
         "./src/game/classes/ship/humanship.ts"
@@ -1921,7 +1922,6 @@
       ],
       "./src/game/classes/ship/combatship.ts": [
         "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/addins/combat.ts",
         "./src/game/classes/ship/ship.ts"
       ],
       "./src/game/classes/ship/humanship.ts": [
@@ -2143,6 +2143,7 @@
       "./src/db/index.ts",
       "./src/game/classes/attackremnant.ts",
       "./src/game/classes/cache.ts",
+      "./src/game/classes/crewmember/active.ts",
       "./src/game/classes/crewmember/addins/rooms.ts",
       "./src/game/classes/crewmember/crewmember.ts",
       "./src/game/classes/faction.ts",
@@ -2150,7 +2151,6 @@
       "./src/game/classes/item/item.ts",
       "./src/game/classes/item/weapon.ts",
       "./src/game/classes/planet.ts",
-      "./src/game/classes/ship/addins/combat.ts",
       "./src/game/classes/ship/addins/crew.ts",
       "./src/game/classes/ship/addins/items.ts",
       "./src/game/classes/ship/addins/motion.ts",

@@ -1,7 +1,7 @@
 import math from './math'
 
-const Filter = require(`bad-words`)
-const filter = new Filter()
+import { LanguageFilter } from './badwords'
+const filter = new LanguageFilter()
 const numberEmojis = [
   `0️⃣`,
   `1️⃣`,
@@ -53,7 +53,7 @@ function coordPairToArrow(coordPair: CoordinatePair) {
 }
 
 function percentToTextBars(
-  percent: number,
+  percent: number = 0,
   barCount = 10,
 ): string {
   const bars = []
@@ -62,26 +62,29 @@ function percentToTextBars(
   return `\`` + bars.join(``) + `\``
 }
 
-function numberToEmoji(number: number): string {
+function numberToEmoji(number: number = 0): string {
   return numberEmojis[number] || `❓`
 }
 
-function emojiToNumber(emoji: string): number {
+function emojiToNumber(emoji: string = ``): number {
   return numberEmojis.findIndex((e) => e === emoji)
 }
 
-function capitalize(string: string): string {
+const skipWords = [`a`, `an`, `the`, `of`, `in`]
+function capitalize(string: string = ``): string {
   return (string || ``)
     .split(` `)
-    .map(
-      (s) =>
+    .map((s, index) => {
+      if (skipWords.includes(s) && index > 0) return s
+      return (
         s.substring(0, 1).toUpperCase() +
-        s.substring(1).toLowerCase(),
-    )
+        s.substring(1).toLowerCase()
+      )
+    })
     .join(` `)
 }
 
-function sanitize(string: string): SanitizeResult {
+function sanitize(string: string = ``): SanitizeResult {
   const cleaned = filter.clean(string)
   return {
     ok: string === cleaned,
@@ -93,7 +96,7 @@ function sanitize(string: string): SanitizeResult {
   }
 }
 
-function msToTimeString(ms: number): string {
+function msToTimeString(ms: number = 0): string {
   let seconds = `${Math.round((ms % (60 * 1000)) / 1000)}`
   if (seconds <= `9`) seconds = `0` + seconds
   const minutes = Math.floor(ms / 1000 / 60)
@@ -101,7 +104,7 @@ function msToTimeString(ms: number): string {
 }
 
 const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 `
-function garble(string: string, percent = 0): string {
+function garble(string: string = ``, percent = 0): string {
   if (percent > 0.98) percent = 0.98
   let splitString: string[] = string.split(` `)
 
@@ -150,6 +153,7 @@ function arrayMove(
   oldIndex: number,
   newIndex: number,
 ): void {
+  if (!Array.isArray(arr) || !arr.length) return
   if (newIndex >= arr.length) {
     let k = newIndex - arr.length + 1
     while (k--) {

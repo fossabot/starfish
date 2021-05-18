@@ -1,6 +1,9 @@
 <template>
   <div class="holder">
-    <div class="box">
+    <Box>
+      <template #title>
+        <span class="sectionemoji">🚪</span>Ship Schematic
+      </template>
       <div
         class="shipdiagram"
         :style="
@@ -68,7 +71,7 @@
           "
         >
           <div
-            class="room box"
+            class="room "
             :class="{
               current: crewMember.location === room,
             }"
@@ -101,7 +104,7 @@
           </template>
         </div>
       </div>
-    </div>
+    </Box>
   </div>
 </template>
 
@@ -148,11 +151,6 @@ export default {
 .holder {
   grid-column: span 2;
   width: 370px;
-}
-.box {
-  width: 100%;
-  padding: 0;
-  overflow: hidden;
 }
 .shipdiagram {
   position: relative;
@@ -202,6 +200,8 @@ export default {
     cursor: pointer;
     z-index: 2;
     background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 1px var(--text);
+    border-bottom: 1px solid var(--text);
 
     &:hover {
       z-index: 4;

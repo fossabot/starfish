@@ -1,51 +1,51 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function lerp(v0, v1, t) {
+function lerp(v0 = 0, v1 = 0, t = 0) {
     return v0 * (1 - t) + v1 * t;
 }
-function radiansToDegrees(radians) {
+function radiansToDegrees(radians = 0) {
     return (180 * radians) / Math.PI;
 }
-function degreesToRadians(degrees) {
+function degreesToRadians(degrees = 0) {
     return (degrees * Math.PI) / 180;
 }
-function coordPairToRadians(coordPair) {
+function coordPairToRadians(coordPair = [0, 0]) {
     const [x, y] = coordPair;
     const angle = Math.atan2(y, x);
     return angle;
 }
-function vectorToDegrees(coordPair) {
+function vectorToDegrees(coordPair = [0, 0]) {
     const angle = coordPairToRadians(coordPair);
     const degrees = (180 * angle) / Math.PI; // degrees
     return (360 + degrees) % 360;
 }
-function distance(a, b) {
+function distance(a = [0, 0], b = [0, 0]) {
     const c = a[0] - b[0];
     const d = a[1] - b[1];
     return Math.sqrt(c * c + d * d);
 }
-function angleFromAToB(a, b) {
+function angleFromAToB(a = [0, 0], b = [0, 0]) {
     return (((Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) /
         Math.PI +
         360) %
         360);
 }
-function degreesToUnitVector(degrees) {
+function degreesToUnitVector(degrees = 0) {
     let rad = (Math.PI * degrees) / 180;
     let r = 1;
     return [r * Math.cos(rad), r * Math.sin(rad)];
 }
-function unitVectorFromThisPointToThatPoint(thisPoint, thatPoint) {
+function unitVectorFromThisPointToThatPoint(thisPoint = [0, 0], thatPoint = [0, 0]) {
     if (thisPoint[0] === thatPoint[0] &&
         thisPoint[1] === thatPoint[1])
         return [0, 0];
     const angleBetween = angleFromAToB(thisPoint, thatPoint);
     return degreesToUnitVector(angleBetween);
 }
-function vectorToMagnitude(vector) {
+function vectorToMagnitude(vector = [0, 0]) {
     return Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
 }
-function pointIsInsideCircle(center, point, radius) {
+function pointIsInsideCircle(center = [0, 0], point = [1, 1], radius = 0) {
     return ((point[0] - center[0]) * (point[0] - center[0]) +
         (point[1] - center[1]) * (point[1] - center[1]) <=
         radius * radius);

@@ -1,10 +1,16 @@
 <template>
   <div class="member">
-    <div class="box">
-      <h4>{{ crewMember.name }}</h4>
+    <Box>
+      <template #title>
+        <span class="sectionemoji">🧑‍✈️</span
+        >{{ crewMember.name }}
+      </template>
 
-      <div class="box">
-        <div>Location: {{ crewMember.location }}</div>
+      <div class="panesection">
+        <div>
+          Location:
+          {{ c.capitalize(crewMember.location) }}
+        </div>
       </div>
 
       <ProgressBar
@@ -22,7 +28,7 @@
         </div>
       </ProgressBar>
 
-      <!-- <div class="box">
+      <!-- <div class="panesection">
       <b>Go to</b>
       <div>
         <span
@@ -41,11 +47,12 @@
       <ShipMemberInventory />
 
       <ShipMemberSkills />
-    </div>
+    </Box>
   </div>
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -53,7 +60,7 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),

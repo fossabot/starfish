@@ -21,10 +21,17 @@ export class AIShip extends CombatShip {
 
   tick() {
     super.tick()
+
+    // recharge weapons
+    this.weapons.forEach(
+      (w) =>
+        (w.cooldownRemaining -= c.deltaTime * this.level),
+    )
+
     // attack human in range
     const weapons = this.availableWeapons()
     if (!weapons.length) return
-    const enemies = this.enemiesInAttackRange()
+    const enemies = this.getEnemiesInAttackRange()
     if (enemies.length) {
       const randomEnemy = c.randomFromArray(enemies)
       const randomWeapon = c.randomFromArray(weapons)

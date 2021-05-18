@@ -3,11 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.weapons = void 0;
 exports.weapons = {};
 exports.weapons.cannon = {
+    type: `weapon`,
     id: `cannon`,
     displayName: `Crustacean Cannon`,
     description: `Exactly what it sounds like.`,
     range: 1,
-    damage: 0.3,
-    baseCooldown: 5 * 60 * 1000,
+    damage: 2,
+    baseCooldown: 20 * 1000,
+    maxHp: 10,
 };
 //# sourceMappingURL=weapons.js.map

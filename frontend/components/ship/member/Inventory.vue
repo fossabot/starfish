@@ -1,6 +1,6 @@
 <template>
-  <div class="inventory box">
-    <b>Inventory</b>
+  <div class="inventory panesection">
+    <div class="panesubhead">Inventory</div>
     <div>Credits: {{ crewMember.credits }}</div>
     <div v-if="!crewMember.inventory.length">
       Nothing in inventory
@@ -9,12 +9,13 @@
       v-for="item in crewMember.inventory"
       :key="'inv' + item.type"
     >
-      {{ item.type }}: {{ item.amount }}
+      {{ c.capitalize(item.type) }}: {{ item.amount }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -22,7 +23,7 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState(['crewMember']),

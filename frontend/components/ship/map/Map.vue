@@ -1,6 +1,6 @@
 <template>
   <div
-    class="holder box"
+    class="holder"
     @mousewheel="mouseWheel"
     @mousedown="mouseDown"
     @mouseup="mouseUp"
@@ -44,15 +44,13 @@
         :containerSizeMultiplier="containerSizeMultiplier"
       />
 
-      <line
+      <ShipMapAttackRemnant
         v-for="(ar, index) in attackRemnants"
         :key="'ar' + index"
-        :x1="ar.from[0] * FLAT_SCALE"
-        :y1="ar.from[1] * FLAT_SCALE"
-        :x2="ar.to[0] * FLAT_SCALE"
-        :y2="ar.to[1] * FLAT_SCALE"
-        :stroke="ar.miss ? 'rgba(255,50,50,.5)' : 'red'"
-        :stroke-width="(0.002 * FLAT_SCALE) / zoom"
+        v-bind="ar"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :containerSizeMultiplier="containerSizeMultiplier"
       />
 
       <ShipMapShipdot
@@ -65,12 +63,20 @@
         :containerSizeMultiplier="containerSizeMultiplier"
       />
 
-      <ShipMapDistanceMarkers
-        v-bind="view"
+      <ShipMapDistanceCircles
+        :location="[data.center[0], data.center[1] * -1]"
+        :view="view"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
         :containerSizeMultiplier="containerSizeMultiplier"
       />
+
+      <!-- <ShipMapDistanceMarkers
+        v-bind="view"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      /> -->
     </svg>
   </div>
 </template>
@@ -113,7 +119,10 @@ const getMaxes = (coordPairs: CoordinatePair[]) => {
 }
 
 export default {
-  props: { data: {}, resetCenterTime: { default: 8000 } },
+  props: {
+    data: {},
+    resetCenterTime: { default: 120 * 10000 },
+  },
   data(): ComponentShape {
     return {
       FLAT_SCALE: 100,
@@ -186,12 +195,16 @@ export default {
           id: el.id,
         })) || []
       this.attackRemnants =
-        this.data.attackRemnants?.map((el: any) => ({
-          type: 'attackRemnant',
-          from: [...el.start],
-          to: [...el.end],
-          miss: el.damageTaken.damageTaken === 0,
-        })) || []
+        this.data.attackRemnants?.map(
+          (el: AttackRemnantStub) => ({
+            type: 'attackRemnant',
+            from: [...el.start],
+            to: [...el.end],
+            attacker: el.attacker,
+            defender: el.defender,
+            miss: el.damageTaken.damageTaken === 0,
+          }),
+        ) || []
 
       // flip y values since svg counts up from the top down
       this.ships.forEach((el: ShipStub) => {
@@ -395,14 +408,14 @@ export default {
 
 <style lang="scss" scoped>
 .holder {
+  line-height: 1;
   z-index: 2;
   user-select: none;
-  display: inline-block;
   position: relative;
   padding: 0 !important;
   width: 100%;
   padding-top: 100%;
-  background: rgba(white, 0.02);
+  background: rgba(white, 0.03);
   cursor: move;
 }
 svg {

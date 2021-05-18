@@ -1,14 +1,17 @@
 <template>
-  <div class="planet box">
-    <h4>Current Planet: {{ ship.planet.name }}</h4>
+  <Box class="planet">
+    <template #title>
+      <span class="sectionemoji">🪐</span>Current Planet:
+      {{ ship.planet.name }}
+    </template>
     <div
-      class="box"
+      class="panesection"
       v-if="ship.planet.vendor && ship.planet.vendor.cargo"
     >
-      <h5>Vendor</h5>
+      <div class="panesubhead">Vendor</div>
 
-      <div v-if="buyableCargo">
-        <h5>Buy</h5>
+      <div class="panesection" v-if="buyableCargo">
+        <div class="panesubhead">Buy</div>
         <div
           v-for="c in buyableCargo"
           :key="'buycargo' + c.cargoData.type"
@@ -23,8 +26,8 @@
         </div>
       </div>
 
-      <div v-if="sellableCargo">
-        <h5>Sell</h5>
+      <div class="panesection" v-if="sellableCargo">
+        <div class="panesubhead">Sell</div>
         <div
           v-for="c in sellableCargo"
           :key="'sellcargo' + c.cargoData.type"
@@ -41,7 +44,11 @@
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="panesection">
+      You cannot be attacked while on a planet.
+    </div>
+  </Box>
 </template>
 
 <script lang="ts">
