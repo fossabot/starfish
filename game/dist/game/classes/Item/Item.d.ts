@@ -1,4 +1,4 @@
-import { Ship } from '../Ship/Ship';
+import type { Ship } from '../Ship/Ship';
 export declare class Item {
     readonly type: ItemType;
     readonly id: string;
@@ -7,7 +7,8 @@ export declare class Item {
     repair: number;
     maxHp: number;
     readonly ship: Ship;
-    constructor({ type, id, displayName, description, repair, maxHp, hp, }: BaseItemData, ship: Ship);
+    announceWhenRepaired: boolean;
+    constructor({ type, id, displayName, description, repair, maxHp, hp, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
     get hp(): number;
     set hp(newHp: number);
     use(): void;

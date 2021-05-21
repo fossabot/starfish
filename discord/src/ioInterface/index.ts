@@ -7,7 +7,7 @@ export const io: Socket<IOServerEvents, IOClientEvents> =
   client.connect()
 
 io.on(`connect`, () => {
-  c.log(`Connected to game server.`)
+  c.log(`green`, `Connected to game server.`)
 })
 
 io.on(`disconnect`, () => {

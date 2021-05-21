@@ -15,44 +15,60 @@
       >
         <div class="sub">Nothing on scanners.</div>
       </div>
-      <div
-        class="panesection"
-        v-if="ship.visible.ships.length"
-      >
-        <div class="panesubhead">Ships</div>
+      <div class="panesection">
         <div
-          v-for="visibleShip in ship.visible.ships"
+          v-for="visibleShip in ship.visible.ships.map(
+            angleAndDistance,
+          )"
           :key="'visibleShip' + visibleShip.id"
         >
-          {{ visibleShip.name }}
-          {{ visibleShip.location }}
+          <span
+            :style="{ color: visibleShip.faction.color }"
+            >🚀{{ visibleShip.name }}</span
+          >
+          <span v-if="visibleShip.distance > 0.001">
+            (<AngleArrow :angle="visibleShip.angle" />
+            {{
+              Math.round(visibleShip.distance * 1000) /
+                1000
+            }}AU)
+          </span>
+          <span v-else>
+            (Here)
+          </span>
         </div>
-      </div>
 
-      <div
-        class="panesection"
-        v-if="ship.visible.planets.length"
-      >
-        <div class="panesubhead">Planets</div>
         <div
-          v-for="visiblePlanet in ship.visible.planets"
+          v-for="visiblePlanet in ship.visible.planets.map(
+            angleAndDistance,
+          )"
           :key="'visiblePlanet' + visiblePlanet.name"
         >
-          {{ visiblePlanet.name }}
-          {{ visiblePlanet.location }}
+          <span :style="{ color: visiblePlanet.color }"
+            >🪐{{ visiblePlanet.name }}</span
+          >
+          <span v-if="visiblePlanet.distance > 0.001">
+            (<AngleArrow :angle="visiblePlanet.angle" />
+            {{
+              Math.round(visiblePlanet.distance * 1000) /
+                1000
+            }}AU)
+          </span>
+          <span v-else>
+            (Here)
+          </span>
         </div>
-      </div>
 
-      <div
-        class="panesection"
-        v-if="ship.visible.caches.length"
-      >
-        <div class="panesubhead">Caches</div>
         <div
-          v-for="visibleCache in ship.visible.caches"
+          v-for="visibleCache in ship.visible.caches.map(
+            angleAndDistance,
+          )"
           :key="'visibleCache' + visibleCache.id"
         >
-          {{ visibleCache }} {{ visibleCache.location }}
+          📦(<AngleArrow :angle="visibleCache.angle" />
+          {{
+            Math.round(visibleCache.distance * 1000) / 1000
+          }}AU)
         </div>
       </div>
 
@@ -77,6 +93,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -91,13 +108,27 @@ export default {
   },
   watch: {},
   mounted(this: ComponentShape) {},
-  methods: {},
+  methods: {
+    angleAndDistance(el: any) {
+      return {
+        ...el,
+        distance: c.distance(
+          this.ship.location,
+          el.location,
+        ),
+        angle: c.angleFromAToB(
+          this.ship.location,
+          el.location,
+        ),
+      }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .visiblepane {
   position: relative;
-  width: 200px;
+  width: 250px;
 }
 </style>

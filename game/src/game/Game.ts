@@ -1,6 +1,7 @@
 import c from '../../../common/dist'
 
-import { io, stubify } from '../server/io'
+import io from '../server/io'
+import { db } from '../db'
 
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet'
@@ -15,6 +16,8 @@ import defaultPlanets from './presets/planets'
 import defaultFactions from './presets/factions'
 
 export class Game {
+  static saveTimeInterval = 1 * 60 * 1000
+
   readonly startTime: Date
   readonly ships: Ship[]
   readonly planets: Planet[]
@@ -43,10 +46,19 @@ export class Game {
       this.addFaction(f)
     })
 
+    setInterval(() => this.save(), Game.saveTimeInterval)
+
     this.tick()
   }
 
-  // ----- general functions -----
+  async save() {
+    c.log(`gray`, `----- Saving Game -----`)
+    const promises: Promise<any>[] = []
+    this.ships.forEach((s) => {
+      promises.push(db.ship.addOrUpdateInDb(s))
+    })
+    await Promise.all(promises)
+  }
 
   identify() {
     c.log(
@@ -71,26 +83,22 @@ export class Game {
 
     this.tickCount++
     this.ships.forEach((s) => s.tick())
-    const attackRemnantExpirationTime =
-      Date.now() - AttackRemnant.expireTime
-    this.attackRemnants.forEach((ar, index) => {
-      if (attackRemnantExpirationTime > ar.time) {
-        this.attackRemnants.splice(index, 1)
-      }
-    })
+
+    this.expireOldAttackRemnantsAndCaches()
+    this.spawnNewCaches()
 
     // ----- timing
 
     const elapsedTimeInMs = Date.now() - startTime
-    if (elapsedTimeInMs > 10) {
-      if (elapsedTimeInMs < 30)
+    if (elapsedTimeInMs > 50) {
+      if (elapsedTimeInMs < 100)
         c.log(
           `Tick took`,
-          'yellow',
+          `yellow`,
           elapsedTimeInMs + ` ms`,
         )
       else
-        c.log(`Tick took`, 'red', elapsedTimeInMs + ` ms`)
+        c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
     }
 
     c.deltaTime = Date.now() - this.lastTickTime
@@ -111,9 +119,9 @@ export class Game {
 
     setTimeout(() => this.tick(), nextTickTime)
 
-    io.to('game').emit('game:tick', {
+    io.to(`game`).emit(`game:tick`, {
       deltaTime: c.deltaTime,
-      game: stubify<Game, GameStub>(this),
+      game: c.stubify<Game, GameStub>(this),
     })
   }
 
@@ -123,7 +131,7 @@ export class Game {
     center: CoordinatePair,
     radius: number,
     ignoreSelf: string | null,
-    type?: `ship` | `planet` | `cache` | 'attackRemnant',
+    type?: `ship` | `planet` | `cache` | `attackRemnant`,
   ): {
     ships: Ship[]
     planets: Planet[]
@@ -157,19 +165,91 @@ export class Game {
     return { ships, planets, caches, attackRemnants }
   }
 
+  // ----- radii -----
+
+  get gameSoftRadius() {
+    const count = this.humanShips.length
+    return Math.sqrt(count)
+  }
+
+  get gameSoftArea() {
+    return Math.PI * this.gameSoftRadius ** 2
+  }
+
+  // ----- tick helpers -----
+
+  expireOldAttackRemnantsAndCaches() {
+    const attackRemnantExpirationTime =
+      Date.now() - AttackRemnant.expireTime
+    this.attackRemnants.forEach((ar, index) => {
+      if (attackRemnantExpirationTime > ar.time) {
+        this.removeAttackRemnant(ar)
+      }
+    })
+
+    const cacheExpirationTime =
+      Date.now() - Cache.expireTime
+    this.caches.forEach((c, index) => {
+      if (cacheExpirationTime > c.time) {
+        this.removeCache(c)
+      }
+    })
+  }
+
+  spawnNewCaches() {
+    if (this.caches.length <= this.gameSoftArea * 2) {
+      const amount =
+        Math.round(Math.random() * 200) / 10 + 1
+      this.addCache({
+        contents: [
+          {
+            type: c.randomFromArray(c.cargoTypes) as
+              | `credits`
+              | CargoType,
+            amount,
+          },
+        ],
+        location: c.randomInsideCircle(this.gameSoftRadius),
+      })
+      c.log(`spawned random cache`)
+    }
+  }
+
   // ----- entity functions -----
 
-  addHumanShip(data: BaseHumanShipData): HumanShip {
-    c.log(`Adding human ship ${data.name} to game`)
+  addHumanShip(
+    data: BaseHumanShipData,
+    save = true,
+  ): HumanShip {
+    const existing = this.ships.find(
+      (s) => s instanceof HumanShip && s.id === data.id,
+    ) as HumanShip
+    if (existing) {
+      c.log(
+        `red`,
+        `Attempted to add an existing human ship.`,
+      )
+      return existing
+    }
+    c.log(`gray`, `Adding human ship ${data.name} to game`)
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
+    if (save) db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
-  addAIShip(data: BaseShipData): AIShip {
-    c.log(`Adding AI ship ${data.name} to game`)
+  addAIShip(data: BaseShipData, save = true): AIShip {
+    const existing = this.ships.find(
+      (s) => s instanceof AIShip && s.id === data.id,
+    ) as AIShip
+    if (existing) {
+      c.log(`red`, `Attempted to add an existing ai ship.`)
+      return existing
+    }
+    c.log(`gray`, `Adding AI ship ${data.name} to game`)
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
+    if (save) db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
@@ -185,18 +265,56 @@ export class Game {
     return newFaction
   }
 
-  addCache(data: BaseCacheData): Cache {
+  addCache(data: BaseCacheData, save = true): Cache {
+    const existing = this.caches.find(
+      (cache) => cache.id === data.id,
+    )
+    if (existing) {
+      c.log(`red`, `Attempted to add an existing cache.`)
+      return existing
+    }
     const newCache = new Cache(data, this)
     this.caches.push(newCache)
+
+    if (save) db.cache.addOrUpdateInDb(newCache)
     return newCache
+  }
+
+  removeCache(cache: Cache) {
+    db.cache.removeFromDb(cache.id)
+    const index = this.caches.findIndex(
+      (ec) => cache.id === ec.id,
+    )
+    if (index === -1) return
+    this.caches.splice(index, 1)
   }
 
   addAttackRemnant(
     data: BaseAttackRemnantData,
+    save = true,
   ): AttackRemnant {
     const newAttackRemnant = new AttackRemnant(data)
     this.attackRemnants.push(newAttackRemnant)
+    if (save)
+      db.attackRemnant.addOrUpdateInDb(newAttackRemnant)
     return newAttackRemnant
+  }
+
+  removeAttackRemnant(ar: AttackRemnant) {
+    db.attackRemnant.removeFromDb(ar.id)
+    const index = this.attackRemnants.findIndex(
+      (eAr) => ar.id === eAr.id,
+    )
+    if (index === -1) return
+    this.attackRemnants.splice(index, 1)
+  }
+
+  get humanShips() {
+    return this.ships.filter((s) => s instanceof HumanShip)
+  }
+
+  get aiShips() {
+    return this.ships.filter((s) => s instanceof AIShip)
   }
 
   // ----- export for god view -----

@@ -2,9 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import { game } from '../..'
-import { stubify } from '../io'
-import { Ship } from '../../game/classes/Ship/Ship'
-import { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { Ship } from '../../game/classes/Ship/Ship'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -14,13 +12,13 @@ export default function (
     (shipIds, userId, callback) => {
       const foundShips = game.ships.filter(
         (s) =>
-          s instanceof HumanShip &&
+          s.human &&
           shipIds.includes(s.id) &&
           s.crewMembers.find((cm) => cm.id === userId),
       )
       if (foundShips.length) {
         const shipsAsStubs = foundShips.map((s) =>
-          stubify<Ship, ShipStub>(s),
+          c.stubify<Ship, ShipStub>(s),
         )
         callback({
           data: shipsAsStubs,
@@ -33,7 +31,7 @@ export default function (
   socket.on(`ship:get`, (id, callback) => {
     const foundShip = game.ships.find((s) => s.id === id)
     if (foundShip) {
-      const stub = stubify<Ship, ShipStub>(foundShip)
+      const stub = c.stubify<Ship, ShipStub>(foundShip)
       callback({
         data: stub,
       })

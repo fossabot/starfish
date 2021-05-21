@@ -8,21 +8,22 @@ const items_1 = require("../../../presets/items");
 const Weapon_1 = require("../../Item/Weapon");
 const Engine_1 = require("../../Item/Engine");
 const loadouts_1 = __importDefault(require("../../../presets/loadouts"));
-function addWeapon(id) {
+function addWeapon(id, props) {
     const baseData = items_1.weapons[id];
     if (!baseData)
         return false;
-    const item = new Weapon_1.Weapon(baseData, this);
+    const item = new Weapon_1.Weapon(baseData, this, props);
     this.weapons.push(item);
     this.recalculateMaxHp();
+    this.toUpdate.attackRadius = this.radii.attack;
     return true;
 }
 exports.addWeapon = addWeapon;
-function addEngine(id) {
+function addEngine(id, props) {
     const baseData = items_1.engines[id];
     if (!baseData)
         return false;
-    const item = new Engine_1.Engine(baseData, this);
+    const item = new Engine_1.Engine(baseData, this, props);
     this.engines.push(item);
     this.recalculateMaxHp();
     return true;

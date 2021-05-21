@@ -7,7 +7,7 @@ exports.weapons.cannon = {
     id: `cannon`,
     displayName: `Crustacean Cannon`,
     description: `Exactly what it sounds like.`,
-    range: 1,
+    range: 0.15,
     damage: 2,
     baseCooldown: 20 * 1000,
     maxHp: 10,

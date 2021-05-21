@@ -1,4 +1,4 @@
 export declare const weapons: {
-    [key: string]: BaseWeaponData;
+    [key in WeaponType]?: BaseWeaponData;
 };
 //# sourceMappingURL=weapons.d.ts.map

@@ -150,7 +150,7 @@ export default {
 <style lang="scss" scoped>
 .holder {
   grid-column: span 2;
-  width: 370px;
+  width: 330px;
 }
 .shipdiagram {
   position: relative;
@@ -158,11 +158,11 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 3em;
+  padding: 2em;
 
   svg {
     z-index: 1;
-    width: 70%;
+    width: 75%;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -7,12 +7,11 @@ import * as discord from './discordClient'
 
 async function start() {
   if (!(await discord.connected())) {
-    c.log('red', 'Failed to connect to discord')
+    c.log(`red`, `Failed to connect to discord`)
     return
   }
   if (!(await io.connected())) {
-    c.log('red', 'Failed to connect to game server')
-    return
+    c.log(`red`, `Failed to connect to game server`)
   }
 }
 

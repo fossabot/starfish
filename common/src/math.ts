@@ -88,16 +88,37 @@ function pointIsInsideCircle(
   )
 }
 
+function randomInsideCircle(
+  radius: number,
+): CoordinatePair {
+  const angle = Math.random() * 2 * Math.PI
+  const radiusSquared = Math.random() * radius * radius
+  const x = Math.sqrt(radiusSquared) * Math.cos(angle)
+  const y = Math.sqrt(radiusSquared) * Math.sin(angle)
+  return [x, y]
+}
+
+function randomSign() {
+  return Math.random() > 0.5 ? 1 : -1
+}
+function randomInRange(a: number, b: number) {
+  const diff = b - a
+  return Math.random() * diff + a
+}
+
 export default {
   lerp,
   radiansToDegrees,
   degreesToRadians,
   distance,
   angleFromAToB,
+  randomInsideCircle,
   degreesToUnitVector,
   unitVectorFromThisPointToThatPoint,
   pointIsInsideCircle,
   vectorToDegrees,
   coordPairToRadians,
   vectorToMagnitude,
+  randomSign,
+  randomInRange,
 }

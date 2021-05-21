@@ -1,4 +1,4 @@
-import { Game } from '../Game';
+import type { Game } from '../Game';
 export declare class Planet {
     readonly name: string;
     readonly color: string;

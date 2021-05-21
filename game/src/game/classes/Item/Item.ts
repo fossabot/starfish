@@ -1,6 +1,6 @@
 import c from '../../../../../common/dist'
 
-import { Ship } from '../Ship/Ship'
+import type { Ship } from '../Ship/Ship'
 
 export class Item {
   readonly type: ItemType
@@ -10,6 +10,7 @@ export class Item {
   repair = 1
   maxHp: number
   readonly ship: Ship
+  announceWhenRepaired = false
 
   constructor(
     {
@@ -22,15 +23,17 @@ export class Item {
       hp,
     }: BaseItemData,
     ship: Ship,
+    props?: Partial<BaseItemData>,
   ) {
     this.type = type
     this.id = id
     this.displayName = displayName
     this.description = description
-    this.repair = repair ?? 1
+    this.repair = repair ?? props?.repair ?? 1
     this.ship = ship
     this.maxHp = maxHp
     if (hp !== undefined) this.hp = hp
+    if (props?.hp !== undefined) this.hp = props?.hp
   }
 
   get hp(): number {
@@ -44,5 +47,6 @@ export class Item {
   use() {
     this.repair -= 0.00005
     if (this.repair < 0) this.repair = 0
+    this.ship.toUpdate._hp = this.ship.hp
   }
 }

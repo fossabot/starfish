@@ -29,12 +29,11 @@ const ioInterface_1 = __importDefault(require("./ioInterface"));
 const discord = __importStar(require("./discordClient"));
 async function start() {
     if (!(await discord.connected())) {
-        dist_1.default.log('red', 'Failed to connect to discord');
+        dist_1.default.log(`red`, `Failed to connect to discord`);
         return;
     }
     if (!(await ioInterface_1.default.connected())) {
-        dist_1.default.log('red', 'Failed to connect to game server');
-        return;
+        dist_1.default.log(`red`, `Failed to connect to game server`);
     }
 }
 start();

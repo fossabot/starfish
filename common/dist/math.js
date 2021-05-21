@@ -50,17 +50,34 @@ function pointIsInsideCircle(center = [0, 0], point = [1, 1], radius = 0) {
         (point[1] - center[1]) * (point[1] - center[1]) <=
         radius * radius);
 }
+function randomInsideCircle(radius) {
+    const angle = Math.random() * 2 * Math.PI;
+    const radiusSquared = Math.random() * radius * radius;
+    const x = Math.sqrt(radiusSquared) * Math.cos(angle);
+    const y = Math.sqrt(radiusSquared) * Math.sin(angle);
+    return [x, y];
+}
+function randomSign() {
+    return Math.random() > 0.5 ? 1 : -1;
+}
+function randomInRange(a, b) {
+    const diff = b - a;
+    return Math.random() * diff + a;
+}
 exports.default = {
     lerp,
     radiansToDegrees,
     degreesToRadians,
     distance,
     angleFromAToB,
+    randomInsideCircle,
     degreesToUnitVector,
     unitVectorFromThisPointToThatPoint,
     pointIsInsideCircle,
     vectorToDegrees,
     coordPairToRadians,
     vectorToMagnitude,
+    randomSign,
+    randomInRange,
 };
 //# sourceMappingURL=math.js.map

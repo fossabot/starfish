@@ -10,9 +10,11 @@
       <Ship class="grid-item" />
 
       <ShipMapPlayermap class="grid-item" />
-      <ShipVisible class="grid-item" />
 
       <ShipPlanet v-if="ship.planet" class="grid-item" />
+      <ShipVisible class="grid-item" />
+
+      <ShipLog class="grid-item" />
 
       <ShipMember class="grid-item" />
       <ShipDiagram class="grid-item" />
@@ -23,6 +25,12 @@
     </div>
     <div class="box" v-if="ship && ship.dead">
       <h5>U dead</h5>
+      <button
+        v-if="this.ship.captain === this.userId"
+        @click="$store.dispatch('respawn')"
+      >
+        Respawn
+      </button>
     </div>
 
     <pre v-if="ship">{{

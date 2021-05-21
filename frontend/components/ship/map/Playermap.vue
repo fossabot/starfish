@@ -5,7 +5,7 @@
     </template>
     <div class="panesection pad-none">
       <ShipMap
-        :data="data"
+        :mapData="mapData"
         @mouseup="$store.commit('setTarget', arguments[0])"
       />
     </div>
@@ -15,19 +15,20 @@
 <script lang="ts">
 import { mapState } from 'vuex'
 interface ComponentShape {
+  ship: ShipStub
   [key: string]: any
 }
 
 export default {
-  data(): ComponentShape {
+  data() {
     return {}
   },
   computed: {
     ...mapState(['ship', 'userId']),
-    data(this: ComponentShape) {
+    mapData(this: ComponentShape) {
       return {
         center: this.ship.location,
-        defaultRadius: this.ship.sightRadius,
+        defaultRadius: this.ship.radii.sight,
         planets: this.planetsToShow,
         ships: [
           ...(this.ship.visible.ships || []),
@@ -36,7 +37,22 @@ export default {
         targetLines: this.targetLines,
         attackRemnants:
           this.ship.visible.attackRemnants || [],
+        caches: this.ship.visible.caches || [],
+        speed: this.ship.speed,
+        radii: this.radii,
       }
+    },
+    radii(this: ComponentShape) {
+      return [
+        {
+          radius: this.ship.radii.attack,
+          label: 'Attack radius',
+          label2:
+            Math.round(this.ship.radii.attack * 100) / 100 +
+            'AU',
+          color: 'hsla(20, 70%, 70%, .6)',
+        },
+      ]
     },
     shipLocation(this: ComponentShape) {
       return this.ship.location
@@ -51,7 +67,10 @@ export default {
     },
     targetLines(this: ComponentShape) {
       return this.ship.crewMembers
-        .filter((c: any | undefined) => c.targetLocation)
+        .filter(
+          (c: CrewMemberStub) =>
+            c.location === 'cockpit' && c.targetLocation,
+        )
         .map((c: CrewMemberStub) => ({
           id: c.id,
           from: this.ship.location,
@@ -68,6 +87,6 @@ export default {
 
 <style lang="scss" scoped>
 .panesection {
-  width: 500px;
+  width: 600px;
 }
 </style>

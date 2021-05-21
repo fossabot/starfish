@@ -1,7 +1,7 @@
 export declare const weapons: {
-    [key: string]: BaseWeaponData;
+    cannon?: BaseWeaponData | undefined;
 };
 export declare const engines: {
-    [key: string]: BaseEngineData;
+    starter?: BaseEngineData | undefined;
 };
 //# sourceMappingURL=index.d.ts.map

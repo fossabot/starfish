@@ -1,0 +1,1 @@
+{"version":3,"file":"attackRemnant.d.ts","sourceRoot":"","sources":["../../../src/db/models/attackRemnant.ts"],"names":[],"mappings":"AAQA,OAAO,KAAK,EAAE,aAAa,EAAE,MAAM,kCAAkC,CAAA;AAmCrE,wBAAsB,eAAe,CACnC,IAAI,EAAE,aAAa,GAClB,OAAO,CAAC,qBAAqB,CAAC,CAehC;AAED,wBAAsB,IAAI,kBAGzB;AAED,wBAAsB,YAAY,CAAC,EAAE,EAAE,MAAM,iBAE5C;AAED,wBAAsB,mBAAmB,IAAI,OAAO,CAClD,qBAAqB,EAAE,CACxB,CAGA"}

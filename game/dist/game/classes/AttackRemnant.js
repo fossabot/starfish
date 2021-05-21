@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttackRemnant = void 0;
 class AttackRemnant {
-    constructor({ attacker, defender, damageTaken, start, end, time, }) {
+    constructor({ attacker, defender, damageTaken, start, end, time, id, }) {
+        this.id = id || `${Math.random()}`.substring(2);
         this.attacker = attacker;
         this.defender = defender;
         this.damageTaken = damageTaken;

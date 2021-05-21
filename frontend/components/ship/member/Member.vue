@@ -8,7 +8,7 @@
 
       <div class="panesection">
         <div>
-          Location:
+          🚪Location:
           {{ c.capitalize(crewMember.location) }}
         </div>
       </div>
@@ -19,7 +19,7 @@
         "
       >
         <div>
-          Stamina:
+          💪Stamina:
           {{ Math.round(crewMember.stamina * 1000) / 1000 }}
           /
           {{

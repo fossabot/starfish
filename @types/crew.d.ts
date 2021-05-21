@@ -12,6 +12,8 @@ type SkillName =
 
 type Tactic = `defensive` | `aggressive`
 
+type RepairPriority = `most damaged` | `engines` | `weapons`
+
 type ActiveName = `boost`
 
 interface BaseCrewMemberData {
@@ -25,6 +27,8 @@ interface BaseCrewMemberData {
   actives?: BaseActiveData[]
   tactic?: Tactic
   attackFactions?: FactionKey[]
+  targetLocation?: CoordinatePair | null
+  repairPriority?: RepairPriority
 }
 
 interface XPData {

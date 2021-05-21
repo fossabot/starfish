@@ -16,7 +16,7 @@ class StartCommand {
         const createdShip = await ship_1.create({
             id: initialMessage.guild.id,
             name: initialMessage.guild.name,
-            faction: `green`,
+            faction: { color: `green` },
         });
         if (!createdShip) {
             await initialMessage.channel.send(`Failed to start your server in the game.`);

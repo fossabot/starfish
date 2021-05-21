@@ -237,18 +237,18 @@
         "affectsGlobalScope": false
       },
       "../@types/attackremnant.d.ts": {
-        "version": "cc7980e50ce9ec9c082ad7ccf8e526c518265ef34f0e31545177485ae10644a8",
-        "signature": "cc7980e50ce9ec9c082ad7ccf8e526c518265ef34f0e31545177485ae10644a8",
+        "version": "b7bcd1874fc9fe524ba0a81e960f838f624e28be3ec459551ea86e7ecabee499",
+        "signature": "b7bcd1874fc9fe524ba0a81e960f838f624e28be3ec459551ea86e7ecabee499",
         "affectsGlobalScope": true
       },
       "../@types/cache.d.ts": {
-        "version": "7df76a88dead43b24743ce366c6548d91fd0b164a5a9b8dd3e4bb9bcc70b9fd1",
-        "signature": "7df76a88dead43b24743ce366c6548d91fd0b164a5a9b8dd3e4bb9bcc70b9fd1",
+        "version": "c994b2cf2b3355826babaed5639b42ff711b95328f90f7851abbe13d0159894e",
+        "signature": "c994b2cf2b3355826babaed5639b42ff711b95328f90f7851abbe13d0159894e",
         "affectsGlobalScope": true
       },
       "../@types/cargo.d.ts": {
-        "version": "242afd9f52a52d34856f742c58041b174a60592737813c296e726dd04178fe81",
-        "signature": "242afd9f52a52d34856f742c58041b174a60592737813c296e726dd04178fe81",
+        "version": "659774bc7adfe1d216d51e5d63998571886ad00ab6ae5c4a61ff0dd8c7b8eed7",
+        "signature": "659774bc7adfe1d216d51e5d63998571886ad00ab6ae5c4a61ff0dd8c7b8eed7",
         "affectsGlobalScope": true
       },
       "../@types/common.d.ts": {
@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
-        "signature": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
+        "version": "e55dad3ef61ba141093d9269cbbfe4e9e69c75474bfa98596b1279b16a080391",
+        "signature": "e55dad3ef61ba141093d9269cbbfe4e9e69c75474bfa98596b1279b16a080391",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -272,13 +272,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
-        "signature": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
+        "version": "0002313220fe058dd01989477981d7e60e0404f2349194fdc3caa634b1adcbbd",
+        "signature": "0002313220fe058dd01989477981d7e60e0404f2349194fdc3caa634b1adcbbd",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
-        "signature": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
+        "version": "a396614929a4f4890481a8fe46abc9602ad77c02f787d4aa6fd1ac1ccd24baa2",
+        "signature": "a396614929a4f4890481a8fe46abc9602ad77c02f787d4aa6fd1ac1ccd24baa2",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -287,13 +287,13 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
-        "signature": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
+        "version": "484b71844462dbe71a565f896827f787bc0e7f73646976355d533ec66df4a4eb",
+        "signature": "484b71844462dbe71a565f896827f787bc0e7f73646976355d533ec66df4a4eb",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
-        "signature": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
+        "version": "64c7c63e823d7122aa430baefca01800f1687498fac3209675d7679da09fdeec",
+        "signature": "64c7c63e823d7122aa430baefca01800f1687498fac3209675d7679da09fdeec",
         "affectsGlobalScope": true
       },
       "./src/badwords.ts": {
@@ -302,18 +302,18 @@
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
-        "version": "e54a4c726f6ce5851d6437c1a3d506576c9bf93b4876170506000944d0e5a63c",
-        "signature": "491fd4cd3949701c8ef7f967f88740cea95be157abbf823d076d4f18bc444777",
-        "affectsGlobalScope": false
-      },
-      "./src/game.ts": {
-        "version": "ae7f4a65638ed675667b3ab3d9fe0de605bbb5a8aa0fb7b00a598ce5889c6d12",
-        "signature": "13ba138699d15dcf082b56ef89a8c4f8a41e4d811c2c5578d40b99834517ba2a",
+        "version": "1d5575ee6d17ef0165f098f92ba941c4a19cb729eac54225062919b5cd4a647e",
+        "signature": "5bb1b5f0c83fdfb694a25a70c62711ac6693a06084e831e7d723f6c61aa83645",
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
-        "version": "ff85d957723e61c6dcbbd06171f55200cf42e1bd2b29e1aa7cb2747b28dc8919",
-        "signature": "bd096a239d501b262f21de85b8084617652452ac7b11d05f29ee774571482570",
+        "version": "55eb58b2a47dcf3ee98c7a9403c0aa5d9cc0e9b849b935142427a49b027c16b3",
+        "signature": "303cdbb2f5b1c2dc4d784ee2d373cc261d5ac7f32334bd1c51941e9706a4c006",
+        "affectsGlobalScope": false
+      },
+      "./src/game.ts": {
+        "version": "d5a124719ee785a65985fc4efb28cdcf975fb1173741c32a015bf2ac13a8044c",
+        "signature": "7395a2ac3a828fdc9dd62b53d054a126ffb334ad7e3683ea8b8821f33bb216af",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -333,22 +333,12 @@
       },
       "./src/index.ts": {
         "version": "109b4c07d418d14c335a79796f8a29a397fd09b7a2550060f04288a8a0edf2a1",
-        "signature": "6e6616b57e6b1749199e586eedd3f80b50d6f43793d17952da3c1ee07165b9a5",
+        "signature": "ccb75f4d8f6384eb562c8edb0e9ebb2644782f1334c55e40101589c0ae9d9697",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {
         "version": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76",
         "signature": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/html-minifier-terser/index.d.ts": {
-        "version": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
-        "signature": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/json-schema/index.d.ts": {
-        "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
-        "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/node/assert/strict.d.ts": {
@@ -601,6 +591,31 @@
         "signature": "6c9c7e459e013ddf52c70b90f88bbdd925e483ef984d80f9bffb501029974e82",
         "affectsGlobalScope": false
       },
+      "../node_modules/@types/bson/index.d.ts": {
+        "version": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "signature": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/html-minifier-terser/index.d.ts": {
+        "version": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
+        "signature": "6767cce098e1e6369c26258b7a1f9e569c5467d501a47a090136d5ea6e80ae6d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/json-schema/index.d.ts": {
+        "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/mongodb/index.d.ts": {
+        "version": "41bd6256bcd9e56c1a945781f443464cf797d9b8ab4221ebd167597fb525a6a9",
+        "signature": "41bd6256bcd9e56c1a945781f443464cf797d9b8ab4221ebd167597fb525a6a9",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/mongoose/index.d.ts": {
+        "version": "6629da0f00710b118d8bcb9f40f5575d80d4574462f96e561b361ab0b63d1a6f",
+        "signature": "6629da0f00710b118d8bcb9f40f5575d80d4574462f96e561b361ab0b63d1a6f",
+        "affectsGlobalScope": false
+      },
       "../node_modules/@types/q/index.d.ts": {
         "version": "f9a2dd6a6084665f093ed0e9664b8e673be2a45e342a59dd4e0e4e552e68a9ad",
         "signature": "f9a2dd6a6084665f093ed0e9664b8e673be2a45e342a59dd4e0e4e552e68a9ad",
@@ -722,6 +737,7 @@
     },
     "referencedMap": {
       "./src/game.ts": [
+        "./src/globals.ts",
         "./src/math.ts"
       ],
       "./src/index.ts": [
@@ -735,6 +751,23 @@
       "./src/text.ts": [
         "./src/badwords.ts",
         "./src/math.ts"
+      ],
+      "../node_modules/@types/bson/index.d.ts": [
+        "../node_modules/@types/node/index.d.ts"
+      ],
+      "../node_modules/@types/mongodb/index.d.ts": [
+        "../node_modules/@types/bson/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/index.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/tls.d.ts"
+      ],
+      "../node_modules/@types/mongoose/index.d.ts": [
+        "../node_modules/@types/mongodb/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/index.d.ts",
+        "../node_modules/@types/node/stream.d.ts"
       ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts"
@@ -1072,6 +1105,22 @@
       ]
     },
     "exportedModulesMap": {
+      "../node_modules/@types/bson/index.d.ts": [
+        "../node_modules/@types/node/index.d.ts"
+      ],
+      "../node_modules/@types/mongodb/index.d.ts": [
+        "../node_modules/@types/bson/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/index.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/tls.d.ts"
+      ],
+      "../node_modules/@types/mongoose/index.d.ts": [
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/index.d.ts",
+        "../node_modules/@types/node/stream.d.ts"
+      ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts"
       ],
@@ -1429,8 +1478,11 @@
       "./src/misc.ts",
       "./src/text.ts",
       "../node_modules/@types/anymatch/index.d.ts",
+      "../node_modules/@types/bson/index.d.ts",
       "../node_modules/@types/html-minifier-terser/index.d.ts",
       "../node_modules/@types/json-schema/index.d.ts",
+      "../node_modules/@types/mongodb/index.d.ts",
+      "../node_modules/@types/mongoose/index.d.ts",
       "../node_modules/@types/node/assert.d.ts",
       "../node_modules/@types/node/assert/strict.d.ts",
       "../node_modules/@types/node/async_hooks.d.ts",

@@ -1,11 +1,12 @@
 interface BaseCacheData {
   contents: CacheContents[]
   location: CoordinatePair
-  ownerId: string
+  time?: number
   message?: string
+  id?: string
 }
 
 interface CacheContents {
-  type: CargoType
+  type: CargoType | `credits`
   amount: number
 }

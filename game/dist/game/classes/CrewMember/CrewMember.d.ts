@@ -1,7 +1,7 @@
 import * as roomActions from './addins/rooms';
-import { HumanShip } from '../Ship/HumanShip';
+import type { HumanShip } from '../Ship/HumanShip';
 import { Active } from './Active';
-import { CombatShip } from '../Ship/CombatShip';
+import type { CombatShip } from '../Ship/CombatShip';
 export declare class CrewMember {
     static readonly passiveStaminaLossPerSecond = 0.0001;
     static readonly levelXPNumbers: number[];
@@ -16,6 +16,7 @@ export declare class CrewMember {
     tactic: Tactic;
     attackFactions: FactionKey[];
     attackTarget: CombatShip | null;
+    repairPriority: RepairPriority;
     readonly inventory: Cargo[];
     credits: number;
     readonly actives: Active[];
@@ -28,6 +29,7 @@ export declare class CrewMember {
     bunkAction: typeof roomActions.bunk;
     tick(): void;
     addXp(skill: SkillName, xp?: number): void;
+    addCargo(type: CargoType, amount: number): void;
     get tired(): boolean;
     get maxStamina(): number;
     get staminaRefillPerHour(): number;

@@ -1,9 +1,12 @@
 import c from '../../../../../common/dist'
-import { io, stubify } from '../../../server/io'
+import io from '../../../server/io'
+import { db } from '../../../db'
+
 import { Ship } from './Ship'
 import type { Weapon } from '../Item/Weapon'
 import type { Item } from '../Item/Item'
-import { Engine } from '../Item/Engine'
+import type { Engine } from '../Item/Engine'
+import type { Game } from '../../Game'
 
 interface DamageResult {
   miss: boolean
@@ -15,12 +18,19 @@ interface DamageResult {
 export abstract class CombatShip extends Ship {
   attackable = true
 
-  attackRange(): number {
-    return this.weapons.reduce(
+  constructor(props: BaseShipData, game: Game) {
+    super(props, game)
+
+    this.updateAttackRadius()
+  }
+
+  updateAttackRadius() {
+    this.radii.attack = this.weapons.reduce(
       (highest: number, curr: Weapon): number =>
         Math.max(curr.range, highest),
       0,
     )
+    this.toUpdate.radii = this.radii
   }
 
   availableWeapons(): Weapon[] {
@@ -37,6 +47,7 @@ export abstract class CombatShip extends Ship {
   }
 
   respawn() {
+    c.log(`respawning`, this.name)
     while (this.weapons.length) this.weapons.pop()
     while (this.engines.length) this.engines.pop()
     this.equipLoadout(`human_default`)
@@ -52,6 +63,8 @@ export abstract class CombatShip extends Ship {
     this.move(moveTo)
     while (this.previousLocations.length)
       this.previousLocations.pop()
+
+    db.ship.addOrUpdateInDb(this)
   }
 
   canAttack(
@@ -71,7 +84,7 @@ export abstract class CombatShip extends Ship {
       return false
     if (
       c.distance(otherShip.location, this.location) >
-      this.attackRange()
+      this.radii.attack
     )
       return false
     if (
@@ -89,7 +102,12 @@ export abstract class CombatShip extends Ship {
     targetType?: ItemType,
   ): TakenDamageResult {
     if (!this.canAttack(target))
-      return { damageTaken: 0, didDie: false, weapon }
+      return {
+        damageTaken: 0,
+        didDie: false,
+        weapon,
+        miss: true,
+      }
 
     weapon.use()
 
@@ -99,7 +117,8 @@ export abstract class CombatShip extends Ship {
     )
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
-    const miss = Math.random() > rangeAsPercent
+    const miss =
+      Math.random() * weapon.repair > rangeAsPercent
     const damage = miss
       ? 0
       : weapon.damage * totalMunitionsSkill
@@ -122,6 +141,21 @@ export abstract class CombatShip extends Ship {
       end: [...target.location],
       time: Date.now(),
     })
+
+    this.logEntry(
+      `${attackResult.miss ? `Missed` : `Attacked`} ${
+        target.name
+      } with ${weapon.displayName}${
+        attackResult.miss
+          ? `.`
+          : `, dealing ${attackResult.damageTaken} damage.`
+      }${
+        attackResult.didDie
+          ? ` ${target.name} died in the exchange.`
+          : ``
+      }`,
+      `high`,
+    )
 
     return attackResult
   }
@@ -158,27 +192,36 @@ export abstract class CombatShip extends Ship {
           equipmentToAttack.hp = 0
           remainingDamage -= remainingHp
         }
+        if (equipmentToAttack.hp === 0) {
+          this.logEntry(
+            `Your ${equipmentToAttack.displayName} has been disabled!`,
+            `high`,
+          )
+        }
       }
     }
-    this.toUpdate.weapons = stubify<Weapon[], WeaponStub[]>(
-      this.weapons,
-    )
-    this.toUpdate.engines = stubify<Engine[], EngineStub[]>(
-      this.engines,
-    )
+    this.toUpdate.weapons = c.stubify<
+      Weapon[],
+      WeaponStub[]
+    >(this.weapons)
+    this.toUpdate.engines = c.stubify<
+      Engine[],
+      EngineStub[]
+    >(this.engines)
 
     const didDie = previousHp > 0 && this.hp <= 0
     if (didDie) {
       // ----- notify listeners -----
       io.to(`ship:${this.id}`).emit(
         `ship:die`,
-        stubify<Ship, ShipStub>(this),
+        c.stubify<Ship, ShipStub>(this),
       )
 
-      this.dead = true
+      this.die()
     } else this.dead = false
 
     c.log(
+      `gray`,
       `${this.name} takes ${attack.damage} damage from ${
         attacker.name
       }'s ${attack.weapon.displayName}, and ${
@@ -194,10 +237,69 @@ export abstract class CombatShip extends Ship {
 
     this.toUpdate._hp = this.hp
 
+    this.logEntry(
+      `${
+        attack.miss
+          ? `Missed by attack from`
+          : `Hit by an attack from`
+      } ${attacker.name}'s ${attack.weapon.displayName}${
+        attack.miss
+          ? `.`
+          : `, taking ${attack.damage} damage.`
+      }`,
+      attack.miss ? `medium` : `high`,
+    )
+
     return {
+      miss: attack.damage === 0,
       damageTaken: attack.damage,
       didDie: didDie,
       weapon: attack.weapon,
     }
+  }
+
+  die() {
+    this.dead = true
+
+    setTimeout(() => {
+      this.logEntry(
+        `Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
+        `critical`,
+      )
+    }, 100)
+
+    const cacheContents: CacheContents[] = []
+
+    this.crewMembers.forEach((cm) => {
+      while (cm.inventory.length) {
+        const toAdd = cm.inventory.pop()
+        const existing = cacheContents.find(
+          (cc) => cc.type === toAdd?.type,
+        )
+        if (existing) existing.amount += toAdd?.amount || 0
+        else if (toAdd) cacheContents.push(toAdd)
+      }
+
+      cm.credits *= 0.5
+      const existing = cacheContents.find(
+        (cc) => cc.type === `credits`,
+      )
+      if (existing) existing.amount += cm.credits || 0
+      else if (cm.credits)
+        cacheContents.push({
+          type: `credits`,
+          amount: cm.credits,
+        })
+
+      cm.location = `bunk`
+    })
+
+    if (cacheContents.length)
+      this.game.addCache({
+        contents: cacheContents,
+        location: this.location,
+        ownerId: this.id,
+        message: `Remains of ${this.name}`,
+      })
   }
 }

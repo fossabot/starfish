@@ -1,15 +1,13 @@
 <template>
   <div class="inventory panesection">
-    <div class="panesubhead">Inventory</div>
-    <div>Credits: {{ crewMember.credits }}</div>
-    <div v-if="!crewMember.inventory.length">
-      Nothing in inventory
+    <div class="panesubhead">Cargo</div>
+    <div>
+      💳Credits:
+      {{ Math.round(crewMember.credits * 1000) / 1000 }}
     </div>
-    <div
-      v-for="item in crewMember.inventory"
-      :key="'inv' + item.type"
-    >
-      {{ c.capitalize(item.type) }}: {{ item.amount }}
+    <div v-for="item in inventory" :key="'inv' + item.type">
+      {{ c.capitalize(item.type) }}:
+      {{ Math.round(item.amount * 1000) / 1000 }} tons
     </div>
   </div>
 </template>
@@ -27,6 +25,11 @@ export default {
   },
   computed: {
     ...mapState(['crewMember']),
+    inventory(this: ComponentShape) {
+      return this.crewMember?.inventory
+        .filter((i: Cargo) => i.amount >= 0.001)
+        .sort((a: Cargo, b: Cargo) => b.amount - a.amount)
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

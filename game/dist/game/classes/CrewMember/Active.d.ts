@@ -1,4 +1,4 @@
-import { CrewMember } from './CrewMember';
+import type { CrewMember } from './CrewMember';
 export declare class Active {
     readonly crewMember: CrewMember;
     readonly id: string;

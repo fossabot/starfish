@@ -7,7 +7,7 @@ exports.engines.starter = {
     id: `starter`,
     displayName: `Bubble Booster`,
     description: `Exactly what it sounds like.`,
-    thrustAmplification: 1,
+    thrustAmplification: 10,
     maxHp: 10,
 };
 //# sourceMappingURL=engines.js.map

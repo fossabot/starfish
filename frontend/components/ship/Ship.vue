@@ -16,8 +16,12 @@
         </div>
       </div> -->
 
+      <div class="panesection" v-if="ship.planet">
+        <div>At planet 🪐{{ ship.planet.name }}</div>
+      </div>
+
       <div class="panesection">
-        <div class="arrow">
+        <div class="arrow" v-if="ship.speed > 0">
           <div>
             Speed: <br />
             {{
@@ -70,6 +74,7 @@
             />
           </svg>
         </div>
+        <div v-else>Stopped</div>
       </div>
 
       <ProgressBar :percent="ship._hp / ship._maxHp">

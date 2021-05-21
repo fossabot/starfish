@@ -12,6 +12,6 @@ export const metals: CargoData = {
 
 export const textiles: CargoData = {
   name: `Textiles`,
-  type: 'textiles',
+  type: `textiles`,
   basePrice: 3,
 }

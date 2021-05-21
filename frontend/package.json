@@ -11,6 +11,7 @@
     "@nuxtjs/axios": "^5.13.1",
     "@types/masonry-layout": "^4.2.2",
     "core-js": "^3.12.1",
+    "dayjs": "^1.10.4",
     "masonry-layout": "^4.2.2",
     "nuxt": "^2.15.3",
     "nuxt-vite": "^0.0.37",

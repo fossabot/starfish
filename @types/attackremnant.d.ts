@@ -1,4 +1,5 @@
 interface BaseAttackRemnantData {
+  id?: string
   attacker: CombatShip
   defender: CombatShip
   damageTaken: TakenDamageResult

@@ -1,4 +1,4 @@
 export declare const engines: {
-    [key: string]: BaseEngineData;
+    [key in EngineType]?: BaseEngineData;
 };
 //# sourceMappingURL=engines.d.ts.map

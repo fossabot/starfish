@@ -6,7 +6,7 @@
     @mouseup="mouseUp"
     @mouseleave="mouseLeave"
     @mousemove="mouseMove"
-    v-if="data"
+    v-if="mapData"
   >
     <svg
       ref="svg"
@@ -14,15 +14,63 @@
         `${view.left} ${view.top} ${view.width} ${view.height}`
       "
     >
-      <ShipMapOutline
-        :location="[data.center[0], data.center[1] * -1]"
-        :radius="data.defaultRadius * FLAT_SCALE"
-        label="sight radius"
+      <ShipMapSightMask
+        :location="[
+          mapData.center[0],
+          mapData.center[1] * -1,
+        ]"
+        :radius="mapData.defaultRadius * FLAT_SCALE"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :view="view"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      />
+
+      <!-- <ShipMapOutline
+        :location="[
+          mapData.center[0],
+          mapData.center[1] * -1,
+        ]"
+        :radius="mapData.defaultRadius * FLAT_SCALE"
+        :label="zoom > 1 ? 'sight radius' : ''"
+        :label2="
+          zoom > 1
+            ? Math.round(mapData.defaultRadius * 100) /
+                100 +
+              'au'
+            : ''
+        "
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
         :view="view"
         :containerSizeMultiplier="containerSizeMultiplier"
         :blackout="true"
+      /> -->
+
+      <ShipMapOutline
+        v-for="el in mapData.radii"
+        :key="el.label"
+        :location="[
+          mapData.center[0],
+          mapData.center[1] * -1,
+        ]"
+        :radius="el.radius * FLAT_SCALE"
+        :label="zoom > 1 ? el.label : ''"
+        :label2="zoom > 1 ? el.label2 : ''"
+        :color="el.color"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :view="view"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      />
+
+      <ShipMapCache
+        v-for="c in caches"
+        :key="'cache' + Math.random()"
+        v-bind="c"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :containerSizeMultiplier="containerSizeMultiplier"
       />
 
       <ShipMapPlanet
@@ -64,12 +112,24 @@
       />
 
       <ShipMapDistanceCircles
-        :location="[data.center[0], data.center[1] * -1]"
+        :location="[
+          mapData.center[0],
+          mapData.center[1] * -1,
+        ]"
         :view="view"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
+        :speed="mapData.speed"
         :containerSizeMultiplier="containerSizeMultiplier"
       />
+
+      <!--
+
+:location="[
+          (view.left + view.width / 2) / FLAT_SCALE,
+          (view.top + view.height / 2) / FLAT_SCALE,
+        ]"
+        -->
 
       <!-- <ShipMapDistanceMarkers
         v-bind="view"
@@ -120,8 +180,8 @@ const getMaxes = (coordPairs: CoordinatePair[]) => {
 
 export default {
   props: {
-    data: {},
-    resetCenterTime: { default: 120 * 10000 },
+    mapData: {},
+    resetCenterTime: { default: 120 * 1000 },
   },
   data(): ComponentShape {
     return {
@@ -131,6 +191,7 @@ export default {
       planets: [],
       targetLines: [],
       attackRemnants: [],
+      caches: [],
       maxView: { left: 0, top: 0, width: 1, height: 1 },
       view: { left: 0, top: 0, width: 0, height: 0 },
       isPanning: false,
@@ -146,7 +207,7 @@ export default {
   },
   computed: {},
   watch: {
-    data(this: ComponentShape) {
+    mapData(this: ComponentShape) {
       this.redraw()
     },
   },
@@ -156,8 +217,8 @@ export default {
   methods: {
     redraw(this: ComponentShape) {
       if (
-        !this.data ||
-        (!this.data.ships && !this.data.planets)
+        !this.mapData ||
+        (!this.mapData.ships && !this.mapData.planets)
       )
         return
 
@@ -165,7 +226,7 @@ export default {
         600 / this.$el.offsetWidth
 
       this.ships =
-        this.data.ships?.map((el: ShipStub) => ({
+        this.mapData.ships?.map((el: ShipStub) => ({
           type: 'ship',
           location: [...el.location],
           color:
@@ -179,7 +240,7 @@ export default {
           previousLocations: el.previousLocations || [],
         })) || []
       this.planets =
-        this.data.planets?.map((el: PlanetStub) => ({
+        this.mapData.planets?.map((el: PlanetStub) => ({
           type: 'planet',
           location: [...el.location],
           radius: (el.radius || 36000) / KM_PER_AU,
@@ -187,7 +248,7 @@ export default {
           name: el.name,
         })) || []
       this.targetLines =
-        this.data.targetLines?.map((el: any) => ({
+        this.mapData.targetLines?.map((el: any) => ({
           type: 'targetLine',
           from: [...el.from],
           to: [...el.to],
@@ -195,16 +256,22 @@ export default {
           id: el.id,
         })) || []
       this.attackRemnants =
-        this.data.attackRemnants?.map(
+        this.mapData.attackRemnants?.map(
           (el: AttackRemnantStub) => ({
             type: 'attackRemnant',
             from: [...el.start],
             to: [...el.end],
             attacker: el.attacker,
             defender: el.defender,
+            time: el.time,
             miss: el.damageTaken.damageTaken === 0,
           }),
         ) || []
+      this.caches =
+        this.mapData.caches?.map((el: CacheStub) => ({
+          type: 'cache',
+          location: [...el.location],
+        })) || []
 
       // flip y values since svg counts up from the top down
       this.ships.forEach((el: ShipStub) => {
@@ -212,6 +279,9 @@ export default {
       })
       this.planets.forEach(
         (el: PlanetStub) => (el.location[1] *= -1),
+      )
+      this.caches.forEach(
+        (el: CacheStub) => (el.location[1] *= -1),
       )
       this.targetLines.forEach((el: PlanetStub) => {
         el.from[1] *= -1
@@ -242,15 +312,15 @@ export default {
       const buffer = hardBuffer + softBuffer
 
       this.maxView.left =
-        this.data.center[0] * this.FLAT_SCALE
+        this.mapData.center[0] * this.FLAT_SCALE
       this.maxView.top =
-        this.data.center[1] * this.FLAT_SCALE * -1
+        this.mapData.center[1] * this.FLAT_SCALE * -1
 
       this.maxView.width =
-        this.data.defaultRadius * 2 * this.FLAT_SCALE +
+        this.mapData.defaultRadius * 2 * this.FLAT_SCALE +
         buffer * 2
       this.maxView.height =
-        this.data.defaultRadius * 2 * this.FLAT_SCALE +
+        this.mapData.defaultRadius * 2 * this.FLAT_SCALE +
         buffer * 2
 
       // this.maxView.width = maxes.width
@@ -423,5 +493,7 @@ svg {
   width: 100%;
   height: 100%;
   position: relative;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 </style>

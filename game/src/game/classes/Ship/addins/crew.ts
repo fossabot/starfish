@@ -1,6 +1,5 @@
 import c from '../../../../../../common/dist'
 import { HumanShip } from '../HumanShip'
-import { Ship } from '../Ship'
 
 export function membersIn(
   this: HumanShip,

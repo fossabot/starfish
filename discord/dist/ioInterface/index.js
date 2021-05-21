@@ -29,7 +29,7 @@ const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const client = socket_io_client_1.default(`http://game:4200`);
 exports.io = client.connect();
 exports.io.on(`connect`, () => {
-    dist_1.default.log(`Connected to game server.`);
+    dist_1.default.log(`green`, `Connected to game server.`);
 });
 exports.io.on(`disconnect`, () => {
     dist_1.default.log(`red`, `Lost connection to game server.`);

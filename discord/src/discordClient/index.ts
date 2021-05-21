@@ -9,7 +9,7 @@ export const client = new Discord.Client({
   messageSweepInterval: 60,
 })
 
-const commandHandler = new CommandHandler('.')
+const commandHandler = new CommandHandler(`.`)
 
 export const rawWatchers: Function[] = []
 let didError: string | null = null
@@ -62,6 +62,7 @@ client.on(`raw`, async (event) => {
 })
 client.on(`ready`, async () => {
   c.log(
+    `green`,
     `Logged in as ${client.user?.tag} in ${
       (await client.guilds.cache.array()).length
     } guilds`,

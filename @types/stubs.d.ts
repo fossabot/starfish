@@ -27,6 +27,7 @@ interface ShipStub extends BaseStub {
   planet: PlanetStub | false
   faction: FactionStub | false
   crewMembers: CrewMemberStub[]
+  log: LogEntry[]
   [key: string]: any
 }
 interface VisibleStub extends BaseStub {
@@ -58,9 +59,15 @@ interface FactionStub extends BaseStub {
   [key: string]: any
 }
 
-interface WeaponStub extends BaseStub {
+interface ItemStub extends BaseStub {
+  type?: ItemType
+  id: string
+  repair?: number
+}
+interface WeaponStub extends ItemStub {
+  cooldownRemaining?: number
   [key: string]: any
 }
-interface EngineStub extends BaseStub {
+interface EngineStub extends ItemStub {
   [key: string]: any
 }

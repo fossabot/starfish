@@ -6,7 +6,7 @@
       </template>
 
       <div class="panesection" v-if="ship.weapons">
-        <h5>Weapons</h5>
+        <div class="panesubhead">Weapons</div>
         <div v-for="i in ship.weapons">
           {{ i.displayName }}
           <div>
@@ -17,7 +17,8 @@
               <div>
                 HP:
                 {{
-                  Math.round(i.repair * i.maxHp * 10) / 10
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
                 }}/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
@@ -52,7 +53,7 @@
       </div>
 
       <div class="panesection" v-if="ship.engines">
-        <h5>Engines</h5>
+        <div class="panesubhead">Engines</div>
         <div v-for="i in ship.engines">
           {{ i.displayName }}
           <div>
@@ -63,7 +64,8 @@
               <div>
                 HP:
                 {{
-                  Math.round(i.repair * i.maxHp * 10) / 10
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
                 }}/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,

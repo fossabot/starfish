@@ -1,7 +1,6 @@
 import c from '../../../../../../common/dist'
-import { stubify } from '../../../../server/io'
-import { Weapon } from '../../Item/Weapon'
-import { CrewMember } from '../CrewMember'
+import type { Item } from '../../Item/Item'
+import type { CrewMember } from '../CrewMember'
 
 export function cockpit(this: CrewMember): void {
   if (
@@ -19,18 +18,60 @@ export function repair(this: CrewMember): void {
     (i) => i.repair < 1,
   )
   if (repairableItems.length) {
-    const amountToRepair =
-      ((this.mechanics?.level || 1) * c.deltaTime) /
-      repairableItems.length /
-      1000 /
-      10000
+    const itemsToRepair: Item[] = []
 
-    c.log(amountToRepair)
-    repairableItems.forEach((ri) => {
-      ri.repair += amountToRepair
-      if (ri.repair > 1) ri.repair = 1
+    if (this.repairPriority === `engines`) {
+      const repairableEngines = repairableItems.filter(
+        (i) => i.type === `engine`,
+      )
+      itemsToRepair.push(...repairableEngines)
+    } else if (this.repairPriority === `weapons`) {
+      const repairableWeapons = repairableItems.filter(
+        (i) => i.type === `weapon`,
+      )
+      itemsToRepair.push(...repairableWeapons)
+    }
+    if (
+      itemsToRepair.length === 0 ||
+      this.repairPriority === `most damaged`
+    )
+      itemsToRepair.push(
+        repairableItems.reduce(
+          (mostBroken, ri) =>
+            ri.repair < mostBroken.repair ? ri : mostBroken,
+          repairableItems[0],
+        ),
+      )
+
+    const amountToRepair =
+      (c.getRepairAmountPerTickForSingleCrewMember(
+        this.mechanics?.level || 1,
+      ) *
+        c.deltaTime) /
+      c.TICK_INTERVAL /
+      itemsToRepair.length
+
+    // c.log(
+    //   this.repairPriority,
+    //   amountToRepair,
+    //   itemsToRepair.map((i) => i.type),
+    // )
+
+    itemsToRepair.forEach((ri) => {
+      ri.repair = (ri.hp + amountToRepair) / ri.maxHp
+      if (ri.repair > 1) {
+        ri.repair = 1
+        if (ri.announceWhenRepaired)
+          this.ship.logEntry(
+            `Your ${ri.displayName} is fully repaired.`,
+            `medium`,
+          )
+        ri.announceWhenRepaired = false
+      } else if (ri.repair < 0.9)
+        ri.announceWhenRepaired = true
     })
     this.addXp(`mechanics`)
+    this.ship.toUpdate._hp = this.ship.hp
   }
 }
 

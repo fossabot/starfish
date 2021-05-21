@@ -42,7 +42,9 @@
         <stop
           offset="100%"
           :stop-color="
-            !miss ? 'rgba(255, 0, 0, .8)' : 'transparent'
+            !miss
+              ? 'rgba(255, 0, 0, .8)'
+              : 'rgba(50, 50, 50, .1)'
           "
         />
       </linearGradient>
@@ -55,6 +57,10 @@
       :y2="to[1] * FLAT_SCALE"
       :stroke="`url(#${id})`"
       :stroke-width="(0.002 * FLAT_SCALE) / zoom"
+      :style="{
+        opacity,
+      }"
+      mask="url(#sightMask)"
     />
   </g>
 </template>
@@ -71,6 +77,7 @@ export default {
     miss: {},
     from: {},
     to: {},
+    time: {},
     containerSizeMultiplier: {},
     FLAT_SCALE: {},
     zoom: {},
@@ -78,6 +85,7 @@ export default {
   data(this: ComponentShape): ComponentShape {
     return {
       id: 'g' + Math.random(),
+      opacity: 1,
     }
   },
   computed: {
@@ -90,8 +98,17 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
-  methods: {},
+  mounted(this: ComponentShape) {
+    this.resetOpacity()
+    setInterval(() => this.resetOpacity(), 1 * 60 * 1000)
+  },
+  methods: {
+    resetOpacity(this: ComponentShape) {
+      this.opacity =
+        0.5 *
+        (1 - (Date.now() - this.time) / (60 * 60 * 1000))
+    },
+  },
 }
 </script>
 

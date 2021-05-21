@@ -76,6 +76,17 @@ export const mutations = {
       target,
     )
   },
+
+  setRepairPriority(state, rp) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, `repairPriority`, rp)
+    this.$socket?.emit(
+      `crew:repairPriority`,
+      state.ship.id,
+      state.userId,
+      rp,
+    )
+  },
 }
 
 export const actions = {
@@ -101,6 +112,18 @@ export const actions = {
       // console.log(updates)
       commit(`updateShip`, { ...updates })
     })
+  },
+
+  respawn({ state, commit }) {
+    if (!state.ship?.dead) return
+    this.$socket?.emit(
+      `ship:respawn`,
+      state.ship.id,
+      ({ data, error }) => {
+        if (error) return console.log(error)
+        commit(`updateShip`, { ...data, dead: false })
+      },
+    )
   },
 
   logout({ commit }) {

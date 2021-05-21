@@ -125,7 +125,7 @@ export default {
 <style lang="scss" scoped>
 .weapons {
   position: relative;
-  width: 300px;
+  width: 320px;
 }
 .active {
   background: var(--active, cyan);

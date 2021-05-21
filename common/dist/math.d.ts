@@ -9,18 +9,24 @@ declare function degreesToUnitVector(degrees?: number): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint?: CoordinatePair, thatPoint?: CoordinatePair): CoordinatePair;
 declare function vectorToMagnitude(vector?: CoordinatePair): number;
 declare function pointIsInsideCircle(center?: CoordinatePair, point?: CoordinatePair, radius?: number): boolean;
+declare function randomInsideCircle(radius: number): CoordinatePair;
+declare function randomSign(): 1 | -1;
+declare function randomInRange(a: number, b: number): number;
 declare const _default: {
     lerp: typeof lerp;
     radiansToDegrees: typeof radiansToDegrees;
     degreesToRadians: typeof degreesToRadians;
     distance: typeof distance;
     angleFromAToB: typeof angleFromAToB;
+    randomInsideCircle: typeof randomInsideCircle;
     degreesToUnitVector: typeof degreesToUnitVector;
     unitVectorFromThisPointToThatPoint: typeof unitVectorFromThisPointToThatPoint;
     pointIsInsideCircle: typeof pointIsInsideCircle;
     vectorToDegrees: typeof vectorToDegrees;
     coordPairToRadians: typeof coordPairToRadians;
     vectorToMagnitude: typeof vectorToMagnitude;
+    randomSign: typeof randomSign;
+    randomInRange: typeof randomInRange;
 };
 export default _default;
 //# sourceMappingURL=math.d.ts.map

@@ -2,9 +2,6 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import { game } from '../..'
-import { stubify } from '../io'
-import { Ship } from '../../game/classes/Ship/Ship'
-import { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,

@@ -11,6 +11,7 @@
       :stroke-width="(strokeWidth * FLAT_SCALE) / zoom"
       :stroke-dasharray="dash ? dash + ' ' + dash : ''"
       :style="{ opacity }"
+      mask="url(#sightMask)"
     />
   </g>
 </template>
@@ -28,7 +29,7 @@ export default {
     zoom: {},
     points: { default: () => [] },
     color: { default: 'rgba(255,255,255,.2)' },
-    strokeWidth: { default: 0.002 },
+    strokeWidth: { default: 0.003 },
     z: { default: 1 },
     dash: {},
     opacity: { default: 1 },

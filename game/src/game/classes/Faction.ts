@@ -1,8 +1,8 @@
 import c from '../../../../common/dist'
 
-import { Game } from '../Game'
-import { Planet } from './Planet'
-import { Ship } from './Ship/Ship'
+import type { Game } from '../Game'
+import type { Planet } from './Planet'
+import type { Ship } from './Ship/Ship'
 
 export class Faction {
   readonly name: string

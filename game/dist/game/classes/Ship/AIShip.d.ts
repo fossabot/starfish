@@ -5,10 +5,14 @@ export declare class AIShip extends CombatShip {
     readonly human: boolean;
     readonly id: string;
     readonly faction: Faction | false;
+    readonly spawnPoint: CoordinatePair;
     level: number;
+    keyAngle: number;
+    targetLocation: CoordinatePair;
     obeysGravity: boolean;
     constructor(data: BaseShipData, game: Game);
     tick(): void;
     cumulativeSkillIn(l: CrewLocation, s: SkillName): number;
+    move(toLocation?: CoordinatePair): void;
 }
 //# sourceMappingURL=AIShip.d.ts.map

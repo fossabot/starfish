@@ -1,6 +1,6 @@
 import c from '../../../../common/dist'
 
-import { Game } from '../Game'
+import type { Game } from '../Game'
 
 export class Planet {
   readonly name: string

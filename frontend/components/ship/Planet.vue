@@ -11,8 +11,8 @@
       <div class="panesubhead">Vendor</div>
 
       <div class="panesection" v-if="buyableCargo">
-        <div class="panesubhead">Buy</div>
-        <div
+        <div><div class="panesubhead">Buy</div></div>
+        <span
           v-for="c in buyableCargo"
           :key="'buycargo' + c.cargoData.type"
         >
@@ -20,15 +20,19 @@
             :disabled="!c.canBuy"
             @click="buyCargo(c)"
           >
-            {{ c.cargoData.name }} ({{ c.pricePerUnit }}
-            credits/ton)
+            <b>{{ c.cargoData.name }}</b>
+            <div>
+              💳{{
+                Math.round(c.pricePerUnit * 10000) / 10000
+              }}/ton
+            </div>
           </button>
-        </div>
+        </span>
       </div>
 
       <div class="panesection" v-if="sellableCargo">
-        <div class="panesubhead">Sell</div>
-        <div
+        <div><div class="panesubhead">Sell</div></div>
+        <span
           v-for="c in sellableCargo"
           :key="'sellcargo' + c.cargoData.type"
         >
@@ -36,17 +40,26 @@
             :disabled="!c.canSell"
             @click="sellCargo(c)"
           >
-            {{ c.cargoData.name }} ({{
-              c.pricePerUnit
-            }}
-            credits/ton) (You have {{ c.heldAmount }})
+            <b>{{ c.cargoData.name }}</b>
+            <div>
+              💳{{
+                Math.round(c.pricePerUnit * 10000) / 10000
+              }}/ton
+            </div>
+            <div class="sub">
+              (You have
+              {{ Math.floor(c.heldAmount * 1000) / 1000 }}
+              tons)
+            </div>
           </button>
-        </div>
+        </span>
       </div>
     </div>
 
     <div class="panesection">
-      You cannot be attacked while on a planet.
+      <div class="sub">
+        You cannot be attacked while on a planet.
+      </div>
     </div>
   </Box>
 </template>
@@ -75,7 +88,7 @@ export default {
             ...c,
             pricePerUnit,
             maxCanBuy,
-            canBuy: this.crewMember.credits >= pricePerUnit,
+            canBuy: this.crewMember.credits > 0.01,
           }
         })
     },
@@ -175,6 +188,6 @@ export default {
 .planet {
   position: relative;
   grid-column: span 2;
-  width: 400px;
+  width: 360px;
 }
 </style>

@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
-const io_1 = require("../../../server/io");
+const io_1 = __importDefault(require("../../../server/io"));
 const roomActions = __importStar(require("./addins/rooms"));
 const Active_1 = require("./Active");
 class CrewMember {
@@ -33,6 +33,7 @@ class CrewMember {
         this.tactic = `defensive`;
         this.attackFactions = [];
         this.attackTarget = null;
+        this.repairPriority = `most damaged`;
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
@@ -57,8 +58,12 @@ class CrewMember {
                 this.actives.push(new Active_1.Active(a, this));
         if (data.tactic)
             this.tactic = data.tactic;
+        if (data.targetLocation)
+            this.targetLocation = data.targetLocation;
         if (data.attackFactions)
             this.attackFactions = data.attackFactions;
+        if (data.repairPriority)
+            this.repairPriority = data.repairPriority;
     }
     rename(newName) {
         this.name = newName;
@@ -70,7 +75,7 @@ class CrewMember {
     tick() {
         // ----- test notify listeners -----
         // todo
-        io_1.io.to(`ship:${this.ship.id}`).emit(`crew:tired`, io_1.stubify(this));
+        io_1.default.to(`ship:${this.ship.id}`).emit(`crew:tired`, dist_1.default.stubify(this));
         // ----- reset attack target if out of vision range -----
         if (this.attackTarget &&
             !this.ship.visible.ships.includes(this.attackTarget))
@@ -92,7 +97,7 @@ class CrewMember {
             this.stamina = 0;
             this.goTo(`bunk`);
             // ----- notify listeners -----
-            io_1.io.to(`ship:${this.ship.id}`).emit(`crew:tired`, io_1.stubify(this));
+            io_1.default.to(`ship:${this.ship.id}`).emit(`crew:tired`, dist_1.default.stubify(this));
             return;
         }
         // ----- cockpit -----
@@ -121,6 +126,13 @@ class CrewMember {
             skillElement.xp += xp;
         skillElement.level =
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
+    }
+    addCargo(type, amount) {
+        const existingStock = this.inventory.find((cargo) => cargo.type === type);
+        if (existingStock)
+            existingStock.amount += amount;
+        else
+            this.inventory.push({ type, amount });
     }
     get tired() {
         return this.stamina <= 0;

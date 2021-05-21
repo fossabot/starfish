@@ -1,15 +1,15 @@
 import { config as dotEnvConfig } from 'dotenv'
+import * as cache from './models/cache'
+import * as ship from './models/ship'
+import * as attackRemnant from './models/attackRemnant'
 dotEnvConfig()
 
 import c from '../../../common/dist'
 import mongoose from 'mongoose'
 export const db = {
-  // guild: require(`./guild`),
-  // cache: require(`./cache`),
-  // ship: require(`./ship`),
-  // user: require(`./user`),
-  // crewMember: require(`./crewMember`),
-  // attackRemnant: require(`./attackRemnant`),
+  cache,
+  ship,
+  attackRemnant,
 }
 let ready = false
 const toRun: Function[] = []
@@ -36,7 +36,7 @@ export const init = ({
     if (ready) resolve()
 
     const onReady = async () => {
-      c.log(`Connection to db established.`)
+      c.log(`green`, `Connection to db established.`)
       ready = true
       const promises = toRun.map(async (f) => await f())
       await Promise.all(promises)
@@ -45,7 +45,10 @@ export const init = ({
 
     if (mongoose.connection.readyState === 0) {
       const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
-      c.log(`No existing db connection, creating...`)
+      c.log(
+        `gray`,
+        `No existing db connection, creating...`,
+      )
 
       mongoose
         .connect(uri, {

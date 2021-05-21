@@ -2,11 +2,9 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import { game } from '../..'
-import { stubify } from '../io'
-import { Ship } from '../../game/classes/Ship/Ship'
-import { HumanShip } from '../../game/classes/Ship/HumanShip'
-import { CrewMember } from '../../game/classes/CrewMember/CrewMember'
-import { CombatShip } from '../../game/classes/Ship/CombatShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
+import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -34,7 +32,9 @@ export default function (
         crewMemberBaseData,
       )
       const stub =
-        stubify<CrewMember, CrewMemberStub>(addedCrewMember)
+        c.stubify<CrewMember, CrewMemberStub>(
+          addedCrewMember,
+        )
       callback({ data: stub })
     },
   )
@@ -51,12 +51,8 @@ export default function (
 
     crewMember.goTo(target)
     c.log(
-      `Set crew member`,
-      crewMember.name,
-      `on ship`,
-      ship.name,
-      `location to`,
-      target,
+      `gray`,
+      `Set ${crewMember.name} on ${ship.name} location to ${target}`,
     )
   })
 
@@ -85,12 +81,8 @@ export default function (
         )
       crewMember.targetLocation = targetLocation
       c.log(
-        `Set`,
-        crewId,
-        `on`,
-        shipId,
-        `targetLocation to`,
-        targetLocation,
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}`,
       )
     },
   )
@@ -106,7 +98,10 @@ export default function (
     if (!crewMember) return
 
     crewMember.tactic = tactic
-    c.log(`Set`, crewId, `on`, shipId, `tactic to`, tactic)
+    c.log(
+      `gray`,
+      `Set ${crewMember.name} on ${ship.name} tactic to ${tactic}`,
+    )
   })
 
   socket.on(
@@ -128,12 +123,28 @@ export default function (
 
       crewMember.attackTarget = targetShip
       c.log(
-        `Set`,
-        crewId,
-        `on`,
-        shipId,
-        `attack target to`,
-        targetShip?.name,
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:repairPriority`,
+    (shipId, crewId, repairPriority) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      crewMember.repairPriority = repairPriority
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} repair priority to ${repairPriority}`,
       )
     },
   )
@@ -189,18 +200,14 @@ export default function (
           amount,
         })
       callback({
-        data: stubify<CrewMember, CrewMemberStub>(
+        data: c.stubify<CrewMember, CrewMemberStub>(
           crewMember,
         ),
       })
 
       c.log(
-        crewId,
-        `bought`,
-        amount,
-        cargoType,
-        `from`,
-        vendorLocation,
+        `gray`,
+        `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}`,
       )
     },
   )
@@ -254,18 +261,14 @@ export default function (
       crewMember.credits += price
       existingStock.amount -= amount
       callback({
-        data: stubify<CrewMember, CrewMemberStub>(
+        data: c.stubify<CrewMember, CrewMemberStub>(
           crewMember,
         ),
       })
 
       c.log(
-        crewId,
-        `sold`,
-        amount,
-        cargoType,
-        `to`,
-        vendorLocation,
+        `gray`,
+        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}`,
       )
     },
   )

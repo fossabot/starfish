@@ -20,6 +20,7 @@
         :view="view"
         :FLAT_SCALE="FLAT_SCALE"
         :containerSizeMultiplier="containerSizeMultiplier"
+        :mask="false"
       />
     </g>
 
@@ -36,6 +37,7 @@
       @enter="enter"
       @leave="leave"
       :containerSizeMultiplier="containerSizeMultiplier"
+      :mask="false"
     />
   </g>
 </template>

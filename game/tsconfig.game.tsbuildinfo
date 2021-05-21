@@ -237,18 +237,18 @@
         "affectsGlobalScope": false
       },
       "../@types/attackremnant.d.ts": {
-        "version": "cc7980e50ce9ec9c082ad7ccf8e526c518265ef34f0e31545177485ae10644a8",
-        "signature": "cc7980e50ce9ec9c082ad7ccf8e526c518265ef34f0e31545177485ae10644a8",
+        "version": "b7bcd1874fc9fe524ba0a81e960f838f624e28be3ec459551ea86e7ecabee499",
+        "signature": "b7bcd1874fc9fe524ba0a81e960f838f624e28be3ec459551ea86e7ecabee499",
         "affectsGlobalScope": true
       },
       "../@types/cache.d.ts": {
-        "version": "7df76a88dead43b24743ce366c6548d91fd0b164a5a9b8dd3e4bb9bcc70b9fd1",
-        "signature": "7df76a88dead43b24743ce366c6548d91fd0b164a5a9b8dd3e4bb9bcc70b9fd1",
+        "version": "c994b2cf2b3355826babaed5639b42ff711b95328f90f7851abbe13d0159894e",
+        "signature": "c994b2cf2b3355826babaed5639b42ff711b95328f90f7851abbe13d0159894e",
         "affectsGlobalScope": true
       },
       "../@types/cargo.d.ts": {
-        "version": "242afd9f52a52d34856f742c58041b174a60592737813c296e726dd04178fe81",
-        "signature": "242afd9f52a52d34856f742c58041b174a60592737813c296e726dd04178fe81",
+        "version": "659774bc7adfe1d216d51e5d63998571886ad00ab6ae5c4a61ff0dd8c7b8eed7",
+        "signature": "659774bc7adfe1d216d51e5d63998571886ad00ab6ae5c4a61ff0dd8c7b8eed7",
         "affectsGlobalScope": true
       },
       "../@types/common.d.ts": {
@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
-        "signature": "7ea29608d1ba3a73c34d01f3a8edeffe9c4d3496002d3079a068fde1016fe349",
+        "version": "e55dad3ef61ba141093d9269cbbfe4e9e69c75474bfa98596b1279b16a080391",
+        "signature": "e55dad3ef61ba141093d9269cbbfe4e9e69c75474bfa98596b1279b16a080391",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -272,13 +272,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
-        "signature": "049a527abf5f5f2d22614cb70f325ff077431c886e01f91c70ea0178bac685a3",
+        "version": "0002313220fe058dd01989477981d7e60e0404f2349194fdc3caa634b1adcbbd",
+        "signature": "0002313220fe058dd01989477981d7e60e0404f2349194fdc3caa634b1adcbbd",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
-        "signature": "ec7ae5eac3a94401a440085423897a3e1f4e281bf6d2e9f490b90081e14bff3c",
+        "version": "a396614929a4f4890481a8fe46abc9602ad77c02f787d4aa6fd1ac1ccd24baa2",
+        "signature": "a396614929a4f4890481a8fe46abc9602ad77c02f787d4aa6fd1ac1ccd24baa2",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -287,18 +287,18 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
-        "signature": "0de1674e2afd82a02284c69435d4a93532a1d8c9418fac6d9872111c6df79126",
+        "version": "484b71844462dbe71a565f896827f787bc0e7f73646976355d533ec66df4a4eb",
+        "signature": "484b71844462dbe71a565f896827f787bc0e7f73646976355d533ec66df4a4eb",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
-        "signature": "075462395b17ef43ebb400f86fd0efb2a4d3a5a3b15d48f19b5abd405b20b54d",
+        "version": "64c7c63e823d7122aa430baefca01800f1687498fac3209675d7679da09fdeec",
+        "signature": "64c7c63e823d7122aa430baefca01800f1687498fac3209675d7679da09fdeec",
         "affectsGlobalScope": true
       },
       "../common/dist/index.d.ts": {
-        "version": "6e6616b57e6b1749199e586eedd3f80b50d6f43793d17952da3c1ee07165b9a5",
-        "signature": "6e6616b57e6b1749199e586eedd3f80b50d6f43793d17952da3c1ee07165b9a5",
+        "version": "ccb75f4d8f6384eb562c8edb0e9ebb2644782f1334c55e40101589c0ae9d9697",
+        "signature": "ccb75f4d8f6384eb562c8edb0e9ebb2644782f1334c55e40101589c0ae9d9697",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -607,158 +607,33 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet.ts": {
-        "version": "dfca8b09bedf7239ddf7dc564bde58c282c5bc92bd3fe5b689a9b1d594dba294",
-        "signature": "2da44e84310ff1066b5423a32b0c297b793e7a9daa69414abf28ad272904871c",
+        "version": "8f784d054c3ccb5c30ad154ca8bc92ae976237d4cf063c8711d413617aceac30",
+        "signature": "35546b32cfcd45e4da305fd4ba97e7f9df14082af90befcfda69a2318075a95f",
         "affectsGlobalScope": false
       },
       "./src/game/classes/faction.ts": {
-        "version": "20864866a2d253b27e20cdc755c3457e003286214d7d9c31c305a40704e884bf",
-        "signature": "d9881b626eb72691bb97af95472e1993708631a440ae196b20f6f93775e0c8ae",
+        "version": "b213fab6d5da03653cc591a31428e12a04a06c21435c7040a571c017cd06feea",
+        "signature": "b65b99ba0ba90f9b3198fd2b024579d175851ef4766925c78eb8627c4663d80d",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
-        "version": "aaf6c4f78f8847e91c4816e8984318d0f6301fc491512527ebf9a714ee36171b",
-        "signature": "d6394d23cdc282615bfb3360b8eb9625ee674b0b7a4c11d15b42d2a5153455ca",
+        "version": "08cf5ead0e30eb916acd85b425214cc24ab0d7ca43ec75bcd83ffc56c93ae977",
+        "signature": "0dd786f70fe7c7d8b50e005b7e04fc2d6e6313a6b7d72c8e60091a3f8270c668",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/engine.ts": {
-        "version": "b5479b9930dd2b4eec91641231e64d6a0464ad6f5ff10881493468cf0153c864",
-        "signature": "ce199efec36a7a9c509bc8f2ed489b198a07bd1096ea2d6a2e465f6ca1773da8",
+        "version": "4c65cad5926355fd3928ebdf8f8b09a529ba2a0fd6e6cf3b72d1a85149229671",
+        "signature": "42387f896d1db181398e72796b1abc7ed820b3f551656aa768f879189afd7a67",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/weapon.ts": {
-        "version": "b1baa3f84cbf903f7fd28cad5d90a407093fb094a6d7f12a0cce9018795d0652",
-        "signature": "29ae41319397ffbbe41cbf891e6c996ef65a45aa2dfb56d235065cf6cbbf9fbd",
+        "version": "d5369ca5c759c9800f568933f05ee0901198c02fcb03fe44fd9a41cc80c3e489",
+        "signature": "ee38ae8bce46be8a007394731305eacd8bf503da16d9819c3e0ff89010fe8c64",
         "affectsGlobalScope": false
       },
       "./src/game/classes/cache.ts": {
-        "version": "3a5c49628802e652ca45e3520a86e977d200ded8071e1eab7624e74f198324fa",
-        "signature": "5dc76d28b65c7a6d3e8e6807ab68e71d8ab38755590b86232c4723f2fca8fde6",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/combatship.ts": {
-        "version": "eb8efa127aceec2b64b3a020b1d860de69a440723cf18764eeea1317a612baaa",
-        "signature": "6b135fa0e9cfa7b601c93e6e62ba81164b787141fa7f955e54849c28c0ca4cc9",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/attackremnant.ts": {
-        "version": "3b7bd67fad3e855f8189685629d092ed4ac3f2210513166fa5ff0cae2ce46f8f",
-        "signature": "cf8e94cd0b21412694fa1714916abc95c427b0045ab586e8783a12163fd22999",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/crewmember/addins/rooms.ts": {
-        "version": "aba4b60033379fb8f71c693682d1888c77393f41e4cfd209bf567751d4dea25d",
-        "signature": "91463aad8bf3a89fc0ff5a807efde3cbb84f17794c96ea37e6a5cc96e100a660",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/addins/crew.ts": {
-        "version": "bc8ddcc9f9485e46e716f9c67ed7433dea97ef91c7e20320fb34897adb56ebc4",
-        "signature": "a0fc6bc73c661247bf36c9a7e3a9d084fd6030e3da95923b5751188e25e2d0dc",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/humanship.ts": {
-        "version": "220d776565b765681a9bae482094d6aa051adba0e5ea26978a037ff6cff82f46",
-        "signature": "7230b04abf5d05a373d725ac8be514e5c52aaa843aa233cd12d3cc69bf368250",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/crewmember/active.ts": {
-        "version": "4f7d1bd97b8c8caac502b03cbb483011ce4783968e594d19b27b2af9435c179c",
-        "signature": "a8e065bc62bcc9f5af7c12876121239008dd4ac3cbfb27755fec6a67404adf63",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/crewmember/crewmember.ts": {
-        "version": "0d783b7a4b2dccbdd7f0edce0c38f4192e6ce8e4911c64f13cb84f9b2589f71e",
-        "signature": "87920eeaa7ad479e166b955aade8291f36e532c8551f8140a189f6532242dbed",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/items/engines.ts": {
-        "version": "17e42db1448a3f29206fd513a8b97be12d227b8de0314dced838bba32adc701e",
-        "signature": "9978c6cbea2662edbc3f35ec739e00df27ec42a811042376b4353d97d68ee7ca",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/items/weapons.ts": {
-        "version": "3ba25478667742c836c5ec47138917b95c2c6a4a53287aeb1319641d5cecf2a8",
-        "signature": "47636cb9df4a0c8e3046094c3492cab49faaefc096ea6b9f7071c608577f6bab",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/items/index.ts": {
-        "version": "21765a21b1259492bd095568a835dd5df1584eb443ec0a5111dd147fe85a24ce",
-        "signature": "795319f00cadafe20c5170ee67e13a11d8856c5268aac0f7f3c004d012206051",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/loadouts.ts": {
-        "version": "73d9e14d1eb90385cc0b2bdef28a653876786fdb20a84088ddc92c18f44fff15",
-        "signature": "27e037558db09adc140d89aae7ed0348a14e58f3a2eb5524af6aaf8e42e00dd1",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/addins/items.ts": {
-        "version": "d5662b4c409d95d0a6d2b2178f9f254cc84db70be79d45a86877efd86517fc64",
-        "signature": "7d59b2b38b11c16bcbc7bf01989b48cc8a7df13b86b9b78c39f0913b4feeb3f8",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/addins/motion.ts": {
-        "version": "c0c5fc8568b53a751dcdd00e7db7be9d1bcb5d575f88e531ab0b4ffc3450fbc5",
-        "signature": "9f9bc1df47e497e907607b16a879ad8a0fbf632daa56e41cf4b5b4cd02495d46",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/ship.ts": {
-        "version": "5a5f6c68b3aa737ff150963f45b074500d873ec109eac9fac43285403295b80f",
-        "signature": "2c7343f215c1e47c3fe8390145110ca2dc4cbb18e9c2c285bcb44ede022d7011",
-        "affectsGlobalScope": false
-      },
-      "./src/server/events/frontend.ts": {
-        "version": "da3f94ec0ae8589a02785ffa8a10d5db29f598047fb34d0765fb7bac239562dc",
-        "signature": "8ff20149da40afb83512b62bea2427c94c788f63d8be335f86ce1a0ee6968e29",
-        "affectsGlobalScope": false
-      },
-      "./src/server/events/discord.ts": {
-        "version": "608540dc7552bc9b6a098917a34ba09e5b13ae42d213e8aed9dfc1bd1ba4ce57",
-        "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
-        "affectsGlobalScope": false
-      },
-      "./src/server/events/general.ts": {
-        "version": "93db753bbe54a758a382a0c91381c24d8b72fccb1b72f9ba19b0f0b5a2f530cc",
-        "signature": "848ac9668b6d48f2715c77ca69de57b877ab05e85bcfb0d618b58964450718c5",
-        "affectsGlobalScope": false
-      },
-      "./src/server/events/combat.ts": {
-        "version": "e5a5f99c3b4d41d75135472f255785ba9fdf99f75a4251d5d4143ea30f40f6ba",
-        "signature": "50f54db09cb7e72269b7f2520f2ad3996a05a5c159ec4bfa8015cb170879772c",
-        "affectsGlobalScope": false
-      },
-      "./src/server/events/crew.ts": {
-        "version": "22f5710f998952cdbbfcf944a7ee4415cb8f7694b503dd77e72b24c5ae882e6b",
-        "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
-        "affectsGlobalScope": false
-      },
-      "./src/server/io.ts": {
-        "version": "82bc56fef048f24cc1cba6a16bce5acca242e9d6ec391359372f24e79a8398af",
-        "signature": "d67e603d94f507db9e079bc964c58fc5772788080c013e302c63e4551383f75e",
-        "affectsGlobalScope": false
-      },
-      "./src/game/classes/ship/aiship.ts": {
-        "version": "f135e06326f0535fe03e8cf3b4f72e1ce726631d7bcf5ef1ce54a72f83e0704e",
-        "signature": "14432c17a9594d79e62000dc9a3a53c453549667d2115de57b7178d6862687d1",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/cargo.ts": {
-        "version": "90440f92e0b91a8f3bd6ff94e948877a481ae2a27678ab29b3522ec5f41bc10c",
-        "signature": "7365cb48d1bd5140e999b5a4f2a6f89eb2b4384c9539458199a239fad2c1d7e9",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/planets.ts": {
-        "version": "62df47911fa009e9b38b0bf5028f03205aab12a1328279bb274891be9fe25af4",
-        "signature": "34a83d534955518fc475f7aab1e46e5dd1d80c8be1d1a8be708a373212853168",
-        "affectsGlobalScope": false
-      },
-      "./src/game/presets/factions.ts": {
-        "version": "f133826d8c645e31819f93ef2bbcff2c28f75eb8a543a15b9a0d9296fe1aa0b1",
-        "signature": "64a828955a7d076ef5b1333f92091aa7cfce54c863cc3af9adfe7fd2b6e31407",
-        "affectsGlobalScope": false
-      },
-      "./src/game/game.ts": {
-        "version": "3714d03a797e92a4ac38bcdea0a5747148795a906e0bfe26e4d16943818628ba",
-        "signature": "09311c71815cbdf81dab179dc2fbe0495c8554ec8cee5c5586ba0487c04c6ab6",
+        "version": "742cc179906b186c41e3ebad3f04c033692fa6332c233849688438b18ed7ef4a",
+        "signature": "5dfc1c024148042c7b14de4999be46d3f2e4da3f788b66806f9d2b45fac058d7",
         "affectsGlobalScope": false
       },
       "./node_modules/dotenv/types/index.d.ts": {
@@ -781,14 +656,154 @@
         "signature": "75047af822ab362fcb445165d31a2fbb6d74d77f53a89e86fcd8377ba422ccbb",
         "affectsGlobalScope": false
       },
+      "./src/db/models/cache.ts": {
+        "version": "ff6fcd81e40d061558bd8a9b653165db6658c554b59da46436bbe5b10afe3b69",
+        "signature": "6d970e73fe131f1a259052cb78ac8e90a42883604c9c862c0f5b480a5e00a029",
+        "affectsGlobalScope": false
+      },
+      "./src/db/models/ship.ts": {
+        "version": "13d6634d02588c809abba07d454996d9010ba021b37cd326a5daf3598d184ed9",
+        "signature": "197a6e7794aace5fc9fc5b50091b9fc8f8d74cba3f2269d311f8fdfd88542b60",
+        "affectsGlobalScope": false
+      },
+      "./src/db/models/attackremnant.ts": {
+        "version": "a55df64f8bce5fe9755dce822ee2dff1eb156a9a90beae7999d01182cd1e072f",
+        "signature": "d9ad88690e75d4d0b0b82d2d12fddb4559c5f1fa8ebeb10dba7488d0dbc1f20c",
+        "affectsGlobalScope": false
+      },
       "./src/db/index.ts": {
-        "version": "477870a4bd80bcf6852656143449a69491b3d9bbd64be1cb8394d44bd88299f2",
-        "signature": "1ada4def6cf11ee426243d1011e532a2380504dd4242801e3d884b1e53ccd329",
+        "version": "087e39a09a4a81a83334c7b3e19bc46d6fcc8daf64647945590f87d8f82a35c6",
+        "signature": "a7b74bf23c1676c59557e70a2bcf429c1a5dcd2e91350b2845a6316e7b2f9653",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/combatship.ts": {
+        "version": "96909d0e9b241e04b1b722a4e2ebffa798532574e88563c72ab62a97e06f9936",
+        "signature": "02ebd57df0e3e99e3d76f5c74d1a576e2ad73230e603416915ee56a9bc9d6e0d",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/attackremnant.ts": {
+        "version": "daf9efcf945f2d9a1aa525cd76d224d24d17ae1a85b9bb230b8b6025fa8069c3",
+        "signature": "97aee2fff13fef911f30c8867a597cbed6fdad69a57759555b1ce92192c31317",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/crewmember/addins/rooms.ts": {
+        "version": "bedb5848e3ffd4cccaab9b6ff45fad6743128b8225ee3fc9a934b1b6a689c2c2",
+        "signature": "2c606ee584e271fb6e87a23282fd41463b13eb82124899a733ce998c60d80637",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/addins/crew.ts": {
+        "version": "6f5207b14b152d0ed760911c8aa96d555e3229116912ede94fec9f048d1f9925",
+        "signature": "a0fc6bc73c661247bf36c9a7e3a9d084fd6030e3da95923b5751188e25e2d0dc",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/humanship.ts": {
+        "version": "0f557670e4a77f881100d6548df93f3344668dab5aaf3e5c0baca0063f6b8ded",
+        "signature": "279ed2af994790fbe2827dbea0e8599f950c042dea5db960e55496777f692cf7",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/crewmember/active.ts": {
+        "version": "cbfae98d5369af9bd9111b877a1b52eaa3f4c8156dc0abe9650bd594ac425764",
+        "signature": "b0eb9ec41507e8aa91813f9a80450782b07a64e733722584530c41c6ca6dbaf7",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/crewmember/crewmember.ts": {
+        "version": "8e36db126473701a2a8d5cc5c3d85bec3f153cf291bd23023399f96715cab230",
+        "signature": "a887855374879a4831d68d180234b141c4ae407e3a727e4031918c5c560d18e9",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/items/engines.ts": {
+        "version": "a48a342d874f89b5a40662482d57673f0d54666a1bcb7da628ae2f4e56c48039",
+        "signature": "b09aed4ec08477c5d6f87bd4ca8cfaf920f108171603f154cb7d0329854215d1",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/items/weapons.ts": {
+        "version": "b1b0b6b53c62cd3619ec13770e5e13f9b874915bd36f32cc8af145add585c36b",
+        "signature": "35b638f4a572044d6c17e4029a6acc9e7bb826e9e5eda8c2c6378b75dea19005",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/items/index.ts": {
+        "version": "21765a21b1259492bd095568a835dd5df1584eb443ec0a5111dd147fe85a24ce",
+        "signature": "88c37842a5eed9e4ce7f2f992ee71f60370addd2e8e04bdc75abbc3ff06a646b",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/loadouts.ts": {
+        "version": "d20235efbb06d6625506c2f898b4258058310cf5210cc58aab27f0c77ce30760",
+        "signature": "27e037558db09adc140d89aae7ed0348a14e58f3a2eb5524af6aaf8e42e00dd1",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/addins/items.ts": {
+        "version": "a4a250a0ff6e255cb9272ff516b456f53c869a98a3bda6ada27ef50c45219872",
+        "signature": "a5ae88a4b262e7e08ab53f72ced235ffdcc7a2ee2190953f6f0ac9c9ccd61a90",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/ship.ts": {
+        "version": "7b810b03f126640dd1cec7b2a6995eec9b266eab363b9661638e2b5f2be4a91c",
+        "signature": "77112a4a7c564164ec78ecddb3cf913a6b1e45b64403a0ad3a848a4e08d34de3",
+        "affectsGlobalScope": false
+      },
+      "./src/server/events/frontend.ts": {
+        "version": "216aa4f1b9fd456af40f1957144b9b607ffac530b6282c6404f34de3f4772ae3",
+        "signature": "8ff20149da40afb83512b62bea2427c94c788f63d8be335f86ce1a0ee6968e29",
+        "affectsGlobalScope": false
+      },
+      "./src/server/events/discord.ts": {
+        "version": "3f582ba6bc45129a1112b0f05ad51bc7ae543c9c560b72d0a9363aadda4c59a6",
+        "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
+        "affectsGlobalScope": false
+      },
+      "./src/server/events/general.ts": {
+        "version": "a006ff640c30fec2ec6c29a0c84850798c3c8d6d5245a92b0c9f09488a5a19d2",
+        "signature": "848ac9668b6d48f2715c77ca69de57b877ab05e85bcfb0d618b58964450718c5",
+        "affectsGlobalScope": false
+      },
+      "./src/server/events/combat.ts": {
+        "version": "fce08ab79ebae7e7e1d23c5cdc5bbb541d33b57b8ddaeca9f85cc893c7119cc1",
+        "signature": "50f54db09cb7e72269b7f2520f2ad3996a05a5c159ec4bfa8015cb170879772c",
+        "affectsGlobalScope": false
+      },
+      "./src/server/events/crew.ts": {
+        "version": "7fb75ab35dc54f642fb9f99e9d575910ac7b1f68119914eaa48255ab236a0d5a",
+        "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
+        "affectsGlobalScope": false
+      },
+      "./src/server/io.ts": {
+        "version": "504ac7f82e74cdccc121d72cf3e723599b9f0930a7417586118c80017aca696f",
+        "signature": "28c55433b6b4c6b72fa7e5f7891a4d1b9cd04220f59d4fb2a5794a7dcb31272e",
+        "affectsGlobalScope": false
+      },
+      "./src/game/classes/ship/aiship.ts": {
+        "version": "cc155d81cb95e7aa06fe2ab82387bcfcde88e318ac484b1af38e47c7de066c05",
+        "signature": "6e347ba4d0174dc8166bc1881319521487c0ed727f9f781404c2741d69b48605",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/cargo.ts": {
+        "version": "fe36e9ed69ca881dd1943eb150e50b393c0a975fe56631bbc04b1271b91ad7d9",
+        "signature": "7365cb48d1bd5140e999b5a4f2a6f89eb2b4384c9539458199a239fad2c1d7e9",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/planets.ts": {
+        "version": "e32042be989d8eb46339b279f3789abac6e1f909ac55119daae5ae094d25c687",
+        "signature": "34a83d534955518fc475f7aab1e46e5dd1d80c8be1d1a8be708a373212853168",
+        "affectsGlobalScope": false
+      },
+      "./src/game/presets/factions.ts": {
+        "version": "f133826d8c645e31819f93ef2bbcff2c28f75eb8a543a15b9a0d9296fe1aa0b1",
+        "signature": "64a828955a7d076ef5b1333f92091aa7cfce54c863cc3af9adfe7fd2b6e31407",
+        "affectsGlobalScope": false
+      },
+      "./src/game/game.ts": {
+        "version": "ae60b00394c4d7116294b8d8c9f617a49f41d483d25b8a9a25e598af56df24e8",
+        "signature": "c1a96d90f295627775d9d412b757a529d22d9b4edd7cc0148188ca5bb70a577f",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "7d028b342d4f2509e376dea7c3f1ec69834d6caf0b0451b82ca9f783b4742369",
+        "version": "0f077d03a8a516d16a172bbd7f9a8664a1acee91c03bff3c3f51f7ff9fa0311c",
         "signature": "ad55138fcff7c310cf2d46ef4eaec62e618eb7e600339b12f539780bd6f14941",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/mongoose/index.d.ts": {
+        "version": "6629da0f00710b118d8bcb9f40f5575d80d4574462f96e561b361ab0b63d1a6f",
+        "signature": "6629da0f00710b118d8bcb9f40f5575d80d4574462f96e561b361ab0b63d1a6f",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {
@@ -926,6 +941,1176 @@
       "configFilePath": "./tsconfig.game.json"
     },
     "referencedMap": {
+      "../@types/attackremnant.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/cache.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/cargo.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/common.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/crew.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/faction.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/generic.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/io.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/item.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/planet.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/ship.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/stubs.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../common/dist/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/bson/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/component-emitter/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/cookie/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/cors/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/mongodb/index.d.ts": [
+        "./node_modules/@types/bson/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/mongoose/index.d.ts": [
+        "./node_modules/@types/mongodb/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/assert.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/assert.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/assert/strict.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/assert.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/async_hooks.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/async_hooks.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/base.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/assert.d.ts",
+        "./node_modules/@types/node/ts3.6/base.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/buffer.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/buffer.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/child_process.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/child_process.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/cluster.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/child_process.d.ts",
+        "./node_modules/@types/node/cluster.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/console.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/constants.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/constants.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/os.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/crypto.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/dgram.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/dgram.d.ts",
+        "./node_modules/@types/node/dns.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/dns.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/dns.d.ts",
+        "./node_modules/@types/node/dns/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/dns/promises.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/dns.d.ts",
+        "./node_modules/@types/node/dns/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/domain.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/domain.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/events.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/fs.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/fs/promises.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/fs/promises.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/fs/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/globals.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/globals.global.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/http.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/http2.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/http2.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/https.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/base.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/inspector.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/inspector.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/module.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/module.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/net.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/dns.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/os.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/os.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/path.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/path.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/perf_hooks.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/async_hooks.d.ts",
+        "./node_modules/@types/node/perf_hooks.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/process.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/tty.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/punycode.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/punycode.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/querystring.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/querystring.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/readline.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/readline.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/repl.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/readline.d.ts",
+        "./node_modules/@types/node/repl.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/vm.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/stream.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/stream/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/stream/promises.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/stream/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/string_decoder.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/string_decoder.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/timers.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/timers.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/timers/promises.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/timers.d.ts",
+        "./node_modules/@types/node/timers/promises.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/tls.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/trace_events.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/trace_events.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/ts3.6/base.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/assert/strict.d.ts",
+        "./node_modules/@types/node/async_hooks.d.ts",
+        "./node_modules/@types/node/buffer.d.ts",
+        "./node_modules/@types/node/child_process.d.ts",
+        "./node_modules/@types/node/cluster.d.ts",
+        "./node_modules/@types/node/console.d.ts",
+        "./node_modules/@types/node/constants.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/dgram.d.ts",
+        "./node_modules/@types/node/dns.d.ts",
+        "./node_modules/@types/node/dns/promises.d.ts",
+        "./node_modules/@types/node/domain.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/fs/promises.d.ts",
+        "./node_modules/@types/node/globals.d.ts",
+        "./node_modules/@types/node/globals.global.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/http2.d.ts",
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/inspector.d.ts",
+        "./node_modules/@types/node/module.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/os.d.ts",
+        "./node_modules/@types/node/path.d.ts",
+        "./node_modules/@types/node/perf_hooks.d.ts",
+        "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/node/punycode.d.ts",
+        "./node_modules/@types/node/querystring.d.ts",
+        "./node_modules/@types/node/readline.d.ts",
+        "./node_modules/@types/node/repl.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/stream/promises.d.ts",
+        "./node_modules/@types/node/string_decoder.d.ts",
+        "./node_modules/@types/node/timers.d.ts",
+        "./node_modules/@types/node/timers/promises.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/@types/node/trace_events.d.ts",
+        "./node_modules/@types/node/tty.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/v8.d.ts",
+        "./node_modules/@types/node/vm.d.ts",
+        "./node_modules/@types/node/wasi.d.ts",
+        "./node_modules/@types/node/worker_threads.d.ts",
+        "./node_modules/@types/node/zlib.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/tty.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/tty.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/url.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/querystring.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/util.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/v8.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/v8.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/vm.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/vm.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/wasi.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/wasi.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/worker_threads.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/fs/promises.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/vm.d.ts",
+        "./node_modules/@types/node/worker_threads.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/@types/node/zlib.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/zlib.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/dotenv/types/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/mongoose/index.d.ts": [
+        "./node_modules/@types/mongodb/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/socket.io-adapter/dist/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/socket.io-parser/dist/index.d.ts": [
+        "./node_modules/@types/component-emitter/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./node_modules/socket.io/dist/broadcast-operator.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io-adapter/dist/index.d.ts",
+        "./node_modules/socket.io/dist/socket.d.ts",
+        "./node_modules/socket.io/dist/typed-events.d.ts"
+      ],
+      "./node_modules/socket.io/dist/client.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io-parser/dist/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./node_modules/socket.io/dist/socket.d.ts",
+        "./node_modules/socket.io/dist/typed-events.d.ts"
+      ],
+      "./node_modules/socket.io/dist/index.d.ts": [
+        "./node_modules/@types/cookie/index.d.ts",
+        "./node_modules/@types/cors/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io-adapter/dist/index.d.ts",
+        "./node_modules/socket.io-parser/dist/index.d.ts",
+        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
+        "./node_modules/socket.io/dist/namespace.d.ts",
+        "./node_modules/socket.io/dist/socket.d.ts",
+        "./node_modules/socket.io/dist/typed-events.d.ts"
+      ],
+      "./node_modules/socket.io/dist/namespace.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io-adapter/dist/index.d.ts",
+        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
+        "./node_modules/socket.io/dist/client.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./node_modules/socket.io/dist/socket.d.ts",
+        "./node_modules/socket.io/dist/typed-events.d.ts"
+      ],
+      "./node_modules/socket.io/dist/socket.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/querystring.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io-adapter/dist/index.d.ts",
+        "./node_modules/socket.io-parser/dist/index.d.ts",
+        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
+        "./node_modules/socket.io/dist/client.d.ts",
+        "./node_modules/socket.io/dist/namespace.d.ts",
+        "./node_modules/socket.io/dist/typed-events.d.ts"
+      ],
+      "./node_modules/socket.io/dist/typed-events.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./src/db/index.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/dotenv/types/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/db/models/attackremnant.ts",
+        "./src/db/models/cache.ts",
+        "./src/db/models/ship.ts"
+      ],
+      "./src/db/models/attackremnant.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/attackremnant.ts"
+      ],
+      "./src/db/models/cache.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/cache.ts"
+      ],
+      "./src/db/models/ship.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/ship/ship.ts"
+      ],
+      "./src/game/classes/attackremnant.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/ship/combatship.ts"
+      ],
+      "./src/game/classes/cache.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/game.ts"
+      ],
+      "./src/game/classes/crewmember/active.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/crewmember/crewmember.ts"
+      ],
+      "./src/game/classes/crewmember/addins/rooms.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/item/item.ts"
+      ],
+      "./src/game/classes/crewmember/crewmember.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/crewmember/active.ts",
+        "./src/game/classes/crewmember/addins/rooms.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/classes/ship/humanship.ts",
+        "./src/server/io.ts"
+      ],
+      "./src/game/classes/faction.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/planet.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/game/game.ts"
+      ],
+      "./src/game/classes/item/engine.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/item/item.ts",
+        "./src/game/classes/ship/ship.ts"
+      ],
+      "./src/game/classes/item/item.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/ship/ship.ts"
+      ],
+      "./src/game/classes/item/weapon.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/item/item.ts",
+        "./src/game/classes/ship/ship.ts"
+      ],
+      "./src/game/classes/planet.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/game.ts"
+      ],
+      "./src/game/classes/ship/addins/crew.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/ship/humanship.ts"
+      ],
+      "./src/game/classes/ship/addins/items.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/item/engine.ts",
+        "./src/game/classes/item/item.ts",
+        "./src/game/classes/item/weapon.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/game/presets/items/index.ts",
+        "./src/game/presets/loadouts.ts"
+      ],
+      "./src/game/classes/ship/aiship.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/faction.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/game.ts"
+      ],
+      "./src/game/classes/ship/combatship.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/db/index.ts",
+        "./src/game/classes/item/engine.ts",
+        "./src/game/classes/item/item.ts",
+        "./src/game/classes/item/weapon.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/game/game.ts",
+        "./src/server/io.ts"
+      ],
+      "./src/game/classes/ship/humanship.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/db/index.ts",
+        "./src/game/classes/attackremnant.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/planet.ts",
+        "./src/game/classes/ship/addins/crew.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/game.ts"
+      ],
+      "./src/game/classes/ship/ship.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/classes/attackremnant.ts",
+        "./src/game/classes/cache.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/faction.ts",
+        "./src/game/classes/item/engine.ts",
+        "./src/game/classes/item/item.ts",
+        "./src/game/classes/item/weapon.ts",
+        "./src/game/classes/planet.ts",
+        "./src/game/classes/ship/addins/items.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/game.ts",
+        "./src/server/io.ts"
+      ],
+      "./src/game/game.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/db/index.ts",
+        "./src/game/classes/attackremnant.ts",
+        "./src/game/classes/cache.ts",
+        "./src/game/classes/faction.ts",
+        "./src/game/classes/planet.ts",
+        "./src/game/classes/ship/aiship.ts",
+        "./src/game/classes/ship/humanship.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/game/presets/factions.ts",
+        "./src/game/presets/planets.ts",
+        "./src/server/io.ts"
+      ],
+      "./src/game/presets/cargo.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./src/game/presets/factions.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./src/game/presets/items/engines.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./src/game/presets/items/index.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/presets/items/engines.ts",
+        "./src/game/presets/items/weapons.ts"
+      ],
+      "./src/game/presets/items/weapons.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "./src/game/presets/loadouts.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/presets/items/index.ts"
+      ],
+      "./src/game/presets/planets.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/game/presets/cargo.ts"
+      ],
+      "./src/index.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./src/db/index.ts",
+        "./src/game/game.ts",
+        "./src/server/io.ts"
+      ],
+      "./src/server/events/combat.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/index.ts"
+      ],
+      "./src/server/events/crew.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/classes/ship/humanship.ts",
+        "./src/index.ts"
+      ],
+      "./src/server/events/discord.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/index.ts"
+      ],
+      "./src/server/events/frontend.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/index.ts"
+      ],
+      "./src/server/events/general.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/index.ts"
+      ],
+      "./src/server/io.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/mongoose/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/server/events/combat.ts",
+        "./src/server/events/crew.ts",
+        "./src/server/events/discord.ts",
+        "./src/server/events/frontend.ts",
+        "./src/server/events/general.ts"
+      ],
+      "../node_modules/@types/anymatch/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/html-minifier-terser/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/json-schema/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/q/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/source-list-map/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/tapable/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/uglify-js/index.d.ts": [
+        "../node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/index.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts": [
+        "../node_modules/@types/source-list-map/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/source.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts": [
+        "../node_modules/@types/webpack-sources/lib/index.d.ts",
+        "../node_modules/@types/webpack-sources/lib/source.d.ts",
+        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/@types/webpack/index.d.ts": [
+        "../node_modules/@types/tapable/index.d.ts",
+        "../node_modules/@types/uglify-js/index.d.ts",
+        "../node_modules/@types/webpack-sources/index.d.ts",
+        "../node_modules/anymatch/index.d.ts",
+        "../node_modules/source-map/source-map.d.ts",
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/crypto.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/anymatch/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/source-map/source-map.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.dom.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.dom.iterable.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2016.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.intl.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.promise.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2018.regexp.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2019.array.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2019.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2019.object.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2019.string.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2019.symbol.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.bigint.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.intl.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.promise.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.string.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es2020.symbol.wellknown.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.es5.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.full.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.intl.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.promise.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.string.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.esnext.weakref.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.scripthost.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../node_modules/typescript/lib/lib.webworker.importscripts.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../@types/attackremnant.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/cache.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/cargo.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/crew.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/io.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/item.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/ship.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/stubs.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../common/dist/index.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
       "./node_modules/@types/bson/index.d.ts": [
         "./node_modules/@types/node/index.d.ts"
       ],
@@ -938,6 +2123,13 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/@types/node/stream.d.ts",
         "./node_modules/@types/node/tls.d.ts"
+      ],
+      "./node_modules/@types/mongoose/index.d.ts": [
+        "./node_modules/@types/mongodb/index.d.ts",
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/mongoose/index.d.ts"
       ],
       "./node_modules/@types/node/assert.d.ts": [
         "./node_modules/@types/node/assert.d.ts"
@@ -1253,619 +2445,18 @@
         "./node_modules/@types/node/index.d.ts"
       ],
       "./src/db/index.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/dotenv/types/index.d.ts",
-        "./node_modules/mongoose/index.d.ts"
+        "./src/db/models/attackremnant.ts",
+        "./src/db/models/cache.ts",
+        "./src/db/models/ship.ts"
       ],
-      "./src/game/classes/attackremnant.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/game.ts"
+      "./src/db/models/attackremnant.ts": [
+        "./src/game/classes/attackremnant.ts"
       ],
-      "./src/game/classes/cache.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/game.ts"
+      "./src/db/models/cache.ts": [
+        "./src/game/classes/cache.ts"
       ],
-      "./src/game/classes/crewmember/active.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/crewmember/crewmember.ts"
-      ],
-      "./src/game/classes/crewmember/addins/rooms.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/crewmember/crewmember.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/classes/crewmember/crewmember.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/crewmember/active.ts",
-        "./src/game/classes/crewmember/addins/rooms.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/classes/faction.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/planet.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/game/game.ts"
-      ],
-      "./src/game/classes/item/engine.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/item.ts",
+      "./src/db/models/ship.ts": [
         "./src/game/classes/ship/ship.ts"
-      ],
-      "./src/game/classes/item/item.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/ship/ship.ts"
-      ],
-      "./src/game/classes/item/weapon.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/item.ts",
-        "./src/game/classes/ship/ship.ts"
-      ],
-      "./src/game/classes/planet.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/game.ts"
-      ],
-      "./src/game/classes/ship/addins/crew.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/game/classes/ship/ship.ts"
-      ],
-      "./src/game/classes/ship/addins/items.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/engine.ts",
-        "./src/game/classes/item/item.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/game/presets/items/index.ts",
-        "./src/game/presets/loadouts.ts"
-      ],
-      "./src/game/classes/ship/addins/motion.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/planet.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/classes/ship/aiship.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/faction.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/game.ts"
-      ],
-      "./src/game/classes/ship/combatship.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/engine.ts",
-        "./src/game/classes/item/item.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/classes/ship/humanship.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/attackremnant.ts",
-        "./src/game/classes/crewmember/crewmember.ts",
-        "./src/game/classes/ship/addins/crew.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/game.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/classes/ship/ship.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/attackremnant.ts",
-        "./src/game/classes/cache.ts",
-        "./src/game/classes/crewmember/crewmember.ts",
-        "./src/game/classes/faction.ts",
-        "./src/game/classes/item/engine.ts",
-        "./src/game/classes/item/item.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/planet.ts",
-        "./src/game/classes/ship/addins/items.ts",
-        "./src/game/classes/ship/addins/motion.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/game/game.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/game.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/attackremnant.ts",
-        "./src/game/classes/cache.ts",
-        "./src/game/classes/faction.ts",
-        "./src/game/classes/planet.ts",
-        "./src/game/classes/ship/aiship.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/game/presets/factions.ts",
-        "./src/game/presets/planets.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/game/presets/items/index.ts": [
-        "./src/game/presets/items/engines.ts",
-        "./src/game/presets/items/weapons.ts"
-      ],
-      "./src/game/presets/loadouts.ts": [
-        "../common/dist/index.d.ts",
-        "./src/game/classes/item/weapon.ts",
-        "./src/game/presets/items/index.ts"
-      ],
-      "./src/game/presets/planets.ts": [
-        "./src/game/presets/cargo.ts"
-      ],
-      "./src/index.ts": [
-        "../common/dist/index.d.ts",
-        "./src/db/index.ts",
-        "./src/game/game.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/combat.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/crew.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/crewmember/crewmember.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/discord.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/frontend.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/events/general.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/ship/humanship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/io.ts"
-      ],
-      "./src/server/io.ts": [
-        "../common/dist/index.d.ts",
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./src/game/classes/ship/combatship.ts",
-        "./src/game/classes/ship/ship.ts",
-        "./src/index.ts",
-        "./src/server/events/combat.ts",
-        "./src/server/events/crew.ts",
-        "./src/server/events/discord.ts",
-        "./src/server/events/frontend.ts",
-        "./src/server/events/general.ts"
-      ],
-      "../node_modules/@types/uglify-js/index.d.ts": [
-        "../node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/index.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
-        "./node_modules/@types/node/index.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/compatsource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/concatsource.d.ts": [
-        "../node_modules/@types/source-list-map/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/index.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/cachedsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/compatsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/concatsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/originalsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/rawsource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/replacesource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/originalsource.d.ts": [
-        "../node_modules/@types/source-list-map/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/prefixsource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/rawsource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/replacesource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/sizeonlysource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/source.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/source.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
-        "./node_modules/@types/node/crypto.d.ts"
-      ],
-      "../node_modules/@types/webpack-sources/lib/sourcemapsource.d.ts": [
-        "../node_modules/@types/webpack-sources/lib/index.d.ts",
-        "../node_modules/@types/webpack-sources/lib/source.d.ts",
-        "../node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts"
-      ],
-      "../node_modules/@types/webpack/index.d.ts": [
-        "../node_modules/@types/tapable/index.d.ts",
-        "../node_modules/@types/uglify-js/index.d.ts",
-        "../node_modules/@types/webpack-sources/index.d.ts",
-        "../node_modules/anymatch/index.d.ts",
-        "../node_modules/source-map/source-map.d.ts",
-        "./node_modules/@types/node/crypto.d.ts",
-        "./node_modules/@types/node/index.d.ts"
-      ]
-    },
-    "exportedModulesMap": {
-      "./node_modules/@types/bson/index.d.ts": [
-        "./node_modules/@types/node/index.d.ts"
-      ],
-      "./node_modules/@types/cors/index.d.ts": [
-        "./node_modules/@types/node/http.d.ts"
-      ],
-      "./node_modules/@types/mongodb/index.d.ts": [
-        "./node_modules/@types/bson/index.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/index.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/tls.d.ts"
-      ],
-      "./node_modules/@types/node/assert.d.ts": [
-        "./node_modules/@types/node/assert.d.ts"
-      ],
-      "./node_modules/@types/node/assert/strict.d.ts": [
-        "./node_modules/@types/node/assert.d.ts"
-      ],
-      "./node_modules/@types/node/async_hooks.d.ts": [
-        "./node_modules/@types/node/async_hooks.d.ts"
-      ],
-      "./node_modules/@types/node/base.d.ts": [
-        "./node_modules/@types/node/assert.d.ts",
-        "./node_modules/@types/node/ts3.6/base.d.ts"
-      ],
-      "./node_modules/@types/node/buffer.d.ts": [
-        "./node_modules/@types/node/buffer.d.ts"
-      ],
-      "./node_modules/@types/node/child_process.d.ts": [
-        "./node_modules/@types/node/child_process.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/stream.d.ts"
-      ],
-      "./node_modules/@types/node/cluster.d.ts": [
-        "./node_modules/@types/node/child_process.d.ts",
-        "./node_modules/@types/node/cluster.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/net.d.ts"
-      ],
-      "./node_modules/@types/node/console.d.ts": [
-        "./node_modules/@types/node/util.d.ts"
-      ],
-      "./node_modules/@types/node/constants.d.ts": [
-        "./node_modules/@types/node/constants.d.ts",
-        "./node_modules/@types/node/crypto.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/os.d.ts"
-      ],
-      "./node_modules/@types/node/crypto.d.ts": [
-        "./node_modules/@types/node/crypto.d.ts",
-        "./node_modules/@types/node/stream.d.ts"
-      ],
-      "./node_modules/@types/node/dgram.d.ts": [
-        "./node_modules/@types/node/dgram.d.ts",
-        "./node_modules/@types/node/dns.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/net.d.ts"
-      ],
-      "./node_modules/@types/node/dns.d.ts": [
-        "./node_modules/@types/node/dns.d.ts",
-        "./node_modules/@types/node/dns/promises.d.ts"
-      ],
-      "./node_modules/@types/node/dns/promises.d.ts": [
-        "./node_modules/@types/node/dns.d.ts",
-        "./node_modules/@types/node/dns/promises.d.ts"
-      ],
-      "./node_modules/@types/node/domain.d.ts": [
-        "./node_modules/@types/node/domain.d.ts",
-        "./node_modules/@types/node/events.d.ts"
-      ],
-      "./node_modules/@types/node/events.d.ts": [
-        "./node_modules/@types/node/events.d.ts"
-      ],
-      "./node_modules/@types/node/fs.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/fs/promises.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/fs/promises.d.ts": [
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/fs/promises.d.ts"
-      ],
-      "./node_modules/@types/node/http.d.ts": [
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/http2.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/http2.d.ts",
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/tls.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/https.d.ts": [
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/https.d.ts",
-        "./node_modules/@types/node/tls.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/index.d.ts": [
-        "./node_modules/@types/node/base.d.ts"
-      ],
-      "./node_modules/@types/node/inspector.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/inspector.d.ts"
-      ],
-      "./node_modules/@types/node/module.d.ts": [
-        "./node_modules/@types/node/module.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/net.d.ts": [
-        "./node_modules/@types/node/dns.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/stream.d.ts"
-      ],
-      "./node_modules/@types/node/os.d.ts": [
-        "./node_modules/@types/node/os.d.ts"
-      ],
-      "./node_modules/@types/node/path.d.ts": [
-        "./node_modules/@types/node/path.d.ts"
-      ],
-      "./node_modules/@types/node/perf_hooks.d.ts": [
-        "./node_modules/@types/node/async_hooks.d.ts",
-        "./node_modules/@types/node/perf_hooks.d.ts"
-      ],
-      "./node_modules/@types/node/process.d.ts": [
-        "./node_modules/@types/node/tty.d.ts"
-      ],
-      "./node_modules/@types/node/punycode.d.ts": [
-        "./node_modules/@types/node/punycode.d.ts"
-      ],
-      "./node_modules/@types/node/querystring.d.ts": [
-        "./node_modules/@types/node/querystring.d.ts"
-      ],
-      "./node_modules/@types/node/readline.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/readline.d.ts"
-      ],
-      "./node_modules/@types/node/repl.d.ts": [
-        "./node_modules/@types/node/readline.d.ts",
-        "./node_modules/@types/node/repl.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/vm.d.ts"
-      ],
-      "./node_modules/@types/node/stream.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/stream/promises.d.ts"
-      ],
-      "./node_modules/@types/node/stream/promises.d.ts": [
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/stream/promises.d.ts"
-      ],
-      "./node_modules/@types/node/string_decoder.d.ts": [
-        "./node_modules/@types/node/string_decoder.d.ts"
-      ],
-      "./node_modules/@types/node/timers.d.ts": [
-        "./node_modules/@types/node/timers.d.ts"
-      ],
-      "./node_modules/@types/node/timers/promises.d.ts": [
-        "./node_modules/@types/node/timers.d.ts",
-        "./node_modules/@types/node/timers/promises.d.ts"
-      ],
-      "./node_modules/@types/node/tls.d.ts": [
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/tls.d.ts"
-      ],
-      "./node_modules/@types/node/trace_events.d.ts": [
-        "./node_modules/@types/node/trace_events.d.ts"
-      ],
-      "./node_modules/@types/node/ts3.6/base.d.ts": [
-        "./node_modules/@types/node/assert/strict.d.ts",
-        "./node_modules/@types/node/async_hooks.d.ts",
-        "./node_modules/@types/node/buffer.d.ts",
-        "./node_modules/@types/node/child_process.d.ts",
-        "./node_modules/@types/node/cluster.d.ts",
-        "./node_modules/@types/node/console.d.ts",
-        "./node_modules/@types/node/constants.d.ts",
-        "./node_modules/@types/node/crypto.d.ts",
-        "./node_modules/@types/node/dgram.d.ts",
-        "./node_modules/@types/node/dns.d.ts",
-        "./node_modules/@types/node/dns/promises.d.ts",
-        "./node_modules/@types/node/domain.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/fs/promises.d.ts",
-        "./node_modules/@types/node/globals.d.ts",
-        "./node_modules/@types/node/globals.global.d.ts",
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/http2.d.ts",
-        "./node_modules/@types/node/https.d.ts",
-        "./node_modules/@types/node/inspector.d.ts",
-        "./node_modules/@types/node/module.d.ts",
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/os.d.ts",
-        "./node_modules/@types/node/path.d.ts",
-        "./node_modules/@types/node/perf_hooks.d.ts",
-        "./node_modules/@types/node/process.d.ts",
-        "./node_modules/@types/node/punycode.d.ts",
-        "./node_modules/@types/node/querystring.d.ts",
-        "./node_modules/@types/node/readline.d.ts",
-        "./node_modules/@types/node/repl.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/stream/promises.d.ts",
-        "./node_modules/@types/node/string_decoder.d.ts",
-        "./node_modules/@types/node/timers.d.ts",
-        "./node_modules/@types/node/timers/promises.d.ts",
-        "./node_modules/@types/node/tls.d.ts",
-        "./node_modules/@types/node/trace_events.d.ts",
-        "./node_modules/@types/node/tty.d.ts",
-        "./node_modules/@types/node/url.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/v8.d.ts",
-        "./node_modules/@types/node/vm.d.ts",
-        "./node_modules/@types/node/wasi.d.ts",
-        "./node_modules/@types/node/worker_threads.d.ts",
-        "./node_modules/@types/node/zlib.d.ts"
-      ],
-      "./node_modules/@types/node/tty.d.ts": [
-        "./node_modules/@types/node/net.d.ts",
-        "./node_modules/@types/node/tty.d.ts"
-      ],
-      "./node_modules/@types/node/url.d.ts": [
-        "./node_modules/@types/node/querystring.d.ts",
-        "./node_modules/@types/node/url.d.ts"
-      ],
-      "./node_modules/@types/node/util.d.ts": [
-        "./node_modules/@types/node/util.d.ts"
-      ],
-      "./node_modules/@types/node/v8.d.ts": [
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/v8.d.ts"
-      ],
-      "./node_modules/@types/node/vm.d.ts": [
-        "./node_modules/@types/node/vm.d.ts"
-      ],
-      "./node_modules/@types/node/wasi.d.ts": [
-        "./node_modules/@types/node/wasi.d.ts"
-      ],
-      "./node_modules/@types/node/worker_threads.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs/promises.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/url.d.ts",
-        "./node_modules/@types/node/vm.d.ts",
-        "./node_modules/@types/node/worker_threads.d.ts"
-      ],
-      "./node_modules/@types/node/zlib.d.ts": [
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/@types/node/zlib.d.ts"
-      ],
-      "./node_modules/dotenv/types/index.d.ts": [
-        "./node_modules/@types/node/index.d.ts"
-      ],
-      "./node_modules/mongoose/index.d.ts": [
-        "./node_modules/@types/mongodb/index.d.ts",
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/stream.d.ts",
-        "./node_modules/mongoose/index.d.ts"
-      ],
-      "./node_modules/socket.io-adapter/dist/index.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/index.d.ts"
-      ],
-      "./node_modules/socket.io-parser/dist/index.d.ts": [
-        "./node_modules/@types/component-emitter/index.d.ts"
-      ],
-      "./node_modules/socket.io/dist/broadcast-operator.d.ts": [
-        "./node_modules/socket.io-adapter/dist/index.d.ts",
-        "./node_modules/socket.io/dist/socket.d.ts",
-        "./node_modules/socket.io/dist/typed-events.d.ts"
-      ],
-      "./node_modules/socket.io/dist/client.d.ts": [
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/index.d.ts",
-        "./node_modules/socket.io-parser/dist/index.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./node_modules/socket.io/dist/socket.d.ts",
-        "./node_modules/socket.io/dist/typed-events.d.ts"
-      ],
-      "./node_modules/socket.io/dist/index.d.ts": [
-        "./node_modules/@types/cookie/index.d.ts",
-        "./node_modules/@types/cors/index.d.ts",
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/index.d.ts",
-        "./node_modules/socket.io-adapter/dist/index.d.ts",
-        "./node_modules/socket.io-parser/dist/index.d.ts",
-        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
-        "./node_modules/socket.io/dist/namespace.d.ts",
-        "./node_modules/socket.io/dist/socket.d.ts",
-        "./node_modules/socket.io/dist/typed-events.d.ts"
-      ],
-      "./node_modules/socket.io/dist/namespace.d.ts": [
-        "./node_modules/socket.io-adapter/dist/index.d.ts",
-        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
-        "./node_modules/socket.io/dist/client.d.ts",
-        "./node_modules/socket.io/dist/index.d.ts",
-        "./node_modules/socket.io/dist/socket.d.ts",
-        "./node_modules/socket.io/dist/typed-events.d.ts"
-      ],
-      "./node_modules/socket.io/dist/socket.d.ts": [
-        "./node_modules/@types/node/http.d.ts",
-        "./node_modules/@types/node/index.d.ts",
-        "./node_modules/@types/node/querystring.d.ts",
-        "./node_modules/socket.io-adapter/dist/index.d.ts",
-        "./node_modules/socket.io-parser/dist/index.d.ts",
-        "./node_modules/socket.io/dist/broadcast-operator.d.ts",
-        "./node_modules/socket.io/dist/client.d.ts",
-        "./node_modules/socket.io/dist/namespace.d.ts",
-        "./node_modules/socket.io/dist/typed-events.d.ts"
-      ],
-      "./node_modules/socket.io/dist/typed-events.d.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/index.d.ts"
       ],
       "./src/game/classes/attackremnant.ts": [
         "./src/game/classes/ship/combatship.ts"
@@ -1912,9 +2503,6 @@
         "./src/game/classes/item/item.ts",
         "./src/game/classes/ship/ship.ts"
       ],
-      "./src/game/classes/ship/addins/motion.ts": [
-        "./src/game/classes/ship/ship.ts"
-      ],
       "./src/game/classes/ship/aiship.ts": [
         "./src/game/classes/faction.ts",
         "./src/game/classes/ship/combatship.ts",
@@ -1922,7 +2510,8 @@
       ],
       "./src/game/classes/ship/combatship.ts": [
         "./src/game/classes/item/weapon.ts",
-        "./src/game/classes/ship/ship.ts"
+        "./src/game/classes/ship/ship.ts",
+        "./src/game/game.ts"
       ],
       "./src/game/classes/ship/humanship.ts": [
         "./src/game/classes/crewmember/crewmember.ts",
@@ -1940,7 +2529,6 @@
         "./src/game/classes/item/weapon.ts",
         "./src/game/classes/planet.ts",
         "./src/game/classes/ship/addins/items.ts",
-        "./src/game/classes/ship/addins/motion.ts",
         "./src/game/classes/ship/combatship.ts",
         "./src/game/game.ts"
       ],
@@ -2080,6 +2668,7 @@
       "./node_modules/@types/cookie/index.d.ts",
       "./node_modules/@types/cors/index.d.ts",
       "./node_modules/@types/mongodb/index.d.ts",
+      "./node_modules/@types/mongoose/index.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/assert/strict.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -2141,6 +2730,9 @@
       "./node_modules/socket.io/dist/socket.d.ts",
       "./node_modules/socket.io/dist/typed-events.d.ts",
       "./src/db/index.ts",
+      "./src/db/models/attackremnant.ts",
+      "./src/db/models/cache.ts",
+      "./src/db/models/ship.ts",
       "./src/game/classes/attackremnant.ts",
       "./src/game/classes/cache.ts",
       "./src/game/classes/crewmember/active.ts",
@@ -2153,9 +2745,31 @@
       "./src/game/classes/planet.ts",
       "./src/game/classes/ship/addins/crew.ts",
       "./src/game/classes/ship/addins/items.ts",
-      "./src/game/classes/ship/addins/motion.ts",
       "./src/game/classes/ship/aiship.ts",
-      "./src/game/classes/ship/combatship.ts",
+      [
+        "./src/game/classes/ship/combatship.ts",
+        [
+          {
+            "file": "./src/game/classes/ship/combatship.ts",
+            "start": 7482,
+            "length": 16,
+            "code": 2345,
+            "category": 1,
+            "messageText": {
+              "messageText": "Argument of type '{ contents: CacheContents[]; location: CoordinatePair; ownerId: string; message: string; }' is not assignable to parameter of type 'BaseCacheData'.",
+              "category": 1,
+              "code": 2345,
+              "next": [
+                {
+                  "messageText": "Object literal may only specify known properties, and 'ownerId' does not exist in type 'BaseCacheData'.",
+                  "category": 1,
+                  "code": 2353
+                }
+              ]
+            }
+          }
+        ]
+      ],
       "./src/game/classes/ship/humanship.ts",
       "./src/game/classes/ship/ship.ts",
       "./src/game/game.ts",

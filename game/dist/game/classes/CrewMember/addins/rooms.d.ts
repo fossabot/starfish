@@ -1,4 +1,4 @@
-import { CrewMember } from '../CrewMember';
+import type { CrewMember } from '../CrewMember';
 export declare function cockpit(this: CrewMember): void;
 export declare function repair(this: CrewMember): void;
 export declare function weapons(this: CrewMember): void;

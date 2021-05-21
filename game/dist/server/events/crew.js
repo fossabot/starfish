@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
-const io_1 = require("../io");
 function default_1(socket) {
     socket.on(`crew:add`, (shipId, crewMemberBaseData, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -19,7 +18,7 @@ function default_1(socket) {
                 error: `That crew member already exists on this ship.`,
             });
         const addedCrewMember = ship.addCrewMember(crewMemberBaseData);
-        const stub = io_1.stubify(addedCrewMember);
+        const stub = dist_1.default.stubify(addedCrewMember);
         callback({ data: stub });
     });
     socket.on(`crew:move`, (shipId, crewId, target) => {
@@ -30,7 +29,7 @@ function default_1(socket) {
         if (!crewMember)
             return;
         crewMember.goTo(target);
-        dist_1.default.log(`Set crew member`, crewMember.name, `on ship`, ship.name, `location to`, target);
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} location to ${target}`);
     });
     socket.on(`crew:targetLocation`, (shipId, crewId, targetLocation) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -44,7 +43,7 @@ function default_1(socket) {
             targetLocation.find((l) => isNaN(parseInt(l))))
             return dist_1.default.log(`Invalid call to set crew targetLocation:`, shipId, crewId, targetLocation);
         crewMember.targetLocation = targetLocation;
-        dist_1.default.log(`Set`, crewId, `on`, shipId, `targetLocation to`, targetLocation);
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}`);
     });
     socket.on(`crew:tactic`, (shipId, crewId, tactic) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -54,7 +53,7 @@ function default_1(socket) {
         if (!crewMember)
             return;
         crewMember.tactic = tactic;
-        dist_1.default.log(`Set`, crewId, `on`, shipId, `tactic to`, tactic);
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} tactic to ${tactic}`);
     });
     socket.on(`crew:attackTarget`, (shipId, crewId, targetId) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -65,7 +64,17 @@ function default_1(socket) {
             return;
         const targetShip = __1.game.ships.find((s) => s.id === targetId) || null;
         crewMember.attackTarget = targetShip;
-        dist_1.default.log(`Set`, crewId, `on`, shipId, `attack target to`, targetShip?.name);
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}`);
+    });
+    socket.on(`crew:repairPriority`, (shipId, crewId, repairPriority) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        crewMember.repairPriority = repairPriority;
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} repair priority to ${repairPriority}`);
     });
     socket.on(`crew:buy`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -97,9 +106,9 @@ function default_1(socket) {
                 amount,
             });
         callback({
-            data: io_1.stubify(crewMember),
+            data: dist_1.default.stubify(crewMember),
         });
-        dist_1.default.log(crewId, `bought`, amount, cargoType, `from`, vendorLocation);
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}`);
     });
     socket.on(`crew:sell`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
@@ -127,9 +136,9 @@ function default_1(socket) {
         crewMember.credits += price;
         existingStock.amount -= amount;
         callback({
-            data: io_1.stubify(crewMember),
+            data: dist_1.default.stubify(crewMember),
         });
-        dist_1.default.log(crewId, `sold`, amount, cargoType, `to`, vendorLocation);
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}`);
     });
 }
 exports.default = default_1;

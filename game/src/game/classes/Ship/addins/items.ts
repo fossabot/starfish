@@ -7,19 +7,28 @@ import { Weapon } from '../../Item/Weapon'
 import { Engine } from '../../Item/Engine'
 import loadouts from '../../../presets/loadouts'
 
-export function addWeapon(this: Ship, id: string): boolean {
+export function addWeapon(
+  this: Ship,
+  id: WeaponType,
+  props?: Partial<BaseWeaponData>,
+): boolean {
   const baseData = weapons[id]
   if (!baseData) return false
-  const item = new Weapon(baseData, this)
+  const item = new Weapon(baseData, this, props)
   this.weapons.push(item)
   this.recalculateMaxHp()
+  this.toUpdate.attackRadius = this.radii.attack
   return true
 }
 
-export function addEngine(this: Ship, id: string): boolean {
+export function addEngine(
+  this: Ship,
+  id: EngineType,
+  props?: Partial<BaseEngineData>,
+): boolean {
   const baseData = engines[id]
   if (!baseData) return false
-  const item = new Engine(baseData, this)
+  const item = new Engine(baseData, this, props)
   this.engines.push(item)
   this.recalculateMaxHp()
   return true

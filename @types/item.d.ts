@@ -1,3 +1,6 @@
+type EngineType = `starter`
+type WeaponType = `cannon`
+
 type ItemType = `weapon` | `engine`
 
 interface BaseItemData {
@@ -8,6 +11,7 @@ interface BaseItemData {
   repair?: number
   hp?: number
   maxHp: number
+  lastUse?: number
 }
 
 interface Loadout {
@@ -17,11 +21,14 @@ interface Loadout {
 }
 
 interface BaseWeaponData extends BaseItemData {
+  id: WeaponType
   range: number
   damage: number
   baseCooldown: number
+  cooldownRemaining?: number
 }
 
 interface BaseEngineData extends BaseItemData {
+  id: EngineType
   thrustAmplification: number
 }

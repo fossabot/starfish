@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "npm run dcu",
     "up": "npm run dcu",
-    "dcu": "docker-compose up",
-    "down": "docker-compose down",
-    "hard-restart": "docker-compose down --remove-orphans --volumes && docker-compose up -d",
-    "restart": "docker-compose down --remove-orphans && docker-compose up -d"
+    "dcu": "docker compose up",
+    "down": "docker compose down",
+    "hard-restart": "docker compose down --remove-orphans --volumes && docker compose up -d",
+    "restart": "docker compose down --remove-orphans && docker-compose up -d"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",
@@ -20,6 +20,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "@types/mongoose": "^5.10.5",
     "nodemon": "^2.0.7",
     "npx": "^10.2.2",
     "nuxt": "^2.15.5"

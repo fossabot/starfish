@@ -11,6 +11,7 @@
       :class="{ blackout }"
     />
     <text
+      v-if="label"
       :x="location[0] * FLAT_SCALE"
       :y="
         location[1] * FLAT_SCALE +
@@ -24,6 +25,22 @@
       :fill="color"
     >
       {{ label }}
+    </text>
+    <text
+      v-if="label2"
+      :x="location[0] * FLAT_SCALE"
+      :y="
+        location[1] * FLAT_SCALE +
+          radius +
+          view.height * 0.023
+      "
+      text-anchor="middle"
+      :font-size="
+        (0.05 * FLAT_SCALE * containerSizeMultiplier) / zoom
+      "
+      :fill="color"
+    >
+      {{ label2 }}
     </text>
   </g>
 </template>
@@ -42,8 +59,9 @@ export default {
     zoom: {},
     location: {},
     radius: {},
-    color: { default: 'rgba(255,255,255,.6)' },
+    color: { default: 'rgba(255,255,255,.3)' },
     label: {},
+    label2: {},
     z: { default: 1 },
     blackout: {},
     dash: {},

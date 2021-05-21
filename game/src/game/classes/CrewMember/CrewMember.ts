@@ -1,9 +1,10 @@
 import c from '../../../../../common/dist'
-import { io, stubify } from '../../../server/io'
+import io from '../../../server/io'
+
 import * as roomActions from './addins/rooms'
-import { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip'
 import { Active } from './Active'
-import { CombatShip } from '../Ship/CombatShip'
+import type { CombatShip } from '../Ship/CombatShip'
 
 export class CrewMember {
   static readonly passiveStaminaLossPerSecond = 0.0001
@@ -20,6 +21,7 @@ export class CrewMember {
   tactic: Tactic = `defensive`
   attackFactions: FactionKey[] = []
   attackTarget: CombatShip | null = null
+  repairPriority: RepairPriority = `most damaged`
   readonly inventory: Cargo[]
   credits: number
   readonly actives: Active[]
@@ -45,8 +47,12 @@ export class CrewMember {
         this.actives.push(new Active(a, this))
 
     if (data.tactic) this.tactic = data.tactic
+    if (data.targetLocation)
+      this.targetLocation = data.targetLocation
     if (data.attackFactions)
       this.attackFactions = data.attackFactions
+    if (data.repairPriority)
+      this.repairPriority = data.repairPriority
   }
 
   rename(newName: string) {
@@ -68,7 +74,7 @@ export class CrewMember {
     // todo
     io.to(`ship:${this.ship.id}`).emit(
       `crew:tired`,
-      stubify<CrewMember, CrewMemberStub>(this),
+      c.stubify<CrewMember, CrewMemberStub>(this),
     )
 
     // ----- reset attack target if out of vision range -----
@@ -100,7 +106,7 @@ export class CrewMember {
       // ----- notify listeners -----
       io.to(`ship:${this.ship.id}`).emit(
         `crew:tired`,
-        stubify<CrewMember, CrewMemberStub>(this),
+        c.stubify<CrewMember, CrewMemberStub>(this),
       )
 
       return
@@ -133,6 +139,14 @@ export class CrewMember {
       CrewMember.levelXPNumbers.findIndex(
         (l) => (skillElement?.xp || 0) <= l,
       )
+  }
+
+  addCargo(type: CargoType, amount: number) {
+    const existingStock = this.inventory.find(
+      (cargo) => cargo.type === type,
+    )
+    if (existingStock) existingStock.amount += amount
+    else this.inventory.push({ type, amount })
   }
 
   get tired() {

@@ -1,4 +1,4 @@
-type CargoType = 'metals' | 'food' | 'textiles'
+type CargoType = `metals` | `food` | `textiles`
 
 type CargoData = {
   type: CargoType

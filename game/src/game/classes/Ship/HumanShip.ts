@@ -1,16 +1,19 @@
 import c from '../../../../../common/dist'
-import { Game } from '../../Game'
-import { CrewMember } from '../CrewMember/CrewMember'
-import { CombatShip } from './CombatShip'
+import { db } from '../../../db'
 
 import { membersIn, cumulativeSkillIn } from './addins/crew'
-import { stubify } from '../../../server/io'
-import { AttackRemnant } from '../AttackRemnant'
+
+import { CombatShip } from './CombatShip'
+import type { Game } from '../../Game'
+import { CrewMember } from '../CrewMember/CrewMember'
+import type { AttackRemnant } from '../AttackRemnant'
+import type { Planet } from '../Planet'
 
 export class HumanShip extends CombatShip {
-  readonly human: boolean
+  static maxLogLength = 20
   readonly id: string
-  crewMembers: CrewMember[] = []
+  readonly log: LogEntry[]
+  readonly crewMembers: CrewMember[] = []
   captain: string | null = null
   availableRooms: CrewLocation[] = [
     `bunk`,
@@ -23,22 +26,78 @@ export class HumanShip extends CombatShip {
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
-    this.human = true
     this.id = data.id
     //* id matches discord guildId here
+
+    this.ai = false
+    this.human = true
+
     this.captain = data.captain || null
+    this.log = data.log || []
 
     data.crewMembers?.forEach((cm) => {
       this.addCrewMember(cm)
     })
+
+    if (!this.log.length)
+      this.logEntry(
+        `Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`,
+        `medium`,
+      )
   }
 
   tick() {
+    if (this.dead) return
+
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
-      stubify<CrewMember, CrewMemberStub>(cm),
+      c.stubify<CrewMember, CrewMemberStub>(cm),
     )
     super.tick()
+
+    // ----- discover new planets -----
+
+    const newPlanets = this.visible.planets.filter(
+      (p) => !this.seenPlanets.includes(p),
+    )
+    if (newPlanets.length) {
+      this.seenPlanets.push(...newPlanets)
+      this.toUpdate.seenPlanets = c.stubify<
+        Planet[],
+        PlanetStub[]
+      >(this.seenPlanets)
+      db.ship.addOrUpdateInDb(this)
+      newPlanets.forEach((p) =>
+        this.logEntry(
+          `You've discovered the planet ${p.name}!`,
+          `high`,
+        ),
+      )
+    }
+
+    // ----- get nearby caches -----
+    this.visible.caches.forEach((cache) => {
+      if (this.isAt(cache.location)) {
+        this.distributeCargoAmongCrew(cache.contents)
+        this.logEntry(
+          `Picked up a cache with ${cache.contents
+            .map(
+              (cc) =>
+                `${Math.round(cc.amount * 10000) / 10000} ${
+                  cc.type
+                }`,
+            )
+            .join(` and `)} inside!${
+            cache.message &&
+            ` There was a message attached, which said, "${cache.message}".`
+          } The cache's contents were distributed evenly among the crew.`,
+          `medium`,
+        )
+        this.game.removeCache(cache)
+      }
+    })
+
+    // ----- auto-attacks -----
 
     this.toUpdate.targetShip = false
 
@@ -63,7 +122,7 @@ export class HumanShip extends CombatShip {
       this.toUpdate.mainTactic = mainTactic
 
       const attackableShips = this.getEnemiesInAttackRange()
-      this.toUpdate.enemiesInAttackRange = stubify(
+      this.toUpdate.enemiesInAttackRange = c.stubify(
         attackableShips,
         [`visible`, `seenPlanets`],
       )
@@ -126,7 +185,7 @@ export class HumanShip extends CombatShip {
           targetShip = mostRecentDefense?.attacker
         }
         this.toUpdate.targetShip = targetShip
-          ? stubify<CombatShip, ShipStub>(targetShip, [
+          ? c.stubify<CombatShip, ShipStub>(targetShip, [
               `visible`,
               `seenPlanets`,
             ])
@@ -168,7 +227,7 @@ export class HumanShip extends CombatShip {
               : mostRecentCombat.attacker
             : c.randomFromArray(attackableShips)
         }
-        this.toUpdate.targetShip = stubify<
+        this.toUpdate.targetShip = c.stubify<
           CombatShip,
           ShipStub
         >(targetShip!, [`visible`, `seenPlanets`])
@@ -179,6 +238,153 @@ export class HumanShip extends CombatShip {
       }
     }
   }
+
+  // ----- log -----
+
+  logEntry(text: string, level: LogLevel = `low`) {
+    this.log.push({ level, text, time: Date.now() })
+    while (this.log.length > HumanShip.maxLogLength)
+      this.log.shift()
+
+    this.toUpdate.log = this.log
+  }
+
+  // ----- move -----
+  move(toLocation?: CoordinatePair) {
+    super.move(toLocation)
+    if (toLocation) {
+      // ----- update planet -----
+      const previousPlanet = this.planet
+      this.planet =
+        this.game.planets.find((p) =>
+          this.isAt(p.location),
+        ) || false
+      if (previousPlanet !== this.planet)
+        this.toUpdate.planet = this.planet
+          ? c.stubify<Planet, PlanetStub>(this.planet)
+          : false
+      return
+    }
+
+    const startingLocation: CoordinatePair = [
+      ...this.location,
+    ]
+
+    const membersInCockpit = this.membersIn(`cockpit`)
+    if (!this.canMove || !membersInCockpit.length) {
+      this.speed = 0
+      this.velocity = [0, 0]
+      this.toUpdate.speed = this.speed
+      this.toUpdate.velocity = this.velocity
+      return
+    }
+
+    const engineThrustMultiplier = this.engines
+      .filter((e) => e.repair > 0)
+      .reduce(
+        (total, e) =>
+          total + e.thrustAmplification * e.repair,
+        0,
+      )
+
+    // ----- calculate new location based on target of each member in cockpit -----
+    for (let member of membersInCockpit) {
+      if (!member.targetLocation) continue
+
+      // already there (plus a bit), so stop
+      if (
+        Math.abs(
+          this.location[0] - member.targetLocation[0],
+        ) <
+          c.arrivalThreshold / 2 &&
+        Math.abs(
+          this.location[1] - member.targetLocation[1],
+        ) <
+          c.arrivalThreshold / 2
+      )
+        continue
+
+      this.engines.forEach((e) => e.use())
+
+      const skill =
+        member.skills.find((s) => s.skill === `piloting`)
+          ?.level || 1
+      const thrustMagnitude =
+        c.getThrustMagnitudeForSingleCrewMember(
+          skill,
+          engineThrustMultiplier,
+        )
+
+      const unitVectorToTarget = c.degreesToUnitVector(
+        c.angleFromAToB(
+          this.location,
+          member.targetLocation,
+        ),
+      )
+
+      this.location[0] +=
+        unitVectorToTarget[0] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+      this.location[1] +=
+        unitVectorToTarget[1] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+    }
+    this.toUpdate.location = this.location
+
+    this.velocity = [
+      this.location[0] - startingLocation[0],
+      this.location[1] - startingLocation[1],
+    ]
+    this.toUpdate.velocity = this.velocity
+    this.speed = c.vectorToMagnitude(this.velocity)
+    this.toUpdate.speed =
+      this.speed * (c.deltaTime / c.TICK_INTERVAL)
+    this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.direction = this.direction
+
+    // ----- update planet -----
+    const previousPlanet = this.planet
+    this.planet =
+      this.game.planets.find((p) =>
+        this.isAt(p.location),
+      ) || false
+    if (previousPlanet !== this.planet)
+      this.toUpdate.planet = this.planet
+        ? c.stubify<Planet, PlanetStub>(this.planet)
+        : false
+
+    // ----- add previousLocation -----
+    this.addPreviousLocation(startingLocation)
+
+    // ----- random encounters -----
+    const distanceTraveled = c.distance(
+      this.location,
+      startingLocation,
+    )
+    if (
+      Math.random() * distanceTraveled >
+      0.9999 * distanceTraveled
+    ) {
+      const amount =
+        Math.round(
+          Math.random() * 3 * (Math.random() * 3),
+        ) /
+          10 +
+        1
+      this.distributeCargoAmongCrew([
+        { type: `metals`, amount },
+      ])
+      this.logEntry(
+        `Encountered some space junk and managed to strip ${amount} ton${
+          amount === 1 ? `` : `s`
+        } of metal off of it.`,
+      )
+    }
+  }
+
+  // ----- room mgmt -----
 
   addRoom(room: CrewLocation) {
     if (!this.availableRooms.includes(room))
@@ -192,11 +398,17 @@ export class HumanShip extends CombatShip {
     if (index !== -1) this.availableRooms.splice(index, 1)
   }
 
+  // ----- crew mgmt -----
+
   addCrewMember(data: BaseCrewMemberData): CrewMember {
     const cm = new CrewMember(data, this)
     this.crewMembers.push(cm)
     if (!this.captain) this.captain = cm.id
-    c.log(`Added crew member`, cm.name, `to`, this.name)
+    c.log(
+      `gray`,
+      `Added crew member ${cm.name} to ${this.name}`,
+    )
+    db.ship.addOrUpdateInDb(this)
     return cm
   }
 
@@ -208,30 +420,40 @@ export class HumanShip extends CombatShip {
     if (index === -1) {
       c.log(
         `red`,
-        `Attempted to remove crew member that did not exist`,
-        id,
-        `from ship`,
-        this.id,
+        `Attempted to remove crew member that did not exist ${id} from ship ${this.id}`,
       )
       return
     }
 
     this.crewMembers.splice(index, 1)
+    db.ship.addOrUpdateInDb(this)
   }
 
   membersIn = membersIn
   cumulativeSkillIn = cumulativeSkillIn
 
+  distributeCargoAmongCrew(cargo: CacheContents[]) {
+    cargo.forEach((contents) => {
+      const toDistribute =
+        contents.amount / this.crewMembers.length
+      this.crewMembers.forEach((cm) => {
+        if (contents.type === `credits`)
+          cm.credits += contents.amount
+        else cm.addCargo(contents.type, toDistribute)
+      })
+    })
+  }
+
+  // ----- respawn -----
+
   respawn() {
     super.respawn()
 
-    this.crewMembers.forEach((cm) => {
-      while (cm.inventory.length) {
-        const cachePayload = cm.inventory.pop()
-        // todo spawn as caches
-      }
-      cm.location = `bunk`
-      cm.credits *= 0.5
-    })
+    if (this instanceof HumanShip) {
+      this.logEntry(
+        `Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`,
+        `critical`,
+      )
+    }
   }
 }

@@ -1,11 +1,11 @@
 import c from '../../../../common/dist'
 
-import { Game } from '../Game'
-import { CombatShip } from './Ship/CombatShip'
+import type { CombatShip } from './Ship/CombatShip'
 
 export class AttackRemnant {
   static readonly expireTime = 1000 * 60 * 60 * 1
 
+  readonly id: string
   readonly attacker: CombatShip
   readonly defender: CombatShip
   readonly damageTaken: TakenDamageResult
@@ -20,7 +20,9 @@ export class AttackRemnant {
     start,
     end,
     time,
+    id,
   }: BaseAttackRemnantData) {
+    this.id = id || `${Math.random()}`.substring(2)
     this.attacker = attacker
     this.defender = defender
     this.damageTaken = damageTaken

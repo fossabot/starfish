@@ -13,7 +13,7 @@ exports.client = new discord_js_1.default.Client({
     messageCacheLifetime: 30,
     messageSweepInterval: 60,
 });
-const commandHandler = new CommandHandler_1.CommandHandler('.');
+const commandHandler = new CommandHandler_1.CommandHandler(`.`);
 exports.rawWatchers = [];
 let didError = null;
 // const privateMessage = require(`./events/privateMessage`)
@@ -62,7 +62,7 @@ exports.client.on(`raw`, async (event) => {
     exports.rawWatchers.forEach((handler) => handler(event));
 });
 exports.client.on(`ready`, async () => {
-    dist_1.default.log(`Logged in as ${exports.client.user?.tag} in ${(await exports.client.guilds.cache.array()).length} guilds`);
+    dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in ${(await exports.client.guilds.cache.array()).length} guilds`);
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });
 });
 exports.client.login(process.env.DISCORD_TOKEN);

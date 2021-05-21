@@ -1,13 +1,13 @@
 import c from '../../../../../common/dist'
 
-import { Game } from '../../Game'
-import { Faction } from '../Faction'
-import { Engine } from '../Item/Engine'
-import { Item } from '../Item/Item'
-import { Weapon } from '../Item/Weapon'
-import { Planet } from '../Planet'
-import { Cache } from '../Cache'
-import { AttackRemnant } from '../AttackRemnant'
+import type { Game } from '../../Game'
+import type { Faction } from '../Faction'
+import type { Engine } from '../Item/Engine'
+import type { Item } from '../Item/Item'
+import type { Weapon } from '../Item/Weapon'
+import type { Planet } from '../Planet'
+import type { Cache } from '../Cache'
+import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
 
@@ -17,23 +17,23 @@ import {
   removeItem,
   equipLoadout,
 } from './addins/items'
-import {
-  move,
-  stop,
-  isAt,
-  // thrust,
-  applyTickOfGravity,
-} from './addins/motion'
-import { io, stubify } from '../../../server/io'
-import { HumanShip } from './HumanShip'
+import io from '../../../server/io'
 
 export class Ship {
-  static maxPreviousLocations: number = 10
+  static maxPreviousLocations: number = 50
 
   readonly name: string
   planet: Planet | false
   readonly faction: Faction | false
   readonly game: Game
+  readonly radii: { [key in RadiusType]: number } = {
+    sight: 0,
+    attack: 0,
+  }
+
+  ai: boolean
+  human: boolean
+  readonly crewMembers: CrewMember[] = []
 
   toUpdate: Partial<ShipStub> = {}
   visible: {
@@ -58,7 +58,6 @@ export class Ship {
   speed: number = 0 // just for frontend reference
   direction: number = 0 // just for frontend reference
   // targetLocation: CoordinatePair = [0, 0]
-  human = false
   attackable = false
   _hp = 10 // set in hp setter below
   _maxHp = 10
@@ -69,18 +68,25 @@ export class Ship {
     {
       name,
       faction,
+      weapons,
+      engines,
       loadout,
       seenPlanets,
       location,
+      previousLocations,
     }: BaseShipData,
     game: Game,
   ) {
     this.game = game
     this.name = name
 
+    this.ai = true
+    this.human = false
+
     this.faction =
-      game.factions.find((f) => f.color === faction) ||
-      false
+      game.factions.find(
+        (f) => f.color === faction?.color,
+      ) || false
 
     if (location) this.location = location
     else if (this.faction) {
@@ -94,15 +100,24 @@ export class Ship {
         this.isAt(p.location),
       ) || false
 
+    if (previousLocations)
+      this.previousLocations = previousLocations
+
     if (seenPlanets)
       this.seenPlanets = seenPlanets
-        .map((name) =>
+        .map(({ name }: { name: PlanetName }) =>
           this.game.planets.find((p) => p.name === name),
         )
         .filter((p) => p) as Planet[]
 
     if (loadout) this.equipLoadout(loadout)
+    if (weapons)
+      weapons.forEach((w) => this.addWeapon(w.id, w))
+    if (engines)
+      engines.forEach((e) => this.addEngine(e.id, e))
     this.hp = this.maxHp
+
+    this.updateSightRadius()
   }
 
   identify() {
@@ -115,29 +130,24 @@ export class Ship {
   }
 
   tick() {
+    if (this.dead) return
+
     this.visible = this.game.scanCircle(
       this.location,
-      this.sightRadius,
+      this.radii.sight,
       this.id,
     )
-    const newPlanets = this.visible.planets.filter(
-      (p) => !this.seenPlanets.includes(p),
-    )
-    if (newPlanets.length) {
-      this.seenPlanets.push(...newPlanets)
-      // todo alert ship
-    }
 
     // ----- updates for frontend -----
-    this.toUpdate.visible = stubify<any, VisibleStub>(
+    this.toUpdate.visible = c.stubify<any, VisibleStub>(
       this.visible,
       [`visible`, `seenPlanets`],
     )
     this.toUpdate.weapons = this.weapons.map((w) =>
-      stubify<Weapon, WeaponStub>(w),
+      c.stubify<Weapon, WeaponStub>(w),
     )
     this.toUpdate.engines = this.engines.map((e) =>
-      stubify<Engine, EngineStub>(e),
+      c.stubify<Engine, EngineStub>(e),
     )
 
     // ----- move -----
@@ -166,8 +176,10 @@ export class Ship {
   equipLoadout = equipLoadout
 
   // ----- radii -----
-
-  sightRadius = 1
+  updateSightRadius() {
+    this.radii.sight = 0.3
+    this.toUpdate.radii = this.radii
+  }
 
   // ----- movement -----
 
@@ -178,20 +190,68 @@ export class Ship {
     return true
   }
 
-  // get atTargetLocation(): boolean {
-  //   return (
-  //     math.abs(this.location[0] - this.targetLocation[0]) <
-  //       0.000001 &&
-  //     math.abs(this.location[1] - this.targetLocation[1]) <
-  //       0.000001
-  //   )
-  // }
+  move(toLocation?: CoordinatePair) {
+    const previousLocation: CoordinatePair = [
+      ...this.location,
+    ]
 
-  move = move
-  stop = stop
-  isAt = isAt
-  // thrust = thrust
-  applyTickOfGravity = applyTickOfGravity
+    if (toLocation) {
+      this.location = toLocation
+      this.speed = 0
+      this.velocity = [0, 0]
+      this.toUpdate.location = this.location
+      this.toUpdate.speed = this.speed
+      this.toUpdate.velocity = this.velocity
+      this.addPreviousLocation(previousLocation)
+    }
+  }
+
+  addPreviousLocation(
+    this: Ship,
+    locationBeforeThisTick: CoordinatePair,
+  ) {
+    const lastPrevLoc =
+      this.previousLocations[
+        this.previousLocations.length - 1
+      ]
+    const newAngle = c.angleFromAToB(
+      this.location,
+      locationBeforeThisTick,
+    )
+    if (
+      !lastPrevLoc ||
+      (Math.abs(newAngle - this.lastMoveAngle) > 8 &&
+        c.distance(this.location, lastPrevLoc) > 0.001)
+    ) {
+      if (
+        locationBeforeThisTick &&
+        locationBeforeThisTick[0]
+      )
+        this.previousLocations.push(locationBeforeThisTick)
+      while (
+        this.previousLocations.length >
+        Ship.maxPreviousLocations
+      )
+        this.previousLocations.shift()
+      this.toUpdate.previousLocations =
+        this.previousLocations
+    }
+    this.lastMoveAngle = newAngle
+  }
+
+  isAt(this: Ship, coords: CoordinatePair) {
+    return (
+      Math.abs(coords[0] - this.location[0]) <
+        c.arrivalThreshold &&
+      Math.abs(coords[1] - this.location[1]) <
+        c.arrivalThreshold
+    )
+  }
+
+  applyTickOfGravity(this: Ship): void {
+    // if (!this.canMove) return
+    // todo
+  }
 
   // ----- crew -----
 
@@ -221,10 +281,15 @@ export class Ship {
   }
 
   get hp() {
-    return this.items.reduce(
+    const total = this.items.reduce(
       (total, i) => i.maxHp * i.repair + total,
       0,
     )
+    const wasDead = this.dead
+    this.dead = total <= 0
+    if (this.dead !== wasDead)
+      this.toUpdate.dead = this.dead
+    return total
   }
 
   set hp(newValue) {
@@ -233,4 +298,8 @@ export class Ship {
     if (this._hp > this._maxHp) this._hp = this._maxHp
     this.toUpdate._hp = this._hp
   }
+
+  // ----- misc stubs -----
+
+  logEntry(s: string, lv: LogLevel) {}
 }

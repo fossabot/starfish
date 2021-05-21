@@ -1,21 +1,31 @@
 import c from '../../../../../common/dist'
-import { Ship } from '../Ship/Ship'
+import type { Ship } from '../Ship/Ship'
 
 import { Item } from './Item'
 
 export class Weapon extends Item {
+  readonly id: WeaponType
   readonly range: number
   readonly damage: number
   lastUse: number = 0
   baseCooldown: number
   cooldownRemaining: number
 
-  constructor(data: BaseWeaponData, ship: Ship) {
-    super(data, ship)
+  constructor(
+    data: BaseWeaponData,
+    ship: Ship,
+    props?: Partial<BaseWeaponData>,
+  ) {
+    super(data, ship, props)
+    this.id = data.id
     this.range = data.range
     this.damage = data.damage
     this.baseCooldown = data.baseCooldown
-    this.cooldownRemaining = data.baseCooldown
+    this.lastUse = data.lastUse || 0
+    this.cooldownRemaining =
+      data.cooldownRemaining ||
+      props?.cooldownRemaining ||
+      data.baseCooldown
   }
 
   use() {

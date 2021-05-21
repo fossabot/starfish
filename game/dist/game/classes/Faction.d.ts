@@ -1,6 +1,6 @@
-import { Game } from '../Game';
-import { Planet } from './Planet';
-import { Ship } from './Ship/Ship';
+import type { Game } from '../Game';
+import type { Planet } from './Planet';
+import type { Ship } from './Ship/Ship';
 export declare class Faction {
     readonly name: string;
     readonly color: string;

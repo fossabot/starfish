@@ -2,36 +2,35 @@ interface BaseShipData {
   name: string
   id?: string
   location?: CoordinatePair
-  faction?: FactionKey
+  faction?: { color: FactionKey }
+  seenPlanets?: { name: PlanetName }[]
   loadout?: string
-  seenPlanets?: PlanetName[]
+  engines?: BaseEngineData[]
+  weapons?: BaseWeaponData[]
+  ai?: Boolean
+  previousLocations?: CoordinatePair[]
+  spawnPoint?: CoordinatePair
 }
 
 interface BaseHumanShipData extends BaseShipData {
   id: string
   crewMembers?: BaseCrewMemberData[]
   captain?: string
+  log?: LogEntry[]
+}
+
+type RadiusType = `sight` | `attack`
+
+type LogLevel = `low` | `medium` | `high` | `critical`
+interface LogEntry {
+  time: number
+  level: LogLevel
+  text: string
 }
 
 interface TakenDamageResult extends ResponseWithMessage {
   damageTaken: number
   didDie: boolean
   weapon: Weapon
-}
-
-interface ThrustRequest {
-  id: string
-  angle: number
-  powerPercent: number
-}
-interface ThrustResult extends ResponseWithMessage {
-  angle: number
-  velocity: number
-}
-
-interface AttackRequest {
-  id: string
-  enemyId: string
-  weaponId: string
-  efficacy: number
+  miss: boolean
 }

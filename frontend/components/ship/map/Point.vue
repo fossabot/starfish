@@ -11,6 +11,7 @@
       :cy="location[1] * FLAT_SCALE"
       :r="scaledRadius"
       :fill="color || 'white'"
+      :mask="mask ? 'url(#sightMask)' : ''"
     />
     <rect
       v-else
@@ -19,6 +20,7 @@
       :width="scaledRadius * 2"
       :height="scaledRadius * 2"
       :fill="color || 'white'"
+      :mask="mask ? 'url(#sightMask)' : ''"
     />
     <text
       v-if="label && zoom > 1"
@@ -33,6 +35,7 @@
         (0.05 * FLAT_SCALE * containerSizeMultiplier) / zoom
       "
       :fill="color || 'white'"
+      :mask="mask ? 'url(#sightMask)' : ''"
     >
       {{ label }}
     </text>
@@ -58,6 +61,7 @@ export default {
     z: { default: 1 },
     circle: { default: true },
     zoom: { default: 1 },
+    mask: { default: true },
   },
   data(): ComponentShape {
     return {}

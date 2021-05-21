@@ -4,7 +4,7 @@ const planets: BasePlanetData[] = []
 
 planets.push({
   name: `Origin`,
-  color: `green`,
+  color: `hsl(50, 80%, 60%)`,
   location: [0, 0],
   vendor: {
     cargo: [
@@ -47,6 +47,21 @@ planets.push({
         cargoData: textiles,
         buyMultiplier: 1.1,
         sellMultiplier: 0.9,
+      },
+    ],
+  },
+})
+
+planets.push({
+  name: `Osiris`,
+  color: `hsl(240, 80%, 90%)`,
+  location: [0.2, -0.1],
+  vendor: {
+    cargo: [
+      {
+        cargoData: textiles,
+        buyMultiplier: 0.8,
+        sellMultiplier: 1.1,
       },
     ],
   },

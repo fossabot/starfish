@@ -1,4 +1,11 @@
-export declare const db: {};
+import * as cache from './models/cache';
+import * as ship from './models/ship';
+import * as attackRemnant from './models/attackRemnant';
+export declare const db: {
+    cache: typeof cache;
+    ship: typeof ship;
+    attackRemnant: typeof attackRemnant;
+};
 export declare const isReady: () => boolean;
 export declare const init: ({ hostname, port, dbName, username, password, }: {
     hostname?: string | undefined;

@@ -56,6 +56,11 @@ interface IOClientEvents {
     crewId: string,
     tactic: Tactic,
   ) => void
+  [`crew:repairPriority`]: (
+    shipId: string,
+    crewId: string,
+    priority: RepairPriority,
+  ) => void
   [`crew:attackTarget`]: (
     shipId: string,
     crewId: string,

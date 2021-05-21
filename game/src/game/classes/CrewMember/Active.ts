@@ -1,5 +1,5 @@
 import c from '../../../../../common/dist'
-import { CrewMember } from './CrewMember'
+import type { CrewMember } from './CrewMember'
 
 const activeDefaults = {
   baseCooldown: 10000,

@@ -1,21 +1,26 @@
-import { Game } from '../../Game';
-import { Faction } from '../Faction';
-import { Engine } from '../Item/Engine';
-import { Item } from '../Item/Item';
-import { Weapon } from '../Item/Weapon';
-import { Planet } from '../Planet';
-import { Cache } from '../Cache';
-import { AttackRemnant } from '../AttackRemnant';
+import type { Game } from '../../Game';
+import type { Faction } from '../Faction';
+import type { Engine } from '../Item/Engine';
+import type { Item } from '../Item/Item';
+import type { Weapon } from '../Item/Weapon';
+import type { Planet } from '../Planet';
+import type { Cache } from '../Cache';
+import type { AttackRemnant } from '../AttackRemnant';
 import type { CrewMember } from '../CrewMember/CrewMember';
 import type { CombatShip } from './CombatShip';
 import { addWeapon, addEngine, removeItem, equipLoadout } from './addins/items';
-import { move, stop, isAt, applyTickOfGravity } from './addins/motion';
 export declare class Ship {
     static maxPreviousLocations: number;
     readonly name: string;
     planet: Planet | false;
     readonly faction: Faction | false;
     readonly game: Game;
+    readonly radii: {
+        [key in RadiusType]: number;
+    };
+    ai: boolean;
+    human: boolean;
+    readonly crewMembers: CrewMember[];
     toUpdate: Partial<ShipStub>;
     visible: {
         ships: Ship[];
@@ -32,13 +37,12 @@ export declare class Ship {
     velocity: CoordinatePair;
     speed: number;
     direction: number;
-    human: boolean;
     attackable: boolean;
     _hp: number;
     _maxHp: number;
     dead: boolean;
     obeysGravity: boolean;
-    constructor({ name, faction, loadout, seenPlanets, location, }: BaseShipData, game: Game);
+    constructor({ name, faction, weapons, engines, loadout, seenPlanets, location, previousLocations, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     get items(): Item[];
@@ -46,13 +50,13 @@ export declare class Ship {
     addEngine: typeof addEngine;
     removeItem: typeof removeItem;
     equipLoadout: typeof equipLoadout;
-    sightRadius: number;
+    updateSightRadius(): void;
     lastMoveAngle: number;
     get canMove(): boolean;
-    move: typeof move;
-    stop: typeof stop;
-    isAt: typeof isAt;
-    applyTickOfGravity: typeof applyTickOfGravity;
+    move(toLocation?: CoordinatePair): void;
+    addPreviousLocation(this: Ship, locationBeforeThisTick: CoordinatePair): void;
+    isAt(this: Ship, coords: CoordinatePair): boolean;
+    applyTickOfGravity(this: Ship): void;
     membersIn(l: CrewLocation): CrewMember[];
     cumulativeSkillIn(l: CrewLocation, s: SkillName): number;
     canAttack(s: CombatShip): boolean;
@@ -60,5 +64,6 @@ export declare class Ship {
     recalculateMaxHp(): void;
     get hp(): number;
     set hp(newValue: number);
+    logEntry(s: string, lv: LogLevel): void;
 }
 //# sourceMappingURL=Ship.d.ts.map

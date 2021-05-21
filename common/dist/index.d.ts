@@ -1,6 +1,9 @@
 declare const _default: {
+    getRepairAmountPerTickForSingleCrewMember: (skill: number) => number;
     getThrustMagnitudeForSingleCrewMember: (skill?: number, engineThrustMultiplier?: number) => number;
     tactics: Tactic[];
+    cargoTypes: ("credits" | CargoType)[];
+    stubify: <BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[] | undefined) => StubType;
     log: (...args: any[]) => void;
     sleep: (ms: number) => Promise<void>;
     randomFromArray: (array: any[]) => any;
@@ -18,15 +21,19 @@ declare const _default: {
     degreesToRadians: (degrees?: number) => number;
     distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
     angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
+    randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;
     unitVectorFromThisPointToThatPoint: (thisPoint?: CoordinatePair, thatPoint?: CoordinatePair) => CoordinatePair;
     pointIsInsideCircle: (center?: CoordinatePair, point?: CoordinatePair, radius?: number) => boolean;
     vectorToDegrees: (coordPair?: CoordinatePair) => number;
     coordPairToRadians: (coordPair?: CoordinatePair) => number;
     vectorToMagnitude: (vector?: CoordinatePair) => number;
+    randomSign: () => 1 | -1;
+    randomInRange: (a: number, b: number) => number;
     GAME_NAME: string;
     TICK_INTERVAL: number;
     deltaTime: number;
+    arrivalThreshold: number;
     levels: number[];
 };
 export default _default;

@@ -1,20 +1,19 @@
 import c from '../../../../common/dist'
-import { Weapon } from '../classes/Item/Weapon'
 import { weapons, engines } from './items'
 
 const loadouts: { [key: string]: Loadout } = {}
 
 function addLoadout(
   name: string,
-  weaponIds: string[],
-  engineIds: string[],
+  weaponIds: WeaponType[],
+  engineIds: EngineType[],
 ): void {
   const w = weaponIds
-    .map((id: string) => weapons[id])
-    .filter((w) => w)
+    .map((id: WeaponType) => weapons[id])
+    .filter((w) => w) as BaseWeaponData[]
   const e = engineIds
-    .map((id: string) => engines[id])
-    .filter((e) => e)
+    .map((id: EngineType) => engines[id])
+    .filter((e) => e) as BaseEngineData[]
   loadouts[name] = { name, weapons: w, engines: e }
 }
 

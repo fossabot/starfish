@@ -19,7 +19,7 @@ export class StartCommand implements Command {
     const createdShip = await create({
       id: initialMessage.guild!.id,
       name: initialMessage.guild!.name,
-      faction: `green`,
+      faction: { color: `green` },
     })
     if (!createdShip) {
       await initialMessage.channel.send(

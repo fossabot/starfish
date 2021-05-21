@@ -2,9 +2,9 @@
   <nav class="pad-pane">
     <nuxt-link to="/">Home</nuxt-link>
 
-    <button v-if="userId" @click="logout">Log out</button>
+    <button v-show="userId" @click="logout">Log out</button>
     <a
-      v-else
+      v-show="!userId"
       href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Flocalhost%3A4300%2Fpostlogin&response_type=token&scope=identify%20guilds"
       >Log in</a
     >

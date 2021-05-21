@@ -6,10 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ship = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const items_1 = require("./addins/items");
-const motion_1 = require("./addins/motion");
-const io_1 = require("../../../server/io");
+const io_1 = __importDefault(require("../../../server/io"));
 class Ship {
-    constructor({ name, faction, loadout, seenPlanets, location, }, game) {
+    constructor({ name, faction, weapons, engines, loadout, seenPlanets, location, previousLocations, }, game) {
+        this.radii = {
+            sight: 0,
+            attack: 0,
+        };
+        this.crewMembers = [];
         this.toUpdate = {};
         this.visible = {
             ships: [],
@@ -27,7 +31,6 @@ class Ship {
         this.speed = 0; // just for frontend reference
         this.direction = 0; // just for frontend reference
         // targetLocation: CoordinatePair = [0, 0]
-        this.human = false;
         this.attackable = false;
         this._hp = 10; // set in hp setter below
         this._maxHp = 10;
@@ -37,28 +40,14 @@ class Ship {
         this.addEngine = items_1.addEngine;
         this.removeItem = items_1.removeItem;
         this.equipLoadout = items_1.equipLoadout;
-        // ----- radii -----
-        this.sightRadius = 1;
         // ----- movement -----
         this.lastMoveAngle = 0;
-        // get atTargetLocation(): boolean {
-        //   return (
-        //     math.abs(this.location[0] - this.targetLocation[0]) <
-        //       0.000001 &&
-        //     math.abs(this.location[1] - this.targetLocation[1]) <
-        //       0.000001
-        //   )
-        // }
-        this.move = motion_1.move;
-        this.stop = motion_1.stop;
-        this.isAt = motion_1.isAt;
-        // thrust = thrust
-        this.applyTickOfGravity = motion_1.applyTickOfGravity;
         this.game = game;
         this.name = name;
+        this.ai = true;
+        this.human = false;
         this.faction =
-            game.factions.find((f) => f.color === faction) ||
-                false;
+            game.factions.find((f) => f.color === faction?.color) || false;
         if (location)
             this.location = location;
         else if (this.faction) {
@@ -70,13 +59,20 @@ class Ship {
             this.location = [0, 0];
         this.planet =
             this.game.planets.find((p) => this.isAt(p.location)) || false;
+        if (previousLocations)
+            this.previousLocations = previousLocations;
         if (seenPlanets)
             this.seenPlanets = seenPlanets
-                .map((name) => this.game.planets.find((p) => p.name === name))
+                .map(({ name }) => this.game.planets.find((p) => p.name === name))
                 .filter((p) => p);
         if (loadout)
             this.equipLoadout(loadout);
+        if (weapons)
+            weapons.forEach((w) => this.addWeapon(w.id, w));
+        if (engines)
+            engines.forEach((e) => this.addEngine(e.id, e));
         this.hp = this.maxHp;
+        this.updateSightRadius();
     }
     identify() {
         dist_1.default.log(`Ship: ${this.name} (${this.id}) at ${this.location}`);
@@ -86,16 +82,13 @@ class Ship {
             dist_1.default.log(`      velocity: ${this.velocity}`);
     }
     tick() {
-        this.visible = this.game.scanCircle(this.location, this.sightRadius, this.id);
-        const newPlanets = this.visible.planets.filter((p) => !this.seenPlanets.includes(p));
-        if (newPlanets.length) {
-            this.seenPlanets.push(...newPlanets);
-            // todo alert ship
-        }
+        if (this.dead)
+            return;
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id);
         // ----- updates for frontend -----
-        this.toUpdate.visible = io_1.stubify(this.visible, [`visible`, `seenPlanets`]);
-        this.toUpdate.weapons = this.weapons.map((w) => io_1.stubify(w));
-        this.toUpdate.engines = this.engines.map((e) => io_1.stubify(e));
+        this.toUpdate.visible = dist_1.default.stubify(this.visible, [`visible`, `seenPlanets`]);
+        this.toUpdate.weapons = this.weapons.map((w) => dist_1.default.stubify(w));
+        this.toUpdate.engines = this.engines.map((e) => dist_1.default.stubify(e));
         // ----- move -----
         this.move();
         if (this.obeysGravity)
@@ -103,7 +96,7 @@ class Ship {
         // ----- send update to listeners -----
         if (!Object.keys(this.toUpdate).length)
             return;
-        io_1.io.to(`ship:${this.id}`).emit(`ship:update`, {
+        io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
             id: this.id,
             updates: this.toUpdate,
         });
@@ -114,10 +107,56 @@ class Ship {
         const items = [...this.weapons, ...this.engines];
         return items;
     }
+    // ----- radii -----
+    updateSightRadius() {
+        this.radii.sight = 0.3;
+        this.toUpdate.radii = this.radii;
+    }
     get canMove() {
         if (this.dead)
             return false;
         return true;
+    }
+    move(toLocation) {
+        const previousLocation = [
+            ...this.location,
+        ];
+        if (toLocation) {
+            this.location = toLocation;
+            this.speed = 0;
+            this.velocity = [0, 0];
+            this.toUpdate.location = this.location;
+            this.toUpdate.speed = this.speed;
+            this.toUpdate.velocity = this.velocity;
+            this.addPreviousLocation(previousLocation);
+        }
+    }
+    addPreviousLocation(locationBeforeThisTick) {
+        const lastPrevLoc = this.previousLocations[this.previousLocations.length - 1];
+        const newAngle = dist_1.default.angleFromAToB(this.location, locationBeforeThisTick);
+        if (!lastPrevLoc ||
+            (Math.abs(newAngle - this.lastMoveAngle) > 8 &&
+                dist_1.default.distance(this.location, lastPrevLoc) > 0.001)) {
+            if (locationBeforeThisTick &&
+                locationBeforeThisTick[0])
+                this.previousLocations.push(locationBeforeThisTick);
+            while (this.previousLocations.length >
+                Ship.maxPreviousLocations)
+                this.previousLocations.shift();
+            this.toUpdate.previousLocations =
+                this.previousLocations;
+        }
+        this.lastMoveAngle = newAngle;
+    }
+    isAt(coords) {
+        return (Math.abs(coords[0] - this.location[0]) <
+            dist_1.default.arrivalThreshold &&
+            Math.abs(coords[1] - this.location[1]) <
+                dist_1.default.arrivalThreshold);
+    }
+    applyTickOfGravity() {
+        // if (!this.canMove) return
+        // todo
     }
     // ----- crew -----
     membersIn(l) {
@@ -137,7 +176,12 @@ class Ship {
         this._maxHp = this.items.reduce((total, i) => i.maxHp + total, 0);
     }
     get hp() {
-        return this.items.reduce((total, i) => i.maxHp * i.repair + total, 0);
+        const total = this.items.reduce((total, i) => i.maxHp * i.repair + total, 0);
+        const wasDead = this.dead;
+        this.dead = total <= 0;
+        if (this.dead !== wasDead)
+            this.toUpdate.dead = this.dead;
+        return total;
     }
     set hp(newValue) {
         this._hp = newValue;
@@ -147,7 +191,9 @@ class Ship {
             this._hp = this._maxHp;
         this.toUpdate._hp = this._hp;
     }
+    // ----- misc stubs -----
+    logEntry(s, lv) { }
 }
 exports.Ship = Ship;
-Ship.maxPreviousLocations = 10;
+Ship.maxPreviousLocations = 50;
 //# sourceMappingURL=Ship.js.map

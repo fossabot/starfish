@@ -1,15 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
-const io_1 = require("../io");
-const HumanShip_1 = require("../../game/classes/Ship/HumanShip");
 function default_1(socket) {
     socket.on(`ships:forUser:fromIdArray`, (shipIds, userId, callback) => {
-        const foundShips = __1.game.ships.filter((s) => s instanceof HumanShip_1.HumanShip &&
+        const foundShips = __1.game.ships.filter((s) => s.human &&
             shipIds.includes(s.id) &&
             s.crewMembers.find((cm) => cm.id === userId));
         if (foundShips.length) {
-            const shipsAsStubs = foundShips.map((s) => io_1.stubify(s));
+            const shipsAsStubs = foundShips.map((s) => dist_1.default.stubify(s));
             callback({
                 data: shipsAsStubs,
             });
@@ -20,7 +22,7 @@ function default_1(socket) {
     socket.on(`ship:get`, (id, callback) => {
         const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {
-            const stub = io_1.stubify(foundShip);
+            const stub = dist_1.default.stubify(foundShip);
             callback({
                 data: stub,
             });

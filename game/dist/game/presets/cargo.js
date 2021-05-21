@@ -13,7 +13,7 @@ exports.metals = {
 };
 exports.textiles = {
     name: `Textiles`,
-    type: 'textiles',
+    type: `textiles`,
     basePrice: 3,
 };
 //# sourceMappingURL=cargo.js.map
