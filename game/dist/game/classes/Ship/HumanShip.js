@@ -199,14 +199,6 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.commonCredits = this.commonCredits;
         member.addStat(`totalContributedToCommonFund`, amount);
     }
-    // setChannel(type: GameChannelType, id: string) {
-    //   const found = this.channelReferences.find(
-    //     (ch) => ch.type === type,
-    //   )
-    //   if (found) found.id = id
-    //   else this.channelReferences.push({ type, id })
-    //   this.toUpdate.channels = this.channelReferences
-    // }
     // ----- room mgmt -----
     addRoom(room) {
         if (!this.availableRooms.includes(room))

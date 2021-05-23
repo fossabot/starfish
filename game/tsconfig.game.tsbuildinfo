@@ -272,8 +272,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "e5b9c3ed9d936648541749fffd77e4416bcb3a7e0eb21de123971dec8e282987",
-        "signature": "e5b9c3ed9d936648541749fffd77e4416bcb3a7e0eb21de123971dec8e282987",
+        "version": "52b87114b6652945a750bf9f18a33194d15f4009b7fa946e3791ededfad37b4f",
+        "signature": "52b87114b6652945a750bf9f18a33194d15f4009b7fa946e3791ededfad37b4f",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -697,7 +697,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "14cba7ca574f671997d0f815588a0cadd3769e274c946e3534b3bf184e67fe5c",
+        "version": "e0903324136488c62223829cdbe9d883cab01970ff6dc8e2d27a9b42e328e595",
         "signature": "c314bd947785b12d9ed74934018ff83887e09f55605958cfa282d43e699e0511",
         "affectsGlobalScope": false
       },
@@ -747,7 +747,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "ab6227b244fff12cf126f87f5aa5574259561a687d9e335cb9a690380335ddc8",
+        "version": "92acc24eab93d7376cf1a99c2573a0bcbdd316e4d8325aedfdc3c6216476258d",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },

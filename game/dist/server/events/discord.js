@@ -30,22 +30,6 @@ function default_1(socket) {
             });
         }
     });
-    // socket.on(
-    //   `ship:channelUpdate`,
-    //   (guildId, channelType, channelId) => {
-    //     const ship = game.ships.find(
-    //       (s) => s.human && s.id === guildId,
-    //     ) as HumanShip
-    //     if (!ship)
-    //       return c.log(
-    //         `Attempted to set channel ${channelType} of nonexistant ship ${guildId}.`,
-    //       )
-    //     ship.setChannel(channelType, channelId)
-    //     c.log(
-    //       `Set channel ${channelType} on ship ${ship.name} to ${channelId}.`,
-    //     )
-    //   },
-    // )
 }
 exports.default = default_1;
 //# sourceMappingURL=discord.js.map

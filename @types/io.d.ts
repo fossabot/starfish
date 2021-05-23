@@ -115,11 +115,6 @@ interface IOClientEvents {
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
-  // [`ship:channelUpdate`]: (
-  //   guildId: string,
-  //   channelType: GameChannelType,
-  //   channelId: string,
-  // ) => void
 }
 
 interface IOError {
