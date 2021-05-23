@@ -11,18 +11,18 @@ function default_1(socket) {
         socket.join([`discord`]);
     });
     socket.on(`ship:create`, (data, callback) => {
-        const foundShip = __1.game.ships.find((s) => s.id === data.id);
-        if (foundShip) {
-            dist_1.default.log(`Call to create existing ship, returning existing`);
-            const stub = dist_1.default.stubify(foundShip);
+        const ship = __1.game.ships.find((s) => s.id === data.id);
+        if (ship) {
+            dist_1.default.log(`Call to create existing ship, returning existing.`);
+            const stub = dist_1.default.stubify(ship);
             callback({
                 data: stub,
             });
         }
         else {
+            data.name = data.name.substring(0, dist_1.default.maxNameLength);
             const ship = __1.game.addHumanShip({
                 ...data,
-                loadout: `human_default`,
             });
             const stub = dist_1.default.stubify(ship);
             callback({
@@ -30,6 +30,22 @@ function default_1(socket) {
             });
         }
     });
+    // socket.on(
+    //   `ship:channelUpdate`,
+    //   (guildId, channelType, channelId) => {
+    //     const ship = game.ships.find(
+    //       (s) => s.human && s.id === guildId,
+    //     ) as HumanShip
+    //     if (!ship)
+    //       return c.log(
+    //         `Attempted to set channel ${channelType} of nonexistant ship ${guildId}.`,
+    //       )
+    //     ship.setChannel(channelType, channelId)
+    //     c.log(
+    //       `Set channel ${channelType} on ship ${ship.name} to ${channelId}.`,
+    //     )
+    //   },
+    // )
 }
 exports.default = default_1;
 //# sourceMappingURL=discord.js.map

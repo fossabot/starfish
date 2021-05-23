@@ -8,6 +8,8 @@ interface DamageResult {
     targetType?: ItemType;
 }
 export declare abstract class CombatShip extends Ship {
+    static percentOfCreditsLostOnDeath: number;
+    static percentOfCreditsDroppedOnDeath: number;
     attackable: boolean;
     constructor(props: BaseShipData, game: Game);
     updateAttackRadius(): void;

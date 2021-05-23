@@ -5,6 +5,7 @@ class Item {
     constructor({ type, id, displayName, description, repair, maxHp, hp, }, ship, props) {
         this.repair = 1;
         this.announceWhenRepaired = false;
+        this.announceWhenBroken = true;
         this.type = type;
         this.id = id;
         this.displayName = displayName;

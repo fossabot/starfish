@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <NavBar />
     <h2>This is the homepage</h2>
     <nuxt-link to="/s">Ship Page</nuxt-link>
     <br />

@@ -16,6 +16,9 @@ interface DamageResult {
 }
 
 export abstract class CombatShip extends Ship {
+  static percentOfCreditsLostOnDeath = 0.5
+  static percentOfCreditsDroppedOnDeath = 0.25
+
   attackable = true
 
   constructor(props: BaseShipData, game: Game) {
@@ -117,11 +120,17 @@ export abstract class CombatShip extends Ship {
     )
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
-    const miss =
-      Math.random() * weapon.repair > rangeAsPercent
+    const hitRoll = Math.random() * weapon.repair
+    const miss = hitRoll < rangeAsPercent
     const damage = miss
       ? 0
       : weapon.damage * totalMunitionsSkill
+
+    c.log(
+      `need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${
+        miss ? `miss` : `hit`
+      } of damage ${damage}`,
+    )
     const damageResult: DamageResult = {
       miss,
       damage,
@@ -192,11 +201,15 @@ export abstract class CombatShip extends Ship {
           equipmentToAttack.hp = 0
           remainingDamage -= remainingHp
         }
-        if (equipmentToAttack.hp === 0) {
+        if (
+          equipmentToAttack.hp === 0 &&
+          equipmentToAttack.announceWhenBroken
+        ) {
           this.logEntry(
             `Your ${equipmentToAttack.displayName} has been disabled!`,
             `high`,
           )
+          equipmentToAttack.announceWhenBroken = false
         }
       }
     }
@@ -260,46 +273,5 @@ export abstract class CombatShip extends Ship {
 
   die() {
     this.dead = true
-
-    setTimeout(() => {
-      this.logEntry(
-        `Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
-        `critical`,
-      )
-    }, 100)
-
-    const cacheContents: CacheContents[] = []
-
-    this.crewMembers.forEach((cm) => {
-      while (cm.inventory.length) {
-        const toAdd = cm.inventory.pop()
-        const existing = cacheContents.find(
-          (cc) => cc.type === toAdd?.type,
-        )
-        if (existing) existing.amount += toAdd?.amount || 0
-        else if (toAdd) cacheContents.push(toAdd)
-      }
-
-      cm.credits *= 0.5
-      const existing = cacheContents.find(
-        (cc) => cc.type === `credits`,
-      )
-      if (existing) existing.amount += cm.credits || 0
-      else if (cm.credits)
-        cacheContents.push({
-          type: `credits`,
-          amount: cm.credits,
-        })
-
-      cm.location = `bunk`
-    })
-
-    if (cacheContents.length)
-      this.game.addCache({
-        contents: cacheContents,
-        location: this.location,
-        ownerId: this.id,
-        message: `Remains of ${this.name}`,
-      })
   }
 }

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.respawn = exports.create = exports.get = void 0;
+exports.channelUpdate = exports.respawn = exports.create = exports.get = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function get(id) {
@@ -54,54 +54,10 @@ async function respawn(id) {
     return shipStub;
 }
 exports.respawn = respawn;
-// export async function thrust(
-//   data: ThrustRequest,
-// ): Promise<ThrustResult | null> {
-//   if (!(await connected())) return null
-//   const res: ThrustResult | null = await new Promise(
-//     (resolve) => {
-//       io.emit(
-//         `ship:thrust`,
-//         data,
-//         ({
-//           data: thrustResult,
-//           error,
-//         }: IOResponseReceived<ThrustResult>) => {
-//           if (!thrustResult || error) {
-//             c.log(error)
-//             resolve(null)
-//             return
-//           }
-//           resolve(thrustResult)
-//         },
-//       )
-//     },
-//   )
-//   return res
-// }
-// export async function attack(
-//   data: AttackRequest,
-// ): Promise<TakenDamageResult | null> {
-//   if (!(await connected())) return null
-//   const res: TakenDamageResult | null = await new Promise(
-//     (resolve) => {
-//       io.emit(
-//         `ship:attack`,
-//         data,
-//         ({
-//           data: attackResult,
-//           error,
-//         }: IOResponseReceived<TakenDamageResult>) => {
-//           if (!attackResult || error) {
-//             c.log(error)
-//             resolve(null)
-//             return
-//           }
-//           resolve(attackResult)
-//         },
-//       )
-//     },
-//   )
-//   return res
-// }
+async function channelUpdate(guildId, channelType, channelId) {
+    if (!(await index_1.connected()))
+        return null;
+    index_1.io.emit(`ship:channelUpdate`, guildId, channelType, channelId);
+}
+exports.channelUpdate = channelUpdate;
 //# sourceMappingURL=ship.js.map

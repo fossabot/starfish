@@ -5,18 +5,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
+const gameSpeedMultiplier = 10;
+const baseRepairCost = 100;
 function getThrustMagnitudeForSingleCrewMember(skill = 1, engineThrustMultiplier = 1) {
-    return (math_1.default.lerp(0.0001, 0.001, skill / 100) *
-        engineThrustMultiplier);
+    return (math_1.default.lerp(0.00001, 0.0001, skill / 100) *
+        engineThrustMultiplier *
+        gameSpeedMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(skill) {
-    return (skill / globals_1.default.TICK_INTERVAL) * 0.3;
+    return ((skill / globals_1.default.TICK_INTERVAL) *
+        0.3 *
+        gameSpeedMultiplier);
+}
+function getStaminaGainPerTickForSingleCrewMember() {
+    return 0.00003 * gameSpeedMultiplier;
+}
+function getWeaponCooldownReductionPerTick(level) {
+    return (2 + level) * 3 * gameSpeedMultiplier;
 }
 const tactics = [`aggressive`, `defensive`];
 const cargoTypes = [
-    `food`,
-    `metals`,
-    `textiles`,
+    `salt`,
+    `water`,
+    `oxygen`,
     `credits`,
 ];
 function stubify(prop, disallowPropName) {
@@ -55,8 +66,12 @@ function stubify(prop, disallowPropName) {
     return circularReferencesRemoved;
 }
 exports.default = {
+    gameSpeedMultiplier,
+    baseRepairCost,
     getRepairAmountPerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
+    getStaminaGainPerTickForSingleCrewMember,
+    getWeaponCooldownReductionPerTick,
     tactics,
     cargoTypes,
     stubify,

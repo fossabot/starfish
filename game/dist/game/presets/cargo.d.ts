@@ -1,4 +1,4 @@
-export declare const food: CargoData;
-export declare const metals: CargoData;
-export declare const textiles: CargoData;
+export declare const salt: CargoData;
+export declare const water: CargoData;
+export declare const oxygen: CargoData;
 //# sourceMappingURL=cargo.d.ts.map

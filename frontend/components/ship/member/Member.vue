@@ -2,7 +2,7 @@
   <div class="member">
     <Box>
       <template #title>
-        <span class="sectionemoji">🧑‍✈️</span
+        <span class="sectionemoji">🦀</span
         >{{ crewMember.name }}
       </template>
 

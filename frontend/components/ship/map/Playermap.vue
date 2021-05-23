@@ -1,9 +1,13 @@
 <template>
   <Box class="map">
     <template #title>
-      <span class="sectionemoji">🗺</span>Area Scan
+      <span class="sectionemoji">{{ emoji }}</span
+      >{{ label }}
     </template>
-    <div class="panesection pad-none">
+    <div
+      class="panesection pad-none"
+      :style="{ width: width + 'px' }"
+    >
       <ShipMap
         :mapData="mapData"
         @mouseup="$store.commit('setTarget', arguments[0])"
@@ -20,6 +24,15 @@ interface ComponentShape {
 }
 
 export default {
+  props: {
+    emoji: { default: '🗺' },
+    interactive: { default: true },
+    radius: {},
+    blackout: { default: true },
+    width: { default: 600 },
+    buffer: { default: true },
+    label: { default: 'Area Scan' },
+  },
   data() {
     return {}
   },
@@ -28,7 +41,10 @@ export default {
     mapData(this: ComponentShape) {
       return {
         center: this.ship.location,
-        defaultRadius: this.ship.radii.sight,
+        defaultRadius: this.radius || this.ship.radii.sight,
+        interactive: this.interactive,
+        blackout: this.blackout,
+        buffer: this.buffer,
         planets: this.planetsToShow,
         ships: [
           ...(this.ship.visible.ships || []),
@@ -46,7 +62,7 @@ export default {
       return [
         {
           radius: this.ship.radii.attack,
-          label: 'Attack radius',
+          label: 'Attack',
           label2:
             Math.round(this.ship.radii.attack * 100) / 100 +
             'AU',
@@ -87,6 +103,6 @@ export default {
 
 <style lang="scss" scoped>
 .panesection {
-  width: 600px;
+  background: var(--bg);
 }
 </style>

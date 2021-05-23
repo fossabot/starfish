@@ -7,7 +7,7 @@
         y="-1000"
         width="1000"
         height="1000"
-        fill="blank"
+        fill="black"
       />
       <!-- Everything under a white pixel will be visible -->
       <circle
@@ -22,7 +22,8 @@
       :cx="location[0] * FLAT_SCALE"
       :cy="location[1] * FLAT_SCALE"
       :r="radius"
-      stroke="rgba(255, 255, 255, 0.5)"
+      stroke="rgba(255, 255, 255, 0.2)"
+      fill="black"
       :stroke-width="(0.0025 * FLAT_SCALE) / zoom"
     />
     <text
@@ -38,7 +39,7 @@
       "
       fill="rgba(255, 255, 255, 0.5)"
     >
-      {{ zoom > 1 ? 'sight radius' : '' }}
+      {{ zoom > 1 ? 'sight' : '' }}
     </text>
     <text
       :x="location[0] * FLAT_SCALE"

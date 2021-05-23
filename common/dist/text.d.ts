@@ -1,3 +1,4 @@
+declare function numberWithCommas(x: number): string;
 declare function degreesToArrow(angle: number): string;
 declare function coordPairToArrow(coordPair: CoordinatePair): string;
 declare function percentToTextBars(percent?: number, barCount?: number): string;
@@ -8,6 +9,8 @@ declare function sanitize(string?: string): SanitizeResult;
 declare function msToTimeString(ms?: number): string;
 declare function garble(string?: string, percent?: number): string;
 declare const _default: {
+    maxNameLength: number;
+    numberWithCommas: typeof numberWithCommas;
     degreesToArrow: typeof degreesToArrow;
     coordPairToArrow: typeof coordPairToArrow;
     percentToTextBars: typeof percentToTextBars;

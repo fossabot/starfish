@@ -1,5 +1,11 @@
 import math from './math'
 
+const maxNameLength = 16
+
+function numberWithCommas(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, `,`)
+}
+
 import { LanguageFilter } from './badwords'
 const filter = new LanguageFilter()
 const numberEmojis = [
@@ -164,6 +170,8 @@ function arrayMove(
 }
 
 export default {
+  maxNameLength,
+  numberWithCommas,
   degreesToArrow,
   coordPairToArrow,
   percentToTextBars,

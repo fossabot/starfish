@@ -1,15 +1,15 @@
-import c from '../../../../../common/dist'
+import c from '../../../common/dist'
 import { Message } from 'discord.js'
-import { CommandContext } from './CommandContext'
-import type { Command } from './Command'
-import { reactor } from '../../reactions/reactor'
-import { get } from '../../../ioInterface/ship'
+import { CommandContext } from './models/CommandContext'
+import type { Command } from './models/Command'
+import { reactor } from './reactions/reactor'
+import ioInterface from '../ioInterface'
 
-import { StartCommand } from '../Start'
-import { InviteCommand } from '../Invite'
-import { LinkCommand } from '../Link'
-import { JoinCommand } from '../Join'
-import { RespawnCommand } from '../Respawn'
+import { StartCommand } from './commands/Start'
+import { InviteCommand } from './commands/Invite'
+import { LinkCommand } from './commands/Link'
+import { JoinCommand } from './commands/Join'
+import { RespawnCommand } from './commands/Respawn'
 
 export class CommandHandler {
   private commands: Command[]
@@ -40,7 +40,7 @@ export class CommandHandler {
     }
 
     // ignore DMs for now
-    if (message.channel.type === `dm`) {
+    if (message.channel.type === `dm` || !message.guild) {
       return
     }
 
@@ -67,7 +67,9 @@ export class CommandHandler {
     }
 
     // get ship data to determine which commands a user should be able to run.
-    const ship = await get(message.guild?.id || ``)
+    const ship = await ioInterface.ship.get(
+      message.guild?.id || ``,
+    )
     commandContext.ship = ship
     const crewMember =
       ship?.crewMembers.find(

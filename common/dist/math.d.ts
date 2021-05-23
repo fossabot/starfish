@@ -5,6 +5,11 @@ declare function coordPairToRadians(coordPair?: CoordinatePair): number;
 declare function vectorToDegrees(coordPair?: CoordinatePair): number;
 declare function distance(a?: CoordinatePair, b?: CoordinatePair): number;
 declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
+/**
+ * shortest distance (in degrees) between two angles.
+ * It will be in range [0, 180].
+ */
+declare function angleDifference(a: number, b: number): number;
 declare function degreesToUnitVector(degrees?: number): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint?: CoordinatePair, thatPoint?: CoordinatePair): CoordinatePair;
 declare function vectorToMagnitude(vector?: CoordinatePair): number;
@@ -18,6 +23,7 @@ declare const _default: {
     degreesToRadians: typeof degreesToRadians;
     distance: typeof distance;
     angleFromAToB: typeof angleFromAToB;
+    angleDifference: typeof angleDifference;
     randomInsideCircle: typeof randomInsideCircle;
     degreesToUnitVector: typeof degreesToUnitVector;
     unitVectorFromThisPointToThatPoint: typeof unitVectorFromThisPointToThatPoint;

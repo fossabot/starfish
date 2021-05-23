@@ -1,13 +1,19 @@
 <template>
-  <span
-    class="roommember"
+  <div
+    class="roommember flex-column flex-center"
     :class="{ hide, highlight, animate }"
     :style="{
       top: top + 'px',
       left: left + 'px',
     }"
-    >{{ name }}</span
   >
+    <div>
+      🦀
+    </div>
+    <div class="name">
+      {{ name }}
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -78,7 +84,7 @@ export default {
 <style lang="scss" scoped>
 .roommember {
   transform-origin: 50% 50%;
-  line-height: 1;
+  line-height: 0.8;
   position: absolute;
   padding: 0;
   top: 0;
@@ -98,6 +104,12 @@ export default {
   &.animate {
     transition: top 1s, left 1s;
   }
+}
+
+.name {
+  font-size: 0.85em;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .hide {

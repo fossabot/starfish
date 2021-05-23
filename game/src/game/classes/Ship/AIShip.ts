@@ -20,8 +20,12 @@ export class AIShip extends CombatShip {
     if (data.id) this.id = data.id
     else this.id = `${Math.random()}`.substring(2)
 
+    this.planet = false
+
     this.ai = true
     this.human = false
+
+    if (data.level) this.level = data.level
 
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = data.spawnPoint
@@ -33,15 +37,28 @@ export class AIShip extends CombatShip {
   }
 
   tick() {
+    if (this.dead) return
     super.tick()
+
+    // ----- move -----
+    this.move()
+    if (this.obeysGravity) this.applyTickOfGravity()
+
+    this.visible = this.game.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+      `ship`,
+    )
 
     // recharge weapons
     this.weapons.forEach(
       (w) =>
-        (w.cooldownRemaining -= c.deltaTime * this.level),
+        (w.cooldownRemaining -=
+          c.getWeaponCooldownReductionPerTick(this.level)),
     )
 
-    // attack human in range
+    // attack enemy in range
     const weapons = this.availableWeapons()
     if (!weapons.length) return
     const enemies = this.getEnemiesInAttackRange()
@@ -74,44 +91,97 @@ export class AIShip extends CombatShip {
         0,
       )
 
-    if (Math.random() < 0.1) {
-      const pointToAdd = c.randomInsideCircle(
-        this.level / 10,
+    if (
+      !(
+        Math.abs(
+          this.location[0] - this.targetLocation[0],
+        ) <
+          c.arrivalThreshold / 2 &&
+        Math.abs(
+          this.location[1] - this.targetLocation[1],
+        ) <
+          c.arrivalThreshold / 2
       )
+    ) {
+      const unitVectorToTarget = c.degreesToUnitVector(
+        c.angleFromAToB(this.location, this.targetLocation),
+      )
+
+      const thrustMagnitude =
+        c.getThrustMagnitudeForSingleCrewMember(
+          this.level,
+          engineThrustMultiplier,
+        )
+
+      this.location[0] +=
+        unitVectorToTarget[0] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+      this.location[1] +=
+        unitVectorToTarget[1] *
+        thrustMagnitude *
+        (c.deltaTime / 1000)
+    }
+
+    // ----- set new target location -----
+    if (Math.random() < 0.01) {
+      const distance = (Math.random() * this.level) / 7
+      const currentAngle = c.angleFromAToB(
+        this.location,
+        this.targetLocation,
+      )
+      const possibleAngles = [
+        this.keyAngle,
+        (this.keyAngle + 90) % 360,
+        (this.keyAngle + 180) % 360,
+        (this.keyAngle + 270) % 360,
+      ].filter((a) => {
+        const diff = c.angleDifference(a, currentAngle)
+        return diff > 1 && diff < 179
+      })
+      const angleToHome = c.angleFromAToB(
+        this.location,
+        this.spawnPoint,
+      )
+      const chosenAngle = c.coinFlip()
+        ? c.randomFromArray(possibleAngles)
+        : possibleAngles.reduce(
+            (lowest, a) =>
+              c.angleDifference(angleToHome, a) <
+              c.angleDifference(angleToHome, lowest)
+                ? a
+                : lowest,
+            possibleAngles[0],
+          )
+      const unitVector = c.degreesToUnitVector(chosenAngle)
+
+      // c.log(angleToHome, chosenAngle, unitVector)
+
       this.targetLocation = [
-        this.spawnPoint[0] + pointToAdd[0],
-        this.spawnPoint[1] + pointToAdd[1],
+        this.location[0] + unitVector[0] * distance,
+        this.location[1] + unitVector[1] * distance,
       ]
     }
 
-    if (
-      Math.abs(this.location[0] - this.targetLocation[0]) <
-        c.arrivalThreshold / 2 &&
-      Math.abs(this.location[1] - this.targetLocation[1]) <
-        c.arrivalThreshold / 2
-    )
-      return
-
-    const unitVectorToTarget = c.degreesToUnitVector(
-      c.angleFromAToB(this.location, this.targetLocation),
-    )
-
-    const thrustMagnitude =
-      c.getThrustMagnitudeForSingleCrewMember(
-        this.level,
-        engineThrustMultiplier,
-      )
-
-    this.location[0] +=
-      unitVectorToTarget[0] *
-      thrustMagnitude *
-      (c.deltaTime / 1000)
-    this.location[1] +=
-      unitVectorToTarget[1] *
-      thrustMagnitude *
-      (c.deltaTime / 1000)
-
     // ----- add previousLocation -----
     this.addPreviousLocation(startingLocation)
+  }
+
+  die() {
+    super.die()
+
+    const amount = Math.round(
+      Math.random() * this.level * 40,
+    )
+    const cacheContents: CacheContents[] = [
+      { type: `credits`, amount },
+    ]
+    this.game.addCache({
+      contents: cacheContents,
+      location: this.location,
+      message: `Remains of ${this.name}`,
+    })
+
+    this.game.removeShip(this)
   }
 }

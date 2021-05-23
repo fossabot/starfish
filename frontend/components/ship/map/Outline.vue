@@ -7,8 +7,7 @@
       :stroke="color"
       :stroke-width="(0.0025 * FLAT_SCALE) / zoom"
       :stroke-dasharray="dash ? dash + ' ' + dash : ''"
-      :fill="blackout ? 'var(--bg)' : 'none'"
-      :class="{ blackout }"
+      fill="none"
     />
     <text
       v-if="label"
@@ -62,8 +61,6 @@ export default {
     color: { default: 'rgba(255,255,255,.3)' },
     label: {},
     label2: {},
-    z: { default: 1 },
-    blackout: {},
     dash: {},
   },
   data(): ComponentShape {
@@ -80,11 +77,7 @@ export default {
 
 <style lang="scss" scoped>
 circle {
-  opacity: 0.6;
-
-  &.blackout {
-    opacity: 1;
-  }
+  opacity: 1;
 }
 text {
   text-transform: uppercase;

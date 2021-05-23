@@ -15,7 +15,7 @@
       >
         <div class="sub">Nothing on scanners.</div>
       </div>
-      <div class="panesection">
+      <div class="panesection" v-else>
         <div
           v-for="visibleShip in ship.visible.ships.map(
             angleAndDistance,

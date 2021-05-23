@@ -1,12 +1,19 @@
 declare const _default: {
+    gameSpeedMultiplier: number;
+    baseRepairCost: number;
     getRepairAmountPerTickForSingleCrewMember: (skill: number) => number;
     getThrustMagnitudeForSingleCrewMember: (skill?: number, engineThrustMultiplier?: number) => number;
+    getStaminaGainPerTickForSingleCrewMember: () => number;
+    getWeaponCooldownReductionPerTick: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("credits" | CargoType)[];
+    cargoTypes: (CargoType | "credits")[];
     stubify: <BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[] | undefined) => StubType;
     log: (...args: any[]) => void;
     sleep: (ms: number) => Promise<void>;
+    coinFlip: () => boolean;
     randomFromArray: (array: any[]) => any;
+    maxNameLength: number;
+    numberWithCommas: (x: number) => string;
     degreesToArrow: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;
     percentToTextBars: (percent?: number, barCount?: number) => string;
@@ -21,6 +28,7 @@ declare const _default: {
     degreesToRadians: (degrees?: number) => number;
     distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
     angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
+    angleDifference: (a: number, b: number) => number;
     randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;
     unitVectorFromThisPointToThatPoint: (thisPoint?: CoordinatePair, thatPoint?: CoordinatePair) => CoordinatePair;

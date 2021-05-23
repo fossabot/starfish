@@ -1,10 +1,12 @@
 import c from '../../../../common/dist'
-import { CommandContext } from './models/CommandContext'
-import type { Command } from './models/Command'
+import { CommandContext } from '../models/CommandContext'
+import type { Command } from '../models/Command'
 import { add } from '../../ioInterface/crew'
 
 export class JoinCommand implements Command {
   commandNames = [`j`, `join`, `add`]
+
+  targetChannel: GameChannelType = `alert`
 
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []

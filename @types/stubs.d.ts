@@ -28,6 +28,7 @@ interface ShipStub extends BaseStub {
   faction: FactionStub | false
   crewMembers: CrewMemberStub[]
   log: LogEntry[]
+  channelReferences?: GameChannelReference[]
   [key: string]: any
 }
 interface VisibleStub extends BaseStub {
@@ -43,6 +44,7 @@ interface CrewMemberStub extends BaseStub {
   skills: XPData[]
   location?: CrewLocation
   stamina: number
+  stats: CrewStatEntry[]
   [key: string]: any
 }
 

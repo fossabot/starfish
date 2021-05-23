@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <NavBar />
     <div v-if="errorMessage">
       <div>
         {{ errorMessage }}

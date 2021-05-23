@@ -20,6 +20,9 @@ export declare class CrewMember {
     readonly inventory: Cargo[];
     credits: number;
     readonly actives: Active[];
+    readonly upgrades: PassiveCrewUpgrade[];
+    maxCargoWeight: number;
+    readonly stats: CrewStatEntry[];
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): void;
@@ -30,9 +33,10 @@ export declare class CrewMember {
     tick(): void;
     addXp(skill: SkillName, xp?: number): void;
     addCargo(type: CargoType, amount: number): void;
+    get heldWeight(): number;
+    addStat(statname: StatKey, amount: number): void;
     get tired(): boolean;
     get maxStamina(): number;
-    get staminaRefillPerHour(): number;
     get piloting(): XPData | undefined;
     get linguistics(): XPData | undefined;
     get munitions(): XPData | undefined;

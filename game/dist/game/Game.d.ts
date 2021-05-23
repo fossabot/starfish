@@ -32,15 +32,17 @@ export declare class Game {
     get gameSoftArea(): number;
     expireOldAttackRemnantsAndCaches(): void;
     spawnNewCaches(): void;
+    spawnNewAIs(): void;
     addHumanShip(data: BaseHumanShipData, save?: boolean): HumanShip;
     addAIShip(data: BaseShipData, save?: boolean): AIShip;
+    removeShip(ship: Ship): void;
     addPlanet(data: BasePlanetData): Planet;
     addFaction(data: BaseFactionData): Faction;
     addCache(data: BaseCacheData, save?: boolean): Cache;
     removeCache(cache: Cache): void;
     addAttackRemnant(data: BaseAttackRemnantData, save?: boolean): AttackRemnant;
     removeAttackRemnant(ar: AttackRemnant): void;
-    get humanShips(): Ship[];
-    get aiShips(): Ship[];
+    get humanShips(): HumanShip[];
+    get aiShips(): AIShip[];
 }
 //# sourceMappingURL=Game.d.ts.map

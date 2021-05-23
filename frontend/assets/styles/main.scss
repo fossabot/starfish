@@ -5,8 +5,6 @@
 *.before,
 *.after {
   box-sizing: border-box;
-  // backface-visibility: hidden;
-  // -webkit-backface-visibility: hidden;
 }
 
 html {
@@ -87,11 +85,13 @@ button,
 }
 .panesection {
   position: relative;
-  border-top: 1px solid var(--text);
-  box-shadow: -1px 0 0 0 var(--text), 1px 0 0 0 var(--text),
-    0 1px 0 0 var(--text);
+  border-top: 1px solid var(--highlight-color, var(--text));
+  box-shadow: -1px 0 0 0 var(--highlight-color, var(--text)),
+    1px 0 0 0 var(--highlight-color, var(--text)),
+    0 1px 0 0 var(--highlight-color, var(--text));
   padding: var(--panesectionpad-top)
     var(--panesectionpad-left);
+  color: var(--highlight-color, var(--text));
 }
 .pad-pane {
   padding: var(--panesectionpad-top)
@@ -114,6 +114,15 @@ button,
   display: flex;
   flex-direction: row;
 }
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .pad-none {
   padding: 0;
@@ -125,4 +134,8 @@ button,
 
 .z-2 {
   z-index: 2;
+}
+
+.no-pointer {
+  pointer-events: none;
 }

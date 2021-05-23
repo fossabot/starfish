@@ -1,27 +1,44 @@
 import math from './math'
 import globals from './globals'
 
+const gameSpeedMultiplier = 10
+
+const baseRepairCost = 100
+
 function getThrustMagnitudeForSingleCrewMember(
   skill: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
   return (
-    math.lerp(0.0001, 0.001, skill / 100) *
-    engineThrustMultiplier
+    math.lerp(0.00001, 0.0001, skill / 100) *
+    engineThrustMultiplier *
+    gameSpeedMultiplier
   )
 }
 
 function getRepairAmountPerTickForSingleCrewMember(
   skill: number,
 ) {
-  return (skill / globals.TICK_INTERVAL) * 0.3
+  return (
+    (skill / globals.TICK_INTERVAL) *
+    0.3 *
+    gameSpeedMultiplier
+  )
+}
+
+function getStaminaGainPerTickForSingleCrewMember() {
+  return 0.00003 * gameSpeedMultiplier
+}
+
+function getWeaponCooldownReductionPerTick(level: number) {
+  return (2 + level) * 3 * gameSpeedMultiplier
 }
 
 const tactics: Tactic[] = [`aggressive`, `defensive`]
 const cargoTypes: (`credits` | CargoType)[] = [
-  `food`,
-  `metals`,
-  `textiles`,
+  `salt`,
+  `water`,
+  `oxygen`,
   `credits`,
 ]
 
@@ -75,8 +92,12 @@ function stubify<BaseType, StubType extends BaseStub>(
 }
 
 export default {
+  gameSpeedMultiplier,
+  baseRepairCost,
   getRepairAmountPerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
+  getStaminaGainPerTickForSingleCrewMember,
+  getWeaponCooldownReductionPerTick,
   tactics,
   cargoTypes,
   stubify,

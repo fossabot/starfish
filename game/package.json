@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "tsc --project ./tsconfig.game.json -w",
-    "dev": "nodemon dist/index.js"
+    "dev": "nodemon dist/index.js",
+    "analyze": "NODE_ENV=production node --prof dist/index.js"
   },
   "dependencies": {
     "@types/mongoose": "^5.10.5",

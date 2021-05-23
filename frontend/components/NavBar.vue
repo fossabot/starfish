@@ -1,14 +1,36 @@
 <template>
-  <nav class="pad-pane">
-    <nuxt-link to="/">Home</nuxt-link>
+  <Box>
+    <template #title>
+      <span class="sectionemoji">⚙️</span>(Game Name)
+    </template>
+    <nav class="pad-pane">
+      <nuxt-link to="/">Home</nuxt-link>
+      <nuxt-link to="/">How To Play</nuxt-link>
 
-    <button v-show="userId" @click="logout">Log out</button>
-    <a
-      v-show="!userId"
-      href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Flocalhost%3A4300%2Fpostlogin&response_type=token&scope=identify%20guilds"
-      >Log in</a
-    >
-  </nav>
+      <select
+        v-if="shipIds && shipIds.length > 1"
+        @change="shipSelected"
+        v-model="selectedShip"
+      >
+        <option
+          v-for="id in shipIds"
+          :key="'shipselector' + id"
+          :selected="ship && ship.id === id"
+          :value="id"
+          >{{ id }}</option
+        >
+      </select>
+
+      <button v-show="userId" @click="logout">
+        Log out
+      </button>
+      <a
+        v-show="!userId"
+        href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Flocalhost%3A4300%2Fpostlogin&response_type=token&scope=identify%20guilds"
+        >Log in</a
+      >
+    </nav>
+  </Box>
 </template>
 
 <script lang="ts">
@@ -19,17 +41,31 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return {}
+    return { selectedShip: null }
   },
   computed: {
-    ...mapState(['userId']),
+    ...mapState([
+      'ship',
+      'userId',
+      'crewMember',
+      'shipIds',
+    ]),
   },
-  watch: {},
-  mounted(this: ComponentShape) {},
+  watch: {
+    ship() {
+      if (this.ship) this.selectedShip = this.ship.id
+    },
+  },
+  mounted(this: ComponentShape) {
+    if (this.ship) this.selectedShip = this.ship.id
+  },
   methods: {
     logout(this: ComponentShape) {
       this.$store.dispatch('logout')
       this.$router.push('/')
+    },
+    shipSelected(this: ComponentShape, e: Event) {
+      this.$store.dispatch('socketSetup', this.selectedShip)
     },
   },
 }
@@ -37,10 +73,8 @@ export default {
 
 <style lang="scss" scoped>
 nav {
-  width: 100%;
-  height: 3em;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }

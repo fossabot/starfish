@@ -24,7 +24,10 @@ export class CrewMember {
   repairPriority: RepairPriority = `most damaged`
   readonly inventory: Cargo[]
   credits: number
-  readonly actives: Active[]
+  readonly actives: Active[] = []
+  readonly upgrades: PassiveCrewUpgrade[] = []
+  maxCargoWeight: number = 10
+  readonly stats: CrewStatEntry[] = []
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     this.id = data.id
@@ -41,7 +44,7 @@ export class CrewMember {
       { skill: `mechanics`, level: 1, xp: 0 },
       { skill: `linguistics`, level: 1, xp: 0 },
     ]
-    this.actives = []
+
     if (data.actives)
       for (let a of data.actives)
         this.actives.push(new Active(a, this))
@@ -53,6 +56,7 @@ export class CrewMember {
       this.attackFactions = data.attackFactions
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
+    if (data.stats) this.stats = data.stats
   }
 
   rename(newName: string) {
@@ -98,7 +102,8 @@ export class CrewMember {
 
     this.stamina -=
       CrewMember.passiveStaminaLossPerSecond *
-      (c.deltaTime / 1000)
+      c.gameSpeedMultiplier *
+      (c.deltaTime / c.TICK_INTERVAL)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)
@@ -122,7 +127,10 @@ export class CrewMember {
   }
 
   addXp(skill: SkillName, xp?: number) {
-    if (!xp) xp = c.deltaTime / 1000
+    if (!xp)
+      xp =
+        (c.deltaTime / c.TICK_INTERVAL) *
+        c.gameSpeedMultiplier
     let skillElement = this.skills.find(
       (s) => s.skill === skill,
     )
@@ -149,16 +157,31 @@ export class CrewMember {
     else this.inventory.push({ type, amount })
   }
 
+  get heldWeight() {
+    return this.inventory.reduce(
+      (total, i) => total + i.amount,
+      0,
+    )
+  }
+
+  addStat(statname: StatKey, amount: number) {
+    const existing = this.stats.find(
+      (s) => s.stat === statname,
+    )
+    if (!existing)
+      this.stats.push({
+        stat: statname,
+        amount,
+      })
+    else existing.amount += amount
+  }
+
   get tired() {
     return this.stamina <= 0
   }
 
   get maxStamina() {
     return 1
-  }
-
-  get staminaRefillPerHour() {
-    return 0.3
   }
 
   get piloting() {

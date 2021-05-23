@@ -5,7 +5,6 @@
     :radius="radius"
     :color="'yellow'"
     :circle="false"
-    :z="z"
     :zoom="zoom"
     :FLAT_SCALE="FLAT_SCALE"
     :view="view"
@@ -25,7 +24,6 @@ export default {
   props: {
     containerSizeMultiplier: {},
     view: {},
-    z: { default: 2 },
     FLAT_SCALE: {},
     zoom: {},
     location: {},

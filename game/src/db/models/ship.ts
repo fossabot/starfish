@@ -14,7 +14,6 @@ const shipSchemaFields: Record<
   any
 > = {
   id: { type: String, required: true },
-  ai: { type: Boolean, default: false },
   location: [{ type: Number, required: true }],
   name: { type: String, required: true },
   faction: { color: String },
@@ -28,6 +27,8 @@ const shipSchemaFields: Record<
     },
   ],
   previousLocations: [[Number, Number]],
+
+  // ----- human
   log: [{ text: String, time: Number, level: String }],
   seenPlanets: [{ name: String }],
   captain: String,
@@ -53,9 +54,15 @@ const shipSchemaFields: Record<
       attackFactions: [String],
       targetLocation: [Number, Number],
       repairPriority: String,
+      stats: [{ stat: String, amount: Number }],
     },
   ],
+  commonCredits: Number,
+
+  // ---- ai
+  ai: { type: Boolean, default: false },
   spawnPoint: [Number, Number],
+  level: Number,
 }
 const shipSchema = new Schema(shipSchemaFields)
 const DBShip = model<DBShipDoc>(`DBShip`, shipSchema)
@@ -84,6 +91,10 @@ export async function removeFromDb(id: string) {
 export async function wipe() {
   const res = await DBShip.deleteMany({})
   c.log(`Wiped ship DB`, res)
+}
+export async function wipeAI() {
+  const res = await DBShip.deleteMany({ ai: true })
+  c.log(`Wiped AIs from ship DB`, res)
 }
 
 export async function getAllConstructible(): Promise<

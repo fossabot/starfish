@@ -20,7 +20,7 @@ import {
 import io from '../../../server/io'
 
 export class Ship {
-  static maxPreviousLocations: number = 50
+  static maxPreviousLocations: number = 20
 
   readonly name: string
   planet: Planet | false
@@ -118,10 +118,13 @@ export class Ship {
     this.hp = this.maxHp
 
     this.updateSightRadius()
+    this.recalculateMaxHp()
+    this._hp = this.hp
   }
 
   identify() {
     c.log(
+      this.ai ? `gray` : `white`,
       `Ship: ${this.name} (${this.id}) at ${this.location}`,
     )
     if (this.planet)
@@ -129,39 +132,7 @@ export class Ship {
     else c.log(`      velocity: ${this.velocity}`)
   }
 
-  tick() {
-    if (this.dead) return
-
-    this.visible = this.game.scanCircle(
-      this.location,
-      this.radii.sight,
-      this.id,
-    )
-
-    // ----- updates for frontend -----
-    this.toUpdate.visible = c.stubify<any, VisibleStub>(
-      this.visible,
-      [`visible`, `seenPlanets`],
-    )
-    this.toUpdate.weapons = this.weapons.map((w) =>
-      c.stubify<Weapon, WeaponStub>(w),
-    )
-    this.toUpdate.engines = this.engines.map((e) =>
-      c.stubify<Engine, EngineStub>(e),
-    )
-
-    // ----- move -----
-    this.move()
-    if (this.obeysGravity) this.applyTickOfGravity()
-
-    // ----- send update to listeners -----
-    if (!Object.keys(this.toUpdate).length) return
-    io.to(`ship:${this.id}`).emit(`ship:update`, {
-      id: this.id,
-      updates: this.toUpdate,
-    })
-    this.toUpdate = {}
-  }
+  tick() {}
 
   // ----- item mgmt -----
 
@@ -177,7 +148,7 @@ export class Ship {
 
   // ----- radii -----
   updateSightRadius() {
-    this.radii.sight = 0.3
+    this.radii.sight = 0.6
     this.toUpdate.radii = this.radii
   }
 
@@ -285,6 +256,7 @@ export class Ship {
       (total, i) => i.maxHp * i.repair + total,
       0,
     )
+    this._hp = total
     const wasDead = this.dead
     this.dead = total <= 0
     if (this.dead !== wasDead)

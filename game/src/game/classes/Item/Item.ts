@@ -11,6 +11,7 @@ export class Item {
   maxHp: number
   readonly ship: Ship
   announceWhenRepaired = false
+  announceWhenBroken = true
 
   constructor(
     {

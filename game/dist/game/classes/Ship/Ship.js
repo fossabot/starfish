@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ship = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const items_1 = require("./addins/items");
-const io_1 = __importDefault(require("../../../server/io"));
 class Ship {
     constructor({ name, faction, weapons, engines, loadout, seenPlanets, location, previousLocations, }, game) {
         this.radii = {
@@ -73,35 +72,17 @@ class Ship {
             engines.forEach((e) => this.addEngine(e.id, e));
         this.hp = this.maxHp;
         this.updateSightRadius();
+        this.recalculateMaxHp();
+        this._hp = this.hp;
     }
     identify() {
-        dist_1.default.log(`Ship: ${this.name} (${this.id}) at ${this.location}`);
+        dist_1.default.log(this.ai ? `gray` : `white`, `Ship: ${this.name} (${this.id}) at ${this.location}`);
         if (this.planet)
             dist_1.default.log(`      docked at ${this.planet.name}`);
         else
             dist_1.default.log(`      velocity: ${this.velocity}`);
     }
-    tick() {
-        if (this.dead)
-            return;
-        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id);
-        // ----- updates for frontend -----
-        this.toUpdate.visible = dist_1.default.stubify(this.visible, [`visible`, `seenPlanets`]);
-        this.toUpdate.weapons = this.weapons.map((w) => dist_1.default.stubify(w));
-        this.toUpdate.engines = this.engines.map((e) => dist_1.default.stubify(e));
-        // ----- move -----
-        this.move();
-        if (this.obeysGravity)
-            this.applyTickOfGravity();
-        // ----- send update to listeners -----
-        if (!Object.keys(this.toUpdate).length)
-            return;
-        io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
-            id: this.id,
-            updates: this.toUpdate,
-        });
-        this.toUpdate = {};
-    }
+    tick() { }
     // ----- item mgmt -----
     get items() {
         const items = [...this.weapons, ...this.engines];
@@ -109,7 +90,7 @@ class Ship {
     }
     // ----- radii -----
     updateSightRadius() {
-        this.radii.sight = 0.3;
+        this.radii.sight = 0.6;
         this.toUpdate.radii = this.radii;
     }
     get canMove() {
@@ -177,6 +158,7 @@ class Ship {
     }
     get hp() {
         const total = this.items.reduce((total, i) => i.maxHp * i.repair + total, 0);
+        this._hp = total;
         const wasDead = this.dead;
         this.dead = total <= 0;
         if (this.dead !== wasDead)
@@ -195,5 +177,5 @@ class Ship {
     logEntry(s, lv) { }
 }
 exports.Ship = Ship;
-Ship.maxPreviousLocations = 50;
+Ship.maxPreviousLocations = 20;
 //# sourceMappingURL=Ship.js.map

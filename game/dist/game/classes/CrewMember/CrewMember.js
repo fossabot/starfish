@@ -34,6 +34,10 @@ class CrewMember {
         this.attackFactions = [];
         this.attackTarget = null;
         this.repairPriority = `most damaged`;
+        this.actives = [];
+        this.upgrades = [];
+        this.maxCargoWeight = 10;
+        this.stats = [];
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
@@ -52,7 +56,6 @@ class CrewMember {
             { skill: `mechanics`, level: 1, xp: 0 },
             { skill: `linguistics`, level: 1, xp: 0 },
         ];
-        this.actives = [];
         if (data.actives)
             for (let a of data.actives)
                 this.actives.push(new Active_1.Active(a, this));
@@ -64,6 +67,8 @@ class CrewMember {
             this.attackFactions = data.attackFactions;
         if (data.repairPriority)
             this.repairPriority = data.repairPriority;
+        if (data.stats)
+            this.stats = data.stats;
     }
     rename(newName) {
         this.name = newName;
@@ -92,7 +97,8 @@ class CrewMember {
             return;
         this.stamina -=
             CrewMember.passiveStaminaLossPerSecond *
-                (dist_1.default.deltaTime / 1000);
+                dist_1.default.gameSpeedMultiplier *
+                (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
@@ -112,7 +118,9 @@ class CrewMember {
     }
     addXp(skill, xp) {
         if (!xp)
-            xp = dist_1.default.deltaTime / 1000;
+            xp =
+                (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) *
+                    dist_1.default.gameSpeedMultiplier;
         let skillElement = this.skills.find((s) => s.skill === skill);
         if (!skillElement) {
             const index = this.skills.push({
@@ -134,14 +142,24 @@ class CrewMember {
         else
             this.inventory.push({ type, amount });
     }
+    get heldWeight() {
+        return this.inventory.reduce((total, i) => total + i.amount, 0);
+    }
+    addStat(statname, amount) {
+        const existing = this.stats.find((s) => s.stat === statname);
+        if (!existing)
+            this.stats.push({
+                stat: statname,
+                amount,
+            });
+        else
+            existing.amount += amount;
+    }
     get tired() {
         return this.stamina <= 0;
     }
     get maxStamina() {
         return 1;
-    }
-    get staminaRefillPerHour() {
-        return 0.3;
     }
     get piloting() {
         return this.skills.find((s) => s.skill === `piloting`);

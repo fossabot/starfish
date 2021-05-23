@@ -1,18 +1,20 @@
 <template>
-  <Box class="items" v-if="ship">
+  <Box class="crewrank" v-if="ship">
     <template #title>
-      <span class="sectionemoji">🏆</span>Crew Rankings
+      <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
 
     <div class="panesection">
-      <h5>Credits</h5>
+      <h5>Contributed Credits</h5>
 
       <div
-        v-for="(cm, index) in richest"
-        :key="'richest' + cm.id"
+        v-for="(cm, index) in mostShared"
+        :key="'mostShared' + cm.id"
       >
         <b>#{{ index + 1 }}</b
-        >: {{ cm.name }} ({{ Math.round(cm.credits) }}
+        >: {{ cm.name }} ({{
+          Math.round(cm.totalContributed)
+        }}
         credits)
       </div>
     </div>
@@ -69,10 +71,20 @@ export default {
       }
       return best
     },
-    richest() {
-      return [...this.ship.crewMembers].sort(
-        (a: any, b: any) => b.credits - a.credits,
-      )
+    mostShared() {
+      return [...this.ship.crewMembers]
+        .map((c: CrewMemberStub) => ({
+          ...c,
+          totalContributed: c.stats?.find(
+            (s: CrewStatEntry) =>
+              s.stat === 'totalContributedToCommonFund',
+          )?.amount,
+        }))
+        .filter((c: CrewMemberStub) => c.totalContributed)
+        .sort(
+          (a: any, b: any) =>
+            b.totalContributed - a.totalContributed,
+        )
     },
   },
   watch: {},
@@ -82,8 +94,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.items {
-  width: 320px;
+.crewrank {
+  width: 300px;
   position: relative;
   grid-column: span 2;
 }

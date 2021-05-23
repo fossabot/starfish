@@ -1,6 +1,6 @@
 import c from '../../../common/dist'
-import Discord, { Message } from 'discord.js'
-import { CommandHandler } from './commands/models/CommandHandler'
+import * as Discord from 'discord.js'
+import { CommandHandler } from './CommandHandler'
 
 export const client = new Discord.Client({
   restTimeOffset: 0,

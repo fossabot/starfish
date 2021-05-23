@@ -1,6 +1,6 @@
 import c from '../../../../common/dist'
-import { CommandContext } from './models/CommandContext'
-import type { Command } from './models/Command'
+import { CommandContext } from '../models/CommandContext'
+import type { Command } from '../models/Command'
 
 export class LinkCommand implements Command {
   commandNames = [`link`, `url`]

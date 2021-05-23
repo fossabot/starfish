@@ -3,12 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllConstructible = exports.wipe = exports.removeFromDb = exports.addOrUpdateInDb = void 0;
+exports.getAllConstructible = exports.wipeAI = exports.wipe = exports.removeFromDb = exports.addOrUpdateInDb = void 0;
 const mongoose_1 = require("mongoose");
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const shipSchemaFields = {
     id: { type: String, required: true },
-    ai: { type: Boolean, default: false },
     location: [{ type: Number, required: true }],
     name: { type: String, required: true },
     faction: { color: String },
@@ -22,6 +21,7 @@ const shipSchemaFields = {
         },
     ],
     previousLocations: [[Number, Number]],
+    // ----- human
     log: [{ text: String, time: Number, level: String }],
     seenPlanets: [{ name: String }],
     captain: String,
@@ -47,9 +47,14 @@ const shipSchemaFields = {
             attackFactions: [String],
             targetLocation: [Number, Number],
             repairPriority: String,
+            stats: [{ stat: String, amount: Number }],
         },
     ],
+    commonCredits: Number,
+    // ---- ai
+    ai: { type: Boolean, default: false },
     spawnPoint: [Number, Number],
+    level: Number,
 };
 const shipSchema = new mongoose_1.Schema(shipSchemaFields);
 const DBShip = mongoose_1.model(`DBShip`, shipSchema);
@@ -76,6 +81,11 @@ async function wipe() {
     dist_1.default.log(`Wiped ship DB`, res);
 }
 exports.wipe = wipe;
+async function wipeAI() {
+    const res = await DBShip.deleteMany({ ai: true });
+    dist_1.default.log(`Wiped AIs from ship DB`, res);
+}
+exports.wipeAI = wipeAI;
 async function getAllConstructible() {
     const docs = await DBShip.find({});
     return docs;

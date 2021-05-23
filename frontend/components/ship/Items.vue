@@ -15,7 +15,7 @@
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
               <div>
-                HP:
+                🇨🇭HP:
                 {{
                   Math.round(i.repair * i.maxHp * 100) /
                     100
@@ -62,7 +62,7 @@
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
               <div>
-                HP:
+                🇨🇭HP:
                 {{
                   Math.round(i.repair * i.maxHp * 100) /
                     100
@@ -101,7 +101,7 @@ export default {
 
 <style lang="scss" scoped>
 .items {
-  width: 240px;
+  width: 250px;
   position: relative;
   grid-column: span 2;
 }

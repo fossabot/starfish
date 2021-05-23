@@ -22,34 +22,16 @@
 
     <div
       class="panesection"
-      v-if="ship.visible.ships.length"
+      v-if="
+        ship.visible.ships.length ||
+          planetsToShow.length ||
+          ship.visible.caches.length
+      "
     >
       <div>
-        <div class="panesubhead">Move Toward Ship</div>
+        <div class="panesubhead">Move Toward</div>
       </div>
-      <span
-        v-for="otherShip in ship.visible.ships"
-        :key="'gotoship' + otherShip.id"
-      >
-        <button
-          @click="setTarget(otherShip.location)"
-          :class="{
-            secondary:
-              otherShip.location[0] !==
-                crewMember.targetLocation[0] ||
-              otherShip.location[1] !==
-                crewMember.targetLocation[1],
-          }"
-        >
-          🚀{{ otherShip.name }}
-        </button>
-      </span>
-    </div>
 
-    <div class="panesection" v-if="planetsToShow.length">
-      <div>
-        <div class="panesubhead">Move Toward Planet</div>
-      </div>
       <span
         v-for="planet in planetsToShow"
         :key="'gotoplanet' + planet.name"
@@ -58,25 +40,35 @@
           @click="setTarget(planet.location)"
           :class="{
             secondary:
+              !crewMember.targetLocation ||
               planet.location[0] !==
                 crewMember.targetLocation[0] ||
               planet.location[1] !==
                 crewMember.targetLocation[1],
           }"
         >
-          🪐{{ planet.name }}
-        </button>
-      </span>
-    </div>
-
-    <div
-      class="panesection"
-      v-if="ship.visible.caches.length"
-    >
-      <div>
-        <div class="panesubhead">Move Toward Cache</div>
-      </div>
-      <span
+          <span :style="{ color: planet.color }"
+            >🪐{{ planet.name }}</span
+          >
+        </button> </span
+      ><span
+        v-for="otherShip in ship.visible.ships"
+        :key="'gotoship' + otherShip.id"
+      >
+        <button
+          @click="setTarget(otherShip.location)"
+          :class="{
+            secondary:
+              !crewMember.targetLocation ||
+              otherShip.location[0] !==
+                crewMember.targetLocation[0] ||
+              otherShip.location[1] !==
+                crewMember.targetLocation[1],
+          }"
+        >
+          🚀{{ otherShip.name }}
+        </button> </span
+      ><span
         v-for="cache in cachesToShow"
         :key="'gotocache' + cache.location"
       >
@@ -84,6 +76,7 @@
           @click="setTarget(cache.location)"
           :class="{
             secondary:
+              !crewMember.targetLocation ||
               cache.location[0] !==
                 crewMember.targetLocation[0] ||
               cache.location[1] !==

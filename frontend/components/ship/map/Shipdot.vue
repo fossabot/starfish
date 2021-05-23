@@ -1,28 +1,17 @@
 <template>
-  <g>
-    <ShipMapPoint
-      :location="location"
-      :minSize="minSize"
-      :radius="radius"
-      :color="color"
-      :label="name"
-      :z="z"
-      :zoom="zoom"
-      :FLAT_SCALE="FLAT_SCALE"
-      :view="view"
-      :containerSizeMultiplier="containerSizeMultiplier"
-      @enter="enter"
-      @leave="leave"
-    />
-    <ShipMapPath
-      :color="color"
-      :opacity="0.4"
-      :points="previousLocationsToUse"
-      :zoom="zoom"
-      :FLAT_SCALE="FLAT_SCALE"
-      :containerSizeMultiplier="containerSizeMultiplier"
-    />
-  </g>
+  <ShipMapPoint
+    :location="location"
+    :minSize="minSize"
+    :radius="radius"
+    :color="color"
+    :label="name"
+    :zoom="zoom"
+    :FLAT_SCALE="FLAT_SCALE"
+    :view="view"
+    :containerSizeMultiplier="containerSizeMultiplier"
+    @enter="enter"
+    @leave="leave"
+  />
 </template>
 
 <script lang="ts">
@@ -43,22 +32,12 @@ export default {
     minSize: { default: 0.009 },
     color: {},
     name: {},
-    previousLocations: {},
   },
   data(): ComponentShape {
     return { hovering: false }
   },
   computed: {
     ...mapState([]),
-    previousLocationsToUse(this: ComponentShape) {
-      return [
-        ...this.previousLocations.map((el: any) => [
-          el[0],
-          el[1] * -1,
-        ]),
-        this.location,
-      ]
-    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

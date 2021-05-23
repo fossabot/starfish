@@ -18,6 +18,11 @@ interface IOServerEvents {
     id: string
     updates: Partial<ShipStub>
   }) => void
+  [`ship:message`]: (
+    id: string,
+    message: string,
+    channelType?: GameChannelType,
+  ) => void
 }
 
 interface IOClientEvents {
@@ -87,6 +92,18 @@ interface IOClientEvents {
     vendorLocation: PlanetName,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
+  [`crew:buyRepair`]: (
+    shipId: string,
+    crewId: string,
+    hp: number,
+    vendorLocation: PlanetName,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
+  [`crew:contribute`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+  ) => void
 
   // discord
   [`discord`]: () => void
@@ -98,10 +115,10 @@ interface IOClientEvents {
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
-
-  // [`ship:attack`]: (
-  //   data: AttackRequest,
-  //   callback: (res: IOResponse<TakenDamageResult>) => void,
+  // [`ship:channelUpdate`]: (
+  //   guildId: string,
+  //   channelType: GameChannelType,
+  //   channelId: string,
   // ) => void
 }
 

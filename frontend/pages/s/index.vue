@@ -1,6 +1,14 @@
 <template>
   <div>
     <Starfield />
+
+    <div class="box" v-if="!ship || !crewMember">
+      No ship found by the ID(s) you have saved! If you're
+      sure that your server still has a ship in the game,
+      try logging out and back in. If that doesn't fix it,
+      please reach out on the support server.
+    </div>
+
     <div
       id="masonrycontainer"
       class="container"
@@ -8,13 +16,14 @@
       v-if="ship && crewMember && !ship.dead"
     >
       <Ship class="grid-item" />
+      <ShipMapPlayermapzoom class="grid-item" />
 
       <ShipMapPlayermap class="grid-item" />
 
+      <ShipLog class="grid-item" />
+
       <ShipPlanet v-if="ship.planet" class="grid-item" />
       <ShipVisible class="grid-item" />
-
-      <ShipLog class="grid-item" />
 
       <ShipMember class="grid-item" />
       <ShipDiagram class="grid-item" />
@@ -22,6 +31,10 @@
 
       <ShipItems class="grid-item" />
       <ShipCrewRank class="grid-item" />
+
+      <ShipFactionRank class="grid-item" />
+
+      <NavBar class="grid-item" />
     </div>
     <div class="box" v-if="ship && ship.dead">
       <h5>U dead</h5>
@@ -33,16 +46,12 @@
       </button>
     </div>
 
-    <pre v-if="ship">{{
-      JSON.stringify(ship, null, 2)
-    }}</pre>
-
-    <div class="box" v-if="!ship || !crewMember">
-      No ship found by the ID(s) you have saved! If you're
-      sure that your server still has a ship in the game,
-      try logging out and back in. If that doesn't fix it,
-      please reach out on the support server.
-    </div>
+    <details>
+      <summary>Raw Data</summary>
+      <pre v-if="ship">{{
+        JSON.stringify(ship, null, 2)
+      }}</pre>
+    </details>
   </div>
 </template>
 
@@ -158,7 +167,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   position: relative;
-  margin: 2em auto;
+  // margin: 2em auto;
 
   .grid-item {
     margin-bottom: 0px;

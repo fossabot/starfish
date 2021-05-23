@@ -1,10 +1,10 @@
 import c from '../../../../common/dist'
 import { weapons, engines } from './items'
 
-const loadouts: { [key: string]: Loadout } = {}
+const loadouts: { [key in LoadoutName]?: Loadout } = {}
 
 function addLoadout(
-  name: string,
+  name: LoadoutName,
   weaponIds: WeaponType[],
   engineIds: EngineType[],
 ): void {

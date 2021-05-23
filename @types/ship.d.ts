@@ -4,12 +4,13 @@ interface BaseShipData {
   location?: CoordinatePair
   faction?: { color: FactionKey }
   seenPlanets?: { name: PlanetName }[]
-  loadout?: string
+  loadout?: LoadoutName
   engines?: BaseEngineData[]
   weapons?: BaseWeaponData[]
-  ai?: Boolean
+  ai?: boolean
   previousLocations?: CoordinatePair[]
   spawnPoint?: CoordinatePair
+  level?: number
 }
 
 interface BaseHumanShipData extends BaseShipData {
@@ -17,6 +18,13 @@ interface BaseHumanShipData extends BaseShipData {
   crewMembers?: BaseCrewMemberData[]
   captain?: string
   log?: LogEntry[]
+  commonCredits?: number
+}
+
+type GameChannelType = `alert` | `chat` | `broadcast`
+interface GameChannelReference {
+  id?: string
+  type: GameChannelType
 }
 
 type RadiusType = `sight` | `attack`

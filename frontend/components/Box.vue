@@ -93,7 +93,7 @@ export default {
   position: relative;
   z-index: 3;
   box-shadow: 0 5px 20px -5px var(--bg);
-  background: rgba(20, 20, 20, 0.9);
+  background: rgba(30, 30, 30, 0.9);
   overflow: hidden;
 
   .title {

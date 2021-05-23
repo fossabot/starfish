@@ -1,8 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StartCommand = void 0;
-const ship_1 = require("../../ioInterface/ship");
-const crew_1 = require("../../ioInterface/crew");
+const ioInterface_1 = __importDefault(require("../../ioInterface/"));
 class StartCommand {
     constructor() {
         this.commandNames = [`s`, `start`, `spawn`, `begin`, `init`];
@@ -11,28 +13,32 @@ class StartCommand {
         this.commandNames = [];
         return `Use ${commandPrefix}start to start your server off in the game.`;
     }
-    async run({ initialMessage, }) {
+    async run(context) {
+        if (!context.initialMessage.guild)
+            return;
         // add ship
-        const createdShip = await ship_1.create({
-            id: initialMessage.guild.id,
-            name: initialMessage.guild.name,
+        const createdShip = await ioInterface_1.default.ship.create({
+            id: context.initialMessage.guild.id,
+            name: context.initialMessage.guild.name,
             faction: { color: `green` },
         });
         if (!createdShip) {
-            await initialMessage.channel.send(`Failed to start your server in the game.`);
+            await context.initialMessage.channel.send(`Failed to start your server in the game.`);
             return;
         }
-        await initialMessage.channel.send(`Started your server in the game.`);
-        const addedCrewMember = await crew_1.add(createdShip.id, {
-            name: initialMessage.author.username,
-            id: initialMessage.author.id,
+        const addedCrewMember = await ioInterface_1.default.crew.add(createdShip.id, {
+            name: context.initialMessage.author.username,
+            id: context.initialMessage.author.id,
         });
         // add crew member
         if (!addedCrewMember) {
-            await initialMessage.channel.send(`Failed to add you as a member of the crew.`);
+            await context.initialMessage.channel.send(`Failed to add you as a member of the crew.`);
             return;
         }
-        await initialMessage.channel.send(`Added you to the crew.`);
+        await context.sendToGuild(`Welcome to the game! Game alerts will be sent to this channel.`);
+        await context.sendToGuild(`${context.initialMessage.author.username} has joined the crew.`);
+        await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
+        await context.sendToGuild(`Use this channel to broadcast to the local area.`, `broadcast`);
     }
     hasPermissionToRun(commandContext) {
         if (commandContext.ship)

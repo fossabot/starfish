@@ -1,7 +1,6 @@
 <template>
   <g
     class="targetline"
-    :style="{ 'z-index': z }"
     @mouseenter="$emit('enter')"
     @mouseleave="$emit('leave')"
   >
@@ -17,9 +16,16 @@
       :x2="to[0] * FLAT_SCALE"
       :y2="to[1] * FLAT_SCALE"
       :stroke="highlight ? highlightColor : color"
-      :stroke-width="(strokeWidth * FLAT_SCALE) / zoom"
+      :stroke-width="
+        ((strokeWidth * FLAT_SCALE) / zoom) *
+          containerSizeMultiplier
+      "
       :stroke-dasharray="
-        dash ? dash / zoom + ' ' + dash / zoom : ''
+        dash
+          ? (dash / zoom) * containerSizeMultiplier +
+            ' ' +
+            (dash / zoom) * containerSizeMultiplier
+          : ''
       "
     />
   </g>
@@ -40,7 +46,6 @@ export default {
     highlightColor: { default: 'rgba(255,255,255,.8)' },
     strokeWidth: { default: 0.002 },
     highlight: {},
-    z: { default: 1 },
     from: { default: [0, 0] },
     to: { default: [0, 0] },
     zoom: { default: 1 },
@@ -52,7 +57,11 @@ export default {
   computed: {
     ...mapState([]),
     scaledRadius(this: ComponentShape) {
-      return (this.minSize / this.zoom) * this.FLAT_SCALE
+      return (
+        (this.minSize / this.zoom) *
+        this.FLAT_SCALE *
+        this.containerSizeMultiplier
+      )
     },
   },
   watch: {},

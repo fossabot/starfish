@@ -33,18 +33,16 @@ export class Game {
     this.factions = []
     this.attackRemnants = []
 
-    this.startGame()
-  }
-
-  startGame() {
-    c.log(`----- Starting Game -----`)
-
     defaultPlanets.forEach((p) => {
       this.addPlanet(p)
     })
     defaultFactions.forEach((f) => {
       this.addFaction(f)
     })
+  }
+
+  startGame() {
+    c.log(`----- Starting Game -----`)
 
     setInterval(() => this.save(), Game.saveTimeInterval)
 
@@ -52,7 +50,10 @@ export class Game {
   }
 
   async save() {
-    c.log(`gray`, `----- Saving Game -----`)
+    c.log(
+      `gray`,
+      `----- Saving Game ----- (Tick avg.: ${this.averageTickLag}ms)`,
+    )
     const promises: Promise<any>[] = []
     this.ships.forEach((s) => {
       promises.push(db.ship.addOrUpdateInDb(s))
@@ -86,6 +87,7 @@ export class Game {
 
     this.expireOldAttackRemnantsAndCaches()
     this.spawnNewCaches()
+    this.spawnNewAIs()
 
     // ----- timing
 
@@ -126,7 +128,7 @@ export class Game {
   }
 
   // ----- scan function -----
-
+  // todo mega-optimize this. chunks?
   scanCircle(
     center: CoordinatePair,
     radius: number,
@@ -197,22 +199,67 @@ export class Game {
   }
 
   spawnNewCaches() {
-    if (this.caches.length <= this.gameSoftArea * 2) {
-      const amount =
-        Math.round(Math.random() * 200) / 10 + 1
-      this.addCache({
-        contents: [
-          {
-            type: c.randomFromArray(c.cargoTypes) as
-              | `credits`
-              | CargoType,
-            amount,
-          },
-        ],
-        location: c.randomInsideCircle(this.gameSoftRadius),
-      })
-      c.log(`spawned random cache`)
+    if (this.caches.length > this.gameSoftArea * 1.5) return
+
+    const type = c.randomFromArray(c.cargoTypes) as
+      | `credits`
+      | CargoType
+    const amount = Math.round(Math.random() * 200) / 10 + 1
+    const location = c.randomInsideCircle(
+      this.gameSoftRadius,
+    )
+    this.addCache({
+      contents: [
+        {
+          type,
+          amount,
+        },
+      ],
+      location,
+    })
+    c.log(
+      `gray`,
+      `Spawned random cache of ${amount} ${type} at ${location}.`,
+    )
+  }
+
+  spawnNewAIs() {
+    if (
+      !this.ships.length ||
+      this.aiShips.length > this.gameSoftArea
+    )
+      return
+
+    let radius = this.gameSoftRadius
+    let spawnPoint: CoordinatePair | undefined
+    while (!spawnPoint) {
+      let point = c.randomInsideCircle(radius)
+      const tooClose = this.humanShips.find((hs) =>
+        c.pointIsInsideCircle(
+          point,
+          hs.location,
+          hs.radii.sight,
+        ),
+      )
+      if (tooClose) spawnPoint = undefined
+      else spawnPoint = point
+      radius += 0.1
     }
+
+    const level = c.distance([0, 0], spawnPoint) * 2
+
+    this.addAIShip({
+      location: spawnPoint,
+      name: `AI${`${Math.random().toFixed(3)}`.substring(
+        2,
+      )}`,
+      loadout: `ai_default`,
+      level,
+    })
+    c.log(
+      `gray`,
+      `Spawned level ${level} AI at ${spawnPoint}.`,
+    )
   }
 
   // ----- entity functions -----
@@ -227,11 +274,13 @@ export class Game {
     if (existing) {
       c.log(
         `red`,
-        `Attempted to add an existing human ship.`,
+        `Attempted to add existing human ship ${existing.name} (${existing.id}).`,
       )
       return existing
     }
     c.log(`gray`, `Adding human ship ${data.name} to game`)
+
+    data.loadout = `human_default`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     if (save) db.ship.addOrUpdateInDb(newShip)
@@ -243,14 +292,29 @@ export class Game {
       (s) => s instanceof AIShip && s.id === data.id,
     ) as AIShip
     if (existing) {
-      c.log(`red`, `Attempted to add an existing ai ship.`)
+      c.log(
+        `red`,
+        `Attempted to add existing ai ship ${existing.name} (${existing.id}).`,
+      )
       return existing
     }
     c.log(`gray`, `Adding AI ship ${data.name} to game`)
+
+    data.loadout = `ai_default`
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
     if (save) db.ship.addOrUpdateInDb(newShip)
     return newShip
+  }
+
+  removeShip(ship: Ship) {
+    c.log(`Removing ship ${ship.name} from the game.`)
+    db.ship.removeFromDb(ship.id)
+    const index = this.ships.findIndex(
+      (ec) => ship.id === ec.id,
+    )
+    if (index === -1) return
+    this.ships.splice(index, 1)
   }
 
   addPlanet(data: BasePlanetData): Planet {
@@ -270,7 +334,10 @@ export class Game {
       (cache) => cache.id === data.id,
     )
     if (existing) {
-      c.log(`red`, `Attempted to add an existing cache.`)
+      c.log(
+        `red`,
+        `Attempted to add existing cache (${existing.id}).`,
+      )
       return existing
     }
     const newCache = new Cache(data, this)
@@ -309,12 +376,16 @@ export class Game {
     this.attackRemnants.splice(index, 1)
   }
 
-  get humanShips() {
-    return this.ships.filter((s) => s instanceof HumanShip)
+  get humanShips(): HumanShip[] {
+    return this.ships.filter(
+      (s) => s instanceof HumanShip,
+    ) as HumanShip[]
   }
 
-  get aiShips() {
-    return this.ships.filter((s) => s instanceof AIShip)
+  get aiShips(): AIShip[] {
+    return this.ships.filter(
+      (s) => s instanceof AIShip,
+    ) as AIShip[]
   }
 
   // ----- export for god view -----

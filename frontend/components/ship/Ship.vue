@@ -79,7 +79,7 @@
 
       <ProgressBar :percent="ship._hp / ship._maxHp">
         <div>
-          HP: {{ Math.round(ship._hp * 100) / 100 }}/{{
+          🇨🇭HP: {{ Math.round(ship._hp * 100) / 100 }}/{{
             Math.round(ship._maxHp * 100) / 100
           }}
         </div>
@@ -87,8 +87,13 @@
 
       <div class="panesection">
         <div>
+          Common Fund: 💳{{
+            ship && Math.round(ship.commonCredits)
+          }}
+        </div>
+        <div>
           Sight Radius:
-          {{ ship && ship.sightRadius }} AU
+          {{ ship && ship.radii.sight }} AU
         </div>
         <div>
           Captain:

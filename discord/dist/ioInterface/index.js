@@ -25,6 +25,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connected = exports.io = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const socket_io_client_1 = __importDefault(require("socket.io-client"));
+const discordClient_1 = require("../discordClient");
+const resolveOrCreateChannel_1 = __importDefault(require("../discordClient/actions/resolveOrCreateChannel"));
+const ship = __importStar(require("./ship"));
+const crew = __importStar(require("./crew"));
+exports.default = {
+    connected,
+    ship,
+    crew,
+};
 // connect to server
 const client = socket_io_client_1.default(`http://game:4200`);
 exports.io = client.connect();
@@ -33,6 +42,19 @@ exports.io.on(`connect`, () => {
 });
 exports.io.on(`disconnect`, () => {
     dist_1.default.log(`red`, `Lost connection to game server.`);
+});
+exports.io.on(`ship:message`, async (id, message, channelType = `alert`) => {
+    const guild = discordClient_1.client.guilds.cache.find((g) => g.id === id);
+    if (!guild)
+        return dist_1.default.log(`red`, `Message came for a guild that does not have the bot added on Discord.`);
+    const channel = await resolveOrCreateChannel_1.default({
+        type: channelType,
+        guild,
+    });
+    if (channel)
+        channel.send(message);
+    else
+        dist_1.default.log(`red`, `Unable to resolve Discord channel to send message for guild ${guild.name}.`);
 });
 function connected() {
     return new Promise(async (resolve) => {
@@ -55,9 +77,4 @@ function connected() {
     });
 }
 exports.connected = connected;
-const ship = __importStar(require("./ship"));
-exports.default = {
-    connected,
-    ship,
-};
 //# sourceMappingURL=index.js.map

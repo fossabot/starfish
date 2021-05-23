@@ -1,8 +1,7 @@
 import c from '../../../../common/dist'
-import { CommandContext } from './models/CommandContext'
-import type { Command } from './models/Command'
-import { create } from '../../ioInterface/ship'
-import { add } from '../../ioInterface/crew'
+import { CommandContext } from '../models/CommandContext'
+import type { Command } from '../models/Command'
+import ioInterface from '../../ioInterface/'
 
 export class StartCommand implements Command {
   commandNames = [`s`, `start`, `spawn`, `begin`, `init`]
@@ -12,39 +11,50 @@ export class StartCommand implements Command {
     return `Use ${commandPrefix}start to start your server off in the game.`
   }
 
-  async run({
-    initialMessage,
-  }: CommandContext): Promise<void> {
+  async run(context: CommandContext): Promise<void> {
+    if (!context.initialMessage.guild) return
+
     // add ship
-    const createdShip = await create({
-      id: initialMessage.guild!.id,
-      name: initialMessage.guild!.name,
+    const createdShip = await ioInterface.ship.create({
+      id: context.initialMessage.guild.id,
+      name: context.initialMessage.guild.name,
       faction: { color: `green` },
     })
     if (!createdShip) {
-      await initialMessage.channel.send(
+      await context.initialMessage.channel.send(
         `Failed to start your server in the game.`,
       )
       return
     }
 
-    await initialMessage.channel.send(
-      `Started your server in the game.`,
+    const addedCrewMember = await ioInterface.crew.add(
+      createdShip.id,
+      {
+        name: context.initialMessage.author.username,
+        id: context.initialMessage.author.id,
+      },
     )
-
-    const addedCrewMember = await add(createdShip.id, {
-      name: initialMessage.author.username,
-      id: initialMessage.author.id,
-    })
     // add crew member
     if (!addedCrewMember) {
-      await initialMessage.channel.send(
+      await context.initialMessage.channel.send(
         `Failed to add you as a member of the crew.`,
       )
       return
     }
-    await initialMessage.channel.send(
-      `Added you to the crew.`,
+
+    await context.sendToGuild(
+      `Welcome to the game! Game alerts will be sent to this channel.`,
+    )
+    await context.sendToGuild(
+      `${context.initialMessage.author.username} has joined the crew.`,
+    )
+    await context.sendToGuild(
+      `Use this channel to chat with your crewmates.`,
+      `chat`,
+    )
+    await context.sendToGuild(
+      `Use this channel to broadcast to the local area.`,
+      `broadcast`,
     )
   }
 

@@ -8,6 +8,7 @@ export declare class Item {
     maxHp: number;
     readonly ship: Ship;
     announceWhenRepaired: boolean;
+    announceWhenBroken: boolean;
     constructor({ type, id, displayName, description, repair, maxHp, hp, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
     get hp(): number;
     set hp(newHp: number);

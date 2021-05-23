@@ -14,19 +14,7 @@ db_1.runOnReady(async () => {
     const savedCaches = await db_1.db.cache.getAllConstructible();
     dist_1.default.log(`Loaded ${savedCaches.length} saved caches from DB.`);
     savedCaches.forEach((cache) => exports.game.addCache(cache, false));
-    // const newCache = game.addCache({
-    //   id: `12323123312`,
-    //   contents: [{ type: `food`, amount: 3 }],
-    //   location: [0.01, 0],
-    //   ownerId: `123`,
-    // })
     // await db.ship.wipe()
-    // const ai1 = game.addAIShip({
-    //   id: `1234`,
-    //   name: `ai1`,
-    //   loadout: `ai_default`,
-    //   location: [-0.5, 0.2] as CoordinatePair,
-    // })
     const savedShips = await db_1.db.ship.getAllConstructible();
     dist_1.default.log(`Loaded ${savedShips.length} saved ships from DB.`);
     for (let ship of savedShips) {
@@ -36,7 +24,8 @@ db_1.runOnReady(async () => {
             exports.game.addHumanShip(ship);
     }
     const savedAttackRemnants = await db_1.db.attackRemnant.getAllConstructible();
-    savedAttackRemnants.forEach((ar) => exports.game.addAttackRemnant(ar, false));
     dist_1.default.log(`Loaded ${exports.game.attackRemnants.length} saved attack remnants from DB.`);
+    savedAttackRemnants.forEach((ar) => exports.game.addAttackRemnant(ar, false));
+    exports.game.startGame();
 });
 //# sourceMappingURL=index.js.map

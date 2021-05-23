@@ -5,6 +5,7 @@ const ship_1 = require("../../ioInterface/ship");
 class RespawnCommand {
     constructor() {
         this.commandNames = [`r`, `respawn`];
+        this.targetChannel = `alert`;
     }
     getHelpMessage(commandPrefix) {
         this.commandNames = [];

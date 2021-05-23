@@ -7,6 +7,7 @@
     @mouseleave="mouseLeave"
     @mousemove="mouseMove"
     v-if="mapData"
+    :class="{ 'no-pointer': !mapData.interactive }"
   >
     <svg
       ref="svg"
@@ -15,6 +16,7 @@
       "
     >
       <ShipMapSightMask
+        v-if="mapData.blackout"
         :location="[
           mapData.center[0],
           mapData.center[1] * -1,
@@ -66,10 +68,20 @@
 
       <ShipMapCache
         v-for="c in caches"
-        :key="'cache' + Math.random()"
+        :key="'cache' + c.id"
         v-bind="c"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      />
+
+      <ShipMapShippath
+        v-for="s in ships"
+        :key="'shippath' + s.id"
+        v-bind="s"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :view="view"
         :containerSizeMultiplier="containerSizeMultiplier"
       />
 
@@ -270,6 +282,7 @@ export default {
       this.caches =
         this.mapData.caches?.map((el: CacheStub) => ({
           type: 'cache',
+          id: el.id,
           location: [...el.location],
         })) || []
 
@@ -303,13 +316,15 @@ export default {
     ) {
       const maxes = getMaxes(points)
 
-      const hardBuffer = 0.05 * this.FLAT_SCALE
+      const hardBuffer = 0.02 * this.FLAT_SCALE
       const softBuffer =
-        0.08 *
+        0.07 *
         this.FLAT_SCALE *
         Math.max(maxes.width, maxes.height) *
         this.containerSizeMultiplier
-      const buffer = hardBuffer + softBuffer
+      const buffer = this.mapData.buffer
+        ? hardBuffer + softBuffer
+        : 0
 
       this.maxView.left =
         this.mapData.center[0] * this.FLAT_SCALE
@@ -364,6 +379,7 @@ export default {
     },
 
     mouseDown(this: ComponentShape, e: MouseEvent) {
+      if (!this.mapData.interactive) return
       clearTimeout(this.followCenterTimeout)
       this.followingCenter = false
       this.mouseIsDown = true
@@ -371,6 +387,7 @@ export default {
       this.dragStartView = { ...this.view }
     },
     mouseUp(this: ComponentShape, e: MouseEvent) {
+      if (!this.mapData.interactive) return
       if (!this.mouseIsDown) return
       this.followCenterTimeout = setTimeout(
         this.resetCenter,
@@ -399,6 +416,7 @@ export default {
       this.mouseIsDown = false
     },
     mouseLeave(this: ComponentShape, e: MouseEvent) {
+      if (!this.mapData.interactive) return
       if (this.mouseIsDown)
         this.followCenterTimeout = setTimeout(
           this.resetCenter,
@@ -408,6 +426,7 @@ export default {
       this.mouseIsDown = false
     },
     mouseMove(this: ComponentShape, e: MouseEvent) {
+      if (!this.mapData.interactive) return
       if (!this.mouseIsDown) return
       this.followingCenter = false
       this.isPanning = true
@@ -433,6 +452,7 @@ export default {
       })
     },
     mouseWheel(this: ComponentShape, e: MouseWheelEvent) {
+      if (!this.mapData.interactive) return
       this.followingCenter = false
       clearTimeout(this.followCenterTimeout)
       this.followCenterTimeout = setTimeout(
@@ -485,7 +505,6 @@ export default {
   padding: 0 !important;
   width: 100%;
   padding-top: 100%;
-  background: rgba(white, 0.03);
   cursor: move;
 }
 svg {

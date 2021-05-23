@@ -16,6 +16,18 @@ type RepairPriority = `most damaged` | `engines` | `weapons`
 
 type ActiveName = `boost`
 
+type StatKey = `totalContributedToCommonFund`
+interface CrewStatEntry {
+  stat: StatKey
+  amount: number
+}
+
+type PassiveCrewUpgradeKey = `storage1`
+interface PassiveCrewUpgrade {
+  type: PassiveCrewUpgradeKey
+  level: number
+}
+
 interface BaseCrewMemberData {
   name: string
   id: string
@@ -29,6 +41,7 @@ interface BaseCrewMemberData {
   attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
+  stats?: CrewStatEntry[]
 }
 
 interface XPData {

@@ -6,8 +6,12 @@ function sleep(ms: number): Promise<void> {
 function randomFromArray(array: any[]): any {
   return array[Math.floor(Math.random() * array.length)]
 }
+function coinFlip() {
+  return Math.random() > 0.5
+}
 
 export default {
   sleep,
+  coinFlip,
   randomFromArray,
 }

@@ -48,6 +48,15 @@ function angleFromAToB(
     360
   )
 }
+/**
+ * shortest distance (in degrees) between two angles.
+ * It will be in range [0, 180].
+ */
+function angleDifference(a: number, b: number): number {
+  const c = Math.abs(b - a) % 360
+  const d = c > 180 ? 360 - c : c
+  return d
+}
 function degreesToUnitVector(
   degrees: number = 0,
 ): CoordinatePair {
@@ -91,11 +100,16 @@ function pointIsInsideCircle(
 function randomInsideCircle(
   radius: number,
 ): CoordinatePair {
-  const angle = Math.random() * 2 * Math.PI
-  const radiusSquared = Math.random() * radius * radius
-  const x = Math.sqrt(radiusSquared) * Math.cos(angle)
-  const y = Math.sqrt(radiusSquared) * Math.sin(angle)
-  return [x, y]
+  const newCoords = (): CoordinatePair => {
+    return [
+      Math.random() * radius * 2 - radius,
+      Math.random() * radius * 2 - radius,
+    ]
+  }
+  let coords = newCoords()
+  while (!pointIsInsideCircle([0, 0], coords, radius))
+    coords = newCoords()
+  return coords
 }
 
 function randomSign() {
@@ -112,6 +126,7 @@ export default {
   degreesToRadians,
   distance,
   angleFromAToB,
+  angleDifference,
   randomInsideCircle,
   degreesToUnitVector,
   unitVectorFromThisPointToThatPoint,

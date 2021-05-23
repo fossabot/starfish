@@ -1,9 +1,13 @@
-type PlanetName = 'Origin' | 'Hera'
+type PlanetName = `Origin` | `Hera` | `Osiris`
 
 interface BasePlanetData {
   name: string
   color: string
   location: CoordinatePair
+  radius: number
+  faction?: { color: FactionKey }
+  races?: string[]
+  repairCostMultiplier?: number
   vendor?: Vendor
 }
 

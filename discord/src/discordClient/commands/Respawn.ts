@@ -1,10 +1,12 @@
 import c from '../../../../common/dist'
-import { CommandContext } from './models/CommandContext'
-import type { Command } from './models/Command'
+import { CommandContext } from '../models/CommandContext'
+import type { Command } from '../models/Command'
 import { respawn } from '../../ioInterface/ship'
 
 export class RespawnCommand implements Command {
   commandNames = [`r`, `respawn`]
+
+  targetChannel: GameChannelType = `alert`
 
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []

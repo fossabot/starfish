@@ -1,15 +1,23 @@
 <template>
   <g
     class="path"
-    :style="{ 'z-index': z }"
     @mouseenter="$emit('enter')"
     @mouseleave="$emit('leave')"
   >
     <path
       :d="d"
       :stroke="color"
-      :stroke-width="(strokeWidth * FLAT_SCALE) / zoom"
-      :stroke-dasharray="dash ? dash + ' ' + dash : ''"
+      :stroke-width="
+        ((strokeWidth * FLAT_SCALE) / zoom) *
+          containerSizeMultiplier
+      "
+      :stroke-dasharray="
+        dash
+          ? dash * containerSizeMultiplier +
+            ' ' +
+            dash * containerSizeMultiplier
+          : ''
+      "
       :style="{ opacity }"
       mask="url(#sightMask)"
     />
@@ -30,7 +38,6 @@ export default {
     points: { default: () => [] },
     color: { default: 'rgba(255,255,255,.2)' },
     strokeWidth: { default: 0.003 },
-    z: { default: 1 },
     dash: {},
     opacity: { default: 1 },
   },

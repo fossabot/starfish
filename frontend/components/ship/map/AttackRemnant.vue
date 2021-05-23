@@ -16,19 +16,19 @@
         <stop
           offset="0%"
           :stop-color="
-            !miss ? 'yellow' : 'rgba(150, 150, 50, .5)'
+            !miss ? 'yellow' : 'rgba(150, 150, 50, .8)'
           "
         />
         <stop
           offset="10%"
           :stop-color="
-            !miss ? 'orange' : 'rgba(180, 100, 50, .5)'
+            !miss ? 'orange' : 'rgba(180, 100, 50, .8)'
           "
         />
         <stop
           offset="40%"
           :stop-color="
-            !miss ? 'red' : 'rgba(100, 50, 50, .5)'
+            !miss ? 'red' : 'rgba(100, 50, 50, .8)'
           "
         />
         <stop

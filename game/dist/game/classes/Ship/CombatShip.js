@@ -81,10 +81,12 @@ class CombatShip extends Ship_1.Ship {
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / weapon.range;
-        const miss = Math.random() * weapon.repair > rangeAsPercent;
+        const hitRoll = Math.random() * weapon.repair;
+        const miss = hitRoll < rangeAsPercent;
         const damage = miss
             ? 0
             : weapon.damage * totalMunitionsSkill;
+        dist_1.default.log(`need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,
             damage,
@@ -129,8 +131,10 @@ class CombatShip extends Ship_1.Ship {
                     equipmentToAttack.hp = 0;
                     remainingDamage -= remainingHp;
                 }
-                if (equipmentToAttack.hp === 0) {
+                if (equipmentToAttack.hp === 0 &&
+                    equipmentToAttack.announceWhenBroken) {
                     this.logEntry(`Your ${equipmentToAttack.displayName} has been disabled!`, `high`);
+                    equipmentToAttack.announceWhenBroken = false;
                 }
             }
         }
@@ -165,38 +169,9 @@ class CombatShip extends Ship_1.Ship {
     }
     die() {
         this.dead = true;
-        setTimeout(() => {
-            this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
-        }, 100);
-        const cacheContents = [];
-        this.crewMembers.forEach((cm) => {
-            while (cm.inventory.length) {
-                const toAdd = cm.inventory.pop();
-                const existing = cacheContents.find((cc) => cc.type === toAdd?.type);
-                if (existing)
-                    existing.amount += toAdd?.amount || 0;
-                else if (toAdd)
-                    cacheContents.push(toAdd);
-            }
-            cm.credits *= 0.5;
-            const existing = cacheContents.find((cc) => cc.type === `credits`);
-            if (existing)
-                existing.amount += cm.credits || 0;
-            else if (cm.credits)
-                cacheContents.push({
-                    type: `credits`,
-                    amount: cm.credits,
-                });
-            cm.location = `bunk`;
-        });
-        if (cacheContents.length)
-            this.game.addCache({
-                contents: cacheContents,
-                location: this.location,
-                ownerId: this.id,
-                message: `Remains of ${this.name}`,
-            });
     }
 }
 exports.CombatShip = CombatShip;
+CombatShip.percentOfCreditsLostOnDeath = 0.5;
+CombatShip.percentOfCreditsDroppedOnDeath = 0.25;
 //# sourceMappingURL=CombatShip.js.map

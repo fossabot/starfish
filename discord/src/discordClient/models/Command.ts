@@ -1,3 +1,4 @@
+import c from '../../../../common/dist'
 import { CommandContext } from './CommandContext'
 
 export interface Command {
@@ -17,4 +18,7 @@ export interface Command {
   hasPermissionToRun(
     parsedUserCommand: CommandContext,
   ): string | true
+
+  /** game channel type to send responses to. leave undefined to reply in the same channel. */
+  readonly targetChannel?: GameChannelType
 }

@@ -4,6 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
+const maxNameLength = 16;
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, `,`);
+}
 const badwords_1 = require("./badwords");
 const filter = new badwords_1.LanguageFilter();
 const numberEmojis = [
@@ -134,6 +138,8 @@ function arrayMove(arr, oldIndex, newIndex) {
     arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
 }
 exports.default = {
+    maxNameLength,
+    numberWithCommas,
     degreesToArrow,
     coordPairToArrow,
     percentToTextBars,

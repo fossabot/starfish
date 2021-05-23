@@ -14,8 +14,9 @@ interface BaseItemData {
   lastUse?: number
 }
 
+type LoadoutName = `human_default` | `ai_default`
 interface Loadout {
-  name: string
+  name: LoadoutName
   weapons: BaseWeaponData[]
   engines: BaseEngineData[]
 }

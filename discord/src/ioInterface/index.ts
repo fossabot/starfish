@@ -1,5 +1,16 @@
 import c from '../../../common/dist'
 import socketIo, { Socket } from 'socket.io-client'
+import { client as discordClient } from '../discordClient'
+import resolveOrCreateChannel from '../discordClient/actions/resolveOrCreateChannel'
+
+import * as ship from './ship'
+import * as crew from './crew'
+
+export default {
+  connected,
+  ship,
+  crew,
+}
 
 // connect to server
 const client = socketIo(`http://game:4200`)
@@ -13,6 +24,30 @@ io.on(`connect`, () => {
 io.on(`disconnect`, () => {
   c.log(`red`, `Lost connection to game server.`)
 })
+
+io.on(
+  `ship:message`,
+  async (id, message, channelType = `alert`) => {
+    const guild = discordClient.guilds.cache.find(
+      (g) => g.id === id,
+    )
+    if (!guild)
+      return c.log(
+        `red`,
+        `Message came for a guild that does not have the bot added on Discord.`,
+      )
+    const channel = await resolveOrCreateChannel({
+      type: channelType,
+      guild,
+    })
+    if (channel) channel.send(message)
+    else
+      c.log(
+        `red`,
+        `Unable to resolve Discord channel to send message for guild ${guild.name}.`,
+      )
+  },
+)
 
 export function connected(): Promise<boolean> {
   return new Promise(async (resolve) => {
@@ -36,11 +71,4 @@ export function connected(): Promise<boolean> {
     )
     resolve(false)
   })
-}
-
-import * as ship from './ship'
-
-export default {
-  connected,
-  ship,
 }

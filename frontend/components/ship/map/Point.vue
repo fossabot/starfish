@@ -1,7 +1,6 @@
 <template>
   <g
     class="point"
-    :style="{ 'z-index': z }"
     @mouseenter="$emit('enter')"
     @mouseleave="$emit('leave')"
   >
@@ -58,7 +57,6 @@ export default {
     minSize: { default: 3 },
     color: {},
     label: {},
-    z: { default: 1 },
     circle: { default: true },
     zoom: { default: 1 },
     mask: { default: true },
@@ -70,8 +68,11 @@ export default {
     ...mapState([]),
     scaledRadius(this: ComponentShape) {
       return (
-        Math.max(this.minSize / this.zoom, this.radius) *
-        this.FLAT_SCALE
+        Math.max(
+          (this.minSize / this.zoom) *
+            this.containerSizeMultiplier,
+          this.radius,
+        ) * this.FLAT_SCALE
       )
     },
   },

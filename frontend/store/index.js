@@ -102,6 +102,7 @@ export const actions = {
       this.$socket?.emit(`ship:listen`, shipId, (res) => {
         if (`error` in res) return console.log(res.error)
         commit(`set`, { ship: res.data })
+        commit(`updateShip`, { ...res.data }) // this gets the crewMember for us
       })
     }
     if (this.$socket.connected) connected()
@@ -109,6 +110,7 @@ export const actions = {
 
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return connected()
+      if (state.ship.id !== id) return
       // console.log(updates)
       commit(`updateShip`, { ...updates })
     })

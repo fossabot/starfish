@@ -1,19 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.textiles = exports.metals = exports.food = void 0;
-exports.food = {
-    name: `Food`,
-    type: `food`,
+exports.oxygen = exports.water = exports.salt = void 0;
+exports.salt = {
+    name: `Salt`,
+    type: `salt`,
     basePrice: 1,
 };
-exports.metals = {
-    name: `Metals`,
-    type: `metals`,
+exports.water = {
+    name: `Water`,
+    type: `water`,
     basePrice: 2,
 };
-exports.textiles = {
-    name: `Textiles`,
-    type: `textiles`,
+exports.oxygen = {
+    name: `Oxygen`,
+    type: `oxygen`,
     basePrice: 3,
 };
 //# sourceMappingURL=cargo.js.map

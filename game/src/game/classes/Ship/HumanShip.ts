@@ -1,5 +1,6 @@
 import c from '../../../../../common/dist'
 import { db } from '../../../db'
+import io from '../../../server/io'
 
 import { membersIn, cumulativeSkillIn } from './addins/crew'
 
@@ -22,6 +23,8 @@ export class HumanShip extends CombatShip {
     `weapons`,
   ]
 
+  commonCredits: number = 0
+
   mainTactic: Tactic | undefined
 
   constructor(data: BaseHumanShipData, game: Game) {
@@ -35,6 +38,8 @@ export class HumanShip extends CombatShip {
     this.captain = data.captain || null
     this.log = data.log || []
 
+    if (data.commonCredits)
+      this.commonCredits = data.commonCredits
     data.crewMembers?.forEach((cm) => {
       this.addCrewMember(cm)
     })
@@ -49,6 +54,16 @@ export class HumanShip extends CombatShip {
   tick() {
     if (this.dead) return
 
+    // ----- move -----
+    this.move()
+    if (this.obeysGravity) this.applyTickOfGravity()
+
+    this.visible = this.game.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+    )
+
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
       c.stubify<CrewMember, CrewMemberStub>(cm),
@@ -56,7 +71,6 @@ export class HumanShip extends CombatShip {
     super.tick()
 
     // ----- discover new planets -----
-
     const newPlanets = this.visible.planets.filter(
       (p) => !this.seenPlanets.includes(p),
     )
@@ -83,14 +97,14 @@ export class HumanShip extends CombatShip {
           `Picked up a cache with ${cache.contents
             .map(
               (cc) =>
-                `${Math.round(cc.amount * 10000) / 10000} ${
-                  cc.type
-                }`,
+                `${Math.round(cc.amount * 10000) / 10000}${
+                  cc.type === `credits` ? `` : ` tons of`
+                } ${cc.type}`,
             )
             .join(` and `)} inside!${
             cache.message &&
-            ` There was a message attached, which said, "${cache.message}".`
-          } The cache's contents were distributed evenly among the crew.`,
+            ` There was a message attached which said, "${cache.message}".`
+          }`,
           `medium`,
         )
         this.game.removeCache(cache)
@@ -98,145 +112,27 @@ export class HumanShip extends CombatShip {
     })
 
     // ----- auto-attacks -----
+    this.autoAttack()
 
-    this.toUpdate.targetShip = false
-
-    const weaponsRoomMembers = this.membersIn(`weapons`)
-    if (weaponsRoomMembers.length) {
-      const tacticCounts = weaponsRoomMembers.reduce(
-        (totals: any, cm) => {
-          const currTotal = totals.find(
-            (t: any) => t.tactic === cm.tactic,
-          )
-          if (currTotal) currTotal.total++
-          else totals.push({ tactic: cm.tactic, total: 1 })
-          return totals
-        },
-        [],
-      )
-      const mainTactic = tacticCounts.sort(
-        (b: any, a: any) => b.total - a.total,
-      )?.[0]?.tactic as Tactic | undefined
-
-      this.mainTactic = mainTactic
-      this.toUpdate.mainTactic = mainTactic
-
-      const attackableShips = this.getEnemiesInAttackRange()
-      this.toUpdate.enemiesInAttackRange = c.stubify(
-        attackableShips,
-        [`visible`, `seenPlanets`],
-      )
-
-      if (!mainTactic) return
-      if (!attackableShips.length) return
-
-      const availableWeapons = this.availableWeapons()
-      if (!availableWeapons) return
-
-      // ----- gather most common attack target -----
-      const targetCounts = weaponsRoomMembers.reduce(
-        (totals: any, cm) => {
-          if (!cm.attackTarget) return totals
-          const currTotal = totals.find(
-            (t: any) => t.attackTarget === cm.attackTarget,
-          )
-          if (currTotal) currTotal.total++
-          else
-            totals.push({
-              target: cm.attackTarget,
-              total: 1,
-            })
-          return totals
-        },
-        [],
-      )
-      const mainAttackTarget = targetCounts.sort(
-        (b: any, a: any) => b.total - a.total,
-      )?.[0]?.target as CombatShip | undefined
-
-      // ----- defensive strategy -----
-      if (mainTactic === `defensive`) {
-        let targetShip: CombatShip | undefined
-        if (
-          mainAttackTarget &&
-          this.canAttack(mainAttackTarget)
-        ) {
-          const attackedByThatTarget =
-            this.visible.attackRemnants.find(
-              (ar) => ar.attacker === mainAttackTarget,
-            )
-          if (attackedByThatTarget)
-            targetShip = mainAttackTarget
-        } else {
-          const mostRecentDefense =
-            this.visible.attackRemnants.reduce(
-              (
-                mostRecent: AttackRemnant | null,
-                ar,
-              ): AttackRemnant | null =>
-                mostRecent &&
-                mostRecent.time > ar.time &&
-                mostRecent.attacker !== this &&
-                this.canAttack(mostRecent.attacker)
-                  ? mostRecent
-                  : ar,
-              null,
-            )
-          targetShip = mostRecentDefense?.attacker
-        }
-        this.toUpdate.targetShip = targetShip
-          ? c.stubify<CombatShip, ShipStub>(targetShip, [
-              `visible`,
-              `seenPlanets`,
-            ])
-          : null
-        if (!targetShip) return
-        availableWeapons.forEach((w) => {
-          this.attack(targetShip!, w)
-        })
-      }
-
-      // ----- aggressive strategy -----
-      if (mainTactic === `aggressive`) {
-        let targetShip = mainAttackTarget
-        if (targetShip && !this.canAttack(targetShip))
-          targetShip = undefined
-        if (!targetShip) {
-          // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
-          const mostRecentCombat =
-            this.visible.attackRemnants.reduce(
-              (
-                mostRecent: AttackRemnant | null,
-                ar,
-              ): AttackRemnant =>
-                mostRecent &&
-                mostRecent.time > ar.time &&
-                this.canAttack(
-                  mostRecent.attacker === this
-                    ? mostRecent.defender
-                    : mostRecent.attacker,
-                )
-                  ? mostRecent
-                  : ar,
-              null,
-            )
-          // ----- if all else fails, just attack whatever's around -----
-          targetShip = mostRecentCombat
-            ? mostRecentCombat.attacker === this
-              ? mostRecentCombat.defender
-              : mostRecentCombat.attacker
-            : c.randomFromArray(attackableShips)
-        }
-        this.toUpdate.targetShip = c.stubify<
-          CombatShip,
-          ShipStub
-        >(targetShip!, [`visible`, `seenPlanets`])
-        // ----- with EVERY AVAILABLE WEAPON -----
-        availableWeapons.forEach((w) => {
-          this.attack(targetShip!, w)
-        })
-      }
-    }
+    // todo if no io watchers, skip this
+    // ----- updates for frontend -----
+    this.toUpdate.visible = c.stubify<any, VisibleStub>(
+      this.visible,
+      [`visible`, `seenPlanets`],
+    )
+    this.toUpdate.weapons = this.weapons.map((w) =>
+      c.stubify(w),
+    )
+    this.toUpdate.engines = this.engines.map((e) =>
+      c.stubify(e),
+    )
+    // ----- send update to listeners -----
+    if (!Object.keys(this.toUpdate).length) return
+    io.to(`ship:${this.id}`).emit(`ship:update`, {
+      id: this.id,
+      updates: this.toUpdate,
+    })
+    this.toUpdate = {}
   }
 
   // ----- log -----
@@ -247,6 +143,9 @@ export class HumanShip extends CombatShip {
       this.log.shift()
 
     this.toUpdate.log = this.log
+
+    if (level === `critical`)
+      io.emit(`ship:message`, this.id, text)
   }
 
   // ----- move -----
@@ -291,29 +190,24 @@ export class HumanShip extends CombatShip {
     for (let member of membersInCockpit) {
       if (!member.targetLocation) continue
 
-      // already there (plus a bit), so stop
-      if (
-        Math.abs(
-          this.location[0] - member.targetLocation[0],
-        ) <
-          c.arrivalThreshold / 2 &&
-        Math.abs(
-          this.location[1] - member.targetLocation[1],
-        ) <
-          c.arrivalThreshold / 2
+      const distanceToTarget = c.distance(
+        this.location,
+        member.targetLocation,
       )
-        continue
-
-      this.engines.forEach((e) => e.use())
+      if (distanceToTarget < 0.000001) continue
 
       const skill =
         member.skills.find((s) => s.skill === `piloting`)
           ?.level || 1
-      const thrustMagnitude =
+      const thrustMagnitude = Math.min(
         c.getThrustMagnitudeForSingleCrewMember(
           skill,
           engineThrustMultiplier,
-        )
+        ),
+        distanceToTarget,
+      )
+
+      this.engines.forEach((e) => e.use())
 
       const unitVectorToTarget = c.degreesToUnitVector(
         c.angleFromAToB(
@@ -355,6 +249,37 @@ export class HumanShip extends CombatShip {
         ? c.stubify<Planet, PlanetStub>(this.planet)
         : false
 
+    // ----- and log for you and other ships on that planet when you land/depart -----
+    if (this.planet && this.planet !== previousPlanet) {
+      this.logEntry(
+        `Landed on ${this.planet ? this.planet.name : ``}.`,
+        `high`,
+      )
+      this.planet.shipsAt().forEach((s) => {
+        if (s === this) return
+        s.logEntry(
+          `${this.name} landed on ${
+            this.planet ? this.planet.name : ``
+          }.`,
+        )
+      })
+    } else if (previousPlanet && !this.planet) {
+      this.logEntry(
+        `Departed from ${
+          previousPlanet ? previousPlanet.name : ``
+        }.`,
+      )
+      if (previousPlanet)
+        previousPlanet.shipsAt().forEach((s) => {
+          if (s === this) return
+          s.logEntry(
+            `${this.name} departed from ${
+              previousPlanet ? previousPlanet.name : ``
+            }.`,
+          )
+        })
+    }
+
     // ----- add previousLocation -----
     this.addPreviousLocation(startingLocation)
 
@@ -374,15 +299,30 @@ export class HumanShip extends CombatShip {
           10 +
         1
       this.distributeCargoAmongCrew([
-        { type: `metals`, amount },
+        { type: `salt`, amount },
       ])
       this.logEntry(
-        `Encountered some space junk and managed to strip ${amount} ton${
+        `Encountered some space junk and managed to harvest ${amount} ton${
           amount === 1 ? `` : `s`
-        } of metal off of it.`,
+        } of salt off of it.`,
       )
     }
   }
+
+  addCommonCredits(amount: number, member: CrewMember) {
+    this.commonCredits += amount
+    this.toUpdate.commonCredits = this.commonCredits
+    member.addStat(`totalContributedToCommonFund`, amount)
+  }
+
+  // setChannel(type: GameChannelType, id: string) {
+  //   const found = this.channelReferences.find(
+  //     (ch) => ch.type === type,
+  //   )
+  //   if (found) found.id = id
+  //   else this.channelReferences.push({ type, id })
+  //   this.toUpdate.channels = this.channelReferences
+  // }
 
   // ----- room mgmt -----
 
@@ -455,5 +395,218 @@ export class HumanShip extends CombatShip {
         `critical`,
       )
     }
+  }
+
+  // ----- auto attack -----
+  autoAttack() {
+    this.toUpdate.targetShip = false
+
+    const weaponsRoomMembers = this.membersIn(`weapons`)
+    if (weaponsRoomMembers.length) {
+      const tacticCounts = weaponsRoomMembers.reduce(
+        (totals: any, cm) => {
+          const currTotal = totals.find(
+            (t: any) => t.tactic === cm.tactic,
+          )
+          if (currTotal) currTotal.total++
+          else totals.push({ tactic: cm.tactic, total: 1 })
+          return totals
+        },
+        [],
+      )
+      const mainTactic = tacticCounts.sort(
+        (b: any, a: any) => b.total - a.total,
+      )?.[0]?.tactic as Tactic | undefined
+
+      this.mainTactic = mainTactic
+      this.toUpdate.mainTactic = mainTactic
+
+      const attackableShips = this.getEnemiesInAttackRange()
+      this.toUpdate.enemiesInAttackRange = c.stubify(
+        attackableShips,
+        [`visible`, `seenPlanets`],
+      )
+
+      if (!mainTactic) return
+      if (!attackableShips.length) return
+
+      const availableWeapons = this.availableWeapons()
+      if (!availableWeapons) return
+
+      // ----- gather most common attack target -----
+
+      const targetCounts = weaponsRoomMembers.reduce(
+        (totals: any, cm) => {
+          if (!cm.attackTarget) return totals
+          const currTotal = totals.find(
+            (t: any) => t.attackTarget === cm.attackTarget,
+          )
+          if (currTotal) currTotal.total++
+          else
+            totals.push({
+              target: cm.attackTarget,
+              total: 1,
+            })
+          return totals
+        },
+        [],
+      )
+      const mainAttackTarget = targetCounts.sort(
+        (b: any, a: any) => b.total - a.total,
+      )?.[0]?.target as CombatShip | undefined
+
+      // ----- defensive strategy -----
+
+      if (mainTactic === `defensive`) {
+        let targetShip: CombatShip | undefined
+        if (
+          mainAttackTarget &&
+          this.canAttack(mainAttackTarget)
+        ) {
+          const attackedByThatTarget =
+            this.visible.attackRemnants.find(
+              (ar) => ar.attacker === mainAttackTarget,
+            )
+          if (attackedByThatTarget)
+            targetShip = mainAttackTarget
+        } else {
+          const mostRecentDefense =
+            this.visible.attackRemnants.reduce(
+              (
+                mostRecent: AttackRemnant | null,
+                ar,
+              ): AttackRemnant | null =>
+                mostRecent &&
+                mostRecent.time > ar.time &&
+                mostRecent.attacker !== this &&
+                this.canAttack(mostRecent.attacker)
+                  ? mostRecent
+                  : ar,
+              null,
+            )
+          targetShip = mostRecentDefense?.attacker
+        }
+        this.toUpdate.targetShip = targetShip
+          ? c.stubify<CombatShip, ShipStub>(targetShip, [
+              `visible`,
+              `seenPlanets`,
+            ])
+          : null
+        if (!targetShip) return
+        availableWeapons.forEach((w) => {
+          this.attack(targetShip!, w)
+        })
+      }
+
+      // ----- aggressive strategy -----
+
+      if (mainTactic === `aggressive`) {
+        let targetShip = mainAttackTarget
+        if (targetShip && !this.canAttack(targetShip))
+          targetShip = undefined
+        if (!targetShip) {
+          // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
+          const mostRecentCombat =
+            this.visible.attackRemnants.reduce(
+              (
+                mostRecent: AttackRemnant | null,
+                ar,
+              ): AttackRemnant =>
+                mostRecent &&
+                mostRecent.time > ar.time &&
+                this.canAttack(
+                  mostRecent.attacker === this
+                    ? mostRecent.defender
+                    : mostRecent.attacker,
+                )
+                  ? mostRecent
+                  : ar,
+              null,
+            )
+          // ----- if all else fails, just attack whatever's around -----
+          targetShip = mostRecentCombat
+            ? mostRecentCombat.attacker === this
+              ? mostRecentCombat.defender
+              : mostRecentCombat.attacker
+            : c.randomFromArray(attackableShips)
+        }
+        this.toUpdate.targetShip = c.stubify<
+          CombatShip,
+          ShipStub
+        >(targetShip!, [`visible`, `seenPlanets`])
+        // ----- with EVERY AVAILABLE WEAPON -----
+        availableWeapons.forEach((w) => {
+          this.attack(targetShip!, w)
+        })
+      }
+    }
+  }
+
+  die() {
+    super.die()
+
+    setTimeout(() => {
+      this.logEntry(
+        `Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
+        `critical`,
+      )
+    }, 100)
+
+    const cacheContents: CacheContents[] = []
+
+    this.crewMembers.forEach((cm) => {
+      // ----- crew member cargo -----
+      while (cm.inventory.length) {
+        const toAdd = cm.inventory.pop()
+        const existing = cacheContents.find(
+          (cc) => cc.type === toAdd?.type,
+        )
+        if (existing) existing.amount += toAdd?.amount || 0
+        else if (toAdd) cacheContents.push(toAdd)
+      }
+
+      // ----- crew member credits -----
+      const toCache =
+        cm.credits *
+        CombatShip.percentOfCreditsDroppedOnDeath
+      cm.credits -=
+        cm.credits * CombatShip.percentOfCreditsLostOnDeath
+      const existing = cacheContents.find(
+        (cc) => cc.type === `credits`,
+      )
+      if (existing) existing.amount += toCache || 0
+      else if (cm.credits)
+        cacheContents.push({
+          type: `credits`,
+          amount: toCache,
+        })
+
+      cm.location = `bunk`
+      cm.stamina = 0
+    })
+
+    // ----- ship common credits -----
+    const toCache =
+      this.commonCredits *
+      CombatShip.percentOfCreditsDroppedOnDeath
+    this.commonCredits -=
+      this.commonCredits *
+      CombatShip.percentOfCreditsLostOnDeath
+    const existing = cacheContents.find(
+      (cc) => cc.type === `credits`,
+    )
+    if (existing) existing.amount += toCache || 0
+    else if (this.commonCredits)
+      cacheContents.push({
+        type: `credits`,
+        amount: toCache,
+      })
+
+    if (cacheContents.length)
+      this.game.addCache({
+        contents: cacheContents,
+        location: this.location,
+        message: `Remains of ${this.name}`,
+      })
   }
 }
