@@ -6,6 +6,27 @@ function lerp(
   return v0 * (1 - t) + v1 * t
 }
 
+// roundTo:
+// @param number (number) Initial number
+// @param decimalPlaces (number) Number of decimal places to round to
+// @param floor? (boolean) If true, uses floor instead of round.
+//
+function r2( // "round to"
+  number: number,
+  decimalPlaces: number = 2,
+  floor?: boolean,
+): number {
+  if (floor)
+    return (
+      Math.floor(number * 10 ** decimalPlaces) /
+      10 ** decimalPlaces
+    )
+  return (
+    Math.round(number * 10 ** decimalPlaces) /
+    10 ** decimalPlaces
+  )
+}
+
 function radiansToDegrees(radians: number = 0) {
   return (180 * radians) / Math.PI
 }
@@ -122,6 +143,7 @@ function randomInRange(a: number, b: number) {
 
 export default {
   lerp,
+  r2,
   radiansToDegrees,
   degreesToRadians,
   distance,

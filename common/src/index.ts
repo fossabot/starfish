@@ -4,6 +4,7 @@ import text from './text'
 import misc from './misc'
 import log from './log'
 import game from './game'
+import physics from './physics'
 
 export default {
   ...globals,
@@ -12,4 +13,5 @@ export default {
   ...misc,
   ...log,
   ...game,
+  ...physics,
 }

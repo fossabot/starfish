@@ -7,6 +7,7 @@ exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class Planet {
     constructor({ name, color, location, vendor, faction, races, repairCostMultiplier, radius, }, game) {
+        this.mass = 5.974e30;
         this.game = game;
         this.name = name;
         this.color = color;

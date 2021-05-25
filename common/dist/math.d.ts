@@ -1,4 +1,6 @@
 declare function lerp(v0?: number, v1?: number, t?: number): number;
+declare function r2(// "round to"
+number: number, decimalPlaces?: number, floor?: boolean): number;
 declare function radiansToDegrees(radians?: number): number;
 declare function degreesToRadians(degrees?: number): number;
 declare function coordPairToRadians(coordPair?: CoordinatePair): number;
@@ -19,6 +21,7 @@ declare function randomSign(): 1 | -1;
 declare function randomInRange(a: number, b: number): number;
 declare const _default: {
     lerp: typeof lerp;
+    r2: typeof r2;
     radiansToDegrees: typeof radiansToDegrees;
     degreesToRadians: typeof degreesToRadians;
     distance: typeof distance;

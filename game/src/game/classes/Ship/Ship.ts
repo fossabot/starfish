@@ -2,22 +2,17 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import type { Faction } from '../Faction'
-import type { Engine } from '../Item/Engine'
+import { Engine } from '../Item/Engine'
 import type { Item } from '../Item/Item'
-import type { Weapon } from '../Item/Weapon'
+import { Weapon } from '../Item/Weapon'
 import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
 
-import {
-  addWeapon,
-  addEngine,
-  removeItem,
-  equipLoadout,
-} from './addins/items'
-import io from '../../../server/io'
+import loadouts from '../../presets/loadouts'
+import { weapons, engines } from '../../presets/items'
 
 export class Ship {
   static maxPreviousLocations: number = 20
@@ -28,6 +23,8 @@ export class Ship {
   readonly game: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
+    broadcast: 0,
+    scan: 0,
     attack: 0,
   }
 
@@ -49,8 +46,7 @@ export class Ship {
   }
 
   readonly seenPlanets: Planet[] = []
-  readonly weapons: Weapon[] = []
-  readonly engines: Engine[] = []
+  readonly items: Item[] = []
   readonly previousLocations: CoordinatePair[] = []
   id = `${Math.random()}`.substring(2) // re-set in subclasses
   location: CoordinatePair = [0, 0]
@@ -63,13 +59,13 @@ export class Ship {
   _maxHp = 10
   dead = false // set in hp setter below
   obeysGravity = true
+  mass = 1000000
 
   constructor(
     {
       name,
       faction,
-      weapons,
-      engines,
+      items,
       loadout,
       seenPlanets,
       location,
@@ -110,11 +106,8 @@ export class Ship {
         )
         .filter((p) => p) as Planet[]
 
-    if (loadout) this.equipLoadout(loadout)
-    if (weapons)
-      weapons.forEach((w) => this.addWeapon(w.id, w))
-    if (engines)
-      engines.forEach((e) => this.addEngine(e.id, e))
+    if (items) items.forEach((i) => this.addItem(i))
+    if (!items && loadout) this.equipLoadout(loadout)
     this.hp = this.maxHp
 
     this.updateSightRadius()
@@ -132,19 +125,83 @@ export class Ship {
     else c.log(`      velocity: ${this.velocity}`)
   }
 
-  tick() {}
+  tick() {
+    if (this.dead) return
+    if (this.obeysGravity) this.applyTickOfGravity()
+    // c.log(`tick`, this.name)
+  }
 
   // ----- item mgmt -----
 
-  get items(): Item[] {
-    const items = [...this.weapons, ...this.engines]
-    return items
+  get engines(): Engine[] {
+    return this.items.filter(
+      (i) => i instanceof Engine,
+    ) as Engine[]
   }
 
-  addWeapon = addWeapon
-  addEngine = addEngine
-  removeItem = removeItem
-  equipLoadout = equipLoadout
+  get weapons(): Weapon[] {
+    return this.items.filter(
+      (i) => i instanceof Weapon,
+    ) as Weapon[]
+  }
+
+  addItem(
+    this: Ship,
+    itemData: Partial<BaseItemData>,
+  ): boolean {
+    let item: Item | undefined
+    if (itemData.type === `engine`) {
+      const engineData = itemData as Partial<BaseEngineData>
+      let foundItem: BaseEngineData | undefined
+      if (engineData.id && engineData.id in engines)
+        foundItem = engines[engineData.id]
+      if (!foundItem) return false
+      item = new Engine(foundItem, this, engineData)
+    }
+    if (itemData.type === `weapon`) {
+      const weaponData = itemData as Partial<BaseWeaponData>
+      let foundItem: BaseWeaponData | undefined
+      if (weaponData.id && weaponData.id in weapons)
+        foundItem = weapons[weaponData.id]
+      if (!foundItem) return false
+      item = new Weapon(foundItem, this, weaponData)
+    }
+
+    if (item) {
+      this.items.push(item)
+      this.recalculateMaxHp()
+      this.toUpdate.attackRadius = this.radii.attack
+    }
+    return true
+  }
+
+  removeItem(this: Ship, item: Item): boolean {
+    const weaponIndex = this.items.findIndex(
+      (w) => w === item,
+    )
+    if (weaponIndex !== -1) {
+      this.items.splice(weaponIndex, 1)
+      return true
+    }
+    const engineIndex = this.items.findIndex(
+      (e) => e === item,
+    )
+    if (engineIndex !== -1) {
+      this.items.splice(engineIndex, 1)
+      return true
+    }
+    this.recalculateMaxHp()
+    return false
+  }
+
+  equipLoadout(this: Ship, name: LoadoutName): boolean {
+    const loadout = loadouts[name]
+    if (!loadout) return false
+    loadout.forEach((baseData: Partial<BaseItemData>) =>
+      this.addItem(baseData),
+    )
+    return true
+  }
 
   // ----- radii -----
   updateSightRadius() {
@@ -162,18 +219,14 @@ export class Ship {
   }
 
   move(toLocation?: CoordinatePair) {
-    const previousLocation: CoordinatePair = [
-      ...this.location,
-    ]
-
     if (toLocation) {
       this.location = toLocation
-      this.speed = 0
-      this.velocity = [0, 0]
       this.toUpdate.location = this.location
-      this.toUpdate.speed = this.speed
-      this.toUpdate.velocity = this.velocity
-      this.addPreviousLocation(previousLocation)
+      // this.speed = 0
+      // this.velocity = [0, 0]
+      // this.toUpdate.speed = this.speed
+      // this.toUpdate.velocity = this.velocity
+      // this.addPreviousLocation(previousLocation)
     }
   }
 
@@ -211,17 +264,68 @@ export class Ship {
   }
 
   isAt(this: Ship, coords: CoordinatePair) {
-    return (
-      Math.abs(coords[0] - this.location[0]) <
-        c.arrivalThreshold &&
-      Math.abs(coords[1] - this.location[1]) <
-        c.arrivalThreshold
+    return c.pointIsInsideCircle(
+      this.location,
+      coords,
+      c.ARRIVAL_THRESHOLD,
     )
   }
 
   applyTickOfGravity(this: Ship): void {
-    // if (!this.canMove) return
+    if (!this.canMove) return
+
+    if (this.human) {
+      for (let planet of this.visible.planets) {
+        const distance = c.distance(
+          planet.location,
+          this.location,
+        )
+        if (
+          distance <= c.GRAVITY_RANGE &&
+          distance > c.ARRIVAL_THRESHOLD
+        ) {
+          const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 100
+          const vectorToAdd = c
+            .getGravityForceVectorOnThisBodyDueToThatBody(
+              this,
+              planet,
+            )
+            .map(
+              (g) =>
+                ((g *
+                  (c.deltaTime / 1000) *
+                  c.gameSpeedMultiplier) /
+                  this.mass /
+                  c.KM_PER_AU /
+                  c.M_PER_KM) *
+                FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK,
+            )
+          // c.log(
+          //   this.name,
+          //   planet.name,
+          //   math.abs(vectorToAdd[0] + vectorToAdd[1]),
+          // )
+          if (
+            Math.abs(vectorToAdd[0] + vectorToAdd[1]) <
+            0.000000001
+          )
+            return
+
+          // if (c.distance(this.location, [this.location[0] + vectorToAdd[0],
+          //   this.location[1] + vectorToAdd[1]]) > c.distance(this.location, planet.location)){
+          //     this.location = planet.location
+          //   }
+
+          // c.log(vectorToAdd)
+          this.location[0] += vectorToAdd[0]
+          this.location[1] += vectorToAdd[1]
+          this.toUpdate.location = this.location
+        }
+      }
+    }
+
     // todo
+    //
   }
 
   // ----- crew -----

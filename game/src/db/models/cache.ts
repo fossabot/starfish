@@ -13,6 +13,7 @@ const cacheSchemaFields: Record<keyof BaseCacheData, any> =
     location: [{ type: Number, required: true }],
     message: { type: String, default: `` },
     contents: [{ type: { type: String }, amount: Number }],
+    droppedBy: String,
   }
 const cacheSchema = new Schema(cacheSchemaFields)
 const DBCache = model<DBCacheDoc>(`DBCache`, cacheSchema)

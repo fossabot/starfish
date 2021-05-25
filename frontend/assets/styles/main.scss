@@ -16,6 +16,7 @@ html {
   max-width: 100%;
   min-width: 100%;
   overflow-x: hidden;
+  user-select: none;
 
   @media only screen and (max-device-width: 768px) {
     font-size: 17px;
@@ -65,7 +66,12 @@ button,
   &.secondary {
     background: var(--bg);
     color: var(--text);
-    box-shadow: inset 0 0 0 1px var(--text);
+    box-shadow: 0 0 0 0.5px var(--text),
+      inset 0 0 0 0.5px var(--text);
+  }
+
+  &.mini {
+    padding: 0.15em 0.3em;
   }
 }
 
@@ -85,10 +91,12 @@ button,
 }
 .panesection {
   position: relative;
-  border-top: 1px solid var(--highlight-color, var(--text));
-  box-shadow: -1px 0 0 0 var(--highlight-color, var(--text)),
-    1px 0 0 0 var(--highlight-color, var(--text)),
-    0 1px 0 0 var(--highlight-color, var(--text));
+  border-top: 1px solid
+    var(--highlight-color, var(--pane-border));
+  box-shadow: -1px 0 0 0
+      var(--highlight-color, var(--pane-border)),
+    1px 0 0 0 var(--highlight-color, var(--pane-border)),
+    0 1px 0 0 var(--highlight-color, var(--pane-border));
   padding: var(--panesectionpad-top)
     var(--panesectionpad-left);
   color: var(--highlight-color, var(--text));
@@ -138,4 +146,8 @@ button,
 
 .no-pointer {
   pointer-events: none;
+}
+
+.inline {
+  display: inline-block;
 }

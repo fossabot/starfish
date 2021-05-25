@@ -1,5 +1,5 @@
 export const engines: {
-  [key in EngineType]?: BaseEngineData
+  [key in EngineId]?: BaseEngineData
 } = {}
 
 engines.starter = {

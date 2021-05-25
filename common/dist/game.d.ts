@@ -6,6 +6,7 @@ declare function stubify<BaseType, StubType extends BaseStub>(prop: BaseType, di
 declare const _default: {
     gameSpeedMultiplier: number;
     baseRepairCost: number;
+    maxBroadcastLength: number;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;

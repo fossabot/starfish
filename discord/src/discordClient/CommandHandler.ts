@@ -1,5 +1,5 @@
 import c from '../../../common/dist'
-import { Message } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
 import { reactor } from './reactions/reactor'
@@ -10,6 +10,8 @@ import { InviteCommand } from './commands/Invite'
 import { LinkCommand } from './commands/Link'
 import { JoinCommand } from './commands/Join'
 import { RespawnCommand } from './commands/Respawn'
+import { RepairChannelsCommand } from './commands/RepairChannels'
+import { BroadcastCommand } from './commands/Broadcast'
 
 export class CommandHandler {
   private commands: Command[]
@@ -23,6 +25,8 @@ export class CommandHandler {
       LinkCommand,
       JoinCommand,
       RespawnCommand,
+      RepairChannelsCommand,
+      BroadcastCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -32,6 +36,7 @@ export class CommandHandler {
   }
 
   async handleMessage(message: Message): Promise<void> {
+    // ----- handle command -----
     if (
       message.author.bot ||
       !this.couldBeCommand(message)
@@ -44,21 +49,34 @@ export class CommandHandler {
       return
     }
 
+    this.sideEffects(message)
+
     // initialize command context
     const commandContext = new CommandContext(
       message,
       this.prefix,
     )
 
-    // find matched command
-    const matchedCommand = this.commands.find((command) =>
-      command.commandNames.includes(
-        commandContext.commandName,
-      ),
+    // find matched commands
+    const matchedCommands = this.commands.filter(
+      (command) => {
+        if (
+          command.commandNames.includes(
+            commandContext.commandName,
+          )
+        )
+          return true
+        if (
+          command.ignorePrefixMatchTest &&
+          command.ignorePrefixMatchTest(message)
+        )
+          return true
+        return false
+      },
     )
 
     // handle prefix but no valid command case
-    if (!matchedCommand) {
+    if (!matchedCommands.length) {
       await message.reply(
         `I don't recognize that command. Try ${this.prefix}help.`,
       )
@@ -77,33 +95,47 @@ export class CommandHandler {
       ) || null
     commandContext.crewMember = crewMember
 
-    // check run permissions and get error message if relevant
-    const permissionRes =
-      matchedCommand.hasPermissionToRun(commandContext)
-    if (permissionRes !== true) {
-      await message.channel.send(permissionRes)
-      await reactor.failure(message)
-      return
+    for (let matchedCommand of matchedCommands) {
+      // check run permissions and get error message if relevant
+      const permissionRes =
+        matchedCommand.hasPermissionToRun(commandContext)
+      if (permissionRes !== true) {
+        await message.channel.send(permissionRes)
+        await reactor.failure(message)
+        continue
+      }
+
+      c.log(`gray`, message.content)
+
+      // run command
+      await matchedCommand
+        .run(commandContext)
+        .then(() => {
+          reactor.success(message)
+        })
+        .catch((reason) => {
+          c.log(
+            `red`,
+            `Failed to run command ${commandContext.commandName}: ${reason}`,
+          )
+          reactor.failure(message)
+        })
     }
-
-    c.log(`gray`, message.content)
-
-    // run command
-    await matchedCommand
-      .run(commandContext)
-      .then(() => {
-        reactor.success(message)
-      })
-      .catch((reason) => {
-        c.log(
-          `red`,
-          `Failed to run command ${commandContext.commandName}: ${reason}`,
-        )
-        reactor.failure(message)
-      })
   }
 
   private couldBeCommand(message: Message): boolean {
-    return message.content.startsWith(this.prefix)
+    if (message.content.startsWith(this.prefix)) return true
+    if (
+      message.channel instanceof TextChannel &&
+      message.channel.name.indexOf(`📣`) !== -1
+    )
+      return true
+    return false
+  }
+
+  private sideEffects(message: Message) {
+    // ----- set nickname -----
+    if (message.guild?.me?.nickname !== `${c.GAME_NAME}`)
+      message.guild?.me?.setNickname(`${c.GAME_NAME}`)
   }
 }

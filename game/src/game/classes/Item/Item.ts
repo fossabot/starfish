@@ -46,7 +46,7 @@ export class Item {
   }
 
   use() {
-    this.repair -= 0.00005
+    this.repair -= 0.00005 * c.gameSpeedMultiplier
     if (this.repair < 0) this.repair = 0
     this.ship.toUpdate._hp = this.ship.hp
   }

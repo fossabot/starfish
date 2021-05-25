@@ -12,8 +12,7 @@ interface GameStub extends BaseStub {
 interface ShipStub extends BaseStub {
   id: string
   name: string
-  weapons: WeaponStub[]
-  engines: EngineStub[]
+  items: ItemStub[]
   previousLocations: CoordinatePair[]
   location: CoordinatePair
   velocity: CoordinatePair
@@ -33,6 +32,7 @@ interface ShipStub extends BaseStub {
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
+  trails: CoordinatePair[][]
   planets: PlanetStub[]
   caches: CacheStub[]
   attackRemnants: AttackRemnantStub[]

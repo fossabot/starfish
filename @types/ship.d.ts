@@ -5,8 +5,7 @@ interface BaseShipData {
   faction?: { color: FactionKey }
   seenPlanets?: { name: PlanetName }[]
   loadout?: LoadoutName
-  engines?: BaseEngineData[]
-  weapons?: BaseWeaponData[]
+  items?: BaseItemData[]
   ai?: boolean
   previousLocations?: CoordinatePair[]
   spawnPoint?: CoordinatePair
@@ -27,7 +26,7 @@ interface GameChannelReference {
   type: GameChannelType
 }
 
-type RadiusType = `sight` | `attack`
+type RadiusType = `sight` | `attack` | `scan` | `broadcast`
 
 type LogLevel = `low` | `medium` | `high` | `critical`
 interface LogEntry {

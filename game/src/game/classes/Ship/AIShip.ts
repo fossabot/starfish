@@ -37,12 +37,11 @@ export class AIShip extends CombatShip {
   }
 
   tick() {
-    if (this.dead) return
     super.tick()
+    if (this.dead) return
 
     // ----- move -----
     this.move()
-    if (this.obeysGravity) this.applyTickOfGravity()
 
     this.visible = this.game.scanCircle(
       this.location,
@@ -96,11 +95,11 @@ export class AIShip extends CombatShip {
         Math.abs(
           this.location[0] - this.targetLocation[0],
         ) <
-          c.arrivalThreshold / 2 &&
+          c.ARRIVAL_THRESHOLD / 2 &&
         Math.abs(
           this.location[1] - this.targetLocation[1],
         ) <
-          c.arrivalThreshold / 2
+          c.ARRIVAL_THRESHOLD / 2
       )
     ) {
       const unitVectorToTarget = c.degreesToUnitVector(
@@ -124,7 +123,7 @@ export class AIShip extends CombatShip {
     }
 
     // ----- set new target location -----
-    if (Math.random() < 0.01) {
+    if (Math.random() < 0.03) {
       const distance = (Math.random() * this.level) / 7
       const currentAngle = c.angleFromAToB(
         this.location,
@@ -143,16 +142,17 @@ export class AIShip extends CombatShip {
         this.location,
         this.spawnPoint,
       )
-      const chosenAngle = c.coinFlip()
-        ? c.randomFromArray(possibleAngles)
-        : possibleAngles.reduce(
-            (lowest, a) =>
-              c.angleDifference(angleToHome, a) <
-              c.angleDifference(angleToHome, lowest)
-                ? a
-                : lowest,
-            possibleAngles[0],
-          )
+      const chosenAngle =
+        Math.random() > 1
+          ? c.randomFromArray(possibleAngles)
+          : possibleAngles.reduce(
+              (lowest, a) =>
+                c.angleDifference(angleToHome, a) <
+                c.angleDifference(angleToHome, lowest)
+                  ? a
+                  : lowest,
+              possibleAngles[0],
+            )
       const unitVector = c.degreesToUnitVector(chosenAngle)
 
       // c.log(angleToHome, chosenAngle, unitVector)

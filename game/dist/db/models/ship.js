@@ -12,10 +12,10 @@ const shipSchemaFields = {
     name: { type: String, required: true },
     faction: { color: String },
     loadout: String,
-    engines: [{ id: String, repair: Number }],
-    weapons: [
+    items: [
         {
-            id: String,
+            type: { type: String, required: true },
+            id: { type: String, required: true },
             repair: Number,
             cooldownRemaining: Number,
         },

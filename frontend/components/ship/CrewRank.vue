@@ -97,6 +97,5 @@ export default {
 .crewrank {
   width: 300px;
   position: relative;
-  grid-column: span 2;
 }
 </style>

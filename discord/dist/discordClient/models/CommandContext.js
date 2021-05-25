@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommandContext = void 0;
+const dist_1 = __importDefault(require("../../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const resolveOrCreateChannel_1 = __importDefault(require("../actions/resolveOrCreateChannel"));
 const GameChannel_1 = require("./GameChannel");
@@ -24,6 +25,10 @@ class CommandContext {
         this.initialMessage = message;
         this.guild = message.guild;
         this.dm = message.channel.type === `dm`;
+        this.isServerAdmin =
+            message.guild?.members.cache
+                .find((m) => m.id === message.author.id)
+                ?.permissions.has(`BAN_MEMBERS`) || false;
         this.isGameAdmin = [
             `244651135984467968`,
             `395634705120100367`,
@@ -49,6 +54,9 @@ class CommandContext {
             this.channels[channelType] = channel;
             channel.send(message);
         }
+    }
+    async reactToInitialMessage(emoji) {
+        await this.initialMessage.react(emoji).catch(dist_1.default.log);
     }
 }
 exports.CommandContext = CommandContext;

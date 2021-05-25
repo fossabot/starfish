@@ -22,8 +22,9 @@ export declare class Game {
     private lastTickExpectedTime;
     private averageTickLag;
     tick(): void;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, type?: `ship` | `planet` | `cache` | `attackRemnant`): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, type?: `ship` | `planet` | `cache` | `attackRemnant` | `trail`, includeTrails?: boolean): {
         ships: Ship[];
+        trails: CoordinatePair[][];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];

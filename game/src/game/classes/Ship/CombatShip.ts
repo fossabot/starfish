@@ -53,7 +53,7 @@ export abstract class CombatShip extends Ship {
     c.log(`respawning`, this.name)
     while (this.weapons.length) this.weapons.pop()
     while (this.engines.length) this.engines.pop()
-    this.equipLoadout(`human_default`)
+    this.equipLoadout(`humanDefault`)
     this.recalculateMaxHp()
     this.hp = this.maxHp
     this.dead = false
@@ -213,14 +213,9 @@ export abstract class CombatShip extends Ship {
         }
       }
     }
-    this.toUpdate.weapons = c.stubify<
-      Weapon[],
-      WeaponStub[]
-    >(this.weapons)
-    this.toUpdate.engines = c.stubify<
-      Engine[],
-      EngineStub[]
-    >(this.engines)
+    this.toUpdate.items = this.items.map((i) =>
+      c.stubify(i),
+    )
 
     const didDie = previousHp > 0 && this.hp <= 0
     if (didDie) {

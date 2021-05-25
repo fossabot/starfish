@@ -22,8 +22,9 @@
 
       <ShipLog class="grid-item" />
 
-      <ShipPlanet v-if="ship.planet" class="grid-item" />
+      <ShipPlanet class="grid-item" />
       <ShipVisible class="grid-item" />
+      <ShipScanShip class="grid-item" />
 
       <ShipMember class="grid-item" />
       <ShipDiagram class="grid-item" />
@@ -58,6 +59,7 @@
 <script lang="ts">
 import { mapState } from 'vuex'
 interface ComponentShape {
+  resizeObserver: ResizeObserver | null
   [key: string]: any
 }
 
@@ -65,6 +67,8 @@ export default {
   data(): ComponentShape {
     return {
       currentShipIndex: 0,
+      resizeObserver: null,
+      masonryElement: null,
     }
   },
 
@@ -92,27 +96,50 @@ export default {
     currentShipIndex(this: ComponentShape) {
       this.changeShip(this.currentShipIndex)
     },
-    ship() {
-      this.resetMasonry()
-    },
-    planet() {
-      this.resetMasonry()
-    },
-    room() {
-      this.resetMasonry()
-    },
+    // ship() {
+    //   this.resetMasonry()
+    // },
+    // planet() {
+    //   this.resetMasonry()
+    // },
+    // room() {
+    //   this.resetMasonry()
+    // },
   },
 
-  mounted(this: ComponentShape) {
+  async mounted(this: ComponentShape) {
     if (!this.userId) {
       this.$router.push('/login')
       return
     }
     this.changeShip(this.currentShipIndex)
-    this.$nextTick(this.resetMasonry)
+    // this.$nextTick(this.resetMasonry)
+    this.setUpObserver()
   },
 
   methods: {
+    async setUpObserver(this: ComponentShape) {
+      if (
+        (this.$refs.container?.children?.length || 0) < 10
+      ) {
+        return setTimeout(this.setUpObserver, 100)
+      }
+
+      await this.$nextTick()
+
+      if (this.resizeObserver)
+        return console.log('observer exists')
+      this.resizeObserver = new ResizeObserver(
+        (entries) => {
+          console.log('resize')
+          this.$nextTick(this.resetMasonry)
+        },
+      )
+      for (let child of this.$refs.container.children) {
+        if (child.$el) child = child.$el
+        this.resizeObserver.observe(child)
+      }
+    },
     changeShip(this: ComponentShape, index: number) {
       if (
         this.shipIds[index] &&
@@ -124,41 +151,24 @@ export default {
         )
     },
     async resetMasonry(this: ComponentShape) {
-      await this.$nextTick()
       if (
         !this.$refs.container ||
         !this.$masonry ||
         !window
       )
         return setTimeout(this.resetMasonry, 500)
-      new this.$masonry('#masonrycontainer', {
-        itemSelector: '.grid-item',
-        columnWidth: 1,
-        gutter: 0,
-        fitWidth: true,
-      })
-
-      setTimeout(
-        () =>
-          new this.$masonry('#masonrycontainer', {
+      console.log(!!this.masonryElement)
+      if (!this.masonryElement)
+        this.masonryElement = new this.$masonry(
+          '#masonrycontainer',
+          {
             itemSelector: '.grid-item',
             columnWidth: 1,
             gutter: 0,
             fitWidth: true,
-          }),
-        500,
-      )
-
-      setTimeout(
-        () =>
-          new this.$masonry('#masonrycontainer', {
-            itemSelector: '.grid-item',
-            columnWidth: 1,
-            gutter: 0,
-            fitWidth: true,
-          }),
-        1000,
-      )
+          },
+        )
+      else this.masonryElement.layout()
     },
   },
 }

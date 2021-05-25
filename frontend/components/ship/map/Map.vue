@@ -76,7 +76,7 @@
       />
 
       <ShipMapShippath
-        v-for="s in ships"
+        v-for="s in mapData.shipPaths"
         :key="'shippath' + s.id"
         v-bind="s"
         :FLAT_SCALE="FLAT_SCALE"

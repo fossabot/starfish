@@ -4,12 +4,12 @@
       ><span class="sectionemoji">🎯</span>Weapons
       Bay</template
     >
-    <div class="panesection" v-if="!ship.weapons">
+    <div class="panesection" v-if="!weapons">
       No weapons on the ship!
     </div>
-    <div class="panesection" v-if="ship.weapons">
+    <div class="panesection" v-if="weapons">
       <div class="panesubhead">Weapons</div>
-      <div v-for="i in ship.weapons">
+      <div v-for="i in weapons">
         {{ i.displayName }}
         <div class="flex">
           <ProgressBar :mini="true" :percent="i.repair">
@@ -115,6 +115,11 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    weapons(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'weapon',
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

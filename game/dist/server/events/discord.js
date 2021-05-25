@@ -30,6 +30,13 @@ function default_1(socket) {
             });
         }
     });
+    socket.on(`ship:broadcast`, (shipId, message, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const broadcastRes = ship.broadcast(message);
+        callback({ data: broadcastRes });
+    });
 }
 exports.default = default_1;
 //# sourceMappingURL=discord.js.map

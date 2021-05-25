@@ -52,7 +52,10 @@ export class Game {
   async save() {
     c.log(
       `gray`,
-      `----- Saving Game ----- (Tick avg.: ${this.averageTickLag}ms)`,
+      `----- Saving Game ----- (Tick avg.: ${c.r2(
+        this.averageTickLag,
+        2,
+      )}ms)`,
     )
     const promises: Promise<any>[] = []
     this.ships.forEach((s) => {
@@ -133,23 +136,46 @@ export class Game {
     center: CoordinatePair,
     radius: number,
     ignoreSelf: string | null,
-    type?: `ship` | `planet` | `cache` | `attackRemnant`,
+    type?:
+      | `ship`
+      | `planet`
+      | `cache`
+      | `attackRemnant`
+      | `trail`,
+    includeTrails: boolean = false,
   ): {
     ships: Ship[]
+    trails: CoordinatePair[][]
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
   } {
     let ships: Ship[] = [],
+      trails: CoordinatePair[][] = [],
       planets: Planet[] = [],
       caches: Cache[] = [],
       attackRemnants: AttackRemnant[] = []
     if (!type || type === `ship`)
-      ships = this.ships.filter(
-        (s) =>
-          s.id !== ignoreSelf &&
-          c.pointIsInsideCircle(center, s.location, radius),
-      )
+      ships = this.ships.filter((s) => {
+        if (s.id === ignoreSelf) return false
+        if (
+          c.pointIsInsideCircle(center, s.location, radius)
+        )
+          return true
+        return false
+      })
+    if ((!type || type === `trail`) && includeTrails)
+      trails = this.ships
+        .filter((s) => {
+          if (s.id === ignoreSelf) return false
+          if (ships.find((ship) => ship === s)) return false
+          for (let l of s.previousLocations) {
+            if (c.pointIsInsideCircle(center, l, radius))
+              return true
+          }
+          return false
+        })
+        .map((s) => s.previousLocations)
     if (!type || type === `planet`)
       planets = this.planets.filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
@@ -164,7 +190,13 @@ export class Game {
           c.pointIsInsideCircle(center, a.start, radius) ||
           c.pointIsInsideCircle(center, a.end, radius),
       )
-    return { ships, planets, caches, attackRemnants }
+    return {
+      ships,
+      trails,
+      planets,
+      caches,
+      attackRemnants,
+    }
   }
 
   // ----- radii -----
@@ -253,7 +285,7 @@ export class Game {
       name: `AI${`${Math.random().toFixed(3)}`.substring(
         2,
       )}`,
-      loadout: `ai_default`,
+      loadout: `aiDefault`,
       level,
     })
     c.log(
@@ -280,7 +312,7 @@ export class Game {
     }
     c.log(`gray`, `Adding human ship ${data.name} to game`)
 
-    data.loadout = `human_default`
+    data.loadout = `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     if (save) db.ship.addOrUpdateInDb(newShip)
@@ -300,7 +332,7 @@ export class Game {
     }
     c.log(`gray`, `Adding AI ship ${data.name} to game`)
 
-    data.loadout = `ai_default`
+    data.loadout = `aiDefault`
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
     if (save) db.ship.addOrUpdateInDb(newShip)

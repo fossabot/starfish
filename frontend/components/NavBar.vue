@@ -1,7 +1,7 @@
 <template>
   <Box>
     <template #title>
-      <span class="sectionemoji">⚙️</span>(Game Name)
+      <span class="sectionemoji">⚙️</span>{{ c.GAME_NAME }}
     </template>
     <nav class="pad-pane">
       <nuxt-link to="/">Home</nuxt-link>
@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -41,7 +42,7 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return { selectedShip: null }
+    return { c, selectedShip: null }
   },
   computed: {
     ...mapState([

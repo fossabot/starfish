@@ -1,9 +1,12 @@
 import math from './math'
 import globals from './globals'
+import c from './log'
 
-const gameSpeedMultiplier = 10
+const gameSpeedMultiplier = 24
 
 const baseRepairCost = 100
+
+const maxBroadcastLength = 200
 
 function getThrustMagnitudeForSingleCrewMember(
   skill: number = 1,
@@ -21,7 +24,7 @@ function getRepairAmountPerTickForSingleCrewMember(
 ) {
   return (
     (skill / globals.TICK_INTERVAL) *
-    0.3 *
+    0.1 *
     gameSpeedMultiplier
   )
 }
@@ -51,6 +54,7 @@ function stubify<BaseType, StubType extends BaseStub>(
   const getKeyValue =
     (key: string) => (obj: Record<string, any>) =>
       obj[key]
+  // c.log(Object.getOwnPropertyNames(proto))
   for (const key of Object.getOwnPropertyNames(proto)) {
     const desc = Object.getOwnPropertyDescriptor(proto, key)
     const hasGetter = desc && typeof desc.get === `function`
@@ -94,6 +98,7 @@ function stubify<BaseType, StubType extends BaseStub>(
 export default {
   gameSpeedMultiplier,
   baseRepairCost,
+  maxBroadcastLength,
   getRepairAmountPerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,

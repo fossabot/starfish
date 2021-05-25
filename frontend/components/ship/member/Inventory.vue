@@ -7,8 +7,14 @@
         <button
           v-if="crewMember.credits > 0.001"
           @click="addToCommonFund"
+          class="mini secondary"
         >
-          Add to ship common fund
+          Add to common fund</button
+        ><button
+          class="mini secondary"
+          @click="drop('credits')"
+        >
+          Drop
         </button>
       </div>
     </div>
@@ -34,6 +40,12 @@
       >
         {{ c.capitalize(item.type) }}:
         {{ Math.round(item.amount * 1000) / 1000 }} tons
+        <button
+          class="mini secondary"
+          @click="drop(item.type)"
+        >
+          Drop
+        </button>
       </div>
     </div>
   </div>
@@ -88,6 +100,48 @@ export default {
         this.ship.id,
         this.crewMember.id,
         amount,
+      )
+    },
+    drop(
+      this: ComponentShape,
+      type: CargoType | 'credits',
+    ) {
+      console.log()
+      const totalHeld =
+        type === 'credits'
+          ? c.r2(this.crewMember.credits, 2, true)
+          : c.r2(
+              this.crewMember.inventory.find(
+                (i: Cargo) => i.type === type,
+              ).amount,
+              2,
+              true,
+            )
+      const amount =
+        parseFloat(
+          prompt(
+            `How ${
+              type === 'credits' ? 'many' : 'many tons of'
+            } ${type} do you want to jettison as a cache? (Max ${totalHeld})`,
+          ) || '0',
+        ) || 0
+      if (!amount || amount < 0 || amount > totalHeld)
+        return console.log('Nope.')
+
+      const message = prompt(
+        `Would you like to attach a message to the cache?`,
+      )?.substring(0, 200)
+
+      this.$socket?.emit(
+        'crew:drop',
+        this.ship.id,
+        this.crewMember.id,
+        type,
+        amount,
+        message,
+        (cache: CacheStub) => {
+          console.log('dropped cache!')
+        },
       )
     },
   },

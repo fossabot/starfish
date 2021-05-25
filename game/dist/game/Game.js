@@ -42,7 +42,7 @@ class Game {
         this.tick();
     }
     async save() {
-        dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg.: ${this.averageTickLag}ms)`);
+        dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg.: ${dist_1.default.r2(this.averageTickLag, 2)}ms)`);
         const promises = [];
         this.ships.forEach((s) => {
             promises.push(db_1.db.ship.addOrUpdateInDb(s));
@@ -84,11 +84,30 @@ class Game {
     }
     // ----- scan function -----
     // todo mega-optimize this. chunks?
-    scanCircle(center, radius, ignoreSelf, type) {
-        let ships = [], planets = [], caches = [], attackRemnants = [];
+    scanCircle(center, radius, ignoreSelf, type, includeTrails = false) {
+        let ships = [], trails = [], planets = [], caches = [], attackRemnants = [];
         if (!type || type === `ship`)
-            ships = this.ships.filter((s) => s.id !== ignoreSelf &&
-                dist_1.default.pointIsInsideCircle(center, s.location, radius));
+            ships = this.ships.filter((s) => {
+                if (s.id === ignoreSelf)
+                    return false;
+                if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
+                    return true;
+                return false;
+            });
+        if ((!type || type === `trail`) && includeTrails)
+            trails = this.ships
+                .filter((s) => {
+                if (s.id === ignoreSelf)
+                    return false;
+                if (ships.find((ship) => ship === s))
+                    return false;
+                for (let l of s.previousLocations) {
+                    if (dist_1.default.pointIsInsideCircle(center, l, radius))
+                        return true;
+                }
+                return false;
+            })
+                .map((s) => s.previousLocations);
         if (!type || type === `planet`)
             planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
         if (!type || type === `cache`)
@@ -96,7 +115,13 @@ class Game {
         if (!type || type === `attackRemnant`)
             attackRemnants = this.attackRemnants.filter((a) => dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
                 dist_1.default.pointIsInsideCircle(center, a.end, radius));
-        return { ships, planets, caches, attackRemnants };
+        return {
+            ships,
+            trails,
+            planets,
+            caches,
+            attackRemnants,
+        };
     }
     // ----- radii -----
     get gameSoftRadius() {
@@ -157,7 +182,7 @@ class Game {
         this.addAIShip({
             location: spawnPoint,
             name: `AI${`${Math.random().toFixed(3)}`.substring(2)}`,
-            loadout: `ai_default`,
+            loadout: `aiDefault`,
             level,
         });
         dist_1.default.log(`gray`, `Spawned level ${level} AI at ${spawnPoint}.`);
@@ -170,7 +195,7 @@ class Game {
             return existing;
         }
         dist_1.default.log(`gray`, `Adding human ship ${data.name} to game`);
-        data.loadout = `human_default`;
+        data.loadout = `humanDefault`;
         const newShip = new HumanShip_1.HumanShip(data, this);
         this.ships.push(newShip);
         if (save)
@@ -184,7 +209,7 @@ class Game {
             return existing;
         }
         dist_1.default.log(`gray`, `Adding AI ship ${data.name} to game`);
-        data.loadout = `ai_default`;
+        data.loadout = `aiDefault`;
         const newShip = new AIShip_1.AIShip(data, this);
         this.ships.push(newShip);
         if (save)

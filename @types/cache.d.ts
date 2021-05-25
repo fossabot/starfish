@@ -4,6 +4,7 @@ interface BaseCacheData {
   time?: number
   message?: string
   id?: string
+  droppedBy?: string
 }
 
 interface CacheContents {

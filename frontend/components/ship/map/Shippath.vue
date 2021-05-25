@@ -3,7 +3,7 @@
     v-if="zoom > 0.5"
     :color="color"
     :opacity="0.4"
-    :points="previousLocationsToUse"
+    :points="pointsToUse"
     :zoom="zoom"
     :FLAT_SCALE="FLAT_SCALE"
     :containerSizeMultiplier="containerSizeMultiplier"
@@ -22,21 +22,19 @@ export default {
     FLAT_SCALE: {},
     zoom: {},
     color: {},
-    previousLocations: {},
-    location: {},
+    points: {},
   },
   data(): ComponentShape {
     return {}
   },
   computed: {
     ...mapState([]),
-    previousLocationsToUse(this: ComponentShape) {
+    pointsToUse(this: ComponentShape) {
       return [
-        ...this.previousLocations.map((el: any) => [
+        ...this.points.map((el: any) => [
           el[0],
           el[1] * -1,
         ]),
-        this.location,
       ]
     },
   },

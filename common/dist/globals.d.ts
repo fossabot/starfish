@@ -1,8 +1,13 @@
 declare const _default: {
     GAME_NAME: string;
     TICK_INTERVAL: number;
+    M_PER_KM: number;
+    KM_PER_AU: number;
+    GRAVITY_RANGE: number;
+    GRAVITATIONAL_CONSTANT: number;
+    LIGHTSPEED: number;
     deltaTime: number;
-    arrivalThreshold: number;
+    ARRIVAL_THRESHOLD: number;
     levels: number[];
 };
 export default _default;

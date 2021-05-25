@@ -162,6 +162,40 @@ function default_1(socket) {
         });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}.`);
     });
+    socket.on(`crew:drop`, (shipId, crewId, cargoType, amount, message, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        if (cargoType === `credits`) {
+            if (crewMember.credits < amount)
+                return callback({
+                    error: `Not enough credits found.`,
+                });
+            crewMember.credits -= amount;
+        }
+        else {
+            const existingStock = crewMember.inventory.find((cargo) => cargo.type === cargoType);
+            if (!existingStock || existingStock.amount < amount)
+                return callback({
+                    error: `Not enough stock of that cargo found.`,
+                });
+            existingStock.amount -= amount;
+        }
+        const cache = __1.game.addCache({
+            location: [...ship.location],
+            contents: [{ type: cargoType, amount }],
+            droppedBy: ship.id,
+            message: dist_1.default.sanitize(message).result,
+        });
+        ship.logEntry(`${crewMember.name} dropped a cache containing ${amount}${cargoType === `credits` ? `` : ` tons of`} ${cargoType}.`);
+        callback({
+            data: dist_1.default.stubify(cache),
+        });
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} dropped ${amount} ${cargoType}.`);
+    });
     socket.on(`crew:buyRepair`, (shipId, crewId, hp, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

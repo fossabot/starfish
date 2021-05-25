@@ -13,6 +13,7 @@ export class Planet {
   readonly races: string[]
   readonly repairCostMultiplier: number
   readonly radius: number
+  mass = 5.974e30
 
   constructor(
     {

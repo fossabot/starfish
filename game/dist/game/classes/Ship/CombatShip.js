@@ -31,7 +31,7 @@ class CombatShip extends Ship_1.Ship {
             this.weapons.pop();
         while (this.engines.length)
             this.engines.pop();
-        this.equipLoadout(`human_default`);
+        this.equipLoadout(`humanDefault`);
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
@@ -138,8 +138,7 @@ class CombatShip extends Ship_1.Ship {
                 }
             }
         }
-        this.toUpdate.weapons = dist_1.default.stubify(this.weapons);
-        this.toUpdate.engines = dist_1.default.stubify(this.engines);
+        this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
         const didDie = previousHp > 0 && this.hp <= 0;
         if (didDie) {
             // ----- notify listeners -----

@@ -9,7 +9,12 @@
       :cx="location[0] * FLAT_SCALE"
       :cy="location[1] * FLAT_SCALE"
       :r="scaledRadius"
-      :fill="color || 'white'"
+      :fill="strokeWidth ? 'none' : color || 'white'"
+      :stroke="strokeWidth ? color || 'white' : 'none'"
+      :stroke-width="scaledStrokeWidth"
+      :stroke-dasharray="
+        dash ? scaledDash + ' ' + scaledDash : ''
+      "
       :mask="mask ? 'url(#sightMask)' : ''"
     />
     <rect
@@ -18,7 +23,12 @@
       :y="location[1] * FLAT_SCALE - scaledRadius"
       :width="scaledRadius * 2"
       :height="scaledRadius * 2"
-      :fill="color || 'white'"
+      :fill="strokeWidth ? 'none' : color || 'white'"
+      :stroke="strokeWidth ? color || 'white' : 'none'"
+      :stroke-width="scaledStrokeWidth"
+      :stroke-dasharray="
+        dash ? scaledDash + ' ' + scaledDash : ''
+      "
       :mask="mask ? 'url(#sightMask)' : ''"
     />
     <text
@@ -56,6 +66,8 @@ export default {
     radius: { default: 0.00001 },
     minSize: { default: 3 },
     color: {},
+    strokeWidth: {},
+    dash: {},
     label: {},
     circle: { default: true },
     zoom: { default: 1 },
@@ -73,6 +85,20 @@ export default {
             this.containerSizeMultiplier,
           this.radius,
         ) * this.FLAT_SCALE
+      )
+    },
+    scaledStrokeWidth(this: ComponentShape) {
+      if (!this.strokeWidth) return
+      return (
+        (this.strokeWidth / this.zoom) *
+        this.containerSizeMultiplier
+      )
+    },
+    scaledDash(this: ComponentShape) {
+      if (!this.dash) return
+      return (
+        (this.dash / this.zoom) *
+        this.containerSizeMultiplier
       )
     },
   },

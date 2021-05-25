@@ -92,8 +92,12 @@
           }}
         </div>
         <div>
-          Sight Radius:
-          {{ ship && ship.radii.sight }} AU
+          Sight:
+          {{ (ship && ship.radii.sight) || 0 }} AU
+        </div>
+        <div>
+          Broadcast:
+          {{ (ship && ship.radii.broadcast) || 0 }} AU
         </div>
         <div>
           Captain:
@@ -112,6 +116,10 @@
               ship.crewMembers &&
               ship.crewMembers.length
           }}
+        </div>
+        <div>
+          Species:
+          {{ ship && ship.species }}
         </div>
         <div>
           Faction:
@@ -177,7 +185,7 @@ export default {
 
 <style lang="scss" scoped>
 .ship {
-  width: 220px;
+  width: 230px;
   position: relative;
 }
 

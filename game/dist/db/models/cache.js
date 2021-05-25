@@ -12,6 +12,7 @@ const cacheSchemaFields = {
     location: [{ type: Number, required: true }],
     message: { type: String, default: `` },
     contents: [{ type: { type: String }, amount: Number }],
+    droppedBy: String,
 };
 const cacheSchema = new mongoose_1.Schema(cacheSchemaFields);
 const DBCache = mongoose_1.model(`DBCache`, cacheSchema);

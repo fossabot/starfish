@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Item = void 0;
+const dist_1 = __importDefault(require("../../../../../common/dist"));
 class Item {
     constructor({ type, id, displayName, description, repair, maxHp, hp, }, ship, props) {
         this.repair = 1;
@@ -25,7 +29,7 @@ class Item {
         this.repair = newHp / this.maxHp;
     }
     use() {
-        this.repair -= 0.00005;
+        this.repair -= 0.00005 * dist_1.default.gameSpeedMultiplier;
         if (this.repair < 0)
             this.repair = 0;
         this.ship.toUpdate._hp = this.ship.hp;

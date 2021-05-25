@@ -31,13 +31,11 @@ class AIShip extends CombatShip_1.CombatShip {
             game.factions.find((f) => f.ai === true) || false;
     }
     tick() {
+        super.tick();
         if (this.dead)
             return;
-        super.tick();
         // ----- move -----
         this.move();
-        if (this.obeysGravity)
-            this.applyTickOfGravity();
         this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, `ship`);
         // recharge weapons
         this.weapons.forEach((w) => (w.cooldownRemaining -=
@@ -70,9 +68,9 @@ class AIShip extends CombatShip_1.CombatShip {
             .filter((e) => e.repair > 0)
             .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
         if (!(Math.abs(this.location[0] - this.targetLocation[0]) <
-            dist_1.default.arrivalThreshold / 2 &&
+            dist_1.default.ARRIVAL_THRESHOLD / 2 &&
             Math.abs(this.location[1] - this.targetLocation[1]) <
-                dist_1.default.arrivalThreshold / 2)) {
+                dist_1.default.ARRIVAL_THRESHOLD / 2)) {
             const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, this.targetLocation));
             const thrustMagnitude = dist_1.default.getThrustMagnitudeForSingleCrewMember(this.level, engineThrustMultiplier);
             this.location[0] +=
@@ -85,7 +83,7 @@ class AIShip extends CombatShip_1.CombatShip {
                     (dist_1.default.deltaTime / 1000);
         }
         // ----- set new target location -----
-        if (Math.random() < 0.01) {
+        if (Math.random() < 0.03) {
             const distance = (Math.random() * this.level) / 7;
             const currentAngle = dist_1.default.angleFromAToB(this.location, this.targetLocation);
             const possibleAngles = [
@@ -98,7 +96,7 @@ class AIShip extends CombatShip_1.CombatShip {
                 return diff > 1 && diff < 179;
             });
             const angleToHome = dist_1.default.angleFromAToB(this.location, this.spawnPoint);
-            const chosenAngle = dist_1.default.coinFlip()
+            const chosenAngle = Math.random() > 1
                 ? dist_1.default.randomFromArray(possibleAngles)
                 : possibleAngles.reduce((lowest, a) => dist_1.default.angleDifference(angleToHome, a) <
                     dist_1.default.angleDifference(angleToHome, lowest)

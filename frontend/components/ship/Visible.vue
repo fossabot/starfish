@@ -26,13 +26,16 @@
             :style="{ color: visibleShip.faction.color }"
             >🚀{{ visibleShip.name }}</span
           >
-          <span v-if="visibleShip.distance > 0.001">
+          <div
+            class="inline"
+            v-if="visibleShip.distance > 0.001"
+          >
             (<AngleArrow :angle="visibleShip.angle" />
             {{
               Math.round(visibleShip.distance * 1000) /
                 1000
             }}AU)
-          </span>
+          </div>
           <span v-else>
             (Here)
           </span>
@@ -47,13 +50,16 @@
           <span :style="{ color: visiblePlanet.color }"
             >🪐{{ visiblePlanet.name }}</span
           >
-          <span v-if="visiblePlanet.distance > 0.001">
+          <div
+            class="inline"
+            v-if="visiblePlanet.distance > 0.001"
+          >
             (<AngleArrow :angle="visiblePlanet.angle" />
             {{
               Math.round(visiblePlanet.distance * 1000) /
                 1000
             }}AU)
-          </span>
+          </div>
           <span v-else>
             (Here)
           </span>
@@ -65,7 +71,9 @@
           )"
           :key="'visibleCache' + visibleCache.id"
         >
-          📦(<AngleArrow :angle="visibleCache.angle" />
+          📦Cache (<AngleArrow
+            :angle="visibleCache.angle"
+          />
           {{
             Math.round(visibleCache.distance * 1000) / 1000
           }}AU)
@@ -129,6 +137,6 @@ export default {
 <style lang="scss" scoped>
 .visiblepane {
   position: relative;
-  width: 250px;
+  width: 260px;
 }
 </style>

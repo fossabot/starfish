@@ -76,6 +76,14 @@ interface IOClientEvents {
     data: BaseCrewMemberData,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
+  [`crew:drop`]: (
+    shipId: string,
+    crewId: string,
+    cargoType: CargoType | `credits`,
+    amount: number,
+    message: string,
+    callback: (res: IOResponse<CacheStub>) => void,
+  ) => void
   [`crew:buy`]: (
     shipId: string,
     crewId: string,
@@ -114,6 +122,11 @@ interface IOClientEvents {
   [`ship:respawn`]: (
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:broadcast`]: (
+    id: string,
+    message: string,
+    callback: (res: IOResponse<number>) => void,
   ) => void
 }
 

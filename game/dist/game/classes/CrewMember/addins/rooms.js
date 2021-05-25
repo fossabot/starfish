@@ -32,8 +32,7 @@ function repair(repairAmount) {
         itemsToRepair.push(repairableItems.reduce((mostBroken, ri) => ri.repair < mostBroken.repair ? ri : mostBroken, repairableItems[0]));
     const amountToRepair = repairAmount ||
         (dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) *
-            dist_1.default.deltaTime) /
-            dist_1.default.TICK_INTERVAL /
+            (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL)) /
             itemsToRepair.length;
     // c.log(
     //   this.repairPriority,
@@ -64,7 +63,9 @@ function weapons() {
     // ----- charge weapons -----
     const chargeableWeapons = this.ship.weapons.filter((w) => w.cooldownRemaining > 0);
     if (chargeableWeapons.length) {
-        const amountToReduceCooldowns = dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) / chargeableWeapons.length;
+        const amountToReduceCooldowns = (dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) *
+            dist_1.default.gameSpeedMultiplier) /
+            chargeableWeapons.length;
         chargeableWeapons.forEach((cw) => {
             cw.cooldownRemaining -= amountToReduceCooldowns;
             if (cw.cooldownRemaining < 0)

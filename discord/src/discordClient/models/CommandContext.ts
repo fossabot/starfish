@@ -25,6 +25,7 @@ export class CommandContext {
 
   readonly dm: boolean
 
+  readonly isServerAdmin: boolean
   readonly isGameAdmin: boolean
 
   readonly guild: Guild | null
@@ -51,6 +52,10 @@ export class CommandContext {
     this.initialMessage = message
     this.guild = message.guild
     this.dm = message.channel.type === `dm`
+    this.isServerAdmin =
+      message.guild?.members.cache
+        .find((m) => m.id === message.author.id)
+        ?.permissions.has(`BAN_MEMBERS`) || false
     this.isGameAdmin = [
       `244651135984467968`,
       `395634705120100367`,
@@ -71,6 +76,7 @@ export class CommandContext {
           guild: this.guild,
         }))
     }
+
     // otherwise send back to the channel we got the message in in the first place
     if (
       !channel &&
@@ -85,5 +91,9 @@ export class CommandContext {
       this.channels[channelType] = channel
       channel.send(message)
     }
+  }
+
+  async reactToInitialMessage(emoji: string) {
+    await this.initialMessage.react(emoji).catch(c.log)
   }
 }

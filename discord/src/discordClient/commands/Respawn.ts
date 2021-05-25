@@ -6,8 +6,6 @@ import { respawn } from '../../ioInterface/ship'
 export class RespawnCommand implements Command {
   commandNames = [`r`, `respawn`]
 
-  targetChannel: GameChannelType = `alert`
-
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []
     return `Use ${commandPrefix}respawn to get your crew a new ship once you've died.`

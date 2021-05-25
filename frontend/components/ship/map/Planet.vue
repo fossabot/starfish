@@ -15,7 +15,6 @@
         :minSize="minSizeAdjustedForActualSize * 8"
         :radius="radius * 4"
         :color="`url('#${name}')`"
-        :z="1"
         :zoom="zoom"
         :view="view"
         :FLAT_SCALE="FLAT_SCALE"
@@ -30,7 +29,6 @@
       :radius="radius"
       :color="color"
       :label="name"
-      :z="2"
       :zoom="zoom"
       :view="view"
       :FLAT_SCALE="FLAT_SCALE"
@@ -39,10 +37,24 @@
       :containerSizeMultiplier="containerSizeMultiplier"
       :mask="false"
     />
+
+    <ShipMapPoint
+      :location="location"
+      :minSize="0"
+      :radius="c.ARRIVAL_THRESHOLD"
+      :color="color"
+      :strokeWidth="0.12"
+      :dash="3"
+      :zoom="zoom"
+      :view="view"
+      :FLAT_SCALE="FLAT_SCALE"
+      :containerSizeMultiplier="containerSizeMultiplier"
+    />
   </g>
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -62,6 +74,7 @@ export default {
   },
   data(): ComponentShape {
     return {
+      c,
       hovering: false,
       earthRadiusInAU: 6371 / 149597900,
     }

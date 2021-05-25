@@ -7,7 +7,7 @@ import { Active } from './Active'
 import type { CombatShip } from '../Ship/CombatShip'
 
 export class CrewMember {
-  static readonly passiveStaminaLossPerSecond = 0.0001
+  static readonly passiveStaminaLossPerSecond = 0.00005
   static readonly levelXPNumbers = c.levels
 
   readonly id: string
@@ -149,12 +149,19 @@ export class CrewMember {
       )
   }
 
-  addCargo(type: CargoType, amount: number) {
+  addCargo(type: CargoType, amount: number): number {
+    const canHold = this.maxCargoWeight - this.heldWeight
     const existingStock = this.inventory.find(
       (cargo) => cargo.type === type,
     )
-    if (existingStock) existingStock.amount += amount
-    else this.inventory.push({ type, amount })
+    if (existingStock)
+      existingStock.amount += Math.min(canHold, amount)
+    else
+      this.inventory.push({
+        type,
+        amount: Math.min(canHold, amount),
+      })
+    return Math.max(0, amount - canHold)
   }
 
   get heldWeight() {

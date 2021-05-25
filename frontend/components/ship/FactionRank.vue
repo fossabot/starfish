@@ -32,6 +32,5 @@ export default {
 .factionrank {
   width: 260px;
   position: relative;
-  grid-column: span 2;
 }
 </style>

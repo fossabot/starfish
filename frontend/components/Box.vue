@@ -38,15 +38,6 @@ export default {
   },
   watch: {
     minimized() {
-      this.$nextTick(() => {
-        new this.$masonry('#masonrycontainer', {
-          itemSelector: '.grid-item',
-          columnWidth: 1,
-          gutter: 0,
-          fitWidth: true,
-        })
-      })
-
       const existing: string[] = JSON.parse(
         storage.get('minimizedPanes') || '[]',
       )
@@ -87,7 +78,7 @@ export default {
 
 <style lang="scss" scoped>
 .boxholder {
-  padding: 0.5em;
+  padding: 0.7em;
 }
 .box {
   position: relative;
@@ -101,8 +92,8 @@ export default {
     width: 100%;
     padding-top: 2px;
     height: 20px;
-    background: var(--text);
-    color: var(--bg);
+    background: var(--pane-border);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -110,8 +101,8 @@ export default {
     line-height: 1;
     text-transform: uppercase;
     padding-left: 0.5rem;
-    box-shadow: inset 0 0 0 1px var(--text),
-      0 0 0 1px var(--text);
+    box-shadow: inset 0 0 0 1px var(--pane-border),
+      0 0 0 1px var(--pane-border);
     z-index: 4;
   }
 
@@ -122,10 +113,10 @@ export default {
     display: inline-flex;
     flex-direction: column;
 
-    // box-shadow: inset 0 1px 0 1px var(--text);
-    border: 1px solid var(--text);
+    // box-shadow: inset 0 1px 0 1px var(--pane-border);
+    border: 1px solid var(--pane-border);
     border-top: none;
-    // border-bottom: 0.5px solid var(--text);
+    // border-bottom: 0.5px solid var(--pane-border);
   }
 }
 

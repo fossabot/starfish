@@ -5,7 +5,6 @@ const crew_1 = require("../../ioInterface/crew");
 class JoinCommand {
     constructor() {
         this.commandNames = [`j`, `join`, `add`];
-        this.targetChannel = `alert`;
     }
     getHelpMessage(commandPrefix) {
         this.commandNames = [];

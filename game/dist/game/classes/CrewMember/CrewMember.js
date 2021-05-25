@@ -136,11 +136,16 @@ class CrewMember {
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
     }
     addCargo(type, amount) {
+        const canHold = this.maxCargoWeight - this.heldWeight;
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)
-            existingStock.amount += amount;
+            existingStock.amount += Math.min(canHold, amount);
         else
-            this.inventory.push({ type, amount });
+            this.inventory.push({
+                type,
+                amount: Math.min(canHold, amount),
+            });
+        return Math.max(0, amount - canHold);
     }
     get heldWeight() {
         return this.inventory.reduce((total, i) => total + i.amount, 0);
@@ -175,6 +180,6 @@ class CrewMember {
     }
 }
 exports.CrewMember = CrewMember;
-CrewMember.passiveStaminaLossPerSecond = 0.0001;
+CrewMember.passiveStaminaLossPerSecond = 0.00005;
 CrewMember.levelXPNumbers = dist_1.default.levels;
 //# sourceMappingURL=CrewMember.js.map

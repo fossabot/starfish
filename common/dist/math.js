@@ -3,6 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function lerp(v0 = 0, v1 = 0, t = 0) {
     return v0 * (1 - t) + v1 * t;
 }
+// roundTo:
+// @param number (number) Initial number
+// @param decimalPlaces (number) Number of decimal places to round to
+// @param floor? (boolean) If true, uses floor instead of round.
+//
+function r2(// "round to"
+number, decimalPlaces = 2, floor) {
+    if (floor)
+        return (Math.floor(number * 10 ** decimalPlaces) /
+            10 ** decimalPlaces);
+    return (Math.round(number * 10 ** decimalPlaces) /
+        10 ** decimalPlaces);
+}
 function radiansToDegrees(radians = 0) {
     return (180 * radians) / Math.PI;
 }
@@ -80,6 +93,7 @@ function randomInRange(a, b) {
 }
 exports.default = {
     lerp,
+    r2,
     radiansToDegrees,
     degreesToRadians,
     distance,

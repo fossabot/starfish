@@ -3,7 +3,7 @@ import type { HumanShip } from '../Ship/HumanShip';
 import { Active } from './Active';
 import type { CombatShip } from '../Ship/CombatShip';
 export declare class CrewMember {
-    static readonly passiveStaminaLossPerSecond = 0.0001;
+    static readonly passiveStaminaLossPerSecond = 0.00005;
     static readonly levelXPNumbers: number[];
     readonly id: string;
     readonly ship: HumanShip;
@@ -32,7 +32,7 @@ export declare class CrewMember {
     bunkAction: typeof roomActions.bunk;
     tick(): void;
     addXp(skill: SkillName, xp?: number): void;
-    addCargo(type: CargoType, amount: number): void;
+    addCargo(type: CargoType, amount: number): number;
     get heldWeight(): number;
     addStat(statname: StatKey, amount: number): void;
     get tired(): boolean;

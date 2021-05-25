@@ -1,14 +1,13 @@
 import type { Game } from '../../Game';
 import type { Faction } from '../Faction';
-import type { Engine } from '../Item/Engine';
+import { Engine } from '../Item/Engine';
 import type { Item } from '../Item/Item';
-import type { Weapon } from '../Item/Weapon';
+import { Weapon } from '../Item/Weapon';
 import type { Planet } from '../Planet';
 import type { Cache } from '../Cache';
 import type { AttackRemnant } from '../AttackRemnant';
 import type { CrewMember } from '../CrewMember/CrewMember';
 import type { CombatShip } from './CombatShip';
-import { addWeapon, addEngine, removeItem, equipLoadout } from './addins/items';
 export declare class Ship {
     static maxPreviousLocations: number;
     readonly name: string;
@@ -29,8 +28,7 @@ export declare class Ship {
         attackRemnants: AttackRemnant[];
     };
     readonly seenPlanets: Planet[];
-    readonly weapons: Weapon[];
-    readonly engines: Engine[];
+    readonly items: Item[];
     readonly previousLocations: CoordinatePair[];
     id: string;
     location: CoordinatePair;
@@ -42,14 +40,15 @@ export declare class Ship {
     _maxHp: number;
     dead: boolean;
     obeysGravity: boolean;
-    constructor({ name, faction, weapons, engines, loadout, seenPlanets, location, previousLocations, }: BaseShipData, game: Game);
+    mass: number;
+    constructor({ name, faction, items, loadout, seenPlanets, location, previousLocations, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
-    get items(): Item[];
-    addWeapon: typeof addWeapon;
-    addEngine: typeof addEngine;
-    removeItem: typeof removeItem;
-    equipLoadout: typeof equipLoadout;
+    get engines(): Engine[];
+    get weapons(): Weapon[];
+    addItem(this: Ship, itemData: Partial<BaseItemData>): boolean;
+    removeItem(this: Ship, item: Item): boolean;
+    equipLoadout(this: Ship, name: LoadoutName): boolean;
     updateSightRadius(): void;
     lastMoveAngle: number;
     get canMove(): boolean;

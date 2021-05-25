@@ -1,5 +1,5 @@
 export const weapons: {
-  [key in WeaponType]?: BaseWeaponData
+  [key in WeaponId]?: BaseWeaponData
 } = {}
 
 weapons.cannon = {

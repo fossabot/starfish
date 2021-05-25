@@ -70,7 +70,7 @@
         </button> </span
       ><span
         v-for="cache in cachesToShow"
-        :key="'gotocache' + cache.location"
+        :key="'gotocache' + cache.id"
       >
         <button
           @click="setTarget(cache.location)"
@@ -135,8 +135,9 @@ export default {
     },
     activeEngines(this: ComponentShape) {
       return (
-        this.ship?.engines.filter(
-          (e: EngineStub) => (e.repair || 0) > 0,
+        this.ship?.items.filter(
+          (e: ItemStub) =>
+            e.type === 'engine' && (e.repair || 0) > 0,
         ) || []
       )
     },

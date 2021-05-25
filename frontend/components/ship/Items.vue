@@ -5,9 +5,9 @@
         <span class="sectionemoji">🛠</span>Ship Equipment
       </template>
 
-      <div class="panesection" v-if="ship.weapons">
+      <div class="panesection" v-if="weapons">
         <div class="panesubhead">Weapons</div>
-        <div v-for="i in ship.weapons">
+        <div v-for="i in weapons">
           {{ i.displayName }}
           <div>
             <ProgressBar
@@ -52,9 +52,34 @@
         </div>
       </div>
 
-      <div class="panesection" v-if="ship.engines">
+      <div class="panesection" v-if="engines">
         <div class="panesubhead">Engines</div>
-        <div v-for="i in ship.engines">
+        <div v-for="i in engines">
+          {{ i.displayName }}
+          <div>
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
+              <div>
+                🇨🇭HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
+              </div>
+            </ProgressBar>
+          </div>
+        </div>
+      </div>
+
+      <div class="panesection" v-if="other">
+        <div class="panesubhead">Other Items</div>
+        <div v-for="i in other">
           {{ i.displayName }}
           <div>
             <ProgressBar
@@ -92,6 +117,22 @@ export default {
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    engines(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'engine',
+      )
+    },
+    weapons(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'weapon',
+      )
+    },
+    other(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) =>
+          i.type !== 'engine' && i.type !== 'weapon',
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

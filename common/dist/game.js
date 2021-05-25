@@ -5,8 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
-const gameSpeedMultiplier = 10;
+const gameSpeedMultiplier = 24;
 const baseRepairCost = 100;
+const maxBroadcastLength = 200;
 function getThrustMagnitudeForSingleCrewMember(skill = 1, engineThrustMultiplier = 1) {
     return (math_1.default.lerp(0.00001, 0.0001, skill / 100) *
         engineThrustMultiplier *
@@ -14,7 +15,7 @@ function getThrustMagnitudeForSingleCrewMember(skill = 1, engineThrustMultiplier
 }
 function getRepairAmountPerTickForSingleCrewMember(skill) {
     return ((skill / globals_1.default.TICK_INTERVAL) *
-        0.3 *
+        0.1 *
         gameSpeedMultiplier);
 }
 function getStaminaGainPerTickForSingleCrewMember() {
@@ -34,6 +35,7 @@ function stubify(prop, disallowPropName) {
     const gettersIncluded = { ...prop };
     const proto = Object.getPrototypeOf(prop);
     const getKeyValue = (key) => (obj) => obj[key];
+    // c.log(Object.getOwnPropertyNames(proto))
     for (const key of Object.getOwnPropertyNames(proto)) {
         const desc = Object.getOwnPropertyDescriptor(proto, key);
         const hasGetter = desc && typeof desc.get === `function`;
@@ -68,6 +70,7 @@ function stubify(prop, disallowPropName) {
 exports.default = {
     gameSpeedMultiplier,
     baseRepairCost,
+    maxBroadcastLength,
     getRepairAmountPerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,

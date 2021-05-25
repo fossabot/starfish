@@ -31,7 +31,7 @@ export class LanguageFilter {
           ? this.replaceWord(word)
           : word
       })
-      .join(this.splitRegex.exec(string)![0])
+      .join(this.splitRegex.exec(string)?.[0] || ``)
   }
 }
 

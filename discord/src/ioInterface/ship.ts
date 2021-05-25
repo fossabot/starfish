@@ -81,17 +81,22 @@ export async function respawn(
   return shipStub
 }
 
-export async function channelUpdate(
+export async function broadcast(
   guildId: string,
-  channelType: GameChannelType,
-  channelId: string,
-) {
-  if (!(await connected())) return null
+  message: string,
+): Promise<IOResponseReceived<number>> {
+  if (!(await connected())) return { error: `` }
 
-  io.emit(
-    `ship:channelUpdate`,
-    guildId,
-    channelType,
-    channelId,
-  )
+  const result: IOResponseReceived<number> =
+    await new Promise((resolve) => {
+      io.emit(
+        `ship:broadcast`,
+        guildId,
+        message,
+        (res: IOResponseReceived<number>) => {
+          resolve(res)
+        },
+      )
+    })
+  return result
 }

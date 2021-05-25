@@ -1,120 +1,134 @@
 <template>
-  <Box class="planet">
-    <template #title>
+  <Box class="planet" v-show="ship.planet">
+    <template #title v-if="ship.planet">
       <span class="sectionemoji">🪐</span>Current Planet:
       {{ ship.planet.name }}
     </template>
     <div class="panesection">
       <div
         class="panesection flex-column flex-center"
-        :style="{ '--highlight-color': ship.planet.color }"
+        :style="{
+          '--highlight-color': ship.planet.color,
+        }"
       >
         <div>
           Welcome to
           <b>{{ ship.planet.name }}!</b>
         </div>
         <div class="sub" v-if="ship.planet.races">
-          Homeworld of {{ ship.planet.races.join(' and ') }}
+          Homeworld of
+          {{ ship.planet.races.join(' and ') }}
         </div>
         <div class="sub">
           Population
           {{
             c.numberWithCommas(
-              (ship.planet.name
-                .split('')
-                .reduce((t, c) => t + c.charCodeAt(0), 0) %
-                1000) **
+              (ship.planet &&
+                ship.planet.name
+                  .split('')
+                  .reduce(
+                    (t, c) => t + c.charCodeAt(0),
+                    0,
+                  ) % 1000) **
                 2 *
-                ship.planet.radius,
+                ship.planet.radius || 0,
             )
           }}
         </div>
       </div>
     </div>
-    <div
-      class="panesection"
-      v-if="ship.planet.vendor && ship.planet.vendor.cargo"
-    >
-      <div class="panesubhead">Merchant District</div>
-
-      <div class="panesection" v-if="buyableCargo">
-        <div><div class="panesubhead">Buy</div></div>
-        <span
-          v-for="c in buyableCargo"
-          :key="'buycargo' + c.cargoData.type"
-        >
-          <button
-            :disabled="!c.canBuy"
-            @click="buyCargo(c)"
-          >
-            <b>{{ c.cargoData.name }}</b>
-            <div>
-              💳{{
-                Math.round(c.pricePerUnit * 10000) / 10000
-              }}/ton
-            </div>
-          </button>
-        </span>
-      </div>
-
-      <div class="panesection" v-if="sellableCargo">
-        <div><div class="panesubhead">Sell</div></div>
-        <span
-          v-for="c in sellableCargo"
-          :key="'sellcargo' + c.cargoData.type"
-        >
-          <button
-            :disabled="!c.canSell"
-            @click="sellCargo(c)"
-          >
-            <b>{{ c.cargoData.name }}</b>
-            <div>
-              💳{{
-                Math.round(c.pricePerUnit * 10000) / 10000
-              }}/ton
-            </div>
-            <div class="sub">
-              (You have
-              {{ Math.floor(c.heldAmount * 1000) / 1000 }})
-            </div>
-          </button>
-        </span>
-      </div>
-    </div>
-
-    <div
-      class="panesection"
-      v-if="ship.planet.repairCostMultiplier"
-    >
-      <div>
-        <div class="panesubhead">Mechanics' Quarter</div>
-      </div>
-      <button
-        v-for="count in repairOptions"
-        :disabled="
-          crewMember.credits <
-            c.baseRepairCost *
-              ship.planet.repairCostMultiplier *
-              count || repairableHp < count
+    <template v-if="ship.planet">
+      <div
+        class="panesection"
+        v-if="
+          ship.planet.vendor && ship.planet.vendor.cargo
         "
-        @click="repair(count)"
       >
-        🇨🇭{{ Math.round(count * 100) / 100 }}: 💳{{
-          Math.round(
-            c.baseRepairCost *
-              ship.planet.repairCostMultiplier *
-              count *
-              100,
-          ) / 100
-        }}
-      </button>
-    </div>
+        <div class="panesubhead">Merchant District</div>
 
-    <div class="panesection">
-      <div class="sub">
-        You cannot be attacked while on a planet.
+        <div class="panesection" v-if="buyableCargo">
+          <div><div class="panesubhead">Buy</div></div>
+          <span
+            v-for="c in buyableCargo"
+            :key="'buycargo' + c.cargoData.type"
+          >
+            <button
+              :disabled="!c.canBuy"
+              @click="buyCargo(c)"
+            >
+              <b>{{ c.cargoData.name }}</b>
+              <div>
+                💳{{
+                  Math.round(c.pricePerUnit * 10000) /
+                    10000
+                }}/ton
+              </div>
+            </button>
+          </span>
+        </div>
+
+        <div class="panesection" v-if="sellableCargo">
+          <div><div class="panesubhead">Sell</div></div>
+          <span
+            v-for="c in sellableCargo"
+            :key="'sellcargo' + c.cargoData.type"
+          >
+            <button
+              :disabled="!c.canSell"
+              @click="sellCargo(c)"
+            >
+              <b>{{ c.cargoData.name }}</b>
+              <div>
+                💳{{
+                  Math.round(c.pricePerUnit * 10000) /
+                    10000
+                }}/ton
+              </div>
+              <div class="sub">
+                (You have
+                {{
+                  Math.floor(c.heldAmount * 1000) / 1000
+                }})
+              </div>
+            </button>
+          </span>
+        </div>
       </div>
-    </div>
+
+      <div
+        class="panesection"
+        v-if="ship.planet.repairCostMultiplier"
+      >
+        <div>
+          <div class="panesubhead">Mechanics' Quarter</div>
+        </div>
+        <button
+          v-for="count in repairOptions"
+          :disabled="
+            crewMember.credits <
+              c.baseRepairCost *
+                ship.planet.repairCostMultiplier *
+                count || repairableHp < count
+          "
+          @click="repair(count)"
+        >
+          🇨🇭{{ Math.round(count * 100) / 100 }}: 💳{{
+            Math.round(
+              c.baseRepairCost *
+                ship.planet.repairCostMultiplier *
+                count *
+                100,
+            ) / 100
+          }}
+        </button>
+      </div>
+
+      <div class="panesection">
+        <div class="sub">
+          You cannot be attacked while on a planet.
+        </div>
+      </div>
+    </template>
   </Box>
 </template>
 

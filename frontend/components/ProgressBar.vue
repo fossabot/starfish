@@ -57,9 +57,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  border: 1px solid var(--text);
+  border-top: 1px solid var(--pane-border);
+  border-left: 1px solid var(--pane-border);
   border-bottom: 0;
-  box-shadow: 0 1px 0 0 var(--text), 0.5px 0 0 0 var(--text);
+  box-shadow: 0 1px 0 0 var(--pane-border),
+    0.5px 0 0 0 var(--pane-border);
 
   &.mini .label {
     padding-top: 0.1em;

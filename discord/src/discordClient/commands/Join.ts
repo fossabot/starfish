@@ -6,8 +6,6 @@ import { add } from '../../ioInterface/crew'
 export class JoinCommand implements Command {
   commandNames = [`j`, `join`, `add`]
 
-  targetChannel: GameChannelType = `alert`
-
   getHelpMessage(commandPrefix: string): string {
     this.commandNames = []
     return `Use ${commandPrefix}join to join your server's ship.`

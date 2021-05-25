@@ -15,7 +15,10 @@ export declare class HumanShip extends CombatShip {
     tick(): void;
     logEntry(text: string, level?: LogLevel): void;
     move(toLocation?: CoordinatePair): void;
+    updatePlanet(): void;
+    applyTickOfGravity(): void;
     addCommonCredits(amount: number, member: CrewMember): void;
+    broadcast(message: string): number;
     addRoom(room: CrewLocation): void;
     removeRoom(room: CrewLocation): void;
     addCrewMember(data: BaseCrewMemberData): CrewMember;

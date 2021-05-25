@@ -4,7 +4,7 @@ import type { Ship } from '../Ship/Ship'
 import { Item } from './Item'
 
 export class Engine extends Item {
-  readonly id: EngineType
+  readonly id: EngineId
   readonly thrustAmplification: number
 
   constructor(

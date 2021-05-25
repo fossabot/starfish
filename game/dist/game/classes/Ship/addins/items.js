@@ -13,7 +13,7 @@ function addWeapon(id, props) {
     if (!baseData)
         return false;
     const item = new Weapon_1.Weapon(baseData, this, props);
-    this.weapons.push(item);
+    this.items.push(item);
     this.recalculateMaxHp();
     this.toUpdate.attackRadius = this.radii.attack;
     return true;
@@ -24,20 +24,20 @@ function addEngine(id, props) {
     if (!baseData)
         return false;
     const item = new Engine_1.Engine(baseData, this, props);
-    this.engines.push(item);
+    this.items.push(item);
     this.recalculateMaxHp();
     return true;
 }
 exports.addEngine = addEngine;
 function removeItem(item) {
-    const weaponIndex = this.weapons.findIndex((w) => w === item);
+    const weaponIndex = this.items.findIndex((w) => w === item);
     if (weaponIndex !== -1) {
-        this.weapons.splice(weaponIndex, 1);
+        this.items.splice(weaponIndex, 1);
         return true;
     }
-    const engineIndex = this.engines.findIndex((e) => e === item);
+    const engineIndex = this.items.findIndex((e) => e === item);
     if (engineIndex !== -1) {
-        this.engines.splice(engineIndex, 1);
+        this.items.splice(engineIndex, 1);
         return true;
     }
     this.recalculateMaxHp();

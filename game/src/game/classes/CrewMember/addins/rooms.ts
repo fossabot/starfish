@@ -52,8 +52,7 @@ export function repair(
     (c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
     ) *
-      c.deltaTime) /
-      c.TICK_INTERVAL /
+      (c.deltaTime / c.TICK_INTERVAL)) /
       itemsToRepair.length
 
   // c.log(
@@ -61,7 +60,6 @@ export function repair(
   //   amountToRepair,
   //   itemsToRepair.map((i) => i.type),
   // )
-
   itemsToRepair.forEach((ri) => {
     const previousRepair = ri.repair
     ri.repair = (ri.hp + amountToRepair) / ri.maxHp
@@ -90,9 +88,11 @@ export function weapons(this: CrewMember): void {
   )
   if (chargeableWeapons.length) {
     const amountToReduceCooldowns =
-      c.getWeaponCooldownReductionPerTick(
+      (c.getWeaponCooldownReductionPerTick(
         this.munitions?.level || 1,
-      ) / chargeableWeapons.length
+      ) *
+        c.gameSpeedMultiplier) /
+      chargeableWeapons.length
     chargeableWeapons.forEach((cw) => {
       cw.cooldownRemaining -= amountToReduceCooldowns
       if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0

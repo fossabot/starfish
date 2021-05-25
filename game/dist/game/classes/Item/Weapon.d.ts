@@ -1,7 +1,7 @@
 import type { Ship } from '../Ship/Ship';
 import { Item } from './Item';
 export declare class Weapon extends Item {
-    readonly id: WeaponType;
+    readonly id: WeaponId;
     readonly range: number;
     readonly damage: number;
     lastUse: number;

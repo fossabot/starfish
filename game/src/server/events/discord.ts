@@ -34,4 +34,17 @@ export default function (
       })
     }
   })
+
+  socket.on(
+    `ship:broadcast`,
+    (shipId, message, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const broadcastRes = ship.broadcast(message)
+      callback({ data: broadcastRes })
+    },
+  )
 }

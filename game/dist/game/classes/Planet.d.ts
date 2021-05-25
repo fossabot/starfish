@@ -10,6 +10,7 @@ export declare class Planet {
     readonly races: string[];
     readonly repairCostMultiplier: number;
     readonly radius: number;
+    mass: number;
     constructor({ name, color, location, vendor, faction, races, repairCostMultiplier, radius, }: BasePlanetData, game: Game);
     identify(): void;
     shipsAt(): import("./Ship/HumanShip").HumanShip[];

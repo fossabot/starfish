@@ -46,10 +46,8 @@ export default {
         blackout: this.blackout,
         buffer: this.buffer,
         planets: this.planetsToShow,
-        ships: [
-          ...(this.ship.visible.ships || []),
-          this.ship,
-        ],
+        ships: this.ships,
+        shipPaths: this.shipPaths,
         targetLines: this.targetLines,
         attackRemnants:
           this.ship.visible.attackRemnants || [],
@@ -57,6 +55,9 @@ export default {
         speed: this.ship.speed,
         radii: this.radii,
       }
+    },
+    ships(this: ComponentShape) {
+      return [...(this.ship.visible.ships || []), this.ship]
     },
     radii(this: ComponentShape) {
       return [
@@ -66,7 +67,15 @@ export default {
           label2:
             Math.round(this.ship.radii.attack * 100) / 100 +
             'AU',
-          color: 'hsla(20, 70%, 70%, .6)',
+          color: 'hsla(20, 70%, 60%, .6)',
+        },
+        {
+          radius: this.ship.radii.scan,
+          label: 'Scan',
+          label2:
+            Math.round(this.ship.radii.scan * 100) / 100 +
+            'AU',
+          color: 'hsla(190, 70%, 70%, .4)',
         },
       ]
     },
@@ -93,6 +102,20 @@ export default {
           to: c.targetLocation,
           highlight: c.id === this.userId,
         }))
+    },
+    shipPaths(this: ComponentShape) {
+      return [
+        ...this.ships.map((s: ShipStub) => ({
+          id: s.id,
+          color: s.faction ? s.faction.color : undefined,
+          points: [...s.previousLocations, s.location],
+        })),
+        ...this.ship.visible.trails.map((t) => ({
+          points: t,
+          id: t[0][0],
+          color: 'rgba(255, 255, 255, .6)',
+        })),
+      ]
     },
   },
   watch: {},
