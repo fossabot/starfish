@@ -7,7 +7,6 @@
     @mouseleave="mouseLeave"
     @mousemove="mouseMove"
     v-if="mapData"
-    :class="{ 'no-pointer': !mapData.interactive }"
   >
     <svg
       ref="svg"
@@ -60,6 +59,19 @@
         :label="zoom > 1 ? el.label : ''"
         :label2="zoom > 1 ? el.label2 : ''"
         :color="el.color"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :view="view"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      />
+
+      <ShipMapOutline
+        v-if="mapData.gameRadius"
+        :location="[0, 0]"
+        :radius="mapData.gameRadius * FLAT_SCALE"
+        :label="zoom > 1 ? 'Known Universe' : ''"
+        :dash="3"
+        :color="'rgba(255,255,255,.3)'"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
         :view="view"
@@ -154,6 +166,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -197,7 +210,8 @@ export default {
   },
   data(): ComponentShape {
     return {
-      FLAT_SCALE: 100,
+      c,
+      FLAT_SCALE: 1,
       zoom: 1,
       ships: [],
       planets: [],
@@ -217,7 +231,9 @@ export default {
       containerSizeMultiplier: 1,
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['ship']),
+  },
   watch: {
     mapData(this: ComponentShape) {
       this.redraw()
@@ -247,7 +263,12 @@ export default {
               : el.faction
               ? el.faction.color
               : 'rgba(255,255,255,.6)',
-          name: el.planet ? false : el.name,
+          name: el.name,
+          species: el.species,
+          faction: el.faction,
+          level: el.level,
+          chassis: el.chassis,
+          showLabel: !el.planet,
           id: el.id,
           previousLocations: el.previousLocations || [],
         })) || []
@@ -258,6 +279,7 @@ export default {
           radius: (el.radius || 36000) / KM_PER_AU,
           color: el.validColor || el.color || 'pink',
           name: el.name,
+          faction: el.faction,
         })) || []
       this.targetLines =
         this.mapData.targetLines?.map((el: any) => ({

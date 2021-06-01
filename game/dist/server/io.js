@@ -11,6 +11,7 @@ const discord_1 = __importDefault(require("./events/discord"));
 const general_1 = __importDefault(require("./events/general"));
 const combat_1 = __importDefault(require("./events/combat"));
 const crew_1 = __importDefault(require("./events/crew"));
+const items_1 = __importDefault(require("./events/items"));
 const httpServer = http_1.createServer();
 const io = new socket_io_1.Server(httpServer, {
     cors: {
@@ -23,6 +24,7 @@ io.on(`connection`, (socket) => {
     general_1.default(socket);
     combat_1.default(socket);
     crew_1.default(socket);
+    items_1.default(socket);
 });
 httpServer.listen(4200);
 dist_1.default.log(`io server listening on port 4200`);

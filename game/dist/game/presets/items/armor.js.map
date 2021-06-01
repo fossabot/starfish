@@ -1,0 +1,1 @@
+{"version":3,"file":"armor.js","sourceRoot":"","sources":["../../../../src/game/presets/items/armor.ts"],"names":[],"mappings":";;;AAAa,QAAA,KAAK,GAEd;IACF,OAAO,EAAE;QACP,IAAI,EAAE,OAAO;QACb,EAAE,EAAE,SAAS;QACb,WAAW,EAAE,aAAa;QAC1B,WAAW,EAAE,8BAA8B;QAC3C,MAAM,EAAE,GAAG;QACX,SAAS,EAAE,EAAE;QACb,eAAe,EAAE,GAAG;QACpB,KAAK,EAAE,EAAE;KACV;CACF,CAAA"}

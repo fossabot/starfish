@@ -35,7 +35,7 @@ export default {
   props: {
     mini: {},
     percent: { default: 1 },
-    color: { default: '#333' },
+    color: { default: 'rgba(255,255,255,.1' },
     dangerZone: { default: 0.2 },
   },
   data(): ComponentShape {

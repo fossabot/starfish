@@ -11,10 +11,18 @@ const db_1 = require("./db");
 db_1.init({});
 exports.game = new Game_1.Game();
 db_1.runOnReady(async () => {
+    await db_1.db.attackRemnant.wipe();
+    // await db.planet.wipe()
+    // await db.cache.wipe()
+    // await db.ship.wipe()
+    // await db.ship.wipeAI()
+    const savedPlanets = await db_1.db.planet.getAllConstructible();
+    dist_1.default.log(`Loaded ${savedPlanets.length} saved planets from DB.`);
+    for (let planet of savedPlanets)
+        exports.game.addPlanet(planet, false);
     const savedCaches = await db_1.db.cache.getAllConstructible();
     dist_1.default.log(`Loaded ${savedCaches.length} saved caches from DB.`);
     savedCaches.forEach((cache) => exports.game.addCache(cache, false));
-    // await db.ship.wipe()
     const savedShips = await db_1.db.ship.getAllConstructible();
     dist_1.default.log(`Loaded ${savedShips.length} saved ships from DB.`);
     for (let ship of savedShips) {

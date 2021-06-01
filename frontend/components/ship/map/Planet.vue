@@ -1,5 +1,5 @@
 <template>
-  <g>
+  <g class="planet">
     <defs>
       <radialGradient :id="name">
         <stop offset="30%" :stop-color="color" />
@@ -12,7 +12,7 @@
     >
       <ShipMapPoint
         :location="location"
-        :minSize="minSizeAdjustedForActualSize * 8"
+        :minSize="minSizeAdjustedForActualSize * 6"
         :radius="radius * 4"
         :color="`url('#${name}')`"
         :zoom="zoom"
@@ -39,6 +39,7 @@
     />
 
     <ShipMapPoint
+      v-if="zoom > 5"
       :location="location"
       :minSize="0"
       :radius="c.ARRIVAL_THRESHOLD"
@@ -71,6 +72,7 @@ export default {
     minSize: { default: 0.007 },
     color: {},
     name: {},
+    faction: {},
   },
   data(): ComponentShape {
     return {
@@ -97,15 +99,23 @@ export default {
   methods: {
     enter(this: ComponentShape) {
       this.hovering = true
+      this.$store.commit('tooltip', {
+        type: 'planet',
+        data: { name: this.name, faction: this.faction },
+      })
     },
     leave(this: ComponentShape) {
       this.hovering = false
+      this.$store.commit('tooltip')
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.planet {
+  opacity: 0.9;
+}
 .atmosphere {
   pointer-events: none;
   opacity: 0.2;

@@ -2,11 +2,27 @@ import math from './math'
 import globals from './globals'
 import c from './log'
 
-const gameSpeedMultiplier = 24
+const gameSpeedMultiplier = 24 * 3
+
+const baseSightRange = 0.2
 
 const baseRepairCost = 100
 
 const maxBroadcastLength = 200
+
+const baseStaminaUse = 0.00002 * gameSpeedMultiplier
+
+const baseXpGain = 0.5 * gameSpeedMultiplier
+
+const factionVendorMultiplier = 0.99
+
+const baseItemSellMultiplier = 0.75
+
+const noEngineThrustMagnitude = 0.02
+
+function getBaseDurabilityLossPerTick(maxHp: number) {
+  return 0.00001 * gameSpeedMultiplier * (10 / maxHp)
+}
 
 function getThrustMagnitudeForSingleCrewMember(
   skill: number = 1,
@@ -30,11 +46,15 @@ function getRepairAmountPerTickForSingleCrewMember(
 }
 
 function getStaminaGainPerTickForSingleCrewMember() {
-  return 0.00003 * gameSpeedMultiplier
+  return baseStaminaUse * 1.5
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
   return (2 + level) * 3 * gameSpeedMultiplier
+}
+
+function getCrewPassivePriceMultiplier(level: number) {
+  return 1 + level ** 2
 }
 
 const tactics: Tactic[] = [`aggressive`, `defensive`]
@@ -74,9 +94,10 @@ function stubify<BaseType, StubType extends BaseStub>(
             `attacker`,
             `defender`,
             `crewMember`,
+            `homeworld`,
           ].includes(key)
         )
-          return value?.id || null
+          return value?.id ? { id: value.id } : null
         if (disallowPropName?.includes(key))
           return value?.id || undefined
         if ([`ships`].includes(key) && Array.isArray(value))
@@ -97,12 +118,20 @@ function stubify<BaseType, StubType extends BaseStub>(
 
 export default {
   gameSpeedMultiplier,
+  baseSightRange,
   baseRepairCost,
   maxBroadcastLength,
+  baseStaminaUse,
+  baseXpGain,
+  factionVendorMultiplier,
+  baseItemSellMultiplier,
+  noEngineThrustMagnitude,
+  getBaseDurabilityLossPerTick,
   getRepairAmountPerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
+  getCrewPassivePriceMultiplier,
   tactics,
   cargoTypes,
   stubify,

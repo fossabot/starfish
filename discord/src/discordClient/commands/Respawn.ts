@@ -34,6 +34,11 @@ export class RespawnCommand implements Command {
   ): string | true {
     if (!commandContext.ship)
       return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
+    if (
+      !commandContext.isCaptain ||
+      !commandContext.isServerAdmin
+    )
+      return `Only the captain or a server admin can run this command.`
     if (!commandContext.ship.dead)
       return `Can't respawn because your ship isn't dead!`
     return true

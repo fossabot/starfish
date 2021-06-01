@@ -14,7 +14,7 @@ export class JoinCommand implements Command {
   async run(context: CommandContext): Promise<void> {
     if (!context.ship) return
     const addedCrewMember = await add(context.ship.id, {
-      name: context.initialMessage.author.username,
+      name: context.nickname,
       id: context.initialMessage.author.id,
     })
     // add crew member

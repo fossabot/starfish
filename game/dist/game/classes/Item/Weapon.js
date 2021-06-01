@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Weapon = void 0;
+const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Item_1 = require("./Item");
 class Weapon extends Item_1.Item {
     constructor(data, ship, props) {
@@ -17,10 +21,14 @@ class Weapon extends Item_1.Item {
                 data.baseCooldown;
     }
     use() {
-        this.repair -= 0.01;
-        this.lastUse = Date.now();
         this.cooldownRemaining = this.baseCooldown;
-        super.use();
+        if (this.ship.ai)
+            return 0;
+        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp) * 2000;
+        this.repair -= repairLoss;
+        this.lastUse = Date.now();
+        repairLoss += super.use();
+        return repairLoss;
     }
 }
 exports.Weapon = Weapon;

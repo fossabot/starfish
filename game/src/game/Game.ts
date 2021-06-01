@@ -7,38 +7,44 @@ import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet'
 import { Cache } from './classes/Cache'
 import { Faction } from './classes/Faction'
+import { Species } from './classes/Species'
 import { AttackRemnant } from './classes/AttackRemnant'
 
 import { HumanShip } from './classes/Ship/HumanShip'
 import { AIShip } from './classes/Ship/AIShip'
 
-import defaultPlanets from './presets/planets'
+import { generatePlanet as generatePlanetData } from './presets/planets'
 import defaultFactions from './presets/factions'
+import defaultSpecies from './presets/species'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
 
   readonly startTime: Date
-  readonly ships: Ship[]
-  readonly planets: Planet[]
-  readonly caches: Cache[]
-  readonly factions: Faction[]
+  readonly ships: Ship[] = []
+  readonly planets: Planet[] = []
+  readonly caches: Cache[] = []
+  readonly factions: Faction[] = []
+  readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
 
   constructor() {
     this.startTime = new Date()
-    this.ships = []
-    this.planets = []
-    this.caches = []
-    this.factions = []
-    this.attackRemnants = []
 
-    defaultPlanets.forEach((p) => {
-      this.addPlanet(p)
-    })
-    defaultFactions.forEach((f) => {
-      this.addFaction(f)
-    })
+    Object.values(defaultFactions).forEach((fd) =>
+      this.addFaction(fd),
+    )
+    Object.values(defaultSpecies).map((sd) =>
+      this.addSpecies(sd),
+    )
+
+    c.log(
+      `Loaded ${
+        Object.keys(defaultSpecies).length
+      } species and ${
+        Object.keys(defaultFactions).length
+      } factions.`,
+    )
   }
 
   startGame() {
@@ -91,6 +97,7 @@ export class Game {
     this.expireOldAttackRemnantsAndCaches()
     this.spawnNewCaches()
     this.spawnNewAIs()
+    this.spawnNewPlanet()
 
     // ----- timing
 
@@ -113,7 +120,7 @@ export class Game {
     this.averageTickLag = c.lerp(
       this.averageTickLag,
       thisTickLag,
-      0.3,
+      0.1,
     )
     const nextTickTime = Math.min(
       c.TICK_INTERVAL,
@@ -202,8 +209,8 @@ export class Game {
   // ----- radii -----
 
   get gameSoftRadius() {
-    const count = this.humanShips.length
-    return Math.sqrt(count)
+    const count = this.humanShips.length || 1
+    return Math.max(1, Math.sqrt(count) / 2)
   }
 
   get gameSoftArea() {
@@ -230,68 +237,89 @@ export class Game {
     })
   }
 
-  spawnNewCaches() {
-    if (this.caches.length > this.gameSoftArea * 1.5) return
+  spawnNewPlanet() {
+    while (
+      this.planets.length < this.gameSoftArea * 1.5 ||
+      this.planets.length < this.factions.length - 1
+    ) {
+      const factionThatNeedsAHomeworld = this.factions.find(
+        (f) => f.id !== `red` && !f.homeworld,
+      )
+      const p = generatePlanetData(
+        this,
+        factionThatNeedsAHomeworld?.id,
+      )
+      if (!p) return
+      const planet = this.addPlanet(p)
+      c.log(
+        `gray`,
+        `Spawned planet ${p.name} at ${p.location}${
+          factionThatNeedsAHomeworld
+            ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
+            : ``
+        }.`,
+      )
+      c.log(this.planets.map((p) => p.vendor.items))
+      c.log(this.planets.map((p) => p.vendor.chassis))
+      c.log(this.planets.map((p) => p.vendor.cargo))
+    }
+  }
 
-    const type = c.randomFromArray(c.cargoTypes) as
-      | `credits`
-      | CargoType
-    const amount = Math.round(Math.random() * 200) / 10 + 1
-    const location = c.randomInsideCircle(
-      this.gameSoftRadius,
-    )
-    this.addCache({
-      contents: [
-        {
-          type,
-          amount,
-        },
-      ],
-      location,
-    })
-    c.log(
-      `gray`,
-      `Spawned random cache of ${amount} ${type} at ${location}.`,
-    )
+  spawnNewCaches() {
+    while (this.caches.length < this.gameSoftArea * 1.5) {
+      const type = c.randomFromArray(c.cargoTypes) as
+        | `credits`
+        | CargoType
+      const amount =
+        Math.round(Math.random() * 200) / 10 + 1
+      const location = c.randomInsideCircle(
+        this.gameSoftRadius,
+      )
+      this.addCache({
+        contents: [
+          {
+            type,
+            amount,
+          },
+        ],
+        location,
+      })
+      c.log(
+        `gray`,
+        `Spawned random cache of ${amount} ${type} at ${location}.`,
+      )
+    }
   }
 
   spawnNewAIs() {
-    if (
-      !this.ships.length ||
-      this.aiShips.length > this.gameSoftArea
-    )
-      return
+    while (
+      this.ships.length &&
+      this.aiShips.length < this.gameSoftArea * 1.35
+    ) {
+      let radius = this.gameSoftRadius
+      let spawnPoint: CoordinatePair | undefined
+      while (!spawnPoint) {
+        let point = c.randomInsideCircle(radius)
+        const tooClose = this.humanShips.find((hs) =>
+          c.pointIsInsideCircle(point, hs.location, 0.2),
+        )
+        if (tooClose) spawnPoint = undefined
+        else spawnPoint = point
+        radius += 0.1
+      }
 
-    let radius = this.gameSoftRadius
-    let spawnPoint: CoordinatePair | undefined
-    while (!spawnPoint) {
-      let point = c.randomInsideCircle(radius)
-      const tooClose = this.humanShips.find((hs) =>
-        c.pointIsInsideCircle(
-          point,
-          hs.location,
-          hs.radii.sight,
-        ),
-      )
-      if (tooClose) spawnPoint = undefined
-      else spawnPoint = point
-      radius += 0.1
+      const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
+
+      this.addAIShip({
+        location: spawnPoint,
+        name: `AI${`${Math.random().toFixed(3)}`.substring(
+          2,
+        )}`,
+        species: { id: `robots` },
+        loadout: `aiDefault`,
+        level,
+      })
     }
-
-    const level = c.distance([0, 0], spawnPoint) * 2
-
-    this.addAIShip({
-      location: spawnPoint,
-      name: `AI${`${Math.random().toFixed(3)}`.substring(
-        2,
-      )}`,
-      loadout: `aiDefault`,
-      level,
-    })
-    c.log(
-      `gray`,
-      `Spawned level ${level} AI at ${spawnPoint}.`,
-    )
   }
 
   // ----- entity functions -----
@@ -310,7 +338,10 @@ export class Game {
       )
       return existing
     }
-    c.log(`gray`, `Adding human ship ${data.name} to game`)
+    c.log(
+      `gray`,
+      `Adding human ship ${data.name} to game at ${data.location}`,
+    )
 
     data.loadout = `humanDefault`
     const newShip = new HumanShip(data, this)
@@ -330,7 +361,10 @@ export class Game {
       )
       return existing
     }
-    c.log(`gray`, `Adding AI ship ${data.name} to game`)
+    c.log(
+      `gray`,
+      `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
+    )
 
     data.loadout = `aiDefault`
     const newShip = new AIShip(data, this)
@@ -349,9 +383,22 @@ export class Game {
     this.ships.splice(index, 1)
   }
 
-  addPlanet(data: BasePlanetData): Planet {
+  addPlanet(data: BasePlanetData, save = true): Planet {
+    const existing = this.planets.find(
+      (p) => p.name === data.name,
+    )
+    if (existing) {
+      c.log(
+        `red`,
+        `Attempted to add existing planet ${existing.name}.`,
+      )
+      return existing
+    }
     const newPlanet = new Planet(data, this)
     this.planets.push(newPlanet)
+    if (newPlanet.homeworld)
+      newPlanet.homeworld.homeworld = newPlanet
+    if (save) db.planet.addOrUpdateInDb(newPlanet)
     return newPlanet
   }
 
@@ -359,6 +406,12 @@ export class Game {
     const newFaction = new Faction(data, this)
     this.factions.push(newFaction)
     return newFaction
+  }
+
+  addSpecies(data: BaseSpeciesData): Species {
+    const newSpecies = new Species(data, this)
+    this.species.push(newSpecies)
+    return newSpecies
   }
 
   addCache(data: BaseCacheData, save = true): Cache {

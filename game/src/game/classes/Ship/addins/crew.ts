@@ -13,7 +13,7 @@ export function membersIn(
 export function cumulativeSkillIn(
   this: HumanShip,
   l: CrewLocation,
-  s: SkillName,
+  s: SkillType,
 ): number {
   return this.membersIn(l).reduce((total, m) => {
     return (

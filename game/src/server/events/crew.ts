@@ -176,7 +176,7 @@ export default function (
   })
 
   socket.on(
-    `crew:buy`,
+    `crew:buyCargo`,
     (
       shipId,
       crewId,
@@ -196,14 +196,15 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const cargoForSale = ship.game.planets
-        .find((p) => p.name === vendorLocation)
-        ?.vendor?.cargo?.find(
-          (cfs) =>
-            cfs.cargoData.type === cargoType &&
-            cfs.buyMultiplier,
-        )
-      if (!cargoForSale)
+      const planet = ship.game.planets.find(
+        (p) => p.name === vendorLocation,
+      )
+      const cargoForSale = planet?.vendor?.cargo?.find(
+        (cfs) =>
+          cfs.cargoData.type === cargoType &&
+          cfs.buyMultiplier,
+      )
+      if (!planet || !cargoForSale)
         return callback({
           error: `That cargo is not for sale here.`,
         })
@@ -216,13 +217,16 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price =
-        Math.round(
-          cargoForSale.cargoData.basePrice *
-            cargoForSale.buyMultiplier *
-            amount *
-            10000,
-        ) / 10000
+      const price = c.r2(
+        cargoForSale.cargoData.basePrice *
+          cargoForSale.buyMultiplier *
+          amount *
+          planet?.buyFluctuator *
+          (planet.faction === ship.faction
+            ? c.factionVendorMultiplier
+            : 1),
+        5,
+      )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -250,7 +254,7 @@ export default function (
   )
 
   socket.on(
-    `crew:sell`,
+    `crew:sellCargo`,
     (
       shipId,
       crewId,
@@ -278,25 +282,29 @@ export default function (
           error: `Not enough stock of that cargo found.`,
         })
 
-      const cargoBeingBought = ship.game.planets
-        .find((p) => p.name === vendorLocation)
-        ?.vendor?.cargo?.find(
-          (cbb) =>
-            cbb.cargoData.type === cargoType &&
-            cbb.sellMultiplier,
-        )
-      if (!cargoBeingBought)
+      const planet = ship.game.planets.find(
+        (p) => p.name === vendorLocation,
+      )
+      const cargoBeingBought = planet?.vendor?.cargo?.find(
+        (cbb) =>
+          cbb.cargoData.type === cargoType &&
+          cbb.sellMultiplier,
+      )
+      if (!planet || !cargoBeingBought)
         return callback({
           error: `The vendor does not buy that.`,
         })
 
-      const price =
-        Math.round(
-          cargoBeingBought.cargoData.basePrice *
-            cargoBeingBought.sellMultiplier *
-            amount *
-            10000,
-        ) / 10000
+      const price = c.r2(
+        cargoBeingBought.cargoData.basePrice *
+          cargoBeingBought.sellMultiplier *
+          amount *
+          planet.sellFluctuator *
+          (planet.faction === ship.faction
+            ? 1 + (1 - (c.factionVendorMultiplier || 1))
+            : 1),
+        5,
+      )
 
       crewMember.credits += price
       existingStock.amount -= amount
@@ -391,18 +399,25 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const repairMultiplier = ship.game.planets.find(
+      const planet = ship.game.planets.find(
         (p) => p.name === vendorLocation,
-      )?.repairCostMultiplier
-      if (!repairMultiplier)
+      )
+      const repairMultiplier = planet?.repairCostMultiplier
+      if (!planet || !repairMultiplier)
         return callback({
           error: `This planet does not offer mechanics.`,
         })
 
-      const price =
-        Math.round(
-          repairMultiplier * c.baseRepairCost * hp * 10000,
-        ) / 10000
+      const price = c.r2(
+        repairMultiplier *
+          c.baseRepairCost *
+          hp *
+          planet.buyFluctuator *
+          (planet.faction === ship.faction
+            ? c.factionVendorMultiplier
+            : 1),
+        5,
+      )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -435,6 +450,77 @@ export default function (
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${vendorLocation}.`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:buyPassive`,
+    (
+      shipId,
+      crewId,
+      passiveType,
+      vendorLocation,
+      callback,
+    ) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      const planet = ship.game.planets.find(
+        (p) => p.name === vendorLocation,
+      )
+      const passiveForSale = planet?.vendor?.passives?.find(
+        (pfs) =>
+          pfs.passiveData?.type === passiveType &&
+          pfs.buyMultiplier,
+      )
+      if (
+        !planet ||
+        !passiveForSale ||
+        !passiveForSale.passiveData
+      )
+        return callback({
+          error: `That passive is not for sale here.`,
+        })
+
+      const currentLevel =
+        crewMember.passives.find(
+          (p) => p.type === passiveType,
+        )?.level || 0
+      const price = c.r2(
+        passiveForSale.passiveData.basePrice *
+          passiveForSale.buyMultiplier *
+          c.getCrewPassivePriceMultiplier(currentLevel) *
+          planet.buyFluctuator *
+          (planet.faction === ship.faction
+            ? c.factionVendorMultiplier
+            : 1),
+        5,
+        true,
+      )
+      if (price > crewMember.credits)
+        return callback({ error: `Insufficient funds.` })
+
+      crewMember.credits -= price
+      crewMember.addPassive(passiveForSale.passiveData)
+
+      callback({
+        data: c.stubify<CrewMember, CrewMemberStub>(
+          crewMember,
+        ),
+      })
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} bought passive ${passiveType} from ${vendorLocation}.`,
       )
     },
   )

@@ -140,6 +140,9 @@ function randomInRange(a: number, b: number) {
   const diff = b - a
   return Math.random() * diff + a
 }
+function lottery(odds: number, outOf: number): boolean {
+  return Math.random() < odds / outOf
+}
 
 export default {
   lerp,
@@ -158,4 +161,5 @@ export default {
   vectorToMagnitude,
   randomSign,
   randomInRange,
+  lottery,
 }

@@ -91,6 +91,9 @@ function randomInRange(a, b) {
     const diff = b - a;
     return Math.random() * diff + a;
 }
+function lottery(odds, outOf) {
+    return Math.random() < odds / outOf;
+}
 exports.default = {
     lerp,
     r2,
@@ -108,5 +111,6 @@ exports.default = {
     vectorToMagnitude,
     randomSign,
     randomInRange,
+    lottery,
 };
 //# sourceMappingURL=math.js.map

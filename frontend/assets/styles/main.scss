@@ -12,14 +12,14 @@ html {
   line-height: 1.4;
   font-family: var(--font-stack);
   color: var(--text);
-  background: var(--bg);
+  background: black;
   max-width: 100%;
   min-width: 100%;
   overflow-x: hidden;
   user-select: none;
 
   @media only screen and (max-device-width: 768px) {
-    font-size: 17px;
+    font-size: 15px;
   }
 }
 body {
@@ -66,8 +66,8 @@ button,
   &.secondary {
     background: var(--bg);
     color: var(--text);
-    box-shadow: 0 0 0 0.5px var(--text),
-      inset 0 0 0 0.5px var(--text);
+    box-shadow: 0 0 0 0.5px var(--pane-border),
+      inset 0 0 0 0.5px var(--pane-border);
   }
 
   &.mini {
@@ -150,4 +150,8 @@ button,
 
 .inline {
   display: inline-block;
+}
+
+.text-center {
+  text-align: center;
 }

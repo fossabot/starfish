@@ -6,7 +6,9 @@
       :r="radius"
       :stroke="color"
       :stroke-width="(0.0025 * FLAT_SCALE) / zoom"
-      :stroke-dasharray="dash ? dash + ' ' + dash : ''"
+      :stroke-dasharray="
+        dash ? scaledDash + ' ' + scaledDash : ''
+      "
       fill="none"
     />
     <text
@@ -68,6 +70,15 @@ export default {
   },
   computed: {
     ...mapState([]),
+    scaledDash(this: ComponentShape) {
+      if (!this.dash) return
+      return (
+        ((this.dash / this.zoom) *
+          this.containerSizeMultiplier) /
+        100 /
+        this.FLAT_SCALE
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

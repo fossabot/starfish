@@ -131,7 +131,11 @@ export default {
         if (!p.find((pl) => pl.name === seen.name))
           p.push(seen)
       }
-      return p
+      return p.sort(
+        (a: PlanetStub, b: PlanetStub) =>
+          c.distance(this.ship.location, a.location) -
+          c.distance(this.ship.location, b.location),
+      )
     },
     activeEngines(this: ComponentShape) {
       return (
@@ -142,11 +146,14 @@ export default {
       )
     },
     engineThrustAmplification(this: ComponentShape) {
-      return this.activeEngines.reduce(
-        (total: number, e: EngineStub) =>
-          total +
-          (e.thrustAmplification || 0) * (e.repair || 0),
-        0,
+      return Math.max(
+        c.noEngineThrustMagnitude,
+        this.activeEngines.reduce(
+          (total: number, e: EngineStub) =>
+            total +
+            (e.thrustAmplification || 0) * (e.repair || 0),
+          0,
+        ),
       )
     },
     pilotingSkill(this: ComponentShape) {

@@ -4,7 +4,7 @@
     :minSize="minSize"
     :radius="radius"
     :color="color"
-    :label="name"
+    :label="showLabel && name"
     :zoom="zoom"
     :FLAT_SCALE="FLAT_SCALE"
     :view="view"
@@ -15,6 +15,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -32,6 +33,11 @@ export default {
     minSize: { default: 0.009 },
     color: {},
     name: {},
+    showLabel: {},
+    species: {},
+    faction: {},
+    level: {},
+    chassis: {},
   },
   data(): ComponentShape {
     return { hovering: false }
@@ -44,9 +50,20 @@ export default {
   methods: {
     enter(this: ComponentShape) {
       this.hovering = true
+      this.$store.commit('tooltip', {
+        type: 'ship',
+        data: {
+          name: this.name,
+          species: this.species,
+          faction: this.faction,
+          level: this.level,
+          chassis: this.chassis,
+        },
+      })
     },
     leave(this: ComponentShape) {
       this.hovering = false
+      this.$store.commit('tooltip')
     },
   },
 }

@@ -2,7 +2,9 @@
   <div class="member">
     <Box>
       <template #title>
-        <span class="sectionemoji">🦀</span
+        <span class="sectionemoji">{{
+          ship.species.icon
+        }}</span
         >{{ crewMember.name }}
       </template>
 
@@ -47,6 +49,8 @@
       <ShipMemberInventory />
 
       <ShipMemberSkills />
+
+      <ShipMemberPassives />
     </Box>
   </div>
 </template>

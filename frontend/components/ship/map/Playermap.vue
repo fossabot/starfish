@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   ship: ShipStub
@@ -34,14 +35,18 @@ export default {
     label: { default: 'Area Scan' },
   },
   data() {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState(['ship', 'userId']),
     mapData(this: ComponentShape) {
       return {
         center: this.ship.location,
-        defaultRadius: this.radius || this.ship.radii.sight,
+        defaultRadius: c.r2(
+          this.radius || this.ship.radii.sight,
+          3,
+          true,
+        ),
         interactive: this.interactive,
         blackout: this.blackout,
         buffer: this.buffer,
@@ -54,30 +59,36 @@ export default {
         caches: this.ship.visible.caches || [],
         speed: this.ship.speed,
         radii: this.radii,
+        gameRadius: this.ship.radii.game,
       }
     },
     ships(this: ComponentShape) {
       return [...(this.ship.visible.ships || []), this.ship]
     },
     radii(this: ComponentShape) {
-      return [
-        {
+      const r = []
+      if (this.ship.radii.attack)
+        r.push({
           radius: this.ship.radii.attack,
           label: 'Attack',
-          label2:
-            Math.round(this.ship.radii.attack * 100) / 100 +
-            'AU',
+          label2: c.r2(this.ship.radii.attack, 2) + 'AU',
           color: 'hsla(20, 70%, 60%, .6)',
-        },
-        {
+        })
+      if (this.ship.radii.scan)
+        r.push({
           radius: this.ship.radii.scan,
           label: 'Scan',
-          label2:
-            Math.round(this.ship.radii.scan * 100) / 100 +
-            'AU',
+          label2: c.r2(this.ship.radii.scan, 2) + 'AU',
           color: 'hsla(190, 70%, 70%, .4)',
-        },
-      ]
+        })
+      if (this.ship.radii.broadcast)
+        r.push({
+          radius: this.ship.radii.broadcast,
+          label: 'Broadcast',
+          label2: c.r2(this.ship.radii.broadcast, 2) + 'AU',
+          color: 'hsla(300, 70%, 60%, .3)',
+        })
+      return r
     },
     shipLocation(this: ComponentShape) {
       return this.ship.location
@@ -88,6 +99,7 @@ export default {
         if (!p.find((pl) => pl.name === seen.name))
           p.push(seen)
       }
+      // c.log(this.ship.seenPlanets, p.length)
       return p
     },
     targetLines(this: ComponentShape) {
@@ -127,5 +139,9 @@ export default {
 <style lang="scss" scoped>
 .panesection {
   background: var(--bg);
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
 }
 </style>

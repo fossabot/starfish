@@ -79,5 +79,8 @@ const log = (...args) => {
     prefix = prefix.padEnd(longest, fillCharacter) + reset;
     console.log(prefix, ...args);
 };
-exports.default = { log };
+function trace() {
+    console.trace();
+}
+exports.default = { log, trace };
 //# sourceMappingURL=log.js.map

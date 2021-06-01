@@ -13,6 +13,7 @@ const CrewMember_1 = require("../CrewMember/CrewMember");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
+        this.logAlertLevel = `high`;
         this.crewMembers = [];
         this.captain = null;
         this.availableRooms = [
@@ -32,13 +33,19 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.log = data.log || [];
         if (data.commonCredits)
             this.commonCredits = data.commonCredits;
-        this.radii.scan = 0.25;
-        this.radii.broadcast = 0.6;
+        if (data.logAlertLevel)
+            this.logAlertLevel = data.logAlertLevel;
         data.crewMembers?.forEach((cm) => {
             this.addCrewMember(cm);
         });
         if (!this.log.length)
             this.logEntry(`Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`, `medium`);
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, undefined, true);
+        this.updatePlanet(true);
+        setTimeout(() => {
+            this.radii.game = this.game.gameSoftRadius;
+            this.toUpdate.radii = this.radii;
+        }, 100);
     }
     tick() {
         super.tick();
@@ -46,14 +53,16 @@ class HumanShip extends CombatShip_1.CombatShip {
             return;
         // ----- move -----
         this.move();
+        // ----- scan -----
         this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, undefined, true);
+        this.scanners.forEach((s) => s.use());
         this.crewMembers.forEach((cm) => cm.tick());
         this.toUpdate.crewMembers = this.crewMembers.map((cm) => dist_1.default.stubify(cm));
         // ----- discover new planets -----
         const newPlanets = this.visible.planets.filter((p) => !this.seenPlanets.includes(p));
         if (newPlanets.length) {
             this.seenPlanets.push(...newPlanets);
-            this.toUpdate.seenPlanets = dist_1.default.stubify(this.seenPlanets);
+            this.toUpdate.seenPlanets = this.seenPlanets.map((p) => dist_1.default.stubify(p));
             db_1.db.ship.addOrUpdateInDb(this);
             newPlanets.forEach((p) => this.logEntry(`You've discovered the planet ${p.name}!`, `high`));
         }
@@ -91,7 +100,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         while (this.log.length > HumanShip.maxLogLength)
             this.log.shift();
         this.toUpdate.log = this.log;
-        if (level === `critical`)
+        if (this.logAlertLevel === `off`)
+            return;
+        const levelsToAlert = [this.logAlertLevel];
+        if (this.logAlertLevel === `low`)
+            levelsToAlert.push(`medium`, `high`, `critical`);
+        if (this.logAlertLevel === `medium`)
+            levelsToAlert.push(`high`, `critical`);
+        if (this.logAlertLevel === `high`)
+            levelsToAlert.push(`critical`);
+        if (levelsToAlert.includes(level))
             io_1.default.emit(`ship:message`, this.id, text);
     }
     // ----- move -----
@@ -119,9 +137,9 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.toUpdate.velocity = this.velocity;
             return;
         }
-        const engineThrustMultiplier = this.engines
+        const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
         // ----- calculate new location based on target of each member in cockpit -----
         for (let member of membersInCockpit) {
             if (!member.targetLocation)
@@ -154,24 +172,38 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.speed * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        this.updatePlanet();
         // ----- add previousLocation -----
         this.addPreviousLocation(startingLocation);
+        // ----- game radius -----
+        this.radii.game = this.game.gameSoftRadius;
+        this.toUpdate.radii = this.radii;
+        const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
+            this.game.gameSoftRadius;
+        const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
+            this.game.gameSoftRadius;
+        if (isOutsideRadius && !startedOutsideRadius)
+            this.logEntry(`Left the known universe. Nothing but the void awaits out here.`, `high`);
+        if (!isOutsideRadius && startedOutsideRadius)
+            this.logEntry(`Re-entered the known universe.`, `high`);
         // ----- random encounters -----
         const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
-        if (Math.random() * distanceTraveled >
-            (1 - 0.00001 * dist_1.default.gameSpeedMultiplier) *
-                distanceTraveled) {
+        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
             const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
                 10 +
                 1;
-            this.distributeCargoAmongCrew([
-                { type: `salt`, amount },
+            const type = dist_1.default.randomFromArray([
+                `oxygen`,
+                `salt`,
+                `water`,
             ]);
-            this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of salt off of it.`);
+            this.distributeCargoAmongCrew([
+                { type: type, amount },
+            ]);
+            this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
         }
+        this.updatePlanet();
     }
-    updatePlanet() {
+    updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
             this.visible.planets.find((p) => this.isAt(p.location)) || false;
@@ -179,6 +211,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.toUpdate.planet = this.planet
                 ? dist_1.default.stubify(this.planet)
                 : false;
+        if (silent)
+            return;
         // -----  log for you and other ships on that planet when you land/depart -----
         if (this.planet && this.planet !== previousPlanet) {
             this.logEntry(`Landed on ${this.planet ? this.planet.name : ``}.`, `high`);
@@ -200,29 +234,44 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     applyTickOfGravity() {
         super.applyTickOfGravity();
-        this.updatePlanet();
+    }
+    updateBroadcastRadius() {
+        this.radii.broadcast = this.communicators.reduce((total, comm) => {
+            const currRadius = comm.repair * comm.range;
+            return currRadius + total;
+        }, 0);
+        this.toUpdate.radii = this.radii;
+    }
+    updateThingsThatCouldChangeOnItemChange() {
+        super.updateThingsThatCouldChangeOnItemChange();
+        this.updateBroadcastRadius();
     }
     addCommonCredits(amount, member) {
         this.commonCredits += amount;
         this.toUpdate.commonCredits = this.commonCredits;
         member.addStat(`totalContributedToCommonFund`, amount);
     }
-    broadcast(message) {
+    broadcast(message, crewMember) {
         const sanitized = dist_1.default.sanitize(message.replace(/\n/g, ` `)).result;
         // todo get equipment, use it, and adjust output/range based on repair etc
-        const range = this.radii.sight; // for now
+        const range = this.radii.broadcast;
         let didSendCount = 0;
         for (let otherShip of this.visible.ships.filter((s) => s.human)) {
             const distance = dist_1.default.distance(this.location, otherShip.location);
             if (distance > range)
                 continue;
             didSendCount++;
-            const antiGarble = 0.4;
-            const garbleAmount = distance / (range + antiGarble);
+            const antiGarble = this.communicators.reduce((total, curr) => curr.antiGarble * curr.repair + total, 0);
+            const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level || 0) / 100;
+            const garbleAmount = distance /
+                (range + antiGarble + crewSkillAntiGarble);
             const garbled = dist_1.default.garble(sanitized, garbleAmount);
             const toSend = `**🚀${this.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n\`${garbled.substring(0, dist_1.default.maxBroadcastLength)}\``;
             io_1.default.emit(`ship:message`, otherShip.id, toSend, `broadcast`);
         }
+        this.communicators.forEach((comm) => comm.use());
+        this.updateBroadcastRadius();
+        crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 20);
         return didSendCount;
     }
     // ----- room mgmt -----
@@ -297,6 +346,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     // ----- respawn -----
     respawn() {
         super.respawn();
+        this.updatePlanet(true);
+        this.toUpdate.dead = this.dead;
         if (this instanceof HumanShip) {
             this.logEntry(`Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`, `critical`);
         }

@@ -7,15 +7,21 @@ exports.Ship = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Engine_1 = require("../Item/Engine");
 const Weapon_1 = require("../Item/Weapon");
-const loadouts_1 = __importDefault(require("../../presets/loadouts"));
+const Scanner_1 = require("../Item/Scanner");
+const Communicator_1 = require("../Item/Communicator");
+const Armor_1 = require("../Item/Armor");
+const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 class Ship {
-    constructor({ name, faction, items, loadout, seenPlanets, location, previousLocations, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, }, game) {
+        this.name = `ship`;
+        this.planet = false;
         this.radii = {
             sight: 0,
             broadcast: 0,
             scan: 0,
             attack: 0,
+            game: 0,
         };
         this.crewMembers = [];
         this.toUpdate = {};
@@ -43,34 +49,41 @@ class Ship {
         // ----- movement -----
         this.lastMoveAngle = 0;
         this.game = game;
-        this.name = name;
+        this.rename(name);
         this.ai = true;
         this.human = false;
-        this.faction =
-            game.factions.find((f) => f.color === faction?.color) || false;
-        if (location)
+        this.species = game.species.find((s) => s.id === species.id);
+        this.faction = this.species.faction;
+        if (location) {
             this.location = location;
+        }
         else if (this.faction) {
             this.location = [
                 ...(this.faction.homeworld?.location || [0, 0]),
             ];
+            // c.log(`fact`, this.location, this.faction.homeworld)
         }
         else
             this.location = [0, 0];
-        this.planet =
-            this.game.planets.find((p) => this.isAt(p.location)) || false;
         if (previousLocations)
             this.previousLocations = previousLocations;
         if (seenPlanets)
             this.seenPlanets = seenPlanets
                 .map(({ name }) => this.game.planets.find((p) => p.name === name))
                 .filter((p) => p);
+        if (chassis && chassis.id)
+            this.chassis = items_1.chassis[chassis.id];
+        else if (loadout)
+            this.chassis =
+                items_1.chassis[loadouts_1.default[loadout].chassis];
+        else
+            this.chassis = items_1.chassis.starter;
         if (items)
             items.forEach((i) => this.addItem(i));
         if (!items && loadout)
             this.equipLoadout(loadout);
         this.hp = this.maxHp;
-        this.updateSightRadius();
+        this.updateSightAndScanRadius();
         this.recalculateMaxHp();
         this._hp = this.hp;
     }
@@ -82,11 +95,17 @@ class Ship {
             dist_1.default.log(`      velocity: ${this.velocity}`);
     }
     tick() {
-        if (this.dead)
-            return;
-        if (this.obeysGravity)
-            this.applyTickOfGravity();
+        // if (this.dead) return
+        // if (this.obeysGravity) this.applyTickOfGravity()
         // c.log(`tick`, this.name)
+    }
+    rename(newName) {
+        this.name = dist_1.default
+            .sanitize(newName)
+            .result.substring(0, dist_1.default.maxNameLength);
+        if (this.name.replace(/\s/g, ``).length === 0)
+            this.name = `ship`;
+        this.toUpdate.name = this.name;
     }
     // ----- item mgmt -----
     get engines() {
@@ -95,13 +114,28 @@ class Ship {
     get weapons() {
         return this.items.filter((i) => i instanceof Weapon_1.Weapon);
     }
+    get scanners() {
+        return this.items.filter((i) => i instanceof Scanner_1.Scanner);
+    }
+    get communicators() {
+        return this.items.filter((i) => i instanceof Communicator_1.Communicator);
+    }
+    get armor() {
+        return this.items.filter((i) => i instanceof Armor_1.Armor);
+    }
     addItem(itemData) {
         let item;
+        if (!itemData.type)
+            return false;
+        if (this.chassis.slots <= this.items.length) {
+            dist_1.default.log(`No chassis slots remaining to add item into.`);
+            return false;
+        }
         if (itemData.type === `engine`) {
             const engineData = itemData;
             let foundItem;
-            if (engineData.id && engineData.id in items_1.engines)
-                foundItem = items_1.engines[engineData.id];
+            if (engineData.id && engineData.id in items_1.engine)
+                foundItem = items_1.engine[engineData.id];
             if (!foundItem)
                 return false;
             item = new Engine_1.Engine(foundItem, this, engineData);
@@ -109,43 +143,75 @@ class Ship {
         if (itemData.type === `weapon`) {
             const weaponData = itemData;
             let foundItem;
-            if (weaponData.id && weaponData.id in items_1.weapons)
-                foundItem = items_1.weapons[weaponData.id];
+            if (weaponData.id && weaponData.id in items_1.weapon)
+                foundItem = items_1.weapon[weaponData.id];
             if (!foundItem)
                 return false;
             item = new Weapon_1.Weapon(foundItem, this, weaponData);
         }
+        if (itemData.type === `scanner`) {
+            const scannerData = itemData;
+            let foundItem;
+            if (scannerData.id &&
+                scannerData.id in items_1.scanner)
+                foundItem = items_1.scanner[scannerData.id];
+            if (!foundItem)
+                return false;
+            item = new Scanner_1.Scanner(foundItem, this, scannerData);
+        }
+        if (itemData.type === `communicator`) {
+            const communicatorData = itemData;
+            let foundItem;
+            if (communicatorData.id &&
+                communicatorData.id in items_1.communicator)
+                foundItem = items_1.communicator[communicatorData.id];
+            if (!foundItem)
+                return false;
+            item = new Communicator_1.Communicator(foundItem, this, communicatorData);
+        }
+        if (itemData.type === `armor`) {
+            const armorData = itemData;
+            let foundItem;
+            if (armorData.id && armorData.id in items_1.armor)
+                foundItem = items_1.armor[armorData.id];
+            if (!foundItem)
+                return false;
+            item = new Armor_1.Armor(foundItem, this, armorData);
+        }
         if (item) {
             this.items.push(item);
-            this.recalculateMaxHp();
-            this.toUpdate.attackRadius = this.radii.attack;
+            this.updateThingsThatCouldChangeOnItemChange();
+            // other radii updated in subclasses
         }
         return true;
     }
     removeItem(item) {
-        const weaponIndex = this.items.findIndex((w) => w === item);
-        if (weaponIndex !== -1) {
-            this.items.splice(weaponIndex, 1);
-            return true;
-        }
-        const engineIndex = this.items.findIndex((e) => e === item);
-        if (engineIndex !== -1) {
-            this.items.splice(engineIndex, 1);
-            return true;
-        }
-        this.recalculateMaxHp();
-        return false;
+        const itemIndex = this.items.findIndex((i) => i === item);
+        if (itemIndex === -1)
+            return false;
+        this.items.splice(itemIndex, 1);
+        this.updateThingsThatCouldChangeOnItemChange();
+        return true;
     }
     equipLoadout(name) {
         const loadout = loadouts_1.default[name];
         if (!loadout)
             return false;
-        loadout.forEach((baseData) => this.addItem(baseData));
+        loadout.items.forEach((baseData) => this.addItem(baseData));
         return true;
     }
     // ----- radii -----
-    updateSightRadius() {
-        this.radii.sight = 0.6;
+    updateThingsThatCouldChangeOnItemChange() {
+        this.recalculateMaxHp();
+        this.updateSightAndScanRadius();
+    }
+    updateSightAndScanRadius() {
+        this.radii.sight = Math.max(dist_1.default.baseSightRange, this.scanners.reduce((max, s) => s.sightRange * s.repair > max
+            ? s.sightRange * s.repair
+            : max, 0));
+        this.radii.scan = this.scanners.reduce((max, s) => s.shipScanRange * s.repair > max
+            ? s.shipScanRange * s.repair
+            : max, 0);
         this.toUpdate.radii = this.radii;
     }
     get canMove() {
@@ -155,13 +221,8 @@ class Ship {
     }
     move(toLocation) {
         if (toLocation) {
-            this.location = toLocation;
+            this.location = [...toLocation];
             this.toUpdate.location = this.location;
-            // this.speed = 0
-            // this.velocity = [0, 0]
-            // this.toUpdate.speed = this.speed
-            // this.toUpdate.velocity = this.velocity
-            // this.addPreviousLocation(previousLocation)
         }
     }
     addPreviousLocation(locationBeforeThisTick) {
@@ -192,7 +253,7 @@ class Ship {
                 const distance = dist_1.default.distance(planet.location, this.location);
                 if (distance <= dist_1.default.GRAVITY_RANGE &&
                     distance > dist_1.default.ARRIVAL_THRESHOLD) {
-                    const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 100;
+                    const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 10;
                     const vectorToAdd = dist_1.default
                         .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
                         .map((g) => ((g *
@@ -242,7 +303,7 @@ class Ship {
         this._maxHp = this.items.reduce((total, i) => i.maxHp + total, 0);
     }
     get hp() {
-        const total = this.items.reduce((total, i) => i.maxHp * i.repair + total, 0);
+        const total = this.items.reduce((total, i) => Math.max(0, i.maxHp * i.repair) + total, 0);
         this._hp = total;
         const wasDead = this.dead;
         this.dead = total <= 0;

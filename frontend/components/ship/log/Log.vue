@@ -44,7 +44,7 @@ export default {
   position: relative;
 }
 .scroll {
-  height: 300px;
+  height: 250px;
   overflow-y: auto;
 }
 </style>

@@ -10,8 +10,9 @@ const shipSchemaFields = {
     id: { type: String, required: true },
     location: [{ type: Number, required: true }],
     name: { type: String, required: true },
-    faction: { color: String },
+    species: { id: String },
     loadout: String,
+    chassis: { id: String },
     items: [
         {
             type: { type: String, required: true },
@@ -25,6 +26,7 @@ const shipSchemaFields = {
     log: [{ text: String, time: Number, level: String }],
     seenPlanets: [{ name: String }],
     captain: String,
+    logAlertLevel: String,
     crewMembers: [
         {
             name: { type: String, required: true },
@@ -42,7 +44,18 @@ const shipSchemaFields = {
                 { type: { type: String }, amount: Number },
             ],
             credits: Number,
-            actives: [String],
+            actives: [
+                {
+                    type: { required: true, type: String },
+                    cooldownRemaining: Number,
+                },
+            ],
+            passives: [
+                {
+                    type: { required: true, type: String },
+                    level: Number,
+                },
+            ],
             tactic: String,
             attackFactions: [String],
             targetLocation: [Number, Number],

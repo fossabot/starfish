@@ -41,9 +41,14 @@ export default {
   methods: {
     enter(this: ComponentShape) {
       this.hovering = true
+      this.$store.commit('tooltip', {
+        type: 'cache',
+        data: {},
+      })
     },
     leave(this: ComponentShape) {
       this.hovering = false
+      this.$store.commit('tooltip')
     },
   },
 }

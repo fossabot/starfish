@@ -4,7 +4,7 @@ type CrewLocation =
   | `repair`
   | `weapons`
 
-type SkillName =
+type SkillType =
   | `piloting`
   | `munitions`
   | `mechanics`
@@ -12,9 +12,15 @@ type SkillName =
 
 type Tactic = `defensive` | `aggressive`
 
-type RepairPriority = `most damaged` | `engines` | `weapons`
+type RepairPriority =
+  | `most damaged`
+  | `engines`
+  | `weapons`
+  | `communicators`
+  | `scanners`
 
-type ActiveName = `boost`
+type CrewActiveType = `boost` | `quickFix` | `sightRange`
+type CrewPassiveType = `cargoSpace`
 
 type StatKey = `totalContributedToCommonFund`
 interface CrewStatEntry {
@@ -36,7 +42,8 @@ interface BaseCrewMemberData {
   stamina?: number
   inventory?: Cargo[]
   credits?: number
-  actives?: BaseActiveData[]
+  actives?: BaseCrewActiveData[]
+  passives?: BaseCrewPassiveData[]
   tactic?: Tactic
   attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null
@@ -45,11 +52,22 @@ interface BaseCrewMemberData {
 }
 
 interface XPData {
-  skill: SkillName
+  skill: SkillType
   level: number
   xp: number
 }
 
-interface BaseActiveData {
-  id: ActiveName
+interface BaseCrewActiveData {
+  displayName: string
+  type: CrewActiveType
+  basePrice: number
+  rarity: number
+}
+interface BaseCrewPassiveData {
+  displayName: string
+  type: CrewPassiveType
+  basePrice: number
+  level?: number
+  factor: number
+  rarity: number
 }

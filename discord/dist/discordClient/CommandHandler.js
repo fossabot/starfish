@@ -16,6 +16,7 @@ const Join_1 = require("./commands/Join");
 const Respawn_1 = require("./commands/Respawn");
 const RepairChannels_1 = require("./commands/RepairChannels");
 const Broadcast_1 = require("./commands/Broadcast");
+const AlertLevel_1 = require("./commands/AlertLevel");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
@@ -26,6 +27,7 @@ class CommandHandler {
             Respawn_1.RespawnCommand,
             RepairChannels_1.RepairChannelsCommand,
             Broadcast_1.BroadcastCommand,
+            AlertLevel_1.AlertLevelCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         // this.commands.push(new HelpCommand(this.commands))
@@ -41,7 +43,6 @@ class CommandHandler {
         if (message.channel.type === `dm` || !message.guild) {
             return;
         }
-        this.sideEffects(message);
         // initialize command context
         const commandContext = new CommandContext_1.CommandContext(message, this.prefix);
         // find matched commands
@@ -59,17 +60,25 @@ class CommandHandler {
             await reactor_1.reactor.failure(message);
             return;
         }
+        commandContext.matchedCommands = matchedCommands;
         // get ship data to determine which commands a user should be able to run.
         const ship = await ioInterface_1.default.ship.get(message.guild?.id || ``);
         commandContext.ship = ship;
         const crewMember = ship?.crewMembers.find((cm) => cm.id === message.author.id) || null;
+        commandContext.isCaptain =
+            Boolean(crewMember) &&
+                crewMember?.id === ship?.captain;
         commandContext.crewMember = crewMember;
+        // side effects!
+        this.sideEffects(commandContext);
         for (let matchedCommand of matchedCommands) {
             // check run permissions and get error message if relevant
             const permissionRes = matchedCommand.hasPermissionToRun(commandContext);
             if (permissionRes !== true) {
-                await message.channel.send(permissionRes);
-                await reactor_1.reactor.failure(message);
+                if (permissionRes.length) {
+                    await message.channel.send(permissionRes);
+                    await reactor_1.reactor.failure(message);
+                }
                 continue;
             }
             dist_1.default.log(`gray`, message.content);
@@ -77,7 +86,7 @@ class CommandHandler {
             await matchedCommand
                 .run(commandContext)
                 .then(() => {
-                reactor_1.reactor.success(message);
+                // reactor.success(message)
             })
                 .catch((reason) => {
                 dist_1.default.log(`red`, `Failed to run command ${commandContext.commandName}: ${reason}`);
@@ -93,10 +102,23 @@ class CommandHandler {
             return true;
         return false;
     }
-    sideEffects(message) {
+    sideEffects(context) {
         // ----- set nickname -----
-        if (message.guild?.me?.nickname !== `${dist_1.default.GAME_NAME}`)
-            message.guild?.me?.setNickname(`${dist_1.default.GAME_NAME}`);
+        if (context.initialMessage.guild?.me?.nickname !==
+            `${dist_1.default.GAME_NAME}`)
+            context.initialMessage.guild?.me?.setNickname(`${dist_1.default.GAME_NAME}`);
+        // ----- check for crew member still in guild, and update name if necessary -----
+        if (context.crewMember) {
+            const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
+            if (!guildMember) {
+                dist_1.default.log(`NO GUILD MEMBER BY THAT NAME`); // todo remove from game
+            }
+            else if (context.ship &&
+                context.nickname !== context.crewMember.name) {
+                ioInterface_1.default.crew.rename(context.ship.id, context.crewMember.id, context.nickname);
+                dist_1.default.log(guildMember.nickname || guildMember.user.username);
+            }
+        }
     }
 }
 exports.CommandHandler = CommandHandler;

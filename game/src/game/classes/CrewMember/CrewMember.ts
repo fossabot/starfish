@@ -1,18 +1,19 @@
 import c from '../../../../../common/dist'
-import io from '../../../server/io'
 
 import * as roomActions from './addins/rooms'
+import * as passives from '../../presets/crewPassives'
 import type { HumanShip } from '../Ship/HumanShip'
-import { Active } from './Active'
+import { CrewActive } from './addins/CrewActive'
+import { CrewPassive } from './addins/CrewPassive'
 import type { CombatShip } from '../Ship/CombatShip'
 
 export class CrewMember {
-  static readonly passiveStaminaLossPerSecond = 0.00005
   static readonly levelXPNumbers = c.levels
+  static readonly baseMaxCargoWeight = 10
 
   readonly id: string
   readonly ship: HumanShip
-  name: string
+  name: string = `crew member`
   location: CrewLocation
   readonly skills: XPData[]
   stamina: number
@@ -24,15 +25,17 @@ export class CrewMember {
   repairPriority: RepairPriority = `most damaged`
   readonly inventory: Cargo[]
   credits: number
-  readonly actives: Active[] = []
+  readonly actives: CrewActive[] = []
+  readonly passives: CrewPassive[] = []
   readonly upgrades: PassiveCrewUpgrade[] = []
-  maxCargoWeight: number = 10
   readonly stats: CrewStatEntry[] = []
+  maxCargoWeight: number = CrewMember.baseMaxCargoWeight
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     this.id = data.id
     this.ship = ship
-    this.name = data.name
+    this.rename(data.name)
+
     this.location = data.location || `bunk`
     this.stamina = data.stamina || this.maxStamina
     this.lastActive = Date.now()
@@ -45,9 +48,11 @@ export class CrewMember {
       { skill: `linguistics`, level: 1, xp: 0 },
     ]
 
-    if (data.actives)
-      for (let a of data.actives)
-        this.actives.push(new Active(a, this))
+    // if (data.actives)
+    //   for (let a of data.actives)
+
+    if (data.passives)
+      for (let p of data.passives) this.addPassive(p)
 
     if (data.tactic) this.tactic = data.tactic
     if (data.targetLocation)
@@ -60,7 +65,11 @@ export class CrewMember {
   }
 
   rename(newName: string) {
-    this.name = newName
+    this.name = c
+      .sanitize(newName)
+      .result.substring(0, c.maxNameLength)
+    if (this.name.replace(/\s/g, ``).length === 0)
+      this.name = `crew member`
   }
 
   goTo(location: CrewLocation) {
@@ -74,13 +83,6 @@ export class CrewMember {
   bunkAction = roomActions.bunk
 
   tick() {
-    // ----- test notify listeners -----
-    // todo
-    io.to(`ship:${this.ship.id}`).emit(
-      `crew:tired`,
-      c.stubify<CrewMember, CrewMemberStub>(this),
-    )
-
     // ----- reset attack target if out of vision range -----
     if (
       this.attackTarget &&
@@ -101,19 +103,10 @@ export class CrewMember {
     if (this.tired) return
 
     this.stamina -=
-      CrewMember.passiveStaminaLossPerSecond *
-      c.gameSpeedMultiplier *
-      (c.deltaTime / c.TICK_INTERVAL)
+      c.baseStaminaUse * (c.deltaTime / c.TICK_INTERVAL)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)
-
-      // ----- notify listeners -----
-      io.to(`ship:${this.ship.id}`).emit(
-        `crew:tired`,
-        c.stubify<CrewMember, CrewMemberStub>(this),
-      )
-
       return
     }
 
@@ -126,11 +119,9 @@ export class CrewMember {
       this.weaponsAction()
   }
 
-  addXp(skill: SkillName, xp?: number) {
+  addXp(skill: SkillType, xp?: number) {
     if (!xp)
-      xp =
-        (c.deltaTime / c.TICK_INTERVAL) *
-        c.gameSpeedMultiplier
+      xp = c.baseXpGain * (c.deltaTime / c.TICK_INTERVAL)
     let skillElement = this.skills.find(
       (s) => s.skill === skill,
     )
@@ -169,6 +160,38 @@ export class CrewMember {
       (total, i) => total + i.amount,
       0,
     )
+  }
+
+  recalculateMaxCargoWeight() {
+    const cargoSpacePassiveBoost =
+      this.passives.find((p) => p.type === `cargoSpace`)
+        ?.changeAmount || 0
+    this.maxCargoWeight =
+      CrewMember.baseMaxCargoWeight + cargoSpacePassiveBoost
+  }
+
+  addPassive(data: Partial<BaseCrewPassiveData>) {
+    if (!data.type) return
+    const existing = this.passives.find(
+      (p) => p.type === data.type,
+    )
+    if (existing) {
+      existing.level++
+    } else {
+      const fullPassiveData = {
+        ...passives[data.type],
+        level: data.level || 1,
+      }
+      this.passives.push(
+        new CrewPassive(fullPassiveData, this),
+      )
+    }
+    // reset all variables that might have changed because of this
+    this.recalculateAll()
+  }
+
+  recalculateAll() {
+    this.recalculateMaxCargoWeight()
   }
 
   addStat(statname: StatKey, amount: number) {

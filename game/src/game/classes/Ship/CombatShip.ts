@@ -27,6 +27,11 @@ export abstract class CombatShip extends Ship {
     this.updateAttackRadius()
   }
 
+  updateThingsThatCouldChangeOnItemChange() {
+    super.updateThingsThatCouldChangeOnItemChange()
+    this.updateAttackRadius()
+  }
+
   updateAttackRadius() {
     this.radii.attack = this.weapons.reduce(
       (highest: number, curr: Weapon): number =>
@@ -50,22 +55,16 @@ export abstract class CombatShip extends Ship {
   }
 
   respawn() {
-    c.log(`respawning`, this.name)
-    while (this.weapons.length) this.weapons.pop()
-    while (this.engines.length) this.engines.pop()
+    c.log(`Respawning`, this.name)
+    this.items = []
+    this.previousLocations = []
     this.equipLoadout(`humanDefault`)
     this.recalculateMaxHp()
     this.hp = this.maxHp
     this.dead = false
-    let moveTo: CoordinatePair
-    if (this.faction) {
-      moveTo = [
-        ...(this.faction.homeworld?.location || [0, 0]),
-      ]
-    } else moveTo = [0, 0]
-    this.move(moveTo)
-    while (this.previousLocations.length)
-      this.previousLocations.pop()
+    this.move([
+      ...(this.faction.homeworld?.location || [0, 0]),
+    ])
 
     db.ship.addOrUpdateInDb(this)
   }
@@ -82,7 +81,7 @@ export abstract class CombatShip extends Ship {
     if (
       otherShip.faction &&
       this.faction &&
-      otherShip.faction.color === this.faction.color
+      otherShip.faction.id === this.faction.id
     )
       return false
     if (
@@ -120,11 +119,13 @@ export abstract class CombatShip extends Ship {
     )
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
-    const hitRoll = Math.random() * weapon.repair
-    const miss = hitRoll < rangeAsPercent
+    const hitRoll = Math.random()
+    let miss = hitRoll < rangeAsPercent
     const damage = miss
       ? 0
-      : weapon.damage * totalMunitionsSkill
+      : weapon.damage * totalMunitionsSkill * weapon.repair
+    // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
+    if (damage === 0) miss = true
 
     c.log(
       `need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${
@@ -157,7 +158,9 @@ export abstract class CombatShip extends Ship {
       } with ${weapon.displayName}${
         attackResult.miss
           ? `.`
-          : `, dealing ${attackResult.damageTaken} damage.`
+          : `, dealing ${c.r2(
+              c.r2(attackResult.damageTaken),
+            )} damage.`
       }${
         attackResult.didDie
           ? ` ${target.name} died in the exchange.`
@@ -177,6 +180,12 @@ export abstract class CombatShip extends Ship {
     const previousHp = this.hp
 
     let remainingDamage = attack.damage
+    if (remainingDamage)
+      for (let armor of this.armor) {
+        const { taken, mitigated, remaining } =
+          armor.blockDamage(remainingDamage)
+        remainingDamage = remaining
+      }
     while (remainingDamage > 0) {
       let attackableEquipment: Item[] = []
       if (attack.targetType)
@@ -195,9 +204,15 @@ export abstract class CombatShip extends Ship {
         )
         const remainingHp = equipmentToAttack.hp
         if (remainingHp >= remainingDamage) {
+          // c.log(
+          //   `hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`,
+          // )
           equipmentToAttack.hp -= remainingDamage
           remainingDamage = 0
         } else {
+          // c.log(
+          //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+          // )
           equipmentToAttack.hp = 0
           remainingDamage -= remainingHp
         }
@@ -207,6 +222,10 @@ export abstract class CombatShip extends Ship {
         ) {
           this.logEntry(
             `Your ${equipmentToAttack.displayName} has been disabled!`,
+            `high`,
+          )
+          attacker.logEntry(
+            `You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`,
             `high`,
           )
           equipmentToAttack.announceWhenBroken = false
@@ -219,12 +238,6 @@ export abstract class CombatShip extends Ship {
 
     const didDie = previousHp > 0 && this.hp <= 0
     if (didDie) {
-      // ----- notify listeners -----
-      io.to(`ship:${this.id}`).emit(
-        `ship:die`,
-        c.stubify<Ship, ShipStub>(this),
-      )
-
       this.die()
     } else this.dead = false
 
@@ -253,7 +266,7 @@ export abstract class CombatShip extends Ship {
       } ${attacker.name}'s ${attack.weapon.displayName}${
         attack.miss
           ? `.`
-          : `, taking ${attack.damage} damage.`
+          : `, taking ${c.r2(attack.damage, 2)} damage.`
       }`,
       attack.miss ? `medium` : `high`,
     )

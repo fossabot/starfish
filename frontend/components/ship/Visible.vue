@@ -21,6 +21,13 @@
             angleAndDistance,
           )"
           :key="'visibleShip' + visibleShip.id"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'ship',
+              data: visibleShip,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           <span
             :style="{ color: visibleShip.faction.color }"
@@ -46,6 +53,13 @@
             angleAndDistance,
           )"
           :key="'visiblePlanet' + visiblePlanet.name"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'planet',
+              data: visiblePlanet,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           <span :style="{ color: visiblePlanet.color }"
             >🪐{{ visiblePlanet.name }}</span
@@ -70,6 +84,13 @@
             angleAndDistance,
           )"
           :key="'visibleCache' + visibleCache.id"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'cache',
+              data: visibleCache,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           📦Cache (<AngleArrow
             :angle="visibleCache.angle"

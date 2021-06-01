@@ -18,7 +18,7 @@ export class StartCommand implements Command {
     const createdShip = await ioInterface.ship.create({
       id: context.initialMessage.guild.id,
       name: context.initialMessage.guild.name,
-      faction: { color: `green` },
+      species: { id: `angelfish` },
     })
     if (!createdShip) {
       await context.initialMessage.channel.send(
@@ -61,6 +61,13 @@ export class StartCommand implements Command {
   hasPermissionToRun(
     commandContext: CommandContext,
   ): string | true {
+    if (commandContext.dm)
+      return `This command can only be invoked in a server.`
+    if (
+      !commandContext.isCaptain &&
+      !commandContext.isServerAdmin
+    )
+      return `Only the captain or a server admin may run this command.`
     if (commandContext.ship)
       return `Your server already has a ship! It's called ${commandContext.ship.name}.`
     return true

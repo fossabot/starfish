@@ -79,12 +79,20 @@ export default {
 <style lang="scss" scoped>
 .boxholder {
   padding: 0.7em;
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+
+    .box {
+      width: 100% !important;
+    }
+  }
 }
 .box {
   position: relative;
   z-index: 3;
   box-shadow: 0 5px 20px -5px var(--bg);
-  background: rgba(30, 30, 30, 0.9);
+  background: var(--pane-bg);
   overflow: hidden;
 
   .title {

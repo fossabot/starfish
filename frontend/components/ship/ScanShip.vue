@@ -1,7 +1,7 @@
 <template>
   <Box class="shipscan" v-if="ship && scannable.length">
     <template #title>
-      <span class="sectionemoji">🛸</span>Scan Ship
+      <span class="sectionemoji">🛸</span>Scan Ships
     </template>
     <div class="panesection">
       {{ scannable.length }} ship{{
@@ -33,13 +33,30 @@
           >{{ toShow.faction.name }}</span
         ><span v-else>No Faction</span>
       </div>
+      <div>
+        Species:
+        {{ toShow.species && toShow.species.icon
+        }}{{
+          c.capitalize(toShow.species && toShow.species.id)
+        }}
+      </div>
       <div v-if="toShow.planet">
         At planet 🪐{{ toShow.planet.name }}
+      </div>
+      <div v-if="toShow.level">
+        Level {{ Math.round(toShow.level) }}
       </div>
       <div>
         <div
           v-for="(item, index) in toShow.items"
           :key="'scanitem' + index"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: item.type,
+              data: item,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           {{ c.capitalize(item.type) }}:
           {{ item.displayName }}
@@ -63,6 +80,7 @@ export default {
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
     scannable(this: ComponentShape) {
+      if (this.ship.radii.scan === 0) return []
       return this.ship.visible.ships
         .filter(
           (s: ShipStub) =>
@@ -82,6 +100,7 @@ export default {
       return {
         name: selectedShip.name,
         faction: selectedShip.faction,
+        species: selectedShip.species,
         items: selectedShip.items,
         planet: selectedShip.planet,
       }

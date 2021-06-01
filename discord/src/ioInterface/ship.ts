@@ -83,6 +83,7 @@ export async function respawn(
 
 export async function broadcast(
   guildId: string,
+  crewMemberId: string,
   message: string,
 ): Promise<IOResponseReceived<number>> {
   if (!(await connected())) return { error: `` }
@@ -92,8 +93,29 @@ export async function broadcast(
       io.emit(
         `ship:broadcast`,
         guildId,
+        crewMemberId,
         message,
         (res: IOResponseReceived<number>) => {
+          resolve(res)
+        },
+      )
+    })
+  return result
+}
+
+export async function alertLevel(
+  guildId: string,
+  level: LogAlertLevel,
+): Promise<IOResponseReceived<LogAlertLevel>> {
+  if (!(await connected())) return { error: `` }
+
+  const result: IOResponseReceived<LogAlertLevel> =
+    await new Promise((resolve) => {
+      io.emit(
+        `ship:alertLevel`,
+        guildId,
+        level,
+        (res: IOResponseReceived<LogAlertLevel>) => {
           resolve(res)
         },
       )

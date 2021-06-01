@@ -25,15 +25,25 @@ export function repair(
   const itemsToRepair: Item[] = []
 
   if (this.repairPriority === `engines`) {
-    const repairableEngines = repairableItems.filter(
+    const r = repairableItems.filter(
       (i) => i.type === `engine`,
     )
-    itemsToRepair.push(...repairableEngines)
+    itemsToRepair.push(...r)
   } else if (this.repairPriority === `weapons`) {
-    const repairableWeapons = repairableItems.filter(
+    const r = repairableItems.filter(
       (i) => i.type === `weapon`,
     )
-    itemsToRepair.push(...repairableWeapons)
+    itemsToRepair.push(...r)
+  } else if (this.repairPriority === `scanners`) {
+    const r = repairableItems.filter(
+      (i) => i.type === `scanner`,
+    )
+    itemsToRepair.push(...r)
+  } else if (this.repairPriority === `communicators`) {
+    const r = repairableItems.filter(
+      (i) => i.type === `communicator`,
+    )
+    itemsToRepair.push(...r)
   }
   if (
     itemsToRepair.length === 0 ||
@@ -77,7 +87,7 @@ export function repair(
     totalRepaired += ri.repair - previousRepair
   })
   this.addXp(`mechanics`)
-  this.ship.toUpdate._hp = this.ship.hp
+  this.ship.updateThingsThatCouldChangeOnItemChange()
   return totalRepaired
 }
 
@@ -88,15 +98,14 @@ export function weapons(this: CrewMember): void {
   )
   if (chargeableWeapons.length) {
     const amountToReduceCooldowns =
-      (c.getWeaponCooldownReductionPerTick(
+      c.getWeaponCooldownReductionPerTick(
         this.munitions?.level || 1,
-      ) *
-        c.gameSpeedMultiplier) /
-      chargeableWeapons.length
+      ) / chargeableWeapons.length
     chargeableWeapons.forEach((cw) => {
       cw.cooldownRemaining -= amountToReduceCooldowns
       if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
     })
+
     this.addXp(`munitions`)
   }
 }

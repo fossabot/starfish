@@ -7,6 +7,7 @@ import discordEvents from './events/discord'
 import generalEvents from './events/general'
 import combatEvents from './events/combat'
 import crewEvents from './events/crew'
+import itemEvents from './events/items'
 
 const httpServer = createServer()
 const io = new Server<IOClientEvents, IOServerEvents>(
@@ -26,6 +27,7 @@ io.on(
     generalEvents(socket)
     combatEvents(socket)
     crewEvents(socket)
+    itemEvents(socket)
   },
 )
 

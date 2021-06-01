@@ -14,6 +14,10 @@ class CombatShip extends Ship_1.Ship {
         this.attackable = true;
         this.updateAttackRadius();
     }
+    updateThingsThatCouldChangeOnItemChange() {
+        super.updateThingsThatCouldChangeOnItemChange();
+        this.updateAttackRadius();
+    }
     updateAttackRadius() {
         this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);
         this.toUpdate.radii = this.radii;
@@ -26,26 +30,16 @@ class CombatShip extends Ship_1.Ship {
         return combatShipsInRange;
     }
     respawn() {
-        dist_1.default.log(`respawning`, this.name);
-        while (this.weapons.length)
-            this.weapons.pop();
-        while (this.engines.length)
-            this.engines.pop();
+        dist_1.default.log(`Respawning`, this.name);
+        this.items = [];
+        this.previousLocations = [];
         this.equipLoadout(`humanDefault`);
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
-        let moveTo;
-        if (this.faction) {
-            moveTo = [
-                ...(this.faction.homeworld?.location || [0, 0]),
-            ];
-        }
-        else
-            moveTo = [0, 0];
-        this.move(moveTo);
-        while (this.previousLocations.length)
-            this.previousLocations.pop();
+        this.move([
+            ...(this.faction.homeworld?.location || [0, 0]),
+        ]);
         db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
@@ -59,7 +53,7 @@ class CombatShip extends Ship_1.Ship {
             return false;
         if (otherShip.faction &&
             this.faction &&
-            otherShip.faction.color === this.faction.color)
+            otherShip.faction.id === this.faction.id)
             return false;
         if (dist_1.default.distance(otherShip.location, this.location) >
             this.radii.attack)
@@ -81,11 +75,14 @@ class CombatShip extends Ship_1.Ship {
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / weapon.range;
-        const hitRoll = Math.random() * weapon.repair;
-        const miss = hitRoll < rangeAsPercent;
+        const hitRoll = Math.random();
+        let miss = hitRoll < rangeAsPercent;
         const damage = miss
             ? 0
-            : weapon.damage * totalMunitionsSkill;
+            : weapon.damage * totalMunitionsSkill * weapon.repair;
+        // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
+        if (damage === 0)
+            miss = true;
         dist_1.default.log(`need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,
@@ -104,7 +101,7 @@ class CombatShip extends Ship_1.Ship {
         });
         this.logEntry(`${attackResult.miss ? `Missed` : `Attacked`} ${target.name} with ${weapon.displayName}${attackResult.miss
             ? `.`
-            : `, dealing ${attackResult.damageTaken} damage.`}${attackResult.didDie
+            : `, dealing ${dist_1.default.r2(dist_1.default.r2(attackResult.damageTaken))} damage.`}${attackResult.didDie
             ? ` ${target.name} died in the exchange.`
             : ``}`, `high`);
         return attackResult;
@@ -112,6 +109,11 @@ class CombatShip extends Ship_1.Ship {
     takeDamage(attacker, attack) {
         const previousHp = this.hp;
         let remainingDamage = attack.damage;
+        if (remainingDamage)
+            for (let armor of this.armor) {
+                const { taken, mitigated, remaining } = armor.blockDamage(remainingDamage);
+                remainingDamage = remaining;
+            }
         while (remainingDamage > 0) {
             let attackableEquipment = [];
             if (attack.targetType)
@@ -124,16 +126,23 @@ class CombatShip extends Ship_1.Ship {
                 const equipmentToAttack = dist_1.default.randomFromArray(attackableEquipment);
                 const remainingHp = equipmentToAttack.hp;
                 if (remainingHp >= remainingDamage) {
+                    // c.log(
+                    //   `hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`,
+                    // )
                     equipmentToAttack.hp -= remainingDamage;
                     remainingDamage = 0;
                 }
                 else {
+                    // c.log(
+                    //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+                    // )
                     equipmentToAttack.hp = 0;
                     remainingDamage -= remainingHp;
                 }
                 if (equipmentToAttack.hp === 0 &&
                     equipmentToAttack.announceWhenBroken) {
                     this.logEntry(`Your ${equipmentToAttack.displayName} has been disabled!`, `high`);
+                    attacker.logEntry(`You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`, `high`);
                     equipmentToAttack.announceWhenBroken = false;
                 }
             }
@@ -141,8 +150,6 @@ class CombatShip extends Ship_1.Ship {
         this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
         const didDie = previousHp > 0 && this.hp <= 0;
         if (didDie) {
-            // ----- notify listeners -----
-            io_1.default.to(`ship:${this.id}`).emit(`ship:die`, dist_1.default.stubify(this));
             this.die();
         }
         else
@@ -158,7 +165,7 @@ class CombatShip extends Ship_1.Ship {
             ? `Missed by attack from`
             : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss
             ? `.`
-            : `, taking ${attack.damage} damage.`}`, attack.miss ? `medium` : `high`);
+            : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
         return {
             miss: attack.damage === 0,
             damageTaken: attack.damage,

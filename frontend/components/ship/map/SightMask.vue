@@ -56,7 +56,7 @@
     >
       {{
         zoom > 1
-          ? Math.round(radius * 100) / 100 / FLAT_SCALE +
+          ? Math.round((radius * 100) / FLAT_SCALE) / 100 +
             'au'
           : ''
       }}

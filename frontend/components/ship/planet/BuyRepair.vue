@@ -1,0 +1,91 @@
+<template>
+  <div
+    class="panesection"
+    v-if="ship.planet && ship.planet.repairCostMultiplier"
+  >
+    <div>
+      <div class="panesubhead">Mechanics' Quarter</div>
+    </div>
+    <button
+      v-for="count in repairOptions"
+      :disabled="
+        crewMember.credits <
+          c.baseRepairCost *
+            ship.planet.repairCostMultiplier *
+            ship.planet.buyFluctuator *
+            (isSameFaction
+              ? c.factionVendorMultiplier
+              : 1) *
+            count || repairableHp < count
+      "
+      @click="buyRepair(count)"
+    >
+      🇨🇭{{ Math.round(count * 100) / 100 }}: 💳{{
+        Math.round(
+          c.baseRepairCost *
+            ship.planet.repairCostMultiplier *
+            ship.planet.buyFluctuator *
+            (isSameFaction
+              ? c.factionVendorMultiplier
+              : 1) *
+            count *
+            100,
+        ) / 100
+      }}
+    </button>
+  </div>
+</template>
+
+<script lang="ts">
+import c from '../../../../common/src'
+import { mapState } from 'vuex'
+interface ComponentShape {
+  [key: string]: any
+}
+
+export default {
+  data(): Partial<ComponentShape> {
+    return { c }
+  },
+  computed: {
+    ...mapState(['ship', 'crewMember']),
+    isSameFaction(this: ComponentShape) {
+      return (
+        this.ship.planet.faction?.id ===
+        this.ship.faction.id
+      )
+    },
+
+    repairableHp(this: ComponentShape) {
+      return this.ship._maxHp - this.ship._hp
+    },
+    repairOptions(this: ComponentShape) {
+      const options = [1, 10]
+      if (this.repairableHp >= 1)
+        options.push(this.repairableHp)
+      return options
+    },
+  },
+  watch: {},
+  mounted(this: ComponentShape) {},
+  methods: {
+    buyRepair(this: ComponentShape, hp: number) {
+      this.$socket?.emit(
+        'crew:buyRepair',
+        this.ship.id,
+        this.crewMember.id,
+        hp,
+        this.ship?.planet?.name,
+        (res: IOResponse<CrewMemberStub>) => {
+          if ('error' in res) {
+            console.log(res.error)
+            return
+          }
+        },
+      )
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped></style>

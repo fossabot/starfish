@@ -29,9 +29,14 @@ export class Weapon extends Item {
   }
 
   use() {
-    this.repair -= 0.01
-    this.lastUse = Date.now()
     this.cooldownRemaining = this.baseCooldown
-    super.use()
+    if (this.ship.ai) return 0
+
+    let repairLoss =
+      c.getBaseDurabilityLossPerTick(this.maxHp) * 2000
+    this.repair -= repairLoss
+    this.lastUse = Date.now()
+    repairLoss += super.use()
+    return repairLoss
   }
 }

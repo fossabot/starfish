@@ -2,30 +2,43 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import type { Faction } from '../Faction'
-import { Engine } from '../Item/Engine'
-import type { Item } from '../Item/Item'
-import { Weapon } from '../Item/Weapon'
 import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
 
-import loadouts from '../../presets/loadouts'
-import { weapons, engines } from '../../presets/items'
+import { Engine } from '../Item/Engine'
+import type { Item } from '../Item/Item'
+import { Weapon } from '../Item/Weapon'
+import { Scanner } from '../Item/Scanner'
+import { Communicator } from '../Item/Communicator'
+import { Armor } from '../Item/Armor'
+import loadouts from '../../presets/items/loadouts'
+import {
+  weapon as weaponPresets,
+  engine as enginePresets,
+  scanner as scannerPresets,
+  communicator as communicatorPresets,
+  armor as armorPresets,
+  chassis as chassisPresets,
+} from '../../presets/items'
+import type { Species } from '../Species'
 
 export class Ship {
   static maxPreviousLocations: number = 20
 
-  readonly name: string
-  planet: Planet | false
-  readonly faction: Faction | false
+  name: string = `ship`
+  planet: Planet | false = false
+  readonly faction: Faction
+  readonly species: Species
   readonly game: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
     broadcast: 0,
     scan: 0,
     attack: 0,
+    game: 0,
   }
 
   ai: boolean
@@ -46,8 +59,9 @@ export class Ship {
   }
 
   readonly seenPlanets: Planet[] = []
-  readonly items: Item[] = []
-  readonly previousLocations: CoordinatePair[] = []
+  chassis: BaseChassisData
+  items: Item[] = []
+  previousLocations: CoordinatePair[] = []
   id = `${Math.random()}`.substring(2) // re-set in subclasses
   location: CoordinatePair = [0, 0]
   velocity: CoordinatePair = [0, 0]
@@ -64,7 +78,8 @@ export class Ship {
   constructor(
     {
       name,
-      faction,
+      species,
+      chassis,
       items,
       loadout,
       seenPlanets,
@@ -74,27 +89,24 @@ export class Ship {
     game: Game,
   ) {
     this.game = game
-    this.name = name
+    this.rename(name)
 
     this.ai = true
     this.human = false
 
-    this.faction =
-      game.factions.find(
-        (f) => f.color === faction?.color,
-      ) || false
+    this.species = game.species.find(
+      (s) => s.id === species.id,
+    )!
+    this.faction = this.species.faction
 
-    if (location) this.location = location
-    else if (this.faction) {
+    if (location) {
+      this.location = location
+    } else if (this.faction) {
       this.location = [
         ...(this.faction.homeworld?.location || [0, 0]),
       ]
+      // c.log(`fact`, this.location, this.faction.homeworld)
     } else this.location = [0, 0]
-
-    this.planet =
-      this.game.planets.find((p) =>
-        this.isAt(p.location),
-      ) || false
 
     if (previousLocations)
       this.previousLocations = previousLocations
@@ -106,11 +118,18 @@ export class Ship {
         )
         .filter((p) => p) as Planet[]
 
+    if (chassis && chassis.id)
+      this.chassis = chassisPresets[chassis.id]
+    else if (loadout)
+      this.chassis =
+        chassisPresets[loadouts[loadout].chassis]
+    else this.chassis = chassisPresets.starter
+
     if (items) items.forEach((i) => this.addItem(i))
     if (!items && loadout) this.equipLoadout(loadout)
     this.hp = this.maxHp
 
-    this.updateSightRadius()
+    this.updateSightAndScanRadius()
     this.recalculateMaxHp()
     this._hp = this.hp
   }
@@ -126,9 +145,18 @@ export class Ship {
   }
 
   tick() {
-    if (this.dead) return
-    if (this.obeysGravity) this.applyTickOfGravity()
+    // if (this.dead) return
+    // if (this.obeysGravity) this.applyTickOfGravity()
     // c.log(`tick`, this.name)
+  }
+
+  rename(newName: string) {
+    this.name = c
+      .sanitize(newName)
+      .result.substring(0, c.maxNameLength)
+    if (this.name.replace(/\s/g, ``).length === 0)
+      this.name = `ship`
+    this.toUpdate.name = this.name
   }
 
   // ----- item mgmt -----
@@ -145,67 +173,139 @@ export class Ship {
     ) as Weapon[]
   }
 
+  get scanners(): Scanner[] {
+    return this.items.filter(
+      (i) => i instanceof Scanner,
+    ) as Scanner[]
+  }
+
+  get communicators(): Communicator[] {
+    return this.items.filter(
+      (i) => i instanceof Communicator,
+    ) as Communicator[]
+  }
+
+  get armor(): Armor[] {
+    return this.items.filter(
+      (i) => i instanceof Armor,
+    ) as Armor[]
+  }
+
   addItem(
     this: Ship,
     itemData: Partial<BaseItemData>,
   ): boolean {
     let item: Item | undefined
+    if (!itemData.type) return false
+    if (this.chassis.slots <= this.items.length) {
+      c.log(`No chassis slots remaining to add item into.`)
+      return false
+    }
     if (itemData.type === `engine`) {
       const engineData = itemData as Partial<BaseEngineData>
       let foundItem: BaseEngineData | undefined
-      if (engineData.id && engineData.id in engines)
-        foundItem = engines[engineData.id]
+      if (engineData.id && engineData.id in enginePresets)
+        foundItem = enginePresets[engineData.id]
       if (!foundItem) return false
       item = new Engine(foundItem, this, engineData)
     }
     if (itemData.type === `weapon`) {
       const weaponData = itemData as Partial<BaseWeaponData>
       let foundItem: BaseWeaponData | undefined
-      if (weaponData.id && weaponData.id in weapons)
-        foundItem = weapons[weaponData.id]
+      if (weaponData.id && weaponData.id in weaponPresets)
+        foundItem = weaponPresets[weaponData.id]
       if (!foundItem) return false
       item = new Weapon(foundItem, this, weaponData)
+    }
+    if (itemData.type === `scanner`) {
+      const scannerData =
+        itemData as Partial<BaseScannerData>
+      let foundItem: BaseScannerData | undefined
+      if (
+        scannerData.id &&
+        scannerData.id in scannerPresets
+      )
+        foundItem = scannerPresets[scannerData.id]
+      if (!foundItem) return false
+      item = new Scanner(foundItem, this, scannerData)
+    }
+    if (itemData.type === `communicator`) {
+      const communicatorData =
+        itemData as Partial<BaseCommunicatorData>
+      let foundItem: BaseCommunicatorData | undefined
+      if (
+        communicatorData.id &&
+        communicatorData.id in communicatorPresets
+      )
+        foundItem = communicatorPresets[communicatorData.id]
+      if (!foundItem) return false
+      item = new Communicator(
+        foundItem,
+        this,
+        communicatorData,
+      )
+    }
+    if (itemData.type === `armor`) {
+      const armorData = itemData as Partial<BaseArmorData>
+      let foundItem: BaseArmorData | undefined
+      if (armorData.id && armorData.id in armorPresets)
+        foundItem = armorPresets[armorData.id]
+      if (!foundItem) return false
+      item = new Armor(foundItem, this, armorData)
     }
 
     if (item) {
       this.items.push(item)
-      this.recalculateMaxHp()
-      this.toUpdate.attackRadius = this.radii.attack
+      this.updateThingsThatCouldChangeOnItemChange()
+      // other radii updated in subclasses
     }
     return true
   }
 
   removeItem(this: Ship, item: Item): boolean {
-    const weaponIndex = this.items.findIndex(
-      (w) => w === item,
+    const itemIndex = this.items.findIndex(
+      (i) => i === item,
     )
-    if (weaponIndex !== -1) {
-      this.items.splice(weaponIndex, 1)
-      return true
-    }
-    const engineIndex = this.items.findIndex(
-      (e) => e === item,
-    )
-    if (engineIndex !== -1) {
-      this.items.splice(engineIndex, 1)
-      return true
-    }
-    this.recalculateMaxHp()
-    return false
+    if (itemIndex === -1) return false
+    this.items.splice(itemIndex, 1)
+    this.updateThingsThatCouldChangeOnItemChange()
+    return true
   }
 
   equipLoadout(this: Ship, name: LoadoutName): boolean {
     const loadout = loadouts[name]
     if (!loadout) return false
-    loadout.forEach((baseData: Partial<BaseItemData>) =>
-      this.addItem(baseData),
+    loadout.items.forEach(
+      (baseData: Partial<BaseItemData>) =>
+        this.addItem(baseData),
     )
     return true
   }
 
   // ----- radii -----
-  updateSightRadius() {
-    this.radii.sight = 0.6
+  updateThingsThatCouldChangeOnItemChange() {
+    this.recalculateMaxHp()
+    this.updateSightAndScanRadius()
+  }
+
+  updateSightAndScanRadius() {
+    this.radii.sight = Math.max(
+      c.baseSightRange,
+      this.scanners.reduce(
+        (max, s) =>
+          s.sightRange * s.repair > max
+            ? s.sightRange * s.repair
+            : max,
+        0,
+      ),
+    )
+    this.radii.scan = this.scanners.reduce(
+      (max, s) =>
+        s.shipScanRange * s.repair > max
+          ? s.shipScanRange * s.repair
+          : max,
+      0,
+    )
     this.toUpdate.radii = this.radii
   }
 
@@ -220,13 +320,8 @@ export class Ship {
 
   move(toLocation?: CoordinatePair) {
     if (toLocation) {
-      this.location = toLocation
+      this.location = [...toLocation]
       this.toUpdate.location = this.location
-      // this.speed = 0
-      // this.velocity = [0, 0]
-      // this.toUpdate.speed = this.speed
-      // this.toUpdate.velocity = this.velocity
-      // this.addPreviousLocation(previousLocation)
     }
   }
 
@@ -284,7 +379,7 @@ export class Ship {
           distance <= c.GRAVITY_RANGE &&
           distance > c.ARRIVAL_THRESHOLD
         ) {
-          const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 100
+          const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 10
           const vectorToAdd = c
             .getGravityForceVectorOnThisBodyDueToThatBody(
               this,
@@ -334,7 +429,7 @@ export class Ship {
     return []
   }
 
-  cumulativeSkillIn(l: CrewLocation, s: SkillName) {
+  cumulativeSkillIn(l: CrewLocation, s: SkillType) {
     return 1
   }
 
@@ -357,7 +452,7 @@ export class Ship {
 
   get hp() {
     const total = this.items.reduce(
-      (total, i) => i.maxHp * i.repair + total,
+      (total, i) => Math.max(0, i.maxHp * i.repair) + total,
       0,
     )
     this._hp = total

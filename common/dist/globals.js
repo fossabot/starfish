@@ -7,6 +7,7 @@ for (let i = 0; i < 100; i++) {
 }
 exports.default = {
     GAME_NAME: `Starfish`,
+    GAME_DESCRIPTION: `Exactly what it sounds like.`,
     TICK_INTERVAL: 1000,
     M_PER_KM: 1000,
     KM_PER_AU: 149597900,

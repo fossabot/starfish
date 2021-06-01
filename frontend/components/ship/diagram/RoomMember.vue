@@ -8,7 +8,7 @@
     }"
   >
     <div>
-      🦀
+      {{ ship.species.icon }}
     </div>
     <div class="name">
       {{ name }}

@@ -92,8 +92,13 @@ export default {
         !amount ||
         amount < 0 ||
         amount > this.crewMember.credits
-      )
+      ) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'Nope.',
+          type: 'error',
+        })
         return console.log('Nope.')
+      }
 
       this.$socket?.emit(
         'crew:contribute',
@@ -125,8 +130,13 @@ export default {
             } ${type} do you want to jettison as a cache? (Max ${totalHeld})`,
           ) || '0',
         ) || 0
-      if (!amount || amount < 0 || amount > totalHeld)
+      if (!amount || amount < 0 || amount > totalHeld) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'Nope.',
+          type: 'error',
+        })
         return console.log('Nope.')
+      }
 
       const message = prompt(
         `Would you like to attach a message to the cache?`,

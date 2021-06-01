@@ -6,7 +6,7 @@
       :location="location"
       :radius="radius"
       color="rgba(255,255,255,.15)"
-      :label2="radius / FLAT_SCALE + 'AU'"
+      :label2="c.r2(radius / FLAT_SCALE, 6) + 'AU'"
       :label="radiusToTime(radius)"
       :zoom="zoom"
       :view="view"
@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../../common/src'
 interface ComponentShape {
   [key: string]: any
 }
@@ -33,7 +34,7 @@ export default {
     speed: {},
   },
   data(): ComponentShape {
-    return {}
+    return { c }
   },
   computed: {
     circlesToDraw(this: ComponentShape) {

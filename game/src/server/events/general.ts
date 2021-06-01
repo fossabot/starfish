@@ -7,6 +7,10 @@ import type { Ship } from '../../game/classes/Ship/Ship'
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
+  socket.on(`game:save`, () => {
+    game.save()
+  })
+
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {

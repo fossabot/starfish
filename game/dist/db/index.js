@@ -27,6 +27,7 @@ const dotenv_1 = require("dotenv");
 const cache = __importStar(require("./models/cache"));
 const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
+const planet = __importStar(require("./models/planet"));
 dotenv_1.config();
 const dist_1 = __importDefault(require("../../../common/dist"));
 const mongoose_1 = __importDefault(require("mongoose"));
@@ -34,6 +35,7 @@ exports.db = {
     cache,
     ship,
     attackRemnant,
+    planet,
 };
 let ready = false;
 const toRun = [];

@@ -8,6 +8,6 @@ export declare class Weapon extends Item {
     baseCooldown: number;
     cooldownRemaining: number;
     constructor(data: BaseWeaponData, ship: Ship, props?: Partial<BaseWeaponData>);
-    use(): void;
+    use(): number;
 }
 //# sourceMappingURL=Weapon.d.ts.map

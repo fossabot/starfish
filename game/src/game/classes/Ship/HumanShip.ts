@@ -14,6 +14,7 @@ export class HumanShip extends CombatShip {
   static maxLogLength = 20
   readonly id: string
   readonly log: LogEntry[]
+  logAlertLevel: LogAlertLevel = `high`
   readonly crewMembers: CrewMember[] = []
   captain: string | null = null
   availableRooms: CrewLocation[] = [
@@ -41,8 +42,8 @@ export class HumanShip extends CombatShip {
     if (data.commonCredits)
       this.commonCredits = data.commonCredits
 
-    this.radii.scan = 0.25
-    this.radii.broadcast = 0.6
+    if (data.logAlertLevel)
+      this.logAlertLevel = data.logAlertLevel
 
     data.crewMembers?.forEach((cm) => {
       this.addCrewMember(cm)
@@ -53,6 +54,21 @@ export class HumanShip extends CombatShip {
         `Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`,
         `medium`,
       )
+
+    this.visible = this.game.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+      undefined,
+      true,
+    )
+
+    this.updatePlanet(true)
+
+    setTimeout(() => {
+      this.radii.game = this.game.gameSoftRadius
+      this.toUpdate.radii = this.radii
+    }, 100)
   }
 
   tick() {
@@ -62,6 +78,7 @@ export class HumanShip extends CombatShip {
     // ----- move -----
     this.move()
 
+    // ----- scan -----
     this.visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
@@ -69,6 +86,7 @@ export class HumanShip extends CombatShip {
       undefined,
       true,
     )
+    this.scanners.forEach((s) => s.use())
 
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
@@ -81,10 +99,9 @@ export class HumanShip extends CombatShip {
     )
     if (newPlanets.length) {
       this.seenPlanets.push(...newPlanets)
-      this.toUpdate.seenPlanets = c.stubify<
-        Planet[],
-        PlanetStub[]
-      >(this.seenPlanets)
+      this.toUpdate.seenPlanets = this.seenPlanets.map(
+        (p) => c.stubify<Planet, PlanetStub>(p),
+      )
       db.ship.addOrUpdateInDb(this)
       newPlanets.forEach((p) =>
         this.logEntry(
@@ -148,7 +165,15 @@ export class HumanShip extends CombatShip {
 
     this.toUpdate.log = this.log
 
-    if (level === `critical`)
+    if (this.logAlertLevel === `off`) return
+    const levelsToAlert = [this.logAlertLevel]
+    if (this.logAlertLevel === `low`)
+      levelsToAlert.push(`medium`, `high`, `critical`)
+    if (this.logAlertLevel === `medium`)
+      levelsToAlert.push(`high`, `critical`)
+    if (this.logAlertLevel === `high`)
+      levelsToAlert.push(`critical`)
+    if (levelsToAlert.includes(level))
       io.emit(`ship:message`, this.id, text)
   }
 
@@ -182,13 +207,16 @@ export class HumanShip extends CombatShip {
       return
     }
 
-    const engineThrustMultiplier = this.engines
-      .filter((e) => e.repair > 0)
-      .reduce(
-        (total, e) =>
-          total + e.thrustAmplification * e.repair,
-        0,
-      )
+    const engineThrustMultiplier = Math.max(
+      c.noEngineThrustMagnitude,
+      this.engines
+        .filter((e) => e.repair > 0)
+        .reduce(
+          (total, e) =>
+            total + e.thrustAmplification * e.repair,
+          0,
+        ),
+    )
 
     // ----- calculate new location based on target of each member in cockpit -----
     for (let member of membersInCockpit) {
@@ -242,10 +270,28 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    this.updatePlanet()
-
     // ----- add previousLocation -----
     this.addPreviousLocation(startingLocation)
+
+    // ----- game radius -----
+    this.radii.game = this.game.gameSoftRadius
+    this.toUpdate.radii = this.radii
+    const isOutsideRadius =
+      c.distance([0, 0], this.location) >
+      this.game.gameSoftRadius
+    const startedOutsideRadius =
+      c.distance([0, 0], startingLocation) >
+      this.game.gameSoftRadius
+    if (isOutsideRadius && !startedOutsideRadius)
+      this.logEntry(
+        `Left the known universe. Nothing but the void awaits out here.`,
+        `high`,
+      )
+    if (!isOutsideRadius && startedOutsideRadius)
+      this.logEntry(
+        `Re-entered the known universe.`,
+        `high`,
+      )
 
     // ----- random encounters -----
     const distanceTraveled = c.distance(
@@ -253,9 +299,10 @@ export class HumanShip extends CombatShip {
       startingLocation,
     )
     if (
-      Math.random() * distanceTraveled >
-      (1 - 0.00001 * c.gameSpeedMultiplier) *
-        distanceTraveled
+      c.lottery(
+        distanceTraveled * (c.deltaTime / 1000),
+        0.5,
+      )
     ) {
       const amount =
         Math.round(
@@ -263,18 +310,26 @@ export class HumanShip extends CombatShip {
         ) /
           10 +
         1
+
+      const type = c.randomFromArray([
+        `oxygen`,
+        `salt`,
+        `water`,
+      ] as CargoType[])
       this.distributeCargoAmongCrew([
-        { type: `salt`, amount },
+        { type: type, amount },
       ])
       this.logEntry(
         `Encountered some space junk and managed to harvest ${amount} ton${
           amount === 1 ? `` : `s`
-        } of salt off of it.`,
+        } of ${type} off of it.`,
       )
     }
+
+    this.updatePlanet()
   }
 
-  updatePlanet() {
+  updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
       this.visible.planets.find((p) =>
@@ -285,6 +340,7 @@ export class HumanShip extends CombatShip {
         ? c.stubify<Planet, PlanetStub>(this.planet)
         : false
 
+    if (silent) return
     // -----  log for you and other ships on that planet when you land/depart -----
     if (this.planet && this.planet !== previousPlanet) {
       this.logEntry(
@@ -319,7 +375,22 @@ export class HumanShip extends CombatShip {
 
   applyTickOfGravity() {
     super.applyTickOfGravity()
-    this.updatePlanet()
+  }
+
+  updateBroadcastRadius() {
+    this.radii.broadcast = this.communicators.reduce(
+      (total, comm) => {
+        const currRadius = comm.repair * comm.range
+        return currRadius + total
+      },
+      0,
+    )
+    this.toUpdate.radii = this.radii
+  }
+
+  updateThingsThatCouldChangeOnItemChange() {
+    super.updateThingsThatCouldChangeOnItemChange()
+    this.updateBroadcastRadius()
   }
 
   addCommonCredits(amount: number, member: CrewMember) {
@@ -328,12 +399,12 @@ export class HumanShip extends CombatShip {
     member.addStat(`totalContributedToCommonFund`, amount)
   }
 
-  broadcast(message: string) {
+  broadcast(message: string, crewMember: CrewMember) {
     const sanitized = c.sanitize(
       message.replace(/\n/g, ` `),
     ).result
     // todo get equipment, use it, and adjust output/range based on repair etc
-    const range = this.radii.sight // for now
+    const range = this.radii.broadcast
     let didSendCount = 0
     for (let otherShip of this.visible.ships.filter(
       (s) => s.human,
@@ -344,8 +415,18 @@ export class HumanShip extends CombatShip {
       )
       if (distance > range) continue
       didSendCount++
-      const antiGarble = 0.4
-      const garbleAmount = distance / (range + antiGarble)
+      const antiGarble = this.communicators.reduce(
+        (total, curr) =>
+          curr.antiGarble * curr.repair + total,
+        0,
+      )
+      const crewSkillAntiGarble =
+        (crewMember.skills.find(
+          (s) => s.skill === `linguistics`,
+        )?.level || 0) / 100
+      const garbleAmount =
+        distance /
+        (range + antiGarble + crewSkillAntiGarble)
       const garbled = c.garble(sanitized, garbleAmount)
       const toSend = `**🚀${this.name}** says: *(${c.r2(
         distance,
@@ -364,6 +445,11 @@ export class HumanShip extends CombatShip {
         `broadcast`,
       )
     }
+
+    this.communicators.forEach((comm) => comm.use())
+    this.updateBroadcastRadius()
+    crewMember.addXp(`linguistics`, c.baseXpGain * 20)
+
     return didSendCount
   }
 
@@ -474,6 +560,9 @@ export class HumanShip extends CombatShip {
 
   respawn() {
     super.respawn()
+
+    this.updatePlanet(true)
+    this.toUpdate.dead = this.dead
 
     if (this instanceof HumanShip) {
       this.logEntry(

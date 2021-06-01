@@ -2,13 +2,16 @@ import c from '../../../../common/dist'
 import {
   DMChannel,
   Guild,
+  GuildMember,
   Message,
   MessageEmbed,
   NewsChannel,
   TextChannel,
+  User,
 } from 'discord.js'
 import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
 import { GameChannel } from './GameChannel'
+import type { Command } from './Command'
 
 /** a user-given command extracted from a message. */
 export class CommandContext {
@@ -20,6 +23,9 @@ export class CommandContext {
 
   /** original message the command was extracted from. */
   readonly initialMessage: Message
+  readonly author: User
+  readonly guildMember?: GuildMember
+  readonly nickname: string
 
   readonly commandPrefix: string
 
@@ -36,6 +42,8 @@ export class CommandContext {
 
   isCaptain: boolean = false
 
+  matchedCommands: Command[] = []
+
   readonly channels: {
     [key in GameChannelType]?: GameChannel
   } = {}
@@ -50,6 +58,12 @@ export class CommandContext {
     this.commandName = splitMessage.shift()!.toLowerCase()
     this.args = splitMessage
     this.initialMessage = message
+    this.author = message.author
+    this.guildMember = message.guild?.members.cache.find(
+      (m) => m.user.id === message.author.id,
+    )
+    this.nickname =
+      this.guildMember?.nickname || this.author.username
     this.guild = message.guild
     this.dm = message.channel.type === `dm`
     this.isServerAdmin =
@@ -89,7 +103,21 @@ export class CommandContext {
     // send
     if (channel) {
       this.channels[channelType] = channel
-      channel.send(message)
+      channel.send(message).catch(c.log)
+    }
+  }
+
+  async reply(message: string | MessageEmbed) {
+    if (this.initialMessage.channel instanceof NewsChannel)
+      return
+
+    let channel = new GameChannel(
+      null,
+      this.initialMessage.channel,
+    )
+    // send
+    if (channel) {
+      channel.send(message).catch(c.log)
     }
   }
 

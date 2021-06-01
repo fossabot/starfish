@@ -6,7 +6,6 @@ import { CombatShip } from './CombatShip'
 export class AIShip extends CombatShip {
   readonly human: boolean = false
   readonly id: string
-  readonly faction: Faction | false
   readonly spawnPoint: CoordinatePair
   level = 1
 
@@ -28,12 +27,9 @@ export class AIShip extends CombatShip {
     if (data.level) this.level = data.level
 
     if (data.spawnPoint?.length === 2)
-      this.spawnPoint = data.spawnPoint
-    else this.spawnPoint = this.location
-    this.targetLocation = this.location
-
-    this.faction =
-      game.factions.find((f) => f.ai === true) || false
+      this.spawnPoint = [...data.spawnPoint]
+    else this.spawnPoint = [...this.location]
+    this.targetLocation = [...this.location]
   }
 
   tick() {
@@ -68,7 +64,7 @@ export class AIShip extends CombatShip {
     }
   }
 
-  cumulativeSkillIn(l: CrewLocation, s: SkillName) {
+  cumulativeSkillIn(l: CrewLocation, s: SkillType) {
     return this.level
   }
 
@@ -123,8 +119,8 @@ export class AIShip extends CombatShip {
     }
 
     // ----- set new target location -----
-    if (Math.random() < 0.03) {
-      const distance = (Math.random() * this.level) / 7
+    if (Math.random() < 0.015) {
+      const distance = (Math.random() * this.level) / 2
       const currentAngle = c.angleFromAToB(
         this.location,
         this.targetLocation,
@@ -154,8 +150,6 @@ export class AIShip extends CombatShip {
               possibleAngles[0],
             )
       const unitVector = c.degreesToUnitVector(chosenAngle)
-
-      // c.log(angleToHome, chosenAngle, unitVector)
 
       this.targetLocation = [
         this.location[0] + unitVector[0] * distance,

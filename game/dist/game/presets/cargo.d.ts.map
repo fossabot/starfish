@@ -1,1 +1,1 @@
-{"version":3,"file":"cargo.d.ts","sourceRoot":"","sources":["../../../src/game/presets/cargo.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,IAAI,EAAE,SAIlB,CAAA;AAED,eAAO,MAAM,KAAK,EAAE,SAInB,CAAA;AAED,eAAO,MAAM,MAAM,EAAE,SAIpB,CAAA"}
+{"version":3,"file":"cargo.d.ts","sourceRoot":"","sources":["../../../src/game/presets/cargo.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,IAAI,EAAE,SAKlB,CAAA;AAED,eAAO,MAAM,KAAK,EAAE,SAKnB,CAAA;AAED,eAAO,MAAM,MAAM,EAAE,SAKpB,CAAA;AAED,eAAO,MAAM,IAAI,EAAE;KAAG,GAAG,IAAI,SAAS,GAAG,SAAS;CAIjD,CAAA"}

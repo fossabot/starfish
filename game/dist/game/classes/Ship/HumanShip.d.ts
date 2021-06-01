@@ -6,6 +6,7 @@ export declare class HumanShip extends CombatShip {
     static maxLogLength: number;
     readonly id: string;
     readonly log: LogEntry[];
+    logAlertLevel: LogAlertLevel;
     readonly crewMembers: CrewMember[];
     captain: string | null;
     availableRooms: CrewLocation[];
@@ -15,10 +16,12 @@ export declare class HumanShip extends CombatShip {
     tick(): void;
     logEntry(text: string, level?: LogLevel): void;
     move(toLocation?: CoordinatePair): void;
-    updatePlanet(): void;
+    updatePlanet(silent?: boolean): void;
     applyTickOfGravity(): void;
+    updateBroadcastRadius(): void;
+    updateThingsThatCouldChangeOnItemChange(): void;
     addCommonCredits(amount: number, member: CrewMember): void;
-    broadcast(message: string): number;
+    broadcast(message: string, crewMember: CrewMember): number;
     addRoom(room: CrewLocation): void;
     removeRoom(room: CrewLocation): void;
     addCrewMember(data: BaseCrewMemberData): CrewMember;

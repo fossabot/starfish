@@ -1,5 +1,6 @@
 declare const _default: {
     GAME_NAME: string;
+    GAME_DESCRIPTION: string;
     TICK_INTERVAL: number;
     M_PER_KM: number;
     KM_PER_AU: number;

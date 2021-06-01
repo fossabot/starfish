@@ -12,6 +12,7 @@ import { JoinCommand } from './commands/Join'
 import { RespawnCommand } from './commands/Respawn'
 import { RepairChannelsCommand } from './commands/RepairChannels'
 import { BroadcastCommand } from './commands/Broadcast'
+import { AlertLevelCommand } from './commands/AlertLevel'
 
 export class CommandHandler {
   private commands: Command[]
@@ -27,6 +28,7 @@ export class CommandHandler {
       RespawnCommand,
       RepairChannelsCommand,
       BroadcastCommand,
+      AlertLevelCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -48,8 +50,6 @@ export class CommandHandler {
     if (message.channel.type === `dm` || !message.guild) {
       return
     }
-
-    this.sideEffects(message)
 
     // initialize command context
     const commandContext = new CommandContext(
@@ -84,6 +84,8 @@ export class CommandHandler {
       return
     }
 
+    commandContext.matchedCommands = matchedCommands
+
     // get ship data to determine which commands a user should be able to run.
     const ship = await ioInterface.ship.get(
       message.guild?.id || ``,
@@ -93,15 +95,23 @@ export class CommandHandler {
       ship?.crewMembers.find(
         (cm) => cm.id === message.author.id,
       ) || null
+    commandContext.isCaptain =
+      Boolean(crewMember) &&
+      crewMember?.id === ship?.captain
     commandContext.crewMember = crewMember
+
+    // side effects!
+    this.sideEffects(commandContext)
 
     for (let matchedCommand of matchedCommands) {
       // check run permissions and get error message if relevant
       const permissionRes =
         matchedCommand.hasPermissionToRun(commandContext)
       if (permissionRes !== true) {
-        await message.channel.send(permissionRes)
-        await reactor.failure(message)
+        if (permissionRes.length) {
+          await message.channel.send(permissionRes)
+          await reactor.failure(message)
+        }
         continue
       }
 
@@ -111,7 +121,7 @@ export class CommandHandler {
       await matchedCommand
         .run(commandContext)
         .then(() => {
-          reactor.success(message)
+          // reactor.success(message)
         })
         .catch((reason) => {
           c.log(
@@ -133,9 +143,37 @@ export class CommandHandler {
     return false
   }
 
-  private sideEffects(message: Message) {
+  private sideEffects(context: CommandContext) {
     // ----- set nickname -----
-    if (message.guild?.me?.nickname !== `${c.GAME_NAME}`)
-      message.guild?.me?.setNickname(`${c.GAME_NAME}`)
+    if (
+      context.initialMessage.guild?.me?.nickname !==
+      `${c.GAME_NAME}`
+    )
+      context.initialMessage.guild?.me?.setNickname(
+        `${c.GAME_NAME}`,
+      )
+
+    // ----- check for crew member still in guild, and update name if necessary -----
+    if (context.crewMember) {
+      const guildMember =
+        context.initialMessage.guild?.members.cache.find(
+          (m) => m.user.id === context.crewMember?.id,
+        )
+      if (!guildMember) {
+        c.log(`NO GUILD MEMBER BY THAT NAME`) // todo remove from game
+      } else if (
+        context.ship &&
+        context.nickname !== context.crewMember.name
+      ) {
+        ioInterface.crew.rename(
+          context.ship.id,
+          context.crewMember.id,
+          context.nickname,
+        )
+        c.log(
+          guildMember.nickname || guildMember.user.username,
+        )
+      }
+    }
   }
 }

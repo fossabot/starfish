@@ -14,6 +14,7 @@ class CommandContext {
         this.ship = null;
         this.crewMember = null;
         this.isCaptain = false;
+        this.matchedCommands = [];
         this.channels = {};
         this.commandPrefix = prefix;
         const splitMessage = message.content
@@ -23,6 +24,10 @@ class CommandContext {
         this.commandName = splitMessage.shift().toLowerCase();
         this.args = splitMessage;
         this.initialMessage = message;
+        this.author = message.author;
+        this.guildMember = message.guild?.members.cache.find((m) => m.user.id === message.author.id);
+        this.nickname =
+            this.guildMember?.nickname || this.author.username;
         this.guild = message.guild;
         this.dm = message.channel.type === `dm`;
         this.isServerAdmin =
@@ -52,7 +57,16 @@ class CommandContext {
         // send
         if (channel) {
             this.channels[channelType] = channel;
-            channel.send(message);
+            channel.send(message).catch(dist_1.default.log);
+        }
+    }
+    async reply(message) {
+        if (this.initialMessage.channel instanceof discord_js_1.NewsChannel)
+            return;
+        let channel = new GameChannel_1.GameChannel(null, this.initialMessage.channel);
+        // send
+        if (channel) {
+            channel.send(message).catch(dist_1.default.log);
         }
     }
     async reactToInitialMessage(emoji) {

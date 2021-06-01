@@ -20,12 +20,20 @@ function repair(repairAmount) {
         return totalRepaired;
     const itemsToRepair = [];
     if (this.repairPriority === `engines`) {
-        const repairableEngines = repairableItems.filter((i) => i.type === `engine`);
-        itemsToRepair.push(...repairableEngines);
+        const r = repairableItems.filter((i) => i.type === `engine`);
+        itemsToRepair.push(...r);
     }
     else if (this.repairPriority === `weapons`) {
-        const repairableWeapons = repairableItems.filter((i) => i.type === `weapon`);
-        itemsToRepair.push(...repairableWeapons);
+        const r = repairableItems.filter((i) => i.type === `weapon`);
+        itemsToRepair.push(...r);
+    }
+    else if (this.repairPriority === `scanners`) {
+        const r = repairableItems.filter((i) => i.type === `scanner`);
+        itemsToRepair.push(...r);
+    }
+    else if (this.repairPriority === `communicators`) {
+        const r = repairableItems.filter((i) => i.type === `communicator`);
+        itemsToRepair.push(...r);
     }
     if (itemsToRepair.length === 0 ||
         this.repairPriority === `most damaged`)
@@ -55,7 +63,7 @@ function repair(repairAmount) {
         totalRepaired += ri.repair - previousRepair;
     });
     this.addXp(`mechanics`);
-    this.ship.toUpdate._hp = this.ship.hp;
+    this.ship.updateThingsThatCouldChangeOnItemChange();
     return totalRepaired;
 }
 exports.repair = repair;
@@ -63,9 +71,7 @@ function weapons() {
     // ----- charge weapons -----
     const chargeableWeapons = this.ship.weapons.filter((w) => w.cooldownRemaining > 0);
     if (chargeableWeapons.length) {
-        const amountToReduceCooldowns = (dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) *
-            dist_1.default.gameSpeedMultiplier) /
-            chargeableWeapons.length;
+        const amountToReduceCooldowns = dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) / chargeableWeapons.length;
         chargeableWeapons.forEach((cw) => {
             cw.cooldownRemaining -= amountToReduceCooldowns;
             if (cw.cooldownRemaining < 0)

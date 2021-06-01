@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Starfield />
+    <div class="bg"></div>
+    <FadeIn :off="ready">{{ c.GAME_NAME }}</FadeIn>
+    <!-- <Starfield /> -->
 
     <div class="box" v-if="!ship || !crewMember">
       No ship found by the ID(s) you have saved! If you're
@@ -57,6 +59,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   resizeObserver: ResizeObserver | null
@@ -66,9 +69,11 @@ interface ComponentShape {
 export default {
   data(): ComponentShape {
     return {
+      c,
       currentShipIndex: 0,
       resizeObserver: null,
       masonryElement: null,
+      ready: false,
     }
   },
 
@@ -96,15 +101,10 @@ export default {
     currentShipIndex(this: ComponentShape) {
       this.changeShip(this.currentShipIndex)
     },
-    // ship() {
-    //   this.resetMasonry()
-    // },
-    // planet() {
-    //   this.resetMasonry()
-    // },
-    // room() {
-    //   this.resetMasonry()
-    // },
+    ship(this: ComponentShape) {
+      this.masonryElement = null
+      this.resizeObserver = null
+    },
   },
 
   async mounted(this: ComponentShape) {
@@ -113,8 +113,8 @@ export default {
       return
     }
     this.changeShip(this.currentShipIndex)
-    // this.$nextTick(this.resetMasonry)
     this.setUpObserver()
+    setTimeout(() => (this.ready = true), 2000)
   },
 
   methods: {
@@ -127,11 +127,10 @@ export default {
 
       await this.$nextTick()
 
-      if (this.resizeObserver)
-        return console.log('observer exists')
+      if (this.resizeObserver) return
       this.resizeObserver = new ResizeObserver(
         (entries) => {
-          console.log('resize')
+          // console.log('resize')
           this.$nextTick(this.resetMasonry)
         },
       )
@@ -151,14 +150,15 @@ export default {
         )
     },
     async resetMasonry(this: ComponentShape) {
+      if (!this.resizeObserver) return this.setUpObserver()
       if (
         !this.$refs.container ||
         !this.$masonry ||
         !window
       )
         return setTimeout(this.resetMasonry, 500)
-      console.log(!!this.masonryElement)
-      if (!this.masonryElement)
+      // console.log(!!this.masonryElement)
+      if (!this.masonryElement) {
         this.masonryElement = new this.$masonry(
           '#masonrycontainer',
           {
@@ -168,19 +168,37 @@ export default {
             fitWidth: true,
           },
         )
-      else this.masonryElement.layout()
+        setTimeout(() => (this.ready = true), 400)
+      } else this.masonryElement.layout()
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.bg {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-image: url('/bg1.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: blur(0.1vw);
+  opacity: 0.3;
+}
+
 .container {
   position: relative;
+
   // margin: 2em auto;
 
   .grid-item {
     margin-bottom: 0px;
+
+    @media (max-width: 768px) {
+      width: 100% !important;
+    }
   }
 }
 </style>

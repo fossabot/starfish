@@ -6,11 +6,17 @@ export const state = () => ({
   shipIds: [],
   ship: null,
   crewMember: null,
+  tooltip: null,
+  winSize: [1200, 1000],
 })
 
 export const mutations = {
   set(state, updates) {
     for (let prop in updates) state[prop] = updates[prop]
+  },
+
+  tooltip(state, text) {
+    state.tooltip = text
   },
 
   updateShip(state, updates) {
@@ -94,7 +100,6 @@ export const actions = {
     this.$socket.removeAllListeners()
 
     this.$socket.on(`disconnect`, () => {
-      console.log(`dc`)
       commit(`set`, { ship: null })
     })
 

@@ -6,26 +6,26 @@ import type { Ship } from './Ship/Ship'
 
 export class Faction {
   readonly name: string
+  readonly id: FactionKey
   readonly color: string
-  readonly homeworld: Planet | null
+  homeworld: Planet | null = null
   readonly ai: boolean
   readonly game: Game
 
   constructor(
-    { name, color, homeworld, ai }: BaseFactionData,
+    { name, id, ai, color }: BaseFactionData,
     game: Game,
   ) {
     this.name = name
-    this.color = color
-    this.homeworld =
-      game.planets.find((p) => p.name === homeworld) || null
+    this.id = id
     this.ai = Boolean(ai)
+    this.color = color
     this.game = game
   }
 
   get members(): Ship[] {
     return this.game.ships.filter(
-      (s) => s.faction && s.faction.color === this.color,
+      (s) => s.faction && s.faction.id === this.id,
     )
   }
 }

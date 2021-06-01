@@ -16,6 +16,7 @@ export class BroadcastCommand implements Command {
     if (context.ship) {
       const res = await ioInterface.ship.broadcast(
         context.ship.id,
+        context.initialMessage.author.id,
         context.initialMessage.content,
       )
       if (res.error)
@@ -39,6 +40,7 @@ export class BroadcastCommand implements Command {
   hasPermissionToRun(
     commandContext: CommandContext,
   ): string | true {
+    if (commandContext.matchedCommands.length > 1) return ``
     // commandContext.ship.items.find(antenna)
     return true
   }

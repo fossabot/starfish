@@ -11,21 +11,17 @@
       :fill="highlight ? highlightColor : color"
     />
     <line
-      :x1="from[0] * FLAT_SCALE"
-      :y1="from[1] * FLAT_SCALE"
-      :x2="to[0] * FLAT_SCALE"
-      :y2="to[1] * FLAT_SCALE"
+      :x2="from[0] * FLAT_SCALE"
+      :y2="from[1] * FLAT_SCALE"
+      :x1="to[0] * FLAT_SCALE"
+      :y1="to[1] * FLAT_SCALE"
       :stroke="highlight ? highlightColor : color"
       :stroke-width="
         ((strokeWidth * FLAT_SCALE) / zoom) *
           containerSizeMultiplier
       "
       :stroke-dasharray="
-        dash
-          ? (dash / zoom) * containerSizeMultiplier +
-            ' ' +
-            (dash / zoom) * containerSizeMultiplier
-          : ''
+        dash ? scaledDash + ' ' + scaledDash : ''
       "
     />
   </g>
@@ -61,6 +57,15 @@ export default {
         (this.minSize / this.zoom) *
         this.FLAT_SCALE *
         this.containerSizeMultiplier
+      )
+    },
+    scaledDash(this: ComponentShape) {
+      if (!this.dash) return
+      return (
+        ((this.dash / this.zoom) *
+          this.containerSizeMultiplier) /
+        100 /
+        this.FLAT_SCALE
       )
     },
   },

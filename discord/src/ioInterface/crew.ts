@@ -31,3 +31,14 @@ export async function add(
   })
   return crewMemberStub || `Failed to add crew member.`
 }
+
+export async function rename(
+  shipId: string,
+  crewId: string,
+  name: string,
+) {
+  if (!(await connected()))
+    return `Failed to rename crew member`
+
+  io.emit(`crew:rename`, shipId, crewId, name)
+}

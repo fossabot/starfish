@@ -1,10 +1,11 @@
 import * as roomActions from './addins/rooms';
 import type { HumanShip } from '../Ship/HumanShip';
-import { Active } from './Active';
+import { CrewActive } from './addins/CrewActive';
+import { CrewPassive } from './addins/CrewPassive';
 import type { CombatShip } from '../Ship/CombatShip';
 export declare class CrewMember {
-    static readonly passiveStaminaLossPerSecond = 0.00005;
     static readonly levelXPNumbers: number[];
+    static readonly baseMaxCargoWeight = 10;
     readonly id: string;
     readonly ship: HumanShip;
     name: string;
@@ -19,10 +20,11 @@ export declare class CrewMember {
     repairPriority: RepairPriority;
     readonly inventory: Cargo[];
     credits: number;
-    readonly actives: Active[];
+    readonly actives: CrewActive[];
+    readonly passives: CrewPassive[];
     readonly upgrades: PassiveCrewUpgrade[];
-    maxCargoWeight: number;
     readonly stats: CrewStatEntry[];
+    maxCargoWeight: number;
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): void;
@@ -31,9 +33,12 @@ export declare class CrewMember {
     weaponsAction: typeof roomActions.weapons;
     bunkAction: typeof roomActions.bunk;
     tick(): void;
-    addXp(skill: SkillName, xp?: number): void;
+    addXp(skill: SkillType, xp?: number): void;
     addCargo(type: CargoType, amount: number): number;
     get heldWeight(): number;
+    recalculateMaxCargoWeight(): void;
+    addPassive(data: Partial<BaseCrewPassiveData>): void;
+    recalculateAll(): void;
     addStat(statname: StatKey, amount: number): void;
     get tired(): boolean;
     get maxStamina(): number;

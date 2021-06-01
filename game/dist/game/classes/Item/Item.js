@@ -29,10 +29,14 @@ class Item {
         this.repair = newHp / this.maxHp;
     }
     use() {
-        this.repair -= 0.00005 * dist_1.default.gameSpeedMultiplier;
+        if (this.ship.ai)
+            return 0;
+        const durabilityLost = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp);
+        this.repair -= durabilityLost;
         if (this.repair < 0)
             this.repair = 0;
         this.ship.toUpdate._hp = this.ship.hp;
+        return durabilityLost;
     }
 }
 exports.Item = Item;

@@ -4,6 +4,7 @@ type CargoData = {
   type: CargoType
   name: string
   basePrice: number
+  rarity: number
 }
 
 interface Cargo {

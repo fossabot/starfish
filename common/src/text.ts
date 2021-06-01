@@ -91,7 +91,11 @@ function capitalize(string: string = ``): string {
 }
 
 function sanitize(string: string = ``): SanitizeResult {
-  const cleaned = filter.clean(string)
+  const withoutURLs = string.replace(
+    /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
+    ``,
+  )
+  const cleaned = filter.clean(withoutURLs)
   return {
     ok: string === cleaned,
     result: cleaned,
@@ -103,13 +107,23 @@ function sanitize(string: string = ``): SanitizeResult {
 }
 
 function msToTimeString(ms: number = 0): string {
-  let seconds = `${Math.round((ms % (60 * 1000)) / 1000)}`
-  if (seconds <= `9`) seconds = `0` + seconds
-  const minutes = Math.floor(ms / 1000 / 60)
-  return `${minutes}:${seconds}`
+  let remainingSeconds = Math.floor(ms / 1000)
+  let hours: any = Math.floor(remainingSeconds / (60 * 60))
+  remainingSeconds -= hours * 60 * 60
+
+  let minutes: any = Math.floor(remainingSeconds / 60)
+  remainingSeconds -= minutes * 60
+  if (minutes < 10 && hours > 0) minutes = `0${minutes}`
+
+  let seconds: any = remainingSeconds
+  if (seconds < 10) seconds = `0${seconds}`
+
+  if (!hours) return `${minutes}m ${seconds}s`
+  if (!minutes || minutes === `00`) return `${seconds}s`
+  return `${hours}h ${minutes}m ${seconds}s`
 }
 
-const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 `
+const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえお`
 function garble(string: string = ``, percent = 0): string {
   if (percent > 0.98) percent = 0.98
   let splitString: string[] = string.split(` `)

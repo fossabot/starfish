@@ -1,1 +1,1 @@
-{"version":3,"file":"weapons.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/weapons.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,OAAO,EAAE;KACnB,GAAG,IAAI,QAAQ,CAAC,CAAC,EAAE,cAAc;CAC9B,CAAA"}
+{"version":3,"file":"weapons.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/weapons.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,OAAO,EAAE;KACnB,GAAG,IAAI,QAAQ,GAAG,cAAc;CAclC,CAAA"}

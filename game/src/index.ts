@@ -12,6 +12,19 @@ dbInit({})
 export const game = new Game()
 
 runOnDbReady(async () => {
+  await db.attackRemnant.wipe()
+  // await db.planet.wipe()
+  // await db.cache.wipe()
+  // await db.ship.wipe()
+  // await db.ship.wipeAI()
+
+  const savedPlanets = await db.planet.getAllConstructible()
+  c.log(
+    `Loaded ${savedPlanets.length} saved planets from DB.`,
+  )
+  for (let planet of savedPlanets)
+    game.addPlanet(planet as BasePlanetData, false)
+
   const savedCaches = await db.cache.getAllConstructible()
   c.log(
     `Loaded ${savedCaches.length} saved caches from DB.`,
@@ -19,8 +32,6 @@ runOnDbReady(async () => {
   savedCaches.forEach((cache) =>
     game.addCache(cache, false),
   )
-
-  // await db.ship.wipe()
 
   const savedShips = await db.ship.getAllConstructible()
   c.log(`Loaded ${savedShips.length} saved ships from DB.`)

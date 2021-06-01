@@ -20,7 +20,7 @@ class StartCommand {
         const createdShip = await ioInterface_1.default.ship.create({
             id: context.initialMessage.guild.id,
             name: context.initialMessage.guild.name,
-            faction: { color: `green` },
+            species: { id: `angelfish` },
         });
         if (!createdShip) {
             await context.initialMessage.channel.send(`Failed to start your server in the game.`);
@@ -41,6 +41,11 @@ class StartCommand {
         await context.sendToGuild(`Use this channel to broadcast to the local area.`, `broadcast`);
     }
     hasPermissionToRun(commandContext) {
+        if (commandContext.dm)
+            return `This command can only be invoked in a server.`;
+        if (!commandContext.isCaptain &&
+            !commandContext.isServerAdmin)
+            return `Only the captain or a server admin may run this command.`;
         if (commandContext.ship)
             return `Your server already has a ship! It's called ${commandContext.ship.name}.`;
         return true;

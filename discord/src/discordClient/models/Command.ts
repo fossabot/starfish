@@ -15,7 +15,7 @@ export interface Command {
   /** execute the command. */
   run(parsedUserCommand: CommandContext): Promise<void>
 
-  /** returns true if the requesting user can use the command in the current context, or an error message otherwise. */
+  /** returns true if the requesting user can use the command in the current context, or an error message otherwise. Returns an empty string to fail silently. */
   hasPermissionToRun(
     parsedUserCommand: CommandContext,
   ): string | true

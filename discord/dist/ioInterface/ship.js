@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.broadcast = exports.respawn = exports.create = exports.get = void 0;
+exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function get(id) {
@@ -54,15 +54,26 @@ async function respawn(id) {
     return shipStub;
 }
 exports.respawn = respawn;
-async function broadcast(guildId, message) {
+async function broadcast(guildId, crewMemberId, message) {
     if (!(await index_1.connected()))
         return { error: `` };
     const result = await new Promise((resolve) => {
-        index_1.io.emit(`ship:broadcast`, guildId, message, (res) => {
+        index_1.io.emit(`ship:broadcast`, guildId, crewMemberId, message, (res) => {
             resolve(res);
         });
     });
     return result;
 }
 exports.broadcast = broadcast;
+async function alertLevel(guildId, level) {
+    if (!(await index_1.connected()))
+        return { error: `` };
+    const result = await new Promise((resolve) => {
+        index_1.io.emit(`ship:alertLevel`, guildId, level, (res) => {
+            resolve(res);
+        });
+    });
+    return result;
+}
+exports.alertLevel = alertLevel;
 //# sourceMappingURL=ship.js.map

@@ -90,15 +90,19 @@ export default {
     scaledStrokeWidth(this: ComponentShape) {
       if (!this.strokeWidth) return
       return (
-        (this.strokeWidth / this.zoom) *
-        this.containerSizeMultiplier
+        ((this.strokeWidth / this.zoom) *
+          this.containerSizeMultiplier) /
+        100 /
+        this.FLAT_SCALE
       )
     },
     scaledDash(this: ComponentShape) {
       if (!this.dash) return
       return (
-        (this.dash / this.zoom) *
-        this.containerSizeMultiplier
+        ((this.dash / this.zoom) *
+          this.containerSizeMultiplier) /
+        100 /
+        this.FLAT_SCALE
       )
     },
   },

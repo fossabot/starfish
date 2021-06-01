@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
 function default_1(socket) {
+    socket.on(`game:save`, () => {
+        __1.game.save();
+    });
     socket.on(`ships:forUser:fromIdArray`, (shipIds, userId, callback) => {
         const foundShips = __1.game.ships.filter((s) => s.human &&
             shipIds.includes(s.id) &&

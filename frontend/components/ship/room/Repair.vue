@@ -9,7 +9,7 @@
         <div class="panesubhead">Repair Priority</div>
       </div>
       <button
-        v-for="choice in repairChoices"
+        v-for="choice in choicesToShow"
         :key="'repairchoice' + choice"
         :class="{ secondary: selected !== choice }"
         @click="$store.commit('setRepairPriority', choice)"
@@ -37,7 +37,6 @@ import c from '../../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   crewMember: CrewMemberStub
-  repairChoices: RepairPriority[]
   [key: string]: any
 }
 
@@ -45,11 +44,38 @@ export default {
   data(): Partial<ComponentShape> {
     return {
       c,
-      repairChoices: ['most damaged', 'engines', 'weapons'],
     }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    choicesToShow(this: ComponentShape) {
+      const choices: RepairPriority[] = ['most damaged']
+      if (
+        this.ship.items.find(
+          (i: ItemStub) => i.type === 'weapon',
+        )
+      )
+        choices.push('weapons')
+      if (
+        this.ship.items.find(
+          (i: ItemStub) => i.type === 'engine',
+        )
+      )
+        choices.push('engines')
+      if (
+        this.ship.items.find(
+          (i: ItemStub) => i.type === 'scanner',
+        )
+      )
+        choices.push('scanners')
+      if (
+        this.ship.items.find(
+          (i: ItemStub) => i.type === 'communicator',
+        )
+      )
+        choices.push('communicators')
+      return choices
+    },
     selected(this: ComponentShape) {
       return (
         this.crewMember?.repairPriority || 'most damaged'

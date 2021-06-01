@@ -4,7 +4,7 @@ import type { Ship } from '../Ship/Ship'
 
 export class Item {
   readonly type: ItemType
-  readonly id: string
+  readonly id: ItemId
   readonly displayName: string
   readonly description: string
   repair = 1
@@ -46,8 +46,13 @@ export class Item {
   }
 
   use() {
-    this.repair -= 0.00005 * c.gameSpeedMultiplier
+    if (this.ship.ai) return 0
+    const durabilityLost = c.getBaseDurabilityLossPerTick(
+      this.maxHp,
+    )
+    this.repair -= durabilityLost
     if (this.repair < 0) this.repair = 0
     this.ship.toUpdate._hp = this.ship.hp
+    return durabilityLost
   }
 }

@@ -91,18 +91,17 @@ function default_1(socket) {
         ship.addCommonCredits(amount, crewMember);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`);
     });
-    socket.on(`crew:buy`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
+    socket.on(`crew:buyCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
             return callback({ error: `No ship found.` });
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
-        const cargoForSale = ship.game.planets
-            .find((p) => p.name === vendorLocation)
-            ?.vendor?.cargo?.find((cfs) => cfs.cargoData.type === cargoType &&
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.cargoData.type === cargoType &&
             cfs.buyMultiplier);
-        if (!cargoForSale)
+        if (!planet || !cargoForSale)
             return callback({
                 error: `That cargo is not for sale here.`,
             });
@@ -111,10 +110,13 @@ function default_1(socket) {
             return callback({
                 error: `That's too heavy to fit into your cargo space.`,
             });
-        const price = Math.round(cargoForSale.cargoData.basePrice *
+        const price = dist_1.default.r2(cargoForSale.cargoData.basePrice *
             cargoForSale.buyMultiplier *
             amount *
-            10000) / 10000;
+            planet?.buyFluctuator *
+            (planet.faction === ship.faction
+                ? dist_1.default.factionVendorMultiplier
+                : 1), 5);
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
@@ -131,7 +133,7 @@ function default_1(socket) {
         });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}.`);
     });
-    socket.on(`crew:sell`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
+    socket.on(`crew:sellCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
             return callback({ error: `No ship found.` });
@@ -143,18 +145,20 @@ function default_1(socket) {
             return callback({
                 error: `Not enough stock of that cargo found.`,
             });
-        const cargoBeingBought = ship.game.planets
-            .find((p) => p.name === vendorLocation)
-            ?.vendor?.cargo?.find((cbb) => cbb.cargoData.type === cargoType &&
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const cargoBeingBought = planet?.vendor?.cargo?.find((cbb) => cbb.cargoData.type === cargoType &&
             cbb.sellMultiplier);
-        if (!cargoBeingBought)
+        if (!planet || !cargoBeingBought)
             return callback({
                 error: `The vendor does not buy that.`,
             });
-        const price = Math.round(cargoBeingBought.cargoData.basePrice *
+        const price = dist_1.default.r2(cargoBeingBought.cargoData.basePrice *
             cargoBeingBought.sellMultiplier *
             amount *
-            10000) / 10000;
+            planet.sellFluctuator *
+            (planet.faction === ship.faction
+                ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
+                : 1), 5);
         crewMember.credits += price;
         existingStock.amount -= amount;
         callback({
@@ -203,12 +207,19 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
-        const repairMultiplier = ship.game.planets.find((p) => p.name === vendorLocation)?.repairCostMultiplier;
-        if (!repairMultiplier)
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const repairMultiplier = planet?.repairCostMultiplier;
+        if (!planet || !repairMultiplier)
             return callback({
                 error: `This planet does not offer mechanics.`,
             });
-        const price = Math.round(repairMultiplier * dist_1.default.baseRepairCost * hp * 10000) / 10000;
+        const price = dist_1.default.r2(repairMultiplier *
+            dist_1.default.baseRepairCost *
+            hp *
+            planet.buyFluctuator *
+            (planet.faction === ship.faction
+                ? dist_1.default.factionVendorMultiplier
+                : 1), 5);
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
@@ -225,6 +236,39 @@ function default_1(socket) {
             data: dist_1.default.stubify(crewMember),
         });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${vendorLocation}.`);
+    });
+    socket.on(`crew:buyPassive`, (shipId, crewId, passiveType, vendorLocation, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const passiveForSale = planet?.vendor?.passives?.find((pfs) => pfs.passiveData?.type === passiveType &&
+            pfs.buyMultiplier);
+        if (!planet ||
+            !passiveForSale ||
+            !passiveForSale.passiveData)
+            return callback({
+                error: `That passive is not for sale here.`,
+            });
+        const currentLevel = crewMember.passives.find((p) => p.type === passiveType)?.level || 0;
+        const price = dist_1.default.r2(passiveForSale.passiveData.basePrice *
+            passiveForSale.buyMultiplier *
+            dist_1.default.getCrewPassivePriceMultiplier(currentLevel) *
+            planet.buyFluctuator *
+            (planet.faction === ship.faction
+                ? dist_1.default.factionVendorMultiplier
+                : 1), 5, true);
+        if (price > crewMember.credits)
+            return callback({ error: `Insufficient funds.` });
+        crewMember.credits -= price;
+        crewMember.addPassive(passiveForSale.passiveData);
+        callback({
+            data: dist_1.default.stubify(crewMember),
+        });
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought passive ${passiveType} from ${vendorLocation}.`);
     });
 }
 exports.default = default_1;

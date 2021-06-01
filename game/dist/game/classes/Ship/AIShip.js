@@ -23,12 +23,10 @@ class AIShip extends CombatShip_1.CombatShip {
         if (data.level)
             this.level = data.level;
         if (data.spawnPoint?.length === 2)
-            this.spawnPoint = data.spawnPoint;
+            this.spawnPoint = [...data.spawnPoint];
         else
-            this.spawnPoint = this.location;
-        this.targetLocation = this.location;
-        this.faction =
-            game.factions.find((f) => f.ai === true) || false;
+            this.spawnPoint = [...this.location];
+        this.targetLocation = [...this.location];
     }
     tick() {
         super.tick();
@@ -83,8 +81,8 @@ class AIShip extends CombatShip_1.CombatShip {
                     (dist_1.default.deltaTime / 1000);
         }
         // ----- set new target location -----
-        if (Math.random() < 0.03) {
-            const distance = (Math.random() * this.level) / 7;
+        if (Math.random() < 0.015) {
+            const distance = (Math.random() * this.level) / 2;
             const currentAngle = dist_1.default.angleFromAToB(this.location, this.targetLocation);
             const possibleAngles = [
                 this.keyAngle,
@@ -103,7 +101,6 @@ class AIShip extends CombatShip_1.CombatShip {
                     ? a
                     : lowest, possibleAngles[0]);
             const unitVector = dist_1.default.degreesToUnitVector(chosenAngle);
-            // c.log(angleToHome, chosenAngle, unitVector)
             this.targetLocation = [
                 this.location[0] + unitVector[0] * distance,
                 this.location[1] + unitVector[1] * distance,

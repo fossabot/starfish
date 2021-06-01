@@ -12,6 +12,7 @@ export declare abstract class CombatShip extends Ship {
     static percentOfCreditsDroppedOnDeath: number;
     attackable: boolean;
     constructor(props: BaseShipData, game: Game);
+    updateThingsThatCouldChangeOnItemChange(): void;
     updateAttackRadius(): void;
     availableWeapons(): Weapon[];
     getEnemiesInAttackRange(): CombatShip[];

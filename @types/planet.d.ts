@@ -5,27 +5,51 @@ interface BasePlanetData {
   color: string
   location: CoordinatePair
   radius: number
-  faction?: { color: FactionKey }
-  races?: string[]
-  repairCostMultiplier?: number
-  vendor?: Vendor
+  factionId?: FactionKey
+  homeworld?: { id: FactionKey }
+  creatures: string[]
+  repairCostMultiplier: number
+  vendor: Vendor
 }
 
 interface VendorCargoPrice {
-  cargoData: CargoData
+  cargoType: CargoType
+  cargoData?: BaseCargoData
+  buyMultiplier: number
+  sellMultiplier: number
+}
+
+interface VendorChassisPrice {
+  chassisType: ChassisId
+  chassisData?: BaseChassisData
   buyMultiplier: number
   sellMultiplier: number
 }
 
 interface VendorItemPrice {
-  cargoData: BaseItemData
-  buyMultiplier: number
+  itemType: ItemType
+  itemId: ItemId
+  itemData?: BaseItemData
+  buyMultiplier?: number
   sellMultiplier: number
 }
 
+interface VendorCrewActivePrice {
+  activeType: CrewActiveType
+  activeData?: BaseActiveData
+  buyMultiplier: number
+}
+
+interface VendorCrewPassivePrice {
+  passiveType: CrewPassiveType
+  passiveData?: BaseCrewPassiveData
+  buyMultiplier: number
+}
+
 interface Vendor {
-  cargo?: VendorCargoPrice[]
-  items?: {
-    [key: ItemType]: VendorItemPrice[]
-  }
+  cargo: VendorCargoPrice[]
+  items: VendorItemPrice[]
+  chassis: VendorChassisPrice[]
+  passives: VendorCrewPassivePrice[]
+  actives: VendorCrewActivePrice[]
 }

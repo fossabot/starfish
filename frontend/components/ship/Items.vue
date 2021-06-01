@@ -5,9 +5,52 @@
         <span class="sectionemoji">🛠</span>Ship Equipment
       </template>
 
-      <div class="panesection" v-if="weapons">
+      <div class="panesection" v-if="armor && armor.length">
+        <div class="panesubhead">Armor</div>
+        <div
+          v-for="i in armor"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'armor',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          {{ i.displayName }}
+          <div>
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
+              <div>
+                🇨🇭HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
+              </div>
+            </ProgressBar>
+          </div>
+        </div>
+      </div>
+
+      <div class="panesection" v-if="weapons.length">
         <div class="panesubhead">Weapons</div>
-        <div v-for="i in weapons">
+        <div
+          v-for="i in weapons"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'weapon',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
           {{ i.displayName }}
           <div>
             <ProgressBar
@@ -52,9 +95,18 @@
         </div>
       </div>
 
-      <div class="panesection" v-if="engines">
+      <div class="panesection" v-if="engines.length">
         <div class="panesubhead">Engines</div>
-        <div v-for="i in engines">
+        <div
+          v-for="i in engines"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'engine',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
           {{ i.displayName }}
           <div>
             <ProgressBar
@@ -77,9 +129,18 @@
         </div>
       </div>
 
-      <div class="panesection" v-if="other">
-        <div class="panesubhead">Other Items</div>
-        <div v-for="i in other">
+      <div class="panesection" v-if="scanners.length">
+        <div class="panesubhead">Scanners</div>
+        <div
+          v-for="i in scanners"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'scanner',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
           {{ i.displayName }}
           <div>
             <ProgressBar
@@ -100,6 +161,83 @@
             </ProgressBar>
           </div>
         </div>
+      </div>
+
+      <div
+        class="panesection"
+        v-if="communicators && communicators.length"
+      >
+        <div class="panesubhead">Communicators</div>
+        <div
+          v-for="i in communicators"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'communicator',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          {{ i.displayName }}
+          <div>
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
+              <div>
+                🇨🇭HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
+              </div>
+            </ProgressBar>
+          </div>
+        </div>
+      </div>
+
+      <div class="panesection" v-if="other.length">
+        <div class="panesubhead">Other Items</div>
+        <div
+          v-for="i in other"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: i.type,
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          {{ i.displayName }}
+          <div>
+            <ProgressBar
+              :mini="true"
+              :percent="(i.repair * i.maxHp) / i.maxHp"
+            >
+              <div>
+                🇨🇭HP:
+                {{
+                  Math.round(i.repair * i.maxHp * 100) /
+                    100
+                }}/{{ i.maxHp }} ({{
+                  Math.round(
+                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
+                  ) / 10
+                }}%)
+              </div>
+            </ProgressBar>
+          </div>
+        </div>
+      </div>
+
+      <div class="panesection sub">
+        Equipment Slots Used: {{ ship.items.length }}/{{
+          ship.chassis.slots
+        }}
       </div>
     </Box>
   </div>
@@ -127,10 +265,29 @@ export default {
         (i: ItemStub) => i.type === 'weapon',
       )
     },
+    scanners(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'scanner',
+      )
+    },
+    communicators(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'communicator',
+      )
+    },
+    armor(this: ComponentShape) {
+      return this.ship.items.filter(
+        (i: ItemStub) => i.type === 'armor',
+      )
+    },
     other(this: ComponentShape) {
       return this.ship.items.filter(
         (i: ItemStub) =>
-          i.type !== 'engine' && i.type !== 'weapon',
+          i.type !== 'engine' &&
+          i.type !== 'weapon' &&
+          i.type !== 'scanner' &&
+          i.type !== 'communicator' &&
+          i.type !== 'armor',
       )
     },
   },

@@ -99,4 +99,8 @@ const log = (...args: any[]): void => {
   console.log(prefix, ...args)
 }
 
-export default { log }
+function trace() {
+  console.trace()
+}
+
+export default { log, trace }

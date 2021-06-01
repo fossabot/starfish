@@ -19,6 +19,7 @@ declare function pointIsInsideCircle(center?: CoordinatePair, point?: Coordinate
 declare function randomInsideCircle(radius: number): CoordinatePair;
 declare function randomSign(): 1 | -1;
 declare function randomInRange(a: number, b: number): number;
+declare function lottery(odds: number, outOf: number): boolean;
 declare const _default: {
     lerp: typeof lerp;
     r2: typeof r2;
@@ -36,6 +37,7 @@ declare const _default: {
     vectorToMagnitude: typeof vectorToMagnitude;
     randomSign: typeof randomSign;
     randomInRange: typeof randomInRange;
+    lottery: typeof lottery;
 };
 export default _default;
 //# sourceMappingURL=math.d.ts.map

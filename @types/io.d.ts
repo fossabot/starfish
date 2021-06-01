@@ -9,8 +9,6 @@ interface IOServerEvents {
     deltaTime: number
     game: GameStub
   }) => void
-  [`crew:tired`]: (crewMember: CrewMemberStub) => void
-  [`ship:die`]: (ship: ShipStub) => void
   [`ship:update`]: ({
     id,
     props,
@@ -27,6 +25,7 @@ interface IOServerEvents {
 
 interface IOClientEvents {
   [`hello`]: () => void
+  [`game:save`]: () => void
   [`ships:forUser:fromIdArray`]: (
     shipIds: Array,
     userId: string,
@@ -71,11 +70,6 @@ interface IOClientEvents {
     crewId: string,
     targetId: string,
   ) => void
-  [`crew:add`]: (
-    shipId: string,
-    data: BaseCrewMemberData,
-    callback: (res: IOResponse<CrewMemberStub>) => void,
-  ) => void
   [`crew:drop`]: (
     shipId: string,
     crewId: string,
@@ -84,7 +78,7 @@ interface IOClientEvents {
     message: string,
     callback: (res: IOResponse<CacheStub>) => void,
   ) => void
-  [`crew:buy`]: (
+  [`crew:buyCargo`]: (
     shipId: string,
     crewId: string,
     cargoType: CargoType,
@@ -92,7 +86,7 @@ interface IOClientEvents {
     vendorLocation: PlanetName,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
-  [`crew:sell`]: (
+  [`crew:sellCargo`]: (
     shipId: string,
     crewId: string,
     cargoType: CargoType,
@@ -107,10 +101,37 @@ interface IOClientEvents {
     vendorLocation: PlanetName,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
+  [`crew:buyPassive`]: (
+    shipId: string,
+    crewId: string,
+    type: CrewPassiveType,
+    vendorLocation: PlanetName,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
   [`crew:contribute`]: (
     shipId: string,
     crewId: string,
     amount: number,
+  ) => void
+  [`ship:buyItem`]: (
+    shipId: string,
+    crewId: string,
+    itemType: ItemType,
+    itemId: ItemId,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:sellItem`]: (
+    shipId: string,
+    crewId: string,
+    itemType: ItemType,
+    itemId: ItemId | ChassisId,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:swapChassis`]: (
+    shipId: string,
+    crewId: string,
+    chassisId: ChassisId,
+    callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 
   // discord
@@ -124,9 +145,26 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:broadcast`]: (
-    id: string,
+    shipId: string,
+    crewMemberId: string,
     message: string,
     callback: (res: IOResponse<number>) => void,
+  ) => void
+  [`ship:alertLevel`]: (
+    id: string,
+    level: LogAlertLevel,
+    callback: (res: IOResponse<LogAlertLevel>) => void,
+  ) => void
+
+  [`crew:add`]: (
+    shipId: string,
+    data: BaseCrewMemberData,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
+  [`crew:rename`]: (
+    shipId: string,
+    crewId: string,
+    name: string,
   ) => void
 }
 

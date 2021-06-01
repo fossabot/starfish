@@ -4,17 +4,6 @@
       <template #title>
         <span class="sectionemoji">🚀</span>{{ ship.name }}
       </template>
-      <!-- <div class="panesection">
-        <div>
-          Location:
-          <br />
-          {{
-            ship.location
-              .map((l) => l.toFixed(5))
-              .join(', ')
-          }}
-        </div>
-      </div> -->
 
       <div class="panesection" v-if="ship.planet">
         <div>At planet 🪐{{ ship.planet.name }}</div>
@@ -24,18 +13,11 @@
         <div class="arrow" v-if="ship.speed > 0">
           <div>
             Speed: <br />
-            {{
-              Math.round(
-                ship && ship.speed * 60 * 60 * 10000,
-              ) / 10000
-            }}
+            {{ c.r2(ship && ship.speed * 60 * 60, 4) }}
             AU/hr
             <br />
             Angle: <br />
-            {{
-              Math.round(ship && ship.direction * 100) /
-                100
-            }}°
+            {{ c.r2(ship && ship.direction, 2) }}°
           </div>
           <svg
             :style="{
@@ -87,17 +69,30 @@
 
       <div class="panesection">
         <div>
+          Model:
+          <span
+            @mouseenter="
+              $store.commit('tooltip', {
+                type: 'chassis',
+                data: ship.chassis,
+              })
+            "
+            @mouseleave="$store.commit('tooltip')"
+            >🚀{{ ship && ship.chassis.displayName }}</span
+          >
+        </div>
+        <div
+          @mouseenter="
+            $store.commit(
+              'tooltip',
+              `The ship's shared pool of credits. The captain can spend the common fund on new items for the ship.`,
+            )
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
           Common Fund: 💳{{
-            ship && Math.round(ship.commonCredits)
+            ship && c.r2(ship.commonCredits)
           }}
-        </div>
-        <div>
-          Sight:
-          {{ (ship && ship.radii.sight) || 0 }} AU
-        </div>
-        <div>
-          Broadcast:
-          {{ (ship && ship.radii.broadcast) || 0 }} AU
         </div>
         <div>
           Captain:
@@ -119,7 +114,8 @@
         </div>
         <div>
           Species:
-          {{ ship && ship.species }}
+          {{ ship && ship.species.icon
+          }}{{ ship && c.capitalize(ship.species.id) }}
         </div>
         <div>
           Faction:
@@ -144,6 +140,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -151,7 +148,7 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
@@ -195,10 +192,10 @@ export default {
   justify-content: space-between;
 
   svg {
-    margin-left: 1em;
+    margin-left: 0.5em;
     margin-right: 0em;
     transition: transform 0.5s;
-    width: 35%;
+    width: 33%;
     height: 50px;
   }
 }

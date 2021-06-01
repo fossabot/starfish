@@ -3,11 +3,12 @@ import type { Planet } from './Planet';
 import type { Ship } from './Ship/Ship';
 export declare class Faction {
     readonly name: string;
+    readonly id: FactionKey;
     readonly color: string;
-    readonly homeworld: Planet | null;
+    homeworld: Planet | null;
     readonly ai: boolean;
     readonly game: Game;
-    constructor({ name, color, homeworld, ai }: BaseFactionData, game: Game);
+    constructor({ name, id, ai, color }: BaseFactionData, game: Game);
     get members(): Ship[];
 }
 //# sourceMappingURL=Faction.d.ts.map

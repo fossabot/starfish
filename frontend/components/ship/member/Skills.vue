@@ -5,9 +5,10 @@
       v-for="skill in sortedSkills"
       :key="'skill' + skill.skill"
     >
-      Lv.{{ skill.level }}
-      {{ c.capitalize(skill.skill) }} ({{
-        Math.round(skill.xp)
+      <b>{{ c.capitalize(skill.skill) }}</b>
+      <br />
+      Lv.{{ skill.level }} ({{
+        c.numberWithCommas(Math.round(skill.xp))
       }}
       xp)
     </div>

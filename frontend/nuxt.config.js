@@ -1,3 +1,4 @@
+import c from '../common/src'
 export default {
   server: {
     port: 4300,
@@ -5,7 +6,7 @@ export default {
 
   // global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: `frontend`,
+    title: c.GAME_NAME,
     htmlAttrs: {
       lang: `en`,
     },
@@ -18,7 +19,7 @@ export default {
       {
         hid: `description`,
         name: `description`,
-        content: ``,
+        content: c.GAME_DESCRIPTION,
       },
     ],
     link: [
@@ -40,9 +41,9 @@ export default {
   components: true,
 
   buildModules: [`@nuxt/typescript-build`], // `nuxt-vite`],
-  //
 
   modules: [`@nuxtjs/axios`],
+
   io: {
     sockets: [
       {
@@ -51,7 +52,9 @@ export default {
     ],
   },
 
-  axios: {},
+  serverMiddleware: {
+    '/api': `~/api`,
+  },
 
   build: {},
 }

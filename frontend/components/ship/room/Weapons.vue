@@ -4,100 +4,115 @@
       ><span class="sectionemoji">🎯</span>Weapons
       Bay</template
     >
-    <div class="panesection" v-if="!weapons">
+    <div class="panesection" v-if="!weapons.length">
       No weapons on the ship!
     </div>
-    <div class="panesection" v-if="weapons">
-      <div class="panesubhead">Weapons</div>
-      <div v-for="i in weapons">
-        {{ i.displayName }}
-        <div class="flex">
-          <ProgressBar :mini="true" :percent="i.repair">
-            <div>
-              Repair:
-              {{ Math.round(i.repair * 1000) / 10 }}%
-            </div>
-          </ProgressBar>
-          <ProgressBar
-            :mini="true"
-            :percent="
-              (i.baseCooldown - i.cooldownRemaining) /
-                i.baseCooldown
-            "
-            :dangerZone="-1"
-          >
-            <div>
-              Charge:
-              {{
-                Math.floor(
-                  ((i.baseCooldown - i.cooldownRemaining) /
-                    i.baseCooldown) *
-                    100,
-                )
-              }}%
-            </div>
-          </ProgressBar>
+    <div v-else>
+      <div class="panesection">
+        <div class="panesubhead">Weapons</div>
+        <div
+          v-for="i in weapons"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'weapon',
+              data: i,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          {{ i.displayName }}
+          <div class="flex">
+            <ProgressBar :mini="true" :percent="i.repair">
+              <div>
+                Repair:
+                {{ Math.round(i.repair * 1000) / 10 }}%
+              </div>
+            </ProgressBar>
+            <ProgressBar
+              :mini="true"
+              :percent="
+                (i.baseCooldown - i.cooldownRemaining) /
+                  i.baseCooldown
+              "
+              :dangerZone="-1"
+            >
+              <div>
+                Charge:
+                {{
+                  Math.floor(
+                    ((i.baseCooldown -
+                      i.cooldownRemaining) /
+                      i.baseCooldown) *
+                      100,
+                  )
+                }}%
+              </div>
+            </ProgressBar>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="panesection">
-      <div class="panesubhead">Majority Tactic</div>
-      <div>
-        <b>{{ c.capitalize(ship.mainTactic) }}</b
-        >,
-        <span v-if="ship.targetShip">
-          targeting <b>{{ ship.targetShip.name }}</b>
-        </span>
-        <span v-else>
-          no specific target
-        </span>
+      <div class="panesection">
+        <div class="panesubhead">Majority Tactic</div>
+        <div>
+          <b>{{ c.capitalize(ship.mainTactic) }}</b
+          >,
+          <span v-if="ship.targetShip">
+            targeting <b>{{ ship.targetShip.name }}</b>
+          </span>
+          <span v-else>
+            no specific target
+          </span>
+        </div>
       </div>
-    </div>
-    <div class="panesection">
-      <div class="panesubhead">
-        Your Tactic
+      <div class="panesection">
+        <div class="panesubhead">
+          Your Tactic
+        </div>
+        <div>
+          <button
+            v-for="tactic in c.tactics"
+            @click="$store.commit('setTactic', tactic)"
+            :class="{
+              secondary: crewMember.tactic !== tactic,
+            }"
+          >
+            {{ c.capitalize(tactic) }}
+          </button>
+        </div>
       </div>
-      <div>
-        <button
-          v-for="tactic in c.tactics"
-          @click="$store.commit('setTactic', tactic)"
-          :class="{
-            secondary: crewMember.tactic !== tactic,
-          }"
-        >
-          {{ c.capitalize(tactic) }}
-        </button>
+      <div class="panesection">
+        <div class="panesubhead">
+          Your Target
+        </div>
+        <div>
+          <button
+            :class="{
+              secondary: crewMember.attackTarget,
+            }"
+            @click="$store.commit('setAttackTarget', null)"
+          >
+            Any Target
+          </button>
+          <button
+            v-for="ship in ship.enemiesInAttackRange"
+            :key="'inattackrange' + ship.id"
+            @click="
+              $store.commit('setAttackTarget', ship.id)
+            "
+            :class="{
+              secondary:
+                !crewMember.attackTarget ||
+                crewMember.attackTarget.id !== ship.id,
+            }"
+          >
+            🚀{{ ship.name }}
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="panesection">
-      <div class="panesubhead">
-        Your Target
+      <div class="panesection">
+        toggle always attack factions:
+        green/gray/red/blue/etc
       </div>
-      <div>
-        <button
-          :class="{
-            secondary: crewMember.attackTarget,
-          }"
-          @click="$store.commit('setAttackTarget', null)"
-        >
-          Any Target
-        </button>
-        <button
-          v-for="ship in ship.enemiesInAttackRange"
-          :key="'inattackrange' + ship.id"
-          @click="$store.commit('setAttackTarget', ship.id)"
-          :class="{
-            secondary:
-              !crewMember.attackTarget ||
-              crewMember.attackTarget.id !== ship.id,
-          }"
-        >
-          🚀{{ ship.name }}
-        </button>
-      </div>
-    </div>
-    <div class="panesection">
-      toggle always attack factions: green/gray/red/blue/etc
     </div>
   </Box>
 </template>

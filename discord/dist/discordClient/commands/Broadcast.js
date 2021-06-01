@@ -17,7 +17,7 @@ class BroadcastCommand {
     }
     async run(context) {
         if (context.ship) {
-            const res = await ioInterface_1.default.ship.broadcast(context.ship.id, context.initialMessage.content);
+            const res = await ioInterface_1.default.ship.broadcast(context.ship.id, context.initialMessage.author.id, context.initialMessage.content);
             if (res.error)
                 context.sendToGuild(res.error, `broadcast`);
             if (res.data !== undefined)
@@ -31,6 +31,8 @@ class BroadcastCommand {
         return false;
     }
     hasPermissionToRun(commandContext) {
+        if (commandContext.matchedCommands.length > 1)
+            return ``;
         // commandContext.ship.items.find(antenna)
         return true;
     }

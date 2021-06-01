@@ -24,27 +24,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
-const io_1 = __importDefault(require("../../../server/io"));
 const roomActions = __importStar(require("./addins/rooms"));
-const Active_1 = require("./Active");
+const passives = __importStar(require("../../presets/crewPassives"));
+const CrewPassive_1 = require("./addins/CrewPassive");
 class CrewMember {
     constructor(data, ship) {
+        this.name = `crew member`;
         this.targetLocation = null;
         this.tactic = `defensive`;
         this.attackFactions = [];
         this.attackTarget = null;
         this.repairPriority = `most damaged`;
         this.actives = [];
+        this.passives = [];
         this.upgrades = [];
-        this.maxCargoWeight = 10;
         this.stats = [];
+        this.maxCargoWeight = CrewMember.baseMaxCargoWeight;
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
         this.bunkAction = roomActions.bunk;
         this.id = data.id;
         this.ship = ship;
-        this.name = data.name;
+        this.rename(data.name);
         this.location = data.location || `bunk`;
         this.stamina = data.stamina || this.maxStamina;
         this.lastActive = Date.now();
@@ -56,9 +58,11 @@ class CrewMember {
             { skill: `mechanics`, level: 1, xp: 0 },
             { skill: `linguistics`, level: 1, xp: 0 },
         ];
-        if (data.actives)
-            for (let a of data.actives)
-                this.actives.push(new Active_1.Active(a, this));
+        // if (data.actives)
+        //   for (let a of data.actives)
+        if (data.passives)
+            for (let p of data.passives)
+                this.addPassive(p);
         if (data.tactic)
             this.tactic = data.tactic;
         if (data.targetLocation)
@@ -71,16 +75,17 @@ class CrewMember {
             this.stats = data.stats;
     }
     rename(newName) {
-        this.name = newName;
+        this.name = dist_1.default
+            .sanitize(newName)
+            .result.substring(0, dist_1.default.maxNameLength);
+        if (this.name.replace(/\s/g, ``).length === 0)
+            this.name = `crew member`;
     }
     goTo(location) {
         this.location = location;
         this.lastActive = Date.now();
     }
     tick() {
-        // ----- test notify listeners -----
-        // todo
-        io_1.default.to(`ship:${this.ship.id}`).emit(`crew:tired`, dist_1.default.stubify(this));
         // ----- reset attack target if out of vision range -----
         if (this.attackTarget &&
             !this.ship.visible.ships.includes(this.attackTarget))
@@ -96,14 +101,10 @@ class CrewMember {
         if (this.tired)
             return;
         this.stamina -=
-            CrewMember.passiveStaminaLossPerSecond *
-                dist_1.default.gameSpeedMultiplier *
-                (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+            dist_1.default.baseStaminaUse * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
-            // ----- notify listeners -----
-            io_1.default.to(`ship:${this.ship.id}`).emit(`crew:tired`, dist_1.default.stubify(this));
             return;
         }
         // ----- cockpit -----
@@ -118,9 +119,7 @@ class CrewMember {
     }
     addXp(skill, xp) {
         if (!xp)
-            xp =
-                (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) *
-                    dist_1.default.gameSpeedMultiplier;
+            xp = dist_1.default.baseXpGain * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         let skillElement = this.skills.find((s) => s.skill === skill);
         if (!skillElement) {
             const index = this.skills.push({
@@ -149,6 +148,32 @@ class CrewMember {
     }
     get heldWeight() {
         return this.inventory.reduce((total, i) => total + i.amount, 0);
+    }
+    recalculateMaxCargoWeight() {
+        const cargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
+            ?.changeAmount || 0;
+        this.maxCargoWeight =
+            CrewMember.baseMaxCargoWeight + cargoSpacePassiveBoost;
+    }
+    addPassive(data) {
+        if (!data.type)
+            return;
+        const existing = this.passives.find((p) => p.type === data.type);
+        if (existing) {
+            existing.level++;
+        }
+        else {
+            const fullPassiveData = {
+                ...passives[data.type],
+                level: data.level || 1,
+            };
+            this.passives.push(new CrewPassive_1.CrewPassive(fullPassiveData, this));
+        }
+        // reset all variables that might have changed because of this
+        this.recalculateAll();
+    }
+    recalculateAll() {
+        this.recalculateMaxCargoWeight();
     }
     addStat(statname, amount) {
         const existing = this.stats.find((s) => s.stat === statname);
@@ -180,6 +205,6 @@ class CrewMember {
     }
 }
 exports.CrewMember = CrewMember;
-CrewMember.passiveStaminaLossPerSecond = 0.00005;
 CrewMember.levelXPNumbers = dist_1.default.levels;
+CrewMember.baseMaxCargoWeight = 10;
 //# sourceMappingURL=CrewMember.js.map

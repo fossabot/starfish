@@ -2,9 +2,10 @@ interface BaseShipData {
   name: string
   id?: string
   location?: CoordinatePair
-  faction?: { color: FactionKey }
+  species: { id: SpeciesKey }
   seenPlanets?: { name: PlanetName }[]
   loadout?: LoadoutName
+  chassis?: { id: ChassisId }
   items?: BaseItemData[]
   ai?: boolean
   previousLocations?: CoordinatePair[]
@@ -17,6 +18,7 @@ interface BaseHumanShipData extends BaseShipData {
   crewMembers?: BaseCrewMemberData[]
   captain?: string
   log?: LogEntry[]
+  logAlertLevel?: LogLevel
   commonCredits?: number
 }
 
@@ -26,9 +28,15 @@ interface GameChannelReference {
   type: GameChannelType
 }
 
-type RadiusType = `sight` | `attack` | `scan` | `broadcast`
+type RadiusType =
+  | `sight`
+  | `attack`
+  | `scan`
+  | `broadcast`
+  | `game`
 
 type LogLevel = `low` | `medium` | `high` | `critical`
+type LogAlertLevel = LogLevel | `off`
 interface LogEntry {
   time: number
   level: LogLevel

@@ -12,11 +12,7 @@
           containerSizeMultiplier
       "
       :stroke-dasharray="
-        dash
-          ? dash * containerSizeMultiplier +
-            ' ' +
-            dash * containerSizeMultiplier
-          : ''
+        dash ? scaledDash + ' ' + scaledDash : ''
       "
       :style="{ opacity }"
       mask="url(#sightMask)"
@@ -51,6 +47,15 @@ export default {
         p[0] * this.FLAT_SCALE,
         p[1] * this.FLAT_SCALE,
       ])
+    },
+    scaledDash(this: ComponentShape) {
+      if (!this.dash) return
+      return (
+        ((this.dash / this.zoom) *
+          this.containerSizeMultiplier) /
+        100 /
+        this.FLAT_SCALE
+      )
     },
     d(this: ComponentShape) {
       if (!this.scaledPoints.length) return ''

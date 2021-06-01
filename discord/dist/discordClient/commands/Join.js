@@ -14,7 +14,7 @@ class JoinCommand {
         if (!context.ship)
             return;
         const addedCrewMember = await crew_1.add(context.ship.id, {
-            name: context.initialMessage.author.username,
+            name: context.nickname,
             id: context.initialMessage.author.id,
         });
         // add crew member
