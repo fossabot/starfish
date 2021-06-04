@@ -96,18 +96,4 @@ async function resolveOrCreateChannel({ type, guild, }) {
     return new GameChannel_1.GameChannel(guild, channel);
 }
 exports.default = resolveOrCreateChannel;
-//
-//
-// // ----- get bot role -----
-// const existingRoles = (
-//   await guild.roles.fetch()
-// ).cache.array()
-// const botRole = existingRoles.find(
-//   (role) => role.name === client.user?.username,
-// )
-// if (!botRole) {
-//   return null
-// }
-//
-//
 //# sourceMappingURL=resolveOrCreateChannel.js.map

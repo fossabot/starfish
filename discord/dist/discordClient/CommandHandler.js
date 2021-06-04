@@ -17,6 +17,8 @@ const Respawn_1 = require("./commands/Respawn");
 const RepairChannels_1 = require("./commands/RepairChannels");
 const Broadcast_1 = require("./commands/Broadcast");
 const AlertLevel_1 = require("./commands/AlertLevel");
+const ChangeCaptain_1 = require("./commands/ChangeCaptain");
+const Help_1 = require("./commands/Help");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
@@ -28,9 +30,10 @@ class CommandHandler {
             RepairChannels_1.RepairChannelsCommand,
             Broadcast_1.BroadcastCommand,
             AlertLevel_1.AlertLevelCommand,
+            ChangeCaptain_1.ChangeCaptainCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
-        // this.commands.push(new HelpCommand(this.commands))
+        this.commands.push(new Help_1.HelpCommand(this.commands));
         this.prefix = prefix;
     }
     async handleMessage(message) {
@@ -107,6 +110,14 @@ class CommandHandler {
         if (context.initialMessage.guild?.me?.nickname !==
             `${dist_1.default.GAME_NAME}`)
             context.initialMessage.guild?.me?.setNickname(`${dist_1.default.GAME_NAME}`);
+        // ----- update guild name if necessary -----
+        if (context.ship && context.guild) {
+            if (dist_1.default
+                .sanitize(context.guild.name)
+                .result.substring(0, dist_1.default.maxNameLength) !==
+                context.ship.name)
+                ioInterface_1.default.ship.rename(context.ship.id, context.guild.name);
+        }
         // ----- check for crew member still in guild, and update name if necessary -----
         if (context.crewMember) {
             const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
@@ -116,7 +127,6 @@ class CommandHandler {
             else if (context.ship &&
                 context.nickname !== context.crewMember.name) {
                 ioInterface_1.default.crew.rename(context.ship.id, context.crewMember.id, context.nickname);
-                dist_1.default.log(guildMember.nickname || guildMember.user.username);
             }
         }
     }

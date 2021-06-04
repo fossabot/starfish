@@ -24,6 +24,13 @@ export default function (
         data: stub,
       })
     } else {
+      if (game.humanShips.length >= c.gameShipLimit) {
+        callback({
+          error: `There are already the maximum number of ships in the game! Please check back later or ask in the support server when more space will be opening up. Priority goes to supporters!`,
+        })
+        return
+      }
+
       data.name = data.name.substring(0, c.maxNameLength)
       const ship = game.addHumanShip({
         ...data,
@@ -56,6 +63,24 @@ export default function (
     },
   )
 
+  socket.on(
+    `ship:setCaptain`,
+    (shipId, crewId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      ship.captain = crewMember.id
+      callback({ data: `ok` })
+    },
+  )
+
   socket.on(`crew:rename`, (shipId, crewId, newName) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,
@@ -75,6 +100,21 @@ export default function (
     crewMember.name = c
       .sanitize(newName)
       .result.substring(0, c.maxNameLength)
+  })
+
+  socket.on(`ship:rename`, (shipId, newName) => {
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship)
+      return c.log(
+        `Attempted to rename a ship that did not exist. (ship ${shipId})`,
+      )
+
+    ship.name = c
+      .sanitize(newName)
+      .result.substring(0, c.maxNameLength)
+    ship.toUpdate.name = ship.name
   })
 
   socket.on(

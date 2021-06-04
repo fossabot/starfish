@@ -57,6 +57,7 @@ const shipSchemaFields = {
                 },
             ],
             tactic: String,
+            itemTarget: String,
             attackFactions: [String],
             targetLocation: [Number, Number],
             repairPriority: String,

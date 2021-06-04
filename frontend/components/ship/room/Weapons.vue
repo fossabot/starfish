@@ -52,16 +52,27 @@
         </div>
       </div>
       <div class="panesection">
-        <div class="panesubhead">Majority Tactic</div>
+        <div class="panesubhead">
+          Majority Combat Strategy
+        </div>
         <div>
-          <b>{{ c.capitalize(ship.mainTactic) }}</b
-          >,
-          <span v-if="ship.targetShip">
-            targeting <b>{{ ship.targetShip.name }}</b>
-          </span>
-          <span v-else>
-            no specific target
-          </span>
+          <div>
+            <b>{{ c.capitalize(ship.mainTactic) }}</b>
+          </div>
+          <div>
+            <span v-if="ship.targetShip">
+              Targeting
+              <b>🚀{{ ship.targetShip.name }}</b></span
+            ><span v-else>No specific target ship</span>
+          </div>
+          <div>
+            <span v-if="ship.itemTarget">
+              Focusing fire on
+              <b>{{ ship.itemTarget }}s</b></span
+            ><span v-else>
+              No specific target equipment
+            </span>
+          </div>
         </div>
       </div>
       <div class="panesection">
@@ -91,9 +102,8 @@
             }"
             @click="$store.commit('setAttackTarget', null)"
           >
-            Any Target
-          </button>
-          <button
+            Any Target</button
+          ><button
             v-for="ship in ship.enemiesInAttackRange"
             :key="'inattackrange' + ship.id"
             @click="
@@ -106,6 +116,33 @@
             }"
           >
             🚀{{ ship.name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="panesection">
+        <div class="panesubhead">
+          Your Target Equipment Type
+        </div>
+        <div>
+          <button
+            :class="{
+              secondary: crewMember.itemTarget,
+            }"
+            @click="$store.commit('setItemTarget', null)"
+          >
+            Any Equipment</button
+          ><button
+            v-for="i in itemTargets"
+            :key="'itemtarget' + i"
+            @click="$store.commit('setItemTarget', i)"
+            :class="{
+              secondary:
+                !crewMember.itemTarget ||
+                crewMember.itemTarget !== i,
+            }"
+          >
+            {{ c.capitalize(i) }}s
           </button>
         </div>
       </div>
@@ -134,6 +171,16 @@ export default {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'weapon',
       )
+    },
+    itemTargets(this: ComponentShape) {
+      const its: ItemType[] = [
+        'weapon',
+        'engine',
+        'scanner',
+        'communicator',
+        'armor',
+      ]
+      return its
     },
   },
   watch: {},

@@ -1,5 +1,9 @@
 <template>
-  <div class="tooltip" v-if="tooltip" :style="tooltipStyle">
+  <div
+    class="hovertooltip"
+    v-if="tooltip"
+    :style="tooltipStyle"
+  >
     <template v-if="tooltip.type">
       <ShipTooltipsEngine
         v-if="tooltip.type === 'engine'"
@@ -35,6 +39,14 @@
       />
       <ShipTooltipsCache
         v-if="tooltip.type === 'cache'"
+        :data="tooltip.data"
+      />
+      <ShipTooltipsCargo
+        v-if="tooltip.type === 'cargo'"
+        :data="tooltip.data"
+      />
+      <ShipTooltipsRoom
+        v-if="tooltip.type === 'room'"
         :data="tooltip.data"
       />
     </template>
@@ -114,8 +126,8 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.tooltip {
+<style lang="scss">
+.hovertooltip {
   position: absolute;
   z-index: 100;
   font-size: 0.9rem;
@@ -127,5 +139,14 @@ export default {
   border: 1px solid var(--pane-border);
   // transition: transform 0.2s;
   pointer-events: none;
+  overflow: hidden;
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--text);
+    opacity: 0.2;
+    margin: 0.5em -2em;
+    width: 200%;
+  }
 }
 </style>

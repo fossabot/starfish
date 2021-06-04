@@ -71,13 +71,14 @@ class Ship {
             this.seenPlanets = seenPlanets
                 .map(({ name }) => this.game.planets.find((p) => p.name === name))
                 .filter((p) => p);
-        if (chassis && chassis.id)
+        if (chassis && chassis.id && items_1.chassis[chassis.id])
             this.chassis = items_1.chassis[chassis.id];
-        else if (loadout)
+        else if (loadout &&
+            items_1.chassis[loadouts_1.default[loadout]?.chassis])
             this.chassis =
                 items_1.chassis[loadouts_1.default[loadout].chassis];
         else
-            this.chassis = items_1.chassis.starter;
+            this.chassis = items_1.chassis.starter1;
         if (items)
             items.forEach((i) => this.addItem(i));
         if (!items && loadout)
@@ -122,6 +123,12 @@ class Ship {
     }
     get armor() {
         return this.items.filter((i) => i instanceof Armor_1.Armor);
+    }
+    swapChassis(chassisData) {
+        if (!chassisData.id)
+            return;
+        const chassisToSwapTo = items_1.chassis[chassisData.id];
+        this.chassis = chassisToSwapTo;
     }
     addItem(itemData) {
         let item;
@@ -181,7 +188,6 @@ class Ship {
         if (item) {
             this.items.push(item);
             this.updateThingsThatCouldChangeOnItemChange();
-            // other radii updated in subclasses
         }
         return true;
     }
@@ -206,12 +212,8 @@ class Ship {
         this.updateSightAndScanRadius();
     }
     updateSightAndScanRadius() {
-        this.radii.sight = Math.max(dist_1.default.baseSightRange, this.scanners.reduce((max, s) => s.sightRange * s.repair > max
-            ? s.sightRange * s.repair
-            : max, 0));
-        this.radii.scan = this.scanners.reduce((max, s) => s.shipScanRange * s.repair > max
-            ? s.shipScanRange * s.repair
-            : max, 0);
+        this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
+        this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         this.toUpdate.radii = this.radii;
     }
     get canMove() {
@@ -249,7 +251,7 @@ class Ship {
         if (!this.canMove)
             return;
         if (this.human) {
-            for (let planet of this.visible.planets) {
+            for (let planet of this.visible?.planets || []) {
                 const distance = dist_1.default.distance(planet.location, this.location);
                 if (distance <= dist_1.default.GRAVITY_RANGE &&
                     distance > dist_1.default.ARRIVAL_THRESHOLD) {
@@ -321,6 +323,7 @@ class Ship {
     }
     // ----- misc stubs -----
     logEntry(s, lv) { }
+    updateMaxScanProperties() { }
 }
 exports.Ship = Ship;
 Ship.maxPreviousLocations = 20;

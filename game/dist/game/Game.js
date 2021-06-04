@@ -126,7 +126,7 @@ class Game {
     // ----- radii -----
     get gameSoftRadius() {
         const count = this.humanShips.length || 1;
-        return Math.max(1, Math.sqrt(count) / 2);
+        return Math.max(3, Math.sqrt(count) * 2);
     }
     get gameSoftArea() {
         return Math.PI * this.gameSoftRadius ** 2;
@@ -147,19 +147,20 @@ class Game {
         });
     }
     spawnNewPlanet() {
-        while (this.planets.length < this.gameSoftArea * 1.5 ||
+        while (this.planets.length < this.gameSoftArea ||
             this.planets.length < this.factions.length - 1) {
             const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
             const p = planets_1.generatePlanet(this, factionThatNeedsAHomeworld?.id);
             if (!p)
                 return;
             const planet = this.addPlanet(p);
-            dist_1.default.log(`gray`, `Spawned planet ${p.name} at ${p.location}${factionThatNeedsAHomeworld
+            dist_1.default.log(`gray`, `Spawned planet ${planet.name} at ${planet.location}${factionThatNeedsAHomeworld
                 ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
                 : ``}.`);
-            dist_1.default.log(this.planets.map((p) => p.vendor.items));
-            dist_1.default.log(this.planets.map((p) => p.vendor.chassis));
-            dist_1.default.log(this.planets.map((p) => p.vendor.cargo));
+            // c.log(this.planets.map((p) => p.vendor.items))
+            // c.log(this.planets.map((p) => p.vendor.chassis))
+            // c.log(this.planets.map((p) => p.vendor.cargo))
+            // c.log(this.planets.map((p) => p.priceFluctuator))
         }
     }
     spawnNewCaches() {
@@ -198,7 +199,6 @@ class Game {
                 location: spawnPoint,
                 name: `AI${`${Math.random().toFixed(3)}`.substring(2)}`,
                 species: { id: `robots` },
-                loadout: `aiDefault`,
                 level,
             });
         }
@@ -225,7 +225,6 @@ class Game {
             return existing;
         }
         dist_1.default.log(`gray`, `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`);
-        data.loadout = `aiDefault`;
         const newShip = new AIShip_1.AIShip(data, this);
         this.ships.push(newShip);
         if (save)

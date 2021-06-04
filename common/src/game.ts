@@ -2,6 +2,8 @@ import math from './math'
 import globals from './globals'
 import c from './log'
 
+const gameShipLimit = 100
+
 const gameSpeedMultiplier = 24 * 3
 
 const baseSightRange = 0.2
@@ -12,16 +14,62 @@ const maxBroadcastLength = 200
 
 const baseStaminaUse = 0.00002 * gameSpeedMultiplier
 
-const baseXpGain = 0.5 * gameSpeedMultiplier
+const baseXpGain = 0.2 * gameSpeedMultiplier
 
-const factionVendorMultiplier = 0.99
+const factionVendorMultiplier = 0.98
 
 const baseItemSellMultiplier = 0.75
 
 const noEngineThrustMagnitude = 0.02
 
+const aiDifficultyMultiplier = 1
+
+const baseShipScanProperties: {
+  id: true
+  name: true
+  human: true
+  ai: true
+  dead: true
+  attackable: true
+  previousLocations: true
+  location: true
+  planet: (keyof BasePlanetData)[]
+  faction: (keyof BaseFactionData)[]
+  species: (keyof BaseSpeciesData)[]
+  chassis: (keyof BaseChassisData)[]
+} = {
+  id: true,
+  name: true,
+  human: true,
+  ai: true,
+  dead: true,
+  attackable: true,
+  previousLocations: true,
+  location: true,
+  planet: [`name`, `location`],
+  faction: [`ai`, `name`, `id`, `color`],
+  species: [`id`, `singular`, `icon`],
+  chassis: [`displayName`],
+}
+
+const tactics: Tactic[] = [`aggressive`, `defensive`]
+const cargoTypes: (`credits` | CargoType)[] = [
+  `salt`,
+  `water`,
+  `oxygen`,
+  `credits`,
+]
+
 function getBaseDurabilityLossPerTick(maxHp: number) {
   return 0.00001 * gameSpeedMultiplier * (10 / maxHp)
+}
+
+function getRadiusDiminishingReturns(
+  totalValue: number,
+  equipmentCount: number,
+) {
+  if (equipmentCount === 0) return 0
+  return totalValue / Math.sqrt(equipmentCount) || 0
 }
 
 function getThrustMagnitudeForSingleCrewMember(
@@ -56,14 +104,6 @@ function getWeaponCooldownReductionPerTick(level: number) {
 function getCrewPassivePriceMultiplier(level: number) {
   return 1 + level ** 2
 }
-
-const tactics: Tactic[] = [`aggressive`, `defensive`]
-const cargoTypes: (`credits` | CargoType)[] = [
-  `salt`,
-  `water`,
-  `oxygen`,
-  `credits`,
-]
 
 function stubify<BaseType, StubType extends BaseStub>(
   prop: BaseType,
@@ -117,6 +157,7 @@ function stubify<BaseType, StubType extends BaseStub>(
 }
 
 export default {
+  gameShipLimit,
   gameSpeedMultiplier,
   baseSightRange,
   baseRepairCost,
@@ -126,7 +167,10 @@ export default {
   factionVendorMultiplier,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
+  aiDifficultyMultiplier,
+  baseShipScanProperties,
   getBaseDurabilityLossPerTick,
+  getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,

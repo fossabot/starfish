@@ -20,6 +20,12 @@ function default_1(socket) {
             });
         }
         else {
+            if (__1.game.humanShips.length >= dist_1.default.gameShipLimit) {
+                callback({
+                    error: `There are already the maximum number of ships in the game! Please check back later or ask in the support server when more space will be opening up. Priority goes to supporters!`,
+                });
+                return;
+            }
             data.name = data.name.substring(0, dist_1.default.maxNameLength);
             const ship = __1.game.addHumanShip({
                 ...data,
@@ -40,6 +46,16 @@ function default_1(socket) {
         const broadcastRes = ship.broadcast(message, crewMember);
         callback({ data: broadcastRes });
     });
+    socket.on(`ship:setCaptain`, (shipId, crewId, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        ship.captain = crewMember.id;
+        callback({ data: `ok` });
+    });
     socket.on(`crew:rename`, (shipId, crewId, newName) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
@@ -50,6 +66,15 @@ function default_1(socket) {
         crewMember.name = dist_1.default
             .sanitize(newName)
             .result.substring(0, dist_1.default.maxNameLength);
+    });
+    socket.on(`ship:rename`, (shipId, newName) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return dist_1.default.log(`Attempted to rename a ship that did not exist. (ship ${shipId})`);
+        ship.name = dist_1.default
+            .sanitize(newName)
+            .result.substring(0, dist_1.default.maxNameLength);
+        ship.toUpdate.name = ship.name;
     });
     socket.on(`ship:alertLevel`, (shipId, newLevel, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);

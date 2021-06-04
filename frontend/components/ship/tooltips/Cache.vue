@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div>📦Cache</div>
+    <div></div>
+    <div>
+      <b>📦Cache</b>
+    </div>
+    <hr />
     <div>Contents unknown.</div>
   </div>
 </template>

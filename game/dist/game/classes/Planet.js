@@ -32,8 +32,7 @@ const itemData = __importStar(require("../presets/items/"));
 class Planet {
     constructor({ name, color, location, vendor, factionId, homeworld, creatures, repairCostMultiplier, radius, }, game) {
         this.mass = 5.974e30;
-        this.buyFluctuator = 1;
-        this.sellFluctuator = 1;
+        this.priceFluctuator = 1;
         this.game = game;
         this.name = name;
         this.color = color;
@@ -91,8 +90,8 @@ class Planet {
         this.mass =
             ((5.974e30 * this.radius) / 36000) *
                 (1 + Math.random() * 0.1);
-        this.updateFluctuators();
-        setInterval(this.updateFluctuators, 1000 * 60 * 60); // every hour
+        this.updateFluctuator();
+        setInterval(this.updateFluctuator, 1000 * 60 * 60); // every hour
     }
     identify() {
         dist_1.default.log(`Planet: ${this.name} (${this.color}) at ${this.location}`);
@@ -100,12 +99,12 @@ class Planet {
     shipsAt() {
         return this.game.humanShips.filter((s) => s.planet === this);
     }
-    updateFluctuators() {
+    updateFluctuator() {
         const intensity = Planet.fluctuatorIntensity;
         const mod = (this.name || ``)
             .split(``)
             .reduce((t, c) => t + c.charCodeAt(0), 0);
-        this.buyFluctuator =
+        this.priceFluctuator =
             (((new Date().getDate() * 13 +
                 mod +
                 (new Date().getMonth() * 7 + mod)) %
@@ -113,17 +112,8 @@ class Planet {
                 100) *
                 intensity +
                 (1 - intensity / 2);
-        this.sellFluctuator =
-            (((new Date().getDate() * 13 +
-                15 +
-                mod +
-                (new Date().getMonth() * 9 + 3 + mod)) %
-                100) /
-                100) *
-                intensity +
-                (1 - intensity / 2);
     }
 }
 exports.Planet = Planet;
-Planet.fluctuatorIntensity = 0.2;
+Planet.fluctuatorIntensity = 0.8;
 //# sourceMappingURL=Planet.js.map

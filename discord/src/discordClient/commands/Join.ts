@@ -2,17 +2,17 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import { add } from '../../ioInterface/crew'
+import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class JoinCommand implements Command {
-  commandNames = [`j`, `join`, `add`]
+  commandNames = [`join`, `add`, `j`]
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use ${commandPrefix}join to join your server's ship.`
+    return `Use \`${commandPrefix}${this.commandNames[0]}\` to join your server's ship.`
   }
 
   async run(context: CommandContext): Promise<void> {
-    if (!context.ship) return
+    if (!context.ship || !context.guild) return
     const addedCrewMember = await add(context.ship.id, {
       name: context.nickname,
       id: context.initialMessage.author.id,
@@ -28,8 +28,21 @@ export class JoinCommand implements Command {
       )
       return
     }
+
+    const crewRole = await resolveOrCreateRole({
+      type: `crew`,
+      guild: context.guild,
+    })
+    if (!crewRole) {
+      await context.initialMessage.channel.send(
+        `Failed to add you to the \`Crew\` server role.`,
+      )
+    } else {
+      context.guildMember?.roles.add(crewRole)
+    }
+
     await context.initialMessage.channel.send(
-      `Added you to the crew.`,
+      `Added you to the crew of ${context.ship.name}.`,
     )
   }
 

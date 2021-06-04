@@ -5,6 +5,7 @@ import misc from './misc'
 import log from './log'
 import game from './game'
 import physics from './physics'
+import discord from './discord'
 
 export default {
   ...globals,
@@ -14,4 +15,5 @@ export default {
   ...log,
   ...game,
   ...physics,
+  ...discord,
 }

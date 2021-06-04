@@ -1,20 +1,28 @@
 export declare const weapon: {
-    cannon: BaseWeaponData;
+    cannon1: BaseWeaponData;
+    cannon2: BaseWeaponData;
+    saber1: BaseWeaponData;
+    sniper1: BaseWeaponData;
 };
 export declare const engine: {
-    starter: BaseEngineData;
+    starter1: BaseEngineData;
+    starter2: BaseEngineData;
 };
 export declare const scanner: {
-    starter: BaseScannerData;
+    starter1: BaseScannerData;
+    starter2: BaseScannerData;
+    shipscanner1: BaseScannerData;
 };
 export declare const communicator: {
-    starter: BaseCommunicatorData;
+    starter1: BaseCommunicatorData;
+    starter2: BaseCommunicatorData;
 };
 export declare const armor: {
-    starter: BaseArmorData;
+    starter1: BaseArmorData;
+    starter2: BaseArmorData;
 };
 export declare const chassis: {
-    starter: BaseChassisData;
-    second: BaseChassisData;
+    starter1: BaseChassisData;
+    starter2: BaseChassisData;
 };
 //# sourceMappingURL=index.d.ts.map

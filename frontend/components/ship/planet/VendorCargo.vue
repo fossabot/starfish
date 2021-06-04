@@ -14,6 +14,13 @@
       <span
         v-for="ca in buyableCargo"
         :key="'buycargo' + ca.cargoData.type"
+        @mouseenter="
+          $store.commit('tooltip', {
+            type: 'cargo',
+            data: ca,
+          })
+        "
+        @mouseleave="$store.commit('tooltip')"
       >
         <button
           :disabled="!ca.canBuy"
@@ -30,6 +37,13 @@
       <span
         v-for="ca in sellableCargo"
         :key="'sellcargo' + ca.cargoData.type"
+        @mouseenter="
+          $store.commit('tooltip', {
+            type: 'cargo',
+            data: ca,
+          })
+        "
+        @mouseleave="$store.commit('tooltip')"
       >
         <button
           :disabled="!ca.canSell"
@@ -73,7 +87,7 @@ export default {
           const pricePerUnit = c.r2(
             cargo.cargoData.basePrice *
               cargo.buyMultiplier *
-              this.ship.planet.buyFluctuator *
+              this.ship.planet.priceFluctuator *
               (this.isSameFaction
                 ? c.factionVendorMultiplier
                 : 1),
@@ -101,7 +115,7 @@ export default {
           const pricePerUnit = c.r2(
             cargo.cargoData.basePrice *
               cargo.sellMultiplier *
-              this.ship.planet.sellFluctuator *
+              this.ship.planet.priceFluctuator *
               (this.isSameFaction
                 ? 1 + (1 - (c.factionVendorMultiplier || 1))
                 : 1),
@@ -163,6 +177,10 @@ export default {
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
             console.log(res.error)
             return
           }
@@ -206,6 +224,10 @@ export default {
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
             console.log(res.error)
             return
           }

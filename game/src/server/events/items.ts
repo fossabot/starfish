@@ -45,7 +45,7 @@ export default function (
       const price = c.r2(
         (itemForSale.itemData?.basePrice || 1) *
           itemForSale.buyMultiplier *
-          planet.buyFluctuator *
+          planet.priceFluctuator *
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
@@ -133,7 +133,7 @@ export default function (
         (itemData?.basePrice || 1) *
           (itemForSale?.sellMultiplier ||
             c.baseItemSellMultiplier) *
-          planet.sellFluctuator *
+          planet.priceFluctuator *
           (planet.faction === ship.faction
             ? 1 + (1 - c.factionVendorMultiplier)
             : 1),
@@ -161,6 +161,86 @@ export default function (
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} sold the ship's ${itemType} of id ${itemId}.`,
+      )
+    },
+  )
+
+  socket.on(
+    `ship:swapChassis`,
+    (shipId, crewId, chassisType, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may buy or sell equipment.`,
+        })
+
+      const planet = ship.planet
+      if (!planet)
+        return callback({ error: `Not at a planet.` })
+      const itemForSale = planet?.vendor?.chassis?.find(
+        (i) => i.chassisType === chassisType,
+      )
+      if (
+        !itemForSale ||
+        !itemForSale.buyMultiplier ||
+        !itemForSale.chassisData
+      )
+        return callback({
+          error: `That equipment is not for sale here.`,
+        })
+
+      const currentChassisSellPrice =
+        ship.chassis.basePrice / 2
+      const price = c.r2(
+        (itemForSale.chassisData?.basePrice || 1) *
+          itemForSale.buyMultiplier *
+          planet.priceFluctuator *
+          (planet.faction === ship.faction
+            ? c.factionVendorMultiplier
+            : 1) -
+          currentChassisSellPrice,
+        2,
+      )
+
+      if (price > ship.commonCredits)
+        return callback({ error: `Insufficient funds.` })
+
+      if (
+        ship.items.length > itemForSale.chassisData?.slots
+      )
+        return callback({
+          error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
+        })
+
+      ship.commonCredits -= price
+      ship.toUpdate.commonCredits = ship.commonCredits
+
+      ship.swapChassis(itemForSale.chassisData)
+      ship.logEntry(
+        `${
+          itemForSale.chassisData?.displayName
+        } (chassis) bought by the captain for ${c.r2(
+          price,
+        )} credits.`,
+        `high`,
+      )
+
+      callback({
+        data: c.stubify<HumanShip, ShipStub>(ship),
+      })
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} swapped to the chassis ${chassisType}.`,
       )
     },
   )

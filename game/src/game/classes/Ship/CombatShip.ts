@@ -48,9 +48,9 @@ export abstract class CombatShip extends Ship {
   }
 
   getEnemiesInAttackRange(): CombatShip[] {
-    const combatShipsInRange = this.visible.ships.filter(
-      (s) => this.canAttack(s, true),
-    ) as CombatShip[]
+    const combatShipsInRange = (
+      this.visible.ships as Ship[]
+    ).filter((s) => this.canAttack(s, true)) as CombatShip[]
     return combatShipsInRange
   }
 
@@ -74,10 +74,9 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
-    if (!(otherShip instanceof CombatShip)) return false
+    if (!otherShip.attackable) return false
     if (otherShip.planet || this.planet) return false
     if (otherShip.dead || this.dead) return false
-    if (!otherShip?.attackable) return false
     if (
       otherShip.faction &&
       this.faction &&
@@ -180,12 +179,27 @@ export abstract class CombatShip extends Ship {
     const previousHp = this.hp
 
     let remainingDamage = attack.damage
+
+    // ----- hit armor first -----
     if (remainingDamage)
       for (let armor of this.armor) {
-        const { taken, mitigated, remaining } =
+        const { remaining } =
           armor.blockDamage(remainingDamage)
         remainingDamage = remaining
+        if (armor.hp === 0 && armor.announceWhenBroken) {
+          this.logEntry(
+            `Your ${armor.displayName} has been broken!`,
+            `high`,
+          )
+          attacker.logEntry(
+            `You have broken through ${this.name}'s ${armor.displayName}!`,
+            `high`,
+          )
+          armor.announceWhenBroken = false
+        }
       }
+
+    // ----- distribute remaining damage -----
     while (remainingDamage > 0) {
       let attackableEquipment: Item[] = []
       if (attack.targetType)
@@ -203,19 +217,23 @@ export abstract class CombatShip extends Ship {
           attackableEquipment,
         )
         const remainingHp = equipmentToAttack.hp
+        // ----- not destroyed -----
         if (remainingHp >= remainingDamage) {
-          // c.log(
-          //   `hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`,
-          // )
+          c.log(
+            `hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`,
+          )
           equipmentToAttack.hp -= remainingDamage
           remainingDamage = 0
-        } else {
-          // c.log(
-          //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-          // )
+        }
+        // ----- destroyed -----
+        else {
+          c.log(
+            `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+          )
           equipmentToAttack.hp = 0
           remainingDamage -= remainingHp
         }
+        // ----- notify both sides -----
         if (
           equipmentToAttack.hp === 0 &&
           equipmentToAttack.announceWhenBroken

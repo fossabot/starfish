@@ -47,7 +47,7 @@ export class Ship {
 
   toUpdate: Partial<ShipStub> = {}
   visible: {
-    ships: Ship[]
+    ships: Ship[] | Partial<ShipStub>[]
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
@@ -118,12 +118,15 @@ export class Ship {
         )
         .filter((p) => p) as Planet[]
 
-    if (chassis && chassis.id)
+    if (chassis && chassis.id && chassisPresets[chassis.id])
       this.chassis = chassisPresets[chassis.id]
-    else if (loadout)
+    else if (
+      loadout &&
+      chassisPresets[loadouts[loadout]?.chassis]
+    )
       this.chassis =
         chassisPresets[loadouts[loadout].chassis]
-    else this.chassis = chassisPresets.starter
+    else this.chassis = chassisPresets.starter1
 
     if (items) items.forEach((i) => this.addItem(i))
     if (!items && loadout) this.equipLoadout(loadout)
@@ -189,6 +192,15 @@ export class Ship {
     return this.items.filter(
       (i) => i instanceof Armor,
     ) as Armor[]
+  }
+
+  swapChassis(
+    this: Ship,
+    chassisData: Partial<BaseChassisData>,
+  ) {
+    if (!chassisData.id) return
+    const chassisToSwapTo = chassisPresets[chassisData.id]
+    this.chassis = chassisToSwapTo
   }
 
   addItem(
@@ -257,7 +269,6 @@ export class Ship {
     if (item) {
       this.items.push(item)
       this.updateThingsThatCouldChangeOnItemChange()
-      // other radii updated in subclasses
     }
     return true
   }
@@ -291,20 +302,20 @@ export class Ship {
   updateSightAndScanRadius() {
     this.radii.sight = Math.max(
       c.baseSightRange,
-      this.scanners.reduce(
-        (max, s) =>
-          s.sightRange * s.repair > max
-            ? s.sightRange * s.repair
-            : max,
-        0,
+      c.getRadiusDiminishingReturns(
+        this.scanners.reduce(
+          (max, s) => s.sightRange * s.repair + max,
+          0,
+        ),
+        this.scanners.length,
       ),
     )
-    this.radii.scan = this.scanners.reduce(
-      (max, s) =>
-        s.shipScanRange * s.repair > max
-          ? s.shipScanRange * s.repair
-          : max,
-      0,
+    this.radii.scan = c.getRadiusDiminishingReturns(
+      this.scanners.reduce(
+        (max, s) => s.shipScanRange * s.repair + max,
+        0,
+      ),
+      this.scanners.length,
     )
     this.toUpdate.radii = this.radii
   }
@@ -370,7 +381,7 @@ export class Ship {
     if (!this.canMove) return
 
     if (this.human) {
-      for (let planet of this.visible.planets) {
+      for (let planet of this.visible?.planets || []) {
         const distance = c.distance(
           planet.location,
           this.location,
@@ -473,4 +484,5 @@ export class Ship {
   // ----- misc stubs -----
 
   logEntry(s: string, lv: LogLevel) {}
+  updateMaxScanProperties() {}
 }

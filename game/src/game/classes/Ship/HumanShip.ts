@@ -9,6 +9,11 @@ import type { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Planet } from '../Planet'
+import type { Cache } from '../Cache'
+import { rooms as roomData } from '../../presets/rooms'
+import type { Ship } from './Ship'
+import type { Scanner } from '../Item/Scanner'
+import type { Item } from '../Item/Item'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 20
@@ -17,16 +22,25 @@ export class HumanShip extends CombatShip {
   logAlertLevel: LogAlertLevel = `high`
   readonly crewMembers: CrewMember[] = []
   captain: string | null = null
-  availableRooms: CrewLocation[] = [
-    `bunk`,
-    `cockpit`,
-    `repair`,
-    `weapons`,
-  ]
+  rooms: { [key in CrewLocation]?: BaseRoomData } = {}
+  maxScanProperties: ShipScanDataShape | null = null
+
+  visible: {
+    ships: Partial<ShipStub>[]
+    planets: Planet[]
+    caches: Cache[]
+    attackRemnants: AttackRemnant[]
+  } = {
+    ships: [],
+    planets: [],
+    caches: [],
+    attackRemnants: [],
+  }
 
   commonCredits: number = 0
 
   mainTactic: Tactic | undefined
+  itemTarget: ItemType | undefined
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
@@ -45,6 +59,14 @@ export class HumanShip extends CombatShip {
     if (data.logAlertLevel)
       this.logAlertLevel = data.logAlertLevel
 
+    for (let room of [
+      `bunk`,
+      `cockpit`,
+      `repair`,
+      `weapons`,
+    ] as CrewLocation[])
+      this.addRoom(room)
+
     data.crewMembers?.forEach((cm) => {
       this.addCrewMember(cm)
     })
@@ -55,13 +77,8 @@ export class HumanShip extends CombatShip {
         `medium`,
       )
 
-    this.visible = this.game.scanCircle(
-      this.location,
-      this.radii.sight,
-      this.id,
-      undefined,
-      true,
-    )
+    this.updateMaxScanProperties()
+    this.updateVisible()
 
     this.updatePlanet(true)
 
@@ -79,13 +96,7 @@ export class HumanShip extends CombatShip {
     this.move()
 
     // ----- scan -----
-    this.visible = this.game.scanCircle(
-      this.location,
-      this.radii.sight,
-      this.id,
-      undefined,
-      true,
-    )
+    this.updateVisible()
     this.scanners.forEach((s) => s.use())
 
     this.crewMembers.forEach((cm) => cm.tick())
@@ -105,7 +116,7 @@ export class HumanShip extends CombatShip {
       db.ship.addOrUpdateInDb(this)
       newPlanets.forEach((p) =>
         this.logEntry(
-          `You've discovered the planet ${p.name}!`,
+          `Discovered the planet ${p.name}!`,
           `high`,
         ),
       )
@@ -142,7 +153,6 @@ export class HumanShip extends CombatShip {
     // ----- updates for frontend -----
     this.toUpdate.visible = c.stubify<any, VisibleStub>(
       this.visible,
-      [`visible`, `seenPlanets`],
     )
     this.toUpdate.items = this.items.map((i) =>
       c.stubify(i),
@@ -266,7 +276,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed =
-      this.speed * (c.deltaTime / c.TICK_INTERVAL)
+      this.speed / (c.deltaTime / c.TICK_INTERVAL)
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
@@ -329,6 +339,24 @@ export class HumanShip extends CombatShip {
     this.updatePlanet()
   }
 
+  updateVisible() {
+    const visible = this.game.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+      undefined,
+      true,
+    )
+    const shipsWithValidScannedProps: Partial<ShipStub>[] =
+      visible.ships.map((s) => {
+        return this.shipToValidScanResult(s)
+      })
+    this.visible = {
+      ...visible,
+      ships: shipsWithValidScannedProps,
+    }
+  }
+
   updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
@@ -373,17 +401,13 @@ export class HumanShip extends CombatShip {
     }
   }
 
-  applyTickOfGravity() {
-    super.applyTickOfGravity()
-  }
-
   updateBroadcastRadius() {
-    this.radii.broadcast = this.communicators.reduce(
-      (total, comm) => {
+    this.radii.broadcast = c.getRadiusDiminishingReturns(
+      this.communicators.reduce((total, comm) => {
         const currRadius = comm.repair * comm.range
         return currRadius + total
-      },
-      0,
+      }, 0),
+      this.communicators.length,
     )
     this.toUpdate.radii = this.radii
   }
@@ -403,7 +427,7 @@ export class HumanShip extends CombatShip {
     const sanitized = c.sanitize(
       message.replace(/\n/g, ` `),
     ).result
-    // todo get equipment, use it, and adjust output/range based on repair etc
+
     const range = this.radii.broadcast
     let didSendCount = 0
     for (let otherShip of this.visible.ships.filter(
@@ -438,12 +462,13 @@ export class HumanShip extends CombatShip {
         0,
         c.maxBroadcastLength,
       )}\``
-      io.emit(
-        `ship:message`,
-        otherShip.id,
-        toSend,
-        `broadcast`,
-      )
+      if (otherShip.id)
+        io.emit(
+          `ship:message`,
+          otherShip.id,
+          toSend,
+          `broadcast`,
+        )
     }
 
     this.communicators.forEach((comm) => comm.use())
@@ -456,15 +481,26 @@ export class HumanShip extends CombatShip {
   // ----- room mgmt -----
 
   addRoom(room: CrewLocation) {
-    if (!this.availableRooms.includes(room))
-      this.availableRooms.push(room)
+    if (!(room in this.rooms))
+      this.rooms[room] = roomData[room]
   }
 
   removeRoom(room: CrewLocation) {
-    const index = this.availableRooms.findIndex(
-      (r) => r === room,
-    )
-    if (index !== -1) this.availableRooms.splice(index, 1)
+    delete this.rooms[room]
+  }
+
+  // ----- items -----
+  addItem(itemData: Partial<BaseItemData>): boolean {
+    const res = super.addItem(itemData)
+    if (itemData.type === 'scanner')
+      this.updateMaxScanProperties()
+    return res
+  }
+  removeItem(item: Item): boolean {
+    const res = super.removeItem(item)
+    if (item.type === 'scanner')
+      this.updateMaxScanProperties()
+    return res
   }
 
   // ----- crew mgmt -----
@@ -556,6 +592,91 @@ export class HumanShip extends CombatShip {
     }
   }
 
+  // -----
+
+  updateMaxScanProperties() {
+    c.log(`updating max scan properties`, this.name)
+    const totalShape: ShipScanDataShape = {
+      ...c.baseShipScanProperties,
+    }
+    for (let scanner of this.scanners) {
+      ;(
+        Object.keys(
+          scanner.shipScanData,
+        ) as (keyof ShipScanDataShape)[]
+      ).forEach((key) => {
+        const value = scanner.shipScanData[key]
+        if (!totalShape[key] && value === true)
+          (totalShape[key] as boolean) = true
+        if (
+          totalShape[key] === undefined &&
+          Array.isArray(value)
+        ) {
+          ;(totalShape[key] as Array<string>) = value
+        } else if (
+          Array.isArray(totalShape[key]) &&
+          Array.isArray(value)
+        ) {
+          for (let s of value) {
+            if (
+              !(totalShape[key] as Array<string>).includes(
+                s,
+              )
+            )
+              (totalShape[key] as Array<string>).push(s)
+          }
+        }
+      })
+    }
+    this.maxScanProperties = totalShape
+  }
+
+  shipToValidScanResult(ship: Ship): Partial<ShipStub> {
+    if (!this.maxScanProperties) return {}
+    const scanPropertiesToUse =
+      c.distance(this.location, ship.location) <
+      this.radii.scan
+        ? this.maxScanProperties
+        : c.baseShipScanProperties
+    const partialShip: Partial<ShipStub> = {}
+    ;(
+      Object.entries(scanPropertiesToUse) as [
+        keyof ShipScanDataShape,
+        true | Array<string>,
+      ][]
+    ).forEach(([key, value]) => {
+      if (!ship[key as keyof Ship]) return
+      if (value === true)
+        partialShip[key] = ship[key as keyof Ship]
+      if (Array.isArray(value)) {
+        if (Array.isArray(ship[key as keyof Ship])) {
+          partialShip[key] = (
+            ship[key as keyof Ship] as Array<any>
+          ).map((el) => {
+            const returnVal: any = {}
+            Object.keys(el)
+              .filter((elKey: any) => value.includes(elKey))
+              .forEach((elKey: any) => {
+                returnVal[elKey] = el[elKey]
+              })
+            return returnVal
+          })
+        } else {
+          partialShip[key] = {}
+          Object.keys(ship[key as keyof Ship]).forEach(
+            (elKey) => {
+              if (value.includes(elKey))
+                partialShip[key][elKey] = (
+                  ship[key as keyof Ship] as any
+                )[elKey]
+            },
+          )
+        }
+      }
+    })
+    return partialShip
+  }
+
   // ----- respawn -----
 
   respawn() {
@@ -577,143 +698,179 @@ export class HumanShip extends CombatShip {
     this.toUpdate.targetShip = false
 
     const weaponsRoomMembers = this.membersIn(`weapons`)
-    if (weaponsRoomMembers.length) {
-      const tacticCounts = weaponsRoomMembers.reduce(
-        (totals: any, cm) => {
-          const currTotal = totals.find(
-            (t: any) => t.tactic === cm.tactic,
+    if (!weaponsRoomMembers.length) return
+
+    // ----- gather most common tactic -----
+
+    const tacticCounts = weaponsRoomMembers.reduce(
+      (totals: any, cm) => {
+        const currTotal = totals.find(
+          (t: any) => t.tactic === cm.tactic,
+        )
+        const toAdd =
+          cm.skills.find((s) => s.skill === `munitions`)
+            ?.level || 1
+        if (currTotal) currTotal.total += toAdd
+        else
+          totals.push({ tactic: cm.tactic, total: toAdd })
+        return totals
+      },
+      [],
+    )
+    const mainTactic = tacticCounts.sort(
+      (b: any, a: any) => b.total - a.total,
+    )?.[0]?.tactic as Tactic | undefined
+
+    this.mainTactic = mainTactic
+    this.toUpdate.mainTactic = mainTactic
+
+    const attackableShips = this.getEnemiesInAttackRange()
+    this.toUpdate.enemiesInAttackRange = c.stubify(
+      attackableShips,
+      [`visible`, `seenPlanets`],
+    )
+
+    // ----- gather most common item target -----
+
+    const itemTargetCounts = weaponsRoomMembers.reduce(
+      (totals: any, cm) => {
+        if (!cm.itemTarget) return totals
+        const currTotal = totals.find(
+          (t: any) => t.itemTarget === cm.itemTarget,
+        )
+        const toAdd =
+          cm.skills.find((s) => s.skill === `munitions`)
+            ?.level || 1
+        if (currTotal) currTotal.total += toAdd
+        else
+          totals.push({
+            target: cm.itemTarget,
+            total: toAdd,
+          })
+        return totals
+      },
+      [],
+    )
+    let mainItemTarget = itemTargetCounts.sort(
+      (b: any, a: any) => b.total - a.total,
+    )?.[0]?.target as ItemType | undefined
+    this.itemTarget = mainItemTarget
+    this.toUpdate.itemTarget = mainItemTarget
+
+    if (!mainTactic) return
+    if (!attackableShips.length) return
+
+    const availableWeapons = this.availableWeapons()
+    if (!availableWeapons) return
+
+    // ----- gather most common attack target -----
+
+    const shipTargetCounts = weaponsRoomMembers.reduce(
+      (totals: any, cm) => {
+        if (!cm.attackTarget) return totals
+        const currTotal = totals.find(
+          (t: any) => t.attackTarget === cm.attackTarget,
+        )
+        const toAdd =
+          cm.skills.find((s) => s.skill === `munitions`)
+            ?.level || 1
+        if (currTotal) currTotal.total += toAdd
+        else
+          totals.push({
+            target: cm.attackTarget,
+            total: toAdd,
+          })
+        return totals
+      },
+      [],
+    )
+    const mainAttackTarget = shipTargetCounts.sort(
+      (b: any, a: any) => b.total - a.total,
+    )?.[0]?.target as CombatShip | undefined
+
+    // ----- defensive strategy -----
+
+    if (mainTactic === `defensive`) {
+      let targetShip: CombatShip | undefined
+      if (
+        mainAttackTarget &&
+        this.canAttack(mainAttackTarget)
+      ) {
+        const attackedByThatTarget =
+          this.visible.attackRemnants.find(
+            (ar) => ar.attacker === mainAttackTarget,
           )
-          if (currTotal) currTotal.total++
-          else totals.push({ tactic: cm.tactic, total: 1 })
-          return totals
-        },
-        [],
-      )
-      const mainTactic = tacticCounts.sort(
-        (b: any, a: any) => b.total - a.total,
-      )?.[0]?.tactic as Tactic | undefined
-
-      this.mainTactic = mainTactic
-      this.toUpdate.mainTactic = mainTactic
-
-      const attackableShips = this.getEnemiesInAttackRange()
-      this.toUpdate.enemiesInAttackRange = c.stubify(
-        attackableShips,
-        [`visible`, `seenPlanets`],
-      )
-
-      if (!mainTactic) return
-      if (!attackableShips.length) return
-
-      const availableWeapons = this.availableWeapons()
-      if (!availableWeapons) return
-
-      // ----- gather most common attack target -----
-
-      const targetCounts = weaponsRoomMembers.reduce(
-        (totals: any, cm) => {
-          if (!cm.attackTarget) return totals
-          const currTotal = totals.find(
-            (t: any) => t.attackTarget === cm.attackTarget,
+        if (attackedByThatTarget)
+          targetShip = mainAttackTarget
+      } else {
+        const mostRecentDefense =
+          this.visible.attackRemnants.reduce(
+            (
+              mostRecent: AttackRemnant | null,
+              ar,
+            ): AttackRemnant | null =>
+              mostRecent &&
+              mostRecent.time > ar.time &&
+              mostRecent.attacker !== this &&
+              this.canAttack(mostRecent.attacker)
+                ? mostRecent
+                : ar,
+            null,
           )
-          if (currTotal) currTotal.total++
-          else
-            totals.push({
-              target: cm.attackTarget,
-              total: 1,
-            })
-          return totals
-        },
-        [],
-      )
-      const mainAttackTarget = targetCounts.sort(
-        (b: any, a: any) => b.total - a.total,
-      )?.[0]?.target as CombatShip | undefined
-
-      // ----- defensive strategy -----
-
-      if (mainTactic === `defensive`) {
-        let targetShip: CombatShip | undefined
-        if (
-          mainAttackTarget &&
-          this.canAttack(mainAttackTarget)
-        ) {
-          const attackedByThatTarget =
-            this.visible.attackRemnants.find(
-              (ar) => ar.attacker === mainAttackTarget,
-            )
-          if (attackedByThatTarget)
-            targetShip = mainAttackTarget
-        } else {
-          const mostRecentDefense =
-            this.visible.attackRemnants.reduce(
-              (
-                mostRecent: AttackRemnant | null,
-                ar,
-              ): AttackRemnant | null =>
-                mostRecent &&
-                mostRecent.time > ar.time &&
-                mostRecent.attacker !== this &&
-                this.canAttack(mostRecent.attacker)
-                  ? mostRecent
-                  : ar,
-              null,
-            )
-          targetShip = mostRecentDefense?.attacker
-        }
-        this.toUpdate.targetShip = targetShip
-          ? c.stubify<CombatShip, ShipStub>(targetShip, [
-              `visible`,
-              `seenPlanets`,
-            ])
-          : null
-        if (!targetShip) return
-        availableWeapons.forEach((w) => {
-          this.attack(targetShip!, w)
-        })
+        targetShip = mostRecentDefense?.attacker
       }
+      this.toUpdate.targetShip = targetShip
+        ? c.stubify<CombatShip, ShipStub>(targetShip, [
+            `visible`,
+            `seenPlanets`,
+          ])
+        : null
+      if (!targetShip) return
+      availableWeapons.forEach((w) => {
+        this.attack(targetShip!, w, mainItemTarget)
+      })
+    }
 
-      // ----- aggressive strategy -----
+    // ----- aggressive strategy -----
 
-      if (mainTactic === `aggressive`) {
-        let targetShip = mainAttackTarget
-        if (targetShip && !this.canAttack(targetShip))
-          targetShip = undefined
-        if (!targetShip) {
-          // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
-          const mostRecentCombat =
-            this.visible.attackRemnants.reduce(
-              (
-                mostRecent: AttackRemnant | null,
-                ar,
-              ): AttackRemnant =>
-                mostRecent &&
-                mostRecent.time > ar.time &&
-                this.canAttack(
-                  mostRecent.attacker === this
-                    ? mostRecent.defender
-                    : mostRecent.attacker,
-                )
-                  ? mostRecent
-                  : ar,
-              null,
-            )
-          // ----- if all else fails, just attack whatever's around -----
-          targetShip = mostRecentCombat
-            ? mostRecentCombat.attacker === this
-              ? mostRecentCombat.defender
-              : mostRecentCombat.attacker
-            : c.randomFromArray(attackableShips)
-        }
-        this.toUpdate.targetShip = c.stubify<
-          CombatShip,
-          ShipStub
-        >(targetShip!, [`visible`, `seenPlanets`])
-        // ----- with EVERY AVAILABLE WEAPON -----
-        availableWeapons.forEach((w) => {
-          this.attack(targetShip!, w)
-        })
+    if (mainTactic === `aggressive`) {
+      let targetShip = mainAttackTarget
+      if (targetShip && !this.canAttack(targetShip))
+        targetShip = undefined
+      if (!targetShip) {
+        // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
+        const mostRecentCombat =
+          this.visible.attackRemnants.reduce(
+            (
+              mostRecent: AttackRemnant | null,
+              ar,
+            ): AttackRemnant =>
+              mostRecent &&
+              mostRecent.time > ar.time &&
+              this.canAttack(
+                mostRecent.attacker === this
+                  ? mostRecent.defender
+                  : mostRecent.attacker,
+              )
+                ? mostRecent
+                : ar,
+            null,
+          )
+        // ----- if all else fails, just attack whatever's around -----
+        targetShip = mostRecentCombat
+          ? mostRecentCombat.attacker === this
+            ? mostRecentCombat.defender
+            : mostRecentCombat.attacker
+          : c.randomFromArray(attackableShips)
       }
+      this.toUpdate.targetShip = c.stubify<
+        CombatShip,
+        ShipStub
+      >(targetShip!, [`visible`, `seenPlanets`])
+      // ----- with EVERY AVAILABLE WEAPON -----
+      availableWeapons.forEach((w) => {
+        this.attack(targetShip!, w, mainItemTarget)
+      })
     }
   }
 

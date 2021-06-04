@@ -8,8 +8,7 @@ export class BroadcastCommand implements Command {
   commandNames = []
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use ${commandPrefix}respawn to get your crew a new ship once you've died.`
+    return ``
   }
 
   async run(context: CommandContext): Promise<void> {

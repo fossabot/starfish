@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "bc4afdb488c7f3ecbcd2f40c0475b49bd022089d4fa43e4e3a4e1ec7f43282e4",
-        "signature": "bc4afdb488c7f3ecbcd2f40c0475b49bd022089d4fa43e4e3a4e1ec7f43282e4",
+        "version": "75cf06b3fd4fd200d6406ed55492a2c310c889b4de7814a53c9d3c690f3fb233",
+        "signature": "75cf06b3fd4fd200d6406ed55492a2c310c889b4de7814a53c9d3c690f3fb233",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -272,13 +272,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "1eaba46b07ffb398891f8405e10c31e60959f5fa152bcd03f96b99a4ec7d0096",
-        "signature": "1eaba46b07ffb398891f8405e10c31e60959f5fa152bcd03f96b99a4ec7d0096",
+        "version": "4a9e1afd4000fbce128f72df088b56820d7df106ed39ba684c3d8afa3ac1090e",
+        "signature": "4a9e1afd4000fbce128f72df088b56820d7df106ed39ba684c3d8afa3ac1090e",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "aa144166c25e085c6afc056438a2d4978a6addeb56992aebea6ce791a98a8e31",
-        "signature": "aa144166c25e085c6afc056438a2d4978a6addeb56992aebea6ce791a98a8e31",
+        "version": "16573858e73fe0efa594ca7c0f10146ca11fc7b2c64ae3aeb2cbb77ac507f334",
+        "signature": "16573858e73fe0efa594ca7c0f10146ca11fc7b2c64ae3aeb2cbb77ac507f334",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -287,8 +287,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "e6d723436495073e3d133b924629ba2d8737a7b3a4b9b1dc61d2a17d3bc981c6",
-        "signature": "e6d723436495073e3d133b924629ba2d8737a7b3a4b9b1dc61d2a17d3bc981c6",
+        "version": "433c07a647552e1f2f94889e8a514c2f7bb13883b7aa214d872eec56d660db5b",
+        "signature": "433c07a647552e1f2f94889e8a514c2f7bb13883b7aa214d872eec56d660db5b",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -299,6 +299,11 @@
       "./src/badwords.ts": {
         "version": "4119c79f1f300edfa1a1f16c2f7bf409161b70860e9383b8d6ac73d53254df7b",
         "signature": "7a083ab9fc4a5e0532512cec7bdb2057a9a1c8ada3d99270cedf68e8e44a9ca5",
+        "affectsGlobalScope": false
+      },
+      "./src/discord.ts": {
+        "version": "aad89fb4e96bfb9ccaafdb98bd988df3ea026a8844604d089424684cdf524965",
+        "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
@@ -317,8 +322,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "17cd28ffbb5838189088e7838344519bedc908f3546ae78bfdcee5477754a4ba",
-        "signature": "d2b2c464e6f2c25493d345f44186075cc62798ca497a5b90472a67335f1985e0",
+        "version": "91798f5967a83334e3d780f1ab53f545a5c8974a17c7a6279d0c15d6b79f798c",
+        "signature": "83648de69b6474241570a814c315c9c6cbbeb07cd61add82fad5f57c113226e5",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -337,8 +342,8 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "dd4227d8e79df34be3868a770ac9f84d01e5b2090bce5409da09e980c4d2a425",
-        "signature": "c42a211603818c8f68017f03531eaeb2f31805aa8d961d6a7767419b74af242b",
+        "version": "e94eaadd4d41aaddc67ee5c5ae4d73c40fba398ad5c30a40a3ec6916b46fcff2",
+        "signature": "9d5616cb08e87e7e890106c3c914137d1e7ff4cc387c467f5631ac665ada3d6d",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {
@@ -747,6 +752,7 @@
         "./src/math.ts"
       ],
       "./src/index.ts": [
+        "./src/discord.ts",
         "./src/game.ts",
         "./src/globals.ts",
         "./src/log.ts",
@@ -1481,6 +1487,7 @@
       "../@types/ship.d.ts",
       "../@types/stubs.d.ts",
       "./src/badwords.ts",
+      "./src/discord.ts",
       "./src/game.ts",
       "./src/globals.ts",
       "./src/index.ts",

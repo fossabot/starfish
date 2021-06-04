@@ -1,4 +1,5 @@
 declare function getBaseDurabilityLossPerTick(maxHp: number): number;
+declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getThrustMagnitudeForSingleCrewMember(skill?: number, engineThrustMultiplier?: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(skill: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(): number;
@@ -6,6 +7,7 @@ declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
 declare function stubify<BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[]): StubType;
 declare const _default: {
+    gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
     baseRepairCost: number;
@@ -15,7 +17,23 @@ declare const _default: {
     factionVendorMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
+    aiDifficultyMultiplier: number;
+    baseShipScanProperties: {
+        id: true;
+        name: true;
+        human: true;
+        ai: true;
+        dead: true;
+        attackable: true;
+        previousLocations: true;
+        location: true;
+        planet: (keyof BasePlanetData)[];
+        faction: (keyof BaseFactionData)[];
+        species: (keyof BaseSpeciesData)[];
+        chassis: (keyof BaseChassisData)[];
+    };
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
+    getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;

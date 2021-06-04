@@ -7,7 +7,7 @@ export class Scanner extends Item {
   readonly id: ScannerId
   readonly sightRange: number
   readonly shipScanRange: number
-  // todo scan more/less properties of a ship
+  readonly shipScanData: ShipScanDataShape
 
   constructor(
     data: BaseScannerData,
@@ -18,6 +18,7 @@ export class Scanner extends Item {
     this.id = data.id
     this.sightRange = data.sightRange
     this.shipScanRange = data.shipScanRange
+    this.shipScanData = data.shipScanData
   }
 
   use() {

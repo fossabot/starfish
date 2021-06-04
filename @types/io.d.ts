@@ -70,6 +70,11 @@ interface IOClientEvents {
     crewId: string,
     targetId: string,
   ) => void
+  [`crew:itemTarget`]: (
+    shipId: string,
+    crewId: string,
+    targetId: ItemType | null,
+  ) => void
   [`crew:drop`]: (
     shipId: string,
     crewId: string,
@@ -109,6 +114,11 @@ interface IOClientEvents {
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
   [`crew:contribute`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+  ) => void
+  [`ship:redistribute`]: (
     shipId: string,
     crewId: string,
     amount: number,
@@ -155,6 +165,12 @@ interface IOClientEvents {
     level: LogAlertLevel,
     callback: (res: IOResponse<LogAlertLevel>) => void,
   ) => void
+  [`ship:setCaptain`]: (
+    shipId: string,
+    crewMemberId: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
+  [`ship:rename`]: (shipId: string, name: string) => void
 
   [`crew:add`]: (
     shipId: string,

@@ -27,7 +27,7 @@ export declare class Ship {
     readonly crewMembers: CrewMember[];
     toUpdate: Partial<ShipStub>;
     visible: {
-        ships: Ship[];
+        ships: Ship[] | Partial<ShipStub>[];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];
@@ -56,6 +56,7 @@ export declare class Ship {
     get scanners(): Scanner[];
     get communicators(): Communicator[];
     get armor(): Armor[];
+    swapChassis(this: Ship, chassisData: Partial<BaseChassisData>): void;
     addItem(this: Ship, itemData: Partial<BaseItemData>): boolean;
     removeItem(this: Ship, item: Item): boolean;
     equipLoadout(this: Ship, name: LoadoutName): boolean;
@@ -75,5 +76,6 @@ export declare class Ship {
     get hp(): number;
     set hp(newValue: number);
     logEntry(s: string, lv: LogLevel): void;
+    updateMaxScanProperties(): void;
 }
 //# sourceMappingURL=Ship.d.ts.map

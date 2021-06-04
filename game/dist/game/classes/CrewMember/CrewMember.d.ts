@@ -17,6 +17,7 @@ export declare class CrewMember {
     tactic: Tactic;
     attackFactions: FactionKey[];
     attackTarget: CombatShip | null;
+    itemTarget: ItemType | null;
     repairPriority: RepairPriority;
     readonly inventory: Cargo[];
     credits: number;
@@ -27,7 +28,7 @@ export declare class CrewMember {
     maxCargoWeight: number;
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
-    goTo(location: CrewLocation): void;
+    goTo(location: CrewLocation): boolean;
     cockpitAction: typeof roomActions.cockpit;
     repairAction: typeof roomActions.repair;
     weaponsAction: typeof roomActions.weapons;

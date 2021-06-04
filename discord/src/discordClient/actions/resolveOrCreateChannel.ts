@@ -1,6 +1,5 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
-import { client } from '..'
 import checkPermissions from './checkPermissions'
 import { GameChannel } from '../models/GameChannel'
 
@@ -99,18 +98,3 @@ export default async function resolveOrCreateChannel({
   if (channel === null) return null
   return new GameChannel(guild, channel)
 }
-
-//
-//
-// // ----- get bot role -----
-// const existingRoles = (
-//   await guild.roles.fetch()
-// ).cache.array()
-// const botRole = existingRoles.find(
-//   (role) => role.name === client.user?.username,
-// )
-// if (!botRole) {
-//   return null
-// }
-//
-//

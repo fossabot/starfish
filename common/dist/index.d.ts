@@ -1,6 +1,11 @@
 declare const _default: {
+    discordBotId: string;
+    discordBotPermissionsString: string;
+    frontendUrl: string;
+    discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocation, thatBody: HasMassAndLocation) => CoordinatePair;
+    gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
     baseRepairCost: number;
@@ -10,7 +15,23 @@ declare const _default: {
     factionVendorMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
+    aiDifficultyMultiplier: number;
+    baseShipScanProperties: {
+        id: true;
+        name: true;
+        human: true;
+        ai: true;
+        dead: true;
+        attackable: true;
+        previousLocations: true;
+        location: true;
+        planet: (keyof BasePlanetData)[];
+        faction: (keyof BaseFactionData)[];
+        species: (keyof BaseSpeciesData)[];
+        chassis: (keyof BaseChassisData)[];
+    };
     getBaseDurabilityLossPerTick: (maxHp: number) => number;
+    getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (skill: number) => number;
     getThrustMagnitudeForSingleCrewMember: (skill?: number, engineThrustMultiplier?: number) => number;
     getStaminaGainPerTickForSingleCrewMember: () => number;

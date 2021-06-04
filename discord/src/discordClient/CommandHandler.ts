@@ -13,6 +13,8 @@ import { RespawnCommand } from './commands/Respawn'
 import { RepairChannelsCommand } from './commands/RepairChannels'
 import { BroadcastCommand } from './commands/Broadcast'
 import { AlertLevelCommand } from './commands/AlertLevel'
+import { ChangeCaptainCommand } from './commands/ChangeCaptain'
+import { HelpCommand } from './commands/Help'
 
 export class CommandHandler {
   private commands: Command[]
@@ -29,11 +31,12 @@ export class CommandHandler {
       RepairChannelsCommand,
       BroadcastCommand,
       AlertLevelCommand,
+      ChangeCaptainCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
     )
-    // this.commands.push(new HelpCommand(this.commands))
+    this.commands.push(new HelpCommand(this.commands))
     this.prefix = prefix
   }
 
@@ -153,6 +156,20 @@ export class CommandHandler {
         `${c.GAME_NAME}`,
       )
 
+    // ----- update guild name if necessary -----
+    if (context.ship && context.guild) {
+      if (
+        c
+          .sanitize(context.guild.name)
+          .result.substring(0, c.maxNameLength) !==
+        context.ship.name
+      )
+        ioInterface.ship.rename(
+          context.ship.id,
+          context.guild.name,
+        )
+    }
+
     // ----- check for crew member still in guild, and update name if necessary -----
     if (context.crewMember) {
       const guildMember =
@@ -169,9 +186,6 @@ export class CommandHandler {
           context.ship.id,
           context.crewMember.id,
           context.nickname,
-        )
-        c.log(
-          guildMember.nickname || guildMember.user.username,
         )
       }
     }

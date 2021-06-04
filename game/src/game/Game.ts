@@ -210,7 +210,7 @@ export class Game {
 
   get gameSoftRadius() {
     const count = this.humanShips.length || 1
-    return Math.max(1, Math.sqrt(count) / 2)
+    return Math.max(3, Math.sqrt(count) * 2)
   }
 
   get gameSoftArea() {
@@ -239,7 +239,7 @@ export class Game {
 
   spawnNewPlanet() {
     while (
-      this.planets.length < this.gameSoftArea * 1.5 ||
+      this.planets.length < this.gameSoftArea ||
       this.planets.length < this.factions.length - 1
     ) {
       const factionThatNeedsAHomeworld = this.factions.find(
@@ -253,15 +253,18 @@ export class Game {
       const planet = this.addPlanet(p)
       c.log(
         `gray`,
-        `Spawned planet ${p.name} at ${p.location}${
+        `Spawned planet ${planet.name} at ${
+          planet.location
+        }${
           factionThatNeedsAHomeworld
             ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
             : ``
         }.`,
       )
-      c.log(this.planets.map((p) => p.vendor.items))
-      c.log(this.planets.map((p) => p.vendor.chassis))
-      c.log(this.planets.map((p) => p.vendor.cargo))
+      // c.log(this.planets.map((p) => p.vendor.items))
+      // c.log(this.planets.map((p) => p.vendor.chassis))
+      // c.log(this.planets.map((p) => p.vendor.cargo))
+      // c.log(this.planets.map((p) => p.priceFluctuator))
     }
   }
 
@@ -316,7 +319,6 @@ export class Game {
           2,
         )}`,
         species: { id: `robots` },
-        loadout: `aiDefault`,
         level,
       })
     }
@@ -366,7 +368,6 @@ export class Game {
       `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
     )
 
-    data.loadout = `aiDefault`
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
     if (save) db.ship.addOrUpdateInDb(newShip)

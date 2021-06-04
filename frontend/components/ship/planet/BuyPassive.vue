@@ -12,7 +12,7 @@
         crewMember.credits <
           passive.passiveData.basePrice *
             passive.buyMultiplier *
-            ship.planet.buyFluctuator *
+            ship.planet.priceFluctuator *
             (isSameFaction
               ? c.factionVendorMultiplier
               : 1) *
@@ -93,6 +93,10 @@ export default {
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
             console.log(res.error)
             return
           }

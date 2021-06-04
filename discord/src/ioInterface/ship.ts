@@ -1,6 +1,37 @@
 import c from '../../../common/dist'
 import { io, connected } from './index'
 
+export async function setCaptain(
+  shipId: string,
+  crewMemberId: string,
+): Promise<string | null> {
+  const error: string | null = await new Promise(
+    (resolve) => {
+      io.emit(
+        `ship:setCaptain`,
+        shipId,
+        crewMemberId,
+        ({ data, error }: IOResponseReceived<string>) => {
+          if (error) {
+            c.log(error)
+            resolve(error)
+            return
+          }
+          resolve(null)
+        },
+      )
+    },
+  )
+  return error // null = ok
+}
+
+export async function rename(
+  shipId: string,
+  newName: string,
+) {
+  await io.emit(`ship:rename`, shipId, newName)
+}
+
 export async function get(
   id: string,
 ): Promise<ShipStub | null> {

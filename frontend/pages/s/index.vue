@@ -39,7 +39,7 @@
 
       <NavBar class="grid-item" />
     </div>
-    <div class="box" v-if="ship && ship.dead">
+    <div class="box dead" v-if="ship && ship.dead">
       <h5>U dead</h5>
       <button
         v-if="this.ship.captain === this.userId"
@@ -49,11 +49,11 @@
       </button>
     </div>
 
-    <details>
+    <details
+      style="position: relative; margin-bottom: 2em;"
+    >
       <summary>Raw Data</summary>
-      <pre v-if="ship">{{
-        JSON.stringify(ship, null, 2)
-      }}</pre>
+      <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
     </details>
   </div>
 </template>
@@ -200,5 +200,9 @@ export default {
       width: 100% !important;
     }
   }
+}
+
+.dead {
+  position: relative;
 }
 </style>

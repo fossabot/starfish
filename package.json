@@ -2,7 +2,11 @@
   "name": "spacecrab",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": ">=16.0.1"
+  },
   "scripts": {
+    "v": "node -v",
     "dev": "npm run dcu",
     "up": "npm run dcu",
     "dcu": "docker-compose up",

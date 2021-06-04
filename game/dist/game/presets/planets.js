@@ -82,12 +82,11 @@ function generatePlanet(game, homeworldFactionKey) {
         if (d.rarity > maxRarity)
             continue;
         if (Math.random() > cargoDispropensity) {
-            const bm = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
-            const sm = dist_1.default.r2(bm * (Math.random() * 0.2) + 0.55, 3);
+            const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
             vendor.cargo.push({
                 cargoType: d.type,
-                buyMultiplier: bm,
-                sellMultiplier: sm,
+                buyMultiplier,
+                sellMultiplier,
             });
         }
     }
@@ -95,10 +94,10 @@ function generatePlanet(game, homeworldFactionKey) {
         if (d.rarity > maxRarity || d.rarity < minRarity)
             continue;
         if (Math.random() > passiveDispropensity) {
-            const bm = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
+            const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
             vendor.passives.push({
                 passiveType: d.type,
-                buyMultiplier: bm,
+                buyMultiplier,
             });
         }
     }
@@ -109,39 +108,39 @@ function generatePlanet(game, homeworldFactionKey) {
         ...Object.values(itemData.scanner),
         ...Object.values(itemData.communicator),
     ]) {
-        const bm = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
-        const sm = dist_1.default.r2(bm * (Math.random() * 0.2) + 0.55, 3);
+        const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
         // vendors will buy any item, but only sell a few
         const itemForSale = {
             itemType: d.type,
             itemId: d.id,
-            sellMultiplier: sm,
+            sellMultiplier,
         };
         if (d.rarity < maxRarity &&
             d.rarity > minRarity &&
             Math.random() > itemDispropensity)
-            itemForSale.buyMultiplier = bm;
+            itemForSale.buyMultiplier = buyMultiplier;
         vendor.items.push(itemForSale);
     }
     for (let d of Object.values(itemData.chassis)) {
         if (d.rarity > maxRarity || d.rarity < minRarity)
             continue;
         if (Math.random() > chassisDispropensity) {
-            const bm = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
-            const sm = dist_1.default.r2(bm * (Math.random() * 0.2) + 0.55, 3);
+            const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
             vendor.chassis.push({
                 chassisType: d.id,
-                buyMultiplier: bm,
-                sellMultiplier: sm,
+                buyMultiplier,
+                sellMultiplier,
             });
         }
     }
-    // todo these correspond generally to faction
     const creatures = [];
     while (creatures.length === 0 || Math.random() > 0.5) {
-        const chosen = dist_1.default.randomFromArray(seaCreatures);
+        const viableCreatures = factionId
+            ? seaCreatures.filter((s) => s.factionKey === factionId)
+            : seaCreatures;
+        const chosen = dist_1.default.randomFromArray(viableCreatures);
         if (!creatures.find((cre) => cre === chosen))
-            creatures.push(chosen);
+            creatures.push(chosen.name);
     }
     return {
         name,
@@ -158,6 +157,11 @@ function generatePlanet(game, homeworldFactionKey) {
     };
 }
 exports.generatePlanet = generatePlanet;
+function getBuyAndSellMultipliers() {
+    const buyMultiplier = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
+    const sellMultiplier = Math.min(buyMultiplier * dist_1.default.factionVendorMultiplier, dist_1.default.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3));
+    return { buyMultiplier, sellMultiplier };
+}
 const planetNames = [
     `Osiris`,
     `Neptune`,
@@ -211,140 +215,43 @@ const planetNames = [
     // todo MORE
 ];
 const seaCreatures = [
-    `crabs`,
-    `seals`,
-    `octopi`,
-    `squids`,
-    `sharks`,
-    `seahorses`,
-    `walruses`,
-    `starfish`,
-    `whales`,
-    `orcas`,
-    `anglerfish`,
-    `eels`,
-    `blowfish`,
-    `penguins`,
-    `jellyfish`,
-    `squids`,
-    `lobsters`,
-    `shrimp`,
-    `oysters`,
-    `clams`,
-    `abalones`,
-    `barnacles`,
-    `seagulls`,
-    `dolphins`,
-    `urchins`,
-    `sea otters`,
-    `pelicans`,
-    `anemones`,
-    `sea turtles`,
-    `sea lions`,
-    `corals`,
-    `narwhals`,
-    `cod`,
-    `mackerel`,
-    `tuna`,
-    `marlin`,
-    `swordfish`,
-    `angelfish`,
-    `clownfish`,
+    { name: `crabs`, factionKey: `green` },
+    { name: `oysters`, factionKey: `green` },
+    { name: `clams`, factionKey: `green` },
+    { name: `abalones`, factionKey: `green` },
+    { name: `barnacles`, factionKey: `green` },
+    { name: `octopi`, factionKey: `green` },
+    { name: `squids`, factionKey: `green` },
+    { name: `lobsters`, factionKey: `green` },
+    { name: `anemones`, factionKey: `green` },
+    { name: `jellyfish`, factionKey: `green` },
+    { name: `urchins`, factionKey: `green` },
+    { name: `sharks`, factionKey: `purple` },
+    { name: `seahorses`, factionKey: `purple` },
+    { name: `starfish`, factionKey: `purple` },
+    { name: `anglerfish`, factionKey: `purple` },
+    { name: `eels`, factionKey: `purple` },
+    { name: `shrimp`, factionKey: `purple` },
+    { name: `corals`, factionKey: `purple` },
+    { name: `narwhals`, factionKey: `purple` },
+    { name: `cod`, factionKey: `purple` },
+    { name: `mackerel`, factionKey: `purple` },
+    { name: `tuna`, factionKey: `purple` },
+    { name: `marlin`, factionKey: `purple` },
+    { name: `swordfish`, factionKey: `purple` },
+    { name: `angelfish`, factionKey: `purple` },
+    { name: `clownfish`, factionKey: `purple` },
+    { name: `walruses`, factionKey: `blue` },
+    { name: `whales`, factionKey: `blue` },
+    { name: `orcas`, factionKey: `blue` },
+    { name: `seals`, factionKey: `blue` },
+    { name: `blowfish`, factionKey: `blue` },
+    { name: `penguins`, factionKey: `blue` },
+    { name: `seagulls`, factionKey: `blue` },
+    { name: `dolphins`, factionKey: `blue` },
+    { name: `sea otters`, factionKey: `blue` },
+    { name: `pelicans`, factionKey: `blue` },
+    { name: `sea turtles`, factionKey: `blue` },
+    { name: `sea lions`, factionKey: `blue` },
 ];
-// const planets: BasePlanetData[] = [
-//   {
-//     name: `Cancer`,
-//     location: [0, 0],
-//     color: `hsl(50, 80%, 60%)`,
-//     radius: 56000,
-//     factionId,
-//     creatures: [`crabs`],
-//     repairCostMultiplier: 1,
-//     vendor: {
-//       cargo: [
-//         {
-//           cargoData: salt,
-//           buyMultiplier: 1,
-//           sellMultiplier: 0.8,
-//         },
-//         {
-//           cargoData: water,
-//           buyMultiplier: 1,
-//           sellMultiplier: 0.8,
-//         },
-//         {
-//           cargoData: oxygen,
-//           buyMultiplier: 1,
-//           sellMultiplier: 0.8,
-//         },
-//       ],
-//       passives: [
-//         {
-//           passiveData: passiveData.cargoSpace,
-//           buyMultiplier: 1.2,
-//         },
-//       ],
-//     },
-//   },
-//   {
-//     name: `Hera`,
-//     color: `red`,
-//     location: [-1, 0],
-//     radius: 26000,
-//     creatures: [`lobsters`],
-//     repairCostMultiplier: 1.1,
-//     vendor: {
-//       cargo: [
-//         {
-//           cargoData: salt,
-//           buyMultiplier: 1.2,
-//           sellMultiplier: 0.8,
-//         },
-//         {
-//           cargoData: water,
-//           buyMultiplier: 0.8,
-//           sellMultiplier: 0.55,
-//         },
-//         {
-//           cargoData: oxygen,
-//           buyMultiplier: 1.1,
-//           sellMultiplier: 0.9,
-//         },
-//       ],
-//     },
-//   },
-//   {
-//     name: `Osiris`,
-//     color: `hsl(240, 80%, 90%)`,
-//     location: [0.2, -0.1],
-//     radius: 36000,
-//     creatures: [`tuna`, `blowfish`],
-//     vendor: {
-//       cargo: [
-//         {
-//           cargoData: oxygen,
-//           buyMultiplier: 0.8,
-//           sellMultiplier: 0.4,
-//         },
-//       ],
-//     },
-//   },
-//   {
-//     name: `Neptune`,
-//     color: `hsl(240, 80%, 90%)`,
-//     location: [-0.15, 0.28],
-//     radius: 36000,
-//     creatures: [`narwhals`, `beluga whales`],
-//     vendor: {
-//       cargo: [
-//         {
-//           cargoData: salt,
-//           buyMultiplier: 0.8,
-//           sellMultiplier: 0.4,
-//         },
-//       ],
-//     },
-//   },
-// ]
-// export default planets
 //# sourceMappingURL=planets.js.map

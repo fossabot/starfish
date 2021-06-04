@@ -1,15 +1,13 @@
 import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
-import { respawn } from '../../ioInterface/ship'
 import ioInterface from '../../ioInterface'
 
 export class AlertLevelCommand implements Command {
-  commandNames = [`al`, `alertlevel`]
+  commandNames = [`alertlevel`, `al`]
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use \`${commandPrefix}alertlevel <1, 2, 3, 4, or 5>\` to set the severity of alert that will appear in the alerts channel.`
+    return `Use \`${commandPrefix}${this.commandNames[0]} <1, 2, 3, 4, or 5>\` to set the severity of alerts that will appear in the \`alerts\` channel.`
   }
 
   async run(context: CommandContext) {

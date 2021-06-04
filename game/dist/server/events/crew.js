@@ -68,6 +68,16 @@ function default_1(socket) {
         crewMember.attackTarget = targetShip;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}.`);
     });
+    socket.on(`crew:itemTarget`, (shipId, crewId, targetId) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        crewMember.itemTarget = targetId;
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} item target to ${targetId}.`);
+    });
     socket.on(`crew:repairPriority`, (shipId, crewId, repairPriority) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
@@ -91,6 +101,25 @@ function default_1(socket) {
         ship.addCommonCredits(amount, crewMember);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`);
     });
+    socket.on(`ship:redistribute`, (shipId, crewId, amount) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        if (ship.captain !== crewMember.id)
+            return;
+        if (amount > ship.commonCredits)
+            return;
+        ship.commonCredits -= amount;
+        ship.toUpdate.commonCredits = ship.commonCredits;
+        ship.logEntry(`The captain dispersed ${dist_1.default.r2(amount)} credits from the common fund amongst the crew.`);
+        ship.distributeCargoAmongCrew([
+            { amount: amount, type: `credits` },
+        ]);
+        dist_1.default.log(`gray`, `The captain on ${ship.name} redistributed ${amount} from the common fund.`);
+    });
     socket.on(`crew:buyCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
@@ -113,7 +142,7 @@ function default_1(socket) {
         const price = dist_1.default.r2(cargoForSale.cargoData.basePrice *
             cargoForSale.buyMultiplier *
             amount *
-            planet?.buyFluctuator *
+            planet?.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 5);
@@ -155,7 +184,7 @@ function default_1(socket) {
         const price = dist_1.default.r2(cargoBeingBought.cargoData.basePrice *
             cargoBeingBought.sellMultiplier *
             amount *
-            planet.sellFluctuator *
+            planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
                 : 1), 5);
@@ -216,7 +245,7 @@ function default_1(socket) {
         const price = dist_1.default.r2(repairMultiplier *
             dist_1.default.baseRepairCost *
             hp *
-            planet.buyFluctuator *
+            planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 5);
@@ -257,7 +286,7 @@ function default_1(socket) {
         const price = dist_1.default.r2(passiveForSale.passiveData.basePrice *
             passiveForSale.buyMultiplier *
             dist_1.default.getCrewPassivePriceMultiplier(currentLevel) *
-            planet.buyFluctuator *
+            planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 5, true);

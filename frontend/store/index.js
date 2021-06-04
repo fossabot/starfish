@@ -83,6 +83,17 @@ export const mutations = {
     )
   },
 
+  setItemTarget(state, target) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, `itemTarget`, target)
+    this.$socket?.emit(
+      `crew:itemTarget`,
+      state.ship.id,
+      state.userId,
+      target,
+    )
+  },
+
   setRepairPriority(state, rp) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `repairPriority`, rp)

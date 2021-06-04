@@ -75,10 +75,17 @@
             :class="{
               current: crewMember.location === room,
             }"
-            v-for="room in ship.availableRooms"
-            :key="'ar' + room"
-            :ref="room"
-            @click="$store.commit('setRoom', room)"
+            v-for="room in ship.rooms"
+            :key="'ar' + room.id"
+            :ref="room.id"
+            @click="$store.commit('setRoom', room.id)"
+            @mouseenter="
+              $store.commit('tooltip', {
+                type: 'room',
+                data: room,
+              })
+            "
+            @mouseleave="$store.commit('tooltip')"
           >
             <div
               class="roomlabel"
@@ -89,7 +96,7 @@
                   : '',
               }"
             >
-              {{ room }}
+              {{ room.id }}
             </div>
           </div>
           <template v-for="roomWithCrew in crewByRoom">
@@ -129,8 +136,9 @@ export default {
         room: string
         crewMembers: CrewMemberStub[]
       }[] = []
-      for (let room of this.ship
-        ?.availableRooms as string[]) {
+      for (let room of Object.keys(
+        this.ship?.rooms,
+      ) as string[]) {
         byRoom.push({
           room,
           crewMembers: this.ship.crewMembers.filter(

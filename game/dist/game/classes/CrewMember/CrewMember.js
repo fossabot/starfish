@@ -34,6 +34,7 @@ class CrewMember {
         this.tactic = `defensive`;
         this.attackFactions = [];
         this.attackTarget = null;
+        this.itemTarget = null;
         this.repairPriority = `most damaged`;
         this.actives = [];
         this.passives = [];
@@ -65,6 +66,8 @@ class CrewMember {
                 this.addPassive(p);
         if (data.tactic)
             this.tactic = data.tactic;
+        if (data.itemTarget)
+            this.itemTarget = data.itemTarget;
         if (data.targetLocation)
             this.targetLocation = data.targetLocation;
         if (data.attackFactions)
@@ -82,13 +85,16 @@ class CrewMember {
             this.name = `crew member`;
     }
     goTo(location) {
+        if (!(location in this.ship.rooms))
+            return false;
         this.location = location;
         this.lastActive = Date.now();
+        return true;
     }
     tick() {
         // ----- reset attack target if out of vision range -----
         if (this.attackTarget &&
-            !this.ship.visible.ships.includes(this.attackTarget))
+            !this.ship.visible.ships.find((s) => s.id === this.attackTarget?.id))
             this.attackTarget = null;
         // ----- actives -----
         this.actives.forEach((a) => a.tick());
@@ -101,7 +107,7 @@ class CrewMember {
         if (this.tired)
             return;
         this.stamina -=
-            dist_1.default.baseStaminaUse * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+            dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
@@ -119,7 +125,7 @@ class CrewMember {
     }
     addXp(skill, xp) {
         if (!xp)
-            xp = dist_1.default.baseXpGain * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+            xp = dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         let skillElement = this.skills.find((s) => s.skill === skill);
         if (!skillElement) {
             const index = this.skills.push({

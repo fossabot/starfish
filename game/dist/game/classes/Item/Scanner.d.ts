@@ -4,6 +4,7 @@ export declare class Scanner extends Item {
     readonly id: ScannerId;
     readonly sightRange: number;
     readonly shipScanRange: number;
+    readonly shipScanData: ShipScanDataShape;
     constructor(data: BaseScannerData, ship: Ship, props?: Partial<BaseScannerData>);
     use(): number;
 }

@@ -6,7 +6,17 @@
       </template>
 
       <div class="panesection" v-if="ship.planet">
-        <div>At planet 🪐{{ ship.planet.name }}</div>
+        <div
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'planet',
+              data: ship.planet,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          At planet 🪐{{ ship.planet.name }}
+        </div>
       </div>
 
       <div class="panesection">
@@ -59,7 +69,16 @@
         <div v-else>Stopped</div>
       </div>
 
-      <ProgressBar :percent="ship._hp / ship._maxHp">
+      <ProgressBar
+        :percent="ship._hp / ship._maxHp"
+        @mouseenter.native="
+          $store.commit(
+            'tooltip',
+            `The sum total of all of your ship's equipment's health. Lose it all, and you're dead.`,
+          )
+        "
+        @mouseleave.native="$store.commit('tooltip')"
+      >
         <div>
           🇨🇭HP: {{ Math.round(ship._hp * 100) / 100 }}/{{
             Math.round(ship._maxHp * 100) / 100
@@ -93,6 +112,13 @@
           Common Fund: 💳{{
             ship && c.r2(ship.commonCredits)
           }}
+          <button
+            v-if="isCaptain && ship.commonCredits > 0.01"
+            @click="redistributeCommonFund"
+            class="mini secondary"
+          >
+            Add to common fund
+          </button>
         </div>
         <div>
           Captain:
@@ -162,8 +188,7 @@ export default {
         room: string
         crewMembers: CrewMemberStub[]
       }[] = []
-      for (let room of this.ship
-        ?.availableRooms as string[]) {
+      for (let room of this.ship?.rooms as string[]) {
         byRoom.push({
           room,
           crewMembers: this.ship?.crewMembers.filter(
@@ -176,7 +201,36 @@ export default {
   },
   watch: {},
   mounted(this: ComponentShape) {},
-  methods: {},
+  methods: {
+    async redistributeCommonFund(this: ComponentShape) {
+      const amount =
+        parseFloat(
+          prompt(
+            `How many credits do you want to contribute to the ship's common credits? (Max ${Math.floor(
+              this.ship.commonCredits * 100,
+            ) / 100})`,
+          ) || '0',
+        ) || 0
+      if (
+        !amount ||
+        amount < 0 ||
+        amount > this.ship.commonCredits
+      ) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'Nope.',
+          type: 'error',
+        })
+        return console.log('Nope.')
+      }
+
+      this.$socket?.emit(
+        'ship:redistribute',
+        this.ship.id,
+        this.crewMember.id,
+        amount,
+      )
+    },
+  },
 }
 </script>
 

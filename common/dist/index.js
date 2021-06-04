@@ -10,6 +10,7 @@ const misc_1 = __importDefault(require("./misc"));
 const log_1 = __importDefault(require("./log"));
 const game_1 = __importDefault(require("./game"));
 const physics_1 = __importDefault(require("./physics"));
+const discord_1 = __importDefault(require("./discord"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -18,5 +19,6 @@ exports.default = {
     ...log_1.default,
     ...game_1.default,
     ...physics_1.default,
+    ...discord_1.default,
 };
 //# sourceMappingURL=index.js.map

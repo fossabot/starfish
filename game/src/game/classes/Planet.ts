@@ -10,7 +10,7 @@ import { chassis as chassisData } from '../presets/items/chassis'
 import * as itemData from '../presets/items/'
 
 export class Planet {
-  static readonly fluctuatorIntensity = 0.2
+  static readonly fluctuatorIntensity = 0.8
 
   readonly name: string
   readonly color: string
@@ -23,8 +23,7 @@ export class Planet {
   readonly radius: number
   readonly homeworld?: Faction
   mass = 5.974e30
-  buyFluctuator = 1
-  sellFluctuator = 1
+  priceFluctuator = 1
 
   constructor(
     {
@@ -104,8 +103,8 @@ export class Planet {
       ((5.974e30 * this.radius) / 36000) *
       (1 + Math.random() * 0.1)
 
-    this.updateFluctuators()
-    setInterval(this.updateFluctuators, 1000 * 60 * 60) // every hour
+    this.updateFluctuator()
+    setInterval(this.updateFluctuator, 1000 * 60 * 60) // every hour
   }
 
   identify() {
@@ -120,26 +119,16 @@ export class Planet {
     )
   }
 
-  updateFluctuators() {
+  updateFluctuator() {
     const intensity = Planet.fluctuatorIntensity
     const mod = (this.name || ``)
       .split(``)
       .reduce((t, c) => t + c.charCodeAt(0), 0)
 
-    this.buyFluctuator =
+    this.priceFluctuator =
       (((new Date().getDate() * 13 +
         mod +
         (new Date().getMonth() * 7 + mod)) %
-        100) /
-        100) *
-        intensity +
-      (1 - intensity / 2)
-
-    this.sellFluctuator =
-      (((new Date().getDate() * 13 +
-        15 +
-        mod +
-        (new Date().getMonth() * 9 + 3 + mod)) %
         100) /
         100) *
         intensity +

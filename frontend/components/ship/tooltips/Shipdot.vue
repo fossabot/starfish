@@ -1,7 +1,12 @@
 <template>
   <div>
-    <div>🚀{{ data.name }}</div>
-    <div>Ship Model: {{ data.chassis.displayName }}</div>
+    <div>
+      <b>🚀{{ data.name }}</b>
+      <span class="sub">{{ c.capitalize(data.type) }}</span>
+    </div>
+    <div>{{ data.description }}</div>
+    <hr />
+    <div>Chassis: {{ data.chassis.displayName }}</div>
     <div v-if="data.species">
       Species:
       {{ data.species.icon

@@ -22,6 +22,7 @@ export class CrewMember {
   tactic: Tactic = `defensive`
   attackFactions: FactionKey[] = []
   attackTarget: CombatShip | null = null
+  itemTarget: ItemType | null = null
   repairPriority: RepairPriority = `most damaged`
   readonly inventory: Cargo[]
   credits: number
@@ -55,6 +56,7 @@ export class CrewMember {
       for (let p of data.passives) this.addPassive(p)
 
     if (data.tactic) this.tactic = data.tactic
+    if (data.itemTarget) this.itemTarget = data.itemTarget
     if (data.targetLocation)
       this.targetLocation = data.targetLocation
     if (data.attackFactions)
@@ -73,8 +75,10 @@ export class CrewMember {
   }
 
   goTo(location: CrewLocation) {
+    if (!(location in this.ship.rooms)) return false
     this.location = location
     this.lastActive = Date.now()
+    return true
   }
 
   cockpitAction = roomActions.cockpit
@@ -86,7 +90,9 @@ export class CrewMember {
     // ----- reset attack target if out of vision range -----
     if (
       this.attackTarget &&
-      !this.ship.visible.ships.includes(this.attackTarget)
+      !this.ship.visible.ships.find(
+        (s) => s.id === this.attackTarget?.id,
+      )
     )
       this.attackTarget = null
 
@@ -103,7 +109,7 @@ export class CrewMember {
     if (this.tired) return
 
     this.stamina -=
-      c.baseStaminaUse * (c.deltaTime / c.TICK_INTERVAL)
+      c.baseStaminaUse / (c.deltaTime / c.TICK_INTERVAL)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)
@@ -121,7 +127,7 @@ export class CrewMember {
 
   addXp(skill: SkillType, xp?: number) {
     if (!xp)
-      xp = c.baseXpGain * (c.deltaTime / c.TICK_INTERVAL)
+      xp = c.baseXpGain / (c.deltaTime / c.TICK_INTERVAL)
     let skillElement = this.skills.find(
       (s) => s.skill === skill,
     )

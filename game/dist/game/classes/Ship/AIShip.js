@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,11 +25,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AIShip = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const CombatShip_1 = require("./CombatShip");
+const itemData = __importStar(require("../../presets/items"));
 class AIShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
         this.human = false;
         this.level = 1;
+        this.visible = {
+            ships: [],
+            planets: [],
+            caches: [],
+            attackRemnants: [],
+        };
         this.keyAngle = Math.random() * 365;
         this.obeysGravity = false;
         if (data.id)
@@ -22,6 +48,8 @@ class AIShip extends CombatShip_1.CombatShip {
         this.human = false;
         if (data.level)
             this.level = data.level;
+        if (this.items.length === 0)
+            this.addLevelAppropriateItems();
         if (data.spawnPoint?.length === 2)
             this.spawnPoint = [...data.spawnPoint];
         else
@@ -51,6 +79,38 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     cumulativeSkillIn(l, s) {
         return this.level;
+    }
+    addLevelAppropriateItems() {
+        dist_1.default.log(`Adding items to level ${this.level} ai...`);
+        let itemBudget = this.level * dist_1.default.aiDifficultyMultiplier;
+        const validChassis = Object.values(itemData.chassis)
+            .filter((i) => i.rarity <= itemBudget / 3)
+            .sort((a, b) => b.rarity - a.rarity);
+        const chassisToBuy = validChassis[0] || itemData.chassis.starter1;
+        this.chassis = chassisToBuy;
+        itemBudget -= chassisToBuy.rarity;
+        dist_1.default.log(`adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`);
+        let canAddMoreItems = true;
+        const isInBudget = (i) => i.rarity <= itemBudget;
+        while (canAddMoreItems) {
+            const typeToAdd = this.weapons.length === 0
+                ? `weapon`
+                : this.engines.length === 0
+                    ? `engine`
+                    : dist_1.default.randomFromArray([`engine`, `weapon`]);
+            const itemPool = itemData[typeToAdd];
+            const validItems = Object.values(itemPool).filter(isInBudget);
+            if (!validItems.length) {
+                canAddMoreItems = false;
+                continue;
+            }
+            const itemToAdd = dist_1.default.randomFromArray(validItems);
+            this.addItem(itemToAdd);
+            itemBudget -= itemToAdd.rarity;
+            dist_1.default.log(`adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`);
+            if (this.chassis.slots <= this.items.length)
+                canAddMoreItems = false;
+        }
     }
     // ----- move -----
     move(toLocation) {

@@ -13,6 +13,7 @@
         ><button
           class="mini secondary"
           @click="drop('credits')"
+          v-if="crewMember.credits > 0.001"
         >
           Drop
         </button>

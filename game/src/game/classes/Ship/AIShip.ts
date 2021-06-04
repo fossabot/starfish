@@ -2,12 +2,29 @@ import c from '../../../../../common/dist'
 import { Game } from '../../Game'
 import { Faction } from '../Faction'
 import { CombatShip } from './CombatShip'
+import type { Ship } from './Ship'
+import type { Planet } from '../Planet'
+import type { Cache } from '../Cache'
+import type { AttackRemnant } from '../AttackRemnant'
+import * as itemData from '../../presets/items'
 
 export class AIShip extends CombatShip {
   readonly human: boolean = false
   readonly id: string
   readonly spawnPoint: CoordinatePair
   level = 1
+
+  visible: {
+    ships: Ship[]
+    planets: Planet[]
+    caches: Cache[]
+    attackRemnants: AttackRemnant[]
+  } = {
+    ships: [],
+    planets: [],
+    caches: [],
+    attackRemnants: [],
+  }
 
   keyAngle = Math.random() * 365
   targetLocation: CoordinatePair
@@ -25,7 +42,8 @@ export class AIShip extends CombatShip {
     this.human = false
 
     if (data.level) this.level = data.level
-
+    if (this.items.length === 0)
+      this.addLevelAppropriateItems()
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
@@ -66,6 +84,56 @@ export class AIShip extends CombatShip {
 
   cumulativeSkillIn(l: CrewLocation, s: SkillType) {
     return this.level
+  }
+
+  addLevelAppropriateItems() {
+    c.log(`Adding items to level ${this.level} ai...`)
+    let itemBudget = this.level * c.aiDifficultyMultiplier
+
+    const validChassis = Object.values(itemData.chassis)
+      .filter(
+        (i: BaseChassisData) => i.rarity <= itemBudget / 3,
+      )
+      .sort(
+        (a: BaseChassisData, b: BaseChassisData) =>
+          b.rarity - a.rarity,
+      )
+    const chassisToBuy: BaseChassisData =
+      validChassis[0] || itemData.chassis.starter1
+    this.chassis = chassisToBuy
+    itemBudget -= chassisToBuy.rarity
+    c.log(
+      `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
+    )
+
+    let canAddMoreItems = true
+    const isInBudget = (i: BaseItemData) =>
+      i.rarity <= itemBudget
+    while (canAddMoreItems) {
+      const typeToAdd: `engine` | `weapon` =
+        this.weapons.length === 0
+          ? `weapon`
+          : this.engines.length === 0
+          ? `engine`
+          : c.randomFromArray([`engine`, `weapon`])
+      const itemPool = itemData[typeToAdd]
+      const validItems: BaseItemData[] =
+        Object.values(itemPool).filter(isInBudget)
+      if (!validItems.length) {
+        canAddMoreItems = false
+        continue
+      }
+      const itemToAdd: BaseItemData =
+        c.randomFromArray(validItems)
+      this.addItem(itemToAdd)
+      itemBudget -= itemToAdd.rarity
+      c.log(
+        `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
+      )
+
+      if (this.chassis.slots <= this.items.length)
+        canAddMoreItems = false
+    }
   }
 
   // ----- move -----

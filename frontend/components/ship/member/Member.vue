@@ -34,7 +34,7 @@
       <b>Go to</b>
       <div>
         <span
-          v-for="room in ship.availableRooms"
+          v-for="room in ship.rooms"
           v-if="room !== crewMember.location"
           :key="'setroom' + room"
           class="pad-none"

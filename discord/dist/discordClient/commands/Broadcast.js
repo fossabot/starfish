@@ -12,8 +12,7 @@ class BroadcastCommand {
         this.commandNames = [];
     }
     getHelpMessage(commandPrefix) {
-        this.commandNames = [];
-        return `Use ${commandPrefix}respawn to get your crew a new ship once you've died.`;
+        return ``;
     }
     async run(context) {
         if (context.ship) {

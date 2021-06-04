@@ -49,7 +49,7 @@ function default_1(socket) {
             });
         const price = dist_1.default.r2((itemForSale.itemData?.basePrice || 1) *
             itemForSale.buyMultiplier *
-            planet.buyFluctuator *
+            planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2);
@@ -99,7 +99,7 @@ function default_1(socket) {
         const price = dist_1.default.r2((itemData?.basePrice || 1) *
             (itemForSale?.sellMultiplier ||
                 dist_1.default.baseItemSellMultiplier) *
-            planet.sellFluctuator *
+            planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? 1 + (1 - dist_1.default.factionVendorMultiplier)
                 : 1), 2);
@@ -111,6 +111,50 @@ function default_1(socket) {
             data: dist_1.default.stubify(ship),
         });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold the ship's ${itemType} of id ${itemId}.`);
+    });
+    socket.on(`ship:swapChassis`, (shipId, crewId, chassisType, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        if (ship.captain !== crewMember.id)
+            return callback({
+                error: `Only the captain may buy or sell equipment.`,
+            });
+        const planet = ship.planet;
+        if (!planet)
+            return callback({ error: `Not at a planet.` });
+        const itemForSale = planet?.vendor?.chassis?.find((i) => i.chassisType === chassisType);
+        if (!itemForSale ||
+            !itemForSale.buyMultiplier ||
+            !itemForSale.chassisData)
+            return callback({
+                error: `That equipment is not for sale here.`,
+            });
+        const currentChassisSellPrice = ship.chassis.basePrice / 2;
+        const price = dist_1.default.r2((itemForSale.chassisData?.basePrice || 1) *
+            itemForSale.buyMultiplier *
+            planet.priceFluctuator *
+            (planet.faction === ship.faction
+                ? dist_1.default.factionVendorMultiplier
+                : 1) -
+            currentChassisSellPrice, 2);
+        if (price > ship.commonCredits)
+            return callback({ error: `Insufficient funds.` });
+        if (ship.items.length > itemForSale.chassisData?.slots)
+            return callback({
+                error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
+            });
+        ship.commonCredits -= price;
+        ship.toUpdate.commonCredits = ship.commonCredits;
+        ship.swapChassis(itemForSale.chassisData);
+        ship.logEntry(`${itemForSale.chassisData?.displayName} (chassis) bought by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
+        callback({
+            data: dist_1.default.stubify(ship),
+        });
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} swapped to the chassis ${chassisType}.`);
     });
 }
 exports.default = default_1;

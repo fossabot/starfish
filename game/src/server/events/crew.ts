@@ -135,6 +135,26 @@ export default function (
   )
 
   socket.on(
+    `crew:itemTarget`,
+    (shipId, crewId, targetId) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      crewMember.itemTarget = targetId
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} item target to ${targetId}.`,
+      )
+    },
+  )
+
+  socket.on(
     `crew:repairPriority`,
     (shipId, crewId, repairPriority) => {
       const ship = game.ships.find(
@@ -174,6 +194,39 @@ export default function (
       `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`,
     )
   })
+
+  socket.on(
+    `ship:redistribute`,
+    (shipId, crewId, amount) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+      if (ship.captain !== crewMember.id) return
+
+      if (amount > ship.commonCredits) return
+
+      ship.commonCredits -= amount
+      ship.toUpdate.commonCredits = ship.commonCredits
+      ship.logEntry(
+        `The captain dispersed ${c.r2(
+          amount,
+        )} credits from the common fund amongst the crew.`,
+      )
+      ship.distributeCargoAmongCrew([
+        { amount: amount, type: `credits` },
+      ])
+
+      c.log(
+        `gray`,
+        `The captain on ${ship.name} redistributed ${amount} from the common fund.`,
+      )
+    },
+  )
 
   socket.on(
     `crew:buyCargo`,
@@ -221,7 +274,7 @@ export default function (
         cargoForSale.cargoData.basePrice *
           cargoForSale.buyMultiplier *
           amount *
-          planet?.buyFluctuator *
+          planet?.priceFluctuator *
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
@@ -299,7 +352,7 @@ export default function (
         cargoBeingBought.cargoData.basePrice *
           cargoBeingBought.sellMultiplier *
           amount *
-          planet.sellFluctuator *
+          planet.priceFluctuator *
           (planet.faction === ship.faction
             ? 1 + (1 - (c.factionVendorMultiplier || 1))
             : 1),
@@ -412,7 +465,7 @@ export default function (
         repairMultiplier *
           c.baseRepairCost *
           hp *
-          planet.buyFluctuator *
+          planet.priceFluctuator *
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
@@ -499,7 +552,7 @@ export default function (
         passiveForSale.passiveData.basePrice *
           passiveForSale.buyMultiplier *
           c.getCrewPassivePriceMultiplier(currentLevel) *
-          planet.buyFluctuator *
+          planet.priceFluctuator *
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),

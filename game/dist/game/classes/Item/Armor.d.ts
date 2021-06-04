@@ -8,6 +8,7 @@ export declare class Armor extends Item {
         taken: number;
         mitigated: number;
         remaining: number;
+        destroyed: boolean;
     };
 }
 //# sourceMappingURL=Armor.d.ts.map

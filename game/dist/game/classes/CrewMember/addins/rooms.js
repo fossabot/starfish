@@ -39,8 +39,8 @@ function repair(repairAmount) {
         this.repairPriority === `most damaged`)
         itemsToRepair.push(repairableItems.reduce((mostBroken, ri) => ri.repair < mostBroken.repair ? ri : mostBroken, repairableItems[0]));
     const amountToRepair = repairAmount ||
-        (dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) *
-            (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL)) /
+        dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) /
+            (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) /
             itemsToRepair.length;
     // c.log(
     //   this.repairPriority,
@@ -83,7 +83,7 @@ function weapons() {
 exports.weapons = weapons;
 function bunk() {
     this.stamina +=
-        dist_1.default.getStaminaGainPerTickForSingleCrewMember() *
+        dist_1.default.getStaminaGainPerTickForSingleCrewMember() /
             (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
     if (this.stamina > this.maxStamina)
         this.stamina = this.maxStamina;

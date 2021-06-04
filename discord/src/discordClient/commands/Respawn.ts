@@ -4,11 +4,10 @@ import type { Command } from '../models/Command'
 import { respawn } from '../../ioInterface/ship'
 
 export class RespawnCommand implements Command {
-  commandNames = [`r`, `respawn`]
+  commandNames = [`respawn`, `r`]
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use ${commandPrefix}respawn to get your crew a new ship once you've died.`
+    return `Use \`${commandPrefix}${this.commandNames[0]}\` to get your crew a new ship once you've died.`
   }
 
   async run({

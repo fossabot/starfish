@@ -7,11 +7,10 @@ exports.AlertLevelCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class AlertLevelCommand {
     constructor() {
-        this.commandNames = [`al`, `alertlevel`];
+        this.commandNames = [`alertlevel`, `al`];
     }
     getHelpMessage(commandPrefix) {
-        this.commandNames = [];
-        return `Use \`${commandPrefix}alertlevel <1, 2, 3, 4, or 5>\` to set the severity of alert that will appear in the alerts channel.`;
+        return `Use \`${commandPrefix}${this.commandNames[0]} <1, 2, 3, 4, or 5>\` to set the severity of alerts that will appear in the \`alerts\` channel.`;
     }
     async run(context) {
         if (!context.ship)

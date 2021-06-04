@@ -27,6 +27,7 @@ interface GameChannelReference {
   id?: string
   type: GameChannelType
 }
+type GameRoleType = `crew`
 
 type RadiusType =
   | `sight`

@@ -3,18 +3,17 @@ import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 
 export class LinkCommand implements Command {
-  commandNames = [`link`, `url`]
+  commandNames = [`link`, `url`, `invite`]
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use ${commandPrefix}link to get a link to your ship's console.`
+    return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a link to your ship's console.`
   }
 
   async run({
     initialMessage,
   }: CommandContext): Promise<void> {
     await initialMessage.channel.send(
-      `Your ship's console:\n${process.env.FRONTEND_URL}/s`,
+      `Your ship's console:\n${c.frontendUrl}/s\n\nBot invite link:\n${c.discordBotInviteUrl}`,
     )
   }
 

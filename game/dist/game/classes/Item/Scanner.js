@@ -7,12 +7,12 @@ exports.Scanner = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Item_1 = require("./Item");
 class Scanner extends Item_1.Item {
-    // todo scan more/less properties of a ship
     constructor(data, ship, props) {
         super(data, ship, props);
         this.id = data.id;
         this.sightRange = data.sightRange;
         this.shipScanRange = data.shipScanRange;
+        this.shipScanData = data.shipScanData;
     }
     use() {
         if (this.ship.ai)

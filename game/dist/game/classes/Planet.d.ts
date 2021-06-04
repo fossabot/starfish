@@ -1,7 +1,7 @@
 import type { Game } from '../Game';
 import type { Faction } from './Faction';
 export declare class Planet {
-    static readonly fluctuatorIntensity = 0.2;
+    static readonly fluctuatorIntensity = 0.8;
     readonly name: string;
     readonly color: string;
     readonly location: CoordinatePair;
@@ -13,11 +13,10 @@ export declare class Planet {
     readonly radius: number;
     readonly homeworld?: Faction;
     mass: number;
-    buyFluctuator: number;
-    sellFluctuator: number;
+    priceFluctuator: number;
     constructor({ name, color, location, vendor, factionId, homeworld, creatures, repairCostMultiplier, radius, }: BasePlanetData, game: Game);
     identify(): void;
     shipsAt(): import("./Ship/HumanShip").HumanShip[];
-    updateFluctuators(): void;
+    updateFluctuator(): void;
 }
 //# sourceMappingURL=Planet.d.ts.map

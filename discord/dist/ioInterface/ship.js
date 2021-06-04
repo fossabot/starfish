@@ -3,9 +3,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = void 0;
+exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = exports.rename = exports.setCaptain = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
+async function setCaptain(shipId, crewMemberId) {
+    const error = await new Promise((resolve) => {
+        index_1.io.emit(`ship:setCaptain`, shipId, crewMemberId, ({ data, error }) => {
+            if (error) {
+                dist_1.default.log(error);
+                resolve(error);
+                return;
+            }
+            resolve(null);
+        });
+    });
+    return error; // null = ok
+}
+exports.setCaptain = setCaptain;
+async function rename(shipId, newName) {
+    await index_1.io.emit(`ship:rename`, shipId, newName);
+}
+exports.rename = rename;
 async function get(id) {
     if (!(await index_1.connected()))
         return null;

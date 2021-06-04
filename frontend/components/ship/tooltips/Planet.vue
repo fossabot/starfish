@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div>🪐{{ data.name }}</div>
+    <div>
+      <b>🪐{{ data.name }}</b>
+      <span class="sub">{{ c.capitalize(data.type) }}</span>
+    </div>
+    <div>{{ data.description }}</div>
+    <hr />
     <div v-if="data.faction">
       Faction:
       <span :style="{ color: data.faction.color }">{{
@@ -11,12 +16,13 @@
 </template>
 
 <script>
+import c from '../../../../common/src'
 import { mapState } from 'vuex'
 
 export default {
   props: { data: {} },
   data() {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState([]),

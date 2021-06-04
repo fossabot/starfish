@@ -1,10 +1,10 @@
-type ChassisId = `starter` | `second`
+type ChassisId = `starter1` | `starter2`
 
-type EngineId = `starter`
-type WeaponId = `cannon`
-type ScannerId = `starter`
-type CommunicatorId = `starter`
-type ArmorId = `starter`
+type EngineId = `starter1` | `starter2`
+type WeaponId = `cannon1` | `cannon2` | `saber1` | `sniper1`
+type ScannerId = `starter1` | `starter2` | `shipscanner1`
+type CommunicatorId = `starter1` | `starter2`
+type ArmorId = `starter1` | `starter2`
 
 type ItemType =
   | `weapon`
@@ -43,7 +43,7 @@ interface BaseItemData {
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 
-type LoadoutName = `humanDefault` | `aiDefault`
+type LoadoutName = `humanDefault`
 type Loadout = {
   chassis: ChassisId
   items: { type: ItemType; id: ItemId }[]
@@ -70,16 +70,46 @@ interface BaseArmorData extends BaseItemData {
   damageReduction: number
 }
 
-interface BaseScannerData extends BaseItemData {
-  type: `scanner`
-  id: ScannerId
-  sightRange: number
-  shipScanRange: number
-}
-
 interface BaseCommunicatorData extends BaseItemData {
   type: `communicator`
   id: CommunicatorId
   range: number
   antiGarble: number
+}
+
+interface BaseScannerData extends BaseItemData {
+  type: `scanner`
+  id: ScannerId
+  sightRange: number
+  shipScanRange: number
+  shipScanData: ShipScanDataShape
+}
+
+interface ShipScanDataShape {
+  id: true
+  name: true
+  previousLocations: true
+  location: true
+  ai: true
+  human: true
+  attackable: true
+  planet: (keyof BasePlanetData)[]
+  faction: (keyof BaseFactionData)[]
+  species: (keyof BaseSpeciesData)[]
+  items?: (
+    | keyof BaseItemData
+    | keyof BaseWeaponData
+    | keyof BaseArmorData
+    | keyof BaseScannerData
+    | keyof BaseCommunicatorData
+    | keyof BaseEngineData
+  )[]
+  crewMembers?: (keyof BaseCrewMemberData)[]
+  rooms?: boolean
+  chassis?: (keyof BaseChassisData)[]
+  _hp?: boolean
+  _maxHp?: boolean
+  attackable?: boolean
+  targetShip?: boolean
+  radii?: RadiusType[]
 }

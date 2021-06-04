@@ -2,22 +2,22 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface/'
+import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class StartCommand implements Command {
-  commandNames = [`s`, `start`, `spawn`, `begin`, `init`]
+  commandNames = [`start`, `s`, `spawn`, `begin`, `init`]
 
   getHelpMessage(commandPrefix: string): string {
-    this.commandNames = []
-    return `Use ${commandPrefix}start to start your server off in the game.`
+    return `Use \`${commandPrefix}${this.commandNames[0]}\` to start your server off in the game.`
   }
 
   async run(context: CommandContext): Promise<void> {
-    if (!context.initialMessage.guild) return
+    if (!context.guild) return
 
     // add ship
     const createdShip = await ioInterface.ship.create({
-      id: context.initialMessage.guild.id,
-      name: context.initialMessage.guild.name,
+      id: context.guild.id,
+      name: context.guild.name,
       species: { id: `angelfish` },
     })
     if (!createdShip) {
@@ -30,10 +30,23 @@ export class StartCommand implements Command {
     const addedCrewMember = await ioInterface.crew.add(
       createdShip.id,
       {
-        name: context.initialMessage.author.username,
+        name: context.nickname,
         id: context.initialMessage.author.id,
       },
     )
+
+    const crewRole = await resolveOrCreateRole({
+      type: `crew`,
+      guild: context.guild,
+    })
+    if (!crewRole) {
+      await context.initialMessage.channel.send(
+        `Failed to add you to the \`Crew\` server role.`,
+      )
+    } else {
+      context.guildMember?.roles.add(crewRole)
+    }
+
     // add crew member
     if (!addedCrewMember) {
       await context.initialMessage.channel.send(

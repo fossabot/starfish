@@ -3,6 +3,10 @@ type CrewLocation =
   | `cockpit`
   | `repair`
   | `weapons`
+interface BaseRoomData {
+  id: CrewLocation
+  description: string
+}
 
 type SkillType =
   | `piloting`
@@ -45,6 +49,7 @@ interface BaseCrewMemberData {
   actives?: BaseCrewActiveData[]
   passives?: BaseCrewPassiveData[]
   tactic?: Tactic
+  itemTarget?: ItemType
   attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority

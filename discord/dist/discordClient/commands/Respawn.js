@@ -4,11 +4,10 @@ exports.RespawnCommand = void 0;
 const ship_1 = require("../../ioInterface/ship");
 class RespawnCommand {
     constructor() {
-        this.commandNames = [`r`, `respawn`];
+        this.commandNames = [`respawn`, `r`];
     }
     getHelpMessage(commandPrefix) {
-        this.commandNames = [];
-        return `Use ${commandPrefix}respawn to get your crew a new ship once you've died.`;
+        return `Use \`${commandPrefix}${this.commandNames[0]}\` to get your crew a new ship once you've died.`;
     }
     async run({ initialMessage, }) {
         // add ship

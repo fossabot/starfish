@@ -1,22 +1,22 @@
 export const chassis: {
   [key in ChassisId]: BaseChassisData
 } = {
-  starter: {
+  starter1: {
     type: `chassis`,
-    id: `starter`,
+    id: `starter1`,
     displayName: `Fishbowl 01`,
-    description: `Exactly what it sounds like.`,
+    description: `They say that a goldfish will grow to the size of its container. The goldfish in this bowl are feeling cramped, restrained to shallower waters.`,
     basePrice: 10,
     slots: 4,
-    rarity: 0.1,
+    rarity: 0.5,
   },
-  second: {
+  starter2: {
     type: `chassis`,
-    id: `second`,
+    id: `starter2`,
     displayName: `Fishbowl 02`,
-    description: `Exactly what it sounds like.`,
+    description: `They say that a goldfish will grow to the size of its container. The goldfish in this bowl are feeling cramped, restrained to shallower waters. The second entry in this series adds an additional equipment slot.`,
     basePrice: 10,
     slots: 5,
-    rarity: 0.15,
+    rarity: 1,
   },
 }

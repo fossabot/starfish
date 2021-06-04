@@ -59,10 +59,10 @@ export function repair(
 
   const amountToRepair =
     repairAmount ||
-    (c.getRepairAmountPerTickForSingleCrewMember(
+    c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
-    ) *
-      (c.deltaTime / c.TICK_INTERVAL)) /
+    ) /
+      (c.deltaTime / c.TICK_INTERVAL) /
       itemsToRepair.length
 
   // c.log(
@@ -112,7 +112,7 @@ export function weapons(this: CrewMember): void {
 
 export function bunk(this: CrewMember): void {
   this.stamina +=
-    c.getStaminaGainPerTickForSingleCrewMember() *
+    c.getStaminaGainPerTickForSingleCrewMember() /
     (c.deltaTime / c.TICK_INTERVAL)
 
   if (this.stamina > this.maxStamina)

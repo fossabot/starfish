@@ -37,6 +37,13 @@
         <span
           v-for="ca in buyableItems"
           :key="'buyitem' + ca.itemType + ca.itemId"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: ca.itemData.type,
+              data: ca.itemData,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           <button
             :disabled="!ca.canBuy"
@@ -58,12 +65,45 @@
           :key="
             'sellitem' + ca.type + ca.id + Math.random()
           "
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: ca.type,
+              data: ca,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
           <button
             :disabled="!ca.canSell"
             @click="sellItem(ca)"
           >
             <b>{{ ca.displayName }}</b>
+            <div>💳{{ c.r2(ca.price, 2) }}</div>
+          </button>
+        </span> </span
+      ><span
+        class="panesection inline"
+        v-if="swappableChassis.length"
+      >
+        <div>
+          <div class="panesubhead">Swap Chassis</div>
+        </div>
+        <span
+          v-for="ca in swappableChassis"
+          :key="'swapchassis' + ca.type + ca.id"
+          @mouseenter="
+            $store.commit('tooltip', {
+              type: 'chassis',
+              data: ca.chassisData,
+            })
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          <button
+            :disabled="!ca.canBuy"
+            @click="swapChassis(ca)"
+          >
+            <b>{{ ca.chassisData.displayName }}</b>
             <div>💳{{ c.r2(ca.price, 2) }}</div>
           </button>
         </span>
@@ -103,7 +143,7 @@ export default {
           const price = c.r2(
             (item.itemData?.basePrice || 1) *
               item.buyMultiplier! *
-              this.ship.planet.buyFluctuator *
+              this.ship.planet.priceFluctuator *
               (this.isSameFaction
                 ? c.factionVendorMultiplier
                 : 1),
@@ -132,7 +172,7 @@ export default {
           const price = c.r2(
             (itemForSale.itemData?.basePrice || 1) *
               itemForSale.sellMultiplier *
-              this.ship.planet.sellFluctuator *
+              this.ship.planet.priceFluctuator *
               (this.isSameFaction
                 ? 1 + (1 - (c.factionVendorMultiplier || 1))
                 : 1),
@@ -145,6 +185,34 @@ export default {
           }
         })
         .filter((i: ItemStub) => i)
+    },
+    swappableChassis(this: ComponentShape) {
+      return (this.ship.planet?.vendor?.chassis || [])
+        .filter(
+          (i: VendorChassisPrice) =>
+            i.chassisType !== this.ship.chassis.id,
+        )
+        .map((chassis: VendorChassisPrice) => {
+          const currentChassisSellPrice =
+            this.ship.chassis.basePrice / 2
+          const price = c.r2(
+            (chassis.chassisData?.basePrice || 1) *
+              chassis.buyMultiplier *
+              this.ship.planet.priceFluctuator *
+              (this.isSameFaction
+                ? c.factionVendorMultiplier
+                : 1) -
+              currentChassisSellPrice,
+            2,
+          )
+          return {
+            ...chassis,
+            price,
+            canBuy:
+              this.isCaptain &&
+              this.ship.commonCredits >= price,
+          }
+        })
     },
   },
   watch: {},
@@ -159,6 +227,10 @@ export default {
         data.itemId,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
             console.log(res.error)
             return
           }
@@ -177,6 +249,33 @@ export default {
         data.id,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+            console.log(res.error)
+            return
+          }
+          this.$store.commit('updateShip', res.data)
+        },
+      )
+    },
+
+    swapChassis(
+      this: ComponentShape,
+      data: VendorChassisPrice,
+    ) {
+      this.$socket.emit(
+        'ship:swapChassis',
+        this.ship.id,
+        this.crewMember.id,
+        data.chassisType,
+        (res: IOResponse<ShipStub>) => {
+          if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
             console.log(res.error)
             return
           }
