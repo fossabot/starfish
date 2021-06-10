@@ -27,8 +27,10 @@ const dist_1 = __importDefault(require("../../../../../common/dist"));
 const roomActions = __importStar(require("./addins/rooms"));
 const passives = __importStar(require("../../presets/crewPassives"));
 const CrewPassive_1 = require("./addins/CrewPassive");
-class CrewMember {
+const Stubbable_1 = require("../Stubbable");
+class CrewMember extends Stubbable_1.Stubbable {
     constructor(data, ship) {
+        super();
         this.name = `crew member`;
         this.targetLocation = null;
         this.tactic = `defensive`;
@@ -48,7 +50,13 @@ class CrewMember {
         this.id = data.id;
         this.ship = ship;
         this.rename(data.name);
-        this.location = data.location || `bunk`;
+        const hasBunk = ship.rooms.bunk;
+        this.location =
+            data.location ||
+                (hasBunk
+                    ? `bunk`
+                    : dist_1.default.randomFromArray(Object.keys(ship.rooms))) ||
+                `bunk`; // failsafe
         this.stamina = data.stamina || this.maxStamina;
         this.lastActive = Date.now();
         this.inventory = data.inventory || [];
@@ -92,6 +100,7 @@ class CrewMember {
         return true;
     }
     tick() {
+        this._stub = null; // invalidate stub
         // ----- reset attack target if out of vision range -----
         if (this.attackTarget &&
             !this.ship.visible.ships.find((s) => s.id === this.attackTarget?.id))
@@ -106,8 +115,9 @@ class CrewMember {
         // ----- stamina check/use -----
         if (this.tired)
             return;
-        this.stamina -=
-            dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+        if (!this.ship.tutorial?.currentStep.disableStamina)
+            this.stamina -=
+                dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);

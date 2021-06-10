@@ -242,8 +242,8 @@
         "affectsGlobalScope": true
       },
       "../@types/cache.d.ts": {
-        "version": "56c38d68524b73e5b3a59a6e07acc3af2a38f5a45f0d57bf8c2e19401c722ca7",
-        "signature": "56c38d68524b73e5b3a59a6e07acc3af2a38f5a45f0d57bf8c2e19401c722ca7",
+        "version": "47be43120c3426d811d7c3e708991c909b071ec65e5633e1a7a8de03ff53ed74",
+        "signature": "47be43120c3426d811d7c3e708991c909b071ec65e5633e1a7a8de03ff53ed74",
         "affectsGlobalScope": true
       },
       "../@types/cargo.d.ts": {
@@ -266,19 +266,24 @@
         "signature": "246883fabb2e5b98c8af74362680afc4b00355b7acf0682952742078ee13c1fe",
         "affectsGlobalScope": true
       },
+      "../@types/frontend.d.ts": {
+        "version": "efd2bec7c1d2e4757ff8b700f28ce40c011c5dbc29bfe2e6032266016cde0e4b",
+        "signature": "efd2bec7c1d2e4757ff8b700f28ce40c011c5dbc29bfe2e6032266016cde0e4b",
+        "affectsGlobalScope": true
+      },
       "../@types/generic.d.ts": {
         "version": "aa5f702fa88b1b43fc2985ef79581c50c2a858a08d2b7acbc2a951e6522a63e5",
         "signature": "aa5f702fa88b1b43fc2985ef79581c50c2a858a08d2b7acbc2a951e6522a63e5",
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "4a9e1afd4000fbce128f72df088b56820d7df106ed39ba684c3d8afa3ac1090e",
-        "signature": "4a9e1afd4000fbce128f72df088b56820d7df106ed39ba684c3d8afa3ac1090e",
+        "version": "782e5e01a392dff040dca61eff0a8d5c25870739c12c5db39646385713e4e74a",
+        "signature": "782e5e01a392dff040dca61eff0a8d5c25870739c12c5db39646385713e4e74a",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "16573858e73fe0efa594ca7c0f10146ca11fc7b2c64ae3aeb2cbb77ac507f334",
-        "signature": "16573858e73fe0efa594ca7c0f10146ca11fc7b2c64ae3aeb2cbb77ac507f334",
+        "version": "a4bb07cfc8208dec16db80c3c24dda6b7986ff93e899f85d9bbff7098c1b6e9f",
+        "signature": "a4bb07cfc8208dec16db80c3c24dda6b7986ff93e899f85d9bbff7098c1b6e9f",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -287,14 +292,24 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "433c07a647552e1f2f94889e8a514c2f7bb13883b7aa214d872eec56d660db5b",
-        "signature": "433c07a647552e1f2f94889e8a514c2f7bb13883b7aa214d872eec56d660db5b",
+        "version": "ab6b5a50804c98f7ec1ac12978313b24904af92d5d637cedc5f6f160bc189d76",
+        "signature": "ab6b5a50804c98f7ec1ac12978313b24904af92d5d637cedc5f6f160bc189d76",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "e50e6e7f3d53b52aa7ad46b2871042275763f2fa298ba687632359512964d4b8",
-        "signature": "e50e6e7f3d53b52aa7ad46b2871042275763f2fa298ba687632359512964d4b8",
+        "version": "d89d0d966d082aa0e0d6c4303b6f6d75bc8556b22eeaa710f6d4b97d4a305e94",
+        "signature": "d89d0d966d082aa0e0d6c4303b6f6d75bc8556b22eeaa710f6d4b97d4a305e94",
         "affectsGlobalScope": true
+      },
+      "./src/log.ts": {
+        "version": "68de63884650a5ad9ab35f002e5fbe6eff0234f790bacabf3dbd7c75aec93488",
+        "signature": "32f06dbc86fd6b686ee59f5b59490c7f5982bc7a2ac78cfbf3e8ba786173e42f",
+        "affectsGlobalScope": false
+      },
+      "./src/profiler.ts": {
+        "version": "09d51cc4e4a113a608f920ef894eaa7db01dbd7653d7392d456899fe00966567",
+        "signature": "b6468b32d1252bea6131f5918395c11424b63fbee1339c56bf2c65d99322fe44",
+        "affectsGlobalScope": false
       },
       "./src/badwords.ts": {
         "version": "4119c79f1f300edfa1a1f16c2f7bf409161b70860e9383b8d6ac73d53254df7b",
@@ -316,24 +331,19 @@
         "signature": "2448e55e514bf97b8f4cedd175b0aa97534a76f2789ccd1d161e4b6db22cf4c8",
         "affectsGlobalScope": false
       },
-      "./src/log.ts": {
-        "version": "68de63884650a5ad9ab35f002e5fbe6eff0234f790bacabf3dbd7c75aec93488",
-        "signature": "32f06dbc86fd6b686ee59f5b59490c7f5982bc7a2ac78cfbf3e8ba786173e42f",
-        "affectsGlobalScope": false
-      },
       "./src/game.ts": {
-        "version": "91798f5967a83334e3d780f1ab53f545a5c8974a17c7a6279d0c15d6b79f798c",
-        "signature": "83648de69b6474241570a814c315c9c6cbbeb07cd61add82fad5f57c113226e5",
+        "version": "743e137fb814fda6ef94a85905d85474ab48d881374bfaf6157c64ee83c5a5e3",
+        "signature": "fecd642df848b72a2551166917fc8a2dfd26d04577c2fb796edd25e55a1b351d",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "d968bf72bd2900a5ee174c181010a33fdc1fb368047c96a2f228b4d735d6ffea",
+        "version": "1409d105116d1c74c89e0d1e3cdd7fc481b415bb73787ceedada2e2dbf437700",
         "signature": "7569e0c0ca88a5230164dc3ffe79b4044b4c286dc25a91391e45faa08ddf78e0",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
-        "version": "6053e1beeafe99f07ee06011bb4715f1c964800e20a9f8b4760ab2f92d703b77",
-        "signature": "17fdbb44b58b2d88575e6008243bd4d07e2881cc9673a42976d903a0aded78d1",
+        "version": "9235149bd737d544b1a47b3cca4d513e8dc4ebcea0b9cb6f9db1c24a5d873013",
+        "signature": "50108e0ea9e44ea3275355da0482ccfd461866e9646b54719e6bdf6cff50fea3",
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
@@ -342,8 +352,18 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "e94eaadd4d41aaddc67ee5c5ae4d73c40fba398ad5c30a40a3ec6916b46fcff2",
-        "signature": "9d5616cb08e87e7e890106c3c914137d1e7ff4cc387c467f5631ac665ada3d6d",
+        "version": "a0b342aa140d802cf99830b0c85459af0279e29ef9b103729db2585084a77c03",
+        "signature": "92b9e99fd499860750ecdcbc20a2e5c6c45e4898022406a1727a7177cca025fc",
+        "affectsGlobalScope": false
+      },
+      "./src/freemase/rect.ts": {
+        "version": "43d5ed1dcdfe2336fa42f812ae61829ea8af9174a2ccbaf3cc86767975c76ddc",
+        "signature": "4732cdc4a771802c9db2fb9304df1620bcb06005d62c8e2d5b61c315335700b3",
+        "affectsGlobalScope": false
+      },
+      "./src/freemase/freemase.ts": {
+        "version": "2790e54d1b77ebd6be502ac950ddaed7966966fa7231cd7bb68f9ca527a1e18c",
+        "signature": "c5656b2c27c567df8c54f4ab78156b03ba28c25a00eb36e38539572c4f9281cb",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {
@@ -746,10 +766,16 @@
       "configFilePath": "./tsconfig.common.json"
     },
     "referencedMap": {
+      "./src/freemase/freemase.ts": [
+        "./src/freemase/rect.ts",
+        "./src/log.ts",
+        "./src/misc.ts"
+      ],
       "./src/game.ts": [
         "./src/globals.ts",
         "./src/log.ts",
-        "./src/math.ts"
+        "./src/math.ts",
+        "./src/profiler.ts"
       ],
       "./src/index.ts": [
         "./src/discord.ts",
@@ -759,11 +785,15 @@
         "./src/math.ts",
         "./src/misc.ts",
         "./src/physics.ts",
+        "./src/profiler.ts",
         "./src/text.ts"
       ],
       "./src/physics.ts": [
         "./src/globals.ts",
         "./src/math.ts"
+      ],
+      "./src/profiler.ts": [
+        "./src/log.ts"
       ],
       "./src/text.ts": [
         "./src/badwords.ts",
@@ -1122,6 +1152,9 @@
       ]
     },
     "exportedModulesMap": {
+      "./src/index.ts": [
+        "./src/profiler.ts"
+      ],
       "../node_modules/@types/bson/index.d.ts": [
         "../node_modules/@types/node/index.d.ts"
       ],
@@ -1480,6 +1513,7 @@
       "../@types/common.d.ts",
       "../@types/crew.d.ts",
       "../@types/faction.d.ts",
+      "../@types/frontend.d.ts",
       "../@types/generic.d.ts",
       "../@types/io.d.ts",
       "../@types/item.d.ts",
@@ -1488,6 +1522,8 @@
       "../@types/stubs.d.ts",
       "./src/badwords.ts",
       "./src/discord.ts",
+      "./src/freemase/freemase.ts",
+      "./src/freemase/rect.ts",
       "./src/game.ts",
       "./src/globals.ts",
       "./src/index.ts",
@@ -1495,6 +1531,7 @@
       "./src/math.ts",
       "./src/misc.ts",
       "./src/physics.ts",
+      "./src/profiler.ts",
       "./src/text.ts",
       "../node_modules/@types/anymatch/index.d.ts",
       "../node_modules/@types/bson/index.d.ts",

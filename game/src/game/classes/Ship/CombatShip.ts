@@ -122,7 +122,7 @@ export abstract class CombatShip extends Ship {
     let miss = hitRoll < rangeAsPercent
     const damage = miss
       ? 0
-      : weapon.damage * totalMunitionsSkill * weapon.repair
+      : c.getHitDamage(weapon, totalMunitionsSkill)
     // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
@@ -223,6 +223,7 @@ export abstract class CombatShip extends Ship {
             `hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`,
           )
           equipmentToAttack.hp -= remainingDamage
+          equipmentToAttack._stub = null
           remainingDamage = 0
         }
         // ----- destroyed -----
@@ -231,6 +232,7 @@ export abstract class CombatShip extends Ship {
             `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
           )
           equipmentToAttack.hp = 0
+          equipmentToAttack._stub = null
           remainingDamage -= remainingHp
         }
         // ----- notify both sides -----

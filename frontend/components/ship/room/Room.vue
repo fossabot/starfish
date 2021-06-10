@@ -1,5 +1,5 @@
 <template>
-  <div class="room">
+  <div class="room" v-if="show">
     <ShipRoomBunk v-if="crewMember.location === 'bunk'" />
     <ShipRoomCockpit
       v-else-if="crewMember.location === 'cockpit'"
@@ -25,6 +25,13 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('room'))
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

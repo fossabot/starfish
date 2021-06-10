@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttackRemnant = void 0;
-class AttackRemnant {
+const Stubbable_1 = require("./Stubbable");
+class AttackRemnant extends Stubbable_1.Stubbable {
     constructor({ attacker, defender, damageTaken, start, end, time, id, }) {
+        super();
         this.id = id || `${Math.random()}`.substring(2);
         this.attacker = attacker;
         this.defender = defender;

@@ -10,10 +10,11 @@ import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
-import { rooms as roomData } from '../../presets/rooms'
 import type { Ship } from './Ship'
-import type { Scanner } from '../Item/Scanner'
 import type { Item } from '../Item/Item'
+
+import { rooms as roomData } from '../../presets/rooms'
+import { Tutorial } from './addins/Tutorial'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 20
@@ -26,10 +27,11 @@ export class HumanShip extends CombatShip {
   maxScanProperties: ShipScanDataShape | null = null
 
   visible: {
-    ships: Partial<ShipStub>[]
+    ships: ShipStub[]
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
+    trails?: CoordinatePair[][]
   } = {
     ships: [],
     planets: [],
@@ -37,15 +39,19 @@ export class HumanShip extends CombatShip {
     attackRemnants: [],
   }
 
+  shownPanels?: any[]
+
   commonCredits: number = 0
 
   mainTactic: Tactic | undefined
   itemTarget: ItemType | undefined
 
+  tutorial: Tutorial | undefined
+
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
     this.id = data.id
-    //* id matches discord guildId here
+    // id matches discord guildId
 
     this.ai = false
     this.human = true
@@ -53,22 +59,21 @@ export class HumanShip extends CombatShip {
     this.captain = data.captain || null
     this.log = data.log || []
 
+    if (data.tutorial && data.tutorial.step !== undefined)
+      this.tutorial = new Tutorial(data.tutorial, this)
+
+    this.recalculateShownPanels()
+
     if (data.commonCredits)
       this.commonCredits = data.commonCredits
 
     if (data.logAlertLevel)
       this.logAlertLevel = data.logAlertLevel
 
-    for (let room of [
-      `bunk`,
-      `cockpit`,
-      `repair`,
-      `weapons`,
-    ] as CrewLocation[])
-      this.addRoom(room)
+    this.resolveRooms()
 
     data.crewMembers?.forEach((cm) => {
-      this.addCrewMember(cm)
+      this.addCrewMember(cm, true)
     })
 
     if (!this.log.length)
@@ -80,7 +85,7 @@ export class HumanShip extends CombatShip {
     this.updateMaxScanProperties()
     this.updateVisible()
 
-    this.updatePlanet(true)
+    if (!this.tutorial) this.updatePlanet(true)
 
     setTimeout(() => {
       this.radii.game = this.game.gameSoftRadius
@@ -89,21 +94,33 @@ export class HumanShip extends CombatShip {
   }
 
   tick() {
+    const profiler = new c.Profiler(
+      4,
+      `human ship tick`,
+      false,
+      0,
+    )
     super.tick()
     if (this.dead) return
 
+    if (this.tutorial) this.tutorial.tick()
+
+    profiler.step(`move`)
     // ----- move -----
     this.move()
 
+    profiler.step(`update visible`)
     // ----- scan -----
     this.updateVisible()
     this.scanners.forEach((s) => s.use())
 
+    profiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
       c.stubify<CrewMember, CrewMemberStub>(cm),
     )
 
+    profiler.step(`discover planets`)
     // ----- discover new planets -----
     const newPlanets = this.visible.planets.filter(
       (p) => !this.seenPlanets.includes(p),
@@ -122,6 +139,7 @@ export class HumanShip extends CombatShip {
       )
     }
 
+    profiler.step(`get caches`)
     // ----- get nearby caches -----
     this.visible.caches.forEach((cache) => {
       if (this.isAt(cache.location)) {
@@ -146,24 +164,33 @@ export class HumanShip extends CombatShip {
       }
     })
 
+    profiler.step(`auto attack`)
     // ----- auto-attacks -----
     this.autoAttack()
 
+    profiler.step(`frontend stubify`)
     // todo if no io watchers, skip this
     // ----- updates for frontend -----
-    this.toUpdate.visible = c.stubify<any, VisibleStub>(
-      this.visible,
-    )
-    this.toUpdate.items = this.items.map((i) =>
-      c.stubify(i),
-    )
+    this.toUpdate.visible = {
+      ships: this.visible.ships,
+      trails: this.visible.trails || [],
+      attackRemnants: this.visible.attackRemnants.map(
+        (ar) => ar.stubify(),
+      ),
+      planets: this.visible.planets.map((p) => p.stubify()),
+      caches: this.visible.caches.map((c) => c.stubify()),
+    }
+    this.toUpdate.items = this.items.map((i) => i.stubify())
+
+    profiler.step(`frontend send`)
     // ----- send update to listeners -----
-    if (!Object.keys(this.toUpdate).length) return
-    io.to(`ship:${this.id}`).emit(`ship:update`, {
-      id: this.id,
-      updates: this.toUpdate,
-    })
+    if (Object.keys(this.toUpdate).length)
+      io.to(`ship:${this.id}`).emit(`ship:update`, {
+        id: this.id,
+        updates: this.toUpdate,
+      })
     this.toUpdate = {}
+    profiler.end()
   }
 
   // ----- log -----
@@ -191,16 +218,8 @@ export class HumanShip extends CombatShip {
   move(toLocation?: CoordinatePair) {
     super.move(toLocation)
     if (toLocation) {
-      // ----- update planet -----
-      const previousPlanet = this.planet
-      this.planet =
-        this.game.planets.find((p) =>
-          this.isAt(p.location),
-        ) || false
-      if (previousPlanet !== this.planet)
-        this.toUpdate.planet = this.planet
-          ? c.stubify<Planet, PlanetStub>(this.planet)
-          : false
+      this.updateVisible()
+      this.updatePlanet()
       return
     }
 
@@ -280,74 +299,79 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    // ----- add previousLocation -----
-    this.addPreviousLocation(startingLocation)
+    // ----- skip if in tutorial -----
+    if (!this.tutorial) {
+      // ----- add previousLocation -----
+      this.addPreviousLocation(startingLocation)
 
-    // ----- game radius -----
-    this.radii.game = this.game.gameSoftRadius
-    this.toUpdate.radii = this.radii
-    const isOutsideRadius =
-      c.distance([0, 0], this.location) >
-      this.game.gameSoftRadius
-    const startedOutsideRadius =
-      c.distance([0, 0], startingLocation) >
-      this.game.gameSoftRadius
-    if (isOutsideRadius && !startedOutsideRadius)
-      this.logEntry(
-        `Left the known universe. Nothing but the void awaits out here.`,
-        `high`,
-      )
-    if (!isOutsideRadius && startedOutsideRadius)
-      this.logEntry(
-        `Re-entered the known universe.`,
-        `high`,
-      )
+      // ----- game radius -----
+      this.radii.game = this.game.gameSoftRadius
+      this.toUpdate.radii = this.radii
+      const isOutsideRadius =
+        c.distance([0, 0], this.location) >
+        this.game.gameSoftRadius
+      const startedOutsideRadius =
+        c.distance([0, 0], startingLocation) >
+        this.game.gameSoftRadius
+      if (isOutsideRadius && !startedOutsideRadius)
+        this.logEntry(
+          `Left the known universe. Nothing but the void awaits out here.`,
+          `high`,
+        )
+      if (!isOutsideRadius && startedOutsideRadius)
+        this.logEntry(
+          `Re-entered the known universe.`,
+          `high`,
+        )
 
-    // ----- random encounters -----
-    const distanceTraveled = c.distance(
-      this.location,
-      startingLocation,
-    )
-    if (
-      c.lottery(
-        distanceTraveled * (c.deltaTime / 1000),
-        0.5,
+      // ----- random encounters -----
+      const distanceTraveled = c.distance(
+        this.location,
+        startingLocation,
       )
-    ) {
-      const amount =
-        Math.round(
-          Math.random() * 3 * (Math.random() * 3),
-        ) /
-          10 +
-        1
+      if (
+        c.lottery(
+          distanceTraveled * (c.deltaTime / 1000),
+          0.5,
+        )
+      ) {
+        const amount =
+          Math.round(
+            Math.random() * 3 * (Math.random() * 3),
+          ) /
+            10 +
+          1
 
-      const type = c.randomFromArray([
-        `oxygen`,
-        `salt`,
-        `water`,
-      ] as CargoType[])
-      this.distributeCargoAmongCrew([
-        { type: type, amount },
-      ])
-      this.logEntry(
-        `Encountered some space junk and managed to harvest ${amount} ton${
-          amount === 1 ? `` : `s`
-        } of ${type} off of it.`,
-      )
+        const type = c.randomFromArray([
+          `oxygen`,
+          `salt`,
+          `water`,
+        ] as CargoType[])
+        this.distributeCargoAmongCrew([
+          { type: type, amount },
+        ])
+        this.logEntry(
+          `Encountered some space junk and managed to harvest ${amount} ton${
+            amount === 1 ? `` : `s`
+          } of ${type} off of it.`,
+        )
+      }
     }
 
     this.updatePlanet()
   }
 
   updateVisible() {
+    const targetTypes =
+      this.tutorial?.currentStep.visibleTypes
     const visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
       this.id,
-      undefined,
+      targetTypes,
       true,
     )
-    const shipsWithValidScannedProps: Partial<ShipStub>[] =
+    const shipsWithValidScannedProps: ShipStub[] =
       visible.ships.map((s) => {
         return this.shipToValidScanResult(s)
       })
@@ -360,12 +384,12 @@ export class HumanShip extends CombatShip {
   updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
-      this.visible.planets.find((p) =>
+      this.game.planets.find((p) =>
         this.isAt(p.location),
       ) || false
     if (previousPlanet !== this.planet)
       this.toUpdate.planet = this.planet
-        ? c.stubify<Planet, PlanetStub>(this.planet)
+        ? this.planet.stubify()
         : false
 
     if (silent) return
@@ -415,6 +439,27 @@ export class HumanShip extends CombatShip {
   updateThingsThatCouldChangeOnItemChange() {
     super.updateThingsThatCouldChangeOnItemChange()
     this.updateBroadcastRadius()
+  }
+
+  recalculateShownPanels() {
+    if (!this.tutorial) this.shownPanels = undefined
+    else
+      this.shownPanels =
+        this.tutorial.currentStep.shownPanels
+    this.toUpdate.shownPanels = this.shownPanels
+  }
+
+  equipLoadout(
+    l: LoadoutName,
+    removeExisting = false,
+  ): boolean {
+    if (removeExisting) this.items = []
+    const res = super.equipLoadout(l)
+    if (!res) return res
+    this.toUpdate.items = this.items
+    this.updateThingsThatCouldChangeOnItemChange()
+    this.updateBroadcastRadius()
+    return true
   }
 
   addCommonCredits(amount: number, member: CrewMember) {
@@ -480,6 +525,17 @@ export class HumanShip extends CombatShip {
 
   // ----- room mgmt -----
 
+  resolveRooms() {
+    this.rooms = {}
+    let roomsToAdd: CrewLocation[] = []
+    if (this.tutorial)
+      roomsToAdd =
+        this.tutorial.currentStep?.shownRooms || []
+    else
+      roomsToAdd = [`bunk`, `cockpit`, `repair`, `weapons`]
+    for (let room of roomsToAdd) this.addRoom(room)
+  }
+
   addRoom(room: CrewLocation) {
     if (!(room in this.rooms))
       this.rooms[room] = roomData[room]
@@ -492,20 +548,24 @@ export class HumanShip extends CombatShip {
   // ----- items -----
   addItem(itemData: Partial<BaseItemData>): boolean {
     const res = super.addItem(itemData)
-    if (itemData.type === 'scanner')
+    if (itemData.type === `scanner`)
       this.updateMaxScanProperties()
     return res
   }
+
   removeItem(item: Item): boolean {
     const res = super.removeItem(item)
-    if (item.type === 'scanner')
+    if (item.type === `scanner`)
       this.updateMaxScanProperties()
     return res
   }
 
   // ----- crew mgmt -----
 
-  addCrewMember(data: BaseCrewMemberData): CrewMember {
+  addCrewMember(
+    data: BaseCrewMemberData,
+    silent = false,
+  ): CrewMember {
     const cm = new CrewMember(data, this)
     this.crewMembers.push(cm)
     if (!this.captain) this.captain = cm.id
@@ -513,6 +573,11 @@ export class HumanShip extends CombatShip {
       `gray`,
       `Added crew member ${cm.name} to ${this.name}`,
     )
+    if (!silent)
+      this.logEntry(
+        `${cm.name} has joined the ship's crew!`,
+        `high`,
+      )
     db.ship.addOrUpdateInDb(this)
     return cm
   }
@@ -521,6 +586,7 @@ export class HumanShip extends CombatShip {
     const index = this.crewMembers.findIndex(
       (cm) => cm.id === id,
     )
+    const cm = this.crewMembers[index]
 
     if (index === -1) {
       c.log(
@@ -530,7 +596,23 @@ export class HumanShip extends CombatShip {
       return
     }
 
+    if (this.captain === cm.id) {
+      c.log(
+        `red`,
+        `Attempted to kick the captain from ship ${this.id}`,
+      )
+      return
+    }
+
     this.crewMembers.splice(index, 1)
+    this.logEntry(
+      `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. ${cm.name}'s cargo has been distributed amongst the crew.`,
+      `critical`,
+    )
+    this.distributeCargoAmongCrew([
+      ...cm.inventory,
+      { type: `credits`, amount: cm.credits },
+    ])
     db.ship.addOrUpdateInDb(this)
   }
 
@@ -595,7 +677,7 @@ export class HumanShip extends CombatShip {
   // -----
 
   updateMaxScanProperties() {
-    c.log(`updating max scan properties`, this.name)
+    // c.log(`updating max scan properties`, this.name)
     const totalShape: ShipScanDataShape = {
       ...c.baseShipScanProperties,
     }
@@ -631,14 +713,13 @@ export class HumanShip extends CombatShip {
     this.maxScanProperties = totalShape
   }
 
-  shipToValidScanResult(ship: Ship): Partial<ShipStub> {
-    if (!this.maxScanProperties) return {}
+  shipToValidScanResult(ship: Ship): ShipStub {
     const scanPropertiesToUse =
       c.distance(this.location, ship.location) <
       this.radii.scan
-        ? this.maxScanProperties
+        ? this.maxScanProperties || c.baseShipScanProperties
         : c.baseShipScanProperties
-    const partialShip: Partial<ShipStub> = {}
+    const partialShip: any = {} // sorry to the typescript gods for this one
     ;(
       Object.entries(scanPropertiesToUse) as [
         keyof ShipScanDataShape,
@@ -674,18 +755,22 @@ export class HumanShip extends CombatShip {
         }
       }
     })
-    return partialShip
+    return partialShip as ShipStub
   }
 
   // ----- respawn -----
 
-  respawn() {
+  respawn(silent = false) {
     super.respawn()
 
     this.updatePlanet(true)
     this.toUpdate.dead = this.dead
 
-    if (this instanceof HumanShip) {
+    this.crewMembers.forEach(
+      (cm) => (cm.targetLocation = null),
+    )
+
+    if (!silent && this instanceof HumanShip) {
       this.logEntry(
         `Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`,
         `critical`,

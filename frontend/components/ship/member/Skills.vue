@@ -6,10 +6,16 @@
       :key="'skill' + skill.skill"
     >
       <b>{{ c.capitalize(skill.skill) }}</b
-      >: {{ skill.level }}
+      >: <NumberChangeHighlighter :number="skill.level" />
       <span class="sub"
-        >({{ c.numberWithCommas(Math.round(skill.xp)) }}
-        xp)
+        ><NumberChangeHighlighter
+          :number="Math.round(skill.xp)"
+          :display="
+            `(${c.numberWithCommas(
+              Math.round(skill.xp),
+            )} xp)`
+          "
+        />
       </span>
     </div>
   </div>

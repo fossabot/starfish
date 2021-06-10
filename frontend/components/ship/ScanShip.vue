@@ -1,5 +1,5 @@
 <template>
-  <Box class="shipscan" v-if="ship && scannable.length">
+  <Box class="shipscan" v-if="show">
     <template #title>
       <span class="sectionemoji">🛸</span>Scan Ships
     </template>
@@ -79,6 +79,14 @@ export default {
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        this.scannable.length &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('scanShip'))
+      )
+    },
     scannable(this: ComponentShape) {
       if (this.ship.radii.scan === 0) return []
       return this.ship.visible.ships

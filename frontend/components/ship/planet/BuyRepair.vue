@@ -20,17 +20,18 @@
       "
       @click="buyRepair(count)"
     >
-      🇨🇭{{ Math.round(count * 100) / 100 }}: 💳{{
-        Math.round(
+      🇨🇭{{ c.r2(count, 2, true) }}: 💳{{
+        c.r2(
           c.baseRepairCost *
             ship.planet.repairCostMultiplier *
             ship.planet.priceFluctuator *
             (isSameFaction
               ? c.factionVendorMultiplier
               : 1) *
-            count *
-            100,
-        ) / 100
+            count,
+          2,
+          true,
+        )
       }}
     </button>
   </div>

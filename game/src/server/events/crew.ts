@@ -28,6 +28,11 @@ export default function (
           error: `That crew member already exists on this ship.`,
         })
 
+      if (ship.chassis.bunks <= ship.crewMembers.length)
+        return callback({
+          error: `The ship is full! Upgrade to a chassis with more bunks (or kick someone) to add more crew members.`,
+        })
+
       crewMemberBaseData.name =
         crewMemberBaseData.name.substring(
           0,
@@ -184,6 +189,8 @@ export default function (
     )
     if (!crewMember) return
 
+    amount = c.r2(amount, 2, true)
+
     if (amount > crewMember.credits) return
 
     crewMember.credits -= amount
@@ -207,6 +214,8 @@ export default function (
       )
       if (!crewMember) return
       if (ship.captain !== crewMember.id) return
+
+      amount = c.r2(amount, 2, true)
 
       if (amount > ship.commonCredits) return
 
@@ -262,6 +271,8 @@ export default function (
           error: `That cargo is not for sale here.`,
         })
 
+      amount = c.r2(amount, 2, true)
+
       if (
         crewMember.heldWeight + amount >
         crewMember.maxCargoWeight
@@ -278,7 +289,8 @@ export default function (
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
-        5,
+        2,
+        true,
       )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
@@ -287,7 +299,12 @@ export default function (
       const existingStock = crewMember.inventory.find(
         (cargo) => cargo.type === cargoType,
       )
-      if (existingStock) existingStock.amount += amount
+      if (existingStock)
+        existingStock.amount = c.r2(
+          amount + existingStock.amount,
+          2,
+          true,
+        )
       else
         crewMember.inventory.push({
           type: cargoType,
@@ -327,6 +344,8 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
+      amount = c.r2(amount, 2, true)
+
       const existingStock = crewMember.inventory.find(
         (cargo) => cargo.type === cargoType,
       )
@@ -356,11 +375,14 @@ export default function (
           (planet.faction === ship.faction
             ? 1 + (1 - (c.factionVendorMultiplier || 1))
             : 1),
-        5,
+        2,
+        true,
       )
 
       crewMember.credits += price
       existingStock.amount -= amount
+      if (existingStock.amount < 0.01)
+        existingStock.amount = 0
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
           crewMember,
@@ -394,6 +416,8 @@ export default function (
       )
       if (!crewMember)
         return callback({ error: `No crew member found.` })
+
+      amount = c.r2(amount, 2, true)
 
       if (cargoType === `credits`) {
         if (crewMember.credits < amount)
@@ -469,7 +493,8 @@ export default function (
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
-        5,
+        2,
+        true,
       )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
@@ -556,7 +581,7 @@ export default function (
           (planet.faction === ship.faction
             ? c.factionVendorMultiplier
             : 1),
-        5,
+        2,
         true,
       )
       if (price > crewMember.credits)

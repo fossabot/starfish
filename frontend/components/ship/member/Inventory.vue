@@ -3,9 +3,9 @@
     <div class="panesection">
       <div>
         💳Credits:
-        {{ Math.floor(crewMember.credits * 100) / 100 }}
+        {{ c.r2(crewMember.credits, 2, true) }}
         <button
-          v-if="crewMember.credits > 0.001"
+          v-if="crewMember.credits > 0.00999"
           @click="addToCommonFund"
           class="mini secondary"
         >
@@ -13,7 +13,7 @@
         ><button
           class="mini secondary"
           @click="drop('credits')"
-          v-if="crewMember.credits > 0.001"
+          v-if="crewMember.credits >= 1"
         >
           Drop
         </button>
@@ -22,14 +22,21 @@
     <ProgressBar
       :percent="totalWeight / crewMember.maxCargoWeight"
       :dangerZone="-1"
+      @mouseenter="
+        $store.commit(
+          'tooltip',
+          'Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.',
+        )
+      "
+      @mouseleave="$store.commit('tooltip')"
     >
       <div>
         📦Cargo:
-        {{ Math.round(totalWeight * 100) / 100 }}
+        <NumberChangeHighlighter
+          :number="c.r2(totalWeight)"
+        />
         /
-        {{
-          Math.round(crewMember.maxCargoWeight * 100) / 100
-        }}
+        {{ c.r2(crewMember.maxCargoWeight) }}
         tons
       </div>
     </ProgressBar>
@@ -38,10 +45,15 @@
       <div
         v-for="item in inventory"
         :key="'inv' + item.type"
+        class="flashtextgoodonspawn"
       >
         {{ c.capitalize(item.type) }}:
-        {{ Math.round(item.amount * 1000) / 1000 }} tons
+        <NumberChangeHighlighter
+          :number="c.r2(item.amount, 2, true)"
+          :display="c.r2(item.amount, 2, true) + ' tons'"
+        />
         <button
+          v-if="item.amount >= 1"
           class="mini secondary"
           @click="drop(item.type)"
         >
@@ -81,14 +93,17 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     addToCommonFund(this: ComponentShape) {
-      const amount =
+      const amount = c.r2(
         parseFloat(
           prompt(
             `How many credits do you want to contribute to the ship's common credits? (Max ${Math.floor(
               this.crewMember.credits * 100,
             ) / 100})`,
           ) || '0',
-        ) || 0
+        ) || 0,
+        2,
+        true,
+      )
       if (
         !amount ||
         amount < 0 ||
@@ -112,7 +127,6 @@ export default {
       this: ComponentShape,
       type: CargoType | 'credits',
     ) {
-      console.log()
       const totalHeld =
         type === 'credits'
           ? c.r2(this.crewMember.credits, 2, true)
@@ -123,20 +137,30 @@ export default {
               2,
               true,
             )
-      const amount =
+      const amount = c.r2(
         parseFloat(
           prompt(
             `How ${
               type === 'credits' ? 'many' : 'many tons of'
             } ${type} do you want to jettison as a cache? (Max ${totalHeld})`,
           ) || '0',
-        ) || 0
-      if (!amount || amount < 0 || amount > totalHeld) {
+        ) || 0,
+        2,
+        true,
+      )
+      if (!amount || amount > totalHeld) {
         this.$store.dispatch('notifications/notify', {
           text: 'Nope.',
           type: 'error',
         })
         return console.log('Nope.')
+      }
+      if (amount < 1) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'You must drop at least 1.',
+          type: 'error',
+        })
+        return console.log('You must drop at least 1.')
       }
 
       const message = prompt(
@@ -152,6 +176,10 @@ export default {
         message,
         (cache: CacheStub) => {
           console.log('dropped cache!')
+          this.$store.dispatch('notifications/notify', {
+            text: 'Dropped cache!',
+            type: 'success',
+          })
         },
       )
     },

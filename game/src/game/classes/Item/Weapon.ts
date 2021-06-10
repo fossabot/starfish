@@ -31,9 +31,14 @@ export class Weapon extends Item {
   use() {
     this.cooldownRemaining = this.baseCooldown
     if (this.ship.ai) return 0
+    if (this.ship.tutorial?.currentStep.disableRepair)
+      return 0
 
     let repairLoss =
-      c.getBaseDurabilityLossPerTick(this.maxHp) * 2000
+      c.getBaseDurabilityLossPerTick(
+        this.maxHp,
+        this.reliability,
+      ) * 150
     this.repair -= repairLoss
     this.lastUse = Date.now()
     repairLoss += super.use()

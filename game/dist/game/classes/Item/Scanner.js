@@ -17,7 +17,9 @@ class Scanner extends Item_1.Item {
     use() {
         if (this.ship.ai)
             return 0;
-        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp) * -0.97;
+        if (this.ship.tutorial?.currentStep.disableRepair)
+            return 0;
+        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * -0.97;
         this.repair -= repairLoss;
         repairLoss += super.use();
         return repairLoss;

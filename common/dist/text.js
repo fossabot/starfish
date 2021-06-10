@@ -6,7 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const maxNameLength = 16;
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, `,`);
+    const decimal = x % 1;
+    const total = Math.floor(x)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
+        (decimal ? `${decimal}`.substring(1) : ``);
+    return total;
 }
 const badwords_1 = require("./badwords");
 const filter = new badwords_1.LanguageFilter();

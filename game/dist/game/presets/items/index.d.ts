@@ -3,6 +3,7 @@ export declare const weapon: {
     cannon2: BaseWeaponData;
     saber1: BaseWeaponData;
     sniper1: BaseWeaponData;
+    tiny1: BaseWeaponData;
 };
 export declare const engine: {
     starter1: BaseEngineData;
@@ -24,5 +25,6 @@ export declare const armor: {
 export declare const chassis: {
     starter1: BaseChassisData;
     starter2: BaseChassisData;
+    solo1: BaseChassisData;
 };
 //# sourceMappingURL=index.d.ts.map

@@ -33,10 +33,7 @@ export default {
 
   css: [`~/assets/styles/main.scss`],
 
-  plugins: [
-    { src: `~/plugins/socket.js` },
-    { src: `~/plugins/masonry.js`, mode: `client` },
-  ],
+  plugins: [{ src: `~/plugins/socket.js` }],
 
   components: true,
 

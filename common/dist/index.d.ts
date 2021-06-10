@@ -1,4 +1,6 @@
+import { Profiler } from './Profiler';
 declare const _default: {
+    Profiler: typeof Profiler;
     discordBotId: string;
     discordBotPermissionsString: string;
     frontendUrl: string;
@@ -30,7 +32,8 @@ declare const _default: {
         species: (keyof BaseSpeciesData)[];
         chassis: (keyof BaseChassisData)[];
     };
-    getBaseDurabilityLossPerTick: (maxHp: number) => number;
+    getHitDamage: (weapon: WeaponStub, totalMunitionsSkill?: number) => number;
+    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (skill: number) => number;
     getThrustMagnitudeForSingleCrewMember: (skill?: number, engineThrustMultiplier?: number) => number;
@@ -45,6 +48,7 @@ declare const _default: {
     sleep: (ms: number) => Promise<void>;
     coinFlip: () => boolean;
     randomFromArray: (array: any[]) => any;
+    debounce: (fn: Function, time?: number) => (...params: any[]) => void;
     maxNameLength: number;
     numberWithCommas: (x: number) => string;
     degreesToArrow: (angle: number) => string;

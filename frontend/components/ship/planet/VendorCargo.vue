@@ -1,7 +1,9 @@
 <template>
   <div
     class="panesection"
-    v-if="ship.planet.vendor && ship.planet.vendor.cargo"
+    v-if="
+      ship.planet.vendor && ship.planet.vendor.cargo.length
+    "
   >
     <div>
       <div class="panesubhead">Merchant District</div>
@@ -27,7 +29,9 @@
           @click="buyCargo(ca)"
         >
           <b>{{ ca.cargoData.name }}</b>
-          <div>💳{{ c.r2(ca.pricePerUnit, 2) }}/ton</div>
+          <div>
+            💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+          </div>
         </button>
       </span></span
     ><span class="panesection inline" v-if="sellableCargo">
@@ -50,10 +54,12 @@
           @click="sellCargo(ca)"
         >
           <b>{{ ca.cargoData.name }}</b>
-          <div>💳{{ c.r2(ca.pricePerUnit, 2) }}/ton</div>
+          <div>
+            💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+          </div>
           <div class="sub">
             (You have
-            {{ c.r2(ca.heldAmount, 3) }})
+            {{ c.r2(ca.heldAmount, 2, true) }})
           </div>
         </button>
       </span>
@@ -93,10 +99,14 @@ export default {
                 : 1),
             5,
           )
-          const maxCanBuy = Math.min(
-            this.crewMember.credits / pricePerUnit,
-            this.crewMember.maxCargoWeight -
-              this.totalWeight,
+          const maxCanBuy = c.r2(
+            Math.min(
+              this.crewMember.credits / pricePerUnit,
+              this.crewMember.maxCargoWeight -
+                this.totalWeight,
+            ),
+            2,
+            true,
           )
           return {
             ...cargo,
@@ -132,7 +142,7 @@ export default {
             canSell:
               this.crewMember.inventory.find(
                 (i: any) => i.type === cargo.cargoData.type,
-              )?.amount > 0.001,
+              )?.amount > 0.009999,
           }
         })
     },
@@ -147,16 +157,19 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     buyCargo(this: ComponentShape, data: any) {
-      const amount =
-        Math.floor(
-          (parseFloat(
-            prompt(
-              `How many tons? (Max ${Math.floor(
-                data.maxCanBuy * 1000,
-              ) / 1000})`,
-            ) || '0',
-          ) || 0) * 100,
-        ) / 100
+      const amount = c.r2(
+        parseFloat(
+          prompt(
+            `How many tons? (Max ${c.r2(
+              data.maxCanBuy,
+              2,
+              true,
+            )})`,
+          ) || '0',
+        ) || 0,
+        2,
+        true,
+      )
       if (
         !amount ||
         amount < 0 ||
@@ -185,21 +198,28 @@ export default {
             return
           }
           this.$store.commit('updateACrewMember', res.data)
+          this.$store.dispatch('notifications/notify', {
+            text: `Bought ${amount} tons of ${data.cargoData.type}.`,
+            type: 'success',
+          })
         },
       )
     },
 
     sellCargo(this: ComponentShape, data: any) {
-      const amount =
-        Math.round(
-          (parseFloat(
-            prompt(
-              `How many tons? (Max ${Math.floor(
-                data.heldAmount * 1000,
-              ) / 1000})`,
-            ) || '0',
-          ) || 0) * 100,
-        ) / 100
+      const amount = c.r2(
+        parseFloat(
+          prompt(
+            `How many tons? (Max ${c.r2(
+              data.heldAmount,
+              2,
+              true,
+            )})`,
+          ) || '0',
+        ) || 0,
+        2,
+        true,
+      )
       if (
         !amount ||
         amount < 0 ||
@@ -232,6 +252,10 @@ export default {
             return
           }
           this.$store.commit('updateACrewMember', res.data)
+          this.$store.dispatch('notifications/notify', {
+            text: `Sold ${amount} tons of ${data.cargoData.type}.`,
+            type: 'success',
+          })
         },
       )
     },

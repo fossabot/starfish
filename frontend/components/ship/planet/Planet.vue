@@ -1,12 +1,12 @@
 <template>
-  <Box class="planet" v-show="ship.planet">
+  <Box class="planet" v-if="show">
     <template #title v-if="ship.planet">
       <span class="sectionemoji">🪐</span>Current Planet:
       {{ ship.planet.name }}
     </template>
     <div class="panesection">
       <div
-        class="panesection flex-column flex-center"
+        class="panesection flexcolumn flexcenter"
         :style="{
           '--highlight-color': ship.planet.color,
         }"
@@ -16,7 +16,7 @@
           <b>{{ ship.planet.name }}!</b>
         </div>
         <div
-          class="sub text-center"
+          class="sub textcenter"
           v-if="ship.planet.creatures"
         >
           Primary creature{{
@@ -108,6 +108,14 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        this.ship.planet &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('planet'))
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

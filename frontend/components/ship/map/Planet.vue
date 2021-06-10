@@ -1,7 +1,7 @@
 <template>
   <g class="planet">
     <defs>
-      <radialGradient :id="name">
+      <radialGradient :id="planetData.name">
         <stop offset="30%" :stop-color="color" />
         <stop offset="100%" stop-color="transparent" />
       </radialGradient>
@@ -14,7 +14,7 @@
         :location="location"
         :minSize="minSizeAdjustedForActualSize * 6"
         :radius="radius * 4"
-        :color="`url('#${name}')`"
+        :color="`url('#${planetData.name}')`"
         :zoom="zoom"
         :view="view"
         :FLAT_SCALE="FLAT_SCALE"
@@ -28,7 +28,7 @@
       :minSize="minSizeAdjustedForActualSize"
       :radius="radius"
       :color="color"
-      :label="name"
+      :label="planetData.name"
       :zoom="zoom"
       :view="view"
       :FLAT_SCALE="FLAT_SCALE"
@@ -71,8 +71,7 @@ export default {
     radius: { default: 0.000001 },
     minSize: { default: 0.007 },
     color: {},
-    name: {},
-    faction: {},
+    planetData: {},
   },
   data(): ComponentShape {
     return {
@@ -101,7 +100,7 @@ export default {
       this.hovering = true
       this.$store.commit('tooltip', {
         type: 'planet',
-        data: { name: this.name, faction: this.faction },
+        data: this.planetData,
       })
     },
     leave(this: ComponentShape) {

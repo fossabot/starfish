@@ -1,6 +1,7 @@
 import type { Game } from '../Game';
 import type { HumanShip } from './Ship/HumanShip';
-export declare class Cache {
+import { Stubbable } from './Stubbable';
+export declare class Cache extends Stubbable {
     static readonly rePickUpTime: number;
     static readonly expireTime: number;
     readonly id: string;
@@ -10,7 +11,8 @@ export declare class Cache {
     readonly time: number;
     readonly game: Game;
     readonly droppedBy: string | undefined;
-    constructor({ contents, location, message, time, id, droppedBy, }: BaseCacheData, game: Game);
+    readonly onlyVisibleToShipId?: string;
+    constructor({ contents, location, message, time, id, droppedBy, onlyVisibleToShipId, }: BaseCacheData, game: Game);
     canBePickedUpBy(ship: HumanShip): boolean;
 }
 //# sourceMappingURL=Cache.d.ts.map

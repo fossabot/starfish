@@ -25,7 +25,10 @@
             <ProgressBar :mini="true" :percent="i.repair">
               <div>
                 Repair:
-                {{ Math.round(i.repair * 1000) / 10 }}%
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * 100, 0)"
+                  :display="c.r2(i.repair * 100, 0) + '%'"
+                />
               </div>
             </ProgressBar>
             <ProgressBar
@@ -38,14 +41,27 @@
             >
               <div>
                 Charge:
-                {{
-                  Math.floor(
-                    ((i.baseCooldown -
-                      i.cooldownRemaining) /
-                      i.baseCooldown) *
-                      100,
-                  )
-                }}%
+
+                <NumberChangeHighlighter
+                  :number="
+                    c.r2(
+                      ((i.baseCooldown -
+                        i.cooldownRemaining) /
+                        i.baseCooldown) *
+                        100,
+                      0,
+                    )
+                  "
+                  :display="
+                    c.r2(
+                      ((i.baseCooldown -
+                        i.cooldownRemaining) /
+                        i.baseCooldown) *
+                        100,
+                      0,
+                    ) + '%'
+                  "
+                />
               </div>
             </ProgressBar>
           </div>

@@ -1,7 +1,9 @@
 <template>
   <div class="logentry" :class="level">
-    <div class="time">[{{ timeString }}]</div>
-    <div class="text">{{ text }}</div>
+    <div class="time flashtextgoodonspawn">
+      [{{ timeString }}]
+    </div>
+    <div class="text flashtextgoodonspawn">{{ text }}</div>
   </div>
 </template>
 
@@ -40,7 +42,8 @@ export default {
   line-height: 1.2;
   margin-bottom: 0.8em;
   padding-left: 0.6em;
-  border-left: 2px solid currentColor;
+  border-left: 2px solid var(--highlight-color);
+  color: var(--text);
 }
 
 .time {
@@ -53,15 +56,15 @@ export default {
 }
 
 .low {
-  color: #444;
+  --highlight-color: #444;
 }
 .medium {
-  color: #aaa;
+  --highlight-color: #aaa;
 }
 .high {
-  color: rgba(255, 200, 0, 0.9);
+  --highlight-color: rgba(255, 200, 0, 0.9);
 }
 .critical {
-  color: red;
+  --highlight-color: red;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="items" v-if="ship">
+  <div class="items" v-if="show">
     <Box>
       <template #title>
         <span class="sectionemoji">🛠</span>Ship Equipment
@@ -25,10 +25,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -59,10 +58,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -81,14 +79,24 @@
             >
               <div>
                 Charge:
-                {{
-                  Math.floor(
-                    ((i.baseCooldown -
-                      i.cooldownRemaining) /
-                      i.baseCooldown) *
-                      100,
-                  )
-                }}%
+                <NumberChangeHighlighter
+                  :number="
+                    Math.floor(
+                      ((i.baseCooldown -
+                        i.cooldownRemaining) /
+                        i.baseCooldown) *
+                        100,
+                    )
+                  "
+                  :display="
+                    Math.floor(
+                      ((i.baseCooldown -
+                        i.cooldownRemaining) /
+                        i.baseCooldown) *
+                        100,
+                    ) + '%'
+                  "
+                />
               </div>
             </ProgressBar>
           </div>
@@ -115,10 +123,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -149,10 +156,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -186,10 +192,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -220,10 +225,9 @@
             >
               <div>
                 🇨🇭HP:
-                {{
-                  Math.round(i.repair * i.maxHp * 100) /
-                    100
-                }}/{{ i.maxHp }} ({{
+                <NumberChangeHighlighter
+                  :number="c.r2(i.repair * i.maxHp)"
+                />/{{ i.maxHp }} ({{
                   Math.round(
                     ((i.repair * i.maxHp) / i.maxHp) * 1000,
                   ) / 10
@@ -244,6 +248,7 @@
 </template>
 
 <script lang="ts">
+import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   [key: string]: any
@@ -251,10 +256,17 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return {}
+    return { c }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('items'))
+      )
+    },
     engines(this: ComponentShape) {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'engine',
@@ -299,7 +311,7 @@ export default {
 
 <style lang="scss" scoped>
 .items {
-  width: 250px;
+  width: 260px;
   position: relative;
   grid-column: span 2;
 }

@@ -23,8 +23,10 @@ export declare class Game {
     private lastTickTime;
     private lastTickExpectedTime;
     private averageTickLag;
+    private averageWorstShipTickLag;
+    private averageTickTime;
     tick(): void;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, type?: `ship` | `planet` | `cache` | `attackRemnant` | `trail`, includeTrails?: boolean): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail`)[], includeTrails?: boolean): {
         ships: Ship[];
         trails: CoordinatePair[][];
         planets: Planet[];
@@ -38,7 +40,7 @@ export declare class Game {
     spawnNewCaches(): void;
     spawnNewAIs(): void;
     addHumanShip(data: BaseHumanShipData, save?: boolean): HumanShip;
-    addAIShip(data: BaseShipData, save?: boolean): AIShip;
+    addAIShip(data: BaseAIShipData, save?: boolean): AIShip;
     removeShip(ship: Ship): void;
     addPlanet(data: BasePlanetData, save?: boolean): Planet;
     addFaction(data: BaseFactionData): Faction;

@@ -29,8 +29,10 @@ const crewPassives_1 = require("../presets/crewPassives");
 const crewActives_1 = require("../presets/crewActives");
 const chassis_1 = require("../presets/items/chassis");
 const itemData = __importStar(require("../presets/items/"));
-class Planet {
+const Stubbable_1 = require("./Stubbable");
+class Planet extends Stubbable_1.Stubbable {
     constructor({ name, color, location, vendor, factionId, homeworld, creatures, repairCostMultiplier, radius, }, game) {
+        super();
         this.mass = 5.974e30;
         this.priceFluctuator = 1;
         this.game = game;
@@ -112,6 +114,7 @@ class Planet {
                 100) *
                 intensity +
                 (1 - intensity / 2);
+        this._stub = null; // invalidate stub
     }
 }
 exports.Planet = Planet;

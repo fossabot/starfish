@@ -7,6 +7,7 @@ import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
 import type { AttackRemnant } from '../AttackRemnant'
 import * as itemData from '../../presets/items'
+import type { Weapon } from '../Item/Weapon'
 
 export class AIShip extends CombatShip {
   readonly human: boolean = false
@@ -31,10 +32,13 @@ export class AIShip extends CombatShip {
 
   obeysGravity = false
 
-  constructor(data: BaseShipData, game: Game) {
+  constructor(data: BaseAIShipData, game: Game) {
     super(data, game)
     if (data.id) this.id = data.id
     else this.id = `${Math.random()}`.substring(2)
+
+    if (data.onlyVisibleToShipId)
+      this.onlyVisibleToShipId = data.onlyVisibleToShipId
 
     this.planet = false
 
@@ -61,7 +65,7 @@ export class AIShip extends CombatShip {
       this.location,
       this.radii.sight,
       this.id,
-      `ship`,
+      [`ship`],
     )
 
     // recharge weapons
@@ -76,9 +80,18 @@ export class AIShip extends CombatShip {
     if (!weapons.length) return
     const enemies = this.getEnemiesInAttackRange()
     if (enemies.length) {
-      const randomEnemy = c.randomFromArray(enemies)
-      const randomWeapon = c.randomFromArray(weapons)
-      this.attack(randomEnemy, randomWeapon)
+      const randomEnemy = c.randomFromArray(
+        enemies,
+      ) as CombatShip
+      const distance = c.distance(
+        randomEnemy.location,
+        this.location,
+      )
+      const randomWeapon = c.randomFromArray(
+        weapons.filter((w) => w.range >= distance),
+      ) as Weapon
+      if (randomWeapon)
+        this.attack(randomEnemy, randomWeapon)
     }
   }
 
@@ -233,7 +246,7 @@ export class AIShip extends CombatShip {
     super.die()
 
     const amount = Math.round(
-      Math.random() * this.level * 40,
+      Math.random() * this.level * 50,
     )
     const cacheContents: CacheContents[] = [
       { type: `credits`, amount },

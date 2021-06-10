@@ -5,6 +5,7 @@ interface BaseCacheData {
   message?: string
   id?: string
   droppedBy?: string
+  onlyVisibleToShipId?: string
 }
 
 interface CacheContents {

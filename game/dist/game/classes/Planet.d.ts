@@ -1,6 +1,7 @@
 import type { Game } from '../Game';
 import type { Faction } from './Faction';
-export declare class Planet {
+import { Stubbable } from './Stubbable';
+export declare class Planet extends Stubbable {
     static readonly fluctuatorIntensity = 0.8;
     readonly name: string;
     readonly color: string;

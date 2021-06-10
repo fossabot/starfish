@@ -11,6 +11,7 @@ const crew_1 = require("./addins/crew");
 const CombatShip_1 = require("./CombatShip");
 const CrewMember_1 = require("../CrewMember/CrewMember");
 const rooms_1 = require("../../presets/rooms");
+const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
@@ -29,46 +30,51 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.membersIn = crew_1.membersIn;
         this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
         this.id = data.id;
-        //* id matches discord guildId here
+        // id matches discord guildId
         this.ai = false;
         this.human = true;
         this.captain = data.captain || null;
         this.log = data.log || [];
+        if (data.tutorial && data.tutorial.step !== undefined)
+            this.tutorial = new Tutorial_1.Tutorial(data.tutorial, this);
+        this.recalculateShownPanels();
         if (data.commonCredits)
             this.commonCredits = data.commonCredits;
         if (data.logAlertLevel)
             this.logAlertLevel = data.logAlertLevel;
-        for (let room of [
-            `bunk`,
-            `cockpit`,
-            `repair`,
-            `weapons`,
-        ])
-            this.addRoom(room);
+        this.resolveRooms();
         data.crewMembers?.forEach((cm) => {
-            this.addCrewMember(cm);
+            this.addCrewMember(cm, true);
         });
         if (!this.log.length)
             this.logEntry(`Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`, `medium`);
         this.updateMaxScanProperties();
         this.updateVisible();
-        this.updatePlanet(true);
+        if (!this.tutorial)
+            this.updatePlanet(true);
         setTimeout(() => {
             this.radii.game = this.game.gameSoftRadius;
             this.toUpdate.radii = this.radii;
         }, 100);
     }
     tick() {
+        const profiler = new dist_1.default.Profiler(4, `human ship tick`, false, 0);
         super.tick();
         if (this.dead)
             return;
+        if (this.tutorial)
+            this.tutorial.tick();
+        profiler.step(`move`);
         // ----- move -----
         this.move();
+        profiler.step(`update visible`);
         // ----- scan -----
         this.updateVisible();
         this.scanners.forEach((s) => s.use());
+        profiler.step(`crew tick & stubify`);
         this.crewMembers.forEach((cm) => cm.tick());
         this.toUpdate.crewMembers = this.crewMembers.map((cm) => dist_1.default.stubify(cm));
+        profiler.step(`discover planets`);
         // ----- discover new planets -----
         const newPlanets = this.visible.planets.filter((p) => !this.seenPlanets.includes(p));
         if (newPlanets.length) {
@@ -77,6 +83,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             db_1.db.ship.addOrUpdateInDb(this);
             newPlanets.forEach((p) => this.logEntry(`Discovered the planet ${p.name}!`, `high`));
         }
+        profiler.step(`get caches`);
         // ----- get nearby caches -----
         this.visible.caches.forEach((cache) => {
             if (this.isAt(cache.location)) {
@@ -90,20 +97,29 @@ class HumanShip extends CombatShip_1.CombatShip {
                 this.game.removeCache(cache);
             }
         });
+        profiler.step(`auto attack`);
         // ----- auto-attacks -----
         this.autoAttack();
+        profiler.step(`frontend stubify`);
         // todo if no io watchers, skip this
         // ----- updates for frontend -----
-        this.toUpdate.visible = dist_1.default.stubify(this.visible);
-        this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
+        this.toUpdate.visible = {
+            ships: this.visible.ships,
+            trails: this.visible.trails || [],
+            attackRemnants: this.visible.attackRemnants.map((ar) => ar.stubify()),
+            planets: this.visible.planets.map((p) => p.stubify()),
+            caches: this.visible.caches.map((c) => c.stubify()),
+        };
+        this.toUpdate.items = this.items.map((i) => i.stubify());
+        profiler.step(`frontend send`);
         // ----- send update to listeners -----
-        if (!Object.keys(this.toUpdate).length)
-            return;
-        io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
-            id: this.id,
-            updates: this.toUpdate,
-        });
+        if (Object.keys(this.toUpdate).length)
+            io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
+                id: this.id,
+                updates: this.toUpdate,
+            });
         this.toUpdate = {};
+        profiler.end();
     }
     // ----- log -----
     logEntry(text, level = `low`) {
@@ -127,14 +143,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     move(toLocation) {
         super.move(toLocation);
         if (toLocation) {
-            // ----- update planet -----
-            const previousPlanet = this.planet;
-            this.planet =
-                this.game.planets.find((p) => this.isAt(p.location)) || false;
-            if (previousPlanet !== this.planet)
-                this.toUpdate.planet = this.planet
-                    ? dist_1.default.stubify(this.planet)
-                    : false;
+            this.updateVisible();
+            this.updatePlanet();
             return;
         }
         const startingLocation = [
@@ -183,39 +193,43 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.speed / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        // ----- add previousLocation -----
-        this.addPreviousLocation(startingLocation);
-        // ----- game radius -----
-        this.radii.game = this.game.gameSoftRadius;
-        this.toUpdate.radii = this.radii;
-        const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
-            this.game.gameSoftRadius;
-        const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
-            this.game.gameSoftRadius;
-        if (isOutsideRadius && !startedOutsideRadius)
-            this.logEntry(`Left the known universe. Nothing but the void awaits out here.`, `high`);
-        if (!isOutsideRadius && startedOutsideRadius)
-            this.logEntry(`Re-entered the known universe.`, `high`);
-        // ----- random encounters -----
-        const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
-        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
-            const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
-                10 +
-                1;
-            const type = dist_1.default.randomFromArray([
-                `oxygen`,
-                `salt`,
-                `water`,
-            ]);
-            this.distributeCargoAmongCrew([
-                { type: type, amount },
-            ]);
-            this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
+        // ----- skip if in tutorial -----
+        if (!this.tutorial) {
+            // ----- add previousLocation -----
+            this.addPreviousLocation(startingLocation);
+            // ----- game radius -----
+            this.radii.game = this.game.gameSoftRadius;
+            this.toUpdate.radii = this.radii;
+            const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
+                this.game.gameSoftRadius;
+            const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
+                this.game.gameSoftRadius;
+            if (isOutsideRadius && !startedOutsideRadius)
+                this.logEntry(`Left the known universe. Nothing but the void awaits out here.`, `high`);
+            if (!isOutsideRadius && startedOutsideRadius)
+                this.logEntry(`Re-entered the known universe.`, `high`);
+            // ----- random encounters -----
+            const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
+            if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
+                const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
+                    10 +
+                    1;
+                const type = dist_1.default.randomFromArray([
+                    `oxygen`,
+                    `salt`,
+                    `water`,
+                ]);
+                this.distributeCargoAmongCrew([
+                    { type: type, amount },
+                ]);
+                this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
+            }
         }
         this.updatePlanet();
     }
     updateVisible() {
-        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, undefined, true);
+        const targetTypes = this.tutorial?.currentStep.visibleTypes;
+        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, true);
         const shipsWithValidScannedProps = visible.ships.map((s) => {
             return this.shipToValidScanResult(s);
         });
@@ -227,10 +241,10 @@ class HumanShip extends CombatShip_1.CombatShip {
     updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
-            this.visible.planets.find((p) => this.isAt(p.location)) || false;
+            this.game.planets.find((p) => this.isAt(p.location)) || false;
         if (previousPlanet !== this.planet)
             this.toUpdate.planet = this.planet
-                ? dist_1.default.stubify(this.planet)
+                ? this.planet.stubify()
                 : false;
         if (silent)
             return;
@@ -264,6 +278,25 @@ class HumanShip extends CombatShip_1.CombatShip {
         super.updateThingsThatCouldChangeOnItemChange();
         this.updateBroadcastRadius();
     }
+    recalculateShownPanels() {
+        if (!this.tutorial)
+            this.shownPanels = undefined;
+        else
+            this.shownPanels =
+                this.tutorial.currentStep.shownPanels;
+        this.toUpdate.shownPanels = this.shownPanels;
+    }
+    equipLoadout(l, removeExisting = false) {
+        if (removeExisting)
+            this.items = [];
+        const res = super.equipLoadout(l);
+        if (!res)
+            return res;
+        this.toUpdate.items = this.items;
+        this.updateThingsThatCouldChangeOnItemChange();
+        this.updateBroadcastRadius();
+        return true;
+    }
     addCommonCredits(amount, member) {
         this.commonCredits += amount;
         this.toUpdate.commonCredits = this.commonCredits;
@@ -293,6 +326,17 @@ class HumanShip extends CombatShip_1.CombatShip {
         return didSendCount;
     }
     // ----- room mgmt -----
+    resolveRooms() {
+        this.rooms = {};
+        let roomsToAdd = [];
+        if (this.tutorial)
+            roomsToAdd =
+                this.tutorial.currentStep?.shownRooms || [];
+        else
+            roomsToAdd = [`bunk`, `cockpit`, `repair`, `weapons`];
+        for (let room of roomsToAdd)
+            this.addRoom(room);
+    }
     addRoom(room) {
         if (!(room in this.rooms))
             this.rooms[room] = rooms_1.rooms[room];
@@ -303,33 +347,45 @@ class HumanShip extends CombatShip_1.CombatShip {
     // ----- items -----
     addItem(itemData) {
         const res = super.addItem(itemData);
-        if (itemData.type === 'scanner')
+        if (itemData.type === `scanner`)
             this.updateMaxScanProperties();
         return res;
     }
     removeItem(item) {
         const res = super.removeItem(item);
-        if (item.type === 'scanner')
+        if (item.type === `scanner`)
             this.updateMaxScanProperties();
         return res;
     }
     // ----- crew mgmt -----
-    addCrewMember(data) {
+    addCrewMember(data, silent = false) {
         const cm = new CrewMember_1.CrewMember(data, this);
         this.crewMembers.push(cm);
         if (!this.captain)
             this.captain = cm.id;
         dist_1.default.log(`gray`, `Added crew member ${cm.name} to ${this.name}`);
+        if (!silent)
+            this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
         db_1.db.ship.addOrUpdateInDb(this);
         return cm;
     }
     removeCrewMember(id) {
         const index = this.crewMembers.findIndex((cm) => cm.id === id);
+        const cm = this.crewMembers[index];
         if (index === -1) {
             dist_1.default.log(`red`, `Attempted to remove crew member that did not exist ${id} from ship ${this.id}`);
             return;
         }
+        if (this.captain === cm.id) {
+            dist_1.default.log(`red`, `Attempted to kick the captain from ship ${this.id}`);
+            return;
+        }
         this.crewMembers.splice(index, 1);
+        this.logEntry(`${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. ${cm.name}'s cargo has been distributed amongst the crew.`, `critical`);
+        this.distributeCargoAmongCrew([
+            ...cm.inventory,
+            { type: `credits`, amount: cm.credits },
+        ]);
         db_1.db.ship.addOrUpdateInDb(this);
     }
     distributeCargoAmongCrew(cargo) {
@@ -374,7 +430,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // -----
     updateMaxScanProperties() {
-        dist_1.default.log(`updating max scan properties`, this.name);
+        // c.log(`updating max scan properties`, this.name)
         const totalShape = {
             ...dist_1.default.baseShipScanProperties,
         };
@@ -401,13 +457,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.maxScanProperties = totalShape;
     }
     shipToValidScanResult(ship) {
-        if (!this.maxScanProperties)
-            return {};
         const scanPropertiesToUse = dist_1.default.distance(this.location, ship.location) <
             this.radii.scan
-            ? this.maxScanProperties
+            ? this.maxScanProperties || dist_1.default.baseShipScanProperties
             : dist_1.default.baseShipScanProperties;
-        const partialShip = {};
+        const partialShip = {} // sorry to the typescript gods for this one
+        ;
         Object.entries(scanPropertiesToUse).forEach(([key, value]) => {
             if (!ship[key])
                 return;
@@ -437,11 +492,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         return partialShip;
     }
     // ----- respawn -----
-    respawn() {
+    respawn(silent = false) {
         super.respawn();
         this.updatePlanet(true);
         this.toUpdate.dead = this.dead;
-        if (this instanceof HumanShip) {
+        this.crewMembers.forEach((cm) => (cm.targetLocation = null));
+        if (!silent && this instanceof HumanShip) {
             this.logEntry(`Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`, `critical`);
         }
     }

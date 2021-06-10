@@ -84,6 +84,26 @@
         v-bind="c"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
+        :view="view"
+        :containerSizeMultiplier="containerSizeMultiplier"
+      />
+
+      <ShipMapPoint
+        v-for="t in targetPoints"
+        :key="
+          'targetPoint' +
+            t.location[0] +
+            ',' +
+            t.location[1]
+        "
+        v-bind="t"
+        radius="0.00001"
+        minSize="0.06"
+        strokeWidth=".5"
+        :mask="false"
+        :FLAT_SCALE="FLAT_SCALE"
+        :zoom="zoom"
+        :view="view"
         :containerSizeMultiplier="containerSizeMultiplier"
       />
 
@@ -99,7 +119,7 @@
 
       <ShipMapPlanet
         v-for="p in planets"
-        :key="'planet' + p.name"
+        :key="'planet' + p.planetData.name"
         v-bind="p"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
@@ -127,7 +147,7 @@
 
       <ShipMapShipdot
         v-for="s in ships"
-        :key="'ship' + s.id"
+        :key="'ship' + s.shipData.id"
         v-bind="s"
         :FLAT_SCALE="FLAT_SCALE"
         :zoom="zoom"
@@ -218,6 +238,7 @@ export default {
       targetLines: [],
       attackRemnants: [],
       caches: [],
+      targetPoints: [],
       maxView: { left: 0, top: 0, width: 1, height: 1 },
       view: { left: 0, top: 0, width: 0, height: 0 },
       isPanning: false,
@@ -263,14 +284,7 @@ export default {
               : el.faction
               ? el.faction.color
               : 'rgba(255,255,255,.6)',
-          name: el.name,
-          species: el.species,
-          faction: el.faction,
-          level: el.level,
-          chassis: el.chassis,
-          showLabel: !el.planet,
-          id: el.id,
-          previousLocations: el.previousLocations || [],
+          shipData: el,
         })) || []
       this.planets =
         this.mapData.planets?.map((el: PlanetStub) => ({
@@ -278,8 +292,7 @@ export default {
           location: [...el.location],
           radius: (el.radius || 36000) / KM_PER_AU,
           color: el.validColor || el.color || 'pink',
-          name: el.name,
-          faction: el.faction,
+          planetData: el,
         })) || []
       this.targetLines =
         this.mapData.targetLines?.map((el: any) => ({
@@ -290,7 +303,7 @@ export default {
           id: el.id,
         })) || []
       this.attackRemnants =
-        this.mapData.attackRemnants?.map(
+        (this.mapData.attackRemnants || []).map(
           (el: AttackRemnantStub) => ({
             type: 'attackRemnant',
             from: [...el.start],
@@ -307,6 +320,13 @@ export default {
           id: el.id,
           location: [...el.location],
         })) || []
+      this.targetPoints =
+        this.mapData.targetPoints?.map((el: any) => ({
+          type: 'targetPoint',
+          color: el.color || '#fb5',
+          label: el.label || 'Go Here!',
+          location: [...el.coordinates],
+        })) || []
 
       // flip y values since svg counts up from the top down
       this.ships.forEach((el: ShipStub) => {
@@ -317,6 +337,9 @@ export default {
       )
       this.caches.forEach(
         (el: CacheStub) => (el.location[1] *= -1),
+      )
+      this.targetPoints.forEach(
+        (el: any) => (el.location[1] *= -1),
       )
       this.targetLines.forEach((el: PlanetStub) => {
         el.from[1] *= -1
@@ -338,9 +361,9 @@ export default {
     ) {
       const maxes = getMaxes(points)
 
-      const hardBuffer = 0.02 * this.FLAT_SCALE
+      const hardBuffer = 0.002 * this.FLAT_SCALE
       const softBuffer =
-        0.07 *
+        0.09 *
         this.FLAT_SCALE *
         Math.max(maxes.width, maxes.height) *
         this.containerSizeMultiplier

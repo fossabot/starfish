@@ -37,7 +37,8 @@ class JoinCommand {
         else {
             context.guildMember?.roles.add(crewRole);
         }
-        await context.initialMessage.channel.send(`Added you to the crew of ${context.ship.name}.`);
+        if (context.ship.crewMembers?.length === 1)
+            await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
     }
     hasPermissionToRun(commandContext) {
         if (!commandContext.ship)

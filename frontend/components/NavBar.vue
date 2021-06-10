@@ -1,16 +1,18 @@
 <template>
-  <Box>
+  <Box class="navbox">
     <template #title>
       <span class="sectionemoji">⚙️</span>{{ c.GAME_NAME }}
     </template>
-    <nav class="pad-pane">
+    <nav class="padpane">
       <nuxt-link to="/">Home</nuxt-link>
-      <nuxt-link to="/">How To Play</nuxt-link>
-      <nuxt-link to="/" @click.native="test"
-        >Feedback</nuxt-link
+      <nuxt-link to="/howtoplay">How To Play</nuxt-link>
+      <nuxt-link to="/feedback">Feedback</nuxt-link>
+      <nuxt-link to="/feedback/bugreport"
+        >Bug Report</nuxt-link
       >
-      <nuxt-link to="/">Bug Report</nuxt-link>
-      <nuxt-link to="/">Share a Story</nuxt-link>
+      <nuxt-link to="/feedback/storytime"
+        >Share a Story</nuxt-link
+      >
 
       <select
         v-if="shipIds && shipIds.length > 1"
@@ -73,24 +75,14 @@ export default {
     shipSelected(this: ComponentShape, e: Event) {
       this.$store.dispatch('socketSetup', this.selectedShip)
     },
-    test() {
-      // fetch(`./api/feedback`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     name: 'test',
-      //     email: 'test!test.com',
-      //     comment: 12345,
-      //   }),
-      // })
-    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.navbox {
+  display: inline-block;
+}
 nav {
   display: flex;
   flex-direction: column;

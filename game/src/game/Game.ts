@@ -58,8 +58,11 @@ export class Game {
   async save() {
     c.log(
       `gray`,
-      `----- Saving Game ----- (Tick avg.: ${c.r2(
-        this.averageTickLag,
+      `----- Saving Game ----- (Tick avg: ${c.r2(
+        this.averageTickTime,
+        2,
+      )}ms, Worst human ship avg: ${c.r2(
+        this.averageWorstShipTickLag,
         2,
       )}ms)`,
     )
@@ -87,12 +90,27 @@ export class Game {
   private lastTickTime: number = Date.now()
   private lastTickExpectedTime: number = 0
   private averageTickLag: number = 0
+  private averageWorstShipTickLag: number = 0
+  private averageTickTime: number = 0
 
   tick() {
     const startTime = Date.now()
 
     this.tickCount++
-    this.ships.forEach((s) => s.tick())
+    const times: any[] = []
+    this.ships.forEach((s) => {
+      const start = Date.now()
+      s.tick()
+      const time = Date.now() - start
+      times.push({ ship: s, time })
+    })
+    if (times.length)
+      this.averageWorstShipTickLag = c.lerp(
+        this.averageWorstShipTickLag,
+        times.sort((a, b) => b.time - a.time)[0].time || 0,
+        0.1,
+      )
+    // c.log(times.map((s) => s.ship.name + ` ` + s.time))
 
     this.expireOldAttackRemnantsAndCaches()
     this.spawnNewCaches()
@@ -100,18 +118,6 @@ export class Game {
     this.spawnNewPlanet()
 
     // ----- timing
-
-    const elapsedTimeInMs = Date.now() - startTime
-    if (elapsedTimeInMs > 50) {
-      if (elapsedTimeInMs < 100)
-        c.log(
-          `Tick took`,
-          `yellow`,
-          elapsedTimeInMs + ` ms`,
-        )
-      else
-        c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
-    }
 
     c.deltaTime = Date.now() - this.lastTickTime
 
@@ -129,26 +135,46 @@ export class Game {
     this.lastTickTime = startTime
     this.lastTickExpectedTime = nextTickTime
 
+    // ----- schedule next tick -----
     setTimeout(() => this.tick(), nextTickTime)
 
-    io.to(`game`).emit(`game:tick`, {
-      deltaTime: c.deltaTime,
-      game: c.stubify<Game, GameStub>(this),
-    })
+    //   // ----- notify watchers -----
+    // io.to(`game`).emit(`game:tick`, {
+    //   deltaTime: c.deltaTime,
+    //   game: c.stubify<Game, GameStub>(this),
+    // })
+
+    const elapsedTimeInMs = Date.now() - startTime
+    if (elapsedTimeInMs > 50) {
+      if (elapsedTimeInMs < 100)
+        c.log(
+          `Tick took`,
+          `yellow`,
+          elapsedTimeInMs + ` ms`,
+        )
+      else
+        c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
+    }
+    this.averageTickTime = c.lerp(
+      this.averageTickTime,
+      elapsedTimeInMs,
+      0.1,
+    )
   }
 
   // ----- scan function -----
-  // todo mega-optimize this. chunks?
+  // todo mega-optimize this with a chunks system
   scanCircle(
     center: CoordinatePair,
     radius: number,
     ignoreSelf: string | null,
-    type?:
+    types?: (
       | `ship`
       | `planet`
       | `cache`
       | `attackRemnant`
-      | `trail`,
+      | `trail`
+    )[],
     includeTrails: boolean = false,
   ): {
     ships: Ship[]
@@ -162,8 +188,16 @@ export class Game {
       planets: Planet[] = [],
       caches: Cache[] = [],
       attackRemnants: AttackRemnant[] = []
-    if (!type || type === `ship`)
+    if (!types || types.includes(`ship`))
       ships = this.ships.filter((s) => {
+        if (
+          s.onlyVisibleToShipId &&
+          ignoreSelf &&
+          s.onlyVisibleToShipId !== ignoreSelf
+        )
+          return false
+        if (s.tutorial && !s.onlyVisibleToShipId)
+          return false
         if (s.id === ignoreSelf) return false
         if (
           c.pointIsInsideCircle(center, s.location, radius)
@@ -171,9 +205,13 @@ export class Game {
           return true
         return false
       })
-    if ((!type || type === `trail`) && includeTrails)
+    if (
+      (!types || types.includes(`trail`)) &&
+      includeTrails
+    )
       trails = this.ships
         .filter((s) => {
+          if (s.tutorial) return false
           if (s.id === ignoreSelf) return false
           if (ships.find((ship) => ship === s)) return false
           for (let l of s.previousLocations) {
@@ -183,15 +221,25 @@ export class Game {
           return false
         })
         .map((s) => s.previousLocations)
-    if (!type || type === `planet`)
+    if (!types || types.includes(`planet`))
       planets = this.planets.filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
       )
-    if (!type || type === `cache`)
-      caches = this.caches.filter((k) =>
-        c.pointIsInsideCircle(center, k.location, radius),
-      )
-    if (!type || type === `attackRemnant`)
+    if (!types || types.includes(`cache`))
+      caches = this.caches.filter((k) => {
+        if (
+          k.onlyVisibleToShipId &&
+          ignoreSelf &&
+          k.onlyVisibleToShipId !== ignoreSelf
+        )
+          return false
+        return c.pointIsInsideCircle(
+          center,
+          k.location,
+          radius,
+        )
+      })
+    if (!types || types.includes(`attackRemnant`))
       attackRemnants = this.attackRemnants.filter(
         (a) =>
           c.pointIsInsideCircle(center, a.start, radius) ||
@@ -352,7 +400,7 @@ export class Game {
     return newShip
   }
 
-  addAIShip(data: BaseShipData, save = true): AIShip {
+  addAIShip(data: BaseAIShipData, save = true): AIShip {
     const existing = this.ships.find(
       (s) => s instanceof AIShip && s.id === data.id,
     ) as AIShip

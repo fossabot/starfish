@@ -52,7 +52,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 2);
+                : 1), 2, true);
         if (price > ship.commonCredits)
             return callback({ error: `Insufficient funds.` });
         if (ship.chassis.slots <= ship.items.length)
@@ -102,7 +102,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? 1 + (1 - dist_1.default.factionVendorMultiplier)
-                : 1), 2);
+                : 1), 2, true);
         ship.commonCredits += price;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.removeItem(heldItem);
@@ -133,6 +133,11 @@ function default_1(socket) {
             return callback({
                 error: `That equipment is not for sale here.`,
             });
+        if (itemForSale.chassisData.bunks <
+            ship.crewMembers.length)
+            return callback({
+                error: `This chassis has too few bunks to support your crew members.`,
+            });
         const currentChassisSellPrice = ship.chassis.basePrice / 2;
         const price = dist_1.default.r2((itemForSale.chassisData?.basePrice || 1) *
             itemForSale.buyMultiplier *
@@ -140,7 +145,7 @@ function default_1(socket) {
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
                 : 1) -
-            currentChassisSellPrice, 2);
+            currentChassisSellPrice, 2, true);
         if (price > ship.commonCredits)
             return callback({ error: `Insufficient funds.` });
         if (ship.items.length > itemForSale.chassisData?.slots)

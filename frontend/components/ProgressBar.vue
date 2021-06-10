@@ -12,7 +12,7 @@
       }"
     ></div>
     <div
-      class="label pad-pane"
+      class="label padpane"
       :style="{
         color:
           percent <= dangerZone

@@ -1,6 +1,18 @@
 export const weapons: {
   [key in WeaponId]: BaseWeaponData
 } = {
+  tiny1: {
+    type: `weapon`,
+    id: `tiny1`,
+    displayName: `Squirt Gun`,
+    description: `Ejects a short stream of hydrocarbons at a specified target. Deals little damage, so it's mostly useful for target practice.`,
+    basePrice: 10,
+    range: 0.75,
+    rarity: 0.3,
+    damage: 0.75,
+    baseCooldown: 2 * 60 * 1000,
+    maxHp: 4,
+  },
   // cannons
   cannon1: {
     type: `weapon`,
@@ -18,7 +30,7 @@ export const weapons: {
     type: `weapon`,
     id: `cannon2`,
     displayName: `Crustacean Cannon 2`,
-    description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats.The second entry in the series upgrades its range and damage.`,
+    description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats. The second entry in the series upgrades its range and damage.`,
     basePrice: 10,
     range: 0.175,
     rarity: 2,

@@ -6,6 +6,7 @@ import log from './log'
 import game from './game'
 import physics from './physics'
 import discord from './discord'
+import { Profiler } from './Profiler'
 
 export default {
   ...globals,
@@ -16,4 +17,5 @@ export default {
   ...game,
   ...physics,
   ...discord,
+  Profiler,
 }

@@ -1,15 +1,15 @@
 <template>
-  <div>
+  <div class="pagecontainer">
     <div class="bg"></div>
     <FadeIn :off="ready">{{ c.GAME_NAME }}</FadeIn>
     <!-- <Starfield /> -->
 
-    <div class="box" v-if="!ship || !crewMember">
+    <Box v-if="!ship || !crewMember">
       No ship found by the ID(s) you have saved! If you're
       sure that your server still has a ship in the game,
       try logging out and back in. If that doesn't fix it,
       please reach out on the support server.
-    </div>
+    </Box>
 
     <div
       id="masonrycontainer"
@@ -17,27 +17,30 @@
       ref="container"
       v-if="ship && crewMember && !ship.dead"
     >
-      <Ship class="grid-item" />
-      <ShipMapPlayermapzoom class="grid-item" />
+      <ShipTutorial />
+      <Ship />
 
-      <ShipMapPlayermap class="grid-item" />
+      <ShipMember />
 
-      <ShipLog class="grid-item" />
+      <ShipMapPlayermapDefault />
+      <ShipMapPlayermapZoom />
 
-      <ShipPlanet class="grid-item" />
-      <ShipVisible class="grid-item" />
-      <ShipScanShip class="grid-item" />
+      <ShipPlanet />
 
-      <ShipMember class="grid-item" />
-      <ShipDiagram class="grid-item" />
-      <ShipRoom class="grid-item" />
+      <ShipDiagram />
+      <ShipRoom />
 
-      <ShipItems class="grid-item" />
-      <ShipCrewRank class="grid-item" />
+      <!-- <ShipVisible /> -->
+      <ShipScanShip />
 
-      <ShipFactionRank class="grid-item" />
+      <ShipLog />
 
-      <NavBar class="grid-item" />
+      <ShipItems />
+      <ShipCrewRank />
+
+      <ShipFactionRank />
+
+      <NavBar v-if="!ship.tutorial" />
     </div>
     <div class="box dead" v-if="ship && ship.dead">
       <h5>U dead</h5>
@@ -65,6 +68,7 @@ interface ComponentShape {
   resizeObserver: ResizeObserver | null
   [key: string]: any
 }
+import { FreeMase } from '../../../common/src/FreeMase/FreeMase'
 
 export default {
   data(): ComponentShape {
@@ -72,6 +76,7 @@ export default {
       c,
       currentShipIndex: 0,
       resizeObserver: null,
+      mutationObserver: null,
       masonryElement: null,
       ready: false,
     }
@@ -113,31 +118,45 @@ export default {
       return
     }
     this.changeShip(this.currentShipIndex)
-    this.setUpObserver()
+    this.setUpObservers()
     setTimeout(() => (this.ready = true), 2000)
   },
 
   methods: {
-    async setUpObserver(this: ComponentShape) {
+    async setUpObservers(this: ComponentShape) {
       if (
-        (this.$refs.container?.children?.length || 0) < 10
+        (this.$refs.container?.children?.length || 0) < 3
       ) {
-        return setTimeout(this.setUpObserver, 100)
+        return setTimeout(this.setUpObservers, 100)
       }
 
       await this.$nextTick()
 
-      if (this.resizeObserver) return
+      if (this.resizeObserver && this.mutationObserver)
+        return
+      let ready = false
+      const updateCallback = c.debounce((els: any) => {
+        if (!ready) return
+        // c.log('resized or mutated', els)
+        this.$nextTick(this.resetMasonry)
+      }, 200)
+
+      this.mutationObserver = new MutationObserver(
+        updateCallback,
+      )
+      this.mutationObserver.observe(this.$refs.container, {
+        childList: true,
+      })
+
       this.resizeObserver = new ResizeObserver(
-        (entries) => {
-          // console.log('resize')
-          this.$nextTick(this.resetMasonry)
-        },
+        updateCallback,
       )
       for (let child of this.$refs.container.children) {
         if (child.$el) child = child.$el
         this.resizeObserver.observe(child)
       }
+      ready = true
+      updateCallback()
     },
     changeShip(this: ComponentShape, index: number) {
       if (
@@ -150,36 +169,42 @@ export default {
         )
     },
     async resetMasonry(this: ComponentShape) {
-      if (!this.resizeObserver) return this.setUpObserver()
-      if (
-        !this.$refs.container ||
-        !this.$masonry ||
-        !window
-      )
+      if (!this.resizeObserver) return this.setUpObservers()
+      if (!this.$refs.container || !window)
         return setTimeout(this.resetMasonry, 500)
-      // console.log(!!this.masonryElement)
+
       if (!this.masonryElement) {
-        this.masonryElement = new this.$masonry(
-          '#masonrycontainer',
-          {
-            itemSelector: '.grid-item',
-            columnWidth: 1,
-            gutter: 0,
-            fitWidth: true,
-          },
+        this.masonryElement = new FreeMase(
+          this.$refs.container,
         )
-        setTimeout(() => (this.ready = true), 400)
-      } else this.masonryElement.layout()
+        setTimeout(() => (this.ready = true), 500)
+      } else this.masonryElement.position()
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.pagecontainer {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  & > * {
+    max-width: 100%;
+  }
+}
+
 .bg {
   width: 100vw;
   height: 100vh;
   position: fixed;
+  top: 0;
+  left: 0;
   background-image: url('/bg1.png');
   background-size: cover;
   background-position: center center;
@@ -189,11 +214,13 @@ export default {
 }
 
 .container {
+  display: inline-block;
   position: relative;
+  margin: 0 auto;
 
-  // margin: 2em auto;
-
-  .grid-item {
+  & > * {
+    display: inline-block;
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out;
     margin-bottom: 0px;
 
     @media (max-width: 768px) {

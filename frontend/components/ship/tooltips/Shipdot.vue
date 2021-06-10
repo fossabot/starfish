@@ -20,7 +20,19 @@
     </div>
     <div v-if="data.level">
       Level:
-      {{ Math.ceil(data.level) }}
+      {{ Math.round(data.level) }}
+    </div>
+    <div v-if="data.planet">
+      At planet 🪐{{ data.planet.name }}
+    </div>
+    <div>
+      <div
+        v-for="(item, index) in data.items || []"
+        :key="'tooltipscanitem' + index"
+      >
+        {{ c.capitalize(item.type) }}:
+        {{ item.displayName }}
+      </div>
     </div>
   </div>
 </template>

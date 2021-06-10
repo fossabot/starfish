@@ -27,6 +27,7 @@ function default_1(socket) {
                 return;
             }
             data.name = data.name.substring(0, dist_1.default.maxNameLength);
+            data.tutorial = { step: -1 };
             const ship = __1.game.addHumanShip({
                 ...data,
             });
@@ -50,10 +51,24 @@ function default_1(socket) {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
             return callback({ error: `No ship found.` });
-        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        const crewMember = ship.crewMembers.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         ship.captain = crewMember.id;
+        callback({ data: `ok` });
+    });
+    socket.on(`ship:kickMember`, (shipId, crewId, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        if (ship.captain === crewMember.id)
+            return callback({
+                error: `You can't kick the captain!`,
+            });
+        ship.removeCrewMember(crewMember.id);
         callback({ data: `ok` });
     });
     socket.on(`crew:rename`, (shipId, crewId, newName) => {

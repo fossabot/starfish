@@ -1,5 +1,5 @@
 <template>
-  <Box class="log" v-if="ship && ship.log">
+  <Box class="log" v-if="show">
     <template #title>
       <span class="sectionemoji">📄</span>Ship Log
     </template>
@@ -7,7 +7,7 @@
     <div class="panesection scroll">
       <ShipLogEntry
         v-for="l in flippedLog"
-        :key="'log' + Math.random()"
+        :key="'log' + l.time + l.text"
         v-bind="l"
       />
     </div>
@@ -26,6 +26,13 @@ export default {
   },
   computed: {
     ...mapState(['ship']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('log'))
+      )
+    },
     flippedLog(this: ComponentShape) {
       const copy = [...this.ship.log]
       copy.reverse()

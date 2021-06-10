@@ -17,6 +17,10 @@ function default_1(socket) {
             return callback({
                 error: `That crew member already exists on this ship.`,
             });
+        if (ship.chassis.bunks <= ship.crewMembers.length)
+            return callback({
+                error: `The ship is full! Upgrade to a chassis with more bunks (or kick someone) to add more crew members.`,
+            });
         crewMemberBaseData.name =
             crewMemberBaseData.name.substring(0, dist_1.default.maxNameLength);
         const addedCrewMember = ship.addCrewMember(crewMemberBaseData);
@@ -95,6 +99,7 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return;
+        amount = dist_1.default.r2(amount, 2, true);
         if (amount > crewMember.credits)
             return;
         crewMember.credits -= amount;
@@ -110,6 +115,7 @@ function default_1(socket) {
             return;
         if (ship.captain !== crewMember.id)
             return;
+        amount = dist_1.default.r2(amount, 2, true);
         if (amount > ship.commonCredits)
             return;
         ship.commonCredits -= amount;
@@ -134,6 +140,7 @@ function default_1(socket) {
             return callback({
                 error: `That cargo is not for sale here.`,
             });
+        amount = dist_1.default.r2(amount, 2, true);
         if (crewMember.heldWeight + amount >
             crewMember.maxCargoWeight)
             return callback({
@@ -145,13 +152,13 @@ function default_1(socket) {
             planet?.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 5);
+                : 1), 2, true);
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
         const existingStock = crewMember.inventory.find((cargo) => cargo.type === cargoType);
         if (existingStock)
-            existingStock.amount += amount;
+            existingStock.amount = dist_1.default.r2(amount + existingStock.amount, 2, true);
         else
             crewMember.inventory.push({
                 type: cargoType,
@@ -169,6 +176,7 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
+        amount = dist_1.default.r2(amount, 2, true);
         const existingStock = crewMember.inventory.find((cargo) => cargo.type === cargoType);
         if (!existingStock || existingStock.amount < amount)
             return callback({
@@ -187,9 +195,11 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
-                : 1), 5);
+                : 1), 2, true);
         crewMember.credits += price;
         existingStock.amount -= amount;
+        if (existingStock.amount < 0.01)
+            existingStock.amount = 0;
         callback({
             data: dist_1.default.stubify(crewMember),
         });
@@ -202,6 +212,7 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
+        amount = dist_1.default.r2(amount, 2, true);
         if (cargoType === `credits`) {
             if (crewMember.credits < amount)
                 return callback({
@@ -248,7 +259,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 5);
+                : 1), 2, true);
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
@@ -289,7 +300,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 5, true);
+                : 1), 2, true);
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;

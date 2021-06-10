@@ -1,6 +1,6 @@
 <template>
   <div
-    class="roommember flex-column flex-center"
+    class="roommember flexcolumn flexcenter"
     :class="{ hide, highlight, animate }"
     :style="{
       top: top + 'px',

@@ -50,6 +50,7 @@ export default function (
             ? c.factionVendorMultiplier
             : 1),
         2,
+        true,
       )
       if (price > ship.commonCredits)
         return callback({ error: `Insufficient funds.` })
@@ -138,6 +139,7 @@ export default function (
             ? 1 + (1 - c.factionVendorMultiplier)
             : 1),
         2,
+        true,
       )
 
       ship.commonCredits += price
@@ -198,6 +200,14 @@ export default function (
           error: `That equipment is not for sale here.`,
         })
 
+      if (
+        itemForSale.chassisData.bunks <
+        ship.crewMembers.length
+      )
+        return callback({
+          error: `This chassis has too few bunks to support your crew members.`,
+        })
+
       const currentChassisSellPrice =
         ship.chassis.basePrice / 2
       const price = c.r2(
@@ -209,6 +219,7 @@ export default function (
             : 1) -
           currentChassisSellPrice,
         2,
+        true,
       )
 
       if (price > ship.commonCredits)

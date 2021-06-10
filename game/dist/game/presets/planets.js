@@ -46,7 +46,8 @@ function generatePlanet(game, homeworldFactionKey) {
     const tooClose = 0.1;
     let location = [0, 0];
     const isTooClose = (p) => dist_1.default.distance(location, p.location) < tooClose;
-    while (game.planets.find(isTooClose)) {
+    while (game.planets.find(isTooClose) ||
+        game.humanShips.find(isTooClose)) {
         location = dist_1.default.randomInsideCircle(locationSearchRadius);
         locationSearchRadius *= 1.01;
     }

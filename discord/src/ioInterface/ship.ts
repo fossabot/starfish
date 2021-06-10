@@ -25,6 +25,30 @@ export async function setCaptain(
   return error // null = ok
 }
 
+export async function kickMember(
+  shipId: string,
+  crewMemberId: string,
+): Promise<string | null> {
+  const error: string | null = await new Promise(
+    (resolve) => {
+      io.emit(
+        `ship:kickMember`,
+        shipId,
+        crewMemberId,
+        ({ data, error }: IOResponseReceived<string>) => {
+          if (error) {
+            c.log(error)
+            resolve(error)
+            return
+          }
+          resolve(null)
+        },
+      )
+    },
+  )
+  return error // null = ok
+}
+
 export async function rename(
   shipId: string,
   newName: string,

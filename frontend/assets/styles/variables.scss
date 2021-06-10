@@ -11,8 +11,26 @@
 
   --warning: #f50;
   --info: #08f;
-  --success: #0d8;
+  --success: rgb(0, 205, 109);
 
   --panesectionpad-top: 0.7rem;
   --panesectionpad-left: 0.8rem;
+}
+
+@keyframes highlight-text-bad {
+  to {
+    color: inherit;
+  }
+  from {
+    color: var(--warning);
+  }
+}
+
+@keyframes highlight-text-good {
+  to {
+    color: inherit;
+  }
+  from {
+    color: var(--success);
+  }
 }

@@ -12,21 +12,23 @@ interface GameStub extends BaseStub {
 interface ShipStub extends BaseStub {
   id: string
   name: string
-  items: ItemStub[]
+  items?: ItemStub[]
   previousLocations: CoordinatePair[]
   location: CoordinatePair
-  velocity: CoordinatePair
-  targetLocation: CoordinatePair
-  visible: VisibleStub
+  velocity?: CoordinatePair
+  targetLocation?: CoordinatePair
+  visible?: VisibleStub
   human: boolean
+  ai: boolean
   attackable: boolean
   dead: boolean
-  hp: number
-  obeysGravity: boolean
-  planet: PlanetStub | false
-  faction: FactionStub | false
-  crewMembers: CrewMemberStub[]
-  log: LogEntry[]
+  hp?: number
+  obeysGravity?: boolean
+  planet?: PlanetStub | false
+  faction: FactionStub
+  species: BaseSpeciesData
+  crewMembers?: CrewMemberStub[]
+  log?: LogEntry[]
   channelReferences?: GameChannelReference[]
   [key: string]: any
 }

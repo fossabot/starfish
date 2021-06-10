@@ -1,5 +1,8 @@
+import c from '../../common/dist'
 import * as storage from '../assets/scripts/storage'
 import Vue from 'vue'
+
+let stillWorkingOnTick = false
 
 export const state = () => ({
   userId: null,
@@ -127,8 +130,16 @@ export const actions = {
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return connected()
       if (state.ship.id !== id) return
-      // console.log(updates)
+      if (stillWorkingOnTick) return // c.log(`skipping tick because too busy`)
+      // c.log(updates)
+
+      stillWorkingOnTick = true
       commit(`updateShip`, { ...updates })
+
+      setTimeout(
+        () => (stillWorkingOnTick = false),
+        c.TICK_INTERVAL * 0.7,
+      )
     })
   },
 

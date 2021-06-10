@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="fader flex-center flex-column"
-    :class="{ off }"
-  >
+  <div class="fader flexcenter flexcolumn" :class="{ off }">
     <slot />
   </div>
 </template>

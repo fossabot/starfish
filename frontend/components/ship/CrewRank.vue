@@ -1,5 +1,5 @@
 <template>
-  <Box class="crewrank" v-if="ship">
+  <Box class="crewrank" v-if="show">
     <template #title>
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
@@ -53,6 +53,14 @@ export default {
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        this.ship.crewMembers.length > 1 &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('crewRank'))
+      )
+    },
     bestXAtEachSkill() {
       const best: any = {}
       for (let { skill } of this.crewMember.skills) {

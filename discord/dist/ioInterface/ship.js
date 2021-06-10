@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = exports.rename = exports.setCaptain = void 0;
+exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = exports.rename = exports.kickMember = exports.setCaptain = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function setCaptain(shipId, crewMemberId) {
@@ -20,6 +20,20 @@ async function setCaptain(shipId, crewMemberId) {
     return error; // null = ok
 }
 exports.setCaptain = setCaptain;
+async function kickMember(shipId, crewMemberId) {
+    const error = await new Promise((resolve) => {
+        index_1.io.emit(`ship:kickMember`, shipId, crewMemberId, ({ data, error }) => {
+            if (error) {
+                dist_1.default.log(error);
+                resolve(error);
+                return;
+            }
+            resolve(null);
+        });
+    });
+    return error; // null = ok
+}
+exports.kickMember = kickMember;
 async function rename(shipId, newName) {
     await index_1.io.emit(`ship:rename`, shipId, newName);
 }

@@ -8,8 +8,9 @@ import { data as passiveData } from '../presets/crewPassives'
 import { data as activeData } from '../presets/crewActives'
 import { chassis as chassisData } from '../presets/items/chassis'
 import * as itemData from '../presets/items/'
+import { Stubbable } from './Stubbable'
 
-export class Planet {
+export class Planet extends Stubbable {
   static readonly fluctuatorIntensity = 0.8
 
   readonly name: string
@@ -39,6 +40,7 @@ export class Planet {
     }: BasePlanetData,
     game: Game,
   ) {
+    super()
     this.game = game
     this.name = name
     this.color = color
@@ -133,5 +135,7 @@ export class Planet {
         100) *
         intensity +
       (1 - intensity / 2)
+
+    this._stub = null // invalidate stub
   }
 }

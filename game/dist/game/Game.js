@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
-const io_1 = __importDefault(require("../server/io"));
 const db_1 = require("../db");
 const Planet_1 = require("./classes/Planet");
 const Cache_1 = require("./classes/Cache");
@@ -30,6 +29,8 @@ class Game {
         this.lastTickTime = Date.now();
         this.lastTickExpectedTime = 0;
         this.averageTickLag = 0;
+        this.averageWorstShipTickLag = 0;
+        this.averageTickTime = 0;
         this.startTime = new Date();
         Object.values(factions_1.default).forEach((fd) => this.addFaction(fd));
         Object.values(species_1.default).map((sd) => this.addSpecies(sd));
@@ -41,7 +42,7 @@ class Game {
         this.tick();
     }
     async save() {
-        dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg.: ${dist_1.default.r2(this.averageTickLag, 2)}ms)`);
+        dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
         const promises = [];
         this.ships.forEach((s) => {
             promises.push(db_1.db.ship.addOrUpdateInDb(s));
@@ -57,12 +58,34 @@ class Game {
     tick() {
         const startTime = Date.now();
         this.tickCount++;
-        this.ships.forEach((s) => s.tick());
+        const times = [];
+        this.ships.forEach((s) => {
+            const start = Date.now();
+            s.tick();
+            const time = Date.now() - start;
+            times.push({ ship: s, time });
+        });
+        if (times.length)
+            this.averageWorstShipTickLag = dist_1.default.lerp(this.averageWorstShipTickLag, times.sort((a, b) => b.time - a.time)[0].time || 0, 0.1);
+        // c.log(times.map((s) => s.ship.name + ` ` + s.time))
         this.expireOldAttackRemnantsAndCaches();
         this.spawnNewCaches();
         this.spawnNewAIs();
         this.spawnNewPlanet();
         // ----- timing
+        dist_1.default.deltaTime = Date.now() - this.lastTickTime;
+        const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
+        this.averageTickLag = dist_1.default.lerp(this.averageTickLag, thisTickLag, 0.1);
+        const nextTickTime = Math.min(dist_1.default.TICK_INTERVAL, dist_1.default.TICK_INTERVAL - this.averageTickLag);
+        this.lastTickTime = startTime;
+        this.lastTickExpectedTime = nextTickTime;
+        // ----- schedule next tick -----
+        setTimeout(() => this.tick(), nextTickTime);
+        //   // ----- notify watchers -----
+        // io.to(`game`).emit(`game:tick`, {
+        //   deltaTime: c.deltaTime,
+        //   game: c.stubify<Game, GameStub>(this),
+        // })
         const elapsedTimeInMs = Date.now() - startTime;
         if (elapsedTimeInMs > 50) {
             if (elapsedTimeInMs < 100)
@@ -70,33 +93,32 @@ class Game {
             else
                 dist_1.default.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`);
         }
-        dist_1.default.deltaTime = Date.now() - this.lastTickTime;
-        const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
-        this.averageTickLag = dist_1.default.lerp(this.averageTickLag, thisTickLag, 0.1);
-        const nextTickTime = Math.min(dist_1.default.TICK_INTERVAL, dist_1.default.TICK_INTERVAL - this.averageTickLag);
-        this.lastTickTime = startTime;
-        this.lastTickExpectedTime = nextTickTime;
-        setTimeout(() => this.tick(), nextTickTime);
-        io_1.default.to(`game`).emit(`game:tick`, {
-            deltaTime: dist_1.default.deltaTime,
-            game: dist_1.default.stubify(this),
-        });
+        this.averageTickTime = dist_1.default.lerp(this.averageTickTime, elapsedTimeInMs, 0.1);
     }
     // ----- scan function -----
-    // todo mega-optimize this. chunks?
-    scanCircle(center, radius, ignoreSelf, type, includeTrails = false) {
+    // todo mega-optimize this with a chunks system
+    scanCircle(center, radius, ignoreSelf, types, includeTrails = false) {
         let ships = [], trails = [], planets = [], caches = [], attackRemnants = [];
-        if (!type || type === `ship`)
+        if (!types || types.includes(`ship`))
             ships = this.ships.filter((s) => {
+                if (s.onlyVisibleToShipId &&
+                    ignoreSelf &&
+                    s.onlyVisibleToShipId !== ignoreSelf)
+                    return false;
+                if (s.tutorial && !s.onlyVisibleToShipId)
+                    return false;
                 if (s.id === ignoreSelf)
                     return false;
                 if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
                     return true;
                 return false;
             });
-        if ((!type || type === `trail`) && includeTrails)
+        if ((!types || types.includes(`trail`)) &&
+            includeTrails)
             trails = this.ships
                 .filter((s) => {
+                if (s.tutorial)
+                    return false;
                 if (s.id === ignoreSelf)
                     return false;
                 if (ships.find((ship) => ship === s))
@@ -108,11 +130,17 @@ class Game {
                 return false;
             })
                 .map((s) => s.previousLocations);
-        if (!type || type === `planet`)
+        if (!types || types.includes(`planet`))
             planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
-        if (!type || type === `cache`)
-            caches = this.caches.filter((k) => dist_1.default.pointIsInsideCircle(center, k.location, radius));
-        if (!type || type === `attackRemnant`)
+        if (!types || types.includes(`cache`))
+            caches = this.caches.filter((k) => {
+                if (k.onlyVisibleToShipId &&
+                    ignoreSelf &&
+                    k.onlyVisibleToShipId !== ignoreSelf)
+                    return false;
+                return dist_1.default.pointIsInsideCircle(center, k.location, radius);
+            });
+        if (!types || types.includes(`attackRemnant`))
             attackRemnants = this.attackRemnants.filter((a) => dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
                 dist_1.default.pointIsInsideCircle(center, a.end, radius));
         return {

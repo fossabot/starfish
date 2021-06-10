@@ -1,5 +1,5 @@
 <template>
-  <div class="holder">
+  <div class="holder" v-if="show">
     <Box>
       <template #title>
         <span class="sectionemoji">🚪</span>Ship Schematic
@@ -129,6 +129,13 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember', 'userId']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('schematic'))
+      )
+    },
     crewByRoom(
       this: ComponentShape,
     ): { room: string; crewMembers: CrewMemberStub[] }[] {
@@ -213,6 +220,7 @@ export default {
 
     &:hover {
       z-index: 4;
+      background: rgba(50, 50, 50, 0.85);
 
       .roomlabel {
         opacity: 0.8;

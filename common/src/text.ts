@@ -3,7 +3,13 @@ import math from './math'
 const maxNameLength = 16
 
 function numberWithCommas(x: number) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, `,`)
+  const decimal = x % 1
+  const total =
+    Math.floor(x)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
+    (decimal ? `${decimal}`.substring(1) : ``)
+  return total
 }
 
 import { LanguageFilter } from './badwords'

@@ -20,6 +20,11 @@ interface BaseHumanShipData extends BaseShipData {
   log?: LogEntry[]
   logAlertLevel?: LogLevel
   commonCredits?: number
+  tutorial?: { step: number }
+}
+
+interface BaseAIShipData extends BaseShipData {
+  onlyVisibleToShipId?: string
 }
 
 type GameChannelType = `alert` | `chat` | `broadcast`
@@ -49,4 +54,10 @@ interface TakenDamageResult extends ResponseWithMessage {
   didDie: boolean
   weapon: Weapon
   miss: boolean
+}
+
+interface TargetLocation {
+  coordinates: CoordinatePair
+  label: string
+  color?: string
 }

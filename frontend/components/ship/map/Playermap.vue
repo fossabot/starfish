@@ -1,11 +1,11 @@
 <template>
-  <Box class="map">
+  <Box class="map" v-if="show">
     <template #title>
       <span class="sectionemoji">{{ emoji }}</span
       >{{ label }}
     </template>
     <div
-      class="panesection pad-none"
+      class="panesection padnone"
       :style="{ width: width + 'px' }"
     >
       <ShipMap
@@ -39,6 +39,9 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'userId']),
+    show(this: ComponentShape) {
+      return this.ship
+    },
     mapData(this: ComponentShape) {
       return {
         center: this.ship.location,
@@ -55,15 +58,21 @@ export default {
         shipPaths: this.shipPaths,
         targetLines: this.targetLines,
         attackRemnants:
-          this.ship.visible.attackRemnants || [],
-        caches: this.ship.visible.caches || [],
+          this.ship.visible?.attackRemnants || [],
+        caches: this.ship.visible?.caches || [],
         speed: this.ship.speed,
         radii: this.radii,
         gameRadius: this.ship.radii.game,
+        targetPoints: this.ship.tutorial?.targetLocation
+          ? [this.ship.tutorial?.targetLocation]
+          : [],
       }
     },
     ships(this: ComponentShape) {
-      return [...(this.ship.visible.ships || []), this.ship]
+      return [
+        ...(this.ship.visible?.ships || []),
+        this.ship,
+      ]
     },
     radii(this: ComponentShape) {
       const r = []
@@ -94,7 +103,7 @@ export default {
       return this.ship.location
     },
     planetsToShow(this: ComponentShape) {
-      const p = [...(this.ship.visible.planets || [])]
+      const p = [...(this.ship.visible?.planets || [])]
       for (let seen of this.ship.seenPlanets) {
         if (!p.find((pl) => pl.name === seen.name))
           p.push(seen)
@@ -103,7 +112,7 @@ export default {
       return p
     },
     targetLines(this: ComponentShape) {
-      return this.ship.crewMembers
+      return (this.ship.crewMembers || [])
         .filter(
           (c: CrewMemberStub) =>
             c.location === 'cockpit' && c.targetLocation,
@@ -122,7 +131,7 @@ export default {
           color: s.faction ? s.faction.color : undefined,
           points: [...s.previousLocations, s.location],
         })),
-        ...this.ship.visible.trails.map((t) => ({
+        ...(this.ship.visible?.trails || []).map((t) => ({
           points: t,
           id: t[0][0],
           color: 'rgba(255, 255, 255, .6)',

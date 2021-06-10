@@ -18,7 +18,7 @@ export declare class AIShip extends CombatShip {
     keyAngle: number;
     targetLocation: CoordinatePair;
     obeysGravity: boolean;
-    constructor(data: BaseShipData, game: Game);
+    constructor(data: BaseAIShipData, game: Game);
     tick(): void;
     cumulativeSkillIn(l: CrewLocation, s: SkillType): number;
     addLevelAppropriateItems(): void;

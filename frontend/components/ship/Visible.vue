@@ -1,107 +1,109 @@
 <template>
-  <div class="visiblepane">
+  <div class="visiblepane" v-if="show">
     <Box>
       <template #title
         ><span class="sectionemoji">📡</span
         >Visible</template
       >
-      <div
-        class="panesection"
-        v-if="
-          !ship.visible.ships.length &&
-            !ship.visible.planets.length &&
-            !ship.visible.caches.length
-        "
-      >
-        <div class="sub">Nothing on scanners.</div>
-      </div>
-      <div class="panesection" v-else>
+      <div class="overflowbox">
         <div
-          v-for="visibleShip in ship.visible.ships.map(
-            angleAndDistance,
-          )"
-          :key="'visibleShip' + visibleShip.id"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'ship',
-              data: visibleShip,
-            })
+          class="panesection"
+          v-if="
+            !ship.visible.ships.length &&
+              !ship.visible.planets.length &&
+              !ship.visible.caches.length
           "
-          @mouseleave="$store.commit('tooltip')"
         >
-          <span
-            :style="{ color: visibleShip.faction.color }"
-            >🚀{{ visibleShip.name }}</span
-          >
+          <div class="sub">Nothing on scanners.</div>
+        </div>
+        <div class="panesection" v-else>
           <div
-            class="inline"
-            v-if="visibleShip.distance > 0.001"
+            v-for="visibleShip in ship.visible.ships.map(
+              angleAndDistance,
+            )"
+            :key="'visibleShip' + visibleShip.id"
+            @mouseenter="
+              $store.commit('tooltip', {
+                type: 'ship',
+                data: visibleShip,
+              })
+            "
+            @mouseleave="$store.commit('tooltip')"
           >
-            (<AngleArrow :angle="visibleShip.angle" />
+            <span
+              :style="{ color: visibleShip.faction.color }"
+              >🚀{{ visibleShip.name }}</span
+            >
+            <div
+              class="inline"
+              v-if="visibleShip.distance > 0.001"
+            >
+              (<AngleArrow :angle="visibleShip.angle" />
+              {{
+                Math.round(visibleShip.distance * 1000) /
+                  1000
+              }}AU)
+            </div>
+            <span v-else>
+              (Here)
+            </span>
+          </div>
+
+          <div
+            v-for="visiblePlanet in ship.visible.planets.map(
+              angleAndDistance,
+            )"
+            :key="'visiblePlanet' + visiblePlanet.name"
+            @mouseenter="
+              $store.commit('tooltip', {
+                type: 'planet',
+                data: visiblePlanet,
+              })
+            "
+            @mouseleave="$store.commit('tooltip')"
+          >
+            <span :style="{ color: visiblePlanet.color }"
+              >🪐{{ visiblePlanet.name }}</span
+            >
+            <div
+              class="inline"
+              v-if="visiblePlanet.distance > 0.001"
+            >
+              (<AngleArrow :angle="visiblePlanet.angle" />
+              {{
+                Math.round(visiblePlanet.distance * 1000) /
+                  1000
+              }}AU)
+            </div>
+            <span v-else>
+              (Here)
+            </span>
+          </div>
+
+          <div
+            v-for="visibleCache in ship.visible.caches.map(
+              angleAndDistance,
+            )"
+            :key="'visibleCache' + visibleCache.id"
+            @mouseenter="
+              $store.commit('tooltip', {
+                type: 'cache',
+                data: visibleCache,
+              })
+            "
+            @mouseleave="$store.commit('tooltip')"
+          >
+            📦Cache (<AngleArrow
+              :angle="visibleCache.angle"
+            />
             {{
-              Math.round(visibleShip.distance * 1000) /
+              Math.round(visibleCache.distance * 1000) /
                 1000
             }}AU)
           </div>
-          <span v-else>
-            (Here)
-          </span>
         </div>
 
-        <div
-          v-for="visiblePlanet in ship.visible.planets.map(
-            angleAndDistance,
-          )"
-          :key="'visiblePlanet' + visiblePlanet.name"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'planet',
-              data: visiblePlanet,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
-        >
-          <span :style="{ color: visiblePlanet.color }"
-            >🪐{{ visiblePlanet.name }}</span
-          >
-          <div
-            class="inline"
-            v-if="visiblePlanet.distance > 0.001"
-          >
-            (<AngleArrow :angle="visiblePlanet.angle" />
-            {{
-              Math.round(visiblePlanet.distance * 1000) /
-                1000
-            }}AU)
-          </div>
-          <span v-else>
-            (Here)
-          </span>
-        </div>
-
-        <div
-          v-for="visibleCache in ship.visible.caches.map(
-            angleAndDistance,
-          )"
-          :key="'visibleCache' + visibleCache.id"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'cache',
-              data: visibleCache,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
-        >
-          📦Cache (<AngleArrow
-            :angle="visibleCache.angle"
-          />
-          {{
-            Math.round(visibleCache.distance * 1000) / 1000
-          }}AU)
-        </div>
-      </div>
-
-      <!-- <div
+        <!-- <div
       class="panesection"
       v-if="ship.visible.attackRemnants.length"
     >
@@ -117,6 +119,7 @@
         {{ visibleAttackRemnant.start }}
       </div>
     </div> -->
+      </div>
     </Box>
   </div>
 </template>
@@ -134,6 +137,13 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('visible'))
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},
@@ -159,5 +169,10 @@ export default {
 .visiblepane {
   position: relative;
   width: 260px;
+}
+
+.overflowbox {
+  max-height: 210px;
+  overflow-y: auto;
 }
 </style>

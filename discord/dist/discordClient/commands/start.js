@@ -43,12 +43,7 @@ class StartCommand {
         // add crew member
         if (!addedCrewMember) {
             await context.initialMessage.channel.send(`Failed to add you as a member of the crew.`);
-            return;
         }
-        await context.sendToGuild(`Welcome to the game! Game alerts will be sent to this channel.`);
-        await context.sendToGuild(`${context.initialMessage.author.username} has joined the crew.`);
-        await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
-        await context.sendToGuild(`Use this channel to broadcast to the local area.`, `broadcast`);
     }
     hasPermissionToRun(commandContext) {
         if (commandContext.dm)

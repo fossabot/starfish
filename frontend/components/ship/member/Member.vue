@@ -1,5 +1,5 @@
 <template>
-  <div class="member">
+  <div class="member" v-if="show">
     <Box>
       <template #title>
         <span class="sectionemoji">{{
@@ -19,14 +19,34 @@
         :percent="
           crewMember.stamina / crewMember.maxStamina
         "
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.',
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
       >
         <div>
           💪Stamina:
-          {{ Math.round(crewMember.stamina * 1000) / 1000 }}
-          /
-          {{
-            Math.round(crewMember.maxStamina * 1000) / 1000
-          }}
+          <NumberChangeHighlighter
+            :number="
+              c.r2(
+                (crewMember.stamina /
+                  crewMember.maxStamina) *
+                  100,
+                1,
+              )
+            "
+            :display="
+              c.r2(
+                (crewMember.stamina /
+                  crewMember.maxStamina) *
+                  100,
+                1,
+              ) + '%'
+            "
+          />
         </div>
       </ProgressBar>
 
@@ -37,7 +57,7 @@
           v-for="room in ship.rooms"
           v-if="room !== crewMember.location"
           :key="'setroom' + room"
-          class="pad-none"
+          class="padnone"
         >
           <button @click="$store.commit('setRoom', room)">
             {{ room }}
@@ -68,6 +88,13 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('crewMember'))
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

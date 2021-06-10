@@ -12,7 +12,9 @@ import { Scanner } from '../Item/Scanner';
 import { Communicator } from '../Item/Communicator';
 import { Armor } from '../Item/Armor';
 import type { Species } from '../Species';
-export declare class Ship {
+import { Stubbable } from '../Stubbable';
+import type { Tutorial } from './addins/Tutorial';
+export declare class Ship extends Stubbable {
     static maxPreviousLocations: number;
     name: string;
     planet: Planet | false;
@@ -22,15 +24,18 @@ export declare class Ship {
     readonly radii: {
         [key in RadiusType]: number;
     };
+    onlyVisibleToShipId?: string;
     ai: boolean;
     human: boolean;
     readonly crewMembers: CrewMember[];
+    tutorial: Tutorial | undefined;
     toUpdate: Partial<ShipStub>;
     visible: {
         ships: Ship[] | Partial<ShipStub>[];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];
+        trails?: CoordinatePair[][];
     };
     readonly seenPlanets: Planet[];
     chassis: BaseChassisData;

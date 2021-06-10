@@ -1,5 +1,6 @@
 import type { CombatShip } from './Ship/CombatShip';
-export declare class AttackRemnant {
+import { Stubbable } from './Stubbable';
+export declare class AttackRemnant extends Stubbable {
     static readonly expireTime: number;
     readonly id: string;
     readonly attacker: CombatShip;

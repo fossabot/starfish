@@ -17,7 +17,9 @@ class Communicator extends Item_1.Item {
     use() {
         if (this.ship.ai)
             return 0;
-        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp) * 500;
+        if (this.ship.tutorial?.currentStep.disableRepair)
+            return 0;
+        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * 500;
         this.repair -= repairLoss;
         this.lastUse = Date.now();
         repairLoss += super.use();

@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
+const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
 const gameSpeedMultiplier = 24 * 3;
 const baseSightRange = 0.2;
-const baseRepairCost = 100;
+const baseRepairCost = 30;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00002 * gameSpeedMultiplier;
 const baseXpGain = 0.2 * gameSpeedMultiplier;
@@ -37,8 +38,14 @@ const cargoTypes = [
     `oxygen`,
     `credits`,
 ];
-function getBaseDurabilityLossPerTick(maxHp) {
-    return 0.00001 * gameSpeedMultiplier * (10 / maxHp);
+function getHitDamage(weapon, totalMunitionsSkill = 0) {
+    return (weapon.damage *
+        (1 + (totalMunitionsSkill - 1) / 20) *
+        (weapon.repair || 0));
+}
+function getBaseDurabilityLossPerTick(maxHp, reliability) {
+    return ((0.00001 * gameSpeedMultiplier * (10 / maxHp)) /
+        reliability);
 }
 function getRadiusDiminishingReturns(totalValue, equipmentCount) {
     if (equipmentCount === 0)
@@ -65,6 +72,8 @@ function getCrewPassivePriceMultiplier(level) {
     return 1 + level ** 2;
 }
 function stubify(prop, disallowPropName) {
+    const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
+    profiler.step(`getters`);
     const gettersIncluded = { ...prop };
     const proto = Object.getPrototypeOf(prop);
     const getKeyValue = (key) => (obj) => obj[key];
@@ -76,8 +85,9 @@ function stubify(prop, disallowPropName) {
             gettersIncluded[key] = getKeyValue(key)(prop);
         }
     }
+    profiler.step(`stringify and parse`);
     const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
-        if ([`toUpdate`].includes(key))
+        if ([`toUpdate`, `_stub`].includes(key))
             return;
         if ([
             `game`,
@@ -99,6 +109,7 @@ function stubify(prop, disallowPropName) {
         return value;
     }));
     // circularReferencesRemoved.lastUpdated = Date.now()
+    profiler.end();
     return circularReferencesRemoved;
 }
 exports.default = {
@@ -114,6 +125,7 @@ exports.default = {
     noEngineThrustMagnitude,
     aiDifficultyMultiplier,
     baseShipScanProperties,
+    getHitDamage,
     getBaseDurabilityLossPerTick,
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,

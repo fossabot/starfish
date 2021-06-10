@@ -4,7 +4,7 @@
     :minSize="minSize"
     :radius="radius"
     :color="color"
-    :label="showLabel && name"
+    :label="showLabel && shipData.name"
     :zoom="zoom"
     :FLAT_SCALE="FLAT_SCALE"
     :view="view"
@@ -25,25 +25,22 @@ export default {
   props: {
     containerSizeMultiplier: {},
     view: {},
-    z: { default: 4 },
     FLAT_SCALE: {},
     zoom: {},
     location: {},
     radius: { default: 0.000001 },
     minSize: { default: 0.009 },
     color: {},
-    name: {},
-    showLabel: {},
-    species: {},
-    faction: {},
-    level: {},
-    chassis: {},
+    shipData: {},
   },
   data(): ComponentShape {
     return { hovering: false }
   },
   computed: {
     ...mapState([]),
+    showLabel(this: ComponentShape) {
+      return !this.shipData.planet && this.zoom > 1
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},
@@ -52,13 +49,7 @@ export default {
       this.hovering = true
       this.$store.commit('tooltip', {
         type: 'ship',
-        data: {
-          name: this.name,
-          species: this.species,
-          faction: this.faction,
-          level: this.level,
-          chassis: this.chassis,
-        },
+        data: this.shipData,
       })
     },
     leave(this: ComponentShape) {

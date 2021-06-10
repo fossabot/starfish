@@ -143,6 +143,7 @@ interface IOClientEvents {
     chassisId: ChassisId,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
+  [`ship:advanceTutorial`]: (shipId: string) => void
 
   // discord
   [`discord`]: () => void
@@ -166,6 +167,11 @@ interface IOClientEvents {
     callback: (res: IOResponse<LogAlertLevel>) => void,
   ) => void
   [`ship:setCaptain`]: (
+    shipId: string,
+    crewMemberId: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
+  [`ship:kickMember`]: (
     shipId: string,
     crewMemberId: string,
     callback: (res: IOResponse<string>) => void,

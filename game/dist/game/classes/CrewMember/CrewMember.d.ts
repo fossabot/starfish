@@ -3,7 +3,8 @@ import type { HumanShip } from '../Ship/HumanShip';
 import { CrewActive } from './addins/CrewActive';
 import { CrewPassive } from './addins/CrewPassive';
 import type { CombatShip } from '../Ship/CombatShip';
-export declare class CrewMember {
+import { Stubbable } from '../Stubbable';
+export declare class CrewMember extends Stubbable {
     static readonly levelXPNumbers: number[];
     static readonly baseMaxCargoWeight = 10;
     readonly id: string;

@@ -32,6 +32,7 @@ export default function (
       }
 
       data.name = data.name.substring(0, c.maxNameLength)
+      data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,
       })
@@ -71,12 +72,35 @@ export default function (
       ) as HumanShip
       if (!ship)
         return callback({ error: `No ship found.` })
-      const crewMember = ship.crewMembers?.find(
+      const crewMember = ship.crewMembers.find(
         (cm) => cm.id === crewId,
       )
       if (!crewMember)
         return callback({ error: `No crew member found.` })
       ship.captain = crewMember.id
+      callback({ data: `ok` })
+    },
+  )
+
+  socket.on(
+    `ship:kickMember`,
+    (shipId, crewId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain === crewMember.id)
+        return callback({
+          error: `You can't kick the captain!`,
+        })
+
+      ship.removeCrewMember(crewMember.id)
       callback({ data: `ok` })
     },
   )

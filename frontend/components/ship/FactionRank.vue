@@ -1,5 +1,5 @@
 <template>
-  <Box class="factionrank" v-if="ship">
+  <Box class="factionrank" v-if="show">
     <template #title>
       <span class="sectionemoji">🏆</span>Faction Rankings
     </template>
@@ -21,6 +21,13 @@ export default {
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('factionRank'))
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},

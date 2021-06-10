@@ -43,6 +43,8 @@ class AIShip extends CombatShip_1.CombatShip {
             this.id = data.id;
         else
             this.id = `${Math.random()}`.substring(2);
+        if (data.onlyVisibleToShipId)
+            this.onlyVisibleToShipId = data.onlyVisibleToShipId;
         this.planet = false;
         this.ai = true;
         this.human = false;
@@ -62,7 +64,7 @@ class AIShip extends CombatShip_1.CombatShip {
             return;
         // ----- move -----
         this.move();
-        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, `ship`);
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
         // recharge weapons
         this.weapons.forEach((w) => (w.cooldownRemaining -=
             dist_1.default.getWeaponCooldownReductionPerTick(this.level)));
@@ -73,8 +75,10 @@ class AIShip extends CombatShip_1.CombatShip {
         const enemies = this.getEnemiesInAttackRange();
         if (enemies.length) {
             const randomEnemy = dist_1.default.randomFromArray(enemies);
-            const randomWeapon = dist_1.default.randomFromArray(weapons);
-            this.attack(randomEnemy, randomWeapon);
+            const distance = dist_1.default.distance(randomEnemy.location, this.location);
+            const randomWeapon = dist_1.default.randomFromArray(weapons.filter((w) => w.range >= distance));
+            if (randomWeapon)
+                this.attack(randomEnemy, randomWeapon);
         }
     }
     cumulativeSkillIn(l, s) {
@@ -171,7 +175,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     die() {
         super.die();
-        const amount = Math.round(Math.random() * this.level * 40);
+        const amount = Math.round(Math.random() * this.level * 50);
         const cacheContents = [
             { type: `credits`, amount },
         ];

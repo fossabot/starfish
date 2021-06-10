@@ -1,12 +1,15 @@
 import c from '../../../../../common/dist'
 
 import type { Ship } from '../Ship/Ship'
+import { Stubbable } from '../Stubbable'
 
-export class Item {
+export class Item extends Stubbable {
   readonly type: ItemType
   readonly id: ItemId
   readonly displayName: string
   readonly description: string
+  readonly repairDifficulty: number = 1
+  readonly reliability: number = 1 // higher loses less repair over time
   repair = 1
   maxHp: number
   readonly ship: Ship
@@ -22,14 +25,20 @@ export class Item {
       repair,
       maxHp,
       hp,
+      repairDifficulty,
+      reliability,
     }: BaseItemData,
     ship: Ship,
     props?: Partial<BaseItemData>,
   ) {
+    super()
     this.type = type
     this.id = id
     this.displayName = displayName
     this.description = description
+    if (reliability) this.reliability = reliability
+    if (repairDifficulty)
+      this.repairDifficulty = repairDifficulty
     this.repair = repair ?? props?.repair ?? 1
     this.ship = ship
     this.maxHp = maxHp
@@ -47,12 +56,18 @@ export class Item {
 
   use() {
     if (this.ship.ai) return 0
+    if (this.ship.tutorial?.currentStep.disableRepair)
+      return 0
     const durabilityLost = c.getBaseDurabilityLossPerTick(
       this.maxHp,
+      this.reliability,
     )
     this.repair -= durabilityLost
     if (this.repair < 0) this.repair = 0
     this.ship.toUpdate._hp = this.ship.hp
+
+    this._stub = null // invalidate stub
+
     return durabilityLost
   }
 }

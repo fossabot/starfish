@@ -21,7 +21,7 @@ class ChangeCaptainCommand {
             return;
         }
         typedId = typedId.replace(/[<>@!]*/g, ``);
-        const crewMember = context.ship.crewMembers.find((cm) => cm.id === typedId);
+        const crewMember = context.ship.crewMembers?.find((cm) => cm.id === typedId);
         if (!crewMember) {
             await context.initialMessage.channel.send(`No ship crew member found for that server member. Are you sure they've joined the crew?`);
             return;

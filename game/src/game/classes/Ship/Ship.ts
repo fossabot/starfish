@@ -24,9 +24,11 @@ import {
   chassis as chassisPresets,
 } from '../../presets/items'
 import type { Species } from '../Species'
+import { Stubbable } from '../Stubbable'
+import type { Tutorial } from './addins/Tutorial'
 
-export class Ship {
-  static maxPreviousLocations: number = 20
+export class Ship extends Stubbable {
+  static maxPreviousLocations: number = 15
 
   name: string = `ship`
   planet: Planet | false = false
@@ -41,9 +43,12 @@ export class Ship {
     game: 0,
   }
 
+  onlyVisibleToShipId?: string
+
   ai: boolean
   human: boolean
   readonly crewMembers: CrewMember[] = []
+  tutorial: Tutorial | undefined
 
   toUpdate: Partial<ShipStub> = {}
   visible: {
@@ -51,6 +56,7 @@ export class Ship {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
+    trails?: CoordinatePair[][]
   } = {
     ships: [],
     planets: [],
@@ -88,6 +94,7 @@ export class Ship {
     }: BaseShipData,
     game: Game,
   ) {
+    super()
     this.game = game
     this.rename(name)
 
@@ -148,6 +155,8 @@ export class Ship {
   }
 
   tick() {
+    this._stub = null // invalidate stub
+
     // if (this.dead) return
     // if (this.obeysGravity) this.applyTickOfGravity()
     // c.log(`tick`, this.name)
@@ -300,6 +309,13 @@ export class Ship {
   }
 
   updateSightAndScanRadius() {
+    if (this.tutorial) {
+      this.radii.sight =
+        this.tutorial.currentStep.sightRange
+      this.radii.scan = 0 // this.tutorial.currentStep.sightRange
+      this.toUpdate.radii = this.radii
+      return
+    }
     this.radii.sight = Math.max(
       c.baseSightRange,
       c.getRadiusDiminishingReturns(
@@ -459,6 +475,7 @@ export class Ship {
       (total, i) => i.maxHp + total,
       0,
     )
+    if (this.hp > this._maxHp) this.hp = this._maxHp
   }
 
   get hp() {

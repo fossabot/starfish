@@ -40,6 +40,15 @@ function default_1(socket) {
             data: stub,
         });
     });
+    socket.on(`ship:advanceTutorial`, (id) => {
+        const ship = __1.game.ships.find((s) => s.id === id);
+        if (!ship)
+            return dist_1.default.log(`red`, `No ship found to advance tutorial for: ${id}`);
+        if (!ship.tutorial)
+            return dist_1.default.log(`red`, `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot advance.`);
+        dist_1.default.log(`gray`, `Advancing tutorial for ship ${id}`);
+        ship.tutorial.advanceStep();
+    });
 }
 exports.default = default_1;
 //# sourceMappingURL=frontend.js.map

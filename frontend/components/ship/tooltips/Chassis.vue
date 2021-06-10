@@ -6,6 +6,7 @@
     </div>
     <hr />
     <div>Equipment Slots: {{ data.slots }}</div>
+    <div>Bunk Space: {{ data.bunks }}</div>
     <hr />
     <div class="sub">{{ data.description }}</div>
   </div>

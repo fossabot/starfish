@@ -7,6 +7,7 @@ import type { Planet } from '../Planet';
 import type { Cache } from '../Cache';
 import type { Ship } from './Ship';
 import type { Item } from '../Item/Item';
+import { Tutorial } from './addins/Tutorial';
 export declare class HumanShip extends CombatShip {
     static maxLogLength: number;
     readonly id: string;
@@ -19,14 +20,17 @@ export declare class HumanShip extends CombatShip {
     };
     maxScanProperties: ShipScanDataShape | null;
     visible: {
-        ships: Partial<ShipStub>[];
+        ships: ShipStub[];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];
+        trails?: CoordinatePair[][];
     };
+    shownPanels?: any[];
     commonCredits: number;
     mainTactic: Tactic | undefined;
     itemTarget: ItemType | undefined;
+    tutorial: Tutorial | undefined;
     constructor(data: BaseHumanShipData, game: Game);
     tick(): void;
     logEntry(text: string, level?: LogLevel): void;
@@ -35,20 +39,23 @@ export declare class HumanShip extends CombatShip {
     updatePlanet(silent?: boolean): void;
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;
+    recalculateShownPanels(): void;
+    equipLoadout(l: LoadoutName, removeExisting?: boolean): boolean;
     addCommonCredits(amount: number, member: CrewMember): void;
     broadcast(message: string, crewMember: CrewMember): number;
+    resolveRooms(): void;
     addRoom(room: CrewLocation): void;
     removeRoom(room: CrewLocation): void;
     addItem(itemData: Partial<BaseItemData>): boolean;
     removeItem(item: Item): boolean;
-    addCrewMember(data: BaseCrewMemberData): CrewMember;
+    addCrewMember(data: BaseCrewMemberData, silent?: boolean): CrewMember;
     removeCrewMember(id: string): void;
     membersIn: typeof membersIn;
     cumulativeSkillIn: typeof cumulativeSkillIn;
     distributeCargoAmongCrew(cargo: CacheContents[]): void;
     updateMaxScanProperties(): void;
-    shipToValidScanResult(ship: Ship): Partial<ShipStub>;
-    respawn(): void;
+    shipToValidScanResult(ship: Ship): ShipStub;
+    respawn(silent?: boolean): void;
     autoAttack(): void;
     die(): void;
 }

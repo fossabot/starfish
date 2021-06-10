@@ -2,7 +2,7 @@
   <div v-if="buyableItems.length || sellableItems.length">
     <div class="panesection">
       <div>
-        <div class="panesubhead">Ship Outfitters</div>
+        <div class="panesubhead">Ship Outfitter</div>
       </div>
 
       <div class="sub">
@@ -55,16 +55,14 @@
         </span></span
       ><span
         class="panesection inline"
-        v-if="sellableItems.length"
+        v-if="sellableItems.length && isCaptain"
       >
         <div>
           <div class="panesubhead">Sell Equipment</div>
         </div>
         <span
-          v-for="ca in sellableItems"
-          :key="
-            'sellitem' + ca.type + ca.id + Math.random()
-          "
+          v-for="(ca, index) in sellableItems"
+          :key="'sellitem' + ca.type + ca.id + index"
           @mouseenter="
             $store.commit('tooltip', {
               type: ca.type,
@@ -90,7 +88,11 @@
         </div>
         <span
           v-for="ca in swappableChassis"
-          :key="'swapchassis' + ca.type + ca.id"
+          :key="
+            'swapchassis' +
+              ca.chassisData.type +
+              ca.chassisData.id
+          "
           @mouseenter="
             $store.commit('tooltip', {
               type: 'chassis',
@@ -148,6 +150,7 @@ export default {
                 ? c.factionVendorMultiplier
                 : 1),
             2,
+            true,
           )
           return {
             ...item,
@@ -177,6 +180,7 @@ export default {
                 ? 1 + (1 - (c.factionVendorMultiplier || 1))
                 : 1),
             2,
+            true,
           )
           return {
             ...item,
@@ -187,12 +191,8 @@ export default {
         .filter((i: ItemStub) => i)
     },
     swappableChassis(this: ComponentShape) {
-      return (this.ship.planet?.vendor?.chassis || [])
-        .filter(
-          (i: VendorChassisPrice) =>
-            i.chassisType !== this.ship.chassis.id,
-        )
-        .map((chassis: VendorChassisPrice) => {
+      return (this.ship.planet?.vendor?.chassis || []).map(
+        (chassis: VendorChassisPrice) => {
           const currentChassisSellPrice =
             this.ship.chassis.basePrice / 2
           const price = c.r2(
@@ -204,15 +204,21 @@ export default {
                 : 1) -
               currentChassisSellPrice,
             2,
+            true,
           )
           return {
             ...chassis,
             price,
             canBuy:
               this.isCaptain &&
-              this.ship.commonCredits >= price,
+              this.ship.commonCredits >= price &&
+              chassis.chassisType !==
+                this.ship.chassis.id &&
+              this.ship.crewMembers.length <=
+                (chassis.chassisData?.bunks || 0),
           }
-        })
+        },
+      )
     },
   },
   watch: {},
@@ -240,7 +246,7 @@ export default {
     },
 
     sellItem(this: ComponentShape, data: ItemStub) {
-      c.log(data)
+      // c.log(data)
       this.$socket.emit(
         'ship:sellItem',
         this.ship.id,

@@ -6,8 +6,9 @@ import type { HumanShip } from '../Ship/HumanShip'
 import { CrewActive } from './addins/CrewActive'
 import { CrewPassive } from './addins/CrewPassive'
 import type { CombatShip } from '../Ship/CombatShip'
+import { Stubbable } from '../Stubbable'
 
-export class CrewMember {
+export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoWeight = 10
 
@@ -33,11 +34,21 @@ export class CrewMember {
   maxCargoWeight: number = CrewMember.baseMaxCargoWeight
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
+    super()
     this.id = data.id
     this.ship = ship
     this.rename(data.name)
 
-    this.location = data.location || `bunk`
+    const hasBunk = ship.rooms.bunk
+    this.location =
+      data.location ||
+      ((hasBunk
+        ? `bunk`
+        : c.randomFromArray(
+            Object.keys(ship.rooms),
+          )) as CrewLocation) ||
+      `bunk` // failsafe
+
     this.stamina = data.stamina || this.maxStamina
     this.lastActive = Date.now()
     this.inventory = data.inventory || []
@@ -87,6 +98,8 @@ export class CrewMember {
   bunkAction = roomActions.bunk
 
   tick() {
+    this._stub = null // invalidate stub
+
     // ----- reset attack target if out of vision range -----
     if (
       this.attackTarget &&
@@ -108,8 +121,9 @@ export class CrewMember {
     // ----- stamina check/use -----
     if (this.tired) return
 
-    this.stamina -=
-      c.baseStaminaUse / (c.deltaTime / c.TICK_INTERVAL)
+    if (!this.ship.tutorial?.currentStep.disableStamina)
+      this.stamina -=
+        c.baseStaminaUse / (c.deltaTime / c.TICK_INTERVAL)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)

@@ -1,7 +1,12 @@
-type ChassisId = `starter1` | `starter2`
+type ChassisId = `starter1` | `starter2` | `solo1`
 
 type EngineId = `starter1` | `starter2`
-type WeaponId = `cannon1` | `cannon2` | `saber1` | `sniper1`
+type WeaponId =
+  | `cannon1`
+  | `cannon2`
+  | `saber1`
+  | `sniper1`
+  | `tiny1`
 type ScannerId = `starter1` | `starter2` | `shipscanner1`
 type CommunicatorId = `starter1` | `starter2`
 type ArmorId = `starter1` | `starter2`
@@ -26,6 +31,7 @@ interface BaseChassisData {
   displayName: string
   description: string
   slots: number
+  bunks: number
   rarity: number
 }
 
@@ -36,6 +42,8 @@ interface BaseItemData {
   description: string
   basePrice: number
   rarity: number
+  reliability?: number
+  repairDifficulty?: number
   repair?: number
   hp?: number
   maxHp: number
@@ -43,7 +51,10 @@ interface BaseItemData {
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 
-type LoadoutName = `humanDefault`
+type LoadoutName =
+  | `tutorial1`
+  | `tutorial2`
+  | `humanDefault`
 type Loadout = {
   chassis: ChassisId
   items: { type: ItemType; id: ItemId }[]

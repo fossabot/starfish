@@ -1,4 +1,5 @@
-declare function getBaseDurabilityLossPerTick(maxHp: number): number;
+declare function getHitDamage(weapon: WeaponStub, totalMunitionsSkill?: number): number;
+declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getThrustMagnitudeForSingleCrewMember(skill?: number, engineThrustMultiplier?: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(skill: number): number;
@@ -32,6 +33,7 @@ declare const _default: {
         species: (keyof BaseSpeciesData)[];
         chassis: (keyof BaseChassisData)[];
     };
+    getHitDamage: typeof getHitDamage;
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;

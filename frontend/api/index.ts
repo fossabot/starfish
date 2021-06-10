@@ -21,6 +21,32 @@ app.post(`/feedback/`, (req, res) => {
     req.body.name,
     req.body.email,
     req.body.comment,
+    req.body.ship,
+    req.body.crewMember,
+  )
+  res.send(`done`)
+})
+app.post(`/bug/`, (req, res) => {
+  if (!req.body.comment) return res.send(`no`)
+  sheets.addFeedback(
+    req.body.name,
+    req.body.email,
+    req.body.comment,
+    req.body.ship,
+    req.body.crewMember,
+    `bug`,
+  )
+  res.send(`done`)
+})
+app.post(`/story/`, (req, res) => {
+  if (!req.body.comment) return res.send(`no`)
+  sheets.addFeedback(
+    req.body.name,
+    req.body.email,
+    req.body.comment,
+    req.body.ship,
+    req.body.crewMember,
+    `story`,
   )
   res.send(`done`)
 })

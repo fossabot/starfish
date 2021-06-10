@@ -19,6 +19,7 @@ const Broadcast_1 = require("./commands/Broadcast");
 const AlertLevel_1 = require("./commands/AlertLevel");
 const ChangeCaptain_1 = require("./commands/ChangeCaptain");
 const Help_1 = require("./commands/Help");
+const KickMember_1 = require("./commands/KickMember");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
@@ -31,6 +32,7 @@ class CommandHandler {
             Broadcast_1.BroadcastCommand,
             AlertLevel_1.AlertLevelCommand,
             ChangeCaptain_1.ChangeCaptainCommand,
+            KickMember_1.KickMemberCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         this.commands.push(new Help_1.HelpCommand(this.commands));
@@ -67,7 +69,7 @@ class CommandHandler {
         // get ship data to determine which commands a user should be able to run.
         const ship = await ioInterface_1.default.ship.get(message.guild?.id || ``);
         commandContext.ship = ship;
-        const crewMember = ship?.crewMembers.find((cm) => cm.id === message.author.id) || null;
+        const crewMember = ship?.crewMembers?.find((cm) => cm.id === message.author.id) || null;
         commandContext.isCaptain =
             Boolean(crewMember) &&
                 crewMember?.id === ship?.captain;

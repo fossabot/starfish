@@ -1,11 +1,11 @@
 <template>
   <ShipMapPlayermap
+    v-if="show"
     :emoji="'👀'"
     :buffer="false"
     :blackout="false"
     :interactive="false"
     :radius="c.ARRIVAL_THRESHOLD"
-    class="grid-item"
     :width="200"
     label="ship vicinity"
   />
@@ -13,10 +13,21 @@
 
 <script>
 import c from '../../../../common/src'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return { c }
+  },
+  computed: {
+    ...mapState(['ship']),
+    show() {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('mapZoom'))
+      )
+    },
   },
 }
 </script>

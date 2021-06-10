@@ -1,6 +1,7 @@
 import math from './math'
 import globals from './globals'
 import c from './log'
+import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
 
@@ -8,7 +9,7 @@ const gameSpeedMultiplier = 24 * 3
 
 const baseSightRange = 0.2
 
-const baseRepairCost = 100
+const baseRepairCost = 30
 
 const maxBroadcastLength = 200
 
@@ -60,8 +61,25 @@ const cargoTypes: (`credits` | CargoType)[] = [
   `credits`,
 ]
 
-function getBaseDurabilityLossPerTick(maxHp: number) {
-  return 0.00001 * gameSpeedMultiplier * (10 / maxHp)
+function getHitDamage(
+  weapon: WeaponStub,
+  totalMunitionsSkill: number = 0,
+) {
+  return (
+    weapon.damage *
+    (1 + (totalMunitionsSkill - 1) / 20) *
+    (weapon.repair || 0)
+  )
+}
+
+function getBaseDurabilityLossPerTick(
+  maxHp: number,
+  reliability: number,
+) {
+  return (
+    (0.00001 * gameSpeedMultiplier * (10 / maxHp)) /
+    reliability
+  )
 }
 
 function getRadiusDiminishingReturns(
@@ -109,6 +127,8 @@ function stubify<BaseType, StubType extends BaseStub>(
   prop: BaseType,
   disallowPropName?: string[],
 ): StubType {
+  const profiler = new Profiler(10, `stubify`, false, 0)
+  profiler.step(`getters`)
   const gettersIncluded: any = { ...prop }
   const proto = Object.getPrototypeOf(prop)
   const getKeyValue =
@@ -122,11 +142,12 @@ function stubify<BaseType, StubType extends BaseStub>(
       gettersIncluded[key] = getKeyValue(key)(prop)
     }
   }
+  profiler.step(`stringify and parse`)
   const circularReferencesRemoved = JSON.parse(
     JSON.stringify(
       gettersIncluded,
       (key: string, value: any) => {
-        if ([`toUpdate`].includes(key)) return
+        if ([`toUpdate`, `_stub`].includes(key)) return
         if (
           [
             `game`,
@@ -153,6 +174,7 @@ function stubify<BaseType, StubType extends BaseStub>(
     ),
   ) as StubType
   // circularReferencesRemoved.lastUpdated = Date.now()
+  profiler.end()
   return circularReferencesRemoved
 }
 
@@ -169,6 +191,7 @@ export default {
   noEngineThrustMagnitude,
   aiDifficultyMultiplier,
   baseShipScanProperties,
+  getHitDamage,
   getBaseDurabilityLossPerTick,
   getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,

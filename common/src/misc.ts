@@ -10,8 +10,19 @@ function coinFlip() {
   return Math.random() > 0.5
 }
 
+function debounce(fn: Function, time = 500) {
+  let timeout: NodeJS.Timeout
+  return (...params: any[]) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      fn(...params)
+    }, time)
+  }
+}
+
 export default {
   sleep,
   coinFlip,
   randomFromArray,
+  debounce,
 }

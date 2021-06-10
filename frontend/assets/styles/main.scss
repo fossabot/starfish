@@ -46,8 +46,31 @@ h5 {
   font-size: 1em;
 }
 
+label {
+  margin-top: 0.5em;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.93rem;
+  opacity: 0.8;
+}
+input,
+textarea {
+  background: transparent;
+  border: 1px solid var(--pane-border);
+  padding: 0.3em 0.4em;
+  color: var(--text);
+  width: 100%;
+  max-width: 30em;
+  margin-bottom: 1em;
+}
+textarea {
+  height: 10em;
+}
+
 button,
-.button {
+.button,
+input[type='submit'] {
   display: inline-block;
   background: var(--text);
   color: var(--bg);
@@ -102,7 +125,7 @@ button,
     var(--panesectionpad-left);
   color: var(--highlight-color, var(--text));
 }
-.pad-pane {
+.padpane {
   padding: var(--panesectionpad-top)
     var(--panesectionpad-left);
 }
@@ -119,21 +142,25 @@ button,
 .flex {
   display: flex;
 }
-.flex-row {
+.flexrow {
   display: flex;
   flex-direction: row;
 }
-.flex-column {
+.flexcolumn {
   display: flex;
   flex-direction: column;
 }
-.flex-center {
+.flexcenter {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.pad-none {
+.padtop {
+  padding-top: 1em;
+}
+
+.padnone {
   padding: 0;
 }
 
@@ -141,11 +168,11 @@ button,
   position: relative;
 }
 
-.z-2 {
+.z2 {
   z-index: 2;
 }
 
-.no-pointer {
+.nopointer {
   pointer-events: none;
 }
 
@@ -153,6 +180,13 @@ button,
   display: inline-block;
 }
 
-.text-center {
+.textcenter {
   text-align: center;
+}
+
+.flashtextgoodonspawn {
+  animation: highlight-text-good 4s ease-out 1;
+}
+.flashtextbadonspawn {
+  animation: highlight-text-bad 4s ease-out 1;
 }

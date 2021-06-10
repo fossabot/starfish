@@ -12,8 +12,10 @@ const Communicator_1 = require("../Item/Communicator");
 const Armor_1 = require("../Item/Armor");
 const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
-class Ship {
+const Stubbable_1 = require("../Stubbable");
+class Ship extends Stubbable_1.Stubbable {
     constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, }, game) {
+        super();
         this.name = `ship`;
         this.planet = false;
         this.radii = {
@@ -96,6 +98,7 @@ class Ship {
             dist_1.default.log(`      velocity: ${this.velocity}`);
     }
     tick() {
+        this._stub = null; // invalidate stub
         // if (this.dead) return
         // if (this.obeysGravity) this.applyTickOfGravity()
         // c.log(`tick`, this.name)
@@ -212,6 +215,13 @@ class Ship {
         this.updateSightAndScanRadius();
     }
     updateSightAndScanRadius() {
+        if (this.tutorial) {
+            this.radii.sight =
+                this.tutorial.currentStep.sightRange;
+            this.radii.scan = 0; // this.tutorial.currentStep.sightRange
+            this.toUpdate.radii = this.radii;
+            return;
+        }
         this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         this.toUpdate.radii = this.radii;
@@ -303,6 +313,8 @@ class Ship {
     }
     recalculateMaxHp() {
         this._maxHp = this.items.reduce((total, i) => i.maxHp + total, 0);
+        if (this.hp > this._maxHp)
+            this.hp = this._maxHp;
     }
     get hp() {
         const total = this.items.reduce((total, i) => Math.max(0, i.maxHp * i.repair) + total, 0);
@@ -326,5 +338,5 @@ class Ship {
     updateMaxScanProperties() { }
 }
 exports.Ship = Ship;
-Ship.maxPreviousLocations = 20;
+Ship.maxPreviousLocations = 15;
 //# sourceMappingURL=Ship.js.map

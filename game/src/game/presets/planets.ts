@@ -6,6 +6,7 @@ import factions from './factions'
 import { data as passiveData } from './crewPassives'
 import { data as cargoData } from './cargo'
 import * as itemData from './items'
+import type { Ship } from '../classes/Ship/Ship'
 
 export function generatePlanet(
   game: Game,
@@ -32,9 +33,12 @@ export function generatePlanet(
   let locationSearchRadius = game.gameSoftRadius * 0.75
   const tooClose = 0.1
   let location: CoordinatePair = [0, 0]
-  const isTooClose = (p: Planet) =>
+  const isTooClose = (p: Planet | Ship) =>
     c.distance(location, p.location) < tooClose
-  while (game.planets.find(isTooClose)) {
+  while (
+    game.planets.find(isTooClose) ||
+    game.humanShips.find(isTooClose)
+  ) {
     location = c.randomInsideCircle(locationSearchRadius)
     locationSearchRadius *= 1.01
   }

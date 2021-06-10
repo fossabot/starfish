@@ -15,6 +15,7 @@ import { BroadcastCommand } from './commands/Broadcast'
 import { AlertLevelCommand } from './commands/AlertLevel'
 import { ChangeCaptainCommand } from './commands/ChangeCaptain'
 import { HelpCommand } from './commands/Help'
+import { KickMemberCommand } from './commands/KickMember'
 
 export class CommandHandler {
   private commands: Command[]
@@ -32,6 +33,7 @@ export class CommandHandler {
       BroadcastCommand,
       AlertLevelCommand,
       ChangeCaptainCommand,
+      KickMemberCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -95,7 +97,7 @@ export class CommandHandler {
     )
     commandContext.ship = ship
     const crewMember =
-      ship?.crewMembers.find(
+      ship?.crewMembers?.find(
         (cm) => cm.id === message.author.id,
       ) || null
     commandContext.isCaptain =

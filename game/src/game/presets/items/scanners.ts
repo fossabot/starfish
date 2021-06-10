@@ -10,7 +10,8 @@ export const scanners: {
     basePrice: 10,
     rarity: 0.6,
     sightRange: 1.3,
-    shipScanRange: 1,
+    shipScanRange: 1.1,
+    reliability: 1.2,
     maxHp: 8,
     shipScanData: {
       ...c.baseShipScanProperties,

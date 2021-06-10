@@ -6,7 +6,7 @@
     </div>
     <hr />
     <div>Max Range: {{ data.range }}AU</div>
-    <div>Max Damage: {{ data.damage }}</div>
+    <div>Base Damage: {{ data.damage }}</div>
     <div>Charge Required: {{ data.baseCooldown }}</div>
     <div v-if="data.cooldownRemaining">
       Charge Progress:

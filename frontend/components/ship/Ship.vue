@@ -1,6 +1,6 @@
 <template>
-  <div class="ship" v-if="ship">
-    <Box v-if="ship">
+  <div class="ship" v-if="show">
+    <Box v-if="show">
       <template #title>
         <span class="sectionemoji">🚀</span>{{ ship.name }}
       </template>
@@ -80,9 +80,12 @@
         @mouseleave.native="$store.commit('tooltip')"
       >
         <div>
-          🇨🇭HP: {{ Math.round(ship._hp * 100) / 100 }}/{{
-            Math.round(ship._maxHp * 100) / 100
-          }}
+          🇨🇭HP:
+          <NumberChangeHighlighter
+            :number="c.r2(ship._hp)"
+          />
+          /
+          {{ c.r2(ship._maxHp) }}
         </div>
       </ProgressBar>
 
@@ -117,27 +120,10 @@
             @click="redistributeCommonFund"
             class="mini secondary"
           >
-            Add to common fund
+            Redistribute Credits
           </button>
         </div>
-        <div>
-          Captain:
-          {{
-            ship && ship.crewMembers
-              ? ship.crewMembers.find(
-                  (cm) => cm.id === ship.captain,
-                ).name
-              : 'No Captain'
-          }}
-        </div>
-        <div>
-          Crew Members:
-          {{
-            ship &&
-              ship.crewMembers &&
-              ship.crewMembers.length
-          }}
-        </div>
+
         <div>
           Species:
           {{ ship && ship.species.icon
@@ -161,6 +147,53 @@
           </span>
         </div>
       </div>
+
+      <div class="panesection">
+        <div>
+          Captain:
+          {{
+            ship && ship.crewMembers
+              ? ship.crewMembers.find(
+                  (cm) => cm.id === ship.captain,
+                ).name
+              : 'No Captain'
+          }}
+        </div>
+        <div
+          @mouseenter="
+            $store.commit(
+              'tooltip',
+              `<b>Crew</b><br/><hr />${ship.crewMembers
+                .map((cm) => cm.name)
+                .join(', ')}<hr />Your ship's chassis (${
+                ship.chassis.displayName
+              }) has enough space and life support for <b>${
+                ship.chassis.bunks
+              }</b> crew members. Trade in for a bigger chassis to get more space!`,
+            )
+          "
+          @mouseleave="$store.commit('tooltip')"
+        >
+          Crew Members:
+          {{
+            ship &&
+              ship.crewMembers &&
+              ship.crewMembers.length
+          }}/{{ ship && ship.chassis.bunks }}
+
+          <div>
+            <span v-for="c in ship.crewMembers.length">{{
+              ship.species.icon
+            }}</span
+            ><span
+              style="opacity: .2;"
+              v-for="c in ship.chassis.bunks -
+                ship.crewMembers.length"
+              >🔳</span
+            >
+          </div>
+        </div>
+      </div>
     </Box>
   </div>
 </template>
@@ -178,6 +211,13 @@ export default {
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('ship'))
+      )
+    },
     isCaptain(this: ComponentShape) {
       return this.ship?.captain === this.userId
     },
@@ -203,14 +243,17 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     async redistributeCommonFund(this: ComponentShape) {
-      const amount =
+      const amount = c.r2(
         parseFloat(
           prompt(
             `How many credits do you want to contribute to the ship's common credits? (Max ${Math.floor(
               this.ship.commonCredits * 100,
             ) / 100})`,
           ) || '0',
-        ) || 0
+        ) || 0,
+        2,
+        true,
+      )
       if (
         !amount ||
         amount < 0 ||

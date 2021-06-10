@@ -4,6 +4,7 @@ import { Socket } from 'socket.io'
 import { game } from '../..'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -54,5 +55,23 @@ export default function (
     callback({
       data: stub,
     })
+  })
+
+  socket.on(`ship:advanceTutorial`, (id) => {
+    const ship = game.ships.find(
+      (s) => s.id === id,
+    ) as HumanShip
+    if (!ship)
+      return c.log(
+        `red`,
+        `No ship found to advance tutorial for: ${id}`,
+      )
+    if (!ship.tutorial)
+      return c.log(
+        `red`,
+        `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot advance.`,
+      )
+    c.log(`gray`, `Advancing tutorial for ship ${id}`)
+    ship.tutorial.advanceStep()
   })
 }

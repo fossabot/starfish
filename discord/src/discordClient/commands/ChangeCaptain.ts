@@ -22,7 +22,7 @@ export class ChangeCaptainCommand implements Command {
     }
     typedId = typedId.replace(/[<>@!]*/g, ``)
 
-    const crewMember = context.ship.crewMembers.find(
+    const crewMember = context.ship.crewMembers?.find(
       (cm) => cm.id === typedId,
     )
     if (!crewMember) {

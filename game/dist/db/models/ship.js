@@ -25,6 +25,11 @@ const shipSchemaFields = {
     // ----- human
     log: [{ text: String, time: Number, level: String }],
     seenPlanets: [{ name: String }],
+    tutorial: {
+        step: Number,
+        spawnedCaches: [{ type: String }],
+        spawnedShips: [{ type: String }],
+    },
     captain: String,
     logAlertLevel: String,
     crewMembers: [
