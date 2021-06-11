@@ -909,7 +909,7 @@ export class HumanShip extends CombatShip {
             ): AttackRemnant | null =>
               mostRecent &&
               mostRecent.time > ar.time &&
-              mostRecent.attacker !== this &&
+              mostRecent.attacker.id !== this.id &&
               this.canAttack(mostRecent.attacker)
                 ? mostRecent
                 : ar,
@@ -924,9 +924,15 @@ export class HumanShip extends CombatShip {
           ])
         : null
       if (!targetShip) return
-      availableWeapons.forEach((w) => {
-        this.attack(targetShip!, w, mainItemTarget)
-      })
+      if (!targetShip.stubify)
+        // in some cases we end up with a stub here
+        targetShip = this.game.ships.find(
+          (s) => s.attackable && s.id === targetShip?.id,
+        ) as CombatShip
+      if (targetShip)
+        availableWeapons.forEach((w) => {
+          this.attack(targetShip!, w, mainItemTarget)
+        })
     }
 
     // ----- aggressive strategy -----
@@ -946,7 +952,7 @@ export class HumanShip extends CombatShip {
               mostRecent &&
               mostRecent.time > ar.time &&
               this.canAttack(
-                mostRecent.attacker === this
+                mostRecent.attacker.id === this.id
                   ? mostRecent.defender
                   : mostRecent.attacker,
               )
@@ -956,13 +962,19 @@ export class HumanShip extends CombatShip {
           )
         // ----- if all else fails, just attack whatever's around -----
         targetShip = mostRecentCombat
-          ? mostRecentCombat.attacker === this
+          ? mostRecentCombat.attacker.id === this.id
             ? mostRecentCombat.defender
             : mostRecentCombat.attacker
           : c.randomFromArray(attackableShips)
       }
 
       // ----- attack with EVERY AVAILABLE WEAPON -----
+      if (!targetShip) return
+      if (!targetShip.stubify)
+        // in some cases we end up with a stub here
+        targetShip = this.game.ships.find(
+          (s) => s.attackable && s.id === targetShip?.id,
+        ) as CombatShip
       if (targetShip) {
         this.toUpdate.targetShip = targetShip.stubify()
         availableWeapons.forEach((w) => {

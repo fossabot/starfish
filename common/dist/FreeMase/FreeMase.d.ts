@@ -1,9 +1,14 @@
+interface FreeMaseOptions {
+    centerX?: boolean;
+}
 export declare class FreeMase {
     parentEl: HTMLElement;
     maxWidth: number;
     maxHeight: number;
     window: Window;
-    constructor(parentEl: HTMLElement);
+    options?: FreeMaseOptions;
+    constructor(parentEl: HTMLElement, options?: FreeMaseOptions);
     position(): Promise<void>;
 }
+export {};
 //# sourceMappingURL=FreeMase.d.ts.map

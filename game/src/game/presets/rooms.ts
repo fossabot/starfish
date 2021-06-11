@@ -3,7 +3,7 @@ export const rooms: {
 } = {
   bunk: {
     id: `bunk`,
-    description: `Catch some sleep and rebuild your stamina.`,
+    description: `Catch some sleep and recharge your stamina.`,
   },
   weapons: {
     id: `weapons`,

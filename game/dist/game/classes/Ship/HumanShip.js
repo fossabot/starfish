@@ -588,7 +588,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             else {
                 const mostRecentDefense = this.visible.attackRemnants.reduce((mostRecent, ar) => mostRecent &&
                     mostRecent.time > ar.time &&
-                    mostRecent.attacker !== this &&
+                    mostRecent.attacker.id !== this.id &&
                     this.canAttack(mostRecent.attacker)
                     ? mostRecent
                     : ar, null);
@@ -602,9 +602,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                 : null;
             if (!targetShip)
                 return;
-            availableWeapons.forEach((w) => {
-                this.attack(targetShip, w, mainItemTarget);
-            });
+            if (!targetShip.stubify)
+                // in some cases we end up with a stub here
+                targetShip = this.game.ships.find((s) => s.attackable && s.id === targetShip?.id);
+            if (targetShip)
+                availableWeapons.forEach((w) => {
+                    this.attack(targetShip, w, mainItemTarget);
+                });
         }
         // ----- aggressive strategy -----
         if (mainTactic === `aggressive`) {
@@ -615,19 +619,24 @@ class HumanShip extends CombatShip_1.CombatShip {
                 // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
                 const mostRecentCombat = this.visible.attackRemnants.reduce((mostRecent, ar) => mostRecent &&
                     mostRecent.time > ar.time &&
-                    this.canAttack(mostRecent.attacker === this
+                    this.canAttack(mostRecent.attacker.id === this.id
                         ? mostRecent.defender
                         : mostRecent.attacker)
                     ? mostRecent
                     : ar, null);
                 // ----- if all else fails, just attack whatever's around -----
                 targetShip = mostRecentCombat
-                    ? mostRecentCombat.attacker === this
+                    ? mostRecentCombat.attacker.id === this.id
                         ? mostRecentCombat.defender
                         : mostRecentCombat.attacker
                     : dist_1.default.randomFromArray(attackableShips);
             }
             // ----- attack with EVERY AVAILABLE WEAPON -----
+            if (!targetShip)
+                return;
+            if (!targetShip.stubify)
+                // in some cases we end up with a stub here
+                targetShip = this.game.ships.find((s) => s.attackable && s.id === targetShip?.id);
             if (targetShip) {
                 this.toUpdate.targetShip = targetShip.stubify();
                 availableWeapons.forEach((w) => {

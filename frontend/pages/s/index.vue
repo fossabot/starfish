@@ -149,24 +149,22 @@ export default {
               const parentEl = entry.target as Element
               if (!parentEl) return
               // c.log('mutated', parentEl)
-              Array.from(parentEl.children).forEach(
-                (childEl) => {
-                  if (
-                    alreadyWatchingForResize.includes(
-                      childEl,
-                    )
-                  )
-                    return
-                  // c.log(
-                  //   'already watching',
-                  //   childEl,
-                  // )
-                  if (this.resizeObserver)
-                    this.resizeObserver.observe(childEl)
-                  c.log('now watching for resize:', childEl)
-                  alreadyWatchingForResize.push(childEl)
-                },
-              )
+              for (let childEl of Array.from(
+                parentEl.children,
+              )) {
+                if (
+                  alreadyWatchingForResize.includes(childEl)
+                )
+                  return
+                // c.log(
+                //   'already watching',
+                //   childEl,
+                // )
+                if (this.resizeObserver)
+                  this.resizeObserver.observe(childEl)
+                c.log('now watching for resize:', childEl)
+                alreadyWatchingForResize.push(childEl)
+              }
             })
           this.$nextTick(this.resetMasonry)
         },
@@ -218,6 +216,7 @@ export default {
       if (!this.masonryElement) {
         this.masonryElement = new FreeMase(
           this.$refs.container,
+          { centerX: true },
         )
         setTimeout(() => (this.ready = true), 500)
       } else this.masonryElement.position()

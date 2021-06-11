@@ -777,17 +777,17 @@
         "affectsGlobalScope": false
       },
       "./src/game/presets/rooms.ts": {
-        "version": "e8afaa92dc349863a14d100deb832b3cc4bc4b3e319e0f6cec85ac61ed19dd6c",
+        "version": "f7e084529bf2c8094a3ff2fbbedba4f8a1a804c043ec8850261c5e9058338820",
         "signature": "d114a8cce249752f97695a8a586b494fe9bfa5dc3b49e4d079ad528e1f504c09",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/tutorial.ts": {
-        "version": "1eff3d846f43d5513e5ac29e9f7097190642b6f94d4b3ca852ac65b0652a2865",
+        "version": "5dd5948838aefa7d447d18bd47f929e69c4cea5eb6fce256bd65bb8fe9dcea50",
         "signature": "72015e385729f56b29b96de4a4a8ae2b6387be6ef7ba59021db510fc4c4749f3",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "a7bb245ad14447c6071df62526b05a6b549632b24dda20573fd7c36dc22f16a6",
+        "version": "8baa53ce91af276e580845069a6fc59244de01ac123f581f6c3f06318115fff4",
         "signature": "ac7135749c94c33b227ef2958adef1986afd84e61044280bc88245bc9df59f58",
         "affectsGlobalScope": false
       },

@@ -7,13 +7,15 @@ exports.FreeMase = void 0;
 const Rect_1 = require("./Rect");
 const misc_1 = __importDefault(require("../misc"));
 class FreeMase {
-    constructor(parentEl) {
+    constructor(parentEl, options) {
         this.maxHeight = 99999;
         this.parentEl = parentEl;
         this.maxWidth = parentEl.offsetWidth;
         this.window = window;
         if (!window)
             return;
+        if (options)
+            this.options = options;
         this.window.addEventListener(`resize`, misc_1.default.debounce(() => {
             this.position();
         }), {
@@ -37,9 +39,11 @@ class FreeMase {
         const takenSpaces = [];
         for (let i = 0; i < this.parentEl.children.length; i++) {
             const element = this.parentEl.children[i];
-            element.setAttribute(`style`, `position: absolute; top: 0; left: 0;`);
+            element.setAttribute(`style`, `position: absolute; top: 0; left: ${this.options?.centerX
+                ? this.maxWidth / 2 - element.offsetWidth / 2
+                : 0};`);
         }
-        const placeOneFrame = (element) => {
+        const determinePlacementForOneFrame = (element) => {
             const elBcr = element.getBoundingClientRect();
             const firstFitIndex = availableSpaces.findIndex((space) => {
                 if (elBcr.width > space.width)
@@ -49,9 +53,8 @@ class FreeMase {
                 return true;
             });
             if (firstFitIndex === -1)
-                return;
+                return null;
             const firstFit = availableSpaces[firstFitIndex];
-            element.setAttribute(`style`, `position: absolute; top:${firstFit.top}px; left: ${firstFit.left}px;  opacity: 1;`);
             const placedRect = new Rect_1.Rect({
                 top: firstFit.top,
                 left: firstFit.left,
@@ -176,17 +179,21 @@ class FreeMase {
                 left: 0,
                 right: this.maxWidth,
             }));
+            return {
+                element,
+                rect: placedRect,
+            };
             // c.log(`available spaces:`, availableSpaces)
         };
+        const frames = [];
         for (let i = 0; i < this.parentEl.children.length; i++) {
             const element = this.parentEl.children[i];
             await new Promise((resolve) => {
-                // this.window.requestAnimationFrame(() => {
-                placeOneFrame(element);
+                const placement = determinePlacementForOneFrame(element);
+                if (placement)
+                    frames.push(placement);
                 resolve();
-                // })
             });
-            // debugger
         }
         const lastTakenSpace = takenSpaces.reduce((last, curr) => {
             if (curr.bottom > last.bottom)
@@ -194,6 +201,21 @@ class FreeMase {
             return last;
         }, takenSpaces[0])?.bottom || 0;
         this.parentEl.setAttribute(`style`, `width: 100%; height: ${lastTakenSpace}px;`);
+        const placeFrames = (frameData) => {
+            let offsetLeft = 0;
+            if (this.options?.centerX) {
+                const farthestRight = frameData.reduce((farthest, curr) => {
+                    if (curr.rect.right > farthest)
+                        return curr.rect.right;
+                    return farthest;
+                }, 0);
+                offsetLeft = (this.maxWidth - farthestRight) / 2;
+            }
+            for (let d of frameData) {
+                d.element.setAttribute(`style`, `position: absolute; top:${d.rect.top}px; left: ${d.rect.left + offsetLeft}px; opacity: 1;`);
+            }
+        };
+        placeFrames(frames);
         const elapsedTime = Date.now() - startTime;
         // c.log(`elapsed time: ${elapsedTime}`)
     }

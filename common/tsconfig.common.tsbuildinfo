@@ -362,8 +362,8 @@
         "affectsGlobalScope": false
       },
       "./src/freemase/freemase.ts": {
-        "version": "9512b3cdac76e6ce0ccbc643c0440679ff242ca871947f3180d8b3e30b44a151",
-        "signature": "c5656b2c27c567df8c54f4ab78156b03ba28c25a00eb36e38539572c4f9281cb",
+        "version": "efc12b8ad0c9191ab27a567a6af30140f20eecd9294f47775e15f6b369a00054",
+        "signature": "9368a4e2160b9fff314c720cd55419553c64a5e122d0626ec2c1f251f13a3f19",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {

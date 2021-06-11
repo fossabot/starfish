@@ -304,7 +304,7 @@ export class Tutorial {
         script: [
           {
             message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged. Switch to the Cockpit to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the Weapons Bay. Destroy the enemy craft!<br /><br />
-            By the way, you can't atack or be attacked when you're on a planet.<br/><br/>
+            By the way, you can't attack or be attacked when you're on a planet.<br/><br/>
             (If you want to fly and shoot at the same time, you'll need to recruit more crew members to your ship.)`,
           },
         ],
@@ -347,7 +347,7 @@ export class Tutorial {
             next: `Uh oh, the ship is damaged.`,
           },
           {
-            message: `You're right! Equipment loses repair through normal use and when it's hit by an attack. Your ship's health is simply the total of your equipment's HP, so make sure to keep everything ship-shape!<br /><br />
+            message: `You're right! Equipment loses repair when used or when hit by an attack. Your ship's health is simply the total of your equipment's HP, so make sure to keep everything ship-shape!<br /><br />
             Go to the repair bay on the ship schematic to start repairing your ship.`,
           },
         ],
@@ -755,7 +755,7 @@ export class Tutorial {
       io.emit(
         `ship:message`,
         this.ship.id,
-        `Use this channel to broadcast and receive messages to/from nearby ships!`,
+        `Use this channel to broadcast to and receive messages from nearby ships!`,
         `broadcast`,
       )
     }, c.TICK_INTERVAL)
@@ -767,16 +767,22 @@ export class Tutorial {
     this.ship.respawn(true)
 
     if (this.ship.planet)
-      this.ship.planet.shipsAt().filter((s) => s.faction?.color === this.ship.faction?.color).forEach((s) => {
-        if (s === this.ship) return
-        s.logEntry(
-          `${
-            this.ship.name
-          } has joined the game, starting out from ${
-            this.ship.planet && this.ship.planet.name
-          }!`,
+      this.ship.planet
+        .shipsAt()
+        .filter(
+          (s) =>
+            s.faction?.color === this.ship.faction?.color,
         )
-      })
+        .forEach((s) => {
+          if (s === this.ship) return
+          s.logEntry(
+            `${
+              this.ship.name
+            } has joined the game, starting out from ${
+              this.ship.planet && this.ship.planet.name
+            }!`,
+          )
+        })
   }
 
   cleanUp() {
