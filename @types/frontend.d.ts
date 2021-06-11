@@ -12,3 +12,4 @@ type FrontendPanelType =
   | `mapZoom`
   | `log`
   | `diagram`
+  | `inventory`

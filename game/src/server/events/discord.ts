@@ -43,6 +43,16 @@ export default function (
     }
   })
 
+  socket.on(`ship:destroy`, (shipId, callback) => {
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship) return callback({ error: `No ship found.` })
+
+    game.removeShip(ship)
+    callback({ data: `Removed your ship from the game.` })
+  })
+
   socket.on(
     `ship:broadcast`,
     (shipId, crewId, message, callback) => {

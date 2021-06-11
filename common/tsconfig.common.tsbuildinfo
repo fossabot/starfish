@@ -267,8 +267,8 @@
         "affectsGlobalScope": true
       },
       "../@types/frontend.d.ts": {
-        "version": "efd2bec7c1d2e4757ff8b700f28ce40c011c5dbc29bfe2e6032266016cde0e4b",
-        "signature": "efd2bec7c1d2e4757ff8b700f28ce40c011c5dbc29bfe2e6032266016cde0e4b",
+        "version": "ad5e2177a4a6a34bc47f5d504dbf4b6e7aa505bdcc7414b0d73be6dfd952c536",
+        "signature": "ad5e2177a4a6a34bc47f5d504dbf4b6e7aa505bdcc7414b0d73be6dfd952c536",
         "affectsGlobalScope": true
       },
       "../@types/generic.d.ts": {
@@ -277,13 +277,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "782e5e01a392dff040dca61eff0a8d5c25870739c12c5db39646385713e4e74a",
-        "signature": "782e5e01a392dff040dca61eff0a8d5c25870739c12c5db39646385713e4e74a",
+        "version": "91222cd5e472d34edd2eea155d746c6c127a91a7c17b0dee1f11c40def247967",
+        "signature": "91222cd5e472d34edd2eea155d746c6c127a91a7c17b0dee1f11c40def247967",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "a4bb07cfc8208dec16db80c3c24dda6b7986ff93e899f85d9bbff7098c1b6e9f",
-        "signature": "a4bb07cfc8208dec16db80c3c24dda6b7986ff93e899f85d9bbff7098c1b6e9f",
+        "version": "d3b034b1d16d21c5e715d6b0d0883b003cc1ffaceaea3ca862521e293eb80ff0",
+        "signature": "d3b034b1d16d21c5e715d6b0d0883b003cc1ffaceaea3ca862521e293eb80ff0",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -332,7 +332,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "743e137fb814fda6ef94a85905d85474ab48d881374bfaf6157c64ee83c5a5e3",
+        "version": "ef601fb333a1ca166b8a9a92ab911057a0a1edfa6bec065f98126f47f18d2a1b",
         "signature": "fecd642df848b72a2551166917fc8a2dfd26d04577c2fb796edd25e55a1b351d",
         "affectsGlobalScope": false
       },
@@ -362,7 +362,7 @@
         "affectsGlobalScope": false
       },
       "./src/freemase/freemase.ts": {
-        "version": "2790e54d1b77ebd6be502ac950ddaed7966966fa7231cd7bb68f9ca527a1e18c",
+        "version": "9512b3cdac76e6ce0ccbc643c0440679ff242ca871947f3180d8b3e30b44a151",
         "signature": "c5656b2c27c567df8c54f4ab78156b03ba28c25a00eb36e38539572c4f9281cb",
         "affectsGlobalScope": false
       },

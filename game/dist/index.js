@@ -11,9 +11,9 @@ const db_1 = require("./db");
 db_1.init({});
 exports.game = new Game_1.Game();
 db_1.runOnReady(async () => {
-    await db_1.db.attackRemnant.wipe();
+    // await db.attackRemnant.wipe()
     // await db.planet.wipe()
-    await db_1.db.ship.wipe();
+    // await db.ship.wipe()
     // await db.cache.wipe()
     // await db.ship.wipeAI()
     const savedPlanets = await db_1.db.planet.getAllConstructible();

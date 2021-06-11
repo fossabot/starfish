@@ -10,6 +10,8 @@ interface TutorialStepData {
   forceCrewLocation?: CrewLocation
   shownPanels: FrontendPanelType[]
   sightRange: number
+  scanRange?: number
+  forceStamina?: number
   disableStamina?: true
   disableRepair?: true
   script: {
@@ -32,17 +34,17 @@ interface TutorialStepData {
   ais?: BaseShipData[]
   nextStepTrigger: {
     location?: TargetLocation
+    crewLocation?: CrewLocation
     gainStaminaTo?: number
     useCrewCreditsTo?: number
     useCommonCreditsTo?: number
+    destroyShipId?: string
     awaitFrontend?: boolean
   }
 }
 
 export class Tutorial {
   step: number = 0
-  spawnedShips: string[] = []
-  spawnedCaches: string[] = []
 
   steps: TutorialStepData[] = []
   baseLocation: CoordinatePair = [0, 0]
@@ -54,7 +56,7 @@ export class Tutorial {
     this.steps = [
       {
         forceLocation: [0, 0],
-        sightRange: 0.01,
+        sightRange: 0.03,
         shownRooms: [],
         shownPanels: [],
         disableStamina: true,
@@ -82,9 +84,9 @@ export class Tutorial {
         nextStepTrigger: { awaitFrontend: true },
       },
       {
-        sightRange: 0.01,
+        sightRange: 0.03,
         shownRooms: [],
-        shownPanels: [`mapZoom`],
+        shownPanels: [`mapZoom`, `ship`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`],
@@ -112,16 +114,18 @@ export class Tutorial {
           awaitFrontend: true,
         },
       },
+
+      // ----- flight & caches -----
       {
-        sightRange: 0.01,
+        sightRange: 0.03,
         shownRooms: [],
-        shownPanels: [`mapZoom`, `map`],
+        shownPanels: [`mapZoom`, `map`, `ship`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`, `cache`],
         script: [
           {
-            message: `Oho! That's clarified things a bit. We can now see for 0.01AU, which is a pretty long way, galactically speaking — somewhere around 1.5 million kilometers.`,
+            message: `Oho! That's clarified things a bit. We can now see for 0.03AU, which is a pretty long way, galactically speaking — somewhere around 4.5 million kilometers.`,
             next: `Cool.`,
           },
           {
@@ -139,22 +143,18 @@ export class Tutorial {
         caches: [
           {
             contents: [{ amount: 10, type: `credits` }],
-            location: [0.005, 0],
+            location: [0.02, 0],
           },
         ],
         nextStepTrigger: {
           awaitFrontend: true,
-          location: {
-            coordinates: [0.005, 0],
-            label: `cache`,
-          },
         },
       },
       {
-        sightRange: 0.01,
+        sightRange: 0.03,
         shownRooms: [`cockpit`],
         forceCrewLocation: `cockpit`,
-        shownPanels: [`mapZoom`, `map`, `room`],
+        shownPanels: [`mapZoom`, `map`, `room`, `ship`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`, `cache`],
@@ -165,27 +165,274 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            coordinates: [0.005, 0],
+            coordinates: [0.02, 0],
             label: `cache`,
           },
         },
       },
       {
-        sightRange: 0.01,
+        sightRange: 0.03,
         shownRooms: [`cockpit`],
-        shownPanels: [`mapZoom`, `map`, `log`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+        ],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`],
         script: [
           {
-            message: `Awesome, we got it! <br />
-            There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br />
+            message: `Awesome, we got it! <br /><br/>
+            There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br /><br/>
+            This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.<br /><br />
             Caches will spawn around the map whenever cargo is dropped, whether intentionally or because... well, you know... someone got blown up.`,
-            next: `Is it really that dangerous out here?`,
+            advance: `Is it really that dangerous out here?`,
+          },
+        ],
+        nextStepTrigger: {
+          awaitFrontend: true,
+        },
+      },
+
+      // ----- ship scan and combat -----
+      {
+        sightRange: 0.03,
+        shownRooms: [`cockpit`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+        ],
+        disableRepair: true,
+        disableStamina: true,
+        visibleTypes: [`planet`, `ship`],
+        script: [
+          {
+            message: `Well it's not THAT dangero— Oh no, what is that...?<br />
+            It's an enemy ship! What are they doing here so close to our homeworld?<br /><br />
+            Quick, engage the ship scanner!`,
+            advance: `Turn on ship scanner`,
+          },
+        ],
+        ais: [
+          {
+            loadout: `aiTutorial1`,
+            id: `tutorialAI1` + this.ship.id,
+            level: 1,
+            name: `Robot Ship`,
+            species: { id: `robots` },
+            location: [0.015, 0.01],
+          },
+        ],
+        nextStepTrigger: {
+          awaitFrontend: true,
+        },
+      },
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [`cockpit`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+        ],
+        disableRepair: true,
+        disableStamina: true,
+        visibleTypes: [`planet`, `ship`, `attackRemnant`],
+        script: [
+          {
+            message: `Now we can see what we're dealing with. It looks like they're outfitted with a weapon but no engine. They're a sitting duck!`,
+            advance: `Let's take 'em out!`,
+          },
+        ],
+        nextStepTrigger: {
+          awaitFrontend: true,
+        },
+      },
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        forceLoadout: `tutorial2`,
+        shownRooms: [`cockpit`, `weapons`, `bunk`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+        ],
+        disableRepair: true,
+        visibleTypes: [`planet`, `ship`, `attackRemnant`],
+        script: [
+          {
+            message: `I've opened up your ship schematic.<br /><br />
+            Tasks are separated by room — if you're in the cockpit you'll pilot the ship, if you're in the bunk you'll sleep, and so on.<br /><br />
+            Click on the <b>weapons</b> room to start charging our weapons!`,
+          },
+        ],
+        nextStepTrigger: {
+          crewLocation: `weapons`,
+        },
+      },
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [`cockpit`, `weapons`, `bunk`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+        ],
+        visibleTypes: [`planet`, `ship`, `attackRemnant`],
+        script: [
+          {
+            message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged. Switch to the Cockpit to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the Weapons Bay. Destroy the enemy craft!<br /><br />
+            By the way, you can't atack or be attacked when you're on a planet.<br/><br/>
+            (If you want to fly and shoot at the same time, you'll need to recruit more crew members to your ship.)`,
+          },
+        ],
+        nextStepTrigger: {
+          destroyShipId: `tutorialAI1` + this.ship.id,
+        },
+      },
+
+      // ----- repair -----
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [
+          `cockpit`,
+          `weapons`,
+          `bunk`,
+          `repair`,
+        ],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+          `items`,
+        ],
+        visibleTypes: [
+          `planet`,
+          `ship`,
+          `attackRemnant`,
+          `cache`,
+        ],
+        script: [
+          {
+            message: `Just like shooting fish in a barrel.`,
+            next: `Uh oh, the ship is damaged.`,
           },
           {
-            message: `It can be! Let's head back planetside to regroup.`,
+            message: `You're right! Equipment loses repair through normal use and when it's hit by an attack. Your ship's health is simply the total of your equipment's HP, so make sure to keep everything ship-shape!<br /><br />
+            Go to the repair bay on the ship schematic to start repairing your ship.`,
+          },
+        ],
+        nextStepTrigger: {
+          crewLocation: `repair`,
+        },
+      },
+
+      // -----
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [
+          `cockpit`,
+          `weapons`,
+          `bunk`,
+          `repair`,
+        ],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+          `items`,
+        ],
+        visibleTypes: [
+          `planet`,
+          `ship`,
+          `attackRemnant`,
+          `cache`,
+        ],
+        forceStamina: 0.95,
+        script: [
+          {
+            message: `Well, that was a productive venture! You've gained some XP in piloting, munitions, and mechanics for all the work you put in.<br />
+            You'll get faster and more efficient at various tasks around the ship by leveling up your skills.`,
+            next: `Sounds good.`,
+          },
+          {
+            message: `Adventuring can really take it out of you. If you look, you'll see that you've lost some stamina from all the hard work.`,
+            next: `Ah, so I have!`,
+          },
+          {
+            message: `Click on the <b>Bunk</b> in the ship schematic to move there and get some rest.`,
+          },
+        ],
+        nextStepTrigger: {
+          crewLocation: `bunk`,
+        },
+      },
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [
+          `cockpit`,
+          `weapons`,
+          `bunk`,
+          `repair`,
+        ],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+          `items`,
+        ],
+        visibleTypes: [
+          `planet`,
+          `ship`,
+          `attackRemnant`,
+          `cache`,
+        ],
+        script: [
+          {
+            message: `Excellent. Once you're ready, let's head planetside to check out what's happening on the surface!`,
           },
         ],
         nextStepTrigger: {
@@ -196,18 +443,88 @@ export class Tutorial {
         },
       },
 
-      // ----------
       {
-        sightRange: 0.01,
-        shownRooms: [`cockpit`],
-        shownPanels: [`mapZoom`, `map`, `log`],
-        disableRepair: true,
-        disableStamina: true,
-        visibleTypes: [`planet`],
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [
+          `cockpit`,
+          `weapons`,
+          `bunk`,
+          `repair`,
+        ],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+          `planet`,
+          `items`,
+        ],
+        visibleTypes: [
+          `planet`,
+          `ship`,
+          `attackRemnant`,
+          `cache`,
+        ],
         script: [
           {
-            message: `final`,
-            advance: `end tutorial`,
+            message: `Wow, they've got a lot of things for sale!`,
+            next: `Cool!`,
+          },
+          {
+            message: `You can buy and sell your personal cargo here.<br />
+            The captain can also buy and sell equipment for the ship. <br />
+            Different planets will have different things for sale, so always be sure to check out what's on offer when you land on a new planet.`,
+            advance: `Got it!`,
+          },
+        ],
+        nextStepTrigger: {
+          awaitFrontend: true,
+        },
+      },
+
+      // ----------
+      {
+        sightRange: 0.03,
+        scanRange: 0.02,
+        shownRooms: [
+          `cockpit`,
+          `weapons`,
+          `bunk`,
+          `repair`,
+        ],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `scanShip`,
+          `diagram`,
+          `log`,
+          `crewMember`,
+          `planet`,
+          `items`,
+        ],
+        visibleTypes: [
+          `planet`,
+          `ship`,
+          `attackRemnant`,
+          `cache`,
+        ],
+        script: [
+          {
+            message: `There's a lot more to learn about — broadcasting, factions, passives, and more — but I think you're ready to start exploring!`,
+            next: `Heck yeah I am!`,
+          },
+          {
+            message: `The real journey starts here. Will your ship be traders? Pirates? Explorers? Peacekeepers? Time will tell.`,
+            advance: `<< Get started >>`,
           },
         ],
         nextStepTrigger: {
@@ -252,6 +569,27 @@ export class Tutorial {
               cm.stamina >
               this.currentStep.nextStepTrigger
                 .gainStaminaTo!,
+          ),
+        )
+
+    if (this.currentStep.nextStepTrigger.destroyShipId)
+      shouldAdvance =
+        shouldAdvance &&
+        !this.ship.game.aiShips.find(
+          (s) =>
+            s.id ===
+            this.currentStep.nextStepTrigger.destroyShipId,
+        )
+
+    if (this.currentStep.nextStepTrigger.crewLocation)
+      shouldAdvance =
+        shouldAdvance &&
+        Boolean(
+          this.ship.crewMembers.find(
+            (cm) =>
+              cm.location ===
+              this.currentStep.nextStepTrigger
+                .crewLocation!,
           ),
         )
 
@@ -311,7 +649,7 @@ export class Tutorial {
     // spawn caches
     if (this.currentStep.caches) {
       for (let k of this.currentStep.caches) {
-        const spawned = this.ship.game.addCache({
+        this.ship.game.addCache({
           ...k,
           location: [
             this.baseLocation[0] + k.location[0],
@@ -319,13 +657,13 @@ export class Tutorial {
           ],
           onlyVisibleToShipId: this.ship.id,
         })
-        this.spawnedCaches.push(spawned.id)
       }
     }
+
     // spawn ais
     if (this.currentStep.ais) {
       for (let s of this.currentStep.ais) {
-        const spawned = this.ship.game.addAIShip({
+        this.ship.game.addAIShip({
           ...s,
           location: s.location
             ? [
@@ -335,7 +673,6 @@ export class Tutorial {
             : [...this.baseLocation],
           onlyVisibleToShipId: this.ship.id,
         })
-        this.spawnedShips.push(spawned.id)
       }
     }
 
@@ -346,6 +683,18 @@ export class Tutorial {
           (cm.location =
             this.currentStep.forceCrewLocation!),
       )
+
+    // crew stamina
+    if (this.currentStep.forceStamina !== undefined)
+      this.ship.crewMembers.forEach(
+        (cm) =>
+          (cm.stamina = this.currentStep.forceStamina!),
+      )
+
+    // rooms
+    if (this.currentStep.shownRooms)
+      for (let r of this.currentStep.shownRooms)
+        this.ship.addRoom(r)
 
     // target locations
     if (this.currentStep.nextStepTrigger.location)
@@ -397,28 +746,47 @@ export class Tutorial {
 
   done() {
     c.log(`Tutorial complete for ${this.ship.name}`)
-    this.ship.logEntry(
-      `Good luck out there! If you have more questions about the game, check out the How To Play page!`,
-    )
+
+    setTimeout(() => {
+      this.ship.logEntry(
+        `Good luck out there! If you have more questions about the game, check out the How To Play page!`,
+        `high`,
+      )
+      io.emit(
+        `ship:message`,
+        this.ship.id,
+        `Use this channel to broadcast and receive messages to/from nearby ships!`,
+        `broadcast`,
+      )
+    }, c.TICK_INTERVAL)
+
     this.cleanUp()
     this.ship.tutorial = undefined
     this.ship.toUpdate.tutorial = false
     this.ship.recalculateShownPanels()
     this.ship.respawn(true)
+
+    if (this.ship.planet)
+      this.ship.planet.shipsAt().filter((s) => s.faction?.color === this.ship.faction?.color).forEach((s) => {
+        if (s === this.ship) return
+        s.logEntry(
+          `${
+            this.ship.name
+          } has joined the game, starting out from ${
+            this.ship.planet && this.ship.planet.name
+          }!`,
+        )
+      })
   }
 
   cleanUp() {
-    for (let id of this.spawnedShips) {
-      const toDelete = this.ship.game.ships.find(
-        (s) => s.id,
-      )
-      if (toDelete) this.ship.game.removeShip(toDelete)
-    }
-    for (let id of this.spawnedCaches) {
-      const toDelete = this.ship.game.caches.find(
-        (k) => k.id,
-      )
-      if (toDelete) this.ship.game.removeCache(toDelete)
-    }
+    this.ship.game.caches.forEach((k) => {
+      if (k.onlyVisibleToShipId === this.ship.id)
+        this.ship.game.removeCache(k)
+    })
+    this.ship.game.aiShips.forEach((s) => {
+      if (s.onlyVisibleToShipId === this.ship.id)
+        this.ship.game.removeShip(s)
+    })
   }
 }

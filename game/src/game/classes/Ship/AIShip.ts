@@ -52,6 +52,8 @@ export class AIShip extends CombatShip {
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
     this.targetLocation = [...this.location]
+
+    if (this.onlyVisibleToShipId) c.log(this)
   }
 
   tick() {
@@ -67,6 +69,13 @@ export class AIShip extends CombatShip {
       this.id,
       [`ship`],
     )
+    if (this.onlyVisibleToShipId) {
+      const onlyVisibleShip = this.game.humanShips.find(
+        (s) => s.id === this.onlyVisibleToShipId,
+      )
+      if (onlyVisibleShip)
+        this.visible.ships.push(onlyVisibleShip)
+    }
 
     // recharge weapons
     this.weapons.forEach(
@@ -246,7 +255,7 @@ export class AIShip extends CombatShip {
     super.die()
 
     const amount = Math.round(
-      Math.random() * this.level * 50,
+      Math.random() * this.level * 40,
     )
     const cacheContents: CacheContents[] = [
       { type: `credits`, amount },
@@ -255,6 +264,7 @@ export class AIShip extends CombatShip {
       contents: cacheContents,
       location: this.location,
       message: `Remains of ${this.name}`,
+      onlyVisibleToShipId: this.onlyVisibleToShipId,
     })
 
     this.game.removeShip(this)

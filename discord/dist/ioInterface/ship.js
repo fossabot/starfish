@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.alertLevel = exports.broadcast = exports.respawn = exports.create = exports.get = exports.rename = exports.kickMember = exports.setCaptain = void 0;
+exports.alertLevel = exports.broadcast = exports.respawn = exports.destroy = exports.create = exports.get = exports.rename = exports.kickMember = exports.setCaptain = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function setCaptain(shipId, crewMemberId) {
@@ -70,6 +70,22 @@ async function create(data) {
     return shipStub;
 }
 exports.create = create;
+async function destroy(id) {
+    if (!(await index_1.connected()))
+        return null;
+    const res = await new Promise((resolve) => {
+        index_1.io.emit(`ship:destroy`, id, ({ data, error }) => {
+            if (error) {
+                dist_1.default.log(error);
+                resolve(error);
+                return;
+            }
+            resolve(data || null);
+        });
+    });
+    return res;
+}
+exports.destroy = destroy;
 async function respawn(id) {
     if (!(await index_1.connected()))
         return null;

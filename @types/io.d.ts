@@ -151,6 +151,10 @@ interface IOClientEvents {
     data: BaseHumanShipData,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
+  [`ship:destroy`]: (
+    shipId: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
   [`ship:respawn`]: (
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,

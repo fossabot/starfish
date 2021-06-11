@@ -238,7 +238,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             ships: shipsWithValidScannedProps,
         };
     }
-    updatePlanet(silent) {
+    async updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
             this.game.planets.find((p) => this.isAt(p.location)) || false;
@@ -248,18 +248,22 @@ class HumanShip extends CombatShip_1.CombatShip {
                 : false;
         if (silent)
             return;
+        await dist_1.default.sleep(100); // to resolve the constructor; this.tutorial doesn't exist yet
         // -----  log for you and other ships on that planet when you land/depart -----
-        if (this.planet && this.planet !== previousPlanet) {
+        if ((!this.tutorial || this.tutorial.step > 0) &&
+            this.planet &&
+            this.planet !== previousPlanet) {
             this.logEntry(`Landed on ${this.planet ? this.planet.name : ``}.`, `high`);
-            this.planet.shipsAt().forEach((s) => {
-                if (s === this)
-                    return;
-                s.logEntry(`${this.name} landed on ${this.planet ? this.planet.name : ``}.`);
-            });
+            if (!this.tutorial)
+                this.planet.shipsAt().forEach((s) => {
+                    if (s === this)
+                        return;
+                    s.logEntry(`${this.name} landed on ${this.planet ? this.planet.name : ``}.`);
+                });
         }
         else if (previousPlanet && !this.planet) {
             this.logEntry(`Departed from ${previousPlanet ? previousPlanet.name : ``}.`);
-            if (previousPlanet)
+            if (previousPlanet && !this.tutorial)
                 previousPlanet.shipsAt().forEach((s) => {
                     if (s === this)
                         return;
@@ -277,6 +281,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     updateThingsThatCouldChangeOnItemChange() {
         super.updateThingsThatCouldChangeOnItemChange();
         this.updateBroadcastRadius();
+        this.toUpdate._hp = this.hp;
+        this.toUpdate._maxHp = this._maxHp;
     }
     recalculateShownPanels() {
         if (!this.tutorial)
@@ -340,9 +346,11 @@ class HumanShip extends CombatShip_1.CombatShip {
     addRoom(room) {
         if (!(room in this.rooms))
             this.rooms[room] = rooms_1.rooms[room];
+        this.toUpdate.rooms = this.rooms;
     }
     removeRoom(room) {
         delete this.rooms[room];
+        this.toUpdate.rooms = this.rooms;
     }
     // ----- items -----
     addItem(itemData) {
@@ -364,7 +372,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.captain)
             this.captain = cm.id;
         dist_1.default.log(`gray`, `Added crew member ${cm.name} to ${this.name}`);
-        if (!silent)
+        if (!silent && this.crewMembers.length > 1)
             this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
         db_1.db.ship.addOrUpdateInDb(this);
         return cm;
@@ -381,11 +389,13 @@ class HumanShip extends CombatShip_1.CombatShip {
             return;
         }
         this.crewMembers.splice(index, 1);
-        this.logEntry(`${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. ${cm.name}'s cargo has been distributed amongst the crew.`, `critical`);
-        this.distributeCargoAmongCrew([
-            ...cm.inventory,
-            { type: `credits`, amount: cm.credits },
-        ]);
+        this.logEntry(`${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `, `critical`);
+        // * this could be abused to generate infinite money
+        // ${cm.name}'s cargo has been distributed amongst the crew.
+        // this.distributeCargoAmongCrew([
+        //   ...cm.inventory,
+        //   { type: `credits`, amount: cm.credits },
+        // ])
         db_1.db.ship.addOrUpdateInDb(this);
     }
     distributeCargoAmongCrew(cargo) {
@@ -617,11 +627,15 @@ class HumanShip extends CombatShip_1.CombatShip {
                         : mostRecentCombat.attacker
                     : dist_1.default.randomFromArray(attackableShips);
             }
-            this.toUpdate.targetShip = dist_1.default.stubify(targetShip, [`visible`, `seenPlanets`]);
-            // ----- with EVERY AVAILABLE WEAPON -----
-            availableWeapons.forEach((w) => {
-                this.attack(targetShip, w, mainItemTarget);
-            });
+            // ----- attack with EVERY AVAILABLE WEAPON -----
+            if (targetShip) {
+                this.toUpdate.targetShip = targetShip.stubify();
+                availableWeapons.forEach((w) => {
+                    this.attack(targetShip, w, mainItemTarget);
+                });
+            }
+            else
+                this.toUpdate.targetShip = false;
         }
     }
     die() {

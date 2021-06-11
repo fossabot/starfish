@@ -37,6 +37,13 @@ function default_1(socket) {
             });
         }
     });
+    socket.on(`ship:destroy`, (shipId, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        __1.game.removeShip(ship);
+        callback({ data: `Removed your ship from the game.` });
+    });
     socket.on(`ship:broadcast`, (shipId, crewId, message, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

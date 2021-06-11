@@ -20,7 +20,7 @@
       <ShipTutorial />
       <Ship />
 
-      <ShipMember />
+      <ShipMemberInventory />
 
       <ShipMapPlayermapDefault />
       <ShipMapPlayermapZoom />
@@ -29,6 +29,8 @@
 
       <ShipDiagram />
       <ShipRoom />
+
+      <ShipMember />
 
       <!-- <ShipVisible /> -->
       <ShipScanShip />
@@ -66,6 +68,7 @@ import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
   resizeObserver: ResizeObserver | null
+  mutationObserver: MutationObserver | null
   [key: string]: any
 }
 import { FreeMase } from '../../../common/src/FreeMase/FreeMase'
@@ -125,38 +128,77 @@ export default {
   methods: {
     async setUpObservers(this: ComponentShape) {
       if (
-        (this.$refs.container?.children?.length || 0) < 3
+        (this.$refs.container?.children?.length || 0) < 1
       ) {
         return setTimeout(this.setUpObservers, 100)
       }
+      // todo need to be able to handle new elements getting appended
 
       await this.$nextTick()
+
+      const alreadyWatchingForResize: Element[] = []
 
       if (this.resizeObserver && this.mutationObserver)
         return
       let ready = false
-      const updateCallback = c.debounce((els: any) => {
-        if (!ready) return
-        // c.log('resized or mutated', els)
-        this.$nextTick(this.resetMasonry)
-      }, 200)
+      const mutateCallback = c.debounce(
+        (els?: MutationRecord[]) => {
+          if (!ready) return
+          if (els)
+            els.forEach((entry) => {
+              const parentEl = entry.target as Element
+              if (!parentEl) return
+              // c.log('mutated', parentEl)
+              Array.from(parentEl.children).forEach(
+                (childEl) => {
+                  if (
+                    alreadyWatchingForResize.includes(
+                      childEl,
+                    )
+                  )
+                    return
+                  // c.log(
+                  //   'already watching',
+                  //   childEl,
+                  // )
+                  if (this.resizeObserver)
+                    this.resizeObserver.observe(childEl)
+                  c.log('now watching for resize:', childEl)
+                  alreadyWatchingForResize.push(childEl)
+                },
+              )
+            })
+          this.$nextTick(this.resetMasonry)
+        },
+        200,
+      )
+
+      const resizeCallback = c.debounce(
+        (els?: ResizeObserverEntry[]) => {
+          // c.log('resized', els)
+          if (!ready) return
+          this.$nextTick(this.resetMasonry)
+        },
+        200,
+      )
 
       this.mutationObserver = new MutationObserver(
-        updateCallback,
+        mutateCallback,
       )
       this.mutationObserver.observe(this.$refs.container, {
         childList: true,
       })
 
       this.resizeObserver = new ResizeObserver(
-        updateCallback,
+        resizeCallback,
       )
       for (let child of this.$refs.container.children) {
         if (child.$el) child = child.$el
         this.resizeObserver.observe(child)
+        alreadyWatchingForResize.push(child)
       }
       ready = true
-      updateCallback()
+      resizeCallback()
     },
     changeShip(this: ComponentShape, index: number) {
       if (
@@ -189,10 +231,10 @@ export default {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // flex-direction: column;
 
   & > * {
     max-width: 100%;
@@ -220,8 +262,10 @@ export default {
 
   & > * {
     display: inline-block;
-    transition: top 0.5s ease-in-out, left 0.5s ease-in-out;
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out,
+      opacity 1s;
     margin-bottom: 0px;
+    opacity: 0;
 
     @media (max-width: 768px) {
       width: 100% !important;

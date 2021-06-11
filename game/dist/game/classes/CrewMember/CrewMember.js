@@ -60,7 +60,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.stamina = data.stamina || this.maxStamina;
         this.lastActive = Date.now();
         this.inventory = data.inventory || [];
-        this.credits = data.credits || 10;
+        this.credits = data.credits || 2;
         this.skills = data.skills || [
             { skill: `piloting`, level: 1, xp: 0 },
             { skill: `munitions`, level: 1, xp: 0 },

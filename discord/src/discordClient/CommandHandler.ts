@@ -16,6 +16,7 @@ import { AlertLevelCommand } from './commands/AlertLevel'
 import { ChangeCaptainCommand } from './commands/ChangeCaptain'
 import { HelpCommand } from './commands/Help'
 import { KickMemberCommand } from './commands/KickMember'
+import { DestroyCommand } from './commands/Destroy'
 
 export class CommandHandler {
   private commands: Command[]
@@ -25,6 +26,7 @@ export class CommandHandler {
   constructor(prefix: string) {
     const commandClasses = [
       StartCommand,
+      DestroyCommand,
       InviteCommand,
       LinkCommand,
       JoinCommand,

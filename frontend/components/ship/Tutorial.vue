@@ -5,11 +5,11 @@
     </template>
 
     <div class="panesection">
-      <div v-if="waitingForNextStep">
-        ............
-      </div>
-      <div v-else>
-        <div v-html="currentScript.message" />
+      <div :class="{ invisible: waitingForNextStep }">
+        <div
+          class="maintext"
+          v-html="currentScript.message"
+        />
         <div class="padtop">
           <button
             v-if="
@@ -66,7 +66,6 @@ export default {
   },
   watch: {
     tutorial(newT: any, oldT: any) {
-      c.log('update tutorial')
       this.scriptIndex = 0
       this.waitingForNextStep = false
     },

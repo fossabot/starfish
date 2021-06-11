@@ -7,6 +7,8 @@ interface TutorialStepData {
     forceCrewLocation?: CrewLocation;
     shownPanels: FrontendPanelType[];
     sightRange: number;
+    scanRange?: number;
+    forceStamina?: number;
     disableStamina?: true;
     disableRepair?: true;
     script: {
@@ -23,16 +25,16 @@ interface TutorialStepData {
     ais?: BaseShipData[];
     nextStepTrigger: {
         location?: TargetLocation;
+        crewLocation?: CrewLocation;
         gainStaminaTo?: number;
         useCrewCreditsTo?: number;
         useCommonCreditsTo?: number;
+        destroyShipId?: string;
         awaitFrontend?: boolean;
     };
 }
 export declare class Tutorial {
     step: number;
-    spawnedShips: string[];
-    spawnedCaches: string[];
     steps: TutorialStepData[];
     baseLocation: CoordinatePair;
     currentStep: TutorialStepData;

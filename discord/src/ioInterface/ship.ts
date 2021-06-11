@@ -108,6 +108,29 @@ export async function create(
   )
   return shipStub
 }
+export async function destroy(
+  id: string,
+): Promise<string | null> {
+  if (!(await connected())) return null
+
+  const res: string | null = await new Promise(
+    (resolve) => {
+      io.emit(
+        `ship:destroy`,
+        id,
+        ({ data, error }: IOResponseReceived<string>) => {
+          if (error) {
+            c.log(error)
+            resolve(error)
+            return
+          }
+          resolve(data || null)
+        },
+      )
+    },
+  )
+  return res
+}
 
 export async function respawn(
   id: string,

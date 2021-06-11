@@ -1,4 +1,5 @@
 export declare const weapon: {
+    tutorial1: BaseWeaponData;
     cannon1: BaseWeaponData;
     cannon2: BaseWeaponData;
     saber1: BaseWeaponData;
@@ -8,6 +9,7 @@ export declare const weapon: {
 export declare const engine: {
     starter1: BaseEngineData;
     starter2: BaseEngineData;
+    tutorial1: BaseEngineData;
 };
 export declare const scanner: {
     starter1: BaseScannerData;

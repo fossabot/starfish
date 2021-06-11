@@ -57,6 +57,8 @@ class AIShip extends CombatShip_1.CombatShip {
         else
             this.spawnPoint = [...this.location];
         this.targetLocation = [...this.location];
+        if (this.onlyVisibleToShipId)
+            dist_1.default.log(this);
     }
     tick() {
         super.tick();
@@ -65,6 +67,11 @@ class AIShip extends CombatShip_1.CombatShip {
         // ----- move -----
         this.move();
         this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
+        if (this.onlyVisibleToShipId) {
+            const onlyVisibleShip = this.game.humanShips.find((s) => s.id === this.onlyVisibleToShipId);
+            if (onlyVisibleShip)
+                this.visible.ships.push(onlyVisibleShip);
+        }
         // recharge weapons
         this.weapons.forEach((w) => (w.cooldownRemaining -=
             dist_1.default.getWeaponCooldownReductionPerTick(this.level)));
@@ -175,7 +182,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     die() {
         super.die();
-        const amount = Math.round(Math.random() * this.level * 50);
+        const amount = Math.round(Math.random() * this.level * 40);
         const cacheContents = [
             { type: `credits`, amount },
         ];
@@ -183,6 +190,7 @@ class AIShip extends CombatShip_1.CombatShip {
             contents: cacheContents,
             location: this.location,
             message: `Remains of ${this.name}`,
+            onlyVisibleToShipId: this.onlyVisibleToShipId,
         });
         this.game.removeShip(this);
     }

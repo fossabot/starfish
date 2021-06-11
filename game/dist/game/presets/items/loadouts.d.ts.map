@@ -1,1 +1,1 @@
-{"version":3,"file":"loadouts.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/loadouts.ts"],"names":[],"mappings":"AAEA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,WAAW,GAAG,OAAO;CAuB9C,CAAA;AAED,eAAe,QAAQ,CAAA"}
+{"version":3,"file":"loadouts.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/loadouts.ts"],"names":[],"mappings":"AAEA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,WAAW,GAAG,OAAO;CAwC9C,CAAA;AAED,eAAe,QAAQ,CAAA"}

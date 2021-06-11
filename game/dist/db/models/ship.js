@@ -27,8 +27,6 @@ const shipSchemaFields = {
     seenPlanets: [{ name: String }],
     tutorial: {
         step: Number,
-        spawnedCaches: [{ type: String }],
-        spawnedShips: [{ type: String }],
     },
     captain: String,
     logAlertLevel: String,

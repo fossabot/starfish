@@ -133,7 +133,7 @@ export default {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('schematic'))
+          this.ship.shownPanels.includes('diagram'))
       )
     },
     crewByRoom(

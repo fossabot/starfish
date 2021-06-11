@@ -295,10 +295,12 @@ export class Ship extends Stubbable {
   equipLoadout(this: Ship, name: LoadoutName): boolean {
     const loadout = loadouts[name]
     if (!loadout) return false
+    this.swapChassis({ id: loadout.chassis })
     loadout.items.forEach(
       (baseData: Partial<BaseItemData>) =>
         this.addItem(baseData),
     )
+    this.updateThingsThatCouldChangeOnItemChange()
     return true
   }
 
@@ -312,7 +314,8 @@ export class Ship extends Stubbable {
     if (this.tutorial) {
       this.radii.sight =
         this.tutorial.currentStep.sightRange
-      this.radii.scan = 0 // this.tutorial.currentStep.sightRange
+      this.radii.scan =
+        this.tutorial.currentStep.scanRange || 0
       this.toUpdate.radii = this.radii
       return
     }

@@ -206,7 +206,9 @@ class Ship extends Stubbable_1.Stubbable {
         const loadout = loadouts_1.default[name];
         if (!loadout)
             return false;
+        this.swapChassis({ id: loadout.chassis });
         loadout.items.forEach((baseData) => this.addItem(baseData));
+        this.updateThingsThatCouldChangeOnItemChange();
         return true;
     }
     // ----- radii -----
@@ -218,7 +220,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (this.tutorial) {
             this.radii.sight =
                 this.tutorial.currentStep.sightRange;
-            this.radii.scan = 0; // this.tutorial.currentStep.sightRange
+            this.radii.scan =
+                this.tutorial.currentStep.scanRange || 0;
             this.toUpdate.radii = this.radii;
             return;
         }

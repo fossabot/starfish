@@ -5,9 +5,14 @@
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
     <hr />
-    <div>Max Sight Range: {{ data.sightRange }}AU</div>
-    <div>
+    <div v-if="data.sightRange">
+      Max Sight Range: {{ data.sightRange }}AU
+    </div>
+    <div v-if="data.shipScanRange">
       Max Ship Scan Range: {{ data.shipScanRange }}AU
+    </div>
+    <div v-if="data.reliability">
+      Reliability: {{ data.reliability * 100 }}%
     </div>
     <hr />
     <div class="sub">{{ data.description }}</div>

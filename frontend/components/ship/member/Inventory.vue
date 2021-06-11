@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <Box class="inventory" v-if="show">
+    <template #title>
+      <span class="sectionemoji">⚖️</span
+      >{{ crewMember.name }}'s Inventory
+    </template>
     <div class="panesection">
       <div>
         💳Credits:
@@ -61,7 +65,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </Box>
 </template>
 
 <script lang="ts">
@@ -77,6 +81,13 @@ export default {
   },
   computed: {
     ...mapState(['crewMember', 'ship']),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes('inventory'))
+      )
+    },
     inventory(this: ComponentShape) {
       return this.crewMember?.inventory
         .filter((i: Cargo) => i.amount >= 0.001)
@@ -187,4 +198,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.inventory {
+  width: 250px;
+}
+</style>

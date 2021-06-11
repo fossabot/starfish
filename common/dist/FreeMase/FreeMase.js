@@ -51,7 +51,7 @@ class FreeMase {
             if (firstFitIndex === -1)
                 return;
             const firstFit = availableSpaces[firstFitIndex];
-            element.setAttribute(`style`, `position: absolute; top:${firstFit.top}px; left: ${firstFit.left}px;`);
+            element.setAttribute(`style`, `position: absolute; top:${firstFit.top}px; left: ${firstFit.left}px;  opacity: 1;`);
             const placedRect = new Rect_1.Rect({
                 top: firstFit.top,
                 left: firstFit.left,

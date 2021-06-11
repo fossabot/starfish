@@ -5,8 +5,15 @@
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
     <hr />
-    <div>Max Broadast Range: {{ data.range }}AU</div>
-    <div>Clarity Boost: {{ data.antiGarble * 100 }}AU</div>
+    <div v-if="data.range">
+      Max Broadast Range: {{ data.range }}AU
+    </div>
+    <div v-if="data.antiGarble">
+      Clarity Boost: {{ data.antiGarble * 100 }}AU
+    </div>
+    <div v-if="data.reliability">
+      Reliability: {{ data.reliability * 100 }}%
+    </div>
     <hr />
     <div class="sub">{{ data.description }}</div>
   </div>

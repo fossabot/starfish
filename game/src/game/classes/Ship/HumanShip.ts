@@ -381,7 +381,7 @@ export class HumanShip extends CombatShip {
     }
   }
 
-  updatePlanet(silent?: boolean) {
+  async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
       this.game.planets.find((p) =>
@@ -393,27 +393,34 @@ export class HumanShip extends CombatShip {
         : false
 
     if (silent) return
+
+    await c.sleep(100) // to resolve the constructor; this.tutorial doesn't exist yet
     // -----  log for you and other ships on that planet when you land/depart -----
-    if (this.planet && this.planet !== previousPlanet) {
+    if (
+      (!this.tutorial || this.tutorial.step > 0) &&
+      this.planet &&
+      this.planet !== previousPlanet
+    ) {
       this.logEntry(
         `Landed on ${this.planet ? this.planet.name : ``}.`,
         `high`,
       )
-      this.planet.shipsAt().forEach((s) => {
-        if (s === this) return
-        s.logEntry(
-          `${this.name} landed on ${
-            this.planet ? this.planet.name : ``
-          }.`,
-        )
-      })
+      if (!this.tutorial)
+        this.planet.shipsAt().forEach((s) => {
+          if (s === this) return
+          s.logEntry(
+            `${this.name} landed on ${
+              this.planet ? this.planet.name : ``
+            }.`,
+          )
+        })
     } else if (previousPlanet && !this.planet) {
       this.logEntry(
         `Departed from ${
           previousPlanet ? previousPlanet.name : ``
         }.`,
       )
-      if (previousPlanet)
+      if (previousPlanet && !this.tutorial)
         previousPlanet.shipsAt().forEach((s) => {
           if (s === this) return
           s.logEntry(
@@ -439,6 +446,8 @@ export class HumanShip extends CombatShip {
   updateThingsThatCouldChangeOnItemChange() {
     super.updateThingsThatCouldChangeOnItemChange()
     this.updateBroadcastRadius()
+    this.toUpdate._hp = this.hp
+    this.toUpdate._maxHp = this._maxHp
   }
 
   recalculateShownPanels() {
@@ -539,10 +548,12 @@ export class HumanShip extends CombatShip {
   addRoom(room: CrewLocation) {
     if (!(room in this.rooms))
       this.rooms[room] = roomData[room]
+    this.toUpdate.rooms = this.rooms
   }
 
   removeRoom(room: CrewLocation) {
     delete this.rooms[room]
+    this.toUpdate.rooms = this.rooms
   }
 
   // ----- items -----
@@ -573,7 +584,7 @@ export class HumanShip extends CombatShip {
       `gray`,
       `Added crew member ${cm.name} to ${this.name}`,
     )
-    if (!silent)
+    if (!silent && this.crewMembers.length > 1)
       this.logEntry(
         `${cm.name} has joined the ship's crew!`,
         `high`,
@@ -606,13 +617,15 @@ export class HumanShip extends CombatShip {
 
     this.crewMembers.splice(index, 1)
     this.logEntry(
-      `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. ${cm.name}'s cargo has been distributed amongst the crew.`,
+      `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
       `critical`,
     )
-    this.distributeCargoAmongCrew([
-      ...cm.inventory,
-      { type: `credits`, amount: cm.credits },
-    ])
+    // * this could be abused to generate infinite money
+    // ${cm.name}'s cargo has been distributed amongst the crew.
+    // this.distributeCargoAmongCrew([
+    //   ...cm.inventory,
+    //   { type: `credits`, amount: cm.credits },
+    // ])
     db.ship.addOrUpdateInDb(this)
   }
 
@@ -948,14 +961,14 @@ export class HumanShip extends CombatShip {
             : mostRecentCombat.attacker
           : c.randomFromArray(attackableShips)
       }
-      this.toUpdate.targetShip = c.stubify<
-        CombatShip,
-        ShipStub
-      >(targetShip!, [`visible`, `seenPlanets`])
-      // ----- with EVERY AVAILABLE WEAPON -----
-      availableWeapons.forEach((w) => {
-        this.attack(targetShip!, w, mainItemTarget)
-      })
+
+      // ----- attack with EVERY AVAILABLE WEAPON -----
+      if (targetShip) {
+        this.toUpdate.targetShip = targetShip.stubify()
+        availableWeapons.forEach((w) => {
+          this.attack(targetShip!, w, mainItemTarget)
+        })
+      } else this.toUpdate.targetShip = false
     }
   }
 

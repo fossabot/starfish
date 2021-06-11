@@ -72,7 +72,7 @@ export class FreeMase {
 
       element.setAttribute(
         `style`,
-        `position: absolute; top:${firstFit.top}px; left: ${firstFit.left}px;`,
+        `position: absolute; top:${firstFit.top}px; left: ${firstFit.left}px;  opacity: 1;`,
       )
       const placedRect: Rect = new Rect({
         top: firstFit.top,

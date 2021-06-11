@@ -26,7 +26,9 @@ class CombatShip extends Ship_1.Ship {
         return this.weapons.filter((w) => w.cooldownRemaining <= 0);
     }
     getEnemiesInAttackRange() {
-        const combatShipsInRange = this.visible.ships.filter((s) => this.canAttack(s, true));
+        const combatShipsInRange = this.visible.ships
+            .map((s) => this.game.ships.find((ship) => ship.id === s.id))
+            .filter((s) => s && this.canAttack(s, true));
         return combatShipsInRange;
     }
     respawn() {

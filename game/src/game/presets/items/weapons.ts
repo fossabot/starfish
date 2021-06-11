@@ -1,6 +1,18 @@
 export const weapons: {
   [key in WeaponId]: BaseWeaponData
 } = {
+  tutorial1: {
+    type: `weapon`,
+    id: `tutorial1`,
+    displayName: `Crustacean Cannon 1`,
+    description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats.`,
+    basePrice: 10,
+    range: 0.01,
+    rarity: 9999999,
+    damage: 3,
+    baseCooldown: 0.05 * 60 * 1000,
+    maxHp: 10,
+  },
   tiny1: {
     type: `weapon`,
     id: `tiny1`,

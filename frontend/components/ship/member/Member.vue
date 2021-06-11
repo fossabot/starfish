@@ -66,7 +66,7 @@
       </div>
     </div> -->
 
-      <ShipMemberInventory />
+      <!-- <ShipMemberInventory /> -->
 
       <ShipMemberSkills />
 

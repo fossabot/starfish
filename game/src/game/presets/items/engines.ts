@@ -1,6 +1,16 @@
 export const engines: {
   [key in EngineId]: BaseEngineData
 } = {
+  tutorial1: {
+    type: `engine`,
+    id: `tutorial1`,
+    displayName: `Bubble Booster v1`,
+    description: `Expels repeated payloads of hyrdocarbon-based fuel that explode outside of the ship, forming a trail that looks not unlike bubbles. A highly inefficient form of propulsion.`,
+    basePrice: 10,
+    rarity: 999999,
+    thrustAmplification: 3,
+    maxHp: 10,
+  },
   starter1: {
     type: `engine`,
     id: `starter1`,

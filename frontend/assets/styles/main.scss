@@ -184,6 +184,11 @@ input[type='submit'] {
   text-align: center;
 }
 
+.invisible {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .flashtextgoodonspawn {
   animation: highlight-text-good 4s ease-out 1;
 }

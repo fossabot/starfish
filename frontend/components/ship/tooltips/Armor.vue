@@ -5,8 +5,11 @@
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
     <hr />
-    <div>
+    <div v-if="data.damageReduction">
       Damage Reduction: {{ data.damageReduction * 100 }}%
+    </div>
+    <div v-if="data.reliability">
+      Reliability: {{ data.reliability * 100 }}%
     </div>
     <hr />
     <div class="sub">{{ data.description }}</div>

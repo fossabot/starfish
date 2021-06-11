@@ -106,7 +106,7 @@ function getRepairAmountPerTickForSingleCrewMember(
 ) {
   return (
     (skill / globals.TICK_INTERVAL) *
-    0.1 *
+    0.05 *
     gameSpeedMultiplier
   )
 }

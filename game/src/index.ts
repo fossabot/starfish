@@ -12,9 +12,9 @@ dbInit({})
 export const game = new Game()
 
 runOnDbReady(async () => {
-  await db.attackRemnant.wipe()
+  // await db.attackRemnant.wipe()
   // await db.planet.wipe()
-  await db.ship.wipe()
+  // await db.ship.wipe()
   // await db.cache.wipe()
   // await db.ship.wipeAI()
 

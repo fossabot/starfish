@@ -36,7 +36,7 @@ export declare class HumanShip extends CombatShip {
     logEntry(text: string, level?: LogLevel): void;
     move(toLocation?: CoordinatePair): void;
     updateVisible(): void;
-    updatePlanet(silent?: boolean): void;
+    updatePlanet(silent?: boolean): Promise<void>;
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;
     recalculateShownPanels(): void;

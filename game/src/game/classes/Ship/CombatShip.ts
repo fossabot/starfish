@@ -49,8 +49,14 @@ export abstract class CombatShip extends Ship {
 
   getEnemiesInAttackRange(): CombatShip[] {
     const combatShipsInRange = (
-      this.visible.ships as Ship[]
-    ).filter((s) => this.canAttack(s, true)) as CombatShip[]
+      this.visible.ships as ShipStub[]
+    )
+      .map((s) =>
+        this.game.ships.find((ship) => ship.id === s.id),
+      )
+      .filter(
+        (s) => s && this.canAttack(s, true),
+      ) as CombatShip[]
     return combatShipsInRange
   }
 

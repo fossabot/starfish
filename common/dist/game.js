@@ -59,7 +59,7 @@ function getThrustMagnitudeForSingleCrewMember(skill = 1, engineThrustMultiplier
 }
 function getRepairAmountPerTickForSingleCrewMember(skill) {
     return ((skill / globals_1.default.TICK_INTERVAL) *
-        0.1 *
+        0.05 *
         gameSpeedMultiplier);
 }
 function getStaminaGainPerTickForSingleCrewMember() {
