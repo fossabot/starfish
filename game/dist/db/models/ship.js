@@ -28,6 +28,7 @@ const shipSchemaFields = {
     tutorial: {
         step: Number,
     },
+    tagline: String,
     captain: String,
     logAlertLevel: String,
     crewMembers: [

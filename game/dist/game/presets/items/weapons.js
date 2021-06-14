@@ -10,6 +10,7 @@ exports.weapons = {
         basePrice: 10,
         range: 0.01,
         rarity: 9999999,
+        reliability: 5,
         damage: 3,
         baseCooldown: 0.05 * 60 * 1000,
         maxHp: 10,

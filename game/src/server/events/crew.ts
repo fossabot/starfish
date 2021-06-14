@@ -28,11 +28,6 @@ export default function (
           error: `That crew member already exists on this ship.`,
         })
 
-      if (ship.chassis.bunks <= ship.crewMembers.length)
-        return callback({
-          error: `The ship is full! Upgrade to a chassis with more bunks (or kick someone) to add more crew members.`,
-        })
-
       crewMemberBaseData.name =
         crewMemberBaseData.name.substring(
           0,
@@ -275,7 +270,10 @@ export default function (
 
       if (
         crewMember.heldWeight + amount >
-        crewMember.maxCargoWeight
+        Math.min(
+          ship.chassis.maxCargoSpace,
+          crewMember.maxCargoSpace,
+        )
       )
         return callback({
           error: `That's too heavy to fit into your cargo space.`,
@@ -286,7 +284,9 @@ export default function (
           cargoForSale.buyMultiplier *
           amount *
           planet?.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
         2,
@@ -315,6 +315,8 @@ export default function (
           crewMember,
         ),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,
@@ -372,7 +374,9 @@ export default function (
           cargoBeingBought.sellMultiplier *
           amount *
           planet.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? 1 + (1 - (c.factionVendorMultiplier || 1))
             : 1),
         2,
@@ -388,6 +392,8 @@ export default function (
           crewMember,
         ),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,
@@ -490,7 +496,9 @@ export default function (
           c.baseRepairCost *
           hp *
           planet.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
         2,
@@ -524,6 +532,8 @@ export default function (
           crewMember,
         ),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,
@@ -578,7 +588,9 @@ export default function (
           passiveForSale.buyMultiplier *
           c.getCrewPassivePriceMultiplier(currentLevel) *
           planet.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
         2,
@@ -595,6 +607,8 @@ export default function (
           crewMember,
         ),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,

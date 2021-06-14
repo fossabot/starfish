@@ -46,7 +46,7 @@ function default_1(socket) {
             return dist_1.default.log(`red`, `No ship found to advance tutorial for: ${id}`);
         if (!ship.tutorial)
             return dist_1.default.log(`red`, `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot advance.`);
-        dist_1.default.log(`gray`, `Advancing tutorial for ship ${id}`);
+        // c.log(`gray`, `Advancing tutorial for ship ${id}`)
         ship.tutorial.advanceStep();
     });
 }

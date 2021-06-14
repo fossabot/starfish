@@ -52,8 +52,6 @@ export class AIShip extends CombatShip {
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
     this.targetLocation = [...this.location]
-
-    if (this.onlyVisibleToShipId) c.log(this)
   }
 
   tick() {

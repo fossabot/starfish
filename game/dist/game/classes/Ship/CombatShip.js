@@ -35,7 +35,6 @@ class CombatShip extends Ship_1.Ship {
         dist_1.default.log(`Respawning`, this.name);
         this.items = [];
         this.previousLocations = [];
-        this.equipLoadout(`humanDefault`);
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
@@ -75,8 +74,9 @@ class CombatShip extends Ship_1.Ship {
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / weapon.range;
+        const enemyAgility = target.chassis.agility;
         const hitRoll = Math.random();
-        let miss = hitRoll < rangeAsPercent;
+        let miss = hitRoll * enemyAgility < rangeAsPercent;
         const damage = miss
             ? 0
             : dist_1.default.getHitDamage(weapon, totalMunitionsSkill);

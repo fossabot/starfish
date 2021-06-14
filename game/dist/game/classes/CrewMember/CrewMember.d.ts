@@ -6,7 +6,7 @@ import type { CombatShip } from '../Ship/CombatShip';
 import { Stubbable } from '../Stubbable';
 export declare class CrewMember extends Stubbable {
     static readonly levelXPNumbers: number[];
-    static readonly baseMaxCargoWeight = 10;
+    static readonly basemaxCargoSpace = 10;
     readonly id: string;
     readonly ship: HumanShip;
     name: string;
@@ -26,7 +26,7 @@ export declare class CrewMember extends Stubbable {
     readonly passives: CrewPassive[];
     readonly upgrades: PassiveCrewUpgrade[];
     readonly stats: CrewStatEntry[];
-    maxCargoWeight: number;
+    maxCargoSpace: number;
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): boolean;
@@ -38,7 +38,7 @@ export declare class CrewMember extends Stubbable {
     addXp(skill: SkillType, xp?: number): void;
     addCargo(type: CargoType, amount: number): number;
     get heldWeight(): number;
-    recalculateMaxCargoWeight(): void;
+    recalculatemaxCargoSpace(): void;
     addPassive(data: Partial<BaseCrewPassiveData>): void;
     recalculateAll(): void;
     addStat(statname: StatKey, amount: number): void;

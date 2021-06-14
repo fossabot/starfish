@@ -147,6 +147,7 @@ class Tutorial {
                     `room`,
                     `inventory`,
                     `ship`,
+                    `log`,
                 ],
                 disableRepair: true,
                 disableStamina: true,
@@ -174,6 +175,7 @@ class Tutorial {
                     `room`,
                     `inventory`,
                     `ship`,
+                    `log`,
                 ],
                 disableRepair: true,
                 disableStamina: true,
@@ -211,6 +213,7 @@ class Tutorial {
                     `inventory`,
                     `ship`,
                     `scanShip`,
+                    `log`,
                 ],
                 disableRepair: true,
                 disableStamina: true,
@@ -238,6 +241,7 @@ class Tutorial {
                     `ship`,
                     `scanShip`,
                     `diagram`,
+                    `log`,
                 ],
                 disableRepair: true,
                 visibleTypes: [`planet`, `ship`, `attackRemnant`],
@@ -647,8 +651,7 @@ class Tutorial {
         this.ship.recalculateShownPanels();
         this.ship.respawn(true);
         if (this.ship.planet)
-            this.ship.planet
-                .shipsAt()
+            this.ship.planet.shipsAt
                 .filter((s) => s.faction?.color === this.ship.faction?.color)
                 .forEach((s) => {
                 if (s === this.ship)
@@ -657,13 +660,18 @@ class Tutorial {
             });
     }
     cleanUp() {
-        this.ship.game.caches.forEach((k) => {
-            if (k.onlyVisibleToShipId === this.ship.id)
-                this.ship.game.removeCache(k);
+        dist_1.default.log(`cleaning up after tutorial...`);
+        dist_1.default.log(this.ship.game.caches.length, this.ship.game.caches.filter((k) => k.onlyVisibleToShipId).length, this.ship.game.caches.filter((k) => k.onlyVisibleToShipId === this.ship.id).length);
+        this.ship.game.caches
+            .filter((k) => k.onlyVisibleToShipId === this.ship.id)
+            .forEach((k) => {
+            dist_1.default.log(`attempting to remove cache`, k);
+            this.ship.game.removeCache(k);
         });
-        this.ship.game.aiShips.forEach((s) => {
-            if (s.onlyVisibleToShipId === this.ship.id)
-                this.ship.game.removeShip(s);
+        this.ship.game.aiShips
+            .filter((s) => s.onlyVisibleToShipId === this.ship.id)
+            .forEach((s) => {
+            this.ship.game.removeShip(s);
         });
     }
 }

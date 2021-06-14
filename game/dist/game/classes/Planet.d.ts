@@ -12,12 +12,16 @@ export declare class Planet extends Stubbable {
     readonly creatures: string[];
     readonly repairCostMultiplier: number;
     readonly radius: number;
+    readonly allegiances: AllegianceData[];
     readonly homeworld?: Faction;
     mass: number;
     priceFluctuator: number;
-    constructor({ name, color, location, vendor, factionId, homeworld, creatures, repairCostMultiplier, radius, }: BasePlanetData, game: Game);
+    constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }: BasePlanetData, game: Game);
     identify(): void;
-    shipsAt(): import("./Ship/HumanShip").HumanShip[];
+    get shipsAt(): import("./Ship/HumanShip").HumanShip[];
+    updateFrontendForShipsAt(): void;
+    incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
+    decrementAllegiances(): void;
     updateFluctuator(): void;
 }
 //# sourceMappingURL=Planet.d.ts.map

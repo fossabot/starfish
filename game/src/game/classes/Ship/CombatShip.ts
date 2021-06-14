@@ -64,7 +64,6 @@ export abstract class CombatShip extends Ship {
     c.log(`Respawning`, this.name)
     this.items = []
     this.previousLocations = []
-    this.equipLoadout(`humanDefault`)
     this.recalculateMaxHp()
     this.hp = this.maxHp
     this.dead = false
@@ -124,8 +123,9 @@ export abstract class CombatShip extends Ship {
     )
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
+    const enemyAgility = target.chassis.agility
     const hitRoll = Math.random()
-    let miss = hitRoll < rangeAsPercent
+    let miss = hitRoll * enemyAgility < rangeAsPercent
     const damage = miss
       ? 0
       : c.getHitDamage(weapon, totalMunitionsSkill)

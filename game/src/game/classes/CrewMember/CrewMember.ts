@@ -10,7 +10,7 @@ import { Stubbable } from '../Stubbable'
 
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
-  static readonly baseMaxCargoWeight = 10
+  static readonly basemaxCargoSpace = 10
 
   readonly id: string
   readonly ship: HumanShip
@@ -31,7 +31,7 @@ export class CrewMember extends Stubbable {
   readonly passives: CrewPassive[] = []
   readonly upgrades: PassiveCrewUpgrade[] = []
   readonly stats: CrewStatEntry[] = []
-  maxCargoWeight: number = CrewMember.baseMaxCargoWeight
+  maxCargoSpace: number = CrewMember.basemaxCargoSpace
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
     super()
@@ -161,7 +161,11 @@ export class CrewMember extends Stubbable {
   }
 
   addCargo(type: CargoType, amount: number): number {
-    const canHold = this.maxCargoWeight - this.heldWeight
+    const canHold =
+      Math.min(
+        this.ship.chassis.maxCargoSpace,
+        this.maxCargoSpace,
+      ) - this.heldWeight
     const existingStock = this.inventory.find(
       (cargo) => cargo.type === type,
     )
@@ -182,12 +186,12 @@ export class CrewMember extends Stubbable {
     )
   }
 
-  recalculateMaxCargoWeight() {
+  recalculatemaxCargoSpace() {
     const cargoSpacePassiveBoost =
       this.passives.find((p) => p.type === `cargoSpace`)
         ?.changeAmount || 0
-    this.maxCargoWeight =
-      CrewMember.baseMaxCargoWeight + cargoSpacePassiveBoost
+    this.maxCargoSpace =
+      CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost
   }
 
   addPassive(data: Partial<BaseCrewPassiveData>) {
@@ -211,7 +215,7 @@ export class CrewMember extends Stubbable {
   }
 
   recalculateAll() {
-    this.recalculateMaxCargoWeight()
+    this.recalculatemaxCargoSpace()
   }
 
   addStat(statname: StatKey, amount: number) {

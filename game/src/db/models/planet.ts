@@ -21,6 +21,7 @@ const planetSchemaFields: Record<
   creatures: [String],
   homeworld: { id: String },
   repairCostMultiplier: Number,
+  allegiances: [{ faction: { id: String }, level: Number }],
   vendor: {
     cargo: [
       {

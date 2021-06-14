@@ -74,6 +74,7 @@ export class Ship extends Stubbable {
   speed: number = 0 // just for frontend reference
   direction: number = 0 // just for frontend reference
   // targetLocation: CoordinatePair = [0, 0]
+  tagline: string | null = null
   attackable = false
   _hp = 10 // set in hp setter below
   _maxHp = 10
@@ -91,6 +92,7 @@ export class Ship extends Stubbable {
       seenPlanets,
       location,
       previousLocations,
+      tagline,
     }: BaseShipData,
     game: Game,
   ) {
@@ -117,6 +119,8 @@ export class Ship extends Stubbable {
 
     if (previousLocations)
       this.previousLocations = previousLocations
+
+    if (tagline) this.tagline = tagline
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets

@@ -12,6 +12,7 @@ const cacheSchemaFields = {
     location: [{ type: Number, required: true }],
     message: { type: String, default: `` },
     contents: [{ type: { type: String }, amount: Number }],
+    onlyVisibleToShipId: String,
     droppedBy: String,
 };
 const cacheSchema = new mongoose_1.Schema(cacheSchemaFields);

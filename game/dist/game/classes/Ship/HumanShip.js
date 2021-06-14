@@ -27,6 +27,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             attackRemnants: [],
         };
         this.commonCredits = 0;
+        this.tutorial = undefined;
         this.membersIn = crew_1.membersIn;
         this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
         this.id = data.id;
@@ -213,7 +214,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
                 const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
                     10 +
-                    1;
+                    1.5;
                 const type = dist_1.default.randomFromArray([
                     `oxygen`,
                     `salt`,
@@ -255,7 +256,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.planet !== previousPlanet) {
             this.logEntry(`Landed on ${this.planet ? this.planet.name : ``}.`, `high`);
             if (!this.tutorial)
-                this.planet.shipsAt().forEach((s) => {
+                this.planet.shipsAt.forEach((s) => {
                     if (s === this)
                         return;
                     s.logEntry(`${this.name} landed on ${this.planet ? this.planet.name : ``}.`);
@@ -264,7 +265,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         else if (previousPlanet && !this.planet) {
             this.logEntry(`Departed from ${previousPlanet ? previousPlanet.name : ``}.`);
             if (previousPlanet && !this.tutorial)
-                previousPlanet.shipsAt().forEach((s) => {
+                previousPlanet.shipsAt.forEach((s) => {
                     if (s === this)
                         return;
                     s.logEntry(`${this.name} departed from ${previousPlanet ? previousPlanet.name : ``}.`);
@@ -429,6 +430,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     });
             }
         });
+        dist_1.default.log(leftovers);
         if (leftovers.length) {
             setTimeout(() => this.logEntry(`Your crew couldn't hold everything, so some cargo was released as a cache.`), 500);
             this.game.addCache({
@@ -504,6 +506,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     // ----- respawn -----
     respawn(silent = false) {
         super.respawn();
+        this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
         this.toUpdate.dead = this.dead;
         this.crewMembers.forEach((cm) => (cm.targetLocation = null));

@@ -22,6 +22,7 @@ export class Planet extends Stubbable {
   readonly creatures: string[]
   readonly repairCostMultiplier: number
   readonly radius: number
+  readonly allegiances: AllegianceData[] = []
   readonly homeworld?: Faction
   mass = 5.974e30
   priceFluctuator = 1
@@ -32,11 +33,11 @@ export class Planet extends Stubbable {
       color,
       location,
       vendor,
-      factionId,
       homeworld,
       creatures,
       repairCostMultiplier,
       radius,
+      allegiances,
     }: BasePlanetData,
     game: Game,
   ) {
@@ -51,9 +52,21 @@ export class Planet extends Stubbable {
     this.homeworld = game.factions.find(
       (f) => f.id === homeworld?.id,
     )
-    this.faction =
-      this.homeworld ||
-      game.factions.find((f) => f.id === factionId)
+    this.faction = this.homeworld
+
+    if (allegiances)
+      for (let a of allegiances) {
+        const foundFaction = this.game.factions.find(
+          (f) => f.id === a.faction.id,
+        )
+        if (foundFaction)
+          this.allegiances.push({
+            faction: foundFaction,
+            level: a.level,
+          })
+      }
+    if (this.faction)
+      this.incrementAllegiance(this.faction, 100)
 
     this.vendor = {
       cargo: vendor.cargo?.map((cargo) => {
@@ -107,6 +120,8 @@ export class Planet extends Stubbable {
 
     this.updateFluctuator()
     setInterval(this.updateFluctuator, 1000 * 60 * 60) // every hour
+
+    setInterval(this.decrementAllegiances, 1000 * 60 * 60) // every hour
   }
 
   identify() {
@@ -115,10 +130,50 @@ export class Planet extends Stubbable {
     )
   }
 
-  shipsAt() {
+  get shipsAt() {
     return this.game.humanShips.filter(
       (s) => s.planet === this,
     )
+  }
+
+  updateFrontendForShipsAt() {
+    this.shipsAt.forEach((s) => {
+      s.toUpdate.planet = this.stubify()
+    })
+  }
+
+  incrementAllegiance(
+    faction: Faction | FactionStub,
+    amount?: number,
+  ) {
+    const allegianceAmountToIncrement = amount || 1
+    const maxAllegiance = 100
+    const found = this.allegiances.find(
+      (a) => a.faction.id === faction.id,
+    )
+    if (found)
+      found.level = Math.min(
+        maxAllegiance,
+        found.level + allegianceAmountToIncrement,
+      )
+    else
+      this.allegiances.push({
+        faction,
+        level: Math.min(
+          maxAllegiance,
+          allegianceAmountToIncrement,
+        ),
+      })
+    this._stub = null
+    this.updateFrontendForShipsAt()
+  }
+
+  decrementAllegiances() {
+    this.allegiances.forEach((a) => {
+      if (this.faction?.id !== a.faction.id) a.level *= 0.99
+    })
+    this._stub = null
+    this.updateFrontendForShipsAt()
   }
 
   updateFluctuator() {
@@ -137,5 +192,6 @@ export class Planet extends Stubbable {
       (1 - intensity / 2)
 
     this._stub = null // invalidate stub
+    this.updateFrontendForShipsAt()
   }
 }

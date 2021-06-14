@@ -46,7 +46,9 @@ export default function (
         (itemForSale.itemData?.basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
         2,
@@ -76,6 +78,8 @@ export default function (
       callback({
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,
@@ -160,6 +164,8 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
+      planet.incrementAllegiance(ship.faction)
+
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} sold the ship's ${itemType} of id ${itemId}.`,
@@ -200,21 +206,15 @@ export default function (
           error: `That equipment is not for sale here.`,
         })
 
-      if (
-        itemForSale.chassisData.bunks <
-        ship.crewMembers.length
-      )
-        return callback({
-          error: `This chassis has too few bunks to support your crew members.`,
-        })
-
       const currentChassisSellPrice =
         ship.chassis.basePrice / 2
       const price = c.r2(
         (itemForSale.chassisData?.basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
-          (planet.faction === ship.faction
+          ((planet.allegiances.find(
+            (a) => a.faction.id === ship.faction.id,
+          )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1) -
           currentChassisSellPrice,
@@ -248,6 +248,8 @@ export default function (
       callback({
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
+
+      planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,

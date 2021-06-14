@@ -46,13 +46,14 @@ export declare class Ship extends Stubbable {
     velocity: CoordinatePair;
     speed: number;
     direction: number;
+    tagline: string | null;
     attackable: boolean;
     _hp: number;
     _maxHp: number;
     dead: boolean;
     obeysGravity: boolean;
     mass: number;
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, }: BaseShipData, game: Game);
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, tagline, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     rename(newName: string): void;

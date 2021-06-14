@@ -8,7 +8,8 @@ export const chassis: {
     description: `They say that a goldfish will grow to the size of its container. The goldfish in this bowl are feeling cramped, restrained to shallower waters.`,
     basePrice: 10,
     slots: 4,
-    bunks: 3,
+    agility: 1.0,
+    maxCargoSpace: 10,
     rarity: 0.5,
   },
   starter2: {
@@ -18,7 +19,8 @@ export const chassis: {
     description: `They say that a goldfish will grow to the size of its container. The goldfish in this bowl are feeling cramped, restrained to shallower waters.`,
     basePrice: 10,
     slots: 5,
-    bunks: 4,
+    agility: 1.0,
+    maxCargoSpace: 15,
     rarity: 1,
   },
 
@@ -28,10 +30,11 @@ export const chassis: {
     type: `chassis`,
     id: `solo1`,
     displayName: `Solo Swimmer mk.1`,
-    description: `Some prefer to handle things alone. This ship chassis eschews crew space for maximum equipment slots.`,
+    description: `Some prefer to handle things alone. This ship chassis eschews crew space for maximum equipment slots and cargo space.`,
     basePrice: 10,
     slots: 6,
-    bunks: 1,
+    agility: 1.35,
+    maxCargoSpace: 50,
     rarity: 3,
   },
 }

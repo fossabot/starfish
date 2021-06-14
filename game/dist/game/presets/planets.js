@@ -109,7 +109,7 @@ function generatePlanet(game, homeworldFactionKey) {
         ...Object.values(itemData.scanner),
         ...Object.values(itemData.communicator),
     ]) {
-        const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
+        const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers(true);
         // vendors will buy any item, but only sell a few
         const itemForSale = {
             itemType: d.type,
@@ -158,9 +158,9 @@ function generatePlanet(game, homeworldFactionKey) {
     };
 }
 exports.generatePlanet = generatePlanet;
-function getBuyAndSellMultipliers() {
+function getBuyAndSellMultipliers(item = false) {
     const buyMultiplier = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
-    const sellMultiplier = Math.min(buyMultiplier * dist_1.default.factionVendorMultiplier, dist_1.default.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3));
+    const sellMultiplier = Math.min(buyMultiplier * dist_1.default.factionVendorMultiplier, dist_1.default.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3)) * (item ? 0.4 : 1);
     return { buyMultiplier, sellMultiplier };
 }
 const planetNames = [

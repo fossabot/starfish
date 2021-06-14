@@ -262,6 +262,8 @@ class Game {
     removeShip(ship) {
         dist_1.default.log(`Removing ship ${ship.name} from the game.`);
         db_1.db.ship.removeFromDb(ship.id);
+        if (ship.tutorial)
+            ship.tutorial.cleanUp();
         const index = this.ships.findIndex((ec) => ship.id === ec.id);
         if (index === -1)
             return;
@@ -304,11 +306,13 @@ class Game {
         return newCache;
     }
     removeCache(cache) {
+        dist_1.default.log(`Removing cache ${cache.id} from the game.`);
         db_1.db.cache.removeFromDb(cache.id);
         const index = this.caches.findIndex((ec) => cache.id === ec.id);
         if (index === -1)
-            return;
+            return dist_1.default.log(`Failed to find cache in list.`);
         this.caches.splice(index, 1);
+        dist_1.default.log(this.caches.length, `remaining`);
     }
     addAttackRemnant(data, save = true) {
         const newAttackRemnant = new AttackRemnant_1.AttackRemnant(data);
@@ -318,6 +322,7 @@ class Game {
         return newAttackRemnant;
     }
     removeAttackRemnant(ar) {
+        dist_1.default.log(`Removing attack remnant ${ar.id} from the game.`);
         db_1.db.attackRemnant.removeFromDb(ar.id);
         const index = this.attackRemnants.findIndex((eAr) => ar.id === eAr.id);
         if (index === -1)

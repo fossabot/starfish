@@ -50,7 +50,7 @@ function default_1(socket) {
         const price = dist_1.default.r2((itemForSale.itemData?.basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2, true);
         if (price > ship.commonCredits)
@@ -66,6 +66,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(ship),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought the ${itemType} of id ${itemId}.`);
     });
     socket.on(`ship:sellItem`, (shipId, crewId, itemType, itemId, callback) => {
@@ -110,6 +111,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(ship),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold the ship's ${itemType} of id ${itemId}.`);
     });
     socket.on(`ship:swapChassis`, (shipId, crewId, chassisType, callback) => {
@@ -133,16 +135,11 @@ function default_1(socket) {
             return callback({
                 error: `That equipment is not for sale here.`,
             });
-        if (itemForSale.chassisData.bunks <
-            ship.crewMembers.length)
-            return callback({
-                error: `This chassis has too few bunks to support your crew members.`,
-            });
         const currentChassisSellPrice = ship.chassis.basePrice / 2;
         const price = dist_1.default.r2((itemForSale.chassisData?.basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1) -
             currentChassisSellPrice, 2, true);
@@ -159,6 +156,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(ship),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} swapped to the chassis ${chassisType}.`);
     });
 }

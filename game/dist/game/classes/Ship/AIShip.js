@@ -57,8 +57,6 @@ class AIShip extends CombatShip_1.CombatShip {
         else
             this.spawnPoint = [...this.location];
         this.targetLocation = [...this.location];
-        if (this.onlyVisibleToShipId)
-            dist_1.default.log(this);
     }
     tick() {
         super.tick();

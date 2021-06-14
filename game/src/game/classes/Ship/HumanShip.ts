@@ -46,7 +46,7 @@ export class HumanShip extends CombatShip {
   mainTactic: Tactic | undefined
   itemTarget: ItemType | undefined
 
-  tutorial: Tutorial | undefined
+  tutorial: Tutorial | undefined = undefined
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
@@ -340,7 +340,7 @@ export class HumanShip extends CombatShip {
             Math.random() * 3 * (Math.random() * 3),
           ) /
             10 +
-          1
+          1.5
 
         const type = c.randomFromArray([
           `oxygen`,
@@ -406,7 +406,7 @@ export class HumanShip extends CombatShip {
         `high`,
       )
       if (!this.tutorial)
-        this.planet.shipsAt().forEach((s) => {
+        this.planet.shipsAt.forEach((s) => {
           if (s === this) return
           s.logEntry(
             `${this.name} landed on ${
@@ -421,7 +421,7 @@ export class HumanShip extends CombatShip {
         }.`,
       )
       if (previousPlanet && !this.tutorial)
-        previousPlanet.shipsAt().forEach((s) => {
+        previousPlanet.shipsAt.forEach((s) => {
           if (s === this) return
           s.logEntry(
             `${this.name} departed from ${
@@ -671,6 +671,7 @@ export class HumanShip extends CombatShip {
           })
       }
     })
+    c.log(leftovers)
     if (leftovers.length) {
       setTimeout(
         () =>
@@ -775,6 +776,8 @@ export class HumanShip extends CombatShip {
 
   respawn(silent = false) {
     super.respawn()
+
+    this.equipLoadout(`humanDefault`)
 
     this.updatePlanet(true)
     this.toUpdate.dead = this.dead

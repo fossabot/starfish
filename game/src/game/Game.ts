@@ -425,6 +425,7 @@ export class Game {
   removeShip(ship: Ship) {
     c.log(`Removing ship ${ship.name} from the game.`)
     db.ship.removeFromDb(ship.id)
+    if (ship.tutorial) ship.tutorial.cleanUp()
     const index = this.ships.findIndex(
       (ec) => ship.id === ec.id,
     )
@@ -482,12 +483,15 @@ export class Game {
   }
 
   removeCache(cache: Cache) {
+    c.log(`Removing cache ${cache.id} from the game.`)
     db.cache.removeFromDb(cache.id)
     const index = this.caches.findIndex(
       (ec) => cache.id === ec.id,
     )
-    if (index === -1) return
+    if (index === -1)
+      return c.log(`Failed to find cache in list.`)
     this.caches.splice(index, 1)
+    c.log(this.caches.length, `remaining`)
   }
 
   addAttackRemnant(
@@ -502,6 +506,7 @@ export class Game {
   }
 
   removeAttackRemnant(ar: AttackRemnant) {
+    c.log(`Removing attack remnant ${ar.id} from the game.`)
     db.attackRemnant.removeFromDb(ar.id)
     const index = this.attackRemnants.findIndex(
       (eAr) => ar.id === eAr.id,

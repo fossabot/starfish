@@ -42,7 +42,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.passives = [];
         this.upgrades = [];
         this.stats = [];
-        this.maxCargoWeight = CrewMember.baseMaxCargoWeight;
+        this.maxCargoSpace = CrewMember.basemaxCargoSpace;
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
@@ -151,7 +151,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
     }
     addCargo(type, amount) {
-        const canHold = this.maxCargoWeight - this.heldWeight;
+        const canHold = Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) - this.heldWeight;
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)
             existingStock.amount += Math.min(canHold, amount);
@@ -165,11 +165,11 @@ class CrewMember extends Stubbable_1.Stubbable {
     get heldWeight() {
         return this.inventory.reduce((total, i) => total + i.amount, 0);
     }
-    recalculateMaxCargoWeight() {
+    recalculatemaxCargoSpace() {
         const cargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
             ?.changeAmount || 0;
-        this.maxCargoWeight =
-            CrewMember.baseMaxCargoWeight + cargoSpacePassiveBoost;
+        this.maxCargoSpace =
+            CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost;
     }
     addPassive(data) {
         if (!data.type)
@@ -189,7 +189,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.recalculateAll();
     }
     recalculateAll() {
-        this.recalculateMaxCargoWeight();
+        this.recalculatemaxCargoSpace();
     }
     addStat(statname, amount) {
         const existing = this.stats.find((s) => s.stat === statname);
@@ -222,5 +222,5 @@ class CrewMember extends Stubbable_1.Stubbable {
 }
 exports.CrewMember = CrewMember;
 CrewMember.levelXPNumbers = dist_1.default.levels;
-CrewMember.baseMaxCargoWeight = 10;
+CrewMember.basemaxCargoSpace = 10;
 //# sourceMappingURL=CrewMember.js.map

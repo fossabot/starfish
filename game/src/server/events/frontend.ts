@@ -71,7 +71,7 @@ export default function (
         `red`,
         `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot advance.`,
       )
-    c.log(`gray`, `Advancing tutorial for ship ${id}`)
+    // c.log(`gray`, `Advancing tutorial for ship ${id}`)
     ship.tutorial.advanceStep()
   })
 }

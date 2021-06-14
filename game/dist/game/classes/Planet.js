@@ -31,8 +31,9 @@ const chassis_1 = require("../presets/items/chassis");
 const itemData = __importStar(require("../presets/items/"));
 const Stubbable_1 = require("./Stubbable");
 class Planet extends Stubbable_1.Stubbable {
-    constructor({ name, color, location, vendor, factionId, homeworld, creatures, repairCostMultiplier, radius, }, game) {
+    constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }, game) {
         super();
+        this.allegiances = [];
         this.mass = 5.974e30;
         this.priceFluctuator = 1;
         this.game = game;
@@ -43,9 +44,18 @@ class Planet extends Stubbable_1.Stubbable {
         this.creatures = creatures || [];
         this.repairCostMultiplier = repairCostMultiplier || 0;
         this.homeworld = game.factions.find((f) => f.id === homeworld?.id);
-        this.faction =
-            this.homeworld ||
-                game.factions.find((f) => f.id === factionId);
+        this.faction = this.homeworld;
+        if (allegiances)
+            for (let a of allegiances) {
+                const foundFaction = this.game.factions.find((f) => f.id === a.faction.id);
+                if (foundFaction)
+                    this.allegiances.push({
+                        faction: foundFaction,
+                        level: a.level,
+                    });
+            }
+        if (this.faction)
+            this.incrementAllegiance(this.faction, 100);
         this.vendor = {
             cargo: vendor.cargo?.map((cargo) => {
                 return {
@@ -94,12 +104,40 @@ class Planet extends Stubbable_1.Stubbable {
                 (1 + Math.random() * 0.1);
         this.updateFluctuator();
         setInterval(this.updateFluctuator, 1000 * 60 * 60); // every hour
+        setInterval(this.decrementAllegiances, 1000 * 60 * 60); // every hour
     }
     identify() {
         dist_1.default.log(`Planet: ${this.name} (${this.color}) at ${this.location}`);
     }
-    shipsAt() {
+    get shipsAt() {
         return this.game.humanShips.filter((s) => s.planet === this);
+    }
+    updateFrontendForShipsAt() {
+        this.shipsAt.forEach((s) => {
+            s.toUpdate.planet = this.stubify();
+        });
+    }
+    incrementAllegiance(faction, amount) {
+        const allegianceAmountToIncrement = amount || 1;
+        const maxAllegiance = 100;
+        const found = this.allegiances.find((a) => a.faction.id === faction.id);
+        if (found)
+            found.level = Math.min(maxAllegiance, found.level + allegianceAmountToIncrement);
+        else
+            this.allegiances.push({
+                faction,
+                level: Math.min(maxAllegiance, allegianceAmountToIncrement),
+            });
+        this._stub = null;
+        this.updateFrontendForShipsAt();
+    }
+    decrementAllegiances() {
+        this.allegiances.forEach((a) => {
+            if (this.faction?.id !== a.faction.id)
+                a.level *= 0.99;
+        });
+        this._stub = null;
+        this.updateFrontendForShipsAt();
     }
     updateFluctuator() {
         const intensity = Planet.fluctuatorIntensity;
@@ -115,6 +153,7 @@ class Planet extends Stubbable_1.Stubbable {
                 intensity +
                 (1 - intensity / 2);
         this._stub = null; // invalidate stub
+        this.updateFrontendForShipsAt();
     }
 }
 exports.Planet = Planet;

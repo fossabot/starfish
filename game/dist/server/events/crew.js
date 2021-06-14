@@ -17,10 +17,6 @@ function default_1(socket) {
             return callback({
                 error: `That crew member already exists on this ship.`,
             });
-        if (ship.chassis.bunks <= ship.crewMembers.length)
-            return callback({
-                error: `The ship is full! Upgrade to a chassis with more bunks (or kick someone) to add more crew members.`,
-            });
         crewMemberBaseData.name =
             crewMemberBaseData.name.substring(0, dist_1.default.maxNameLength);
         const addedCrewMember = ship.addCrewMember(crewMemberBaseData);
@@ -142,7 +138,7 @@ function default_1(socket) {
             });
         amount = dist_1.default.r2(amount, 2, true);
         if (crewMember.heldWeight + amount >
-            crewMember.maxCargoWeight)
+            Math.min(ship.chassis.maxCargoSpace, crewMember.maxCargoSpace))
             return callback({
                 error: `That's too heavy to fit into your cargo space.`,
             });
@@ -150,7 +146,7 @@ function default_1(socket) {
             cargoForSale.buyMultiplier *
             amount *
             planet?.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2, true);
         if (price > crewMember.credits)
@@ -167,6 +163,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}.`);
     });
     socket.on(`crew:sellCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
@@ -193,7 +190,7 @@ function default_1(socket) {
             cargoBeingBought.sellMultiplier *
             amount *
             planet.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
                 : 1), 2, true);
         crewMember.credits += price;
@@ -203,6 +200,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}.`);
     });
     socket.on(`crew:drop`, (shipId, crewId, cargoType, amount, message, callback) => {
@@ -257,7 +255,7 @@ function default_1(socket) {
             dist_1.default.baseRepairCost *
             hp *
             planet.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2, true);
         if (price > crewMember.credits)
@@ -275,6 +273,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${vendorLocation}.`);
     });
     socket.on(`crew:buyPassive`, (shipId, crewId, passiveType, vendorLocation, callback) => {
@@ -298,7 +297,7 @@ function default_1(socket) {
             passiveForSale.buyMultiplier *
             dist_1.default.getCrewPassivePriceMultiplier(currentLevel) *
             planet.priceFluctuator *
-            (planet.faction === ship.faction
+            ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2, true);
         if (price > crewMember.credits)
@@ -308,6 +307,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought passive ${passiveType} from ${vendorLocation}.`);
     });
 }

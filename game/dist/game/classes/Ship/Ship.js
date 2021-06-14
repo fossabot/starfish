@@ -14,7 +14,7 @@ const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, tagline, }, game) {
         super();
         this.name = `ship`;
         this.planet = false;
@@ -42,6 +42,7 @@ class Ship extends Stubbable_1.Stubbable {
         this.speed = 0; // just for frontend reference
         this.direction = 0; // just for frontend reference
         // targetLocation: CoordinatePair = [0, 0]
+        this.tagline = null;
         this.attackable = false;
         this._hp = 10; // set in hp setter below
         this._maxHp = 10;
@@ -69,6 +70,8 @@ class Ship extends Stubbable_1.Stubbable {
             this.location = [0, 0];
         if (previousLocations)
             this.previousLocations = previousLocations;
+        if (tagline)
+            this.tagline = tagline;
         if (seenPlanets)
             this.seenPlanets = seenPlanets
                 .map(({ name }) => this.game.planets.find((p) => p.name === name))
