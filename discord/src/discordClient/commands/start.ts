@@ -44,7 +44,9 @@ export class StartCommand implements Command {
         `Failed to add you to the \`Crew\` server role.`,
       )
     } else {
-      context.guildMember?.roles.add(crewRole)
+      context.guildMember?.roles
+        .add(crewRole)
+        .catch(() => {})
     }
 
     // add crew member

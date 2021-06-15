@@ -80,10 +80,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isSameFaction(this: ComponentShape) {
+    isFriendlyToFaction(this: ComponentShape) {
       return (
-        this.ship.planet.faction?.id ===
-        this.ship.faction.id
+        (this.ship.planet.allegiances.find(
+          (a: AllegianceData) =>
+            a.faction.id === this.ship.faction.id,
+        )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
     buyableCargo(this: ComponentShape) {
@@ -94,7 +96,7 @@ export default {
             cargo.cargoData.basePrice *
               cargo.buyMultiplier *
               this.ship.planet.priceFluctuator *
-              (this.isSameFaction
+              (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
                 : 1),
             5,
@@ -102,8 +104,10 @@ export default {
           const maxCanBuy = c.r2(
             Math.min(
               this.crewMember.credits / pricePerUnit,
-              this.crewMember.maxCargoWeight -
-                this.totalWeight,
+              Math.min(
+                this.ship.chassis.maxCargoSpace,
+                this.crewMember.maxCargoSpace,
+              ) - this.totalWeight,
             ),
             2,
             true,
@@ -126,7 +130,7 @@ export default {
             cargo.cargoData.basePrice *
               cargo.sellMultiplier *
               this.ship.planet.priceFluctuator *
-              (this.isSameFaction
+              (this.isFriendlyToFaction
                 ? 1 + (1 - (c.factionVendorMultiplier || 1))
                 : 1),
             5,

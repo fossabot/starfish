@@ -24,7 +24,7 @@ export class Planet extends Stubbable {
   readonly radius: number
   readonly allegiances: AllegianceData[] = []
   readonly homeworld?: Faction
-  mass = 5.974e30
+  mass = 5.974e31
   priceFluctuator = 1
 
   constructor(
@@ -119,9 +119,15 @@ export class Planet extends Stubbable {
       (1 + Math.random() * 0.1)
 
     this.updateFluctuator()
-    setInterval(this.updateFluctuator, 1000 * 60 * 60) // every hour
+    setInterval(
+      () => this.updateFluctuator(),
+      1000 * 60 * 60,
+    ) // every hour
 
-    setInterval(this.decrementAllegiances, 1000 * 60 * 60) // every hour
+    setInterval(
+      () => this.decrementAllegiances(),
+      1000 * 60 * 60,
+    ) // every hour
   }
 
   identify() {
@@ -137,6 +143,7 @@ export class Planet extends Stubbable {
   }
 
   updateFrontendForShipsAt() {
+    this._stub = null
     this.shipsAt.forEach((s) => {
       s.toUpdate.planet = this.stubify()
     })
@@ -147,6 +154,7 @@ export class Planet extends Stubbable {
     amount?: number,
   ) {
     const allegianceAmountToIncrement = amount || 1
+    c.log(`allegiance`, allegianceAmountToIncrement)
     const maxAllegiance = 100
     const found = this.allegiances.find(
       (a) => a.faction.id === faction.id,
@@ -164,7 +172,6 @@ export class Planet extends Stubbable {
           allegianceAmountToIncrement,
         ),
       })
-    this._stub = null
     this.updateFrontendForShipsAt()
   }
 
@@ -172,7 +179,6 @@ export class Planet extends Stubbable {
     this.allegiances.forEach((a) => {
       if (this.faction?.id !== a.faction.id) a.level *= 0.99
     })
-    this._stub = null
     this.updateFrontendForShipsAt()
   }
 

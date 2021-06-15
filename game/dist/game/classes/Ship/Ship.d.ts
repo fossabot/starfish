@@ -53,7 +53,7 @@ export declare class Ship extends Stubbable {
     dead: boolean;
     obeysGravity: boolean;
     mass: number;
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, tagline, }: BaseShipData, game: Game);
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     rename(newName: string): void;
@@ -67,11 +67,11 @@ export declare class Ship extends Stubbable {
     removeItem(this: Ship, item: Item): boolean;
     equipLoadout(this: Ship, name: LoadoutName): boolean;
     updateThingsThatCouldChangeOnItemChange(): void;
+    recalculateMass(): void;
     updateSightAndScanRadius(): void;
-    lastMoveAngle: number;
     get canMove(): boolean;
     move(toLocation?: CoordinatePair): void;
-    addPreviousLocation(this: Ship, locationBeforeThisTick: CoordinatePair): void;
+    addPreviousLocation(this: Ship, previousLocation: CoordinatePair, currentLocation: CoordinatePair): void;
     isAt(this: Ship, coords: CoordinatePair): boolean;
     applyTickOfGravity(this: Ship): void;
     membersIn(l: CrewLocation): CrewMember[];

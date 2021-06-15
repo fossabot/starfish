@@ -68,6 +68,13 @@ textarea {
   height: 10em;
 }
 
+*:disabled,
+.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
 button,
 .button,
 input[type='submit'] {
@@ -80,12 +87,6 @@ input[type='submit'] {
   margin: 0;
   padding: 0.3em 0.5em;
   cursor: pointer;
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    pointer-events: auto;
-  }
 
   &.secondary {
     background: var(--bg);
@@ -156,12 +157,37 @@ input[type='submit'] {
   justify-content: center;
 }
 
+.martop {
+  margin-top: 1em;
+}
+.martopsmall {
+  margin-top: 0.5em;
+}
+.marbot {
+  margin-bottom: 1em;
+}
+.marbotsmall {
+  margin-bottom: 0.5em;
+}
+
 .padtop {
   padding-top: 1em;
+}
+.padtopsmall {
+  padding-top: 0.5em;
+}
+.padbot {
+  padding-bottom: 1em;
+}
+.padbotsmall {
+  padding-bottom: 0.5em;
 }
 
 .padnone {
   padding: 0;
+}
+.marnone {
+  margin: 0;
 }
 
 .relative {

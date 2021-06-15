@@ -24,6 +24,7 @@ export class CrewMember extends Stubbable {
   attackFactions: FactionKey[] = []
   attackTarget: CombatShip | null = null
   itemTarget: ItemType | null = null
+  cockpitCharge: number = 0
   repairPriority: RepairPriority = `most damaged`
   readonly inventory: Cargo[]
   credits: number
@@ -50,8 +51,9 @@ export class CrewMember extends Stubbable {
       `bunk` // failsafe
 
     this.stamina = data.stamina || this.maxStamina
-    this.lastActive = Date.now()
+    this.lastActive = data.lastActive || Date.now()
     this.inventory = data.inventory || []
+    this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits || 2
     this.skills = data.skills || [
       { skill: `piloting`, level: 1, xp: 0 },
@@ -140,6 +142,7 @@ export class CrewMember extends Stubbable {
   }
 
   addXp(skill: SkillType, xp?: number) {
+    this.lastActive = Date.now()
     if (!xp)
       xp = c.baseXpGain / (c.deltaTime / c.TICK_INTERVAL)
     let skillElement = this.skills.find(
@@ -161,6 +164,7 @@ export class CrewMember extends Stubbable {
   }
 
   addCargo(type: CargoType, amount: number): number {
+    this.lastActive = Date.now()
     const canHold =
       Math.min(
         this.ship.chassis.maxCargoSpace,
@@ -170,13 +174,30 @@ export class CrewMember extends Stubbable {
       (cargo) => cargo.type === type,
     )
     if (existingStock)
-      existingStock.amount += Math.min(canHold, amount)
+      existingStock.amount = c.r2(
+        existingStock.amount + Math.min(canHold, amount),
+      )
     else
       this.inventory.push({
         type,
         amount: Math.min(canHold, amount),
       })
+
+    this.ship.recalculateMass()
+
     return Math.max(0, amount - canHold)
+  }
+
+  removeCargo(type: CargoType, amount: number) {
+    const existingStock = this.inventory.find(
+      (cargo) => cargo.type === type,
+    )
+    if (existingStock)
+      existingStock.amount = c.r2(
+        existingStock.amount -
+          Math.min(existingStock.amount, amount),
+      )
+    this.ship.recalculateMass()
   }
 
   get heldWeight() {
@@ -195,6 +216,7 @@ export class CrewMember extends Stubbable {
   }
 
   addPassive(data: Partial<BaseCrewPassiveData>) {
+    this.lastActive = Date.now()
     if (!data.type) return
     const existing = this.passives.find(
       (p) => p.type === data.type,
@@ -219,6 +241,7 @@ export class CrewMember extends Stubbable {
   }
 
   addStat(statname: StatKey, amount: number) {
+    this.lastActive = Date.now()
     const existing = this.stats.find(
       (s) => s.stat === statname,
     )

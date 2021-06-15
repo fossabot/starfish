@@ -7,8 +7,9 @@ exports.Item = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Stubbable_1 = require("../Stubbable");
 class Item extends Stubbable_1.Stubbable {
-    constructor({ type, id, displayName, description, repair, maxHp, hp, repairDifficulty, reliability, }, ship, props) {
+    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, }, ship, props) {
         super();
+        this.mass = 1000;
         this.repairDifficulty = 1;
         this.reliability = 1; // higher loses less repair over time
         this.repair = 1;
@@ -18,6 +19,7 @@ class Item extends Stubbable_1.Stubbable {
         this.id = id;
         this.displayName = displayName;
         this.description = description;
+        this.mass = mass;
         if (reliability)
             this.reliability = reliability;
         if (repairDifficulty)
@@ -36,12 +38,12 @@ class Item extends Stubbable_1.Stubbable {
     set hp(newHp) {
         this.repair = newHp / this.maxHp;
     }
-    use() {
+    use(usePercent = 1) {
         if (this.ship.ai)
             return 0;
         if (this.ship.tutorial?.currentStep.disableRepair)
             return 0;
-        const durabilityLost = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability);
+        const durabilityLost = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * usePercent;
         this.repair -= durabilityLost;
         if (this.repair < 0)
             this.repair = 0;

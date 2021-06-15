@@ -5,6 +5,7 @@
     :buffer="false"
     :blackout="false"
     :interactive="false"
+    background="black"
     :radius="c.ARRIVAL_THRESHOLD"
     :width="200"
     label="ship vicinity"

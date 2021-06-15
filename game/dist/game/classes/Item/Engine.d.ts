@@ -4,5 +4,6 @@ export declare class Engine extends Item {
     readonly id: EngineId;
     readonly thrustAmplification: number;
     constructor(data: BaseEngineData, ship: Ship, props?: Partial<BaseEngineData>);
+    use(usePercent?: number): number;
 }
 //# sourceMappingURL=Engine.d.ts.map

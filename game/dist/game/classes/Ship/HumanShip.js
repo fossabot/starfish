@@ -34,6 +34,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         // id matches discord guildId
         this.ai = false;
         this.human = true;
+        this.speed = dist_1.default.vectorToMagnitude(this.velocity);
+        this.toUpdate.speed = this.speed;
+        this.direction = dist_1.default.vectorToDegrees(this.velocity);
+        this.toUpdate.direction = this.direction;
         this.captain = data.captain || null;
         this.log = data.log || [];
         if (data.tutorial && data.tutorial.step !== undefined)
@@ -51,6 +55,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`, `medium`);
         this.updateMaxScanProperties();
         this.updateVisible();
+        this.recalculateMass();
         if (!this.tutorial)
             this.updatePlanet(true);
         setTimeout(() => {
@@ -140,6 +145,85 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (levelsToAlert.includes(level))
             io_1.default.emit(`ship:message`, this.id, text);
     }
+    applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
+    thruster) {
+        charge *= thruster.cockpitCharge;
+        thruster.cockpitCharge -= charge;
+        const memberPilotingSkill = thruster.piloting?.level || 1;
+        const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
+            .filter((e) => e.repair > 0)
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
+        const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
+        const shipMass = this.mass;
+        const finalMagnitude = (magnitudePerPointOfCharge * charge) / shipMass;
+        // const currentVelocity: CoordinatePair = [...this.velocity]
+        // const currentMagnitude = c.vectorToMagnitude(currentVelocity)
+        const angleToTarget = dist_1.default.angleFromAToB(this.location, targetLocation);
+        const unitVectorToTarget = dist_1.default.unitVectorFromThisPointToThatPoint(this.location, targetLocation);
+        const thrustVector = [
+            unitVectorToTarget[0] * finalMagnitude,
+            unitVectorToTarget[1] * finalMagnitude,
+        ];
+        this.velocity = [
+            this.velocity[0] + thrustVector[0],
+            this.velocity[1] + thrustVector[1],
+        ];
+        this.toUpdate.velocity = this.velocity;
+        this.speed = dist_1.default.vectorToMagnitude(this.velocity);
+        this.toUpdate.speed = this.speed;
+        this.direction = dist_1.default.vectorToDegrees(this.velocity);
+        this.toUpdate.direction = this.direction;
+        dist_1.default.log({
+            mass: this.mass,
+            charge,
+            memberPilotingSkill,
+            engineThrustMultiplier,
+            magnitudePerPointOfCharge,
+            finalMagnitude,
+            unitVectorToTarget,
+            thrustVector,
+            velocity: this.velocity,
+            speed: this.speed,
+            direction: this.direction,
+        });
+        if (charge > 0.1)
+            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(angleToTarget, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} k/m/s of thrust.`, `low`);
+        this.engines.forEach((e) => e.use(charge));
+    }
+    brake(charge, thruster) {
+        charge *= thruster.cockpitCharge;
+        thruster.cockpitCharge -= charge;
+        charge *= 2; // braking is easier
+        const memberPilotingSkill = thruster.piloting?.level || 1;
+        const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
+            .filter((e) => e.repair > 0)
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
+        const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
+        const shipMass = this.mass;
+        const finalMagnitude = (magnitudePerPointOfCharge * charge) / shipMass;
+        const currentVelocity = [
+            ...this.velocity,
+        ];
+        const currentMagnitude = dist_1.default.vectorToMagnitude(currentVelocity);
+        if (finalMagnitude > currentMagnitude)
+            this.hardStop();
+        else {
+            const relativeScaleOfMagnitudeShrink = (currentMagnitude - finalMagnitude) /
+                currentMagnitude;
+            this.velocity = [
+                this.velocity[0] * relativeScaleOfMagnitudeShrink,
+                this.velocity[1] * relativeScaleOfMagnitudeShrink,
+            ];
+        }
+        this.toUpdate.velocity = this.velocity;
+        this.speed = dist_1.default.vectorToMagnitude(this.velocity);
+        this.toUpdate.speed = this.speed;
+        this.direction = dist_1.default.vectorToDegrees(this.velocity);
+        this.toUpdate.direction = this.direction;
+        if (charge > 0.1)
+            this.logEntry(`${thruster.name} applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} k/m/s of thrust.`, `low`);
+        this.engines.forEach((e) => e.use(charge));
+    }
     // ----- move -----
     move(toLocation) {
         super.move(toLocation);
@@ -148,85 +232,54 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.updatePlanet();
             return;
         }
+        if (!this.canMove) {
+            this.hardStop();
+            return;
+        }
         const startingLocation = [
             ...this.location,
         ];
-        const membersInCockpit = this.membersIn(`cockpit`);
-        if (!this.canMove || !membersInCockpit.length) {
-            this.speed = 0;
-            this.velocity = [0, 0];
-            this.toUpdate.speed = this.speed;
-            this.toUpdate.velocity = this.velocity;
-            return;
-        }
-        const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
-            .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
-        // ----- calculate new location based on target of each member in cockpit -----
-        for (let member of membersInCockpit) {
-            if (!member.targetLocation)
-                continue;
-            const distanceToTarget = dist_1.default.distance(this.location, member.targetLocation);
-            if (distanceToTarget < 0.000001)
-                continue;
-            const skill = member.skills.find((s) => s.skill === `piloting`)
-                ?.level || 1;
-            const thrustMagnitude = Math.min(dist_1.default.getThrustMagnitudeForSingleCrewMember(skill, engineThrustMultiplier), distanceToTarget);
-            this.engines.forEach((e) => e.use());
-            const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, member.targetLocation));
-            this.location[0] +=
-                unitVectorToTarget[0] *
-                    thrustMagnitude *
-                    (dist_1.default.deltaTime / 1000);
-            this.location[1] +=
-                unitVectorToTarget[1] *
-                    thrustMagnitude *
-                    (dist_1.default.deltaTime / 1000);
-        }
+        this.location[0] += this.velocity[0];
+        this.location[1] += this.velocity[1];
         this.toUpdate.location = this.location;
-        this.velocity = [
-            this.location[0] - startingLocation[0],
-            this.location[1] - startingLocation[1],
-        ];
-        this.toUpdate.velocity = this.velocity;
-        this.speed = dist_1.default.vectorToMagnitude(this.velocity);
-        this.toUpdate.speed =
-            this.speed / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
-        this.direction = dist_1.default.vectorToDegrees(this.velocity);
-        this.toUpdate.direction = this.direction;
-        // ----- skip if in tutorial -----
-        if (!this.tutorial) {
-            // ----- add previousLocation -----
-            this.addPreviousLocation(startingLocation);
-            // ----- game radius -----
-            this.radii.game = this.game.gameSoftRadius;
-            this.toUpdate.radii = this.radii;
-            const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
-                this.game.gameSoftRadius;
-            const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
-                this.game.gameSoftRadius;
-            if (isOutsideRadius && !startedOutsideRadius)
-                this.logEntry(`Left the known universe. Nothing but the void awaits out here.`, `high`);
-            if (!isOutsideRadius && startedOutsideRadius)
-                this.logEntry(`Re-entered the known universe.`, `high`);
-            // ----- random encounters -----
-            const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
-            if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
-                const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
-                    10 +
-                    1.5;
-                const type = dist_1.default.randomFromArray([
-                    `oxygen`,
-                    `salt`,
-                    `water`,
-                ]);
-                this.distributeCargoAmongCrew([
-                    { type: type, amount },
-                ]);
-                this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
-            }
-        }
+        this.addPreviousLocation(startingLocation, this.location);
         this.updatePlanet();
+        // ----- end if in tutorial -----
+        if (this.tutorial)
+            return;
+        // ----- game radius -----
+        this.radii.game = this.game.gameSoftRadius;
+        this.toUpdate.radii = this.radii;
+        const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
+            this.game.gameSoftRadius;
+        const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
+            this.game.gameSoftRadius;
+        if (isOutsideRadius && !startedOutsideRadius)
+            this.logEntry(`Left the known universe. Nothing but the void awaits out here.`, `high`);
+        if (!isOutsideRadius && startedOutsideRadius)
+            this.logEntry(`Re-entered the known universe.`, `high`);
+        // ----- random encounters -----
+        const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
+        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / 1000), 0.5)) {
+            const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
+                10 +
+                1.5;
+            const type = dist_1.default.randomFromArray([
+                `oxygen`,
+                `salt`,
+                `water`,
+            ]);
+            this.distributeCargoAmongCrew([
+                { type: type, amount },
+            ]);
+            this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
+        }
+    }
+    hardStop() {
+        this.velocity = [0, 0];
+        this.speed = 0;
+        this.toUpdate.velocity = this.velocity;
+        this.toUpdate.speed = this.speed;
     }
     updateVisible() {
         const targetTypes = this.tutorial?.currentStep.visibleTypes;
@@ -243,10 +296,13 @@ class HumanShip extends CombatShip_1.CombatShip {
         const previousPlanet = this.planet;
         this.planet =
             this.game.planets.find((p) => this.isAt(p.location)) || false;
-        if (previousPlanet !== this.planet)
+        if (previousPlanet !== this.planet) {
             this.toUpdate.planet = this.planet
                 ? this.planet.stubify()
                 : false;
+            if (this.planet)
+                this.hardStop();
+        }
         if (silent)
             return;
         await dist_1.default.sleep(100); // to resolve the constructor; this.tutorial doesn't exist yet

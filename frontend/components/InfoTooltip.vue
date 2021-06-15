@@ -1,7 +1,7 @@
 <template>
   <div
     class="hovertooltip"
-    v-if="tooltip"
+    v-if="tooltip && !isMobile"
     :style="tooltipStyle"
   >
     <template v-if="tooltip.type">
@@ -95,7 +95,7 @@ export default {
       this.recalcTooltipStyle()
     },
     async recalcTooltipStyle() {
-      if (!this.tooltip)
+      if (!this.tooltip || !this.$el)
         return (this.tooltipStyle = { opacity: 0 })
 
       await this.$nextTick()

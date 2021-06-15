@@ -2,6 +2,7 @@ interface BaseShipData {
   name: string
   id?: string
   location?: CoordinatePair
+  velocity?: CoordinatePair
   species: { id: SpeciesKey }
   seenPlanets?: { name: PlanetName }[]
   loadout?: LoadoutName
@@ -11,6 +12,7 @@ interface BaseShipData {
   previousLocations?: CoordinatePair[]
   spawnPoint?: CoordinatePair
   level?: number
+  tagline?: string
 }
 
 interface BaseHumanShipData extends BaseShipData {

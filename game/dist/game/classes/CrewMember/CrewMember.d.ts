@@ -19,6 +19,7 @@ export declare class CrewMember extends Stubbable {
     attackFactions: FactionKey[];
     attackTarget: CombatShip | null;
     itemTarget: ItemType | null;
+    cockpitCharge: number;
     repairPriority: RepairPriority;
     readonly inventory: Cargo[];
     credits: number;
@@ -37,6 +38,7 @@ export declare class CrewMember extends Stubbable {
     tick(): void;
     addXp(skill: SkillType, xp?: number): void;
     addCargo(type: CargoType, amount: number): number;
+    removeCargo(type: CargoType, amount: number): void;
     get heldWeight(): number;
     recalculatemaxCargoSpace(): void;
     addPassive(data: Partial<BaseCrewPassiveData>): void;

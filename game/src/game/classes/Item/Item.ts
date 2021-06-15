@@ -8,6 +8,7 @@ export class Item extends Stubbable {
   readonly id: ItemId
   readonly displayName: string
   readonly description: string
+  readonly mass: number = 1000
   readonly repairDifficulty: number = 1
   readonly reliability: number = 1 // higher loses less repair over time
   repair = 1
@@ -22,6 +23,7 @@ export class Item extends Stubbable {
       id,
       displayName,
       description,
+      mass,
       repair,
       maxHp,
       hp,
@@ -36,6 +38,7 @@ export class Item extends Stubbable {
     this.id = id
     this.displayName = displayName
     this.description = description
+    this.mass = mass
     if (reliability) this.reliability = reliability
     if (repairDifficulty)
       this.repairDifficulty = repairDifficulty
@@ -54,14 +57,15 @@ export class Item extends Stubbable {
     this.repair = newHp / this.maxHp
   }
 
-  use() {
+  use(usePercent: number = 1) {
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep.disableRepair)
       return 0
-    const durabilityLost = c.getBaseDurabilityLossPerTick(
-      this.maxHp,
-      this.reliability,
-    )
+    const durabilityLost =
+      c.getBaseDurabilityLossPerTick(
+        this.maxHp,
+        this.reliability,
+      ) * usePercent
     this.repair -= durabilityLost
     if (this.repair < 0) this.repair = 0
     this.ship.toUpdate._hp = this.ship.hp

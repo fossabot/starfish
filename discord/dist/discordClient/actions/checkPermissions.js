@@ -35,6 +35,7 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
     }
     if (!permissionsToCheck)
         return { error: `Failed to find bot permissions` };
+    // c.log(permissionsToCheck.toArray())
     // -------------- check permissions
     const missingPermissions = [];
     for (let p of requiredPermissions)

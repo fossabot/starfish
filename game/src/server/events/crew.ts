@@ -296,20 +296,8 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
-      const existingStock = crewMember.inventory.find(
-        (cargo) => cargo.type === cargoType,
-      )
-      if (existingStock)
-        existingStock.amount = c.r2(
-          amount + existingStock.amount,
-          2,
-          true,
-        )
-      else
-        crewMember.inventory.push({
-          type: cargoType,
-          amount,
-        })
+      crewMember.addCargo(cargoType, amount)
+
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
           crewMember,
@@ -346,14 +334,14 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      amount = c.r2(amount, 2, true)
+      amount = c.r2(amount, 2)
 
       const existingStock = crewMember.inventory.find(
         (cargo) => cargo.type === cargoType,
       )
       if (!existingStock || existingStock.amount < amount)
         return callback({
-          error: `Not enough stock of that cargo found.`,
+          error: `Not holding enough stock of that cargo.`,
         })
 
       const planet = ship.game.planets.find(
@@ -384,9 +372,7 @@ export default function (
       )
 
       crewMember.credits += price
-      existingStock.amount -= amount
-      if (existingStock.amount < 0.01)
-        existingStock.amount = 0
+      crewMember.removeCargo(cargoType, amount)
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
           crewMember,
@@ -613,6 +599,63 @@ export default function (
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} bought passive ${passiveType} from ${vendorLocation}.`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:thrust`,
+    (shipId, crewId, chargePercent, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      const targetLocation: CoordinatePair | null =
+        crewMember.targetLocation
+      if (!targetLocation)
+        return callback({
+          error: `You're not targeting any location to thrust towards!`,
+        })
+
+      ship.applyThrust(
+        targetLocation,
+        chargePercent,
+        crewMember,
+      )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} thrusted.`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:brake`,
+    (shipId, crewId, chargePercent, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      ship.brake(chargePercent, crewMember)
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} thrusted.`,
       )
     },
   )

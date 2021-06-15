@@ -15,6 +15,7 @@ const shipSchemaFields: Record<
 > = {
   id: { type: String, required: true },
   location: [{ type: Number, required: true }],
+  velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
   species: { id: String },
   loadout: String,
@@ -42,6 +43,8 @@ const shipSchemaFields: Record<
     {
       name: { type: String, required: true },
       id: { type: String, required: true },
+      lastActive: Number,
+      cockpitCharge: Number,
       skills: [
         {
           skill: String,

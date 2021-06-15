@@ -130,10 +130,12 @@ export default {
     isCaptain(this: ComponentShape) {
       return this.ship?.captain === this.userId
     },
-    isSameFaction(this: ComponentShape) {
+    isFriendlyToFaction(this: ComponentShape) {
       return (
-        this.ship.planet.faction?.id ===
-        this.ship.faction.id
+        (this.ship.planet.allegiances.find(
+          (a: AllegianceData) =>
+            a.faction.id === this.ship.faction.id,
+        )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
     buyableItems(this: ComponentShape) {
@@ -146,7 +148,7 @@ export default {
             (item.itemData?.basePrice || 1) *
               item.buyMultiplier! *
               this.ship.planet.priceFluctuator *
-              (this.isSameFaction
+              (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
                 : 1),
             2,
@@ -176,7 +178,7 @@ export default {
             (itemForSale.itemData?.basePrice || 1) *
               itemForSale.sellMultiplier *
               this.ship.planet.priceFluctuator *
-              (this.isSameFaction
+              (this.isFriendlyToFaction
                 ? 1 + (1 - (c.factionVendorMultiplier || 1))
                 : 1),
             2,
@@ -199,7 +201,7 @@ export default {
             (chassis.chassisData?.basePrice || 1) *
               chassis.buyMultiplier *
               this.ship.planet.priceFluctuator *
-              (this.isSameFaction
+              (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
                 : 1) -
               currentChassisSellPrice,
@@ -212,10 +214,7 @@ export default {
             canBuy:
               this.isCaptain &&
               this.ship.commonCredits >= price &&
-              chassis.chassisType !==
-                this.ship.chassis.id &&
-              this.ship.crewMembers.length <=
-                (chassis.chassisData?.bunks || 0),
+              chassis.chassisType !== this.ship.chassis.id,
           }
         },
       )

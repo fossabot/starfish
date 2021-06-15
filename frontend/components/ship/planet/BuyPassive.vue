@@ -13,7 +13,7 @@
           passive.passiveData.basePrice *
             passive.buyMultiplier *
             ship.planet.priceFluctuator *
-            (isSameFaction
+            (isFriendlyToFaction
               ? c.factionVendorMultiplier
               : 1) *
             c.getCrewPassivePriceMultiplier(
@@ -32,7 +32,7 @@
         c.r2(
           passive.passiveData.basePrice *
             passive.buyMultiplier *
-            (isSameFaction
+            (isFriendlyToFaction
               ? c.factionVendorMultiplier
               : 1) *
             c.getCrewPassivePriceMultiplier(
@@ -62,10 +62,12 @@ export default {
   computed: {
     ...mapState(['ship', 'crewMember']),
 
-    isSameFaction(this: ComponentShape) {
+    isFriendlyToFaction(this: ComponentShape) {
       return (
-        this.ship.planet.faction?.id ===
-        this.ship.faction.id
+        (this.ship.planet.allegiances.find(
+          (a: AllegianceData) =>
+            a.faction.id === this.ship.faction.id,
+        )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
 

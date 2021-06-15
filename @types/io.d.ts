@@ -118,6 +118,18 @@ interface IOClientEvents {
     crewId: string,
     amount: number,
   ) => void
+  [`crew:thrust`]: (
+    shipId: string,
+    crewId: string,
+    charge: number,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`crew:brake`]: (
+    shipId: string,
+    crewId: string,
+    charge: number,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
   [`ship:redistribute`]: (
     shipId: string,
     crewId: string,

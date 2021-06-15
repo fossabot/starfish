@@ -38,7 +38,9 @@ class StartCommand {
             await context.initialMessage.channel.send(`Failed to add you to the \`Crew\` server role.`);
         }
         else {
-            context.guildMember?.roles.add(crewRole);
+            context.guildMember?.roles
+                .add(crewRole)
+                .catch(() => { });
         }
         // add crew member
         if (!addedCrewMember) {

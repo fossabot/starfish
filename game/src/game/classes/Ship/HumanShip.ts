@@ -56,6 +56,11 @@ export class HumanShip extends CombatShip {
     this.ai = false
     this.human = true
 
+    this.speed = c.vectorToMagnitude(this.velocity)
+    this.toUpdate.speed = this.speed
+    this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.direction = this.direction
+
     this.captain = data.captain || null
     this.log = data.log || []
 
@@ -84,6 +89,7 @@ export class HumanShip extends CombatShip {
 
     this.updateMaxScanProperties()
     this.updateVisible()
+    this.recalculateMass()
 
     if (!this.tutorial) this.updatePlanet(true)
 
@@ -214,28 +220,16 @@ export class HumanShip extends CombatShip {
       io.emit(`ship:message`, this.id, text)
   }
 
-  // ----- move -----
-  move(toLocation?: CoordinatePair) {
-    super.move(toLocation)
-    if (toLocation) {
-      this.updateVisible()
-      this.updatePlanet()
-      return
-    }
+  applyThrust(
+    targetLocation: CoordinatePair,
+    charge: number, // 0 to 1 % of AVAILABLE charge to use
+    thruster: CrewMember,
+  ) {
+    charge *= thruster.cockpitCharge
+    thruster.cockpitCharge -= charge
 
-    const startingLocation: CoordinatePair = [
-      ...this.location,
-    ]
-
-    const membersInCockpit = this.membersIn(`cockpit`)
-    if (!this.canMove || !membersInCockpit.length) {
-      this.speed = 0
-      this.velocity = [0, 0]
-      this.toUpdate.speed = this.speed
-      this.toUpdate.velocity = this.velocity
-      return
-    }
-
+    const memberPilotingSkill =
+      thruster.piloting?.level || 1
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
@@ -246,119 +240,224 @@ export class HumanShip extends CombatShip {
           0,
         ),
     )
+    const magnitudePerPointOfCharge =
+      c.getThrustMagnitudeForSingleCrewMember(
+        memberPilotingSkill,
+        engineThrustMultiplier,
+      )
+    const shipMass = this.mass
+    const finalMagnitude =
+      (magnitudePerPointOfCharge * charge) / shipMass
 
-    // ----- calculate new location based on target of each member in cockpit -----
-    for (let member of membersInCockpit) {
-      if (!member.targetLocation) continue
+    // const currentVelocity: CoordinatePair = [...this.velocity]
+    // const currentMagnitude = c.vectorToMagnitude(currentVelocity)
 
-      const distanceToTarget = c.distance(
+    const angleToTarget = c.angleFromAToB(
+      this.location,
+      targetLocation,
+    )
+    const unitVectorToTarget =
+      c.unitVectorFromThisPointToThatPoint(
         this.location,
-        member.targetLocation,
-      )
-      if (distanceToTarget < 0.000001) continue
-
-      const skill =
-        member.skills.find((s) => s.skill === `piloting`)
-          ?.level || 1
-      const thrustMagnitude = Math.min(
-        c.getThrustMagnitudeForSingleCrewMember(
-          skill,
-          engineThrustMultiplier,
-        ),
-        distanceToTarget,
+        targetLocation,
       )
 
-      this.engines.forEach((e) => e.use())
-
-      const unitVectorToTarget = c.degreesToUnitVector(
-        c.angleFromAToB(
-          this.location,
-          member.targetLocation,
-        ),
-      )
-
-      this.location[0] +=
-        unitVectorToTarget[0] *
-        thrustMagnitude *
-        (c.deltaTime / 1000)
-      this.location[1] +=
-        unitVectorToTarget[1] *
-        thrustMagnitude *
-        (c.deltaTime / 1000)
-    }
-    this.toUpdate.location = this.location
+    const thrustVector = [
+      unitVectorToTarget[0] * finalMagnitude,
+      unitVectorToTarget[1] * finalMagnitude,
+    ]
 
     this.velocity = [
-      this.location[0] - startingLocation[0],
-      this.location[1] - startingLocation[1],
+      this.velocity[0] + thrustVector[0],
+      this.velocity[1] + thrustVector[1],
     ]
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
-    this.toUpdate.speed =
-      this.speed / (c.deltaTime / c.TICK_INTERVAL)
+    this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    // ----- skip if in tutorial -----
-    if (!this.tutorial) {
-      // ----- add previousLocation -----
-      this.addPreviousLocation(startingLocation)
+    c.log({
+      mass: this.mass,
+      charge,
+      memberPilotingSkill,
+      engineThrustMultiplier,
+      magnitudePerPointOfCharge,
+      finalMagnitude,
+      unitVectorToTarget,
+      thrustVector,
+      velocity: this.velocity,
+      speed: this.speed,
+      direction: this.direction,
+    })
 
-      // ----- game radius -----
-      this.radii.game = this.game.gameSoftRadius
-      this.toUpdate.radii = this.radii
-      const isOutsideRadius =
-        c.distance([0, 0], this.location) >
-        this.game.gameSoftRadius
-      const startedOutsideRadius =
-        c.distance([0, 0], startingLocation) >
-        this.game.gameSoftRadius
-      if (isOutsideRadius && !startedOutsideRadius)
-        this.logEntry(
-          `Left the known universe. Nothing but the void awaits out here.`,
-          `high`,
-        )
-      if (!isOutsideRadius && startedOutsideRadius)
-        this.logEntry(
-          `Re-entered the known universe.`,
-          `high`,
-        )
-
-      // ----- random encounters -----
-      const distanceTraveled = c.distance(
-        this.location,
-        startingLocation,
+    if (charge > 0.1)
+      this.logEntry(
+        `${thruster.name} thrusted towards ${c.r2(
+          angleToTarget,
+          0,
+        )}° with ${c.r2(
+          magnitudePerPointOfCharge * charge,
+        )} k/m/s of thrust.`,
+        `low`,
       )
-      if (
-        c.lottery(
-          distanceTraveled * (c.deltaTime / 1000),
-          0.5,
-        )
-      ) {
-        const amount =
-          Math.round(
-            Math.random() * 3 * (Math.random() * 3),
-          ) /
-            10 +
-          1.5
 
-        const type = c.randomFromArray([
-          `oxygen`,
-          `salt`,
-          `water`,
-        ] as CargoType[])
-        this.distributeCargoAmongCrew([
-          { type: type, amount },
-        ])
-        this.logEntry(
-          `Encountered some space junk and managed to harvest ${amount} ton${
-            amount === 1 ? `` : `s`
-          } of ${type} off of it.`,
-        )
-      }
+    this.engines.forEach((e) => e.use(charge))
+  }
+
+  brake(charge: number, thruster: CrewMember) {
+    charge *= thruster.cockpitCharge
+    thruster.cockpitCharge -= charge
+
+    charge *= 2 // braking is easier
+
+    const memberPilotingSkill =
+      thruster.piloting?.level || 1
+    const engineThrustMultiplier = Math.max(
+      c.noEngineThrustMagnitude,
+      this.engines
+        .filter((e) => e.repair > 0)
+        .reduce(
+          (total, e) =>
+            total + e.thrustAmplification * e.repair,
+          0,
+        ),
+    )
+    const magnitudePerPointOfCharge =
+      c.getThrustMagnitudeForSingleCrewMember(
+        memberPilotingSkill,
+        engineThrustMultiplier,
+      )
+    const shipMass = this.mass
+
+    const finalMagnitude =
+      (magnitudePerPointOfCharge * charge) / shipMass
+
+    const currentVelocity: CoordinatePair = [
+      ...this.velocity,
+    ]
+    const currentMagnitude =
+      c.vectorToMagnitude(currentVelocity)
+
+    if (finalMagnitude > currentMagnitude) this.hardStop()
+    else {
+      const relativeScaleOfMagnitudeShrink =
+        (currentMagnitude - finalMagnitude) /
+        currentMagnitude
+      this.velocity = [
+        this.velocity[0] * relativeScaleOfMagnitudeShrink,
+        this.velocity[1] * relativeScaleOfMagnitudeShrink,
+      ]
     }
 
+    this.toUpdate.velocity = this.velocity
+    this.speed = c.vectorToMagnitude(this.velocity)
+    this.toUpdate.speed = this.speed
+    this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.direction = this.direction
+
+    if (charge > 0.1)
+      this.logEntry(
+        `${thruster.name} applied the brakes with ${c.r2(
+          magnitudePerPointOfCharge * charge,
+        )} k/m/s of thrust.`,
+        `low`,
+      )
+
+    this.engines.forEach((e) => e.use(charge))
+  }
+
+  // ----- move -----
+  move(toLocation?: CoordinatePair) {
+    super.move(toLocation)
+    if (toLocation) {
+      this.updateVisible()
+      this.updatePlanet()
+      return
+    }
+
+    if (!this.canMove) {
+      this.hardStop()
+      return
+    }
+
+    const startingLocation: CoordinatePair = [
+      ...this.location,
+    ]
+
+    this.location[0] += this.velocity[0]
+    this.location[1] += this.velocity[1]
+    this.toUpdate.location = this.location
+
+    this.addPreviousLocation(
+      startingLocation,
+      this.location,
+    )
+
     this.updatePlanet()
+
+    // ----- end if in tutorial -----
+    if (this.tutorial) return
+
+    // ----- game radius -----
+    this.radii.game = this.game.gameSoftRadius
+    this.toUpdate.radii = this.radii
+    const isOutsideRadius =
+      c.distance([0, 0], this.location) >
+      this.game.gameSoftRadius
+    const startedOutsideRadius =
+      c.distance([0, 0], startingLocation) >
+      this.game.gameSoftRadius
+    if (isOutsideRadius && !startedOutsideRadius)
+      this.logEntry(
+        `Left the known universe. Nothing but the void awaits out here.`,
+        `high`,
+      )
+    if (!isOutsideRadius && startedOutsideRadius)
+      this.logEntry(
+        `Re-entered the known universe.`,
+        `high`,
+      )
+
+    // ----- random encounters -----
+    const distanceTraveled = c.distance(
+      this.location,
+      startingLocation,
+    )
+    if (
+      c.lottery(
+        distanceTraveled * (c.deltaTime / 1000),
+        0.5,
+      )
+    ) {
+      const amount =
+        Math.round(
+          Math.random() * 3 * (Math.random() * 3),
+        ) /
+          10 +
+        1.5
+
+      const type = c.randomFromArray([
+        `oxygen`,
+        `salt`,
+        `water`,
+      ] as CargoType[])
+      this.distributeCargoAmongCrew([
+        { type: type, amount },
+      ])
+      this.logEntry(
+        `Encountered some space junk and managed to harvest ${amount} ton${
+          amount === 1 ? `` : `s`
+        } of ${type} off of it.`,
+      )
+    }
+  }
+
+  hardStop() {
+    this.velocity = [0, 0]
+    this.speed = 0
+    this.toUpdate.velocity = this.velocity
+    this.toUpdate.speed = this.speed
   }
 
   updateVisible() {
@@ -387,10 +486,13 @@ export class HumanShip extends CombatShip {
       this.game.planets.find((p) =>
         this.isAt(p.location),
       ) || false
-    if (previousPlanet !== this.planet)
+    if (previousPlanet !== this.planet) {
       this.toUpdate.planet = this.planet
         ? this.planet.stubify()
         : false
+
+      if (this.planet) this.hardStop()
+    }
 
     if (silent) return
 

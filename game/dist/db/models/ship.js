@@ -9,6 +9,7 @@ const dist_1 = __importDefault(require("../../../../common/dist"));
 const shipSchemaFields = {
     id: { type: String, required: true },
     location: [{ type: Number, required: true }],
+    velocity: [{ type: Number, required: true }],
     name: { type: String, required: true },
     species: { id: String },
     loadout: String,
@@ -35,6 +36,8 @@ const shipSchemaFields = {
         {
             name: { type: String, required: true },
             id: { type: String, required: true },
+            lastActive: Number,
+            cockpitCharge: Number,
             skills: [
                 {
                     skill: String,

@@ -143,6 +143,12 @@
           }}
         </span>
       </div>
+      <div>
+        Mass:
+        {{
+          ship && c.numberWithCommas(c.r2(ship.mass, 0))
+        }}kg
+      </div>
     </div>
 
     <div class="panesection">
@@ -162,11 +168,7 @@
             'tooltip',
             `<b>Crew</b><br/><hr />${ship.crewMembers
               .map((cm) => cm.name)
-              .join(', ')}<hr />Your ship's chassis (${
-              ship.chassis.displayName
-            }) has enough space and life support for <b>${
-              ship.chassis.bunks
-            }</b> crew members. Trade in for a bigger chassis to get more space!`,
+              .join(', ')}`,
           )
         "
         @mouseleave="$store.commit('tooltip')"
@@ -176,19 +178,7 @@
           ship &&
             ship.crewMembers &&
             ship.crewMembers.length
-        }}/{{ ship && ship.chassis.bunks }}
-
-        <div>
-          <span v-for="c in ship.crewMembers.length">{{
-            ship.species.icon
-          }}</span
-          ><span
-            style="opacity: .2;"
-            v-for="c in ship.chassis.bunks -
-              ship.crewMembers.length"
-            >🔳</span
-          >
-        </div>
+        }}
       </div>
     </div>
   </Box>

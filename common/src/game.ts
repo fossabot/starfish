@@ -13,11 +13,12 @@ const baseRepairCost = 30
 
 const maxBroadcastLength = 200
 
-const baseStaminaUse = 0.00002 * gameSpeedMultiplier
+const baseStaminaUse = 0.00001 * gameSpeedMultiplier
 
-const baseXpGain = 0.2 * gameSpeedMultiplier
+const baseXpGain = 0.1 * gameSpeedMultiplier
 
 const factionVendorMultiplier = 0.98
+const factionAllegianceFriendCutoff = 10
 
 const baseItemSellMultiplier = 0.75
 
@@ -67,7 +68,7 @@ function getHitDamage(
 ) {
   return (
     weapon.damage *
-    (1 + (totalMunitionsSkill - 1) / 20) *
+    (1 + (totalMunitionsSkill - 1) / 50) *
     (weapon.repair || 0)
   )
 }
@@ -90,23 +91,35 @@ function getRadiusDiminishingReturns(
   return totalValue / Math.sqrt(equipmentCount) || 0
 }
 
+function getMaxCockpitChargeForSingleCrewMember(
+  level: number = 1,
+) {
+  return math.lerp(1, 10, level / 100)
+}
+
+function getCockpitChargePerTickForSingleCrewMember(
+  level: number = 1,
+) {
+  return math.lerp(0.002, 0.0002, level / 100) // backwards because you gain max charge
+}
+
 function getThrustMagnitudeForSingleCrewMember(
-  skill: number = 1,
+  level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
   return (
-    math.lerp(0.00001, 0.0001, skill / 100) *
+    math.lerp(0.2, 1, level / 100) *
     engineThrustMultiplier *
     gameSpeedMultiplier
   )
 }
 
 function getRepairAmountPerTickForSingleCrewMember(
-  skill: number,
+  level: number,
 ) {
   return (
-    (skill / globals.TICK_INTERVAL) *
-    0.05 *
+    (math.lerp(0.5, 2, level / 100) /
+      globals.TICK_INTERVAL) *
     gameSpeedMultiplier
   )
 }
@@ -116,7 +129,11 @@ function getStaminaGainPerTickForSingleCrewMember() {
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + level) * 3 * gameSpeedMultiplier
+  return (
+    (2 + math.lerp(1, 20, level / 100)) *
+    3 *
+    gameSpeedMultiplier
+  )
 }
 
 function getCrewPassivePriceMultiplier(level: number) {
@@ -187,6 +204,7 @@ export default {
   baseStaminaUse,
   baseXpGain,
   factionVendorMultiplier,
+  factionAllegianceFriendCutoff,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
   aiDifficultyMultiplier,
@@ -195,6 +213,8 @@ export default {
   getBaseDurabilityLossPerTick,
   getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,
+  getMaxCockpitChargeForSingleCrewMember,
+  getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,

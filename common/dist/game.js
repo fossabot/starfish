@@ -11,9 +11,10 @@ const gameSpeedMultiplier = 24 * 3;
 const baseSightRange = 0.2;
 const baseRepairCost = 30;
 const maxBroadcastLength = 200;
-const baseStaminaUse = 0.00002 * gameSpeedMultiplier;
-const baseXpGain = 0.2 * gameSpeedMultiplier;
+const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
+const baseXpGain = 0.1 * gameSpeedMultiplier;
 const factionVendorMultiplier = 0.98;
+const factionAllegianceFriendCutoff = 10;
 const baseItemSellMultiplier = 0.75;
 const noEngineThrustMagnitude = 0.02;
 const aiDifficultyMultiplier = 1;
@@ -40,7 +41,7 @@ const cargoTypes = [
 ];
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
-        (1 + (totalMunitionsSkill - 1) / 20) *
+        (1 + (totalMunitionsSkill - 1) / 50) *
         (weapon.repair || 0));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability) {
@@ -52,21 +53,29 @@ function getRadiusDiminishingReturns(totalValue, equipmentCount) {
         return 0;
     return totalValue / Math.sqrt(equipmentCount) || 0;
 }
-function getThrustMagnitudeForSingleCrewMember(skill = 1, engineThrustMultiplier = 1) {
-    return (math_1.default.lerp(0.00001, 0.0001, skill / 100) *
+function getMaxCockpitChargeForSingleCrewMember(level = 1) {
+    return math_1.default.lerp(1, 10, level / 100);
+}
+function getCockpitChargePerTickForSingleCrewMember(level = 1) {
+    return math_1.default.lerp(0.002, 0.0002, level / 100); // backwards because you gain max charge
+}
+function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
+    return (math_1.default.lerp(0.2, 1, level / 100) *
         engineThrustMultiplier *
         gameSpeedMultiplier);
 }
-function getRepairAmountPerTickForSingleCrewMember(skill) {
-    return ((skill / globals_1.default.TICK_INTERVAL) *
-        0.05 *
+function getRepairAmountPerTickForSingleCrewMember(level) {
+    return ((math_1.default.lerp(0.5, 2, level / 100) /
+        globals_1.default.TICK_INTERVAL) *
         gameSpeedMultiplier);
 }
 function getStaminaGainPerTickForSingleCrewMember() {
     return baseStaminaUse * 1.5;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + level) * 3 * gameSpeedMultiplier;
+    return ((2 + math_1.default.lerp(1, 20, level / 100)) *
+        3 *
+        gameSpeedMultiplier);
 }
 function getCrewPassivePriceMultiplier(level) {
     return 1 + level ** 2;
@@ -121,6 +130,7 @@ exports.default = {
     baseStaminaUse,
     baseXpGain,
     factionVendorMultiplier,
+    factionAllegianceFriendCutoff,
     baseItemSellMultiplier,
     noEngineThrustMagnitude,
     aiDifficultyMultiplier,
@@ -129,6 +139,8 @@ exports.default = {
     getBaseDurabilityLossPerTick,
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,
+    getMaxCockpitChargeForSingleCrewMember,
+    getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,

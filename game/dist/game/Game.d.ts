@@ -18,6 +18,7 @@ export declare class Game {
     constructor();
     startGame(): void;
     save(): Promise<void>;
+    daily(): Promise<void>;
     identify(): void;
     private tickCount;
     private lastTickTime;

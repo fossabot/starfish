@@ -61,6 +61,8 @@ export default async function checkPermissions({
   if (!permissionsToCheck)
     return { error: `Failed to find bot permissions` }
 
+  // c.log(permissionsToCheck.toArray())
+
   // -------------- check permissions
   const missingPermissions: Discord.PermissionString[] = []
   for (let p of requiredPermissions)

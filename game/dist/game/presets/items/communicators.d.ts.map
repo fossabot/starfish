@@ -1,1 +1,1 @@
-{"version":3,"file":"communicators.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/communicators.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,aAAa,EAAE;KACzB,GAAG,IAAI,cAAc,GAAG,oBAAoB;CAwB9C,CAAA"}
+{"version":3,"file":"communicators.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/communicators.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,aAAa,EAAE;KACzB,GAAG,IAAI,cAAc,GAAG,oBAAoB;CA0B9C,CAAA"}

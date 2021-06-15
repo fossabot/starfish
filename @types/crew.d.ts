@@ -41,6 +41,7 @@ interface PassiveCrewUpgrade {
 interface BaseCrewMemberData {
   name: string
   id: string
+  lastActive?: number
   skills?: XPData[]
   location?: CrewLocation
   stamina?: number
@@ -48,6 +49,7 @@ interface BaseCrewMemberData {
   credits?: number
   actives?: BaseCrewActiveData[]
   passives?: BaseCrewPassiveData[]
+  cockpitCharge?: number
   tactic?: Tactic
   itemTarget?: ItemType
   attackFactions?: FactionKey[]

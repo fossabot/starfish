@@ -24,15 +24,22 @@
       </div>
     </div>
     <ProgressBar
-      :percent="totalWeight / crewMember.maxCargoWeight"
+      :percent="
+        totalWeight /
+          Math.min(
+            crewMember.maxCargoSpace,
+            ship.chassis.maxCargoSpace,
+          )
+      "
       :dangerZone="-1"
-      @mouseenter="
+      @mouseenter.native="
         $store.commit(
           'tooltip',
-          'Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.',
+          `Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.<br />
+          Your ship's chassis has a hard maximum cargo space per crew member of <b>${ship.chassis.maxCargoSpace} tons</b>, which you cannot go above.`,
         )
       "
-      @mouseleave="$store.commit('tooltip')"
+      @mouseleave.native="$store.commit('tooltip')"
     >
       <div>
         📦Cargo:
@@ -40,7 +47,14 @@
           :number="c.r2(totalWeight)"
         />
         /
-        {{ c.r2(crewMember.maxCargoWeight) }}
+        {{
+          c.r2(
+            Math.min(
+              crewMember.maxCargoSpace,
+              ship.chassis.maxCargoSpace,
+            ),
+          )
+        }}
         tons
       </div>
     </ProgressBar>

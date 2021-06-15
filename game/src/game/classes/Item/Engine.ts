@@ -16,4 +16,20 @@ export class Engine extends Item {
     this.id = data.id
     this.thrustAmplification = data.thrustAmplification
   }
+
+  use(usePercent: number = 1): number {
+    if (this.ship.tutorial?.currentStep.disableRepair)
+      return 0
+
+    let repairLoss =
+      c.getBaseDurabilityLossPerTick(
+        this.maxHp,
+        this.reliability,
+      ) *
+      usePercent *
+      400
+    this.repair -= repairLoss
+    this._stub = null // invalidate stub
+    return repairLoss
+  }
 }

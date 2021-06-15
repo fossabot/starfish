@@ -1,8 +1,10 @@
 declare function getHitDamage(weapon: WeaponStub, totalMunitionsSkill?: number): number;
 declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
-declare function getThrustMagnitudeForSingleCrewMember(skill?: number, engineThrustMultiplier?: number): number;
-declare function getRepairAmountPerTickForSingleCrewMember(skill: number): number;
+declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
+declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
+declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThrustMultiplier?: number): number;
+declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
@@ -16,6 +18,7 @@ declare const _default: {
     baseStaminaUse: number;
     baseXpGain: number;
     factionVendorMultiplier: number;
+    factionAllegianceFriendCutoff: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     aiDifficultyMultiplier: number;
@@ -37,6 +40,8 @@ declare const _default: {
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
+    getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
+    getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;

@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "75cf06b3fd4fd200d6406ed55492a2c310c889b4de7814a53c9d3c690f3fb233",
-        "signature": "75cf06b3fd4fd200d6406ed55492a2c310c889b4de7814a53c9d3c690f3fb233",
+        "version": "11db3b8e0f9223b094faf240bb42396f3a956ebc16ed0bd52bb95d5410796f29",
+        "signature": "11db3b8e0f9223b094faf240bb42396f3a956ebc16ed0bd52bb95d5410796f29",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -277,28 +277,28 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "91222cd5e472d34edd2eea155d746c6c127a91a7c17b0dee1f11c40def247967",
-        "signature": "91222cd5e472d34edd2eea155d746c6c127a91a7c17b0dee1f11c40def247967",
+        "version": "b241fe5d797249ab5d4c60011f7c135bdf68a3a65fec5e4bf6f63002ce2bf168",
+        "signature": "b241fe5d797249ab5d4c60011f7c135bdf68a3a65fec5e4bf6f63002ce2bf168",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "d3b034b1d16d21c5e715d6b0d0883b003cc1ffaceaea3ca862521e293eb80ff0",
-        "signature": "d3b034b1d16d21c5e715d6b0d0883b003cc1ffaceaea3ca862521e293eb80ff0",
+        "version": "b65fe8b3b442d25aedc097190592c7cf73efe5828ee3c16b93d306b20b27d1df",
+        "signature": "b65fe8b3b442d25aedc097190592c7cf73efe5828ee3c16b93d306b20b27d1df",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "2bb2f848823b3dfc9e7f5fc091583e897a1fb140aa41c333d17cd2d81890593d",
-        "signature": "2bb2f848823b3dfc9e7f5fc091583e897a1fb140aa41c333d17cd2d81890593d",
+        "version": "25e08db2011812df022c6220a0d39c3723309b6b3c50a2e0c70f0975da92f45b",
+        "signature": "25e08db2011812df022c6220a0d39c3723309b6b3c50a2e0c70f0975da92f45b",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "ab6b5a50804c98f7ec1ac12978313b24904af92d5d637cedc5f6f160bc189d76",
-        "signature": "ab6b5a50804c98f7ec1ac12978313b24904af92d5d637cedc5f6f160bc189d76",
+        "version": "0aae420eb6f7a62cf97b47eac4706d4147e63c2857c7351fd9ce9f77d0b38a4e",
+        "signature": "0aae420eb6f7a62cf97b47eac4706d4147e63c2857c7351fd9ce9f77d0b38a4e",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "d89d0d966d082aa0e0d6c4303b6f6d75bc8556b22eeaa710f6d4b97d4a305e94",
-        "signature": "d89d0d966d082aa0e0d6c4303b6f6d75bc8556b22eeaa710f6d4b97d4a305e94",
+        "version": "8b3fa249fedb3eadcd4b05c7c52704bf067fb8bdbf87348815e54dd3a3fcf7f9",
+        "signature": "8b3fa249fedb3eadcd4b05c7c52704bf067fb8bdbf87348815e54dd3a3fcf7f9",
         "affectsGlobalScope": true
       },
       "./src/log.ts": {
@@ -317,7 +317,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "aad89fb4e96bfb9ccaafdb98bd988df3ea026a8844604d089424684cdf524965",
+        "version": "67a657f0e4d208e95bce17ac2aba2bf2f6e493f5e4faca869a3db0eee1fabe30",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
@@ -327,13 +327,13 @@
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
-        "version": "96b87944dc47e827864c4ffd62b9b2815d9b08df02f232b92304880ff0de8c9e",
+        "version": "1313cf4034d26167be8f16a79fc6c24f305b8b3f9229148909036496e239a841",
         "signature": "2448e55e514bf97b8f4cedd175b0aa97534a76f2789ccd1d161e4b6db22cf4c8",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "ef601fb333a1ca166b8a9a92ab911057a0a1edfa6bec065f98126f47f18d2a1b",
-        "signature": "fecd642df848b72a2551166917fc8a2dfd26d04577c2fb796edd25e55a1b351d",
+        "version": "8a5d859c292348d52b205a4501e044bcc4ab46028772ac7bf870fb6bd29c9ca8",
+        "signature": "72d682d80a12fce641c27300ab599a5c9b07ea1dc8f127e374bacd91449644c7",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -353,7 +353,7 @@
       },
       "./src/index.ts": {
         "version": "a0b342aa140d802cf99830b0c85459af0279e29ef9b103729db2585084a77c03",
-        "signature": "92b9e99fd499860750ecdcbc20a2e5c6c45e4898022406a1727a7177cca025fc",
+        "signature": "bab1c12a6b0512ff74821bf9f79924d315256584a6d26f8e77b61707c5c82888",
         "affectsGlobalScope": false
       },
       "./src/freemase/rect.ts": {

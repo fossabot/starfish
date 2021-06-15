@@ -15,6 +15,7 @@ declare const _default: {
     baseStaminaUse: number;
     baseXpGain: number;
     factionVendorMultiplier: number;
+    factionAllegianceFriendCutoff: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     aiDifficultyMultiplier: number;
@@ -35,8 +36,10 @@ declare const _default: {
     getHitDamage: (weapon: WeaponStub, totalMunitionsSkill?: number) => number;
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
-    getRepairAmountPerTickForSingleCrewMember: (skill: number) => number;
-    getThrustMagnitudeForSingleCrewMember: (skill?: number, engineThrustMultiplier?: number) => number;
+    getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
+    getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
+    getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
+    getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number) => number;
     getStaminaGainPerTickForSingleCrewMember: () => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;

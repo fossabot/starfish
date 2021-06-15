@@ -39,6 +39,7 @@ class Game {
     startGame() {
         dist_1.default.log(`----- Starting Game -----`);
         setInterval(() => this.save(), Game.saveTimeInterval);
+        setInterval(() => this.daily(), 24 * 60 * 60 * 1000);
         this.tick();
     }
     async save() {
@@ -48,6 +49,14 @@ class Game {
             promises.push(db_1.db.ship.addOrUpdateInDb(s));
         });
         await Promise.all(promises);
+    }
+    async daily() {
+        dist_1.default.log(`gray`, `----- Running Daily Tasks -----`);
+        // remove inactive ships
+        const inactiveCutoff = 14 * 24 * 60 * 60 * 1000; // 2 weeks
+        const ic = Date.now() - inactiveCutoff;
+        for (let inactiveShip of this.humanShips.filter((s) => !s.crewMembers.find((c) => c.lastActive > ic)))
+            this.removeShip(inactiveShip);
     }
     identify() {
         dist_1.default.log(`Game of ${dist_1.default.GAME_NAME} started at ${this.startTime}, running for ${this.tickCount} ticks`);

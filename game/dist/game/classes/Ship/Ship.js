@@ -14,7 +14,7 @@ const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, previousLocations, tagline, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, }, game) {
         super();
         this.name = `ship`;
         this.planet = false;
@@ -48,15 +48,14 @@ class Ship extends Stubbable_1.Stubbable {
         this._maxHp = 10;
         this.dead = false; // set in hp setter below
         this.obeysGravity = true;
-        this.mass = 1000000;
-        // ----- movement -----
-        this.lastMoveAngle = 0;
+        this.mass = 10000;
         this.game = game;
         this.rename(name);
         this.ai = true;
         this.human = false;
         this.species = game.species.find((s) => s.id === species.id);
         this.faction = this.species.faction;
+        this.velocity = velocity || [0, 0];
         if (location) {
             this.location = location;
         }
@@ -102,8 +101,10 @@ class Ship extends Stubbable_1.Stubbable {
     }
     tick() {
         this._stub = null; // invalidate stub
-        // if (this.dead) return
-        // if (this.obeysGravity) this.applyTickOfGravity()
+        if (this.dead)
+            return;
+        if (this.obeysGravity)
+            this.applyTickOfGravity();
         // c.log(`tick`, this.name)
     }
     rename(newName) {
@@ -135,6 +136,7 @@ class Ship extends Stubbable_1.Stubbable {
             return;
         const chassisToSwapTo = items_1.chassis[chassisData.id];
         this.chassis = chassisToSwapTo;
+        this.recalculateMass();
     }
     addItem(itemData) {
         let item;
@@ -194,6 +196,7 @@ class Ship extends Stubbable_1.Stubbable {
         if (item) {
             this.items.push(item);
             this.updateThingsThatCouldChangeOnItemChange();
+            this.recalculateMass();
         }
         return true;
     }
@@ -203,6 +206,7 @@ class Ship extends Stubbable_1.Stubbable {
             return false;
         this.items.splice(itemIndex, 1);
         this.updateThingsThatCouldChangeOnItemChange();
+        this.recalculateMass();
         return true;
     }
     equipLoadout(name) {
@@ -219,6 +223,14 @@ class Ship extends Stubbable_1.Stubbable {
         this.recalculateMaxHp();
         this.updateSightAndScanRadius();
     }
+    recalculateMass() {
+        let mass = this.chassis.mass;
+        for (let item of this.items)
+            mass += item.mass;
+        this.crewMembers.forEach((cm) => (mass += cm.inventory.reduce((total, cargo) => total + cargo.amount, 0)));
+        this.mass = mass;
+        this.toUpdate.mass = mass;
+    }
     updateSightAndScanRadius() {
         if (this.tutorial) {
             this.radii.sight =
@@ -232,6 +244,7 @@ class Ship extends Stubbable_1.Stubbable {
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         this.toUpdate.radii = this.radii;
     }
+    // ----- movement -----
     get canMove() {
         if (this.dead)
             return false;
@@ -243,22 +256,38 @@ class Ship extends Stubbable_1.Stubbable {
             this.toUpdate.location = this.location;
         }
     }
-    addPreviousLocation(locationBeforeThisTick) {
-        const lastPrevLoc = this.previousLocations[this.previousLocations.length - 1];
-        const newAngle = dist_1.default.angleFromAToB(this.location, locationBeforeThisTick);
-        if (!lastPrevLoc ||
-            (Math.abs(newAngle - this.lastMoveAngle) > 8 &&
-                dist_1.default.distance(this.location, lastPrevLoc) > 0.001)) {
-            if (locationBeforeThisTick &&
-                locationBeforeThisTick[0])
-                this.previousLocations.push(locationBeforeThisTick);
+    addPreviousLocation(previousLocation, currentLocation) {
+        if (previousLocation[0] ===
+            this.previousLocations[this.previousLocations.length - 1][0] &&
+            previousLocation[1] ===
+                this.previousLocations[this.previousLocations.length - 1][1])
+            return;
+        // if (this.human)
+        //   c.log(
+        //     c.angleFromAToB(
+        //       this.previousLocations[
+        //         this.previousLocations.length - 1
+        //       ],
+        //       previousLocation,
+        //     ) -
+        //       c.angleFromAToB(
+        //         previousLocation,
+        //         currentLocation,
+        //       ),
+        //   )
+        if (this.previousLocations.length < 1 ||
+            (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
+                dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 8 &&
+                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.0001)) {
+            if (this.human)
+                dist_1.default.log(`adding`);
+            this.previousLocations.push(currentLocation);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)
                 this.previousLocations.shift();
             this.toUpdate.previousLocations =
                 this.previousLocations;
         }
-        this.lastMoveAngle = newAngle;
     }
     isAt(coords) {
         return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.ARRIVAL_THRESHOLD);
@@ -266,42 +295,39 @@ class Ship extends Stubbable_1.Stubbable {
     applyTickOfGravity() {
         if (!this.canMove)
             return;
-        if (this.human) {
-            for (let planet of this.visible?.planets || []) {
-                const distance = dist_1.default.distance(planet.location, this.location);
-                if (distance <= dist_1.default.GRAVITY_RANGE &&
-                    distance > dist_1.default.ARRIVAL_THRESHOLD) {
-                    const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 10;
-                    const vectorToAdd = dist_1.default
-                        .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
-                        .map((g) => ((g *
-                        (dist_1.default.deltaTime / 1000) *
-                        dist_1.default.gameSpeedMultiplier) /
-                        this.mass /
-                        dist_1.default.KM_PER_AU /
-                        dist_1.default.M_PER_KM) *
-                        FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK);
-                    // c.log(
-                    //   this.name,
-                    //   planet.name,
-                    //   math.abs(vectorToAdd[0] + vectorToAdd[1]),
-                    // )
-                    if (Math.abs(vectorToAdd[0] + vectorToAdd[1]) <
-                        0.000000001)
-                        return;
-                    // if (c.distance(this.location, [this.location[0] + vectorToAdd[0],
-                    //   this.location[1] + vectorToAdd[1]]) > c.distance(this.location, planet.location)){
-                    //     this.location = planet.location
-                    //   }
-                    // c.log(vectorToAdd)
-                    this.location[0] += vectorToAdd[0];
-                    this.location[1] += vectorToAdd[1];
-                    this.toUpdate.location = this.location;
-                }
+        if (!this.human)
+            return;
+        for (let planet of this.visible?.planets || []) {
+            const distance = dist_1.default.distance(planet.location, this.location);
+            if (distance <= dist_1.default.GRAVITY_RANGE &&
+                distance > dist_1.default.ARRIVAL_THRESHOLD) {
+                const vectorToAdd = dist_1.default
+                    .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
+                    .map((g) => (g *
+                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) *
+                    dist_1.default.gameSpeedMultiplier) /
+                    this.mass /
+                    dist_1.default.KM_PER_AU /
+                    dist_1.default.M_PER_KM);
+                // c.log(
+                //   this.name,
+                //   planet.name,
+                //   Math.abs(vectorToAdd[0]) +
+                //     Math.abs(vectorToAdd[1]),
+                // )
+                if (Math.abs(vectorToAdd[0]) +
+                    Math.abs(vectorToAdd[1]) <
+                    0.000000001)
+                    return;
+                this.velocity[0] += vectorToAdd[0];
+                this.velocity[1] += vectorToAdd[1];
+                this.toUpdate.velocity = this.velocity;
+                this.speed = dist_1.default.vectorToMagnitude(this.velocity);
+                this.toUpdate.speed = this.speed;
+                this.direction = dist_1.default.vectorToDegrees(this.velocity);
+                this.toUpdate.direction = this.direction;
             }
         }
-        // todo
-        //
     }
     // ----- crew -----
     membersIn(l) {

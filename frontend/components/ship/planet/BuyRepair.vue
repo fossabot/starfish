@@ -13,7 +13,7 @@
           c.baseRepairCost *
             ship.planet.repairCostMultiplier *
             ship.planet.priceFluctuator *
-            (isSameFaction
+            (isFriendlyToFaction
               ? c.factionVendorMultiplier
               : 1) *
             count || repairableHp < count
@@ -25,7 +25,7 @@
           c.baseRepairCost *
             ship.planet.repairCostMultiplier *
             ship.planet.priceFluctuator *
-            (isSameFaction
+            (isFriendlyToFaction
               ? c.factionVendorMultiplier
               : 1) *
             count,
@@ -50,10 +50,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isSameFaction(this: ComponentShape) {
+    isFriendlyToFaction(this: ComponentShape) {
       return (
-        this.ship.planet.faction?.id ===
-        this.ship.faction.id
+        (this.ship.planet.allegiances.find(
+          (a: AllegianceData) =>
+            a.faction.id === this.ship.faction.id,
+        )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
 

@@ -3,12 +3,13 @@ import type { Item } from '../../Item/Item'
 import type { CrewMember } from '../CrewMember'
 
 export function cockpit(this: CrewMember): void {
-  if (
-    this.ship.canMove &&
-    this.targetLocation &&
-    !this.ship.isAt(this.targetLocation)
-  )
-    this.addXp(`piloting`)
+  if (this.cockpitCharge < 1) this.addXp(`piloting`)
+
+  this.cockpitCharge +=
+    c.getCockpitChargePerTickForSingleCrewMember(
+      this.piloting?.level || 1,
+    )
+  if (this.cockpitCharge > 1) this.cockpitCharge = 1
 
   // * actual movement handled by Ship class
 }

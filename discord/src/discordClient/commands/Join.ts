@@ -38,7 +38,9 @@ export class JoinCommand implements Command {
         `Failed to add you to the \`Crew\` server role.`,
       )
     } else {
-      context.guildMember?.roles.add(crewRole)
+      context.guildMember?.roles
+        .add(crewRole)
+        .catch(() => {})
     }
 
     if (context.ship.crewMembers?.length === 1)

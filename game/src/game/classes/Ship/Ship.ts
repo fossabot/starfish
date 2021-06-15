@@ -80,7 +80,7 @@ export class Ship extends Stubbable {
   _maxHp = 10
   dead = false // set in hp setter below
   obeysGravity = true
-  mass = 1000000
+  mass = 10000
 
   constructor(
     {
@@ -91,6 +91,7 @@ export class Ship extends Stubbable {
       loadout,
       seenPlanets,
       location,
+      velocity,
       previousLocations,
       tagline,
     }: BaseShipData,
@@ -108,6 +109,7 @@ export class Ship extends Stubbable {
     )!
     this.faction = this.species.faction
 
+    this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
     } else if (this.faction) {
@@ -161,8 +163,8 @@ export class Ship extends Stubbable {
   tick() {
     this._stub = null // invalidate stub
 
-    // if (this.dead) return
-    // if (this.obeysGravity) this.applyTickOfGravity()
+    if (this.dead) return
+    if (this.obeysGravity) this.applyTickOfGravity()
     // c.log(`tick`, this.name)
   }
 
@@ -214,6 +216,7 @@ export class Ship extends Stubbable {
     if (!chassisData.id) return
     const chassisToSwapTo = chassisPresets[chassisData.id]
     this.chassis = chassisToSwapTo
+    this.recalculateMass()
   }
 
   addItem(
@@ -282,6 +285,7 @@ export class Ship extends Stubbable {
     if (item) {
       this.items.push(item)
       this.updateThingsThatCouldChangeOnItemChange()
+      this.recalculateMass()
     }
     return true
   }
@@ -293,6 +297,7 @@ export class Ship extends Stubbable {
     if (itemIndex === -1) return false
     this.items.splice(itemIndex, 1)
     this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateMass()
     return true
   }
 
@@ -312,6 +317,20 @@ export class Ship extends Stubbable {
   updateThingsThatCouldChangeOnItemChange() {
     this.recalculateMaxHp()
     this.updateSightAndScanRadius()
+  }
+
+  recalculateMass() {
+    let mass = this.chassis.mass
+    for (let item of this.items) mass += item.mass
+    this.crewMembers.forEach(
+      (cm) =>
+        (mass += cm.inventory.reduce(
+          (total, cargo) => total + cargo.amount,
+          0,
+        )),
+    )
+    this.mass = mass
+    this.toUpdate.mass = mass
   }
 
   updateSightAndScanRadius() {
@@ -345,8 +364,6 @@ export class Ship extends Stubbable {
 
   // ----- movement -----
 
-  lastMoveAngle = 0
-
   get canMove(): boolean {
     if (this.dead) return false
     return true
@@ -361,26 +378,58 @@ export class Ship extends Stubbable {
 
   addPreviousLocation(
     this: Ship,
-    locationBeforeThisTick: CoordinatePair,
+    previousLocation: CoordinatePair,
+    currentLocation: CoordinatePair,
   ) {
-    const lastPrevLoc =
-      this.previousLocations[
-        this.previousLocations.length - 1
-      ]
-    const newAngle = c.angleFromAToB(
-      this.location,
-      locationBeforeThisTick,
-    )
     if (
-      !lastPrevLoc ||
-      (Math.abs(newAngle - this.lastMoveAngle) > 8 &&
-        c.distance(this.location, lastPrevLoc) > 0.001)
+      previousLocation[0] ===
+        this.previousLocations[
+          this.previousLocations.length - 1
+        ][0] &&
+      previousLocation[1] ===
+        this.previousLocations[
+          this.previousLocations.length - 1
+        ][1]
+    )
+      return
+
+    // if (this.human)
+    //   c.log(
+    //     c.angleFromAToB(
+    //       this.previousLocations[
+    //         this.previousLocations.length - 1
+    //       ],
+    //       previousLocation,
+    //     ) -
+    //       c.angleFromAToB(
+    //         previousLocation,
+    //         currentLocation,
+    //       ),
+    //   )
+
+    if (
+      this.previousLocations.length < 1 ||
+      (Math.abs(
+        c.angleFromAToB(
+          this.previousLocations[
+            this.previousLocations.length - 1
+          ],
+          previousLocation,
+        ) -
+          c.angleFromAToB(
+            previousLocation,
+            currentLocation,
+          ),
+      ) > 8 &&
+        c.distance(
+          this.location,
+          this.previousLocations[
+            this.previousLocations.length - 1
+          ],
+        ) > 0.0001)
     ) {
-      if (
-        locationBeforeThisTick &&
-        locationBeforeThisTick[0]
-      )
-        this.previousLocations.push(locationBeforeThisTick)
+      if (this.human) c.log(`adding`)
+      this.previousLocations.push(currentLocation)
       while (
         this.previousLocations.length >
         Ship.maxPreviousLocations
@@ -389,7 +438,6 @@ export class Ship extends Stubbable {
       this.toUpdate.previousLocations =
         this.previousLocations
     }
-    this.lastMoveAngle = newAngle
   }
 
   isAt(this: Ship, coords: CoordinatePair) {
@@ -403,58 +451,53 @@ export class Ship extends Stubbable {
   applyTickOfGravity(this: Ship): void {
     if (!this.canMove) return
 
-    if (this.human) {
-      for (let planet of this.visible?.planets || []) {
-        const distance = c.distance(
-          planet.location,
-          this.location,
-        )
-        if (
-          distance <= c.GRAVITY_RANGE &&
-          distance > c.ARRIVAL_THRESHOLD
-        ) {
-          const FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK = 10
-          const vectorToAdd = c
-            .getGravityForceVectorOnThisBodyDueToThatBody(
-              this,
-              planet,
-            )
-            .map(
-              (g) =>
-                ((g *
-                  (c.deltaTime / 1000) *
-                  c.gameSpeedMultiplier) /
-                  this.mass /
-                  c.KM_PER_AU /
-                  c.M_PER_KM) *
-                FAKE_MULTIPLIER_TO_GO_FROM_FORCE_OVER_TIME_TO_SINGLE_TICK,
-            )
-          // c.log(
-          //   this.name,
-          //   planet.name,
-          //   math.abs(vectorToAdd[0] + vectorToAdd[1]),
-          // )
-          if (
-            Math.abs(vectorToAdd[0] + vectorToAdd[1]) <
-            0.000000001
+    if (!this.human) return
+
+    for (let planet of this.visible?.planets || []) {
+      const distance = c.distance(
+        planet.location,
+        this.location,
+      )
+      if (
+        distance <= c.GRAVITY_RANGE &&
+        distance > c.ARRIVAL_THRESHOLD
+      ) {
+        const vectorToAdd = c
+          .getGravityForceVectorOnThisBodyDueToThatBody(
+            this,
+            planet,
           )
-            return
+          .map(
+            (g) =>
+              (g *
+                (c.deltaTime / c.TICK_INTERVAL) *
+                c.gameSpeedMultiplier) /
+              this.mass /
+              c.KM_PER_AU /
+              c.M_PER_KM,
+          )
+        // c.log(
+        //   this.name,
+        //   planet.name,
+        //   Math.abs(vectorToAdd[0]) +
+        //     Math.abs(vectorToAdd[1]),
+        // )
+        if (
+          Math.abs(vectorToAdd[0]) +
+            Math.abs(vectorToAdd[1]) <
+          0.000000001
+        )
+          return
 
-          // if (c.distance(this.location, [this.location[0] + vectorToAdd[0],
-          //   this.location[1] + vectorToAdd[1]]) > c.distance(this.location, planet.location)){
-          //     this.location = planet.location
-          //   }
-
-          // c.log(vectorToAdd)
-          this.location[0] += vectorToAdd[0]
-          this.location[1] += vectorToAdd[1]
-          this.toUpdate.location = this.location
-        }
+        this.velocity[0] += vectorToAdd[0]
+        this.velocity[1] += vectorToAdd[1]
+        this.toUpdate.velocity = this.velocity
+        this.speed = c.vectorToMagnitude(this.velocity)
+        this.toUpdate.speed = this.speed
+        this.direction = c.vectorToDegrees(this.velocity)
+        this.toUpdate.direction = this.direction
       }
     }
-
-    // todo
-    //
   }
 
   // ----- crew -----

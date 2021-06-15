@@ -4,8 +4,8 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
-export class DestroyCommand implements Command {
-  commandNames = [`destroy`, `end`]
+export class LeaveGameCommand implements Command {
+  commandNames = [`leavegame`]
 
   getHelpMessage(commandPrefix: string): string {
     return `Use \`${commandPrefix}${this.commandNames[0]}\` to remove your server from the game.`

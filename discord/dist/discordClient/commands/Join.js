@@ -35,7 +35,9 @@ class JoinCommand {
             await context.initialMessage.channel.send(`Failed to add you to the \`Crew\` server role.`);
         }
         else {
-            context.guildMember?.roles.add(crewRole);
+            context.guildMember?.roles
+                .add(crewRole)
+                .catch(() => { });
         }
         if (context.ship.crewMembers?.length === 1)
             await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);

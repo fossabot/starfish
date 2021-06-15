@@ -5,6 +5,7 @@ export declare class Item extends Stubbable {
     readonly id: ItemId;
     readonly displayName: string;
     readonly description: string;
+    readonly mass: number;
     readonly repairDifficulty: number;
     readonly reliability: number;
     repair: number;
@@ -12,9 +13,9 @@ export declare class Item extends Stubbable {
     readonly ship: Ship;
     announceWhenRepaired: boolean;
     announceWhenBroken: boolean;
-    constructor({ type, id, displayName, description, repair, maxHp, hp, repairDifficulty, reliability, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
+    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
     get hp(): number;
     set hp(newHp: number);
-    use(): number;
+    use(usePercent?: number): number;
 }
 //# sourceMappingURL=Item.d.ts.map

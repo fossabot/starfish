@@ -20,12 +20,12 @@ const AlertLevel_1 = require("./commands/AlertLevel");
 const ChangeCaptain_1 = require("./commands/ChangeCaptain");
 const Help_1 = require("./commands/Help");
 const KickMember_1 = require("./commands/KickMember");
-const Destroy_1 = require("./commands/Destroy");
+const LeaveGame_1 = require("./commands/LeaveGame");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
             Start_1.StartCommand,
-            Destroy_1.DestroyCommand,
+            LeaveGame_1.LeaveGameCommand,
             Invite_1.InviteCommand,
             Link_1.LinkCommand,
             Join_1.JoinCommand,

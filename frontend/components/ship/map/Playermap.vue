@@ -6,7 +6,7 @@
     </template>
     <div
       class="panesection padnone"
-      :style="{ width: width + 'px' }"
+      :style="{ width: width + 'px', background }"
     >
       <ShipMap
         :mapData="mapData"
@@ -30,6 +30,7 @@ export default {
     interactive: { default: true },
     radius: {},
     blackout: { default: true },
+    background: {},
     width: { default: 600 },
     buffer: { default: true },
     label: { default: 'Area Scan' },

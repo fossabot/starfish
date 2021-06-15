@@ -25,21 +25,30 @@ async function resolveOrCreateRole({ type, guild, }) {
     const existingRoles = await guild.roles.cache.array();
     // ----- get/make role -----
     const existing = existingRoles.find((c) => c.name === name);
-    if (existing)
+    if (existing) {
+        // c.log(`found existing role...`)
         return existing;
-    const role = (await guild.roles
-        .create({
-        data: {
-            name,
-            hoist: false,
-            mentionable: true,
-            position: 99999,
-        },
-        reason: `Game initialization`,
-    })
-        .catch(dist_1.default.log)) || null;
-    dist_1.default.log(`Created role ${name} for ${guild.name}.`);
-    return role;
+    }
+    try {
+        // c.log(`attempting to create role...`)
+        const role = (await guild.roles
+            .create({
+            data: {
+                name,
+                hoist: false,
+                mentionable: true,
+                position: 99999,
+            },
+            reason: `Game initialization`,
+        })
+            .catch(dist_1.default.log)) || null;
+        dist_1.default.log(`Created role ${name} for ${guild.name}.`);
+        return role;
+    }
+    catch (e) {
+        dist_1.default.log(`red`, `failed to create role:`, e);
+        return null;
+    }
 }
 exports.default = resolveOrCreateRole;
 //# sourceMappingURL=resolveOrCreateRole.js.map

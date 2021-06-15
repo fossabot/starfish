@@ -28,11 +28,13 @@ type ItemId =
 interface BaseChassisData {
   id: ChassisId
   type: `chassis`
+  mass: number
   basePrice: number
   displayName: string
   description: string
   slots: number
-  bunks: number
+  agility: number
+  maxCargoSpace: number
   rarity: number
 }
 
@@ -41,6 +43,7 @@ interface BaseItemData {
   type: ItemType
   displayName: string
   description: string
+  mass: number
   basePrice: number
   rarity: number
   reliability?: number

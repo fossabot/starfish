@@ -9,6 +9,7 @@ interface BasePlanetData {
   homeworld?: { id: FactionKey }
   creatures: string[]
   repairCostMultiplier: number
+  allegiances?: AllegianceData[]
   vendor: Vendor
 }
 
@@ -52,4 +53,9 @@ interface Vendor {
   chassis: VendorChassisPrice[]
   passives: VendorCrewPassivePrice[]
   actives: VendorCrewActivePrice[]
+}
+
+interface AllegianceData {
+  faction: FactionStub
+  level: number
 }

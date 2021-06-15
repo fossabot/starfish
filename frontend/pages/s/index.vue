@@ -35,9 +35,10 @@
       <!-- <ShipVisible /> -->
       <ShipScanShip />
 
+      <ShipItems />
+
       <ShipLog />
 
-      <ShipItems />
       <ShipCrewRank />
 
       <ShipFactionRank />

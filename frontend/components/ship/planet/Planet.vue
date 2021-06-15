@@ -4,92 +4,120 @@
       <span class="sectionemoji">🪐</span>Current Planet:
       {{ ship.planet.name }}
     </template>
-    <div class="panesection">
-      <div
-        class="panesection flexcolumn flexcenter"
-        :style="{
-          '--highlight-color': ship.planet.color,
-        }"
-      >
-        <div>
-          Welcome to
-          <b>{{ ship.planet.name }}!</b>
-        </div>
+    <div class="scroller">
+      <div class="panesection">
         <div
-          class="sub textcenter"
-          v-if="ship.planet.creatures"
+          class="panesection flexcolumn flexcenter"
+          :style="{
+            '--highlight-color': ship.planet.color,
+          }"
         >
-          Primary creature{{
-            ship.planet.creatures.length === 1 ? '' : 's'
-          }}:
-          {{ ship.planet.creatures.join(' and ') }}
-        </div>
-        <div class="sub" v-if="ship.planet.homeworld">
-          <span
-            :style="{
-              color: ship.planet.faction.color,
-            }"
+          <div>
+            Welcome to
+            <b>{{ ship.planet.name }}!</b>
+          </div>
+          <div
+            class="sub textcenter"
+            v-if="ship.planet.creatures"
           >
-            {{ ship.planet.faction.name }}
-          </span>
-          faction homeworld
+            Primary creature{{
+              ship.planet.creatures.length === 1 ? '' : 's'
+            }}:
+            {{ ship.planet.creatures.join(' and ') }}
+          </div>
+          <div class="sub" v-if="ship.planet.homeworld">
+            <span
+              :style="{
+                color: ship.planet.faction.color,
+              }"
+            >
+              {{ ship.planet.faction.name }}
+            </span>
+            faction homeworld
+          </div>
+          <div class="sub" v-else-if="ship.planet.faction">
+            Faction allegiance:
+            <span
+              :style="{
+                color: ship.planet.faction.color,
+              }"
+            >
+              {{ ship.planet.faction.name }}
+            </span>
+          </div>
+          <div class="sub">
+            Population
+            {{
+              c.numberWithCommas(
+                ((ship.planet &&
+                  ship.planet.name
+                    .split('')
+                    .reduce(
+                      (t, c) => t + c.charCodeAt(0),
+                      0,
+                    ) % 200) +
+                  80) **
+                  3 *
+                  ship.planet.radius || 0,
+              )
+            }}
+          </div>
         </div>
-        <div class="sub" v-else-if="ship.planet.faction">
-          Faction allegiance:
-          <span
-            :style="{
-              color: ship.planet.faction.color,
-            }"
-          >
-            {{ ship.planet.faction.name }}
-          </span>
-        </div>
-        <div class="sub">
-          Population
+      </div>
+
+      <ShipPlanetVendorCargo />
+      <ShipPlanetVendorItems />
+      <ShipPlanetBuyRepair />
+      <ShipPlanetBuyPassive />
+
+      <div class="panesection" v-if="isFriendlyToFaction">
+        <div
+          :style="{
+            color: ship.planet.faction.color,
+          }"
+        >
+          Friendly faction bonus! Prices improved by
           {{
-            c.numberWithCommas(
-              ((ship.planet &&
-                ship.planet.name
-                  .split('')
-                  .reduce(
-                    (t, c) => t + c.charCodeAt(0),
-                    0,
-                  ) % 200) +
-                80) **
-                3 *
-                ship.planet.radius || 0,
+            Math.round(
+              (1 - c.factionVendorMultiplier) * 100,
             )
-          }}
+          }}%.
         </div>
       </div>
-    </div>
-
-    <ShipPlanetVendorCargo />
-    <ShipPlanetVendorItems />
-    <ShipPlanetBuyRepair />
-    <ShipPlanetBuyPassive />
-
-    <div
-      class="panesection"
-      v-if="
-        ship.planet.faction &&
-          ship.planet.faction.id === ship.faction.id
-      "
-    >
-      <div
-        :style="{
-          color: ship.planet.faction.color,
-        }"
-      >
-        Faction bonus! Prices improved by
-        {{
-          Math.round((1 - c.factionVendorMultiplier) * 100)
-        }}%.
+      <div class="panesection">
+        <div class="panesubhead">Faction Allegiances</div>
+        <div
+          v-if="!ship.planet.allegiances.length"
+          class="sub"
+        >
+          No allegiances yet!
+        </div>
+        <div class="flex factiongraph">
+          <!-- <div
+            :style="{
+              color: a.faction.color,
+            }"
+          >
+            {{ a.faction.name }}
+          </div> -->
+          <div
+            v-for="a in [...ship.planet.allegiances].sort(
+              (a, b) => b.level - a.level,
+            )"
+            :key="'fal' + a.faction.id"
+            :dangerZone="-1"
+            :style="{
+              background: a.faction.color,
+              'flex-grow': a.level,
+              height: 0.2 + (a.level / 100) * 0.8 + 'em',
+            }"
+          ></div>
+        </div>
       </div>
-    </div>
-    <div class="panesection" v-if="ship.planet">
-      <div class="sub">
-        You cannot be attacked while on a planet.
+      <div class="panesection" v-if="ship.planet">
+        <div class="sub">
+          You cannot be attacked while on a planet.
+        </div>
       </div>
     </div>
   </Box>
@@ -116,6 +144,14 @@ export default {
           this.ship.shownPanels.includes('planet'))
       )
     },
+    isFriendlyToFaction(this: ComponentShape) {
+      return (
+        (this.ship.planet.allegiances.find(
+          (a: AllegianceData) =>
+            a.faction.id === this.ship.faction.id,
+        )?.level || 0) >= c.factionAllegianceFriendCutoff
+      )
+    },
   },
   watch: {},
   mounted(this: ComponentShape) {},
@@ -128,5 +164,15 @@ export default {
   position: relative;
   grid-column: span 2;
   width: 420px;
+}
+.scroller {
+  max-height: 370px;
+  overflow-y: auto;
+}
+.factiongraph {
+  & > * {
+    height: 1em;
+    border-right: 1px solid var(--bg);
+  }
 }
 </style>

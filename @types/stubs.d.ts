@@ -60,6 +60,10 @@ interface AttackRemnantStub extends BaseStub {
   [key: string]: any
 }
 interface FactionStub extends BaseStub {
+  id: FactionKey
+  name?: string
+  color?: string
+  ai?: boolean
   [key: string]: any
 }
 

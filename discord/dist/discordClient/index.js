@@ -36,14 +36,9 @@ const commandHandler = new CommandHandler_1.CommandHandler(`.`);
 exports.rawWatchers = [];
 let didError = null;
 // const privateMessage = require(`./events/privateMessage`)
-// const kickedFromGuild = require(`./events/kickedFromGuild`)
-// const addedToGuild = require(`./events/addedToGuild`)
-// // added to a server
-// client.on(`guildCreate`, addedToGuild)
-// // removed from a server
-// client.on(`guildDelete`, kickedFromGuild)
-// // other user leaves a guild
-// client.on(`guildMemberRemove`, otherMemberLeaveServer)
+const kickedFromGuild_1 = __importDefault(require("./events/kickedFromGuild"));
+const addedToGuild_1 = __importDefault(require("./events/addedToGuild"));
+const otherMemberLeaveServer_1 = __importDefault(require("./events/otherMemberLeaveServer"));
 async function connected() {
     return new Promise(async (resolve, reject) => {
         if (didError)
@@ -77,6 +72,12 @@ exports.client.on(`message`, async (msg) => {
         return;
     commandHandler.handleMessage(msg);
 });
+// added to a server
+exports.client.on(`guildCreate`, addedToGuild_1.default);
+// removed from a server
+exports.client.on(`guildDelete`, kickedFromGuild_1.default);
+// other user leaves a guild
+exports.client.on(`guildMemberRemove`, otherMemberLeaveServer_1.default);
 exports.client.on(`raw`, async (event) => {
     exports.rawWatchers.forEach((handler) => handler(event));
 });

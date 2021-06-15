@@ -37,6 +37,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.attackFactions = [];
         this.attackTarget = null;
         this.itemTarget = null;
+        this.cockpitCharge = 0;
         this.repairPriority = `most damaged`;
         this.actives = [];
         this.passives = [];
@@ -58,8 +59,9 @@ class CrewMember extends Stubbable_1.Stubbable {
                     : dist_1.default.randomFromArray(Object.keys(ship.rooms))) ||
                 `bunk`; // failsafe
         this.stamina = data.stamina || this.maxStamina;
-        this.lastActive = Date.now();
+        this.lastActive = data.lastActive || Date.now();
         this.inventory = data.inventory || [];
+        this.cockpitCharge = data.cockpitCharge || 0;
         this.credits = data.credits || 2;
         this.skills = data.skills || [
             { skill: `piloting`, level: 1, xp: 0 },
@@ -134,6 +136,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.weaponsAction();
     }
     addXp(skill, xp) {
+        this.lastActive = Date.now();
         if (!xp)
             xp = dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         let skillElement = this.skills.find((s) => s.skill === skill);
@@ -151,16 +154,25 @@ class CrewMember extends Stubbable_1.Stubbable {
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
     }
     addCargo(type, amount) {
+        this.lastActive = Date.now();
         const canHold = Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) - this.heldWeight;
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)
-            existingStock.amount += Math.min(canHold, amount);
+            existingStock.amount = dist_1.default.r2(existingStock.amount + Math.min(canHold, amount));
         else
             this.inventory.push({
                 type,
                 amount: Math.min(canHold, amount),
             });
+        this.ship.recalculateMass();
         return Math.max(0, amount - canHold);
+    }
+    removeCargo(type, amount) {
+        const existingStock = this.inventory.find((cargo) => cargo.type === type);
+        if (existingStock)
+            existingStock.amount = dist_1.default.r2(existingStock.amount -
+                Math.min(existingStock.amount, amount));
+        this.ship.recalculateMass();
     }
     get heldWeight() {
         return this.inventory.reduce((total, i) => total + i.amount, 0);
@@ -172,6 +184,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost;
     }
     addPassive(data) {
+        this.lastActive = Date.now();
         if (!data.type)
             return;
         const existing = this.passives.find((p) => p.type === data.type);
@@ -192,6 +205,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.recalculatemaxCargoSpace();
     }
     addStat(statname, amount) {
+        this.lastActive = Date.now();
         const existing = this.stats.find((s) => s.stat === statname);
         if (!existing)
             this.stats.push({

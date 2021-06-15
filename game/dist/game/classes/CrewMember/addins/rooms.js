@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.bunk = exports.weapons = exports.repair = exports.cockpit = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
 function cockpit() {
-    if (this.ship.canMove &&
-        this.targetLocation &&
-        !this.ship.isAt(this.targetLocation))
+    if (this.cockpitCharge < 1)
         this.addXp(`piloting`);
+    this.cockpitCharge +=
+        dist_1.default.getCockpitChargePerTickForSingleCrewMember(this.piloting?.level || 1);
+    if (this.cockpitCharge > 1)
+        this.cockpitCharge = 1;
     // * actual movement handled by Ship class
 }
 exports.cockpit = cockpit;

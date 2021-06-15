@@ -176,7 +176,7 @@ class AIShip extends CombatShip_1.CombatShip {
             ];
         }
         // ----- add previousLocation -----
-        this.addPreviousLocation(startingLocation);
+        this.addPreviousLocation(startingLocation, this.location);
     }
     die() {
         super.die();

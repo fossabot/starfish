@@ -2,7 +2,9 @@
   <div>
     <div>
       <b>🚀{{ data.name }}</b>
-      <span class="sub">{{ c.capitalize(data.type) }}</span>
+      <div v-if="data.tagline" class="sub">
+        {{ data.tagline }}
+      </div>
     </div>
     <div>{{ data.description }}</div>
     <hr />

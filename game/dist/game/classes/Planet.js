@@ -34,7 +34,7 @@ class Planet extends Stubbable_1.Stubbable {
     constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }, game) {
         super();
         this.allegiances = [];
-        this.mass = 5.974e30;
+        this.mass = 5.974e31;
         this.priceFluctuator = 1;
         this.game = game;
         this.name = name;
@@ -103,8 +103,8 @@ class Planet extends Stubbable_1.Stubbable {
             ((5.974e30 * this.radius) / 36000) *
                 (1 + Math.random() * 0.1);
         this.updateFluctuator();
-        setInterval(this.updateFluctuator, 1000 * 60 * 60); // every hour
-        setInterval(this.decrementAllegiances, 1000 * 60 * 60); // every hour
+        setInterval(() => this.updateFluctuator(), 1000 * 60 * 60); // every hour
+        setInterval(() => this.decrementAllegiances(), 1000 * 60 * 60); // every hour
     }
     identify() {
         dist_1.default.log(`Planet: ${this.name} (${this.color}) at ${this.location}`);
@@ -113,12 +113,14 @@ class Planet extends Stubbable_1.Stubbable {
         return this.game.humanShips.filter((s) => s.planet === this);
     }
     updateFrontendForShipsAt() {
+        this._stub = null;
         this.shipsAt.forEach((s) => {
             s.toUpdate.planet = this.stubify();
         });
     }
     incrementAllegiance(faction, amount) {
         const allegianceAmountToIncrement = amount || 1;
+        dist_1.default.log(`allegiance`, allegianceAmountToIncrement);
         const maxAllegiance = 100;
         const found = this.allegiances.find((a) => a.faction.id === faction.id);
         if (found)
@@ -128,7 +130,6 @@ class Planet extends Stubbable_1.Stubbable {
                 faction,
                 level: Math.min(maxAllegiance, allegianceAmountToIncrement),
             });
-        this._stub = null;
         this.updateFrontendForShipsAt();
     }
     decrementAllegiances() {
@@ -136,7 +137,6 @@ class Planet extends Stubbable_1.Stubbable {
             if (this.faction?.id !== a.faction.id)
                 a.level *= 0.99;
         });
-        this._stub = null;
         this.updateFrontendForShipsAt();
     }
     updateFluctuator() {

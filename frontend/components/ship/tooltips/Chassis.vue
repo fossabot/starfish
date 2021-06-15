@@ -6,7 +6,14 @@
     </div>
     <hr />
     <div>Equipment Slots: {{ data.slots }}</div>
-    <div>Bunk Space: {{ data.bunks }}</div>
+    <div>
+      Passive Dodge Modifier:
+      {{ (data.agility - 1) * 100 + '%' }}
+    </div>
+    <div>
+      Max Cargo Space Per Crew Member:
+      {{ data.maxCargoSpace }}
+    </div>
     <hr />
     <div class="sub">{{ data.description }}</div>
   </div>

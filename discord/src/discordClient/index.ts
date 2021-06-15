@@ -15,17 +15,9 @@ export const rawWatchers: Function[] = []
 let didError: string | null = null
 
 // const privateMessage = require(`./events/privateMessage`)
-// const kickedFromGuild = require(`./events/kickedFromGuild`)
-// const addedToGuild = require(`./events/addedToGuild`)
-
-// // added to a server
-// client.on(`guildCreate`, addedToGuild)
-
-// // removed from a server
-// client.on(`guildDelete`, kickedFromGuild)
-
-// // other user leaves a guild
-// client.on(`guildMemberRemove`, otherMemberLeaveServer)
+import kickedFromGuild from './events/kickedFromGuild'
+import addedToGuild from './events/addedToGuild'
+import otherMemberLeaveServer from './events/otherMemberLeaveServer'
 
 export async function connected(): Promise<boolean> {
   return new Promise(async (resolve, reject) => {
@@ -57,6 +49,16 @@ client.on(`message`, async (msg) => {
   if (!msg.author || msg.author.bot) return
   commandHandler.handleMessage(msg)
 })
+
+// added to a server
+client.on(`guildCreate`, addedToGuild)
+
+// removed from a server
+client.on(`guildDelete`, kickedFromGuild)
+
+// other user leaves a guild
+client.on(`guildMemberRemove`, otherMemberLeaveServer)
+
 client.on(`raw`, async (event) => {
   rawWatchers.forEach((handler: Function) => handler(event))
 })
