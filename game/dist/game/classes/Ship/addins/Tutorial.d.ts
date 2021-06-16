@@ -8,6 +8,7 @@ interface TutorialStepData {
     shownPanels: FrontendPanelType[];
     sightRange: number;
     scanRange?: number;
+    forceCockpitCharge?: number;
     forceStamina?: number;
     disableStamina?: true;
     disableRepair?: true;
@@ -31,6 +32,7 @@ interface TutorialStepData {
         useCommonCreditsTo?: number;
         destroyShipId?: string;
         awaitFrontend?: boolean;
+        stopped?: boolean;
     };
 }
 export declare class Tutorial {

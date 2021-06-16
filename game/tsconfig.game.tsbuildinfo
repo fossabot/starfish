@@ -782,8 +782,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/tutorial.ts": {
-        "version": "9d4061afb050ccbd3b7642c09b1d196e51c365061616f0cfb4a3fb5697baa0ae",
-        "signature": "72015e385729f56b29b96de4a4a8ae2b6387be6ef7ba59021db510fc4c4749f3",
+        "version": "521dd60f866600c9f0befc6ef4ae82cc8f1a3a87182d27721d3b07b5c2a035b6",
+        "signature": "fe91b9c73bc9752dd0467639a3f7523b9dc565ae5030d41a901a63635f584051",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
@@ -822,7 +822,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "6fc0bec5a1bec4d503c6beef1358bfa98c6d935417207afd75714d713a569b7f",
+        "version": "fcecfd05c6f9b579b056949eec25d88a6c0aee4699f9d19f6f070416bab75665",
         "signature": "d88f83b519e421f170812d41283615624ce116b4efd03d3513bb221d73c77e47",
         "affectsGlobalScope": false
       },

@@ -382,14 +382,15 @@ export class Ship extends Stubbable {
     currentLocation: CoordinatePair,
   ) {
     if (
+      this.previousLocations.length > 1 &&
       previousLocation[0] ===
         this.previousLocations[
           this.previousLocations.length - 1
-        ][0] &&
+        ]?.[0] &&
       previousLocation[1] ===
         this.previousLocations[
           this.previousLocations.length - 1
-        ][1]
+        ]?.[1]
     )
       return
 

@@ -11,6 +11,7 @@ interface TutorialStepData {
   shownPanels: FrontendPanelType[]
   sightRange: number
   scanRange?: number
+  forceCockpitCharge?: number
   forceStamina?: number
   disableStamina?: true
   disableRepair?: true
@@ -40,6 +41,7 @@ interface TutorialStepData {
     useCommonCreditsTo?: number
     destroyShipId?: string
     awaitFrontend?: boolean
+    stopped?: boolean
   }
 }
 
@@ -154,13 +156,18 @@ export class Tutorial {
         sightRange: 0.03,
         shownRooms: [`cockpit`],
         forceCrewLocation: `cockpit`,
+        forceCockpitCharge: 0.3,
         shownPanels: [`mapZoom`, `map`, `room`, `ship`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`, `cache`],
         script: [
           {
-            message: `While you're in the <b>cockpit</b>, you can click on the big map to set a destination. Try to move the ship to the cache we found!`,
+            message: `Click on the big map to set a destination.<br />
+            While you're in the <b>cockpit</b>, you will slowly charge up thrust (unique to you).<br /><br />
+            Click and hold the <b>Thrust</b> button in the cockpit pane to use your charged thrust toward your chosen direction!<br />
+            Since we're in space, once you start moving in a direction, you'll keep floating that way! That means that even a small ship can generate a huge amount of speed over time.<br /><br />
+            Try to <b>move the ship to the cache we found!</b>`,
           },
         ],
         nextStepTrigger: {
@@ -189,7 +196,31 @@ export class Tutorial {
             message: `Awesome, we got it! <br /><br/>
             There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br /><br/>
             This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.<br /><br />
-            Caches will spawn around the map whenever cargo is dropped, whether intentionally or because... well, you know... someone got blown up.`,
+            Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
+          },
+        ],
+        nextStepTrigger: { stopped: true },
+      },
+
+      {
+        sightRange: 0.03,
+        shownRooms: [`cockpit`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `log`,
+        ],
+        disableRepair: true,
+        disableStamina: true,
+        visibleTypes: [`planet`],
+        script: [
+          {
+            message: `You're a natural! A regular flying fish!<br /><br />
+            You can see that we've already started drifting back towards the planet due to gravity.<br /><br />
+            Good job on snagging your first cache. Caches will spawn around the map whenever cargo is dropped, whether intentionally or because... well, you know... someone got blown up.`,
             advance: `Is it really that dangerous out here?`,
           },
         ],
@@ -616,6 +647,12 @@ export class Tutorial {
           this.currentStep.nextStepTrigger
             .useCommonCreditsTo
 
+    if (this.currentStep.nextStepTrigger.stopped)
+      shouldAdvance =
+        shouldAdvance &&
+        this.ship.velocity[0] < 0.0001 &&
+        this.ship.velocity[1] < 0.0001
+
     if (shouldAdvance) this.advanceStep()
     this.ship.updateSightAndScanRadius()
   }
@@ -693,6 +730,14 @@ export class Tutorial {
       this.ship.crewMembers.forEach(
         (cm) =>
           (cm.stamina = this.currentStep.forceStamina!),
+      )
+
+    // crew cockpit charge
+    if (this.currentStep.forceCockpitCharge !== undefined)
+      this.ship.crewMembers.forEach(
+        (cm) =>
+          (cm.cockpitCharge =
+            this.currentStep.forceCockpitCharge!),
       )
 
     // rooms

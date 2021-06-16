@@ -257,10 +257,11 @@ class Ship extends Stubbable_1.Stubbable {
         }
     }
     addPreviousLocation(previousLocation, currentLocation) {
-        if (previousLocation[0] ===
-            this.previousLocations[this.previousLocations.length - 1][0] &&
+        if (this.previousLocations.length > 1 &&
+            previousLocation[0] ===
+                this.previousLocations[this.previousLocations.length - 1]?.[0] &&
             previousLocation[1] ===
-                this.previousLocations[this.previousLocations.length - 1][1])
+                this.previousLocations[this.previousLocations.length - 1]?.[1])
             return;
         // if (this.human)
         //   c.log(
