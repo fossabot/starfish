@@ -26,6 +26,9 @@ export class CrewActive {
     if (this.cooldownRemaining > 0) {
       this.cooldownRemaining -= this.crewMember.stamina
       this.ready = false
-    } else this.ready = true
+      if (this.cooldownRemaining <= 0) this.ready = true
+      this.crewMember.toUpdate.actives =
+        this.crewMember.actives
+    }
   }
 }

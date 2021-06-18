@@ -126,6 +126,7 @@ export abstract class CombatShip extends Ship {
     const enemyAgility = target.chassis.agility
     const hitRoll = Math.random()
     let miss = hitRoll * enemyAgility < rangeAsPercent
+    // todo this makes it impossible to hit some ships even when they're "in range"... fix
     const damage = miss
       ? 0
       : c.getHitDamage(weapon, totalMunitionsSkill)

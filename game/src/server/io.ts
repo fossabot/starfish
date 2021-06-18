@@ -5,7 +5,6 @@ import { Server, Socket } from 'socket.io'
 import frontendEvents from './events/frontend'
 import discordEvents from './events/discord'
 import generalEvents from './events/general'
-import combatEvents from './events/combat'
 import crewEvents from './events/crew'
 import itemEvents from './events/items'
 
@@ -25,7 +24,6 @@ io.on(
     frontendEvents(socket)
     discordEvents(socket)
     generalEvents(socket)
-    combatEvents(socket)
     crewEvents(socket)
     itemEvents(socket)
   },

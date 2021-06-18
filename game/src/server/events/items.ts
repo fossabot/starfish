@@ -3,8 +3,6 @@ import { Socket } from 'socket.io'
 
 import { game } from '../..'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
-import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import * as allItemData from '../../game/presets/items'
 
 export default function (

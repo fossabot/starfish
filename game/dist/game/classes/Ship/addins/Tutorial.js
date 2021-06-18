@@ -46,8 +46,39 @@ class Tutorial {
                         next: `Sure did!`,
                     },
                     {
+                        message: `That's good news, because the ability to click buttons is the only skill you'll need to pilot a ship.<br />
+            Let's get started!`,
+                        next: `Yeah!`,
+                    },
+                    {
+                        message: `Welcome to ${dist_1.default.GAME_NAME}!<br />
+            This is a game about exploring space in a ship crewed by your Discord server's members.<br /><br />
+            Get into huge-scale battles with rival factions of real people!<br />
+            Communicate (poorly) with servers from all over the world!<br />
+            Build a trade empire! Upgrade your ship, and level up your personal character!<br /><br />
+            Your adventure will be slow-paced (until it's not), so it's best to participate incrementally over the course of days and weeks.`,
+                        next: `Sounds good!`,
+                    },
+                    {
+                        message: `But first, a little backstory...<br /><br />
+            Remember Earth?<br />
+            Humans really did a number on that one, huh?<br />
+            They did a pretty good job of wiping each other out, though.<br /><br />
+            Not that we were left with much, though.<br />
+            Us fish had to rush to evolve our brains and technology to the point where we could escape from the dying planet we were left on.<br /><br />
+            Now the fish roam the stars, colonizing the galaxy with aquatic utopias wherever we can.`,
+                        next: `Woah. Is it only fish out here?`,
+                    },
+                    {
+                        message: `Hah! If only.<br /><br />
+            Some of the craftier species of birds also made it off of Earth.<br />
+            They haven't changed at all — they'll hunt down any fish they get their beady little eyes on. Steer clear of them if you can!<br /><br />
+            Besides the birds, I'm not sure what else managed to make it off of Earth.`,
+                        next: `I see...`,
+                    },
+                    {
                         message: `It's dark in here. Let's turn the lights on!`,
-                        advance: `Turn on Scanner`,
+                        advance: `Turn on scanner`,
                     },
                 ],
                 nextStepTrigger: { awaitFrontend: true },
@@ -56,6 +87,7 @@ class Tutorial {
                 sightRange: 0.03,
                 shownRooms: [],
                 shownPanels: [`mapZoom`, `ship`],
+                highlightPanel: `mapZoom`,
                 disableRepair: true,
                 disableStamina: true,
                 visibleTypes: [`planet`],
@@ -88,6 +120,7 @@ class Tutorial {
                 sightRange: 0.03,
                 shownRooms: [],
                 shownPanels: [`mapZoom`, `map`, `ship`],
+                highlightPanel: `map`,
                 disableRepair: true,
                 disableStamina: true,
                 visibleTypes: [`planet`, `cache`],
@@ -120,13 +153,16 @@ class Tutorial {
             },
             {
                 sightRange: 0.03,
+                maxDistanceFromSpawn: 0.03,
+                resetView: true,
                 shownRooms: [`cockpit`],
                 forceCrewLocation: `cockpit`,
-                forceCockpitCharge: 0.3,
+                forceCockpitCharge: 0.15,
                 shownPanels: [`mapZoom`, `map`, `room`, `ship`],
+                highlightPanel: `room`,
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`, `cache`],
+                visibleTypes: [`planet`, `cache`, `trail`],
                 script: [
                     {
                         message: `Click on the big map to set a destination.<br />
@@ -145,6 +181,7 @@ class Tutorial {
             },
             {
                 sightRange: 0.03,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [`cockpit`],
                 shownPanels: [
                     `mapZoom`,
@@ -154,21 +191,48 @@ class Tutorial {
                     `ship`,
                     `log`,
                 ],
+                highlightPanel: `inventory`,
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`],
+                forceCockpitCharge: 0.1,
+                visibleTypes: [`planet`, `trail`],
                 script: [
                     {
                         message: `Awesome, we got it! <br /><br/>
             There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br /><br/>
-            This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.<br /><br />
-            Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
+            This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.`,
+                        advance: `Got it.`,
+                    },
+                ],
+                nextStepTrigger: { awaitFrontend: true },
+            },
+            {
+                sightRange: 0.03,
+                maxDistanceFromSpawn: 0.03,
+                shownRooms: [`cockpit`],
+                shownPanels: [
+                    `mapZoom`,
+                    `map`,
+                    `room`,
+                    `inventory`,
+                    `ship`,
+                    `log`,
+                ],
+                highlightPanel: `room`,
+                disableRepair: true,
+                disableStamina: true,
+                forceCockpitCharge: 0.15,
+                visibleTypes: [`planet`, `trail`],
+                script: [
+                    {
+                        message: `Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
                     },
                 ],
                 nextStepTrigger: { stopped: true },
             },
             {
                 sightRange: 0.03,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [`cockpit`],
                 shownPanels: [
                     `mapZoom`,
@@ -178,13 +242,13 @@ class Tutorial {
                     `ship`,
                     `log`,
                 ],
+                highlightPanel: `ship`,
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`],
+                visibleTypes: [`planet`, `trail`],
                 script: [
                     {
                         message: `You're a natural! A regular flying fish!<br /><br />
-            You can see that we've already started drifting back towards the planet due to gravity.<br /><br />
             Good job on snagging your first cache. Caches will spawn around the map whenever cargo is dropped, whether intentionally or because... well, you know... someone got blown up.`,
                         advance: `Is it really that dangerous out here?`,
                     },
@@ -196,6 +260,8 @@ class Tutorial {
             // ----- ship scan and combat -----
             {
                 sightRange: 0.03,
+                maxDistanceFromSpawn: 0.03,
+                resetView: true,
                 shownRooms: [`cockpit`],
                 shownPanels: [
                     `mapZoom`,
@@ -207,7 +273,7 @@ class Tutorial {
                 ],
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`, `ship`],
+                visibleTypes: [`planet`, `ship`, `trail`],
                 script: [
                     {
                         message: `Well it's not THAT dangero— Oh no, what is that...?<br />
@@ -221,8 +287,8 @@ class Tutorial {
                         loadout: `aiTutorial1`,
                         id: `tutorialAI1` + this.ship.id,
                         level: 1,
-                        name: `Robot Ship`,
-                        species: { id: `robots` },
+                        name: `Enemy Ship`,
+                        species: { id: `flamingos` },
                         location: [0.015, 0.01],
                     },
                 ],
@@ -233,6 +299,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [`cockpit`],
                 shownPanels: [
                     `mapZoom`,
@@ -243,12 +310,20 @@ class Tutorial {
                     `scanShip`,
                     `log`,
                 ],
+                highlightPanel: `scanShip`,
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`, `ship`, `attackRemnant`],
+                visibleTypes: [
+                    `planet`,
+                    `ship`,
+                    `attackRemnant`,
+                    `trail`,
+                ],
                 script: [
                     {
-                        message: `Now we can see what we're dealing with. It looks like they're outfitted with a weapon but no engine. They're a sitting duck!`,
+                        message: `Now we can see what we're dealing with.<br />
+            Ugh, they're <i>BIRDS</i>! The enemy of all fish!<br /><br />
+            It looks like they're outfitted with a weapon but no engine, the fools! They're sitting ducks!`,
                         advance: `Let's take 'em out!`,
                     },
                 ],
@@ -259,6 +334,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 forceLoadout: `tutorial2`,
                 shownRooms: [`cockpit`, `weapons`, `bunk`],
                 shownPanels: [
@@ -271,8 +347,14 @@ class Tutorial {
                     `diagram`,
                     `log`,
                 ],
+                highlightPanel: `diagram`,
                 disableRepair: true,
-                visibleTypes: [`planet`, `ship`, `attackRemnant`],
+                visibleTypes: [
+                    `planet`,
+                    `ship`,
+                    `attackRemnant`,
+                    `trail`,
+                ],
                 script: [
                     {
                         message: `I've opened up your ship schematic.<br /><br />
@@ -287,6 +369,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [`cockpit`, `weapons`, `bunk`],
                 shownPanels: [
                     `mapZoom`,
@@ -299,12 +382,17 @@ class Tutorial {
                     `log`,
                     `crewMember`,
                 ],
-                visibleTypes: [`planet`, `ship`, `attackRemnant`],
+                visibleTypes: [
+                    `planet`,
+                    `ship`,
+                    `attackRemnant`,
+                    `trail`,
+                ],
                 script: [
                     {
-                        message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged. Switch to the Cockpit to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the Weapons Bay. Destroy the enemy craft!<br /><br />
-            By the way, you can't attack or be attacked when you're on a planet.<br/><br/>
-            (If you want to fly and shoot at the same time, you'll need to recruit more crew members to your ship.)`,
+                        message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged.<br /><br />
+            Now's your chance to use what you've learned!<br />
+            Switch to the <b>Cockpit</b> to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the <b>Weapons Bay</b>. Destroy that fowl craft!`,
                     },
                 ],
                 nextStepTrigger: {
@@ -315,6 +403,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -333,10 +422,12 @@ class Tutorial {
                     `crewMember`,
                     `items`,
                 ],
+                highlightPanel: `diagram`,
                 visibleTypes: [
                     `planet`,
                     `ship`,
                     `attackRemnant`,
+                    `trail`,
                     `cache`,
                 ],
                 script: [
@@ -357,6 +448,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -379,6 +471,7 @@ class Tutorial {
                     `planet`,
                     `ship`,
                     `attackRemnant`,
+                    `trail`,
                     `cache`,
                 ],
                 forceStamina: 0.95,
@@ -403,6 +496,8 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
+                resetView: true,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -425,6 +520,7 @@ class Tutorial {
                     `planet`,
                     `ship`,
                     `attackRemnant`,
+                    `trail`,
                     `cache`,
                 ],
                 script: [
@@ -442,6 +538,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -461,10 +558,12 @@ class Tutorial {
                     `planet`,
                     `items`,
                 ],
+                highlightPanel: `planet`,
                 visibleTypes: [
                     `planet`,
                     `ship`,
                     `attackRemnant`,
+                    `trail`,
                     `cache`,
                 ],
                 script: [
@@ -487,6 +586,7 @@ class Tutorial {
             {
                 sightRange: 0.03,
                 scanRange: 0.02,
+                maxDistanceFromSpawn: 0.03,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -510,6 +610,7 @@ class Tutorial {
                     `planet`,
                     `ship`,
                     `attackRemnant`,
+                    `trail`,
                     `cache`,
                 ],
                 script: [
@@ -586,6 +687,8 @@ class Tutorial {
             this.ship.equipLoadout(this.currentStep.forceLoadout, true);
         }
         this.ship.updateSightAndScanRadius();
+        if (this.currentStep.resetView)
+            io_1.default.to(`ship:${this.ship.id}`).emit(`ship:resetView`);
         // move to step location
         if (this.currentStep.forceLocation) {
             this.ship.previousLocations = [];

@@ -21,6 +21,7 @@ interface IOServerEvents {
     message: string,
     channelType?: GameChannelType,
   ) => void
+  [`ship:resetView`]: () => void
 }
 
 interface IOClientEvents {
@@ -37,7 +38,6 @@ interface IOClientEvents {
   ) => void
 
   // client
-
   [`god`]: () => void
   [`ship:listen`]: (
     id: string,
@@ -156,6 +156,18 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:advanceTutorial`]: (shipId: string) => void
+  [`ship:headerBackground`]: (
+    shipId: string,
+    crewId: string,
+    bgId: string,
+    callback: (res: IOResponse<String>) => void,
+  ) => void
+  [`ship:tagline`]: (
+    shipId: string,
+    crewId: string,
+    tagline: string,
+    callback: (res: IOResponse<String>) => void,
+  ) => void
 
   // discord
   [`discord`]: () => void

@@ -1,5 +1,5 @@
 <template>
-  <Box class="cockpit">
+  <Box class="cockpit" :highlight="highlight">
     <template #title
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
@@ -56,7 +56,7 @@
           }"
         >
           🚀{{ otherShip.name }}
-        </button> </span
+        </button></span
       ><span
         v-for="cache in cachesToShow"
         :key="'gotocache' + cache.id"
@@ -79,12 +79,28 @@
     </div>
 
     <div class="panesection">
-      <div>
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
         Base thrust from engines:
         {{ c.r2(engineThrustAmplification) }} kg/m^2/s? or
         something
       </div>
-      <div>
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
         Charge:
         {{
           c.r2(
@@ -105,7 +121,16 @@
             '%'
         }}
       </div>
-      <div class="marbotsmall">
+      <div
+        class="marbotsmall"
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The maximum amount of thrust that you can generate currently.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
         Available Thrust:
         <NumberChangeHighlighter
           :number="
@@ -125,6 +150,14 @@
           :max="crewMember.cockpitCharge"
           @end="thrust"
           @percent="thrustChargeToUse = arguments[0]"
+          @mouseenter.native="
+            $store.commit(
+              'tooltip',
+              `Click and hold to use your charged thrust!`,
+            )
+          "
+          @mouseleave.native="$store.commit('tooltip')"
+          @mousedown.native="$store.commit('tooltip')"
         >
           Thrust
           <span v-if="thrustChargeToUse">
@@ -153,6 +186,14 @@
           "
           @percent="brakeChargeToUse = arguments[0]"
           @end="brake"
+          @mouseenter.native="
+            $store.commit(
+              'tooltip',
+              `Click and hold to use your charged thrust to stop the ship.`,
+            )
+          "
+          @mouseleave.native="$store.commit('tooltip')"
+          @mousedown.native="$store.commit('tooltip')"
         >
           Brake
           <span v-if="brakeChargeToUse">
@@ -187,6 +228,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'room'
+      )
+    },
     planetsToShow(this: ComponentShape) {
       const p = [...(this.ship.visible.planets || [])]
       for (let seen of this.ship.seenPlanets) {
@@ -272,7 +319,7 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.commit('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data)
         },
       )
     },
@@ -292,7 +339,7 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.commit('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data)
         },
       )
     },

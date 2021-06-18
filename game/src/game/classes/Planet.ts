@@ -24,7 +24,7 @@ export class Planet extends Stubbable {
   readonly radius: number
   readonly allegiances: AllegianceData[] = []
   readonly homeworld?: Faction
-  mass = 5.974e31
+  mass = 5.974e32
   priceFluctuator = 1
 
   constructor(
@@ -149,12 +149,32 @@ export class Planet extends Stubbable {
     })
   }
 
+  getVisibleStub() {
+    const initialStub: PlanetStub = this.stubify()
+    initialStub.vendor.cargo.forEach(
+      (i: VendorCargoPrice) => delete i.cargoData,
+    )
+    initialStub.vendor.actives.forEach(
+      (i: VendorCrewActivePrice) => delete i.activeData,
+    )
+    initialStub.vendor.passives.forEach(
+      (i: VendorCrewPassivePrice) => delete i.passiveData,
+    )
+    initialStub.vendor.items.forEach(
+      (i: VendorItemPrice) => delete i.itemData,
+    )
+    initialStub.vendor.chassis.forEach(
+      (i: VendorChassisPrice) => delete i.chassisData,
+    )
+    return initialStub
+  }
+
   incrementAllegiance(
     faction: Faction | FactionStub,
     amount?: number,
   ) {
     const allegianceAmountToIncrement = amount || 1
-    c.log(`allegiance`, allegianceAmountToIncrement)
+    // c.log(`allegiance`, allegianceAmountToIncrement)
     const maxAllegiance = 100
     const found = this.allegiances.find(
       (a) => a.faction.id === faction.id,

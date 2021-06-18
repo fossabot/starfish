@@ -85,6 +85,13 @@ function degreesToUnitVector(
   let r = 1
   return [r * Math.cos(rad), r * Math.sin(rad)]
 }
+function vectorToUnitVector(
+  vector: CoordinatePair = [0, 0],
+): CoordinatePair {
+  const magnitude = vectorToMagnitude(vector)
+  if (magnitude === 0) return [0, 0]
+  return [vector[0] / magnitude, vector[1] / magnitude]
+}
 function unitVectorFromThisPointToThatPoint(
   thisPoint: CoordinatePair = [0, 0],
   thatPoint: CoordinatePair = [0, 0],
@@ -154,6 +161,7 @@ export default {
   angleDifference,
   randomInsideCircle,
   degreesToUnitVector,
+  vectorToUnitVector,
   unitVectorFromThisPointToThatPoint,
   pointIsInsideCircle,
   vectorToDegrees,

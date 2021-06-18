@@ -261,6 +261,7 @@ export default {
     },
   },
   mounted(this: ComponentShape) {
+    this.$socket.on(`ship:resetView`, this.resetCenter)
     this.redraw()
   },
   methods: {

@@ -1,16 +1,14 @@
 <template>
-  <Box class="shipscan" v-if="show">
+  <Box v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">🛸</span>Scan Ships
     </template>
-    <div class="panesection">
+    <div class="panesection shipscan">
       {{ scannable.length }} ship{{
         scannable.length === 1 ? '' : 's'
       }}
       in scan range
-    </div>
-
-    <div class="panesection" v-if="toShow">
+      <br />
       <select
         v-model="selected"
         v-if="scannable.length > 1"
@@ -19,50 +17,17 @@
           v-for="(otherShip, index) in scannable"
           :key="otherShip.id"
           :value="index"
-          >🚀{{ otherShip.name }}</option
+          >{{ otherShip.species.icon
+          }}{{ otherShip.name }}</option
         >
       </select>
-      <div v-else>
-        <b>🚀{{ toShow.name }}</b>
-      </div>
-      <div>
-        Faction:
-        <span
-          v-if="toShow.faction"
-          :style="{ color: toShow.faction.color }"
-          >{{ toShow.faction.name }}</span
-        ><span v-else>No Faction</span>
-      </div>
-      <div>
-        Species:
-        {{ toShow.species && toShow.species.icon
-        }}{{
-          c.capitalize(toShow.species && toShow.species.id)
-        }}
-      </div>
-      <div v-if="toShow.planet">
-        At planet 🪐{{ toShow.planet.name }}
-      </div>
-      <div v-if="toShow.level">
-        Level {{ Math.round(toShow.level) }}
-      </div>
-      <div>
-        <div
-          v-for="(item, index) in toShow.items"
-          :key="'scanitem' + index"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: item.type,
-              data: item,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
-        >
-          {{ c.capitalize(item.type) }}:
-          {{ item.displayName }}
-        </div>
-      </div>
     </div>
+
+    <ShipTooltipsShipdot
+      :key="toShow && 'scanship' + toShow.id"
+      v-if="toShow"
+      :data="toShow"
+    />
   </Box>
 </template>
 
@@ -78,13 +43,19 @@ export default {
     return { c, selected: 0 }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState(['userId', 'ship']),
     show(this: ComponentShape) {
       return (
         this.ship &&
         this.scannable.length &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('scanShip'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'scanShip'
       )
     },
     scannable(this: ComponentShape) {
@@ -103,15 +74,7 @@ export default {
     },
     toShow(this: ComponentShape) {
       const selectedShip = this.scannable[this.selected]
-      if (!selectedShip) return
-
-      return {
-        name: selectedShip.name,
-        faction: selectedShip.faction,
-        species: selectedShip.species,
-        items: selectedShip.items,
-        planet: selectedShip.planet,
-      }
+      return selectedShip
     },
   },
   watch: {
@@ -127,7 +90,6 @@ export default {
 
 <style lang="scss" scoped>
 .shipscan {
-  width: 260px;
-  position: relative;
+  width: 230px;
 }
 </style>

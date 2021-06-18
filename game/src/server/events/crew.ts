@@ -85,6 +85,8 @@ export default function (
           targetLocation,
         )
       crewMember.targetLocation = targetLocation
+      crewMember.toUpdate.targetLocation =
+        crewMember.targetLocation
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}.`,
@@ -103,6 +105,7 @@ export default function (
     if (!crewMember) return
 
     crewMember.tactic = tactic
+    crewMember.toUpdate.tactic = crewMember.tactic
     c.log(
       `gray`,
       `Set ${crewMember.name} on ${ship.name} tactic to ${tactic}.`,
@@ -127,6 +130,8 @@ export default function (
         ) as CombatShip) || null
 
       crewMember.attackTarget = targetShip
+      crewMember.toUpdate.attackTarget =
+        crewMember.attackTarget
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}.`,
@@ -147,6 +152,7 @@ export default function (
       if (!crewMember) return
 
       crewMember.itemTarget = targetId
+      crewMember.toUpdate.itemTarget = crewMember.itemTarget
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} item target to ${targetId}.`,
@@ -167,6 +173,8 @@ export default function (
       if (!crewMember) return
 
       crewMember.repairPriority = repairPriority
+      crewMember.toUpdate.repairPriority =
+        crewMember.repairPriority
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} repair priority to ${repairPriority}.`,
@@ -189,6 +197,7 @@ export default function (
     if (amount > crewMember.credits) return
 
     crewMember.credits -= amount
+    crewMember.toUpdate.credits = crewMember.credits
     ship.addCommonCredits(amount, crewMember)
 
     c.log(
@@ -296,6 +305,7 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
+      crewMember.toUpdate.credits = crewMember.credits
       crewMember.addCargo(cargoType, amount)
 
       callback({
@@ -372,6 +382,7 @@ export default function (
       )
 
       crewMember.credits += price
+      crewMember.toUpdate.credits = crewMember.credits
       crewMember.removeCargo(cargoType, amount)
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(

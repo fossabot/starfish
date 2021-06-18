@@ -32,6 +32,7 @@ class CrewMember extends Stubbable_1.Stubbable {
     constructor(data, ship) {
         super();
         this.name = `crew member`;
+        this.maxStamina = 1;
         this.targetLocation = null;
         this.tactic = `defensive`;
         this.attackFactions = [];
@@ -44,6 +45,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.upgrades = [];
         this.stats = [];
         this.maxCargoSpace = CrewMember.basemaxCargoSpace;
+        this.toUpdate = {};
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
@@ -86,27 +88,34 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.repairPriority = data.repairPriority;
         if (data.stats)
             this.stats = data.stats;
+        this.toUpdate = this;
     }
     rename(newName) {
+        this.active();
         this.name = dist_1.default
             .sanitize(newName)
             .result.substring(0, dist_1.default.maxNameLength);
         if (this.name.replace(/\s/g, ``).length === 0)
             this.name = `crew member`;
+        this.toUpdate.name = this.name;
     }
     goTo(location) {
         if (!(location in this.ship.rooms))
             return false;
         this.location = location;
-        this.lastActive = Date.now();
+        this.toUpdate.location = this.location;
+        this.active();
         return true;
     }
     tick() {
-        this._stub = null; // invalidate stub
+        this.toUpdate = {};
+        // this._stub = null // invalidate stub
         // ----- reset attack target if out of vision range -----
         if (this.attackTarget &&
-            !this.ship.visible.ships.find((s) => s.id === this.attackTarget?.id))
+            !this.ship.visible.ships.find((s) => s.id === this.attackTarget?.id)) {
             this.attackTarget = null;
+            this.toUpdate.attackTarget = this.attackTarget;
+        }
         // ----- actives -----
         this.actives.forEach((a) => a.tick());
         // ----- bunk -----
@@ -123,8 +132,10 @@ class CrewMember extends Stubbable_1.Stubbable {
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
+            this.toUpdate.stamina = this.stamina;
             return;
         }
+        this.toUpdate.stamina = this.stamina;
         // ----- cockpit -----
         if (this.location === `cockpit`)
             this.cockpitAction();
@@ -135,8 +146,12 @@ class CrewMember extends Stubbable_1.Stubbable {
         else if (this.location === `weapons`)
             this.weaponsAction();
     }
-    addXp(skill, xp) {
+    active() {
         this.lastActive = Date.now();
+        this.toUpdate.lastActive = this.lastActive;
+    }
+    addXp(skill, xp) {
+        this.active();
         if (!xp)
             xp = dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         let skillElement = this.skills.find((s) => s.skill === skill);
@@ -152,9 +167,9 @@ class CrewMember extends Stubbable_1.Stubbable {
             skillElement.xp += xp;
         skillElement.level =
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
+        this.toUpdate.skills = this.skills;
     }
     addCargo(type, amount) {
-        this.lastActive = Date.now();
         const canHold = Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) - this.heldWeight;
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)
@@ -164,14 +179,17 @@ class CrewMember extends Stubbable_1.Stubbable {
                 type,
                 amount: Math.min(canHold, amount),
             });
+        this.toUpdate.inventory = this.inventory;
         this.ship.recalculateMass();
         return Math.max(0, amount - canHold);
     }
     removeCargo(type, amount) {
+        this.active();
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)
             existingStock.amount = dist_1.default.r2(existingStock.amount -
                 Math.min(existingStock.amount, amount));
+        this.toUpdate.inventory = this.inventory;
         this.ship.recalculateMass();
     }
     get heldWeight() {
@@ -184,7 +202,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost;
     }
     addPassive(data) {
-        this.lastActive = Date.now();
+        this.active();
         if (!data.type)
             return;
         const existing = this.passives.find((p) => p.type === data.type);
@@ -198,6 +216,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             };
             this.passives.push(new CrewPassive_1.CrewPassive(fullPassiveData, this));
         }
+        this.toUpdate.passives = this.passives;
         // reset all variables that might have changed because of this
         this.recalculateAll();
     }
@@ -205,7 +224,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.recalculatemaxCargoSpace();
     }
     addStat(statname, amount) {
-        this.lastActive = Date.now();
+        this.active();
         const existing = this.stats.find((s) => s.stat === statname);
         if (!existing)
             this.stats.push({
@@ -214,12 +233,10 @@ class CrewMember extends Stubbable_1.Stubbable {
             });
         else
             existing.amount += amount;
+        this.toUpdate.stats = this.stats;
     }
     get tired() {
         return this.stamina <= 0;
-    }
-    get maxStamina() {
-        return 1;
     }
     get piloting() {
         return this.skills.find((s) => s.skill === `piloting`);

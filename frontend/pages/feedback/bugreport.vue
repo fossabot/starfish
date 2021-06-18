@@ -1,35 +1,42 @@
 <template>
   <div class="container">
     <NavBar />
-    <h2>Bug Report</h2>
-    <div>
-      Also consider creating an issue on the github issues
-      page! (link)
+    <div class="textcolumn">
+      <h2>Bug Report</h2>
+      <div>
+        Also consider creating an issue on the github issues
+        page! (link)
+      </div>
+
+      <form @submit.prevent="submit" ref="form">
+        <div>
+          <label for="Name">Name</label>
+          <input
+            id="Name"
+            type="text"
+            ref="Name"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="Email">Email</label>
+          <input
+            id="Email"
+            type="email"
+            ref="Email"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="Feedback">Bug Description</label>
+          <textarea id="Feedback" ref="Feedback" required />
+        </div>
+
+        <input type="submit" value="Submit" />
+      </form>
     </div>
-
-    <form @submit.prevent="submit" ref="form">
-      <div>
-        <label for="Name">Name</label>
-        <input id="Name" type="text" ref="Name" required />
-      </div>
-
-      <div>
-        <label for="Email">Email</label>
-        <input
-          id="Email"
-          type="email"
-          ref="Email"
-          required
-        />
-      </div>
-
-      <div>
-        <label for="Feedback">Bug Description</label>
-        <textarea id="Feedback" ref="Feedback" required />
-      </div>
-
-      <input type="submit" value="Submit" />
-    </form>
   </div>
 </template>
 

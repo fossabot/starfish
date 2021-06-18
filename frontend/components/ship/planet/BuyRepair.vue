@@ -1,7 +1,11 @@
 <template>
   <div
     class="panesection"
-    v-if="ship.planet && ship.planet.repairCostMultiplier"
+    v-if="
+      crewMember &&
+        ship.planet &&
+        ship.planet.repairCostMultiplier
+    "
   >
     <div>
       <div class="panesubhead">Mechanics' Quarter</div>
@@ -76,7 +80,7 @@ export default {
       this.$socket?.emit(
         'crew:buyRepair',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         hp,
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {

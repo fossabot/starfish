@@ -1,5 +1,5 @@
 <template>
-  <Box class="log" v-if="show">
+  <Box class="log" v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">📄</span>Ship Log
     </template>
@@ -31,6 +31,12 @@ export default {
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('log'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'log'
       )
     },
     flippedLog(this: ComponentShape) {

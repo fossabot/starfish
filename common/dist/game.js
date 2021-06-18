@@ -23,6 +23,8 @@ const baseShipScanProperties = {
     name: true,
     human: true,
     ai: true,
+    headerBackground: true,
+    tagline: true,
     dead: true,
     attackable: true,
     previousLocations: true,
@@ -65,7 +67,7 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         gameSpeedMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return ((math_1.default.lerp(0.5, 2, level / 100) /
+    return ((math_1.default.lerp(0.2, 1.3, level / 100) /
         globals_1.default.TICK_INTERVAL) *
         gameSpeedMultiplier);
 }
@@ -80,6 +82,24 @@ function getWeaponCooldownReductionPerTick(level) {
 function getCrewPassivePriceMultiplier(level) {
     return 1 + level ** 2;
 }
+const taglineOptions = [
+    `Tester`,
+    `✨Supporter✨`,
+    `Very Shallow`,
+];
+const headerBackgroundOptions = [
+    { id: `Default`, url: `default.jpg` },
+    { id: `Blue Faction 1`, url: `blue1.svg` },
+    { id: `Purple Faction 1`, url: `purple1.svg` },
+    { id: `Green Faction 1`, url: `green1.svg` },
+    { id: `Flat 1`, url: `flat1.svg` },
+    { id: `Flat 2`, url: `flat2.svg` },
+    { id: `Gradient 1`, url: `gradient1.svg` },
+    { id: `Gradient 2`, url: `gradient2.svg` },
+    { id: `Gradient 3`, url: `gradient3.svg` },
+    { id: `Constellation 1`, url: `stars1.jpg` },
+    { id: `Vintage 1`, url: `vintage1.jpg` },
+];
 function stubify(prop, disallowPropName) {
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
     profiler.step(`getters`);
@@ -147,6 +167,8 @@ exports.default = {
     getCrewPassivePriceMultiplier,
     tactics,
     cargoTypes,
+    taglineOptions,
+    headerBackgroundOptions,
     stubify,
 };
 //# sourceMappingURL=game.js.map

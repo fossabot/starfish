@@ -1,31 +1,41 @@
 <template>
   <div class="container">
     <NavBar />
-    <h2>Feedback</h2>
-
-    <form @submit.prevent="submit" ref="form">
+    <div class="textcolumn">
+      <h2>Feedback</h2>
       <div>
-        <label for="Name">Name</label>
-        <input id="Name" type="text" ref="Name" required />
+        Let us know what you think of {{ c.GAME_NAME }}!
       </div>
 
-      <div>
-        <label for="Email">Email</label>
-        <input
-          id="Email"
-          type="email"
-          ref="Email"
-          required
-        />
-      </div>
+      <form @submit.prevent="submit" ref="form">
+        <div>
+          <label for="Name">Name</label>
+          <input
+            id="Name"
+            type="text"
+            ref="Name"
+            required
+          />
+        </div>
 
-      <div>
-        <label for="Feedback">Feedback</label>
-        <textarea id="Feedback" ref="Feedback" required />
-      </div>
+        <div>
+          <label for="Email">Email</label>
+          <input
+            id="Email"
+            type="email"
+            ref="Email"
+            required
+          />
+        </div>
 
-      <input type="submit" value="Submit" />
-    </form>
+        <div>
+          <label for="Feedback">Feedback</label>
+          <textarea id="Feedback" ref="Feedback" required />
+        </div>
+
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
   </div>
 </template>
 

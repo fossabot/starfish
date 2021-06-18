@@ -11,6 +11,7 @@ export const state = () => ({
   crewMember: null,
   tooltip: null,
   winSize: [1200, 1000],
+  modal: null,
 })
 
 export const mutations = {
@@ -22,22 +23,18 @@ export const mutations = {
     state.tooltip = text
   },
 
-  updateShip(state, updates) {
-    if (!state.ship) return
-    for (let prop in updates)
-      Vue.set(state.ship, prop, updates[prop])
-    Vue.set(state.ship, `lastUpdated`, Date.now())
-    state.crewMember = state.ship?.crewMembers?.find(
-      (cm) => cm.id === state.userId,
-    )
+  setShipProp(state, pair) {
+    Vue.set(state.ship, pair[0], pair[1])
   },
 
   updateACrewMember(state, updates) {
     const crewMember = state.ship?.crewMembers?.find(
       (c) => c.id === updates?.id,
     )
-    for (let prop in updates)
-      Vue.set(crewMember, prop, updates[prop])
+    if (!crewMember) state.ship?.crewMembers?.push(updates)
+    else
+      for (let prop in updates)
+        Vue.set(crewMember, prop, updates[prop])
   },
 
   setRoom(state, target) {
@@ -110,7 +107,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async socketSetup({ state, commit }, shipId) {
+  async socketSetup({ state, dispatch, commit }, shipId) {
     this.$socket.removeAllListeners()
 
     this.$socket.on(`disconnect`, () => {
@@ -121,7 +118,7 @@ export const actions = {
       this.$socket?.emit(`ship:listen`, shipId, (res) => {
         if (`error` in res) return console.log(res.error)
         commit(`set`, { ship: res.data })
-        commit(`updateShip`, { ...res.data }) // this gets the crewMember for us
+        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
       })
     }
     if (this.$socket.connected) connected()
@@ -134,12 +131,36 @@ export const actions = {
       // c.log(updates)
 
       stillWorkingOnTick = true
-      commit(`updateShip`, { ...updates })
+      dispatch(`updateShip`, { ...updates })
 
       setTimeout(
         () => (stillWorkingOnTick = false),
         c.TICK_INTERVAL * 0.7,
       )
+    })
+  },
+
+  updateShip({ commit, state }, updates) {
+    // c.log(`updating ship props`, Object.keys(updates))
+    if (!state.ship) return
+    for (let prop in updates) {
+      if (prop === `crewMembers`) {
+        const existingMembers = state.ship.crewMembers
+        if (!existingMembers)
+          commit(`setShipProp`, [
+            `crewMembers`,
+            updates.crewMembers,
+          ])
+        updates.crewMembers.forEach((cmStub) =>
+          commit(`updateACrewMember`, cmStub),
+        )
+      } else commit(`setShipProp`, [prop, updates[prop]])
+    }
+    commit(`setShipProp`, [`lastUpdated`, Date.now()])
+    commit(`set`, {
+      crewMember: state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
     })
   },
 

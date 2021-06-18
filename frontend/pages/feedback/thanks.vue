@@ -1,8 +1,11 @@
 <template>
   <div class="container">
     <NavBar />
-    <h2>Thanks for sharing!</h2>
-    Your feedback has been logged.
+
+    <div class="textcolumn">
+      <h2>Thanks for sharing!</h2>
+      Your feedback has been recorded.
+    </div>
   </div>
 </template>
 

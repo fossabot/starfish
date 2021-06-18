@@ -13,6 +13,7 @@ declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
  */
 declare function angleDifference(a: number, b: number): number;
 declare function degreesToUnitVector(degrees?: number): CoordinatePair;
+declare function vectorToUnitVector(vector?: CoordinatePair): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint?: CoordinatePair, thatPoint?: CoordinatePair): CoordinatePair;
 declare function vectorToMagnitude(vector?: CoordinatePair): number;
 declare function pointIsInsideCircle(center?: CoordinatePair, point?: CoordinatePair, radius?: number): boolean;
@@ -30,6 +31,7 @@ declare const _default: {
     angleDifference: typeof angleDifference;
     randomInsideCircle: typeof randomInsideCircle;
     degreesToUnitVector: typeof degreesToUnitVector;
+    vectorToUnitVector: typeof vectorToUnitVector;
     unitVectorFromThisPointToThatPoint: typeof unitVectorFromThisPointToThatPoint;
     pointIsInsideCircle: typeof pointIsInsideCircle;
     vectorToDegrees: typeof vectorToDegrees;

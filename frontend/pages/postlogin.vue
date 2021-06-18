@@ -5,6 +5,13 @@
       <div>
         {{ errorMessage }}
       </div>
+      <div>
+        If it's not working, try turning off any privacy
+        extensions or adblockers.
+      </div>
+      <div>
+        PrivacyBadger has broken this before.
+      </div>
       <a
         href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Flocalhost%3A4300%2Fpostlogin&response_type=token&scope=identify%20guilds"
         >Try Again</a

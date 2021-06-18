@@ -1,5 +1,5 @@
 <template>
-  <div class="items" v-if="show">
+  <div class="items" v-if="show" :highlight="highlight">
     <Box>
       <template #title>
         <span class="sectionemoji">🛠</span>Ship Equipment
@@ -265,6 +265,12 @@ export default {
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('items'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'items'
       )
     },
     engines(this: ComponentShape) {

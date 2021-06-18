@@ -48,6 +48,8 @@ class AIShip extends CombatShip_1.CombatShip {
         this.planet = false;
         this.ai = true;
         this.human = false;
+        if (data.headerBackground)
+            this.headerBackground = data.headerBackground;
         if (data.level)
             this.level = data.level;
         if (this.items.length === 0)
@@ -90,7 +92,7 @@ class AIShip extends CombatShip_1.CombatShip {
         return this.level;
     }
     addLevelAppropriateItems() {
-        dist_1.default.log(`Adding items to level ${this.level} ai...`);
+        // c.log(`Adding items to level ${this.level} ai...`)
         let itemBudget = this.level * dist_1.default.aiDifficultyMultiplier;
         const validChassis = Object.values(itemData.chassis)
             .filter((i) => i.rarity <= itemBudget / 3)
@@ -98,7 +100,9 @@ class AIShip extends CombatShip_1.CombatShip {
         const chassisToBuy = validChassis[0] || itemData.chassis.starter1;
         this.chassis = chassisToBuy;
         itemBudget -= chassisToBuy.rarity;
-        dist_1.default.log(`adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`);
+        // c.log(
+        //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
+        // )
         let canAddMoreItems = true;
         const isInBudget = (i) => i.rarity <= itemBudget;
         while (canAddMoreItems) {
@@ -116,7 +120,9 @@ class AIShip extends CombatShip_1.CombatShip {
             const itemToAdd = dist_1.default.randomFromArray(validItems);
             this.addItem(itemToAdd);
             itemBudget -= itemToAdd.rarity;
-            dist_1.default.log(`adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`);
+            // c.log(
+            //   `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
+            // )
             if (this.chassis.slots <= this.items.length)
                 canAddMoreItems = false;
         }
@@ -134,12 +140,15 @@ class AIShip extends CombatShip_1.CombatShip {
         const engineThrustMultiplier = this.engines
             .filter((e) => e.repair > 0)
             .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
-        if (!(Math.abs(this.location[0] - this.targetLocation[0]) <
+        const hasArrived = Math.abs(this.location[0] - this.targetLocation[0]) <
             dist_1.default.ARRIVAL_THRESHOLD / 2 &&
             Math.abs(this.location[1] - this.targetLocation[1]) <
-                dist_1.default.ARRIVAL_THRESHOLD / 2)) {
+                dist_1.default.ARRIVAL_THRESHOLD / 2;
+        if (!hasArrived) {
             const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, this.targetLocation));
-            const thrustMagnitude = dist_1.default.getThrustMagnitudeForSingleCrewMember(this.level, engineThrustMultiplier);
+            const thrustMagnitude = dist_1.default.lerp(0.00001, 0.0001, this.level / 100) *
+                engineThrustMultiplier *
+                dist_1.default.gameSpeedMultiplier;
             this.location[0] +=
                 unitVectorToTarget[0] *
                     thrustMagnitude *
@@ -150,7 +159,7 @@ class AIShip extends CombatShip_1.CombatShip {
                     (dist_1.default.deltaTime / 1000);
         }
         // ----- set new target location -----
-        if (Math.random() < 0.015) {
+        if (Math.random() < 0.000015 * dist_1.default.TICK_INTERVAL) {
             const distance = (Math.random() * this.level) / 2;
             const currentAngle = dist_1.default.angleFromAToB(this.location, this.targetLocation);
             const possibleAngles = [
@@ -176,7 +185,8 @@ class AIShip extends CombatShip_1.CombatShip {
             ];
         }
         // ----- add previousLocation -----
-        this.addPreviousLocation(startingLocation, this.location);
+        if (!hasArrived)
+            this.addPreviousLocation(startingLocation, this.location);
     }
     die() {
         super.die();

@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.bunk = exports.weapons = exports.repair = exports.cockpit = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
 function cockpit() {
-    if (this.cockpitCharge < 1)
-        this.addXp(`piloting`);
+    if (this.cockpitCharge >= 1)
+        return;
+    this.addXp(`piloting`);
     this.cockpitCharge +=
         dist_1.default.getCockpitChargePerTickForSingleCrewMember(this.piloting?.level || 1);
     if (this.cockpitCharge > 1)
         this.cockpitCharge = 1;
+    this.toUpdate.cockpitCharge = this.cockpitCharge;
     // * actual movement handled by Ship class
 }
 exports.cockpit = cockpit;
@@ -70,8 +72,10 @@ function repair(repairAmount) {
             ri.announceWhenRepaired = true;
         totalRepaired += ri.repair - previousRepair;
     });
-    if (!overRepair)
+    if (!overRepair) {
         this.addXp(`mechanics`); // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
+        this.toUpdate.skills = this.skills;
+    }
     this.ship.updateThingsThatCouldChangeOnItemChange();
     return totalRepaired;
 }
@@ -79,24 +83,28 @@ exports.repair = repair;
 function weapons() {
     // ----- charge weapons -----
     const chargeableWeapons = this.ship.weapons.filter((w) => w.cooldownRemaining > 0);
-    if (chargeableWeapons.length) {
-        const amountToReduceCooldowns = dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) / chargeableWeapons.length;
-        chargeableWeapons.forEach((cw) => {
-            cw._stub = null; // invalidate stub
-            cw.cooldownRemaining -= amountToReduceCooldowns;
-            if (cw.cooldownRemaining < 0)
-                cw.cooldownRemaining = 0;
-        });
-        this.addXp(`munitions`);
-    }
+    if (!chargeableWeapons.length)
+        return;
+    const amountToReduceCooldowns = dist_1.default.getWeaponCooldownReductionPerTick(this.munitions?.level || 1) / chargeableWeapons.length;
+    chargeableWeapons.forEach((cw) => {
+        cw._stub = null; // invalidate stub
+        cw.cooldownRemaining -= amountToReduceCooldowns;
+        if (cw.cooldownRemaining < 0)
+            cw.cooldownRemaining = 0;
+    });
+    this.addXp(`munitions`);
+    this.toUpdate.skills = this.skills;
 }
 exports.weapons = weapons;
 function bunk() {
+    if (this.stamina >= this.maxStamina)
+        return;
     this.stamina +=
         dist_1.default.getStaminaGainPerTickForSingleCrewMember() /
             (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
     if (this.stamina > this.maxStamina)
         this.stamina = this.maxStamina;
+    this.toUpdate.stamina = this.stamina;
 }
 exports.bunk = bunk;
 //# sourceMappingURL=rooms.js.map

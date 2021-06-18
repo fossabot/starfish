@@ -1,57 +1,59 @@
 <template>
-  <div
-    class="hovertooltip"
-    v-if="tooltip && !isMobile"
-    :style="tooltipStyle"
-  >
-    <template v-if="tooltip.type">
-      <ShipTooltipsEngine
-        v-if="tooltip.type === 'engine'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsCommunicator
-        v-if="tooltip.type === 'communicator'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsScanner
-        v-if="tooltip.type === 'scanner'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsWeapon
-        v-if="tooltip.type === 'weapon'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsArmor
-        v-if="tooltip.type === 'armor'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsChassis
-        v-if="tooltip.type === 'chassis'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsPlanet
-        v-if="tooltip.type === 'planet'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsShipdot
-        v-if="tooltip.type === 'ship'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsCache
-        v-if="tooltip.type === 'cache'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsCargo
-        v-if="tooltip.type === 'cargo'"
-        :data="tooltip.data"
-      />
-      <ShipTooltipsRoom
-        v-if="tooltip.type === 'room'"
-        :data="tooltip.data"
-      />
-    </template>
-    <div v-else v-html="tooltip" />
-  </div>
+  <transition name="fadein">
+    <div
+      class="hovertooltip"
+      v-if="tooltip && !isMobile"
+      :style="tooltipStyle"
+    >
+      <template v-if="tooltip.type">
+        <ShipTooltipsEngine
+          v-if="tooltip.type === 'engine'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsCommunicator
+          v-if="tooltip.type === 'communicator'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsScanner
+          v-if="tooltip.type === 'scanner'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsWeapon
+          v-if="tooltip.type === 'weapon'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsArmor
+          v-if="tooltip.type === 'armor'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsChassis
+          v-if="tooltip.type === 'chassis'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsPlanet
+          v-if="tooltip.type === 'planet'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsShipdot
+          v-if="tooltip.type === 'ship'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsCache
+          v-if="tooltip.type === 'cache'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsCargo
+          v-if="tooltip.type === 'cargo'"
+          :data="tooltip.data"
+        />
+        <ShipTooltipsRoom
+          v-if="tooltip.type === 'room'"
+          :data="tooltip.data"
+        />
+      </template>
+      <div v-else v-html="tooltip" />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -128,18 +130,22 @@ export default {
 
 <style lang="scss">
 .hovertooltip {
+  --tooltip-pad-lr: 0.75em;
+  --tooltip-pad-tb: 0.5em;
   position: absolute;
   z-index: 100;
   font-size: 0.9rem;
   max-width: 250px;
   font-weight: 400;
-  padding: 0.5em 0.75em;
+  padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--pane-border);
   // transition: transform 0.2s;
   pointer-events: none;
   overflow: hidden;
+  display: flex;
+  box-shadow: 0 2em 4em 0 var(--bg);
 
   hr {
     border: none;

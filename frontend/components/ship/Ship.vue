@@ -1,106 +1,18 @@
 <template>
-  <Box class="ship" v-if="show">
+  <Box v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">🚀</span>{{ ship.name }}
     </template>
 
-    <div class="panesection" v-if="ship.planet">
-      <div
-        @mouseenter="
-          $store.commit('tooltip', {
-            type: 'planet',
-            data: ship.planet,
-          })
-        "
-        @mouseleave="$store.commit('tooltip')"
-      >
-        At planet 🪐{{ ship.planet.name }}
-      </div>
-    </div>
+    <ShipTooltipsShipdot
+      :data="ship"
+      :showItems="false"
+      class="ship"
+    />
 
     <div class="panesection">
-      <div class="arrow" v-if="ship.speed > 0">
-        <div>
-          Speed: <br />
-          {{ c.r2(ship && ship.speed * 60 * 60, 4) }}
-          AU/hr
-          <br />
-          Angle: <br />
-          {{ c.r2(ship && ship.direction, 2) }}°
-        </div>
-        <svg
-          :style="{
-            transform: `rotate(${ship &&
-              ship.direction * -1}deg)`,
-          }"
-          width="604"
-          height="233"
-          viewBox="0 0 604 233"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <line
-            x1="4.37114e-07"
-            y1="116"
-            x2="604"
-            y2="116"
-            stroke="white"
-            stroke-width="10"
-          />
-          <line
-            x1="600.464"
-            y1="115.536"
-            x2="488.464"
-            y2="3.53553"
-            stroke="white"
-            stroke-width="10"
-          />
-          <line
-            y1="-5"
-            x2="158.392"
-            y2="-5"
-            transform="matrix(-0.707107 0.707107 0.707107 0.707107 604 121)"
-            stroke="white"
-            stroke-width="10"
-          />
-        </svg>
-      </div>
-      <div v-else>Stopped</div>
-    </div>
-
-    <ProgressBar
-      :percent="ship._hp / ship._maxHp"
-      @mouseenter.native="
-        $store.commit(
-          'tooltip',
-          `The sum total of all of your ship's equipment's health. Lose it all, and you're dead.`,
-        )
-      "
-      @mouseleave.native="$store.commit('tooltip')"
-    >
-      <div>
-        🇨🇭HP:
-        <NumberChangeHighlighter :number="c.r2(ship._hp)" />
-        /
-        {{ c.r2(ship._maxHp) }}
-      </div>
-    </ProgressBar>
-
-    <div class="panesection">
-      <div>
-        Model:
-        <span
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'chassis',
-              data: ship.chassis,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
-          >🚀{{ ship && ship.chassis.displayName }}</span
-        >
-      </div>
       <div
+        class="flexbetween"
         @mouseenter="
           $store.commit(
             'tooltip',
@@ -109,77 +21,16 @@
         "
         @mouseleave="$store.commit('tooltip')"
       >
-        Common Fund: 💳{{
-          ship && c.r2(ship.commonCredits)
-        }}
-        <button
-          v-if="isCaptain && ship.commonCredits > 0.01"
-          @click="redistributeCommonFund"
-          class="mini secondary"
-        >
-          Redistribute Credits
-        </button>
+        <div>Common Fund</div>
+        <div>💳{{ ship && c.r2(ship.commonCredits) }}</div>
       </div>
-
-      <div>
-        Species:
-        {{ ship && ship.species.icon
-        }}{{ ship && c.capitalize(ship.species.id) }}
-      </div>
-      <div>
-        Faction:
-        <span
-          :style="{
-            color:
-              ship && ship.faction
-                ? ship.faction.color
-                : '',
-          }"
-        >
-          {{
-            ship && ship.faction
-              ? ship.faction.name
-              : 'No Faction'
-          }}
-        </span>
-      </div>
-      <div>
-        Mass:
-        {{
-          ship && c.numberWithCommas(c.r2(ship.mass, 0))
-        }}kg
-      </div>
-    </div>
-
-    <div class="panesection">
-      <div>
-        Captain:
-        {{
-          ship && ship.crewMembers
-            ? ship.crewMembers.find(
-                (cm) => cm.id === ship.captain,
-              ).name
-            : 'No Captain'
-        }}
-      </div>
-      <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `<b>Crew</b><br/><hr />${ship.crewMembers
-              .map((cm) => cm.name)
-              .join(', ')}`,
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
+      <button
+        v-if="isCaptain && ship.commonCredits > 0.01"
+        @click="redistributeCommonFund"
+        class="mini secondary"
       >
-        Crew Members:
-        {{
-          ship &&
-            ship.crewMembers &&
-            ship.crewMembers.length
-        }}
-      </div>
+        Redistribute Credits
+      </button>
     </div>
   </Box>
 </template>
@@ -204,25 +55,14 @@ export default {
           this.ship.shownPanels.includes('ship'))
       )
     },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'ship'
+      )
+    },
     isCaptain(this: ComponentShape) {
       return this.ship?.captain === this.userId
-    },
-    crewByRoom(
-      this: ComponentShape,
-    ): { room: string; crewMembers: CrewMemberStub[] }[] {
-      const byRoom: {
-        room: string
-        crewMembers: CrewMemberStub[]
-      }[] = []
-      for (let room of this.ship?.rooms as string[]) {
-        byRoom.push({
-          room,
-          crewMembers: this.ship?.crewMembers.filter(
-            (cm: CrewMemberStub) => cm.location === room,
-          ),
-        })
-      }
-      return byRoom
     },
   },
   watch: {},
@@ -255,7 +95,7 @@ export default {
       this.$socket?.emit(
         'ship:redistribute',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         amount,
       )
     },
@@ -266,20 +106,9 @@ export default {
 <style lang="scss" scoped>
 .ship {
   width: 230px;
-  position: relative;
 }
 
-.arrow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  svg {
-    margin-left: 0.5em;
-    margin-right: 0em;
-    transition: transform 0.5s;
-    width: 33%;
-    height: 50px;
-  }
+.panesection {
+  width: 230px;
 }
 </style>

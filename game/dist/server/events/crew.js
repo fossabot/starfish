@@ -45,6 +45,8 @@ function default_1(socket) {
             targetLocation.find((l) => isNaN(parseInt(l))))
             return dist_1.default.log(`Invalid call to set crew targetLocation:`, shipId, crewId, targetLocation);
         crewMember.targetLocation = targetLocation;
+        crewMember.toUpdate.targetLocation =
+            crewMember.targetLocation;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}.`);
     });
     socket.on(`crew:tactic`, (shipId, crewId, tactic) => {
@@ -55,6 +57,7 @@ function default_1(socket) {
         if (!crewMember)
             return;
         crewMember.tactic = tactic;
+        crewMember.toUpdate.tactic = crewMember.tactic;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} tactic to ${tactic}.`);
     });
     socket.on(`crew:attackTarget`, (shipId, crewId, targetId) => {
@@ -66,6 +69,8 @@ function default_1(socket) {
             return;
         const targetShip = __1.game.ships.find((s) => s.id === targetId) || null;
         crewMember.attackTarget = targetShip;
+        crewMember.toUpdate.attackTarget =
+            crewMember.attackTarget;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}.`);
     });
     socket.on(`crew:itemTarget`, (shipId, crewId, targetId) => {
@@ -76,6 +81,7 @@ function default_1(socket) {
         if (!crewMember)
             return;
         crewMember.itemTarget = targetId;
+        crewMember.toUpdate.itemTarget = crewMember.itemTarget;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} item target to ${targetId}.`);
     });
     socket.on(`crew:repairPriority`, (shipId, crewId, repairPriority) => {
@@ -86,6 +92,8 @@ function default_1(socket) {
         if (!crewMember)
             return;
         crewMember.repairPriority = repairPriority;
+        crewMember.toUpdate.repairPriority =
+            crewMember.repairPriority;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} repair priority to ${repairPriority}.`);
     });
     socket.on(`crew:contribute`, (shipId, crewId, amount) => {
@@ -99,6 +107,7 @@ function default_1(socket) {
         if (amount > crewMember.credits)
             return;
         crewMember.credits -= amount;
+        crewMember.toUpdate.credits = crewMember.credits;
         ship.addCommonCredits(amount, crewMember);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`);
     });
@@ -152,6 +161,7 @@ function default_1(socket) {
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
+        crewMember.toUpdate.credits = crewMember.credits;
         crewMember.addCargo(cargoType, amount);
         callback({
             data: dist_1.default.stubify(crewMember),
@@ -187,6 +197,7 @@ function default_1(socket) {
                 ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
                 : 1), 2, true);
         crewMember.credits += price;
+        crewMember.toUpdate.credits = crewMember.credits;
         crewMember.removeCargo(cargoType, amount);
         callback({
             data: dist_1.default.stubify(crewMember),

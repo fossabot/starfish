@@ -13,6 +13,9 @@ interface BaseShipData {
   spawnPoint?: CoordinatePair
   level?: number
   tagline?: string
+  availableTaglines?: string[]
+  headerBackground?: string
+  availableHeaderBackgrounds?: string[]
 }
 
 interface BaseHumanShipData extends BaseShipData {

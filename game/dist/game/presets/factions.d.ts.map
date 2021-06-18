@@ -1,1 +1,1 @@
-{"version":3,"file":"factions.d.ts","sourceRoot":"","sources":["../../../src/game/presets/factions.ts"],"names":[],"mappings":"AAEA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,UAAU,GAAG,eAAe;CA4CrD,CAAA;AAgBD,eAAe,QAAQ,CAAA"}
+{"version":3,"file":"factions.d.ts","sourceRoot":"","sources":["../../../src/game/presets/factions.ts"],"names":[],"mappings":"AAEA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,UAAU,GAAG,eAAe;CAiDrD,CAAA;AAgBD,eAAe,QAAQ,CAAA"}

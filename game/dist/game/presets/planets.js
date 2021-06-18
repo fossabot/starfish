@@ -43,12 +43,30 @@ function generatePlanet(game, homeworldFactionKey) {
     if (!name)
         return false;
     let locationSearchRadius = game.gameSoftRadius * 0.75;
-    const tooClose = 0.1;
+    const tooClose = 0.2;
     let location = [0, 0];
     const isTooClose = (p) => dist_1.default.distance(location, p.location) < tooClose;
+    const getClosestPlanet = (closest, p) => dist_1.default.distance(p.location, location) <
+        dist_1.default.distance(closest?.location || [0, 0], location)
+        ? p
+        : closest;
     while (game.planets.find(isTooClose) ||
-        game.humanShips.find(isTooClose)) {
+        game.humanShips.find(isTooClose) ||
+        dist_1.default.distance(location, [0, 0]) > game.gameSoftRadius) {
         location = dist_1.default.randomInsideCircle(locationSearchRadius);
+        // move planets closer to each other to generate clusters
+        const closestPlanet = game.planets.reduce(getClosestPlanet, game.planets[0]);
+        if (closestPlanet) {
+            const distance = dist_1.default.distance(location, closestPlanet.location);
+            if (distance < 1) {
+                const vectorTowardsClosestPlanet = dist_1.default.getUnitVectorFromThatBodyToThisBody({ location }, closestPlanet);
+                const magnitude = distance * 0.4 * (homeworldFactionKey ? -1 : 1); // spawn homeworlds as "seeds" so they land farther away from other possible homeworlds
+                location[0] -=
+                    vectorTowardsClosestPlanet[0] * magnitude;
+                location[1] -=
+                    vectorTowardsClosestPlanet[1] * magnitude;
+            }
+        }
         locationSearchRadius *= 1.01;
     }
     const radius = Math.floor(Math.random() * 60000 + 10000);
@@ -213,6 +231,52 @@ const planetNames = [
     `Achilles`,
     `Hermes`,
     `Zenra`,
+    `Cualla`,
+    `Vakury`,
+    `Cioros`,
+    `Ibitas`,
+    `Deland`,
+    `Kenara`,
+    `Daeko`,
+    `Artan`,
+    `Ceti`,
+    `Talaran`,
+    `Deepsea`,
+    `Mist`,
+    `Mire`,
+    `Wave`,
+    `Aran`,
+    `Woaka`,
+    `Shalos`,
+    `Prime`,
+    `Hon‘an`,
+    `Maztes`,
+    `Meron`,
+    `Bevis`,
+    `Sotara`,
+    `Tza`,
+    `Uromi`,
+    `Oblas`,
+    `Wunan`,
+    `S'vas`,
+    `Loth`,
+    `Mora`,
+    `Tavda`,
+    `Kepes`,
+    `Boon`,
+    `Oxtus`,
+    `Cortus`,
+    `Ca‘us`,
+    `Sonor`,
+    `Ae'o`,
+    `K'arth`,
+    `Pluthra`,
+    `Sotix`,
+    `Taleos`,
+    `Cynia`,
+    `Konar`,
+    `C’lax`,
+    `Arcton`,
     // todo MORE
 ];
 const seaCreatures = [

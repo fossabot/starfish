@@ -53,6 +53,21 @@ export class HumanShip extends CombatShip {
     this.id = data.id
     // id matches discord guildId
 
+    this.availableTaglines = [`Tester`, `Very Shallow`]
+    this.availableHeaderBackgrounds = [
+      `Default`,
+      `Flat 1`,
+      `Flat 2`,
+      `Gradient 1`,
+      `Gradient 2`,
+      `Gradient 3`,
+      `Constellation 1`,
+      `Vintage 1`,
+    ]
+    this.availableHeaderBackgrounds.push(
+      c.capitalize(this.faction.id) + ` Faction 1`,
+    )
+
     this.ai = false
     this.human = true
 
@@ -122,9 +137,19 @@ export class HumanShip extends CombatShip {
 
     profiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
-    this.toUpdate.crewMembers = this.crewMembers.map((cm) =>
-      c.stubify<CrewMember, CrewMemberStub>(cm),
-    )
+    this.toUpdate.crewMembers = this.crewMembers
+      .filter((cm) => Object.keys(cm.toUpdate).length)
+      .map((cm) => ({
+        ...c.stubify(cm.toUpdate),
+        id: cm.id,
+      }))
+    if (!this.toUpdate.crewMembers.length)
+      delete this.toUpdate.crewMembers
+    // c.log(
+    //   `updated ${this.crewMembers.map((cm) =>
+    //     Object.keys(cm.toUpdate),
+    //   )} crew members on ${this.name}`,
+    // )
 
     profiler.step(`discover planets`)
     // ----- discover new planets -----
@@ -183,19 +208,33 @@ export class HumanShip extends CombatShip {
       attackRemnants: this.visible.attackRemnants.map(
         (ar) => ar.stubify(),
       ),
-      planets: this.visible.planets.map((p) => p.stubify()),
+      planets: this.visible.planets.map((p) =>
+        p.getVisibleStub(),
+      ),
       caches: this.visible.caches.map((c) => c.stubify()),
     }
     this.toUpdate.items = this.items.map((i) => i.stubify())
 
     profiler.step(`frontend send`)
     // ----- send update to listeners -----
-    if (Object.keys(this.toUpdate).length)
+    if (Object.keys(this.toUpdate).length) {
+      // c.log(
+      //   `sending`,
+      //   Object.keys(this.toUpdate).map(
+      //     (k) =>
+      //       `${k}: ${
+      //         JSON.stringify(this.toUpdate[k])?.length
+      //       }`,
+      //   ),
+      //   `characters to frontend for`,
+      //   this.name,
+      // )
       io.to(`ship:${this.id}`).emit(`ship:update`, {
         id: this.id,
         updates: this.toUpdate,
       })
-    this.toUpdate = {}
+      this.toUpdate = {}
+    }
     profiler.end()
   }
 
@@ -261,10 +300,25 @@ export class HumanShip extends CombatShip {
         this.location,
         targetLocation,
       )
+    const distanceToTarget = c.distance(
+      this.location,
+      targetLocation,
+    )
+    const vectorToTarget = [
+      unitVectorToTarget[0] * distanceToTarget,
+      unitVectorToTarget[1] * distanceToTarget,
+    ]
+
+    const vectorAlongWhichToThrust: CoordinatePair = [
+      vectorToTarget[0] - this.velocity[0],
+      vectorToTarget[1] - this.velocity[1],
+    ]
+    const unitVectorAlongWhichToThrust =
+      c.vectorToUnitVector(vectorAlongWhichToThrust)
 
     const thrustVector = [
-      unitVectorToTarget[0] * finalMagnitude,
-      unitVectorToTarget[1] * finalMagnitude,
+      unitVectorAlongWhichToThrust[0] * finalMagnitude,
+      unitVectorAlongWhichToThrust[1] * finalMagnitude,
     ]
 
     this.velocity = [
@@ -284,6 +338,8 @@ export class HumanShip extends CombatShip {
       engineThrustMultiplier,
       magnitudePerPointOfCharge,
       finalMagnitude,
+      targetLocation,
+      angleToTarget,
       unitVectorToTarget,
       thrustVector,
       velocity: this.velocity,
@@ -397,7 +453,41 @@ export class HumanShip extends CombatShip {
     this.updatePlanet()
 
     // ----- end if in tutorial -----
-    if (this.tutorial) return
+    if (this.tutorial) {
+      // reset position if outside max distance from spawn
+      if (
+        this.tutorial.currentStep.maxDistanceFromSpawn &&
+        c.distance(
+          this.tutorial.baseLocation,
+          this.location,
+        ) > this.tutorial.currentStep.maxDistanceFromSpawn
+      ) {
+        const unitVectorFromSpawn =
+          c.unitVectorFromThisPointToThatPoint(
+            this.tutorial.baseLocation,
+            this.location,
+          )
+        this.move([
+          this.tutorial.baseLocation[0] +
+            unitVectorFromSpawn[0] *
+              0.999 *
+              this.tutorial.currentStep
+                .maxDistanceFromSpawn,
+          this.tutorial.baseLocation[1] +
+            unitVectorFromSpawn[1] *
+              0.999 *
+              this.tutorial.currentStep
+                .maxDistanceFromSpawn,
+        ])
+        this.hardStop()
+        this.logEntry(
+          `Automatically stopped the ship — Let's keep it close to home while we're learning the ropes.`,
+          `high`,
+        )
+      }
+
+      return
+    }
 
     // ----- game radius -----
     this.radii.game = this.game.gameSoftRadius
@@ -471,9 +561,9 @@ export class HumanShip extends CombatShip {
       true,
     )
     const shipsWithValidScannedProps: ShipStub[] =
-      visible.ships.map((s) => {
-        return this.shipToValidScanResult(s)
-      })
+      visible.ships.map((s) =>
+        this.shipToValidScanResult(s),
+      )
     this.visible = {
       ...visible,
       ships: shipsWithValidScannedProps,
@@ -744,9 +834,10 @@ export class HumanShip extends CombatShip {
           toDistribute / canHoldMore.length
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
-            if (contents.type === `credits`)
+            if (contents.type === `credits`) {
               cm.credits += amountForEach
-            else {
+              cm.toUpdate.credits = cm.credits
+            } else {
               const leftOver = cm.addCargo(
                 contents.type,
                 amountForEach,
@@ -755,6 +846,7 @@ export class HumanShip extends CombatShip {
                 canHoldMore.splice(index, 1)
                 return total + leftOver
               }
+              cm.toUpdate.inventory = cm.inventory
             }
             return total
           },
@@ -773,7 +865,6 @@ export class HumanShip extends CombatShip {
           })
       }
     })
-    c.log(leftovers)
     if (leftovers.length) {
       setTimeout(
         () =>
@@ -898,8 +989,6 @@ export class HumanShip extends CombatShip {
 
   // ----- auto attack -----
   autoAttack() {
-    this.toUpdate.targetShip = false
-
     const weaponsRoomMembers = this.membersIn(`weapons`)
     if (!weaponsRoomMembers.length) return
 
@@ -1080,8 +1169,8 @@ export class HumanShip extends CombatShip {
         targetShip = this.game.ships.find(
           (s) => s.attackable && s.id === targetShip?.id,
         ) as CombatShip
+      this.toUpdate.targetShip = targetShip?.stubify()
       if (targetShip) {
-        this.toUpdate.targetShip = targetShip.stubify()
         availableWeapons.forEach((w) => {
           this.attack(targetShip!, w, mainItemTarget)
         })

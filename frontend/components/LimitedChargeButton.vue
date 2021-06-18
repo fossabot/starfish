@@ -5,22 +5,22 @@
       background: `linear-gradient(to right, ${startColor}, ${endColor}`,
     }"
     @mousedown="!disabled && start()"
-    @mouseup="!disabled && end()"
-    @mouseleave="!disabled && end()"
+    @mouseup="end()"
+    @mouseleave="end()"
+    @mouseenter="end()"
   >
     <div
       class="hider"
       :style="{ width: (1 - percent) * 100 + '%' }"
-    >
-      <div
-        class="base"
-        :style="{
-          width:
-            (max - percent) * (1 + percent) * 100 + '%',
-          background: maxFillColor,
-        }"
-      ></div>
-    </div>
+    ></div>
+    <div
+      class="base"
+      :style="{
+        width: max * 100 + '%',
+        background: maxFillColor,
+      }"
+    ></div>
+
     <div class="content flex flexcenter">
       <slot />
     </div>
@@ -34,8 +34,8 @@ export default {
     disabled: {},
     max: { default: 1 },
     maxFillColor: { default: 'rgba(255,255,255,.1)' },
-    startColor: { default: '#533' },
-    endColor: { default: '#fb0' },
+    startColor: { default: '#aa0' },
+    endColor: { default: '#f50' },
   },
   data() {
     return {
@@ -79,13 +79,15 @@ export default {
     right: 0;
     height: 100%;
     background: var(--bg);
-    z-index: 2;
+    z-index: 1;
+  }
 
-    .base {
-      position: absolute;
-      height: 100%;
-      left: 0;
-    }
+  .base {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    z-index: 2;
+    mix-blend-mode: screen;
   }
   .content {
     position: relative;

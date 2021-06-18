@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="data">
     <div>
       <b>{{
         data.cargoData ? data.cargoData.name : data.name

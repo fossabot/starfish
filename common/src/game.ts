@@ -31,6 +31,8 @@ const baseShipScanProperties: {
   name: true
   human: true
   ai: true
+  headerBackground: true
+  tagline: true
   dead: true
   attackable: true
   previousLocations: true
@@ -44,6 +46,8 @@ const baseShipScanProperties: {
   name: true,
   human: true,
   ai: true,
+  headerBackground: true,
+  tagline: true,
   dead: true,
   attackable: true,
   previousLocations: true,
@@ -118,7 +122,7 @@ function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    (math.lerp(0.5, 2, level / 100) /
+    (math.lerp(0.2, 1.3, level / 100) /
       globals.TICK_INTERVAL) *
     gameSpeedMultiplier
   )
@@ -139,6 +143,29 @@ function getWeaponCooldownReductionPerTick(level: number) {
 function getCrewPassivePriceMultiplier(level: number) {
   return 1 + level ** 2
 }
+
+const taglineOptions: string[] = [
+  `Tester`,
+  `✨Supporter✨`,
+  `Very Shallow`,
+]
+
+const headerBackgroundOptions: {
+  id: string
+  url: string
+}[] = [
+  { id: `Default`, url: `default.jpg` },
+  { id: `Blue Faction 1`, url: `blue1.svg` },
+  { id: `Purple Faction 1`, url: `purple1.svg` },
+  { id: `Green Faction 1`, url: `green1.svg` },
+  { id: `Flat 1`, url: `flat1.svg` },
+  { id: `Flat 2`, url: `flat2.svg` },
+  { id: `Gradient 1`, url: `gradient1.svg` },
+  { id: `Gradient 2`, url: `gradient2.svg` },
+  { id: `Gradient 3`, url: `gradient3.svg` },
+  { id: `Constellation 1`, url: `stars1.jpg` },
+  { id: `Vintage 1`, url: `vintage1.jpg` },
+]
 
 function stubify<BaseType, StubType extends BaseStub>(
   prop: BaseType,
@@ -221,5 +248,7 @@ export default {
   getCrewPassivePriceMultiplier,
   tactics,
   cargoTypes,
+  taglineOptions,
+  headerBackgroundOptions,
   stubify,
 }

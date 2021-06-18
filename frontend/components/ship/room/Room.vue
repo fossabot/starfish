@@ -28,6 +28,7 @@ export default {
     show(this: ComponentShape) {
       return (
         this.ship &&
+        this.crewMember &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('room'))
       )

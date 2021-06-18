@@ -34,7 +34,7 @@ class Planet extends Stubbable_1.Stubbable {
     constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }, game) {
         super();
         this.allegiances = [];
-        this.mass = 5.974e31;
+        this.mass = 5.974e32;
         this.priceFluctuator = 1;
         this.game = game;
         this.name = name;
@@ -118,9 +118,18 @@ class Planet extends Stubbable_1.Stubbable {
             s.toUpdate.planet = this.stubify();
         });
     }
+    getVisibleStub() {
+        const initialStub = this.stubify();
+        initialStub.vendor.cargo.forEach((i) => delete i.cargoData);
+        initialStub.vendor.actives.forEach((i) => delete i.activeData);
+        initialStub.vendor.passives.forEach((i) => delete i.passiveData);
+        initialStub.vendor.items.forEach((i) => delete i.itemData);
+        initialStub.vendor.chassis.forEach((i) => delete i.chassisData);
+        return initialStub;
+    }
     incrementAllegiance(faction, amount) {
         const allegianceAmountToIncrement = amount || 1;
-        dist_1.default.log(`allegiance`, allegianceAmountToIncrement);
+        // c.log(`allegiance`, allegianceAmountToIncrement)
         const maxAllegiance = 100;
         const found = this.allegiances.find((a) => a.faction.id === faction.id);
         if (found)

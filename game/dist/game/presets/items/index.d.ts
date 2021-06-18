@@ -28,5 +28,6 @@ export declare const chassis: {
     starter1: BaseChassisData;
     starter2: BaseChassisData;
     solo1: BaseChassisData;
+    mega1: BaseChassisData;
 };
 //# sourceMappingURL=index.d.ts.map

@@ -1,7 +1,11 @@
 <template>
   <div
     class="panesection"
-    v-if="ship.planet && ship.planet.vendor.passives.length"
+    v-if="
+      crewMember &&
+        ship.planet &&
+        ship.planet.vendor.passives.length
+    "
   >
     <div>
       <div class="panesubhead">Personal Outfitter</div>
@@ -75,7 +79,7 @@ export default {
       const levels: {
         [key in CrewPassiveType]?: number
       } = {}
-      for (let p of this.crewMember.passives || []) {
+      for (let p of this.crewMember?.passives || []) {
         levels[p.type as CrewPassiveType] = p.level
       }
       return levels
@@ -91,7 +95,7 @@ export default {
       this.$socket?.emit(
         'crew:buyPassive',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         type,
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {

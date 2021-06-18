@@ -6,8 +6,11 @@ interface TutorialStepData {
     shownRooms: CrewLocation[];
     forceCrewLocation?: CrewLocation;
     shownPanels: FrontendPanelType[];
+    highlightPanel?: FrontendPanelType;
+    maxDistanceFromSpawn?: number;
     sightRange: number;
     scanRange?: number;
+    resetView?: boolean;
     forceCockpitCharge?: number;
     forceStamina?: number;
     disableStamina?: true;

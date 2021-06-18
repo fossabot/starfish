@@ -30,6 +30,9 @@ const shipSchemaFields = {
         step: Number,
     },
     tagline: String,
+    availableTaglines: [{ type: String }],
+    headerBackground: String,
+    availableHeaderBackgrounds: [{ type: String }],
     captain: String,
     logAlertLevel: String,
     crewMembers: [

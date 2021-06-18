@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
-        "version": "246883fabb2e5b98c8af74362680afc4b00355b7acf0682952742078ee13c1fe",
-        "signature": "246883fabb2e5b98c8af74362680afc4b00355b7acf0682952742078ee13c1fe",
+        "version": "7ba86b056e489d50c6f68142fbf1f5d32ac32de07e80213857fc14b6245c28ae",
+        "signature": "7ba86b056e489d50c6f68142fbf1f5d32ac32de07e80213857fc14b6245c28ae",
         "affectsGlobalScope": true
       },
       "../@types/frontend.d.ts": {
@@ -277,13 +277,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "b241fe5d797249ab5d4c60011f7c135bdf68a3a65fec5e4bf6f63002ce2bf168",
-        "signature": "b241fe5d797249ab5d4c60011f7c135bdf68a3a65fec5e4bf6f63002ce2bf168",
+        "version": "c662348acc08d1b63e3b90f9e8d55b964b3e76c07adb7ba07fbc907917de4d42",
+        "signature": "c662348acc08d1b63e3b90f9e8d55b964b3e76c07adb7ba07fbc907917de4d42",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "b65fe8b3b442d25aedc097190592c7cf73efe5828ee3c16b93d306b20b27d1df",
-        "signature": "b65fe8b3b442d25aedc097190592c7cf73efe5828ee3c16b93d306b20b27d1df",
+        "version": "e40c13788657b2ebfee4ebd133589dc43e28bf4abec996a891b3bd98ef8f652c",
+        "signature": "e40c13788657b2ebfee4ebd133589dc43e28bf4abec996a891b3bd98ef8f652c",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -292,8 +292,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "0aae420eb6f7a62cf97b47eac4706d4147e63c2857c7351fd9ce9f77d0b38a4e",
-        "signature": "0aae420eb6f7a62cf97b47eac4706d4147e63c2857c7351fd9ce9f77d0b38a4e",
+        "version": "963d86fadf631a0f655b9955ffabc7c92359a21a4c68b72e20f4805676be2e8c",
+        "signature": "963d86fadf631a0f655b9955ffabc7c92359a21a4c68b72e20f4805676be2e8c",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -322,8 +322,8 @@
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
-        "version": "9447458633c249c464a0d60f9420ad920a604e022c6b09e2cbaac91aa80be20e",
-        "signature": "b83437d6b0bb36596df8f69def6bd02e3b585f7135357fc1ea6e3923e65402c7",
+        "version": "876dbb0a055f4b0fdd61be9235aef581bbef522e1e39dc8359a81962100d957a",
+        "signature": "68cb4759344715e5e27518a8608e2ef007b946c2cb709ac18d3b8f326eb53fce",
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
@@ -332,8 +332,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "8a5d859c292348d52b205a4501e044bcc4ab46028772ac7bf870fb6bd29c9ca8",
-        "signature": "72d682d80a12fce641c27300ab599a5c9b07ea1dc8f127e374bacd91449644c7",
+        "version": "fc15180b72b5e47d9c645990c880a90a91c037cae28354aa1db880ab551ae74b",
+        "signature": "e5c0bffe90a6dc4354d3da11c484eaa922348e5ffd4713350f57473b2c58fb70",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -353,7 +353,7 @@
       },
       "./src/index.ts": {
         "version": "a0b342aa140d802cf99830b0c85459af0279e29ef9b103729db2585084a77c03",
-        "signature": "bab1c12a6b0512ff74821bf9f79924d315256584a6d26f8e77b61707c5c82888",
+        "signature": "d97aa2a409a42e6422333cb1b724bd394da38b99fe1dcdcfac65d8b7bf06a3b5",
         "affectsGlobalScope": false
       },
       "./src/freemase/rect.ts": {

@@ -46,6 +46,21 @@ h5 {
   font-size: 1em;
 }
 
+.textcolumn {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1em;
+  margin-bottom: 8em;
+
+  h2,
+  h3 {
+    margin-top: 4em;
+  }
+  div {
+    margin-bottom: 1.5em;
+  }
+}
+
 label {
   margin-top: 0.5em;
   display: block;
@@ -143,6 +158,10 @@ input[type='submit'] {
 .flex {
   display: flex;
 }
+.flexwrap {
+  display: flex;
+  flex-wrap: wrap;
+}
 .flexrow {
   display: flex;
   flex-direction: row;
@@ -155,6 +174,10 @@ input[type='submit'] {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.flexbetween {
+  display: flex;
+  justify-content: space-between;
 }
 
 .martop {
@@ -220,4 +243,20 @@ input[type='submit'] {
 }
 .flashtextbadonspawn {
   animation: highlight-text-bad 4s ease-out 1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fadein-enter-active {
+  transition: opacity 0.25s;
+}
+.fadein-enter {
+  opacity: 0;
 }

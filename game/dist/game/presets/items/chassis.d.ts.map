@@ -1,1 +1,1 @@
-{"version":3,"file":"chassis.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/chassis.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,OAAO,EAAE;KACnB,GAAG,IAAI,SAAS,GAAG,eAAe;CAyCpC,CAAA"}
+{"version":3,"file":"chassis.d.ts","sourceRoot":"","sources":["../../../../src/game/presets/items/chassis.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,OAAO,EAAE;KACnB,GAAG,IAAI,SAAS,GAAG,eAAe;CAsDpC,CAAA"}

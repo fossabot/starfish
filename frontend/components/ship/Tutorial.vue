@@ -1,15 +1,20 @@
 <template>
-  <Box class="tutorial" v-if="show">
+  <Box class="tutorial" v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">👋</span>Tutorial
     </template>
 
     <div class="panesection">
-      <div :class="{ invisible: waitingForNextStep }">
-        <div
-          class="maintext"
-          v-html="currentScript.message"
-        />
+      <div
+        :class="{ invisible: waitingForNextStep }"
+        class="spreader"
+      >
+        <div class="flex maintextholder">
+          <div
+            class="maintext"
+            v-html="currentScript.message"
+          />
+        </div>
         <div class="padtop">
           <button
             v-if="
@@ -49,7 +54,16 @@ export default {
     ...mapState(['userId', 'ship', 'crewMember']),
     show(this: ComponentShape) {
       return (
-        this.ship && this.tutorial && this.currentScript
+        this.ship &&
+        this.crewMember &&
+        this.tutorial &&
+        this.currentScript
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'tutorial'
       )
     },
     tutorial(this: ComponentShape) {
@@ -87,5 +101,15 @@ export default {
 .tutorial {
   width: 380px;
   position: relative;
+}
+.spreader {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.maintextholder {
+  align-items: center;
+  flex-grow: 1;
 }
 </style>

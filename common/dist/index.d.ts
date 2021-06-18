@@ -24,6 +24,8 @@ declare const _default: {
         name: true;
         human: true;
         ai: true;
+        headerBackground: true;
+        tagline: true;
         dead: true;
         attackable: true;
         previousLocations: true;
@@ -45,6 +47,11 @@ declare const _default: {
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
     cargoTypes: (CargoType | "credits")[];
+    taglineOptions: string[];
+    headerBackgroundOptions: {
+        id: string;
+        url: string;
+    }[];
     stubify: <BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[] | undefined) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
@@ -72,6 +79,7 @@ declare const _default: {
     angleDifference: (a: number, b: number) => number;
     randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;
+    vectorToUnitVector: (vector?: CoordinatePair) => CoordinatePair;
     unitVectorFromThisPointToThatPoint: (thisPoint?: CoordinatePair, thatPoint?: CoordinatePair) => CoordinatePair;
     pointIsInsideCircle: (center?: CoordinatePair, point?: CoordinatePair, radius?: number) => boolean;
     vectorToDegrees: (coordPair?: CoordinatePair) => number;

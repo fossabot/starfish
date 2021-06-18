@@ -27,6 +27,8 @@ declare const _default: {
         name: true;
         human: true;
         ai: true;
+        headerBackground: true;
+        tagline: true;
         dead: true;
         attackable: true;
         previousLocations: true;
@@ -48,6 +50,11 @@ declare const _default: {
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
     cargoTypes: (CargoType | "credits")[];
+    taglineOptions: string[];
+    headerBackgroundOptions: {
+        id: string;
+        url: string;
+    }[];
     stubify: typeof stubify;
 };
 export default _default;

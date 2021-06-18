@@ -28,4 +28,7 @@ type SpeciesKey =
   | `angelfish`
   | `blowfish`
   | `shrimp`
-  | `robots`
+  | `eagles`
+  | `seagulls`
+  | `chickens`
+  | `flamingos`

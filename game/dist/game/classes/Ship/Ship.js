@@ -14,7 +14,7 @@ const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, }, game) {
         super();
         this.name = `ship`;
         this.planet = false;
@@ -43,6 +43,9 @@ class Ship extends Stubbable_1.Stubbable {
         this.direction = 0; // just for frontend reference
         // targetLocation: CoordinatePair = [0, 0]
         this.tagline = null;
+        this.availableTaglines = [];
+        this.headerBackground = null;
+        this.availableHeaderBackgrounds = [`Default`];
         this.attackable = false;
         this._hp = 10; // set in hp setter below
         this._maxHp = 10;
@@ -71,6 +74,13 @@ class Ship extends Stubbable_1.Stubbable {
             this.previousLocations = previousLocations;
         if (tagline)
             this.tagline = tagline;
+        if (availableTaglines)
+            this.availableTaglines = availableTaglines;
+        if (headerBackground)
+            this.headerBackground = headerBackground;
+        if (availableHeaderBackgrounds?.length)
+            this.availableHeaderBackgrounds =
+                availableHeaderBackgrounds;
         if (seenPlanets)
             this.seenPlanets = seenPlanets
                 .map(({ name }) => this.game.planets.find((p) => p.name === name))
@@ -227,9 +237,9 @@ class Ship extends Stubbable_1.Stubbable {
         let mass = this.chassis.mass;
         for (let item of this.items)
             mass += item.mass;
-        this.crewMembers.forEach((cm) => (mass += cm.inventory.reduce((total, cargo) => total + cargo.amount, 0)));
-        this.mass = mass;
-        this.toUpdate.mass = mass;
+        this.crewMembers.forEach((cm) => (mass += cm.inventory.reduce((total, cargo) => total + cargo.amount * 1000, 0)));
+        this.mass = dist_1.default.r2(mass, 0);
+        this.toUpdate.mass = this.mass;
     }
     updateSightAndScanRadius() {
         if (this.tutorial) {
@@ -263,8 +273,9 @@ class Ship extends Stubbable_1.Stubbable {
             previousLocation[1] ===
                 this.previousLocations[this.previousLocations.length - 1]?.[1])
             return;
-        // if (this.human)
+        // if (this.ai)
         //   c.log(
+        //     this.name,
         //     c.angleFromAToB(
         //       this.previousLocations[
         //         this.previousLocations.length - 1
@@ -280,8 +291,6 @@ class Ship extends Stubbable_1.Stubbable {
             (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
                 dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 8 &&
                 dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.0001)) {
-            if (this.human)
-                dist_1.default.log(`adding`);
             this.previousLocations.push(currentLocation);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)

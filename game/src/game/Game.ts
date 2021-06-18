@@ -299,7 +299,7 @@ export class Game {
 
   spawnNewPlanet() {
     while (
-      this.planets.length < this.gameSoftArea ||
+      this.planets.length < this.gameSoftArea * 0.7 ||
       this.planets.length < this.factions.length - 1
     ) {
       const factionThatNeedsAHomeworld = this.factions.find(
@@ -363,8 +363,9 @@ export class Game {
       let spawnPoint: CoordinatePair | undefined
       while (!spawnPoint) {
         let point = c.randomInsideCircle(radius)
+        // c.log(point)
         const tooClose = this.humanShips.find((hs) =>
-          c.pointIsInsideCircle(point, hs.location, 0.2),
+          c.pointIsInsideCircle(point, hs.location, 0.1),
         )
         if (tooClose) spawnPoint = undefined
         else spawnPoint = point
@@ -372,14 +373,22 @@ export class Game {
       }
 
       const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
+      const species = c.randomFromArray(
+        this.species
+          .filter((s) => s.faction.id === `red`)
+          .map((s) => s.id),
+      ) as SpeciesKey
 
       this.addAIShip({
         location: spawnPoint,
         name: `AI${`${Math.random().toFixed(3)}`.substring(
           2,
         )}`,
-        species: { id: `robots` },
+        species: {
+          id: species,
+        },
         level,
+        headerBackground: `ai.jpg`,
       })
     }
   }

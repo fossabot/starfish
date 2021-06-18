@@ -14,8 +14,8 @@ exports.scanners = {
         mass: 1000,
         basePrice: 10,
         rarity: 0.6,
-        sightRange: 0.3,
-        shipScanRange: 0.1,
+        sightRange: 1.3,
+        shipScanRange: 1.1,
         maxHp: 8,
         shipScanData: {
             ...dist_1.default.baseShipScanProperties,

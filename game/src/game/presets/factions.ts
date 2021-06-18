@@ -38,11 +38,16 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
     ],
   },
   red: {
-    name: `Red Robos`,
+    name: `Bloody Birds`,
     id: `red`,
     color: `hsl(0, 60%, 50%)`,
     ai: true,
-    species: [species.robots],
+    species: [
+      species.seagulls,
+      species.flamingos,
+      species.eagles,
+      species.chickens,
+    ],
   },
 }
 

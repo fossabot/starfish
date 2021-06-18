@@ -37,6 +37,10 @@
       {{ data.vendor.passives.length }}
       for sale
     </div>
+
+    <hr />
+
+    <ShipPlanetFactionGraph :planet="data" />
   </div>
 </template>
 

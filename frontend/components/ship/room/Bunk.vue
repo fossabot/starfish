@@ -1,5 +1,5 @@
 <template>
-  <Box class="bunk">
+  <Box class="bunk" :highlight="highlight">
     <template #title
       ><span class="sectionemoji">🛌</span>Bunk</template
     >
@@ -29,6 +29,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'room'
+      )
+    },
     timeToRested(this: ComponentShape) {
       if (this.crewMember.stamina === 1) return null
       return c.msToTimeString(

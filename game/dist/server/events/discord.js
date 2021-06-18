@@ -27,7 +27,7 @@ function default_1(socket) {
                 return;
             }
             data.name = data.name.substring(0, dist_1.default.maxNameLength);
-            data.tutorial = { step: -1 };
+            // data.tutorial = { step: -1 }
             const ship = __1.game.addHumanShip({
                 ...data,
             });
@@ -83,9 +83,7 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return dist_1.default.log(`Attempted to rename a user that did not exist. (${crewId} on ship ${shipId})`);
-        crewMember.name = dist_1.default
-            .sanitize(newName)
-            .result.substring(0, dist_1.default.maxNameLength);
+        crewMember.rename(newName);
     });
     socket.on(`ship:rename`, (shipId, newName) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);

@@ -181,7 +181,7 @@ export class CommandHandler {
           (m) => m.user.id === context.crewMember?.id,
         )
       if (!guildMember) {
-        c.log(`NO GUILD MEMBER BY THAT NAME`) // todo remove from game
+        c.log(`NO GUILD MEMBER BY THAT NAME`)
       } else if (
         context.ship &&
         context.nickname !== context.crewMember.name

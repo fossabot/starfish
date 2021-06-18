@@ -4,7 +4,7 @@
     <FadeIn :off="ready">{{ c.GAME_NAME }}</FadeIn>
     <!-- <Starfield /> -->
 
-    <Box v-if="!ship || !crewMember">
+    <Box v-if="!ship">
       No ship found by the ID(s) you have saved! If you're
       sure that your server still has a ship in the game,
       try logging out and back in. If that doesn't fix it,
@@ -15,8 +15,10 @@
       id="masonrycontainer"
       class="container"
       ref="container"
-      v-if="ship && crewMember && !ship.dead"
+      v-if="ship && !ship.dead"
     >
+      <ShipSpectator />
+
       <ShipTutorial />
       <Ship />
 
@@ -46,7 +48,16 @@
       <NavBar v-if="!ship.tutorial" />
     </div>
     <div class="box dead" v-if="ship && ship.dead">
-      <h5>U dead</h5>
+      <h5>You've died!</h5>
+      <div>
+        Your ship explodes into a cloud of rapidly-freezing
+        crystals of ice and air! The crew watches in horror
+        from the window of the escape pod as the wreckage of
+        their ship goes spiraling out into the abyss.
+      </div>
+      <div>
+        The captain can respawn you back at your homeworld.
+      </div>
       <button
         v-if="this.ship.captain === this.userId"
         @click="$store.dispatch('respawn')"
@@ -133,7 +144,6 @@ export default {
       ) {
         return setTimeout(this.setUpObservers, 100)
       }
-      // todo need to be able to handle new elements getting appended
 
       await this.$nextTick()
 
@@ -247,7 +257,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  background-image: url('/bg1.png');
+  background-image: url('/images/pageBackgrounds/bg1.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

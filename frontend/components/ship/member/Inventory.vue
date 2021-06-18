@@ -1,5 +1,5 @@
 <template>
-  <Box class="inventory" v-if="show">
+  <Box class="inventory" v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">⚖️</span
       >{{ crewMember.name }}'s Inventory
@@ -98,8 +98,15 @@ export default {
     show(this: ComponentShape) {
       return (
         this.ship &&
+        this.crewMember &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('inventory'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'inventory'
       )
     },
     inventory(this: ComponentShape) {
@@ -108,7 +115,7 @@ export default {
         .sort((a: Cargo, b: Cargo) => b.amount - a.amount)
     },
     totalWeight(this: ComponentShape) {
-      return this.crewMember.inventory.reduce(
+      return this.crewMember?.inventory.reduce(
         (total: number, i: Cargo) => total + i.amount,
         0,
       )

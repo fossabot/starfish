@@ -1,5 +1,5 @@
 <template>
-  <Box class="weapons ">
+  <Box class="weapons" :highlight="highlight">
     <template #title
       ><span class="sectionemoji">🎯</span>Weapons
       Bay</template
@@ -183,6 +183,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'room'
+      )
+    },
     weapons(this: ComponentShape) {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'weapon',

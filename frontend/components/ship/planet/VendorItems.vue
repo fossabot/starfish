@@ -1,5 +1,10 @@
 <template>
-  <div v-if="buyableItems.length || sellableItems.length">
+  <div
+    v-if="
+      crewMember &&
+        (buyableItems.length || sellableItems.length)
+    "
+  >
     <div class="panesection">
       <div>
         <div class="panesubhead">Ship Outfitter</div>
@@ -39,7 +44,7 @@
           :key="'buyitem' + ca.itemType + ca.itemId"
           @mouseenter="
             $store.commit('tooltip', {
-              type: ca.itemData.type,
+              type: ca.itemData && ca.itemData.type,
               data: ca.itemData,
             })
           "
@@ -49,7 +54,9 @@
             :disabled="!ca.canBuy"
             @click="buyItem(ca)"
           >
-            <b>{{ ca.itemData.displayName }}</b>
+            <b>{{
+              ca.itemData && ca.itemData.displayName
+            }}</b>
             <div>💳{{ c.r2(ca.price, 2) }}</div>
           </button>
         </span></span
@@ -75,7 +82,7 @@
             :disabled="!ca.canSell"
             @click="sellItem(ca)"
           >
-            <b>{{ ca.displayName }}</b>
+            <b>{{ ca && ca.displayName }}</b>
             <div>💳{{ c.r2(ca.price, 2) }}</div>
           </button>
         </span> </span
@@ -89,9 +96,11 @@
         <span
           v-for="ca in swappableChassis"
           :key="
-            'swapchassis' +
-              ca.chassisData.type +
-              ca.chassisData.id
+            ca.chassisData
+              ? 'swapchassis' +
+                ca.chassisData.type +
+                ca.chassisData.id
+              : Math.random()
           "
           @mouseenter="
             $store.commit('tooltip', {
@@ -105,7 +114,9 @@
             :disabled="!ca.canBuy"
             @click="swapChassis(ca)"
           >
-            <b>{{ ca.chassisData.displayName }}</b>
+            <b>{{
+              ca.chassisData && ca.chassisData.displayName
+            }}</b>
             <div>💳{{ c.r2(ca.price, 2) }}</div>
           </button>
         </span>
@@ -227,7 +238,7 @@ export default {
       this.$socket.emit(
         'ship:buyItem',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         data.itemType,
         data.itemId,
         (res: IOResponse<ShipStub>) => {
@@ -239,7 +250,7 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.commit('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data)
         },
       )
     },
@@ -249,7 +260,7 @@ export default {
       this.$socket.emit(
         'ship:sellItem',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         data.type,
         data.id,
         (res: IOResponse<ShipStub>) => {
@@ -261,7 +272,7 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.commit('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data)
         },
       )
     },
@@ -273,7 +284,7 @@ export default {
       this.$socket.emit(
         'ship:swapChassis',
         this.ship.id,
-        this.crewMember.id,
+        this.crewMember?.id,
         data.chassisType,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
@@ -284,7 +295,7 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.commit('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data)
         },
       )
     },

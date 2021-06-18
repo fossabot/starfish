@@ -75,6 +75,9 @@ export class Ship extends Stubbable {
   direction: number = 0 // just for frontend reference
   // targetLocation: CoordinatePair = [0, 0]
   tagline: string | null = null
+  availableTaglines: string[] = []
+  headerBackground: string | null = null
+  availableHeaderBackgrounds: string[] = [`Default`]
   attackable = false
   _hp = 10 // set in hp setter below
   _maxHp = 10
@@ -94,6 +97,9 @@ export class Ship extends Stubbable {
       velocity,
       previousLocations,
       tagline,
+      availableTaglines,
+      headerBackground,
+      availableHeaderBackgrounds,
     }: BaseShipData,
     game: Game,
   ) {
@@ -123,6 +129,13 @@ export class Ship extends Stubbable {
       this.previousLocations = previousLocations
 
     if (tagline) this.tagline = tagline
+    if (availableTaglines)
+      this.availableTaglines = availableTaglines
+    if (headerBackground)
+      this.headerBackground = headerBackground
+    if (availableHeaderBackgrounds?.length)
+      this.availableHeaderBackgrounds =
+        availableHeaderBackgrounds
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
@@ -325,12 +338,12 @@ export class Ship extends Stubbable {
     this.crewMembers.forEach(
       (cm) =>
         (mass += cm.inventory.reduce(
-          (total, cargo) => total + cargo.amount,
+          (total, cargo) => total + cargo.amount * 1000,
           0,
         )),
     )
-    this.mass = mass
-    this.toUpdate.mass = mass
+    this.mass = c.r2(mass, 0)
+    this.toUpdate.mass = this.mass
   }
 
   updateSightAndScanRadius() {
@@ -394,8 +407,9 @@ export class Ship extends Stubbable {
     )
       return
 
-    // if (this.human)
+    // if (this.ai)
     //   c.log(
+    //     this.name,
     //     c.angleFromAToB(
     //       this.previousLocations[
     //         this.previousLocations.length - 1
@@ -429,7 +443,6 @@ export class Ship extends Stubbable {
           ],
         ) > 0.0001)
     ) {
-      if (this.human) c.log(`adding`)
       this.previousLocations.push(currentLocation)
       while (
         this.previousLocations.length >

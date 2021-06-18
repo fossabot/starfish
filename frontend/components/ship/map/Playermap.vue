@@ -1,5 +1,5 @@
 <template>
-  <Box class="map" v-if="show">
+  <Box class="map" v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">{{ emoji }}</span
       >{{ label }}
@@ -42,6 +42,12 @@ export default {
     ...mapState(['ship', 'userId']),
     show(this: ComponentShape) {
       return this.ship
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        (this.interactive ? 'map' : 'mapZoom')
+      )
     },
     mapData(this: ComponentShape) {
       return {

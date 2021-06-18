@@ -32,7 +32,7 @@ export default function (
       }
 
       data.name = data.name.substring(0, c.maxNameLength)
-      data.tutorial = { step: -1 }
+      // data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,
       })
@@ -130,9 +130,7 @@ export default function (
         `Attempted to rename a user that did not exist. (${crewId} on ship ${shipId})`,
       )
 
-    crewMember.name = c
-      .sanitize(newName)
-      .result.substring(0, c.maxNameLength)
+    crewMember.rename(newName)
   })
 
   socket.on(`ship:rename`, (shipId, newName) => {

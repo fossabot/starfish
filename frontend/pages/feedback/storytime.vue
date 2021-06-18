@@ -1,35 +1,44 @@
 <template>
   <div class="container">
     <NavBar />
-    <h2>Share a Story</h2>
-    <div>
-      Have you had an interesting, memorable, or noteworthy
-      experience in {{ c.GAME_NAME }}? Tell us about it!
+
+    <div class="textcolumn">
+      <h2>Share a Story</h2>
+      <div>
+        Have you had an interesting, memorable, or
+        noteworthy experience in {{ c.GAME_NAME }}? Tell us
+        about it!
+      </div>
+
+      <form @submit.prevent="submit" ref="form">
+        <div>
+          <label for="Name">Name</label>
+          <input
+            id="Name"
+            type="text"
+            ref="Name"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="Email">Email</label>
+          <input
+            id="Email"
+            type="email"
+            ref="Email"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="Feedback">Tell Your Story!</label>
+          <textarea id="Feedback" ref="Feedback" required />
+        </div>
+
+        <input type="submit" value="Submit" />
+      </form>
     </div>
-
-    <form @submit.prevent="submit" ref="form">
-      <div>
-        <label for="Name">Name</label>
-        <input id="Name" type="text" ref="Name" required />
-      </div>
-
-      <div>
-        <label for="Email">Email</label>
-        <input
-          id="Email"
-          type="email"
-          ref="Email"
-          required
-        />
-      </div>
-
-      <div>
-        <label for="Feedback">Tell Your Story!</label>
-        <textarea id="Feedback" ref="Feedback" required />
-      </div>
-
-      <input type="submit" value="Submit" />
-    </form>
   </div>
 </template>
 

@@ -5,6 +5,7 @@ import { game } from '../..'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -74,4 +75,102 @@ export default function (
     // c.log(`gray`, `Advancing tutorial for ship ${id}`)
     ship.tutorial.advanceStep()
   })
+
+  socket.on(
+    `ship:headerBackground`,
+    (shipId, crewId, bgId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may change the ship banner.`,
+        })
+
+      if (!ship.availableHeaderBackgrounds.includes(bgId))
+        return callback({
+          error: `You don't own that banner yet!`,
+        })
+
+      const found = c.headerBackgroundOptions.find(
+        (b) => b.id === bgId,
+      )
+      if (!found)
+        return callback({
+          error: `Invalid banner id.`,
+        })
+
+      ship.headerBackground = found.url
+      ship.toUpdate.headerBackground = found.url
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} swapped banner to ${bgId}.`,
+      )
+
+      callback({ data: `ok` })
+    },
+  )
+
+  socket.on(
+    `ship:tagline`,
+    (shipId, crewId, tagline, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may change the ship tagline.`,
+        })
+
+      if (!tagline) {
+        ship.tagline = null
+        ship.toUpdate.tagline = null
+
+        c.log(
+          `gray`,
+          `${crewMember.name} on ${ship.name} cleared their tagline.`,
+        )
+        callback({ data: `ok` })
+        return
+      }
+
+      if (!ship.availableTaglines.includes(tagline))
+        return callback({
+          error: `You don't own that tagline yet!`,
+        })
+
+      const found = c.taglineOptions.find(
+        (t) => t === tagline,
+      )
+      if (!found)
+        return callback({
+          error: `Invalid tagline.`,
+        })
+
+      ship.tagline = found
+      ship.toUpdate.tagline = found
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} swapped tagline to ${tagline}.`,
+      )
+
+      callback({ data: `ok` })
+    },
+  )
 }

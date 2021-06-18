@@ -42,11 +42,16 @@ const factions = {
         ],
     },
     red: {
-        name: `Red Robos`,
+        name: `Bloody Birds`,
         id: `red`,
         color: `hsl(0, 60%, 50%)`,
         ai: true,
-        species: [species_1.default.robots],
+        species: [
+            species_1.default.seagulls,
+            species_1.default.flamingos,
+            species_1.default.eagles,
+            species_1.default.chickens,
+        ],
     },
 };
 // proper fish 🐟🐠🐡

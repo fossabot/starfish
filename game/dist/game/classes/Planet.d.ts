@@ -20,6 +20,7 @@ export declare class Planet extends Stubbable {
     identify(): void;
     get shipsAt(): import("./Ship/HumanShip").HumanShip[];
     updateFrontendForShipsAt(): void;
+    getVisibleStub(): PlanetStub;
     incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
     decrementAllegiances(): void;
     updateFluctuator(): void;

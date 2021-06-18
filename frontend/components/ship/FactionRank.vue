@@ -1,5 +1,9 @@
 <template>
-  <Box class="factionrank" v-if="show">
+  <Box
+    class="factionrank"
+    v-if="show"
+    :highlight="highlight"
+  >
     <template #title>
       <span class="sectionemoji">🏆</span>Faction Rankings
     </template>
@@ -26,6 +30,12 @@ export default {
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('factionRank'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'factionRank'
       )
     },
   },

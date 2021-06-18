@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="data">
     <div>
       <b>{{ data.displayName }}</b>
       <span class="sub">{{ c.capitalize(data.type) }}</span>
@@ -8,7 +8,7 @@
     <div>Equipment Slots: {{ data.slots }}</div>
     <div>
       Passive Dodge Modifier:
-      {{ (data.agility - 1) * 100 + '%' }}
+      {{ c.r2((data.agility - 1) * 100) + '%' }}
     </div>
     <div>
       Max Cargo Space Per Crew Member:

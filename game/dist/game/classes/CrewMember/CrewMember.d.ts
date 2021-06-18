@@ -11,8 +11,9 @@ export declare class CrewMember extends Stubbable {
     readonly ship: HumanShip;
     name: string;
     location: CrewLocation;
-    readonly skills: XPData[];
+    skills: XPData[];
     stamina: number;
+    maxStamina: number;
     lastActive: number;
     targetLocation: CoordinatePair | null;
     tactic: Tactic;
@@ -21,13 +22,16 @@ export declare class CrewMember extends Stubbable {
     itemTarget: ItemType | null;
     cockpitCharge: number;
     repairPriority: RepairPriority;
-    readonly inventory: Cargo[];
+    inventory: Cargo[];
     credits: number;
-    readonly actives: CrewActive[];
-    readonly passives: CrewPassive[];
-    readonly upgrades: PassiveCrewUpgrade[];
-    readonly stats: CrewStatEntry[];
+    actives: CrewActive[];
+    passives: CrewPassive[];
+    upgrades: PassiveCrewUpgrade[];
+    stats: CrewStatEntry[];
     maxCargoSpace: number;
+    toUpdate: {
+        [key in keyof CrewMember]?: any;
+    };
     constructor(data: BaseCrewMemberData, ship: HumanShip);
     rename(newName: string): void;
     goTo(location: CrewLocation): boolean;
@@ -36,6 +40,7 @@ export declare class CrewMember extends Stubbable {
     weaponsAction: typeof roomActions.weapons;
     bunkAction: typeof roomActions.bunk;
     tick(): void;
+    active(): void;
     addXp(skill: SkillType, xp?: number): void;
     addCargo(type: CargoType, amount: number): number;
     removeCargo(type: CargoType, amount: number): void;
@@ -45,7 +50,6 @@ export declare class CrewMember extends Stubbable {
     recalculateAll(): void;
     addStat(statname: StatKey, amount: number): void;
     get tired(): boolean;
-    get maxStamina(): number;
     get piloting(): XPData | undefined;
     get linguistics(): XPData | undefined;
     get munitions(): XPData | undefined;

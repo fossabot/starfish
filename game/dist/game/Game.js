@@ -184,7 +184,7 @@ class Game {
         });
     }
     spawnNewPlanet() {
-        while (this.planets.length < this.gameSoftArea ||
+        while (this.planets.length < this.gameSoftArea * 0.7 ||
             this.planets.length < this.factions.length - 1) {
             const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
             const p = planets_1.generatePlanet(this, factionThatNeedsAHomeworld?.id);
@@ -224,7 +224,8 @@ class Game {
             let spawnPoint;
             while (!spawnPoint) {
                 let point = dist_1.default.randomInsideCircle(radius);
-                const tooClose = this.humanShips.find((hs) => dist_1.default.pointIsInsideCircle(point, hs.location, 0.2));
+                // c.log(point)
+                const tooClose = this.humanShips.find((hs) => dist_1.default.pointIsInsideCircle(point, hs.location, 0.1));
                 if (tooClose)
                     spawnPoint = undefined;
                 else
@@ -232,11 +233,17 @@ class Game {
                 radius += 0.1;
             }
             const level = dist_1.default.distance([0, 0], spawnPoint) * 2 + 0.1;
+            const species = dist_1.default.randomFromArray(this.species
+                .filter((s) => s.faction.id === `red`)
+                .map((s) => s.id));
             this.addAIShip({
                 location: spawnPoint,
                 name: `AI${`${Math.random().toFixed(3)}`.substring(2)}`,
-                species: { id: `robots` },
+                species: {
+                    id: species,
+                },
                 level,
+                headerBackground: `ai.jpg`,
             });
         }
     }

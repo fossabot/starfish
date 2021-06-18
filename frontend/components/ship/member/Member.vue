@@ -1,6 +1,6 @@
 <template>
   <div class="member" v-if="show">
-    <Box>
+    <Box :highlight="highlight">
       <template #title>
         <span class="sectionemoji">{{
           ship.species.icon
@@ -8,12 +8,12 @@
         >{{ crewMember.name }}
       </template>
 
-      <div class="panesection">
+      <!-- <div class="panesection">
         <div>
           🚪Location:
           {{ c.capitalize(crewMember.location) }}
         </div>
-      </div>
+      </div> -->
 
       <ProgressBar
         :percent="
@@ -91,8 +91,15 @@ export default {
     show(this: ComponentShape) {
       return (
         this.ship &&
+        this.crewMember &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewMember'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'crewMember'
       )
     },
   },

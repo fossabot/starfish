@@ -126,7 +126,7 @@ class CommandHandler {
         if (context.crewMember) {
             const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
             if (!guildMember) {
-                dist_1.default.log(`NO GUILD MEMBER BY THAT NAME`); // todo remove from game
+                dist_1.default.log(`NO GUILD MEMBER BY THAT NAME`);
             }
             else if (context.ship &&
                 context.nickname !== context.crewMember.name) {

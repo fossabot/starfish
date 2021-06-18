@@ -1,5 +1,5 @@
 <template>
-  <Box class="crewrank" v-if="show">
+  <Box class="crewrank" v-if="show" :highlight="highlight">
     <template #title>
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
@@ -59,6 +59,12 @@ export default {
         this.ship.crewMembers.length > 1 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewRank'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'crewRank'
       )
     },
     bestXAtEachSkill() {

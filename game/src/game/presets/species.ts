@@ -88,11 +88,29 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     id: `shrimp`,
     singular: `shrimp`,
   },
-  robots: {
-    icon: `🤖`,
+  eagles: {
+    icon: `🦅`,
     factionId: `red`,
-    id: `robots`,
-    singular: `robot`,
+    id: `eagles`,
+    singular: `eagle`,
+  },
+  seagulls: {
+    icon: `🐦`,
+    factionId: `red`,
+    id: `seagulls`,
+    singular: `seagull`,
+  },
+  chickens: {
+    icon: `🐓`,
+    factionId: `red`,
+    id: `chickens`,
+    singular: `chicken`,
+  },
+  flamingos: {
+    icon: `🦩`,
+    factionId: `red`,
+    id: `flamingos`,
+    singular: `flamingo`,
   },
 }
 export default species

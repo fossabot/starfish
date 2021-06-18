@@ -1,4 +1,4 @@
-type ChassisId = `starter1` | `starter2` | `solo1`
+type ChassisId = `starter1` | `starter2` | `solo1` | `mega1`
 
 type EngineId = `starter1` | `starter2` | `tutorial1`
 type WeaponId =
@@ -105,6 +105,8 @@ interface BaseScannerData extends BaseItemData {
 interface ShipScanDataShape {
   id: true
   name: true
+  headerBackground: true
+  tagline: true
   previousLocations: true
   location: true
   ai: true

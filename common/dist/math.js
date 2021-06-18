@@ -57,6 +57,12 @@ function degreesToUnitVector(degrees = 0) {
     let r = 1;
     return [r * Math.cos(rad), r * Math.sin(rad)];
 }
+function vectorToUnitVector(vector = [0, 0]) {
+    const magnitude = vectorToMagnitude(vector);
+    if (magnitude === 0)
+        return [0, 0];
+    return [vector[0] / magnitude, vector[1] / magnitude];
+}
 function unitVectorFromThisPointToThatPoint(thisPoint = [0, 0], thatPoint = [0, 0]) {
     if (thisPoint[0] === thatPoint[0] &&
         thisPoint[1] === thatPoint[1])
@@ -104,6 +110,7 @@ exports.default = {
     angleDifference,
     randomInsideCircle,
     degreesToUnitVector,
+    vectorToUnitVector,
     unitVectorFromThisPointToThatPoint,
     pointIsInsideCircle,
     vectorToDegrees,

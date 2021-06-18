@@ -1,5 +1,5 @@
 <template>
-  <Box class="repair">
+  <Box class="repair" :highlight="highlight">
     <template #title
       ><span class="sectionemoji">🔧</span>Repair
       Bay</template
@@ -48,6 +48,12 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'room'
+      )
+    },
     choicesToShow(this: ComponentShape) {
       const choices: RepairPriority[] = ['most damaged']
       if (

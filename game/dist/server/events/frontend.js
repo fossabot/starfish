@@ -49,6 +49,63 @@ function default_1(socket) {
         // c.log(`gray`, `Advancing tutorial for ship ${id}`)
         ship.tutorial.advanceStep();
     });
+    socket.on(`ship:headerBackground`, (shipId, crewId, bgId, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        if (ship.captain !== crewMember.id)
+            return callback({
+                error: `Only the captain may change the ship banner.`,
+            });
+        if (!ship.availableHeaderBackgrounds.includes(bgId))
+            return callback({
+                error: `You don't own that banner yet!`,
+            });
+        const found = dist_1.default.headerBackgroundOptions.find((b) => b.id === bgId);
+        if (!found)
+            return callback({
+                error: `Invalid banner id.`,
+            });
+        ship.headerBackground = found.url;
+        ship.toUpdate.headerBackground = found.url;
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} swapped banner to ${bgId}.`);
+        callback({ data: `ok` });
+    });
+    socket.on(`ship:tagline`, (shipId, crewId, tagline, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({ error: `No ship found.` });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({ error: `No crew member found.` });
+        if (ship.captain !== crewMember.id)
+            return callback({
+                error: `Only the captain may change the ship tagline.`,
+            });
+        if (!tagline) {
+            ship.tagline = null;
+            ship.toUpdate.tagline = null;
+            dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} cleared their tagline.`);
+            callback({ data: `ok` });
+            return;
+        }
+        if (!ship.availableTaglines.includes(tagline))
+            return callback({
+                error: `You don't own that tagline yet!`,
+            });
+        const found = dist_1.default.taglineOptions.find((t) => t === tagline);
+        if (!found)
+            return callback({
+                error: `Invalid tagline.`,
+            });
+        ship.tagline = found;
+        ship.toUpdate.tagline = found;
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} swapped tagline to ${tagline}.`);
+        callback({ data: `ok` });
+    });
 }
 exports.default = default_1;
 //# sourceMappingURL=frontend.js.map

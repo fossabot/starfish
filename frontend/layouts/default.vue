@@ -1,6 +1,7 @@
 <template>
   <div>
     <Notifications />
+    <Modal />
     <InfoTooltip />
     <Nuxt />
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <Box class="planet" v-if="show">
+  <Box class="planet" v-if="show" :highlight="highlight">
     <template #title v-if="ship.planet">
       <span class="sectionemoji">🪐</span>Current Planet:
       {{ ship.planet.name }}
@@ -86,33 +86,7 @@
       </div>
       <div class="panesection">
         <div class="panesubhead">Faction Allegiances</div>
-        <div
-          v-if="!ship.planet.allegiances.length"
-          class="sub"
-        >
-          No allegiances yet!
-        </div>
-        <div class="flex factiongraph">
-          <!-- <div
-            :style="{
-              color: a.faction.color,
-            }"
-          >
-            {{ a.faction.name }}
-          </div> -->
-          <div
-            v-for="a in [...ship.planet.allegiances].sort(
-              (a, b) => b.level - a.level,
-            )"
-            :key="'fal' + a.faction.id"
-            :dangerZone="-1"
-            :style="{
-              background: a.faction.color,
-              'flex-grow': a.level,
-              height: 0.2 + (a.level / 100) * 0.8 + 'em',
-            }"
-          ></div>
-        </div>
+        <ShipPlanetFactionGraph :planet="ship.planet" />
       </div>
       <div class="panesection" v-if="ship.planet">
         <div class="sub">
@@ -135,13 +109,19 @@ export default {
     return { c }
   },
   computed: {
-    ...mapState(['ship', 'crewMember']),
+    ...mapState(['ship']),
     show(this: ComponentShape) {
       return (
         this.ship &&
         this.ship.planet &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('planet'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'planet'
       )
     },
     isFriendlyToFaction(this: ComponentShape) {

@@ -3,13 +3,15 @@ import type { Item } from '../../Item/Item'
 import type { CrewMember } from '../CrewMember'
 
 export function cockpit(this: CrewMember): void {
-  if (this.cockpitCharge < 1) this.addXp(`piloting`)
+  if (this.cockpitCharge >= 1) return
 
+  this.addXp(`piloting`)
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
       this.piloting?.level || 1,
     )
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
+  this.toUpdate.cockpitCharge = this.cockpitCharge
 
   // * actual movement handled by Ship class
 }
@@ -93,7 +95,12 @@ export function repair(
     if (ri.repair < 0.9) ri.announceWhenRepaired = true
     totalRepaired += ri.repair - previousRepair
   })
-  if (!overRepair) this.addXp(`mechanics`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
+
+  if (!overRepair) {
+    this.addXp(`mechanics`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
+    this.toUpdate.skills = this.skills
+  }
+
   this.ship.updateThingsThatCouldChangeOnItemChange()
   return totalRepaired
 }
@@ -103,26 +110,29 @@ export function weapons(this: CrewMember): void {
   const chargeableWeapons = this.ship.weapons.filter(
     (w) => w.cooldownRemaining > 0,
   )
-  if (chargeableWeapons.length) {
-    const amountToReduceCooldowns =
-      c.getWeaponCooldownReductionPerTick(
-        this.munitions?.level || 1,
-      ) / chargeableWeapons.length
-    chargeableWeapons.forEach((cw) => {
-      cw._stub = null // invalidate stub
-      cw.cooldownRemaining -= amountToReduceCooldowns
-      if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
-    })
+  if (!chargeableWeapons.length) return
+  const amountToReduceCooldowns =
+    c.getWeaponCooldownReductionPerTick(
+      this.munitions?.level || 1,
+    ) / chargeableWeapons.length
+  chargeableWeapons.forEach((cw) => {
+    cw._stub = null // invalidate stub
+    cw.cooldownRemaining -= amountToReduceCooldowns
+    if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
+  })
 
-    this.addXp(`munitions`)
-  }
+  this.addXp(`munitions`)
+  this.toUpdate.skills = this.skills
 }
 
 export function bunk(this: CrewMember): void {
+  if (this.stamina >= this.maxStamina) return
   this.stamina +=
     c.getStaminaGainPerTickForSingleCrewMember() /
     (c.deltaTime / c.TICK_INTERVAL)
 
   if (this.stamina > this.maxStamina)
     this.stamina = this.maxStamina
+
+  this.toUpdate.stamina = this.stamina
 }

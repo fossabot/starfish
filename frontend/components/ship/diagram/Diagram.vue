@@ -1,6 +1,6 @@
 <template>
   <div class="holder" v-if="show">
-    <Box>
+    <Box :highlight="highlight">
       <template #title>
         <span class="sectionemoji">🚪</span>Ship Schematic
       </template>
@@ -73,12 +73,16 @@
           <div
             class="room "
             :class="{
-              current: crewMember.location === room,
+              current:
+                crewMember && crewMember.location === room,
             }"
             v-for="room in ship.rooms"
             :key="'ar' + room.id"
             :ref="room.id"
-            @click="$store.commit('setRoom', room.id)"
+            @click="
+              crewMember &&
+                $store.commit('setRoom', room.id)
+            "
             @mouseenter="
               $store.commit('tooltip', {
                 type: 'room',
@@ -134,6 +138,12 @@ export default {
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('diagram'))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        'diagram'
       )
     },
     crewByRoom(

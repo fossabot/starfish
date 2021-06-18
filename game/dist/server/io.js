@@ -9,7 +9,6 @@ const socket_io_1 = require("socket.io");
 const frontend_1 = __importDefault(require("./events/frontend"));
 const discord_1 = __importDefault(require("./events/discord"));
 const general_1 = __importDefault(require("./events/general"));
-const combat_1 = __importDefault(require("./events/combat"));
 const crew_1 = __importDefault(require("./events/crew"));
 const items_1 = __importDefault(require("./events/items"));
 const httpServer = http_1.createServer();
@@ -22,7 +21,6 @@ io.on(`connection`, (socket) => {
     frontend_1.default(socket);
     discord_1.default(socket);
     general_1.default(socket);
-    combat_1.default(socket);
     crew_1.default(socket);
     items_1.default(socket);
 });

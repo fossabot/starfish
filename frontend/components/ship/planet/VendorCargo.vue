@@ -2,7 +2,9 @@
   <div
     class="panesection"
     v-if="
-      ship.planet.vendor && ship.planet.vendor.cargo.length
+      crewMember &&
+        ship.planet.vendor &&
+        ship.planet.vendor.cargo.length
     "
   >
     <div>
@@ -103,10 +105,10 @@ export default {
           )
           const maxCanBuy = c.r2(
             Math.min(
-              this.crewMember.credits / pricePerUnit,
+              this.crewMember?.credits / pricePerUnit,
               Math.min(
                 this.ship.chassis.maxCargoSpace,
-                this.crewMember.maxCargoSpace,
+                this.crewMember?.maxCargoSpace,
               ) - this.totalWeight,
             ),
             2,
@@ -118,7 +120,7 @@ export default {
             maxCanBuy,
             canBuy:
               maxCanBuy > 0.001 &&
-              this.crewMember.credits > 0.01,
+              this.crewMember?.credits > 0.01,
           }
         })
     },
@@ -136,7 +138,7 @@ export default {
             5,
           )
           const heldAmount =
-            this.crewMember.inventory.find(
+            this.crewMember?.inventory.find(
               (i: any) => i.type === cargo.cargoData.type,
             )?.amount || 0
           return {
@@ -144,7 +146,7 @@ export default {
             pricePerUnit,
             heldAmount,
             canSell:
-              this.crewMember.inventory.find(
+              this.crewMember?.inventory.find(
                 (i: any) => i.type === cargo.cargoData.type,
               )?.amount > 0.009999,
           }

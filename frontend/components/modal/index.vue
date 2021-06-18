@@ -1,0 +1,63 @@
+<template>
+  <div v-if="modal" class="modal flexcenter">
+    <div
+      class="bg"
+      @click="$store.commit('set', { modal: null })"
+    ></div>
+    <div class="modalbox">
+      <ModalTaglineBannerPicker
+        v-if="modal === 'headerBackgroundPicker'"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import c from '../../../common/src'
+import { mapState } from 'vuex'
+interface ComponentShape {
+  [key: string]: any
+}
+
+export default {
+  props: {},
+  data(): ComponentShape {
+    return { c }
+  },
+  computed: {
+    ...mapState(['modal']),
+  },
+  watch: {},
+  mounted(this: ComponentShape) {},
+  methods: {},
+}
+</script>
+
+<style lang="scss" scoped>
+.modal {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+}
+.bg {
+  background: rgba(30, 30, 30, 0.9);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.modalbox {
+  max-width: calc(min(900px, 90vw));
+  padding: 3em;
+  margin: 1.5em;
+  z-index: 2;
+  position: relative;
+  border: 1px solid var(--pane-border);
+  background: var(--bg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+</style>

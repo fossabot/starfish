@@ -1,7 +1,7 @@
 <template>
   <ShipMapPlayermap
     v-if="show"
-    :emoji="'👀'"
+    :emoji="'🔍'"
     :buffer="false"
     :blackout="false"
     :interactive="false"

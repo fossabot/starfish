@@ -5,6 +5,7 @@
     </template>
     <nav class="padpane">
       <nuxt-link to="/">Home</nuxt-link>
+      <nuxt-link to="/about">About</nuxt-link>
       <nuxt-link to="/howtoplay">How To Play</nuxt-link>
       <nuxt-link to="/feedback">Feedback</nuxt-link>
       <nuxt-link to="/feedback/bugreport"
@@ -13,6 +14,7 @@
       <nuxt-link to="/feedback/storytime"
         >Share a Story</nuxt-link
       >
+      <nuxt-link to="/supportus">Support Us</nuxt-link>
 
       <select
         v-if="shipIds && shipIds.length > 1"
