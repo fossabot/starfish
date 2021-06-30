@@ -250,7 +250,7 @@ class Ship extends Stubbable_1.Stubbable {
             this.toUpdate.radii = this.radii;
             return;
         }
-        this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
+        this.radii.sight = Math.max(0.1, dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         this.toUpdate.radii = this.radii;
     }
@@ -290,8 +290,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (this.previousLocations.length < 1 ||
             (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
                 dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 8 &&
-                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.0001)) {
-            this.previousLocations.push(currentLocation);
+                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.00001)) {
+            this.previousLocations.push([...currentLocation]);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)
                 this.previousLocations.shift();
@@ -303,18 +303,21 @@ class Ship extends Stubbable_1.Stubbable {
         return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.ARRIVAL_THRESHOLD);
     }
     applyTickOfGravity() {
-        if (!this.canMove)
-            return;
         if (!this.human)
             return;
-        for (let planet of this.visible?.planets || []) {
+        if (this.planet)
+            return;
+        if (!this.canMove)
+            return;
+        for (let planet of this.seenPlanets || []) {
             const distance = dist_1.default.distance(planet.location, this.location);
             if (distance <= dist_1.default.GRAVITY_RANGE &&
                 distance > dist_1.default.ARRIVAL_THRESHOLD) {
                 const vectorToAdd = dist_1.default
                     .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
+                    // comes back as kg * m / second == N
                     .map((g) => (g *
-                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) *
+                    Math.min(dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL, 2) *
                     dist_1.default.gameSpeedMultiplier) /
                     this.mass /
                     dist_1.default.KM_PER_AU /
@@ -327,7 +330,7 @@ class Ship extends Stubbable_1.Stubbable {
                 // )
                 if (Math.abs(vectorToAdd[0]) +
                     Math.abs(vectorToAdd[1]) <
-                    0.000000001)
+                    0.0000000000001)
                     return;
                 this.velocity[0] += vectorToAdd[0];
                 this.velocity[1] += vectorToAdd[1];
@@ -380,5 +383,5 @@ class Ship extends Stubbable_1.Stubbable {
     updateMaxScanProperties() { }
 }
 exports.Ship = Ship;
-Ship.maxPreviousLocations = 15;
+Ship.maxPreviousLocations = 30;
 //# sourceMappingURL=Ship.js.map

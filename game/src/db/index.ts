@@ -1,4 +1,5 @@
 import { config as dotEnvConfig } from 'dotenv'
+import isDocker from 'is-docker'
 import * as cache from './models/cache'
 import * as ship from './models/ship'
 import * as attackRemnant from './models/attackRemnant'
@@ -18,7 +19,7 @@ const toRun: Function[] = []
 
 export const isReady = () => ready
 export const init = ({
-  hostname = `mongodb`,
+  hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
   dbName = `spacecord`,
   username = encodeURIComponent(

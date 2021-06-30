@@ -219,6 +219,7 @@ function default_1(socket) {
                     error: `Not enough credits found.`,
                 });
             crewMember.credits -= amount;
+            crewMember.toUpdate.credits = crewMember.credits;
         }
         else {
             const existingStock = crewMember.inventory.find((cargo) => cargo.type === cargoType);
@@ -227,6 +228,7 @@ function default_1(socket) {
                     error: `Not enough stock of that cargo found.`,
                 });
             existingStock.amount -= amount;
+            crewMember.toUpdate.inventory = crewMember.inventory;
         }
         const cache = __1.game.addCache({
             location: [...ship.location],
@@ -263,6 +265,7 @@ function default_1(socket) {
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
+        crewMember.toUpdate.credits = crewMember.credits;
         let remainingHp = hp;
         while (true) {
             const prev = remainingHp;
@@ -325,6 +328,14 @@ function default_1(socket) {
                 error: `You're not targeting any location to thrust towards!`,
             });
         ship.applyThrust(targetLocation, chargePercent, crewMember);
+        crewMember._stub = null;
+        ship._stub = null;
+        callback({
+            data: {
+                crewMember: crewMember.stubify(),
+                ship: ship.stubify(),
+            },
+        });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} thrusted.`);
     });
     socket.on(`crew:brake`, (shipId, crewId, chargePercent, callback) => {
@@ -335,6 +346,14 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         ship.brake(chargePercent, crewMember);
+        crewMember._stub = null;
+        ship._stub = null;
+        callback({
+            data: {
+                crewMember: crewMember.stubify(),
+                ship: ship.stubify(),
+            },
+        });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} thrusted.`);
     });
 }

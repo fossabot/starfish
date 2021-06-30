@@ -61,6 +61,7 @@ export default function (
         })
 
       ship.commonCredits -= price
+      ship._stub = null
       ship.toUpdate.commonCredits = ship.commonCredits
 
       ship.addItem({ type: itemType, id: itemId })
@@ -108,7 +109,6 @@ export default function (
       if (!planet)
         return callback({ error: `Not at a planet.` })
 
-      c.log(itemType, itemId)
       const heldItem = ship.items.find(
         (i) => i.type === itemType && i.id === itemId,
       )
@@ -145,6 +145,7 @@ export default function (
       )
 
       ship.commonCredits += price
+      ship._stub = null
       ship.toUpdate.commonCredits = ship.commonCredits
 
       ship.removeItem(heldItem)
@@ -231,6 +232,7 @@ export default function (
         })
 
       ship.commonCredits -= price
+      ship._stub = null
       ship.toUpdate.commonCredits = ship.commonCredits
 
       ship.swapChassis(itemForSale.chassisData)

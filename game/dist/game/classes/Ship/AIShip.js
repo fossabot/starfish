@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -42,7 +42,7 @@ class AIShip extends CombatShip_1.CombatShip {
         if (data.id)
             this.id = data.id;
         else
-            this.id = `${Math.random()}`.substring(2);
+            this.id = `ai${Math.random()}`.substring(2);
         if (data.onlyVisibleToShipId)
             this.onlyVisibleToShipId = data.onlyVisibleToShipId;
         this.planet = false;
@@ -105,6 +105,7 @@ class AIShip extends CombatShip_1.CombatShip {
         // )
         let canAddMoreItems = true;
         const isInBudget = (i) => i.rarity <= itemBudget;
+        const isBuyable = (i) => i.buyable !== false;
         while (canAddMoreItems) {
             const typeToAdd = this.weapons.length === 0
                 ? `weapon`
@@ -112,7 +113,9 @@ class AIShip extends CombatShip_1.CombatShip {
                     ? `engine`
                     : dist_1.default.randomFromArray([`engine`, `weapon`]);
             const itemPool = itemData[typeToAdd];
-            const validItems = Object.values(itemPool).filter(isInBudget);
+            const validItems = Object.values(itemPool)
+                .filter(isInBudget)
+                .filter(isBuyable);
             if (!validItems.length) {
                 canAddMoreItems = false;
                 continue;
@@ -152,11 +155,11 @@ class AIShip extends CombatShip_1.CombatShip {
             this.location[0] +=
                 unitVectorToTarget[0] *
                     thrustMagnitude *
-                    (dist_1.default.deltaTime / 1000);
+                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
             this.location[1] +=
                 unitVectorToTarget[1] *
                     thrustMagnitude *
-                    (dist_1.default.deltaTime / 1000);
+                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
         }
         // ----- set new target location -----
         if (Math.random() < 0.000015 * dist_1.default.TICK_INTERVAL) {
@@ -183,10 +186,12 @@ class AIShip extends CombatShip_1.CombatShip {
                 this.location[0] + unitVector[0] * distance,
                 this.location[1] + unitVector[1] * distance,
             ];
+            // ----- add previousLocation because it will be turning -----
+            this.previousLocations.push([...this.location]);
+            while (this.previousLocations.length >
+                AIShip.maxPreviousLocations / 2)
+                this.previousLocations.shift();
         }
-        // ----- add previousLocation -----
-        if (!hasArrived)
-            this.addPreviousLocation(startingLocation, this.location);
     }
     die() {
         super.die();

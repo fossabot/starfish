@@ -109,8 +109,7 @@ export class CrewMember extends Stubbable {
   bunkAction = roomActions.bunk
 
   tick() {
-    this.toUpdate = {}
-    // this._stub = null // invalidate stub
+    this._stub = null // invalidate stub
 
     // ----- reset attack target if out of vision range -----
     if (

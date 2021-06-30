@@ -15,6 +15,7 @@ export declare class Game {
     readonly factions: Faction[];
     readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
+    factionRankings: FactionRanking[];
     constructor();
     startGame(): void;
     save(): Promise<void>;
@@ -27,7 +28,7 @@ export declare class Game {
     private averageWorstShipTickLag;
     private averageTickTime;
     tick(): void;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail`)[], includeTrails?: boolean): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail`)[], includeTrails?: boolean, tutorial?: boolean): {
         ships: Ship[];
         trails: CoordinatePair[][];
         planets: Planet[];
@@ -52,5 +53,6 @@ export declare class Game {
     removeAttackRemnant(ar: AttackRemnant): void;
     get humanShips(): HumanShip[];
     get aiShips(): AIShip[];
+    recalculateFactionRankings(): void;
 }
 //# sourceMappingURL=Game.d.ts.map

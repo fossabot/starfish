@@ -32,6 +32,7 @@ export class Scanner extends Item {
         this.reliability,
       ) * -0.97
     this.repair -= repairLoss
+    if (this.repair < 0) this.repair = 0
     repairLoss += super.use()
     return repairLoss
   }

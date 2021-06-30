@@ -428,6 +428,7 @@ export default function (
             error: `Not enough credits found.`,
           })
         crewMember.credits -= amount
+        crewMember.toUpdate.credits = crewMember.credits
       } else {
         const existingStock = crewMember.inventory.find(
           (cargo) => cargo.type === cargoType,
@@ -437,6 +438,7 @@ export default function (
             error: `Not enough stock of that cargo found.`,
           })
         existingStock.amount -= amount
+        crewMember.toUpdate.inventory = crewMember.inventory
       }
 
       const cache = game.addCache({
@@ -505,6 +507,7 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
+      crewMember.toUpdate.credits = crewMember.credits
 
       let remainingHp = hp
       while (true) {
@@ -641,6 +644,15 @@ export default function (
         crewMember,
       )
 
+      crewMember._stub = null
+      ship._stub = null
+      callback({
+        data: {
+          crewMember: crewMember.stubify(),
+          ship: ship.stubify(),
+        },
+      })
+
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} thrusted.`,
@@ -663,6 +675,15 @@ export default function (
         return callback({ error: `No crew member found.` })
 
       ship.brake(chargePercent, crewMember)
+
+      crewMember._stub = null
+      ship._stub = null
+      callback({
+        data: {
+          crewMember: crewMember.stubify(),
+          ship: ship.stubify(),
+        },
+      })
 
       c.log(
         `gray`,

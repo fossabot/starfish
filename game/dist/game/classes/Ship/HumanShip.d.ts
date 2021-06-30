@@ -34,12 +34,20 @@ export declare class HumanShip extends CombatShip {
     constructor(data: BaseHumanShipData, game: Game);
     tick(): void;
     logEntry(text: string, level?: LogLevel): void;
+    discoverPlanet(p: Planet): void;
     applyThrust(targetLocation: CoordinatePair, charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember): void;
     brake(charge: number, thruster: CrewMember): void;
     move(toLocation?: CoordinatePair): void;
     hardStop(): void;
     updateVisible(): void;
+    generateVisiblePayload(previousVisible?: {
+        ships: ShipStub[];
+        planets: Planet[];
+        caches: Cache[];
+        attackRemnants: AttackRemnant[];
+        trails?: CoordinatePair[][];
+    }): void;
     updatePlanet(silent?: boolean): Promise<void>;
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;
@@ -47,6 +55,7 @@ export declare class HumanShip extends CombatShip {
     equipLoadout(l: LoadoutName, removeExisting?: boolean): boolean;
     addCommonCredits(amount: number, member: CrewMember): void;
     broadcast(message: string, crewMember: CrewMember): number;
+    receiveBroadcast(message: string): void;
     resolveRooms(): void;
     addRoom(room: CrewLocation): void;
     removeRoom(room: CrewLocation): void;
@@ -62,5 +71,6 @@ export declare class HumanShip extends CombatShip {
     respawn(silent?: boolean): void;
     autoAttack(): void;
     die(): void;
+    get factionRankings(): FactionRanking[];
 }
 //# sourceMappingURL=HumanShip.d.ts.map

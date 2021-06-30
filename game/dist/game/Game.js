@@ -15,7 +15,6 @@ const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = require("./presets/planets");
 const factions_1 = __importDefault(require("./presets/factions"));
-const species_1 = __importDefault(require("./presets/species"));
 class Game {
     constructor() {
         this.ships = [];
@@ -24,6 +23,7 @@ class Game {
         this.factions = [];
         this.species = [];
         this.attackRemnants = [];
+        this.factionRankings = [];
         // ----- game loop -----
         this.tickCount = 0;
         this.lastTickTime = Date.now();
@@ -33,14 +33,15 @@ class Game {
         this.averageTickTime = 0;
         this.startTime = new Date();
         Object.values(factions_1.default).forEach((fd) => this.addFaction(fd));
-        Object.values(species_1.default).map((sd) => this.addSpecies(sd));
-        dist_1.default.log(`Loaded ${Object.keys(species_1.default).length} species and ${Object.keys(factions_1.default).length} factions.`);
+        Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
+        dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(factions_1.default).length} factions.`);
     }
     startGame() {
         dist_1.default.log(`----- Starting Game -----`);
         setInterval(() => this.save(), Game.saveTimeInterval);
         setInterval(() => this.daily(), 24 * 60 * 60 * 1000);
         this.tick();
+        this.recalculateFactionRankings();
     }
     async save() {
         dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
@@ -49,6 +50,7 @@ class Game {
             promises.push(db_1.db.ship.addOrUpdateInDb(s));
         });
         await Promise.all(promises);
+        this.recalculateFactionRankings();
     }
     async daily() {
         dist_1.default.log(`gray`, `----- Running Daily Tasks -----`);
@@ -57,6 +59,7 @@ class Game {
         const ic = Date.now() - inactiveCutoff;
         for (let inactiveShip of this.humanShips.filter((s) => !s.crewMembers.find((c) => c.lastActive > ic)))
             this.removeShip(inactiveShip);
+        this.recalculateFactionRankings();
     }
     identify() {
         dist_1.default.log(`Game of ${dist_1.default.GAME_NAME} started at ${this.startTime}, running for ${this.tickCount} ticks`);
@@ -77,6 +80,9 @@ class Game {
         if (times.length)
             this.averageWorstShipTickLag = dist_1.default.lerp(this.averageWorstShipTickLag, times.sort((a, b) => b.time - a.time)[0].time || 0, 0.1);
         // c.log(times.map((s) => s.ship.name + ` ` + s.time))
+        this.planets.forEach((p) => {
+            p.toUpdate = {};
+        });
         this.expireOldAttackRemnantsAndCaches();
         this.spawnNewCaches();
         this.spawnNewAIs();
@@ -106,7 +112,7 @@ class Game {
     }
     // ----- scan function -----
     // todo mega-optimize this with a chunks system
-    scanCircle(center, radius, ignoreSelf, types, includeTrails = false) {
+    scanCircle(center, radius, ignoreSelf, types, includeTrails = false, tutorial = false) {
         let ships = [], trails = [], planets = [], caches = [], attackRemnants = [];
         if (!types || types.includes(`ship`))
             ships = this.ships.filter((s) => {
@@ -114,7 +120,7 @@ class Game {
                     ignoreSelf &&
                     s.onlyVisibleToShipId !== ignoreSelf)
                     return false;
-                if (s.tutorial && !s.onlyVisibleToShipId)
+                if (tutorial && !s.onlyVisibleToShipId)
                     return false;
                 if (s.id === ignoreSelf)
                     return false;
@@ -126,7 +132,7 @@ class Game {
             includeTrails)
             trails = this.ships
                 .filter((s) => {
-                if (s.tutorial)
+                if (tutorial)
                     return false;
                 if (s.id === ignoreSelf)
                     return false;
@@ -138,7 +144,7 @@ class Game {
                 }
                 return false;
             })
-                .map((s) => s.previousLocations);
+                .map((s) => [...s.previousLocations, s.location]);
         if (!types || types.includes(`planet`))
             planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
         if (!types || types.includes(`cache`))
@@ -163,20 +169,20 @@ class Game {
     // ----- radii -----
     get gameSoftRadius() {
         const count = this.humanShips.length || 1;
-        return Math.max(3, Math.sqrt(count) * 2);
+        return Math.max(5, Math.sqrt(count) * 2);
     }
     get gameSoftArea() {
         return Math.PI * this.gameSoftRadius ** 2;
     }
     // ----- tick helpers -----
     expireOldAttackRemnantsAndCaches() {
-        const attackRemnantExpirationTime = Date.now() - AttackRemnant_1.AttackRemnant.expireTime;
+        const attackRemnantExpirationTime = Date.now() - dist_1.default.attackRemnantExpireTime;
         this.attackRemnants.forEach((ar, index) => {
             if (attackRemnantExpirationTime > ar.time) {
                 this.removeAttackRemnant(ar);
             }
         });
-        const cacheExpirationTime = Date.now() - Cache_1.Cache.expireTime;
+        const cacheExpirationTime = Date.now() - dist_1.default.cacheExpireTime;
         this.caches.forEach((c, index) => {
             if (cacheExpirationTime > c.time) {
                 this.removeCache(c);
@@ -205,6 +211,27 @@ class Game {
             const type = dist_1.default.randomFromArray(dist_1.default.cargoTypes);
             const amount = Math.round(Math.random() * 200) / 10 + 1;
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
+            const message = Math.random() > 0.9
+                ? dist_1.default.randomFromArray([
+                    `Your lack of fear is based on your ignorance.`,
+                    `Rationality was powerless.`,
+                    `Time is the cruelest force of all.`,
+                    `“We'll send only a brain," he said.`,
+                    `Fate lies within the light cone.`,
+                    `The universe is but a corpse puffing up.`,
+                    `It's easy to be led to the abyss.`,
+                    `In fundamental theory, one must be stupid.`,
+                    `Let's go drinking.`,
+                    `Go back to sleep like good bugs.`,
+                    `Any planet is 'Earth' to those that live on it.`,
+                    `The easiest way to solve a problem is to deny it exists.`,
+                    `It pays to be obvious.`,
+                    `All evil is good become cancerous.`,
+                    `I've no sympathy at all.`,
+                    `Theft is property.`,
+                    `Pretend that you have free will.`,
+                ])
+                : undefined;
             this.addCache({
                 contents: [
                     {
@@ -213,13 +240,14 @@ class Game {
                     },
                 ],
                 location,
+                message,
             });
             dist_1.default.log(`gray`, `Spawned random cache of ${amount} ${type} at ${location}.`);
         }
     }
     spawnNewAIs() {
         while (this.ships.length &&
-            this.aiShips.length < this.gameSoftArea * 1.35) {
+            this.aiShips.length < this.gameSoftArea * 1.3) {
             let radius = this.gameSoftRadius;
             let spawnPoint;
             while (!spawnPoint) {
@@ -238,7 +266,7 @@ class Game {
                 .map((s) => s.id));
             this.addAIShip({
                 location: spawnPoint,
-                name: `AI${`${Math.random().toFixed(3)}`.substring(2)}`,
+                name: `${dist_1.default.capitalize(species.substring(0, species.length - 1))}${`${Math.random().toFixed(3)}`.substring(2)}`,
                 species: {
                     id: species,
                 },
@@ -254,7 +282,10 @@ class Game {
             dist_1.default.log(`red`, `Attempted to add existing human ship ${existing.name} (${existing.id}).`);
             return existing;
         }
-        dist_1.default.log(`gray`, `Adding human ship ${data.name} to game at ${data.location}`);
+        // c.log(
+        //   `gray`,
+        //   `Adding human ship ${data.name} to game at ${data.location}`,
+        // )
         data.loadout = `humanDefault`;
         const newShip = new HumanShip_1.HumanShip(data, this);
         this.ships.push(newShip);
@@ -268,7 +299,10 @@ class Game {
             dist_1.default.log(`red`, `Attempted to add existing ai ship ${existing.name} (${existing.id}).`);
             return existing;
         }
-        dist_1.default.log(`gray`, `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`);
+        // c.log(
+        //   `gray`,
+        //   `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
+        // )
         const newShip = new AIShip_1.AIShip(data, this);
         this.ships.push(newShip);
         if (save)
@@ -317,6 +351,7 @@ class Game {
         }
         const newCache = new Cache_1.Cache(data, this);
         this.caches.push(newCache);
+        // c.log(`adding`, newCache)
         if (save)
             db_1.db.cache.addOrUpdateInDb(newCache);
         return newCache;
@@ -328,7 +363,7 @@ class Game {
         if (index === -1)
             return dist_1.default.log(`Failed to find cache in list.`);
         this.caches.splice(index, 1);
-        dist_1.default.log(this.caches.length, `remaining`);
+        // c.log(this.caches.length, `remaining`)
     }
     addAttackRemnant(data, save = true) {
         const newAttackRemnant = new AttackRemnant_1.AttackRemnant(data);
@@ -350,6 +385,73 @@ class Game {
     }
     get aiShips() {
         return this.ships.filter((s) => s instanceof AIShip_1.AIShip);
+    }
+    recalculateFactionRankings() {
+        // credits
+        let topCreditsShips = [];
+        const creditsScores = [];
+        for (let faction of this.factions) {
+            if (faction.id === `red`)
+                continue;
+            let total = 0;
+            faction.members.forEach((s) => {
+                let shipTotal = s.commonCredits || 0;
+                for (let cm of s.crewMembers) {
+                    shipTotal += cm.credits;
+                }
+                topCreditsShips.push({
+                    name: s.name,
+                    color: faction.color,
+                    score: shipTotal,
+                });
+                total += shipTotal;
+            });
+            creditsScores.push({
+                faction: dist_1.default.stubify(faction, [
+                    `members`,
+                ]),
+                score: total,
+            });
+        }
+        topCreditsShips = topCreditsShips
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);
+        // control
+        const controlScores = [];
+        for (let faction of this.factions) {
+            if (faction.id === `red`)
+                continue;
+            controlScores.push({
+                faction: dist_1.default.stubify(faction, [
+                    `members`,
+                ]),
+                score: 0,
+            });
+        }
+        for (let planet of this.planets) {
+            planet.allegiances.forEach((a) => {
+                if (a.faction.id === `red`)
+                    return;
+                const found = controlScores.find((s) => s.faction.id === a.faction.id);
+                if (!found)
+                    return;
+                found.score += a.level;
+            });
+        }
+        this.factionRankings = [
+            {
+                category: `credits`,
+                scores: creditsScores.sort((a, b) => b.score - a.score),
+                top: topCreditsShips,
+            },
+            {
+                category: `control`,
+                scores: controlScores.sort((a, b) => b.score - a.score),
+            },
+        ];
+        // c.log(JSON.stringify(this.factionRankings, null, 2))
+        this.humanShips.forEach((hs) => (hs.toUpdate.factionRankings =
+            this.factionRankings));
     }
 }
 exports.Game = Game;

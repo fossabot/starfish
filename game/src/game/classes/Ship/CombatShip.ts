@@ -133,6 +133,7 @@ export abstract class CombatShip extends Ship {
     // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
+    c.log(target.location)
     c.log(
       `need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${
         miss ? `miss` : `hit`
@@ -277,13 +278,8 @@ export abstract class CombatShip extends Ship {
       }.`,
     )
 
-    // ----- notify listeners -----
-    io.to(`ship:${this.id}`).emit(`ship:update`, {
-      id: this.id,
-      updates: { dead: this.dead, _hp: this.hp },
-    })
-
     this.toUpdate._hp = this.hp
+    this.toUpdate.dead = this.dead
 
     this.logEntry(
       `${

@@ -79,6 +79,7 @@ const shipSchemaFields = {
     ai: { type: Boolean, default: false },
     spawnPoint: [Number, Number],
     level: Number,
+    onlyVisibleToShipId: String,
 };
 const shipSchema = new mongoose_1.Schema(shipSchemaFields);
 const DBShip = mongoose_1.model(`DBShip`, shipSchema);

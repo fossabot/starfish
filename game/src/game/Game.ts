@@ -15,7 +15,6 @@ import { AIShip } from './classes/Ship/AIShip'
 
 import { generatePlanet as generatePlanetData } from './presets/planets'
 import defaultFactions from './presets/factions'
-import defaultSpecies from './presets/species'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
@@ -28,19 +27,21 @@ export class Game {
   readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
 
+  factionRankings: FactionRanking[] = []
+
   constructor() {
     this.startTime = new Date()
 
     Object.values(defaultFactions).forEach((fd) =>
       this.addFaction(fd),
     )
-    Object.values(defaultSpecies).map((sd) =>
+    Object.values(c.species).map((sd) =>
       this.addSpecies(sd),
     )
 
     c.log(
       `Loaded ${
-        Object.keys(defaultSpecies).length
+        Object.keys(c.species).length
       } species and ${
         Object.keys(defaultFactions).length
       } factions.`,
@@ -54,6 +55,8 @@ export class Game {
     setInterval(() => this.daily(), 24 * 60 * 60 * 1000)
 
     this.tick()
+
+    this.recalculateFactionRankings()
   }
 
   async save() {
@@ -72,10 +75,13 @@ export class Game {
       promises.push(db.ship.addOrUpdateInDb(s))
     })
     await Promise.all(promises)
+
+    this.recalculateFactionRankings()
   }
 
   async daily() {
     c.log(`gray`, `----- Running Daily Tasks -----`)
+
     // remove inactive ships
     const inactiveCutoff = 14 * 24 * 60 * 60 * 1000 // 2 weeks
     const ic = Date.now() - inactiveCutoff
@@ -83,6 +89,8 @@ export class Game {
       (s) => !s.crewMembers.find((c) => c.lastActive > ic),
     ))
       this.removeShip(inactiveShip)
+
+    this.recalculateFactionRankings()
   }
 
   identify() {
@@ -123,6 +131,10 @@ export class Game {
         0.1,
       )
     // c.log(times.map((s) => s.ship.name + ` ` + s.time))
+
+    this.planets.forEach((p) => {
+      p.toUpdate = {}
+    })
 
     this.expireOldAttackRemnantsAndCaches()
     this.spawnNewCaches()
@@ -188,6 +200,7 @@ export class Game {
       | `trail`
     )[],
     includeTrails: boolean = false,
+    tutorial: boolean = false,
   ): {
     ships: Ship[]
     trails: CoordinatePair[][]
@@ -208,8 +221,7 @@ export class Game {
           s.onlyVisibleToShipId !== ignoreSelf
         )
           return false
-        if (s.tutorial && !s.onlyVisibleToShipId)
-          return false
+        if (tutorial && !s.onlyVisibleToShipId) return false
         if (s.id === ignoreSelf) return false
         if (
           c.pointIsInsideCircle(center, s.location, radius)
@@ -223,7 +235,7 @@ export class Game {
     )
       trails = this.ships
         .filter((s) => {
-          if (s.tutorial) return false
+          if (tutorial) return false
           if (s.id === ignoreSelf) return false
           if (ships.find((ship) => ship === s)) return false
           for (let l of s.previousLocations) {
@@ -232,7 +244,7 @@ export class Game {
           }
           return false
         })
-        .map((s) => s.previousLocations)
+        .map((s) => [...s.previousLocations, s.location])
     if (!types || types.includes(`planet`))
       planets = this.planets.filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
@@ -270,7 +282,7 @@ export class Game {
 
   get gameSoftRadius() {
     const count = this.humanShips.length || 1
-    return Math.max(3, Math.sqrt(count) * 2)
+    return Math.max(5, Math.sqrt(count) * 2)
   }
 
   get gameSoftArea() {
@@ -281,7 +293,7 @@ export class Game {
 
   expireOldAttackRemnantsAndCaches() {
     const attackRemnantExpirationTime =
-      Date.now() - AttackRemnant.expireTime
+      Date.now() - c.attackRemnantExpireTime
     this.attackRemnants.forEach((ar, index) => {
       if (attackRemnantExpirationTime > ar.time) {
         this.removeAttackRemnant(ar)
@@ -289,7 +301,7 @@ export class Game {
     })
 
     const cacheExpirationTime =
-      Date.now() - Cache.expireTime
+      Date.now() - c.cacheExpireTime
     this.caches.forEach((c, index) => {
       if (cacheExpirationTime > c.time) {
         this.removeCache(c)
@@ -338,6 +350,28 @@ export class Game {
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
       )
+      const message =
+        Math.random() > 0.9
+          ? c.randomFromArray([
+              `Your lack of fear is based on your ignorance.`,
+              `Rationality was powerless.`,
+              `Time is the cruelest force of all.`,
+              `“We'll send only a brain," he said.`,
+              `Fate lies within the light cone.`,
+              `The universe is but a corpse puffing up.`,
+              `It's easy to be led to the abyss.`,
+              `In fundamental theory, one must be stupid.`,
+              `Let's go drinking.`,
+              `Go back to sleep like good bugs.`,
+              `Any planet is 'Earth' to those that live on it.`,
+              `The easiest way to solve a problem is to deny it exists.`,
+              `It pays to be obvious.`,
+              `All evil is good become cancerous.`,
+              `I've no sympathy at all.`,
+              `Theft is property.`,
+              `Pretend that you have free will.`,
+            ])
+          : undefined
       this.addCache({
         contents: [
           {
@@ -346,6 +380,7 @@ export class Game {
           },
         ],
         location,
+        message,
       })
       c.log(
         `gray`,
@@ -357,7 +392,7 @@ export class Game {
   spawnNewAIs() {
     while (
       this.ships.length &&
-      this.aiShips.length < this.gameSoftArea * 1.35
+      this.aiShips.length < this.gameSoftArea * 1.3
     ) {
       let radius = this.gameSoftRadius
       let spawnPoint: CoordinatePair | undefined
@@ -381,9 +416,9 @@ export class Game {
 
       this.addAIShip({
         location: spawnPoint,
-        name: `AI${`${Math.random().toFixed(3)}`.substring(
-          2,
-        )}`,
+        name: `${c.capitalize(
+          species.substring(0, species.length - 1),
+        )}${`${Math.random().toFixed(3)}`.substring(2)}`,
         species: {
           id: species,
         },
@@ -409,10 +444,10 @@ export class Game {
       )
       return existing
     }
-    c.log(
-      `gray`,
-      `Adding human ship ${data.name} to game at ${data.location}`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `Adding human ship ${data.name} to game at ${data.location}`,
+    // )
 
     data.loadout = `humanDefault`
     const newShip = new HumanShip(data, this)
@@ -432,10 +467,10 @@ export class Game {
       )
       return existing
     }
-    c.log(
-      `gray`,
-      `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
+    // )
 
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
@@ -498,6 +533,7 @@ export class Game {
     }
     const newCache = new Cache(data, this)
     this.caches.push(newCache)
+    // c.log(`adding`, newCache)
 
     if (save) db.cache.addOrUpdateInDb(newCache)
     return newCache
@@ -512,7 +548,7 @@ export class Game {
     if (index === -1)
       return c.log(`Failed to find cache in list.`)
     this.caches.splice(index, 1)
-    c.log(this.caches.length, `remaining`)
+    // c.log(this.caches.length, `remaining`)
   }
 
   addAttackRemnant(
@@ -548,23 +584,81 @@ export class Game {
     ) as AIShip[]
   }
 
-  // ----- export for god view -----
+  recalculateFactionRankings() {
+    // credits
+    let topCreditsShips: FactionRankingTopEntry[] = []
+    const creditsScores: FactionRankingScoreEntry[] = []
+    for (let faction of this.factions) {
+      if (faction.id === `red`) continue
+      let total = 0
+      faction.members.forEach((s) => {
+        let shipTotal = (s as HumanShip).commonCredits || 0
+        for (let cm of (s as HumanShip).crewMembers) {
+          shipTotal += cm.credits
+        }
+        topCreditsShips.push({
+          name: s.name,
+          color: faction.color,
+          score: shipTotal,
+        })
 
-  // export(): GameExport {
-  //   return {
-  //     planets: JSON.parse(JSON.stringify(this.planets)),
-  //     ships: JSON.parse(JSON.stringify(this.ships)),
-  //     caches: JSON.parse(JSON.stringify(this.caches)),
-  //     attackRemnants: JSON.parse(
-  //       jSON.stringify(this.attackRemnants),
-  //     ),
-  //   }
-  // }
-}
+        total += shipTotal
+      })
+      creditsScores.push({
+        faction: c.stubify(faction, [
+          `members`,
+        ]) as FactionStub,
+        score: total,
+      })
+    }
+    topCreditsShips = topCreditsShips
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
 
-interface GameExport {
-  planets: any
-  ships: any
-  caches: any
-  attackRemnants: any
+    // control
+    const controlScores: FactionRankingScoreEntry[] = []
+    for (let faction of this.factions) {
+      if (faction.id === `red`) continue
+      controlScores.push({
+        faction: c.stubify(faction, [
+          `members`,
+        ]) as FactionStub,
+        score: 0,
+      })
+    }
+    for (let planet of this.planets) {
+      planet.allegiances.forEach((a) => {
+        if (a.faction.id === `red`) return
+        const found = controlScores.find(
+          (s) => s.faction.id === a.faction.id,
+        )
+        if (!found) return
+        found.score += a.level
+      })
+    }
+
+    this.factionRankings = [
+      {
+        category: `credits`,
+        scores: creditsScores.sort(
+          (a, b) => b.score - a.score,
+        ),
+        top: topCreditsShips,
+      },
+      {
+        category: `control`,
+        scores: controlScores.sort(
+          (a, b) => b.score - a.score,
+        ),
+      },
+    ]
+
+    // c.log(JSON.stringify(this.factionRankings, null, 2))
+
+    this.humanShips.forEach(
+      (hs) =>
+        (hs.toUpdate.factionRankings =
+          this.factionRankings),
+    )
+  }
 }

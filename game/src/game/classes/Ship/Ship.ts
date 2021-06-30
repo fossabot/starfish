@@ -28,7 +28,7 @@ import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
 
 export class Ship extends Stubbable {
-  static maxPreviousLocations: number = 15
+  static maxPreviousLocations: number = 30
 
   name: string = `ship`
   planet: Planet | false = false
@@ -356,6 +356,7 @@ export class Ship extends Stubbable {
       return
     }
     this.radii.sight = Math.max(
+      0.1,
       c.baseSightRange,
       c.getRadiusDiminishingReturns(
         this.scanners.reduce(
@@ -441,9 +442,9 @@ export class Ship extends Stubbable {
           this.previousLocations[
             this.previousLocations.length - 1
           ],
-        ) > 0.0001)
+        ) > 0.00001)
     ) {
-      this.previousLocations.push(currentLocation)
+      this.previousLocations.push([...currentLocation])
       while (
         this.previousLocations.length >
         Ship.maxPreviousLocations
@@ -463,11 +464,11 @@ export class Ship extends Stubbable {
   }
 
   applyTickOfGravity(this: Ship): void {
+    if (!this.human) return
+    if (this.planet) return
     if (!this.canMove) return
 
-    if (!this.human) return
-
-    for (let planet of this.visible?.planets || []) {
+    for (let planet of this.seenPlanets || []) {
       const distance = c.distance(
         planet.location,
         this.location,
@@ -481,10 +482,11 @@ export class Ship extends Stubbable {
             this,
             planet,
           )
+          // comes back as kg * m / second == N
           .map(
             (g) =>
               (g *
-                (c.deltaTime / c.TICK_INTERVAL) *
+                Math.min(c.deltaTime / c.TICK_INTERVAL, 2) *
                 c.gameSpeedMultiplier) /
               this.mass /
               c.KM_PER_AU /
@@ -499,7 +501,7 @@ export class Ship extends Stubbable {
         if (
           Math.abs(vectorToAdd[0]) +
             Math.abs(vectorToAdd[1]) <
-          0.000000001
+          0.0000000000001
         )
           return
 

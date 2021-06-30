@@ -21,6 +21,8 @@ class Scanner extends Item_1.Item {
             return 0;
         let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * -0.97;
         this.repair -= repairLoss;
+        if (this.repair < 0)
+            this.repair = 0;
         repairLoss += super.use();
         return repairLoss;
     }

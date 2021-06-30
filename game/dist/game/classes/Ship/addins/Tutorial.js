@@ -106,10 +106,6 @@ class Tutorial {
                         message: `Let's zoom out a little bit.`,
                         advance: `See More`,
                     },
-                    // {
-                    //   message: `broadcast from here`,
-                    //   channel: `broadcast`,
-                    // },
                 ],
                 nextStepTrigger: {
                     awaitFrontend: true,
@@ -194,7 +190,7 @@ class Tutorial {
                 highlightPanel: `inventory`,
                 disableRepair: true,
                 disableStamina: true,
-                forceCockpitCharge: 0.1,
+                forceCockpitCharge: 0.15,
                 visibleTypes: [`planet`, `trail`],
                 script: [
                     {
@@ -729,15 +725,23 @@ class Tutorial {
         }
         // crew location
         if (this.currentStep.forceCrewLocation)
-            this.ship.crewMembers.forEach((cm) => (cm.location =
-                this.currentStep.forceCrewLocation));
+            this.ship.crewMembers.forEach((cm) => {
+                cm.location = this.currentStep.forceCrewLocation;
+                cm.toUpdate.location = cm.location;
+            });
         // crew stamina
         if (this.currentStep.forceStamina !== undefined)
-            this.ship.crewMembers.forEach((cm) => (cm.stamina = this.currentStep.forceStamina));
+            this.ship.crewMembers.forEach((cm) => {
+                cm.stamina = this.currentStep.forceStamina;
+                cm.toUpdate.stamina = cm.stamina;
+            });
         // crew cockpit charge
         if (this.currentStep.forceCockpitCharge !== undefined)
-            this.ship.crewMembers.forEach((cm) => (cm.cockpitCharge =
-                this.currentStep.forceCockpitCharge));
+            this.ship.crewMembers.forEach((cm) => {
+                cm.cockpitCharge =
+                    this.currentStep.forceCockpitCharge;
+                cm.toUpdate.cockpitCharge = cm.cockpitCharge;
+            });
         // rooms
         if (this.currentStep.shownRooms)
             for (let r of this.currentStep.shownRooms)
@@ -800,12 +804,20 @@ class Tutorial {
             });
     }
     cleanUp() {
-        dist_1.default.log(`cleaning up after tutorial...`);
-        dist_1.default.log(this.ship.game.caches.length, this.ship.game.caches.filter((k) => k.onlyVisibleToShipId).length, this.ship.game.caches.filter((k) => k.onlyVisibleToShipId === this.ship.id).length);
+        dist_1.default.log(`Cleaning up after tutorial...`);
+        // c.log(
+        //   this.ship.game.caches.length,
+        //   this.ship.game.caches.filter(
+        //     (k) => k.onlyVisibleToShipId,
+        //   ),
+        //   this.ship.game.caches.filter(
+        //     (k) => k.onlyVisibleToShipId === this.ship.id,
+        //   ),
+        // )
         this.ship.game.caches
             .filter((k) => k.onlyVisibleToShipId === this.ship.id)
             .forEach((k) => {
-            dist_1.default.log(`attempting to remove cache`, k);
+            // c.log(`attempting to remove cache`, k)
             this.ship.game.removeCache(k);
         });
         this.ship.game.aiShips

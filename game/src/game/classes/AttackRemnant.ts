@@ -4,8 +4,6 @@ import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 
 export class AttackRemnant extends Stubbable {
-  static readonly expireTime = 1000 * 60 * 60 * 1
-
   readonly id: string
   readonly attacker: CombatShip
   readonly defender: CombatShip

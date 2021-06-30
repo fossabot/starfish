@@ -2,11 +2,11 @@ import c from '../../../../../../common/dist'
 import type { CrewMember } from '../CrewMember'
 
 export class CrewPassive {
-  readonly displayName
-  readonly crewMember
-  readonly type
+  readonly displayName: string
+  readonly crewMember: CrewMember
+  readonly type: CrewPassiveType
   level = 1
-  readonly factor
+  readonly factor: number
 
   constructor(
     {

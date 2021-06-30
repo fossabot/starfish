@@ -31,6 +31,7 @@ export class Communicator extends Item {
         this.reliability,
       ) * 500
     this.repair -= repairLoss
+    if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()
     repairLoss += super.use()
     return repairLoss

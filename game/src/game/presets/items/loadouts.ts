@@ -2,14 +2,14 @@ import c from '../../../../../common/dist'
 
 const loadouts: { [key in LoadoutName]: Loadout } = {
   tutorial1: {
-    chassis: `solo1`,
+    chassis: `starter1`,
     items: [
       { type: `engine`, id: `tutorial1` },
       { type: `scanner`, id: `starter1` },
     ],
   },
   tutorial2: {
-    chassis: `solo1`,
+    chassis: `starter1`,
     items: [
       { type: `engine`, id: `tutorial1` },
       { type: `weapon`, id: `tutorial1` },
@@ -17,7 +17,7 @@ const loadouts: { [key in LoadoutName]: Loadout } = {
     ],
   },
   tutorial3: {
-    chassis: `solo1`,
+    chassis: `starter1`,
     items: [
       { type: `engine`, id: `tutorial1` },
       { type: `weapon`, id: `tutorial1` },
@@ -26,7 +26,7 @@ const loadouts: { [key in LoadoutName]: Loadout } = {
     ],
   },
   aiTutorial1: {
-    chassis: `solo1`,
+    chassis: `starter1`,
     items: [{ type: `weapon`, id: `tiny1` }],
   },
   humanDefault: {

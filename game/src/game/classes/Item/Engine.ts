@@ -6,6 +6,7 @@ import { Item } from './Item'
 export class Engine extends Item {
   readonly id: EngineId
   readonly thrustAmplification: number
+  lastUse: number = Date.now()
 
   constructor(
     data: BaseEngineData,
@@ -15,6 +16,7 @@ export class Engine extends Item {
     super(data, ship, props)
     this.id = data.id
     this.thrustAmplification = data.thrustAmplification
+    this.lastUse = data.lastUse || 0
   }
 
   use(usePercent: number = 1): number {
@@ -29,6 +31,8 @@ export class Engine extends Item {
       usePercent *
       400
     this.repair -= repairLoss
+    if (this.repair < 0) this.repair = 0
+    this.lastUse = Date.now()
     this._stub = null // invalidate stub
     return repairLoss
   }

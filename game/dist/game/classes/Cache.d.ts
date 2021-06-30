@@ -3,7 +3,6 @@ import type { HumanShip } from './Ship/HumanShip';
 import { Stubbable } from './Stubbable';
 export declare class Cache extends Stubbable {
     static readonly rePickUpTime: number;
-    static readonly expireTime: number;
     readonly id: string;
     readonly contents: CacheContents[];
     readonly location: CoordinatePair;

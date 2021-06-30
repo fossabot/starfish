@@ -6,7 +6,6 @@ import { Stubbable } from './Stubbable'
 
 export class Cache extends Stubbable {
   static readonly rePickUpTime = 1000 * 60 // 1 minute
-  static readonly expireTime = 1000 * 60 * 60 * 24 * 7 // one week
 
   readonly id: string
   readonly contents: CacheContents[]

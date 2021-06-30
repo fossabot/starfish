@@ -2,7 +2,7 @@ import type { CrewMember } from '../CrewMember';
 export declare class CrewPassive {
     readonly displayName: string;
     readonly crewMember: CrewMember;
-    readonly type: "cargoSpace";
+    readonly type: CrewPassiveType;
     level: number;
     readonly factor: number;
     constructor({ displayName, type, level, factor, }: BaseCrewPassiveData, crewMember: CrewMember);

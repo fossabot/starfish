@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CombatShip = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
-const io_1 = __importDefault(require("../../../server/io"));
 const db_1 = require("../../../db");
 const Ship_1 = require("./Ship");
 class CombatShip extends Ship_1.Ship {
@@ -84,6 +83,7 @@ class CombatShip extends Ship_1.Ship {
         // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
+        dist_1.default.log(target.location);
         dist_1.default.log(`need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,
@@ -164,12 +164,8 @@ class CombatShip extends Ship_1.Ship {
         else
             this.dead = false;
         dist_1.default.log(`gray`, `${this.name} takes ${attack.damage} damage from ${attacker.name}'s ${attack.weapon.displayName}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
-        // ----- notify listeners -----
-        io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
-            id: this.id,
-            updates: { dead: this.dead, _hp: this.hp },
-        });
         this.toUpdate._hp = this.hp;
+        this.toUpdate.dead = this.dead;
         this.logEntry(`${attack.miss
             ? `Missed by attack from`
             : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss

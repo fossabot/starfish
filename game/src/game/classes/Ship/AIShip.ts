@@ -35,7 +35,7 @@ export class AIShip extends CombatShip {
   constructor(data: BaseAIShipData, game: Game) {
     super(data, game)
     if (data.id) this.id = data.id
-    else this.id = `${Math.random()}`.substring(2)
+    else this.id = `ai${Math.random()}`.substring(2)
 
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
@@ -132,6 +132,9 @@ export class AIShip extends CombatShip {
     let canAddMoreItems = true
     const isInBudget = (i: BaseItemData) =>
       i.rarity <= itemBudget
+    const isBuyable = (i: BaseItemData) =>
+      i.buyable !== false
+
     while (canAddMoreItems) {
       const typeToAdd: `engine` | `weapon` =
         this.weapons.length === 0
@@ -140,8 +143,11 @@ export class AIShip extends CombatShip {
           ? `engine`
           : c.randomFromArray([`engine`, `weapon`])
       const itemPool = itemData[typeToAdd]
-      const validItems: BaseItemData[] =
-        Object.values(itemPool).filter(isInBudget)
+      const validItems: BaseItemData[] = Object.values(
+        itemPool,
+      )
+        .filter(isInBudget)
+        .filter(isBuyable)
       if (!validItems.length) {
         canAddMoreItems = false
         continue
@@ -195,11 +201,11 @@ export class AIShip extends CombatShip {
       this.location[0] +=
         unitVectorToTarget[0] *
         thrustMagnitude *
-        (c.deltaTime / 1000)
+        (c.deltaTime / c.TICK_INTERVAL)
       this.location[1] +=
         unitVectorToTarget[1] *
         thrustMagnitude *
-        (c.deltaTime / 1000)
+        (c.deltaTime / c.TICK_INTERVAL)
     }
 
     // ----- set new target location -----
@@ -239,14 +245,15 @@ export class AIShip extends CombatShip {
         this.location[0] + unitVector[0] * distance,
         this.location[1] + unitVector[1] * distance,
       ]
-    }
 
-    // ----- add previousLocation -----
-    if (!hasArrived)
-      this.addPreviousLocation(
-        startingLocation,
-        this.location,
+      // ----- add previousLocation because it will be turning -----
+      this.previousLocations.push([...this.location])
+      while (
+        this.previousLocations.length >
+        AIShip.maxPreviousLocations / 2
       )
+        this.previousLocations.shift()
+    }
   }
 
   die() {

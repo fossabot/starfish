@@ -15,5 +15,4 @@ class AttackRemnant extends Stubbable_1.Stubbable {
     }
 }
 exports.AttackRemnant = AttackRemnant;
-AttackRemnant.expireTime = 1000 * 60 * 60 * 1;
 //# sourceMappingURL=AttackRemnant.js.map

@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -30,12 +30,14 @@ const crewActives_1 = require("../presets/crewActives");
 const chassis_1 = require("../presets/items/chassis");
 const itemData = __importStar(require("../presets/items/"));
 const Stubbable_1 = require("./Stubbable");
+const db_1 = require("../../db");
 class Planet extends Stubbable_1.Stubbable {
     constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }, game) {
         super();
         this.allegiances = [];
-        this.mass = 5.974e32;
+        this.mass = 0;
         this.priceFluctuator = 1;
+        this.toUpdate = {};
         this.game = game;
         this.name = name;
         this.color = color;
@@ -45,7 +47,7 @@ class Planet extends Stubbable_1.Stubbable {
         this.repairCostMultiplier = repairCostMultiplier || 0;
         this.homeworld = game.factions.find((f) => f.id === homeworld?.id);
         this.faction = this.homeworld;
-        if (allegiances)
+        if (allegiances) {
             for (let a of allegiances) {
                 const foundFaction = this.game.factions.find((f) => f.id === a.faction.id);
                 if (foundFaction)
@@ -54,8 +56,8 @@ class Planet extends Stubbable_1.Stubbable {
                         level: a.level,
                     });
             }
-        if (this.faction)
-            this.incrementAllegiance(this.faction, 100);
+            this.toUpdate.allegiances = this.allegiances;
+        }
         this.vendor = {
             cargo: vendor.cargo?.map((cargo) => {
                 return {
@@ -99,12 +101,13 @@ class Planet extends Stubbable_1.Stubbable {
             })
                 .filter((i) => i.itemData),
         };
-        this.mass =
-            ((5.974e30 * this.radius) / 36000) *
-                (1 + Math.random() * 0.1);
+        this.mass = (5.974e30 * this.radius) / 36000;
+        // * (1 + Math.random() * 0.1) // todo this shouldn't be randomized on startup
         this.updateFluctuator();
         setInterval(() => this.updateFluctuator(), 1000 * 60 * 60); // every hour
         setInterval(() => this.decrementAllegiances(), 1000 * 60 * 60); // every hour
+        if (this.faction)
+            this.incrementAllegiance(this.faction, 100);
     }
     identify() {
         dist_1.default.log(`Planet: ${this.name} (${this.color}) at ${this.location}`);
@@ -119,12 +122,17 @@ class Planet extends Stubbable_1.Stubbable {
         });
     }
     getVisibleStub() {
-        const initialStub = this.stubify();
-        initialStub.vendor.cargo.forEach((i) => delete i.cargoData);
-        initialStub.vendor.actives.forEach((i) => delete i.activeData);
-        initialStub.vendor.passives.forEach((i) => delete i.passiveData);
-        initialStub.vendor.items.forEach((i) => delete i.itemData);
-        initialStub.vendor.chassis.forEach((i) => delete i.chassisData);
+        this._stub = null;
+        const initialStub = {
+            ...this.stubify([
+                `cargoData`,
+                `activeData`,
+                `passiveData`,
+                `itemData`,
+                `chassisData`,
+            ]),
+        };
+        this._stub = null;
         return initialStub;
     }
     incrementAllegiance(faction, amount) {
@@ -139,13 +147,16 @@ class Planet extends Stubbable_1.Stubbable {
                 faction,
                 level: Math.min(maxAllegiance, allegianceAmountToIncrement),
             });
+        this.toUpdate.allegiances = this.allegiances;
         this.updateFrontendForShipsAt();
+        db_1.db.planet.addOrUpdateInDb(this);
     }
     decrementAllegiances() {
         this.allegiances.forEach((a) => {
             if (this.faction?.id !== a.faction.id)
                 a.level *= 0.99;
         });
+        this.toUpdate.allegiances = this.allegiances;
         this.updateFrontendForShipsAt();
     }
     updateFluctuator() {
@@ -162,6 +173,7 @@ class Planet extends Stubbable_1.Stubbable {
                 intensity +
                 (1 - intensity / 2);
         this._stub = null; // invalidate stub
+        this.toUpdate.priceFluctuator = this.priceFluctuator;
         this.updateFrontendForShipsAt();
     }
 }

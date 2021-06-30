@@ -10,7 +10,7 @@ interface DBShipDoc
 }
 
 const shipSchemaFields: Record<
-  keyof BaseHumanShipData,
+  keyof BaseHumanShipData | keyof BaseAIShipData,
   any
 > = {
   id: { type: String, required: true },
@@ -87,6 +87,7 @@ const shipSchemaFields: Record<
   ai: { type: Boolean, default: false },
   spawnPoint: [Number, Number],
   level: Number,
+  onlyVisibleToShipId: String,
 }
 const shipSchema = new Schema(shipSchemaFields)
 const DBShip = model<DBShipDoc>(`DBShip`, shipSchema)

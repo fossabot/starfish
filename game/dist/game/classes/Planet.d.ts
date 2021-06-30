@@ -16,6 +16,10 @@ export declare class Planet extends Stubbable {
     readonly homeworld?: Faction;
     mass: number;
     priceFluctuator: number;
+    toUpdate: {
+        allegiances?: AllegianceData[];
+        priceFluctuator?: number;
+    };
     constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }: BasePlanetData, game: Game);
     identify(): void;
     get shipsAt(): import("./Ship/HumanShip").HumanShip[];

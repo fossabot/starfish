@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runOnReady = exports.init = exports.isReady = exports.db = void 0;
 const dotenv_1 = require("dotenv");
+const is_docker_1 = __importDefault(require("is-docker"));
 const cache = __importStar(require("./models/cache"));
 const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
@@ -39,9 +40,8 @@ exports.db = {
 };
 let ready = false;
 const toRun = [];
-const isReady = () => ready;
-exports.isReady = isReady;
-const init = ({ hostname = `mongodb`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
+exports.isReady = () => ready;
+exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -72,12 +72,10 @@ const init = ({ hostname = `mongodb`, port = 27017, dbName = `spacecord`, userna
         }
     });
 };
-exports.init = init;
-const runOnReady = (f) => {
+exports.runOnReady = (f) => {
     if (ready)
         f();
     else
         toRun.push(f);
 };
-exports.runOnReady = runOnReady;
 //# sourceMappingURL=index.js.map

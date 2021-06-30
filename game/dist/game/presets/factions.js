@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const species_1 = __importDefault(require("./species"));
+const dist_1 = __importDefault(require("../../../../common/dist"));
 const factions = {
     green: {
         name: `Green Grapplers`,
@@ -11,10 +11,10 @@ const factions = {
         color: `hsl(140, 70%, 55%)`,
         homeworld: `Origin`,
         species: [
-            species_1.default.octopi,
-            species_1.default.squids,
-            species_1.default.crabs,
-            species_1.default.lobsters,
+            dist_1.default.species.octopi,
+            dist_1.default.species.squids,
+            dist_1.default.species.crabs,
+            dist_1.default.species.lobsters,
         ],
     },
     blue: {
@@ -23,10 +23,10 @@ const factions = {
         color: `hsl(190, 75%, 40%)`,
         homeworld: `Neptune`,
         species: [
-            species_1.default.seals,
-            species_1.default[`sea turtles`],
-            species_1.default.dolphins,
-            species_1.default.whales,
+            dist_1.default.species.seals,
+            dist_1.default.species[`sea turtles`],
+            dist_1.default.species.dolphins,
+            dist_1.default.species.whales,
         ],
     },
     purple: {
@@ -35,10 +35,10 @@ const factions = {
         color: `hsl(290, 40%, 50%)`,
         homeworld: `Osiris`,
         species: [
-            species_1.default.angelfish,
-            species_1.default.blowfish,
-            species_1.default.tuna,
-            species_1.default.shrimp,
+            dist_1.default.species.angelfish,
+            dist_1.default.species.blowfish,
+            dist_1.default.species.tuna,
+            dist_1.default.species.shrimp,
         ],
     },
     red: {
@@ -47,10 +47,10 @@ const factions = {
         color: `hsl(0, 60%, 50%)`,
         ai: true,
         species: [
-            species_1.default.seagulls,
-            species_1.default.flamingos,
-            species_1.default.eagles,
-            species_1.default.chickens,
+            dist_1.default.species.seagulls,
+            dist_1.default.species.flamingos,
+            dist_1.default.species.eagles,
+            dist_1.default.species.chickens,
         ],
     },
 };

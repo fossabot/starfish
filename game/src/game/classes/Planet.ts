@@ -9,6 +9,7 @@ import { data as activeData } from '../presets/crewActives'
 import { chassis as chassisData } from '../presets/items/chassis'
 import * as itemData from '../presets/items/'
 import { Stubbable } from './Stubbable'
+import { db } from '../../db'
 
 export class Planet extends Stubbable {
   static readonly fluctuatorIntensity = 0.8
@@ -24,8 +25,12 @@ export class Planet extends Stubbable {
   readonly radius: number
   readonly allegiances: AllegianceData[] = []
   readonly homeworld?: Faction
-  mass = 5.974e32
+  mass = 0
   priceFluctuator = 1
+  toUpdate: {
+    allegiances?: AllegianceData[]
+    priceFluctuator?: number
+  } = {}
 
   constructor(
     {
@@ -54,7 +59,7 @@ export class Planet extends Stubbable {
     )
     this.faction = this.homeworld
 
-    if (allegiances)
+    if (allegiances) {
       for (let a of allegiances) {
         const foundFaction = this.game.factions.find(
           (f) => f.id === a.faction.id,
@@ -65,8 +70,8 @@ export class Planet extends Stubbable {
             level: a.level,
           })
       }
-    if (this.faction)
-      this.incrementAllegiance(this.faction, 100)
+      this.toUpdate.allegiances = this.allegiances
+    }
 
     this.vendor = {
       cargo: vendor.cargo?.map((cargo) => {
@@ -114,9 +119,8 @@ export class Planet extends Stubbable {
         .filter((i) => i.itemData),
     }
 
-    this.mass =
-      ((5.974e30 * this.radius) / 36000) *
-      (1 + Math.random() * 0.1)
+    this.mass = (5.974e30 * this.radius) / 36000
+    // * (1 + Math.random() * 0.1) // todo this shouldn't be randomized on startup
 
     this.updateFluctuator()
     setInterval(
@@ -128,6 +132,9 @@ export class Planet extends Stubbable {
       () => this.decrementAllegiances(),
       1000 * 60 * 60,
     ) // every hour
+
+    if (this.faction)
+      this.incrementAllegiance(this.faction, 100)
   }
 
   identify() {
@@ -150,22 +157,17 @@ export class Planet extends Stubbable {
   }
 
   getVisibleStub() {
-    const initialStub: PlanetStub = this.stubify()
-    initialStub.vendor.cargo.forEach(
-      (i: VendorCargoPrice) => delete i.cargoData,
-    )
-    initialStub.vendor.actives.forEach(
-      (i: VendorCrewActivePrice) => delete i.activeData,
-    )
-    initialStub.vendor.passives.forEach(
-      (i: VendorCrewPassivePrice) => delete i.passiveData,
-    )
-    initialStub.vendor.items.forEach(
-      (i: VendorItemPrice) => delete i.itemData,
-    )
-    initialStub.vendor.chassis.forEach(
-      (i: VendorChassisPrice) => delete i.chassisData,
-    )
+    this._stub = null
+    const initialStub: PlanetStub = {
+      ...this.stubify([
+        `cargoData`,
+        `activeData`,
+        `passiveData`,
+        `itemData`,
+        `chassisData`,
+      ]),
+    }
+    this._stub = null
     return initialStub
   }
 
@@ -192,13 +194,16 @@ export class Planet extends Stubbable {
           allegianceAmountToIncrement,
         ),
       })
+    this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
+    db.planet.addOrUpdateInDb(this)
   }
 
   decrementAllegiances() {
     this.allegiances.forEach((a) => {
       if (this.faction?.id !== a.faction.id) a.level *= 0.99
     })
+    this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
   }
 
@@ -218,6 +223,7 @@ export class Planet extends Stubbable {
       (1 - intensity / 2)
 
     this._stub = null // invalidate stub
+    this.toUpdate.priceFluctuator = this.priceFluctuator
     this.updateFrontendForShipsAt()
   }
 }

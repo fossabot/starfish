@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -60,6 +60,7 @@ function default_1(socket) {
                 error: `No slot available to attach any more equipment.`,
             });
         ship.commonCredits -= price;
+        ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.addItem({ type: itemType, id: itemId });
         ship.logEntry(`${itemForSale.itemData?.displayName} (${itemType}) bought by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
@@ -83,7 +84,6 @@ function default_1(socket) {
         const planet = ship.planet;
         if (!planet)
             return callback({ error: `Not at a planet.` });
-        dist_1.default.log(itemType, itemId);
         const heldItem = ship.items.find((i) => i.type === itemType && i.id === itemId);
         if (!heldItem)
             return callback({
@@ -105,6 +105,7 @@ function default_1(socket) {
                 ? 1 + (1 - dist_1.default.factionVendorMultiplier)
                 : 1), 2, true);
         ship.commonCredits += price;
+        ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.removeItem(heldItem);
         ship.logEntry(`${heldItem.displayName} (${itemType}) sold by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
@@ -150,6 +151,7 @@ function default_1(socket) {
                 error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
             });
         ship.commonCredits -= price;
+        ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.swapChassis(itemForSale.chassisData);
         ship.logEntry(`${itemForSale.chassisData?.displayName} (chassis) bought by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
