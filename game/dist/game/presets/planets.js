@@ -40,6 +40,16 @@ function generatePlanet(game, homeworldFactionKey) {
             thisName = undefined;
         name = thisName;
     }
+    if (!name) {
+        const useSuffix = Math.random() > 0.2;
+        name = `${!useSuffix
+            ? `${dist_1.default.randomFromArray(planetNamePrefixes)} `
+            : ``}${dist_1.default.randomFromArray(planetNames)}${useSuffix
+            ? ` ${dist_1.default.randomFromArray(planetNameSuffixes)}`
+            : ``}`;
+        if (game.planets.find((p) => p.name === name))
+            name = undefined;
+    }
     if (!name)
         return false;
     let locationSearchRadius = game.gameSoftRadius * 0.75;
@@ -94,7 +104,7 @@ function generatePlanet(game, homeworldFactionKey) {
     let maxRarity = level;
     const minRarity = level / 1.5;
     const cargoDispropensity = 0.8 - Math.random();
-    const passiveDispropensity = 1 - Math.random() / 2;
+    const passiveDispropensity = 0.85 - Math.random() / 2;
     const itemDispropensity = 1 - Math.random() / 2;
     const chassisDispropensity = 1 - Math.random() / 2;
     // guarantee we have at least ONE thing for sale
@@ -315,6 +325,17 @@ const planetNames = [
     `Olympus`,
     `Irra`,
     `Ungol`,
+];
+const planetNamePrefixes = [`New`];
+const planetNameSuffixes = [
+    `Prime`,
+    `II`,
+    `IV`,
+    `Beta`,
+    `VI`,
+    `III`,
+    `Landing`,
+    `V`,
 ];
 const seaCreatures = [
     { name: `crabs`, factionKey: `green` },

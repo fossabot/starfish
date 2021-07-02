@@ -259,9 +259,9 @@ export class AIShip extends CombatShip {
   die() {
     super.die()
 
-    const amount = Math.round(
-      Math.random() * this.level * 40,
-    )
+    const amount =
+      Math.ceil(Math.random() * this.level * 40) +
+      this.level
     const cacheContents: CacheContents[] = [
       { type: `credits`, amount },
     ]

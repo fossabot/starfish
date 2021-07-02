@@ -15,7 +15,7 @@ const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
-        this.logAlertLevel = `high`;
+        this.logAlertLevel = `medium`;
         this.crewMembers = [];
         this.captain = null;
         this.rooms = {};
@@ -193,33 +193,181 @@ class HumanShip extends CombatShip_1.CombatShip {
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
     thruster) {
         charge *= thruster.cockpitCharge;
-        thruster.cockpitCharge -= charge;
-        const initialVelocity = [...this.velocity];
+        // thruster.cockpitCharge -= charge
+        const initialVelocity = [
+            ...this.velocity,
+        ];
+        const initialMagnitude = dist_1.default.vectorToMagnitude(initialVelocity);
+        const initialAngle = this.direction;
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
             .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
         const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
         const shipMass = this.mass;
-        const finalMagnitude = (magnitudePerPointOfCharge * charge) / shipMass;
-        // const currentVelocity: CoordinatePair = [...this.velocity]
-        // const currentMagnitude = c.vectorToMagnitude(currentVelocity)
-        const angleToTarget = dist_1.default.angleFromAToB(this.location, targetLocation);
-        const unitVectorToTarget = dist_1.default.unitVectorFromThisPointToThatPoint(this.location, targetLocation);
-        const distanceToTarget = dist_1.default.distance(this.location, targetLocation);
-        const vectorToTarget = [
-            unitVectorToTarget[0] * distanceToTarget,
-            unitVectorToTarget[1] * distanceToTarget,
-        ];
-        const vectorAlongWhichToThrust = [
-            vectorToTarget[0] - this.velocity[0],
-            vectorToTarget[1] - this.velocity[1],
-        ];
-        const unitVectorAlongWhichToThrust = dist_1.default.vectorToUnitVector(vectorAlongWhichToThrust);
+        const thrustMagnitudeToApply = (magnitudePerPointOfCharge * charge) / shipMass;
+        let zeroedAngleToTargetInDegrees = dist_1.default.angleFromAToB(this.location, targetLocation);
+        let angleToThrustInDegrees = 0;
+        const TEMPT_THE_GODS_SEMICOLON_USE_THE_MATH = false;
+        if (!TEMPT_THE_GODS_SEMICOLON_USE_THE_MATH) {
+            dist_1.default.log(`ez mode`);
+            angleToThrustInDegrees = zeroedAngleToTargetInDegrees;
+        }
+        // * Do we dare?????
+        else {
+            // ----- here comes the math -----
+            if (zeroedAngleToTargetInDegrees > 180)
+                zeroedAngleToTargetInDegrees -= 360;
+            const angleDifferenceFromVelocityToTargetInRadians = (dist_1.default.degreesToRadians(dist_1.default.angleDifference(zeroedAngleToTargetInDegrees, this.direction, true)) +
+                2 * Math.PI) %
+                (2 * Math.PI);
+            // normalized to 0~2pi
+            const isAcute = angleDifferenceFromVelocityToTargetInRadians <
+                Math.PI / 2 ||
+                angleDifferenceFromVelocityToTargetInRadians >
+                    Math.PI * (3 / 2);
+            let zeroedAngleToThrustInRadians = 0;
+            dist_1.default.log({
+                initialVelocity,
+                initialMagnitude,
+                thrustMagnitudeToApply,
+                isAcute,
+                angleDifferenceFromVelocityToTargetInRadians,
+                angleDifferenceFromVelocityToTargetInDegrees: dist_1.default.radiansToDegrees(angleDifferenceFromVelocityToTargetInRadians),
+            });
+            // * acute case!
+            if (isAcute) {
+                // the distance to the closest point on the target line from the velocity vector
+                const distanceToClosestPointOnTargetLineFromVelocity = Math.abs(initialMagnitude *
+                    Math.sin(dist_1.default.degreesToRadians(zeroedAngleToTargetInDegrees)));
+                const didHaveExcessMagnitude = thrustMagnitudeToApply >
+                    distanceToClosestPointOnTargetLineFromVelocity;
+                // angle from the tip of the velocity line that forms a right angle when it intersects the target line
+                const zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInRadians = Math.PI -
+                    Math.PI / 2 -
+                    (angleDifferenceFromVelocityToTargetInRadians <=
+                        Math.PI
+                        ? angleDifferenceFromVelocityToTargetInRadians
+                        : Math.PI -
+                            angleDifferenceFromVelocityToTargetInRadians);
+                if (!didHaveExcessMagnitude) {
+                    dist_1.default.log(`using line that forms right angle to target`);
+                    zeroedAngleToThrustInRadians =
+                        zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInRadians;
+                }
+                else {
+                    // we have "excess" magnitude, so the line needs to extend out along target line to match magnitude length
+                    dist_1.default.log(`adjusting line to account for excess magnitude`);
+                    const additionalDistanceToMoveAlongTargetLine = Math.PI -
+                        Math.sqrt(thrustMagnitudeToApply ** 2 -
+                            distanceToClosestPointOnTargetLineFromVelocity **
+                                2);
+                    const additionalAngleToAddToThrustAngle = Math.acos((distanceToClosestPointOnTargetLineFromVelocity **
+                        2 +
+                        thrustMagnitudeToApply ** 2 -
+                        additionalDistanceToMoveAlongTargetLine **
+                            2) /
+                        (2 *
+                            distanceToClosestPointOnTargetLineFromVelocity *
+                            thrustMagnitudeToApply));
+                    // Math.asin(
+                    //   (additionalDistanceToMoveAlongTargetLine /
+                    //     thrustMagnitudeToApply)
+                    // )
+                    dist_1.default.log({
+                        additionalDistanceToMoveAlongTargetLine,
+                        additionalAngleToAddToThrustAngle,
+                    });
+                    zeroedAngleToThrustInRadians +=
+                        additionalAngleToAddToThrustAngle;
+                }
+                dist_1.default.log({
+                    distanceToClosestPointOnTargetLineFromVelocity,
+                    didHaveExcessMagnitude,
+                    zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInRadians,
+                    zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInDegrees: dist_1.default.radiansToDegrees(zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInRadians),
+                });
+            }
+            // * obtuse case
+            else {
+                const didHaveExcessMagnitude = thrustMagnitudeToApply > initialMagnitude;
+                // if it's shorter than the velocity vector
+                if (!didHaveExcessMagnitude) {
+                    // straight back opposite the velocity vector
+                    // ? we know their target point, should we try to make the vector to that point instead?
+                    zeroedAngleToThrustInRadians = Math.PI;
+                    dist_1.default.log(`thrusting back along velocity vector`);
+                }
+                // otherwise, we use the excess length to hit the furthest point along the target line that we can
+                else {
+                    dist_1.default.log(`targeting point along target angle`);
+                    const distanceDownThrustAngleFromOriginToHit = Math.sqrt(thrustMagnitudeToApply ** 2 -
+                        initialMagnitude ** 2);
+                    const angleFromVelocityVectorToPointOnTargetLineInRadians = Math.PI -
+                        Math.acos((thrustMagnitudeToApply ** 2 +
+                            initialMagnitude ** 2 -
+                            distanceDownThrustAngleFromOriginToHit **
+                                2) /
+                            (2 *
+                                thrustMagnitudeToApply *
+                                initialMagnitude));
+                    // Math.asin(
+                    //   (distanceDownThrustAngleFromOriginToHit *
+                    //     (Math.sin(
+                    //       angleDifferenceFromVelocityToTargetInRadians <
+                    //         Math.PI
+                    //         ? angleDifferenceFromVelocityToTargetInRadians
+                    //         : Math.PI * 2 -
+                    //             angleDifferenceFromVelocityToTargetInRadians,
+                    //     ) /
+                    //       thrustMagnitudeToApply)) %
+                    //     1,
+                    // )
+                    zeroedAngleToThrustInRadians =
+                        angleFromVelocityVectorToPointOnTargetLineInRadians;
+                    dist_1.default.log({
+                        didHaveExcessMagnitude,
+                        distanceDownThrustAngleFromOriginToHit,
+                        angleFromVelocityVectorToPointOnTargetLineInRadians,
+                        angleFromVelocityVectorToPointOnTargetLineInDegrees: dist_1.default.radiansToDegrees(angleFromVelocityVectorToPointOnTargetLineInRadians),
+                    });
+                }
+            }
+            dist_1.default.log({
+                zeroedAngleToThrustInRadians,
+                zeroedAngleToThrustInDegrees: dist_1.default.radiansToDegrees(zeroedAngleToThrustInRadians),
+            });
+            // this angle assumes we're going at 0 degrees. rotate it to fit the actual current angle...
+            angleToThrustInDegrees =
+                (this.direction +
+                    dist_1.default.radiansToDegrees(zeroedAngleToThrustInRadians) +
+                    360) %
+                    360;
+            if (isNaN(angleToThrustInDegrees))
+                return dist_1.default.log(`nan`);
+            // ----- done with big math -----
+        }
+        // const unitVectorToTarget =
+        //   c.unitVectorFromThisPointToThatPoint(
+        //     this.location,
+        //     targetLocation,
+        //   )
+        // const distanceToTarget = c.distance(
+        //   this.location,
+        //   targetLocation,
+        // )
+        // const vectorToTarget = [
+        //   unitVectorToTarget[0] * distanceToTarget,
+        //   unitVectorToTarget[1] * distanceToTarget,
+        // ]
+        const unitVectorAlongWhichToThrust = dist_1.default.degreesToUnitVector(angleToThrustInDegrees);
         const thrustVector = [
-            unitVectorAlongWhichToThrust[0] * finalMagnitude,
-            unitVectorAlongWhichToThrust[1] * finalMagnitude,
+            unitVectorAlongWhichToThrust[0] *
+                thrustMagnitudeToApply,
+            unitVectorAlongWhichToThrust[1] *
+                thrustMagnitudeToApply,
         ];
+        const thrustAngle = dist_1.default.vectorToDegrees(thrustVector);
         this.velocity = [
             this.velocity[0] + thrustVector[0],
             this.velocity[1] + thrustVector[1],
@@ -235,24 +383,27 @@ class HumanShip extends CombatShip_1.CombatShip {
             memberPilotingSkill,
             engineThrustMultiplier,
             magnitudePerPointOfCharge,
-            finalMagnitude,
+            finalMagnitude: thrustMagnitudeToApply,
             targetLocation,
-            angleToTarget,
-            unitVectorToTarget,
-            vectorToTarget,
+            zeroedAngleToTargetInDegrees,
+            // unitVectorToTarget,
+            // vectorToTarget,
             thrustVector,
+            thrustAngle,
             initialVelocity,
+            initialMagnitude,
+            initialAngle,
             velocity: this.velocity,
             speed: this.speed,
             direction: this.direction,
         });
         if (charge > 0.1)
-            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(angleToTarget, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} P of thrust.`, `low`);
-        this.engines.forEach((e) => e.use(charge));
+            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} P of thrust.`, `low`);
+        // this.engines.forEach((e) => e.use(charge))
     }
     brake(charge, thruster) {
         charge *= thruster.cockpitCharge;
-        thruster.cockpitCharge -= charge;
+        // thruster.cockpitCharge -= charge
         charge *= 2; // braking is easier
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
@@ -282,7 +433,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.direction = this.direction;
         if (charge > 0.1)
             this.logEntry(`${thruster.name} applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} P of thrust.`, `low`);
-        this.engines.forEach((e) => e.use(charge));
+        // this.engines.forEach((e) => e.use(charge))
     }
     // ----- move -----
     move(toLocation) {

@@ -27,7 +27,7 @@ function default_1(socket) {
                 return;
             }
             data.name = data.name.substring(0, dist_1.default.maxNameLength);
-            data.tutorial = { step: -1 };
+            // data.tutorial = { step: -1 }
             const ship = __1.game.addHumanShip({
                 ...data,
             });

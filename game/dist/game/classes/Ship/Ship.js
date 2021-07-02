@@ -289,8 +289,8 @@ class Ship extends Stubbable_1.Stubbable {
         //   )
         if (this.previousLocations.length < 1 ||
             (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
-                dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 8 &&
-                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.00001)) {
+                dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 5 &&
+                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.000005)) {
             this.previousLocations.push([...currentLocation]);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)

@@ -415,7 +415,7 @@ class Game {
         }
         topCreditsShips = topCreditsShips
             .sort((a, b) => b.score - a.score)
-            .slice(0, 3);
+            .slice(0, 5);
         // control
         const controlScores = [];
         for (let faction of this.factions) {

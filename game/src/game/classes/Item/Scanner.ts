@@ -34,6 +34,8 @@ export class Scanner extends Item {
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     repairLoss += super.use()
+
+    this.ship.updateSightAndScanRadius()
     return repairLoss
   }
 }

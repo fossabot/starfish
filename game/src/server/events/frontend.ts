@@ -15,10 +15,10 @@ export default function (
   })
 
   socket.on(`ship:listen`, (id, callback) => {
-    c.log(
-      `gray`,
-      `Frontend client started watching ship ${id} io`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `Frontend client started watching ship ${id} io`,
+    // )
     socket.join([`ship:${id}`])
 
     const foundShip = game.ships.find((s) => s.id === id)

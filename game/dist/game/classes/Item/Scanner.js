@@ -24,6 +24,7 @@ class Scanner extends Item_1.Item {
         if (this.repair < 0)
             this.repair = 0;
         repairLoss += super.use();
+        this.ship.updateSightAndScanRadius();
         return repairLoss;
     }
 }

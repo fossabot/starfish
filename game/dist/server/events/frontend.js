@@ -10,7 +10,10 @@ function default_1(socket) {
         socket.join([`game`]);
     });
     socket.on(`ship:listen`, (id, callback) => {
-        dist_1.default.log(`gray`, `Frontend client started watching ship ${id} io`);
+        // c.log(
+        //   `gray`,
+        //   `Frontend client started watching ship ${id} io`,
+        // )
         socket.join([`ship:${id}`]);
         const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {

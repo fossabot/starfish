@@ -55,6 +55,7 @@ export class Item extends Stubbable {
 
   set hp(newHp: number) {
     this.repair = newHp / this.maxHp
+    this.ship.updateThingsThatCouldChangeOnItemChange()
   }
 
   use(usePercent: number = 1) {

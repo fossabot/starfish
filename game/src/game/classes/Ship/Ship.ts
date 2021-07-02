@@ -436,13 +436,13 @@ export class Ship extends Stubbable {
             previousLocation,
             currentLocation,
           ),
-      ) > 8 &&
+      ) > 5 &&
         c.distance(
           this.location,
           this.previousLocations[
             this.previousLocations.length - 1
           ],
-        ) > 0.00001)
+        ) > 0.000005)
     ) {
       this.previousLocations.push([...currentLocation])
       while (

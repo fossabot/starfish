@@ -28,6 +28,20 @@ export function generatePlanet(
       thisName = undefined
     name = thisName
   }
+  if (!name) {
+    const useSuffix = Math.random() > 0.2
+    name = `${
+      !useSuffix
+        ? `${c.randomFromArray(planetNamePrefixes)} `
+        : ``
+    }${c.randomFromArray(planetNames)}${
+      useSuffix
+        ? ` ${c.randomFromArray(planetNameSuffixes)}`
+        : ``
+    }`
+    if (game.planets.find((p) => p.name === name))
+      name = undefined
+  }
   if (!name) return false
 
   let locationSearchRadius = game.gameSoftRadius * 0.75
@@ -107,7 +121,7 @@ export function generatePlanet(
   let maxRarity = level
   const minRarity = level / 1.5
   const cargoDispropensity = 0.8 - Math.random()
-  const passiveDispropensity = 1 - Math.random() / 2
+  const passiveDispropensity = 0.85 - Math.random() / 2
   const itemDispropensity = 1 - Math.random() / 2
   const chassisDispropensity = 1 - Math.random() / 2
 
@@ -347,6 +361,17 @@ const planetNames = [
   `Irra`,
   `Ungol`,
   // todo MORE
+]
+const planetNamePrefixes = [`New`]
+const planetNameSuffixes = [
+  `Prime`,
+  `II`,
+  `IV`,
+  `Beta`,
+  `VI`,
+  `III`,
+  `Landing`,
+  `V`,
 ]
 
 const seaCreatures: {
