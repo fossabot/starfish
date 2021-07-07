@@ -9,9 +9,9 @@ declare function distance(a?: CoordinatePair, b?: CoordinatePair): number;
 declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
 /**
  * shortest distance (in degrees) between two angles.
- * It will be in range [0, 180].
+ * It will be in range [0, 180] if not signed.
  */
-declare function angleDifference(a: number, b: number): number;
+declare function angleDifference(a: number, b: number, signed?: boolean): number;
 declare function degreesToUnitVector(degrees?: number): CoordinatePair;
 declare function vectorToUnitVector(vector?: CoordinatePair): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint?: CoordinatePair, thatPoint?: CoordinatePair): CoordinatePair;
@@ -21,6 +21,7 @@ declare function randomInsideCircle(radius: number): CoordinatePair;
 declare function randomSign(): 1 | -1;
 declare function randomInRange(a: number, b: number): number;
 declare function lottery(odds: number, outOf: number): boolean;
+declare function randomBetween(start: number, end: number): number;
 declare const _default: {
     lerp: typeof lerp;
     r2: typeof r2;
@@ -40,6 +41,7 @@ declare const _default: {
     randomSign: typeof randomSign;
     randomInRange: typeof randomInRange;
     lottery: typeof lottery;
+    randomBetween: typeof randomBetween;
 };
 export default _default;
 //# sourceMappingURL=math.d.ts.map

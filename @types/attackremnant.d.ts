@@ -6,4 +6,5 @@ interface BaseAttackRemnantData {
   start: CoordinatePair
   end: CoordinatePair
   time: number
+  onlyVisibleToShipId?: string
 }

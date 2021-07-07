@@ -58,49 +58,50 @@ class Planet extends Stubbable_1.Stubbable {
             }
             this.toUpdate.allegiances = this.allegiances;
         }
-        this.vendor = {
-            cargo: vendor.cargo?.map((cargo) => {
-                return {
-                    sellMultiplier: cargo.sellMultiplier,
-                    buyMultiplier: cargo.buyMultiplier,
-                    cargoType: cargo.cargoType,
-                    cargoData: cargo_1.data[cargo.cargoType],
-                };
-            }),
-            passives: vendor.passives?.map((passive) => {
-                return {
-                    buyMultiplier: passive.buyMultiplier,
-                    passiveType: passive.passiveType,
-                    passiveData: crewPassives_1.data[passive.passiveType],
-                };
-            }),
-            chassis: vendor.chassis?.map((chassis) => {
-                return {
-                    buyMultiplier: chassis.buyMultiplier,
-                    sellMultiplier: chassis.sellMultiplier,
-                    chassisType: chassis.chassisType,
-                    chassisData: chassis_1.chassis[chassis.chassisType],
-                };
-            }),
-            actives: vendor.actives?.map((active) => {
-                return {
-                    buyMultiplier: active.buyMultiplier,
-                    activeType: active.activeType,
-                    activeData: crewActives_1.data[active.activeType],
-                };
-            }),
-            items: vendor.items
-                ?.map((item) => {
-                return {
-                    buyMultiplier: item.buyMultiplier,
-                    sellMultiplier: item.sellMultiplier,
-                    itemType: item.itemType,
-                    itemId: item.itemId,
-                    itemData: itemData[item.itemType][item.itemId],
-                };
-            })
-                .filter((i) => i.itemData),
-        };
+        if (vendor)
+            this.vendor = {
+                cargo: vendor.cargo?.map((cargo) => {
+                    return {
+                        sellMultiplier: cargo.sellMultiplier,
+                        buyMultiplier: cargo.buyMultiplier,
+                        cargoType: cargo.cargoType,
+                        cargoData: cargo_1.data[cargo.cargoType],
+                    };
+                }),
+                passives: vendor.passives?.map((passive) => {
+                    return {
+                        buyMultiplier: passive.buyMultiplier,
+                        passiveType: passive.passiveType,
+                        passiveData: crewPassives_1.data[passive.passiveType],
+                    };
+                }),
+                chassis: vendor.chassis?.map((chassis) => {
+                    return {
+                        buyMultiplier: chassis.buyMultiplier,
+                        sellMultiplier: chassis.sellMultiplier,
+                        chassisType: chassis.chassisType,
+                        chassisData: chassis_1.chassis[chassis.chassisType],
+                    };
+                }),
+                actives: vendor.actives?.map((active) => {
+                    return {
+                        buyMultiplier: active.buyMultiplier,
+                        activeType: active.activeType,
+                        activeData: crewActives_1.data[active.activeType],
+                    };
+                }),
+                items: vendor.items
+                    ?.map((item) => {
+                    return {
+                        buyMultiplier: item.buyMultiplier,
+                        sellMultiplier: item.sellMultiplier,
+                        itemType: item.itemType,
+                        itemId: item.itemId,
+                        itemData: itemData[item.itemType][item.itemId],
+                    };
+                })
+                    .filter((i) => i.itemData),
+            };
         this.mass = (5.974e30 * this.radius) / 36000;
         // * (1 + Math.random() * 0.1) // todo this shouldn't be randomized on startup
         this.updateFluctuator();

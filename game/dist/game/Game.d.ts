@@ -4,6 +4,7 @@ import { Cache } from './classes/Cache';
 import { Faction } from './classes/Faction';
 import { Species } from './classes/Species';
 import { AttackRemnant } from './classes/AttackRemnant';
+import { Zone } from './classes/Zone';
 import { HumanShip } from './classes/Ship/HumanShip';
 import { AIShip } from './classes/Ship/AIShip';
 export declare class Game {
@@ -12,6 +13,7 @@ export declare class Game {
     readonly ships: Ship[];
     readonly planets: Planet[];
     readonly caches: Cache[];
+    readonly zones: Zone[];
     readonly factions: Faction[];
     readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
@@ -28,17 +30,19 @@ export declare class Game {
     private averageWorstShipTickLag;
     private averageTickTime;
     tick(): void;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail`)[], includeTrails?: boolean, tutorial?: boolean): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail` | `zone`)[], includeTrails?: boolean, tutorial?: boolean): {
         ships: Ship[];
         trails: CoordinatePair[][];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];
+        zones: Zone[];
     };
     get gameSoftRadius(): number;
     get gameSoftArea(): number;
     expireOldAttackRemnantsAndCaches(): void;
-    spawnNewPlanet(): void;
+    spawnNewPlanets(): void;
+    spawnNewZones(): void;
     spawnNewCaches(): void;
     spawnNewAIs(): void;
     addHumanShip(data: BaseHumanShipData, save?: boolean): HumanShip;
@@ -49,6 +53,7 @@ export declare class Game {
     addSpecies(data: BaseSpeciesData): Species;
     addCache(data: BaseCacheData, save?: boolean): Cache;
     removeCache(cache: Cache): void;
+    addZone(data: BaseZoneData, save?: boolean): Zone;
     addAttackRemnant(data: BaseAttackRemnantData, save?: boolean): AttackRemnant;
     removeAttackRemnant(ar: AttackRemnant): void;
     get humanShips(): HumanShip[];

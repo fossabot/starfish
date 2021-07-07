@@ -158,6 +158,7 @@ function default_1(socket) {
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1), 2, true);
+        dist_1.default.log({ price, credits: crewMember.credits });
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;

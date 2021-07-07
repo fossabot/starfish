@@ -27,8 +27,7 @@ export default function (
         callback({
           data: shipsAsStubs,
         })
-      } else
-        callback({ error: `No ships found by those IDs.` })
+      } else callback({ data: [] })
     },
   )
 

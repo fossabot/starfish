@@ -3,6 +3,7 @@ import io from '../../../server/io'
 import { db } from '../../../db'
 
 import { Ship } from './Ship'
+import { Zone } from '../Zone'
 import type { Weapon } from '../Item/Weapon'
 import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
@@ -11,7 +12,7 @@ import type { Game } from '../../Game'
 interface DamageResult {
   miss: boolean
   damage: number
-  weapon: Weapon
+  weapon?: Weapon
   targetType?: ItemType
 }
 
@@ -41,6 +42,18 @@ export abstract class CombatShip extends Ship {
     this.toUpdate.radii = this.radii
   }
 
+  applyZoneTickEffects() {
+    this.visible.zones
+      .filter((z) =>
+        c.pointIsInsideCircle(
+          z.location,
+          this.location,
+          z.radius,
+        ),
+      )
+      .forEach((z) => z.affectShip(this))
+  }
+
   availableWeapons(): Weapon[] {
     return this.weapons.filter(
       (w) => w.cooldownRemaining <= 0,
@@ -67,9 +80,11 @@ export abstract class CombatShip extends Ship {
     this.recalculateMaxHp()
     this.hp = this.maxHp
     this.dead = false
-    this.move([
-      ...(this.faction.homeworld?.location || [0, 0]),
-    ])
+    this.move(
+      [...(this.faction.homeworld?.location || [0, 0])].map(
+        (pos) => pos + c.randomBetween(-0.00001, 0.00001),
+      ) as CoordinatePair,
+    )
 
     db.ship.addOrUpdateInDb(this)
   }
@@ -157,6 +172,11 @@ export abstract class CombatShip extends Ship {
       start: [...this.location],
       end: [...target.location],
       time: Date.now(),
+      onlyVisibleToShipId: this.tutorial
+        ? this.id
+        : target.tutorial
+        ? target.id
+        : undefined,
     })
 
     this.logEntry(
@@ -181,7 +201,7 @@ export abstract class CombatShip extends Ship {
 
   takeDamage(
     this: CombatShip,
-    attacker: CombatShip,
+    attacker: { name: string; [key: string]: any },
     attack: DamageResult,
   ): TakenDamageResult {
     const previousHp = this.hp
@@ -199,10 +219,11 @@ export abstract class CombatShip extends Ship {
             `Your ${armor.displayName} has been broken!`,
             `high`,
           )
-          attacker.logEntry(
-            `You have broken through ${this.name}'s ${armor.displayName}!`,
-            `high`,
-          )
+          if (`logEntry` in attacker)
+            attacker.logEntry(
+              `You have broken through ${this.name}'s ${armor.displayName}!`,
+              `high`,
+            )
           armor.announceWhenBroken = false
         }
       }
@@ -252,10 +273,11 @@ export abstract class CombatShip extends Ship {
             `Your ${equipmentToAttack.displayName} has been disabled!`,
             `high`,
           )
-          attacker.logEntry(
-            `You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`,
-            `high`,
-          )
+          if (`logEntry` in attacker)
+            attacker.logEntry(
+              `You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`,
+              `high`,
+            )
           equipmentToAttack.announceWhenBroken = false
         }
       }
@@ -273,7 +295,11 @@ export abstract class CombatShip extends Ship {
       `gray`,
       `${this.name} takes ${attack.damage} damage from ${
         attacker.name
-      }'s ${attack.weapon.displayName}, and ${
+      }'s ${
+        attack.weapon
+          ? attack.weapon.displayName
+          : `passive effect`
+      }, and ${
         didDie ? `dies` : `has ${this.hp} hp left`
       }.`,
     )
@@ -281,18 +307,32 @@ export abstract class CombatShip extends Ship {
     this.toUpdate._hp = this.hp
     this.toUpdate.dead = this.dead
 
-    this.logEntry(
-      `${
-        attack.miss
-          ? `Missed by attack from`
-          : `Hit by an attack from`
-      } ${attacker.name}'s ${attack.weapon.displayName}${
-        attack.miss
-          ? `.`
-          : `, taking ${c.r2(attack.damage, 2)} damage.`
-      }`,
-      attack.miss ? `medium` : `high`,
-    )
+    // ship damage
+    if (attack.weapon)
+      this.logEntry(
+        `${
+          attack.miss
+            ? `Missed by an attack from`
+            : `Hit by an attack from`
+        } ${attacker.name}'s ${attack.weapon.displayName}${
+          attack.miss
+            ? `.`
+            : `, taking ${c.r2(attack.damage, 2)} damage.`
+        }`,
+        attack.miss ? `medium` : `high`,
+      )
+    // zone or passive damage
+    else
+      this.logEntry(
+        `${attack.miss ? `Missed by` : `Hit by`} ${
+          attacker.name
+        }${
+          attack.miss
+            ? `.`
+            : `, taking ${c.r2(attack.damage, 2)} damage.`
+        }`,
+        attack.miss ? `medium` : `high`,
+      )
 
     return {
       miss: attack.damage === 0,

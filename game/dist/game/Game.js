@@ -11,15 +11,18 @@ const Cache_1 = require("./classes/Cache");
 const Faction_1 = require("./classes/Faction");
 const Species_1 = require("./classes/Species");
 const AttackRemnant_1 = require("./classes/AttackRemnant");
+const Zone_1 = require("./classes/Zone");
 const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = require("./presets/planets");
+const zones_1 = require("./presets/zones");
 const factions_1 = __importDefault(require("./presets/factions"));
 class Game {
     constructor() {
         this.ships = [];
         this.planets = [];
         this.caches = [];
+        this.zones = [];
         this.factions = [];
         this.species = [];
         this.attackRemnants = [];
@@ -86,7 +89,8 @@ class Game {
         this.expireOldAttackRemnantsAndCaches();
         this.spawnNewCaches();
         this.spawnNewAIs();
-        this.spawnNewPlanet();
+        this.spawnNewPlanets();
+        this.spawnNewZones();
         // ----- timing
         dist_1.default.deltaTime = Date.now() - this.lastTickTime;
         const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
@@ -113,14 +117,17 @@ class Game {
     // ----- scan function -----
     // todo mega-optimize this with a chunks system
     scanCircle(center, radius, ignoreSelf, types, includeTrails = false, tutorial = false) {
-        let ships = [], trails = [], planets = [], caches = [], attackRemnants = [];
+        let ships = [], trails = [], planets = [], caches = [], attackRemnants = [], zones = [];
         if (!types || types.includes(`ship`))
             ships = this.ships.filter((s) => {
                 if (s.onlyVisibleToShipId &&
-                    ignoreSelf &&
-                    s.onlyVisibleToShipId !== ignoreSelf)
+                    ((ignoreSelf &&
+                        s.onlyVisibleToShipId !== ignoreSelf) ||
+                        !ignoreSelf))
                     return false;
                 if (tutorial && !s.onlyVisibleToShipId)
+                    return false;
+                if (s.tutorial && s.id !== ignoreSelf && !tutorial)
                     return false;
                 if (s.id === ignoreSelf)
                     return false;
@@ -133,6 +140,8 @@ class Game {
             trails = this.ships
                 .filter((s) => {
                 if (tutorial)
+                    return false;
+                if (s.tutorial)
                     return false;
                 if (s.id === ignoreSelf)
                     return false;
@@ -156,14 +165,26 @@ class Game {
                 return dist_1.default.pointIsInsideCircle(center, k.location, radius);
             });
         if (!types || types.includes(`attackRemnant`))
-            attackRemnants = this.attackRemnants.filter((a) => dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
-                dist_1.default.pointIsInsideCircle(center, a.end, radius));
+            attackRemnants = this.attackRemnants.filter((a) => {
+                if (a.onlyVisibleToShipId &&
+                    ignoreSelf &&
+                    a.onlyVisibleToShipId !== ignoreSelf)
+                    return false;
+                return (dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
+                    dist_1.default.pointIsInsideCircle(center, a.end, radius));
+            });
+        if (!types || types.includes(`zone`))
+            zones = this.zones.filter((z) => {
+                return (dist_1.default.distance(center, z.location) - z.radius <=
+                    radius);
+            });
         return {
             ships,
             trails,
             planets,
             caches,
             attackRemnants,
+            zones,
         };
     }
     // ----- radii -----
@@ -189,7 +210,7 @@ class Game {
             }
         });
     }
-    spawnNewPlanet() {
+    spawnNewPlanets() {
         while (this.planets.length < this.gameSoftArea * 0.7 ||
             this.planets.length < this.factions.length - 1) {
             const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
@@ -204,6 +225,15 @@ class Game {
             // c.log(this.planets.map((p) => p.vendor.chassis))
             // c.log(this.planets.map((p) => p.vendor.cargo))
             // c.log(this.planets.map((p) => p.priceFluctuator))
+        }
+    }
+    spawnNewZones() {
+        while (this.zones.length < this.gameSoftArea * 0.2) {
+            const z = zones_1.generateZoneData(this);
+            if (!z)
+                return;
+            const zone = this.addZone(z);
+            dist_1.default.log(`gray`, `Spawned zone ${zone.name} at ${zone.location} of radius ${zone.radius}.`);
         }
     }
     spawnNewCaches() {
@@ -294,7 +324,7 @@ class Game {
         return newShip;
     }
     addAIShip(data, save = true) {
-        const existing = this.ships.find((s) => s instanceof AIShip_1.AIShip && s.id === data.id);
+        const existing = this.ships.find((s) => s && s instanceof AIShip_1.AIShip && s.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing ai ship ${existing.name} (${existing.id}).`);
             return existing;
@@ -364,6 +394,18 @@ class Game {
             return dist_1.default.log(`Failed to find cache in list.`);
         this.caches.splice(index, 1);
         // c.log(this.caches.length, `remaining`)
+    }
+    addZone(data, save = true) {
+        const existing = this.zones.find((zone) => zone.id === data.id);
+        if (existing) {
+            dist_1.default.log(`red`, `Attempted to add existing zone (${existing.id}).`);
+            return existing;
+        }
+        const newZone = new Zone_1.Zone(data, this);
+        this.zones.push(newZone);
+        if (save)
+            db_1.db.zone.addOrUpdateInDb(newZone);
+        return newZone;
     }
     addAttackRemnant(data, save = true) {
         const newAttackRemnant = new AttackRemnant_1.AttackRemnant(data);
@@ -438,6 +480,32 @@ class Game {
                 found.score += a.level;
             });
         }
+        // members
+        let topMembersShips = [];
+        const membersScores = [];
+        for (let faction of this.factions) {
+            if (faction.id === `red`)
+                continue;
+            let total = 0;
+            faction.members.forEach((s) => {
+                let shipTotal = s.crewMembers.length || 0;
+                topMembersShips.push({
+                    name: s.name,
+                    color: faction.color,
+                    score: shipTotal,
+                });
+                total += shipTotal;
+            });
+            membersScores.push({
+                faction: dist_1.default.stubify(faction, [
+                    `members`,
+                ]),
+                score: total,
+            });
+        }
+        topMembersShips = topMembersShips
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5);
         this.factionRankings = [
             {
                 category: `credits`,
@@ -447,6 +515,11 @@ class Game {
             {
                 category: `control`,
                 scores: controlScores.sort((a, b) => b.score - a.score),
+            },
+            {
+                category: `members`,
+                scores: membersScores.sort((a, b) => b.score - a.score),
+                top: topMembersShips,
             },
         ];
         // c.log(JSON.stringify(this.factionRankings, null, 2))

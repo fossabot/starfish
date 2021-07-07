@@ -8,6 +8,15 @@
       <ModalTaglineBannerPicker
         v-if="modal === 'headerBackgroundPicker'"
       />
+
+      <portal-target
+        v-if="modal === 'prompt'"
+        name="prompt"
+      />
+
+      <div v-if="modal === 'pause' && $route.path === '/s'">
+        Updates Paused
+      </div>
     </div>
   </div>
 </template>
@@ -28,8 +37,19 @@ export default {
     ...mapState(['modal']),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
-  methods: {},
+  mounted(this: ComponentShape) {
+    window.addEventListener('keydown', this.keyListener)
+  },
+  beforeDestroy(this: ComponentShape) {
+    window.removeEventListener('keydown', this.keyListener)
+  },
+  methods: {
+    keyListener(e: KeyboardEvent) {
+      if (!this.modal) return
+      if (e.key === 'Escape')
+        this.$store.commit('set', { modal: null })
+    },
+  },
 }
 </script>
 

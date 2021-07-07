@@ -8,6 +8,7 @@ export declare class AttackRemnant extends Stubbable {
     readonly start: CoordinatePair;
     readonly end: CoordinatePair;
     readonly time: number;
-    constructor({ attacker, defender, damageTaken, start, end, time, id, }: BaseAttackRemnantData);
+    readonly onlyVisibleToShipId?: string;
+    constructor({ attacker, defender, damageTaken, start, end, time, id, onlyVisibleToShipId, }: BaseAttackRemnantData);
 }
 //# sourceMappingURL=AttackRemnant.d.ts.map

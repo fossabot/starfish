@@ -7,8 +7,12 @@ export declare class FreeMase {
     maxHeight: number;
     window: Window;
     options?: FreeMaseOptions;
+    resizeObserver: ResizeObserver | null;
+    mutationObserver: MutationObserver | null;
+    watchingForResize: Element[];
     constructor(parentEl: HTMLElement, options?: FreeMaseOptions);
-    position(): Promise<void>;
+    setup(): Promise<void>;
+    position(): Promise<number>;
 }
 export {};
 //# sourceMappingURL=FreeMase.d.ts.map

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Profiler = void 0;
 const log_1 = __importDefault(require("./log"));
+const math_1 = __importDefault(require("./math"));
 class Profiler {
     constructor(top = 10, name = false, enabled = true, cutoff = 2) {
         this.enabled = true;
@@ -17,9 +18,16 @@ class Profiler {
         this.cutoff = cutoff;
         if (!this.enabled)
             return;
+        this.metric = Date;
+        try {
+            this.metric = performance;
+        }
+        catch (e) {
+            this.metric = Date;
+        }
         this.currentSnapshot = {
             name: `start`,
-            time: Date.now(),
+            time: this.metric.now(),
             timeFromStart: 0,
         };
     }
@@ -35,7 +43,7 @@ class Profiler {
     step(name) {
         if (!this.enabled)
             return;
-        const time = Date.now();
+        const time = this.metric.now();
         if (this.currentSnapshot)
             this.currentSnapshot.duration =
                 time -
@@ -49,7 +57,7 @@ class Profiler {
     end() {
         if (!this.enabled)
             return;
-        const time = Date.now();
+        const time = this.metric.now();
         if (this.currentSnapshot)
             this.currentSnapshot.duration =
                 time -
@@ -61,7 +69,7 @@ class Profiler {
         if (!toPrint.length)
             return;
         log_1.default.log(`----- ${this.name ? String(this.name) : `profiler start`} -----`);
-        toPrint.forEach((ss) => log_1.default.log(`${this.name ? this.name + `/` : ``}${ss.name}: ${ss.duration}ms`));
+        toPrint.forEach((ss) => log_1.default.log(`${this.name ? this.name + `/` : ``}${ss.name}: ${math_1.default.r2(ss.duration || 0)}ms`));
         this.snapshots = [];
     }
 }

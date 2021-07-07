@@ -1,5 +1,9 @@
 <template>
-  <Box class="repair" :highlight="highlight">
+  <Box
+    class="repair"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/9.jpg"
+  >
     <template #title
       ><span class="sectionemoji">🔧</span>Repair
       Bay</template
@@ -19,9 +23,7 @@
     </div>
 
     <div class="panesection">
-      <div class="panesubhead">Efficacy</div>
-
-      <div>
+      <div class="">
         Your repair speed:
         {{
           Math.round(totalRepairPower * 60 * 60 * 100) / 100

@@ -21,6 +21,8 @@ class CommandContext {
             .slice(prefix.length)
             .trim()
             .split(/ +/g);
+        this.correctPrefix =
+            message.content.slice(0, prefix.length) === prefix;
         this.commandName = splitMessage.shift().toLowerCase();
         this.args = splitMessage;
         this.initialMessage = message;

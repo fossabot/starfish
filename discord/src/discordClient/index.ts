@@ -9,6 +9,9 @@ export const client = new Discord.Client({
   messageSweepInterval: 60,
 })
 
+import disbut from 'discord-buttons'
+disbut(client)
+
 const commandHandler = new CommandHandler(`.`)
 
 export const rawWatchers: Function[] = []

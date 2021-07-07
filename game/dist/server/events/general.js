@@ -20,7 +20,7 @@ function default_1(socket) {
             });
         }
         else
-            callback({ error: `No ships found by those IDs.` });
+            callback({ data: [] });
     });
     socket.on(`ship:get`, (id, callback) => {
         const foundShip = __1.game.ships.find((s) => s.id === id);

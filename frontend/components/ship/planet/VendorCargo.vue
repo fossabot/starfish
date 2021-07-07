@@ -17,7 +17,12 @@
       </div>
       <span
         v-for="ca in buyableCargo"
-        :key="'buycargo' + ca.cargoData.type"
+        :key="
+          'buycargo' +
+            (ca.cargoData
+              ? ca.cargoData.type
+              : Math.random())
+        "
         @mouseenter="
           $store.commit('tooltip', {
             type: 'cargo',
@@ -26,15 +31,35 @@
         "
         @mouseleave="$store.commit('tooltip')"
       >
-        <button
+        <PromptButton
           :disabled="!ca.canBuy"
-          @click="buyCargo(ca)"
+          class="inlineblock"
+          @done="buyCargo(ca, ...arguments)"
         >
-          <b>{{ ca.cargoData.name }}</b>
-          <div>
-            💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
-          </div>
-        </button>
+          <template #label>
+            <div class="padsmall">
+              <b>{{ ca.cargoData && ca.cargoData.name }}</b>
+              <div
+                :class="{
+                  good:
+                    ca.cargoData &&
+                    ca.pricePerUnit <
+                      ca.cargoData.basePrice,
+                  bad:
+                    ca.cargoData &&
+                    ca.pricePerUnit >
+                      ca.cargoData.basePrice,
+                }"
+              >
+                💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+              </div>
+            </div>
+          </template>
+          <template>
+            How many tons? (Max
+            {{ c.r2(ca.maxCanBuy, 2, true) }})
+          </template>
+        </PromptButton>
       </span></span
     ><span class="panesection inline" v-if="sellableCargo">
       <div>
@@ -42,7 +67,12 @@
       </div>
       <span
         v-for="ca in sellableCargo"
-        :key="'sellcargo' + ca.cargoData.type"
+        :key="
+          'sellcargo' +
+            (ca.cargoData
+              ? ca.cargoData.type
+              : Math.random())
+        "
         @mouseenter="
           $store.commit('tooltip', {
             type: 'cargo',
@@ -51,19 +81,39 @@
         "
         @mouseleave="$store.commit('tooltip')"
       >
-        <button
+        <PromptButton
           :disabled="!ca.canSell"
-          @click="sellCargo(ca)"
+          class="inlineblock"
+          @done="sellCargo(ca, ...arguments)"
         >
-          <b>{{ ca.cargoData.name }}</b>
-          <div>
-            💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
-          </div>
-          <div class="sub">
-            (You have
+          <template #label>
+            <div class="padsmall">
+              <b>{{ ca.cargoData && ca.cargoData.name }}</b>
+              <div
+                :class="{
+                  good:
+                    ca.cargoData &&
+                    ca.pricePerUnit >
+                      ca.cargoData.basePrice,
+                  bad:
+                    ca.cargoData &&
+                    ca.pricePerUnit <
+                      ca.cargoData.basePrice,
+                }"
+              >
+                💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+              </div>
+              <div class="sub" v-if="ca.heldAmount > 0.005">
+                (You have
+                {{ c.r2(ca.heldAmount, 2, true) }})
+              </div>
+            </div>
+          </template>
+          <template>
+            How many tons? (Max
             {{ c.r2(ca.heldAmount, 2, true) }})
-          </div>
-        </button>
+          </template>
+        </PromptButton>
       </span>
     </span>
   </div>
@@ -95,7 +145,7 @@ export default {
         .filter((cargo: any) => cargo.buyMultiplier)
         .map((cargo: any) => {
           const pricePerUnit = c.r2(
-            cargo.cargoData.basePrice *
+            cargo.cargoData?.basePrice *
               cargo.buyMultiplier *
               this.ship.planet.priceFluctuator *
               (this.isFriendlyToFaction
@@ -129,7 +179,7 @@ export default {
         .filter((cargo: any) => cargo.sellMultiplier)
         .map((cargo: any) => {
           const pricePerUnit = c.r2(
-            cargo.cargoData.basePrice *
+            cargo.cargoData?.basePrice *
               cargo.sellMultiplier *
               this.ship.planet.priceFluctuator *
               (this.isFriendlyToFaction
@@ -139,7 +189,7 @@ export default {
           )
           const heldAmount =
             this.crewMember?.inventory.find(
-              (i: any) => i.type === cargo.cargoData.type,
+              (i: any) => i.type === cargo.cargoData?.type,
             )?.amount || 0
           return {
             ...cargo,
@@ -147,7 +197,8 @@ export default {
             heldAmount,
             canSell:
               this.crewMember?.inventory.find(
-                (i: any) => i.type === cargo.cargoData.type,
+                (i: any) =>
+                  i.type === cargo.cargoData?.type,
               )?.amount > 0.009999,
           }
         })
@@ -162,20 +213,8 @@ export default {
   watch: {},
   mounted(this: ComponentShape) {},
   methods: {
-    buyCargo(this: ComponentShape, data: any) {
-      const amount = c.r2(
-        parseFloat(
-          prompt(
-            `How many tons? (Max ${c.r2(
-              data.maxCanBuy,
-              2,
-              true,
-            )})`,
-          ) || '0',
-        ) || 0,
-        2,
-        true,
-      )
+    buyCargo(this: ComponentShape, data: any, amount: any) {
+      amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
         amount < 0 ||
@@ -212,20 +251,12 @@ export default {
       )
     },
 
-    sellCargo(this: ComponentShape, data: any) {
-      const amount = c.r2(
-        parseFloat(
-          prompt(
-            `How many tons? (Max ${c.r2(
-              data.heldAmount,
-              2,
-              true,
-            )})`,
-          ) || '0',
-        ) || 0,
-        2,
-        true,
-      )
+    sellCargo(
+      this: ComponentShape,
+      data: any,
+      amount: any,
+    ) {
+      amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
         amount < 0 ||
@@ -269,4 +300,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.good {
+  color: var(--success);
+}
+.bad {
+  color: var(--warning);
+}
+</style>

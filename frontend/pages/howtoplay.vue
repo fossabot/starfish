@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar />
+    <NavPane />
 
     <div class="textcolumn">
       <h2>How to Play {{ c.GAME_NAME }}</h2>

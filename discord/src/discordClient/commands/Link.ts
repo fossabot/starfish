@@ -3,7 +3,7 @@ import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 
 export class LinkCommand implements Command {
-  commandNames = [`link`, `url`, `invite`]
+  commandNames = [`link`, `url`]
 
   getHelpMessage(commandPrefix: string): string {
     return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a link to your ship's console.`

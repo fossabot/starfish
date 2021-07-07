@@ -11,6 +11,7 @@ export class AttackRemnant extends Stubbable {
   readonly start: CoordinatePair
   readonly end: CoordinatePair
   readonly time: number
+  readonly onlyVisibleToShipId?: string
 
   constructor({
     attacker,
@@ -20,6 +21,7 @@ export class AttackRemnant extends Stubbable {
     end,
     time,
     id,
+    onlyVisibleToShipId,
   }: BaseAttackRemnantData) {
     super()
     this.id = id || `${Math.random()}`.substring(2)
@@ -29,5 +31,6 @@ export class AttackRemnant extends Stubbable {
     this.start = start
     this.end = end
     this.time = time
+    this.onlyVisibleToShipId = onlyVisibleToShipId
   }
 }

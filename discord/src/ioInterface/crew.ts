@@ -42,3 +42,14 @@ export async function rename(
 
   io.emit(`crew:rename`, shipId, crewId, name)
 }
+
+export async function move(
+  shipId: string,
+  crewId: string,
+  target: CrewLocation,
+) {
+  if (!(await connected()))
+    return `Failed to move crew member`
+
+  io.emit(`crew:move`, shipId, crewId, target)
+}

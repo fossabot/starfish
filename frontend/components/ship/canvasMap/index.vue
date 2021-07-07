@@ -1,0 +1,493 @@
+<template>
+  <Box
+    class="map"
+    v-if="show"
+    :highlight="highlight"
+    :overlayTitle="true"
+    @minimize="minimize"
+    @unminimize="unminimize"
+    @mouseleave.native="$store.commit('tooltip', null)"
+  >
+    <template #title>
+      <span class="sectionemoji">{{ emoji }}</span
+      >{{ label }}
+    </template>
+    <div
+      class="panesection padnone"
+      :style="{
+        width: width + 'px',
+        height: width + 'px',
+        background,
+      }"
+    >
+      <canvas
+        id="map"
+        :width="widthScaledToDevice + 'px'"
+        :height="widthScaledToDevice + 'px'"
+        :style="{
+          width: width + 'px',
+          height: width + 'px',
+        }"
+        @mousewheel="mouseWheel"
+        @mousedown="mouseDown"
+        @mouseup="mouseUp"
+        @mouseleave="mouseLeave"
+        @mousemove="mouseMove"
+      />
+
+      <div class="floatbuttons">
+        <button
+          @click="resetCenter"
+          v-if="!followingCenter"
+          class="secondary"
+        >
+          Follow Ship
+        </button>
+      </div>
+    </div>
+  </Box>
+</template>
+
+<script lang="ts">
+import c from '../../../../common/src'
+import { mapState } from 'vuex'
+import Drawer from './drawMapFrame'
+interface ComponentShape {
+  element: HTMLCanvasElement | null
+  drawer: Drawer | null
+  ship: ShipStub
+  [key: string]: any
+}
+
+export default {
+  props: {
+    emoji: { default: '🗺' },
+    label: { default: 'Area Scan' },
+    interactive: { default: true },
+    radius: {},
+    blackout: { default: true },
+    background: {},
+    width: { default: 600 },
+    buffer: { default: true },
+  },
+  data() {
+    return {
+      c,
+      element: null,
+      drawer: null,
+      paused: false,
+      widthScaledToDevice: 1,
+      devicePixelRatio: 1,
+      lastFrameRes: null,
+      mapCenter: null,
+      zoom: null,
+      isZooming: false,
+      isPanning: false,
+      mouseIsDown: false,
+      awaitingDragFrame: false,
+      dragStartPoint: [],
+      dragEndPoint: [],
+      mapCenterAtDragStart: [],
+      followingCenter: true,
+      followCenterTimeout: null,
+      resetCenterTime: 2 * 60 * 1000,
+      hoverPoint: null,
+    }
+  },
+  computed: {
+    ...mapState([
+      'ship',
+      'userId',
+      'lastUpdated',
+      'forceMapRedraw',
+    ]),
+    show(this: ComponentShape) {
+      return (
+        this.ship &&
+        (!this.ship.shownPanels ||
+          this.ship.shownPanels.includes(
+            this.interactive ? 'map' : 'mapZoom',
+          ))
+      )
+    },
+    highlight(this: ComponentShape) {
+      return (
+        this.ship?.tutorial?.currentStep?.highlightPanel ===
+        (this.interactive ? 'map' : 'mapZoom')
+      )
+    },
+  },
+  watch: {
+    lastUpdated() {
+      if (!this.mouseIsDown && !this.isZooming) {
+        this.drawNextFrame()
+      }
+    },
+    forceMapRedraw() {
+      this.drawNextFrame()
+    },
+    async show() {
+      await this.$nextTick()
+      setTimeout(() => this.drawNextFrame(), 200)
+    },
+  },
+  mounted(this: ComponentShape) {
+    this.devicePixelRatio = window.devicePixelRatio || 1
+    this.widthScaledToDevice =
+      this.width * this.devicePixelRatio
+    this.drawNextFrame()
+  },
+  methods: {
+    drawNextFrame(this: ComponentShape, immediate = false) {
+      if (this.paused) return
+      return new Promise<void>((resolve) => {
+        if (!this.$el || !this.$el.querySelector) return
+        const profiler = new c.Profiler(
+          4,
+          `canvasmap`,
+          false,
+          0,
+        )
+        profiler.step('called')
+        requestAnimationFrame(() => {
+          if (this.paused) return
+          profiler.step('framestart')
+          if (!this.element) {
+            this.element = this.$el.querySelector('#map')
+            this.drawNextFrame()
+            resolve()
+            return
+          }
+          if (this.radius) immediate = true
+
+          if (!this.drawer) {
+            this.drawer = new Drawer({
+              element: this.element,
+              elWidth: this.widthScaledToDevice,
+            })
+          }
+
+          profiler.step('startdraw')
+
+          this.drawer.draw({
+            zoom: this.radius
+              ? (((1 / this.radius) *
+                  this.drawer.flatScale) /
+                  1000000) *
+                2
+              : this.followingCenter
+              ? null
+              : this.zoom,
+            ship: this.ship,
+            center: this.followingCenter
+              ? null
+              : this.mapCenter,
+            visible: this.ship?.visible,
+            immediate: !!immediate,
+            crewMemberId: this.userId,
+          })
+
+          profiler.step('drawn')
+          this.zoom = this.drawer.targetZoom || 1
+          this.mapCenter = [
+            ...(this.drawer.center || [0, 0]),
+          ]
+          profiler.end()
+          if (!immediate && !this.drawer?.isIdle()) {
+            this.drawNextFrame()
+          }
+          resolve()
+        })
+      })
+    },
+
+    mouseDown(this: ComponentShape, e: MouseEvent) {
+      if (!this.interactive) return
+      clearTimeout(this.followCenterTimeout)
+      this.followingCenter = false
+      this.mouseIsDown = true
+      this.dragStartPoint = [e.x, e.y]
+      this.zoom = this.drawer?.zoom
+      this.mapCenterAtDragStart = [...this.mapCenter]
+    },
+    mouseUp(this: ComponentShape, e: MouseEvent) {
+      if (!this.interactive) return
+      if (!this.mouseIsDown) return
+      this.followCenterTimeout = setTimeout(
+        this.resetCenter,
+        this.resetCenterTime,
+      )
+
+      if (!this.isPanning) {
+        this.$store.commit(
+          'setTarget',
+          this.$store.state.tooltip?.type !== 'zone'
+            ? this.$store.state.tooltip?.data?.location ||
+                this.hoverPoint
+            : this.hoverPoint,
+        )
+      }
+
+      this.isPanning = false
+      this.mouseIsDown = false
+    },
+    mouseLeave(this: ComponentShape, e: MouseEvent) {
+      this.hoverPoint = null
+
+      if (!this.interactive) return
+      if (this.mouseIsDown)
+        this.followCenterTimeout = setTimeout(
+          this.resetCenter,
+          this.resetCenterTime,
+        )
+      this.isPanning = false
+      this.mouseIsDown = false
+    },
+    async mouseMove(this: ComponentShape, e: MouseEvent) {
+      this.checkHoverPointForTooltip(e)
+
+      if (!this.interactive) return
+      if (!this.mouseIsDown) return
+      this.dragEndPoint = [e.x, e.y]
+      if (
+        c.distance(this.dragStartPoint, this.dragEndPoint) >
+        4
+      )
+        this.isPanning = true
+      else return
+
+      this.followingCenter = false
+
+      // c.log({
+      //   dsp: this.dragStartPoint,
+      //   dep: this.dragEndPoint,
+      // })
+
+      if (this.awaitingDragFrame) return
+
+      this.awaitingDragFrame = true
+      const dx =
+        ((this.dragStartPoint[0] - this.dragEndPoint[0]) /
+          this.width) *
+        (this.drawer?.width || 1)
+      const dy =
+        ((this.dragStartPoint[1] - this.dragEndPoint[1]) /
+          this.width) *
+        (this.drawer?.height || 1)
+      this.mapCenter = [
+        this.mapCenterAtDragStart[0] + dx,
+        this.mapCenterAtDragStart[1] + dy,
+      ]
+      await this.drawNextFrame(true)
+      this.awaitingDragFrame = false
+    },
+    async mouseWheel(this: ComponentShape, e: WheelEvent) {
+      if (!this.interactive) return
+      e.preventDefault()
+      if (!this.mapCenter) return c.log('no mapcenter')
+
+      clearTimeout(this.isZoomingTimeout)
+      this.isZooming = true
+      this.isZoomingTimeout = setTimeout(
+        () => (this.isZooming = false),
+        100,
+      )
+
+      this.followingCenter = false
+      clearTimeout(this.followCenterTimeout)
+      this.followCenterTimeout = setTimeout(
+        this.resetCenter,
+        this.resetCenterTime,
+      )
+
+      let sizeDifference = this.zoom
+
+      const fs = this.drawer?.flatScale || 1
+
+      if (this.zoom <= 20 / fs && e.deltaY > 0) return
+      if (this.zoom > 500000 / fs && e.deltaY < 0) return
+
+      const zoomSpeed = 0.0015
+      const zoomChange =
+        this.zoom * Math.abs(e.deltaY) * zoomSpeed
+      if (e.deltaY < 0) this.zoom += zoomChange
+      else this.zoom -= zoomChange
+
+      if (this.zoom < 20 / fs) this.zoom = 20 / fs
+      if (this.zoom > 500000 / fs) this.zoom = 500000 / fs
+
+      sizeDifference /= this.zoom
+      sizeDifference -= 1
+
+      const mx = e.offsetX / this.width
+      const my = e.offsetY / this.width
+
+      const mapDistanceFromMouseToCenter = this.drawer
+        ? [
+            this.drawer.width * (mx - 0.5),
+            this.drawer.height * (my - 0.5),
+          ]
+        : [1, 1]
+
+      this.mapCenter = [
+        this.mapCenter[0] -
+          mapDistanceFromMouseToCenter[0] * sizeDifference,
+        this.mapCenter[1] -
+          mapDistanceFromMouseToCenter[1] * sizeDifference,
+      ]
+
+      await this.drawNextFrame(true)
+    },
+
+    resetCenter(this: ComponentShape) {
+      this.followingCenter = true
+      this.zoom = null
+      this.mapCenter = null
+      this.drawNextFrame()
+    },
+
+    setHoverPoint(this: ComponentShape, e: MouseEvent) {
+      const tl = this.drawer?.topLeft || [0, 0]
+
+      this.hoverPoint = [
+        ((e.offsetX / this.width) *
+          (this.drawer?.width || 1) +
+          tl[0]) /
+          (this.drawer?.flatScale || 1),
+        (((e.offsetY / this.width) *
+          (this.drawer?.height || 1) +
+          tl[1]) *
+          -1) /
+          (this.drawer?.flatScale || 1),
+      ]
+    },
+
+    checkHoverPointForTooltip(
+      this: ComponentShape,
+      e: MouseEvent,
+    ) {
+      if (!this.ship) return
+      this.setHoverPoint(e)
+
+      const hoverRadius =
+        (this.drawer?.width || 1) /
+        (this.drawer?.flatScale || 1) /
+        30
+      const hoverableElements: any[] = []
+      const s = this.ship as ShipStub
+
+      s.seenPlanets.forEach((p: PlanetStub) => {
+        const hoverDistance = c.distance(
+          p.location,
+          this.hoverPoint,
+        )
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            type: 'planet',
+            data: p,
+          })
+      })
+
+      s.visible?.caches.forEach((p: CacheStub) => {
+        const hoverDistance = c.distance(
+          p.location,
+          this.hoverPoint,
+        )
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            type: 'cache',
+            data: p,
+          })
+      })
+
+      s.visible?.ships.forEach((p: ShipStub) => {
+        const hoverDistance = c.distance(
+          p.location,
+          this.hoverPoint,
+        )
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            type: 'ship',
+            data: p,
+          })
+      })
+
+      s.visible?.zones.forEach((p: ZoneStub) => {
+        const hoverDistance =
+          c.distance(p.location, this.hoverPoint) - p.radius
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            hoverDistanceSubtract: p.radius,
+            type: 'zone',
+            data: p,
+          })
+      })
+
+      const hd = c.distance(
+        this.ship.location,
+        this.hoverPoint,
+      )
+      if (hd <= hoverRadius)
+        hoverableElements.push({
+          hoverDistance: hd,
+          type: 'ship',
+          data: this.ship,
+        })
+
+      const toShow = hoverableElements.reduce(
+        (closest, curr) => {
+          if (
+            !closest ||
+            curr.hoverDistance +
+              (curr.hoverDistanceSubtract || 0) <=
+              closest.hoverDistance +
+                (closest.hoverDistanceSubtract || 0)
+          )
+            return curr
+          return closest
+        },
+        null,
+      )
+      if (
+        this.$store.state.tooltip === toShow ||
+        (this.$store.state.tooltip?.type === toShow?.type &&
+          this.$store.state.tooltip?.data?.name ===
+            toShow?.data?.name)
+      )
+        return
+
+      this.$store.commit('tooltip', toShow)
+    },
+    minimize(this: ComponentShape) {
+      this.paused = true
+      this.drawer = null
+      this.element = null
+    },
+    async unminimize(this: ComponentShape) {
+      await this.$nextTick()
+      this.paused = false
+      this.drawNextFrame(true)
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.panesection {
+  background: var(--bg);
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
+
+  .floatbuttons {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+  }
+}
+</style>

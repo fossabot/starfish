@@ -207,7 +207,7 @@ export default {
       return (this.ship.planet?.vendor?.chassis || []).map(
         (chassis: VendorChassisPrice) => {
           const currentChassisSellPrice =
-            this.ship.chassis.basePrice / 2
+            this.ship.chassis?.basePrice / 2
           const price = c.r2(
             (chassis.chassisData?.basePrice || 1) *
               chassis.buyMultiplier *
@@ -235,6 +235,10 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     buyItem(this: ComponentShape, data: VendorItemPrice) {
+      this.$store.commit('setShipProp', [
+        'items',
+        [...this.ship.items, data.itemData],
+      ])
       this.$socket.emit(
         'ship:buyItem',
         this.ship.id,
@@ -257,6 +261,12 @@ export default {
 
     sellItem(this: ComponentShape, data: ItemStub) {
       // c.log(data)
+      this.$store.commit('setShipProp', [
+        'items',
+        [...this.ship.items].filter(
+          (i) => i.id === data.id,
+        ),
+      ])
       this.$socket.emit(
         'ship:sellItem',
         this.ship.id,
@@ -275,6 +285,7 @@ export default {
           this.$store.dispatch('updateShip', res.data)
         },
       )
+      this.$store.commit('tooltip')
     },
 
     swapChassis(

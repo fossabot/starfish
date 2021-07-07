@@ -4,7 +4,7 @@ import type { Game } from '../../Game';
 interface DamageResult {
     miss: boolean;
     damage: number;
-    weapon: Weapon;
+    weapon?: Weapon;
     targetType?: ItemType;
 }
 export declare abstract class CombatShip extends Ship {
@@ -14,12 +14,16 @@ export declare abstract class CombatShip extends Ship {
     constructor(props: BaseShipData, game: Game);
     updateThingsThatCouldChangeOnItemChange(): void;
     updateAttackRadius(): void;
+    applyZoneTickEffects(): void;
     availableWeapons(): Weapon[];
     getEnemiesInAttackRange(): CombatShip[];
     respawn(): void;
     canAttack(this: CombatShip, otherShip: Ship, ignoreWeaponState?: boolean): boolean;
     attack(this: CombatShip, target: CombatShip, weapon: Weapon, targetType?: ItemType): TakenDamageResult;
-    takeDamage(this: CombatShip, attacker: CombatShip, attack: DamageResult): TakenDamageResult;
+    takeDamage(this: CombatShip, attacker: {
+        name: string;
+        [key: string]: any;
+    }, attack: DamageResult): TakenDamageResult;
     die(): void;
 }
 export {};

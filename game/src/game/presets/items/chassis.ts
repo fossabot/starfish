@@ -39,7 +39,7 @@ export const chassis: {
     slots: 5,
     agility: 0.7,
     maxCargoSpace: 45,
-    rarity: 2.1,
+    rarity: 4,
   },
   hauler2: {
     type: `chassis`,
@@ -51,7 +51,7 @@ export const chassis: {
     slots: 5,
     agility: 0.75,
     maxCargoSpace: 55,
-    rarity: 2.8,
+    rarity: 8,
   },
 
   // sailer
@@ -65,7 +65,7 @@ export const chassis: {
     slots: 4,
     agility: 1.4,
     maxCargoSpace: 15,
-    rarity: 2.4,
+    rarity: 4,
   },
   sailer2: {
     type: `chassis`,
@@ -77,7 +77,7 @@ export const chassis: {
     slots: 5,
     agility: 1.45,
     maxCargoSpace: 25,
-    rarity: 3,
+    rarity: 7,
   },
 
   // mega
@@ -91,7 +91,7 @@ export const chassis: {
     slots: 14,
     agility: 0.45,
     maxCargoSpace: 300,
-    rarity: 7,
+    rarity: 12,
   },
   mega2: {
     type: `chassis`,
@@ -103,6 +103,6 @@ export const chassis: {
     slots: 17,
     agility: 0.35,
     maxCargoSpace: 400,
-    rarity: 9.5,
+    rarity: 18,
   },
 }

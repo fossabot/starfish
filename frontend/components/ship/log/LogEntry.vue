@@ -1,9 +1,9 @@
 <template>
   <div class="logentry" :class="level">
-    <div class="time flashtextgoodonspawn">
-      [{{ timeString }}]
-    </div>
     <div class="text flashtextgoodonspawn">{{ text }}</div>
+    <div class="sub time flashtextgoodonspawn padtoptiny">
+      {{ timeString }}
+    </div>
   </div>
 </template>
 
@@ -39,15 +39,20 @@ export default {
 
 <style lang="scss" scoped>
 .logentry {
-  line-height: 1.2;
-  margin-bottom: 0.8em;
-  padding-left: 0.6em;
-  border-left: 2px solid var(--highlight-color);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5em;
+  padding: 0em 0.4em 0em 0.6em;
+  border-left: 3px solid var(--highlight-color);
   color: var(--text);
+  border-radius: 0.2em;
+  overflow: hidden;
+  // background: rgba(255, 255, 255, 0.05);
+  word-break: break-word;
 }
 
 .time {
-  opacity: 0.5;
+  // opacity: 0.5;
   color: var(--text);
 }
 

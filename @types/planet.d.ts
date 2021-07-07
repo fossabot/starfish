@@ -8,9 +8,9 @@ interface BasePlanetData {
   factionId?: FactionKey
   homeworld?: { id: FactionKey }
   creatures: string[]
-  repairCostMultiplier: number
+  repairCostMultiplier?: number
   allegiances?: AllegianceData[]
-  vendor: Vendor
+  vendor?: Vendor
 }
 
 interface VendorCargoPrice {

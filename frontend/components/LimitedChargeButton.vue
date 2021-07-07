@@ -6,8 +6,8 @@
     }"
     @mousedown="!disabled && start()"
     @mouseup="end()"
-    @mouseleave="end()"
-    @mouseenter="end()"
+    @mouseleave="cancel()"
+    @mouseenter="cancel()"
   >
     <div
       class="hider"
@@ -36,11 +36,13 @@ export default {
     maxFillColor: { default: 'rgba(255,255,255,.1)' },
     startColor: { default: '#aa0' },
     endColor: { default: '#f50' },
+    chargeTime: { default: 5000 },
   },
   data() {
     return {
       holdInterval: false,
       percent: 0,
+      startTime: null,
     }
   },
   computed: {
@@ -48,18 +50,26 @@ export default {
   },
   mounted() {},
   methods: {
+    cancel() {
+      this.percent = 0
+      clearInterval(this.holdInterval)
+    },
     start() {
       this.percent = 0
       this.holdInterval = setInterval(this.tick, 20)
+      this.startTime = Date.now()
     },
     tick() {
-      this.percent += 0.002
+      this.percent = Math.min(
+        this.max,
+        (Date.now() - this.startTime) / this.chargeTime,
+      )
       this.$emit('percent', this.percent / this.max)
       if (this.percent > this.max) this.percent = this.max
     },
     end() {
-      if (!this.percent) return
       clearInterval(this.holdInterval)
+      if (!this.percent) return
       this.$emit('end', this.percent / this.max)
       this.percent = 0
     },
@@ -72,6 +82,8 @@ export default {
   position: relative;
   height: 2em;
   border: 1px solid var(--text);
+  border-radius: 5px;
+  overflow: hidden;
 
   .hider {
     position: absolute;
@@ -88,6 +100,7 @@ export default {
     left: 0;
     z-index: 2;
     mix-blend-mode: screen;
+    // border-radius: 5px;
   }
   .content {
     position: relative;

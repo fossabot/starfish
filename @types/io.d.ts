@@ -39,6 +39,10 @@ interface IOClientEvents {
 
   // client
   [`god`]: () => void
+  [`ship:basics`]: (
+    id: string,
+    callback: (res: IOResponse<Partial<ShipStub>>) => void,
+  ) => void
   [`ship:listen`]: (
     id: string,
     callback: (res: IOResponse<ShipStub>) => void,
@@ -122,13 +126,23 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     charge: number,
-    callback: (res: IOResponse<ShipStub>) => void,
+    callback: (
+      res: IOResponse<{
+        crewMember: CrewMemberStub
+        ship: ShipStub
+      }>,
+    ) => void,
   ) => void
   [`crew:brake`]: (
     shipId: string,
     crewId: string,
     charge: number,
-    callback: (res: IOResponse<ShipStub>) => void,
+    callback: (
+      res: IOResponse<{
+        crewMember: CrewMemberStub
+        ship: ShipStub
+      }>,
+    ) => void,
   ) => void
   [`ship:redistribute`]: (
     shipId: string,

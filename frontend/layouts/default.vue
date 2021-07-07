@@ -8,6 +8,7 @@
 </template>
 
 <script lang="js">
+import c from '../../common/src'
 import * as storage from '../assets/scripts/storage'
 
 const debounce = (fn, time = 1000) => {
@@ -39,11 +40,13 @@ export default {
     const shipIds = JSON.parse(
       storage.get('shipIds') || '[]',
     )
-    if (userId && shipIds)
-      this.$store.commit('set', {
+    if (userId && shipIds?.length){
+      this.$store.dispatch('logIn', {
         userId,
         shipIds,
       })
+    }
+
 
     window.addEventListener('resize', debounce(this.resetWindowSize), {
       passive: true,

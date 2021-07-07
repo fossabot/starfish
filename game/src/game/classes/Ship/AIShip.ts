@@ -5,6 +5,7 @@ import { CombatShip } from './CombatShip'
 import type { Ship } from './Ship'
 import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
+import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import * as itemData from '../../presets/items'
 import type { Weapon } from '../Item/Weapon'
@@ -20,11 +21,13 @@ export class AIShip extends CombatShip {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
+    zones: Zone[]
   } = {
     ships: [],
     planets: [],
     caches: [],
     attackRemnants: [],
+    zones: [],
   }
 
   keyAngle = Math.random() * 365
@@ -85,10 +88,17 @@ export class AIShip extends CombatShip {
           c.getWeaponCooldownReductionPerTick(this.level)),
     )
 
+    // ----- zone effects -----
+    this.applyZoneTickEffects()
+
     // attack enemy in range
     const weapons = this.availableWeapons()
     if (!weapons.length) return
-    const enemies = this.getEnemiesInAttackRange()
+    const enemies = this.getEnemiesInAttackRange().filter(
+      (e) =>
+        !this.onlyVisibleToShipId ||
+        e.id === this.onlyVisibleToShipId,
+    )
     if (enemies.length) {
       const randomEnemy = c.randomFromArray(
         enemies,

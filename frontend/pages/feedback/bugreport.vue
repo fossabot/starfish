@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <NavBar />
+    <NavPane />
+
     <div class="textcolumn">
       <h2>Bug Report</h2>
       <div>

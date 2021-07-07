@@ -1,6 +1,9 @@
 <template>
   <div class="holder" v-if="show">
-    <Box :highlight="highlight">
+    <Box
+      :highlight="highlight"
+      bgImage="/images/paneBackgrounds/14.jpg"
+    >
       <template #title>
         <span class="sectionemoji">🚪</span>Ship Schematic
       </template>

@@ -1,67 +1,82 @@
 <template>
-  <Box class="planet" v-if="show" :highlight="highlight">
+  <Box
+    class="planet"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/5.jpg"
+    :bgTint="ship.planet.color"
+  >
     <template #title v-if="ship.planet">
       <span class="sectionemoji">🪐</span>Current Planet:
       {{ ship.planet.name }}
     </template>
     <div class="scroller">
-      <div class="panesection">
+      <div
+        class="panesection flexcolumn flexcenter marbotsmall"
+        :style="{
+          '--highlight-color': ship.planet.color,
+        }"
+      >
+        <div>
+          Welcome to
+          <b>{{ ship.planet.name }}!</b>
+        </div>
         <div
-          class="panesection flexcolumn flexcenter"
-          :style="{
-            '--highlight-color': ship.planet.color,
-          }"
+          class="sub textcenter"
+          v-if="ship.planet.creatures"
         >
-          <div>
-            Welcome to
-            <b>{{ ship.planet.name }}!</b>
-          </div>
-          <div
-            class="sub textcenter"
-            v-if="ship.planet.creatures"
+          Primary creature{{
+            ship.planet.creatures.length === 1 ? '' : 's'
+          }}:
+          {{ c.printList(ship.planet.creatures) }}
+        </div>
+        <div
+          class="sub"
+          v-if="
+            ship.planet.homeworld && ship.planet.faction
+          "
+        >
+          <span
+            :style="{
+              color: ship.planet.faction.color,
+            }"
           >
-            Primary creature{{
-              ship.planet.creatures.length === 1 ? '' : 's'
-            }}:
-            {{ ship.planet.creatures.join(' and ') }}
-          </div>
-          <div class="sub" v-if="ship.planet.homeworld">
-            <span
-              :style="{
-                color: ship.planet.faction.color,
-              }"
-            >
-              {{ ship.planet.faction.name }}
-            </span>
-            faction homeworld
-          </div>
-          <div class="sub" v-else-if="ship.planet.faction">
-            Faction allegiance:
-            <span
-              :style="{
-                color: ship.planet.faction.color,
-              }"
-            >
-              {{ ship.planet.faction.name }}
-            </span>
-          </div>
-          <div class="sub">
-            Population
-            {{
-              c.numberWithCommas(
-                ((ship.planet &&
-                  ship.planet.name
-                    .split('')
-                    .reduce(
-                      (t, c) => t + c.charCodeAt(0),
-                      0,
-                    ) % 200) +
-                  80) **
-                  3 *
-                  ship.planet.radius || 0,
-              )
-            }}
-          </div>
+            {{ ship.planet.faction.name }}
+          </span>
+          faction homeworld
+        </div>
+        <div
+          class="sub"
+          v-else-if="
+            ship.planet.faction && ship.planet.faction.color
+          "
+        >
+          Faction allegiance:
+          <span
+            :style="{
+              color: ship.planet.faction.color,
+            }"
+          >
+            {{ ship.planet.faction.name }}
+          </span>
+        </div>
+        <div class="sub">
+          Population
+          {{
+            c.numberWithCommas(
+              ((ship.planet &&
+                ship.planet.name
+                  .split('')
+                  .reduce(
+                    (t, c) => t + c.charCodeAt(0),
+                    0,
+                  ) % 200) +
+                80) **
+                2 *
+                8 *
+                ship.planet.radius || 0,
+            )
+          }}
         </div>
       </div>
 
@@ -70,10 +85,14 @@
       <ShipPlanetBuyRepair />
       <ShipPlanetBuyPassive />
 
-      <div class="panesection" v-if="isFriendlyToFaction">
+      <div class="panesection">
+        <div class="panesubhead">Faction Allegiances</div>
+        <ShipPlanetFactionGraph :planet="ship.planet" />
         <div
+          class="martop"
+          v-if="isFriendlyToFaction"
           :style="{
-            color: ship.planet.faction.color,
+            color: ship.faction.color,
           }"
         >
           Friendly faction bonus! Prices improved by
@@ -83,10 +102,6 @@
             )
           }}%.
         </div>
-      </div>
-      <div class="panesection">
-        <div class="panesubhead">Faction Allegiances</div>
-        <ShipPlanetFactionGraph :planet="ship.planet" />
       </div>
       <div class="panesection" v-if="ship.planet">
         <div class="sub">
@@ -146,7 +161,7 @@ export default {
   width: 420px;
 }
 .scroller {
-  max-height: 370px;
+  max-height: 420px;
   overflow-y: auto;
 }
 .factiongraph {

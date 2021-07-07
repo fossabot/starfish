@@ -1,4 +1,5 @@
 import c from './log'
+import math from './math'
 
 interface ProfilerSnapshot {
   name: string
@@ -14,6 +15,8 @@ export class Profiler {
   name: string | false
   private snapshots: ProfilerSnapshot[] = []
 
+  readonly metric: any
+
   constructor(
     top = 10,
     name: string | false = false,
@@ -27,9 +30,16 @@ export class Profiler {
 
     if (!this.enabled) return
 
+    this.metric = Date
+    try {
+      this.metric = performance
+    } catch (e) {
+      this.metric = Date
+    }
+
     this.currentSnapshot = {
       name: `start`,
-      time: Date.now(),
+      time: this.metric.now(),
       timeFromStart: 0,
     }
   }
@@ -46,7 +56,7 @@ export class Profiler {
   step(name?: string) {
     if (!this.enabled) return
 
-    const time = Date.now()
+    const time = this.metric.now()
     if (this.currentSnapshot)
       this.currentSnapshot.duration =
         time -
@@ -61,7 +71,7 @@ export class Profiler {
   end() {
     if (!this.enabled) return
 
-    const time = Date.now()
+    const time = this.metric.now()
     if (this.currentSnapshot)
       this.currentSnapshot.duration =
         time -
@@ -82,9 +92,9 @@ export class Profiler {
     )
     toPrint.forEach((ss) =>
       c.log(
-        `${this.name ? this.name + `/` : ``}${ss.name}: ${
-          ss.duration
-        }ms`,
+        `${this.name ? this.name + `/` : ``}${
+          ss.name
+        }: ${math.r2(ss.duration || 0)}ms`,
       ),
     )
 

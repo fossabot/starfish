@@ -1,5 +1,5 @@
 <template>
-  <canvas :width="width" :height="height" />
+  <canvas :width="width + 'px'" :height="height + 'px'" />
 </template>
 
 <script lang="ts">
@@ -54,7 +54,7 @@ export default {
 <style lang="scss" scoped>
 canvas {
   pointer-events: none;
-  /* background: black; */
+  background: red;
   /* var(--bg); */
   position: absolute;
   z-index: 0;

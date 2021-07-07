@@ -20,9 +20,19 @@ function debounce(fn: Function, time = 500) {
   }
 }
 
+function shuffleArray(array: any[]): any[] {
+  const toReturn = [...array]
+  for (let i = toReturn.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[toReturn[i], toReturn[j]] = [toReturn[j], toReturn[i]]
+  }
+  return toReturn
+}
+
 export default {
   sleep,
   coinFlip,
   randomFromArray,
   debounce,
+  shuffleArray,
 }

@@ -23,21 +23,27 @@ interface ShipStub extends BaseStub {
   attackable: boolean
   dead: boolean
   hp?: number
+  radii?: { [key in RadiusType]?: number }
   obeysGravity?: boolean
   planet?: PlanetStub | false
   faction: FactionStub
   species: BaseSpeciesData
+  rooms: { [key in CrewLocation]?: BaseRoomData }
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]
   channelReferences?: GameChannelReference[]
+  targetShip?: ShipStub
+  speed?: number
+  direction?: number
   [key: string]: any
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
   trails: CoordinatePair[][]
-  planets: PlanetStub[]
+  planets: Partial<PlanetStub>[]
   caches: CacheStub[]
   attackRemnants: AttackRemnantStub[]
+  zones: ZoneStub[]
 }
 
 interface CrewMemberStub extends BaseStub {
@@ -47,16 +53,42 @@ interface CrewMemberStub extends BaseStub {
   location?: CrewLocation
   stamina: number
   stats: CrewStatEntry[]
+  inventory: Cargo[]
+  credits: number
+  actives: BaseCrewActiveData[]
+  passives: BaseCrewPassiveData[]
+  cockpitCharge: number
+  tactic: Tactic
+  itemTarget: ItemType
+  attackFactions?: FactionKey[]
+  targetLocation: CoordinatePair | null
+  repairPriority: RepairPriority
   [key: string]: any
 }
 
 interface PlanetStub extends BaseStub {
+  location: CoordinatePair
   [key: string]: any
 }
 interface CacheStub extends BaseStub {
+  location: CoordinatePair
+  [key: string]: any
+}
+interface ZoneStub extends BaseStub {
+  location: CoordinatePair
+  radius: number
+  color: string
+  name: string
   [key: string]: any
 }
 interface AttackRemnantStub extends BaseStub {
+  attacker: ShipStub
+  defender: ShipStub
+  damageTaken: TakenDamageResult
+  start: CoordinatePair
+  end: CoordinatePair
+  time: number
+  id: string
   [key: string]: any
 }
 interface FactionStub extends BaseStub {

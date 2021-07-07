@@ -6,7 +6,7 @@
       }}</b>
     </div>
     <hr />
-    <div>
+    <div v-if="data.cargoData">
       Base price: 💳{{
         data.cargoData
           ? data.cargoData.basePrice

@@ -1,60 +1,26 @@
 <template>
   <div class="shipdataview">
-    <div
-      class="topzone"
-      :class="{ captain: isCaptain }"
-      :style="{
-        background: `url('/images/headerBackgrounds/${data.headerBackground ||
-          'default.jpg'}')`,
-      }"
-      @click="
-        isCaptain &&
-          $store.commit('set', {
-            modal: 'headerBackgroundPicker',
-          })
-      "
-    >
-      <div class="bgfade"></div>
-      <div class="content">
-        <div v-if="data.species">
-          <div
-            class="icon"
-            :class="{ pushup: data.tagline }"
-            @mouseenter="
-              $store.commit(
-                'tooltip',
-                `<b>Species:</b> ${
-                  data.species.icon
-                }${c.capitalize(data.species.id)}`,
-              )
-            "
-            @mouseleave="$store.commit('tooltip')"
-          >
-            {{ data.species.icon }}
-          </div>
-        </div>
-        <div class="right">
-          <div class="shipname">{{ data.name }}</div>
-          <div v-if="data.tagline" class="sub">
-            {{ data.tagline }}
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="data.faction"
-        class="factiontag"
-        :style="{ background: data.faction.color }"
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `<b>Faction:</b> ${data.faction.name}`,
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
-      ></div>
-    </div>
+    <ShipTooltipsShipheader
+      :data="data"
+      :interactive="true"
+    />
 
-    <ProgressBar
+    <div
+      v-if="data._hp && data._maxHp"
+      class="panesection"
+      @mouseenter="
+        $store.commit(
+          'tooltip',
+          `🇨🇭HP: ${c.r2(data._hp)}/${c.r2(
+            data._maxHp,
+          )}<br /><br />The sum total of all of the ship's equipment's health.`,
+        )
+      "
+      @mouseleave="$store.commit('tooltip')"
+    >
+      <PillBar :value="data._hp" :max="data._maxHp" />
+    </div>
+    <!-- <ProgressBar
       v-if="data._hp && data._maxHp"
       :percent="data._hp / data._maxHp"
       @mouseenter.native="
@@ -71,7 +37,7 @@
         /
         {{ c.r2(data._maxHp) }}
       </div>
-    </ProgressBar>
+    </ProgressBar> -->
 
     <div class="panesection" v-if="data.planet">
       <div
@@ -175,7 +141,17 @@
         <div>{{ Math.round(data.level) }}</div>
       </div>
 
-      <div v-if="data.mass" class="flexbetween">
+      <div
+        v-if="data.mass"
+        class="flexbetween"
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `More mass requires more thrust to gain velocity.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
         <div>Mass</div>
         <div>
           {{ c.numberWithCommas(c.r2(data.mass, 0)) }}kg
@@ -187,6 +163,8 @@
         class="flexbetween"
         @mouseenter="
           Array.isArray(data.crewMembers) &&
+            data.crewMembers[0] &&
+            data.crewMembers[0].name &&
             $store.commit(
               'tooltip',
               `<b>Crew</b><br/><hr />${data.crewMembers
@@ -242,10 +220,30 @@
           "
           @mouseleave="$store.commit('tooltip')"
         >
-          {{ item.displayName }}
-          <span class="sub">{{
-            c.capitalize(item.type)
-          }}</span>
+          <div>
+            {{ item.displayName }}
+            <span class="sub">{{
+              c.capitalize(item.type)
+            }}</span>
+          </div>
+          <PillBar
+            v-if="item.repair && item.maxHp"
+            :mini="true"
+            :value="item.repair * item.maxHp"
+            :max="item.maxHp"
+          />
+          <div
+            v-else-if="item.repair"
+            class="sub marbotsmall"
+          >
+            Repair: {{ c.r2(item.repair * 100) }}%
+          </div>
+          <div
+            v-else-if="item.maxHp"
+            class="sub marbotsmall"
+          >
+            Max HP: {{ c.r2(item.maxHp) }}
+          </div>
         </div>
       </div>
     </div>
@@ -261,16 +259,7 @@ export default {
   data() {
     return { c }
   },
-  computed: {
-    ...mapState(['ship', 'userId']),
-    isCaptain() {
-      return (
-        this.ship?.id === this.data?.id &&
-        this.ship?.captain &&
-        this.ship?.captain === this.userId
-      )
-    },
-  },
+  computed: {},
   mounted() {},
 }
 </script>
@@ -283,78 +272,6 @@ export default {
 
 .panesection {
   width: 230px;
-}
-
-.bgfade {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--bg) 85%
-  );
-  mix-blend-mode: multiply;
-  opacity: 0.5;
-}
-
-.topzone {
-  width: 230px;
-  background-size: cover !important;
-  background-position: center center !important;
-  position: relative;
-  overflow: hidden;
-
-  &.captain {
-    cursor: pointer;
-
-    &:hover {
-      background-size: 110% !important;
-    }
-  }
-
-  .content {
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-    padding: 0.7em 1em;
-    position: relative;
-    z-index: 1;
-
-    min-height: 100px;
-  }
-
-  .icon {
-    position: relative;
-    font-size: 1.4em;
-    top: 0.1em;
-
-    &.pushup {
-      top: -0.7em;
-    }
-  }
-
-  .right {
-    flex-grow: 1;
-    padding-left: 0.5em;
-  }
-
-  .shipname {
-    font-size: 1.4em;
-    font-weight: bold;
-  }
-
-  .factiontag {
-    position: absolute;
-    z-index: 3;
-    top: 0;
-    right: 0;
-    width: 50px;
-    height: 50px;
-    transform: translateX(50%) translateY(-50%)
-      rotate(45deg);
-    box-shadow: 0 0 10px -3px var(--bg);
-  }
 }
 
 .arrow {

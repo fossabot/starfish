@@ -46,6 +46,10 @@
           v-if="tooltip.type === 'cargo'"
           :data="tooltip.data"
         />
+        <ShipTooltipsZone
+          v-if="tooltip.type === 'zone'"
+          :data="tooltip.data"
+        />
         <ShipTooltipsRoom
           v-if="tooltip.type === 'room'"
           :data="tooltip.data"
@@ -138,14 +142,16 @@ export default {
   max-width: 250px;
   font-weight: 400;
   padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
-  background: var(--bg);
+  background: #282828;
   color: var(--text);
-  border: 1px solid var(--pane-border);
+  border-radius: 10px;
+  // border: 1px solid var(--pane-border);
   // transition: transform 0.2s;
   pointer-events: none;
   overflow: hidden;
   display: flex;
-  box-shadow: 0 2em 4em 0 var(--bg);
+  box-shadow: 0 2em 6em 0 var(--bg), 0 1em 2em 0 var(--bg),
+    0 0.5em 1em 0 var(--bg);
 
   hr {
     border: none;

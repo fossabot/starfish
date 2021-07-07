@@ -1,7 +1,7 @@
 <template>
-  <div class="flex factiongraph" v-if="planet">
+  <div class="flex factiongraph rounded" v-if="planet">
     <div
-      class="singleholder"
+      class="singleholder flexcenter"
       v-if="planet.allegiances.length"
       v-for="a in [...planet.allegiances].sort(
         (a, b) => b.level - a.level,
@@ -22,7 +22,7 @@
       ></div>
     </div>
     <div class="sub" v-if="!planet.allegiances.length">
-      No faction allegiances yet.
+      No faction allegiances.
     </div>
   </div>
 </template>
@@ -53,6 +53,10 @@ export default {
     min-width: 1em;
     height: 1em;
     padding-right: 1px solid transparent;
+
+    .single {
+      width: 100%;
+    }
   }
 }
 </style>

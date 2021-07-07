@@ -18,10 +18,10 @@ export class Planet extends Stubbable {
   readonly color: string
   readonly location: CoordinatePair
   readonly game: Game
-  readonly vendor: Vendor
+  readonly vendor?: Vendor
   readonly faction?: Faction
   readonly creatures: string[]
-  readonly repairCostMultiplier: number
+  readonly repairCostMultiplier?: number
   readonly radius: number
   readonly allegiances: AllegianceData[] = []
   readonly homeworld?: Faction
@@ -73,51 +73,52 @@ export class Planet extends Stubbable {
       this.toUpdate.allegiances = this.allegiances
     }
 
-    this.vendor = {
-      cargo: vendor.cargo?.map((cargo) => {
-        return {
-          sellMultiplier: cargo.sellMultiplier,
-          buyMultiplier: cargo.buyMultiplier,
-          cargoType: cargo.cargoType,
-          cargoData: cargoData[cargo.cargoType],
-        } as VendorCargoPrice
-      }),
-      passives: vendor.passives?.map((passive) => {
-        return {
-          buyMultiplier: passive.buyMultiplier,
-          passiveType: passive.passiveType,
-          passiveData: passiveData[passive.passiveType],
-        } as VendorCrewPassivePrice
-      }),
-      chassis: vendor.chassis?.map((chassis) => {
-        return {
-          buyMultiplier: chassis.buyMultiplier,
-          sellMultiplier: chassis.sellMultiplier,
-          chassisType: chassis.chassisType,
-          chassisData: chassisData[chassis.chassisType],
-        } as VendorChassisPrice
-      }),
-      actives: vendor.actives?.map((active) => {
-        return {
-          buyMultiplier: active.buyMultiplier,
-          activeType: active.activeType,
-          activeData: activeData[active.activeType],
-        } as VendorCrewActivePrice
-      }),
-      items: vendor.items
-        ?.map((item) => {
+    if (vendor)
+      this.vendor = {
+        cargo: vendor.cargo?.map((cargo) => {
           return {
-            buyMultiplier: item.buyMultiplier,
-            sellMultiplier: item.sellMultiplier,
-            itemType: item.itemType,
-            itemId: item.itemId,
-            itemData: (itemData[item.itemType] as any)[
-              item.itemId
-            ],
-          } as VendorItemPrice
-        })
-        .filter((i) => i.itemData),
-    }
+            sellMultiplier: cargo.sellMultiplier,
+            buyMultiplier: cargo.buyMultiplier,
+            cargoType: cargo.cargoType,
+            cargoData: cargoData[cargo.cargoType],
+          } as VendorCargoPrice
+        }),
+        passives: vendor.passives?.map((passive) => {
+          return {
+            buyMultiplier: passive.buyMultiplier,
+            passiveType: passive.passiveType,
+            passiveData: passiveData[passive.passiveType],
+          } as VendorCrewPassivePrice
+        }),
+        chassis: vendor.chassis?.map((chassis) => {
+          return {
+            buyMultiplier: chassis.buyMultiplier,
+            sellMultiplier: chassis.sellMultiplier,
+            chassisType: chassis.chassisType,
+            chassisData: chassisData[chassis.chassisType],
+          } as VendorChassisPrice
+        }),
+        actives: vendor.actives?.map((active) => {
+          return {
+            buyMultiplier: active.buyMultiplier,
+            activeType: active.activeType,
+            activeData: activeData[active.activeType],
+          } as VendorCrewActivePrice
+        }),
+        items: vendor.items
+          ?.map((item) => {
+            return {
+              buyMultiplier: item.buyMultiplier,
+              sellMultiplier: item.sellMultiplier,
+              itemType: item.itemType,
+              itemId: item.itemId,
+              itemData: (itemData[item.itemType] as any)[
+                item.itemId
+              ],
+            } as VendorItemPrice
+          })
+          .filter((i) => i.itemData),
+      }
 
     this.mass = (5.974e30 * this.radius) / 36000
     // * (1 + Math.random() * 0.1) // todo this shouldn't be randomized on startup

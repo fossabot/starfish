@@ -3,12 +3,63 @@
     class="factionrank"
     v-if="show"
     :highlight="highlight"
+    bgImage="/images/paneBackgrounds/12.jpg"
   >
     <template #title>
-      <span class="sectionemoji">🏆</span>Faction Rankings
+      <span class="sectionemoji">🏆</span>Global Rankings
     </template>
 
-    <div class="panesection"></div>
+    <div
+      class="panesection"
+      v-for="ranking in ship.factionRankings"
+      :key="'factionRanking' + ranking.category"
+    >
+      <div class="panesubhead">{{ ranking.category }}</div>
+      <div class="flex rounded">
+        <div
+          v-for="(score, index) in ranking.scores"
+          class="scorebit"
+          :style="{
+            'flex-grow': score.score,
+            background: score.faction.color,
+          }"
+          :key="
+            'score' + ranking.category + score.faction.id
+          "
+          @mouseenter="
+            $store.commit(
+              'tooltip',
+              `#${index + 1}) ${c.capitalize(
+                score.faction.name,
+              )}: ${c.r2(score.score, 0)}`,
+            )
+          "
+          @mouseleave="$store.commit('tooltip')"
+        ></div>
+      </div>
+      <div v-if="ranking.top" class="martop">
+        <h5 class="sub">Top Ships</h5>
+        <ol>
+          <li
+            v-for="(score, index) in ranking.top"
+            :key="'scoretop' + ranking.category + index"
+          >
+            <div class="flexbetween">
+              <div
+                :style="{
+                  color: score.color,
+                }"
+              >
+                <b>{{ score.name }}</b>
+              </div>
+              <div class="sub">
+                {{ c.r2(score.score, 0) }}
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
   </Box>
 </template>
 
@@ -47,7 +98,10 @@ export default {
 
 <style lang="scss" scoped>
 .factionrank {
-  width: 260px;
+  width: 250px;
   position: relative;
+}
+.scorebit {
+  height: 1em;
 }
 </style>

@@ -32,9 +32,8 @@ interface CrewStatEntry {
   amount: number
 }
 
-type PassiveCrewUpgradeKey = `storage1`
 interface PassiveCrewUpgrade {
-  type: PassiveCrewUpgradeKey
+  type: CrewPassiveType
   level: number
 }
 

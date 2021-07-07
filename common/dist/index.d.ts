@@ -1,5 +1,23 @@
 import { Profiler } from './Profiler';
 declare const _default: {
+    species: {
+        octopi: BaseSpeciesData;
+        squids: BaseSpeciesData;
+        lobsters: BaseSpeciesData;
+        crabs: BaseSpeciesData;
+        seals: BaseSpeciesData;
+        "sea turtles": BaseSpeciesData;
+        dolphins: BaseSpeciesData;
+        whales: BaseSpeciesData;
+        tuna: BaseSpeciesData;
+        angelfish: BaseSpeciesData;
+        blowfish: BaseSpeciesData;
+        shrimp: BaseSpeciesData;
+        eagles: BaseSpeciesData;
+        seagulls: BaseSpeciesData;
+        chickens: BaseSpeciesData;
+        flamingos: BaseSpeciesData;
+    };
     Profiler: typeof Profiler;
     discordBotId: string;
     discordBotPermissionsString: string;
@@ -16,9 +34,12 @@ declare const _default: {
     baseXpGain: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
+    itemPriceMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     aiDifficultyMultiplier: number;
+    attackRemnantExpireTime: number;
+    cacheExpireTime: number;
     baseShipScanProperties: {
         id: true;
         name: true;
@@ -26,14 +47,19 @@ declare const _default: {
         ai: true;
         headerBackground: true;
         tagline: true;
+        level: true;
         dead: true;
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: (keyof BasePlanetData)[];
-        faction: (keyof BaseFactionData)[];
-        species: (keyof BaseSpeciesData)[];
-        chassis: (keyof BaseChassisData)[];
+        planet: ("name" | "color" | "location" | "radius" | "factionId" | "homeworld" | "creatures" | "repairCostMultiplier" | "allegiances" | "vendor")[];
+        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
+        species: ("factionId" | "id" | "icon" | "singular")[];
+        chassis: ("id" | "type" | "mass" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+    };
+    sameFactionShipScanProperties: {
+        _hp: boolean;
+        _maxHp: boolean;
     };
     getHitDamage: (weapon: WeaponStub, totalMunitionsSkill?: number) => number;
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
@@ -46,7 +72,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: (CargoType | "credits")[];
+    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;
@@ -59,8 +85,10 @@ declare const _default: {
     coinFlip: () => boolean;
     randomFromArray: (array: any[]) => any;
     debounce: (fn: Function, time?: number) => (...params: any[]) => void;
+    shuffleArray: (array: any[]) => any[];
     maxNameLength: number;
     numberWithCommas: (x: number) => string;
+    printList: (list: string[]) => string;
     degreesToArrow: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;
     percentToTextBars: (percent?: number, barCount?: number) => string;
@@ -76,7 +104,7 @@ declare const _default: {
     degreesToRadians: (degrees?: number) => number;
     distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
     angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
-    angleDifference: (a: number, b: number) => number;
+    angleDifference: (a: number, b: number, signed?: boolean) => number;
     randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;
     vectorToUnitVector: (vector?: CoordinatePair) => CoordinatePair;
@@ -88,6 +116,7 @@ declare const _default: {
     randomSign: () => 1 | -1;
     randomInRange: (a: number, b: number) => number;
     lottery: (odds: number, outOf: number) => boolean;
+    randomBetween: (start: number, end: number) => number;
     GAME_NAME: string;
     GAME_DESCRIPTION: string;
     TICK_INTERVAL: number;

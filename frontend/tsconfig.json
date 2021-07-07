@@ -2,6 +2,7 @@
   "include": ["../@types", "./"],
   "compilerOptions": {
     "esModuleInterop": true
+    // "strict": true
   },
   "references": [
     {

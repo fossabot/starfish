@@ -32,6 +32,7 @@ class Ship extends Stubbable_1.Stubbable {
             planets: [],
             caches: [],
             attackRemnants: [],
+            zones: [],
         };
         this.seenPlanets = [];
         this.items = [];
@@ -250,7 +251,7 @@ class Ship extends Stubbable_1.Stubbable {
             this.toUpdate.radii = this.radii;
             return;
         }
-        this.radii.sight = Math.max(0.1, dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
+        this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         this.toUpdate.radii = this.radii;
     }

@@ -301,6 +301,7 @@ export default function (
         2,
         true,
       )
+      c.log({ price, credits: crewMember.credits })
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 

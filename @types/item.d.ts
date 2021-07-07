@@ -1,16 +1,66 @@
-type ChassisId = `starter1` | `starter2` | `solo1` | `mega1`
+type ChassisId =
+  | `starter1`
+  | `starter2`
+  | `hauler1`
+  | `hauler2`
+  | `sailer1`
+  | `sailer2`
+  | `mega1`
+  | `mega2`
 
-type EngineId = `starter1` | `starter2` | `tutorial1`
+type EngineId =
+  | `starter1`
+  | `starter2`
+  | `tutorial1`
+  | `basic1`
+  | `basic2`
+  | `glass1`
+  | `glass2`
+  | `glass3`
 type WeaponId =
+  | `tutorial1`
   | `cannon1`
   | `cannon2`
+  | `cannon3`
   | `saber1`
+  | `saber2`
+  | `saber3`
   | `sniper1`
+  | `sniper2`
+  | `sniper3`
   | `tiny1`
-  | `tutorial1`
-type ScannerId = `starter1` | `starter2` | `shipscanner1`
-type CommunicatorId = `starter1` | `starter2`
-type ArmorId = `starter1` | `starter2`
+type ScannerId =
+  | `starter1`
+  | `starter2`
+  | `peek1`
+  | `peek2`
+  | `peek3`
+  | `wide1`
+  | `wide2`
+  | `wide3`
+  | `shipscanner1`
+  | `shipscanner2`
+  | `shipscanner3`
+type CommunicatorId =
+  | `starter1`
+  | `starter2`
+  | `distance1`
+  | `distance2`
+  | `distance3`
+  | `distance4`
+  | `clarity1`
+  | `clarity2`
+  | `clarity3`
+type ArmorId =
+  | `starter1`
+  | `starter2`
+  | `block1`
+  | `block2`
+  | `block3`
+  | `block4`
+  | `tough1`
+  | `tough2`
+  | `tough3`
 
 type ItemType =
   | `weapon`
@@ -51,6 +101,8 @@ interface BaseItemData {
   repair?: number
   hp?: number
   maxHp: number
+  buyable?: false
+  aiOnly?: boolean
   lastUse?: number
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
@@ -111,6 +163,7 @@ interface ShipScanDataShape {
   location: true
   ai: true
   human: true
+  level: true
   attackable: true
   planet: (keyof BasePlanetData)[]
   faction: (keyof BaseFactionData)[]

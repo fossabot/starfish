@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div></div>
-    <div>
-      <b>📦Cache</b>
-    </div>
+    <div class="tooltipheader">📦Cache</div>
     <hr />
     <div>Contents unknown.</div>
   </div>

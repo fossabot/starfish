@@ -12,6 +12,8 @@
     </div>
     <button
       v-for="passive in ship.planet.vendor.passives"
+      :key="'buypassive' + passive.id"
+      v-if="passive.passiveData"
       :disabled="
         crewMember.credits <
           passive.passiveData.basePrice *

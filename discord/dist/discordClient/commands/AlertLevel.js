@@ -19,7 +19,7 @@ class AlertLevelCommand {
             context.reply(this.getHelpMessage(context.commandPrefix));
             return;
         }
-        let selectedNumber = parseInt(context.args[0].replace(/<>/g, ``));
+        let selectedNumber = parseInt(context.args[0].replace(/[<>]/g, ``));
         if (isNaN(selectedNumber))
             selectedNumber = 4;
         selectedNumber--;

@@ -20,6 +20,7 @@ const attackRemnantSchemaFields = {
             id: String,
         },
     },
+    onlyVisibleToShipId: { type: String },
 };
 const attackRemnantSchema = new mongoose_1.Schema(attackRemnantSchemaFields);
 const DBAttackRemnant = mongoose_1.model(`DBAttackRemnant`, attackRemnantSchema);

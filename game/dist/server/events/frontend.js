@@ -9,6 +9,22 @@ function default_1(socket) {
     socket.on(`god`, () => {
         socket.join([`game`]);
     });
+    socket.on(`ship:basics`, (id, callback) => {
+        const foundShip = __1.game.ships.find((s) => s.id === id);
+        if (foundShip) {
+            const stub = dist_1.default.stubify({
+                name: foundShip.name,
+                id: foundShip.id,
+                faction: foundShip.faction,
+                species: foundShip.species,
+                tagline: foundShip.tagline,
+                headerBackground: foundShip.headerBackground,
+            });
+            callback({ data: stub });
+        }
+        else
+            callback({ error: `No ship found by that ID.` });
+    });
     socket.on(`ship:listen`, (id, callback) => {
         // c.log(
         //   `gray`,

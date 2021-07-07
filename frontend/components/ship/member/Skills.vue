@@ -1,7 +1,10 @@
 <template>
   <div class="inventory panesection">
     <div class="panesubhead">Skills</div>
-    <div
+    <ProgressBar
+      :mini="true"
+      :dangerZone="-1"
+      :percent="skill.progress"
       v-for="skill in sortedSkills"
       :key="'skill' + skill.skill"
     >
@@ -17,7 +20,7 @@
           "
         />
       </span>
-    </div>
+    </ProgressBar>
   </div>
 </template>
 
@@ -35,9 +38,15 @@ export default {
   computed: {
     ...mapState(['crewMember']),
     sortedSkills(this: ComponentShape) {
-      return [...this.crewMember.skills].sort(
-        (a: XPData, b: XPData) => b.xp - a.xp,
-      )
+      return [...this.crewMember.skills]
+        .sort((a: XPData, b: XPData) => b.xp - a.xp)
+        .map((s: XPData) => {
+          const toNext = c.levels[s.level] - s.xp
+          const levelSize =
+            c.levels[s.level] - c.levels[s.level - 1]
+          const progress = 1 - toNext / levelSize
+          return { ...s, progress }
+        })
     },
   },
   watch: {},

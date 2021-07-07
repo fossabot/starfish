@@ -4,6 +4,7 @@ export declare class Profiler {
     cutoff: number;
     name: string | false;
     private snapshots;
+    readonly metric: any;
     constructor(top?: number, name?: string | false, enabled?: boolean, cutoff?: number);
     private get currentSnapshot();
     private set currentSnapshot(value);

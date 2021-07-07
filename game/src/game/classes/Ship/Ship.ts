@@ -4,6 +4,7 @@ import type { Game } from '../../Game'
 import type { Faction } from '../Faction'
 import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
+import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
@@ -57,11 +58,13 @@ export class Ship extends Stubbable {
     caches: Cache[]
     attackRemnants: AttackRemnant[]
     trails?: CoordinatePair[][]
+    zones: Zone[]
   } = {
     ships: [],
     planets: [],
     caches: [],
     attackRemnants: [],
+    zones: [],
   }
 
   readonly seenPlanets: Planet[] = []
@@ -356,7 +359,6 @@ export class Ship extends Stubbable {
       return
     }
     this.radii.sight = Math.max(
-      0.1,
       c.baseSightRange,
       c.getRadiusDiminishingReturns(
         this.scanners.reduce(

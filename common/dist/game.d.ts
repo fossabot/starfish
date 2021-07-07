@@ -19,9 +19,12 @@ declare const _default: {
     baseXpGain: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
+    itemPriceMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     aiDifficultyMultiplier: number;
+    attackRemnantExpireTime: number;
+    cacheExpireTime: number;
     baseShipScanProperties: {
         id: true;
         name: true;
@@ -29,14 +32,19 @@ declare const _default: {
         ai: true;
         headerBackground: true;
         tagline: true;
+        level: true;
         dead: true;
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: (keyof BasePlanetData)[];
-        faction: (keyof BaseFactionData)[];
-        species: (keyof BaseSpeciesData)[];
-        chassis: (keyof BaseChassisData)[];
+        planet: ("name" | "color" | "location" | "radius" | "factionId" | "homeworld" | "creatures" | "repairCostMultiplier" | "allegiances" | "vendor")[];
+        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
+        species: ("factionId" | "id" | "icon" | "singular")[];
+        chassis: ("id" | "type" | "mass" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+    };
+    sameFactionShipScanProperties: {
+        _hp: boolean;
+        _maxHp: boolean;
     };
     getHitDamage: typeof getHitDamage;
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
@@ -49,7 +57,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
-    cargoTypes: (CargoType | "credits")[];
+    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

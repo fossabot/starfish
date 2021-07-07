@@ -39,7 +39,7 @@ export default {
 
   buildModules: [`@nuxt/typescript-build`], // `nuxt-vite`],
 
-  modules: [`@nuxtjs/axios`],
+  modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 
   io: {
     sockets: [

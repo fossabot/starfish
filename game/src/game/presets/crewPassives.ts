@@ -3,7 +3,7 @@ export const cargoSpace: BaseCrewPassiveData = {
   type: `cargoSpace`,
   basePrice: 100,
   factor: 10,
-  rarity: 0.2,
+  rarity: 1,
 }
 
 export const data: {

@@ -15,6 +15,7 @@ import type { Item } from '../Item/Item'
 
 import { rooms as roomData } from '../../presets/rooms'
 import { Tutorial } from './addins/Tutorial'
+import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 20
@@ -32,11 +33,13 @@ export class HumanShip extends CombatShip {
     caches: Cache[]
     attackRemnants: AttackRemnant[]
     trails?: CoordinatePair[][]
+    zones: Zone[]
   } = {
     ships: [],
     planets: [],
     caches: [],
     attackRemnants: [],
+    zones: [],
   }
 
   shownPanels?: any[]
@@ -175,32 +178,38 @@ export class HumanShip extends CombatShip {
 
     profiler.step(`get caches`)
     // ----- get nearby caches -----
-    this.visible.caches.forEach((cache) => {
-      if (this.isAt(cache.location)) {
-        if (!cache.canBePickedUpBy(this)) return
+    if (!this.dead)
+      this.visible.caches.forEach((cache) => {
+        if (this.isAt(cache.location)) {
+          if (!cache.canBePickedUpBy(this)) return
 
-        this.distributeCargoAmongCrew(cache.contents)
-        this.logEntry(
-          `Picked up a cache with ${cache.contents
-            .map(
-              (cc) =>
-                `${Math.round(cc.amount * 10000) / 10000}${
-                  cc.type === `credits` ? `` : ` tons of`
-                } ${cc.type}`,
-            )
-            .join(` and `)} inside!${
-            cache.message &&
-            ` There was a message attached which said, "${cache.message}".`
-          }`,
-          `medium`,
-        )
-        this.game.removeCache(cache)
-      }
-    })
+          this.distributeCargoAmongCrew(cache.contents)
+          this.logEntry(
+            `Picked up a cache with ${cache.contents
+              .map(
+                (cc) =>
+                  `${
+                    Math.round(cc.amount * 10000) / 10000
+                  }${
+                    cc.type === `credits` ? `` : ` tons of`
+                  } ${cc.type}`,
+              )
+              .join(` and `)} inside!${
+              cache.message &&
+              ` There was a message attached which said, "${cache.message}".`
+            }`,
+            `medium`,
+          )
+          this.game.removeCache(cache)
+        }
+      })
 
     profiler.step(`auto attack`)
     // ----- auto-attacks -----
-    this.autoAttack()
+    if (!this.dead) this.autoAttack()
+
+    // ----- zone effects -----
+    if (!this.dead) this.applyZoneTickEffects()
 
     profiler.step(`frontend stubify`)
     // todo if no io watchers, skip this
@@ -267,8 +276,9 @@ export class HumanShip extends CombatShip {
     charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember,
   ) {
+    const thrustForFree = true
     charge *= thruster.cockpitCharge
-    // thruster.cockpitCharge -= charge
+    if (!thrustForFree) thruster.cockpitCharge -= charge
 
     const initialVelocity: CoordinatePair = [
       ...this.velocity,
@@ -577,12 +587,14 @@ export class HumanShip extends CombatShip {
         `low`,
       )
 
-    // this.engines.forEach((e) => e.use(charge))
+    if (!thrustForFree)
+      this.engines.forEach((e) => e.use(charge))
   }
 
   brake(charge: number, thruster: CrewMember) {
+    const thrustForFree = true
     charge *= thruster.cockpitCharge
-    // thruster.cockpitCharge -= charge
+    if (!thrustForFree) thruster.cockpitCharge -= charge
 
     charge *= 2 // braking is easier
 
@@ -639,7 +651,8 @@ export class HumanShip extends CombatShip {
         `low`,
       )
 
-    // this.engines.forEach((e) => e.use(charge))
+    if (!thrustForFree)
+      this.engines.forEach((e) => e.use(charge))
   }
 
   // ----- move -----
@@ -670,6 +683,7 @@ export class HumanShip extends CombatShip {
     )
 
     this.updatePlanet()
+    this.notifyZones(startingLocation)
 
     // ----- end if in tutorial -----
     if (this.tutorial) {
@@ -735,10 +749,11 @@ export class HumanShip extends CombatShip {
       this.location,
       startingLocation,
     )
+    // - space junk -
     if (
       c.lottery(
-        distanceTraveled * (c.deltaTime / 1000),
-        0.5,
+        distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
+        0.4,
       )
     ) {
       const amount =
@@ -760,6 +775,30 @@ export class HumanShip extends CombatShip {
         `Encountered some space junk and managed to harvest ${amount} ton${
           amount === 1 ? `` : `s`
         } of ${type} off of it.`,
+      )
+    }
+
+    // - asteroid hit -
+    if (
+      c.lottery(
+        distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
+        0.12,
+      )
+    ) {
+      if (!this.attackable || this.planet) return
+      let miss = false
+      const hitRoll = Math.random()
+      if (hitRoll < 0.1) miss = true
+      // random passive miss chance
+      else miss = hitRoll < this.chassis.agility * 0.5
+      const damage =
+        this._maxHp * c.randomBetween(0.01, 0.15)
+      this.takeDamage(
+        { name: `an asteroid` },
+        {
+          damage: miss ? 0 : damage,
+          miss,
+        },
       )
     }
   }
@@ -798,6 +837,7 @@ export class HumanShip extends CombatShip {
     caches: Cache[]
     attackRemnants: AttackRemnant[]
     trails?: CoordinatePair[][]
+    zones: Zone[]
   }) {
     let planetDataToSend = []
     if (previousVisible?.planets?.length)
@@ -819,6 +859,7 @@ export class HumanShip extends CombatShip {
       ),
       planets: planetDataToSend,
       caches: this.visible.caches.map((c) => c.stubify()),
+      zones: this.visible.zones.map((z) => z.stubify()),
     }
   }
 
@@ -873,6 +914,25 @@ export class HumanShip extends CombatShip {
             }.`,
           )
         })
+    }
+  }
+
+  notifyZones(startingLocation: CoordinatePair) {
+    for (let z of this.visible.zones) {
+      const startedInside = c.pointIsInsideCircle(
+        z.location,
+        startingLocation,
+        z.radius,
+      )
+      const endedInside = c.pointIsInsideCircle(
+        z.location,
+        this.location,
+        z.radius,
+      )
+      if (startedInside && !endedInside)
+        this.logEntry(`Exited ${z.name}.`, `high`)
+      if (!startedInside && endedInside)
+        this.logEntry(`Entered ${z.name}.`, `high`)
     }
   }
 
@@ -960,7 +1020,13 @@ export class HumanShip extends CombatShip {
         0,
         c.maxBroadcastLength,
       )}\``
-      if (otherShip.id) otherShip.receiveBroadcast(toSend)
+
+      // can be a stub, so find the real thing
+      const actualShipObject = this.game.humanShips.find(
+        (s) => s.id === otherShip.id,
+      )
+      if (actualShipObject)
+        actualShipObject.receiveBroadcast(toSend)
     }
 
     this.communicators.forEach((comm) => comm.use())
@@ -1236,9 +1302,10 @@ export class HumanShip extends CombatShip {
     this.updatePlanet(true)
     this.toUpdate.dead = this.dead
 
-    this.crewMembers.forEach(
-      (cm) => (cm.targetLocation = null),
-    )
+    this.crewMembers.forEach((cm) => {
+      cm.targetLocation = null
+      cm.location = `bunk`
+    })
 
     if (!silent && this instanceof HumanShip) {
       this.logEntry(
@@ -1374,18 +1441,16 @@ export class HumanShip extends CombatShip {
           )
         targetShip = mostRecentDefense?.attacker
       }
-      this.toUpdate.targetShip = targetShip
-        ? c.stubify<CombatShip, ShipStub>(targetShip, [
-            `visible`,
-            `seenPlanets`,
-          ])
-        : undefined
+      c.log(`defensive, targeting`, targetShip?.name)
       if (!targetShip) return
       if (!targetShip.stubify)
         // in some cases we end up with a stub here
         targetShip = this.game.ships.find(
           (s) => s.attackable && s.id === targetShip?.id,
         ) as CombatShip
+      this.toUpdate.targetShip = targetShip
+        ? targetShip.stubify()
+        : undefined
       if (targetShip)
         availableWeapons.forEach((w) => {
           this.attack(targetShip!, w, mainItemTarget)

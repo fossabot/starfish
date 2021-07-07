@@ -14,6 +14,21 @@ export default function (
     socket.join([`game`])
   })
 
+  socket.on(`ship:basics`, (id, callback) => {
+    const foundShip = game.ships.find((s) => s.id === id)
+    if (foundShip) {
+      const stub = c.stubify({
+        name: foundShip.name,
+        id: foundShip.id,
+        faction: foundShip.faction,
+        species: foundShip.species,
+        tagline: foundShip.tagline,
+        headerBackground: foundShip.headerBackground,
+      })
+      callback({ data: stub })
+    } else callback({ error: `No ship found by that ID.` })
+  })
+
   socket.on(`ship:listen`, (id, callback) => {
     // c.log(
     //   `gray`,

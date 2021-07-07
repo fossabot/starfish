@@ -17,5 +17,6 @@ export declare class Item extends Stubbable {
     get hp(): number;
     set hp(newHp: number);
     use(usePercent?: number): number;
+    applyRepair(numericAmount: number): boolean;
 }
 //# sourceMappingURL=Item.d.ts.map

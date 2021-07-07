@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttackRemnant = void 0;
 const Stubbable_1 = require("./Stubbable");
 class AttackRemnant extends Stubbable_1.Stubbable {
-    constructor({ attacker, defender, damageTaken, start, end, time, id, }) {
+    constructor({ attacker, defender, damageTaken, start, end, time, id, onlyVisibleToShipId, }) {
         super();
         this.id = id || `${Math.random()}`.substring(2);
         this.attacker = attacker;
@@ -12,6 +12,7 @@ class AttackRemnant extends Stubbable_1.Stubbable {
         this.start = start;
         this.end = end;
         this.time = time;
+        this.onlyVisibleToShipId = onlyVisibleToShipId;
     }
 }
 exports.AttackRemnant = AttackRemnant;

@@ -75,4 +75,26 @@ export class Item extends Stubbable {
 
     return durabilityLost
   }
+
+  applyRepair(numericAmount: number): boolean {
+    let overRepair = false
+    this.repair =
+      (this.hp + numericAmount / this.repairDifficulty) /
+      this.maxHp
+    // todo use repair difficulty on more items
+    this._stub = null // invalidate stub
+    if (this.repair > 1) {
+      overRepair = true
+      this.repair = 1
+      if (this.announceWhenRepaired)
+        this.ship.logEntry(
+          `Your ${this.displayName} is fully repaired.`,
+          `medium`,
+        )
+      this.announceWhenRepaired = false
+    }
+    if (this.repair > 0.1) this.announceWhenBroken = true
+    if (this.repair < 0.9) this.announceWhenRepaired = true
+    return overRepair
+  }
 }

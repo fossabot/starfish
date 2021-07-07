@@ -21,6 +21,11 @@ class CombatShip extends Ship_1.Ship {
         this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);
         this.toUpdate.radii = this.radii;
     }
+    applyZoneTickEffects() {
+        this.visible.zones
+            .filter((z) => dist_1.default.pointIsInsideCircle(z.location, this.location, z.radius))
+            .forEach((z) => z.affectShip(this));
+    }
     availableWeapons() {
         return this.weapons.filter((w) => w.cooldownRemaining <= 0);
     }
@@ -37,9 +42,7 @@ class CombatShip extends Ship_1.Ship {
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
-        this.move([
-            ...(this.faction.homeworld?.location || [0, 0]),
-        ]);
+        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos + dist_1.default.randomBetween(-0.00001, 0.00001)));
         db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
@@ -99,6 +102,11 @@ class CombatShip extends Ship_1.Ship {
             start: [...this.location],
             end: [...target.location],
             time: Date.now(),
+            onlyVisibleToShipId: this.tutorial
+                ? this.id
+                : target.tutorial
+                    ? target.id
+                    : undefined,
         });
         this.logEntry(`${attackResult.miss ? `Missed` : `Attacked`} ${target.name} with ${weapon.displayName}${attackResult.miss
             ? `.`
@@ -117,7 +125,8 @@ class CombatShip extends Ship_1.Ship {
                 remainingDamage = remaining;
                 if (armor.hp === 0 && armor.announceWhenBroken) {
                     this.logEntry(`Your ${armor.displayName} has been broken!`, `high`);
-                    attacker.logEntry(`You have broken through ${this.name}'s ${armor.displayName}!`, `high`);
+                    if (`logEntry` in attacker)
+                        attacker.logEntry(`You have broken through ${this.name}'s ${armor.displayName}!`, `high`);
                     armor.announceWhenBroken = false;
                 }
             }
@@ -151,7 +160,8 @@ class CombatShip extends Ship_1.Ship {
                 if (equipmentToAttack.hp === 0 &&
                     equipmentToAttack.announceWhenBroken) {
                     this.logEntry(`Your ${equipmentToAttack.displayName} has been disabled!`, `high`);
-                    attacker.logEntry(`You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`, `high`);
+                    if (`logEntry` in attacker)
+                        attacker.logEntry(`You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`, `high`);
                     equipmentToAttack.announceWhenBroken = false;
                 }
             }
@@ -163,14 +173,23 @@ class CombatShip extends Ship_1.Ship {
         }
         else
             this.dead = false;
-        dist_1.default.log(`gray`, `${this.name} takes ${attack.damage} damage from ${attacker.name}'s ${attack.weapon.displayName}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
+        dist_1.default.log(`gray`, `${this.name} takes ${attack.damage} damage from ${attacker.name}'s ${attack.weapon
+            ? attack.weapon.displayName
+            : `passive effect`}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
         this.toUpdate._hp = this.hp;
         this.toUpdate.dead = this.dead;
-        this.logEntry(`${attack.miss
-            ? `Missed by attack from`
-            : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss
-            ? `.`
-            : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
+        // ship damage
+        if (attack.weapon)
+            this.logEntry(`${attack.miss
+                ? `Missed by an attack from`
+                : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss
+                ? `.`
+                : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
+        // zone or passive damage
+        else
+            this.logEntry(`${attack.miss ? `Missed by` : `Hit by`} ${attacker.name}${attack.miss
+                ? `.`
+                : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
         return {
             miss: attack.damage === 0,
             damageTaken: attack.damage,

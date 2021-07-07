@@ -1,12 +1,12 @@
 <template>
   <div class="items" v-if="show" :highlight="highlight">
-    <Box>
+    <Box bgImage="/images/paneBackgrounds/3.jpg">
       <template #title>
         <span class="sectionemoji">🛠</span>Ship Equipment
       </template>
 
-      <div class="panesection" v-if="armor && armor.length">
-        <div class="panesubhead">Armor</div>
+      <div class="panesection itemlist">
+        <!-- v-if="armor && armor.length" <div class="panesubhead">Armor</div> -->
         <div
           v-for="i in armor"
           @mouseenter="
@@ -18,8 +18,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -33,13 +41,13 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
         </div>
-      </div>
+        <!-- </div>
 
       <div class="panesection" v-if="weapons.length">
-        <div class="panesubhead">Weapons</div>
+        <div class="panesubhead">Weapons</div> -->
         <div
           v-for="i in weapons"
           @mouseenter="
@@ -51,8 +59,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -66,45 +82,23 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
-          <div>
+          <div class="">
             <ProgressBar
-              :mini="true"
+              :micro="true"
               :percent="
                 (i.baseCooldown - i.cooldownRemaining) /
                   i.baseCooldown
               "
               :dangerZone="-1"
-            >
-              <div>
-                Charge:
-                <NumberChangeHighlighter
-                  :number="
-                    Math.floor(
-                      ((i.baseCooldown -
-                        i.cooldownRemaining) /
-                        i.baseCooldown) *
-                        100,
-                    )
-                  "
-                  :display="
-                    Math.floor(
-                      ((i.baseCooldown -
-                        i.cooldownRemaining) /
-                        i.baseCooldown) *
-                        100,
-                    ) + '%'
-                  "
-                />
-              </div>
-            </ProgressBar>
+            />
           </div>
         </div>
-      </div>
+        <!-- </div>
 
       <div class="panesection" v-if="engines.length">
-        <div class="panesubhead">Engines</div>
+        <div class="panesubhead">Engines</div> -->
         <div
           v-for="i in engines"
           @mouseenter="
@@ -116,8 +110,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -131,13 +133,13 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
         </div>
-      </div>
+        <!-- </div>
 
       <div class="panesection" v-if="scanners.length">
-        <div class="panesubhead">Scanners</div>
+        <div class="panesubhead">Scanners</div> -->
         <div
           v-for="i in scanners"
           @mouseenter="
@@ -149,8 +151,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -164,16 +174,16 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
         </div>
-      </div>
+        <!-- </div>
 
       <div
         class="panesection"
         v-if="communicators && communicators.length"
       >
-        <div class="panesubhead">Communicators</div>
+        <div class="panesubhead">Communicators</div> -->
         <div
           v-for="i in communicators"
           @mouseenter="
@@ -185,8 +195,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -200,13 +218,13 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
         </div>
-      </div>
+        <!-- </div>
 
       <div class="panesection" v-if="other.length">
-        <div class="panesubhead">Other Items</div>
+        <div class="panesubhead">Other Items</div> -->
         <div
           v-for="i in other"
           @mouseenter="
@@ -218,8 +236,16 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
+          <span class="sub">{{
+            c.capitalize(i.type)
+          }}</span>
           <div>
-            <ProgressBar
+            <PillBar
+              :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <!-- <ProgressBar
               :mini="true"
               :percent="(i.repair * i.maxHp) / i.maxHp"
             >
@@ -233,7 +259,7 @@
                   ) / 10
                 }}%)
               </div>
-            </ProgressBar>
+            </ProgressBar> -->
           </div>
         </div>
       </div>
@@ -320,5 +346,10 @@ export default {
   width: 260px;
   position: relative;
   grid-column: span 2;
+}
+.itemlist {
+  & > * {
+    margin-bottom: 0.5em;
+  }
 }
 </style>

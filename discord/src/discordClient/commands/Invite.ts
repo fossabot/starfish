@@ -9,10 +9,8 @@ export class InviteCommand implements Command {
     return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a game bot invite link.`
   }
 
-  async run({
-    initialMessage,
-  }: CommandContext): Promise<void> {
-    await initialMessage.channel.send(
+  async run(context: CommandContext): Promise<void> {
+    await context.initialMessage.channel.send(
       `Add ${c.GAME_NAME} to your server!\n${c.discordBotInviteUrl}`,
     )
   }

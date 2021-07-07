@@ -2,11 +2,13 @@ import * as cache from './models/cache';
 import * as ship from './models/ship';
 import * as attackRemnant from './models/attackRemnant';
 import * as planet from './models/planet';
+import * as zone from './models/zone';
 export declare const db: {
     cache: typeof cache;
     ship: typeof ship;
     attackRemnant: typeof attackRemnant;
     planet: typeof planet;
+    zone: typeof zone;
 };
 export declare const isReady: () => boolean;
 export declare const init: ({ hostname, port, dbName, username, password, }: {

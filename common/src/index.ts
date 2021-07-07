@@ -7,6 +7,7 @@ import game from './game'
 import physics from './physics'
 import discord from './discord'
 import { Profiler } from './Profiler'
+import species from './species'
 
 export default {
   ...globals,
@@ -17,5 +18,6 @@ export default {
   ...game,
   ...physics,
   ...discord,
+  species,
   Profiler,
 }

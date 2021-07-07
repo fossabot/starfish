@@ -31,6 +31,7 @@ const attackRemnantSchemaFields: Record<
       id: String,
     },
   },
+  onlyVisibleToShipId: { type: String },
 }
 
 const attackRemnantSchema = new Schema(

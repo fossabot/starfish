@@ -4,17 +4,19 @@
       <b>{{ data.displayName }}</b>
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
-    <hr />
-    <div>Equipment Slots: {{ data.slots }}</div>
-    <div>
+    <hr v-if="Object.keys(data).length > 3" />
+    <div v-if="data.slots">
+      Equipment Slots: {{ data.slots }}
+    </div>
+    <div v-if="data.agility">
       Passive Dodge Modifier:
       {{ c.r2((data.agility - 1) * 100) + '%' }}
     </div>
-    <div>
+    <div v-if="data.maxCargoSpace">
       Max Cargo Space Per Crew Member:
       {{ data.maxCargoSpace }}
     </div>
-    <hr />
+    <hr v-if="data.description" />
     <div class="sub">{{ data.description }}</div>
   </div>
 </template>

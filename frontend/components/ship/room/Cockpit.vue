@@ -1,8 +1,160 @@
 <template>
-  <Box class="cockpit" :highlight="highlight">
+  <Box
+    class="cockpit"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/10.jpg"
+  >
     <template #title
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
+    <div class="thrustbg" :class="{ animateThrust }"></div>
+
+    <div class="panesection">
+      <div class="marbot">
+        <LimitedChargeButton
+          class="marbottiny"
+          :max="crewMember.cockpitCharge"
+          @end="thrust"
+          @percent="thrustChargeToUse = arguments[0]"
+          @mouseenter.native="
+            $store.commit(
+              'tooltip',
+              `Click and hold to use your charged thrust!`,
+            )
+          "
+          @mouseleave.native="$store.commit('tooltip')"
+          @mousedown.native="$store.commit('tooltip')"
+        >
+          Thrust
+          <span v-if="thrustChargeToUse">
+            ({{
+              c.r2(
+                thrustChargeToUse *
+                  c.getMaxCockpitChargeForSingleCrewMember(
+                    pilotingSkill,
+                  ) *
+                  crewMember.cockpitCharge *
+                  engineThrustAmplification,
+              )
+            }}
+            P)
+          </span>
+        </LimitedChargeButton>
+        <LimitedChargeButton
+          :class="{
+            disabled:
+              ship.velocity[0] === 0 &&
+              ship.velocity[1] === 0,
+          }"
+          :max="crewMember.cockpitCharge"
+          :disabled="
+            ship.velocity[0] === 0 && ship.velocity[1] === 0
+          "
+          @percent="brakeChargeToUse = arguments[0]"
+          @end="brake"
+          @mouseenter.native="
+            $store.commit(
+              'tooltip',
+              `Click and hold to use your charged thrust to stop the ship.`,
+            )
+          "
+          @mouseleave.native="$store.commit('tooltip')"
+          @mousedown.native="$store.commit('tooltip')"
+        >
+          Brake
+          <span v-if="brakeChargeToUse">
+            ({{
+              c.r2(
+                brakeChargeToUse *
+                  c.getMaxCockpitChargeForSingleCrewMember(
+                    pilotingSkill,
+                  ) *
+                  crewMember.cockpitCharge *
+                  engineThrustAmplification,
+              )
+            }}
+            P)
+          </span>
+        </LimitedChargeButton>
+      </div>
+
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
+        Engine Base Thrust:
+        {{ c.r2(engineThrustAmplification)
+        }}<span
+          @mouseenter="
+            $store.commit('tooltip', `Poseidons`)
+          "
+          @mouseleave="$store.commit('tooltip')"
+          >P</span
+        >
+      </div>
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
+        Charge:
+        {{
+          c.r2(
+            crewMember.cockpitCharge *
+              c.getMaxCockpitChargeForSingleCrewMember(
+                pilotingSkill,
+              ) *
+              100,
+            1,
+          ) +
+            '% / ' +
+            c.r2(
+              c.getMaxCockpitChargeForSingleCrewMember(
+                pilotingSkill,
+              ) * 100,
+              1,
+            ) +
+            '%'
+        }}
+      </div>
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `The maximum amount of thrust that you can generate currently.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
+        Available Thrust:
+        <NumberChangeHighlighter
+          :number="
+            c.r2(
+              c.getMaxCockpitChargeForSingleCrewMember(
+                pilotingSkill,
+              ) *
+                crewMember.cockpitCharge *
+                engineThrustAmplification,
+            )
+          "
+        /><span
+          @mouseenter="
+            $store.commit('tooltip', `Poseidons`)
+          "
+          @mouseleave="$store.commit('tooltip')"
+          >P</span
+        >
+      </div>
+    </div>
 
     <div
       class="panesection"
@@ -29,6 +181,9 @@
           @click="setTarget(planet.location)"
           :class="{
             secondary:
+              !planet ||
+              !planet.location ||
+              !crewMember ||
               !crewMember.targetLocation ||
               planet.location[0] !==
                 crewMember.targetLocation[0] ||
@@ -73,144 +228,9 @@
           }"
         >
           📦Cache (<AngleArrow :angle="cache.angle" />
-          {{ Math.round(cache.distance * 1000) / 1000 }}AU)
+          {{ c.r2(cache.distance) }}AU)
         </button>
       </span>
-    </div>
-
-    <div class="panesection">
-      <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`,
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
-      >
-        Base thrust from engines:
-        {{ c.r2(engineThrustAmplification) }} kg/m^2/s? or
-        something
-      </div>
-      <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`,
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
-      >
-        Charge:
-        {{
-          c.r2(
-            crewMember.cockpitCharge *
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) *
-              100,
-            1,
-          ) +
-            '% / ' +
-            c.r2(
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) * 100,
-              1,
-            ) +
-            '%'
-        }}
-      </div>
-      <div
-        class="marbotsmall"
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The maximum amount of thrust that you can generate currently.`,
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
-      >
-        Available Thrust:
-        <NumberChangeHighlighter
-          :number="
-            c.r2(
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) *
-                crewMember.cockpitCharge *
-                engineThrustAmplification,
-            )
-          "
-        />
-        xyz
-      </div>
-      <div>
-        <LimitedChargeButton
-          :max="crewMember.cockpitCharge"
-          @end="thrust"
-          @percent="thrustChargeToUse = arguments[0]"
-          @mouseenter.native="
-            $store.commit(
-              'tooltip',
-              `Click and hold to use your charged thrust!`,
-            )
-          "
-          @mouseleave.native="$store.commit('tooltip')"
-          @mousedown.native="$store.commit('tooltip')"
-        >
-          Thrust
-          <span v-if="thrustChargeToUse">
-            ({{
-              c.r2(
-                thrustChargeToUse *
-                  c.getMaxCockpitChargeForSingleCrewMember(
-                    pilotingSkill,
-                  ) *
-                  crewMember.cockpitCharge *
-                  engineThrustAmplification,
-              )
-            }}
-            xyz)
-          </span>
-        </LimitedChargeButton>
-        <LimitedChargeButton
-          :class="{
-            disabled:
-              ship.velocity[0] === 0 &&
-              ship.velocity[1] === 0,
-          }"
-          :max="crewMember.cockpitCharge"
-          :disabled="
-            ship.velocity[0] === 0 && ship.velocity[1] === 0
-          "
-          @percent="brakeChargeToUse = arguments[0]"
-          @end="brake"
-          @mouseenter.native="
-            $store.commit(
-              'tooltip',
-              `Click and hold to use your charged thrust to stop the ship.`,
-            )
-          "
-          @mouseleave.native="$store.commit('tooltip')"
-          @mousedown.native="$store.commit('tooltip')"
-        >
-          Brake
-          <span v-if="brakeChargeToUse">
-            ({{
-              c.r2(
-                brakeChargeToUse *
-                  c.getMaxCockpitChargeForSingleCrewMember(
-                    pilotingSkill,
-                  ) *
-                  crewMember.cockpitCharge *
-                  engineThrustAmplification,
-              )
-            }}
-            xyz)
-          </span>
-        </LimitedChargeButton>
-      </div>
     </div>
   </Box>
 </template>
@@ -224,7 +244,12 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return { c, thrustChargeToUse: 0, brakeChargeToUse: 0 }
+    return {
+      c,
+      thrustChargeToUse: 0,
+      brakeChargeToUse: 0,
+      animateThrust: false,
+    }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
@@ -304,6 +329,14 @@ export default {
       this.$store.commit('setTarget', target)
     },
     thrust(percent: number) {
+      this.animateThrust = true
+      setTimeout(() => (this.animateThrust = false), 2000)
+      this.$store.commit('updateACrewMember', {
+        id: this.crewMember.id,
+        cockpitCharge:
+          this.crewMember.cockpitCharge -
+          this.crewMember.cockpitCharge * percent,
+      })
       this.thrustChargeToUse = 0
       this.$socket.emit(
         'crew:thrust',
@@ -319,11 +352,23 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.dispatch('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data.ship)
+          this.$store.commit(
+            'updateACrewMember',
+            res.data.crewMember,
+          )
         },
       )
     },
     brake(percent: number) {
+      this.animateThrust = true
+      setTimeout(() => (this.animateThrust = false), 2000)
+      this.$store.commit('updateACrewMember', {
+        id: this.crewMember.id,
+        cockpitCharge:
+          this.crewMember.cockpitCharge -
+          this.crewMember.cockpitCharge * percent,
+      })
       this.brakeChargeToUse = 0
       this.$socket.emit(
         'crew:brake',
@@ -339,7 +384,11 @@ export default {
             console.log(res.error)
             return
           }
-          this.$store.dispatch('updateShip', res.data)
+          this.$store.dispatch('updateShip', res.data.ship)
+          this.$store.commit(
+            'updateACrewMember',
+            res.data.crewMember,
+          )
         },
       )
     },
@@ -351,5 +400,43 @@ export default {
 .cockpit {
   position: relative;
   width: 300px;
+
+  & > * {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.thrustbg {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 180%;
+  background: radial-gradient(
+    rgb(215, 50, 0),
+    rgba(255, 185, 65, 0.767),
+    transparent,
+    transparent
+  );
+  transform: scale(2, 1) translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+}
+.animateThrust {
+  animation: 2s thrust ease-out 1;
+}
+
+@keyframes thrust {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 0.5;
+  }
+  25% {
+    opacity: 0.4;
+  }
 }
 </style>

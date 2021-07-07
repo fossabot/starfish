@@ -17,6 +17,7 @@ import { ChangeCaptainCommand } from './commands/ChangeCaptain'
 import { HelpCommand } from './commands/Help'
 import { KickMemberCommand } from './commands/KickMember'
 import { LeaveGameCommand } from './commands/LeaveGame'
+import { GoCommand } from './commands/Go'
 
 export class CommandHandler {
   private commands: Command[]
@@ -36,6 +37,7 @@ export class CommandHandler {
       AlertLevelCommand,
       ChangeCaptainCommand,
       KickMemberCommand,
+      GoCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -68,6 +70,7 @@ export class CommandHandler {
     const matchedCommands = this.commands.filter(
       (command) => {
         if (
+          commandContext.correctPrefix &&
           command.commandNames.includes(
             commandContext.commandName,
           )

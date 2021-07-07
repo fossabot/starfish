@@ -3,6 +3,7 @@ import { CombatShip } from './CombatShip';
 import type { Ship } from './Ship';
 import type { Planet } from '../Planet';
 import type { Cache } from '../Cache';
+import type { Zone } from '../Zone';
 import type { AttackRemnant } from '../AttackRemnant';
 export declare class AIShip extends CombatShip {
     readonly human: boolean;
@@ -14,6 +15,7 @@ export declare class AIShip extends CombatShip {
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];
+        zones: Zone[];
     };
     keyAngle: number;
     targetLocation: CoordinatePair;

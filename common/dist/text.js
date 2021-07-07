@@ -13,6 +13,17 @@ function numberWithCommas(x) {
         (decimal ? `${decimal}`.substring(1) : ``);
     return total;
 }
+function printList(list) {
+    if (!list)
+        return ``;
+    if (list.length === 1)
+        return list[0];
+    if (list.length === 2)
+        return `${list[0]} and ${list[1]}`;
+    return (list.slice(0, list.length - 1).join(`, `) +
+        `, and ` +
+        list[list.length - 1]);
+}
 const badwords_1 = require("./badwords");
 const filter = new badwords_1.LanguageFilter();
 const numberEmojis = [
@@ -39,7 +50,7 @@ const numberEmojis = [
     `🕗`,
     `🕘`,
     `🕙`,
-    `🕚`, // 23
+    `🕚`,
 ];
 const directionArrows = [
     `:arrow_right:`,
@@ -84,6 +95,8 @@ function capitalize(string = ``) {
         .join(` `);
 }
 function sanitize(string = ``) {
+    if (!string)
+        string = ``;
     const withoutURLs = string.replace(/(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/gi, ``);
     const cleaned = filter.clean(withoutURLs);
     return {
@@ -156,6 +169,7 @@ function arrayMove(arr, oldIndex, newIndex) {
 exports.default = {
     maxNameLength,
     numberWithCommas,
+    printList,
     degreesToArrow,
     coordPairToArrow,
     percentToTextBars,

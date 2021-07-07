@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rename = exports.add = void 0;
+exports.move = exports.rename = exports.add = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function add(shipId, data) {
@@ -28,4 +28,10 @@ async function rename(shipId, crewId, name) {
     index_1.io.emit(`crew:rename`, shipId, crewId, name);
 }
 exports.rename = rename;
+async function move(shipId, crewId, target) {
+    if (!(await index_1.connected()))
+        return `Failed to move crew member`;
+    index_1.io.emit(`crew:move`, shipId, crewId, target);
+}
+exports.move = move;
 //# sourceMappingURL=crew.js.map

@@ -2,76 +2,57 @@
   <div class="pagecontainer">
     <div class="bg"></div>
     <FadeIn :off="ready">{{ c.GAME_NAME }}</FadeIn>
-    <!-- <Starfield /> -->
-
-    <Box v-if="!ship">
-      No ship found by the ID(s) you have saved! If you're
-      sure that your server still has a ship in the game,
-      try logging out and back in. If that doesn't fix it,
-      please reach out on the support server.
-    </Box>
+    <!-- <Starfield class="starfield" /> -->
 
     <div
       id="masonrycontainer"
       class="container"
       ref="container"
-      v-if="ship && !ship.dead"
     >
-      <ShipSpectator />
+      <ShipNoShip />
 
-      <ShipTutorial />
-      <Ship />
+      <template v-if="ship && !ship.dead">
+        <ShipSpectator />
 
-      <ShipMemberInventory />
+        <ShipTutorial />
 
-      <ShipMapPlayermapDefault />
-      <ShipMapPlayermapZoom />
+        <Ship />
 
-      <ShipPlanet />
+        <ShipCanvasMap />
+        <ShipPlanet />
 
-      <ShipDiagram />
-      <ShipRoom />
+        <ShipCanvasMapZoom />
 
-      <ShipMember />
+        <ShipMemberInventory />
 
-      <!-- <ShipVisible /> -->
-      <ShipScanShip />
+        <ShipDiagram />
+        <ShipRoom />
 
-      <ShipItems />
+        <ShipMember />
 
-      <ShipLog />
+        <!-- <ShipVisible /> -->
+        <ShipScanShip />
 
-      <ShipCrewRank />
+        <ShipItems />
 
-      <ShipFactionRank />
+        <ShipLog />
 
-      <NavBar v-if="!ship.tutorial" />
-    </div>
-    <div class="box dead" v-if="ship && ship.dead">
-      <h5>You've died!</h5>
-      <div>
-        Your ship explodes into a cloud of rapidly-freezing
-        crystals of ice and air! The crew watches in horror
-        from the window of the escape pod as the wreckage of
-        their ship goes spiraling out into the abyss.
-      </div>
-      <div>
-        The captain can respawn you back at your homeworld.
-      </div>
-      <button
-        v-if="this.ship.captain === this.userId"
-        @click="$store.dispatch('respawn')"
-      >
-        Respawn
-      </button>
+        <ShipCrewRank />
+
+        <ShipFactionRank />
+
+        <ShipNavPane v-if="!ship.tutorial" />
+      </template>
+
+      <ShipDead v-if="ship && ship.dead" />
     </div>
 
-    <details
+    <!-- <details
       style="position: relative; margin-bottom: 2em;"
     >
       <summary>Raw Data</summary>
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-    </details>
+    </details> -->
   </div>
 </template>
 
@@ -79,19 +60,15 @@
 import c from '../../../common/src'
 import { mapState } from 'vuex'
 interface ComponentShape {
-  resizeObserver: ResizeObserver | null
-  mutationObserver: MutationObserver | null
   [key: string]: any
 }
-import { FreeMase } from '../../../common/src/FreeMase/FreeMase'
+import FreeMase from 'freemase'
 
 export default {
   data(): ComponentShape {
     return {
       c,
       currentShipIndex: 0,
-      resizeObserver: null,
-      mutationObserver: null,
       masonryElement: null,
       ready: false,
     }
@@ -102,7 +79,9 @@ export default {
       'ship',
       'userId',
       'shipIds',
+      'shipsBasics',
       'crewMember',
+      'connected',
     ]),
     planet(this: ComponentShape) {
       return this.ship?.planet
@@ -122,95 +101,42 @@ export default {
       this.changeShip(this.currentShipIndex)
     },
     ship(this: ComponentShape) {
-      this.masonryElement = null
-      this.resizeObserver = null
+      this.masonryElement?.position()
+    },
+    connected(this: ComponentShape) {
+      this.masonryElement?.position()
+    },
+    userId(this: ComponentShape) {
+      if (!this.userId) this.$router.push('/login')
     },
   },
 
   async mounted(this: ComponentShape) {
-    if (!this.userId) {
-      this.$router.push('/login')
-      return
+    if (
+      !this.userId ||
+      !this.shipIds ||
+      !this.shipIds.length
+    ) {
+      this.$store.dispatch('logIn', {
+        userId: this.userId,
+        shipIds: this.shipIds,
+      })
     }
     this.changeShip(this.currentShipIndex)
-    this.setUpObservers()
-    setTimeout(() => (this.ready = true), 2000)
+    this.setUpMasonry()
+
+    window.addEventListener('focus', () => {
+      this.$store.dispatch('slowMode', false)
+    })
+    window.addEventListener('blur', () => {
+      this.$store.dispatch('slowMode', true)
+    })
   },
 
   methods: {
-    async setUpObservers(this: ComponentShape) {
-      if (
-        (this.$refs.container?.children?.length || 0) < 1
-      ) {
-        return setTimeout(this.setUpObservers, 100)
-      }
-
-      await this.$nextTick()
-
-      const alreadyWatchingForResize: Element[] = []
-
-      if (this.resizeObserver && this.mutationObserver)
-        return
-      let ready = false
-      const mutateCallback = c.debounce(
-        (els?: MutationRecord[]) => {
-          if (!ready) return
-          if (els)
-            els.forEach((entry) => {
-              const parentEl = entry.target as Element
-              if (!parentEl) return
-              // c.log('mutated', parentEl)
-              for (let childEl of Array.from(
-                parentEl.children,
-              )) {
-                if (
-                  alreadyWatchingForResize.includes(childEl)
-                )
-                  return
-                // c.log(
-                //   'already watching',
-                //   childEl,
-                // )
-                if (this.resizeObserver)
-                  this.resizeObserver.observe(childEl)
-                c.log('now watching for resize:', childEl)
-                alreadyWatchingForResize.push(childEl)
-              }
-            })
-          this.$nextTick(this.resetMasonry)
-        },
-        200,
-      )
-
-      const resizeCallback = c.debounce(
-        (els?: ResizeObserverEntry[]) => {
-          // c.log('resized', els)
-          if (!ready) return
-          this.$nextTick(this.resetMasonry)
-        },
-        200,
-      )
-
-      this.mutationObserver = new MutationObserver(
-        mutateCallback,
-      )
-      this.mutationObserver.observe(this.$refs.container, {
-        childList: true,
-      })
-
-      this.resizeObserver = new ResizeObserver(
-        resizeCallback,
-      )
-      for (let child of this.$refs.container.children) {
-        if (child.$el) child = child.$el
-        this.resizeObserver.observe(child)
-        alreadyWatchingForResize.push(child)
-      }
-      ready = true
-      resizeCallback()
-    },
     changeShip(this: ComponentShape, index: number) {
       if (
+        this.shipIds &&
         this.shipIds[index] &&
         (!this.ship || this.ship.id !== this.shipIds[index])
       )
@@ -219,18 +145,15 @@ export default {
           this.shipIds[index],
         )
     },
-    async resetMasonry(this: ComponentShape) {
-      if (!this.resizeObserver) return this.setUpObservers()
-      if (!this.$refs.container || !window)
-        return setTimeout(this.resetMasonry, 500)
-
-      if (!this.masonryElement) {
-        this.masonryElement = new FreeMase(
-          this.$refs.container,
-          { centerX: true },
-        )
-        setTimeout(() => (this.ready = true), 500)
-      } else this.masonryElement.position()
+    async setUpMasonry(this: ComponentShape) {
+      if (this.masonryElement) return
+      if (!this.$refs.container)
+        return setTimeout(this.setUpMasonry, 100)
+      this.masonryElement = new FreeMase(
+        this.$refs.container,
+        { centerX: true },
+      )
+      setTimeout(() => (this.ready = true), 200)
     },
   },
 }
@@ -257,12 +180,19 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  background-image: url('/images/pageBackgrounds/bg1.png');
+  background-image: url('/images/pageBackgrounds/bg2.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  filter: blur(0.1vw);
-  opacity: 0.3;
+  // filter: blur(0.1vw);
+  opacity: 0.2;
+}
+.starfield {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .container {

@@ -2,6 +2,7 @@ import type { Game } from '../../Game';
 import type { Faction } from '../Faction';
 import type { Planet } from '../Planet';
 import type { Cache } from '../Cache';
+import type { Zone } from '../Zone';
 import type { AttackRemnant } from '../AttackRemnant';
 import type { CrewMember } from '../CrewMember/CrewMember';
 import type { CombatShip } from './CombatShip';
@@ -36,6 +37,7 @@ export declare class Ship extends Stubbable {
         caches: Cache[];
         attackRemnants: AttackRemnant[];
         trails?: CoordinatePair[][];
+        zones: Zone[];
     };
     readonly seenPlanets: Planet[];
     chassis: BaseChassisData;

@@ -1,5 +1,10 @@
 <template>
-  <Box class="log" v-if="show" :highlight="highlight">
+  <Box
+    class="log"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/1.jpg"
+  >
     <template #title>
       <span class="sectionemoji">📄</span>Ship Log
     </template>

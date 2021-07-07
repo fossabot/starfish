@@ -8,6 +8,7 @@ import type { Cache } from '../Cache';
 import type { Ship } from './Ship';
 import type { Item } from '../Item/Item';
 import { Tutorial } from './addins/Tutorial';
+import type { Zone } from '../Zone';
 export declare class HumanShip extends CombatShip {
     static maxLogLength: number;
     readonly id: string;
@@ -25,6 +26,7 @@ export declare class HumanShip extends CombatShip {
         caches: Cache[];
         attackRemnants: AttackRemnant[];
         trails?: CoordinatePair[][];
+        zones: Zone[];
     };
     shownPanels?: any[];
     commonCredits: number;
@@ -47,8 +49,10 @@ export declare class HumanShip extends CombatShip {
         caches: Cache[];
         attackRemnants: AttackRemnant[];
         trails?: CoordinatePair[][];
+        zones: Zone[];
     }): void;
     updatePlanet(silent?: boolean): Promise<void>;
+    notifyZones(startingLocation: CoordinatePair): void;
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;
     recalculateShownPanels(): void;

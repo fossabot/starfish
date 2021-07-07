@@ -1,5 +1,9 @@
 <template>
-  <Box class="bunk" :highlight="highlight">
+  <Box
+    class="bunk"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/13.jpg"
+  >
     <template #title
       ><span class="sectionemoji">🛌</span>Bunk</template
     >

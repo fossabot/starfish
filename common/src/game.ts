@@ -7,7 +7,7 @@ const gameShipLimit = 100
 
 const gameSpeedMultiplier = 24 * 3
 
-const baseSightRange = 0.2
+const baseSightRange = 0.1
 
 const baseRepairCost = 30
 
@@ -15,16 +15,23 @@ const maxBroadcastLength = 200
 
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier
 
-const baseXpGain = 0.1 * gameSpeedMultiplier
+const baseXpGain = 0.05 * gameSpeedMultiplier
+
+const itemPriceMultiplier = 1
 
 const factionVendorMultiplier = 0.98
-const factionAllegianceFriendCutoff = 10
+const factionAllegianceFriendCutoff = 50
 
 const baseItemSellMultiplier = 0.75
 
 const noEngineThrustMagnitude = 0.02
 
-const aiDifficultyMultiplier = 1
+const aiDifficultyMultiplier = 0.5
+
+const attackRemnantExpireTime =
+  (1000 * 60 * 60 * 24 * 3) / gameSpeedMultiplier
+const cacheExpireTime =
+  (1000 * 60 * 60 * 24 * 14) / gameSpeedMultiplier
 
 const baseShipScanProperties: {
   id: true
@@ -33,6 +40,7 @@ const baseShipScanProperties: {
   ai: true
   headerBackground: true
   tagline: true
+  level: true
   dead: true
   attackable: true
   previousLocations: true
@@ -48,6 +56,7 @@ const baseShipScanProperties: {
   ai: true,
   headerBackground: true,
   tagline: true,
+  level: true,
   dead: true,
   attackable: true,
   previousLocations: true,
@@ -56,6 +65,10 @@ const baseShipScanProperties: {
   faction: [`ai`, `name`, `id`, `color`],
   species: [`id`, `singular`, `icon`],
   chassis: [`displayName`],
+}
+const sameFactionShipScanProperties = {
+  _hp: true,
+  _maxHp: true,
 }
 
 const tactics: Tactic[] = [`aggressive`, `defensive`]
@@ -92,7 +105,7 @@ function getRadiusDiminishingReturns(
   equipmentCount: number,
 ) {
   if (equipmentCount === 0) return 0
-  return totalValue / Math.sqrt(equipmentCount) || 0
+  return totalValue / Math.sqrt(equipmentCount) || 0 // this might be too harsh? 5 and 2 = 4.9
 }
 
 function getMaxCockpitChargeForSingleCrewMember(
@@ -122,7 +135,7 @@ function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    (math.lerp(0.2, 1.3, level / 100) /
+    (math.lerp(0.15, 1.0, level / 100) /
       globals.TICK_INTERVAL) *
     gameSpeedMultiplier
   )
@@ -148,6 +161,10 @@ const taglineOptions: string[] = [
   `Tester`,
   `✨Supporter✨`,
   `Very Shallow`,
+  `Big Fish`,
+  `Guppy`,
+  `On the Hunt`,
+  `Schoolin'`,
 ]
 
 const headerBackgroundOptions: {
@@ -232,10 +249,14 @@ export default {
   baseXpGain,
   factionVendorMultiplier,
   factionAllegianceFriendCutoff,
+  itemPriceMultiplier,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
   aiDifficultyMultiplier,
+  attackRemnantExpireTime,
+  cacheExpireTime,
   baseShipScanProperties,
+  sameFactionShipScanProperties,
   getHitDamage,
   getBaseDurabilityLossPerTick,
   getRadiusDiminishingReturns,

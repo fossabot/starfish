@@ -7,10 +7,10 @@ export declare class Planet extends Stubbable {
     readonly color: string;
     readonly location: CoordinatePair;
     readonly game: Game;
-    readonly vendor: Vendor;
+    readonly vendor?: Vendor;
     readonly faction?: Faction;
     readonly creatures: string[];
-    readonly repairCostMultiplier: number;
+    readonly repairCostMultiplier?: number;
     readonly radius: number;
     readonly allegiances: AllegianceData[];
     readonly homeworld?: Faction;

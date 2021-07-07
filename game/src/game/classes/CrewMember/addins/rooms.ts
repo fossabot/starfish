@@ -76,23 +76,8 @@ export function repair(
   let overRepair = false
   itemsToRepair.forEach((ri) => {
     const previousRepair = ri.repair
-    ri.repair =
-      (ri.hp + amountToRepair) /
-      ri.repairDifficulty /
-      ri.maxHp
-    ri._stub = null // invalidate stub
-    if (ri.repair > 1) {
-      overRepair = true
-      ri.repair = 1
-      if (ri.announceWhenRepaired)
-        this.ship.logEntry(
-          `Your ${ri.displayName} is fully repaired.`,
-          `medium`,
-        )
-      ri.announceWhenRepaired = false
-    }
-    if (ri.repair > 0.1) ri.announceWhenBroken = true
-    if (ri.repair < 0.9) ri.announceWhenRepaired = true
+    const res = ri.applyRepair(amountToRepair)
+    overRepair = overRepair || res
     totalRepaired += ri.repair - previousRepair
   })
 

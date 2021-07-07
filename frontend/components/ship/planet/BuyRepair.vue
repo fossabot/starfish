@@ -77,6 +77,9 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     buyRepair(this: ComponentShape, hp: number) {
+      this.$store.commit('updateShip', {
+        _hp: this.ship._hp + hp,
+      })
       this.$socket?.emit(
         'crew:buyRepair',
         this.ship.id,

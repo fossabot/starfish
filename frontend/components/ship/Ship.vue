@@ -1,7 +1,16 @@
 <template>
-  <Box v-if="show" :highlight="highlight">
+  <Box
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/4.jpg"
+    :overlayTitle="true"
+    @minimize="minimized = true"
+    @unminimize="minimized = false"
+  >
     <template #title>
-      <span class="sectionemoji">🚀</span>{{ ship.name }}
+      <span :style="{ display: minimized ? '' : 'none' }">
+        <span class="sectionemoji">🚀</span>{{ ship.name }}
+      </span>
     </template>
 
     <ShipTooltipsShipdot
@@ -10,7 +19,7 @@
       class="ship"
     />
 
-    <div class="panesection">
+    <div class="panesection" v-if="ship.commonCredits">
       <div
         class="flexbetween"
         @mouseenter="
@@ -22,15 +31,23 @@
         @mouseleave="$store.commit('tooltip')"
       >
         <div>Common Fund</div>
-        <div>💳{{ ship && c.r2(ship.commonCredits) }}</div>
+        <div>
+          💳{{ ship && c.r2(ship.commonCredits, 2, true) }}
+        </div>
       </div>
-      <button
+      <PromptButton
         v-if="isCaptain && ship.commonCredits > 0.01"
-        @click="redistributeCommonFund"
-        class="mini secondary"
+        @done="redistributeCommonFund(...arguments)"
       >
-        Redistribute Credits
-      </button>
+        <template #label>
+          Redistribute Credits
+        </template>
+        <template>
+          How many credits do you want to redistribute
+          evenly among the crew? (Max
+          {{ Math.floor(ship.commonCredits * 100) / 100 }})
+        </template>
+      </PromptButton>
     </div>
   </Box>
 </template>
@@ -44,7 +61,7 @@ interface ComponentShape {
 
 export default {
   data(): ComponentShape {
-    return { c }
+    return { c, minimized: false }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
@@ -68,18 +85,11 @@ export default {
   watch: {},
   mounted(this: ComponentShape) {},
   methods: {
-    async redistributeCommonFund(this: ComponentShape) {
-      const amount = c.r2(
-        parseFloat(
-          prompt(
-            `How many credits do you want to contribute to the ship's common credits? (Max ${Math.floor(
-              this.ship.commonCredits * 100,
-            ) / 100})`,
-          ) || '0',
-        ) || 0,
-        2,
-        true,
-      )
+    async redistributeCommonFund(
+      this: ComponentShape,
+      amount: any,
+    ) {
+      amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
         amount < 0 ||

@@ -26,8 +26,9 @@ const mainDirs = [
 // 'common', 'discord', 'frontend', 'game'
 ];
 const log = (...args) => {
-    const regexResult = /log\.[jt]s[^\n]*\n([^\n]*\/([^/]+\/[^/]+\/[^/:]+))\.[^:]+/gi.exec(`${new Error().stack}`);
+    const regexResult = /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || ``;
+    // const lineNumber: string = regexResult?.[3] || ``
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
     const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``;
     for (let index = 0; index < args.length; index++) {
@@ -76,7 +77,9 @@ const log = (...args) => {
         pathName);
     if (prefix.length > longest)
         longest = prefix.length;
-    prefix = prefix.padEnd(longest, fillCharacter) + reset;
+    prefix =
+        prefix.padEnd(Math.min(25, longest), fillCharacter) +
+            reset;
     console.log(prefix, ...args);
 };
 function trace() {

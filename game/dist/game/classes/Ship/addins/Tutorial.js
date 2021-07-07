@@ -238,7 +238,6 @@ class Tutorial {
                     `ship`,
                     `log`,
                 ],
-                highlightPanel: `ship`,
                 disableRepair: true,
                 disableStamina: true,
                 visibleTypes: [`planet`, `trail`],
@@ -819,6 +818,11 @@ class Tutorial {
             .forEach((k) => {
             // c.log(`attempting to remove cache`, k)
             this.ship.game.removeCache(k);
+        });
+        this.ship.game.attackRemnants
+            .filter((a) => a.onlyVisibleToShipId === this.ship.id)
+            .forEach((a) => {
+            this.ship.game.removeAttackRemnant(a);
         });
         this.ship.game.aiShips
             .filter((s) => s.onlyVisibleToShipId === this.ship.id)

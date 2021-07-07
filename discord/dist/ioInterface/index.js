@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -27,6 +27,7 @@ const dist_1 = __importDefault(require("../../../common/dist"));
 const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const discordClient_1 = require("../discordClient");
 const resolveOrCreateChannel_1 = __importDefault(require("../discordClient/actions/resolveOrCreateChannel"));
+const is_docker_1 = __importDefault(require("is-docker"));
 const ship = __importStar(require("./ship"));
 const crew = __importStar(require("./crew"));
 exports.default = {
@@ -35,7 +36,7 @@ exports.default = {
     crew,
 };
 // connect to server
-const client = socket_io_client_1.default(`http://game:4200`);
+const client = socket_io_client_1.default(`http://${is_docker_1.default() ? `game` : `localhost`}:4200`);
 exports.io = client.connect();
 exports.io.on(`connect`, () => {
     dist_1.default.log(`green`, `Connected to game server.`);

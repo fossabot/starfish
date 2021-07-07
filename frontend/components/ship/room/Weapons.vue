@@ -1,5 +1,9 @@
 <template>
-  <Box class="weapons" :highlight="highlight">
+  <Box
+    class="weapons"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/8.jpg"
+  >
     <template #title
       ><span class="sectionemoji">🎯</span>Weapons
       Bay</template
@@ -21,49 +25,20 @@
           @mouseleave="$store.commit('tooltip')"
         >
           {{ i.displayName }}
-          <div class="flex">
-            <ProgressBar :mini="true" :percent="i.repair">
-              <div>
-                Repair:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * 100, 0)"
-                  :display="c.r2(i.repair * 100, 0) + '%'"
-                />
-              </div>
-            </ProgressBar>
-            <ProgressBar
+          <div class="">
+            <PillBar
               :mini="true"
+              :value="i.repair * i.maxHp"
+              :max="i.maxHp"
+            />
+            <ProgressBar
+              :micro="true"
               :percent="
                 (i.baseCooldown - i.cooldownRemaining) /
                   i.baseCooldown
               "
               :dangerZone="-1"
-            >
-              <div>
-                Charge:
-
-                <NumberChangeHighlighter
-                  :number="
-                    c.r2(
-                      ((i.baseCooldown -
-                        i.cooldownRemaining) /
-                        i.baseCooldown) *
-                        100,
-                      0,
-                    )
-                  "
-                  :display="
-                    c.r2(
-                      ((i.baseCooldown -
-                        i.cooldownRemaining) /
-                        i.baseCooldown) *
-                        100,
-                      0,
-                    ) + '%'
-                  "
-                />
-              </div>
-            </ProgressBar>
+            />
           </div>
         </div>
       </div>
@@ -162,10 +137,10 @@
           </button>
         </div>
       </div>
-      <div class="panesection">
+      <!-- <div class="panesection">
         toggle always attack factions:
         green/gray/red/blue/etc
-      </div>
+      </div> -->
     </div>
   </Box>
 </template>

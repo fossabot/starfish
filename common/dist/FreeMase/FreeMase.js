@@ -1,32 +1,99 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FreeMase = void 0;
 const Rect_1 = require("./Rect");
-const misc_1 = __importDefault(require("../misc"));
 class FreeMase {
     constructor(parentEl, options) {
+        this.maxWidth = 99999;
         this.maxHeight = 99999;
+        this.resizeObserver = null;
+        this.mutationObserver = null;
+        this.watchingForResize = [];
+        console.log(`FreeMase:`, `a`);
         this.parentEl = parentEl;
-        this.maxWidth = parentEl.offsetWidth;
         this.window = window;
-        if (!window)
-            return;
         if (options)
             this.options = options;
-        this.window.addEventListener(`resize`, misc_1.default.debounce(() => {
+        if (!this.parentEl) {
+            console.error(`FreeMase requires a parent element as the first property to its constructor.`);
+            return;
+        }
+        if (!window) {
+            console.error(`FreeMase can only run in a browser (window object not found).`);
+            return;
+        }
+        this.window.addEventListener(`resize`, debounce(() => {
             this.position();
         }), {
             passive: true,
         });
+        this.setup();
+    }
+    async setup() {
+        const giveUpLimit = 100;
+        let giveUp = 0;
+        while (!this.parentEl || !this.window) {
+            await sleep(100);
+            if (++giveUp > giveUpLimit) {
+                console.error(`FreeMase:`, `Failed to initialize`);
+                return;
+            }
+        }
+        if (this.resizeObserver && this.mutationObserver)
+            return;
+        this.maxWidth = this.parentEl.offsetWidth;
+        let ready = false;
+        const mutateCallback = debounce((els) => {
+            if (!ready)
+                return;
+            if (els)
+                els.forEach((entry) => {
+                    const parentEl = entry.target;
+                    if (!parentEl)
+                        return;
+                    console.log(`FreeMase:`, `mutated`, parentEl);
+                    for (let childEl of Array.from(parentEl.children)) {
+                        if (this.watchingForResize.includes(childEl))
+                            return;
+                        // console.log('FreeMase:',
+                        //   'already watching',
+                        //   childEl,
+                        // )
+                        if (this.resizeObserver)
+                            this.resizeObserver.observe(childEl);
+                        console.log(`FreeMase:`, `now watching for resize:`, childEl);
+                        this.watchingForResize.push(childEl);
+                    }
+                });
+            this.position();
+        }, 100);
+        const resizeCallback = debounce((els) => {
+            // console.log('FreeMase:', 'resized', els)
+            if (!ready)
+                return;
+            this.position();
+        }, 100);
+        this.mutationObserver = new MutationObserver(mutateCallback);
+        this.mutationObserver.observe(this.parentEl, {
+            childList: true,
+        });
+        this.resizeObserver = new ResizeObserver(resizeCallback);
+        for (let child of Array.from(this.parentEl.children)) {
+            console.log(`FreeMase:`, `now watching for resize:`, child);
+            this.resizeObserver.observe(child);
+            this.watchingForResize.push(child);
+        }
+        ready = true;
         this.position();
     }
     async position() {
+        if (!this.parentEl ||
+            !this.resizeObserver ||
+            !this.mutationObserver)
+            return 0;
         const startTime = Date.now();
-        // c.log(`resetting positions`)
-        this.parentEl.setAttribute(`style`, `width: 100%;`);
+        // console.log('FreeMase:', `resetting positions`)
+        this.parentEl.style.width = `100%`;
         this.maxWidth = this.parentEl.offsetWidth;
         let availableSpaces = [
             new Rect_1.Rect({
@@ -39,9 +106,19 @@ class FreeMase {
         const takenSpaces = [];
         for (let i = 0; i < this.parentEl.children.length; i++) {
             const element = this.parentEl.children[i];
-            element.setAttribute(`style`, `position: absolute; top: 0; left: ${this.options?.centerX
+            element.style.position = `absolute`;
+            element.style.top = `0px`;
+            element.style.left = `${this.options?.centerX
                 ? this.maxWidth / 2 - element.offsetWidth / 2
-                : 0};`);
+                : 0}px`;
+            // element.setAttribute(
+            //   `style`,
+            //   `position: absolute; top: 0px; left: ${
+            //     this.options?.centerX
+            //       ? this.maxWidth / 2 - element.offsetWidth / 2
+            //       : 0
+            //   }px;`,
+            // )
         }
         const determinePlacementForOneFrame = (element) => {
             const elBcr = element.getBoundingClientRect();
@@ -62,9 +139,9 @@ class FreeMase {
                 right: firstFit.left + elBcr.width,
             });
             takenSpaces.push(placedRect);
-            // c.log(`---`)
-            // c.log(`placing:`, element)
-            // c.log(`placing in rect`, placedRect)
+            // console.log('FreeMase:', `---`)
+            // console.log('FreeMase:', `placing:`, element)
+            // console.log('FreeMase:', `placing in rect`, placedRect)
             // recalculate available spaces
             availableSpaces = [];
             let doneAddingNewAvailableSpaces = false;
@@ -144,7 +221,7 @@ class FreeMase {
                         });
                     }
                 }
-                // c.log(`gaps`, foundSpans)
+                // console.log('FreeMase:', `gaps`, foundSpans)
                 // get the max heights for the gaps
                 for (let { left, right } of foundSpans) {
                     let top = searchTop;
@@ -183,7 +260,7 @@ class FreeMase {
                 element,
                 rect: placedRect,
             };
-            // c.log(`available spaces:`, availableSpaces)
+            // console.log('FreeMase:', `available spaces:`, availableSpaces)
         };
         const frames = [];
         for (let i = 0; i < this.parentEl.children.length; i++) {
@@ -200,7 +277,7 @@ class FreeMase {
                 return curr;
             return last;
         }, takenSpaces[0])?.bottom || 0;
-        this.parentEl.setAttribute(`style`, `width: 100%; height: ${lastTakenSpace}px;`);
+        this.parentEl.style.height = `${lastTakenSpace}px`;
         const placeFrames = (frameData) => {
             let offsetLeft = 0;
             if (this.options?.centerX) {
@@ -212,13 +289,31 @@ class FreeMase {
                 offsetLeft = (this.maxWidth - farthestRight) / 2;
             }
             for (let d of frameData) {
-                d.element.setAttribute(`style`, `position: absolute; top:${d.rect.top}px; left: ${d.rect.left + offsetLeft}px; opacity: 1;`);
+                d.element.style.top = `${d.rect.top}px`;
+                d.element.style.left = `${d.rect.left + offsetLeft}px`;
+                d.element.style.opacity = `1`;
             }
         };
         placeFrames(frames);
         const elapsedTime = Date.now() - startTime;
-        // c.log(`elapsed time: ${elapsedTime}`)
+        console.log(`FreeMase:`, `elapsed time: ${elapsedTime}`);
+        return elapsedTime;
     }
 }
 exports.FreeMase = FreeMase;
+function debounce(fn, time = 500) {
+    let timeout;
+    return (...params) => {
+        if (timeout)
+            clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            fn(...params);
+        }, time);
+    };
+}
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 //# sourceMappingURL=FreeMase.js.map

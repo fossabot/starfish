@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div>
-      <b>🪐{{ data.name }}</b>
+    <div class="tooltipheader">
+      <span>🪐</span
+      ><span :style="{ color: data.color }">{{
+        data.name
+      }}</span>
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
     <div>{{ data.description }}</div>
@@ -59,4 +62,8 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.icon {
+  border-radius: 50%;
+}
+</style>

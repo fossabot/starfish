@@ -21,6 +21,7 @@ const ChangeCaptain_1 = require("./commands/ChangeCaptain");
 const Help_1 = require("./commands/Help");
 const KickMember_1 = require("./commands/KickMember");
 const LeaveGame_1 = require("./commands/LeaveGame");
+const Go_1 = require("./commands/Go");
 class CommandHandler {
     constructor(prefix) {
         const commandClasses = [
@@ -35,6 +36,7 @@ class CommandHandler {
             AlertLevel_1.AlertLevelCommand,
             ChangeCaptain_1.ChangeCaptainCommand,
             KickMember_1.KickMemberCommand,
+            Go_1.GoCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         this.commands.push(new Help_1.HelpCommand(this.commands));
@@ -54,7 +56,8 @@ class CommandHandler {
         const commandContext = new CommandContext_1.CommandContext(message, this.prefix);
         // find matched commands
         const matchedCommands = this.commands.filter((command) => {
-            if (command.commandNames.includes(commandContext.commandName))
+            if (commandContext.correctPrefix &&
+                command.commandNames.includes(commandContext.commandName))
                 return true;
             if (command.ignorePrefixMatchTest &&
                 command.ignorePrefixMatchTest(message))

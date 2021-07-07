@@ -16,6 +16,7 @@ runOnDbReady(async () => {
   // await db.planet.wipe()
   // await db.ship.wipe()
   // await db.cache.wipe()
+  // await db.zone.wipe()
   // await db.ship.wipeAI()
 
   const savedPlanets = await db.planet.getAllConstructible()
@@ -32,6 +33,10 @@ runOnDbReady(async () => {
   savedCaches.forEach((cache) =>
     game.addCache(cache, false),
   )
+
+  const savedZones = await db.zone.getAllConstructible()
+  c.log(`Loaded ${savedZones.length} saved zones from DB.`)
+  savedZones.forEach((zone) => game.addZone(zone, false))
 
   const savedShips = await db.ship.getAllConstructible()
   c.log(`Loaded ${savedShips.length} saved ships from DB.`)

@@ -36,6 +36,7 @@ class AIShip extends CombatShip_1.CombatShip {
             planets: [],
             caches: [],
             attackRemnants: [],
+            zones: [],
         };
         this.keyAngle = Math.random() * 365;
         this.obeysGravity = false;
@@ -75,11 +76,14 @@ class AIShip extends CombatShip_1.CombatShip {
         // recharge weapons
         this.weapons.forEach((w) => (w.cooldownRemaining -=
             dist_1.default.getWeaponCooldownReductionPerTick(this.level)));
+        // ----- zone effects -----
+        this.applyZoneTickEffects();
         // attack enemy in range
         const weapons = this.availableWeapons();
         if (!weapons.length)
             return;
-        const enemies = this.getEnemiesInAttackRange();
+        const enemies = this.getEnemiesInAttackRange().filter((e) => !this.onlyVisibleToShipId ||
+            e.id === this.onlyVisibleToShipId);
         if (enemies.length) {
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const distance = dist_1.default.distance(randomEnemy.location, this.location);

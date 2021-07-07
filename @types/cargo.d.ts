@@ -1,4 +1,12 @@
-type CargoType = `salt` | `water` | `oxygen`
+type CargoType =
+  | `salt`
+  | `water`
+  | `oxygen`
+  | `plastic`
+  | `carbon`
+  | `steel`
+  | `titanium`
+  | `uranium`
 
 type CargoData = {
   type: CargoType

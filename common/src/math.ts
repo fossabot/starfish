@@ -1,7 +1,9 @@
+import globals from './globals'
+
 function lerp(
   v0: number = 0,
   v1: number = 0,
-  t: number = 0,
+  t: number = globals.TICK_INTERVAL || 0,
 ) {
   return v0 * (1 - t) + v1 * t
 }
@@ -71,9 +73,25 @@ function angleFromAToB(
 }
 /**
  * shortest distance (in degrees) between two angles.
- * It will be in range [0, 180].
+ * It will be in range [0, 180] if not signed.
  */
-function angleDifference(a: number, b: number): number {
+function angleDifference(
+  a: number,
+  b: number,
+  signed = false,
+): number {
+  if (signed) {
+    const d = Math.abs(a - b) % 360
+    let r = d > 180 ? 360 - d : d
+    // calculate sign
+    const sign =
+      (a - b >= 0 && a - b <= 180) ||
+      (a - b <= -180 && a - b >= -360)
+        ? 1
+        : -1
+    r *= sign
+    return r
+  }
   const c = Math.abs(b - a) % 360
   const d = c > 180 ? 360 - c : c
   return d
@@ -150,6 +168,12 @@ function randomInRange(a: number, b: number) {
 function lottery(odds: number, outOf: number): boolean {
   return Math.random() < odds / outOf
 }
+function randomBetween(start: number, end: number) {
+  const lesser = Math.min(start, end)
+  const greater = Math.max(start, end)
+  const diff = greater - lesser
+  return Math.random() * diff + lesser
+}
 
 export default {
   lerp,
@@ -170,4 +194,5 @@ export default {
   randomSign,
   randomInRange,
   lottery,
+  randomBetween,
 }

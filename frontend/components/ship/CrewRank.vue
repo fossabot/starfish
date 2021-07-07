@@ -1,5 +1,10 @@
 <template>
-  <Box class="crewrank" v-if="show" :highlight="highlight">
+  <Box
+    class="crewrank"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/15.jpg"
+  >
     <template #title>
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
@@ -7,16 +12,17 @@
     <div class="panesection">
       <h5>Contributed Credits</h5>
 
-      <div
-        v-for="(cm, index) in mostShared"
-        :key="'mostShared' + cm.id"
-      >
-        <b>#{{ index + 1 }}</b
-        >: {{ cm.name }} ({{
-          Math.round(cm.totalContributed)
-        }}
-        credits)
-      </div>
+      <ol>
+        <li
+          v-for="(cm, index) in mostShared"
+          :key="'mostShared' + cm.id"
+        >
+          {{ cm.name }}
+          <span class="sub">
+            ({{ Math.round(cm.totalContributed) }})
+          </span>
+        </li>
+      </ol>
     </div>
 
     <div
@@ -26,16 +32,21 @@
     >
       <h5>{{ c.capitalize(skill.skill) }}</h5>
 
-      <div
-        v-for="(cm, index) in bestXAtEachSkill[skill.skill]"
-        :key="'skillrankmember' + skill.skill + cm.id"
-      >
-        <b>#{{ index + 1 }}</b
-        >: {{ cm.name }} - Lv.{{ cm.skill.level }} ({{
-          Math.round(cm.skill.xp)
-        }}
-        xp)
-      </div>
+      <ol>
+        <li
+          v-for="(cm, index) in bestXAtEachSkill[
+            skill.skill
+          ]"
+          :key="'skillrankmember' + skill.skill + cm.id"
+        >
+          {{ cm.name }}
+          <span class="sub">
+            Lv.{{ cm.skill.level }} ({{
+              Math.round(cm.skill.xp)
+            }}xp)
+          </span>
+        </li>
+      </ol>
     </div>
   </Box>
 </template>
@@ -99,6 +110,7 @@ export default {
           (a: any, b: any) =>
             b.totalContributed - a.totalContributed,
         )
+        .slice(0, 3)
     },
   },
   watch: {},

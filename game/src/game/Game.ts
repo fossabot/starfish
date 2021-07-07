@@ -9,11 +9,13 @@ import { Cache } from './classes/Cache'
 import { Faction } from './classes/Faction'
 import { Species } from './classes/Species'
 import { AttackRemnant } from './classes/AttackRemnant'
+import { Zone } from './classes/Zone'
 
 import { HumanShip } from './classes/Ship/HumanShip'
 import { AIShip } from './classes/Ship/AIShip'
 
 import { generatePlanet as generatePlanetData } from './presets/planets'
+import { generateZoneData } from './presets/zones'
 import defaultFactions from './presets/factions'
 
 export class Game {
@@ -23,6 +25,7 @@ export class Game {
   readonly ships: Ship[] = []
   readonly planets: Planet[] = []
   readonly caches: Cache[] = []
+  readonly zones: Zone[] = []
   readonly factions: Faction[] = []
   readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
@@ -139,7 +142,8 @@ export class Game {
     this.expireOldAttackRemnantsAndCaches()
     this.spawnNewCaches()
     this.spawnNewAIs()
-    this.spawnNewPlanet()
+    this.spawnNewPlanets()
+    this.spawnNewZones()
 
     // ----- timing
 
@@ -198,6 +202,7 @@ export class Game {
       | `cache`
       | `attackRemnant`
       | `trail`
+      | `zone`
     )[],
     includeTrails: boolean = false,
     tutorial: boolean = false,
@@ -207,21 +212,26 @@ export class Game {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
+    zones: Zone[]
   } {
     let ships: Ship[] = [],
       trails: CoordinatePair[][] = [],
       planets: Planet[] = [],
       caches: Cache[] = [],
-      attackRemnants: AttackRemnant[] = []
+      attackRemnants: AttackRemnant[] = [],
+      zones: Zone[] = []
     if (!types || types.includes(`ship`))
       ships = this.ships.filter((s) => {
         if (
           s.onlyVisibleToShipId &&
-          ignoreSelf &&
-          s.onlyVisibleToShipId !== ignoreSelf
+          ((ignoreSelf &&
+            s.onlyVisibleToShipId !== ignoreSelf) ||
+            !ignoreSelf)
         )
           return false
         if (tutorial && !s.onlyVisibleToShipId) return false
+        if (s.tutorial && s.id !== ignoreSelf && !tutorial)
+          return false
         if (s.id === ignoreSelf) return false
         if (
           c.pointIsInsideCircle(center, s.location, radius)
@@ -236,6 +246,7 @@ export class Game {
       trails = this.ships
         .filter((s) => {
           if (tutorial) return false
+          if (s.tutorial) return false
           if (s.id === ignoreSelf) return false
           if (ships.find((ship) => ship === s)) return false
           for (let l of s.previousLocations) {
@@ -264,17 +275,32 @@ export class Game {
         )
       })
     if (!types || types.includes(`attackRemnant`))
-      attackRemnants = this.attackRemnants.filter(
-        (a) =>
+      attackRemnants = this.attackRemnants.filter((a) => {
+        if (
+          a.onlyVisibleToShipId &&
+          ignoreSelf &&
+          a.onlyVisibleToShipId !== ignoreSelf
+        )
+          return false
+        return (
           c.pointIsInsideCircle(center, a.start, radius) ||
-          c.pointIsInsideCircle(center, a.end, radius),
-      )
+          c.pointIsInsideCircle(center, a.end, radius)
+        )
+      })
+    if (!types || types.includes(`zone`))
+      zones = this.zones.filter((z) => {
+        return (
+          c.distance(center, z.location) - z.radius <=
+          radius
+        )
+      })
     return {
       ships,
       trails,
       planets,
       caches,
       attackRemnants,
+      zones,
     }
   }
 
@@ -309,7 +335,7 @@ export class Game {
     })
   }
 
-  spawnNewPlanet() {
+  spawnNewPlanets() {
     while (
       this.planets.length < this.gameSoftArea * 0.7 ||
       this.planets.length < this.factions.length - 1
@@ -337,6 +363,18 @@ export class Game {
       // c.log(this.planets.map((p) => p.vendor.chassis))
       // c.log(this.planets.map((p) => p.vendor.cargo))
       // c.log(this.planets.map((p) => p.priceFluctuator))
+    }
+  }
+
+  spawnNewZones() {
+    while (this.zones.length < this.gameSoftArea * 0.2) {
+      const z = generateZoneData(this)
+      if (!z) return
+      const zone = this.addZone(z)
+      c.log(
+        `gray`,
+        `Spawned zone ${zone.name} at ${zone.location} of radius ${zone.radius}.`,
+      )
     }
   }
 
@@ -458,8 +496,8 @@ export class Game {
 
   addAIShip(data: BaseAIShipData, save = true): AIShip {
     const existing = this.ships.find(
-      (s) => s instanceof AIShip && s.id === data.id,
-    ) as AIShip
+      (s) => s && s instanceof AIShip && s.id === data.id,
+    ) as AIShip | undefined
     if (existing) {
       c.log(
         `red`,
@@ -551,6 +589,24 @@ export class Game {
     // c.log(this.caches.length, `remaining`)
   }
 
+  addZone(data: BaseZoneData, save = true): Zone {
+    const existing = this.zones.find(
+      (zone) => zone.id === data.id,
+    )
+    if (existing) {
+      c.log(
+        `red`,
+        `Attempted to add existing zone (${existing.id}).`,
+      )
+      return existing
+    }
+    const newZone = new Zone(data, this)
+    this.zones.push(newZone)
+
+    if (save) db.zone.addOrUpdateInDb(newZone)
+    return newZone
+  }
+
   addAttackRemnant(
     data: BaseAttackRemnantData,
     save = true,
@@ -637,6 +693,33 @@ export class Game {
       })
     }
 
+    // members
+    let topMembersShips: FactionRankingTopEntry[] = []
+    const membersScores: FactionRankingScoreEntry[] = []
+    for (let faction of this.factions) {
+      if (faction.id === `red`) continue
+      let total = 0
+      faction.members.forEach((s) => {
+        let shipTotal =
+          (s as HumanShip).crewMembers.length || 0
+        topMembersShips.push({
+          name: s.name,
+          color: faction.color,
+          score: shipTotal,
+        })
+        total += shipTotal
+      })
+      membersScores.push({
+        faction: c.stubify(faction, [
+          `members`,
+        ]) as FactionStub,
+        score: total,
+      })
+    }
+    topMembersShips = topMembersShips
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+
     this.factionRankings = [
       {
         category: `credits`,
@@ -650,6 +733,13 @@ export class Game {
         scores: controlScores.sort(
           (a, b) => b.score - a.score,
         ),
+      },
+      {
+        category: `members`,
+        scores: membersScores.sort(
+          (a, b) => b.score - a.score,
+        ),
+        top: topMembersShips,
       },
     ]
 

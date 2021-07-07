@@ -4,6 +4,7 @@ import * as cache from './models/cache'
 import * as ship from './models/ship'
 import * as attackRemnant from './models/attackRemnant'
 import * as planet from './models/planet'
+import * as zone from './models/zone'
 dotEnvConfig()
 
 import c from '../../../common/dist'
@@ -13,6 +14,7 @@ export const db = {
   ship,
   attackRemnant,
   planet,
+  zone,
 }
 let ready = false
 const toRun: Function[] = []

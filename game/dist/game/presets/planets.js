@@ -62,6 +62,7 @@ function generatePlanet(game, homeworldFactionKey) {
         : closest;
     while (game.planets.find(isTooClose) ||
         game.humanShips.find(isTooClose) ||
+        game.zones.find(isTooClose) ||
         dist_1.default.distance(location, [0, 0]) > game.gameSoftRadius) {
         location = dist_1.default.randomInsideCircle(locationSearchRadius);
         // move planets closer to each other to generate clusters

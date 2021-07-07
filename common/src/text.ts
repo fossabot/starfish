@@ -12,6 +12,17 @@ function numberWithCommas(x: number) {
   return total
 }
 
+function printList(list: string[]) {
+  if (!list) return ``
+  if (list.length === 1) return list[0]
+  if (list.length === 2) return `${list[0]} and ${list[1]}`
+  return (
+    list.slice(0, list.length - 1).join(`, `) +
+    `, and ` +
+    list[list.length - 1]
+  )
+}
+
 import { LanguageFilter } from './badwords'
 const filter = new LanguageFilter()
 const numberEmojis = [
@@ -97,6 +108,7 @@ function capitalize(string: string = ``): string {
 }
 
 function sanitize(string: string = ``): SanitizeResult {
+  if (!string) string = ``
   const withoutURLs = string.replace(
     /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
     ``,
@@ -192,6 +204,7 @@ function arrayMove(
 export default {
   maxNameLength,
   numberWithCommas,
+  printList,
   degreesToArrow,
   coordPairToArrow,
   percentToTextBars,

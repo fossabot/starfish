@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function lerp(v0 = 0, v1 = 0, t = 0) {
+const globals_1 = __importDefault(require("./globals"));
+function lerp(v0 = 0, v1 = 0, t = globals_1.default.TICK_INTERVAL || 0) {
     return v0 * (1 - t) + v1 * t;
 }
 // roundTo:
@@ -45,9 +49,20 @@ function angleFromAToB(a = [0, 0], b = [0, 0]) {
 }
 /**
  * shortest distance (in degrees) between two angles.
- * It will be in range [0, 180].
+ * It will be in range [0, 180] if not signed.
  */
-function angleDifference(a, b) {
+function angleDifference(a, b, signed = false) {
+    if (signed) {
+        const d = Math.abs(a - b) % 360;
+        let r = d > 180 ? 360 - d : d;
+        // calculate sign
+        const sign = (a - b >= 0 && a - b <= 180) ||
+            (a - b <= -180 && a - b >= -360)
+            ? 1
+            : -1;
+        r *= sign;
+        return r;
+    }
     const c = Math.abs(b - a) % 360;
     const d = c > 180 ? 360 - c : c;
     return d;
@@ -100,6 +115,12 @@ function randomInRange(a, b) {
 function lottery(odds, outOf) {
     return Math.random() < odds / outOf;
 }
+function randomBetween(start, end) {
+    const lesser = Math.min(start, end);
+    const greater = Math.max(start, end);
+    const diff = greater - lesser;
+    return Math.random() * diff + lesser;
+}
 exports.default = {
     lerp,
     r2,
@@ -119,5 +140,6 @@ exports.default = {
     randomSign,
     randomInRange,
     lottery,
+    randomBetween,
 };
 //# sourceMappingURL=math.js.map

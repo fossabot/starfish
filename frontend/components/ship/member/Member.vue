@@ -1,6 +1,9 @@
 <template>
   <div class="member" v-if="show">
-    <Box :highlight="highlight">
+    <Box
+      :highlight="highlight"
+      bgImage="/images/paneBackgrounds/2.jpg"
+    >
       <template #title>
         <span class="sectionemoji">{{
           ship.species.icon
@@ -8,63 +11,42 @@
         >{{ crewMember.name }}
       </template>
 
-      <!-- <div class="panesection">
-        <div>
-          🚪Location:
-          {{ c.capitalize(crewMember.location) }}
-        </div>
-      </div> -->
-
-      <ProgressBar
-        :percent="
-          crewMember.stamina / crewMember.maxStamina
-        "
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.',
-          )
-        "
-        @mouseleave="$store.commit('tooltip')"
-      >
-        <div>
-          💪Stamina:
-          <NumberChangeHighlighter
-            :number="
-              c.r2(
-                (crewMember.stamina /
-                  crewMember.maxStamina) *
-                  100,
-                1,
-              )
-            "
-            :display="
-              c.r2(
-                (crewMember.stamina /
-                  crewMember.maxStamina) *
-                  100,
-                1,
-              ) + '%'
-            "
-          />
-        </div>
-      </ProgressBar>
-
-      <!-- <div class="panesection">
-      <b>Go to</b>
-      <div>
-        <span
-          v-for="room in ship.rooms"
-          v-if="room !== crewMember.location"
-          :key="'setroom' + room"
-          class="padnone"
+      <div class="panesection">
+        <ProgressBar
+          :percent="
+            crewMember.stamina / crewMember.maxStamina
+          "
+          @mouseenter="
+            $store.commit(
+              'tooltip',
+              'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.',
+            )
+          "
+          @mouseleave="$store.commit('tooltip')"
         >
-          <button @click="$store.commit('setRoom', room)">
-            {{ room }}
-          </button>
-        </span>
+          <div>
+            💪Stamina:
+            <NumberChangeHighlighter
+              :number="
+                c.r2(
+                  (crewMember.stamina /
+                    crewMember.maxStamina) *
+                    100,
+                  1,
+                )
+              "
+              :display="
+                c.r2(
+                  (crewMember.stamina /
+                    crewMember.maxStamina) *
+                    100,
+                  1,
+                ) + '%'
+              "
+            />
+          </div>
+        </ProgressBar>
       </div>
-    </div> -->
 
       <!-- <ShipMemberInventory /> -->
 

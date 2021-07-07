@@ -2,6 +2,7 @@ import c from '../../../common/dist'
 import socketIo, { Socket } from 'socket.io-client'
 import { client as discordClient } from '../discordClient'
 import resolveOrCreateChannel from '../discordClient/actions/resolveOrCreateChannel'
+import isDocker from 'is-docker'
 
 import * as ship from './ship'
 import * as crew from './crew'
@@ -13,7 +14,9 @@ export default {
 }
 
 // connect to server
-const client = socketIo(`http://game:4200`)
+const client = socketIo(
+  `http://${isDocker() ? `game` : `localhost`}:4200`,
+)
 export const io: Socket<IOServerEvents, IOClientEvents> =
   client.connect()
 

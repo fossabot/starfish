@@ -34,7 +34,8 @@ services:
       driver: none
 
   game:
-    image: 'spacecrab.local/game:latest'
+    build: './game'
+    # image: 'spacecrab.local/game:latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -53,7 +54,8 @@ services:
       - mongodb
 
   frontend:
-    image: 'spacecrab.local/frontend:latest'
+    build: './frontend'
+    # image: 'spacecrab.local/frontend:latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -65,7 +67,8 @@ services:
     command: 'npm run dev'
 
   discord:
-    image: 'spacecrab.local/discord:latest'
+    build: './discord'
+    # image: 'spacecrab.local/discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
