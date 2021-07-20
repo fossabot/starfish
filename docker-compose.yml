@@ -34,8 +34,8 @@ services:
       driver: none
 
   game:
-    build: './game'
-    # image: 'spacecrab.local/game:latest'
+    # build: './game'
+    image: 'xmadsen/starfish:game-0.1'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -54,8 +54,8 @@ services:
       - mongodb
 
   frontend:
-    build: './frontend'
-    # image: 'spacecrab.local/frontend:latest'
+    #build: './frontend'
+    image: 'xmadsen/starfish:frontend-0.1'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -67,8 +67,8 @@ services:
     command: 'npm run dev'
 
   discord:
-    build: './discord'
-    # image: 'spacecrab.local/discord:latest'
+    #build: './discord'
+    image: 'xmadsen/starfish:discord-0.1'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
