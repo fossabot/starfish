@@ -35,7 +35,7 @@ services:
 
   game:
     # build: './game'
-    image: 'xmadsen/starfish:game-0.1'
+    image: 'xmadsen/starfish-game:latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -55,7 +55,7 @@ services:
 
   frontend:
     #build: './frontend'
-    image: 'xmadsen/starfish:frontend-0.1'
+    image: 'xmadsen/starfish-frontend:latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -68,7 +68,7 @@ services:
 
   discord:
     #build: './discord'
-    image: 'xmadsen/starfish:discord-0.1'
+    image: 'xmadsen/starfish-discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
