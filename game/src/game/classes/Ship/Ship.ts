@@ -81,6 +81,8 @@ export class Ship extends Stubbable {
   availableTaglines: string[] = []
   headerBackground: string | null = null
   availableHeaderBackgrounds: string[] = [`Default`]
+  passives: ShipPassiveEffect[] = []
+  slots: number = 1
   attackable = false
   _hp = 10 // set in hp setter below
   _maxHp = 10
@@ -156,6 +158,8 @@ export class Ship extends Stubbable {
       this.chassis =
         chassisPresets[loadouts[loadout].chassis]
     else this.chassis = chassisPresets.starter1
+
+    this.updateSlots()
 
     if (items) items.forEach((i) => this.addItem(i))
     if (!items && loadout) this.equipLoadout(loadout)
@@ -235,13 +239,23 @@ export class Ship extends Stubbable {
     this.recalculateMass()
   }
 
+  updateSlots() {
+    let slots = this.chassis.slots
+    for (let p of this.passives.filter(
+      (p) => p.id === `extraEquipmentSlots`,
+    ))
+      slots += Math.round(p.intensity || 0)
+    this.slots = slots
+    this.toUpdate.slots = slots
+  }
+
   addItem(
     this: Ship,
     itemData: Partial<BaseItemData>,
   ): boolean {
     let item: Item | undefined
     if (!itemData.type) return false
-    if (this.chassis.slots <= this.items.length) {
+    if (this.slots <= this.items.length) {
       c.log(`No chassis slots remaining to add item into.`)
       return false
     }

@@ -10,10 +10,19 @@ export class Species {
   readonly icon: string
   readonly singular: string
   readonly game: Game
+  readonly passives: ShipPassiveEffect[] = []
+  readonly description: string
   faction: Faction
 
   constructor(
-    { id, factionId, icon, singular }: BaseSpeciesData,
+    {
+      id,
+      factionId,
+      icon,
+      singular,
+      description,
+      passives,
+    }: BaseSpeciesData,
     game: Game,
   ) {
     this.id = id
@@ -23,6 +32,8 @@ export class Species {
     this.faction = game.factions.find(
       (f) => f.id === factionId,
     )!
+    this.description = description
+    if (passives) this.passives = passives
   }
 
   get members(): Ship[] {

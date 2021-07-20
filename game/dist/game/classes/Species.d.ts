@@ -6,8 +6,10 @@ export declare class Species {
     readonly icon: string;
     readonly singular: string;
     readonly game: Game;
+    readonly passives: ShipPassiveEffect[];
+    readonly description: string;
     faction: Faction;
-    constructor({ id, factionId, icon, singular }: BaseSpeciesData, game: Game);
+    constructor({ id, factionId, icon, singular, description, passives, }: BaseSpeciesData, game: Game);
     get members(): Ship[];
 }
 //# sourceMappingURL=Species.d.ts.map

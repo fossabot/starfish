@@ -25,6 +25,10 @@ export abstract class CombatShip extends Ship {
   constructor(props: BaseShipData, game: Game) {
     super(props, game)
 
+    this.species.passives.forEach((p) =>
+      this.applyPassive(p),
+    )
+
     this.updateAttackRadius()
   }
 
@@ -40,6 +44,14 @@ export abstract class CombatShip extends Ship {
       0,
     )
     this.toUpdate.radii = this.radii
+  }
+
+  applyPassive(p: ShipPassiveEffect) {
+    this.passives.push(p)
+    this.updateThingsThatCouldChangeOnItemChange()
+    this.updateAttackRadius()
+    this.updateMaxScanProperties()
+    this.updateSlots()
   }
 
   applyZoneTickEffects() {
@@ -94,6 +106,7 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
+    if (this === otherShip) return false
     if (!otherShip.attackable) return false
     if (otherShip.planet || this.planet) return false
     if (otherShip.dead || this.dead) return false
@@ -148,7 +161,6 @@ export abstract class CombatShip extends Ship {
     // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
-    c.log(target.location)
     c.log(
       `need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${
         miss ? `miss` : `hit`

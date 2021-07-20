@@ -14,6 +14,7 @@ export declare abstract class CombatShip extends Ship {
     constructor(props: BaseShipData, game: Game);
     updateThingsThatCouldChangeOnItemChange(): void;
     updateAttackRadius(): void;
+    applyPassive(p: ShipPassiveEffect): void;
     applyZoneTickEffects(): void;
     availableWeapons(): Weapon[];
     getEnemiesInAttackRange(): CombatShip[];

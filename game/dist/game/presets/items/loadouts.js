@@ -37,6 +37,7 @@ const loadouts = {
             { type: `scanner`, id: `starter1` },
             // { type: `scanner`, id: `starter2` },
             { type: `communicator`, id: `starter1` },
+            // { type: `armor`, id: `starter` },
         ],
     },
 };

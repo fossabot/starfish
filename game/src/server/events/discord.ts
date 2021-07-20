@@ -32,7 +32,7 @@ export default function (
       }
 
       data.name = data.name.substring(0, c.maxNameLength)
-      data.tutorial = { step: -1 }
+      // data.tutorial = { step: -1 } // todo replace
       const ship = game.addHumanShip({
         ...data,
       })
@@ -133,7 +133,7 @@ export default function (
     crewMember.rename(newName)
   })
 
-  socket.on(`ship:rename`, (shipId, newName) => {
+  socket.on(`ship:rename`, (shipId, newName, callback) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,
     ) as HumanShip
@@ -146,6 +146,8 @@ export default function (
       .sanitize(newName)
       .result.substring(0, c.maxNameLength)
     ship.toUpdate.name = ship.name
+
+    callback({ data: ship.name })
   })
 
   socket.on(

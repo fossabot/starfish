@@ -11,6 +11,7 @@ import { Tutorial } from './addins/Tutorial';
 import type { Zone } from '../Zone';
 export declare class HumanShip extends CombatShip {
     static maxLogLength: number;
+    static movementIsFree: boolean;
     readonly id: string;
     readonly log: LogEntry[];
     logAlertLevel: LogAlertLevel;

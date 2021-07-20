@@ -54,6 +54,7 @@ export class AIShip extends CombatShip {
     if (data.level) this.level = data.level
     if (this.items.length === 0)
       this.addLevelAppropriateItems()
+    if (this.items.length === 0) setTimeout(this.die, 1000)
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
@@ -170,7 +171,7 @@ export class AIShip extends CombatShip {
       //   `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
       // )
 
-      if (this.chassis.slots <= this.items.length)
+      if (this.slots <= this.items.length)
         canAddMoreItems = false
     }
   }
@@ -270,7 +271,7 @@ export class AIShip extends CombatShip {
     super.die()
 
     const amount =
-      Math.ceil(Math.random() * this.level * 40) +
+      Math.ceil(Math.random() * this.level * 30) +
       this.level
     const cacheContents: CacheContents[] = [
       { type: `credits`, amount },

@@ -11,6 +11,7 @@ class CombatShip extends Ship_1.Ship {
     constructor(props, game) {
         super(props, game);
         this.attackable = true;
+        this.species.passives.forEach((p) => this.applyPassive(p));
         this.updateAttackRadius();
     }
     updateThingsThatCouldChangeOnItemChange() {
@@ -20,6 +21,13 @@ class CombatShip extends Ship_1.Ship {
     updateAttackRadius() {
         this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);
         this.toUpdate.radii = this.radii;
+    }
+    applyPassive(p) {
+        this.passives.push(p);
+        this.updateThingsThatCouldChangeOnItemChange();
+        this.updateAttackRadius();
+        this.updateMaxScanProperties();
+        this.updateSlots();
     }
     applyZoneTickEffects() {
         this.visible.zones
@@ -46,6 +54,8 @@ class CombatShip extends Ship_1.Ship {
         db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
+        if (this === otherShip)
+            return false;
         if (!otherShip.attackable)
             return false;
         if (otherShip.planet || this.planet)
@@ -86,7 +96,6 @@ class CombatShip extends Ship_1.Ship {
         // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
-        dist_1.default.log(target.location);
         dist_1.default.log(`need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,

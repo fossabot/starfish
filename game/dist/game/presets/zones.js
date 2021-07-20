@@ -68,9 +68,11 @@ const dotZoneNames = [
     `Shredder Swarm`,
     `Gamma Cloud`,
     `Planetary Remains`,
+    // todo MORE
 ];
 const healZoneNames = [
     `Astral Oasis`,
     `Nanorepair Swarm`,
+    // todo MORE
 ];
 //# sourceMappingURL=zones.js.map

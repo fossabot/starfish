@@ -19,6 +19,8 @@ import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 20
+  static movementIsFree = true
+
   readonly id: string
   readonly log: LogEntry[]
   logAlertLevel: LogAlertLevel = `medium`
@@ -183,14 +185,31 @@ export class HumanShip extends CombatShip {
         if (this.isAt(cache.location)) {
           if (!cache.canBePickedUpBy(this)) return
 
+          // apply "amount boost" passive
+          const amountBoostPassive = (
+            this.passives.filter(
+              (p) => p.id === `boostDropAmount`,
+            ) || []
+          ).reduce(
+            (total: number, p: ShipPassiveEffect) =>
+              total + (p.intensity || 0),
+            0,
+          )
+          if (
+            cache.droppedBy !== this.id &&
+            amountBoostPassive
+          )
+            cache.contents.forEach(
+              (c) =>
+                (c.amount += c.amount * amountBoostPassive),
+            )
+
           this.distributeCargoAmongCrew(cache.contents)
           this.logEntry(
             `Picked up a cache with ${cache.contents
               .map(
                 (cc) =>
-                  `${
-                    Math.round(cc.amount * 10000) / 10000
-                  }${
+                  `${c.r2(cc.amount)}${
                     cc.type === `credits` ? `` : ` tons of`
                   } ${cc.type}`,
               )
@@ -276,9 +295,9 @@ export class HumanShip extends CombatShip {
     charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember,
   ) {
-    const thrustForFree = true
     charge *= thruster.cockpitCharge
-    if (!thrustForFree) thruster.cockpitCharge -= charge
+    if (!HumanShip.movementIsFree)
+      thruster.cockpitCharge -= charge
 
     const initialVelocity: CoordinatePair = [
       ...this.velocity,
@@ -555,26 +574,26 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    c.log({
-      mass: this.mass,
-      charge,
-      memberPilotingSkill,
-      engineThrustMultiplier,
-      magnitudePerPointOfCharge,
-      finalMagnitude: thrustMagnitudeToApply,
-      targetLocation,
-      zeroedAngleToTargetInDegrees,
-      // unitVectorToTarget,
-      // vectorToTarget,
-      thrustVector,
-      thrustAngle,
-      initialVelocity,
-      initialMagnitude,
-      initialAngle,
-      velocity: this.velocity,
-      speed: this.speed,
-      direction: this.direction,
-    })
+    // c.log({
+    //   mass: this.mass,
+    //   charge,
+    //   memberPilotingSkill,
+    //   engineThrustMultiplier,
+    //   magnitudePerPointOfCharge,
+    //   finalMagnitude: thrustMagnitudeToApply,
+    //   targetLocation,
+    //   zeroedAngleToTargetInDegrees,
+    //   // unitVectorToTarget,
+    //   // vectorToTarget,
+    //   thrustVector,
+    //   thrustAngle,
+    //   initialVelocity,
+    //   initialMagnitude,
+    //   initialAngle,
+    //   velocity: this.velocity,
+    //   speed: this.speed,
+    //   direction: this.direction,
+    // })
 
     if (charge > 0.1)
       this.logEntry(
@@ -583,20 +602,20 @@ export class HumanShip extends CombatShip {
           0,
         )}° with ${c.r2(
           magnitudePerPointOfCharge * charge,
-        )} P of thrust.`,
+        )}P of thrust.`,
         `low`,
       )
 
-    if (!thrustForFree)
+    if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge))
   }
 
   brake(charge: number, thruster: CrewMember) {
-    const thrustForFree = true
     charge *= thruster.cockpitCharge
-    if (!thrustForFree) thruster.cockpitCharge -= charge
+    if (!HumanShip.movementIsFree)
+      thruster.cockpitCharge -= charge
 
-    charge *= 2 // braking is easier
+    charge *= 3 // braking is easier
 
     const memberPilotingSkill =
       thruster.piloting?.level || 1
@@ -647,11 +666,11 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         `${thruster.name} applied the brakes with ${c.r2(
           magnitudePerPointOfCharge * charge,
-        )} P of thrust.`,
+        )}P of thrust.`,
         `low`,
       )
 
-    if (!thrustForFree)
+    if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge))
   }
 
@@ -753,15 +772,27 @@ export class HumanShip extends CombatShip {
     if (
       c.lottery(
         distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
-        0.4,
+        2,
       )
     ) {
+      // apply "amount boost" passive
+      const amountBoostPassive = (
+        this.passives.filter(
+          (p) => p.id === `boostDropAmount`,
+        ) || []
+      ).reduce(
+        (total: number, p: ShipPassiveEffect) =>
+          total + (p.intensity || 0),
+        0,
+      )
+
       const amount =
-        Math.round(
+        (Math.round(
           Math.random() * 3 * (Math.random() * 3),
         ) /
           10 +
-        1.5
+          1.5) *
+        (1 + amountBoostPassive)
 
       const type = c.randomFromArray([
         `oxygen`,
@@ -782,7 +813,7 @@ export class HumanShip extends CombatShip {
     if (
       c.lottery(
         distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
-        0.12,
+        5,
       )
     ) {
       if (!this.attackable || this.planet) return
@@ -1261,6 +1292,20 @@ export class HumanShip extends CombatShip {
       ][]
     ).forEach(([key, value]) => {
       if (!ship[key as keyof Ship]) return
+      if (
+        key === `crewMembers` &&
+        ship.passives.find(
+          (p) => p.id === `disguiseCrewMemberCount`,
+        )
+      )
+        return
+      if (
+        key === `chassis` &&
+        ship.passives.find(
+          (p) => p.id === `disguiseChassisType`,
+        )
+      )
+        return
       if (value === true)
         partialShip[key] = ship[key as keyof Ship]
       if (Array.isArray(value)) {
@@ -1426,19 +1471,24 @@ export class HumanShip extends CombatShip {
           targetShip = mainAttackTarget
       } else {
         const mostRecentDefense =
-          this.visible.attackRemnants.reduce(
-            (
-              mostRecent: AttackRemnant | null,
-              ar,
-            ): AttackRemnant | null =>
-              mostRecent &&
-              mostRecent.time > ar.time &&
-              mostRecent.attacker.id !== this.id &&
-              this.canAttack(mostRecent.attacker)
-                ? mostRecent
-                : ar,
-            null,
-          )
+          this.visible.attackRemnants
+            .filter(
+              (ar) =>
+                ar.attacker.id !== this.id &&
+                !ar.attacker.dead,
+            )
+            .reduce(
+              (
+                mostRecent: AttackRemnant | null,
+                ar,
+              ): AttackRemnant | null =>
+                mostRecent &&
+                mostRecent.time > ar.time &&
+                this.canAttack(mostRecent.attacker)
+                  ? mostRecent
+                  : ar,
+              null,
+            )
         targetShip = mostRecentDefense?.attacker
       }
       c.log(`defensive, targeting`, targetShip?.name)

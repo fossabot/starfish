@@ -47,6 +47,8 @@ class Ship extends Stubbable_1.Stubbable {
         this.availableTaglines = [];
         this.headerBackground = null;
         this.availableHeaderBackgrounds = [`Default`];
+        this.passives = [];
+        this.slots = 1;
         this.attackable = false;
         this._hp = 10; // set in hp setter below
         this._maxHp = 10;
@@ -94,6 +96,7 @@ class Ship extends Stubbable_1.Stubbable {
                 items_1.chassis[loadouts_1.default[loadout].chassis];
         else
             this.chassis = items_1.chassis.starter1;
+        this.updateSlots();
         if (items)
             items.forEach((i) => this.addItem(i));
         if (!items && loadout)
@@ -149,11 +152,18 @@ class Ship extends Stubbable_1.Stubbable {
         this.chassis = chassisToSwapTo;
         this.recalculateMass();
     }
+    updateSlots() {
+        let slots = this.chassis.slots;
+        for (let p of this.passives.filter((p) => p.id === `extraEquipmentSlots`))
+            slots += Math.round(p.intensity || 0);
+        this.slots = slots;
+        this.toUpdate.slots = slots;
+    }
     addItem(itemData) {
         let item;
         if (!itemData.type)
             return false;
-        if (this.chassis.slots <= this.items.length) {
+        if (this.slots <= this.items.length) {
             dist_1.default.log(`No chassis slots remaining to add item into.`);
             return false;
         }

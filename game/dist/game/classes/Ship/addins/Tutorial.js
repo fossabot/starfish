@@ -106,6 +106,10 @@ class Tutorial {
                         message: `Let's zoom out a little bit.`,
                         advance: `See More`,
                     },
+                    // {
+                    //   message: `broadcast from here`,
+                    //   channel: `broadcast`,
+                    // },
                 ],
                 nextStepTrigger: {
                     awaitFrontend: true,
@@ -140,7 +144,7 @@ class Tutorial {
                 caches: [
                     {
                         contents: [{ amount: 10, type: `credits` }],
-                        location: [0.02, 0],
+                        location: [0.015, 0],
                     },
                 ],
                 nextStepTrigger: {
@@ -153,7 +157,7 @@ class Tutorial {
                 resetView: true,
                 shownRooms: [`cockpit`],
                 forceCrewLocation: `cockpit`,
-                forceCockpitCharge: 0.15,
+                forceCockpitCharge: 0.75,
                 shownPanels: [`mapZoom`, `map`, `room`, `ship`],
                 highlightPanel: `room`,
                 disableRepair: true,
@@ -170,7 +174,7 @@ class Tutorial {
                 ],
                 nextStepTrigger: {
                     location: {
-                        coordinates: [0.02, 0],
+                        coordinates: [0.015, 0],
                         label: `cache`,
                     },
                 },
@@ -190,7 +194,7 @@ class Tutorial {
                 highlightPanel: `inventory`,
                 disableRepair: true,
                 disableStamina: true,
-                forceCockpitCharge: 0.15,
+                forceCockpitCharge: 0.65,
                 visibleTypes: [`planet`, `trail`],
                 script: [
                     {
@@ -217,7 +221,7 @@ class Tutorial {
                 highlightPanel: `room`,
                 disableRepair: true,
                 disableStamina: true,
-                forceCockpitCharge: 0.15,
+                forceCockpitCharge: 0.65,
                 visibleTypes: [`planet`, `trail`],
                 script: [
                     {
@@ -365,6 +369,7 @@ class Tutorial {
                 sightRange: 0.03,
                 scanRange: 0.02,
                 maxDistanceFromSpawn: 0.03,
+                forceCockpitCharge: 0.5,
                 shownRooms: [`cockpit`, `weapons`, `bunk`],
                 shownPanels: [
                     `mapZoom`,
@@ -492,6 +497,7 @@ class Tutorial {
                 sightRange: 0.03,
                 scanRange: 0.02,
                 maxDistanceFromSpawn: 0.03,
+                forceCockpitCharge: 0.4,
                 resetView: true,
                 shownRooms: [
                     `cockpit`,
@@ -582,6 +588,7 @@ class Tutorial {
                 sightRange: 0.03,
                 scanRange: 0.02,
                 maxDistanceFromSpawn: 0.03,
+                forceCockpitCharge: 1,
                 shownRooms: [
                     `cockpit`,
                     `weapons`,
@@ -770,13 +777,13 @@ class Tutorial {
         }
         // show panels on frontend
         this.ship.recalculateShownPanels();
-        setTimeout(() => {
-            // timeout to come after any tick-related logs
-            // // if (!m.channel) this.ship.logEntry(m.message)
-            for (let m of this.currentStep.script)
-                if (m.channel)
-                    io_1.default.emit(`ship:message`, this.ship.id, m.message, m.channel);
-        }, dist_1.default.TICK_INTERVAL);
+        // setTimeout(() => {
+        // timeout to come after any tick-related logs but was breaking if the player went too fast
+        // // if (!m.channel) this.ship.logEntry(m.message)
+        for (let m of this.currentStep.script)
+            if (m.channel)
+                io_1.default.emit(`ship:message`, this.ship.id, m.message, m.channel);
+        // }, c.TICK_INTERVAL)
         this.ship.toUpdate.tutorial = {
             currentStep: this.currentStep,
             targetLocation: this.targetLocation,

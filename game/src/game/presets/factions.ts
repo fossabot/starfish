@@ -15,7 +15,7 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
   blue: {
     name: `Blue Breathers`,
     id: `blue`,
-    color: `hsl(190, 75%, 40%)`,
+    color: `hsl(190, 80%, 45%)`,
     homeworld: `Neptune`,
     species: [
       c.species.seals,
@@ -27,7 +27,7 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
   purple: {
     name: `Purple Pescos`,
     id: `purple`,
-    color: `hsl(290, 40%, 50%)`,
+    color: `hsl(290, 50%, 55%)`,
     homeworld: `Osiris`,
     species: [
       c.species.angelfish,

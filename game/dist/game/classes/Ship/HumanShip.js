@@ -132,9 +132,14 @@ class HumanShip extends CombatShip_1.CombatShip {
                 if (this.isAt(cache.location)) {
                     if (!cache.canBePickedUpBy(this))
                         return;
+                    // apply "amount boost" passive
+                    const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+                    if (cache.droppedBy !== this.id &&
+                        amountBoostPassive)
+                        cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive));
                     this.distributeCargoAmongCrew(cache.contents);
                     this.logEntry(`Picked up a cache with ${cache.contents
-                        .map((cc) => `${Math.round(cc.amount * 10000) / 10000}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
+                        .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
                         .join(` and `)} inside!${cache.message &&
                         ` There was a message attached which said, "${cache.message}".`}`, `medium`);
                     this.game.removeCache(cache);
@@ -198,9 +203,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
     thruster) {
-        const thrustForFree = true;
         charge *= thruster.cockpitCharge;
-        if (!thrustForFree)
+        if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
         const initialVelocity = [
             ...this.velocity,
@@ -385,37 +389,36 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        dist_1.default.log({
-            mass: this.mass,
-            charge,
-            memberPilotingSkill,
-            engineThrustMultiplier,
-            magnitudePerPointOfCharge,
-            finalMagnitude: thrustMagnitudeToApply,
-            targetLocation,
-            zeroedAngleToTargetInDegrees,
-            // unitVectorToTarget,
-            // vectorToTarget,
-            thrustVector,
-            thrustAngle,
-            initialVelocity,
-            initialMagnitude,
-            initialAngle,
-            velocity: this.velocity,
-            speed: this.speed,
-            direction: this.direction,
-        });
+        // c.log({
+        //   mass: this.mass,
+        //   charge,
+        //   memberPilotingSkill,
+        //   engineThrustMultiplier,
+        //   magnitudePerPointOfCharge,
+        //   finalMagnitude: thrustMagnitudeToApply,
+        //   targetLocation,
+        //   zeroedAngleToTargetInDegrees,
+        //   // unitVectorToTarget,
+        //   // vectorToTarget,
+        //   thrustVector,
+        //   thrustAngle,
+        //   initialVelocity,
+        //   initialMagnitude,
+        //   initialAngle,
+        //   velocity: this.velocity,
+        //   speed: this.speed,
+        //   direction: this.direction,
+        // })
         if (charge > 0.1)
-            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} P of thrust.`, `low`);
-        if (!thrustForFree)
+            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}P of thrust.`, `low`);
+        if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
     }
     brake(charge, thruster) {
-        const thrustForFree = true;
         charge *= thruster.cockpitCharge;
-        if (!thrustForFree)
+        if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
-        charge *= 2; // braking is easier
+        charge *= 3; // braking is easier
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
@@ -443,8 +446,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
         if (charge > 0.1)
-            this.logEntry(`${thruster.name} applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)} P of thrust.`, `low`);
-        if (!thrustForFree)
+            this.logEntry(`${thruster.name} applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}P of thrust.`, `low`);
+        if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
     }
     // ----- move -----
@@ -507,10 +510,13 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- random encounters -----
         const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
         // - space junk -
-        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 0.4)) {
-            const amount = Math.round(Math.random() * 3 * (Math.random() * 3)) /
+        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 2)) {
+            // apply "amount boost" passive
+            const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+            const amount = (Math.round(Math.random() * 3 * (Math.random() * 3)) /
                 10 +
-                1.5;
+                1.5) *
+                (1 + amountBoostPassive);
             const type = dist_1.default.randomFromArray([
                 `oxygen`,
                 `salt`,
@@ -522,7 +528,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
         }
         // - asteroid hit -
-        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 0.12)) {
+        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 5)) {
             if (!this.attackable || this.planet)
                 return;
             let miss = false;
@@ -844,6 +850,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         Object.entries(scanPropertiesToUse).forEach(([key, value]) => {
             if (!ship[key])
                 return;
+            if (key === `crewMembers` &&
+                ship.passives.find((p) => p.id === `disguiseCrewMemberCount`))
+                return;
+            if (key === `chassis` &&
+                ship.passives.find((p) => p.id === `disguiseChassisType`))
+                return;
             if (value === true)
                 partialShip[key] = ship[key];
             if (Array.isArray(value)) {
@@ -958,9 +970,11 @@ class HumanShip extends CombatShip_1.CombatShip {
                     targetShip = mainAttackTarget;
             }
             else {
-                const mostRecentDefense = this.visible.attackRemnants.reduce((mostRecent, ar) => mostRecent &&
+                const mostRecentDefense = this.visible.attackRemnants
+                    .filter((ar) => ar.attacker.id !== this.id &&
+                    !ar.attacker.dead)
+                    .reduce((mostRecent, ar) => mostRecent &&
                     mostRecent.time > ar.time &&
-                    mostRecent.attacker.id !== this.id &&
                     this.canAttack(mostRecent.attacker)
                     ? mostRecent
                     : ar, null);
@@ -1083,4 +1097,5 @@ class HumanShip extends CombatShip_1.CombatShip {
 }
 exports.HumanShip = HumanShip;
 HumanShip.maxLogLength = 20;
+HumanShip.movementIsFree = true;
 //# sourceMappingURL=HumanShip.js.map

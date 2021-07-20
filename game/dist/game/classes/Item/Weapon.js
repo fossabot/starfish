@@ -15,10 +15,9 @@ class Weapon extends Item_1.Item {
         this.damage = data.damage;
         this.baseCooldown = data.baseCooldown;
         this.lastUse = data.lastUse || 0;
-        this.cooldownRemaining =
-            data.cooldownRemaining ||
-                props?.cooldownRemaining ||
-                data.baseCooldown;
+        this.cooldownRemaining = Math.min(data.cooldownRemaining ||
+            props?.cooldownRemaining ||
+            data.baseCooldown, data.baseCooldown);
     }
     use() {
         this.cooldownRemaining = this.baseCooldown;

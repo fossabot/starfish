@@ -52,6 +52,8 @@ export declare class Ship extends Stubbable {
     availableTaglines: string[];
     headerBackground: string | null;
     availableHeaderBackgrounds: string[];
+    passives: ShipPassiveEffect[];
+    slots: number;
     attackable: boolean;
     _hp: number;
     _maxHp: number;
@@ -68,6 +70,7 @@ export declare class Ship extends Stubbable {
     get communicators(): Communicator[];
     get armor(): Armor[];
     swapChassis(this: Ship, chassisData: Partial<BaseChassisData>): void;
+    updateSlots(): void;
     addItem(this: Ship, itemData: Partial<BaseItemData>): boolean;
     removeItem(this: Ship, item: Item): boolean;
     equipLoadout(this: Ship, name: LoadoutName): boolean;
