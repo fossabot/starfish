@@ -2,18 +2,18 @@ version: '3.7'
 services:
   mongodb:
     image: 'mongo:4.0'
-    restart: always
+    # restart: always
     volumes:
       - db_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_DATABASE: spacecord
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    logging:
-      driver: none
+    # logging:
+    #   driver: none
 
   mongo-express:
     image: 'mongo-express:0.54.0'
@@ -30,8 +30,8 @@ services:
       - mongodb
     ports:
       - 8081:8081
-    logging:
-      driver: none
+    # logging:
+    #   driver: none
 
   game:
     image: 'xmadsen/starfish-game:latest'
