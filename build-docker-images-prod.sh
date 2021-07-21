@@ -1,7 +1,7 @@
 #!/bin/bash
 
 image_prefix='xmadsen/starfish'
-for image in discord frontend game
+for image in discord frontend game db
 do
     cp -r common ${image}/
     cp -r @types ${image}/
