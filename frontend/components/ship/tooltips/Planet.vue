@@ -15,14 +15,26 @@
         data.faction.name
       }}</span>
     </div>
-    <div v-if="data.vendor.cargo.length">
+    <div
+      v-if="
+        data.vendor &&
+          data.vendor.cargo &&
+          data.vendor.cargo.length
+      "
+    >
       Cargo:
       {{ data.vendor.cargo.length }} type{{
         data.vendor.cargo.length === 1 ? '' : 's'
       }}
       on sale
     </div>
-    <div v-if="data.vendor.items.length">
+    <div
+      v-if="
+        data.vendor &&
+          data.vendor.items &&
+          data.vendor.items.length
+      "
+    >
       Equipment:
       {{
         data.vendor.items.filter((i) => i.buyMultiplier)
@@ -30,12 +42,24 @@
       }}
       for sale
     </div>
-    <div v-if="data.vendor.chassis.length">
+    <div
+      v-if="
+        data.vendor &&
+          data.vendor.chassis &&
+          data.vendor.chassis.length
+      "
+    >
       Chassis:
       {{ data.vendor.chassis.length }}
       for sale
     </div>
-    <div v-if="data.vendor.passives.length">
+    <div
+      v-if="
+        data.vendor &&
+          data.vendor.passives &&
+          data.vendor.passives.length
+      "
+    >
       Passives:
       {{ data.vendor.passives.length }}
       for sale

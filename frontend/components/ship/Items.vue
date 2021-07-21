@@ -266,7 +266,7 @@
 
       <div class="panesection sub">
         Equipment Slots Used: {{ ship.items.length }}/{{
-          ship.chassis.slots
+          ship.slots
         }}
       </div>
     </Box>

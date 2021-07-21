@@ -20,12 +20,10 @@
           class="icon"
           :class="{ pushup: data.tagline }"
           @mouseenter="
-            $store.commit(
-              'tooltip',
-              `<b>Species:</b> ${
-                data.species.icon
-              }${c.capitalize(data.species.id)}`,
-            )
+            $store.commit('tooltip', {
+              type: 'species',
+              data: data.species,
+            })
           "
           @mouseleave="$store.commit('tooltip')"
         >

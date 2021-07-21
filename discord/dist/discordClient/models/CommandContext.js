@@ -25,6 +25,7 @@ class CommandContext {
             message.content.slice(0, prefix.length) === prefix;
         this.commandName = splitMessage.shift().toLowerCase();
         this.args = splitMessage;
+        this.rawArgs = splitMessage.join(` `);
         this.initialMessage = message;
         this.author = message.author;
         this.guildMember = message.guild?.members.cache.find((m) => m.user.id === message.author.id);

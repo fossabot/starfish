@@ -1,6 +1,7 @@
 <template>
   <div
     class="chargebutton"
+    :class="{ big }"
     :style="{
       background: `linear-gradient(to right, ${startColor}, ${endColor}`,
     }"
@@ -32,6 +33,7 @@ export default {
   name: 'notification',
   props: {
     disabled: {},
+    big: {},
     max: { default: 1 },
     maxFillColor: { default: 'rgba(255,255,255,.1)' },
     startColor: { default: '#aa0' },
@@ -84,6 +86,12 @@ export default {
   border: 1px solid var(--text);
   border-radius: 5px;
   overflow: hidden;
+  cursor: pointer;
+
+  &.big {
+    height: 3em;
+    border-radius: 8px;
+  }
 
   .hider {
     position: absolute;

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StartCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
-const ioInterface_1 = __importDefault(require("../../ioInterface/"));
+const ioInterface_1 = __importDefault(require("../../ioInterface"));
 const resolveOrCreateRole_1 = __importDefault(require("../actions/resolveOrCreateRole"));
 const discord_buttons_1 = require("discord-buttons");
 class StartCommand {
@@ -18,7 +18,6 @@ class StartCommand {
     async run(context) {
         if (!context.guild)
             return;
-        const buttons = [];
         const rows = [];
         for (let s of dist_1.default.shuffleArray(Object.entries(dist_1.default.species).filter((e) => {
             return e[1].factionId !== `red`;
@@ -45,7 +44,7 @@ Choose your ship's species to get started!`, {
                 context.initialMessage.author.id;
             // @ts-ignore
             const collector = sentMessage.createButtonCollector(filter, {
-                time: 5 * 60 * 1000,
+                time: 5 * 60 * 1000, // 5 mins
             });
             collector.on?.(`collect`, (b) => {
                 done = true;

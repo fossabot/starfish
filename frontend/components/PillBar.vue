@@ -2,7 +2,7 @@
   <div
     class="pillbar"
     v-if="value !== undefined && max !== undefined"
-    :class="{ mini }"
+    :class="{ mini, micro }"
     :style="{
       '--primary-color':
         value / max <= dangerZone
@@ -29,7 +29,8 @@
     >
       <div
         :style="{
-          height: `${(value % 1) * 100}%`,
+          height: micro ? '100%' : `${(value % 1) * 100}%`,
+          width: micro ? `${(value % 1) * 100}%` : '100%',
         }"
         :class="{
           highlightBackgroundBad: highlightBad,
@@ -55,6 +56,7 @@ interface ComponentShape {
 export default {
   props: {
     mini: {},
+    micro: {},
     value: {},
     max: { default: 10 },
     color: { default: 'rgba(255,255,255,.85)' },
@@ -103,6 +105,16 @@ export default {
   &.mini {
     border-radius: 0.4em;
     height: 0.5em;
+  }
+  &.micro {
+    border-radius: 0.1em;
+    height: 0.2em;
+    .pill {
+      background: rgba(255, 255, 255, 0.5);
+      &.middle {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
   }
 
   .pill {

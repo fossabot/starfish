@@ -218,7 +218,11 @@ interface IOClientEvents {
     crewMemberId: string,
     callback: (res: IOResponse<string>) => void,
   ) => void
-  [`ship:rename`]: (shipId: string, name: string) => void
+  [`ship:rename`]: (
+    shipId: string,
+    name: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
 
   [`crew:add`]: (
     shipId: string,

@@ -54,6 +54,31 @@ interface LogEntry {
   text: string
 }
 
+type ShipPassiveEffectType =
+  | `boostDropAmount`
+  | `boostDropRarity`
+  | `boostScanRange`
+  | `boostSightRange`
+  | `boostBroadcastRange`
+  | `boostRepairSpeed`
+  | `boostRestSpeed`
+  | `boostThrust`
+  | `boostXpGain`
+  | `flatSkillBoost`
+  | `addBaseArmor`
+  | `flatDamageReduction`
+  | `extraEquipmentSlots`
+  | `boostCargoSpace`
+  | `boostChassisAgility`
+  | `disguiseCrewMemberCount`
+  | `disguiseChassisType`
+  | `boostAttackWithNumberOfFactionMembersWithinDistance`
+interface ShipPassiveEffect {
+  id: ShipPassiveEffectType
+  intensity?: number
+  [key: string]: any
+}
+
 interface TakenDamageResult extends ResponseWithMessage {
   damageTaken: number
   didDie: boolean

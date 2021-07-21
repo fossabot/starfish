@@ -8,10 +8,12 @@
       <span class="sectionemoji">🛸</span>Scan Ships
     </template>
     <div class="panesection shipscan">
-      {{ scannable.length }} ship{{
-        scannable.length === 1 ? '' : 's'
-      }}
-      in scan range
+      <b>
+        {{ scannable.length }} ship{{
+          scannable.length === 1 ? '' : 's'
+        }}
+        in scan range
+      </b>
       <br />
       <select
         v-model="selected"

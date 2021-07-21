@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
-import ioInterface from '../../ioInterface/'
+import ioInterface from '../../ioInterface'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 import {
   MessageButton,
@@ -18,8 +18,6 @@ export class StartCommand implements Command {
 
   async run(context: CommandContext): Promise<void> {
     if (!context.guild) return
-
-    const buttons = []
 
     const rows: MessageActionRow[] = []
     for (let s of c.shuffleArray(

@@ -13,6 +13,7 @@
       <div class="marbot">
         <LimitedChargeButton
           class="marbottiny"
+          :big="true"
           :max="crewMember.cockpitCharge"
           @end="thrust"
           @percent="thrustChargeToUse = arguments[0]"
@@ -46,6 +47,7 @@
               ship.velocity[0] === 0 &&
               ship.velocity[1] === 0,
           }"
+          :big="true"
           :max="crewMember.cockpitCharge"
           :disabled="
             ship.velocity[0] === 0 && ship.velocity[1] === 0
@@ -265,11 +267,13 @@ export default {
         if (!p.find((pl) => pl.name === seen.name))
           p.push(seen)
       }
-      return p.sort(
-        (a: PlanetStub, b: PlanetStub) =>
-          c.distance(this.ship.location, a.location) -
-          c.distance(this.ship.location, b.location),
-      )
+      return p
+        .sort(
+          (a: PlanetStub, b: PlanetStub) =>
+            c.distance(this.ship.location, a.location) -
+            c.distance(this.ship.location, b.location),
+        )
+        .slice(0, 6)
     },
     activeEngines(this: ComponentShape) {
       return (

@@ -21,6 +21,8 @@ export class CommandContext {
 
   /** arguments (pre-split by space). */
   readonly args: string[]
+  /** arguments not split by space. */
+  readonly rawArgs: string
 
   /** original message the command was extracted from. */
   readonly initialMessage: Message
@@ -60,6 +62,7 @@ export class CommandContext {
 
     this.commandName = splitMessage.shift()!.toLowerCase()
     this.args = splitMessage
+    this.rawArgs = splitMessage.join(` `)
     this.initialMessage = message
     this.author = message.author
     this.guildMember = message.guild?.members.cache.find(

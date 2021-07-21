@@ -52,7 +52,7 @@
               >
                 <b>{{ score.name }}</b>
               </div>
-              <div class="sub">
+              <div class="sub scorenumber">
                 {{ c.r2(score.score, 0) }}
               </div>
             </div>
@@ -103,5 +103,9 @@ export default {
 }
 .scorebit {
   height: 1em;
+}
+.scorenumber {
+  position: relative;
+  top: 0.2em;
 }
 </style>

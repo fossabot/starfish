@@ -1,5 +1,8 @@
 <template>
-  <div class="flex factiongraph rounded" v-if="planet">
+  <div
+    class="flex factiongraph rounded"
+    v-if="planet && planet.allegiances"
+  >
     <div
       class="singleholder flexcenter"
       v-if="planet.allegiances.length"

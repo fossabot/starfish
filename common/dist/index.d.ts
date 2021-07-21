@@ -18,6 +18,62 @@ declare const _default: {
         chickens: BaseSpeciesData;
         flamingos: BaseSpeciesData;
     };
+    basePassiveData: {
+        boostDropAmount: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostDropRarity: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostScanRange: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostSightRange: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostBroadcastRange: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostRepairSpeed: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostRestSpeed: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostThrust: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostXpGain: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        flatSkillBoost: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        addBaseArmor: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        flatDamageReduction: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        extraEquipmentSlots: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostCargoSpace: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostChassisAgility: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        disguiseCrewMemberCount: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        disguiseChassisType: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostAttackWithNumberOfFactionMembersWithinDistance: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+    };
     Profiler: typeof Profiler;
     discordBotId: string;
     discordBotPermissionsString: string;
@@ -52,10 +108,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "factionId" | "homeworld" | "creatures" | "repairCostMultiplier" | "allegiances" | "vendor")[];
-        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
-        species: ("factionId" | "id" | "icon" | "singular")[];
-        chassis: ("id" | "type" | "mass" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: (keyof BasePlanetData)[];
+        faction: (keyof BaseFactionData)[];
+        species: (keyof BaseSpeciesData)[];
+        chassis: (keyof BaseChassisData)[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
@@ -72,7 +128,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
+    cargoTypes: ("credits" | CargoType)[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

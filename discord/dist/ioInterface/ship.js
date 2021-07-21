@@ -35,7 +35,13 @@ async function kickMember(shipId, crewMemberId) {
 }
 exports.kickMember = kickMember;
 async function rename(shipId, newName) {
-    await index_1.io.emit(`ship:rename`, shipId, newName);
+    return new Promise(async (resolve) => {
+        await index_1.io.emit(`ship:rename`, shipId, newName, (res) => {
+            if (`error` in res)
+                return resolve(res.error);
+            return resolve(res.data);
+        });
+    });
 }
 exports.rename = rename;
 async function get(id) {

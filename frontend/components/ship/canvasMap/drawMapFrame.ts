@@ -203,6 +203,7 @@ export default class Drawer {
         color: `#bbbbbb`,
         outline: true,
         opacity: 0.5,
+        alwaysShowLabels: true,
       })
 
     // ----- non-clipped objects -----
@@ -376,7 +377,7 @@ export default class Drawer {
           0.4,
           Math.min(ship.speed / 2, 0.7),
         ),
-        dash: [2, ship.speed * 50 * 1000],
+        dash: [2, Math.max(8, ship.speed * 50 * 1000)],
       })
     }
 
@@ -616,7 +617,7 @@ export default class Drawer {
       this.ctx.globalAlpha = Math.max(0.35, opacity * 0.5)
       this.ctx.textAlign = `center`
       this.ctx.font = `bold ${(0.9 / this.zoom) *
-        window.devicePixelRatio}em Source Code Pro`
+        window.devicePixelRatio}em Prompt`
       if (labelTop)
         this.ctx.fillText(
           labelTop.toUpperCase(),
@@ -750,7 +751,7 @@ export default class Drawer {
           ]
         : [0, 0],
       el.location,
-      (this.width / this.flatScale) * 0.6,
+      (this.width / this.flatScale) * 1.2,
     )
   }
 

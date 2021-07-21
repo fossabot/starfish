@@ -4,6 +4,7 @@
     v-if="
       crewMember &&
         ship.planet.vendor &&
+        ship.planet.vendor.cargo &&
         ship.planet.vendor.cargo.length
     "
   >

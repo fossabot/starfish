@@ -149,7 +149,7 @@ export default {
           0,
         )
         profiler.step('called')
-        requestAnimationFrame(() => {
+        requestAnimationFrame(async () => {
           if (this.paused) return
           profiler.step('framestart')
           if (!this.element) {
@@ -165,6 +165,12 @@ export default {
               element: this.element,
               elWidth: this.widthScaledToDevice,
             })
+          }
+
+          if (!this.drawer.element || !this.element) {
+            await this.$nextTick()
+            this.element = this.$el.querySelector('#map')
+            this.drawer.element = this.element!
           }
 
           profiler.step('startdraw')

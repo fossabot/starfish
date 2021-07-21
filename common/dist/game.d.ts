@@ -37,10 +37,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "factionId" | "homeworld" | "creatures" | "repairCostMultiplier" | "allegiances" | "vendor")[];
-        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
-        species: ("factionId" | "id" | "icon" | "singular")[];
-        chassis: ("id" | "type" | "mass" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: (keyof BasePlanetData)[];
+        faction: (keyof BaseFactionData)[];
+        species: (keyof BaseSpeciesData)[];
+        chassis: (keyof BaseChassisData)[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
@@ -57,7 +57,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
-    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
+    cargoTypes: (CargoType | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

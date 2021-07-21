@@ -55,26 +55,38 @@
     <div class="panesection" v-if="inventory.length > 0">
       <div class="panesubhead">Cargo</div>
 
-      <ProgressBar
-        class="marbotsmall"
-        :percent="
-          totalWeight /
+      <div
+        @mouseenter="
+          $store.commit(
+            'tooltip',
+            `Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.<br />
+Your personal maximum cargo space is <b>${
+              crewMember.maxCargoSpace
+            } tons</b>.<br />
+${
+  ship.chassis.maxCargoSpace < crewMember.maxCargoSpace
+    ? 'However, y'
+    : 'Y'
+}our ship's chassis has a hard maximum cargo space per crew member of <b>${
+              ship.chassis.maxCargoSpace
+            } tons</b>, which you cannot go above.`,
+          )
+        "
+        @mouseleave="$store.commit('tooltip')"
+      >
+        <PillBar
+          :micro="true"
+          :value="totalWeight"
+          :dangerZone="-1"
+          :max="
             Math.min(
               crewMember.maxCargoSpace,
               ship.chassis.maxCargoSpace,
             )
-        "
-        :dangerZone="-1"
-        @mouseenter.native="
-          $store.commit(
-            'tooltip',
-            `Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.<br />
-          Your ship's chassis has a hard maximum cargo space per crew member of <b>${ship.chassis.maxCargoSpace} tons</b>, which you cannot go above.`,
-          )
-        "
-        @mouseleave.native="$store.commit('tooltip')"
-      >
-        <div>
+          "
+          :color="'var(--cargo)'"
+        />
+        <div class="sub martoptiny marbottiny">
           <NumberChangeHighlighter
             :number="c.r2(totalWeight)"
           />
@@ -89,7 +101,7 @@
           }}
           tons
         </div>
-      </ProgressBar>
+      </div>
 
       <div
         v-for="item in inventory"

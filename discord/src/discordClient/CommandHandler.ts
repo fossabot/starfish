@@ -18,6 +18,7 @@ import { HelpCommand } from './commands/Help'
 import { KickMemberCommand } from './commands/KickMember'
 import { LeaveGameCommand } from './commands/LeaveGame'
 import { GoCommand } from './commands/Go'
+import { ChangeShipNameCommand } from './commands/ShipName'
 
 export class CommandHandler {
   private commands: Command[]
@@ -38,6 +39,7 @@ export class CommandHandler {
       ChangeCaptainCommand,
       KickMemberCommand,
       GoCommand,
+      ChangeShipNameCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),

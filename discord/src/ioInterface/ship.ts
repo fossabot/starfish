@@ -52,8 +52,13 @@ export async function kickMember(
 export async function rename(
   shipId: string,
   newName: string,
-) {
-  await io.emit(`ship:rename`, shipId, newName)
+): Promise<string> {
+  return new Promise(async (resolve) => {
+    await io.emit(`ship:rename`, shipId, newName, (res) => {
+      if (`error` in res) return resolve(res.error)
+      return resolve(res.data)
+    })
+  })
 }
 
 export async function get(

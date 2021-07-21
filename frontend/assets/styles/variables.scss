@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap');
 
 :root {
-  --font-stack: 'Source Code Pro', 'Monaco', 'Fira Code',
-    monospace;
+  --font-stack: 'Prompt', 'Monaco', 'Fira Code', monospace;
 
   --text: #eee;
   --pane-border: #666;
@@ -12,6 +11,8 @@
   --warning: #f50;
   --info: #08f;
   --success: rgb(0, 205, 109);
+
+  --cargo: rgb(216, 174, 3);
 
   --panesectionpad-top: 0.7rem;
   --panesectionpad-left: 0.8rem;

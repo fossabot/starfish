@@ -54,6 +54,10 @@
           v-if="tooltip.type === 'room'"
           :data="tooltip.data"
         />
+        <ShipTooltipsSpecies
+          v-if="tooltip.type === 'species'"
+          :data="tooltip.data"
+        />
       </template>
       <div v-else v-html="tooltip" />
     </div>

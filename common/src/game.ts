@@ -5,9 +5,9 @@ import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
 
-const gameSpeedMultiplier = 24 * 3
+const gameSpeedMultiplier = 1 * 12
 
-const baseSightRange = 0.1
+const baseSightRange = 0.05
 
 const baseRepairCost = 30
 
@@ -111,13 +111,18 @@ function getRadiusDiminishingReturns(
 function getMaxCockpitChargeForSingleCrewMember(
   level: number = 1,
 ) {
-  return math.lerp(1, 10, level / 100)
+  return math.lerp(1, 5, level / 100)
 }
 
 function getCockpitChargePerTickForSingleCrewMember(
   level: number = 1,
 ) {
-  return math.lerp(0.002, 0.0002, level / 100) // backwards because you gain max charge
+  const flatMod = 0.8
+  return math.lerp(
+    0.002 * flatMod,
+    0.0005 * flatMod,
+    level / 100,
+  ) // backwards because you gain max charge
 }
 
 function getThrustMagnitudeForSingleCrewMember(

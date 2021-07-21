@@ -40,7 +40,7 @@ export default {
 <style lang="scss" scoped>
 .logentry {
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 1.5em;
   padding: 0em 0.4em 0em 0.6em;
   border-left: 3px solid var(--highlight-color);

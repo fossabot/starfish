@@ -103,11 +103,10 @@
       </div>
       <div v-else>Stopped</div>
     </div>
-
     <div
       class="panesection"
       v-if="
-        data._maxHp ||
+        (data._hp === undefined && data._maxHp) ||
           data.chassis ||
           data.level ||
           data.mass ||

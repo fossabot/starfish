@@ -26,7 +26,7 @@
         </div>
         <div>
           Equipment Slots Used: {{ ship.items.length }}/{{
-            ship.chassis.slots
+            ship.slots
           }}
         </div>
         <br />

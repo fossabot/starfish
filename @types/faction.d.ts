@@ -14,6 +14,8 @@ interface BaseSpeciesData {
   factionId: FactionKey
   id: SpeciesKey
   singular: string
+  description: string
+  passives?: ShipPassiveEffect[]
 }
 type SpeciesKey =
   | `octopi`
