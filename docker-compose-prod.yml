@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   mongodb:
-    image: 'mongo:4.0'
+    image: 'xmadsen/starfish-db:prod-latest'
     # restart: always
     volumes:
       - db_data:/data/db
@@ -34,7 +34,7 @@ services:
     #   driver: none
 
   game:
-    image: 'xmadsen/starfish-game:latest'
+    image: 'xmadsen/starfish-game:prod-latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -47,7 +47,7 @@ services:
       - mongodb
 
   frontend:
-    image: 'xmadsen/starfish-frontend:latest'
+    image: 'xmadsen/starfish-frontend:prod-latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -55,7 +55,7 @@ services:
     command: 'npm run dev'
 
   discord:
-    image: 'xmadsen/starfish-discord:latest'
+    image: 'xmadsen/starfish-discord:prod-latest'
     user: 'node'
     working_dir: /usr/app/discord
     command: 'npm run dev'
