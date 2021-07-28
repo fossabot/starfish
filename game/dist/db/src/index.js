@@ -20,7 +20,7 @@ let ready = false;
 const toRun = [];
 const isReady = () => ready;
 exports.isReady = isReady;
-const init = ({ hostname = `mongodb`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
+const init = ({ hostname = `mongodb`, port = 27017, dbName = `starfish`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();

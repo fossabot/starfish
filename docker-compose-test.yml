@@ -9,7 +9,7 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_DATABASE: spacecord
+      MONGO_INITDB_DATABASE: starfish
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
     logging:
@@ -21,11 +21,11 @@ services:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
-      ME_CONFIG_MONGODB_AUTH_DATABASE: spacecord
+      ME_CONFIG_MONGODB_AUTH_DATABASE: starfish
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
-      ME_CONFIG_BASICAUTH_USERNAME: spacecord
-      ME_CONFIG_BASICAUTH_PASSWORD: spacecord321
+      ME_CONFIG_BASICAUTH_USERNAME: starfish
+      ME_CONFIG_BASICAUTH_PASSWORD: starfish321
     depends_on:
       - mongodb
     ports:
@@ -48,8 +48,8 @@ services:
       - ./game/src:/usr/app/game/src
     command: 'npm run dev'
     environment:
-      MONGODB_ADMINUSERNAME: spacecord
-      MONGODB_ADMINPASSWORD: spacecord123
+      MONGODB_ADMINUSERNAME: starfish
+      MONGODB_ADMINPASSWORD: starfish123
     depends_on:
       - mongodb
 

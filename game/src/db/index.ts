@@ -23,7 +23,7 @@ export const isReady = () => ready
 export const init = ({
   hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
-  dbName = `spacecord`,
+  dbName = `starfish`,
   username = encodeURIComponent(
     process.env.MONGODB_ADMINUSERNAME!,
   ),

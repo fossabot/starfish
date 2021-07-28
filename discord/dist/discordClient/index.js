@@ -87,5 +87,7 @@ exports.client.on(`ready`, async () => {
     dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in ${(await exports.client.guilds.cache.array()).length} guilds`);
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });
 });
-exports.client.login(process.env.DISCORD_TOKEN);
+
+import discordToken from '/run/secrets/discord_token'
+exports.client.login(discordToken);
 //# sourceMappingURL=index.js.map
