@@ -62,7 +62,8 @@ type ShipPassiveEffectType =
   | `boostBroadcastRange`
   | `boostRepairSpeed`
   | `boostRestSpeed`
-  | `boostThrust`
+  // | `boostThrust`
+  | `boostCockpitChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`
   | `addBaseArmor`

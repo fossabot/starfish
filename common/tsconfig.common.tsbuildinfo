@@ -292,8 +292,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "e3e2fa519ffef4dbce3959e682a79c6e924d6a827ee9407b740452d0b0001db6",
-        "signature": "e3e2fa519ffef4dbce3959e682a79c6e924d6a827ee9407b740452d0b0001db6",
+        "version": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
+        "signature": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -332,7 +332,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "8219d4238d5c8e82f983f5917e884d0f15e0cf56bc6435a828461a474e50288d",
+        "version": "e5029da8a2d4f7bb58e4d1302d897ba27115d5071b746306447f05b9a50bb06d",
         "signature": "e4bf5e5fa64e96cf86c647f3a770e736f17500bef11a4c0b03d66e8b26fd2781",
         "affectsGlobalScope": false
       },
@@ -362,7 +362,7 @@
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "8ab4a632b44cf2a5c0e4cd21ce1b3316f995e2e13838d18a7d8b36e9f1bf75aa",
+        "version": "72f8246432eb6abae6e851caa7bf5511968966d0313e9129050856e060c1d96b",
         "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },

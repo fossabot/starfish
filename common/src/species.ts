@@ -50,7 +50,7 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     passives: [
       {
         id: `boostRepairSpeed`,
-        intensity: 0.35,
+        intensity: 0.25,
       },
     ],
   },
@@ -114,7 +114,7 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     description: `Just like their namesake, angelfish are natural-born fliers.`,
     passives: [
       {
-        id: `boostThrust`,
+        id: `boostCockpitChargeSpeed`,
         intensity: 0.15,
       },
     ],

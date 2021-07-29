@@ -40,7 +40,7 @@ declare const _default: {
         boostRestSpeed: {
             toString: (intensity: number, ...args: any[]) => string;
         };
-        boostThrust: {
+        boostCockpitChargeSpeed: {
             toString: (intensity: number, ...args: any[]) => string;
         };
         boostXpGain: {
@@ -128,7 +128,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("credits" | CargoType)[];
+    cargoTypes: (CargoType | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

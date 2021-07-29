@@ -14,7 +14,7 @@ const basePassiveData = {
         toString: (intensity) => `+${intensity} cargo space for crew members`,
     },
     boostChassisAgility: {
-        toString: (intensity) => `+${intensity * 100}% agility`,
+        toString: (intensity) => `+${intensity * 100}% ship agility`,
     },
     boostDropAmount: {
         toString: (intensity) => `+${intensity * 100}% drop amounts`,
@@ -29,14 +29,18 @@ const basePassiveData = {
         toString: (intensity) => `+${intensity * 100}% faster rest`,
     },
     boostScanRange: {
-        toString: (intensity) => `+${intensity} scan range`,
+        toString: (intensity) => `+${intensity}% scan range`,
     },
     boostSightRange: {
-        toString: (intensity) => `+${intensity} sight range`,
+        toString: (intensity) => `+${intensity}% sight range`,
     },
-    boostThrust: {
-        toString: (intensity) => `+${intensity * 100}% more thrust`,
+    boostCockpitChargeSpeed: {
+        toString: (intensity) => `+${intensity * 100}% cockpit charge speed`,
     },
+    // boostThrust: {
+    //   toString: (intensity) =>
+    //     `+${intensity * 100}% more thrust`,
+    // },
     boostXpGain: {
         toString: (intensity) => `+${intensity * 100}% faster xp gain`,
     },
