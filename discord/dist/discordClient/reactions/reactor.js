@@ -7,6 +7,7 @@ const FAILURE_REACTIONS = [`⛔`];
 /** gets a random element of an array. */
 const getRandom = (array) => array[Math.floor(Math.random() * array.length)];
 class Reactor {
+    enableReactions;
     constructor(enableReactions) {
         this.enableReactions = enableReactions;
     }

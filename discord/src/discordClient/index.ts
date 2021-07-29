@@ -75,4 +75,8 @@ client.on(`ready`, async () => {
   client.user?.setActivity(`.help`, { type: `LISTENING` })
 })
 
-client.login(process.env.DISCORD_TOKEN)
+import * as fs from 'fs'
+const discordToken = fs.readFileSync('/run/secrets/discord_token', 'utf-8')
+console.log({discordToken})
+
+client.login(discordToken)

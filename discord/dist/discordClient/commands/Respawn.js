@@ -3,9 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RespawnCommand = void 0;
 const ship_1 = require("../../ioInterface/ship");
 class RespawnCommand {
-    constructor() {
-        this.commandNames = [`respawn`, `r`];
-    }
+    commandNames = [`respawn`, `r`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to get your crew a new ship once you've died.`;
     }

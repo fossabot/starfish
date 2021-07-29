@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AlertLevelCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class AlertLevelCommand {
-    constructor() {
-        this.commandNames = [`alertlevel`, `al`];
-    }
+    commandNames = [`alertlevel`, `al`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]} <1, 2, 3, 4, or 5>\` to set the severity of alerts that will appear in the \`alerts\` channel.`;
     }

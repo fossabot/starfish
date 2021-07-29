@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameChannel = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class GameChannel {
+    guild;
+    channel;
+    listeners = [];
     constructor(guild, channel) {
-        this.listeners = [];
         this.guild = guild;
         this.channel = channel;
     }

@@ -7,9 +7,7 @@ exports.LeaveGameCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class LeaveGameCommand {
-    constructor() {
-        this.commandNames = [`leavegame`];
-    }
+    commandNames = [`leavegame`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to remove your server from the game.`;
     }

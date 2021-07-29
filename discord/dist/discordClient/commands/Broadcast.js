@@ -8,9 +8,7 @@ const dist_1 = __importDefault(require("../../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class BroadcastCommand {
-    constructor() {
-        this.commandNames = [];
-    }
+    commandNames = [];
     getHelpMessage(commandPrefix) {
         return ``;
     }

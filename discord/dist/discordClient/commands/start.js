@@ -9,9 +9,7 @@ const ioInterface_1 = __importDefault(require("../../ioInterface"));
 const resolveOrCreateRole_1 = __importDefault(require("../actions/resolveOrCreateRole"));
 const discord_buttons_1 = require("discord-buttons");
 class StartCommand {
-    constructor() {
-        this.commandNames = [`start`, `s`, `spawn`, `begin`, `init`];
-    }
+    commandNames = [`start`, `s`, `spawn`, `begin`, `init`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to start your server off in the game.`;
     }

@@ -7,9 +7,7 @@ exports.JoinCommand = void 0;
 const crew_1 = require("../../ioInterface/crew");
 const resolveOrCreateRole_1 = __importDefault(require("../actions/resolveOrCreateRole"));
 class JoinCommand {
-    constructor() {
-        this.commandNames = [`join`, `add`, `j`];
-    }
+    commandNames = [`join`, `add`, `j`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to join your server's ship.`;
     }

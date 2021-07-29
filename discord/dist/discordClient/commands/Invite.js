@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InviteCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class InviteCommand {
-    constructor() {
-        this.commandNames = [`invite`, `inv`, `i`];
-    }
+    commandNames = [`invite`, `inv`, `i`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a game bot invite link.`;
     }

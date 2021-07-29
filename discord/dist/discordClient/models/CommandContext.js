@@ -10,12 +10,29 @@ const resolveOrCreateChannel_1 = __importDefault(require("../actions/resolveOrCr
 const GameChannel_1 = require("./GameChannel");
 /** a user-given command extracted from a message. */
 class CommandContext {
+    /** command name in all lowercase. */
+    commandName;
+    correctPrefix;
+    /** arguments (pre-split by space). */
+    args;
+    /** arguments not split by space. */
+    rawArgs;
+    /** original message the command was extracted from. */
+    initialMessage;
+    author;
+    guildMember;
+    nickname;
+    commandPrefix;
+    dm;
+    isServerAdmin;
+    isGameAdmin;
+    guild;
+    ship = null;
+    crewMember = null;
+    isCaptain = false;
+    matchedCommands = [];
+    channels = {};
     constructor(message, prefix) {
-        this.ship = null;
-        this.crewMember = null;
-        this.isCaptain = false;
-        this.matchedCommands = [];
-        this.channels = {};
         this.commandPrefix = prefix;
         const splitMessage = message.content
             .slice(prefix.length)

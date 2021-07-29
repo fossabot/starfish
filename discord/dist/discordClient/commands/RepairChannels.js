@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RepairChannelsCommand = void 0;
 const resolveOrCreateChannel_1 = __importDefault(require("../actions/resolveOrCreateChannel"));
 class RepairChannelsCommand {
-    constructor() {
-        this.commandNames = [`repairchannels`, `repair`, `rc`, `rch`];
-    }
+    commandNames = [`repairchannels`, `repair`, `rc`, `rch`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to repair the game's Discord channels (should they become unlinked).`;
     }

@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LinkCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class LinkCommand {
-    constructor() {
-        this.commandNames = [`link`, `url`];
-    }
+    commandNames = [`link`, `url`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a link to your ship's console.`;
     }

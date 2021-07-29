@@ -87,7 +87,8 @@ exports.client.on(`ready`, async () => {
     dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in ${(await exports.client.guilds.cache.array()).length} guilds`);
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });
 });
-
-import discordToken from '/run/secrets/discord_token'
+const fs = __importStar(require("fs"));
+const discordToken = fs.readFileSync('/run/secrets/discord_token', 'utf-8');
+console.log({ discordToken });
 exports.client.login(discordToken);
 //# sourceMappingURL=index.js.map
