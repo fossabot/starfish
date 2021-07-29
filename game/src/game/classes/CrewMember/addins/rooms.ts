@@ -6,14 +6,16 @@ export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
   this.addXp(`piloting`)
+  const chargeBoost =
+    (this.ship.passives.find(
+      (p) => p.id === `boostCockpitChargeSpeed`,
+    )?.intensity || 0) + 1
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
       this.piloting?.level || 1,
-    )
+    ) * chargeBoost
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
   this.toUpdate.cockpitCharge = this.cockpitCharge
-
-  // * actual movement handled by Ship class
 }
 
 export function repair(
@@ -60,11 +62,17 @@ export function repair(
       ),
     )
 
+  const repairBoost =
+    (this.ship.passives.find(
+      (p) => p.id === `boostRepairSpeed`,
+    )?.intensity || 0) + 1
+
   const amountToRepair =
     repairAmount ||
-    c.getRepairAmountPerTickForSingleCrewMember(
+    (c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
-    ) /
+    ) *
+      repairBoost) /
       (c.deltaTime / c.TICK_INTERVAL) /
       itemsToRepair.length
 

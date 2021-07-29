@@ -292,8 +292,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "e3e2fa519ffef4dbce3959e682a79c6e924d6a827ee9407b740452d0b0001db6",
-        "signature": "e3e2fa519ffef4dbce3959e682a79c6e924d6a827ee9407b740452d0b0001db6",
+        "version": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
+        "signature": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -312,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "../common/dist/index.d.ts": {
-        "version": "15d332d6e68f577b2e0f95127ea17cfdbe64bdd6384745cb636b5c8c598d6589",
-        "signature": "15d332d6e68f577b2e0f95127ea17cfdbe64bdd6384745cb636b5c8c598d6589",
+        "version": "2ab4f9d93e5d2a8fb0ddd91e54f928a2ac1be7edae6a59323fcd944e1703115c",
+        "signature": "2ab4f9d93e5d2a8fb0ddd91e54f928a2ac1be7edae6a59323fcd944e1703115c",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -727,12 +727,12 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "4bdc52ad497d3cb10bd1478dd70c905537f452ed75f94fdf97ed4f7167dae980",
+        "version": "48e06af5141f396c91cf1db486cb693166a5af327d31fff6a27c057e7e0e1c00",
         "signature": "bd697f78455a9a2f3c474f11fef2a28f62b02b8a7941ff8ac39ee7160dcd336d",
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/addins/rooms.ts": {
-        "version": "3e446a09085a39f64598fe248fdade5049b6a48874a76ddae58b67798b1ddc0c",
+        "version": "124b7ec010291aaf61ae2109289e7e606d2db5e512be189f98d3cb948ffc91f7",
         "signature": "7db0c336ef7f497a008473210f793e27877640c20b4a7a017a0600f1101b7116",
         "affectsGlobalScope": false
       },
@@ -747,7 +747,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/crewmember.ts": {
-        "version": "bf527fd448e01630f84133f878019b87d419fc0129ed6405387ce467121942cd",
+        "version": "9a51aff6576fd4164a31d68e2fa460a58eee68264c6a52fe4318114697e6610d",
         "signature": "f89c21e83132c0281ec350d2d5726b26583bb0162c21e81046fe4368cbee56b5",
         "affectsGlobalScope": false
       },
@@ -842,7 +842,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "8300d9af9687bea942d45d1565c4190ec0b99e050231092d8a6761b76209c777",
+        "version": "7d1fdbd2bbf3fcb8c336f0b2d1793ccce821cdcd42912038d00f1e38e3a9ff6c",
         "signature": "754c74962edc81ee32ff3080bc80a1a47de6a772fece697d2d4f676780d94f59",
         "affectsGlobalScope": false
       },

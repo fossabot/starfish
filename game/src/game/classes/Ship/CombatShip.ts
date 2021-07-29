@@ -151,7 +151,11 @@ export abstract class CombatShip extends Ship {
     )
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
-    const enemyAgility = target.chassis.agility
+    const enemyAgility =
+      target.chassis.agility +
+      (target.passives.find(
+        (p) => p.id === `boostChassisAgility`,
+      )?.intensity || 0)
     const hitRoll = Math.random()
     let miss = hitRoll * enemyAgility < rangeAsPercent
     // todo this makes it impossible to hit some ships even when they're "in range"... fix

@@ -372,6 +372,8 @@ export class Ship extends Stubbable {
       this.toUpdate.radii = this.radii
       return
     }
+
+    // ----- sight -----
     this.radii.sight = Math.max(
       c.baseSightRange,
       c.getRadiusDiminishingReturns(
@@ -382,6 +384,12 @@ export class Ship extends Stubbable {
         this.scanners.length,
       ),
     )
+    const boostSight =
+      (this.passives.find((p) => p.id === `boostSightRange`)
+        ?.intensity || 0) + 1
+    this.radii.scan *= boostSight
+
+    // ----- scan -----
     this.radii.scan = c.getRadiusDiminishingReturns(
       this.scanners.reduce(
         (max, s) => s.shipScanRange * s.repair + max,
@@ -389,6 +397,10 @@ export class Ship extends Stubbable {
       ),
       this.scanners.length,
     )
+    const boostScan =
+      (this.passives.find((p) => p.id === `boostScanRange`)
+        ?.intensity || 0) + 1
+    this.radii.scan *= boostScan
     this.toUpdate.radii = this.radii
   }
 

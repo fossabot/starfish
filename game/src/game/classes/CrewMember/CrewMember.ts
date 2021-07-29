@@ -161,8 +161,16 @@ export class CrewMember extends Stubbable {
 
   addXp(skill: SkillType, xp?: number) {
     this.active()
+
+    const xpBoostMultiplier =
+      (this.ship.passives.find(
+        (p) => p.id === `boostXpGain`,
+      )?.intensity || 0) + 1
     if (!xp)
-      xp = c.baseXpGain / (c.deltaTime / c.TICK_INTERVAL)
+      xp =
+        (c.baseXpGain / (c.deltaTime / c.TICK_INTERVAL)) *
+        xpBoostMultiplier
+
     let skillElement = this.skills.find(
       (s) => s.skill === skill,
     )

@@ -261,8 +261,16 @@ class Ship extends Stubbable_1.Stubbable {
             this.toUpdate.radii = this.radii;
             return;
         }
+        // ----- sight -----
         this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
+        const boostSight = (this.passives.find((p) => p.id === `boostSightRange`)
+            ?.intensity || 0) + 1;
+        this.radii.scan *= boostSight;
+        // ----- scan -----
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
+        const boostScan = (this.passives.find((p) => p.id === `boostScanRange`)
+            ?.intensity || 0) + 1;
+        this.radii.scan *= boostScan;
         this.toUpdate.radii = this.radii;
     }
     // ----- movement -----

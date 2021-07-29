@@ -151,8 +151,11 @@ class CrewMember extends Stubbable_1.Stubbable {
     }
     addXp(skill, xp) {
         this.active();
+        const xpBoostMultiplier = (this.ship.passives.find((p) => p.id === `boostXpGain`)?.intensity || 0) + 1;
         if (!xp)
-            xp = dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+            xp =
+                (dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL)) *
+                    xpBoostMultiplier;
         let skillElement = this.skills.find((s) => s.skill === skill);
         if (!skillElement) {
             const index = this.skills.push({

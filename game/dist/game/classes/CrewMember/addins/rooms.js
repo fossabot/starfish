@@ -9,12 +9,12 @@ function cockpit() {
     if (this.cockpitCharge >= 1)
         return;
     this.addXp(`piloting`);
+    const chargeBoost = (this.ship.passives.find((p) => p.id === `boostCockpitChargeSpeed`)?.intensity || 0) + 1;
     this.cockpitCharge +=
-        dist_1.default.getCockpitChargePerTickForSingleCrewMember(this.piloting?.level || 1);
+        dist_1.default.getCockpitChargePerTickForSingleCrewMember(this.piloting?.level || 1) * chargeBoost;
     if (this.cockpitCharge > 1)
         this.cockpitCharge = 1;
     this.toUpdate.cockpitCharge = this.cockpitCharge;
-    // * actual movement handled by Ship class
 }
 exports.cockpit = cockpit;
 function repair(repairAmount) {
@@ -42,8 +42,10 @@ function repair(repairAmount) {
     if (itemsToRepair.length === 0 ||
         this.repairPriority === `most damaged`)
         itemsToRepair.push(repairableItems.reduce((mostBroken, ri) => ri.repair < mostBroken.repair ? ri : mostBroken, repairableItems[0]));
+    const repairBoost = (this.ship.passives.find((p) => p.id === `boostRepairSpeed`)?.intensity || 0) + 1;
     const amountToRepair = repairAmount ||
-        dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) /
+        (dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) *
+            repairBoost) /
             (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) /
             itemsToRepair.length;
     // c.log(
