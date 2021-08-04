@@ -1,0 +1,82 @@
+version: '3.7'
+services:
+  mongodb:
+    image: 'xmadsen/starfish-db:0.1'
+    restart: always
+    volumes:
+      - db_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: starfish
+      MONGO_INITDB_ROOT_USERNAME: mongodb_root_user
+      MONGO_INITDB_ROOT_PASSWORD: mongodb_root_pass
+    secrets:
+      - mongodb_root_user
+      - mongodb_root_pass
+    logging:
+      driver: none
+
+  game:
+    image: 'xmadsen/starfish-game:0.1'
+    user: 'node'
+    working_dir: /usr/app/game
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./common:/usr/app/common
+      - ./game/dist:/usr/app/game/dist
+      - ./game/src:/usr/app/game/src
+    command: 'npm run dev'
+    environment:
+      MONGODB_ADMINUSERNAME: mongodb_user
+      MONGODB_ADMINPASSWORD: mongodb_pass
+    depends_on:
+      - mongodb
+    secrets:
+      - mongodb_user
+      - mongodb_pass
+
+  frontend:
+    image: 'xmadsen/starfish-frontend:0.1'
+    user: 'node'
+    working_dir: /usr/app/frontend
+    ports:
+      - '4300:4300'
+    volumes:
+      - ./@types:/usr/app/@types
+      - ./common:/usr/app/common
+      - ./frontend:/usr/app/frontend/
+    command: 'npm run dev'
+
+  discord:
+    image: 'xmadsen/starfish-discord:0.1'
+    user: 'node'
+    working_dir: /usr/app/discord
+    volumes:
+      - ./common:/usr/app/common
+      - ./discord/dist:/usr/app/discord/dist
+    command: 'npm run dev'
+    secrets:
+      - discord_token
+      - bot_id
+
+secrets:
+  discord_token:
+    file: discord/secrets/discord_token.txt
+  bot_id:
+    file: discord/secrets/bot_id.txt
+  mongodb_user:  
+    file: db/secrets/mongodb_user.txt
+  mongodb_user:
+    file: db/secrets/mongodb_pass.txt
+  mongodb_pass:
+    file: db/secrets/mongodb_root_user.txt
+  mongodb_root_user:
+    file: db/secrets/mongodb_root_user.txt
+  mongodb_root_pass:
+    file: db/secrets/mongodb_root_pass.txt
+  
+volumes:
+  db_data:
