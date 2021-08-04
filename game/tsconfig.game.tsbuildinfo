@@ -802,7 +802,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "864d6be3cf9726866045fe96fc64689a17e9478ecfeebba9f2256c8cecf2239b",
+        "version": "ad0e64660369eb8d2131ab8b237fc333b752f978e9a977f97f728abdf14f78dd",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },
@@ -1588,6 +1588,7 @@
       "./src/db/index.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
         "./node_modules/dotenv/types/index.d.ts",
         "./node_modules/is-docker/index.d.ts",
         "./node_modules/mongoose/index.d.ts",

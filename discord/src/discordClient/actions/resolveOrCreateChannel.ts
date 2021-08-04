@@ -12,7 +12,7 @@ const channelData: {
 } = {
   alert: {
     name: `🚀Alerts`,
-    topic: `Automated ship alerts. Go to ${process.env.FRONTEND_URL} to take action!`,
+    topic: `Automated ship alerts. Go to ${c.frontendUrl} to take action!`,
     permissions: [],
   },
   chat: {

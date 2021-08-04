@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runOnReady = exports.init = exports.isReady = exports.db = void 0;
 const dotenv_1 = require("dotenv");
 const is_docker_1 = __importDefault(require("is-docker"));
+const fs = __importStar(require("fs"));
 const cache = __importStar(require("./models/cache"));
 const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
@@ -41,10 +42,26 @@ exports.db = {
     zone,
 };
 let ready = false;
+let mongoUsername;
+let mongoPassword;
+try {
+    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_user`, `utf-8`);
+}
+catch (e) {
+    mongoUsername = process.env
+        .MONGODB_ADMINUSERNAME;
+}
+try {
+    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_pass`, `utf-8`);
+}
+catch (e) {
+    mongoPassword = process.env
+        .MONGODB_ADMINPASSWORD;
+}
 const toRun = [];
 const isReady = () => ready;
 exports.isReady = isReady;
-const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
+const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = encodeURIComponent(mongoUsername), password = encodeURIComponent(mongoPassword), }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -57,7 +74,7 @@ const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port
         };
         if (mongoose_1.default.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
-            // c.log(uri)
+            dist_1.default.log(uri);
             dist_1.default.log(`gray`, `No existing db connection, creating...`);
             mongoose_1.default
                 .connect(uri, {

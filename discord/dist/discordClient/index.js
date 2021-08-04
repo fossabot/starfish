@@ -25,6 +25,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connected = exports.rawWatchers = exports.client = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const Discord = __importStar(require("discord.js"));
+const fs = __importStar(require("fs"));
+let discordToken;
+try {
+    discordToken = fs.readFileSync(`/run/secrets/discord_token`, `utf-8`);
+}
+catch (e) {
+    discordToken = process.env.DISCORD_TOKEN;
+}
 const CommandHandler_1 = require("./CommandHandler");
 exports.client = new Discord.Client({
     restTimeOffset: 0,
@@ -84,10 +92,15 @@ exports.client.on(`raw`, async (event) => {
     exports.rawWatchers.forEach((handler) => handler(event));
 });
 exports.client.on(`ready`, async () => {
-    dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in ${(await exports.client.guilds.cache.array()).length} guilds`);
+    const guilds = await exports.client.guilds.cache.array();
+    dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in:
+${guilds
+        .slice(0, 100)
+        .map((g) => g.name.substring(0, 50))
+        .join(`\n`)}${guilds.length > 100
+        ? `\n(and ${guilds.length - 100} more guilds)`
+        : ``}`);
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });
 });
-
-import discordToken from '/run/secrets/discord_token'
 exports.client.login(discordToken);
 //# sourceMappingURL=index.js.map

@@ -29,7 +29,7 @@ const GameChannel_1 = require("../models/GameChannel");
 const channelData = {
     alert: {
         name: `🚀Alerts`,
-        topic: `Automated ship alerts. Go to ${process.env.FRONTEND_URL} to take action!`,
+        topic: `Automated ship alerts. Go to ${dist_1.default.frontendUrl} to take action!`,
         permissions: [],
     },
     chat: {

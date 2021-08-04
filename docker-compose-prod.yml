@@ -3,8 +3,8 @@ services:
   mongodb:
     image: 'xmadsen/starfish-db:prod-latest'
     restart: always
-    volumes:
-      - db_data:/data/db
+    # volumes:
+    #   - db_data:/data/db
     ports:
       - 27017:27017
     environment:
@@ -29,7 +29,7 @@ services:
     depends_on:
       - mongodb
     ports:
-      - 8081:8081 
+      - 8081:8081
     secrets:
       - mongodb_user
       - mongodb_pass
@@ -74,16 +74,13 @@ secrets:
     file: discord/secrets/discord_token.txt
   bot_id:
     file: discord/secrets/bot_id.txt
-  mongodb_user:  
-    file: db/secrets/mongodb_user.txt
   mongodb_user:
-    file: db/secrets/mongodb_pass.txt
+    file: game/secrets/mongodb_user.txt
   mongodb_pass:
-    file: db/secrets/mongodb_root_user.txt
+    file: game/secrets/mongodb_pass.txt
   mongodb_root_user:
     file: db/secrets/mongodb_root_user.txt
   mongodb_root_pass:
     file: db/secrets/mongodb_root_pass.txt
-  
-volumes:
-  db_data:
+# volumes:
+#   db_data:
