@@ -106,10 +106,6 @@ class Tutorial {
                         message: `Let's zoom out a little bit.`,
                         advance: `See More`,
                     },
-                    // {
-                    //   message: `broadcast from here`,
-                    //   channel: `broadcast`,
-                    // },
                 ],
                 nextStepTrigger: {
                     awaitFrontend: true,

@@ -44,7 +44,7 @@ Choose your ship's species to get started!`, {
                 context.initialMessage.author.id;
             // @ts-ignore
             const collector = sentMessage.createButtonCollector(filter, {
-                time: 5 * 60 * 1000, // 5 mins
+                time: 5 * 60 * 1000,
             });
             collector.on?.(`collect`, (b) => {
                 done = true;
