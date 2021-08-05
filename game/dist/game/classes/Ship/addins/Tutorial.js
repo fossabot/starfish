@@ -791,6 +791,8 @@ class Tutorial {
             this.ship.logEntry(`Good luck out there! If you have more questions about the game, check out the How To Play page!`, `high`);
             io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
         }, dist_1.default.TICK_INTERVAL);
+        this.ship.addHeaderBackground(dist_1.default.capitalize(this.ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(this.ship.faction.id)} faction`);
+        this.ship.addTagline(`Tester`, `helping to test ${dist_1.default.GAME_NAME}`);
         this.cleanUp();
         this.ship.tutorial = undefined;
         this.ship.toUpdate.tutorial = false;

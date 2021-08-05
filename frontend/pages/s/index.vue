@@ -59,6 +59,7 @@
 <script lang="ts">
 import c from '../../../common/src'
 import { mapState } from 'vuex'
+import * as storage from '../../assets/scripts/storage'
 interface ComponentShape {
   [key: string]: any
 }
@@ -68,7 +69,6 @@ export default {
   data(): ComponentShape {
     return {
       c,
-      currentShipIndex: 0,
       masonryElement: null,
       ready: false,
     }
@@ -92,14 +92,6 @@ export default {
   },
 
   watch: {
-    shipIds(this: ComponentShape) {
-      if (this.shipIds?.length) {
-        this.changeShip(this.currentShipIndex)
-      }
-    },
-    currentShipIndex(this: ComponentShape) {
-      this.changeShip(this.currentShipIndex)
-    },
     ship(this: ComponentShape) {
       this.masonryElement?.position()
     },
@@ -122,7 +114,10 @@ export default {
         shipIds: this.shipIds,
       })
     }
-    this.changeShip(this.currentShipIndex)
+    const storedActiveId = storage.get('activeShipId')
+    if (storedActiveId)
+      this.changeShip(false, storedActiveId)
+    else this.changeShip(0)
     this.setUpMasonry()
 
     window.addEventListener('focus', () => {
@@ -134,16 +129,25 @@ export default {
   },
 
   methods: {
-    changeShip(this: ComponentShape, index: number) {
-      if (
+    changeShip(
+      this: ComponentShape,
+      index: number | false,
+      id?: string,
+    ) {
+      c.log(id, index, this.ship?.id)
+      if (id && (!this.ship || this.ship.id !== id))
+        this.$store.dispatch('socketSetup', id)
+      else if (
+        index !== false &&
         this.shipIds &&
         this.shipIds[index] &&
         (!this.ship || this.ship.id !== this.shipIds[index])
-      )
+      ) {
         this.$store.dispatch(
           'socketSetup',
-          this.shipIds[index],
+          id || this.shipIds[index],
         )
+      }
     },
     async setUpMasonry(this: ComponentShape) {
       if (this.masonryElement) return

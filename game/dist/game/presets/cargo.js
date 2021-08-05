@@ -4,49 +4,49 @@ exports.data = exports.uranium = exports.titanium = exports.carbon = exports.ste
 exports.salt = {
     name: `Salt`,
     type: `salt`,
-    basePrice: 1,
+    basePrice: 100,
     rarity: 0,
 };
 exports.water = {
     name: `Water`,
     type: `water`,
-    basePrice: 1.4,
+    basePrice: 140,
     rarity: 0,
 };
 exports.oxygen = {
     name: `Oxygen`,
     type: `oxygen`,
-    basePrice: 2.6,
+    basePrice: 260,
     rarity: 0,
 };
 exports.plastic = {
     name: `Plastic`,
     type: `plastic`,
-    basePrice: 2,
+    basePrice: 200,
     rarity: 1.5,
 };
 exports.steel = {
     name: `Steel`,
     type: `steel`,
-    basePrice: 3.2,
+    basePrice: 320,
     rarity: 3,
 };
 exports.carbon = {
     name: `Carbon`,
     type: `carbon`,
-    basePrice: 2.5,
+    basePrice: 250,
     rarity: 5,
 };
 exports.titanium = {
     name: `Titanium`,
     type: `titanium`,
-    basePrice: 3.8,
+    basePrice: 380,
     rarity: 7,
 };
 exports.uranium = {
     name: `Uranium`,
     type: `uranium`,
-    basePrice: 5.2,
+    basePrice: 520,
     rarity: 8,
 };
 exports.data = {

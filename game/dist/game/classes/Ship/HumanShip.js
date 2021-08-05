@@ -32,19 +32,20 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.membersIn = crew_1.membersIn;
         this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
         this.id = data.id;
-        // id matches discord guildId
-        this.availableTaglines = [`Tester`, `Very Shallow`];
-        this.availableHeaderBackgrounds = [
-            `Default`,
-            `Flat 1`,
-            `Flat 2`,
-            `Gradient 1`,
-            `Gradient 2`,
-            `Gradient 3`,
-            `Constellation 1`,
-            `Vintage 1`,
-        ];
-        this.availableHeaderBackgrounds.push(dist_1.default.capitalize(this.faction.id) + ` Faction 1`);
+        // this.availableTaglines = [] // `Tester`, `Very Shallow`
+        // this.availableHeaderBackgrounds = [
+        //   `Default`,
+        //   // `Flat 1`,
+        //   // `Flat 2`,
+        //   // `Gradient 1`,
+        //   // `Gradient 2`,
+        //   // `Gradient 3`,
+        //   // `Constellation 1`,
+        //   // `Vintage 1`,
+        // ]
+        // this.availableHeaderBackgrounds.push(
+        //   c.capitalize(this.faction.id) + ` Faction 1`,
+        // )
         this.ai = false;
         this.human = true;
         this.speed = dist_1.default.vectorToMagnitude(this.velocity);
@@ -200,6 +201,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.seenPlanets.push(p);
         this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.getVisibleStub());
         this.logEntry(`Discovered the planet ${p.name}!`, `high`);
+        if (this.seenPlanets.length > 5)
+            this.addTagline(`Small Pond Paddler`, `discovering 5 planets`);
+        else if (this.seenPlanets.length > 15)
+            this.addTagline(`Current Rider`, `discovering 15 planets`);
+        else if (this.seenPlanets.length > 30)
+            this.addTagline(`Migratory`, `discovering 30 planets`);
+        else if (this.seenPlanets.length > 100)
+            this.addTagline(`EAC-zy Rider`, `discovering 100 planets`);
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
     thruster) {
@@ -389,6 +398,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
+        if (this.speed > 3)
+            this.addTagline(`River Runner`, `going over 3AU/hr`);
+        else if (this.speed > 7)
+            this.addTagline(`Flying Fish`, `going over 7AU/hr`);
+        else if (this.speed > 12)
+            this.addTagline(`Hell's Angelfish`, `going over 12AU/hr`);
         // c.log({
         //   mass: this.mass,
         //   charge,
@@ -662,6 +677,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.commonCredits += amount;
         this.toUpdate.commonCredits = this.commonCredits;
         member.addStat(`totalContributedToCommonFund`, amount);
+        if (this.commonCredits > 50000)
+            this.addTagline(`Easy Target`, `having 50000 credits in the common fund`);
+        else if (this.commonCredits > 200000)
+            this.addTagline(`Moneybags`, `having 200000 credits in the common fund`);
     }
     broadcast(message, crewMember) {
         const sanitized = dist_1.default.sanitize(message.replace(/\n/g, ` `)).result;
@@ -739,6 +758,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         // )
         if (!silent && this.crewMembers.length > 1)
             this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
+        if (this.crewMembers.length >= 5)
+            this.addTagline(`Guppy`, `having 5 crew members`);
+        else if (this.crewMembers.length >= 10)
+            this.addTagline(`Schoolin'`, `having 10 crew members`);
+        else if (this.crewMembers.length >= 30)
+            this.addTagline(`Pod`, `having 30 crew members`);
+        else if (this.crewMembers.length >= 100)
+            this.addTagline(`Big Fish`, `having 100 crew members`);
         db_1.db.ship.addOrUpdateInDb(this);
         return cm;
     }
@@ -1043,6 +1070,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         setTimeout(() => {
             this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
         }, 100);
+        this.addTagline(`Delicious with Lemon`, `having your ship destroyed`);
         const cacheContents = [];
         this.crewMembers.forEach((cm) => {
             // ----- crew member cargo -----

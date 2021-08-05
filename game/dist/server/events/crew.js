@@ -151,17 +151,17 @@ function default_1(socket) {
             return callback({
                 error: `That's too heavy to fit into your cargo space.`,
             });
-        const price = dist_1.default.r2(cargoForSale.cargoData.basePrice *
+        const price = Math.max(cargoForSale.cargoData.basePrice *
             cargoForSale.buyMultiplier *
             amount *
             planet?.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 2, true);
+                : 1));
         dist_1.default.log({ price, credits: crewMember.credits });
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
-        crewMember.credits -= price;
+        crewMember.credits = Math.round(crewMember.credits - price);
         crewMember.toUpdate.credits = crewMember.credits;
         crewMember.addCargo(cargoType, amount);
         callback({
@@ -190,14 +190,14 @@ function default_1(socket) {
             return callback({
                 error: `The vendor does not buy that.`,
             });
-        const price = dist_1.default.r2(cargoBeingBought.cargoData.basePrice *
+        const price = Math.min(cargoBeingBought.cargoData.basePrice *
             cargoBeingBought.sellMultiplier *
             amount *
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? 1 + (1 - (dist_1.default.factionVendorMultiplier || 1))
-                : 1), 2, true);
-        crewMember.credits += price;
+                : 1));
+        crewMember.credits = Math.round(crewMember.credits + price);
         crewMember.toUpdate.credits = crewMember.credits;
         crewMember.removeCargo(cargoType, amount);
         callback({

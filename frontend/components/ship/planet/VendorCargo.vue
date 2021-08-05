@@ -172,7 +172,7 @@ export default {
               (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
                 : 1),
-            5,
+            0,
           )
           const maxCanBuy = c.r2(
             Math.min(
@@ -190,8 +190,8 @@ export default {
             pricePerUnit,
             maxCanBuy,
             canBuy:
-              maxCanBuy > 0.001 &&
-              this.crewMember?.credits > 0.01,
+              maxCanBuy >= 0.00999 &&
+              this.crewMember?.credits >= 1,
           }
         })
     },
@@ -200,13 +200,16 @@ export default {
         .filter((cargo: any) => cargo.sellMultiplier)
         .map((cargo: any) => {
           const pricePerUnit = c.r2(
-            cargo.cargoData?.basePrice *
-              cargo.sellMultiplier *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? 1 + (1 - (c.factionVendorMultiplier || 1))
-                : 1),
-            5,
+            Math.min(
+              cargo.cargoData?.basePrice *
+                cargo.sellMultiplier *
+                this.ship.planet.priceFluctuator *
+                (this.isFriendlyToFaction
+                  ? 1 +
+                    (1 - (c.factionVendorMultiplier || 1))
+                  : 1),
+            ),
+            0,
           )
           const heldAmount =
             this.crewMember?.inventory.find(
@@ -220,7 +223,7 @@ export default {
               this.crewMember?.inventory.find(
                 (i: any) =>
                   i.type === cargo.cargoData?.type,
-              )?.amount > 0.009999,
+              )?.amount >= 0.00999,
           }
         })
     },

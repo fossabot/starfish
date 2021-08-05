@@ -397,6 +397,22 @@ class Ship extends Stubbable_1.Stubbable {
             this._hp = this._maxHp;
         this.toUpdate._hp = this._hp;
     }
+    // ----- cosmetics -----
+    addTagline(tagline, reason) {
+        if (this.availableTaglines.find((t) => t === tagline))
+            return;
+        this.availableTaglines.push(tagline);
+        this.toUpdate.availableTaglines = this.availableTaglines;
+        this.logEntry(`Unlocked a new ship tagline for ${reason}: "${tagline}"`, `high`);
+    }
+    addHeaderBackground(bg, reason) {
+        if (this.availableHeaderBackgrounds.find((b) => b === bg))
+            return;
+        this.availableHeaderBackgrounds.push(bg);
+        this.toUpdate.availableHeaderBackgrounds =
+            this.availableHeaderBackgrounds;
+        this.logEntry(`Unlocked a new ship header background for ${reason}: "${bg}"`, `high`);
+    }
     // ----- misc stubs -----
     logEntry(s, lv) { }
     updateMaxScanProperties() { }

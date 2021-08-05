@@ -123,6 +123,7 @@ export const actions = {
     }
 
     commit(`set`, { modal: null, activeShipId: shipId })
+    storage.set(`activeShipId`, `${shipId}`)
 
     this.$socket.on(`disconnect`, () => {
       commit(`set`, { ship: null, connected: false })

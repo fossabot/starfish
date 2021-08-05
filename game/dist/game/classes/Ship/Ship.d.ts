@@ -89,6 +89,8 @@ export declare class Ship extends Stubbable {
     recalculateMaxHp(): void;
     get hp(): number;
     set hp(newValue: number);
+    addTagline(tagline: string, reason: string): void;
+    addHeaderBackground(bg: string, reason: string): void;
     logEntry(s: string, lv: LogLevel): void;
     updateMaxScanProperties(): void;
 }

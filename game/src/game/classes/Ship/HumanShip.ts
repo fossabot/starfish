@@ -56,22 +56,21 @@ export class HumanShip extends CombatShip {
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
     this.id = data.id
-    // id matches discord guildId
 
-    this.availableTaglines = [`Tester`, `Very Shallow`]
-    this.availableHeaderBackgrounds = [
-      `Default`,
-      `Flat 1`,
-      `Flat 2`,
-      `Gradient 1`,
-      `Gradient 2`,
-      `Gradient 3`,
-      `Constellation 1`,
-      `Vintage 1`,
-    ]
-    this.availableHeaderBackgrounds.push(
-      c.capitalize(this.faction.id) + ` Faction 1`,
-    )
+    // this.availableTaglines = [] // `Tester`, `Very Shallow`
+    // this.availableHeaderBackgrounds = [
+    //   `Default`,
+    //   // `Flat 1`,
+    //   // `Flat 2`,
+    //   // `Gradient 1`,
+    //   // `Gradient 2`,
+    //   // `Gradient 3`,
+    //   // `Constellation 1`,
+    //   // `Vintage 1`,
+    // ]
+    // this.availableHeaderBackgrounds.push(
+    //   c.capitalize(this.faction.id) + ` Faction 1`,
+    // )
 
     this.ai = false
     this.human = true
@@ -288,6 +287,24 @@ export class HumanShip extends CombatShip {
       `Discovered the planet ${p.name}!`,
       `high`,
     )
+
+    if (this.seenPlanets.length > 5)
+      this.addTagline(
+        `Small Pond Paddler`,
+        `discovering 5 planets`,
+      )
+    else if (this.seenPlanets.length > 15)
+      this.addTagline(
+        `Current Rider`,
+        `discovering 15 planets`,
+      )
+    else if (this.seenPlanets.length > 30)
+      this.addTagline(`Migratory`, `discovering 30 planets`)
+    else if (this.seenPlanets.length > 100)
+      this.addTagline(
+        `EAC-zy Rider`,
+        `discovering 100 planets`,
+      )
   }
 
   applyThrust(
@@ -573,6 +590,16 @@ export class HumanShip extends CombatShip {
     this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
+
+    if (this.speed > 3)
+      this.addTagline(`River Runner`, `going over 3AU/hr`)
+    else if (this.speed > 7)
+      this.addTagline(`Flying Fish`, `going over 7AU/hr`)
+    else if (this.speed > 12)
+      this.addTagline(
+        `Hell's Angelfish`,
+        `going over 12AU/hr`,
+      )
 
     // c.log({
     //   mass: this.mass,
@@ -1010,6 +1037,17 @@ export class HumanShip extends CombatShip {
     this.commonCredits += amount
     this.toUpdate.commonCredits = this.commonCredits
     member.addStat(`totalContributedToCommonFund`, amount)
+
+    if (this.commonCredits > 50000)
+      this.addTagline(
+        `Easy Target`,
+        `having 50000 credits in the common fund`,
+      )
+    else if (this.commonCredits > 200000)
+      this.addTagline(
+        `Moneybags`,
+        `having 200000 credits in the common fund`,
+      )
   }
 
   broadcast(message: string, crewMember: CrewMember) {
@@ -1131,6 +1169,16 @@ export class HumanShip extends CombatShip {
         `${cm.name} has joined the ship's crew!`,
         `high`,
       )
+
+    if (this.crewMembers.length >= 5)
+      this.addTagline(`Guppy`, `having 5 crew members`)
+    else if (this.crewMembers.length >= 10)
+      this.addTagline(`Schoolin'`, `having 10 crew members`)
+    else if (this.crewMembers.length >= 30)
+      this.addTagline(`Pod`, `having 30 crew members`)
+    else if (this.crewMembers.length >= 100)
+      this.addTagline(`Big Fish`, `having 100 crew members`)
+
     db.ship.addOrUpdateInDb(this)
     return cm
   }
@@ -1582,6 +1630,11 @@ export class HumanShip extends CombatShip {
         `critical`,
       )
     }, 100)
+
+    this.addTagline(
+      `Delicious with Lemon`,
+      `having your ship destroyed`,
+    )
 
     const cacheContents: CacheContents[] = []
 

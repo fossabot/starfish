@@ -27,14 +27,16 @@
       🇨🇭{{ c.r2(count, 2, true) }}: 💳{{
         c.numberWithCommas(
           c.r2(
-            c.baseRepairCost *
-              ship.planet.repairCostMultiplier *
-              ship.planet.priceFluctuator *
-              (isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1) *
-              count,
-            2,
+            Math.max(
+              c.baseRepairCost *
+                ship.planet.repairCostMultiplier *
+                ship.planet.priceFluctuator *
+                (isFriendlyToFaction
+                  ? c.factionVendorMultiplier
+                  : 1) *
+                count,
+            ),
+            0,
             true,
           ),
         )

@@ -201,7 +201,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     die() {
         super.die();
-        const amount = Math.ceil(Math.random() * this.level * 30) +
+        const amount = Math.ceil(Math.random() * this.level * 3000) +
             this.level;
         const cacheContents = [
             { type: `credits`, amount },

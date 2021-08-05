@@ -64,7 +64,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.lastActive = data.lastActive || Date.now();
         this.inventory = data.inventory || [];
         this.cockpitCharge = data.cockpitCharge || 0;
-        this.credits = data.credits || 2;
+        this.credits = data.credits ?? 200;
         this.skills = data.skills || [
             { skill: `piloting`, level: 1, xp: 0 },
             { skill: `munitions`, level: 1, xp: 0 },
@@ -105,6 +105,11 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.location = location;
         this.toUpdate.location = this.location;
         this.active();
+        if (this.ship.crewMembers.length > 10 &&
+            this.ship.crewMembers.reduce((all, cm) => {
+                return Boolean(all && cm.location === `bunk`);
+            }, true))
+            this.ship.addTagline(`Nap Champions`, `having all 10+ crew members asleep at once`);
         return true;
     }
     tick() {

@@ -162,13 +162,15 @@ export default {
         )
         .map((item: VendorItemPrice) => {
           const price = c.r2(
-            (item.itemData?.basePrice || 1) *
-              item.buyMultiplier! *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1),
-            2,
+            Math.max(
+              (item.itemData?.basePrice || 1) *
+                item.buyMultiplier! *
+                this.ship.planet.priceFluctuator *
+                (this.isFriendlyToFaction
+                  ? c.factionVendorMultiplier
+                  : 1),
+            ),
+            0,
             true,
           )
           return {
@@ -192,13 +194,16 @@ export default {
           )
           if (!itemForSale) return
           const price = c.r2(
-            (itemForSale.itemData?.basePrice || 1) *
-              itemForSale.sellMultiplier *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? 1 + (1 - (c.factionVendorMultiplier || 1))
-                : 1),
-            2,
+            Math.min(
+              (itemForSale.itemData?.basePrice || 1) *
+                itemForSale.sellMultiplier *
+                this.ship.planet.priceFluctuator *
+                (this.isFriendlyToFaction
+                  ? 1 +
+                    (1 - (c.factionVendorMultiplier || 1))
+                  : 1),
+            ),
+            0,
             true,
           )
           return {
@@ -212,17 +217,20 @@ export default {
     swappableChassis(this: ComponentShape) {
       return (this.ship.planet?.vendor?.chassis || []).map(
         (chassis: VendorChassisPrice) => {
-          const currentChassisSellPrice =
-            this.ship.chassis?.basePrice / 2
+          const currentChassisSellPrice = Math.floor(
+            this.ship.chassis?.basePrice / 2,
+          )
           const price = c.r2(
-            (chassis.chassisData?.basePrice || 1) *
-              chassis.buyMultiplier *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1) -
-              currentChassisSellPrice,
-            2,
+            Math.min(
+              (chassis.chassisData?.basePrice || 1) *
+                chassis.buyMultiplier *
+                this.ship.planet.priceFluctuator *
+                (this.isFriendlyToFaction
+                  ? c.factionVendorMultiplier
+                  : 1) -
+                currentChassisSellPrice,
+            ),
+            0,
             true,
           )
           return {

@@ -1,56 +1,56 @@
 export const salt: CargoData = {
   name: `Salt`,
   type: `salt`,
-  basePrice: 1,
+  basePrice: 100,
   rarity: 0,
 }
 
 export const water: CargoData = {
   name: `Water`,
   type: `water`,
-  basePrice: 1.4,
+  basePrice: 140,
   rarity: 0,
 }
 
 export const oxygen: CargoData = {
   name: `Oxygen`,
   type: `oxygen`,
-  basePrice: 2.6,
+  basePrice: 260,
   rarity: 0,
 }
 
 export const plastic: CargoData = {
   name: `Plastic`,
   type: `plastic`,
-  basePrice: 2,
+  basePrice: 200,
   rarity: 1.5,
 }
 
 export const steel: CargoData = {
   name: `Steel`,
   type: `steel`,
-  basePrice: 3.2,
+  basePrice: 320,
   rarity: 3,
 }
 
 export const carbon: CargoData = {
   name: `Carbon`,
   type: `carbon`,
-  basePrice: 2.5,
+  basePrice: 250,
   rarity: 5,
 }
 
 export const titanium: CargoData = {
   name: `Titanium`,
   type: `titanium`,
-  basePrice: 3.8,
+  basePrice: 380,
   rarity: 7,
 }
 
 export const uranium: CargoData = {
   name: `Uranium`,
   type: `uranium`,
-  basePrice: 5.2,
+  basePrice: 520,
   rarity: 8,
 }
 

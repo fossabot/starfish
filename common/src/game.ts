@@ -9,7 +9,7 @@ const gameSpeedMultiplier = 1 * 12
 
 const baseSightRange = 0.05
 
-const baseRepairCost = 30
+const baseRepairCost = 3000
 
 const maxBroadcastLength = 200
 
@@ -165,11 +165,57 @@ function getCrewPassivePriceMultiplier(level: number) {
 const taglineOptions: string[] = [
   `Tester`,
   `✨Supporter✨`,
+  `🔨Admin🔨`,
+
+  // to be assigned
+  `Big Flipper`,
+  `Whale, I'll be!`,
+  `Splish splash`,
+  `Holy Mackerel!`,
+  `Small Pond 4 Life`,
+  `Nautical Nonsense`,
   `Very Shallow`,
-  `Big Fish`,
-  `Guppy`,
+
+  // flight (implemented)
+  `River Runner`,
+  `Hell's Angelfish`,
+  `Flying Fish`,
+
+  // exploration (implemented)
+  `Small Pond Paddler`,
+  `Current Rider`,
+  `Migratory`,
+  `EAC-zy Rider`,
+
+  // credits (implemented)
+  `Easy Target`,
+  `Moneybags`,
+
+  // bunk (implemented)
+  `Nap Champions`,
+
+  // upgrade to x chassis
+  `Big Kahuna`,
+
+  // planet time
+  `Home Schooled`,
+
+  // combat achievements
   `On the Hunt`,
+  `Blood in the Water`,
+  `Feeding Frenzied`,
+  `Venomous`,
+  `Big Chompers`,
+  `Bait and Switch`,
+
+  // dying (implemented)
+  `Delicious with Lemon`,
+
+  // crew member numbers (implemented)
+  `Guppy`,
   `Schoolin'`,
+  `Pod`,
+  `Big Fish`,
 ]
 
 const headerBackgroundOptions: {

@@ -917,6 +917,17 @@ export class Tutorial {
       )
     }, c.TICK_INTERVAL)
 
+    this.ship.addHeaderBackground(
+      c.capitalize(this.ship.faction.id) + ` Faction 1`,
+      `joining the ${c.capitalize(
+        this.ship.faction.id,
+      )} faction`,
+    )
+    this.ship.addTagline(
+      `Tester`,
+      `helping to test ${c.GAME_NAME}`,
+    )
+
     this.cleanUp()
     this.ship.tutorial = undefined
     this.ship.toUpdate.tutorial = false

@@ -288,7 +288,7 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price = c.r2(
+      const price = Math.max(
         cargoForSale.cargoData.basePrice *
           cargoForSale.buyMultiplier *
           amount *
@@ -298,14 +298,14 @@ export default function (
           )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
-        2,
-        true,
       )
       c.log({ price, credits: crewMember.credits })
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
-      crewMember.credits -= price
+      crewMember.credits = Math.round(
+        crewMember.credits - price,
+      )
       crewMember.toUpdate.credits = crewMember.credits
       crewMember.addCargo(cargoType, amount)
 
@@ -368,7 +368,7 @@ export default function (
           error: `The vendor does not buy that.`,
         })
 
-      const price = c.r2(
+      const price = Math.min(
         cargoBeingBought.cargoData.basePrice *
           cargoBeingBought.sellMultiplier *
           amount *
@@ -378,11 +378,11 @@ export default function (
           )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? 1 + (1 - (c.factionVendorMultiplier || 1))
             : 1),
-        2,
-        true,
       )
 
-      crewMember.credits += price
+      crewMember.credits = Math.round(
+        crewMember.credits + price,
+      )
       crewMember.toUpdate.credits = crewMember.credits
       crewMember.removeCargo(cargoType, amount)
       callback({

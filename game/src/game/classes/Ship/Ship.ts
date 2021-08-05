@@ -592,6 +592,32 @@ export class Ship extends Stubbable {
     this.toUpdate._hp = this._hp
   }
 
+  // ----- cosmetics -----
+  addTagline(tagline: string, reason: string) {
+    if (this.availableTaglines.find((t) => t === tagline))
+      return
+    this.availableTaglines.push(tagline)
+    this.toUpdate.availableTaglines = this.availableTaglines
+    this.logEntry(
+      `Unlocked a new ship tagline for ${reason}: "${tagline}"`,
+      `high`,
+    )
+  }
+
+  addHeaderBackground(bg: string, reason: string) {
+    if (
+      this.availableHeaderBackgrounds.find((b) => b === bg)
+    )
+      return
+    this.availableHeaderBackgrounds.push(bg)
+    this.toUpdate.availableHeaderBackgrounds =
+      this.availableHeaderBackgrounds
+    this.logEntry(
+      `Unlocked a new ship header background for ${reason}: "${bg}"`,
+      `high`,
+    )
+  }
+
   // ----- misc stubs -----
 
   logEntry(s: string, lv: LogLevel) {}
