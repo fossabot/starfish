@@ -111,13 +111,13 @@ function getRadiusDiminishingReturns(
 function getMaxCockpitChargeForSingleCrewMember(
   level: number = 1,
 ) {
-  return math.lerp(1, 5, level / 100)
+  return math.lerp(1, 5, (level - 1) / 100)
 }
 
 function getCockpitChargePerTickForSingleCrewMember(
   level: number = 1,
 ) {
-  const flatMod = 0.8
+  const flatMod = 0.6
   return math.lerp(
     0.002 * flatMod,
     0.0005 * flatMod,

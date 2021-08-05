@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -42,9 +42,8 @@ exports.db = {
 };
 let ready = false;
 const toRun = [];
-const isReady = () => ready;
-exports.isReady = isReady;
-const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
+exports.isReady = () => ready;
+exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -76,12 +75,10 @@ const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port
         }
     });
 };
-exports.init = init;
-const runOnReady = (f) => {
+exports.runOnReady = (f) => {
     if (ready)
         f();
     else
         toRun.push(f);
 };
-exports.runOnReady = runOnReady;
 //# sourceMappingURL=index.js.map

@@ -1,7 +1,7 @@
 <template>
   <div
     class="chargebutton"
-    :class="{ big }"
+    :class="{ big, disabled }"
     :style="{
       background: `linear-gradient(to right, ${startColor}, ${endColor}`,
     }"
@@ -35,7 +35,7 @@ export default {
     disabled: {},
     big: {},
     max: { default: 1 },
-    maxFillColor: { default: 'rgba(255,255,255,.1)' },
+    maxFillColor: { default: 'rgba(255,230,150,.3)' },
     startColor: { default: '#aa0' },
     endColor: { default: '#f50' },
     chargeTime: { default: 5000 },
@@ -93,6 +93,10 @@ export default {
     border-radius: 8px;
   }
 
+  &.disabled {
+    cursor: not-allowed;
+  }
+
   .hider {
     position: absolute;
     overflow: hidden;
@@ -108,12 +112,20 @@ export default {
     left: 0;
     z-index: 2;
     mix-blend-mode: screen;
+    opacity: 0.5;
+    transition: opacity 0.2s;
     // border-radius: 5px;
   }
   .content {
     position: relative;
     z-index: 3;
     height: 100%;
+  }
+
+  &:not(.disabled):hover {
+    .base {
+      opacity: 1;
+    }
   }
 }
 </style>

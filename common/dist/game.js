@@ -64,10 +64,10 @@ function getRadiusDiminishingReturns(totalValue, equipmentCount) {
     return totalValue / Math.sqrt(equipmentCount) || 0; // this might be too harsh? 5 and 2 = 4.9
 }
 function getMaxCockpitChargeForSingleCrewMember(level = 1) {
-    return math_1.default.lerp(1, 5, level / 100);
+    return math_1.default.lerp(1, 5, (level - 1) / 100);
 }
 function getCockpitChargePerTickForSingleCrewMember(level = 1) {
-    const flatMod = 0.8;
+    const flatMod = 0.6;
     return math_1.default.lerp(0.002 * flatMod, 0.0005 * flatMod, level / 100); // backwards because you gain max charge
 }
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
