@@ -52,13 +52,21 @@
                       ca.cargoData.basePrice,
                 }"
               >
-                💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+                💳{{
+                  c.numberWithCommas(
+                    c.r2(ca.pricePerUnit, 2, true),
+                  )
+                }}/ton
               </div>
             </div>
           </template>
           <template>
             How many tons? (Max
-            {{ c.r2(ca.maxCanBuy, 2, true) }})
+            {{
+              c.numberWithCommas(
+                c.r2(ca.maxCanBuy, 2, true),
+              )
+            }})
           </template>
         </PromptButton>
       </span></span
@@ -102,17 +110,29 @@
                       ca.cargoData.basePrice,
                 }"
               >
-                💳{{ c.r2(ca.pricePerUnit, 2, true) }}/ton
+                💳{{
+                  c.numberWithCommas(
+                    c.r2(ca.pricePerUnit, 2, true),
+                  )
+                }}/ton
               </div>
               <div class="sub" v-if="ca.heldAmount > 0.005">
                 (You have
-                {{ c.r2(ca.heldAmount, 2, true) }})
+                {{
+                  c.numberWithCommas(
+                    c.r2(ca.heldAmount, 2, true),
+                  )
+                }})
               </div>
             </div>
           </template>
           <template>
             How many tons? (Max
-            {{ c.r2(ca.heldAmount, 2, true) }})
+            {{
+              c.numberWithCommas(
+                c.r2(ca.heldAmount, 2, true),
+              )
+            }})
           </template>
         </PromptButton>
       </span>

@@ -35,19 +35,21 @@
           passive.passiveData.type
         ] || 0) + 1
       }}: 💳{{
-        c.r2(
-          passive.passiveData.basePrice *
-            passive.buyMultiplier *
-            (isFriendlyToFaction
-              ? c.factionVendorMultiplier
-              : 1) *
-            c.getCrewPassivePriceMultiplier(
-              crewMemberPassiveLevels[
-                passive.passiveData.type
-              ] || 0,
-            ),
-          2,
-          true,
+        c.numberWithCommas(
+          c.r2(
+            passive.passiveData.basePrice *
+              passive.buyMultiplier *
+              (isFriendlyToFaction
+                ? c.factionVendorMultiplier
+                : 1) *
+              c.getCrewPassivePriceMultiplier(
+                crewMemberPassiveLevels[
+                  passive.passiveData.type
+                ] || 0,
+              ),
+            2,
+            true,
+          ),
         )
       }}
     </button>

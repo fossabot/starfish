@@ -97,7 +97,8 @@ export default {
   }
 
   &:not(.highlight) {
-    color: #ccc;
+    font-size: 0.8em;
+    color: #bbb;
     z-index: 2;
   }
 

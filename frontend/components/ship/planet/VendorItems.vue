@@ -57,7 +57,9 @@
             <b>{{
               ca.itemData && ca.itemData.displayName
             }}</b>
-            <div>💳{{ c.r2(ca.price, 2) }}</div>
+            <div>
+              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+            </div>
           </button>
         </span></span
       ><span
@@ -83,7 +85,9 @@
             @click="sellItem(ca)"
           >
             <b>{{ ca && ca.displayName }}</b>
-            <div>💳{{ c.r2(ca.price, 2) }}</div>
+            <div>
+              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+            </div>
           </button>
         </span> </span
       ><span
@@ -117,7 +121,9 @@
             <b>{{
               ca.chassisData && ca.chassisData.displayName
             }}</b>
-            <div>💳{{ c.r2(ca.price, 2) }}</div>
+            <div>
+              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+            </div>
           </button>
         </span>
       </span>

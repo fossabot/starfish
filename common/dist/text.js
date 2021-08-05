@@ -10,7 +10,7 @@ function numberWithCommas(x) {
     const total = Math.floor(x)
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
-        (decimal ? `${decimal}`.substring(1) : ``);
+        (decimal ? `${math_1.default.r2(decimal, 6)}`.substring(1) : ``);
     return total;
 }
 function printList(list) {

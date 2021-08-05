@@ -8,7 +8,7 @@ function numberWithCommas(x: number) {
     Math.floor(x)
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
-    (decimal ? `${decimal}`.substring(1) : ``)
+    (decimal ? `${math.r2(decimal, 6)}`.substring(1) : ``)
   return total
 }
 
