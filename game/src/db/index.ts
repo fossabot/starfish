@@ -8,7 +8,7 @@ import * as zone from './models/zone'
 dotEnvConfig()
 
 import c from '../../../common/dist'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 export const db = {
   cache,
   ship,
@@ -19,17 +19,32 @@ export const db = {
 let ready = false
 const toRun: Function[] = []
 
+
+import * as fs from 'fs'
+c.log(`Imported from fs`)
+let mongodb_username : string 
+let mongodb_password : string
+try{
+  mongodb_username= fs.readFileSync(process.env.MONGODB_USERNAME_FILE as string, 'utf-8')
+}
+catch (e){
+  c.log("Got an error reading mongodb_username")
+}
+try{
+  mongodb_password = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE as string, 'utf-8')
+}
+catch (e){
+  c.log("Got an error reading mongodb_password")
+}
+
+
 export const isReady = () => ready
 export const init = ({
   hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
   dbName = `starfish`,
-  username = encodeURIComponent(
-    process.env.MONGODB_ADMINUSERNAME!,
-  ),
-  password = encodeURIComponent(
-    process.env.MONGODB_ADMINPASSWORD!,
-  ),
+  username = mongodb_username,
+  password = mongodb_password,
 }: {
   hostname?: string
   port?: number

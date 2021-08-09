@@ -1,4 +1,4 @@
 node_modules
 .env
 db/data
-*/secrets/!(example).txt
+discord/secrets/discord_token.txt
