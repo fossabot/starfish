@@ -1,16 +1,12 @@
-const fs = require('fs')
-  
-function readSecretFromFile(secret_file) {
-  fs.readFile(secret_file, (err, secret) => {
-    return secret.toString()
-  })
-}
+import * as fs from 'fs'
+let mongodb_username = fs.readFileSync(process.env.MONGODB_USERNAME_FILE, 'utf-8')
+let mongodb_password = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE, 'utf-8')
 
 
 db = db.getSiblingDB(`starfish`)
 db.createUser({
-  user: readSecretFromFile('/run/secrets/mongodb_user'),
-  pwd: readSecretFromFile('/run/secrets/mongodb_pass'),
+  user: mongodb_username,
+  pwd: mongodb_password,
   roles: [
     {
       role: `readWrite`,

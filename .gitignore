@@ -1,4 +1,7 @@
 node_modules
 .env
 db/data
-*/secrets/!(example).txt
+discord/secrets/
+db/secrets
+game/secrets
+discord/secrets

@@ -59,8 +59,23 @@ catch (e) {
         .MONGODB_ADMINPASSWORD;
 }
 const toRun = [];
+dist_1.default.log(`Imported from fs`);
+let mongodbUsername;
+let mongodbPassword;
+try {
+    mongodbUsername = fs.readFileSync(process.env.MONGODB_USERNAME_FILE, `utf-8`);
+}
+catch (e) {
+    dist_1.default.log(`Got an error reading mongodbUsername`);
+}
+try {
+    mongodbPassword = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE, `utf-8`);
+}
+catch (e) {
+    dist_1.default.log(`Got an error reading mongodbPassword`);
+}
 exports.isReady = () => ready;
-exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = encodeURIComponent(mongoUsername), password = encodeURIComponent(mongoPassword), }) => {
+exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongodbUsername, password = mongodbPassword, }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
