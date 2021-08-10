@@ -787,7 +787,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "44a5f9d161dbb7d099eef39fdf3de9b25429b411b94bc5df753f2524a05bf7ed",
+        "version": "384472bedb83f89267261939d021a11736141bbfc9de1cf677b380d26bec36a5",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },
@@ -862,7 +862,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/aiship.ts": {
-        "version": "2f0e44b2484a94e8e15cdd0be4a7f08aad6e0c1f096d34951114966adcb593b7",
+        "version": "2cba1065d292b505e66d6e64a79f686ee43e78eaa578e658822f93b09662d2ff",
         "signature": "cb2fe3d57c4ecba2155fee8ba3bb3f8002f8dd746f534ba1e88a497c446530b9",
         "affectsGlobalScope": false
       },

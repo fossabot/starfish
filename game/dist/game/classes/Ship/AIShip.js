@@ -56,7 +56,7 @@ class AIShip extends CombatShip_1.CombatShip {
         if (this.items.length === 0)
             this.addLevelAppropriateItems();
         if (this.items.length === 0)
-            setTimeout(this.die, 1000);
+            setTimeout(() => this.die(), 1000);
         if (data.spawnPoint?.length === 2)
             this.spawnPoint = [...data.spawnPoint];
         else

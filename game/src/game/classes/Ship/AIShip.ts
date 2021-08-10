@@ -54,7 +54,8 @@ export class AIShip extends CombatShip {
     if (data.level) this.level = data.level
     if (this.items.length === 0)
       this.addLevelAppropriateItems()
-    if (this.items.length === 0) setTimeout(this.die, 1000)
+    if (this.items.length === 0)
+      setTimeout(() => this.die(), 1000)
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]

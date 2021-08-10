@@ -59,7 +59,6 @@ catch (e) {
         .MONGODB_ADMINPASSWORD;
 }
 const toRun = [];
-dist_1.default.log(`Imported from fs`);
 let mongodbUsername;
 let mongodbPassword;
 try {
@@ -70,6 +69,7 @@ catch (e) {
 }
 try {
     mongodbPassword = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE, `utf-8`);
+    dist_1.default.log(`Imported mongo creds from secret files`);
 }
 catch (e) {
     dist_1.default.log(`Got an error reading mongodbPassword`);

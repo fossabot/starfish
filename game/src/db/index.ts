@@ -43,7 +43,6 @@ try {
 
 const toRun: Function[] = []
 
-c.log(`Imported from fs`)
 let mongodbUsername: string
 let mongodbPassword: string
 try {
@@ -59,6 +58,7 @@ try {
     process.env.MONGODB_PASSWORD_FILE as string,
     `utf-8`,
   )
+  c.log(`Imported mongo creds from secret files`)
 } catch (e) {
   c.log(`Got an error reading mongodbPassword`)
 }

@@ -112,11 +112,7 @@ export default {
   },
 
   async mounted(this: ComponentShape) {
-    if (
-      !this.userId ||
-      !this.shipIds ||
-      !this.shipIds.length
-    ) {
+    if (!this.userId || !this.shipIds) {
       this.$store.dispatch('logIn', {
         userId: this.userId,
         shipIds: this.shipIds,
