@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runOnReady = exports.init = exports.isReady = exports.db = void 0;
 const dotenv_1 = require("dotenv");
 const is_docker_1 = __importDefault(require("is-docker"));
+const fs = __importStar(require("fs"));
 const cache = __importStar(require("./models/cache"));
 const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
@@ -41,10 +42,40 @@ exports.db = {
     zone,
 };
 let ready = false;
+let mongoUsername;
+let mongoPassword;
+try {
+    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_user`, `utf-8`);
+}
+catch (e) {
+    mongoUsername = process.env
+        .MONGODB_ADMINUSERNAME;
+}
+try {
+    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_pass`, `utf-8`);
+}
+catch (e) {
+    mongoPassword = process.env
+        .MONGODB_ADMINPASSWORD;
+}
 const toRun = [];
-const isReady = () => ready;
-exports.isReady = isReady;
-const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
+let mongodbUsername;
+let mongodbPassword;
+try {
+    mongodbUsername = fs.readFileSync(process.env.MONGODB_USERNAME_FILE, `utf-8`);
+}
+catch (e) {
+    dist_1.default.log(`Got an error reading mongodbUsername`);
+}
+try {
+    mongodbPassword = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE, `utf-8`);
+    dist_1.default.log(`Imported mongo creds from secret files`);
+}
+catch (e) {
+    dist_1.default.log(`Got an error reading mongodbPassword`);
+}
+exports.isReady = () => ready;
+exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongodbUsername, password = mongodbPassword, }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -57,7 +88,7 @@ const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port
         };
         if (mongoose_1.default.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
-            // c.log(uri)
+            dist_1.default.log(uri);
             dist_1.default.log(`gray`, `No existing db connection, creating...`);
             mongoose_1.default
                 .connect(uri, {
@@ -76,12 +107,10 @@ const init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port
         }
     });
 };
-exports.init = init;
-const runOnReady = (f) => {
+exports.runOnReady = (f) => {
     if (ready)
         f();
     else
         toRun.push(f);
 };
-exports.runOnReady = runOnReady;
 //# sourceMappingURL=index.js.map
