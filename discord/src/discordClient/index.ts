@@ -1,5 +1,15 @@
 import c from '../../../common/dist'
 import * as Discord from 'discord.js'
+import * as fs from 'fs'
+let discordToken
+try {
+  discordToken = fs.readFileSync(
+    `/run/secrets/discord_token`,
+    `utf-8`,
+  )
+} catch (e) {
+  discordToken = process.env.DISCORD_TOKEN
+}
 import { CommandHandler } from './CommandHandler'
 
 export const client = new Discord.Client({
@@ -66,13 +76,20 @@ client.on(`raw`, async (event) => {
   rawWatchers.forEach((handler: Function) => handler(event))
 })
 client.on(`ready`, async () => {
+  const guilds = await client.guilds.cache.array()
   c.log(
     `green`,
-    `Logged in as ${client.user?.tag} in ${
-      (await client.guilds.cache.array()).length
-    } guilds`,
+    `Logged in as ${client.user?.tag} in:
+${guilds
+  .slice(0, 100)
+  .map((g) => g.name.substring(0, 50))
+  .join(`\n`)}${
+      guilds.length > 100
+        ? `\n(and ${guilds.length - 100} more guilds)`
+        : ``
+    }`,
   )
   client.user?.setActivity(`.help`, { type: `LISTENING` })
 })
 
-client.login(process.env.DISCORD_TOKEN)
+client.login(discordToken)

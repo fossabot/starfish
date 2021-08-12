@@ -1,16 +1,20 @@
 version: '3.7'
 services:
   mongodb:
-    image: 'xmadsen/starfish-db:prod-latest'
-    restart: always
+    image: 'xmadsen/starfish-db:0.1'
+    # restart: always
     volumes:
       - db_data:/data/db
     ports:
       - 27017:27017
+    # entrypoint: /docker-entrypoint.sh
     environment:
       MONGO_INITDB_DATABASE: starfish
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongodb_root_username
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongodb_root_password
+      # MONGO_USERNAME_FILE: /run/secrets/mongodb_username
+      # MONGO_PASSWORD_FILE: /run/secrets/mongodb_password
+    # command: /bin/bash - "export MONGO_USERNAME=$$(cat /run/secrets/mongodb_username) && export MONGO_PASSWORD=$$(cat /run/secrets/mongodb_password)"
     secrets:
       - mongodb_root_username
       - mongodb_root_password
@@ -18,11 +22,15 @@ services:
       - mongodb_password
 
   game:
-    image: 'xmadsen/starfish-game:prod-latest'
+    image: 'xmadsen/starfish-game:0.1'
     user: 'node'
     working_dir: /usr/app/game
     ports:
       - '4200:4200'
+    volumes:
+      - ./common:/usr/app/common
+      - ./game/dist:/usr/app/game/dist
+      - ./game/src:/usr/app/game/src
     command: 'npm run dev'
     environment:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
@@ -34,17 +42,24 @@ services:
       - mongodb_password
 
   frontend:
-    image: 'xmadsen/starfish-frontend:prod-latest'
+    image: 'xmadsen/starfish-frontend:0.1'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
-      - '80:4300'
+      - '4300:4300'
+    volumes:
+      - ./@types:/usr/app/@types
+      - ./common:/usr/app/common
+      - ./frontend:/usr/app/frontend/
     command: 'npm run dev'
 
   discord:
-    image: 'xmadsen/starfish-discord:prod-latest'
+    image: 'xmadsen/starfish-discord:0.1'
     user: 'node'
     working_dir: /usr/app/discord
+    volumes:
+      - ./common:/usr/app/common
+      - ./discord/dist:/usr/app/discord/dist
     command: 'npm run dev'
     secrets:
       - discord_token

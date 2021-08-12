@@ -64,9 +64,17 @@ export async function loadUserGameGuilds({
   )
     .then((result) => result.json())
     .then((guildRes) => {
+      if (guildRes.error) {
+        console.log(
+          `Error loading user discord guilds`,
+          guildRes.error,
+        )
+        return []
+      }
       return guildRes.map((g: any) => g?.id)
     })
     .catch((e) => {
+      console.log(`Error loading user discord guilds`, e)
       storage.set(`tokenType`, tokenType)
       storage.set(`accessToken`, accessToken)
       return `Bad token`

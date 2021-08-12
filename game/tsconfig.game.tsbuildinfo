@@ -787,7 +787,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "864d6be3cf9726866045fe96fc64689a17e9478ecfeebba9f2256c8cecf2239b",
+        "version": "384472bedb83f89267261939d021a11736141bbfc9de1cf677b380d26bec36a5",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },
@@ -862,7 +862,11 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/aiship.ts": {
+<<<<<<< HEAD
         "version": "2e0fdf2367ef8421473f59bdff5082649dd7840a8af1b149c8cf29db807224b9",
+=======
+        "version": "2cba1065d292b505e66d6e64a79f686ee43e78eaa578e658822f93b09662d2ff",
+>>>>>>> 93946de984e28a0e4bc736a3662fafe652771969
         "signature": "cb2fe3d57c4ecba2155fee8ba3bb3f8002f8dd746f534ba1e88a497c446530b9",
         "affectsGlobalScope": false
       },
@@ -1573,6 +1577,7 @@
       "./src/db/index.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
         "./node_modules/dotenv/types/index.d.ts",
         "./node_modules/is-docker/index.d.ts",
         "./node_modules/mongoose/index.d.ts",

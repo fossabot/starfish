@@ -1,5 +1,6 @@
 import { config as dotEnvConfig } from 'dotenv'
 import isDocker from 'is-docker'
+import * as fs from 'fs'
 import * as cache from './models/cache'
 import * as ship from './models/ship'
 import * as attackRemnant from './models/attackRemnant'
@@ -8,7 +9,7 @@ import * as zone from './models/zone'
 dotEnvConfig()
 
 import c from '../../../common/dist'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 export const db = {
   cache,
   ship,
@@ -17,19 +18,58 @@ export const db = {
   zone,
 }
 let ready = false
+
+let mongoUsername: string
+let mongoPassword: string
+
+try {
+  mongoUsername = fs.readFileSync(
+    `/run/secrets/mongodb_user`,
+    `utf-8`,
+  )
+} catch (e) {
+  mongoUsername = process.env
+    .MONGODB_ADMINUSERNAME as string
+}
+try {
+  mongoPassword = fs.readFileSync(
+    `/run/secrets/mongodb_pass`,
+    `utf-8`,
+  )
+} catch (e) {
+  mongoPassword = process.env
+    .MONGODB_ADMINPASSWORD as string
+}
+
 const toRun: Function[] = []
+
+let mongodbUsername: string
+let mongodbPassword: string
+try {
+  mongodbUsername = fs.readFileSync(
+    process.env.MONGODB_USERNAME_FILE as string,
+    `utf-8`,
+  )
+} catch (e) {
+  c.log(`Got an error reading mongodbUsername`)
+}
+try {
+  mongodbPassword = fs.readFileSync(
+    process.env.MONGODB_PASSWORD_FILE as string,
+    `utf-8`,
+  )
+  c.log(`Imported mongo creds from secret files`)
+} catch (e) {
+  c.log(`Got an error reading mongodbPassword`)
+}
 
 export const isReady = () => ready
 export const init = ({
   hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
-  dbName = `spacecord`,
-  username = encodeURIComponent(
-    process.env.MONGODB_ADMINUSERNAME!,
-  ),
-  password = encodeURIComponent(
-    process.env.MONGODB_ADMINPASSWORD!,
-  ),
+  dbName = `starfish`,
+  username = mongodbUsername,
+  password = mongodbPassword,
 }: {
   hostname?: string
   port?: number
@@ -50,7 +90,7 @@ export const init = ({
 
     if (mongoose.connection.readyState === 0) {
       const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
-      // c.log(uri)
+      c.log(uri)
       c.log(
         `gray`,
         `No existing db connection, creating...`,

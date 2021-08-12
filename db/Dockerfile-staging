@@ -1,0 +1,4 @@
+FROM mongo:4.0
+
+# COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./init-mongo-staging.js /docker-entrypoint-initdb.d/init-mongo.js

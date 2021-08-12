@@ -1,0 +1,16 @@
+import * as fs from 'fs'
+let mongodb_username = fs.readFileSync(process.env.MONGODB_USERNAME_FILE, 'utf-8')
+let mongodb_password = fs.readFileSync(process.env.MONGODB_PASSWORD_FILE, 'utf-8')
+
+
+db = db.getSiblingDB(`starfish`)
+db.createUser({
+  user: mongodb_username,
+  pwd: mongodb_password,
+  roles: [
+    {
+      role: `readWrite`,
+      db: `starfish`,
+    },
+  ],
+})

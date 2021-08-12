@@ -239,6 +239,7 @@ export const actions = {
             text: idRes.error,
             type: `error`,
           })
+          c.log(idRes.error)
           return
         }
         userId = idRes.data
@@ -263,8 +264,15 @@ export const actions = {
           c.log(guildsRes.error)
 
           if (guildsRes.error === `Bad token`) {
-            dispatch(`logout`)
-            this.$router.push(`/login`)
+            c.log(
+              `failed!`,
+              guildsRes,
+              tokenType,
+              accessToken,
+              userId,
+            )
+            // dispatch(`logout`)
+            // this.$router.push(`/login`)
             return
           }
           return
