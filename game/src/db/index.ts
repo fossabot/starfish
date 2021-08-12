@@ -90,7 +90,7 @@ export const init = ({
 
     if (mongoose.connection.readyState === 0) {
       const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
-      c.log(uri)
+      // c.log(uri)
       c.log(
         `gray`,
         `No existing db connection, creating...`,

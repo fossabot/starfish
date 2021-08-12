@@ -1,8 +1,30 @@
 import c from '../../../common/src'
 const { GoogleSpreadsheet } = require(`google-spreadsheet`)
+import fs from 'fs'
 
 /* eslint-disable */
-process.env.private_key = process.env.private_key.replace(
+const credentials: {
+  private_key?: string
+  client_email?: string
+} = {}
+try {
+  credentials.private_key = fs.readFileSync(
+    `/run/secrets/google_private_key`,
+    `utf-8`,
+  )
+  credentials.client_email = fs.readFileSync(
+    `/run/secrets/google_client_email`,
+    `utf-8`,
+  )
+  c.log('Loaded google api credentials from secret files.')
+} catch (e) {
+  credentials.private_key = process.env.private_key
+  credentials.client_email = process.env.client_email
+  c.log(
+    'Loaded google api credentials from environment variables.',
+  )
+}
+credentials.private_key = credentials.private_key.replace(
   /\\n/g,
   `\n`,
 )
@@ -17,7 +39,7 @@ export async function setup() {
   )
 
   // authentication
-  await doc.useServiceAccountAuth(process.env, (err) => {
+  await doc.useServiceAccountAuth(credentials, (err) => {
     c.log(`Google Sheets auth error:`, err)
   })
 

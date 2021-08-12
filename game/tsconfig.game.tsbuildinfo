@@ -297,8 +297,8 @@
         "affectsGlobalScope": false
       },
       "../common/dist/index.d.ts": {
-        "version": "2ab4f9d93e5d2a8fb0ddd91e54f928a2ac1be7edae6a59323fcd944e1703115c",
-        "signature": "2ab4f9d93e5d2a8fb0ddd91e54f928a2ac1be7edae6a59323fcd944e1703115c",
+        "version": "4c9ac6f224b91127c07da2475c2be4f814221bceb0265ff07124aed95b7a26d3",
+        "signature": "4c9ac6f224b91127c07da2475c2be4f814221bceb0265ff07124aed95b7a26d3",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -787,7 +787,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "384472bedb83f89267261939d021a11736141bbfc9de1cf677b380d26bec36a5",
+        "version": "c187d054ff8495798ce5baf06f0a17eb1c046a8f15dbbef9abeca6ac9d8c5b9d",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },
@@ -862,11 +862,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/aiship.ts": {
-<<<<<<< HEAD
-        "version": "2e0fdf2367ef8421473f59bdff5082649dd7840a8af1b149c8cf29db807224b9",
-=======
-        "version": "2cba1065d292b505e66d6e64a79f686ee43e78eaa578e658822f93b09662d2ff",
->>>>>>> 93946de984e28a0e4bc736a3662fafe652771969
+        "version": "9bfd43f610dc72f5610e82cd6a3fcfcea0998f33b42e28a0a92c4ea7550e6b90",
         "signature": "cb2fe3d57c4ecba2155fee8ba3bb3f8002f8dd746f534ba1e88a497c446530b9",
         "affectsGlobalScope": false
       },

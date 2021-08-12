@@ -52,6 +52,9 @@ services:
       - ./common:/usr/app/common
       - ./frontend:/usr/app/frontend/
     command: 'npm run dev'
+    secrets:
+      - google_client_email
+      - google_private_key
 
   discord:
     image: 'xmadsen/starfish-discord:0.1'
@@ -70,7 +73,7 @@ secrets:
     file: discord/secrets/discord_token.txt
   bot_id:
     file: discord/secrets/bot_id.txt
-  mongodb_username:  
+  mongodb_username:
     file: db/secrets/mongodb_username.txt
   mongodb_password:
     file: db/secrets/mongodb_password.txt
@@ -78,6 +81,10 @@ secrets:
     file: db/secrets/mongodb_root_username.txt
   mongodb_root_password:
     file: db/secrets/mongodb_root_password.txt
-  
+  google_client_email:
+    file: frontend/secrets/google_client_email.txt
+  google_private_key:
+    file: frontend/secrets/google_private_key.txt
+
 volumes:
   db_data:

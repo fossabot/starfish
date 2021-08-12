@@ -59,10 +59,6 @@ catch (e) {
         .MONGODB_ADMINPASSWORD;
 }
 const toRun = [];
-<<<<<<< HEAD
-exports.isReady = () => ready;
-exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `spacecord`, username = encodeURIComponent(process.env.MONGODB_ADMINUSERNAME), password = encodeURIComponent(process.env.MONGODB_ADMINPASSWORD), }) => {
-=======
 let mongodbUsername;
 let mongodbPassword;
 try {
@@ -80,7 +76,6 @@ catch (e) {
 }
 exports.isReady = () => ready;
 exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongodbUsername, password = mongodbPassword, }) => {
->>>>>>> 93946de984e28a0e4bc736a3662fafe652771969
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -93,7 +88,7 @@ exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, po
         };
         if (mongoose_1.default.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
-            dist_1.default.log(uri);
+            // c.log(uri)
             dist_1.default.log(`gray`, `No existing db connection, creating...`);
             mongoose_1.default
                 .connect(uri, {
