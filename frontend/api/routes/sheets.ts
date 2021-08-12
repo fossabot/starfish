@@ -20,15 +20,16 @@ try {
 } catch (e) {
   credentials.private_key = process.env.private_key
   credentials.client_email = process.env.client_email
+  credentials.private_key = credentials.private_key.replace(
+    /\\n/g,
+    `\n`,
+  )
   c.log(
     'Loaded google api credentials from environment variables.',
   )
 }
-credentials.private_key = credentials.private_key.replace(
-  /\\n/g,
-  `\n`,
-)
 /* eslint-enable */
+c.log(credentials)
 
 let feedbackSheet, bugsSheet, storiesSheet
 
