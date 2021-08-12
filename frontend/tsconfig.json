@@ -2,8 +2,11 @@
   "include": ["../@types", "./"],
   "compilerOptions": {
     "esModuleInterop": true,
-    "target": "ES6"
+    "target": "ESNEXT",
+    "module": "commonjs",
     // "strict": true
+    "skipLibCheck": true /* Skip type checking of declaration files. */,
+    "forceConsistentCasingInFileNames": true
   },
   "references": [
     {
