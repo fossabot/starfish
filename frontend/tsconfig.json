@@ -1,7 +1,8 @@
 {
   "include": ["../@types", "./"],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "target": "ESNEXT"
     // "strict": true
   },
   "references": [
