@@ -11,6 +11,7 @@
     "up": "npm run dcu",
     "dcu": "docker-compose up",
     "down": "docker-compose down",
+    "produp": "docker-compose -f docker-compose-prod.yml up"
     "hard-restart": "docker-compose down --remove-orphans --volumes && docker-compose up -d",
     "restart": "docker-compose down --remove-orphans && docker-compose up -d",
     "mongo": "mongod --dbpath ./db/data",

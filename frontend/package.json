@@ -18,6 +18,7 @@
     "freemase": "^1.0.0",
     "google-spreadsheet": "^3.1.15",
     "masonry-layout": "^4.2.2",
+    "node-pre-gyp": "^0.17.0",
     "nuxt": "^2.15.3",
     "nuxt-vite": "^0.0.37",
     "portal-vue": "^2.1.7",

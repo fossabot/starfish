@@ -4,6 +4,7 @@ ENV HOST 0.0.0.0
 
 WORKDIR /usr/app/frontend
 RUN chown node /usr/app/frontend
+RUN chmod 777 /usr/app/frontend
 COPY package.json .
 
 FROM base AS dependencies
