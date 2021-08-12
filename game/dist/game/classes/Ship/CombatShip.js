@@ -124,8 +124,10 @@ class CombatShip extends Ship_1.Ship {
             ? ` ${target.name} died in the exchange.`
             : ``}`, `high`);
         this.addStat(`damageDealt`, attackResult.damageTaken);
-        if (attackResult.didDie)
+        if (attackResult.didDie) {
             this.addStat(`kills`, 1);
+            this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
+        }
         return attackResult;
     }
     takeDamage(attacker, attack) {

@@ -367,13 +367,19 @@ export class Game {
   }
 
   spawnNewZones() {
-    while (this.zones.length < this.gameSoftArea * 0.25) {
+    while (this.zones.length < this.gameSoftArea * 2.25) {
       const z = generateZoneData(this)
       if (!z) return
       const zone = this.addZone(z)
       c.log(
         `gray`,
-        `Spawned zone ${zone.name} at ${zone.location} of radius ${zone.radius}.`,
+        `Spawned zone ${zone.name} at ${zone.location.map(
+          (l) => c.r2(l),
+        )} of radius ${c.r2(
+          zone.radius,
+        )} and intensity ${c.r2(
+          zone.effects[0].intensity,
+        )}.`,
       )
     }
   }

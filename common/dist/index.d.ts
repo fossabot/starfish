@@ -128,7 +128,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
+    cargoTypes: ("credits" | "salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;
@@ -140,6 +140,10 @@ declare const _default: {
     sleep: (ms: number) => Promise<void>;
     coinFlip: () => boolean;
     randomFromArray: (array: any[]) => any;
+    randomWithWeights: <E>(elements: {
+        weight: number;
+        value: E;
+    }[]) => E;
     debounce: (fn: Function, time?: number) => (...params: any[]) => void;
     shuffleArray: (array: any[]) => any[];
     maxNameLength: number;

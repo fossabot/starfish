@@ -45,9 +45,10 @@ export class Zone extends Stubbable {
         return
 
       const proximityMod = effect.basedOnProximity
-        ? c.distance(this.location, ship.location) /
-          this.radius
-        : 1
+        ? (c.distance(this.location, ship.location) /
+            this.radius) *
+          2 // if based on proximity, doubles at center
+        : 1 // otherwise always 1
 
       const intensity =
         effect.intensity *
@@ -67,7 +68,7 @@ export class Zone extends Stubbable {
             miss = hitRoll < proximityMod / enemyAgility / 2
           c.log({ hitRoll, enemyAgility, proximityMod })
         }
-        c.log({ miss, intensity })
+        // c.log({ miss, intensity })
         ship.takeDamage(this, {
           damage: miss ? 0 : intensity,
           miss,
@@ -80,10 +81,27 @@ export class Zone extends Stubbable {
           (i) => i.repair <= 0.9995,
         )
         const amountToRepair =
-          effect.intensity / repairableItems.length
+          (effect.intensity / repairableItems.length) *
+          proximityMod
         repairableItems.forEach((ri) => {
           ri.applyRepair(amountToRepair)
         })
+      }
+
+      // accelerate
+      else if (effect.type === `accelerate`) {
+        const accelerateMultiplier =
+          1 + effect.intensity * proximityMod * 0.01
+        ship.velocity[0] *= accelerateMultiplier
+        ship.velocity[1] *= accelerateMultiplier
+      }
+
+      // decelerate
+      else if (effect.type === `decelerate`) {
+        const decelerateMultiplier =
+          1 - effect.intensity * proximityMod * 0.01
+        ship.velocity[0] *= decelerateMultiplier
+        ship.velocity[1] *= decelerateMultiplier
       }
     }
   }

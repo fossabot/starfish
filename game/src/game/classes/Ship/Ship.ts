@@ -321,6 +321,18 @@ export class Ship extends Stubbable {
       this.updateThingsThatCouldChangeOnItemChange()
       this.recalculateMass()
     }
+
+    if (this.items.length === 5)
+      this.addHeaderBackground(
+        `Flat 1`,
+        `equipping 5 items`,
+      )
+    else if (this.items.length === 8)
+      this.addHeaderBackground(
+        `Flat 2`,
+        `equipping 8 items`,
+      )
+
     return true
   }
 

@@ -143,13 +143,16 @@ const headerBackgroundOptions = [
     { id: `Blue Faction 1`, url: `blue1.svg` },
     { id: `Purple Faction 1`, url: `purple1.svg` },
     { id: `Green Faction 1`, url: `green1.svg` },
+    // { id: `Blue Faction 2`, url: `blue2.svg` }, // ! no image yet
+    // { id: `Purple Faction 2`, url: `purple2.svg` }, // ! no image yet
+    // { id: `Green Faction 2`, url: `green2.svg` }, // ! no image yet
     { id: `Flat 1`, url: `flat1.svg` },
     { id: `Flat 2`, url: `flat2.svg` },
-    { id: `Gradient 1`, url: `gradient1.svg` },
-    { id: `Gradient 2`, url: `gradient2.svg` },
-    { id: `Gradient 3`, url: `gradient3.svg` },
+    { id: `Stone Cold 1`, url: `gradient1.svg` },
+    { id: `Crimson Blur`, url: `gradient3.svg` },
+    { id: `Lightspeedy`, url: `gradient2.svg` },
     { id: `Constellation 1`, url: `stars1.jpg` },
-    { id: `Vintage 1`, url: `vintage1.jpg` },
+    { id: `Gravestone 1`, url: `vintage1.jpg` },
 ];
 function stubify(prop, disallowPropName) {
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);

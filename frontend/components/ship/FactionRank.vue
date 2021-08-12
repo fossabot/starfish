@@ -49,7 +49,9 @@
                 <b>{{ score.name }}</b>
               </div>
               <div class="sub scorenumber">
-                {{ c.r2(score.score, 0) }}
+                {{
+                  c.numberWithCommas(c.r2(score.score, 0))
+                }}
               </div>
             </div>
           </li>

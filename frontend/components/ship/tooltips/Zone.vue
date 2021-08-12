@@ -4,7 +4,7 @@
       <span :style="{ color: data.color }">{{
         data.name
       }}</span>
-      <span class="sub">Zone</span>
+      <span class="sub">(Zone)</span>
     </div>
     <hr />
     <div>
@@ -14,7 +14,12 @@
         :key="'effecttt' + index"
       >
         <div>{{ c.capitalize(e.type) }}</div>
-        <div>Intensity: {{ c.r2(e.intensity * 100) }}</div>
+        <div class="sub">
+          Intensity: {{ c.r2(e.intensity * 100) }}
+        </div>
+        <div v-if="e.basedOnProximity" class="sub">
+          Effect increases with proximity to epicenter
+        </div>
       </div>
     </div>
   </div>
@@ -33,9 +38,13 @@ export default {
     ...mapState([]),
   },
   mounted() {
-    c.log(this.data)
+    // c.log(this.data)
   },
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.sub {
+  font-weight: normal;
+}
+</style>

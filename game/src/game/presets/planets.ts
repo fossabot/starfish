@@ -121,9 +121,9 @@ export function generatePlanet(
   }
   const level = c.distance([0, 0], location)
   let maxRarity = level
-  const minRarity = level / 1.5
+  const minRarity = level * 0.75
   const cargoDispropensity = 0.8 - Math.random()
-  const passiveDispropensity = 0.85 - Math.random() / 2
+  const passiveDispropensity = 0.85 - Math.random() * 0.8
   const itemDispropensity = 1 - Math.random() / 2
   const chassisDispropensity = 1 - Math.random() / 2
 

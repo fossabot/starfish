@@ -1,6 +1,8 @@
 type ZoneEffectType =
   | `damage over time`
   | `repair over time`
+  | `accelerate`
+  | `decelerate`
 
 interface ZoneEffect {
   type: ZoneEffectType

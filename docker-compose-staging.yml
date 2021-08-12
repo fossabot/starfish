@@ -20,6 +20,8 @@ services:
       - mongodb_root_password
       - mongodb_username
       - mongodb_password
+    logging:
+      driver: none
 
   game:
     image: 'xmadsen/starfish-game:0.1'

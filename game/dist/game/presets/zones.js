@@ -7,25 +7,29 @@ exports.generateZoneData = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 function generateZoneData(game) {
     let locationSearchRadius = game.gameSoftRadius * 0.75;
-    const tooClose = 0.8;
+    const tooClose = 0.7;
     let location = [0, 0];
     const isTooClose = (p) => dist_1.default.distance(location, p.location) < tooClose;
-    const getClosestPlanet = (closest, p) => dist_1.default.distance(p.location, location) <
-        dist_1.default.distance(closest?.location || [0, 0], location)
-        ? p
-        : closest;
+    // const getClosestPlanet = (closest: Planet, p: Planet) =>
+    //   c.distance(p.location, location) <
+    //   c.distance(closest?.location || [0, 0], location)
+    //     ? p
+    //     : closest
     while (game.planets.find(isTooClose) ||
         game.zones.find(isTooClose) ||
-        game.humanShips.find(isTooClose) ||
-        dist_1.default.distance(location, [0, 0]) > game.gameSoftRadius) {
+        game.humanShips.find(isTooClose)) {
         location = dist_1.default.randomInsideCircle(locationSearchRadius);
         locationSearchRadius *= 1.01;
     }
     let radius = (Math.random() + 0.15) * 0.2;
     const color = `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 30}%)`;
-    const type = Math.random() > 0.2
-        ? `damage over time`
-        : `repair over time`;
+    const weightedTypes = [
+        { value: `accelerate`, weight: 2 },
+        { value: `decelerate`, weight: 2 },
+        { value: `damage over time`, weight: 5 },
+        { value: `repair over time`, weight: 1 },
+    ];
+    const type = dist_1.default.randomWithWeights(weightedTypes) || `damage over time`;
     let name;
     const effects = [];
     if (type === `damage over time`) {
@@ -38,13 +42,33 @@ function generateZoneData(game) {
         });
         radius *= 2.5;
     }
-    else {
+    else if (type === `repair over time`) {
         name = dist_1.default.randomFromArray(healZoneNames);
         effects.push({
             type: `repair over time`,
             intensity: Math.random() * 0.01,
             procChancePerTick: 1,
         });
+    }
+    else if (type === `accelerate`) {
+        name = dist_1.default.randomFromArray(accelerateZoneNames);
+        effects.push({
+            type: `accelerate`,
+            intensity: Math.random(),
+            procChancePerTick: 1,
+            basedOnProximity: dist_1.default.coinFlip(),
+        });
+        radius *= 1.1;
+    }
+    else if (type === `decelerate`) {
+        name = dist_1.default.randomFromArray(decelerateZoneNames);
+        effects.push({
+            type: `decelerate`,
+            intensity: Math.random(),
+            procChancePerTick: 1,
+            basedOnProximity: dist_1.default.coinFlip(),
+        });
+        radius *= 1.2;
     }
     if (!name)
         return false;
@@ -72,5 +96,17 @@ const dotZoneNames = [
 const healZoneNames = [
     `Astral Oasis`,
     `Nanorepair Swarm`,
+];
+const accelerateZoneNames = [
+    `Gravity Slingshot`,
+    `Overcharge Field`,
+    `Gravitational Anomaly`,
+    `Boost Zone`,
+];
+const decelerateZoneNames = [
+    `Magnesis Field`,
+    `Gravity Well`,
+    `Murky Nebula`,
+    `Stifling Zone`,
 ];
 //# sourceMappingURL=zones.js.map

@@ -6,6 +6,24 @@ function sleep(ms: number): Promise<void> {
 function randomFromArray(array: any[]): any {
   return array[Math.floor(Math.random() * array.length)]
 }
+
+function randomWithWeights<E>(
+  elements: { weight: number; value: E }[],
+): E {
+  const total: number = elements.reduce(
+    (total, e) => e.weight + total,
+    0,
+  )
+  const random = Math.random() * total
+  let currentCount = 0
+  for (let i = 0; i < elements.length; i++) {
+    currentCount += elements[i].weight
+    if (currentCount >= random) return elements[i].value
+  }
+  console.log(`failed to get weighted random value`)
+  return elements[0].value
+}
+
 function coinFlip() {
   return Math.random() > 0.5
 }
@@ -33,6 +51,7 @@ export default {
   sleep,
   coinFlip,
   randomFromArray,
+  randomWithWeights,
   debounce,
   shuffleArray,
 }

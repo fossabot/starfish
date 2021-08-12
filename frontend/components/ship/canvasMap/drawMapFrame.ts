@@ -426,90 +426,25 @@ export default class Drawer {
         })
       })
 
-    // ----- clipped objects -----
-
-    profiler.step(`clip`)
-    this.ctx.beginPath()
-    this.ctx.arc(
-      ...shipLocation,
-      sightRadius,
-      0,
-      Math.PI * 2,
-    )
-    this.ctx.clip()
-
     // ----- zones
-    ;[...(ship.visible?.zones || [])].forEach((z) => {
-      this.drawPoint({
-        location: [z.location[0], z.location[1] * -1],
-        labelCenter: z.name,
-        radius: z.radius * this.flatScale,
-        color: z.color,
-        outline: `dash`,
-        opacity: 0.3,
-      })
-      this.drawPoint({
-        location: [z.location[0], z.location[1] * -1],
-        radius: z.radius * this.flatScale,
-        color: z.color,
-        opacity: 0.02,
-      })
-    })
-
-    profiler.step(`draw trails`)
-    // ----- trails
-    ;[...trailsToDraw].forEach((t) => {
-      let prevTrailPoint
-      t.forEach((pl, index) => {
-        prevTrailPoint = t[index - 1]
-        if (!prevTrailPoint) return
-        this.drawLine({
-          start: [
-            prevTrailPoint[0] * this.flatScale,
-            prevTrailPoint[1] * this.flatScale * -1,
-          ],
-          end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
-          ],
-          width: 1.5,
-          color: `#ffffff`,
-          opacity: (index / (t.length - 1)) * 0.2,
+    ;[...(ship.visible?.zones || [])]
+      .sort((a, b) => a.radius - b.radius)
+      .forEach((z) => {
+        this.drawPoint({
+          location: [z.location[0], z.location[1] * -1],
+          labelCenter: z.name,
+          radius: z.radius * this.flatScale,
+          color: z.color,
+          outline: `dash`,
+          opacity: 0.3,
+        })
+        this.drawPoint({
+          location: [z.location[0], z.location[1] * -1],
+          radius: z.radius * this.flatScale,
+          color: z.color,
+          opacity: 0.02,
         })
       })
-    })
-
-    // ----- attack remnants
-    const now = Date.now()
-    ship.visible?.attackRemnants.forEach(
-      (ar: AttackRemnantStub) => {
-        let grd = this.ctx.createLinearGradient(
-          ar.start[0] * this.flatScale,
-          ar.start[1] * this.flatScale * -1,
-          ar.end[0] * this.flatScale,
-          ar.end[1] * this.flatScale * -1,
-        )
-        grd.addColorStop(0, `yellow`)
-        grd.addColorStop(1, `red`)
-
-        this.drawLine({
-          start: [
-            ar.start[0] * this.flatScale,
-            ar.start[1] * this.flatScale * -1,
-          ],
-          end: [
-            ar.end[0] * this.flatScale,
-            ar.end[1] * this.flatScale * -1,
-          ],
-          color: grd,
-          opacity:
-            (1 -
-              (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.miss ? 0.5 : 1),
-          width: ar.damageTaken.miss ? 0.5 : 1,
-        })
-      },
-    )
 
     profiler.step(`draw ships`)
     // ----- ships
@@ -571,6 +506,73 @@ export default class Drawer {
         opacity: 0.8,
       })
     })
+
+    // ----- clipped objects -----
+
+    profiler.step(`clip`)
+    this.ctx.beginPath()
+    this.ctx.arc(
+      ...shipLocation,
+      sightRadius,
+      0,
+      Math.PI * 2,
+    )
+    this.ctx.clip()
+
+    profiler.step(`draw trails`)
+    // ----- trails
+    ;[...trailsToDraw].forEach((t) => {
+      let prevTrailPoint
+      t.forEach((pl, index) => {
+        prevTrailPoint = t[index - 1]
+        if (!prevTrailPoint) return
+        this.drawLine({
+          start: [
+            prevTrailPoint[0] * this.flatScale,
+            prevTrailPoint[1] * this.flatScale * -1,
+          ],
+          end: [
+            pl[0] * this.flatScale,
+            pl[1] * this.flatScale * -1,
+          ],
+          width: 1.5,
+          color: `#ffffff`,
+          opacity: (index / (t.length - 1)) * 0.2,
+        })
+      })
+    })
+
+    // ----- attack remnants
+    const now = Date.now()
+    ship.visible?.attackRemnants.forEach(
+      (ar: AttackRemnantStub) => {
+        let grd = this.ctx.createLinearGradient(
+          ar.start[0] * this.flatScale,
+          ar.start[1] * this.flatScale * -1,
+          ar.end[0] * this.flatScale,
+          ar.end[1] * this.flatScale * -1,
+        )
+        grd.addColorStop(0, `yellow`)
+        grd.addColorStop(1, `red`)
+
+        this.drawLine({
+          start: [
+            ar.start[0] * this.flatScale,
+            ar.start[1] * this.flatScale * -1,
+          ],
+          end: [
+            ar.end[0] * this.flatScale,
+            ar.end[1] * this.flatScale * -1,
+          ],
+          color: grd,
+          opacity:
+            (1 -
+              (now - ar.time) / c.attackRemnantExpireTime) *
+            (ar.damageTaken.miss ? 0.5 : 1),
+          width: ar.damageTaken.miss ? 0.5 : 1,
+        })
+      },
+    )
 
     profiler.step(`reset`)
     // ----- reset for next time -----

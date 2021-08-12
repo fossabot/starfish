@@ -213,7 +213,13 @@ export abstract class CombatShip extends Ship {
     )
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
-    if (attackResult.didDie) this.addStat(`kills`, 1)
+    if (attackResult.didDie) {
+      this.addStat(`kills`, 1)
+      this.addHeaderBackground(
+        `Stone Cold 1`,
+        `destroying an enemy ship`,
+      )
+    }
 
     return attackResult
   }

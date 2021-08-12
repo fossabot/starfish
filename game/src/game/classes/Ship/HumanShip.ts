@@ -256,19 +256,24 @@ export class HumanShip extends CombatShip {
 
     this.addStat(`seenPlanets`, 1)
 
-    if (this.seenPlanets.length > 5)
+    if (this.seenPlanets.length >= 5)
       this.addTagline(
         `Small Pond Paddler`,
         `discovering 5 planets`,
       )
-    else if (this.seenPlanets.length > 15)
+    else if (this.seenPlanets.length >= 10)
+      this.addHeaderBackground(
+        `Constellation 1`,
+        `discovering 10 planets`,
+      )
+    else if (this.seenPlanets.length >= 15)
       this.addTagline(
         `Current Rider`,
         `discovering 15 planets`,
       )
-    else if (this.seenPlanets.length > 30)
+    else if (this.seenPlanets.length >= 30)
       this.addTagline(`Migratory`, `discovering 30 planets`)
-    else if (this.seenPlanets.length > 100)
+    else if (this.seenPlanets.length >= 100)
       this.addTagline(
         `EAC-zy Rider`,
         `discovering 100 planets`,
@@ -322,7 +327,7 @@ export class HumanShip extends CombatShip {
     const TEMPT_THE_GODS_SEMICOLON_USE_THE_MATH = false
 
     if (!TEMPT_THE_GODS_SEMICOLON_USE_THE_MATH) {
-      c.log(`ez mode`)
+      // c.log(`ez mode`)
       angleToThrustInDegrees = zeroedAngleToTargetInDegrees
     }
 
@@ -559,14 +564,24 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    if (this.speed > 3)
-      this.addTagline(`River Runner`, `going over 3AU/hr`)
-    else if (this.speed > 7)
-      this.addTagline(`Flying Fish`, `going over 7AU/hr`)
-    else if (this.speed > 12)
+    if (this.speed > 2)
+      this.addTagline(`River Runner`, `going over 2AU/hr`)
+    else if (this.speed > 5)
+      this.addHeaderBackground(
+        `Crimson Blur`,
+        `going over 5AU/hr`,
+      )
+    else if (this.speed > 7.21436)
+      this.addHeaderBackground(
+        `Lightspeedy`,
+        `breaking the speed of light`,
+      )
+    else if (this.speed > 10)
+      this.addTagline(`Flying Fish`, `going over 10AU/hr`)
+    else if (this.speed > 20)
       this.addTagline(
         `Hell's Angelfish`,
-        `going over 12AU/hr`,
+        `going over 20AU/hr`,
       )
 
     // c.log({
@@ -1644,6 +1659,15 @@ export class HumanShip extends CombatShip {
       `Delicious with Lemon`,
       `having your ship destroyed`,
     )
+
+    if (
+      this.stats.find((s) => s.stat === `deaths`)
+        ?.amount === 2
+    )
+      this.addHeaderBackground(
+        `Gravestone 1`,
+        `having your ship destroyed twice`,
+      )
 
     const cacheContents: CacheContents[] = []
 

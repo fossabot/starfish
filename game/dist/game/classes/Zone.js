@@ -23,9 +23,10 @@ class Zone extends Stubbable_1.Stubbable {
                 effect.procChancePerTick)
                 return;
             const proximityMod = effect.basedOnProximity
-                ? dist_1.default.distance(this.location, ship.location) /
-                    this.radius
-                : 1;
+                ? (dist_1.default.distance(this.location, ship.location) /
+                    this.radius) *
+                    2 // if based on proximity, doubles at center
+                : 1; // otherwise always 1
             const intensity = effect.intensity *
                 proximityMod *
                 dist_1.default.randomBetween(0.5, 1.5);
@@ -44,7 +45,7 @@ class Zone extends Stubbable_1.Stubbable {
                         miss = hitRoll < proximityMod / enemyAgility / 2;
                     dist_1.default.log({ hitRoll, enemyAgility, proximityMod });
                 }
-                dist_1.default.log({ miss, intensity });
+                // c.log({ miss, intensity })
                 ship.takeDamage(this, {
                     damage: miss ? 0 : intensity,
                     miss,
@@ -53,10 +54,23 @@ class Zone extends Stubbable_1.Stubbable {
             // repair
             else if (effect.type === `repair over time`) {
                 const repairableItems = ship.items.filter((i) => i.repair <= 0.9995);
-                const amountToRepair = effect.intensity / repairableItems.length;
+                const amountToRepair = (effect.intensity / repairableItems.length) *
+                    proximityMod;
                 repairableItems.forEach((ri) => {
                     ri.applyRepair(amountToRepair);
                 });
+            }
+            // accelerate
+            else if (effect.type === `accelerate`) {
+                const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.01;
+                ship.velocity[0] *= accelerateMultiplier;
+                ship.velocity[1] *= accelerateMultiplier;
+            }
+            // decelerate
+            else if (effect.type === `decelerate`) {
+                const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.01;
+                ship.velocity[0] *= decelerateMultiplier;
+                ship.velocity[1] *= decelerateMultiplier;
             }
         }
     }

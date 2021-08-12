@@ -228,12 +228,12 @@ class Game {
         }
     }
     spawnNewZones() {
-        while (this.zones.length < this.gameSoftArea * 0.25) {
+        while (this.zones.length < this.gameSoftArea * 2.25) {
             const z = zones_1.generateZoneData(this);
             if (!z)
                 return;
             const zone = this.addZone(z);
-            dist_1.default.log(`gray`, `Spawned zone ${zone.name} at ${zone.location} of radius ${zone.radius}.`);
+            dist_1.default.log(`gray`, `Spawned zone ${zone.name} at ${zone.location.map((l) => dist_1.default.r2(l))} of radius ${dist_1.default.r2(zone.radius)} and intensity ${dist_1.default.r2(zone.effects[0].intensity)}.`);
         }
     }
     spawnNewCaches() {
