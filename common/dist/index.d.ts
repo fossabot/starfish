@@ -128,7 +128,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("credits" | "salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium")[];
+    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

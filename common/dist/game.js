@@ -149,8 +149,8 @@ const headerBackgroundOptions = [
     { id: `Flat 1`, url: `flat1.svg` },
     { id: `Flat 2`, url: `flat2.svg` },
     { id: `Stone Cold 1`, url: `gradient1.svg` },
-    { id: `Crimson Blur`, url: `gradient3.svg` },
-    { id: `Lightspeedy`, url: `gradient2.svg` },
+    { id: `Crimson Blur`, url: `gradient2.svg` },
+    { id: `Lightspeedy`, url: `gradient3.svg` },
     { id: `Constellation 1`, url: `stars1.jpg` },
     { id: `Gravestone 1`, url: `vintage1.jpg` },
 ];

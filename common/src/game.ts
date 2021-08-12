@@ -234,8 +234,8 @@ const headerBackgroundOptions: {
   { id: `Flat 1`, url: `flat1.svg` }, // equipping items
   { id: `Flat 2`, url: `flat2.svg` }, // equipping items
   { id: `Stone Cold 1`, url: `gradient1.svg` }, // killing an enemy
-  { id: `Crimson Blur`, url: `gradient3.svg` }, // high speed
-  { id: `Lightspeedy`, url: `gradient2.svg` }, // breaking lightspeed
+  { id: `Crimson Blur`, url: `gradient2.svg` }, // high speed
+  { id: `Lightspeedy`, url: `gradient3.svg` }, // breaking lightspeed
   { id: `Constellation 1`, url: `stars1.jpg` }, // discover planets
   { id: `Gravestone 1`, url: `vintage1.jpg` }, // die twice
 ]

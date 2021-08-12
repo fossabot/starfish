@@ -102,6 +102,7 @@ type ShipStatKey =
   | `damageTaken`
   | `distanceTraveled`
   | `cachesRecovered`
+  | `planetTime`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

@@ -16,6 +16,7 @@
       Max Cargo Space Per Crew Member:
       {{ data.maxCargoSpace }}
     </div>
+    <div v-if="data.mass">Mass: {{ data.mass }}kg</div>
     <hr v-if="data.description" />
     <div class="sub">{{ data.description }}</div>
   </div>

@@ -126,6 +126,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         newPlanets.forEach((p) => this.discoverPlanet(p));
         if (newPlanets.length)
             db_1.db.ship.addOrUpdateInDb(this);
+        if (this.planet)
+            this.addStat(`planetTime`, 1);
         profiler.step(`get caches`);
         // ----- get nearby caches -----
         if (!this.dead)
@@ -194,13 +196,13 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.addStat(`seenPlanets`, 1);
         if (this.seenPlanets.length >= 5)
             this.addTagline(`Small Pond Paddler`, `discovering 5 planets`);
-        else if (this.seenPlanets.length >= 10)
+        if (this.seenPlanets.length >= 10)
             this.addHeaderBackground(`Constellation 1`, `discovering 10 planets`);
-        else if (this.seenPlanets.length >= 15)
+        if (this.seenPlanets.length >= 15)
             this.addTagline(`Current Rider`, `discovering 15 planets`);
-        else if (this.seenPlanets.length >= 30)
+        if (this.seenPlanets.length >= 30)
             this.addTagline(`Migratory`, `discovering 30 planets`);
-        else if (this.seenPlanets.length >= 100)
+        if (this.seenPlanets.length >= 100)
             this.addTagline(`EAC-zy Rider`, `discovering 100 planets`);
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
@@ -391,16 +393,6 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        if (this.speed > 2)
-            this.addTagline(`River Runner`, `going over 2AU/hr`);
-        else if (this.speed > 5)
-            this.addHeaderBackground(`Crimson Blur`, `going over 5AU/hr`);
-        else if (this.speed > 7.21436)
-            this.addHeaderBackground(`Lightspeedy`, `breaking the speed of light`);
-        else if (this.speed > 10)
-            this.addTagline(`Flying Fish`, `going over 10AU/hr`);
-        else if (this.speed > 20)
-            this.addTagline(`Hell's Angelfish`, `going over 20AU/hr`);
         // c.log({
         //   mass: this.mass,
         //   charge,
@@ -484,6 +476,19 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.updatePlanet();
         this.notifyZones(startingLocation);
         this.addStat(`distanceTraveled`, dist_1.default.distance(startingLocation, this.location));
+        const speed = (dist_1.default.vectorToMagnitude(this.velocity) *
+            (1000 * 60 * 60)) /
+            dist_1.default.TICK_INTERVAL;
+        if (speed > 2)
+            this.addTagline(`River Runner`, `going over 2AU/hr`);
+        if (speed > 4)
+            this.addHeaderBackground(`Crimson Blur`, `going over 4AU/hr`);
+        if (speed > 7.21436)
+            this.addHeaderBackground(`Lightspeedy`, `breaking the speed of light`);
+        if (speed > 10)
+            this.addTagline(`Flying Fish`, `going over 10AU/hr`);
+        if (speed > 20)
+            this.addTagline(`Hell's Angelfish`, `going over 20AU/hr`);
         // ----- end if in tutorial -----
         if (this.tutorial) {
             // reset position if outside max distance from spawn
@@ -541,9 +546,9 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
         }
         // - asteroid hit -
-        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 5)) {
-            if (!this.attackable || this.planet)
-                return;
+        if (!this.planet &&
+            this.attackable &&
+            dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 5)) {
             let miss = false;
             const hitRoll = Math.random();
             if (hitRoll < 0.1)

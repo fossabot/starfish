@@ -30,6 +30,9 @@
     <div v-if="data.reliability">
       Reliability: {{ data.reliability * 100 }}%
     </div>
+
+    <div v-if="data.mass">Mass: {{ data.mass }}kg</div>
+
     <hr v-if="data.description" />
     <div class="sub">{{ data.description }}</div>
   </div>
