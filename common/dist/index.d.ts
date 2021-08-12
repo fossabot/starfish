@@ -49,7 +49,7 @@ declare const _default: {
         flatSkillBoost: {
             toString: (intensity: number, ...args: any[]) => string;
         };
-        addBaseArmor: {
+        scaledDamageReduction: {
             toString: (intensity: number, ...args: any[]) => string;
         };
         flatDamageReduction: {

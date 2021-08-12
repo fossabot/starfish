@@ -288,7 +288,7 @@ export class CrewMember extends Stubbable {
     this.recalculatemaxCargoSpace()
   }
 
-  addStat(statname: StatKey, amount: number) {
+  addStat(statname: CrewStatKey, amount: number) {
     this.active()
     const existing = this.stats.find(
       (s) => s.stat === statname,

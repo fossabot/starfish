@@ -16,6 +16,7 @@ interface BaseShipData {
   availableTaglines?: string[]
   headerBackground?: string
   availableHeaderBackgrounds?: string[]
+  stats?: ShipStatEntry[]
 }
 
 interface BaseHumanShipData extends BaseShipData {
@@ -66,7 +67,7 @@ type ShipPassiveEffectType =
   | `boostCockpitChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`
-  | `addBaseArmor`
+  | `scaledDamageReduction`
   | `flatDamageReduction`
   | `extraEquipmentSlots`
   | `boostCargoSpace`
@@ -91,4 +92,17 @@ interface TargetLocation {
   coordinates: CoordinatePair
   label: string
   color?: string
+}
+
+type ShipStatKey =
+  | `kills`
+  | `deaths`
+  | `seenPlanets`
+  | `damageDealt`
+  | `damageTaken`
+  | `distanceTraveled`
+  | `cachesRecovered`
+interface ShipStatEntry {
+  stat: ShipStatKey
+  amount: number
 }

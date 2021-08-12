@@ -14,7 +14,7 @@ const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
         super();
         this.name = `ship`;
         this.planet = false;
@@ -55,6 +55,7 @@ class Ship extends Stubbable_1.Stubbable {
         this.dead = false; // set in hp setter below
         this.obeysGravity = true;
         this.mass = 10000;
+        this.stats = [];
         this.game = game;
         this.rename(name);
         this.ai = true;
@@ -105,6 +106,8 @@ class Ship extends Stubbable_1.Stubbable {
         this.updateSightAndScanRadius();
         this.recalculateMaxHp();
         this._hp = this.hp;
+        if (stats)
+            this.stats = stats;
     }
     identify() {
         dist_1.default.log(this.ai ? `gray` : `white`, `Ship: ${this.name} (${this.id}) at ${this.location}`);
@@ -412,6 +415,18 @@ class Ship extends Stubbable_1.Stubbable {
         this.toUpdate.availableHeaderBackgrounds =
             this.availableHeaderBackgrounds;
         this.logEntry(`Unlocked a new ship header background for ${reason}: "${bg}"`, `high`);
+    }
+    // ----- stats -----
+    addStat(statname, amount) {
+        const existing = this.stats.find((s) => s.stat === statname);
+        if (!existing)
+            this.stats.push({
+                stat: statname,
+                amount,
+            });
+        else
+            existing.amount += amount;
+        this.toUpdate.stats = this.stats;
     }
     // ----- misc stubs -----
     logEntry(s, lv) { }

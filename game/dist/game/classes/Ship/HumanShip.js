@@ -133,17 +133,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 if (this.isAt(cache.location)) {
                     if (!cache.canBePickedUpBy(this))
                         return;
-                    // apply "amount boost" passive
-                    const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
-                    if (cache.droppedBy !== this.id &&
-                        amountBoostPassive)
-                        cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive));
-                    this.distributeCargoAmongCrew(cache.contents);
-                    this.logEntry(`Picked up a cache with ${cache.contents
-                        .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
-                        .join(` and `)} inside!${cache.message &&
-                        ` There was a message attached which said, "${cache.message}".`}`, `medium`);
-                    this.game.removeCache(cache);
+                    this.getCache(cache);
                 }
             });
         profiler.step(`auto attack`);
@@ -201,6 +191,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.seenPlanets.push(p);
         this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.getVisibleStub());
         this.logEntry(`Discovered the planet ${p.name}!`, `high`);
+        this.addStat(`seenPlanets`, 1);
         if (this.seenPlanets.length > 5)
             this.addTagline(`Small Pond Paddler`, `discovering 5 planets`);
         else if (this.seenPlanets.length > 15)
@@ -486,6 +477,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.addPreviousLocation(startingLocation, this.location);
         this.updatePlanet();
         this.notifyZones(startingLocation);
+        this.addStat(`distanceTraveled`, dist_1.default.distance(startingLocation, this.location));
         // ----- end if in tutorial -----
         if (this.tutorial) {
             // reset position if outside max distance from spawn
@@ -630,6 +622,19 @@ class HumanShip extends CombatShip_1.CombatShip {
                     s.logEntry(`${this.name} departed from ${previousPlanet ? previousPlanet.name : ``}.`);
                 });
         }
+    }
+    getCache(cache) {
+        // apply "amount boost" passive
+        const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+        if (cache.droppedBy !== this.id && amountBoostPassive)
+            cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive));
+        this.distributeCargoAmongCrew(cache.contents);
+        this.logEntry(`Picked up a cache with ${cache.contents
+            .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
+            .join(` and `)} inside!${cache.message &&
+            ` There was a message attached which said, "${cache.message}".`}`, `medium`);
+        this.game.removeCache(cache);
+        this.addStat(`cachesRecovered`, 1);
     }
     notifyZones(startingLocation) {
         for (let z of this.visible.zones) {
@@ -1007,7 +1012,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     : ar, null);
                 targetShip = mostRecentDefense?.attacker;
             }
-            dist_1.default.log(`defensive, targeting`, targetShip?.name);
+            // c.log(`defensive, targeting`, targetShip?.name)
             if (!targetShip)
                 return;
             if (!targetShip.stubify)

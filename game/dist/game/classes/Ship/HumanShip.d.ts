@@ -53,6 +53,7 @@ export declare class HumanShip extends CombatShip {
         zones: Zone[];
     }): void;
     updatePlanet(silent?: boolean): Promise<void>;
+    getCache(cache: Cache): void;
     notifyZones(startingLocation: CoordinatePair): void;
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;

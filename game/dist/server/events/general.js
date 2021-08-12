@@ -31,7 +31,7 @@ function default_1(socket) {
             });
         }
         else
-            callback({ error: `No ship found by that ID.` });
+            callback({ error: `No ship found by the ID ${id}.` });
     });
 }
 exports.default = default_1;

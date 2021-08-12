@@ -16,13 +16,10 @@
         <div class="panesubhead">Weapons</div>
         <div
           v-for="i in weapons"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'weapon',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'weapon',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <div class="">

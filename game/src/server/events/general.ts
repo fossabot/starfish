@@ -38,6 +38,7 @@ export default function (
       callback({
         data: stub,
       })
-    } else callback({ error: `No ship found by that ID.` })
+    } else
+      callback({ error: `No ship found by the ID ${id}.` })
   })
 }

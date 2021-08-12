@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("../..");
 function default_1(socket) {
-    socket.on(`god`, () => {
-        socket.join([`game`]);
-    });
+    // socket.on(`god`, () => {
+    //   socket.join([`game`])
+    // })
     socket.on(`ship:basics`, (id, callback) => {
         const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {
@@ -23,21 +23,21 @@ function default_1(socket) {
             callback({ data: stub });
         }
         else
-            callback({ error: `No ship found by that ID.` });
+            callback({ error: `No ship found by the ID ${id}.` });
     });
     socket.on(`ship:listen`, (id, callback) => {
-        // c.log(
-        //   `gray`,
-        //   `Frontend client started watching ship ${id} io`,
-        // )
         socket.join([`ship:${id}`]);
         const foundShip = __1.game.ships.find((s) => s.id === id);
         if (foundShip) {
             const stub = dist_1.default.stubify(foundShip);
             callback({ data: stub });
+            // c.log(
+            //   `gray`,
+            //   `Frontend client started watching ship ${id} io`,
+            // )
         }
         else
-            callback({ error: `No ship found by that ID.` });
+            callback({ error: `No ship found by the ID ${id}.` });
     });
     socket.on(`ship:unlisten`, (id) => {
         dist_1.default.log(`gray`, `Frontend client stopped watching ${id} io`);

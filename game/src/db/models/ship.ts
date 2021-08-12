@@ -42,6 +42,7 @@ const shipSchemaFields: Record<
   availableHeaderBackgrounds: [{ type: String }],
   captain: String,
   logAlertLevel: String,
+  stats: [{ stat: String, amount: Number }],
   crewMembers: [
     {
       name: { type: String, required: true },

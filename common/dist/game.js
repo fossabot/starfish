@@ -98,7 +98,7 @@ const taglineOptions = [
     // to be assigned
     `Big Flipper`,
     `Whale, I'll be!`,
-    `Splish splash`,
+    `Splish Splash`,
     `Holy Mackerel!`,
     `Small Pond 4 Life`,
     `Nautical Nonsense`,
@@ -107,6 +107,7 @@ const taglineOptions = [
     `River Runner`,
     `Hell's Angelfish`,
     `Flying Fish`,
+    // todo more flight taglines for distance traveled
     // exploration (implemented)
     `Small Pond Paddler`,
     `Current Rider`,
@@ -122,6 +123,7 @@ const taglineOptions = [
     // planet time
     `Home Schooled`,
     // combat achievements
+    `Nibbler`,
     `On the Hunt`,
     `Blood in the Water`,
     `Feeding Frenzied`,

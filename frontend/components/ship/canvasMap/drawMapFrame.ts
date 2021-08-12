@@ -377,7 +377,7 @@ export default class Drawer {
           0.4,
           Math.min(ship.speed / 2, 0.7),
         ),
-        dash: [2, Math.max(8, ship.speed * 50 * 1000)],
+        dash: [2, Math.max(10, ship.speed * 50 * 1000)],
       })
     }
 

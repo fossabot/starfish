@@ -42,13 +42,10 @@
         <span
           v-for="ca in buyableItems"
           :key="'buyitem' + ca.itemType + ca.itemId"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: ca.itemData && ca.itemData.type,
-              data: ca.itemData,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: ca.itemData && ca.itemData.type,
+            data: ca.itemData,
+          }"
         >
           <button
             :disabled="!ca.canBuy"
@@ -72,13 +69,10 @@
         <span
           v-for="(ca, index) in sellableItems"
           :key="'sellitem' + ca.type + ca.id + index"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: ca.type,
-              data: ca,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: ca.type,
+            data: ca,
+          }"
         >
           <button
             :disabled="!ca.canSell"
@@ -106,13 +100,10 @@
                 ca.chassisData.id
               : Math.random()
           "
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'chassis',
-              data: ca.chassisData,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'chassis',
+            data: ca.chassisData,
+          }"
         >
           <button
             :disabled="!ca.canBuy"

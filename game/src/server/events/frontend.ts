@@ -10,9 +10,9 @@ import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
-  socket.on(`god`, () => {
-    socket.join([`game`])
-  })
+  // socket.on(`god`, () => {
+  //   socket.join([`game`])
+  // })
 
   socket.on(`ship:basics`, (id, callback) => {
     const foundShip = game.ships.find((s) => s.id === id)
@@ -26,14 +26,11 @@ export default function (
         headerBackground: foundShip.headerBackground,
       })
       callback({ data: stub })
-    } else callback({ error: `No ship found by that ID.` })
+    } else
+      callback({ error: `No ship found by the ID ${id}.` })
   })
 
   socket.on(`ship:listen`, (id, callback) => {
-    // c.log(
-    //   `gray`,
-    //   `Frontend client started watching ship ${id} io`,
-    // )
     socket.join([`ship:${id}`])
 
     const foundShip = game.ships.find((s) => s.id === id)
@@ -42,7 +39,12 @@ export default function (
         foundShip as CombatShip,
       )
       callback({ data: stub })
-    } else callback({ error: `No ship found by that ID.` })
+      // c.log(
+      //   `gray`,
+      //   `Frontend client started watching ship ${id} io`,
+      // )
+    } else
+      callback({ error: `No ship found by the ID ${id}.` })
   })
 
   socket.on(`ship:unlisten`, (id) => {

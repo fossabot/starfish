@@ -26,9 +26,9 @@ type RepairPriority =
 type CrewActiveType = `boost` | `quickFix` | `sightRange`
 type CrewPassiveType = `cargoSpace`
 
-type StatKey = `totalContributedToCommonFund`
+type CrewStatKey = `totalContributedToCommonFund`
 interface CrewStatEntry {
-  stat: StatKey
+  stat: CrewStatKey
   amount: number
 }
 

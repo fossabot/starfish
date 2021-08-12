@@ -16,13 +16,9 @@
           :percent="
             crewMember.stamina / crewMember.maxStamina
           "
-          @mouseenter="
-            $store.commit(
-              'tooltip',
-              'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.',
-            )
+          v-tooltip="
+            'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.'
           "
-          @mouseleave="$store.commit('tooltip')"
         >
           <div>
             💪Stamina:

@@ -13,8 +13,7 @@
       :style="{
         'flex-grow': a.level,
       }"
-      @mouseenter="$store.commit('tooltip', a.faction.name)"
-      @mouseleave="$store.commit('tooltip')"
+      v-tooltip="a.faction.name"
     >
       <div
         class="single"

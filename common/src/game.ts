@@ -170,7 +170,7 @@ const taglineOptions: string[] = [
   // to be assigned
   `Big Flipper`,
   `Whale, I'll be!`,
-  `Splish splash`,
+  `Splish Splash`,
   `Holy Mackerel!`,
   `Small Pond 4 Life`,
   `Nautical Nonsense`,
@@ -180,6 +180,7 @@ const taglineOptions: string[] = [
   `River Runner`,
   `Hell's Angelfish`,
   `Flying Fish`,
+  // todo more flight taglines for distance traveled
 
   // exploration (implemented)
   `Small Pond Paddler`,
@@ -201,6 +202,7 @@ const taglineOptions: string[] = [
   `Home Schooled`,
 
   // combat achievements
+  `Nibbler`,
   `On the Hunt`,
   `Blood in the Water`,
   `Feeding Frenzied`,

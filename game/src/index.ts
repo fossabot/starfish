@@ -39,7 +39,11 @@ runOnDbReady(async () => {
   savedZones.forEach((zone) => game.addZone(zone, false))
 
   const savedShips = await db.ship.getAllConstructible()
-  c.log(`Loaded ${savedShips.length} saved ships from DB.`)
+  c.log(
+    `Loaded ${savedShips.length} saved ships (${
+      savedShips.filter((s) => !s.ai).length
+    } human) from DB.`,
+  )
   for (let ship of savedShips) {
     if (ship.ai) game.addAIShip(ship, false)
     else game.addHumanShip(ship as BaseHumanShipData)

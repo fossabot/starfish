@@ -86,13 +86,10 @@
               crewMember &&
                 $store.commit('setRoom', room.id)
             "
-            @mouseenter="
-              $store.commit('tooltip', {
-                type: 'room',
-                data: room,
-              })
-            "
-            @mouseleave="$store.commit('tooltip')"
+            v-tooltip="{
+              type: 'room',
+              data: room,
+            }"
           >
             <div
               class="roomlabel"

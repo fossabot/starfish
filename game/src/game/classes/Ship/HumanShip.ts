@@ -184,41 +184,7 @@ export class HumanShip extends CombatShip {
         if (this.isAt(cache.location)) {
           if (!cache.canBePickedUpBy(this)) return
 
-          // apply "amount boost" passive
-          const amountBoostPassive = (
-            this.passives.filter(
-              (p) => p.id === `boostDropAmount`,
-            ) || []
-          ).reduce(
-            (total: number, p: ShipPassiveEffect) =>
-              total + (p.intensity || 0),
-            0,
-          )
-          if (
-            cache.droppedBy !== this.id &&
-            amountBoostPassive
-          )
-            cache.contents.forEach(
-              (c) =>
-                (c.amount += c.amount * amountBoostPassive),
-            )
-
-          this.distributeCargoAmongCrew(cache.contents)
-          this.logEntry(
-            `Picked up a cache with ${cache.contents
-              .map(
-                (cc) =>
-                  `${c.r2(cc.amount)}${
-                    cc.type === `credits` ? `` : ` tons of`
-                  } ${cc.type}`,
-              )
-              .join(` and `)} inside!${
-              cache.message &&
-              ` There was a message attached which said, "${cache.message}".`
-            }`,
-            `medium`,
-          )
-          this.game.removeCache(cache)
+          this.getCache(cache)
         }
       })
 
@@ -287,6 +253,8 @@ export class HumanShip extends CombatShip {
       `Discovered the planet ${p.name}!`,
       `high`,
     )
+
+    this.addStat(`seenPlanets`, 1)
 
     if (this.seenPlanets.length > 5)
       this.addTagline(
@@ -731,6 +699,11 @@ export class HumanShip extends CombatShip {
     this.updatePlanet()
     this.notifyZones(startingLocation)
 
+    this.addStat(
+      `distanceTraveled`,
+      c.distance(startingLocation, this.location),
+    )
+
     // ----- end if in tutorial -----
     if (this.tutorial) {
       // reset position if outside max distance from spawn
@@ -973,6 +946,42 @@ export class HumanShip extends CombatShip {
           )
         })
     }
+  }
+
+  getCache(cache: Cache) {
+    // apply "amount boost" passive
+    const amountBoostPassive = (
+      this.passives.filter(
+        (p) => p.id === `boostDropAmount`,
+      ) || []
+    ).reduce(
+      (total: number, p: ShipPassiveEffect) =>
+        total + (p.intensity || 0),
+      0,
+    )
+    if (cache.droppedBy !== this.id && amountBoostPassive)
+      cache.contents.forEach(
+        (c) => (c.amount += c.amount * amountBoostPassive),
+      )
+
+    this.distributeCargoAmongCrew(cache.contents)
+    this.logEntry(
+      `Picked up a cache with ${cache.contents
+        .map(
+          (cc) =>
+            `${c.r2(cc.amount)}${
+              cc.type === `credits` ? `` : ` tons of`
+            } ${cc.type}`,
+        )
+        .join(` and `)} inside!${
+        cache.message &&
+        ` There was a message attached which said, "${cache.message}".`
+      }`,
+      `medium`,
+    )
+    this.game.removeCache(cache)
+
+    this.addStat(`cachesRecovered`, 1)
   }
 
   notifyZones(startingLocation: CoordinatePair) {
@@ -1539,7 +1548,7 @@ export class HumanShip extends CombatShip {
             )
         targetShip = mostRecentDefense?.attacker
       }
-      c.log(`defensive, targeting`, targetShip?.name)
+      // c.log(`defensive, targeting`, targetShip?.name)
       if (!targetShip) return
       if (!targetShip.stubify)
         // in some cases we end up with a stub here

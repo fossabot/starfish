@@ -62,7 +62,7 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     description: `Naturally armored, sea turtles' ships can take a bigger beating.`,
     passives: [
       {
-        id: `addBaseArmor`,
+        id: `scaledDamageReduction`,
         intensity: 0.1,
       },
     ],

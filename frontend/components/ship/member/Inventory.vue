@@ -11,7 +11,11 @@
     <div class="panesection">
       <div>
         💳Credits:
-        {{ c.r2(crewMember.credits, 2, true) }}
+        {{
+          c.numberWithCommas(
+            c.r2(crewMember.credits, 0, true),
+          )
+        }}
 
         <div class="flexwrap">
           <PromptButton
@@ -56,23 +60,19 @@
       <div class="panesubhead">Cargo</div>
 
       <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.<br />
+        v-tooltip="
+          `Your personal store of cargo to buy and sell. You can upgrade your cargo space on certain planets.<br />
 Your personal maximum cargo space is <b>${
-              crewMember.maxCargoSpace
-            } tons</b>.<br />
+            crewMember.maxCargoSpace
+          } tons</b>.<br />
 ${
   ship.chassis.maxCargoSpace < crewMember.maxCargoSpace
     ? 'However, y'
     : 'Y'
 }our ship's chassis has a hard maximum cargo space per crew member of <b>${
-              ship.chassis.maxCargoSpace
-            } tons</b>, which you cannot go above.`,
-          )
+            ship.chassis.maxCargoSpace
+          } tons</b>, which you cannot go above.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         <PillBar
           :micro="true"

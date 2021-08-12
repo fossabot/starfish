@@ -242,8 +242,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "2d16185ac3ece903b42a24a065bc2325c94d932b7dff85d044beb463b06c88d1",
-        "signature": "2d16185ac3ece903b42a24a065bc2325c94d932b7dff85d044beb463b06c88d1",
+        "version": "6a382149e881d3d2afaa23b18ee161442a7872c772f1d89519f40a8fa29db55c",
+        "signature": "6a382149e881d3d2afaa23b18ee161442a7872c772f1d89519f40a8fa29db55c",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
-        "signature": "b9bad55cf4a4d97e661cc1f8f934f5f2303d18e21a3d83c037b017a4ca84fb2f",
+        "version": "60a9fb7943007e87ca5880c220bb8c9b4509289084fc885784483e6aebbaaaa1",
+        "signature": "60a9fb7943007e87ca5880c220bb8c9b4509289084fc885784483e6aebbaaaa1",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -317,7 +317,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "e5029da8a2d4f7bb58e4d1302d897ba27115d5071b746306447f05b9a50bb06d",
+        "version": "0e6d25fff02b7936089ce6bb035fc21aad6773d5ec72fae4857a5dcc4e59906f",
         "signature": "e4bf5e5fa64e96cf86c647f3a770e736f17500bef11a4c0b03d66e8b26fd2781",
         "affectsGlobalScope": false
       },
@@ -327,7 +327,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "c2e94ae0a4940a480ebe58788dfed6e7c61df8b7e6605e0f24f7a6fcef9d5fc8",
+        "version": "1dbaf8b8044b06c18d8ebc3c84b7c56a175604f834548f5a7975fbb62e1d8d6b",
         "signature": "8a22f8d3cbafaaab75b5d86267f0e5bc74eaacd4359b1abef1e5457a1229c321",
         "affectsGlobalScope": false
       },
@@ -347,7 +347,7 @@
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "72f8246432eb6abae6e851caa7bf5511968966d0313e9129050856e060c1d96b",
+        "version": "8a91350fb1aefa3efba71414988b926a57b8438d3669693e79d147a2b3f038c2",
         "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },

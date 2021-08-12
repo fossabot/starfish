@@ -33,7 +33,10 @@ export default {
 
   css: [`~/assets/styles/main.scss`],
 
-  plugins: [{ src: `~/plugins/socket.js` }],
+  plugins: [
+    { src: `~/plugins/socket.js` },
+    { src: `~/plugins/tooltip.js` },
+  ],
 
   components: true,
 

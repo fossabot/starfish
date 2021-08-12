@@ -123,11 +123,29 @@ class CombatShip extends Ship_1.Ship {
             : `, dealing ${dist_1.default.r2(dist_1.default.r2(attackResult.damageTaken))} damage.`}${attackResult.didDie
             ? ` ${target.name} died in the exchange.`
             : ``}`, `high`);
+        this.addStat(`damageDealt`, attackResult.damageTaken);
+        if (attackResult.didDie)
+            this.addStat(`kills`, 1);
         return attackResult;
     }
     takeDamage(attacker, attack) {
         const previousHp = this.hp;
         let remainingDamage = attack.damage;
+        // apply passives
+        // scaled damage reduction
+        const passiveDamageMultiplier = Math.max(0, 1 -
+            this.passives
+                .filter((p) => p.id === `scaledDamageReduction`)
+                .reduce((total, p) => total + (p.intensity || 0), 0));
+        remainingDamage *= passiveDamageMultiplier;
+        // flat damage reduction
+        const flatDamageReduction = this.passives
+            .filter((p) => p.id === `flatDamageReduction`)
+            .reduce((total, p) => total + (p.intensity || 0), 0);
+        remainingDamage -= flatDamageReduction;
+        if (remainingDamage < 0)
+            remainingDamage = 0;
+        const attackDamageAfterPassives = remainingDamage;
         // ----- hit armor first -----
         if (remainingDamage)
             for (let armor of this.armor) {
@@ -178,12 +196,10 @@ class CombatShip extends Ship_1.Ship {
         }
         this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
         const didDie = previousHp > 0 && this.hp <= 0;
-        if (didDie) {
+        if (didDie)
             this.die();
-        }
-        else
-            this.dead = false;
-        dist_1.default.log(`gray`, `${this.name} takes ${attack.damage} damage from ${attacker.name}'s ${attack.weapon
+        this.addStat(`damageTaken`, previousHp - this.hp);
+        dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(attackDamageAfterPassives)} damage from ${attacker.name}'s ${attack.weapon
             ? attack.weapon.displayName
             : `passive effect`}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
         this.toUpdate._hp = this.hp;
@@ -194,20 +210,21 @@ class CombatShip extends Ship_1.Ship {
                 ? `Missed by an attack from`
                 : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss
                 ? `.`
-                : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
+                : `, taking ${dist_1.default.r2(attackDamageAfterPassives)} damage.`}`, attack.miss ? `medium` : `high`);
         // zone or passive damage
         else
             this.logEntry(`${attack.miss ? `Missed by` : `Hit by`} ${attacker.name}${attack.miss
                 ? `.`
-                : `, taking ${dist_1.default.r2(attack.damage, 2)} damage.`}`, attack.miss ? `medium` : `high`);
+                : `, taking ${dist_1.default.r2(attackDamageAfterPassives, 2)} damage.`}`, attack.miss ? `medium` : `high`);
         return {
-            miss: attack.damage === 0,
-            damageTaken: attack.damage,
+            miss: attackDamageAfterPassives === 0,
+            damageTaken: attackDamageAfterPassives,
             didDie: didDie,
             weapon: attack.weapon,
         };
     }
     die() {
+        this.addStat(`deaths`, 1);
         this.dead = true;
     }
 }

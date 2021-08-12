@@ -5,10 +5,6 @@ const basePassiveData: {
     toString: (intensity: number, ...args: any[]) => string
   }
 } = {
-  addBaseArmor: {
-    toString: (intensity) =>
-      `+${intensity * 100}% base armor`,
-  },
   boostAttackWithNumberOfFactionMembersWithinDistance: {
     toString: (intensity, distance) =>
       `+${
@@ -72,6 +68,10 @@ const basePassiveData: {
       `+${intensity} item slot${
         intensity === 1 ? `` : `s`
       }`,
+  },
+  scaledDamageReduction: {
+    toString: (intensity) =>
+      `+${intensity * 100}% damage reduction`,
   },
   flatDamageReduction: {
     toString: (intensity) =>

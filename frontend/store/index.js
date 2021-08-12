@@ -118,8 +118,11 @@ export const actions = {
   async socketSetup({ state, dispatch, commit }, shipId) {
     this.$socket.removeAllListeners()
 
-    if (!shipId) {
-      return
+    if (
+      !shipId ||
+      !state.shipIds.find((s) => s === shipId)
+    ) {
+      return // c.log(`Skipping setup: invalid ship id`)
     }
 
     commit(`set`, { modal: null, activeShipId: shipId })

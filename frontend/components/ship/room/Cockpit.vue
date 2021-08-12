@@ -28,7 +28,7 @@
         >
           Thrust
           <span v-if="thrustChargeToUse">
-            ({{
+            &nbsp;({{
               c.r2(
                 thrustChargeToUse *
                   c.getMaxCockpitChargeForSingleCrewMember(
@@ -65,7 +65,7 @@
         >
           Brake
           <span v-if="brakeChargeToUse">
-            ({{
+            &nbsp;({{
               c.r2(
                 brakeChargeToUse *
                   c.getMaxCockpitChargeForSingleCrewMember(
@@ -81,32 +81,18 @@
       </div>
 
       <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`,
-          )
+        v-tooltip="
+          `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         Engine Base Thrust:
         {{ c.r2(engineThrustAmplification)
-        }}<span
-          @mouseenter="
-            $store.commit('tooltip', `Poseidons`)
-          "
-          @mouseleave="$store.commit('tooltip')"
-          >P</span
-        >
+        }}<span v-tooltip="`Poseidons`">P</span>
       </div>
       <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`,
-          )
+        v-tooltip="
+          `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         Charge:
         {{
@@ -129,13 +115,9 @@
         }}
       </div>
       <div
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The maximum amount of thrust that you can generate currently.`,
-          )
+        v-tooltip="
+          `The maximum amount of thrust that you can generate currently.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         Available Thrust:
         <NumberChangeHighlighter
@@ -148,13 +130,7 @@
                 engineThrustAmplification,
             )
           "
-        /><span
-          @mouseenter="
-            $store.commit('tooltip', `Poseidons`)
-          "
-          @mouseleave="$store.commit('tooltip')"
-          >P</span
-        >
+        /><span v-tooltip="`Poseidons`">P</span>
       </div>
     </div>
 

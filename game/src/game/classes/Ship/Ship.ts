@@ -89,6 +89,7 @@ export class Ship extends Stubbable {
   dead = false // set in hp setter below
   obeysGravity = true
   mass = 10000
+  stats: ShipStatEntry[] = []
 
   constructor(
     {
@@ -105,6 +106,7 @@ export class Ship extends Stubbable {
       availableTaglines,
       headerBackground,
       availableHeaderBackgrounds,
+      stats,
     }: BaseShipData,
     game: Game,
   ) {
@@ -168,6 +170,8 @@ export class Ship extends Stubbable {
     this.updateSightAndScanRadius()
     this.recalculateMaxHp()
     this._hp = this.hp
+
+    if (stats) this.stats = stats
   }
 
   identify() {
@@ -616,6 +620,20 @@ export class Ship extends Stubbable {
       `Unlocked a new ship header background for ${reason}: "${bg}"`,
       `high`,
     )
+  }
+
+  // ----- stats -----
+  addStat(statname: ShipStatKey, amount: number) {
+    const existing = this.stats.find(
+      (s) => s.stat === statname,
+    )
+    if (!existing)
+      this.stats.push({
+        stat: statname,
+        amount,
+      })
+    else existing.amount += amount
+    this.toUpdate.stats = this.stats
   }
 
   // ----- misc stubs -----

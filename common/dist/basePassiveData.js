@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const basePassiveData = {
-    addBaseArmor: {
-        toString: (intensity) => `+${intensity * 100}% base armor`,
-    },
     boostAttackWithNumberOfFactionMembersWithinDistance: {
         toString: (intensity, distance) => `+${intensity * 100}% attack damage per ally within ${distance}AU`,
     },
@@ -52,6 +49,9 @@ const basePassiveData = {
     },
     extraEquipmentSlots: {
         toString: (intensity) => `+${intensity} item slot${intensity === 1 ? `` : `s`}`,
+    },
+    scaledDamageReduction: {
+        toString: (intensity) => `+${intensity * 100}% damage reduction`,
     },
     flatDamageReduction: {
         toString: (intensity) => `+${intensity} flat damage reduction`,

@@ -8,15 +8,11 @@
     <div
       v-if="data._hp && data._maxHp"
       class="panesection"
-      @mouseenter="
-        $store.commit(
-          'tooltip',
-          `🇨🇭HP: ${c.r2(data._hp)}/${c.r2(
-            data._maxHp,
-          )}<br /><br />The sum total of all of the ship's equipment's health.`,
-        )
+      v-tooltip="
+        `🇨🇭HP: ${c.r2(data._hp)}/${c.r2(
+          data._maxHp,
+        )}<br /><br />The sum total of all of the ship's equipment's health.`
       "
-      @mouseleave="$store.commit('tooltip')"
     >
       <PillBar :value="data._hp" :max="data._maxHp" />
     </div>
@@ -41,13 +37,10 @@
 
     <div class="panesection" v-if="data.planet">
       <div
-        @mouseenter="
-          $store.commit('tooltip', {
-            type: 'planet',
-            data: data.planet,
-          })
-        "
-        @mouseleave="$store.commit('tooltip')"
+        v-tooltip="{
+          type: 'planet',
+          data: data.planet,
+        }"
       >
         At planet 🪐{{ data.planet.name }}
       </div>
@@ -123,13 +116,10 @@
       <div
         v-if="data.chassis"
         class="flexbetween"
-        @mouseenter="
-          $store.commit('tooltip', {
-            type: 'chassis',
-            data: data.chassis,
-          })
-        "
-        @mouseleave="$store.commit('tooltip')"
+        v-tooltip="{
+          type: 'chassis',
+          data: data.chassis,
+        }"
       >
         <div>Chassis</div>
         <div>{{ data.chassis.displayName }}</div>
@@ -143,13 +133,9 @@
       <div
         v-if="data.mass"
         class="flexbetween"
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `More mass requires more thrust to gain velocity.`,
-          )
+        v-tooltip="
+          `More mass requires more thrust to gain velocity.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         <div>Mass</div>
         <div>
@@ -171,7 +157,6 @@
                 .join(', ')}`,
             )
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         <div>Crew Members</div>
         <div>
@@ -211,13 +196,10 @@
         <div
           v-for="(item, index) in data.items || []"
           :key="'tooltipscanitem' + data.id + index"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: item.type,
-              data: item,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: item.type,
+            data: item,
+          }"
         >
           <div>
             {{ item.displayName }}

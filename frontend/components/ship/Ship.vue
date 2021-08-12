@@ -22,13 +22,9 @@
     <div class="panesection" v-if="ship.commonCredits">
       <div
         class="flexbetween"
-        @mouseenter="
-          $store.commit(
-            'tooltip',
-            `The ship's shared pool of credits. The captain can spend the common fund on new items for the ship.`,
-          )
+        v-tooltip="
+          `The ship's shared pool of credits. The captain can spend the common fund on new items for the ship.`
         "
-        @mouseleave="$store.commit('tooltip')"
       >
         <div>Common Fund</div>
         <div>

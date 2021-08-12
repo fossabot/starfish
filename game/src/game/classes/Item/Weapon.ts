@@ -22,12 +22,12 @@ export class Weapon extends Item {
     this.damage = data.damage
     this.baseCooldown = data.baseCooldown
     this.lastUse = data.lastUse || 0
-    this.cooldownRemaining = Math.min(
+    this.cooldownRemaining =
       data.cooldownRemaining ||
-        props?.cooldownRemaining ||
-        data.baseCooldown,
-      data.baseCooldown,
-    )
+      props?.cooldownRemaining ||
+      0
+    if (this.cooldownRemaining > this.baseCooldown)
+      this.cooldownRemaining = this.baseCooldown
   }
 
   use() {

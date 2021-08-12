@@ -26,15 +26,11 @@
           :key="
             'score' + ranking.category + score.faction.id
           "
-          @mouseenter="
-            $store.commit(
-              'tooltip',
-              `#${index + 1}) ${c.capitalize(
-                score.faction.name,
-              )}: ${c.r2(score.score, 0)}`,
-            )
+          v-tooltip="
+            `#${index + 1}) ${c.capitalize(
+              score.faction.name,
+            )}: ${c.r2(score.score, 0)}`
           "
-          @mouseleave="$store.commit('tooltip')"
         ></div>
       </div>
       <div v-if="ranking.top" class="martop">

@@ -47,12 +47,12 @@
       <ShipDead v-if="ship && ship.dead" />
     </div>
 
-    <!-- <details
+    <details
       style="position: relative; margin-bottom: 2em;"
     >
       <summary>Raw Data</summary>
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-    </details> -->
+    </details>
   </div>
 </template>
 
@@ -82,6 +82,7 @@ export default {
       'shipsBasics',
       'crewMember',
       'connected',
+      'activeShipId',
     ]),
     planet(this: ComponentShape) {
       return this.ship?.planet
@@ -92,6 +93,9 @@ export default {
   },
 
   watch: {
+    shipIds(this: ComponentShape) {
+      if (!this.activeShipId) this.changeShip(0)
+    },
     ship(this: ComponentShape) {
       this.masonryElement?.position()
     },
@@ -141,10 +145,11 @@ export default {
       ) {
         this.$store.dispatch(
           'socketSetup',
-          id || this.shipIds[index],
+          this.shipIds[index],
         )
       }
     },
+
     async setUpMasonry(this: ComponentShape) {
       if (this.masonryElement) return
       if (!this.$refs.container)

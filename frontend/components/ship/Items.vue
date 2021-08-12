@@ -9,13 +9,10 @@
         <!-- v-if="armor && armor.length" <div class="panesubhead">Armor</div> -->
         <div
           v-for="i in armor"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'armor',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'armor',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{
@@ -50,13 +47,10 @@
         <div class="panesubhead">Weapons</div> -->
         <div
           v-for="i in weapons"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'weapon',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'weapon',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{
@@ -101,13 +95,10 @@
         <div class="panesubhead">Engines</div> -->
         <div
           v-for="i in engines"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'engine',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'engine',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{
@@ -142,13 +133,10 @@
         <div class="panesubhead">Scanners</div> -->
         <div
           v-for="i in scanners"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'scanner',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'scanner',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{
@@ -186,13 +174,10 @@
         <div class="panesubhead">Communicators</div> -->
         <div
           v-for="i in communicators"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'communicator',
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'communicator',
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{
@@ -227,13 +212,10 @@
         <div class="panesubhead">Other Items</div> -->
         <div
           v-for="i in other"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: i.type,
-              data: i,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: i.type,
+            data: i,
+          }"
         >
           {{ i.displayName }}
           <span class="sub">{{

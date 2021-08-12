@@ -60,7 +60,8 @@ export declare class Ship extends Stubbable {
     dead: boolean;
     obeysGravity: boolean;
     mass: number;
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, }: BaseShipData, game: Game);
+    stats: ShipStatEntry[];
+    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     rename(newName: string): void;
@@ -91,6 +92,7 @@ export declare class Ship extends Stubbable {
     set hp(newValue: number);
     addTagline(tagline: string, reason: string): void;
     addHeaderBackground(bg: string, reason: string): void;
+    addStat(statname: ShipStatKey, amount: number): void;
     logEntry(s: string, lv: LogLevel): void;
     updateMaxScanProperties(): void;
 }

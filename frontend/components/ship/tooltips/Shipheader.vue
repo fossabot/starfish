@@ -19,13 +19,10 @@
         <div
           class="icon"
           :class="{ pushup: data.tagline }"
-          @mouseenter="
-            $store.commit('tooltip', {
-              type: 'species',
-              data: data.species,
-            })
-          "
-          @mouseleave="$store.commit('tooltip')"
+          v-tooltip="{
+            type: 'species',
+            data: data.species,
+          }"
         >
           {{ data.species.icon }}
         </div>
@@ -41,13 +38,7 @@
       v-if="data.faction"
       class="factiontag"
       :style="{ background: data.faction.color }"
-      @mouseenter="
-        $store.commit(
-          'tooltip',
-          `<b>Faction:</b> ${data.faction.name}`,
-        )
-      "
-      @mouseleave="$store.commit('tooltip')"
+      v-tooltip="`<b>Faction:</b> ${data.faction.name}`"
     ></div>
   </div>
 </template>

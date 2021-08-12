@@ -24,13 +24,10 @@
               ? ca.cargoData.type
               : Math.random())
         "
-        @mouseenter="
-          $store.commit('tooltip', {
-            type: 'cargo',
-            data: ca,
-          })
-        "
-        @mouseleave="$store.commit('tooltip')"
+        v-tooltip="{
+          type: 'cargo',
+          data: ca,
+        }"
       >
         <PromptButton
           :disabled="!ca.canBuy"
@@ -82,13 +79,10 @@
               ? ca.cargoData.type
               : Math.random())
         "
-        @mouseenter="
-          $store.commit('tooltip', {
-            type: 'cargo',
-            data: ca,
-          })
-        "
-        @mouseleave="$store.commit('tooltip')"
+        v-tooltip="{
+          type: 'cargo',
+          data: ca,
+        }"
       >
         <PromptButton
           :disabled="!ca.canSell"

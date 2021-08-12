@@ -48,7 +48,7 @@ export declare class CrewMember extends Stubbable {
     recalculatemaxCargoSpace(): void;
     addPassive(data: Partial<BaseCrewPassiveData>): void;
     recalculateAll(): void;
-    addStat(statname: StatKey, amount: number): void;
+    addStat(statname: CrewStatKey, amount: number): void;
     get tired(): boolean;
     get piloting(): XPData | undefined;
     get linguistics(): XPData | undefined;
