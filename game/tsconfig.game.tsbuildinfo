@@ -653,7 +653,7 @@
       },
       "./src/game/presets/items/index.ts": {
         "version": "d5b392daee0133e84c7b5cf9b782daf494657f10571e480fb6398081cc6327ab",
-        "signature": "bd1cb20b25a8a28061777103d36998b7d4a16f3dbc51447bafe016fd9e397b31",
+        "signature": "243505ed0c3e07a24cc72de923e059b8a91575ddae92798a452a7db7bb4d9538",
         "affectsGlobalScope": false
       },
       "./src/game/classes/stubbable.ts": {

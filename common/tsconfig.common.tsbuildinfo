@@ -317,7 +317,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "0e6d25fff02b7936089ce6bb035fc21aad6773d5ec72fae4857a5dcc4e59906f",
+        "version": "56f780b6ffbc9645795d8d1621841c156d4e8d5057fe17ec62f5b0153cc8a20c",
         "signature": "e4bf5e5fa64e96cf86c647f3a770e736f17500bef11a4c0b03d66e8b26fd2781",
         "affectsGlobalScope": false
       },
@@ -741,9 +741,6 @@
       "configFilePath": "./tsconfig.common.json"
     },
     "referencedMap": {
-      "./src/basepassivedata.ts": [
-        "../node_modules/@types/node/dns.d.ts"
-      ],
       "./src/game.ts": [
         "./src/globals.ts",
         "./src/log.ts",

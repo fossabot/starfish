@@ -12,9 +12,9 @@ export declare const weapon: {
     tiny1: BaseWeaponData;
 };
 export declare const engine: {
+    tutorial1: BaseEngineData;
     starter1: BaseEngineData;
     starter2: BaseEngineData;
-    tutorial1: BaseEngineData;
     basic1: BaseEngineData;
     basic2: BaseEngineData;
     glass1: BaseEngineData;

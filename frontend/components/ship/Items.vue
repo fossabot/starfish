@@ -325,7 +325,7 @@ export default {
 
 <style lang="scss" scoped>
 .items {
-  width: 260px;
+  width: 250px;
   position: relative;
   grid-column: span 2;
 }

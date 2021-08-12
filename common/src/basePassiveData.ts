@@ -1,5 +1,3 @@
-import { AnyCnameRecord } from 'node:dns'
-
 const basePassiveData: {
   [key in ShipPassiveEffectType]: {
     toString: (intensity: number, ...args: any[]) => string
