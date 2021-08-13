@@ -20,9 +20,12 @@ export default {
   },
   mounted(this: ComponentShape) {
     if (this.userId) this.$router.push('/s')
-    else
-      window.location.href =
-        'https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Flocalhost%3A4300%2Fpostlogin&response_type=token&scope=identify%20guilds'
+    else {
+      const postLoginPage = 'http://0.0.0.0:80/postlogin'
+      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
+        postLoginPage,
+      )}&response_type=token&scope=identify%20guilds`
+    }
   },
   methods: {},
 }
