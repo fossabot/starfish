@@ -74,6 +74,7 @@ export declare class HumanShip extends CombatShip {
     distributeCargoAmongCrew(cargo: CacheContents[]): void;
     updateMaxScanProperties(): void;
     shipToValidScanResult(ship: Ship): ShipStub;
+    cacheToValidScanResult(cache: Cache): Partial<CacheStub> | CacheStub;
     respawn(silent?: boolean): void;
     autoAttack(): void;
     die(): void;

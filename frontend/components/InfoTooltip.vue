@@ -41,6 +41,7 @@
         <ShipTooltipsCache
           v-if="tooltip.type === 'cache'"
           :data="tooltip.data"
+          :key="tooltip.data.id"
         />
         <ShipTooltipsCargo
           v-if="tooltip.type === 'cargo'"

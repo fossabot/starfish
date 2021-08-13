@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "8337fc7ae74510a998b109f9f3c3d55f604c1517a49e9f65b610a0962963c535",
-        "signature": "8337fc7ae74510a998b109f9f3c3d55f604c1517a49e9f65b610a0962963c535",
+        "version": "bd343ed370eb3211255ace16fb7b5f152ae934aaf18dc87447ba23c537fe2a1a",
+        "signature": "bd343ed370eb3211255ace16fb7b5f152ae934aaf18dc87447ba23c537fe2a1a",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {

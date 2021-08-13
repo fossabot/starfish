@@ -367,7 +367,7 @@ export class Game {
   }
 
   spawnNewZones() {
-    while (this.zones.length < this.gameSoftArea * 2.25) {
+    while (this.zones.length < this.gameSoftArea * 1.25) {
       const z = generateZoneData(this)
       if (!z) return
       const zone = this.addZone(z)

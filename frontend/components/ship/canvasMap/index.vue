@@ -395,7 +395,7 @@ export default {
           })
       })
 
-      s.visible?.caches.forEach((p: CacheStub) => {
+      s.visible?.caches.forEach((p: Partial<CacheStub>) => {
         const hoverDistance = c.distance(
           p.location,
           this.hoverPoint,
@@ -462,7 +462,9 @@ export default {
         this.$store.state.tooltip === toShow ||
         (this.$store.state.tooltip?.type === toShow?.type &&
           this.$store.state.tooltip?.data?.name ===
-            toShow?.data?.name)
+            toShow?.data?.name &&
+          this.$store.state.tooltip?.data?.id ===
+            toShow?.data?.id)
       )
         return
 

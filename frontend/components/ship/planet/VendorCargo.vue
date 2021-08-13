@@ -33,6 +33,7 @@
           :disabled="!ca.canBuy"
           class="inlineblock"
           @done="buyCargo(ca, ...arguments)"
+          @apply="buyCargo(ca, ...arguments)"
         >
           <template #label>
             <div class="padsmall">
@@ -88,6 +89,7 @@
           :disabled="!ca.canSell"
           class="inlineblock"
           @done="sellCargo(ca, ...arguments)"
+          @apply="sellCargo(ca, ...arguments)"
         >
           <template #label>
             <div class="padsmall">
@@ -232,6 +234,7 @@ export default {
   mounted(this: ComponentShape) {},
   methods: {
     buyCargo(this: ComponentShape, data: any, amount: any) {
+      if (amount === 'all') amount = data.maxCanBuy
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
@@ -274,6 +277,11 @@ export default {
       data: any,
       amount: any,
     ) {
+      if (amount === 'all')
+        amount =
+          this.crewMember.inventory.find(
+            (i: any) => i.type === data.cargoData.type,
+          )?.amount || 0
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||

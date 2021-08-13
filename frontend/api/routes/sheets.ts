@@ -16,19 +16,20 @@ try {
     `/run/secrets/google_client_email`,
     `utf-8`,
   )
-  credentials.client_email.replace(/\n/g, '')
   c.log('Loaded google api credentials from secret files.')
 } catch (e) {
   credentials.private_key = process.env.private_key
   credentials.client_email = process.env.client_email
-  credentials.private_key = credentials.private_key.replace(
-    /\\n/g,
-    `\n`,
-  )
   c.log(
     'Loaded google api credentials from environment variables.',
   )
 }
+credentials.client_email.replace(/\n/g, '')
+credentials.private_key = credentials.private_key.replace(
+  /\\n/g,
+  `\n`,
+)
+c.log({ credentials })
 
 /* eslint-enable */
 

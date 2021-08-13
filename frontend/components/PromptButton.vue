@@ -8,7 +8,12 @@
       <slot name="label" />
     </button>
     <portal to="prompt" v-if="prompt">
-      <Prompt @done="done" :key="'prompt' + prompt">
+      <Prompt
+        @done="done"
+        @apply="apply"
+        :max="max"
+        :key="'prompt' + prompt"
+      >
         <slot v-if="prompt === 1" />
         <slot name="second" v-if="prompt === 2" />
       </Prompt>
@@ -24,7 +29,7 @@ interface ComponentShape {
 }
 
 export default {
-  props: { disabled: {} },
+  props: { disabled: {}, max: {} },
   data(): ComponentShape {
     return { c, prompt: null, results: [] }
   },
@@ -38,8 +43,19 @@ export default {
         this.results = []
       }
     },
+    prompt() {
+      if (!this.prompt) {
+        this.results = []
+        this.$store.commit('set', { modal: null })
+      }
+    },
   },
-  mounted(this: ComponentShape) {},
+  mounted(this: ComponentShape) {
+    // setInterval(
+    //   () => c.log(this.prompt, this.results),
+    //   1000,
+    // )
+  },
   methods: {
     openPrompt(this: ComponentShape) {
       this.prompt = 1
@@ -55,6 +71,13 @@ export default {
       this.prompt = null
       this.results = []
       this.$store.commit('set', { modal: null })
+    },
+    apply(this: ComponentShape, ...args: any[]) {
+      this.$emit('apply', ...args)
+      if (args[0] === 'all') {
+        this.results = []
+        this.$store.commit('set', { modal: null })
+      }
     },
   },
 }

@@ -1,7 +1,7 @@
 import c from '../common/src'
 export default {
   server: {
-    port: 80,
+    port: 4300,
   },
 
   // global page headers: https://go.nuxtjs.dev/config-head

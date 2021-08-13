@@ -19,8 +19,10 @@
 
         <div class="flexwrap">
           <PromptButton
-            v-if="crewMember.credits > 0.00999"
+            v-if="crewMember.credits >= 1"
+            :max="crewMember.credits"
             @done="addToCommonFund(...arguments)"
+            @apply="addToCommonFund(...arguments)"
           >
             <template #label>
               Add to common fund
@@ -29,14 +31,17 @@
               How many credits do you want to contribute to
               the ship's common credits? (Max
               {{
-                Math.floor(crewMember.credits * 100) / 100
+                c.numberWithCommas(
+                  Math.floor(crewMember.credits),
+                )
               }})
             </template>
           </PromptButton>
 
           <PromptButton
-            v-if="crewMember.credits > 0.099999"
+            v-if="crewMember.credits >= 1"
             @done="drop('credits', ...arguments)"
+            @apply="drop('credits', ...arguments)"
           >
             <template #label>
               Drop
@@ -45,7 +50,9 @@
               How many credits do you want to jettison as a
               cache? (Max
               {{
-                Math.floor(crewMember.credits * 100) / 100
+                c.numberWithCommas(
+                  Math.floor(crewMember.credits),
+                )
               }})
             </template>
             <template #second>
@@ -117,6 +124,7 @@ ${
             class="inlineblock"
             v-if="item.amount >= 1"
             @done="drop(item.type, ...arguments)"
+            @apply="drop(item.type, ...arguments)"
           >
             <template #label>
               Drop
@@ -124,7 +132,11 @@ ${
             <template>
               How many tons of {{ item.type }} do you want
               to jettison as a cache? (Max
-              {{ c.r2(item.amount, 2, true) }})
+              {{
+                c.numberWithCommas(
+                  c.r2(item.amount, 2, true),
+                )
+              }})
             </template>
             <template #second>
               Would you like to attach a message to the
@@ -179,7 +191,11 @@ export default {
   watch: {},
   mounted(this: ComponentShape) {},
   methods: {
-    addToCommonFund(this: ComponentShape, amount: any) {
+    async addToCommonFund(
+      this: ComponentShape,
+      amount: any,
+    ) {
+      if (amount === 'all') amount = this.crewMember.credits
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
@@ -199,6 +215,10 @@ export default {
         this.crewMember.id,
         amount,
       )
+      this.$store.dispatch('notifications/notify', {
+        text: `Contributed ${c.r2(amount, 0)} credits.`,
+        type: 'success',
+      })
     },
     drop(
       this: ComponentShape,
@@ -217,6 +237,8 @@ export default {
               2,
               true,
             )
+
+      if (amount === 'all') amount = totalHeld
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (!amount || amount > totalHeld) {
         this.$store.dispatch('notifications/notify', {

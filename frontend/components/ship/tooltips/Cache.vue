@@ -2,7 +2,15 @@
   <div>
     <div class="tooltipheader">📦Cache</div>
     <hr />
-    <div>Contents unknown.</div>
+    <div v-if="!data.contents">Contents unknown.</div>
+    <div v-else>
+      <div
+        v-for="(c, index) in data.contents"
+        :key="'cachecontentstooltip' + index"
+      >
+        Contains {{ c.amount }} {{ c.type }}
+      </div>
+    </div>
   </div>
 </template>
 

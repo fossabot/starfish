@@ -28,12 +28,19 @@
       >
         <div>Common Fund</div>
         <div>
-          💳{{ ship && c.r2(ship.commonCredits, 2, true) }}
+          💳{{
+            ship &&
+              c.numberWithCommas(
+                c.r2(ship.commonCredits, 2, true),
+              )
+          }}
         </div>
       </div>
       <PromptButton
-        v-if="isCaptain && ship.commonCredits > 0.01"
+        v-if="isCaptain"
+        :max="ship.commonCredits"
         @done="redistributeCommonFund(...arguments)"
+        @apply="redistributeCommonFund(...arguments)"
       >
         <template #label>
           Redistribute Credits
@@ -41,7 +48,11 @@
         <template>
           How many credits do you want to redistribute
           evenly among the crew? (Max
-          {{ Math.floor(ship.commonCredits * 100) / 100 }})
+          {{
+            c.numberWithCommas(
+              Math.floor(ship.commonCredits),
+            )
+          }})
         </template>
       </PromptButton>
     </div>
@@ -85,6 +96,7 @@ export default {
       this: ComponentShape,
       amount: any,
     ) {
+      if (amount === 'all') amount = this.ship.commonCredits
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
         !amount ||
@@ -104,6 +116,10 @@ export default {
         this.crewMember?.id,
         amount,
       )
+      this.$store.dispatch('notifications/notify', {
+        text: `Redistributed ${c.r2(amount, 0)} credits.`,
+        type: 'success',
+      })
     },
   },
 }

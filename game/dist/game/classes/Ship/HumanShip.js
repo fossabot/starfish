@@ -594,7 +594,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             trails: this.visible.trails || [],
             attackRemnants: this.visible.attackRemnants.map((ar) => ar.stubify()),
             planets: planetDataToSend,
-            caches: this.visible.caches.map((c) => c.stubify()),
+            caches: this.visible.caches.map((c) => this.cacheToValidScanResult(c)),
             zones: this.visible.zones.map((z) => z.stubify()),
         };
     }
@@ -815,7 +815,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 const amountForEach = toDistribute / canHoldMore.length;
                 toDistribute = canHoldMore.reduce((total, cm, index) => {
                     if (contents.type === `credits`) {
-                        cm.credits += amountForEach;
+                        cm.credits += Math.floor(amountForEach);
                         cm.toUpdate.credits = cm.credits;
                     }
                     else {
@@ -923,6 +923,14 @@ class HumanShip extends CombatShip_1.CombatShip {
             }
         });
         return partialShip;
+    }
+    cacheToValidScanResult(cache) {
+        const isInRange = dist_1.default.distance(this.location, cache.location) <=
+            this.radii.scan;
+        const partialStub = isInRange
+            ? cache.stubify()
+            : { location: cache.location, id: cache.id };
+        return partialStub;
     }
     // ----- respawn -----
     respawn(silent = false) {

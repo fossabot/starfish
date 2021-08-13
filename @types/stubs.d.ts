@@ -41,7 +41,7 @@ interface VisibleStub extends BaseStub {
   ships: ShipStub[]
   trails: CoordinatePair[][]
   planets: Partial<PlanetStub>[]
-  caches: CacheStub[]
+  caches: CacheStub[] | Partial<CacheStub>[]
   attackRemnants: AttackRemnantStub[]
   zones: ZoneStub[]
 }

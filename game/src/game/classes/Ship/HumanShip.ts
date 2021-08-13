@@ -185,7 +185,6 @@ export class HumanShip extends CombatShip {
       this.visible.caches.forEach((cache) => {
         if (this.isAt(cache.location)) {
           if (!cache.canBePickedUpBy(this)) return
-
           this.getCache(cache)
         }
       })
@@ -911,7 +910,9 @@ export class HumanShip extends CombatShip {
         (ar) => ar.stubify(),
       ),
       planets: planetDataToSend,
-      caches: this.visible.caches.map((c) => c.stubify()),
+      caches: this.visible.caches.map((c) =>
+        this.cacheToValidScanResult(c),
+      ),
       zones: this.visible.zones.map((z) => z.stubify()),
     }
   }
@@ -1264,7 +1265,7 @@ export class HumanShip extends CombatShip {
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
             if (contents.type === `credits`) {
-              cm.credits += amountForEach
+              cm.credits += Math.floor(amountForEach)
               cm.toUpdate.credits = cm.credits
             } else {
               const leftOver = cm.addCargo(
@@ -1414,6 +1415,19 @@ export class HumanShip extends CombatShip {
       }
     })
     return partialShip as ShipStub
+  }
+
+  cacheToValidScanResult(
+    cache: Cache,
+  ): Partial<CacheStub> | CacheStub {
+    const isInRange =
+      c.distance(this.location, cache.location) <=
+      this.radii.scan
+    const partialStub: Partial<CacheStub> | Cache =
+      isInRange
+        ? cache.stubify()
+        : { location: cache.location, id: cache.id }
+    return partialStub
   }
 
   // ----- respawn -----

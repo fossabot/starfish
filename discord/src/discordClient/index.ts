@@ -11,6 +11,7 @@ try {
   discordToken = process.env.DISCORD_TOKEN
 }
 discordToken = discordToken?.replace(/\n/g, ``)
+c.log({ discordToken })
 
 import { CommandHandler } from './CommandHandler'
 
