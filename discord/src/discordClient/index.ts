@@ -10,7 +10,7 @@ try {
 } catch (e) {
   discordToken = process.env.DISCORD_TOKEN
 }
-c.log({ discordToken })
+discordToken = discordToken?.replace(/\n/g, ``)
 
 import { CommandHandler } from './CommandHandler'
 
