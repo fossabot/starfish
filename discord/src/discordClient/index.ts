@@ -10,6 +10,8 @@ try {
 } catch (e) {
   discordToken = process.env.DISCORD_TOKEN
 }
+c.log({ discordToken })
+
 import { CommandHandler } from './CommandHandler'
 
 export const client = new Discord.Client({
