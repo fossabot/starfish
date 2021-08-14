@@ -144,9 +144,13 @@ export default class Drawer {
     ).filter((p) => this.isTrailInSightRange(p))
 
     // ----- caches -----
-    const cachesToDraw: CacheStub[] = (
+    const cachesToDraw: Partial<CacheStub>[] = (
       visible?.caches || []
-    ).filter((p) => this.isPointInSightRange(p))
+    ).filter(
+      (p) =>
+        `location` in p &&
+        this.isPointInSightRange(p as HasLocation),
+    )
 
     // ----- actually draw -----
 
