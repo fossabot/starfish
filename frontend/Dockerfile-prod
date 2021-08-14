@@ -1,22 +1,21 @@
 FROM node:16-alpine3.11 as base
 
-ENV HOST 0.0.0.0
-
 WORKDIR /usr/app/frontend
-
-COPY package.json .
-
-FROM base AS dependencies
+COPY package*.json .
 RUN npm install
 
-FROM base as release
-COPY --from=dependencies /usr/app/frontend/node_modules /usr/app/frontend/node_modules
+FROM base as npmbuild
+WORKDIR /usr/app/frontend
+COPY . /usr/app/frontend
+COPY common /usr/app/common
+COPY @types /usr/app/@types
+RUN npm run build
 
-ADD @types/ /usr/app/@types
-ADD common/ /usr/app/common
-ADD . /usr/app/frontend
-
+FROM node:16-alpine3.11 as release
+COPY --from=npmbuild /usr/app /usr/app
+ENV HOST 0.0.0.0
 RUN chown node:root /usr/app/frontend
-RUN chmod -R 777 /usr/app/frontend/
+RUN chmod -R 777 /usr/app/frontend/.nuxt
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
+#"run", "dev"]
