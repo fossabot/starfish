@@ -53,7 +53,7 @@ export default async function resolveOrCreateChannel({
   const existingCategory = existingChannels.find(
     (ch) =>
       ch instanceof Discord.CategoryChannel &&
-      ch.name === c.GAME_NAME,
+      ch.name === c.gameName,
   ) as Discord.CategoryChannel
   if (existingCategory) {
     parentCategory = existingCategory
@@ -64,7 +64,7 @@ export default async function resolveOrCreateChannel({
     ) as Discord.TextChannel[]
   } else {
     const createdCategory = await guild.channels
-      .create(c.GAME_NAME, {
+      .create(c.gameName, {
         type: `category`,
         position: 99999,
         reason: `Game initialization`,

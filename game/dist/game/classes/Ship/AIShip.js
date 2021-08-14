@@ -150,9 +150,9 @@ class AIShip extends CombatShip_1.CombatShip {
             .filter((e) => e.repair > 0)
             .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
         const hasArrived = Math.abs(this.location[0] - this.targetLocation[0]) <
-            dist_1.default.ARRIVAL_THRESHOLD / 2 &&
+            dist_1.default.arrivalThreshold / 2 &&
             Math.abs(this.location[1] - this.targetLocation[1]) <
-                dist_1.default.ARRIVAL_THRESHOLD / 2;
+                dist_1.default.arrivalThreshold / 2;
         if (!hasArrived) {
             const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, this.targetLocation));
             const thrustMagnitude = dist_1.default.lerp(0.00001, 0.0001, this.level / 100) *
@@ -161,14 +161,14 @@ class AIShip extends CombatShip_1.CombatShip {
             this.location[0] +=
                 unitVectorToTarget[0] *
                     thrustMagnitude *
-                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+                    (dist_1.default.deltaTime / dist_1.default.tickInterval);
             this.location[1] +=
                 unitVectorToTarget[1] *
                     thrustMagnitude *
-                    (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+                    (dist_1.default.deltaTime / dist_1.default.tickInterval);
         }
         // ----- set new target location -----
-        if (Math.random() < 0.000015 * dist_1.default.TICK_INTERVAL) {
+        if (Math.random() < 0.000015 * dist_1.default.tickInterval) {
             const distance = (Math.random() * this.level) / 2;
             const currentAngle = dist_1.default.angleFromAToB(this.location, this.targetLocation);
             const possibleAngles = [

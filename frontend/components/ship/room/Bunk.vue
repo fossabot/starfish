@@ -45,7 +45,7 @@ export default {
         ((this.crewMember.maxStamina -
           this.crewMember.stamina) /
           c.getStaminaGainPerTickForSingleCrewMember()) *
-          c.TICK_INTERVAL,
+          c.tickInterval,
       )
     },
   },

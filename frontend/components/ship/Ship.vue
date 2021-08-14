@@ -31,7 +31,7 @@
           💳{{
             ship &&
               c.numberWithCommas(
-                c.r2(ship.commonCredits, 2, true),
+                c.r2(ship.commonCredits, 0, true),
               )
           }}
         </div>

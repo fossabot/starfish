@@ -1,7 +1,7 @@
 <template>
   <div class="pagecontainer">
     <div class="bg"></div>
-    <FadeIn :off="ready">{{ c.GAME_NAME }}</FadeIn>
+    <FadeIn :off="ready">{{ c.gameName }}</FadeIn>
     <!-- <Starfield class="starfield" /> -->
 
     <div

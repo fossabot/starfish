@@ -43,7 +43,7 @@ export class StartCommand implements Command {
 
     const sentMessage =
       await context.initialMessage.channel.send(
-        `Welcome to **${c.GAME_NAME}**!
+        `Welcome to **${c.gameName}**!
 This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
 
 Choose your ship's species to get started!`,

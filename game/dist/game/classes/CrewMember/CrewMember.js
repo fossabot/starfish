@@ -132,7 +132,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             return;
         if (!this.ship.tutorial?.currentStep.disableStamina)
             this.stamina -=
-                dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+                dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.tickInterval);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
@@ -159,7 +159,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         const xpBoostMultiplier = (this.ship.passives.find((p) => p.id === `boostXpGain`)?.intensity || 0) + 1;
         if (!xp)
             xp =
-                (dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL)) *
+                (dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.tickInterval)) *
                     xpBoostMultiplier;
         let skillElement = this.skills.find((s) => s.skill === skill);
         if (!skillElement) {

@@ -91,9 +91,26 @@ class CombatShip extends Ship_1.Ship {
         const hitRoll = Math.random();
         let miss = hitRoll * enemyAgility < rangeAsPercent;
         // todo this makes it impossible to hit some ships even when they're "in range"... fix
-        const damage = miss
+        let damage = miss
             ? 0
             : dist_1.default.getHitDamage(weapon, totalMunitionsSkill);
+        // apply passive
+        const relevantPassives = this.passives.filter((p) => p.id ===
+            `boostAttackWithNumberOfFactionMembersWithinDistance`) || [];
+        let passiveDamageMultiplier = relevantPassives.reduce((total, p) => total + (p.intensity || 0), 0);
+        if (passiveDamageMultiplier) {
+            let factionMembersInRange = 0;
+            const range = relevantPassives.reduce((avg, curr) => avg +
+                (curr.distance || 0) / relevantPassives.length, 0);
+            this.visible.ships.forEach((s) => {
+                if (s?.faction?.id === this.faction.id &&
+                    dist_1.default.distance(s.location, this.location) <= range)
+                    factionMembersInRange++;
+            });
+            passiveDamageMultiplier *= factionMembersInRange;
+            dist_1.default.log(`damage boosted from passive by`, passiveDamageMultiplier, `because there are`, factionMembersInRange, `faction members within`, range);
+            damage *= 1 + passiveDamageMultiplier;
+        }
         // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
@@ -133,7 +150,7 @@ class CombatShip extends Ship_1.Ship {
     takeDamage(attacker, attack) {
         const previousHp = this.hp;
         let remainingDamage = attack.damage;
-        // apply passives
+        // ----- apply passives -----
         // scaled damage reduction
         const passiveDamageMultiplier = Math.max(0, 1 -
             this.passives
@@ -148,11 +165,28 @@ class CombatShip extends Ship_1.Ship {
         if (remainingDamage < 0)
             remainingDamage = 0;
         const attackDamageAfterPassives = remainingDamage;
+        // calculate passive item type damage boosts from attacker
+        let itemTypeDamageMultipliers = {};
+        (attacker.passives?.filter((p) => p.id === `boostDamageToItemType`) || []).forEach((p) => {
+            if (!itemTypeDamageMultipliers[p.type])
+                itemTypeDamageMultipliers[p.type] =
+                    1 + (p.intensity || 0);
+            else
+                itemTypeDamageMultipliers[p.type] +=
+                    p.intensity || 0;
+        });
+        let totalDamageDealt = 0;
         // ----- hit armor first -----
         if (remainingDamage)
             for (let armor of this.armor) {
-                const { remaining } = armor.blockDamage(remainingDamage);
-                remainingDamage = remaining;
+                let adjustedRemainingDamage = remainingDamage;
+                if (itemTypeDamageMultipliers.armor)
+                    adjustedRemainingDamage *=
+                        itemTypeDamageMultipliers.armor;
+                const { remaining, taken } = armor.blockDamage(adjustedRemainingDamage);
+                totalDamageDealt += taken;
+                const damageRemovedFromTotal = adjustedRemainingDamage - remaining;
+                remainingDamage -= damageRemovedFromTotal;
                 if (armor.hp === 0 && armor.announceWhenBroken) {
                     this.logEntry(`Your ${armor.displayName} has been broken!`, `high`);
                     if (`logEntry` in attacker)
@@ -167,41 +201,51 @@ class CombatShip extends Ship_1.Ship {
                 attackableEquipment = this.items.filter((i) => i.repair > 0 && i.type === attack.targetType);
             if (!attackableEquipment.length)
                 attackableEquipment = this.items.filter((i) => i.repair > 0);
-            if (!attackableEquipment.length)
+            // nothing to attack, so we're done
+            if (!attackableEquipment.length) {
                 remainingDamage = 0;
+                break;
+            }
+            const equipmentToAttack = dist_1.default.randomFromArray(attackableEquipment);
+            // apply passive damage boost to item types
+            let adjustedRemainingDamage = remainingDamage;
+            if (itemTypeDamageMultipliers[equipmentToAttack.type] !== undefined) {
+                adjustedRemainingDamage *=
+                    itemTypeDamageMultipliers[equipmentToAttack.type];
+                dist_1.default.log(`damage to`, equipmentToAttack.type, `boosted by passive:`, remainingDamage, `became`, adjustedRemainingDamage);
+            }
+            const remainingHp = equipmentToAttack.hp;
+            // ----- item not destroyed -----
+            if (remainingHp >= adjustedRemainingDamage) {
+                dist_1.default.log(`hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`);
+                equipmentToAttack.hp -= adjustedRemainingDamage;
+                equipmentToAttack._stub = null;
+                remainingDamage = 0;
+                totalDamageDealt += adjustedRemainingDamage;
+            }
+            // ----- item destroyed -----
             else {
-                const equipmentToAttack = dist_1.default.randomFromArray(attackableEquipment);
-                const remainingHp = equipmentToAttack.hp;
-                // ----- not destroyed -----
-                if (remainingHp >= remainingDamage) {
-                    dist_1.default.log(`hitting ${equipmentToAttack.displayName} with ${remainingDamage} damage`);
-                    equipmentToAttack.hp -= remainingDamage;
-                    equipmentToAttack._stub = null;
-                    remainingDamage = 0;
-                }
-                // ----- destroyed -----
-                else {
-                    dist_1.default.log(`destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
-                    equipmentToAttack.hp = 0;
-                    equipmentToAttack._stub = null;
-                    remainingDamage -= remainingHp;
-                }
-                // ----- notify both sides -----
-                if (equipmentToAttack.hp === 0 &&
-                    equipmentToAttack.announceWhenBroken) {
-                    this.logEntry(`Your ${equipmentToAttack.displayName} has been disabled!`, `high`);
-                    if (`logEntry` in attacker)
-                        attacker.logEntry(`You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`, `high`);
-                    equipmentToAttack.announceWhenBroken = false;
-                }
+                dist_1.default.log(`destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
+                equipmentToAttack.hp = 0;
+                equipmentToAttack._stub = null;
+                remainingDamage -= remainingHp;
+                totalDamageDealt += remainingHp;
+            }
+            // ----- notify both sides -----
+            if (equipmentToAttack.hp === 0 &&
+                equipmentToAttack.announceWhenBroken) {
+                this.logEntry(`Your ${equipmentToAttack.displayName} has been disabled!`, `high`);
+                if (`logEntry` in attacker)
+                    attacker.logEntry(`You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`, `high`);
+                equipmentToAttack.announceWhenBroken = false;
             }
         }
         this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
         const didDie = previousHp > 0 && this.hp <= 0;
         if (didDie)
             this.die();
-        this.addStat(`damageTaken`, previousHp - this.hp);
-        dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(attackDamageAfterPassives)} damage from ${attacker.name}'s ${attack.weapon
+        this.addStat(`damageTaken`, totalDamageDealt);
+        dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(totalDamageDealt)} damage from ${attacker.name}'s ${attack.weapon
             ? attack.weapon.displayName
             : `passive effect`}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
         this.toUpdate._hp = this.hp;
@@ -212,15 +256,15 @@ class CombatShip extends Ship_1.Ship {
                 ? `Missed by an attack from`
                 : `Hit by an attack from`} ${attacker.name}'s ${attack.weapon.displayName}${attack.miss
                 ? `.`
-                : `, taking ${dist_1.default.r2(attackDamageAfterPassives)} damage.`}`, attack.miss ? `medium` : `high`);
+                : `, taking ${dist_1.default.r2(totalDamageDealt)} damage.`}`, attack.miss ? `medium` : `high`);
         // zone or passive damage
         else
             this.logEntry(`${attack.miss ? `Missed by` : `Hit by`} ${attacker.name}${attack.miss
                 ? `.`
-                : `, taking ${dist_1.default.r2(attackDamageAfterPassives, 2)} damage.`}`, attack.miss ? `medium` : `high`);
+                : `, taking ${dist_1.default.r2(totalDamageDealt, 2)} damage.`}`, attack.miss ? `medium` : `high`);
         return {
             miss: attackDamageAfterPassives === 0,
-            damageTaken: attackDamageAfterPassives,
+            damageTaken: totalDamageDealt,
             didDie: didDie,
             weapon: attack.weapon,
         };

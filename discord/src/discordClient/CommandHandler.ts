@@ -159,10 +159,10 @@ export class CommandHandler {
     // ----- set nickname -----
     if (
       context.initialMessage.guild?.me?.nickname !==
-      `${c.GAME_NAME}`
+      `${c.gameName}`
     )
       context.initialMessage.guild?.me?.setNickname(
-        `${c.GAME_NAME}`,
+        `${c.gameName}`,
       )
 
     // ----- update guild name if necessary -----

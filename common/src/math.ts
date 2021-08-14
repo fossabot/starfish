@@ -3,7 +3,7 @@ import globals from './globals'
 function lerp(
   v0: number = 0,
   v1: number = 0,
-  t: number = globals.TICK_INTERVAL || 0,
+  t: number = globals.tickInterval || 0,
 ) {
   return v0 * (1 - t) + v1 * t
 }

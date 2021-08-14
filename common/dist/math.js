@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const globals_1 = __importDefault(require("./globals"));
-function lerp(v0 = 0, v1 = 0, t = globals_1.default.TICK_INTERVAL || 0) {
+function lerp(v0 = 0, v1 = 0, t = globals_1.default.tickInterval || 0) {
     return v0 * (1 - t) + v1 * t;
 }
 // roundTo:

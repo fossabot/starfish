@@ -154,7 +154,7 @@ export const actions = {
 
       setTimeout(
         () => (stillWorkingOnTick = false),
-        c.TICK_INTERVAL * 0.7,
+        c.tickInterval * 0.7,
       )
     })
   },

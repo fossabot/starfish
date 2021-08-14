@@ -63,6 +63,7 @@ type ShipPassiveEffectType =
   | `boostBroadcastRange`
   | `boostRepairSpeed`
   | `boostRestSpeed`
+  | `boostBrake`
   // | `boostThrust`
   | `boostCockpitChargeSpeed`
   | `boostXpGain`
@@ -75,6 +76,7 @@ type ShipPassiveEffectType =
   | `disguiseCrewMemberCount`
   | `disguiseChassisType`
   | `boostAttackWithNumberOfFactionMembersWithinDistance`
+  | `boostDamageToItemType`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectType
   intensity?: number

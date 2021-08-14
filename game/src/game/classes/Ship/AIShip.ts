@@ -197,9 +197,9 @@ export class AIShip extends CombatShip {
 
     const hasArrived =
       Math.abs(this.location[0] - this.targetLocation[0]) <
-        c.ARRIVAL_THRESHOLD / 2 &&
+        c.arrivalThreshold / 2 &&
       Math.abs(this.location[1] - this.targetLocation[1]) <
-        c.ARRIVAL_THRESHOLD / 2
+        c.arrivalThreshold / 2
     if (!hasArrived) {
       const unitVectorToTarget = c.degreesToUnitVector(
         c.angleFromAToB(this.location, this.targetLocation),
@@ -213,15 +213,15 @@ export class AIShip extends CombatShip {
       this.location[0] +=
         unitVectorToTarget[0] *
         thrustMagnitude *
-        (c.deltaTime / c.TICK_INTERVAL)
+        (c.deltaTime / c.tickInterval)
       this.location[1] +=
         unitVectorToTarget[1] *
         thrustMagnitude *
-        (c.deltaTime / c.TICK_INTERVAL)
+        (c.deltaTime / c.tickInterval)
     }
 
     // ----- set new target location -----
-    if (Math.random() < 0.000015 * c.TICK_INTERVAL) {
+    if (Math.random() < 0.000015 * c.tickInterval) {
       const distance = (Math.random() * this.level) / 2
       const currentAngle = c.angleFromAToB(
         this.location,

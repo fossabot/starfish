@@ -49,7 +49,7 @@ export default function (
           )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
-        2,
+        0,
         true,
       )
       if (price > ship.commonCredits)
@@ -140,7 +140,7 @@ export default function (
           (planet.faction === ship.faction
             ? 1 + (1 - c.factionVendorMultiplier)
             : 1),
-        2,
+        0,
         true,
       )
 
@@ -205,8 +205,9 @@ export default function (
           error: `That equipment is not for sale here.`,
         })
 
-      const currentChassisSellPrice =
-        ship.chassis.basePrice / 2
+      const currentChassisSellPrice = Math.round(
+        ship.chassis.basePrice / 2,
+      )
       const price = c.r2(
         (itemForSale.chassisData?.basePrice || 1) *
           itemForSale.buyMultiplier *
@@ -217,7 +218,7 @@ export default function (
             ? c.factionVendorMultiplier
             : 1) -
           currentChassisSellPrice,
-        2,
+        0,
         true,
       )
 

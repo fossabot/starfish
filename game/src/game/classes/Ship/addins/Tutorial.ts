@@ -70,7 +70,7 @@ export class Tutorial {
         visibleTypes: [],
         script: [
           {
-            message: `Welcome to ${c.GAME_NAME}! To get started, log in at ${c.frontendUrl}`,
+            message: `Welcome to ${c.gameName}! To get started, log in at ${c.frontendUrl}`,
             channel: `alert`,
           },
           {
@@ -87,7 +87,7 @@ export class Tutorial {
             next: `Yeah!`,
           },
           {
-            message: `Welcome to ${c.GAME_NAME}!<br />
+            message: `Welcome to ${c.gameName}!<br />
             This is a game about exploring space in a ship crewed by your Discord server's members.<br /><br />
             Get into huge-scale battles with rival factions of real people!<br />
             Communicate (poorly) with servers from all over the world!<br />
@@ -429,7 +429,7 @@ export class Tutorial {
         ],
         script: [
           {
-            message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged.<br /><br />
+            message: `Your ship will automatically fire when the weapons are charged and a valid target is in range.<br /><br />
             Now's your chance to use what you've learned!<br />
             Switch to the <b>Cockpit</b> to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the <b>Weapons Bay</b>. Destroy that fowl craft!`,
           },
@@ -699,7 +699,7 @@ export class Tutorial {
         c.distance(
           this.ship.location,
           this.targetLocation.coordinates,
-        ) <= c.ARRIVAL_THRESHOLD
+        ) <= c.arrivalThreshold
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
       shouldAdvance =
@@ -893,7 +893,7 @@ export class Tutorial {
           m.message,
           m.channel,
         )
-    // }, c.TICK_INTERVAL)
+    // }, c.tickInterval)
 
     this.ship.toUpdate.tutorial = {
       currentStep: this.currentStep,
@@ -915,7 +915,7 @@ export class Tutorial {
         `Use this channel to broadcast to and receive messages from nearby ships!`,
         `broadcast`,
       )
-    }, c.TICK_INTERVAL)
+    }, c.tickInterval)
 
     this.ship.addHeaderBackground(
       c.capitalize(this.ship.faction.id) + ` Faction 1`,
@@ -925,7 +925,7 @@ export class Tutorial {
     )
     this.ship.addTagline(
       `Tester`,
-      `helping to test ${c.GAME_NAME}`,
+      `helping to test ${c.gameName}`,
     )
 
     this.cleanUp()

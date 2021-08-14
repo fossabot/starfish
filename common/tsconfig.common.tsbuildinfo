@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "9228116091f6a083088190b8c435f2bd5a4f2f264ea8af93d83f98adbd84d381",
-        "signature": "9228116091f6a083088190b8c435f2bd5a4f2f264ea8af93d83f98adbd84d381",
+        "version": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
+        "signature": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -297,12 +297,12 @@
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
-        "version": "1313cf4034d26167be8f16a79fc6c24f305b8b3f9229148909036496e239a841",
-        "signature": "2448e55e514bf97b8f4cedd175b0aa97534a76f2789ccd1d161e4b6db22cf4c8",
+        "version": "5b0bf4ebcadb81834ffc3b25695459aa97742d7cf5a1cf0c30247e63603473d7",
+        "signature": "d9d84bc04b6b8ea391b8acc5f988a3209a4d1e33cfe482a2439b5b0c46604d0e",
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
-        "version": "bb888ce67852ac67ed13e7b67c81c88e9b8c32c9f12d994dbb89c972ab9f5cbf",
+        "version": "4ec5772b4d557ca25fa790121551cd2b6a385884cb615b906de894e6d9839137",
         "signature": "5ec39be0eeb2ac5f6fa47a5575628af6b7e6998bdee4ca95532e75006ae30fee",
         "affectsGlobalScope": false
       },
@@ -317,7 +317,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "56f780b6ffbc9645795d8d1621841c156d4e8d5057fe17ec62f5b0153cc8a20c",
+        "version": "f64753a82824230dae7a4a21bb0430809355b89f73aaf60ffbf611d061479c28",
         "signature": "e4bf5e5fa64e96cf86c647f3a770e736f17500bef11a4c0b03d66e8b26fd2781",
         "affectsGlobalScope": false
       },
@@ -327,8 +327,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "8fc804441f7cd245fce4d06b491dd0d8a8a0f123cbea6b0449d9aad63a89a89b",
-        "signature": "8a22f8d3cbafaaab75b5d86267f0e5bc74eaacd4359b1abef1e5457a1229c321",
+        "version": "0a3c09e3007d0e093e8ffb642bf2b1543556688f5bfcd74349d5346116821258",
+        "signature": "3999ec210de7008ac0500bb9caf34ae31a8f492c9936ed107b8e0ec93d45e560",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -342,18 +342,18 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "73356802e58160b98eb4734a3a1f9b53844fd491fe37a1866709dd6b7a1709cd",
+        "version": "637c67514887c06712fa0e35b8c61258f2843d2d1a7ab90d2771fe154a361e6c",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "8a91350fb1aefa3efba71414988b926a57b8438d3669693e79d147a2b3f038c2",
+        "version": "d1956dde8d5e7e50ffcfa1c87f81be14c938e6b77f0e8e4a2670443474c62153",
         "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
         "version": "3494e91af3e030e238b8f4599a44251f3f96450f7d22d197a6ba19111b62f9ab",
-        "signature": "76c544121de4a5977a7bb9f1aad23e7a8b1600f46799fb9694371babd25a575e",
+        "signature": "038724e745077524a4da20bd04faeb64b6662d3ec32ce117a2c0411c8887d6f0",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {

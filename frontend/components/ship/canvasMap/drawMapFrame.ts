@@ -279,8 +279,8 @@ export default class Drawer {
     profiler.step(`draw planets`)
     ;[...planetsToDraw].forEach((p) => {
       const sizeMod = Math.max(
-        (p.radius / c.KM_PER_AU) * this.flatScale,
-        ((p.radius / c.KM_PER_AU) *
+        (p.radius / c.kmPerAu) * this.flatScale,
+        ((p.radius / c.kmPerAu) *
           this.flatScale *
           2 *
           devicePixelRatio) /
@@ -300,7 +300,7 @@ export default class Drawer {
       })
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
-        radius: c.ARRIVAL_THRESHOLD * this.flatScale,
+        radius: c.arrivalThreshold * this.flatScale,
         color: p.color,
         outline: `dash`,
         opacity: 0.4,

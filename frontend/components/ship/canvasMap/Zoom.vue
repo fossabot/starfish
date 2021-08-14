@@ -5,7 +5,7 @@
     :buffer="false"
     :interactive="false"
     background="black"
-    :radius="c.ARRIVAL_THRESHOLD"
+    :radius="c.arrivalThreshold"
     :width="200"
     label="vicinity"
   />

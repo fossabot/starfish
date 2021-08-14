@@ -326,7 +326,7 @@ class Ship extends Stubbable_1.Stubbable {
         }
     }
     isAt(coords) {
-        return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.ARRIVAL_THRESHOLD);
+        return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.arrivalThreshold);
     }
     applyTickOfGravity() {
         if (!this.human)
@@ -337,17 +337,17 @@ class Ship extends Stubbable_1.Stubbable {
             return;
         for (let planet of this.seenPlanets || []) {
             const distance = dist_1.default.distance(planet.location, this.location);
-            if (distance <= dist_1.default.GRAVITY_RANGE &&
-                distance > dist_1.default.ARRIVAL_THRESHOLD) {
+            if (distance <= dist_1.default.gravityRange &&
+                distance > dist_1.default.arrivalThreshold) {
                 const vectorToAdd = dist_1.default
                     .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
                     // comes back as kg * m / second == N
                     .map((g) => (g *
-                    Math.min(dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL, 2) *
+                    Math.min(dist_1.default.deltaTime / dist_1.default.tickInterval, 2) *
                     dist_1.default.gameSpeedMultiplier) /
                     this.mass /
-                    dist_1.default.KM_PER_AU /
-                    dist_1.default.M_PER_KM);
+                    dist_1.default.kmPerAu /
+                    dist_1.default.mPerKm);
                 // c.log(
                 //   this.name,
                 //   planet.name,

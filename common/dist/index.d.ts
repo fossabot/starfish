@@ -40,6 +40,9 @@ declare const _default: {
         boostRestSpeed: {
             toString: (intensity: number, ...args: any[]) => string;
         };
+        boostBrake: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
         boostCockpitChargeSpeed: {
             toString: (intensity: number, ...args: any[]) => string;
         };
@@ -71,6 +74,9 @@ declare const _default: {
             toString: (intensity: number, ...args: any[]) => string;
         };
         boostAttackWithNumberOfFactionMembersWithinDistance: {
+            toString: (intensity: number, ...args: any[]) => string;
+        };
+        boostDamageToItemType: {
             toString: (intensity: number, ...args: any[]) => string;
         };
     };
@@ -177,16 +183,16 @@ declare const _default: {
     randomInRange: (a: number, b: number) => number;
     lottery: (odds: number, outOf: number) => boolean;
     randomBetween: (start: number, end: number) => number;
-    GAME_NAME: string;
-    GAME_DESCRIPTION: string;
-    TICK_INTERVAL: number;
-    M_PER_KM: number;
-    KM_PER_AU: number;
-    GRAVITY_RANGE: number;
-    GRAVITATIONAL_CONSTANT: number;
-    LIGHTSPEED: number;
+    gameName: string;
+    gameDescription: string;
+    tickInterval: number;
+    mPerKm: number;
+    kmPerAu: number;
+    gravityRange: number;
+    gravitationalConstant: number;
+    lightspeed: number;
     deltaTime: number;
-    ARRIVAL_THRESHOLD: number;
+    arrivalThreshold: number;
     levels: number[];
 };
 export default _default;

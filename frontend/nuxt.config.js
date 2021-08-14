@@ -6,7 +6,7 @@ export default {
 
   // global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: c.GAME_NAME,
+    title: c.gameName,
     htmlAttrs: {
       lang: `en`,
     },
@@ -19,7 +19,7 @@ export default {
       {
         hid: `description`,
         name: `description`,
-        content: c.GAME_DESCRIPTION,
+        content: c.gameDescription,
       },
     ],
     link: [

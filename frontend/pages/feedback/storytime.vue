@@ -6,7 +6,7 @@
       <h2>Share a Story</h2>
       <div>
         Have you had an interesting, memorable, or
-        noteworthy experience in {{ c.GAME_NAME }}? Tell us
+        noteworthy experience in {{ c.gameName }}? Tell us
         about it!
       </div>
 

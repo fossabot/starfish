@@ -40,36 +40,37 @@ try {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string
 }
+c.log(mongoUsername, mongoPassword)
 
 const toRun: Function[] = []
 
-let mongodbUsername: string
-let mongodbPassword: string
-try {
-  mongodbUsername = fs.readFileSync(
-    process.env.MONGODB_USERNAME_FILE as string,
-    `utf-8`,
-  )
-} catch (e) {
-  c.log(`Got an error reading mongodbUsername`)
-}
-try {
-  mongodbPassword = fs.readFileSync(
-    process.env.MONGODB_PASSWORD_FILE as string,
-    `utf-8`,
-  )
-  c.log(`Imported mongo creds from secret files`)
-} catch (e) {
-  c.log(`Got an error reading mongodbPassword`)
-}
+// let mongodbUsername: string
+// let mongodbPassword: string
+// try {
+//   mongodbUsername = fs.readFileSync(
+//     process.env.MONGODB_USERNAME_FILE as string,
+//     `utf-8`,
+//   )
+// } catch (e) {
+//   c.log(`Got an error reading mongodbUsername`)
+// }
+// try {
+//   mongodbPassword = fs.readFileSync(
+//     process.env.MONGODB_PASSWORD_FILE as string,
+//     `utf-8`,
+//   )
+//   c.log(`Imported mongo creds from secret files`)
+// } catch (e) {
+//   c.log(`Got an error reading mongodbPassword`)
+// }
 
 export const isReady = () => ready
 export const init = ({
   hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
   dbName = `starfish`,
-  username = mongodbUsername,
-  password = mongodbPassword,
+  username = mongoUsername,
+  password = mongoPassword,
 }: {
   hostname?: string
   port?: number

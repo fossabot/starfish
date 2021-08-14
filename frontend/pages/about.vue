@@ -3,7 +3,7 @@
     <NavPane />
 
     <div class="textcolumn">
-      <h2>About {{ c.GAME_NAME }}</h2>
+      <h2>About {{ c.gameName }}</h2>
 
       <h3>Remember Earth?</h3>
       <div>
@@ -39,13 +39,13 @@
         Now, you find yourself cast into the murky depths of
         the universe. You and your shipmates will have to
         pool your courage to make a splash among the stars.
-        Welcome to <b>{{ c.GAME_NAME }}</b
+        Welcome to <b>{{ c.gameName }}</b
         >!
       </div>
 
-      <h3>What is {{ c.GAME_NAME }}?</h3>
+      <h3>What is {{ c.gameName }}?</h3>
       <div class="marbot">
-        {{ c.GAME_NAME }} is
+        {{ c.gameName }} is
         <b
           >Discord server vs. Discord server space
           action!</b
@@ -70,7 +70,7 @@
         <li>And much more!</li>
       </ul>
       <div class="marbot">
-        {{ c.GAME_NAME }} feels somewhat like a board game.
+        {{ c.gameName }} feels somewhat like a board game.
         Your adventure will take place over the course of
         days and weeks. It's a perfect game for servers with
         members all over the world, who might only have a
@@ -78,9 +78,9 @@
       </div>
 
       <div class="martop">
-        <h2>Support {{ c.GAME_NAME }}!</h2>
+        <h2>Support {{ c.gameName }}!</h2>
         <div>
-          {{ c.GAME_NAME }} is made by
+          {{ c.gameName }} is made by
           <a
             target="_blank"
             href="https://www.jasperstephenson.com"

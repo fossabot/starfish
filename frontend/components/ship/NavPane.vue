@@ -1,7 +1,7 @@
 <template>
   <Box class="navbox">
     <template #title>
-      <span class="sectionemoji">⚙️</span>{{ c.GAME_NAME }}
+      <span class="sectionemoji">⚙️</span>{{ c.gameName }}
     </template>
     <nav class="padpane">
       <nuxt-link to="/">Home</nuxt-link>

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const basePassiveData = {
     boostAttackWithNumberOfFactionMembersWithinDistance: {
-        toString: (intensity, distance) => `+${intensity * 100}% attack damage per ally within ${distance}AU`,
+        toString: (intensity, data) => `+${intensity * 100}% attack damage per ally within ${data.distance}AU`,
     },
     boostBroadcastRange: {
         toString: (intensity) => `+${intensity} broadcast range`,
@@ -34,6 +34,9 @@ const basePassiveData = {
     boostCockpitChargeSpeed: {
         toString: (intensity) => `+${intensity * 100}% cockpit charge speed`,
     },
+    boostBrake: {
+        toString: (intensity) => `+${intensity * 100}% ship braking`,
+    },
     // boostThrust: {
     //   toString: (intensity) =>
     //     `+${intensity * 100}% more thrust`,
@@ -49,6 +52,9 @@ const basePassiveData = {
     },
     extraEquipmentSlots: {
         toString: (intensity) => `+${intensity} item slot${intensity === 1 ? `` : `s`}`,
+    },
+    boostDamageToItemType: {
+        toString: (intensity, data) => `+${intensity * 100}% damage to ${data.type}s`,
     },
     scaledDamageReduction: {
         toString: (intensity) => `+${intensity * 100}% damage reduction`,

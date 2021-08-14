@@ -141,7 +141,7 @@ function getRepairAmountPerTickForSingleCrewMember(
 ) {
   return (
     (math.lerp(0.15, 1.0, level / 100) /
-      globals.TICK_INTERVAL) *
+      globals.tickInterval) *
     gameSpeedMultiplier
   )
 }

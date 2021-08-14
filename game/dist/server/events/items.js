@@ -52,7 +52,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 2, true);
+                : 1), 0, true);
         if (price > ship.commonCredits)
             return callback({ error: `Insufficient funds.` });
         if (ship.slots <= ship.items.length)
@@ -103,7 +103,7 @@ function default_1(socket) {
             planet.priceFluctuator *
             (planet.faction === ship.faction
                 ? 1 + (1 - dist_1.default.factionVendorMultiplier)
-                : 1), 2, true);
+                : 1), 0, true);
         ship.commonCredits += price;
         ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
@@ -136,14 +136,14 @@ function default_1(socket) {
             return callback({
                 error: `That equipment is not for sale here.`,
             });
-        const currentChassisSellPrice = ship.chassis.basePrice / 2;
+        const currentChassisSellPrice = Math.round(ship.chassis.basePrice / 2);
         const price = dist_1.default.r2((itemForSale.chassisData?.basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1) -
-            currentChassisSellPrice, 2, true);
+            currentChassisSellPrice, 0, true);
         if (price > ship.commonCredits)
             return callback({ error: `Insufficient funds.` });
         if (ship.items.length > itemForSale.chassisData?.slots)

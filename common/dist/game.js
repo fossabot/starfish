@@ -77,7 +77,7 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return ((math_1.default.lerp(0.15, 1.0, level / 100) /
-        globals_1.default.TICK_INTERVAL) *
+        globals_1.default.tickInterval) *
         gameSpeedMultiplier);
 }
 function getStaminaGainPerTickForSingleCrewMember() {

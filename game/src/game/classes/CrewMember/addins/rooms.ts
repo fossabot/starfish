@@ -73,7 +73,7 @@ export function repair(
       this.mechanics?.level || 1,
     ) *
       repairBoost) /
-      (c.deltaTime / c.TICK_INTERVAL) /
+      (c.deltaTime / c.tickInterval) /
       itemsToRepair.length
 
   // c.log(
@@ -122,7 +122,7 @@ export function bunk(this: CrewMember): void {
   if (this.stamina >= this.maxStamina) return
   this.stamina +=
     c.getStaminaGainPerTickForSingleCrewMember() /
-    (c.deltaTime / c.TICK_INTERVAL)
+    (c.deltaTime / c.tickInterval)
 
   if (this.stamina > this.maxStamina)
     this.stamina = this.maxStamina

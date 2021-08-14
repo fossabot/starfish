@@ -98,7 +98,7 @@ export class Game {
 
   identify() {
     c.log(
-      `Game of ${c.GAME_NAME} started at ${this.startTime}, running for ${this.tickCount} ticks`,
+      `Game of ${c.gameName} started at ${this.startTime}, running for ${this.tickCount} ticks`,
     )
     c.log(
       `${this.ships.length} ships, ${this.planets.length} planets, ${this.caches.length} caches`,
@@ -157,8 +157,8 @@ export class Game {
       0.1,
     )
     const nextTickTime = Math.min(
-      c.TICK_INTERVAL,
-      c.TICK_INTERVAL - this.averageTickLag,
+      c.tickInterval,
+      c.tickInterval - this.averageTickLag,
     )
     this.lastTickTime = startTime
     this.lastTickExpectedTime = nextTickTime

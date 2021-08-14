@@ -65,7 +65,7 @@ class Game {
         this.recalculateFactionRankings();
     }
     identify() {
-        dist_1.default.log(`Game of ${dist_1.default.GAME_NAME} started at ${this.startTime}, running for ${this.tickCount} ticks`);
+        dist_1.default.log(`Game of ${dist_1.default.gameName} started at ${this.startTime}, running for ${this.tickCount} ticks`);
         dist_1.default.log(`${this.ships.length} ships, ${this.planets.length} planets, ${this.caches.length} caches`);
         this.planets.forEach((p) => p.identify());
         this.ships.forEach((s) => s.identify());
@@ -95,7 +95,7 @@ class Game {
         dist_1.default.deltaTime = Date.now() - this.lastTickTime;
         const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
         this.averageTickLag = dist_1.default.lerp(this.averageTickLag, thisTickLag, 0.1);
-        const nextTickTime = Math.min(dist_1.default.TICK_INTERVAL, dist_1.default.TICK_INTERVAL - this.averageTickLag);
+        const nextTickTime = Math.min(dist_1.default.tickInterval, dist_1.default.tickInterval - this.averageTickLag);
         this.lastTickTime = startTime;
         this.lastTickExpectedTime = nextTickTime;
         // ----- schedule next tick -----

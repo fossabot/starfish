@@ -503,7 +503,7 @@ export class Ship extends Stubbable {
     return c.pointIsInsideCircle(
       this.location,
       coords,
-      c.ARRIVAL_THRESHOLD,
+      c.arrivalThreshold,
     )
   }
 
@@ -518,8 +518,8 @@ export class Ship extends Stubbable {
         this.location,
       )
       if (
-        distance <= c.GRAVITY_RANGE &&
-        distance > c.ARRIVAL_THRESHOLD
+        distance <= c.gravityRange &&
+        distance > c.arrivalThreshold
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
@@ -530,11 +530,11 @@ export class Ship extends Stubbable {
           .map(
             (g) =>
               (g *
-                Math.min(c.deltaTime / c.TICK_INTERVAL, 2) *
+                Math.min(c.deltaTime / c.tickInterval, 2) *
                 c.gameSpeedMultiplier) /
               this.mass /
-              c.KM_PER_AU /
-              c.M_PER_KM,
+              c.kmPerAu /
+              c.mPerKm,
           )
         // c.log(
         //   this.name,

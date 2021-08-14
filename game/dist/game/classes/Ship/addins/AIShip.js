@@ -188,11 +188,11 @@ class AIShip extends CombatShip_1.CombatShip {
         Math.abs(
           this.location[0] - this.targetLocation[0],
         ) <
-          dist_1.default.ARRIVAL_THRESHOLD / 2 &&
+          dist_1.default.arrivalThreshold / 2 &&
         Math.abs(
           this.location[1] - this.targetLocation[1],
         ) <
-          dist_1.default.ARRIVAL_THRESHOLD / 2
+          dist_1.default.arrivalThreshold / 2
       )
     ) {
       const unitVectorToTarget =

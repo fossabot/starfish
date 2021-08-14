@@ -12,7 +12,7 @@
       {{
         c.basePassiveData[passive.id].toString(
           passive.intensity,
-          passive.distance,
+          passive,
         )
       }}
     </div>
@@ -35,9 +35,7 @@ export default {
   computed: {
     ...mapState([]),
   },
-  mounted() {
-    c.log(this.data)
-  },
+  mounted() {},
 }
 </script>
 

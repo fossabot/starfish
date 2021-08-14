@@ -34,7 +34,7 @@ class Tutorial {
                 visibleTypes: [],
                 script: [
                     {
-                        message: `Welcome to ${dist_1.default.GAME_NAME}! To get started, log in at ${dist_1.default.frontendUrl}`,
+                        message: `Welcome to ${dist_1.default.gameName}! To get started, log in at ${dist_1.default.frontendUrl}`,
                         channel: `alert`,
                     },
                     {
@@ -51,7 +51,7 @@ class Tutorial {
                         next: `Yeah!`,
                     },
                     {
-                        message: `Welcome to ${dist_1.default.GAME_NAME}!<br />
+                        message: `Welcome to ${dist_1.default.gameName}!<br />
             This is a game about exploring space in a ship crewed by your Discord server's members.<br /><br />
             Get into huge-scale battles with rival factions of real people!<br />
             Communicate (poorly) with servers from all over the world!<br />
@@ -386,7 +386,7 @@ class Tutorial {
                 ],
                 script: [
                     {
-                        message: `Depending on your chosen tactic, your ship will automatically fight. Change your tactic to <b>aggressive</b> to attack as soon as your weapons are charged.<br /><br />
+                        message: `Your ship will automatically fire when the weapons are charged and a valid target is in range.<br /><br />
             Now's your chance to use what you've learned!<br />
             Switch to the <b>Cockpit</b> to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the <b>Weapons Bay</b>. Destroy that fowl craft!`,
                     },
@@ -635,7 +635,7 @@ class Tutorial {
         if (this.targetLocation)
             shouldAdvance =
                 shouldAdvance &&
-                    dist_1.default.distance(this.ship.location, this.targetLocation.coordinates) <= dist_1.default.ARRIVAL_THRESHOLD;
+                    dist_1.default.distance(this.ship.location, this.targetLocation.coordinates) <= dist_1.default.arrivalThreshold;
         if (this.currentStep.nextStepTrigger.gainStaminaTo)
             shouldAdvance =
                 shouldAdvance &&
@@ -779,7 +779,7 @@ class Tutorial {
         for (let m of this.currentStep.script)
             if (m.channel)
                 io_1.default.emit(`ship:message`, this.ship.id, m.message, m.channel);
-        // }, c.TICK_INTERVAL)
+        // }, c.tickInterval)
         this.ship.toUpdate.tutorial = {
             currentStep: this.currentStep,
             targetLocation: this.targetLocation,
@@ -790,9 +790,9 @@ class Tutorial {
         setTimeout(() => {
             this.ship.logEntry(`Good luck out there! If you have more questions about the game, check out the How To Play page!`, `high`);
             io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
-        }, dist_1.default.TICK_INTERVAL);
+        }, dist_1.default.tickInterval);
         this.ship.addHeaderBackground(dist_1.default.capitalize(this.ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(this.ship.faction.id)} faction`);
-        this.ship.addTagline(`Tester`, `helping to test ${dist_1.default.GAME_NAME}`);
+        this.ship.addTagline(`Tester`, `helping to test ${dist_1.default.gameName}`);
         this.cleanUp();
         this.ship.tutorial = undefined;
         this.ship.toUpdate.tutorial = false;

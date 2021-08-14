@@ -151,7 +151,7 @@ export class CrewMember extends Stubbable {
 
     if (!this.ship.tutorial?.currentStep.disableStamina)
       this.stamina -=
-        c.baseStaminaUse / (c.deltaTime / c.TICK_INTERVAL)
+        c.baseStaminaUse / (c.deltaTime / c.tickInterval)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)
@@ -183,7 +183,7 @@ export class CrewMember extends Stubbable {
       )?.intensity || 0) + 1
     if (!xp)
       xp =
-        (c.baseXpGain / (c.deltaTime / c.TICK_INTERVAL)) *
+        (c.baseXpGain / (c.deltaTime / c.tickInterval)) *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(

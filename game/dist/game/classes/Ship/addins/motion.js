@@ -44,9 +44,9 @@ exports.addPreviousLocation = addPreviousLocation
 function isAt(coords) {
   return (
     Math.abs(coords[0] - this.location[0]) <
-      dist_1.default.ARRIVAL_THRESHOLD &&
+      dist_1.default.arrivalThreshold &&
     Math.abs(coords[1] - this.location[1]) <
-      dist_1.default.ARRIVAL_THRESHOLD
+      dist_1.default.arrivalThreshold
   )
 }
 exports.isAt = isAt

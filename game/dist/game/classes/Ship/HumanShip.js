@@ -83,7 +83,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 return;
             this.previousLocations.shift();
             // c.log(`removing previous location`)
-        }, (dist_1.default.TICK_INTERVAL * 100000) / dist_1.default.gameSpeedMultiplier);
+        }, (dist_1.default.tickInterval * 100000) / dist_1.default.gameSpeedMultiplier);
     }
     tick() {
         const profiler = new dist_1.default.Profiler(4, `human ship tick`, false, 0);
@@ -423,6 +423,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
         charge *= 3; // braking is easier
+        // apply passive
+        const relevantPassives = this.passives.filter((p) => p.id === `boostBrake`) ||
+            [];
+        let passiveBrakeMultiplier = 1 +
+            relevantPassives.reduce((total, p) => total + (p.intensity || 0), 0);
+        charge *= passiveBrakeMultiplier;
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
@@ -478,7 +484,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.addStat(`distanceTraveled`, dist_1.default.distance(startingLocation, this.location));
         const speed = (dist_1.default.vectorToMagnitude(this.velocity) *
             (1000 * 60 * 60)) /
-            dist_1.default.TICK_INTERVAL;
+            dist_1.default.tickInterval;
         if (speed > 2)
             this.addTagline(`River Runner`, `going over 2AU/hr`);
         if (speed > 4)
@@ -528,7 +534,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- random encounters -----
         const distanceTraveled = dist_1.default.distance(this.location, startingLocation);
         // - space junk -
-        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 2)) {
+        if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.tickInterval), 2)) {
             // apply "amount boost" passive
             const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
             const amount = (Math.round(Math.random() * 3 * (Math.random() * 3)) /
@@ -548,7 +554,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         // - asteroid hit -
         if (!this.planet &&
             this.attackable &&
-            dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL), 5)) {
+            dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.tickInterval), 5)) {
             let miss = false;
             const hitRoll = Math.random();
             if (hitRoll < 0.1)

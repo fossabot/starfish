@@ -413,11 +413,13 @@ const seaCreatures: {
   { name: `orcas`, factionKey: `blue` },
   { name: `seals`, factionKey: `blue` },
   { name: `blowfish`, factionKey: `blue` },
-  { name: `penguins`, factionKey: `blue` },
-  { name: `seagulls`, factionKey: `blue` },
+  { name: `narwhals`, factionKey: `blue` },
   { name: `dolphins`, factionKey: `blue` },
   { name: `sea otters`, factionKey: `blue` },
-  { name: `pelicans`, factionKey: `blue` },
   { name: `sea turtles`, factionKey: `blue` },
   { name: `sea lions`, factionKey: `blue` },
 ]
+
+// { name: `penguins`, factionKey: `blue` },
+// { name: `seagulls`, factionKey: `blue` },
+// { name: `pelicans`, factionKey: `blue` },

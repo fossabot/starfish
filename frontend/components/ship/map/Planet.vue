@@ -42,7 +42,7 @@
       v-if="zoom > 5"
       :location="location"
       :minSize="0"
-      :radius="c.ARRIVAL_THRESHOLD"
+      :radius="c.arrivalThreshold"
       :color="color"
       :strokeWidth="0.12"
       :dash="3"

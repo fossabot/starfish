@@ -3,7 +3,7 @@
     <NavPane />
 
     <div class="textcolumn">
-      <h2>How to Play {{ c.GAME_NAME }}</h2>
+      <h2>How to Play {{ c.gameName }}</h2>
       <h3>Game Objectives</h3>
       <ul>
         <li>
@@ -150,7 +150,7 @@
       <h3>Planets</h3>
       <div>
         Planets are the safe havens, the hubs, the social
-        gathering points of {{ c.GAME_NAME }}.
+        gathering points of {{ c.gameName }}.
       </div>
       <div>
         Planets have a small radius around them. Your ship

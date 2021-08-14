@@ -35,14 +35,14 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   const r =
     math.distance(thisBody.location, thatBody.location) *
-    globals.KM_PER_AU *
-    globals.M_PER_KM
+    globals.kmPerAu *
+    globals.mPerKm
   if (r === 0) return [0, 0]
   const gravityForce =
-    (-globals.GRAVITATIONAL_CONSTANT * m1 * m2) / r ** 2
+    (-globals.gravitationalConstant * m1 * m2) / r ** 2
   // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
   // const gravityForce =
-  // (-globals.GRAVITATIONAL_CONSTANT * m1 * m2) / r ** 2
+  // (-globals.gravitationalConstant * m1 * m2) / r ** 2
 
   const vectorToThisBody: CoordinatePair =
     getUnitVectorFromThatBodyToThisBody(thisBody, thatBody)

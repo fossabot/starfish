@@ -193,7 +193,7 @@ interface ComponentShape {
 }
 
 const ZOOM_LEVEL_ONE = 2.5 // AU across viewport
-const KM_PER_AU = 149597900
+const kmPerAu = 149597900
 const getMaxes = (coordPairs: CoordinatePair[]) => {
   let upperBound = coordPairs.reduce(
     (max, p) => Math.max(p[1], max),
@@ -291,7 +291,7 @@ export default {
         this.mapData.planets?.map((el: PlanetStub) => ({
           type: 'planet',
           location: [...el.location],
-          radius: (el.radius || 36000) / KM_PER_AU,
+          radius: (el.radius || 36000) / kmPerAu,
           color: el.validColor || el.color || 'pink',
           planetData: el,
         })) || []

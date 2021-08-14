@@ -123,7 +123,7 @@ export class HumanShip extends CombatShip {
       if (!this.previousLocations.length) return
       this.previousLocations.shift()
       // c.log(`removing previous location`)
-    }, (c.TICK_INTERVAL * 100000) / c.gameSpeedMultiplier)
+    }, (c.tickInterval * 100000) / c.gameSpeedMultiplier)
   }
 
   tick() {
@@ -608,6 +608,19 @@ export class HumanShip extends CombatShip {
 
     charge *= 3 // braking is easier
 
+    // apply passive
+    const relevantPassives =
+      this.passives.filter((p) => p.id === `boostBrake`) ||
+      []
+    let passiveBrakeMultiplier =
+      1 +
+      relevantPassives.reduce(
+        (total: number, p: ShipPassiveEffect) =>
+          total + (p.intensity || 0),
+        0,
+      )
+    charge *= passiveBrakeMultiplier
+
     const memberPilotingSkill =
       thruster.piloting?.level || 1
     const engineThrustMultiplier = Math.max(
@@ -703,7 +716,7 @@ export class HumanShip extends CombatShip {
     const speed =
       (c.vectorToMagnitude(this.velocity) *
         (1000 * 60 * 60)) /
-      c.TICK_INTERVAL
+      c.tickInterval
     if (speed > 2)
       this.addTagline(`River Runner`, `going over 2AU/hr`)
     if (speed > 4)
@@ -791,7 +804,7 @@ export class HumanShip extends CombatShip {
     // - space junk -
     if (
       c.lottery(
-        distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
+        distanceTraveled * (c.deltaTime / c.tickInterval),
         2,
       )
     ) {
@@ -834,7 +847,7 @@ export class HumanShip extends CombatShip {
       !this.planet &&
       this.attackable &&
       c.lottery(
-        distanceTraveled * (c.deltaTime / c.TICK_INTERVAL),
+        distanceTraveled * (c.deltaTime / c.tickInterval),
         5,
       )
     ) {

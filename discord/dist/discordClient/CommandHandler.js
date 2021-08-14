@@ -117,8 +117,8 @@ class CommandHandler {
     sideEffects(context) {
         // ----- set nickname -----
         if (context.initialMessage.guild?.me?.nickname !==
-            `${dist_1.default.GAME_NAME}`)
-            context.initialMessage.guild?.me?.setNickname(`${dist_1.default.GAME_NAME}`);
+            `${dist_1.default.gameName}`)
+            context.initialMessage.guild?.me?.setNickname(`${dist_1.default.gameName}`);
         // ----- update guild name if necessary -----
         if (context.ship && context.guild) {
             if (dist_1.default

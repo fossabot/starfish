@@ -58,7 +58,7 @@ async function resolveOrCreateChannel({ type, guild, }) {
     let parentCategory = null;
     // ----- get/make category -----
     const existingCategory = existingChannels.find((ch) => ch instanceof Discord.CategoryChannel &&
-        ch.name === dist_1.default.GAME_NAME);
+        ch.name === dist_1.default.gameName);
     if (existingCategory) {
         parentCategory = existingCategory;
         existingSubChannels = existingChannels.filter((c) => c instanceof Discord.TextChannel &&
@@ -66,7 +66,7 @@ async function resolveOrCreateChannel({ type, guild, }) {
     }
     else {
         const createdCategory = await guild.channels
-            .create(dist_1.default.GAME_NAME, {
+            .create(dist_1.default.gameName, {
             type: `category`,
             position: 99999,
             reason: `Game initialization`,

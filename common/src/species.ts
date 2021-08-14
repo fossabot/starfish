@@ -17,8 +17,14 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     factionId: `green`,
     id: `squids`,
     singular: `squid`,
-    description: `Possess the ability to cloud their enemies' senses to make an escape.`,
-    passives: [],
+    description: `Tentacles are useful for grappling enemies, stifling their mobility.`,
+    passives: [
+      {
+        id: `boostDamageToItemType`,
+        intensity: 0.3,
+        type: `engine`,
+      },
+    ],
   },
   lobsters: {
     icon: `🦞`,
@@ -38,8 +44,13 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     factionId: `green`,
     id: `crabs`,
     singular: `crab`,
-    description: `Itchy.`,
-    passives: [],
+    description: `Unbuffeted by the pounding of tides, crabs can gain traction anywhere.`,
+    passives: [
+      {
+        id: `boostBrake`,
+        intensity: 2,
+      },
+    ],
   },
   seals: {
     icon: `🦭`,
@@ -139,7 +150,7 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
     factionId: `purple`,
     id: `shrimp`,
     singular: `shrimp`,
-    description: `For something so small, strength lies in numbers`,
+    description: `For something so small, strength lies in numbers.`,
     passives: [
       {
         id: `boostAttackWithNumberOfFactionMembersWithinDistance`,

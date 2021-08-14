@@ -5,7 +5,7 @@
     <div class="textcolumn">
       <h2>Feedback</h2>
       <div>
-        Let us know what you think of {{ c.GAME_NAME }}!
+        Let us know what you think of {{ c.gameName }}!
       </div>
 
       <form @submit.prevent="submit" ref="form">

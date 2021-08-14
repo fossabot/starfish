@@ -4,9 +4,9 @@
 
     <div class="textcolumn">
       <div class="martop">
-        <h2>Support {{ c.GAME_NAME }}!</h2>
+        <h2>Support {{ c.gameName }}!</h2>
         <div>
-          {{ c.GAME_NAME }} is made by
+          {{ c.gameName }} is made by
           <a
             target="_blank"
             href="https://www.jasperstephenson.com"

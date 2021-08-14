@@ -31,7 +31,7 @@ class StartCommand {
                 .setStyle(2)
                 .setID(s[1].id));
         }
-        const sentMessage = await context.initialMessage.channel.send(`Welcome to **${dist_1.default.GAME_NAME}**!
+        const sentMessage = await context.initialMessage.channel.send(`Welcome to **${dist_1.default.gameName}**!
 This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
 
 Choose your ship's species to get started!`, {

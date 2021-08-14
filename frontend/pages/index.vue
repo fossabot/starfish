@@ -2,10 +2,10 @@
   <div class="container">
     <NavPane />
     <div class="textcolumn">
-      <h1>{{ c.GAME_NAME }}</h1>
+      <h1>{{ c.gameName }}</h1>
 
       <h2 class="marbotsmall martop">
-        Welcome to the alpha test of {{ c.GAME_NAME }}!
+        Welcome to the alpha test of {{ c.gameName }}!
       </h2>
 
       <div class="marbot">

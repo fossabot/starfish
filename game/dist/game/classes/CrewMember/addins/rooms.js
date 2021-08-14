@@ -46,7 +46,7 @@ function repair(repairAmount) {
     const amountToRepair = repairAmount ||
         (dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) *
             repairBoost) /
-            (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL) /
+            (dist_1.default.deltaTime / dist_1.default.tickInterval) /
             itemsToRepair.length;
     // c.log(
     //   this.repairPriority,
@@ -89,7 +89,7 @@ function bunk() {
         return;
     this.stamina +=
         dist_1.default.getStaminaGainPerTickForSingleCrewMember() /
-            (dist_1.default.deltaTime / dist_1.default.TICK_INTERVAL);
+            (dist_1.default.deltaTime / dist_1.default.tickInterval);
     if (this.stamina > this.maxStamina)
         this.stamina = this.maxStamina;
     this.toUpdate.stamina = this.stamina;
