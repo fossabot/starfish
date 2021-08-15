@@ -33,6 +33,7 @@ export declare const scanner: {
     shipscanner1: BaseScannerData;
     shipscanner2: BaseScannerData;
     shipscanner3: BaseScannerData;
+    treasure1: BaseScannerData;
 };
 export declare const communicator: {
     starter1: BaseCommunicatorData;

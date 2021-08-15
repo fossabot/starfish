@@ -52,6 +52,25 @@ export abstract class CombatShip extends Ship {
     this.updateAttackRadius()
     this.updateMaxScanProperties()
     this.updateSlots()
+    this.toUpdate.passives = this.passives
+  }
+
+  removePassive(p: ShipPassiveEffect) {
+    const index = this.passives.findIndex(
+      (ep: ShipPassiveEffect) => {
+        for (let key in ep)
+          if (ep[key] !== p[key]) return false
+        return true
+      },
+    )
+    if (index === -1) return
+    c.log(`removing passive`, p)
+    this.passives.splice(index, 1)
+    this.updateThingsThatCouldChangeOnItemChange()
+    this.updateAttackRadius()
+    this.updateMaxScanProperties()
+    this.updateSlots()
+    this.toUpdate.passives = this.passives
   }
 
   applyZoneTickEffects() {

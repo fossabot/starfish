@@ -11,6 +11,7 @@ export class Item extends Stubbable {
   readonly mass: number = 1000
   readonly repairDifficulty: number = 1
   readonly reliability: number = 1 // higher loses less repair over time
+  readonly passives: ShipPassiveEffect[] = []
   repair = 1
   maxHp: number
   readonly ship: Ship
@@ -29,6 +30,7 @@ export class Item extends Stubbable {
       hp,
       repairDifficulty,
       reliability,
+      passives,
     }: BaseItemData,
     ship: Ship,
     props?: Partial<BaseItemData>,
@@ -43,6 +45,7 @@ export class Item extends Stubbable {
     if (repairDifficulty)
       this.repairDifficulty = repairDifficulty
     this.repair = repair ?? props?.repair ?? 1
+    this.passives = passives || []
     this.ship = ship
     this.maxHp = maxHp
     if (hp !== undefined) this.hp = hp

@@ -70,12 +70,14 @@ export default {
 }
 
 .modalbox {
+  box-shadow: 0 5px 20px -5px var(--bg), 0 1px 3px var(--bg);
   max-width: calc(min(900px, 90vw));
   padding: 3em;
   margin: 1.5em;
   z-index: 2;
   position: relative;
-  border: 1px solid var(--pane-border);
+  // border: 1px solid var(--pane-border);
+  border-radius: 10px;
   background: var(--bg);
   max-height: 90vh;
   overflow-y: auto;

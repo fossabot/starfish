@@ -28,6 +28,24 @@ class CombatShip extends Ship_1.Ship {
         this.updateAttackRadius();
         this.updateMaxScanProperties();
         this.updateSlots();
+        this.toUpdate.passives = this.passives;
+    }
+    removePassive(p) {
+        const index = this.passives.findIndex((ep) => {
+            for (let key in ep)
+                if (ep[key] !== p[key])
+                    return false;
+            return true;
+        });
+        if (index === -1)
+            return;
+        dist_1.default.log(`removing passive`, p);
+        this.passives.splice(index, 1);
+        this.updateThingsThatCouldChangeOnItemChange();
+        this.updateAttackRadius();
+        this.updateMaxScanProperties();
+        this.updateSlots();
+        this.toUpdate.passives = this.passives;
     }
     applyZoneTickEffects() {
         this.visible.zones

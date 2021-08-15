@@ -219,6 +219,8 @@ class Ship extends Stubbable_1.Stubbable {
         }
         if (item) {
             this.items.push(item);
+            if (item.passives)
+                item.passives.forEach((p) => this.applyPassive(p));
             this.updateThingsThatCouldChangeOnItemChange();
             this.recalculateMass();
         }
@@ -233,6 +235,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (itemIndex === -1)
             return false;
         this.items.splice(itemIndex, 1);
+        if (item.passives)
+            item.passives.forEach((p) => this.removePassive(p));
         this.updateThingsThatCouldChangeOnItemChange();
         this.recalculateMass();
         return true;
@@ -272,7 +276,7 @@ class Ship extends Stubbable_1.Stubbable {
         this.radii.sight = Math.max(dist_1.default.baseSightRange, dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0), this.scanners.length));
         const boostSight = (this.passives.find((p) => p.id === `boostSightRange`)
             ?.intensity || 0) + 1;
-        this.radii.scan *= boostSight;
+        this.radii.sight *= boostSight;
         // ----- scan -----
         this.radii.scan = dist_1.default.getRadiusDiminishingReturns(this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0), this.scanners.length);
         const boostScan = (this.passives.find((p) => p.id === `boostScanRange`)
@@ -435,6 +439,8 @@ class Ship extends Stubbable_1.Stubbable {
     // ----- misc stubs -----
     logEntry(s, lv) { }
     updateMaxScanProperties() { }
+    applyPassive(p) { }
+    removePassive(p) { }
 }
 exports.Ship = Ship;
 Ship.maxPreviousLocations = 30;

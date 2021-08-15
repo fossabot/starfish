@@ -7,11 +7,12 @@ exports.Item = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Stubbable_1 = require("../Stubbable");
 class Item extends Stubbable_1.Stubbable {
-    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, }, ship, props) {
+    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, passives, }, ship, props) {
         super();
         this.mass = 1000;
         this.repairDifficulty = 1;
         this.reliability = 1; // higher loses less repair over time
+        this.passives = [];
         this.repair = 1;
         this.announceWhenRepaired = false;
         this.announceWhenBroken = true;
@@ -25,6 +26,7 @@ class Item extends Stubbable_1.Stubbable {
         if (repairDifficulty)
             this.repairDifficulty = repairDifficulty;
         this.repair = repair ?? props?.repair ?? 1;
+        this.passives = passives || [];
         this.ship = ship;
         this.maxHp = maxHp;
         if (hp !== undefined)
