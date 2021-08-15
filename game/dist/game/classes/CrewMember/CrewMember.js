@@ -202,11 +202,14 @@ class CrewMember extends Stubbable_1.Stubbable {
     get heldWeight() {
         return this.inventory.reduce((total, i) => total + i.amount, 0);
     }
-    recalculatemaxCargoSpace() {
-        const cargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
+    recalculateMaxCargoSpace() {
+        const personalCargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
             ?.changeAmount || 0;
+        const shipwideCargoSpacePassiveBoost = this.ship.passives.find((p) => p.id === `boostCargoSpace`)?.changeAmount || 0;
         this.maxCargoSpace =
-            CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost;
+            CrewMember.basemaxCargoSpace +
+                personalCargoSpacePassiveBoost *
+                    shipwideCargoSpacePassiveBoost;
     }
     addPassive(data) {
         this.active();
@@ -228,7 +231,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.recalculateAll();
     }
     recalculateAll() {
-        this.recalculatemaxCargoSpace();
+        this.recalculateMaxCargoSpace();
     }
     addStat(statname, amount) {
         this.active();

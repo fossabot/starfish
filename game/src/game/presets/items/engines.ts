@@ -14,6 +14,7 @@ export const engines: {
     rarity: 999999,
     thrustAmplification: 3,
     maxHp: 10,
+    passives: [],
   },
   starter1: {
     type: `engine`,
@@ -25,6 +26,7 @@ export const engines: {
     rarity: 0.4,
     thrustAmplification: 0.7,
     maxHp: 5,
+    passives: [],
   },
   starter2: {
     type: `engine`,
@@ -36,6 +38,7 @@ export const engines: {
     rarity: 2,
     thrustAmplification: 0.9,
     maxHp: 6,
+    passives: [],
   },
 
   // basic
@@ -49,6 +52,7 @@ export const engines: {
     rarity: 3,
     thrustAmplification: 1.2,
     maxHp: 4,
+    passives: [],
   },
   basic2: {
     type: `engine`,
@@ -60,6 +64,7 @@ export const engines: {
     rarity: 6,
     thrustAmplification: 1.4,
     maxHp: 4,
+    passives: [],
   },
 
   // glass
@@ -74,6 +79,9 @@ export const engines: {
     thrustAmplification: 1.7,
     reliability: 0.3,
     maxHp: 1,
+    passives: [
+      { id: `boostChassisAgility`, intensity: 0.03 },
+    ],
   },
   glass2: {
     type: `engine`,
@@ -86,6 +94,9 @@ export const engines: {
     thrustAmplification: 2,
     reliability: 0.4,
     maxHp: 1,
+    passives: [
+      { id: `boostChassisAgility`, intensity: 0.06 },
+    ],
   },
   glass3: {
     type: `engine`,
@@ -98,5 +109,8 @@ export const engines: {
     thrustAmplification: 2.3,
     reliability: 0.45,
     maxHp: 1,
+    passives: [
+      { id: `boostChassisAgility`, intensity: 0.1 },
+    ],
   },
 }

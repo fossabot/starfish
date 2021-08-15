@@ -8,12 +8,13 @@ export declare class Item extends Stubbable {
     readonly mass: number;
     readonly repairDifficulty: number;
     readonly reliability: number;
+    readonly passives: ShipPassiveEffect[];
     repair: number;
     maxHp: number;
     readonly ship: Ship;
     announceWhenRepaired: boolean;
     announceWhenBroken: boolean;
-    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
+    constructor({ type, id, displayName, description, mass, repair, maxHp, hp, repairDifficulty, reliability, passives, }: BaseItemData, ship: Ship, props?: Partial<BaseItemData>);
     get hp(): number;
     set hp(newHp: number);
     use(usePercent?: number): number;

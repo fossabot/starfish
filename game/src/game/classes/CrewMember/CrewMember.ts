@@ -253,12 +253,18 @@ export class CrewMember extends Stubbable {
     )
   }
 
-  recalculatemaxCargoSpace() {
-    const cargoSpacePassiveBoost =
+  recalculateMaxCargoSpace() {
+    const personalCargoSpacePassiveBoost =
       this.passives.find((p) => p.type === `cargoSpace`)
         ?.changeAmount || 0
+    const shipwideCargoSpacePassiveBoost =
+      this.ship.passives.find(
+        (p) => p.id === `boostCargoSpace`,
+      )?.changeAmount || 0
     this.maxCargoSpace =
-      CrewMember.basemaxCargoSpace + cargoSpacePassiveBoost
+      CrewMember.basemaxCargoSpace +
+      personalCargoSpacePassiveBoost *
+        shipwideCargoSpacePassiveBoost
   }
 
   addPassive(data: Partial<BaseCrewPassiveData>) {
@@ -285,7 +291,7 @@ export class CrewMember extends Stubbable {
   }
 
   recalculateAll() {
-    this.recalculatemaxCargoSpace()
+    this.recalculateMaxCargoSpace()
   }
 
   addStat(statname: CrewStatKey, amount: number) {

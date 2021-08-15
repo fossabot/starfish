@@ -383,7 +383,6 @@ class HumanShip extends CombatShip_1.CombatShip {
             unitVectorAlongWhichToThrust[1] *
                 thrustMagnitudeToApply,
         ];
-        const thrustAngle = dist_1.default.vectorToDegrees(thrustVector);
         this.velocity = [
             this.velocity[0] + thrustVector[0],
             this.velocity[1] + thrustVector[1],
@@ -393,6 +392,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
+        // const thrustAngle = c.vectorToDegrees(thrustVector)
         // c.log({
         //   mass: this.mass,
         //   charge,
@@ -413,7 +413,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         //   speed: this.speed,
         //   direction: this.direction,
         // })
-        if (charge > 0.1)
+        if (charge > 0.5)
             this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}P of thrust.`, `low`);
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
@@ -422,7 +422,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
-        charge *= 3; // braking is easier
+        charge *= 3; // braking is easier than thrusting
         // apply passive
         const relevantPassives = this.passives.filter((p) => p.id === `boostBrake`) ||
             [];
@@ -673,6 +673,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     updateThingsThatCouldChangeOnItemChange() {
         super.updateThingsThatCouldChangeOnItemChange();
         this.updateBroadcastRadius();
+        this.crewMembers.forEach((c) => c.recalculateAll());
         this.toUpdate._hp = this.hp;
         this.toUpdate._maxHp = this._maxHp;
     }
@@ -1095,8 +1096,8 @@ class HumanShip extends CombatShip_1.CombatShip {
                 this.toUpdate.targetShip = undefined;
         }
     }
-    die() {
-        super.die();
+    die(attacker) {
+        super.die(attacker);
         setTimeout(() => {
             this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
         }, 100);

@@ -316,6 +316,7 @@ export default function (
       })
 
       planet.incrementAllegiance(ship.faction)
+      crewMember.addStat(`cargoTransactions`, 1)
 
       c.log(
         `gray`,
@@ -392,6 +393,7 @@ export default function (
       })
 
       planet.incrementAllegiance(ship.faction)
+      crewMember.addStat(`cargoTransactions`, 1)
 
       c.log(
         `gray`,

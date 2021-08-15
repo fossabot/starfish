@@ -32,6 +32,7 @@
         <PromptButton
           :disabled="!ca.canBuy"
           class="inlineblock"
+          :max="ca.maxCanBuy"
           @done="buyCargo(ca, ...arguments)"
           @apply="buyCargo(ca, ...arguments)"
         >
@@ -88,6 +89,7 @@
         <PromptButton
           :disabled="!ca.canSell"
           class="inlineblock"
+          :max="ca.heldAmount"
           @done="sellCargo(ca, ...arguments)"
           @apply="sellCargo(ca, ...arguments)"
         >
@@ -113,12 +115,12 @@
                 }}/ton
               </div>
               <div class="sub" v-if="ca.heldAmount > 0.005">
-                (You have
-                {{
+                ({{
                   c.numberWithCommas(
                     c.r2(ca.heldAmount, 2, true),
                   )
-                }})
+                }}
+                held)
               </div>
             </div>
           </template>
@@ -169,6 +171,14 @@ export default {
                 ? c.factionVendorMultiplier
                 : 1),
             0,
+          )
+          c.log(
+            this.crewMember?.credits / pricePerUnit,
+            c.r2(
+              this.crewMember?.credits / pricePerUnit,
+              2,
+              true,
+            ),
           )
           const maxCanBuy = c.r2(
             Math.min(

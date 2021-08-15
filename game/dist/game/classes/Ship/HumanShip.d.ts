@@ -77,7 +77,7 @@ export declare class HumanShip extends CombatShip {
     cacheToValidScanResult(cache: Cache): Partial<CacheStub> | CacheStub;
     respawn(silent?: boolean): void;
     autoAttack(): void;
-    die(): void;
+    die(attacker?: CombatShip): void;
     get factionRankings(): FactionRanking[];
 }
 //# sourceMappingURL=HumanShip.d.ts.map

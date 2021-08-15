@@ -26,6 +26,7 @@ exports.AIShip = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const CombatShip_1 = require("./CombatShip");
 const itemData = __importStar(require("../../presets/items"));
+const cargo_1 = require("../../presets/cargo");
 class AIShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
@@ -199,13 +200,36 @@ class AIShip extends CombatShip_1.CombatShip {
                 this.previousLocations.shift();
         }
     }
-    die() {
-        super.die();
-        const amount = Math.ceil(Math.random() * this.level * 3000) +
-            this.level;
-        const cacheContents = [
-            { type: `credits`, amount },
-        ];
+    die(attacker) {
+        super.die(attacker);
+        let itemRarity = this.level / 3;
+        if (attacker) {
+            // apply "rarity boost" passive
+            const rarityBoostPassive = (attacker.passives?.filter((p) => p.id === `boostDropRarity`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+            itemRarity *= 1 + rarityBoostPassive;
+            dist_1.default.log(`ai drop rarity boosted by passive:`, rarityBoostPassive);
+        }
+        const cacheContents = [];
+        while (cacheContents.length === 0) {
+            // always a chance for credits
+            if (Math.random() > 0.6) {
+                let amount = Math.ceil(Math.random() * itemRarity * 100) * 100;
+                cacheContents.push({ type: `credits`, amount });
+            }
+            const upperLimit = itemRarity;
+            const lowerLimit = itemRarity * 0.5 - 0.5;
+            for (let ca of Object.values(cargo_1.data)) {
+                // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
+                if (ca.rarity <= upperLimit &&
+                    ca.rarity >= lowerLimit &&
+                    Math.random() > 0.7) {
+                    const amount = dist_1.default.r2(Math.random() * this.level * 3 + this.level);
+                    cacheContents.push({ type: ca.type, amount });
+                }
+            }
+            itemRarity -= 0.1;
+        }
+        // c.log(cacheContents)
         this.game.addCache({
             contents: cacheContents,
             location: this.location,

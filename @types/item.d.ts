@@ -41,6 +41,7 @@ type ScannerId =
   | `shipscanner1`
   | `shipscanner2`
   | `shipscanner3`
+  | `treasure1`
 type CommunicatorId =
   | `starter1`
   | `starter2`
@@ -104,6 +105,7 @@ interface BaseItemData {
   buyable?: false
   aiOnly?: boolean
   lastUse?: number
+  passives?: ShipPassiveEffect[]
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 

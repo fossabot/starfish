@@ -318,6 +318,10 @@ export class Ship extends Stubbable {
 
     if (item) {
       this.items.push(item)
+
+      if (item.passives)
+        item.passives.forEach((p) => this.applyPassive(p))
+
       this.updateThingsThatCouldChangeOnItemChange()
       this.recalculateMass()
     }
@@ -342,6 +346,10 @@ export class Ship extends Stubbable {
     )
     if (itemIndex === -1) return false
     this.items.splice(itemIndex, 1)
+
+    if (item.passives)
+      item.passives.forEach((p) => this.removePassive(p))
+
     this.updateThingsThatCouldChangeOnItemChange()
     this.recalculateMass()
     return true
@@ -403,7 +411,7 @@ export class Ship extends Stubbable {
     const boostSight =
       (this.passives.find((p) => p.id === `boostSightRange`)
         ?.intensity || 0) + 1
-    this.radii.scan *= boostSight
+    this.radii.sight *= boostSight
 
     // ----- scan -----
     this.radii.scan = c.getRadiusDiminishingReturns(
@@ -652,4 +660,6 @@ export class Ship extends Stubbable {
 
   logEntry(s: string, lv: LogLevel) {}
   updateMaxScanProperties() {}
+  applyPassive(p: ShipPassiveEffect) {}
+  removePassive(p: ShipPassiveEffect) {}
 }

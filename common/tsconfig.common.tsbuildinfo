@@ -242,8 +242,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "6a382149e881d3d2afaa23b18ee161442a7872c772f1d89519f40a8fa29db55c",
-        "signature": "6a382149e881d3d2afaa23b18ee161442a7872c772f1d89519f40a8fa29db55c",
+        "version": "a267af6702f7200fcfb0956a09df927d16298187ac8fd3e480c8f03af127213d",
+        "signature": "a267af6702f7200fcfb0956a09df927d16298187ac8fd3e480c8f03af127213d",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -267,8 +267,8 @@
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "95f3f9f527529a84e848a58c172b48408294c2b5e5fac12e738a826bd78b5add",
-        "signature": "95f3f9f527529a84e848a58c172b48408294c2b5e5fac12e738a826bd78b5add",
+        "version": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
+        "signature": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -317,12 +317,12 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "f64753a82824230dae7a4a21bb0430809355b89f73aaf60ffbf611d061479c28",
+        "version": "4a8ada91cf161127fbf99cb5c2dc3312ad809f5dbcd22c4c426ffb396887518e",
         "signature": "e4bf5e5fa64e96cf86c647f3a770e736f17500bef11a4c0b03d66e8b26fd2781",
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "67a657f0e4d208e95bce17ac2aba2bf2f6e493f5e4faca869a3db0eee1fabe30",
+        "version": "bb98ff628751accf4e2af76d22496d2d3d05592908e72bd6a3b426dfa1024cd8",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },

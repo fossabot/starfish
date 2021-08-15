@@ -168,6 +168,7 @@ function default_1(socket) {
             data: dist_1.default.stubify(crewMember),
         });
         planet.incrementAllegiance(ship.faction);
+        crewMember.addStat(`cargoTransactions`, 1);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}.`);
     });
     socket.on(`crew:sellCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
@@ -204,6 +205,7 @@ function default_1(socket) {
             data: dist_1.default.stubify(crewMember),
         });
         planet.incrementAllegiance(ship.faction);
+        crewMember.addStat(`cargoTransactions`, 1);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}.`);
     });
     socket.on(`crew:drop`, (shipId, crewId, cargoType, amount, message, callback) => {

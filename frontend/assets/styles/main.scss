@@ -206,6 +206,13 @@ ol {
   margin-left: 0;
 }
 
+.success {
+  color: var(--success);
+}
+.warning {
+  color: var(--warning);
+}
+
 .tooltipheader {
   font-size: 1.3em;
   letter-spacing: -0.01em;

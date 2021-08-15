@@ -46,19 +46,37 @@
       Base Damage: {{ data.damage }}
     </div>
     <div v-if="data.baseCooldown">
-      Charge Required: {{ data.baseCooldown }}
+      Charge Required:
+      {{ c.numberWithCommas(data.baseCooldown) }}
     </div>
     <div v-if="data.cooldownRemaining">
       Charge Progress:
       {{
-        c.r2(data.baseCooldown - data.cooldownRemaining, 0)
+        c.numberWithCommas(
+          c.r2(
+            data.baseCooldown - data.cooldownRemaining,
+            0,
+          ),
+        )
       }}
     </div>
     <div v-if="data.reliability">
       Reliability: {{ data.reliability * 100 }}%
     </div>
 
-    <div v-if="data.mass">Mass: {{ data.mass }}kg</div>
+    <div v-if="data.mass">
+      Mass: {{ c.numberWithCommas(data.mass) }}kg
+    </div>
+
+    <hr v-if="data.passives && data.passives.length" />
+    <div v-for="passive in data.passives" class="success">
+      {{
+        c.basePassiveData[passive.id].toString(
+          passive.intensity,
+          passive,
+        )
+      }}
+    </div>
 
     <hr v-if="data.description" />
     <div class="sub">{{ data.description }}</div>

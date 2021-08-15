@@ -7,7 +7,7 @@
     <hr />
     <div
       v-for="passive in c.species[data.id].passives"
-      class="passive"
+      class="success"
     >
       {{
         c.basePassiveData[passive.id].toString(
@@ -39,8 +39,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.passive {
-  color: var(--success);
-}
-</style>
+<style scoped lang="scss"></style>

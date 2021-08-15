@@ -553,7 +553,6 @@ export class HumanShip extends CombatShip {
       unitVectorAlongWhichToThrust[1] *
         thrustMagnitudeToApply,
     ]
-    const thrustAngle = c.vectorToDegrees(thrustVector)
 
     this.velocity = [
       this.velocity[0] + thrustVector[0],
@@ -565,6 +564,7 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
+    // const thrustAngle = c.vectorToDegrees(thrustVector)
     // c.log({
     //   mass: this.mass,
     //   charge,
@@ -586,7 +586,7 @@ export class HumanShip extends CombatShip {
     //   direction: this.direction,
     // })
 
-    if (charge > 0.1)
+    if (charge > 0.5)
       this.logEntry(
         `${thruster.name} thrusted towards ${c.r2(
           zeroedAngleToTargetInDegrees,
@@ -606,7 +606,7 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
 
-    charge *= 3 // braking is easier
+    charge *= 3 // braking is easier than thrusting
 
     // apply passive
     const relevantPassives =
@@ -1053,6 +1053,7 @@ export class HumanShip extends CombatShip {
   updateThingsThatCouldChangeOnItemChange() {
     super.updateThingsThatCouldChangeOnItemChange()
     this.updateBroadcastRadius()
+    this.crewMembers.forEach((c) => c.recalculateAll())
     this.toUpdate._hp = this.hp
     this.toUpdate._maxHp = this._maxHp
   }
@@ -1679,8 +1680,8 @@ export class HumanShip extends CombatShip {
     }
   }
 
-  die() {
-    super.die()
+  die(attacker?: CombatShip) {
+    super.die(attacker)
 
     setTimeout(() => {
       this.logEntry(

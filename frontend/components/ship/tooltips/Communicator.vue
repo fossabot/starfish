@@ -31,7 +31,19 @@
       Reliability: {{ data.reliability * 100 }}%
     </div>
 
-    <div v-if="data.mass">Mass: {{ data.mass }}kg</div>
+    <div v-if="data.mass">
+      Mass: {{ c.numberWithCommas(data.mass) }}kg
+    </div>
+
+    <hr v-if="data.passives && data.passives.length" />
+    <div v-for="passive in data.passives" class="success">
+      {{
+        c.basePassiveData[passive.id].toString(
+          passive.intensity,
+          passive,
+        )
+      }}
+    </div>
 
     <hr v-if="data.description" />
     <div class="sub">{{ data.description }}</div>

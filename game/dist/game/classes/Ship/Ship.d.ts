@@ -95,5 +95,7 @@ export declare class Ship extends Stubbable {
     addStat(statname: ShipStatKey, amount: number): void;
     logEntry(s: string, lv: LogLevel): void;
     updateMaxScanProperties(): void;
+    applyPassive(p: ShipPassiveEffect): void;
+    removePassive(p: ShipPassiveEffect): void;
 }
 //# sourceMappingURL=Ship.d.ts.map

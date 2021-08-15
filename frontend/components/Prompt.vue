@@ -1,7 +1,7 @@
 <template>
   <div class="prompt flexcolumn flexcenter textcenter">
     <slot />
-    <div class="flex martop" v-if="max && max >= 1">
+    <div class="flex martop" v-if="max && max >= 0">
       <button
         v-if="max >= 1"
         class="secondary"
@@ -38,7 +38,7 @@
         <span>10,000</span>
       </button>
       <button class="secondary" @click="applyValue('all')">
-        <span>All</span>
+        <span>Max</span>
       </button>
     </div>
     <div class="flex martopsmall combo">

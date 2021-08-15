@@ -3,7 +3,8 @@
     <h2>Customize Ship</h2>
 
     <div class="sub martop marbot">
-      More banners and taglines coming soon!
+      Certain in-game achievements will unlock taglines and
+      banners!
     </div>
 
     <h3 class="padtop padbot">Choose Ship Tagline</h3>
@@ -36,7 +37,12 @@
     <div class="flexcenter flexwrap">
       <div
         class="preview flexcenter flexcolumn"
-        :class="{ current: option.url === currentBanner }"
+        :class="{
+          current:
+            option.url === currentBanner ||
+            (option.id === 'Default' &&
+              currentBanner === 'default.svg'),
+        }"
         v-for="option in ownedHeaderBackgrounds || []"
         :key="'hbgo' + option.id"
         @click="setHeaderBackground(option.id)"

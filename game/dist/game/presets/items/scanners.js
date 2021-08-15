@@ -282,5 +282,31 @@ exports.scanners = {
             radii: [`sight`, `scan`, `attack`, `broadcast`],
         },
     },
+    treasure1: {
+        type: `scanner`,
+        id: `treasure1`,
+        displayName: `Beachcomber v1`,
+        description: ``,
+        mass: 4200,
+        basePrice: 250000 * dist_1.default.itemPriceMultiplier,
+        rarity: 4,
+        sightRange: 0.47,
+        shipScanRange: 0.35,
+        maxHp: 3,
+        shipScanData: {
+            ...dist_1.default.baseShipScanProperties,
+            items: [
+                `maxHp`,
+                `type`,
+                `displayName`,
+                `description`,
+            ],
+            chassis: [`id`, `displayName`],
+        },
+        passives: [
+            { id: `boostDropAmount`, intensity: 0.15 },
+            { id: `boostDropRarity`, intensity: 0.2 },
+        ],
+    },
 };
 //# sourceMappingURL=scanners.js.map
