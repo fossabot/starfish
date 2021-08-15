@@ -24,12 +24,9 @@ try {
     'Loaded google api credentials from environment variables.',
   )
 }
-credentials.client_email.replace(/\n/g, '')
-credentials.private_key = credentials.private_key.replace(
-  /\\n/g,
-  `\n`,
-)
-c.log({ credentials })
+
+credentials.client_email = credentials.client_email.trim()
+credentials.private_key = credentials.private_key
 
 /* eslint-enable */
 

@@ -1,20 +1,19 @@
-FROM node:16-alpine3.11 as base
-
-ENV HOST 0.0.0.0
-
+# 1st stage - install dependencies
+FROM node:16-alpine3.11 as builder
 WORKDIR /usr/app/discord
-COPY package.json .
+COPY package*.json .
+RUN npm install
+COPY . .
 
-FROM base AS dependencies
+
+# 2nd stage - compile typescript
+FROM node:16-alpine3.11
 WORKDIR /usr/app/discord
-RUN npm set progress=false && \
-    npm config set depth 0 && \
-    npm install --only=production
+COPY package*.json .
+RUN npm install --production
+COPY --from=builder /usr/app/discord/dist ./dist
+COPY common /usr/app/common
 
-FROM base as release
-COPY --from=dependencies /usr/app/discord/node_modules /usr/app/discord/node_modules
 
-ADD common /usr/app/common
-ADD dist /usr/app/discord/dist
-# COPY discord/.env /usr/app/discord/.env
+USER node
 CMD ["npm", "run", "dev"]
