@@ -38,7 +38,7 @@ services:
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
-      - '80:4300'
+      - '4300:4300'
     command: 'npm run dev'
     secrets:
       - google_client_email
@@ -52,6 +52,21 @@ services:
     secrets:
       - discord_token
       - bot_id
+
+  nginx:
+    image: 'xmadsen/starfish-nginx:prod-latest'
+    ports:
+      - '80:80'
+      # - '443:443'
+    # command: >
+    #   “/bin/sh -c ‘while :; do sleep 6h & wait $${!};
+    #   nginx -s reload; done & nginx -g \”daemon off;\”‘”
+
+  # certbot:
+  #   image: 'certbot/certbot:latest'
+  #   entrypoint: >
+  #     “/bin/sh -c ‘trap exit TERM; while :; do certbot renew;
+  #     sleep 12h & wait $${!}; done;'”
 
 secrets:
   discord_token:
