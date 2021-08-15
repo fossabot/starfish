@@ -34,7 +34,6 @@ catch (e) {
     discordToken = process.env.DISCORD_TOKEN;
 }
 discordToken = discordToken?.replace(/\n/g, ``);
-
 const CommandHandler_1 = require("./CommandHandler");
 exports.client = new Discord.Client({
     restTimeOffset: 0,

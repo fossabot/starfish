@@ -322,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "67a657f0e4d208e95bce17ac2aba2bf2f6e493f5e4faca869a3db0eee1fabe30",
+        "version": "bb98ff628751accf4e2af76d22496d2d3d05592908e72bd6a3b426dfa1024cd8",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
