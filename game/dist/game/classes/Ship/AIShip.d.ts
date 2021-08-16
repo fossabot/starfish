@@ -25,6 +25,6 @@ export declare class AIShip extends CombatShip {
     cumulativeSkillIn(l: CrewLocation, s: SkillType): number;
     addLevelAppropriateItems(): void;
     move(toLocation?: CoordinatePair): void;
-    die(attacker?: CombatShip): void;
+    die(attacker?: CombatShip, silently?: boolean): void;
 }
 //# sourceMappingURL=AIShip.d.ts.map

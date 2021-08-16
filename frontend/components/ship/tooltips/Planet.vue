@@ -7,13 +7,13 @@
       }}</span>
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
-    <div>{{ data.description }}</div>
     <hr />
     <div v-if="data.faction">
-      Faction:
       <span :style="{ color: data.faction.color }">{{
         data.faction.name
       }}</span>
+      Homeworld
+      <hr />
     </div>
     <div
       v-if="
@@ -68,6 +68,11 @@
     <hr />
 
     <ShipPlanetFactionGraph :planet="data" />
+
+    <hr v-if="data.description" />
+    <div v-if="data.description">
+      {{ data.description }}
+    </div>
   </div>
 </template>
 

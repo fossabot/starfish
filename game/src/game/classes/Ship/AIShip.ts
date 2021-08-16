@@ -57,7 +57,7 @@ export class AIShip extends CombatShip {
     if (this.items.length === 0)
       this.addLevelAppropriateItems()
     if (this.items.length === 0)
-      setTimeout(() => this.die(), 1000)
+      setTimeout(() => this.die(undefined, false), 1000)
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
@@ -143,13 +143,12 @@ export class AIShip extends CombatShip {
     //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
     // )
 
-    let canAddMoreItems = true
     const isInBudget = (i: BaseItemData) =>
       i.rarity <= itemBudget
     const isBuyable = (i: BaseItemData) =>
       i.buyable !== false
 
-    while (canAddMoreItems) {
+    while (true) {
       const typeToAdd: `engine` | `weapon` =
         this.weapons.length === 0
           ? `weapon`
@@ -162,10 +161,9 @@ export class AIShip extends CombatShip {
       )
         .filter(isInBudget)
         .filter(isBuyable)
-      if (!validItems.length) {
-        canAddMoreItems = false
-        continue
-      }
+
+      if (!validItems.length) break
+
       const itemToAdd: BaseItemData =
         c.randomFromArray(validItems)
       this.addItem(itemToAdd)
@@ -174,8 +172,7 @@ export class AIShip extends CombatShip {
       //   `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
       // )
 
-      if (this.slots <= this.items.length)
-        canAddMoreItems = false
+      if (this.slots <= this.items.length) break
     }
   }
 
@@ -223,7 +220,7 @@ export class AIShip extends CombatShip {
     }
 
     // ----- set new target location -----
-    if (Math.random() < 0.000015 * c.tickInterval) {
+    if (Math.random() < 0.000005 * c.tickInterval) {
       const distance = (Math.random() * this.level) / 2
       const currentAngle = c.angleFromAToB(
         this.location,
@@ -270,65 +267,68 @@ export class AIShip extends CombatShip {
     }
   }
 
-  die(attacker?: CombatShip) {
+  die(attacker?: CombatShip, silently?: boolean) {
     super.die(attacker)
 
-    let itemRarity = this.level / 3
+    if (!silently) {
+      let itemRarity = this.level / 3
 
-    if (attacker) {
-      // apply "rarity boost" passive
-      const rarityBoostPassive = (
-        attacker.passives?.filter(
-          (p) => p.id === `boostDropRarity`,
-        ) || []
-      ).reduce(
-        (total: number, p: ShipPassiveEffect) =>
-          total + (p.intensity || 0),
-        0,
-      )
-      itemRarity *= 1 + rarityBoostPassive
-      c.log(
-        `ai drop rarity boosted by passive:`,
-        rarityBoostPassive,
-      )
-    }
-
-    const cacheContents: CacheContents[] = []
-
-    while (cacheContents.length === 0) {
-      // always a chance for credits
-      if (Math.random() > 0.6) {
-        let amount =
-          Math.ceil(Math.random() * itemRarity * 100) * 100
-        cacheContents.push({ type: `credits`, amount })
+      if (attacker) {
+        // apply "rarity boost" passive
+        const rarityBoostPassive = (
+          attacker.passives?.filter(
+            (p) => p.id === `boostDropRarity`,
+          ) || []
+        ).reduce(
+          (total: number, p: ShipPassiveEffect) =>
+            total + (p.intensity || 0),
+          0,
+        )
+        itemRarity *= 1 + rarityBoostPassive
+        c.log(
+          `ai drop rarity boosted by passive:`,
+          rarityBoostPassive,
+        )
       }
 
-      const upperLimit = itemRarity
-      const lowerLimit = itemRarity * 0.5 - 0.5
-      for (let ca of Object.values(cargoData)) {
-        // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
-        if (
-          ca.rarity <= upperLimit &&
-          ca.rarity >= lowerLimit &&
-          Math.random() > 0.7
-        ) {
-          const amount = c.r2(
-            Math.random() * this.level * 3 + this.level,
-          )
-          cacheContents.push({ type: ca.type, amount })
+      const cacheContents: CacheContents[] = []
+
+      while (cacheContents.length === 0) {
+        // always a chance for credits
+        if (Math.random() > 0.6) {
+          let amount =
+            Math.ceil(Math.random() * itemRarity * 100) *
+            100
+          cacheContents.push({ type: `credits`, amount })
         }
+
+        const upperLimit = itemRarity
+        const lowerLimit = itemRarity * 0.5 - 0.5
+        for (let ca of Object.values(cargoData)) {
+          // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
+          if (
+            ca.rarity <= upperLimit &&
+            ca.rarity >= lowerLimit &&
+            Math.random() > 0.7
+          ) {
+            const amount = c.r2(
+              Math.random() * this.level * 3 + this.level,
+            )
+            cacheContents.push({ type: ca.type, amount })
+          }
+        }
+
+        itemRarity -= 0.1
       }
+      // c.log(cacheContents)
 
-      itemRarity -= 0.1
+      this.game.addCache({
+        contents: cacheContents,
+        location: this.location,
+        message: `Remains of ${this.name}`,
+        onlyVisibleToShipId: this.onlyVisibleToShipId,
+      })
     }
-    // c.log(cacheContents)
-
-    this.game.addCache({
-      contents: cacheContents,
-      location: this.location,
-      message: `Remains of ${this.name}`,
-      onlyVisibleToShipId: this.onlyVisibleToShipId,
-    })
 
     this.game.removeShip(this)
   }

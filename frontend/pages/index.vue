@@ -1,8 +1,12 @@
 <template>
   <div class="container">
-    <NavPane />
+    <NavBar />
+
     <div class="textcolumn">
-      <h1>{{ c.gameName }}</h1>
+      <h1 class="title marbot">
+        <img src="/images/logo.svg" class="logo" />
+        <span>{{ c.gameName }}</span>
+      </h1>
 
       <h2 class="marbotsmall martop">
         Welcome to the alpha test of {{ c.gameName }}!
@@ -90,4 +94,15 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.title {
+  display: flex;
+  align-items: center;
+  font-size: 3rem;
+  margin-top: 3em;
+}
+.logo {
+  width: 2em;
+  margin-right: 0.3em;
+}
+</style>

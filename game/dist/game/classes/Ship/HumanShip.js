@@ -822,7 +822,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 const amountForEach = toDistribute / canHoldMore.length;
                 toDistribute = canHoldMore.reduce((total, cm, index) => {
                     if (contents.type === `credits`) {
-                        cm.credits += Math.floor(amountForEach);
+                        cm.credits = Math.floor(cm.credits + amountForEach);
                         cm.toUpdate.credits = cm.credits;
                     }
                     else {
@@ -1159,5 +1159,5 @@ class HumanShip extends CombatShip_1.CombatShip {
 }
 exports.HumanShip = HumanShip;
 HumanShip.maxLogLength = 20;
-HumanShip.movementIsFree = true;
+HumanShip.movementIsFree = false; // true
 //# sourceMappingURL=HumanShip.js.map

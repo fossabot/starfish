@@ -23,19 +23,16 @@
               `Click and hold to use your charged thrust!`,
             )
           "
-          @mouseleave.native="$store.commit('tooltip')"
-          @mousedown.native="$store.commit('tooltip')"
+          @mouseleave.native="reset"
+          @mousedown.native="reset"
         >
           Thrust
           <span v-if="thrustChargeToUse">
             &nbsp;({{
               c.r2(
                 thrustChargeToUse *
-                  c.getMaxCockpitChargeForSingleCrewMember(
-                    pilotingSkill,
-                  ) *
                   crewMember.cockpitCharge *
-                  engineThrustAmplification,
+                  memberThrust,
               )
             }}
             P)
@@ -60,19 +57,16 @@
               `Click and hold to use your charged thrust to stop the ship.`,
             )
           "
-          @mouseleave.native="$store.commit('tooltip')"
-          @mousedown.native="$store.commit('tooltip')"
+          @mouseleave.native="reset"
+          @mousedown.native="reset"
         >
           Brake
           <span v-if="brakeChargeToUse">
             &nbsp;({{
               c.r2(
                 brakeChargeToUse *
-                  c.getMaxCockpitChargeForSingleCrewMember(
-                    pilotingSkill,
-                  ) *
                   crewMember.cockpitCharge *
-                  engineThrustAmplification,
+                  memberThrust,
               )
             }}
             P)
@@ -91,7 +85,7 @@
       </div>
       <div
         v-tooltip="
-          `The percent of the engines' max thrust you have charged, that can be released as thrust. This percent is unique to you. Your maximum percent goes up as you gain levels in <b>piloting</b>.`
+          `The percent of the engines' max thrust you have charged that can be released as thrust. This percent is unique to you. <br />Your maximum percent goes up as you gain levels in <b>piloting</b>.`
         "
       >
         Charge:
@@ -102,33 +96,42 @@
                 pilotingSkill,
               ) *
               100,
-            1,
+            0,
           ) +
             '% / ' +
             c.r2(
               c.getMaxCockpitChargeForSingleCrewMember(
                 pilotingSkill,
               ) * 100,
-              1,
+              0,
             ) +
             '%'
         }}
+        <span class="sub"
+          >(Full in
+          {{
+            c.msToTimeString(
+              ((c.getMaxCockpitChargeForSingleCrewMember(
+                pilotingSkill,
+              ) -
+                crewMember.cockpitCharge) /
+                c.getCockpitChargePerTickForSingleCrewMember(
+                  pilotingSkill,
+                )) *
+                c.tickInterval,
+            )
+          }})</span
+        >
       </div>
       <div
         v-tooltip="
-          `The maximum amount of thrust that you can generate currently.`
+          `The maximum amount of thrust that you can generate with your total current amount of charge. Increases with levels in <b>piloting</b> and better engine base thrust.`
         "
       >
         Available Thrust:
         <NumberChangeHighlighter
           :number="
-            c.r2(
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) *
-                crewMember.cockpitCharge *
-                engineThrustAmplification,
-            )
+            c.r2(memberThrust * crewMember.cockpitCharge)
           "
         /><span v-tooltip="`Poseidons`">P</span>
       </div>
@@ -226,7 +229,7 @@ export default {
       c,
       thrustChargeToUse: 0,
       brakeChargeToUse: 0,
-      animateThrust: false,
+      animateThrust: true,
     }
   },
   computed: {
@@ -302,6 +305,11 @@ export default {
   watch: {},
   mounted(this: ComponentShape) {},
   methods: {
+    reset() {
+      this.$store.commit('tooltip')
+      this.brakeChargeToUse = 0
+      this.thrustChargeToUse = 0
+    },
     setTarget(
       this: ComponentShape,
       target: CoordinatePair,

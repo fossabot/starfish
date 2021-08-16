@@ -4,7 +4,6 @@ export default {
     port: 4300,
   },
 
-  // global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: c.gameName,
     htmlAttrs: {
@@ -25,8 +24,11 @@ export default {
     link: [
       {
         rel: `icon`,
-        type: `image/x-icon`,
-        href: `/favicon.ico`,
+        href: `/images/favicon/favicon.svg?v=4`,
+      },
+      {
+        rel: `alternate icon`,
+        href: `/images/favicon/favicon.ico`,
       },
     ],
   },

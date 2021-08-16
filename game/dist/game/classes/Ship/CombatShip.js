@@ -261,7 +261,9 @@ class CombatShip extends Ship_1.Ship {
         this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
         const didDie = previousHp > 0 && this.hp <= 0;
         if (didDie)
-            this.die();
+            this.die(attacker instanceof CombatShip
+                ? attacker
+                : undefined);
         this.addStat(`damageTaken`, totalDamageDealt);
         dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(totalDamageDealt)} damage from ${attacker.name}'s ${attack.weapon
             ? attack.weapon.displayName
@@ -287,7 +289,7 @@ class CombatShip extends Ship_1.Ship {
             weapon: attack.weapon,
         };
     }
-    die() {
+    die(attacker) {
         this.addStat(`deaths`, 1);
         this.dead = true;
     }

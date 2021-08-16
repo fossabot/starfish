@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavPane />
+    <NavBar />
 
     <div class="textcolumn">
       <div class="martop">

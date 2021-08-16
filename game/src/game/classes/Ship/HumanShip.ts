@@ -19,7 +19,7 @@ import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 20
-  static movementIsFree = true
+  static movementIsFree = false // true
 
   readonly id: string
   readonly log: LogEntry[]
@@ -1279,7 +1279,9 @@ export class HumanShip extends CombatShip {
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
             if (contents.type === `credits`) {
-              cm.credits += Math.floor(amountForEach)
+              cm.credits = Math.floor(
+                cm.credits + amountForEach,
+              )
               cm.toUpdate.credits = cm.credits
             } else {
               const leftOver = cm.addCargo(

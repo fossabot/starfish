@@ -1,6 +1,8 @@
 <template>
   <nav class="padpane">
-    <nuxt-link to="/">Home</nuxt-link>
+    <nuxt-link to="/"
+      ><img src="/images/logo.svg" class="logo"
+    /></nuxt-link>
     <nuxt-link to="/about">About</nuxt-link>
     <nuxt-link to="/howtoplay">How To Play</nuxt-link>
     <nuxt-link to="/feedback">Feedback</nuxt-link>
@@ -77,5 +79,9 @@ nav {
   & > * {
     margin: 0.1em 0.5em;
   }
+}
+
+.logo {
+  width: 2em;
 }
 </style>

@@ -6,6 +6,7 @@
     :overlayTitle="true"
     @minimize="minimized = true"
     @unminimize="minimized = false"
+    class="shipbox"
   >
     <template #title>
       <span :style="{ display: minimized ? '' : 'none' }">
@@ -126,11 +127,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ship {
-  width: 230px;
-}
-
-.panesection {
-  width: 230px;
+.shipbox {
+  width: 250px;
 }
 </style>

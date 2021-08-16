@@ -207,6 +207,8 @@ export class CrewMember extends Stubbable {
   }
 
   addCargo(type: CargoType, amount: number): number {
+    amount = c.r2(amount, 2, true) // round down to 2 decimal places
+
     const canHold =
       Math.min(
         this.ship.chassis.maxCargoSpace,

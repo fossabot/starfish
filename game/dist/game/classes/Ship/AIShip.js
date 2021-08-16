@@ -57,7 +57,7 @@ class AIShip extends CombatShip_1.CombatShip {
         if (this.items.length === 0)
             this.addLevelAppropriateItems();
         if (this.items.length === 0)
-            setTimeout(() => this.die(), 1000);
+            setTimeout(() => this.die(undefined, false), 1000);
         if (data.spawnPoint?.length === 2)
             this.spawnPoint = [...data.spawnPoint];
         else
@@ -110,10 +110,9 @@ class AIShip extends CombatShip_1.CombatShip {
         // c.log(
         //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
         // )
-        let canAddMoreItems = true;
         const isInBudget = (i) => i.rarity <= itemBudget;
         const isBuyable = (i) => i.buyable !== false;
-        while (canAddMoreItems) {
+        while (true) {
             const typeToAdd = this.weapons.length === 0
                 ? `weapon`
                 : this.engines.length === 0
@@ -123,10 +122,8 @@ class AIShip extends CombatShip_1.CombatShip {
             const validItems = Object.values(itemPool)
                 .filter(isInBudget)
                 .filter(isBuyable);
-            if (!validItems.length) {
-                canAddMoreItems = false;
-                continue;
-            }
+            if (!validItems.length)
+                break;
             const itemToAdd = dist_1.default.randomFromArray(validItems);
             this.addItem(itemToAdd);
             itemBudget -= itemToAdd.rarity;
@@ -134,7 +131,7 @@ class AIShip extends CombatShip_1.CombatShip {
             //   `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
             // )
             if (this.slots <= this.items.length)
-                canAddMoreItems = false;
+                break;
         }
     }
     // ----- move -----
@@ -169,7 +166,7 @@ class AIShip extends CombatShip_1.CombatShip {
                     (dist_1.default.deltaTime / dist_1.default.tickInterval);
         }
         // ----- set new target location -----
-        if (Math.random() < 0.000015 * dist_1.default.tickInterval) {
+        if (Math.random() < 0.000005 * dist_1.default.tickInterval) {
             const distance = (Math.random() * this.level) / 2;
             const currentAngle = dist_1.default.angleFromAToB(this.location, this.targetLocation);
             const possibleAngles = [
@@ -200,42 +197,45 @@ class AIShip extends CombatShip_1.CombatShip {
                 this.previousLocations.shift();
         }
     }
-    die(attacker) {
+    die(attacker, silently) {
         super.die(attacker);
-        let itemRarity = this.level / 3;
-        if (attacker) {
-            // apply "rarity boost" passive
-            const rarityBoostPassive = (attacker.passives?.filter((p) => p.id === `boostDropRarity`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
-            itemRarity *= 1 + rarityBoostPassive;
-            dist_1.default.log(`ai drop rarity boosted by passive:`, rarityBoostPassive);
-        }
-        const cacheContents = [];
-        while (cacheContents.length === 0) {
-            // always a chance for credits
-            if (Math.random() > 0.6) {
-                let amount = Math.ceil(Math.random() * itemRarity * 100) * 100;
-                cacheContents.push({ type: `credits`, amount });
+        if (!silently) {
+            let itemRarity = this.level / 3;
+            if (attacker) {
+                // apply "rarity boost" passive
+                const rarityBoostPassive = (attacker.passives?.filter((p) => p.id === `boostDropRarity`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+                itemRarity *= 1 + rarityBoostPassive;
+                dist_1.default.log(`ai drop rarity boosted by passive:`, rarityBoostPassive);
             }
-            const upperLimit = itemRarity;
-            const lowerLimit = itemRarity * 0.5 - 0.5;
-            for (let ca of Object.values(cargo_1.data)) {
-                // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
-                if (ca.rarity <= upperLimit &&
-                    ca.rarity >= lowerLimit &&
-                    Math.random() > 0.7) {
-                    const amount = dist_1.default.r2(Math.random() * this.level * 3 + this.level);
-                    cacheContents.push({ type: ca.type, amount });
+            const cacheContents = [];
+            while (cacheContents.length === 0) {
+                // always a chance for credits
+                if (Math.random() > 0.6) {
+                    let amount = Math.ceil(Math.random() * itemRarity * 100) *
+                        100;
+                    cacheContents.push({ type: `credits`, amount });
                 }
+                const upperLimit = itemRarity;
+                const lowerLimit = itemRarity * 0.5 - 0.5;
+                for (let ca of Object.values(cargo_1.data)) {
+                    // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
+                    if (ca.rarity <= upperLimit &&
+                        ca.rarity >= lowerLimit &&
+                        Math.random() > 0.7) {
+                        const amount = dist_1.default.r2(Math.random() * this.level * 3 + this.level);
+                        cacheContents.push({ type: ca.type, amount });
+                    }
+                }
+                itemRarity -= 0.1;
             }
-            itemRarity -= 0.1;
+            // c.log(cacheContents)
+            this.game.addCache({
+                contents: cacheContents,
+                location: this.location,
+                message: `Remains of ${this.name}`,
+                onlyVisibleToShipId: this.onlyVisibleToShipId,
+            });
         }
-        // c.log(cacheContents)
-        this.game.addCache({
-            contents: cacheContents,
-            location: this.location,
-            message: `Remains of ${this.name}`,
-            onlyVisibleToShipId: this.onlyVisibleToShipId,
-        });
         this.game.removeShip(this);
     }
 }

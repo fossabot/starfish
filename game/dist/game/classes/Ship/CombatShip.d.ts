@@ -26,7 +26,7 @@ export declare abstract class CombatShip extends Ship {
         name: string;
         [key: string]: any;
     }, attack: DamageResult): TakenDamageResult;
-    die(): void;
+    die(attacker?: CombatShip): void;
 }
 export {};
 //# sourceMappingURL=CombatShip.d.ts.map

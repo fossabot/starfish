@@ -447,7 +447,12 @@ export abstract class CombatShip extends Ship {
     )
 
     const didDie = previousHp > 0 && this.hp <= 0
-    if (didDie) this.die()
+    if (didDie)
+      this.die(
+        attacker instanceof CombatShip
+          ? attacker
+          : undefined,
+      )
 
     this.addStat(`damageTaken`, totalDamageDealt)
 
@@ -505,7 +510,7 @@ export abstract class CombatShip extends Ship {
     }
   }
 
-  die() {
+  die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
     this.dead = true
   }

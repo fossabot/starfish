@@ -239,7 +239,9 @@ class Game {
     spawnNewCaches() {
         while (this.caches.length < this.gameSoftArea * 1.5) {
             const type = dist_1.default.randomFromArray(dist_1.default.cargoTypes);
-            const amount = Math.round(Math.random() * 200) / 10 + 1;
+            const amount = type === `credits`
+                ? Math.round(Math.random() * 200) * 100
+                : Math.round(Math.random() * 200) / 10 + 1;
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
             const message = Math.random() > 0.9
                 ? dist_1.default.randomFromArray([

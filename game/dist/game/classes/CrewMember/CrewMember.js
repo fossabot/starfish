@@ -177,6 +177,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.toUpdate.skills = this.skills;
     }
     addCargo(type, amount) {
+        amount = dist_1.default.r2(amount, 2, true); // round down to 2 decimal places
         const canHold = Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) - this.heldWeight;
         const existingStock = this.inventory.find((cargo) => cargo.type === type);
         if (existingStock)

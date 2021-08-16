@@ -5,10 +5,10 @@
     <div v-if="!data.contents">Contents unknown.</div>
     <div v-else>
       <div
-        v-for="(c, index) in data.contents"
+        v-for="(ca, index) in data.contents"
         :key="'cachecontentstooltip' + index"
       >
-        Contains {{ c.amount }} {{ c.type }}
+        Contains {{ c.r2(ca.amount) }} {{ ca.type }}
       </div>
     </div>
   </div>

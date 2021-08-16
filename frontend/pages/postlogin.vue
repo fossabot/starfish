@@ -2,7 +2,7 @@
   <div class="container">
     <transition name="fade">
       <div v-if="show">
-        <NavPane />
+        <NavBar />
 
         <div>
           If it's not working, try turning off any privacy

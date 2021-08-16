@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavPane />
+    <NavBar />
 
     <h2>Admin</h2>
     <nuxt-link to="/s">Ship Page</nuxt-link>
