@@ -39,7 +39,11 @@ services:
     working_dir: /usr/app/frontend
     ports:
       - '4300:4300'
-    command: 'npm run dev'
+    expose: 
+      - '4300'
+    command: 'npm run start'
+    environment: 
+      hostname: localhost
     secrets:
       - google_client_email
       - google_private_key
@@ -88,3 +92,6 @@ secrets:
 
 volumes:
   db_data:
+
+networks:
+  default:
