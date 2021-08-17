@@ -6,3 +6,5 @@ frontend/secrets/
 db/secrets
 game/secrets
 discord/secrets
+frontend/@types/
+frontend/common/
