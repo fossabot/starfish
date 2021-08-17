@@ -21,7 +21,7 @@ export default {
   mounted(this: ComponentShape) {
     if (this.userId) this.$router.push('/s')
     else {
-      const postLoginPage = 'http://0.0.0.0/postlogin'
+      const postLoginPage = `http://${process.env.hostname}/postlogin`
       window.location.href = `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`

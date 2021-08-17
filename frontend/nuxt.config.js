@@ -58,5 +58,4 @@ export default {
     '/api': `~/api`,
   },
 
-  build: {},
 }
