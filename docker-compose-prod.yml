@@ -43,7 +43,7 @@ services:
       - '4300'
     command: 'npm run start'
     environment: 
-      hostname: localhost
+      hostname: starfish.cool
     secrets:
       - google_client_email
       - google_private_key
