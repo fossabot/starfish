@@ -172,8 +172,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         profiler.end();
     }
     // ----- log -----
-    logEntry(text, level = `low`) {
-        this.log.push({ level, text, time: Date.now() });
+    logEntry(content, level = `low`) {
+        this.log.push({ level, content, time: Date.now() });
         while (this.log.length > HumanShip.maxLogLength)
             this.log.shift();
         this.toUpdate.log = this.log;
@@ -187,7 +187,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (this.logAlertLevel === `high`)
             levelsToAlert.push(`critical`);
         if (levelsToAlert.includes(level))
-            io_1.default.emit(`ship:message`, this.id, text);
+            io_1.default.emit(`ship:message`, this.id, content);
     }
     discoverPlanet(p) {
         this.seenPlanets.push(p);
@@ -1158,6 +1158,6 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
 }
 exports.HumanShip = HumanShip;
-HumanShip.maxLogLength = 20;
+HumanShip.maxLogLength = 40;
 HumanShip.movementIsFree = false; // true
 //# sourceMappingURL=HumanShip.js.map

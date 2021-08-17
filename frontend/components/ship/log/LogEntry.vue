@@ -1,6 +1,9 @@
 <template>
   <div class="logentry" :class="level">
-    <div class="text flashtextgoodonspawn">{{ text }}</div>
+    <div
+      class="text flashtextgoodonspawn"
+      v-html="outputHtml"
+    ></div>
     <div class="sub time flashtextgoodonspawn padtoptiny">
       {{ timeString }}
     </div>
@@ -19,11 +22,15 @@ interface ComponentShape {
 }
 
 export default {
-  props: { text: {}, time: {}, level: {} },
+  props: { content: {}, time: {}, level: {} },
   data(): Partial<ComponentShape> {
     return { timeString: '' }
   },
-  computed: {},
+  computed: {
+    outputHtml() {
+      return this.content
+    },
+  },
   watch: {},
   mounted(this: ComponentShape) {
     this.resetTimeString()

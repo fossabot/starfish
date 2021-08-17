@@ -47,14 +47,6 @@ type RadiusType =
   | `broadcast`
   | `game`
 
-type LogLevel = `low` | `medium` | `high` | `critical`
-type LogAlertLevel = LogLevel | `off`
-interface LogEntry {
-  time: number
-  level: LogLevel
-  text: string
-}
-
 type ShipPassiveEffectType =
   | `boostDropAmount`
   | `boostDropRarity`

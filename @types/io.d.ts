@@ -18,7 +18,7 @@ interface IOServerEvents {
   }) => void
   [`ship:message`]: (
     id: string,
-    message: string,
+    message: string | RichLogContent,
     channelType?: GameChannelType,
   ) => void
   [`ship:resetView`]: () => void

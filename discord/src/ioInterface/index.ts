@@ -43,7 +43,14 @@ io.on(
       type: channelType,
       guild,
     })
-    if (channel) channel.send(message)
+    if (channel)
+      channel.send(
+        typeof message === `string`
+          ? message
+          : message
+              .map((m: RichLogContentElement) => m.text)
+              .join(` `),
+      )
     else
       c.log(
         `red`,

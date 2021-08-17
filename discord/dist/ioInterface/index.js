@@ -53,7 +53,11 @@ exports.io.on(`ship:message`, async (id, message, channelType = `alert`) => {
         guild,
     });
     if (channel)
-        channel.send(message);
+        channel.send(typeof message === `string`
+            ? message
+            : message
+                .map((m) => m.text)
+                .join(` `));
     else
         dist_1.default.log(`red`, `Unable to resolve Discord channel to send message for guild ${guild.name}.`);
 });

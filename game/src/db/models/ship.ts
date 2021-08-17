@@ -31,7 +31,13 @@ const shipSchemaFields: Record<
   previousLocations: [[Number, Number]],
 
   // ----- human
-  log: [{ text: String, time: Number, level: String }],
+  log: [
+    {
+      content: Schema.Types.Mixed,
+      time: Number,
+      level: String,
+    },
+  ],
   seenPlanets: [{ name: String }],
   tutorial: {
     step: Number,

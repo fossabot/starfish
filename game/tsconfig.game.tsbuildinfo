@@ -262,13 +262,18 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "59fb4c289be7e1b7aec9a193ea743324ee31d97c099aa12ca6b64821401c7f0d",
-        "signature": "59fb4c289be7e1b7aec9a193ea743324ee31d97c099aa12ca6b64821401c7f0d",
+        "version": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
+        "signature": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
         "version": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
         "signature": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
+        "affectsGlobalScope": true
+      },
+      "../@types/log.d.ts": {
+        "version": "25707e2d5c2a1b096371f3960e9061c2bcd018799daf41880157b130a1a1e8eb",
+        "signature": "25707e2d5c2a1b096371f3960e9061c2bcd018799daf41880157b130a1a1e8eb",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -277,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
-        "signature": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
+        "version": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
+        "signature": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -752,8 +757,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "9c055d6104126ec5c05d67194e4fa389779fe055c35474f67a76a350348addaa",
-        "signature": "5011353116097508ac7a484ce56aa4e942b799a5f54ccf8896ecda4be0a77633",
+        "version": "a1d80f7a4410471a676cf50d3a8995c4397b071f20215082657e835dfeedd7d4",
+        "signature": "1de60c2df564f50994d8ccabbed4ca64551c88c0f9ec215f1f0badc91a481482",
         "affectsGlobalScope": false
       },
       "./src/game/classes/cache.ts": {
@@ -767,7 +772,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/models/ship.ts": {
-        "version": "978da072239929b8f0084fcd512008cba14d93209e03a0e7933835aa0abb0e49",
+        "version": "130b038ee5a56a346642fcfebd7fd52c65b641ebf5b1b6ac40fa11d98d9e37d0",
         "signature": "e0589f41da7616bf6880144f107b8553b9b8935a9d17764eea58fc626a88f342",
         "affectsGlobalScope": false
       },
@@ -1068,6 +1073,10 @@
         "./node_modules/mongoose/index.d.ts"
       ],
       "../@types/item.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
+      "../@types/log.d.ts": [
         "./node_modules/@types/mongoose/index.d.ts",
         "./node_modules/mongoose/index.d.ts"
       ],
@@ -2380,6 +2389,10 @@
         "./node_modules/@types/mongoose/index.d.ts",
         "./node_modules/mongoose/index.d.ts"
       ],
+      "../@types/log.d.ts": [
+        "./node_modules/@types/mongoose/index.d.ts",
+        "./node_modules/mongoose/index.d.ts"
+      ],
       "../@types/planet.d.ts": [
         "./node_modules/@types/mongoose/index.d.ts",
         "./node_modules/mongoose/index.d.ts"
@@ -3401,6 +3414,7 @@
       "../@types/generic.d.ts",
       "../@types/io.d.ts",
       "../@types/item.d.ts",
+      "../@types/log.d.ts",
       "../@types/planet.d.ts",
       "../@types/ship.d.ts",
       "../@types/stubs.d.ts",

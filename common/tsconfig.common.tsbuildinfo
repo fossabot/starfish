@@ -262,13 +262,18 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "59fb4c289be7e1b7aec9a193ea743324ee31d97c099aa12ca6b64821401c7f0d",
-        "signature": "59fb4c289be7e1b7aec9a193ea743324ee31d97c099aa12ca6b64821401c7f0d",
+        "version": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
+        "signature": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
         "version": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
         "signature": "a47603e243233b645e5c40328316c9744c4895a1bcbff264da226a35342c8dac",
+        "affectsGlobalScope": true
+      },
+      "../@types/log.d.ts": {
+        "version": "25707e2d5c2a1b096371f3960e9061c2bcd018799daf41880157b130a1a1e8eb",
+        "signature": "25707e2d5c2a1b096371f3960e9061c2bcd018799daf41880157b130a1a1e8eb",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -277,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
-        "signature": "e0a8e0d911f13852b557477826906a8d2e4cf4094e128915314478ef92a53415",
+        "version": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
+        "signature": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -1460,6 +1465,7 @@
       "../@types/generic.d.ts",
       "../@types/io.d.ts",
       "../@types/item.d.ts",
+      "../@types/log.d.ts",
       "../@types/planet.d.ts",
       "../@types/ship.d.ts",
       "../@types/stubs.d.ts",

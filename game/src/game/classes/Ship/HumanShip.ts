@@ -18,7 +18,7 @@ import { Tutorial } from './addins/Tutorial'
 import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
-  static maxLogLength = 20
+  static maxLogLength = 40
   static movementIsFree = false // true
 
   readonly id: string
@@ -226,8 +226,11 @@ export class HumanShip extends CombatShip {
 
   // ----- log -----
 
-  logEntry(text: string, level: LogLevel = `low`) {
-    this.log.push({ level, text, time: Date.now() })
+  logEntry(
+    content: string | RichLogContentElement[],
+    level: LogLevel = `low`,
+  ) {
+    this.log.push({ level, content, time: Date.now() })
     while (this.log.length > HumanShip.maxLogLength)
       this.log.shift()
 
@@ -242,7 +245,7 @@ export class HumanShip extends CombatShip {
     if (this.logAlertLevel === `high`)
       levelsToAlert.push(`critical`)
     if (levelsToAlert.includes(level))
-      io.emit(`ship:message`, this.id, text)
+      io.emit(`ship:message`, this.id, content)
   }
 
   discoverPlanet(p: Planet) {
