@@ -54,6 +54,8 @@ export async function loadUserGameGuilds({
     accessToken = storage.get(`accessToken`)
   }
 
+  // console.log(`Loading user ${userId}'s guilds...`)
+
   const allGuilds = await fetch(
     `https://discord.com/api/users/@me/guilds`,
     {

@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <div class="textcolumn">
       <h2>Change Log</h2>
 
@@ -13,12 +11,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
+  layout: 'withnavbar',
   data() {
     return { c }
   },

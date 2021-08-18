@@ -11,20 +11,32 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { content: {}, time: {}, level: {} },
+  props: {
+    content: {
+      type: [String, Object] as PropType<
+        string | RichLogContentElement[]
+      >,
+    },
+    time: { type: Number },
+    level: {},
+  },
   data() {
     return { timeString: '' }
   },
   computed: {
-    outputHtml() {
-      return this.content
+    outputHtml(): string {
+      return typeof this.content === 'string'
+        ? this.content
+        : Array.isArray(this.content)
+        ? this.content.map((c) => c.text).join(' ')
+        : `${this.content}`
     },
   },
   watch: {},

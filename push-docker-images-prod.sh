@@ -40,7 +40,7 @@ for image in discord frontend game db nginx
 do
     cp -r common ${image}/
     cp -r @types ${image}/
-    docker build ${image} -t ${image_prefix}-${image}:prod-${VERSION} --file=${image}/Dockerfile-prod
+    docker build . -t ${image_prefix}-${image}:prod-${VERSION} --file=${image}/Dockerfile-prod
     rm -rf ${image}/common
     rm -rf ${image}/@types
 done

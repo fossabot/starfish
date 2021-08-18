@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <h2>Admin</h2>
     <nuxt-link to="/s">Ship Page</nuxt-link>
     <br />
@@ -12,11 +10,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
+  layout: 'withnavbar',
   data() {
     return {}
   },

@@ -246,42 +246,59 @@ export const actions = {
           return
         }
         userId = idRes.data
+        c.log({ userId })
       }
       if (userId) storage.set(`userId`, userId)
 
       if (!shipIds) shipIds = state.shipIds
       if (!shipIds || !shipIds?.length) {
-        const guildsRes = await discordAuth.loadUserGameGuilds(
-          {
-            userId,
-            socket: this.$socket,
-            tokenType,
-            accessToken,
-          },
-        )
-        if (guildsRes.error) {
-          dispatch(`notifications/notify`, {
-            text: guildsRes.error,
-            type: `error`,
-          })
-          c.log(guildsRes.error)
-
-          if (guildsRes.error === `Bad token`) {
-            c.log(
-              `failed!`,
-              guildsRes,
+        try {
+          const guildsRes = await discordAuth
+            .loadUserGameGuilds({
+              userId,
+              socket: this.$socket,
               tokenType,
               accessToken,
-              userId,
-            )
-            // dispatch(`logout`)
-            // this.$router.push(`/login`)
+            })
+            .catch((e) => {
+              c.log(
+                `error loading game guilds from discord api`,
+                e,
+              )
+            })
+
+          if (guildsRes.error) {
+            dispatch(`notifications/notify`, {
+              text: guildsRes.error,
+              type: `error`,
+            })
+
+            if (guildsRes.error === `Bad token`) {
+              c.log(
+                `failed!`,
+                guildsRes,
+                tokenType,
+                accessToken,
+                userId,
+              )
+              // dispatch(`logout`)
+              // this.$router.push(`/login`)
+              return
+            }
+
+            c.log(`login error!`, guildsRes.error)
             return
           }
+
+          shipIds = guildsRes.data
+          c.log({ shipIds })
+        } catch (e) {
+          console.log(
+            `failed to get ship ids from discord api`,
+            e,
+          )
           return
         }
-
-        shipIds = guildsRes.data
       }
       if (shipIds)
         storage.set(`shipIds`, JSON.stringify(shipIds))
@@ -300,12 +317,13 @@ export const actions = {
             id,
             ({ data, error }) => {
               if (error) {
+                c.log(`ship basics error:`, error)
                 // something's up with one of the guilds, so reset the whole deal
                 storage.remove(`shipIds`)
                 commit(`set`, { shipIds: [] })
                 dispatch(`logIn`, { userId })
                 resolve()
-                return c.log(error)
+                return
               }
               shipsBasics.push(data)
               resolve()

@@ -53,6 +53,8 @@ export default Vue.extend({
   },
   mounted() {
     if (this.ship) this.selectedShip = this.ship.id
+
+    // c.log(this.$store, this.$store.dispatch)
   },
   methods: {
     logout() {

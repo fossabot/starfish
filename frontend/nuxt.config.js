@@ -42,7 +42,7 @@ export default {
 
   components: true,
 
-  buildModules: [`@nuxt/typescript-build`], // `nuxt-vite`],
+  buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
 
   modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 

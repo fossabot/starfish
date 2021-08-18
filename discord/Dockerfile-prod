@@ -1,15 +1,15 @@
 # 1st stage - install dependencies
 FROM node:16-alpine3.11 as builder
 WORKDIR /usr/app/discord
-COPY package*.json .
+COPY discord/package*.json .
 RUN npm install
-COPY . .
+COPY discord/ .
 
 
 # 2nd stage - compile typescript
 FROM node:16-alpine3.11
 WORKDIR /usr/app/discord
-COPY package*.json .
+COPY discord/package*.json .
 RUN npm install --production
 COPY --from=builder /usr/app/discord/dist ./dist
 COPY common /usr/app/common

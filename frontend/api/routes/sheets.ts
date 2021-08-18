@@ -29,7 +29,7 @@ credentials.client_email = credentials.client_email.trim()
 credentials.private_key = credentials.private_key
   .trim()
   .replace(/\\n/g, '\n')
-c.log(credentials)
+// c.log(credentials)
 
 /* eslint-enable */
 

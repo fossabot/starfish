@@ -58,7 +58,7 @@ catch (e) {
     mongoPassword = process.env
         .MONGODB_ADMINPASSWORD;
 }
-dist_1.default.log({ mongoUsername, mongoPassword });
+// c.log({ mongoUsername, mongoPassword })
 const toRun = [];
 exports.isReady = () => ready;
 exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongoUsername, password = mongoPassword, }) => {

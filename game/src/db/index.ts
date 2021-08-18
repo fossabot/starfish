@@ -40,7 +40,7 @@ try {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string
 }
-c.log({ mongoUsername, mongoPassword })
+// c.log({ mongoUsername, mongoPassword })
 
 const toRun: Function[] = []
 

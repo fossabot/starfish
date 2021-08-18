@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <div class="textcolumn">
       <h2>Bug Report</h2>
       <div>
@@ -41,12 +39,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
+  layout: 'withnavbar',
   data() {
     return { c }
   },
@@ -63,11 +62,9 @@ export default Vue.extend({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: (this.$refs.Name as HTMLInputElement).value,
-          email: (this.$refs.Email as HTMLInputElement)
-            .value,
-          comment: (this.$refs.Feedback as HTMLInputElement)
-            .value,
+          name: this.$refs.Name.value,
+          email: this.$refs.Email.value,
+          comment: this.$refs.Feedback.value,
           ship: this.ship
             ? `${this.ship?.name} (${this.ship?.id})`
             : '',

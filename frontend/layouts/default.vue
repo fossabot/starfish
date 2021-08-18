@@ -1,9 +1,13 @@
 <template>
   <div>
-    <Notifications />
-    <Modal />
-    <InfoTooltip />
-    <Nuxt />
+    <client-only>
+      <Notifications />
+      <Modal />
+      <InfoTooltip />
+      <slot>
+        <Nuxt />
+      </slot>
+    </client-only>
   </div>
 </template>
 

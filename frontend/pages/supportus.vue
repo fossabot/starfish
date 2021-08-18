@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <div class="textcolumn">
       <div class="martop">
         <h2>Support {{ c.gameName }}!</h2>
@@ -43,12 +41,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
+  layout: 'withnavbar',
   data() {
     return { c }
   },

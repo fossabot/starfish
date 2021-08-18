@@ -7,6 +7,10 @@ import type { Ship } from '../../game/classes/Ship/Ship'
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
+  socket.on(`hello`, () => {
+    c.log(`hello received`)
+  })
+
   socket.on(`game:save`, () => {
     game.save()
   })
@@ -14,6 +18,7 @@ export default function (
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {
+      c.log(`ships:forUser:fromIdArray`, shipIds, userId)
       const foundShips = game.ships.filter(
         (s) =>
           s.human &&
