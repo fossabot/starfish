@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <div class="textcolumn">
       <h2>Bug Report</h2>
       <div>
@@ -41,24 +39,23 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  layout: 'withnavbar',
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId', 'crewMember', 'ship']),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    submit(this: ComponentShape) {
+    submit() {
       fetch(`/api/bug/`, {
         method: 'POST',
         headers: {
@@ -79,7 +76,7 @@ export default {
       this.$router.push('/feedback/thanks')
     },
   },
-}
+})
 </script>
 
 <style></style>

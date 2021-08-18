@@ -36,13 +36,13 @@ export default {
   css: [`~/assets/styles/main.scss`],
 
   plugins: [
-    { src: `~/plugins/socket.js` },
-    { src: `~/plugins/tooltip.js` },
+    { src: `~/plugins/socket.ts` },
+    { src: `~/plugins/tooltip.ts` },
   ],
 
   components: true,
 
-  buildModules: [`@nuxt/typescript-build`], // `nuxt-vite`],
+  buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
 
   modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 
@@ -57,5 +57,4 @@ export default {
   serverMiddleware: {
     '/api': `~/api`,
   },
-
 }

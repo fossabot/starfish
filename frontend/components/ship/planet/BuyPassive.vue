@@ -57,20 +57,18 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
 
-    isFriendlyToFaction(this: ComponentShape) {
+    isFriendlyToFaction() {
       return (
         (this.ship.planet.allegiances.find(
           (a: AllegianceData) =>
@@ -79,7 +77,7 @@ export default {
       )
     },
 
-    crewMemberPassiveLevels(this: ComponentShape) {
+    crewMemberPassiveLevels() {
       const levels: {
         [key in CrewPassiveType]?: number
       } = {}
@@ -90,12 +88,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    buyPassive(
-      this: ComponentShape,
-      type: CrewPassiveType,
-    ) {
+    buyPassive(type: CrewPassiveType) {
       this.$socket?.emit(
         'crew:buyPassive',
         this.ship.id,
@@ -115,7 +110,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -46,19 +46,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(this: ComponentShape) {
+    isFriendlyToFaction(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: AllegianceData) =>
@@ -67,10 +65,10 @@ export default {
       )
     },
 
-    repairableHp(this: ComponentShape) {
+    repairableHp(): number {
       return this.ship._maxHp - this.ship._hp
     },
-    repairOptions(this: ComponentShape) {
+    repairOptions(): number[] {
       const options = [1, 10]
       if (this.repairableHp >= 1)
         options.push(this.repairableHp)
@@ -78,9 +76,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    buyRepair(this: ComponentShape, hp: number) {
+    buyRepair(hp: number) {
       this.$store.commit('updateShip', {
         _hp: this.ship._hp + hp,
       })
@@ -103,7 +101,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -65,38 +65,36 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {},
-  data(): ComponentShape {
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    currentTagline(this: ComponentShape) {
+    currentTagline() {
       return this.ship?.tagline
     },
-    currentBanner(this: ComponentShape) {
+    currentBanner() {
       return this.ship?.headerBackground || 'default.svg'
     },
-    ownedHeaderBackgrounds(this: ComponentShape) {
+    ownedHeaderBackgrounds() {
       return c.headerBackgroundOptions.filter((o) =>
         this.ship?.availableHeaderBackgrounds?.includes(
           o.id,
         ),
       )
     },
-    ownedTaglines(this: ComponentShape) {
+    ownedTaglines() {
       return c.taglineOptions.filter((o) =>
         this.ship?.availableTaglines?.includes(o),
       )
     },
-    // unownedHeaderBackgrounds(this: ComponentShape) {
+    // unownedHeaderBackgrounds() {
     //   return c.headerBackgroundOptions.filter(
     //     (o) =>
     //       !this.ship?.availableHeaderBackgrounds?.includes(
@@ -106,9 +104,9 @@ export default {
     // },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    setHeaderBackground(this: ComponentShape, id: string) {
+    setHeaderBackground(id: string) {
       this.$socket?.emit(
         'ship:headerBackground',
         this.ship.id,
@@ -131,7 +129,7 @@ export default {
         },
       )
     },
-    setTagline(this: ComponentShape, tagline: string) {
+    setTagline(tagline: string) {
       this.$socket?.emit(
         'ship:tagline',
         this.ship.id,
@@ -155,7 +153,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

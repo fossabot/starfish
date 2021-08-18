@@ -217,14 +217,12 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {
       c,
       thrustChargeToUse: 0,
@@ -234,13 +232,13 @@ export default {
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    highlight(this: ComponentShape) {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'room'
       )
     },
-    planetsToShow(this: ComponentShape) {
+    planetsToShow(): PlanetStub[] {
       const p = [...(this.ship.visible.planets || [])]
       for (let seen of this.ship.seenPlanets) {
         if (!p.find((pl) => pl.name === seen.name))
@@ -254,7 +252,7 @@ export default {
         )
         .slice(0, 6)
     },
-    activeEngines(this: ComponentShape) {
+    activeEngines(): ItemStub[] {
       return (
         this.ship?.items.filter(
           (e: ItemStub) =>
@@ -262,7 +260,7 @@ export default {
         ) || []
       )
     },
-    engineThrustAmplification(this: ComponentShape) {
+    engineThrustAmplification(): number {
       return Math.max(
         c.noEngineThrustMagnitude,
         this.activeEngines.reduce(
@@ -273,20 +271,20 @@ export default {
         ),
       )
     },
-    pilotingSkill(this: ComponentShape) {
+    pilotingSkill(): number {
       return (
         this.crewMember.skills.find(
           (s: XPData) => s.skill === 'piloting',
         )?.level || 1
       )
     },
-    memberThrust(this: ComponentShape) {
+    memberThrust(): number {
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
         this.engineThrustAmplification,
       )
     },
-    cachesToShow(this: ComponentShape) {
+    cachesToShow(): CacheStub[] {
       return this.ship?.visible.caches
         .map((cache: CacheStub) => ({
           ...cache,
@@ -303,20 +301,17 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    reset() {
+    reset(): void {
       this.$store.commit('tooltip')
       this.brakeChargeToUse = 0
       this.thrustChargeToUse = 0
     },
-    setTarget(
-      this: ComponentShape,
-      target: CoordinatePair,
-    ) {
+    setTarget(target: CoordinatePair): void {
       this.$store.commit('setTarget', target)
     },
-    thrust(percent: number) {
+    thrust(percent: number): void {
       this.animateThrust = true
       setTimeout(() => (this.animateThrust = false), 2000)
       this.$store.commit('updateACrewMember', {
@@ -348,7 +343,7 @@ export default {
         },
       )
     },
-    brake(percent: number) {
+    brake(percent: number): void {
       this.animateThrust = true
       setTimeout(() => (this.animateThrust = false), 2000)
       this.$store.commit('updateACrewMember', {
@@ -381,7 +376,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

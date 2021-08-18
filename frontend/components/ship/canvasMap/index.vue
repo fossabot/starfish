@@ -49,49 +49,56 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
 import Drawer from './drawMapFrame'
-interface ComponentShape {
-  element: HTMLCanvasElement | null
-  drawer: Drawer | null
-  ship: ShipStub
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     emoji: { default: '🗺' },
     label: { default: 'Area Scan' },
     interactive: { default: true },
-    radius: {},
+    radius: { type: Number },
     blackout: { default: true },
     background: {},
     width: { default: 600 },
     buffer: { default: true },
   },
   data() {
+    let element: HTMLCanvasElement | undefined | null,
+      drawer: Drawer | undefined,
+      zoom: number | undefined,
+      mapCenter: CoordinatePair | undefined,
+      hoverPoint: CoordinatePair | undefined,
+      followCenterTimeout: any,
+      isZoomingTimeout: any,
+      dragStartPoint: CoordinatePair | undefined,
+      dragEndPoint: CoordinatePair | undefined,
+      mapCenterAtDragStart: CoordinatePair | undefined
+
     return {
       c,
-      element: null,
-      drawer: null,
+      element,
+      drawer,
       paused: false,
       widthScaledToDevice: 1,
       devicePixelRatio: 1,
       lastFrameRes: null,
-      mapCenter: null,
-      zoom: null,
+      mapCenter,
+      zoom,
       isZooming: false,
       isPanning: false,
       mouseIsDown: false,
       awaitingDragFrame: false,
-      dragStartPoint: [],
-      dragEndPoint: [],
-      mapCenterAtDragStart: [],
+      dragStartPoint,
+      dragEndPoint,
+      mapCenterAtDragStart,
       followingCenter: true,
-      followCenterTimeout: null,
+      followCenterTimeout,
+      isZoomingTimeout,
       resetCenterTime: 2 * 60 * 1000,
-      hoverPoint: null,
+      hoverPoint,
     }
   },
   computed: {
@@ -101,7 +108,7 @@ export default {
       'lastUpdated',
       'forceMapRedraw',
     ]),
-    show(this: ComponentShape) {
+    show(): boolean {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
@@ -110,7 +117,7 @@ export default {
           ))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         (this.interactive ? 'map' : 'mapZoom')
@@ -131,14 +138,14 @@ export default {
       setTimeout(() => this.drawNextFrame(), 200)
     },
   },
-  mounted(this: ComponentShape) {
+  mounted() {
     this.devicePixelRatio = window.devicePixelRatio || 1
     this.widthScaledToDevice =
       this.width * this.devicePixelRatio
     this.drawNextFrame()
   },
   methods: {
-    drawNextFrame(this: ComponentShape, immediate = false) {
+    drawNextFrame(immediate = false) {
       if (this.paused) return
       return new Promise<void>((resolve) => {
         if (!this.$el || !this.$el.querySelector) return
@@ -153,7 +160,9 @@ export default {
           if (this.paused) return
           profiler.step('framestart')
           if (!this.element) {
-            this.element = this.$el.querySelector('#map')
+            this.element = this.$el.querySelector(
+              '#map',
+            ) as HTMLCanvasElement
             this.drawNextFrame()
             resolve()
             return
@@ -169,7 +178,9 @@ export default {
 
           if (!this.drawer.element || !this.element) {
             await this.$nextTick()
-            this.element = this.$el.querySelector('#map')
+            this.element = this.$el.querySelector(
+              '#map',
+            ) as HTMLCanvasElement
             this.drawer.element = this.element!
           }
 
@@ -182,11 +193,11 @@ export default {
                   1000000) *
                 2
               : this.followingCenter
-              ? null
+              ? undefined
               : this.zoom,
             ship: this.ship,
             center: this.followingCenter
-              ? null
+              ? undefined
               : this.mapCenter,
             visible: this.ship?.visible,
             immediate: !!immediate,
@@ -207,16 +218,18 @@ export default {
       })
     },
 
-    mouseDown(this: ComponentShape, e: MouseEvent) {
+    mouseDown(e: MouseEvent) {
       if (!this.interactive) return
       clearTimeout(this.followCenterTimeout)
       this.followingCenter = false
       this.mouseIsDown = true
       this.dragStartPoint = [e.x, e.y]
       this.zoom = this.drawer?.zoom
-      this.mapCenterAtDragStart = [...this.mapCenter]
+      this.mapCenterAtDragStart = [
+        ...(this.mapCenter || [0, 0]),
+      ]
     },
-    mouseUp(this: ComponentShape, e: MouseEvent) {
+    mouseUp(e: MouseEvent) {
       if (!this.interactive) return
       if (!this.mouseIsDown) return
       this.followCenterTimeout = setTimeout(
@@ -237,8 +250,8 @@ export default {
       this.isPanning = false
       this.mouseIsDown = false
     },
-    mouseLeave(this: ComponentShape, e: MouseEvent) {
-      this.hoverPoint = null
+    mouseLeave(e: MouseEvent) {
+      this.hoverPoint = undefined
 
       if (!this.interactive) return
       if (this.mouseIsDown)
@@ -249,11 +262,16 @@ export default {
       this.isPanning = false
       this.mouseIsDown = false
     },
-    async mouseMove(this: ComponentShape, e: MouseEvent) {
+    async mouseMove(e: MouseEvent) {
       this.checkHoverPointForTooltip(e)
 
       if (!this.interactive) return
       if (!this.mouseIsDown) return
+      if (
+        !this.dragStartPoint ||
+        !this.mapCenterAtDragStart
+      )
+        return
       this.dragEndPoint = [e.x, e.y]
       if (
         c.distance(this.dragStartPoint, this.dragEndPoint) >
@@ -287,8 +305,9 @@ export default {
       await this.drawNextFrame(true)
       this.awaitingDragFrame = false
     },
-    async mouseWheel(this: ComponentShape, e: WheelEvent) {
+    async mouseWheel(e: WheelEvent) {
       if (!this.interactive) return
+      if (this.zoom === undefined) return
       e.preventDefault()
       if (!this.mapCenter) return c.log('no mapcenter')
 
@@ -345,14 +364,14 @@ export default {
       await this.drawNextFrame(true)
     },
 
-    resetCenter(this: ComponentShape) {
+    resetCenter() {
       this.followingCenter = true
-      this.zoom = null
-      this.mapCenter = null
+      this.zoom = undefined
+      this.mapCenter = undefined
       this.drawNextFrame()
     },
 
-    setHoverPoint(this: ComponentShape, e: MouseEvent) {
+    setHoverPoint(e: MouseEvent) {
       const tl = this.drawer?.topLeft || [0, 0]
 
       this.hoverPoint = [
@@ -368,10 +387,7 @@ export default {
       ]
     },
 
-    checkHoverPointForTooltip(
-      this: ComponentShape,
-      e: MouseEvent,
-    ) {
+    checkHoverPointForTooltip(e: MouseEvent) {
       if (!this.ship) return
       this.setHoverPoint(e)
 
@@ -470,18 +486,18 @@ export default {
 
       this.$store.commit('tooltip', toShow)
     },
-    minimize(this: ComponentShape) {
+    minimize() {
       this.paused = true
-      this.drawer = null
-      this.element = null
+      this.drawer = undefined
+      this.element = undefined
     },
-    async unminimize(this: ComponentShape) {
+    async unminimize() {
       await this.$nextTick()
       this.paused = false
       this.drawNextFrame(true)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

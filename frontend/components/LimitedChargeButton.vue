@@ -29,7 +29,8 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+export default Vue.extend({
   name: 'notification',
   props: {
     disabled: {},
@@ -76,7 +77,7 @@ export default {
       this.percent = 0
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

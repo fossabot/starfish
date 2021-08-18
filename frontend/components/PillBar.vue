@@ -47,13 +47,11 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     mini: {},
     micro: {},
@@ -64,7 +62,7 @@ export default {
     flashOnChange: { default: true },
     higherIsBetter: { default: true },
   },
-  data(): ComponentShape {
+  data() {
     return {
       highlightGood: false,
       highlightBad: false,
@@ -87,7 +85,7 @@ export default {
     },
   },
   mounted() {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

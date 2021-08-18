@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <NavBar />
-
     <div class="textcolumn">
       <div class="martop">
         <h2>Support {{ c.gameName }}!</h2>
@@ -43,24 +41,23 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
+import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  layout: 'withnavbar',
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId']),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style></style>

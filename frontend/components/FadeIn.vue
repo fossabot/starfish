@@ -5,25 +5,23 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     off: {},
   },
-  data(): ComponentShape {
+  data() {
     return {}
   },
   computed: {
     ...mapState([]),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

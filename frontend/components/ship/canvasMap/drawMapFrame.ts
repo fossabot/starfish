@@ -52,7 +52,7 @@ export default class Drawer {
     crewMemberId,
   }: {
     ship: ShipStub
-    center: CoordinatePair
+    center?: CoordinatePair
     zoom?: number
     visible?: {
       [key in keyof VisibleStub]?: VisibleStub[key]

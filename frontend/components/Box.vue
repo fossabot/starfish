@@ -35,13 +35,11 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import * as storage from '../assets/scripts/storage'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     highlight: {},
     bgImage: {},
@@ -49,7 +47,7 @@ export default {
     overlayTitle: {},
     minimizable: { default: true },
   },
-  data(): ComponentShape {
+  data() {
     return {
       minimized: false,
     }
@@ -90,7 +88,7 @@ export default {
       }
     },
   },
-  mounted(this: ComponentShape) {
+  mounted() {
     const preMinimized: string[] = JSON.parse(
       storage.get('minimizedPanes') || '[]',
     )
@@ -106,7 +104,7 @@ export default {
     else this.$emit('unminimize')
   },
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

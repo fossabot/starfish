@@ -113,19 +113,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         this.ship.planet &&
@@ -133,13 +131,13 @@ export default {
           this.ship.shownPanels.includes('planet'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'planet'
       )
     },
-    isFriendlyToFaction(this: ComponentShape) {
+    isFriendlyToFaction() {
       return (
         (this.ship.planet.allegiances.find(
           (a: AllegianceData) =>
@@ -149,9 +147,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -11,37 +11,45 @@
 </template>
 
 <script lang="ts">
-import relativeTime from 'dayjs/plugin/relativeTime'
+import Vue, { PropType } from 'vue'
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
-
 import { mapState } from 'vuex'
-interface ComponentShape {
-  time: number
-  [key: string]: any
-}
 
-export default {
-  props: { content: {}, time: {}, level: {} },
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  props: {
+    content: {
+      type: [String, Object] as PropType<
+        string | RichLogContentElement[]
+      >,
+    },
+    time: { type: Number },
+    level: {},
+  },
+  data() {
     return { timeString: '' }
   },
   computed: {
-    outputHtml() {
-      return this.content
+    outputHtml(): string {
+      return typeof this.content === 'string'
+        ? this.content
+        : Array.isArray(this.content)
+        ? this.content.map((c) => c.text).join(' ')
+        : `${this.content}`
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {
+  mounted() {
     this.resetTimeString()
     setInterval(() => this.resetTimeString(), 1 * 60 * 1000)
   },
   methods: {
-    resetTimeString(this: ComponentShape) {
+    resetTimeString() {
       this.timeString = dayjs().to(this.time)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

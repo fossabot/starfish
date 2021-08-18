@@ -1,12 +1,13 @@
 {
-  "include": ["../@types", "./"],
+  "include": ["../@types", "./index.d.ts", "./"],
   "compilerOptions": {
     "esModuleInterop": true,
     "target": "ESNEXT",
     "module": "commonjs",
     // "strict": true
     "skipLibCheck": true /* Skip type checking of declaration files. */,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["@nuxt/types"]
   },
   "references": [
     {

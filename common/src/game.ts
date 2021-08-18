@@ -117,7 +117,7 @@ function getMaxCockpitChargeForSingleCrewMember(
 function getCockpitChargePerTickForSingleCrewMember(
   level: number = 1,
 ) {
-  const flatMod = 0.6
+  const flatMod = 0.2
   return math.lerp(
     0.002 * flatMod,
     0.0005 * flatMod,

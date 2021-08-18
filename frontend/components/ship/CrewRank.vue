@@ -52,19 +52,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         this.ship.crewMembers.length > 1 &&
@@ -72,7 +70,7 @@ export default {
           this.ship.shownPanels.includes('crewRank'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'crewRank'
@@ -114,9 +112,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>
