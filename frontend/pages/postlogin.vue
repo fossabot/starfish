@@ -12,7 +12,7 @@
           PrivacyBadger has broken this before.
         </div>
         <a
-          href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Fstarfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
+          href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Fwww.starfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
           >Try Again</a
         >
       </div>
@@ -48,7 +48,7 @@ export default {
       fragment.get('access_token'),
       fragment.get('token_type'),
     ]
-
+    console.log(accessToken, tokenType)
     if (!accessToken || !tokenType) {
       return (this.errorMessage =
         'Failed to log in through Discord.')
