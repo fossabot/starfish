@@ -802,7 +802,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "bf5be1029effb452e9c7307171f733c61c763a682a014ca4559c3c8534b79532",
+        "version": "3e56a37a16671364d8bff0f1bf77423d6cd5ee133e02b8f4f46d2c855e7c3153",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },

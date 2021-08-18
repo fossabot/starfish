@@ -45,14 +45,14 @@ let ready = false;
 let mongoUsername;
 let mongoPassword;
 try {
-    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_username`, `utf-8`);
+    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_username.txt`, `utf-8`);
 }
 catch (e) {
     mongoUsername = process.env
         .MONGODB_ADMINUSERNAME;
 }
 try {
-    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_password`, `utf-8`);
+    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_password.txt`, `utf-8`);
 }
 catch (e) {
     mongoPassword = process.env
