@@ -24,7 +24,7 @@ let mongoPassword: string
 
 try {
   mongoUsername = fs.readFileSync(
-    `/run/secrets/mongodb_user`,
+    `/run/secrets/mongodb_username`,
     `utf-8`,
   )
 } catch (e) {
@@ -33,36 +33,16 @@ try {
 }
 try {
   mongoPassword = fs.readFileSync(
-    `/run/secrets/mongodb_pass`,
+    `/run/secrets/mongodb_password`,
     `utf-8`,
   )
 } catch (e) {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string
 }
-c.log(mongoUsername, mongoPassword)
+c.log({ mongoUsername, mongoPassword })
 
 const toRun: Function[] = []
-
-// let mongodbUsername: string
-// let mongodbPassword: string
-// try {
-//   mongodbUsername = fs.readFileSync(
-//     process.env.MONGODB_USERNAME_FILE as string,
-//     `utf-8`,
-//   )
-// } catch (e) {
-//   c.log(`Got an error reading mongodbUsername`)
-// }
-// try {
-//   mongodbPassword = fs.readFileSync(
-//     process.env.MONGODB_PASSWORD_FILE as string,
-//     `utf-8`,
-//   )
-//   c.log(`Imported mongo creds from secret files`)
-// } catch (e) {
-//   c.log(`Got an error reading mongodbPassword`)
-// }
 
 export const isReady = () => ready
 export const init = ({

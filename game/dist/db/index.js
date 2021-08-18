@@ -45,40 +45,21 @@ let ready = false;
 let mongoUsername;
 let mongoPassword;
 try {
-    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_user`, `utf-8`);
+    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_username`, `utf-8`);
 }
 catch (e) {
     mongoUsername = process.env
         .MONGODB_ADMINUSERNAME;
 }
 try {
-    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_pass`, `utf-8`);
+    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_password`, `utf-8`);
 }
 catch (e) {
     mongoPassword = process.env
         .MONGODB_ADMINPASSWORD;
 }
-dist_1.default.log(mongoUsername, mongoPassword);
+dist_1.default.log({ mongoUsername, mongoPassword });
 const toRun = [];
-// let mongodbUsername: string
-// let mongodbPassword: string
-// try {
-//   mongodbUsername = fs.readFileSync(
-//     process.env.MONGODB_USERNAME_FILE as string,
-//     `utf-8`,
-//   )
-// } catch (e) {
-//   c.log(`Got an error reading mongodbUsername`)
-// }
-// try {
-//   mongodbPassword = fs.readFileSync(
-//     process.env.MONGODB_PASSWORD_FILE as string,
-//     `utf-8`,
-//   )
-//   c.log(`Imported mongo creds from secret files`)
-// } catch (e) {
-//   c.log(`Got an error reading mongodbPassword`)
-// }
 exports.isReady = () => ready;
 exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongoUsername, password = mongoPassword, }) => {
     return new Promise(async (resolve) => {
