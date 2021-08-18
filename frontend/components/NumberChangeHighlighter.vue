@@ -11,9 +11,10 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../common/src'
 
-export default {
+export default Vue.extend({
   props: {
     number: {},
     display: {},
@@ -40,7 +41,7 @@ export default {
     },
   },
   mounted() {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

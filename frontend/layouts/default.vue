@@ -8,6 +8,7 @@
 </template>
 
 <script lang="js">
+import Vue from 'vue'
 import c from '../../common/src'
 import * as storage from '../assets/scripts/storage'
 
@@ -34,7 +35,7 @@ const debounce = (fn, time = 1000) => {
       return true
 }
 
-export default {
+export default Vue.extend({
   mounted() {
     const userId = storage.get('userId')
     const shipIds = JSON.parse(
@@ -68,7 +69,7 @@ export default {
       document.documentElement.style.setProperty('--vw', `${vw}px`)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -29,14 +29,12 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c, selectedShip: null }
   },
   computed: {
@@ -53,19 +51,19 @@ export default {
       if (this.ship) this.selectedShip = this.ship.id
     },
   },
-  mounted(this: ComponentShape) {
+  mounted() {
     if (this.ship) this.selectedShip = this.ship.id
   },
   methods: {
-    logout(this: ComponentShape) {
+    logout() {
       this.$store.dispatch('logout')
       this.$router.push('/')
     },
-    shipSelected(this: ComponentShape, e: Event) {
+    shipSelected(e: Event) {
       this.$store.dispatch('socketSetup', this.selectedShip)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

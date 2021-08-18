@@ -242,7 +242,7 @@ export const actions = {
             text: idRes.error,
             type: `error`,
           })
-          c.log(idRes.error)
+          c.log(`login error:`, idRes.error)
           return
         }
         userId = idRes.data
@@ -336,10 +336,10 @@ export const actions = {
   slowMode({ state, dispatch }, turnOn) {
     clearInterval(slowModeUpdateInterval)
     if (turnOn) {
-      c.log(`slow mode on`)
+      // c.log(`slow mode on`)
       dispatch(`socketSetup`, null)
       slowModeUpdateInterval = setInterval(() => {
-        c.log(`slow mode update`)
+        // c.log(`slow mode update`)
         dispatch(`socketSetup`, state.activeShipId)
         setTimeout(() => {
           if (slowModeUpdateInterval)
@@ -347,7 +347,7 @@ export const actions = {
         }, 2 * 1000)
       }, 60 * 1000)
     } else {
-      c.log(`slow mode off`)
+      // c.log(`slow mode off`)
       dispatch(`socketSetup`, state.activeShipId)
     }
   },

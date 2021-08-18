@@ -120,35 +120,34 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {
       rotate: false,
     }
   },
   computed: {
     ...mapState(['ship', 'crewMember', 'userId']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('diagram'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'diagram'
       )
     },
-    crewByRoom(
-      this: ComponentShape,
-    ): { room: string; crewMembers: CrewMemberStub[] }[] {
+    crewByRoom(): {
+      room: string
+      crewMembers: CrewMemberStub[]
+    }[] {
       const byRoom: {
         room: string
         crewMembers: CrewMemberStub[]
@@ -167,9 +166,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

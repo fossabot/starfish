@@ -3,13 +3,11 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {
       width: 0,
       height: 0,
@@ -19,12 +17,13 @@ export default {
     ...mapState([]),
   },
   watch: {},
-  async mounted(this: ComponentShape) {
+  async mounted() {
     setTimeout(this.redraw, 1000)
   },
   methods: {
-    async redraw(this: ComponentShape) {
-      const canvas: HTMLCanvasElement = this.$el,
+    async redraw() {
+      const canvas: HTMLCanvasElement = this
+          .$el as HTMLCanvasElement,
         ctx: CanvasRenderingContext2D = canvas.getContext(
           '2d',
         )!
@@ -32,8 +31,8 @@ export default {
       // color = getComputedStyle(document.documentElement)
       //   .getPropertyValue('--ui')
 
-      this.width = this.$el.parentElement.offsetWidth * 2
-      this.height = this.$el.parentElement.offsetHeight * 2
+      this.width = this.$el.parentElement!.offsetWidth * 2
+      this.height = this.$el.parentElement!.offsetHeight * 2
       const stars = Math.round(
         this.width * this.height * 0.0005,
       )
@@ -48,7 +47,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

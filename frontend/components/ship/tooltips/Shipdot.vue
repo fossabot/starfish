@@ -232,17 +232,18 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
 
-export default {
+export default Vue.extend({
   props: { data: {}, showItems: { default: true } },
   data() {
     return { c }
   },
   computed: {},
   mounted() {},
-}
+})
 </script>
 
 <style scoped lang="scss">

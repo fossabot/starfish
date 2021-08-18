@@ -61,42 +61,37 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c, minimized: false }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('ship'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'ship'
       )
     },
-    isCaptain(this: ComponentShape) {
+    isCaptain() {
       return this.ship?.captain === this.userId
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    async redistributeCommonFund(
-      this: ComponentShape,
-      amount: any,
-    ) {
+    async redistributeCommonFund(amount: any) {
       if (amount === 'all') amount = this.ship.commonCredits
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
@@ -123,7 +118,7 @@ export default {
       })
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

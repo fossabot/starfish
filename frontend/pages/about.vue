@@ -104,23 +104,21 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId']),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style></style>

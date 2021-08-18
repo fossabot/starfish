@@ -22,25 +22,23 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {},
-  data(): ComponentShape {
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['modal']),
   },
   watch: {},
-  mounted(this: ComponentShape) {
+  mounted() {
     window.addEventListener('keydown', this.keyListener)
   },
-  beforeDestroy(this: ComponentShape) {
+  beforeDestroy() {
     window.removeEventListener('keydown', this.keyListener)
   },
   methods: {
@@ -50,7 +48,7 @@ export default {
         this.$store.commit('set', { modal: null })
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

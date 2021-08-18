@@ -36,10 +36,11 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
 
-export default {
+export default Vue.extend({
   props: { data: {} },
   data() {
     return { c }
@@ -47,7 +48,7 @@ export default {
   computed: {
     ...mapState([]),
   },
-}
+})
 </script>
 
 <style scoped lang="scss"></style>

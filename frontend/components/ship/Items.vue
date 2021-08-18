@@ -256,57 +256,55 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('items'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'items'
       )
     },
-    engines(this: ComponentShape) {
+    engines() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'engine',
       )
     },
-    weapons(this: ComponentShape) {
+    weapons() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'weapon',
       )
     },
-    scanners(this: ComponentShape) {
+    scanners() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'scanner',
       )
     },
-    communicators(this: ComponentShape) {
+    communicators() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'communicator',
       )
     },
-    armor(this: ComponentShape) {
+    armor() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'armor',
       )
     },
-    other(this: ComponentShape) {
+    other() {
       return this.ship.items.filter(
         (i: ItemStub) =>
           i.type !== 'engine' &&
@@ -318,9 +316,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

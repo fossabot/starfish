@@ -40,23 +40,21 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c, selectedShip: null }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return !this.ship
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

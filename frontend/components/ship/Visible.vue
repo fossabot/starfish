@@ -116,19 +116,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {}
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
@@ -137,7 +135,7 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
     angleAndDistance(el: any) {
       return {
@@ -153,7 +151,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

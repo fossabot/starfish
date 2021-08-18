@@ -25,19 +25,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['crewMember']),
-    sortedSkills(this: ComponentShape) {
+    sortedSkills() {
       return [...this.crewMember.skills]
         .sort((a: XPData, b: XPData) => b.xp - a.xp)
         .map((s: XPData) => {
@@ -50,9 +48,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

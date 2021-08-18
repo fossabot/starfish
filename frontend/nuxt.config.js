@@ -36,8 +36,8 @@ export default {
   css: [`~/assets/styles/main.scss`],
 
   plugins: [
-    { src: `~/plugins/socket.js` },
-    { src: `~/plugins/tooltip.js` },
+    { src: `~/plugins/socket.ts` },
+    { src: `~/plugins/tooltip.ts` },
   ],
 
   components: true,
@@ -57,5 +57,4 @@ export default {
   serverMiddleware: {
     '/api': `~/api`,
   },
-
 }

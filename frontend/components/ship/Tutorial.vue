@@ -40,19 +40,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c, scriptIndex: 0, waitingForNextStep: false }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show(): boolean {
       return (
         this.ship &&
         this.crewMember &&
@@ -60,21 +58,21 @@ export default {
         this.currentScript
       )
     },
-    highlight(this: ComponentShape) {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'tutorial'
       )
     },
-    tutorial(this: ComponentShape) {
+    tutorial(): any {
       return this.ship && this.ship.tutorial
     },
-    textToShow(this: ComponentShape) {
+    textToShow(): string[] {
       return this.tutorial?.currentStep?.script?.filter(
         (s: any) => !s.channel,
       )
     },
-    currentScript(this: ComponentShape) {
+    currentScript(): string {
       return this.textToShow?.[this.scriptIndex]
     },
   },
@@ -84,9 +82,9 @@ export default {
       this.waitingForNextStep = false
     },
   },
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    advanceTutorial(this: ComponentShape) {
+    advanceTutorial() {
       this.waitingForNextStep = true
       this.$socket.emit(
         'ship:advanceTutorial',
@@ -94,7 +92,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

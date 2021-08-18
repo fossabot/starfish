@@ -41,32 +41,32 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['userId', 'crewMember', 'ship']),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    submit(this: ComponentShape) {
+    submit() {
       fetch(`/api/feedback/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: this.$refs.Name.value,
-          email: this.$refs.Email.value,
-          comment: this.$refs.Feedback.value,
+          name: (this.$refs.Name as HTMLInputElement).value,
+          email: (this.$refs.Email as HTMLInputElement)
+            .value,
+          comment: (this.$refs.Feedback as HTMLInputElement)
+            .value,
           ship: this.ship
             ? `${this.ship?.name} (${this.ship?.id})`
             : '',
@@ -78,7 +78,7 @@ export default {
       this.$router.push('/feedback/thanks')
     },
   },
-}
+})
 </script>
 
 <style></style>

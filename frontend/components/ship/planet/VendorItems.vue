@@ -123,22 +123,20 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship', 'userId', 'crewMember']),
-    isCaptain(this: ComponentShape) {
+    isCaptain() {
       return this.ship?.captain === this.userId
     },
-    isFriendlyToFaction(this: ComponentShape) {
+    isFriendlyToFaction() {
       return (
         (this.ship.planet.allegiances.find(
           (a: AllegianceData) =>
@@ -146,7 +144,7 @@ export default {
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
-    buyableItems(this: ComponentShape) {
+    buyableItems() {
       return (this.ship?.planet?.vendor?.items || [])
         .filter(
           (item: VendorItemPrice) => item.buyMultiplier,
@@ -173,7 +171,7 @@ export default {
           }
         })
     },
-    sellableItems(this: ComponentShape) {
+    sellableItems() {
       return this.ship?.items
         .map((item: ItemStub) => {
           const itemForSale = (
@@ -205,7 +203,7 @@ export default {
         })
         .filter((i: ItemStub) => i)
     },
-    swappableChassis(this: ComponentShape) {
+    swappableChassis() {
       return (this.ship.planet?.vendor?.chassis || []).map(
         (chassis: VendorChassisPrice) => {
           const currentChassisSellPrice = Math.floor(
@@ -237,9 +235,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    buyItem(this: ComponentShape, data: VendorItemPrice) {
+    buyItem(data: VendorItemPrice) {
       this.$store.commit('setShipProp', [
         'items',
         [...this.ship.items, data.itemData],
@@ -264,7 +262,7 @@ export default {
       )
     },
 
-    sellItem(this: ComponentShape, data: ItemStub) {
+    sellItem(data: ItemStub) {
       // c.log(data)
       this.$store.commit('setShipProp', [
         'items',
@@ -293,10 +291,7 @@ export default {
       this.$store.commit('tooltip')
     },
 
-    swapChassis(
-      this: ComponentShape,
-      data: VendorChassisPrice,
-    ) {
+    swapChassis(data: VendorChassisPrice) {
       this.$socket.emit(
         'ship:swapChassis',
         this.ship.id,
@@ -316,7 +311,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

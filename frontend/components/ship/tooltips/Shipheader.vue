@@ -44,10 +44,11 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
 
-export default {
+export default Vue.extend({
   props: { data: {}, interactive: {} },
   data() {
     return { c }
@@ -64,7 +65,7 @@ export default {
     },
   },
   mounted() {},
-}
+})
 </script>
 
 <style scoped lang="scss">

@@ -21,14 +21,12 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import * as storage from '../assets/scripts/storage'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {
       errorMessage: '',
       userData: null,
@@ -36,11 +34,11 @@ export default {
       show: false,
     }
   },
-  computed: {
-    ...mapState([]),
-  },
-  async mounted(this: ComponentShape) {
-    setTimeout(() => (this.show = true), 4000)
+  computed: {},
+  async mounted() {
+    setTimeout(() => {
+      this.show = true
+    }, 4000)
     const fragment = new URLSearchParams(
       window.location.hash.slice(1),
     )
@@ -50,8 +48,9 @@ export default {
     ]
 
     if (!accessToken || !tokenType) {
-      return (this.errorMessage =
-        'Failed to log in through Discord.')
+      this.errorMessage =
+        'Failed to log in through Discord.'
+      return
     } else {
       storage.set('tokenType', tokenType)
       storage.set('accessToken', accessToken)
@@ -59,7 +58,7 @@ export default {
     }
   },
   methods: {},
-}
+})
 </script>
 
 <style></style>

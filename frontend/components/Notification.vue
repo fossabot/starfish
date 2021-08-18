@@ -9,7 +9,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'notification',
   props: {
     text: {},
@@ -21,7 +23,7 @@ export default {
     }
   },
   mounted() {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

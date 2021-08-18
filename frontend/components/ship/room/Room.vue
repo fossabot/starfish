@@ -14,18 +14,16 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {}
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         this.crewMember &&
@@ -35,9 +33,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

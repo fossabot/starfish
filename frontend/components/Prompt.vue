@@ -57,7 +57,9 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   props: { max: {} },
   data() {
     return {
@@ -77,7 +79,7 @@ export default {
       this.$emit('apply', value)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

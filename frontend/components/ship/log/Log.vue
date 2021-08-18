@@ -20,40 +20,38 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return {}
   },
   computed: {
     ...mapState(['ship']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('log'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'log'
       )
     },
-    flippedLog(this: ComponentShape) {
+    flippedLog() {
       const copy = [...this.ship.log]
       copy.reverse()
       return copy
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

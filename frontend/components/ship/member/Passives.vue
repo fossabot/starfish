@@ -12,19 +12,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['crewMember']),
-    sortedPassives(this: ComponentShape) {
+    sortedPassives() {
       return [...this.crewMember.passives].sort(
         (a: BaseCrewPassiveData, b: BaseCrewPassiveData) =>
           (b.level || 0) - (a.level || 0),
@@ -32,9 +30,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

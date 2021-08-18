@@ -35,28 +35,25 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  crewMember: CrewMemberStub
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return {
       c,
     }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'room'
       )
     },
-    choicesToShow(this: ComponentShape) {
+    choicesToShow() {
       const choices: RepairPriority[] = ['most damaged']
       if (
         this.ship.items.find(
@@ -84,12 +81,12 @@ export default {
         choices.push('communicators')
       return choices
     },
-    selected(this: ComponentShape) {
+    selected() {
       return (
         this.crewMember?.repairPriority || 'most damaged'
       )
     },
-    totalRepairPower(this: ComponentShape) {
+    totalRepairPower() {
       return c.getRepairAmountPerTickForSingleCrewMember(
         this.crewMember?.skills.find(
           (s: XPData) => s.skill === 'mechanics',
@@ -98,9 +95,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

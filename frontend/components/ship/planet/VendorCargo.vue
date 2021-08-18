@@ -139,19 +139,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): Partial<ComponentShape> {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(this: ComponentShape) {
+    isFriendlyToFaction(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: AllegianceData) =>
@@ -159,7 +157,7 @@ export default {
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
-    buyableCargo(this: ComponentShape) {
+    buyableCargo(): any[] {
       return this.ship?.planet?.vendor?.cargo
         .filter((cargo: any) => cargo.buyMultiplier)
         .map((cargo: any) => {
@@ -201,7 +199,7 @@ export default {
           }
         })
     },
-    sellableCargo(this: ComponentShape) {
+    sellableCargo(): any[] {
       return this.ship?.planet?.vendor?.cargo
         .filter((cargo: any) => cargo.sellMultiplier)
         .map((cargo: any) => {
@@ -233,7 +231,7 @@ export default {
           }
         })
     },
-    totalWeight(this: ComponentShape) {
+    totalWeight(): number {
       return this.crewMember.inventory.reduce(
         (total: number, i: Cargo) => total + i.amount,
         0,
@@ -241,9 +239,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    buyCargo(this: ComponentShape, data: any, amount: any) {
+    buyCargo(data: any, amount: any) {
       if (amount === 'all') amount = data.maxCanBuy
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
@@ -282,11 +280,7 @@ export default {
       )
     },
 
-    sellCargo(
-      this: ComponentShape,
-      data: any,
-      amount: any,
-    ) {
+    sellCargo(data: any, amount: any) {
       if (amount === 'all')
         amount =
           this.crewMember.inventory.find(
@@ -333,7 +327,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -22,16 +22,16 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import c from '../../common/src'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: { disabled: {}, max: {} },
-  data(): ComponentShape {
-    return { c, prompt: null, results: [] }
+  data() {
+    let prompt: any,
+      results: any[] = []
+    return { c, prompt, results }
   },
   computed: {
     ...mapState(['modal']),
@@ -50,18 +50,18 @@ export default {
       }
     },
   },
-  mounted(this: ComponentShape) {
+  mounted() {
     // setInterval(
     //   () => c.log(this.prompt, this.results),
     //   1000,
     // )
   },
   methods: {
-    openPrompt(this: ComponentShape) {
+    openPrompt() {
       this.prompt = 1
       this.$store.commit('set', { modal: 'prompt' })
     },
-    done(this: ComponentShape, ...args: any[]) {
+    done(...args: any[]) {
       this.results.push(...args)
       if (this.$slots.second && this.prompt === 1) {
         this.prompt = 2
@@ -72,7 +72,7 @@ export default {
       this.results = []
       this.$store.commit('set', { modal: null })
     },
-    apply(this: ComponentShape, ...args: any[]) {
+    apply(...args: any[]) {
       this.$emit('apply', ...args)
       if (args[0] === 'all') {
         this.results = []
@@ -80,7 +80,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

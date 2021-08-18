@@ -150,19 +150,17 @@ ${
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c }
   },
   computed: {
     ...mapState(['crewMember', 'ship']),
-    show(this: ComponentShape) {
+    show() {
       return (
         this.ship &&
         this.crewMember &&
@@ -170,18 +168,18 @@ export default {
           this.ship.shownPanels.includes('inventory'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'inventory'
       )
     },
-    inventory(this: ComponentShape) {
+    inventory() {
       return this.crewMember?.inventory
         .filter((i: Cargo) => i.amount >= 0.001)
         .sort((a: Cargo, b: Cargo) => b.amount - a.amount)
     },
-    totalWeight(this: ComponentShape) {
+    totalWeight() {
       return this.crewMember?.inventory.reduce(
         (total: number, i: Cargo) => total + i.amount,
         0,
@@ -189,12 +187,9 @@ export default {
     },
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {
-    async addToCommonFund(
-      this: ComponentShape,
-      amount: any,
-    ) {
+    async addToCommonFund(amount: any) {
       if (amount === 'all') amount = this.crewMember.credits
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
@@ -220,11 +215,7 @@ export default {
         type: 'success',
       })
     },
-    drop(
-      this: ComponentShape,
-      type: CargoType | 'credits',
-      res: any[],
-    ) {
+    drop(type: CargoType | 'credits', res: any[]) {
       let [amount, message] = res
 
       const totalHeld =
@@ -274,7 +265,7 @@ export default {
       )
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -57,20 +57,21 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+import type VueRouter from 'vue-router'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
 import * as storage from '../../assets/scripts/storage'
-interface ComponentShape {
-  [key: string]: any
-}
+
 import FreeMase from 'freemase'
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
+    let masonryElement: FreeMase | undefined
     return {
-      c,
-      masonryElement: null,
+      masonryElement,
       ready: false,
+      c,
     }
   },
 
@@ -84,30 +85,30 @@ export default {
       'connected',
       'activeShipId',
     ]),
-    planet(this: ComponentShape) {
+    planet(): PlanetStub {
       return this.ship?.planet
     },
-    room(this: ComponentShape) {
+    room(): CrewLocation {
       return this.crewMember?.location
     },
   },
 
   watch: {
-    shipIds(this: ComponentShape) {
+    shipIds(): void {
       if (!this.activeShipId) this.changeShip(0)
     },
-    ship(this: ComponentShape) {
+    ship(): void {
       this.masonryElement?.position()
     },
-    connected(this: ComponentShape) {
+    connected(): void {
       this.masonryElement?.position()
     },
-    userId(this: ComponentShape) {
+    userId(): void {
       if (!this.userId) this.$router.push('/login')
     },
   },
 
-  async mounted(this: ComponentShape) {
+  async mounted(): Promise<void> {
     if (!this.userId || !this.shipIds) {
       this.$store.dispatch('logIn', {
         userId: this.userId,
@@ -129,12 +130,8 @@ export default {
   },
 
   methods: {
-    changeShip(
-      this: ComponentShape,
-      index: number | false,
-      id?: string,
-    ) {
-      c.log(id, index, this.ship?.id)
+    changeShip(index: number | false, id?: string): void {
+      // c.log(id, index, this.ship?.id)
       if (id && (!this.ship || this.ship.id !== id))
         this.$store.dispatch('socketSetup', id)
       else if (
@@ -150,18 +147,20 @@ export default {
       }
     },
 
-    async setUpMasonry(this: ComponentShape) {
+    async setUpMasonry(): Promise<void> {
       if (this.masonryElement) return
-      if (!this.$refs.container)
-        return setTimeout(this.setUpMasonry, 100)
+      if (!this.$refs.container) {
+        setTimeout(() => this.setUpMasonry(), 100)
+        return
+      }
       this.masonryElement = new FreeMase(
-        this.$refs.container,
+        this.$refs.container as HTMLElement,
         { centerX: true },
       )
       setTimeout(() => (this.ready = true), 200)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

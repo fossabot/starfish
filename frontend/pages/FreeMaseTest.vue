@@ -53,34 +53,39 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import FreeMase from 'freemase'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
-    return { boxes: 150, scrambler: Math.random() }
+export default Vue.extend({
+  data() {
+    let masonryElement: FreeMase | undefined
+    return {
+      boxes: 150,
+      scrambler: Math.random(),
+      masonryElement,
+    }
   },
   computed: {},
   watch: {},
-  async mounted(this: ComponentShape) {
+  async mounted() {
     await this.$nextTick()
 
     while (!this.$refs.container) await this.$nextTick()
-    this.masonryElement = new FreeMase(this.$refs.container)
+    this.masonryElement = new FreeMase(
+      this.$refs.container as HTMLElement,
+    )
 
     window.addEventListener('keydown', this.reset)
   },
-  beforeDestroy(this: ComponentShape) {
+  beforeDestroy() {
     window.removeEventListener('keydown', this.reset)
   },
   methods: {
-    reset(this: ComponentShape) {
+    reset() {
       this.scrambler = Math.random()
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

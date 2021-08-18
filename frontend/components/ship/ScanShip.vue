@@ -38,19 +38,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
-  data(): ComponentShape {
+export default Vue.extend({
+  data() {
     return { c, selected: 0 }
   },
   computed: {
     ...mapState(['userId', 'ship']),
-    show(this: ComponentShape) {
+    show(): boolean {
       return (
         this.ship &&
         this.scannable.length &&
@@ -58,13 +56,13 @@ export default {
           this.ship.shownPanels.includes('scanShip'))
       )
     },
-    highlight(this: ComponentShape) {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'scanShip'
       )
     },
-    scannable(this: ComponentShape) {
+    scannable(): ShipStub[] {
       if (this.ship.radii.scan === 0) return []
       return this.ship.visible.ships
         .filter(
@@ -78,20 +76,20 @@ export default {
             c.distance(b.location, this.ship.location),
         )
     },
-    toShow(this: ComponentShape) {
+    toShow(): ShipStub {
       const selectedShip = this.scannable[this.selected]
       return selectedShip
     },
   },
   watch: {
-    scannable() {
+    scannable(): void {
       if (this.selected + 1 > this.scannable.length)
         this.selected = 0
     },
   },
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

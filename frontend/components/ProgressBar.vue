@@ -32,12 +32,10 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     micro: {},
     mini: {},
@@ -45,16 +43,16 @@ export default {
     color: { default: 'rgba(255,255,255,.1)' },
     dangerZone: { default: 0.2 },
   },
-  data(): ComponentShape {
+  data() {
     return {}
   },
   computed: {
     ...mapState([]),
   },
   watch: {},
-  mounted(this: ComponentShape) {},
+  mounted() {},
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>

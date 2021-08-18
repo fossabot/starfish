@@ -17,19 +17,17 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { mapState } from 'vuex'
-interface ComponentShape {
-  [key: string]: any
-}
 
-export default {
+export default Vue.extend({
   props: {
     name: {},
     location: {},
     roomEls: {},
     highlight: {},
   },
-  data(): ComponentShape {
+  data() {
     return {
       animate: false,
       hide: false,
@@ -41,16 +39,16 @@ export default {
     ...mapState(['ship']),
   },
   watch: {
-    location(this: ComponentShape) {
+    location() {
       this.calculateNewPosition()
     },
   },
-  mounted(this: ComponentShape) {
+  mounted() {
     this.calculateNewPosition()
     setTimeout(() => (this.animate = true), 1000)
   },
   methods: {
-    calculateNewPosition(this: ComponentShape) {
+    calculateNewPosition() {
       let targetElement = this.roomEls[
         this.location
       ] as HTMLDivElement
@@ -78,7 +76,7 @@ export default {
       this.left = minLeft + Math.random() * leftRange
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
