@@ -24,9 +24,6 @@ services:
     ports:
       - '4200:4200'
     command: 'npm run dev'
-    environment:
-      MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
-      MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
     depends_on:
       - mongodb
     secrets:
@@ -42,8 +39,6 @@ services:
     expose: 
       - '4300'
     command: 'npm run start'
-    environment: 
-      hostname: localhost
     secrets:
       - google_client_email
       - google_private_key

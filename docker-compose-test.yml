@@ -32,10 +32,15 @@ services:
       - 8081:8081
     logging:
       driver: none
+    secrets:
+      - mongodb_root_username
+      - mongodb_root_password
+      - mongodb_username
+      - mongodb_password
 
   game:
     # build: './game'
-    image: 'xmadsen/starfish-game:0.1'
+    image: 'xmadsen/starfish-game:prod-latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -47,15 +52,18 @@ services:
       - ./game/dist:/usr/app/game/dist
       - ./game/src:/usr/app/game/src
     command: 'npm run dev'
-    environment:
-      MONGODB_ADMINUSERNAME: starfish
-      MONGODB_ADMINPASSWORD: starfish123
+    # environment:
+    #   MONGODB_ADMINUSERNAME: starfish
+    #   MONGODB_ADMINPASSWORD: starfish123
     depends_on:
       - mongodb
+    secrets:
+      - mongodb_username
+      - mongodb_password
 
   frontend:
     #build: './frontend'
-    image: 'xmadsen/starfish-frontend:0.1'
+    image: 'xmadsen/starfish-frontend:prod-latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -65,10 +73,13 @@ services:
       - ./common:/usr/app/common
       - ./frontend:/usr/app/frontend/
     command: 'npm run dev'
+    secrets:
+      - google_client_email
+      - google_private_key
 
   discord:
     #build: './discord'
-    image: 'xmadsen/starfish-discord:0.1'
+    image: 'xmadsen/starfish-discord:prod-latest'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
@@ -76,6 +87,32 @@ services:
       - ./discord/dist:/usr/app/discord/dist
       - ./discord/.env:/usr/app/discord/.env
     command: 'npm run dev'
+    secrets:
+      - discord_token
+      - bot_id
+
+  nginx:
+    image: 'xmadsen/starfish-nginx:prod-latest'
+    ports:
+      - '80:80'
+
+secrets:
+  discord_token:
+    file: discord/secrets/discord_token.txt
+  bot_id:
+    file: discord/secrets/bot_id.txt
+  mongodb_username:
+    file: db/secrets/mongodb_username.txt
+  mongodb_password:
+    file: db/secrets/mongodb_password.txt
+  mongodb_root_username:
+    file: db/secrets/mongodb_root_username.txt
+  mongodb_root_password:
+    file: db/secrets/mongodb_root_password.txt
+  google_client_email:
+    file: frontend/secrets/google_client_email.txt
+  google_private_key:
+    file: frontend/secrets/google_private_key.txt
 
 volumes:
   db_data:

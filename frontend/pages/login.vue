@@ -6,6 +6,7 @@ interface ComponentShape {
   [key: string]: any
 }
 
+
 export default {
   data(): ComponentShape {
     return {}
@@ -21,8 +22,8 @@ export default {
   mounted(this: ComponentShape) {
     if (this.userId) this.$router.push('/s')
     else {
-      const postLoginPage = `http://${process.env.hostname}/postlogin`
-      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
+      const postLoginPage = `http://${window.location.hostname}/postlogin`
+      window.location.href =`https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`
     }
