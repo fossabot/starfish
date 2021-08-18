@@ -9,6 +9,7 @@ interface LogEntry {
 interface RichLogContentElement {
   text: string
   color?: string
-  url: string
-  tooltipData: any
+  style?: string
+  url?: string
+  tooltipData?: string | { type: string }
 }
