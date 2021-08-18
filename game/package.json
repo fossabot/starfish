@@ -1,14 +1,15 @@
 {
   "scripts": {
+    "build-once": "rm -f tsconfig.game.tsbuildinfo && tsc --project ./tsconfig.game.json",
     "build": "tsc --project ./tsconfig.game.json -w",
     "dev": "nodemon dist/index.js",
     "analyze": "NODE_ENV=production node --prof dist/index.js"
   },
   "dependencies": {
-    "@types/mongoose": "^5.10.5",
+    "@types/mongoose": "5.10.3",
     "dotenv": "^9.0.2",
     "is-docker": "^2.2.1",
-    "mongoose": "^5.12.8",
+    "mongoose": "5.10.19",
     "nodemon": "^2.0.7",
     "socket.io": "^4.0.1"
   }
