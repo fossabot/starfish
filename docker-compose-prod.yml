@@ -16,6 +16,8 @@ services:
       - mongodb_root_password
       - mongodb_username
       - mongodb_password
+    logging:
+      driver: none
 
   game:
     image: 'xmadsen/starfish-game:prod-latest'
@@ -24,6 +26,9 @@ services:
     ports:
       - '4200:4200'
     command: 'npm run dev'
+    environment:
+      MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
+      MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
     depends_on:
       - mongodb
     secrets:
@@ -36,7 +41,7 @@ services:
     working_dir: /usr/app/frontend
     ports:
       - '4300:4300'
-    expose: 
+    expose:
       - '4300'
     command: 'npm run start'
     secrets:
@@ -56,6 +61,8 @@ services:
     image: 'xmadsen/starfish-nginx:prod-latest'
     ports:
       - '80:80'
+    logging:
+      driver: none
       # - '443:443'
     # command: >
     #   “/bin/sh -c ‘while :; do sleep 6h & wait $${!};

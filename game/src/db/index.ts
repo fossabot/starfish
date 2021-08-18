@@ -24,7 +24,7 @@ let mongoPassword: string
 
 try {
   mongoUsername = fs.readFileSync(
-    `/run/secrets/mongodb_username`,
+    `/run/secrets/mongodb_username.txt`,
     `utf-8`,
   )
 } catch (e) {
@@ -33,7 +33,7 @@ try {
 }
 try {
   mongoPassword = fs.readFileSync(
-    `/run/secrets/mongodb_password`,
+    `/run/secrets/mongodb_password.txt`,
     `utf-8`,
   )
 } catch (e) {
