@@ -247,7 +247,16 @@ export class HumanShip extends CombatShip {
     if (this.logAlertLevel === `high`)
       levelsToAlert.push(`critical`)
     if (levelsToAlert.includes(level))
-      io.emit(`ship:message`, this.id, content)
+      io.emit(
+        `ship:message`,
+        this.id,
+        Array.isArray(content)
+          ? content
+              .map((ce) => (ce as any).text || ce)
+              .join(` `)
+              .replace(/\s*&nospace/g, ``)
+          : content,
+      )
   }
 
   discoverPlanet(p: Planet) {
@@ -602,10 +611,7 @@ export class HumanShip extends CombatShip {
     if (charge > 0.5)
       this.logEntry(
         [
-          {
-            text: `${thruster.name}`,
-            tooltipData: thruster.stubify(),
-          },
+          thruster.name,
           `thrusted towards ${c.r2(
             zeroedAngleToTargetInDegrees,
             0,
@@ -690,10 +696,7 @@ export class HumanShip extends CombatShip {
     if (charge > 1)
       this.logEntry(
         [
-          {
-            text: `${thruster.name}`,
-            tooltipData: thruster.stubify(),
-          },
+          thruster.name,
           `applied the brakes with ${c.r2(
             magnitudePerPointOfCharge * charge,
           )}`,
@@ -1126,7 +1129,7 @@ export class HumanShip extends CombatShip {
               color: z.color,
               tooltipData: z.stubify(),
             },
-            `.`,
+            `&nospace.`,
           ],
           `high`,
         )
@@ -1139,7 +1142,7 @@ export class HumanShip extends CombatShip {
               color: z.color,
               tooltipData: z.stubify(),
             },
-            `.`,
+            `&nospace.`,
           ],
           `high`,
         )

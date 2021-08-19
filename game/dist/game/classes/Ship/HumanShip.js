@@ -192,7 +192,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (this.logAlertLevel === `high`)
             levelsToAlert.push(`critical`);
         if (levelsToAlert.includes(level))
-            io_1.default.emit(`ship:message`, this.id, content);
+            io_1.default.emit(`ship:message`, this.id, Array.isArray(content)
+                ? content
+                    .map((ce) => ce.text || ce)
+                    .join(` `)
+                    .replace(/\s*&nospace/g, ``)
+                : content);
     }
     discoverPlanet(p) {
         this.seenPlanets.push(p);
@@ -428,10 +433,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         // })
         if (charge > 0.5)
             this.logEntry([
-                {
-                    text: `${thruster.name}`,
-                    tooltipData: thruster.stubify(),
-                },
+                thruster.name,
                 `thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
                 { text: `&nospaceP`, tooltipData: `Poseidons` },
                 `of thrust.`,
@@ -478,10 +480,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.direction = this.direction;
         if (charge > 1)
             this.logEntry([
-                {
-                    text: `${thruster.name}`,
-                    tooltipData: thruster.stubify(),
-                },
+                thruster.name,
                 `applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
                 { text: `&nospaceP`, tooltipData: `Poseidons` },
                 `of thrust.`,
@@ -765,7 +764,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         color: z.color,
                         tooltipData: z.stubify(),
                     },
-                    `.`,
+                    `&nospace.`,
                 ], `high`);
             if (!startedInside && endedInside)
                 this.logEntry([
@@ -775,7 +774,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         color: z.color,
                         tooltipData: z.stubify(),
                     },
-                    `.`,
+                    `&nospace.`,
                 ], `high`);
         }
     }

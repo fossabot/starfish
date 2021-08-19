@@ -245,6 +245,7 @@ class CombatShip extends Ship_1.Ship {
                     p.intensity || 0;
         });
         let totalDamageDealt = 0;
+        const damageTally = [];
         // ----- hit armor first -----
         if (remainingDamage)
             for (let armor of this.armor) {
@@ -289,6 +290,13 @@ class CombatShip extends Ship_1.Ship {
                         ], `high`);
                     armor.announceWhenBroken = false;
                 }
+                damageTally.push({
+                    targetType: `armor`,
+                    targetDisplayName: armor.displayName,
+                    damage: taken,
+                    damageBlocked: damageRemovedFromTotal,
+                    destroyed: armor.hp === 0,
+                });
             }
         // ----- distribute remaining damage -----
         while (remainingDamage > 0) {
@@ -318,6 +326,12 @@ class CombatShip extends Ship_1.Ship {
                 equipmentToAttack._stub = null;
                 remainingDamage = 0;
                 totalDamageDealt += adjustedRemainingDamage;
+                damageTally.push({
+                    targetType: equipmentToAttack.type,
+                    targetDisplayName: equipmentToAttack.displayName,
+                    damage: adjustedRemainingDamage,
+                    destroyed: false,
+                });
             }
             // ----- item destroyed -----
             else {
@@ -326,6 +340,12 @@ class CombatShip extends Ship_1.Ship {
                 equipmentToAttack._stub = null;
                 remainingDamage -= remainingHp;
                 totalDamageDealt += remainingHp;
+                damageTally.push({
+                    targetType: equipmentToAttack.type,
+                    targetDisplayName: equipmentToAttack.displayName,
+                    damage: remainingHp,
+                    destroyed: true,
+                });
             }
             // ----- notify both sides -----
             if (equipmentToAttack.hp === 0 &&
@@ -380,6 +400,7 @@ class CombatShip extends Ship_1.Ship {
             damageTaken: totalDamageDealt,
             didDie: didDie,
             weapon: attack.weapon?.stubify(),
+            damageTally,
         };
         // ship damage
         if (attack.weapon)
@@ -418,13 +439,14 @@ class CombatShip extends Ship_1.Ship {
                     : [
                         `You took`,
                         {
-                            text: `${dist_1.default.r2(totalDamageDealt)}`,
+                            text: `${dist_1.default.r2(totalDamageDealt)} damage`,
+                            color: `var(--warning)`,
                             tooltipData: {
                                 type: `damage`,
                                 ...damageResult,
                             },
                         },
-                        `damage.`,
+                        `&nospace.`,
                     ]),
             ], attack.miss ? `medium` : `high`);
         // zone or passive damage
@@ -434,6 +456,9 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: attacker.name,
                     color: attacker.color || `red`,
+                    tooltipData: attacker.stubify
+                        ? attacker.stubify()
+                        : undefined,
                 },
                 `&nospace.`,
                 ...(attack.miss
@@ -441,13 +466,14 @@ class CombatShip extends Ship_1.Ship {
                     : [
                         `You took`,
                         {
-                            text: `${dist_1.default.r2(totalDamageDealt)}`,
+                            text: `${dist_1.default.r2(totalDamageDealt)} damage`,
+                            color: `var(--warning)`,
                             tooltipData: {
                                 type: `damage`,
                                 ...damageResult,
                             },
                         },
-                        `damage.`,
+                        `&nospace.`,
                     ]),
             ], attack.miss ? `medium` : `high`);
         return damageResult;

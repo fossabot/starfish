@@ -7,6 +7,7 @@ import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 
 export class Zone extends Stubbable {
+  readonly type = `zone`
   readonly id: string
   readonly name: string
   readonly location: CoordinatePair
@@ -66,7 +67,14 @@ export class Zone extends Stubbable {
           // random passive miss chance
           else
             miss = hitRoll < proximityMod / enemyAgility / 2
-          c.log({ hitRoll, enemyAgility, proximityMod })
+          c.log({
+            hitRoll,
+            enemyAgility,
+            proximityMod,
+            miss,
+            missMustBeLessThan:
+              proximityMod / enemyAgility / 2,
+          })
         }
         // c.log({ miss, intensity })
         ship.takeDamage(this, {

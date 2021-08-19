@@ -9,6 +9,7 @@ const Stubbable_1 = require("./Stubbable");
 class Zone extends Stubbable_1.Stubbable {
     constructor({ location, radius, id, color, name, effects, }, game) {
         super();
+        this.type = `zone`;
         this.game = game;
         this.location = location;
         this.radius = radius;
@@ -43,7 +44,13 @@ class Zone extends Stubbable_1.Stubbable {
                     // random passive miss chance
                     else
                         miss = hitRoll < proximityMod / enemyAgility / 2;
-                    dist_1.default.log({ hitRoll, enemyAgility, proximityMod });
+                    dist_1.default.log({
+                        hitRoll,
+                        enemyAgility,
+                        proximityMod,
+                        miss,
+                        missMustBeLessThan: proximityMod / enemyAgility / 2,
+                    });
                 }
                 // c.log({ miss, intensity })
                 ship.takeDamage(this, {

@@ -381,6 +381,13 @@ export abstract class CombatShip extends Ship {
     })
 
     let totalDamageDealt = 0
+    const damageTally: {
+      targetType: string
+      targetDisplayName: string
+      damage: number
+      damageBlocked?: number
+      destroyed: boolean
+    }[] = []
 
     // ----- hit armor first -----
     if (remainingDamage)
@@ -435,6 +442,13 @@ export abstract class CombatShip extends Ship {
             )
           armor.announceWhenBroken = false
         }
+        damageTally.push({
+          targetType: `armor`,
+          targetDisplayName: armor.displayName,
+          damage: taken,
+          damageBlocked: damageRemovedFromTotal,
+          destroyed: armor.hp === 0,
+        })
       }
 
     // ----- distribute remaining damage -----
@@ -488,6 +502,12 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack._stub = null
         remainingDamage = 0
         totalDamageDealt += adjustedRemainingDamage
+        damageTally.push({
+          targetType: equipmentToAttack.type,
+          targetDisplayName: equipmentToAttack.displayName,
+          damage: adjustedRemainingDamage,
+          destroyed: false,
+        })
       }
       // ----- item destroyed -----
       else {
@@ -498,7 +518,14 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack._stub = null
         remainingDamage -= remainingHp
         totalDamageDealt += remainingHp
+        damageTally.push({
+          targetType: equipmentToAttack.type,
+          targetDisplayName: equipmentToAttack.displayName,
+          damage: remainingHp,
+          destroyed: true,
+        })
       }
+
       // ----- notify both sides -----
       if (
         equipmentToAttack.hp === 0 &&
@@ -578,6 +605,7 @@ export abstract class CombatShip extends Ship {
       damageTaken: totalDamageDealt,
       didDie: didDie,
       weapon: attack.weapon?.stubify(),
+      damageTally,
     }
 
     // ship damage
@@ -618,13 +646,14 @@ export abstract class CombatShip extends Ship {
             : ([
                 `You took`,
                 {
-                  text: `${c.r2(totalDamageDealt)}`,
+                  text: `${c.r2(totalDamageDealt)} damage`,
+                  color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
                     ...damageResult,
                   },
                 },
-                `damage.`,
+                `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss ? `medium` : `high`,
@@ -637,6 +666,9 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.color || `red`,
+            tooltipData: attacker.stubify
+              ? attacker.stubify()
+              : undefined,
           },
           `&nospace.`,
           ...(attack.miss
@@ -644,13 +676,14 @@ export abstract class CombatShip extends Ship {
             : ([
                 `You took`,
                 {
-                  text: `${c.r2(totalDamageDealt)}`,
+                  text: `${c.r2(totalDamageDealt)} damage`,
+                  color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
                     ...damageResult,
                   },
                 },
-                `damage.`,
+                `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss ? `medium` : `high`,

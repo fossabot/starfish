@@ -2,6 +2,7 @@ import type { Game } from '../Game';
 import type { CombatShip } from './Ship/CombatShip';
 import { Stubbable } from './Stubbable';
 export declare class Zone extends Stubbable {
+    readonly type = "zone";
     readonly id: string;
     readonly name: string;
     readonly location: CoordinatePair;

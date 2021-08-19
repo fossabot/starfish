@@ -707,8 +707,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/zone.ts": {
-        "version": "c830fee8e537a9f0e8e875545123e7317643ba76e01cd397123788be7b682b18",
-        "signature": "2a1b672ef097061e4e831982e791feaa965deccb8211d9b8e1d92496a1644723",
+        "version": "240fa78908c510fd739c51367c57f1131bcb46e510ba46c151c82b5e0a028bc2",
+        "signature": "a11573610e21ed134c875256925886abfa37c7294b03c0a615aeb362dcd80a93",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
@@ -727,7 +727,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "9f54e20c9707d58139264113582e413a4817307798aea8334864fd27e32343cf",
+        "version": "854fec06441cced221d779f6b874994536cb1aad1b1e190b941ca03a2e2a13d3",
         "signature": "f816c4612097d94a204d05c14b9f26f82aee8cfa5522d05b4ff54970b1e01867",
         "affectsGlobalScope": false
       },
@@ -767,7 +767,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "a4aa783dd741fe03d08a61841722d80c53cdd60a7d84611cfc148cf980ac5365",
+        "version": "4d3f8ed51af6224509d2e77d3b1c91d0e1a36f34cfc91f4881be22ccff47d469",
         "signature": "03a9054179d670457fb167a1dcfd2581b5c5b0d39be53b70b1fdbf2828c1f6ac",
         "affectsGlobalScope": false
       },
@@ -802,7 +802,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/index.ts": {
-        "version": "56cab0f24cc802c62f74a8fae667fd00fdd17ef2263ce881a518d978673cb6db",
+        "version": "e99b9c6746c8111f1291488c98f6ae0862543d1bfa68b29938c59d2229421a51",
         "signature": "f700253913d0f276b9ba940563223c3ebd6d1de49f77acfabd82f82e6a625573",
         "affectsGlobalScope": false
       },

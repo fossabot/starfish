@@ -1,9 +1,33 @@
 <template>
   <div class="logentry" :class="level">
-    <div
-      class="text flashtextgoodonspawn"
-      v-html="outputHtml"
-    ></div>
+    <div class="text flashtextgoodonspawn">
+      <span
+        v-if="outputElements"
+        v-for="(el, index) in outputElements"
+        :key="id + index"
+        :style="
+          (el.style || '') +
+            (el.color ? `; color: ${el.color};` : '')
+        "
+        v-tooltip="el.tooltipData"
+        :class="{ tooltip: el.tooltipData }"
+        ><span
+          v-if="
+            (el.text || el).indexOf('&nospace') !== 0 &&
+              index !== 0
+          "
+          >&nbsp;</span
+        ><a v-if="el.url" :href="el.url">{{
+          (el.text || el).replace(/\s*&nospace/g, '')
+        }}</a>
+        <span v-else>{{
+          (el.text || el).replace(/\s*&nospace/g, '')
+        }}</span>
+      </span>
+      <span v-else>
+        {{ outputText }}
+      </span>
+    </div>
     <div class="sub time flashtextgoodonspawn padtoptiny">
       {{ timeString }}
     </div>
@@ -28,15 +52,21 @@ export default Vue.extend({
     level: {},
   },
   data() {
-    return { timeString: '' }
+    return { timeString: '', id: Math.random() }
   },
   computed: {
-    outputHtml(): string {
-      return typeof this.content === 'string'
+    outputElements(): any[] | false {
+      if (!Array.isArray(this.content)) return false
+      return this.content
+    },
+
+    outputText(): string {
+      return (typeof this.content === 'string'
         ? this.content
         : Array.isArray(this.content)
-        ? this.content.map((c) => c.text).join(' ')
+        ? this.content.map((c) => c.text || c).join(' ')
         : `${this.content}`
+      ).replace(/\s*&nospace/g, '')
     },
   },
   watch: {},
@@ -87,4 +117,8 @@ export default Vue.extend({
 .critical {
   --highlight-color: red;
 }
+
+// .tooltip {
+// background: rgba(white, 0.1);
+// }
 </style>

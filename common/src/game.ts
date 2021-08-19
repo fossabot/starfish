@@ -129,8 +129,9 @@ function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
+  const flatMod = 4
   return (
-    math.lerp(0.2, 1, level / 100) *
+    math.lerp(0.2 * flatMod, Number(flatMod), level / 100) *
     engineThrustMultiplier *
     gameSpeedMultiplier
   )

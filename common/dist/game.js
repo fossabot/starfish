@@ -71,7 +71,8 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     return math_1.default.lerp(0.002 * flatMod, 0.0005 * flatMod, level / 100); // backwards because you gain max charge
 }
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    return (math_1.default.lerp(0.2, 1, level / 100) *
+    const flatMod = 4;
+    return (math_1.default.lerp(0.2 * flatMod, Number(flatMod), level / 100) *
         engineThrustMultiplier *
         gameSpeedMultiplier);
 }
