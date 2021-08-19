@@ -24,18 +24,18 @@ let mongoPassword: string
 
 try {
   mongoUsername = fs.readFileSync(
-    `/run/secrets/mongodb_username.txt`,
+    `/run/secrets/mongodb_username`,
     `utf-8`,
-  )
+  ).trim()
 } catch (e) {
   mongoUsername = process.env
     .MONGODB_ADMINUSERNAME as string
 }
 try {
   mongoPassword = fs.readFileSync(
-    `/run/secrets/mongodb_password.txt`,
+    `/run/secrets/mongodb_password`,
     `utf-8`,
-  )
+  ).trim()
 } catch (e) {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string
