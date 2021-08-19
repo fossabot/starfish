@@ -11,11 +11,11 @@ node {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
 
-        game = docker.build("xmadsen/starfish-game". "-f game/Dockerfile-prod game")
-        db = docker.build("xmadsen/starfish-db". "-f db/Dockerfile-prod db")
-        frontend = docker.build("xmadsen/starfish-frontend". "-f frontend/Dockerfile-prod frontend")
-        discord = docker.build("xmadsen/starfish-discord". "-f discord/Dockerfile-prod discord")
-        nginx = docker.build("xmadsen/starfish-nginx". "-f nginx/Dockerfile-prod nginx")
+        game = docker.build("xmadsen/starfish-game". "-f game/Dockerfile-prod .")
+        db = docker.build("xmadsen/starfish-db". "-f db/Dockerfile-prod .")
+        frontend = docker.build("xmadsen/starfish-frontend". "-f frontend/Dockerfile-prod .")
+        discord = docker.build("xmadsen/starfish-discord". "-f discord/Dockerfile-prod .")
+        nginx = docker.build("xmadsen/starfish-nginx". "-f nginx/Dockerfile-prod .")
     }
 
     // stage('Test image') {
@@ -33,8 +33,16 @@ node {
          * Second, the 'latest' tag.
          * Pushing multiple tags is cheap, as all the layers are reused. */
         docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+            game.push("${env.BUILD_NUMBER}")
+            game.push("latest")
+            discord.push("${env.BUILD_NUMBER}")
+            discord.push("latest")
+            frontend.push("${env.BUILD_NUMBER}")
+            frontend.push("latest")
+            db.push("${env.BUILD_NUMBER}")
+            db.push("latest")
+            nginx.push("${env.BUILD_NUMBER}")
+            nginx.push("latest")
         }
     }
 }
