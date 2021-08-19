@@ -11,11 +11,11 @@ node {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
 
-        game = docker.build("xmadsen/starfish-game". "-f game/Dockerfile-prod .")
-        db = docker.build("xmadsen/starfish-db". "-f db/Dockerfile-prod .")
-        frontend = docker.build("xmadsen/starfish-frontend". "-f frontend/Dockerfile-prod .")
-        discord = docker.build("xmadsen/starfish-discord". "-f discord/Dockerfile-prod .")
-        nginx = docker.build("xmadsen/starfish-nginx". "-f nginx/Dockerfile-prod .")
+        game = docker.build("xmadsen/starfish-game", "-f game/Dockerfile-prod .")
+        db = docker.build("xmadsen/starfish-db", "-f db/Dockerfile-prod .")
+        frontend = docker.build("xmadsen/starfish-frontend", "-f frontend/Dockerfile-prod .")
+        discord = docker.build("xmadsen/starfish-discord", "-f discord/Dockerfile-prod .")
+        nginx = docker.build("xmadsen/starfish-nginx", "-f nginx/Dockerfile-prod .")
     }
 
     // stage('Test image') {
