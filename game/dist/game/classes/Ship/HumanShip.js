@@ -11,6 +11,7 @@ const crew_1 = require("./addins/crew");
 const CombatShip_1 = require("./CombatShip");
 const CrewMember_1 = require("../CrewMember/CrewMember");
 const rooms_1 = require("../../presets/rooms");
+const cargo_1 = require("../../presets/cargo");
 const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
@@ -66,7 +67,11 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addCrewMember(cm, true);
         });
         if (!this.log.length)
-            this.logEntry(`Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`, `medium`);
+            this.logEntry([
+                `Your crew boards the ship`,
+                { text: this.name, color: this.faction.color },
+                `for the first time, and sets out towards the stars.`,
+            ], `medium`);
         this.updateMaxScanProperties();
         this.updateVisible();
         this.recalculateMass();
@@ -192,7 +197,15 @@ class HumanShip extends CombatShip_1.CombatShip {
     discoverPlanet(p) {
         this.seenPlanets.push(p);
         this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.getVisibleStub());
-        this.logEntry(`Discovered the planet ${p.name}!`, `high`);
+        this.logEntry([
+            `Discovered the planet`,
+            {
+                text: p.name,
+                color: p.color,
+                tooltipData: p.stubify(),
+            },
+            `&nospace!`,
+        ], `high`);
         this.addStat(`seenPlanets`, 1);
         if (this.seenPlanets.length >= 5)
             this.addTagline(`Small Pond Paddler`, `discovering 5 planets`);
@@ -414,7 +427,15 @@ class HumanShip extends CombatShip_1.CombatShip {
         //   direction: this.direction,
         // })
         if (charge > 0.5)
-            this.logEntry(`${thruster.name} thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}P of thrust.`, `low`);
+            this.logEntry([
+                {
+                    text: `${thruster.name}`,
+                    tooltipData: thruster.stubify(),
+                },
+                `thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
+                { text: `&nospaceP`, tooltipData: `Poseidons` },
+                `of thrust.`,
+            ], `low`);
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
     }
@@ -455,8 +476,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        if (charge > 0.1)
-            this.logEntry(`${thruster.name} applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}P of thrust.`, `low`);
+        if (charge > 1)
+            this.logEntry([
+                {
+                    text: `${thruster.name}`,
+                    tooltipData: thruster.stubify(),
+                },
+                `applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
+                { text: `&nospaceP`, tooltipData: `Poseidons` },
+                `of thrust.`,
+            ], `low`);
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
     }
@@ -545,11 +574,24 @@ class HumanShip extends CombatShip_1.CombatShip {
                 `oxygen`,
                 `salt`,
                 `water`,
+                `carbon`,
+                `plastic`,
+                `steel`,
             ]);
             this.distributeCargoAmongCrew([
                 { type: type, amount },
             ]);
-            this.logEntry(`Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of ${type} off of it.`);
+            this.logEntry([
+                `Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of`,
+                {
+                    text: type,
+                    tooltipData: {
+                        ...cargo_1.data[type],
+                        type: `cargo`,
+                    },
+                },
+                `off of it.`,
+            ]);
         }
         // - asteroid hit -
         if (!this.planet &&
@@ -622,21 +664,77 @@ class HumanShip extends CombatShip_1.CombatShip {
         if ((!this.tutorial || this.tutorial.step > 0) &&
             this.planet &&
             !previousPlanet) {
-            this.logEntry(`Landed on ${this.planet ? this.planet.name : ``}.`, `high`);
+            this.logEntry([
+                `Landed on`,
+                {
+                    text: this.planet.name,
+                    color: this.planet.color,
+                    tooltipData: this.planet.stubify(),
+                },
+                `&nospace.`,
+            ], `high`);
             if (!this.tutorial)
                 this.planet.shipsAt.forEach((s) => {
-                    if (s === this)
+                    if (s === this || !s.planet)
                         return;
-                    s.logEntry(`${this.name} landed on ${this.planet ? this.planet.name : ``}.`);
+                    s.logEntry([
+                        {
+                            text: this.name,
+                            color: this.faction.color,
+                            tooltipData: {
+                                type: `ship`,
+                                name: this.name,
+                                faction: this.faction,
+                                species: this.species,
+                                tagline: this.tagline,
+                                headerBackground: this.headerBackground,
+                            },
+                        },
+                        `landed on`,
+                        {
+                            text: s.planet.name,
+                            color: s.planet.color,
+                            tooltipData: s.planet.stubify(),
+                        },
+                        `&nospace.`,
+                    ]);
                 });
         }
         else if (previousPlanet && !this.planet) {
-            this.logEntry(`Departed from ${previousPlanet ? previousPlanet.name : ``}.`);
+            this.logEntry([
+                `Departed from`,
+                {
+                    text: previousPlanet.name,
+                    color: previousPlanet.color,
+                    tooltipData: previousPlanet.stubify(),
+                },
+                `&nospace.`,
+            ]);
             if (previousPlanet && !this.tutorial)
                 previousPlanet.shipsAt.forEach((s) => {
-                    if (s === this)
+                    if (s === this || !s.planet)
                         return;
-                    s.logEntry(`${this.name} departed from ${previousPlanet ? previousPlanet.name : ``}.`);
+                    s.logEntry([
+                        {
+                            text: this.name,
+                            color: this.faction.color,
+                            tooltipData: {
+                                type: `ship`,
+                                name: this.name,
+                                faction: this.faction,
+                                species: this.species,
+                                tagline: this.tagline,
+                                headerBackground: this.headerBackground,
+                            },
+                        },
+                        `landed on`,
+                        {
+                            text: s.planet.name,
+                            color: s.planet.color,
+                            tooltipData: s.planet.stubify(),
+                        },
+                        `&nospace.`,
+                    ]);
                 });
         }
     }
@@ -646,7 +744,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (cache.droppedBy !== this.id && amountBoostPassive)
             cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive));
         this.distributeCargoAmongCrew(cache.contents);
-        this.logEntry(`Picked up a cache with ${cache.contents
+        this.logEntry(
+        // todo update
+        `Picked up a cache with ${cache.contents
             .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
             .join(` and `)} inside!${cache.message &&
             ` There was a message attached which said, "${cache.message}".`}`, `medium`);
@@ -658,9 +758,25 @@ class HumanShip extends CombatShip_1.CombatShip {
             const startedInside = dist_1.default.pointIsInsideCircle(z.location, startingLocation, z.radius);
             const endedInside = dist_1.default.pointIsInsideCircle(z.location, this.location, z.radius);
             if (startedInside && !endedInside)
-                this.logEntry(`Exited ${z.name}.`, `high`);
+                this.logEntry([
+                    `Exited`,
+                    {
+                        text: z.name,
+                        color: z.color,
+                        tooltipData: z.stubify(),
+                    },
+                    `.`,
+                ], `high`);
             if (!startedInside && endedInside)
-                this.logEntry(`Entered ${z.name}.`, `high`);
+                this.logEntry([
+                    `Entered`,
+                    {
+                        text: z.name,
+                        color: z.color,
+                        tooltipData: z.stubify(),
+                    },
+                    `.`,
+                ], `high`);
         }
     }
     updateBroadcastRadius() {
@@ -848,7 +964,17 @@ class HumanShip extends CombatShip_1.CombatShip {
             }
         });
         if (leftovers.length) {
-            setTimeout(() => this.logEntry(`Your crew couldn't hold everything, so some cargo was released as a cache.`), 500);
+            setTimeout(() => this.logEntry([
+                `Your crew couldn't hold everything, so`,
+                {
+                    text: `some cargo`,
+                    tooltipData: {
+                        type: `cargo`,
+                        cargo: leftovers,
+                    },
+                },
+                `was released as a cache.`,
+            ]), 500);
             this.game.addCache({
                 location: [...this.location],
                 contents: leftovers,

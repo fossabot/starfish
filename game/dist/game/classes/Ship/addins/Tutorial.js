@@ -788,7 +788,11 @@ class Tutorial {
     done() {
         dist_1.default.log(`Tutorial complete for ${this.ship.name}`);
         setTimeout(() => {
-            this.ship.logEntry(`Good luck out there! If you have more questions about the game, check out the How To Play page!`, `high`);
+            this.ship.logEntry([
+                `Good luck out there! If you have more questions about the game, check out the`,
+                { text: `How To Play`, url: `/howtoplay` },
+                `page!`,
+            ], `high`);
             io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
         }, dist_1.default.tickInterval);
         this.ship.addHeaderBackground(dist_1.default.capitalize(this.ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(this.ship.faction.id)} faction`);
@@ -802,9 +806,29 @@ class Tutorial {
             this.ship.planet.shipsAt
                 .filter((s) => s.faction?.color === this.ship.faction?.color)
                 .forEach((s) => {
-                if (s === this.ship)
+                if (s === this.ship || !s.planet)
                     return;
-                s.logEntry(`${this.ship.name} has joined the game, starting out from ${this.ship.planet && this.ship.planet.name}!`);
+                s.logEntry([
+                    {
+                        text: this.ship.name,
+                        color: this.ship.faction.color,
+                        tooltipData: {
+                            type: `ship`,
+                            name: this.ship.name,
+                            faction: this.ship.faction,
+                            species: this.ship.species,
+                            tagline: this.ship.tagline,
+                            headerBackground: this.ship.headerBackground,
+                        },
+                    },
+                    `has joined the game, starting out from`,
+                    {
+                        text: s.planet.name,
+                        color: s.planet.color,
+                        tooltipData: s.planet.stubify(),
+                    },
+                    `&nospace!`,
+                ]);
             });
     }
     cleanUp() {

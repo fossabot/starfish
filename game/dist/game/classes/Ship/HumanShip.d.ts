@@ -36,7 +36,7 @@ export declare class HumanShip extends CombatShip {
     tutorial: Tutorial | undefined;
     constructor(data: BaseHumanShipData, game: Game);
     tick(): void;
-    logEntry(content: string | RichLogContentElement[], level?: LogLevel): void;
+    logEntry(content: LogContent, level?: LogLevel): void;
     discoverPlanet(p: Planet): void;
     applyThrust(targetLocation: CoordinatePair, charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember): void;

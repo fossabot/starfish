@@ -31,6 +31,7 @@ import type { Tutorial } from './addins/Tutorial'
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 30
 
+  readonly type = `ship`
   name: string = `ship`
   planet: Planet | false = false
   readonly faction: Faction
@@ -623,7 +624,11 @@ export class Ship extends Stubbable {
     this.availableTaglines.push(tagline)
     this.toUpdate.availableTaglines = this.availableTaglines
     this.logEntry(
-      `Unlocked a new ship tagline for ${reason}: "${tagline}"`,
+      [
+        `Unlocked a new ship tagline for`,
+        { text: reason + `:`, color: `white` },
+        { text: `"${tagline}"`, color: `yellow` },
+      ],
       `high`,
     )
   }
@@ -637,7 +642,11 @@ export class Ship extends Stubbable {
     this.toUpdate.availableHeaderBackgrounds =
       this.availableHeaderBackgrounds
     this.logEntry(
-      `Unlocked a new ship header background for ${reason}: "${bg}"`,
+      [
+        `Unlocked a new ship header background for`,
+        { text: reason + `:`, color: `white` },
+        { text: `"${bg}"`, color: `yellow` },
+      ],
       `high`,
     )
   }
@@ -658,8 +667,11 @@ export class Ship extends Stubbable {
 
   // ----- misc stubs -----
 
-  logEntry(s: string, lv: LogLevel) {}
+  logEntry(s: LogContent, lv: LogLevel) {}
+
   updateMaxScanProperties() {}
+
   applyPassive(p: ShipPassiveEffect) {}
+
   removePassive(p: ShipPassiveEffect) {}
 }

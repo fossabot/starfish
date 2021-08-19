@@ -17,6 +17,7 @@ import { Stubbable } from '../Stubbable';
 import type { Tutorial } from './addins/Tutorial';
 export declare class Ship extends Stubbable {
     static maxPreviousLocations: number;
+    readonly type = "ship";
     name: string;
     planet: Planet | false;
     readonly faction: Faction;
@@ -93,7 +94,7 @@ export declare class Ship extends Stubbable {
     addTagline(tagline: string, reason: string): void;
     addHeaderBackground(bg: string, reason: string): void;
     addStat(statname: ShipStatKey, amount: number): void;
-    logEntry(s: string, lv: LogLevel): void;
+    logEntry(s: LogContent, lv: LogLevel): void;
     updateMaxScanProperties(): void;
     applyPassive(p: ShipPassiveEffect): void;
     removePassive(p: ShipPassiveEffect): void;

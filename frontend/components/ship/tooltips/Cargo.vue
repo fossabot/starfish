@@ -13,6 +13,14 @@
           : data.basePrice
       }}
     </div>
+    <div
+      v-if="data.cargo"
+      v-for="(cargo, index) in data.cargo"
+      :key="'tooltipcargo' + index"
+    >
+      // todo
+      {{ cargo }}
+    </div>
   </div>
 </template>
 

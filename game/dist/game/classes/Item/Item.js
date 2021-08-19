@@ -65,7 +65,15 @@ class Item extends Stubbable_1.Stubbable {
             overRepair = true;
             this.repair = 1;
             if (this.announceWhenRepaired)
-                this.ship.logEntry(`Your ${this.displayName} is fully repaired.`, `medium`);
+                this.ship.logEntry([
+                    `Your`,
+                    {
+                        text: this.displayName,
+                        tooltipData: this.stubify(),
+                        color: `white`,
+                    },
+                    `is fully repaired.`,
+                ], `medium`);
             this.announceWhenRepaired = false;
         }
         if (this.repair > 0.1)

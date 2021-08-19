@@ -254,22 +254,69 @@ export abstract class CombatShip extends Ship {
         : undefined,
     })
 
-    this.logEntry(
-      `${attackResult.miss ? `Missed` : `Attacked`} ${
-        target.name
-      } with ${weapon.displayName}${
-        attackResult.miss
-          ? `.`
-          : `, dealing ${c.r2(
-              c.r2(attackResult.damageTaken),
-            )} damage.`
-      }${
-        attackResult.didDie
-          ? ` ${target.name} died in the exchange.`
-          : ``
-      }`,
-      `high`,
-    )
+    if (attackResult.miss)
+      this.logEntry(
+        [
+          `Missed`,
+          {
+            text: target.name,
+            color: target.faction.color,
+            tooltipData: {
+              type: `ship`,
+              name: target.name,
+              faction: target.faction,
+              species: target.species,
+              tagline: target.tagline,
+              headerBackground: target.headerBackground,
+            },
+          },
+          `with`,
+          {
+            text: weapon.displayName,
+            tooltipData: weapon.stubify(),
+          },
+          `&nospace.`,
+        ],
+        `high`,
+      )
+    else
+      this.logEntry(
+        [
+          `Attacked`,
+          {
+            text: target.name,
+            color: target.faction.color,
+            tooltipData: {
+              type: `ship`,
+              name: target.name,
+              faction: target.faction,
+              species: target.species,
+              tagline: target.tagline,
+              headerBackground: target.headerBackground,
+            },
+          },
+          `with`,
+          {
+            text: weapon.displayName,
+            tooltipData: weapon.stubify(),
+          },
+          `&nospace, dealing`,
+          {
+            text:
+              c.r2(c.r2(attackResult.damageTaken)) +
+              ` damage`,
+            tooltipData: {
+              type: `damage`,
+              ...attackResult,
+            },
+          },
+          `&nospace.`,
+          attackResult.didDie
+            ? `${target.name} died in the exchange.`
+            : ``,
+        ],
+        `high`,
+      )
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
     if (attackResult.didDie) {
@@ -351,12 +398,39 @@ export abstract class CombatShip extends Ship {
         remainingDamage -= damageRemovedFromTotal
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
-            `Your ${armor.displayName} has been broken!`,
+            [
+              `Your`,
+              {
+                text: armor.displayName,
+                tooltipData: armor.stubify(),
+              },
+              `has been broken!`,
+            ],
             `high`,
           )
           if (`logEntry` in attacker)
             attacker.logEntry(
-              `You have broken through ${this.name}'s ${armor.displayName}!`,
+              [
+                `You have broken through`,
+                {
+                  text: this.name,
+                  color: this.faction.color,
+                  tooltipData: {
+                    type: `ship`,
+                    name: this.name,
+                    faction: this.faction,
+                    species: this.species,
+                    tagline: this.tagline,
+                    headerBackground: this.headerBackground,
+                  },
+                },
+                `&nospace's`,
+                {
+                  text: armor.displayName,
+                  tooltipData: armor.stubify(),
+                },
+                `&nospace!`,
+              ],
               `high`,
             )
           armor.announceWhenBroken = false
@@ -431,12 +505,39 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack.announceWhenBroken
       ) {
         this.logEntry(
-          `Your ${equipmentToAttack.displayName} has been disabled!`,
+          [
+            `Your`,
+            {
+              text: equipmentToAttack.displayName,
+              tooltipData: equipmentToAttack.stubify(),
+            },
+            `has been disabled!`,
+          ],
           `high`,
         )
         if (`logEntry` in attacker)
           attacker.logEntry(
-            `You have disabled ${this.name}'s ${equipmentToAttack.displayName}!`,
+            [
+              `You have disabled`,
+              {
+                text: this.name,
+                color: this.faction.color,
+                tooltipData: {
+                  type: `ship`,
+                  name: this.name,
+                  faction: this.faction,
+                  species: this.species,
+                  tagline: this.tagline,
+                  headerBackground: this.headerBackground,
+                },
+              },
+              `&nospace's`,
+              {
+                text: equipmentToAttack.displayName,
+                tooltipData: equipmentToAttack.stubify(),
+              },
+              `&nospace!`,
+            ],
             `high`,
           )
         equipmentToAttack.announceWhenBroken = false
@@ -472,42 +573,90 @@ export abstract class CombatShip extends Ship {
     this.toUpdate._hp = this.hp
     this.toUpdate.dead = this.dead
 
+    const damageResult = {
+      miss: attackDamageAfterPassives === 0,
+      damageTaken: totalDamageDealt,
+      didDie: didDie,
+      weapon: attack.weapon?.stubify(),
+    }
+
     // ship damage
     if (attack.weapon)
       this.logEntry(
-        `${
+        [
           attack.miss
             ? `Missed by an attack from`
-            : `Hit by an attack from`
-        } ${attacker.name}'s ${attack.weapon.displayName}${
-          attack.miss
-            ? `.`
-            : `, taking ${c.r2(totalDamageDealt)} damage.`
-        }`,
+            : `Hit by an attack from`,
+          {
+            text: attacker.name,
+            color: attacker.faction.color,
+            tooltipData: {
+              type: `ship`,
+              name: attacker.name,
+              faction: attacker.faction,
+              species: attacker.species,
+              tagline: attacker.tagline,
+              headerBackground: attacker.headerBackground,
+            },
+          },
+          `&nospace's`,
+          {
+            text: attack.weapon.displayName,
+            tooltipData: {
+              type: `weapon`,
+              damage: attack.weapon.damage,
+              description: attack.weapon.description,
+              range: attack.weapon.range,
+              displayName: attack.weapon.displayName,
+              id: attack.weapon.id,
+              mass: attack.weapon.mass,
+            },
+          },
+          `&nospace.`,
+          ...(attack.miss
+            ? [``]
+            : ([
+                `You took`,
+                {
+                  text: `${c.r2(totalDamageDealt)}`,
+                  tooltipData: {
+                    type: `damage`,
+                    ...damageResult,
+                  },
+                },
+                `damage.`,
+              ] as RichLogContentElement[])),
+        ],
         attack.miss ? `medium` : `high`,
       )
     // zone or passive damage
     else
       this.logEntry(
-        `${attack.miss ? `Missed by` : `Hit by`} ${
-          attacker.name
-        }${
-          attack.miss
-            ? `.`
-            : `, taking ${c.r2(
-                totalDamageDealt,
-                2,
-              )} damage.`
-        }`,
+        [
+          attack.miss ? `Missed by` : `Hit by`,
+          {
+            text: attacker.name,
+            color: attacker.color || `red`,
+          },
+          `&nospace.`,
+          ...(attack.miss
+            ? [``]
+            : ([
+                `You took`,
+                {
+                  text: `${c.r2(totalDamageDealt)}`,
+                  tooltipData: {
+                    type: `damage`,
+                    ...damageResult,
+                  },
+                },
+                `damage.`,
+              ] as RichLogContentElement[])),
+        ],
         attack.miss ? `medium` : `high`,
       )
 
-    return {
-      miss: attackDamageAfterPassives === 0,
-      damageTaken: totalDamageDealt,
-      didDie: didDie,
-      weapon: attack.weapon,
-    }
+    return damageResult
   }
 
   die(attacker?: CombatShip) {

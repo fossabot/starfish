@@ -906,7 +906,11 @@ export class Tutorial {
 
     setTimeout(() => {
       this.ship.logEntry(
-        `Good luck out there! If you have more questions about the game, check out the How To Play page!`,
+        [
+          `Good luck out there! If you have more questions about the game, check out the`,
+          { text: `How To Play`, url: `/howtoplay` },
+          `page!`,
+        ],
         `high`,
       )
       io.emit(
@@ -941,14 +945,29 @@ export class Tutorial {
             s.faction?.color === this.ship.faction?.color,
         )
         .forEach((s) => {
-          if (s === this.ship) return
-          s.logEntry(
-            `${
-              this.ship.name
-            } has joined the game, starting out from ${
-              this.ship.planet && this.ship.planet.name
-            }!`,
-          )
+          if (s === this.ship || !s.planet) return
+          s.logEntry([
+            {
+              text: this.ship.name,
+              color: this.ship.faction.color,
+              tooltipData: {
+                type: `ship`,
+                name: this.ship.name,
+                faction: this.ship.faction,
+                species: this.ship.species,
+                tagline: this.ship.tagline,
+                headerBackground:
+                  this.ship.headerBackground,
+              },
+            },
+            `has joined the game, starting out from`,
+            {
+              text: s.planet.name,
+              color: s.planet.color,
+              tooltipData: s.planet.stubify(),
+            },
+            `&nospace!`,
+          ])
         })
   }
 

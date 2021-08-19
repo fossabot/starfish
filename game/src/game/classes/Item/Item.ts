@@ -91,7 +91,15 @@ export class Item extends Stubbable {
       this.repair = 1
       if (this.announceWhenRepaired)
         this.ship.logEntry(
-          `Your ${this.displayName} is fully repaired.`,
+          [
+            `Your`,
+            {
+              text: this.displayName,
+              tooltipData: this.stubify(),
+              color: `white`,
+            },
+            `is fully repaired.`,
+          ],
           `medium`,
         )
       this.announceWhenRepaired = false

@@ -66,11 +66,15 @@ export default function (
 
       ship.addItem({ type: itemType, id: itemId })
       ship.logEntry(
-        `${
-          itemForSale.itemData?.displayName
-        } (${itemType}) bought by the captain for ${c.r2(
-          price,
-        )} credits.`,
+        [
+          {
+            text: itemForSale.itemData!.displayName,
+            tooltipData: itemForSale.itemData,
+          },
+          `bought by the captain for ${c.r2(
+            price,
+          )} credits.`,
+        ],
         `high`,
       )
 
@@ -151,11 +155,13 @@ export default function (
       ship.removeItem(heldItem)
 
       ship.logEntry(
-        `${
-          heldItem.displayName
-        } (${itemType}) sold by the captain for ${c.r2(
-          price,
-        )} credits.`,
+        [
+          {
+            text: heldItem.displayName,
+            tooltipData: heldItem,
+          },
+          `sold by the captain for ${c.r2(price)} credits.`,
+        ],
         `high`,
       )
 
@@ -238,11 +244,15 @@ export default function (
 
       ship.swapChassis(itemForSale.chassisData)
       ship.logEntry(
-        `${
-          itemForSale.chassisData?.displayName
-        } (chassis) bought by the captain for ${c.r2(
-          price,
-        )} credits.`,
+        [
+          {
+            text: itemForSale.chassisData!.displayName,
+            tooltipData: itemForSale.chassisData,
+          },
+          `bought by the captain for ${c.r2(
+            price,
+          )} credits.`,
+        ],
         `high`,
       )
 

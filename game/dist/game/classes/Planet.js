@@ -34,6 +34,7 @@ const db_1 = require("../../db");
 class Planet extends Stubbable_1.Stubbable {
     constructor({ name, color, location, vendor, homeworld, creatures, repairCostMultiplier, radius, allegiances, }, game) {
         super();
+        this.type = `planet`;
         this.allegiances = [];
         this.mass = 0;
         this.priceFluctuator = 1;

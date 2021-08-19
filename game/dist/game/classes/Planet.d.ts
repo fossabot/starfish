@@ -3,6 +3,7 @@ import type { Faction } from './Faction';
 import { Stubbable } from './Stubbable';
 export declare class Planet extends Stubbable {
     static readonly fluctuatorIntensity = 0.8;
+    readonly type = "planet";
     readonly name: string;
     readonly color: string;
     readonly location: CoordinatePair;

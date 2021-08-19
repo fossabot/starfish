@@ -19,8 +19,8 @@ const factionAllegianceFriendCutoff = 50;
 const baseItemSellMultiplier = 0.75;
 const noEngineThrustMagnitude = 0.02;
 const aiDifficultyMultiplier = 0.5;
-const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 3) / gameSpeedMultiplier;
-const cacheExpireTime = (1000 * 60 * 60 * 24 * 14) / gameSpeedMultiplier;
+const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
+const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 4) / gameSpeedMultiplier;
 const baseShipScanProperties = {
     id: true,
     name: true,

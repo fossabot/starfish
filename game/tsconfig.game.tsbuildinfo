@@ -272,8 +272,8 @@
         "affectsGlobalScope": true
       },
       "../@types/log.d.ts": {
-        "version": "12342f5622d715069f2d219559221804527d10606e94201b0393b106d7546f98",
-        "signature": "12342f5622d715069f2d219559221804527d10606e94201b0393b106d7546f98",
+        "version": "948814e7a6050d6f0288ae289a5fbb4a509494d4902e12881f7a05f95bccfefa",
+        "signature": "948814e7a6050d6f0288ae289a5fbb4a509494d4902e12881f7a05f95bccfefa",
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
@@ -712,7 +712,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
-        "version": "c178f0d836343748d2269cf7c59a852d1b9aa2c52c788ef988ef804bfb3dd95b",
+        "version": "46318387f53485c44641fb3c2723a58f7bec84e111593af9831de21aefd74d92",
         "signature": "e265109e88d358765ab3c08ff8e99020d0a791602017f03314b56c09ef9b2f95",
         "affectsGlobalScope": false
       },
@@ -727,7 +727,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "a5a4022103f9fcbb72c9e309155e31a95b0484753b3586a2b8df232bd8f85dc7",
+        "version": "9f54e20c9707d58139264113582e413a4817307798aea8334864fd27e32343cf",
         "signature": "f816c4612097d94a204d05c14b9f26f82aee8cfa5522d05b4ff54970b1e01867",
         "affectsGlobalScope": false
       },
@@ -762,13 +762,13 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/tutorial.ts": {
-        "version": "0b0648ae754e2d914cb5f206db3c18d685118e1784ed752294ed85f2886ec112",
+        "version": "82a64bc7d9a2393b9e8c01f2d3e1ccd29a3543ddf76c47f34b5d984c3189be2c",
         "signature": "701fc27a7f4ef06dd4dbfa0760bd217c9b3957b164145b1e26da2eaf4771545f",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "a1d80f7a4410471a676cf50d3a8995c4397b071f20215082657e835dfeedd7d4",
-        "signature": "1de60c2df564f50994d8ccabbed4ca64551c88c0f9ec215f1f0badc91a481482",
+        "version": "a4aa783dd741fe03d08a61841722d80c53cdd60a7d84611cfc148cf980ac5365",
+        "signature": "03a9054179d670457fb167a1dcfd2581b5c5b0d39be53b70b1fdbf2828c1f6ac",
         "affectsGlobalScope": false
       },
       "./src/game/classes/cache.ts": {
@@ -807,8 +807,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet.ts": {
-        "version": "ceff8f23a8452aaa703ae89baa92659daeb4c965b41cba7dfda65dd78b9cda82",
-        "signature": "657261d072b127e8b9d9d6b796e76e9cb0978e28fb8100f392a055138e90be06",
+        "version": "65580101ae83884662fa4b867416bc271f2c217ec4e4972757197a7be65d7b17",
+        "signature": "4cf0dd6bac8b73e37e8f4b406939e8e0437d2e83ef905080cc74f810b50d0651",
         "affectsGlobalScope": false
       },
       "./src/game/classes/faction.ts": {
@@ -842,8 +842,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "360cd34ccefd416c2bc2e4ddccdacfbf5cc2ddec502b40c6f2dcea8e7c0d0c81",
-        "signature": "300b052408722b1488a2ea38203fcb1bd8c5e7ac5773c6f7c7f3883c23c8e22a",
+        "version": "7a455dc100bfeb654125f54c36edbafa8898a6fd37105af8729895894f3f57d5",
+        "signature": "3266e6bb4f84334fe84902f3d29b23aa718e369095c686413284a26fb365797c",
         "affectsGlobalScope": false
       },
       "./src/server/events/frontend.ts": {
@@ -867,7 +867,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/items.ts": {
-        "version": "813cc18fa78f2433305f73d4a1aab64e408bc08f077bcd6a7512257ed803837e",
+        "version": "89b8a12a4771b86472ca059f3d479ea2e588bfabb88c7b7bd06c150b3eb64ad5",
         "signature": "bea054ddc1381fd37f72503d1de7f7e3663efacbb19d7386827ff753f8ca8dd8",
         "affectsGlobalScope": false
       },
@@ -1446,6 +1446,7 @@
         "./src/game/classes/ship/ship.ts",
         "./src/game/classes/zone.ts",
         "./src/game/game.ts",
+        "./src/game/presets/cargo.ts",
         "./src/game/presets/rooms.ts",
         "./src/server/io.ts"
       ],

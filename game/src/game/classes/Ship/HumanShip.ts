@@ -14,6 +14,7 @@ import type { Ship } from './Ship'
 import type { Item } from '../Item/Item'
 
 import { rooms as roomData } from '../../presets/rooms'
+import { data as cargoData } from '../../presets/cargo'
 import { Tutorial } from './addins/Tutorial'
 import type { Zone } from '../Zone'
 
@@ -102,7 +103,11 @@ export class HumanShip extends CombatShip {
 
     if (!this.log.length)
       this.logEntry(
-        `Your crew boards the ship ${this.name} for the first time, and sets out towards the stars.`,
+        [
+          `Your crew boards the ship`,
+          { text: this.name, color: this.faction.color },
+          `for the first time, and sets out towards the stars.`,
+        ],
         `medium`,
       )
 
@@ -226,10 +231,7 @@ export class HumanShip extends CombatShip {
 
   // ----- log -----
 
-  logEntry(
-    content: string | RichLogContentElement[],
-    level: LogLevel = `low`,
-  ) {
+  logEntry(content: LogContent, level: LogLevel = `low`) {
     this.log.push({ level, content, time: Date.now() })
     while (this.log.length > HumanShip.maxLogLength)
       this.log.shift()
@@ -254,7 +256,15 @@ export class HumanShip extends CombatShip {
       p.getVisibleStub(),
     )
     this.logEntry(
-      `Discovered the planet ${p.name}!`,
+      [
+        `Discovered the planet`,
+        {
+          text: p.name,
+          color: p.color,
+          tooltipData: p.stubify(),
+        },
+        `&nospace!`,
+      ],
       `high`,
     )
 
@@ -591,12 +601,20 @@ export class HumanShip extends CombatShip {
 
     if (charge > 0.5)
       this.logEntry(
-        `${thruster.name} thrusted towards ${c.r2(
-          zeroedAngleToTargetInDegrees,
-          0,
-        )}° with ${c.r2(
-          magnitudePerPointOfCharge * charge,
-        )}P of thrust.`,
+        [
+          {
+            text: `${thruster.name}`,
+            tooltipData: thruster.stubify(),
+          },
+          `thrusted towards ${c.r2(
+            zeroedAngleToTargetInDegrees,
+            0,
+          )}° with ${c.r2(
+            magnitudePerPointOfCharge * charge,
+          )}`,
+          { text: `&nospaceP`, tooltipData: `Poseidons` },
+          `of thrust.`,
+        ],
         `low`,
       )
 
@@ -669,11 +687,19 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    if (charge > 0.1)
+    if (charge > 1)
       this.logEntry(
-        `${thruster.name} applied the brakes with ${c.r2(
-          magnitudePerPointOfCharge * charge,
-        )}P of thrust.`,
+        [
+          {
+            text: `${thruster.name}`,
+            tooltipData: thruster.stubify(),
+          },
+          `applied the brakes with ${c.r2(
+            magnitudePerPointOfCharge * charge,
+          )}`,
+          { text: `&nospaceP`, tooltipData: `Poseidons` },
+          `of thrust.`,
+        ],
         `low`,
       )
 
@@ -830,19 +856,30 @@ export class HumanShip extends CombatShip {
           1.5) *
         (1 + amountBoostPassive)
 
-      const type = c.randomFromArray([
+      const type: CargoType = c.randomFromArray([
         `oxygen`,
         `salt`,
         `water`,
+        `carbon`,
+        `plastic`,
+        `steel`,
       ] as CargoType[])
       this.distributeCargoAmongCrew([
         { type: type, amount },
       ])
-      this.logEntry(
+      this.logEntry([
         `Encountered some space junk and managed to harvest ${amount} ton${
           amount === 1 ? `` : `s`
-        } of ${type} off of it.`,
-      )
+        } of`,
+        {
+          text: type,
+          tooltipData: {
+            ...cargoData[type],
+            type: `cargo`,
+          },
+        },
+        `off of it.`,
+      ])
     }
 
     // - asteroid hit -
@@ -957,32 +994,76 @@ export class HumanShip extends CombatShip {
       !previousPlanet
     ) {
       this.logEntry(
-        `Landed on ${this.planet ? this.planet.name : ``}.`,
+        [
+          `Landed on`,
+          {
+            text: this.planet.name,
+            color: this.planet.color,
+            tooltipData: this.planet.stubify(),
+          },
+          `&nospace.`,
+        ],
         `high`,
       )
       if (!this.tutorial)
         this.planet.shipsAt.forEach((s) => {
-          if (s === this) return
-          s.logEntry(
-            `${this.name} landed on ${
-              this.planet ? this.planet.name : ``
-            }.`,
-          )
+          if (s === this || !s.planet) return
+          s.logEntry([
+            {
+              text: this.name,
+              color: this.faction.color,
+              tooltipData: {
+                type: `ship`,
+                name: this.name,
+                faction: this.faction,
+                species: this.species,
+                tagline: this.tagline,
+                headerBackground: this.headerBackground,
+              },
+            },
+            `landed on`,
+            {
+              text: s.planet.name,
+              color: s.planet.color,
+              tooltipData: s.planet.stubify(),
+            },
+            `&nospace.`,
+          ])
         })
     } else if (previousPlanet && !this.planet) {
-      this.logEntry(
-        `Departed from ${
-          previousPlanet ? previousPlanet.name : ``
-        }.`,
-      )
+      this.logEntry([
+        `Departed from`,
+        {
+          text: previousPlanet.name,
+          color: previousPlanet.color,
+          tooltipData: previousPlanet.stubify(),
+        },
+        `&nospace.`,
+      ])
       if (previousPlanet && !this.tutorial)
         previousPlanet.shipsAt.forEach((s) => {
-          if (s === this) return
-          s.logEntry(
-            `${this.name} departed from ${
-              previousPlanet ? previousPlanet.name : ``
-            }.`,
-          )
+          if (s === this || !s.planet) return
+          s.logEntry([
+            {
+              text: this.name,
+              color: this.faction.color,
+              tooltipData: {
+                type: `ship`,
+                name: this.name,
+                faction: this.faction,
+                species: this.species,
+                tagline: this.tagline,
+                headerBackground: this.headerBackground,
+              },
+            },
+            `landed on`,
+            {
+              text: s.planet.name,
+              color: s.planet.color,
+              tooltipData: s.planet.stubify(),
+            },
+            `&nospace.`,
+          ])
         })
     }
   }
@@ -1005,6 +1086,7 @@ export class HumanShip extends CombatShip {
 
     this.distributeCargoAmongCrew(cache.contents)
     this.logEntry(
+      // todo update
       `Picked up a cache with ${cache.contents
         .map(
           (cc) =>
@@ -1036,9 +1118,31 @@ export class HumanShip extends CombatShip {
         z.radius,
       )
       if (startedInside && !endedInside)
-        this.logEntry(`Exited ${z.name}.`, `high`)
+        this.logEntry(
+          [
+            `Exited`,
+            {
+              text: z.name,
+              color: z.color,
+              tooltipData: z.stubify(),
+            },
+            `.`,
+          ],
+          `high`,
+        )
       if (!startedInside && endedInside)
-        this.logEntry(`Entered ${z.name}.`, `high`)
+        this.logEntry(
+          [
+            `Entered`,
+            {
+              text: z.name,
+              color: z.color,
+              tooltipData: z.stubify(),
+            },
+            `.`,
+          ],
+          `high`,
+        )
     }
   }
 
@@ -1317,9 +1421,17 @@ export class HumanShip extends CombatShip {
     if (leftovers.length) {
       setTimeout(
         () =>
-          this.logEntry(
-            `Your crew couldn't hold everything, so some cargo was released as a cache.`,
-          ),
+          this.logEntry([
+            `Your crew couldn't hold everything, so`,
+            {
+              text: `some cargo`,
+              tooltipData: {
+                type: `cargo`,
+                cargo: leftovers,
+              },
+            },
+            `was released as a cache.`,
+          ]),
         500,
       )
       this.game.addCache({

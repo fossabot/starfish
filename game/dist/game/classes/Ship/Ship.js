@@ -16,6 +16,7 @@ const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
     constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
         super();
+        this.type = `ship`;
         this.name = `ship`;
         this.planet = false;
         this.radii = {
@@ -414,7 +415,11 @@ class Ship extends Stubbable_1.Stubbable {
             return;
         this.availableTaglines.push(tagline);
         this.toUpdate.availableTaglines = this.availableTaglines;
-        this.logEntry(`Unlocked a new ship tagline for ${reason}: "${tagline}"`, `high`);
+        this.logEntry([
+            `Unlocked a new ship tagline for`,
+            { text: reason + `:`, color: `white` },
+            { text: `"${tagline}"`, color: `yellow` },
+        ], `high`);
     }
     addHeaderBackground(bg, reason) {
         if (this.availableHeaderBackgrounds.find((b) => b === bg))
@@ -422,7 +427,11 @@ class Ship extends Stubbable_1.Stubbable {
         this.availableHeaderBackgrounds.push(bg);
         this.toUpdate.availableHeaderBackgrounds =
             this.availableHeaderBackgrounds;
-        this.logEntry(`Unlocked a new ship header background for ${reason}: "${bg}"`, `high`);
+        this.logEntry([
+            `Unlocked a new ship header background for`,
+            { text: reason + `:`, color: `white` },
+            { text: `"${bg}"`, color: `yellow` },
+        ], `high`);
     }
     // ----- stats -----
     addStat(statname, amount) {

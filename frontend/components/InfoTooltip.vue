@@ -12,54 +12,55 @@
             :data="tooltip.data"
           />
           <ShipTooltipsCommunicator
-            v-if="tooltip.type === 'communicator'"
+            v-else-if="tooltip.type === 'communicator'"
             :data="tooltip.data"
           />
           <ShipTooltipsScanner
-            v-if="tooltip.type === 'scanner'"
+            v-else-if="tooltip.type === 'scanner'"
             :data="tooltip.data"
           />
           <ShipTooltipsWeapon
-            v-if="tooltip.type === 'weapon'"
+            v-else-if="tooltip.type === 'weapon'"
             :data="tooltip.data"
           />
           <ShipTooltipsArmor
-            v-if="tooltip.type === 'armor'"
+            v-else-if="tooltip.type === 'armor'"
             :data="tooltip.data"
           />
           <ShipTooltipsChassis
-            v-if="tooltip.type === 'chassis'"
+            v-else-if="tooltip.type === 'chassis'"
             :data="tooltip.data"
           />
           <ShipTooltipsPlanet
-            v-if="tooltip.type === 'planet'"
+            v-else-if="tooltip.type === 'planet'"
             :data="tooltip.data"
           />
           <ShipTooltipsShipdot
-            v-if="tooltip.type === 'ship'"
+            v-else-if="tooltip.type === 'ship'"
             :data="tooltip.data"
           />
           <ShipTooltipsCache
-            v-if="tooltip.type === 'cache'"
+            v-else-if="tooltip.type === 'cache'"
             :data="tooltip.data"
             :key="tooltip.data.id"
           />
           <ShipTooltipsCargo
-            v-if="tooltip.type === 'cargo'"
+            v-else-if="tooltip.type === 'cargo'"
             :data="tooltip.data"
           />
           <ShipTooltipsZone
-            v-if="tooltip.type === 'zone'"
+            v-else-if="tooltip.type === 'zone'"
             :data="tooltip.data"
           />
           <ShipTooltipsRoom
-            v-if="tooltip.type === 'room'"
+            v-else-if="tooltip.type === 'room'"
             :data="tooltip.data"
           />
           <ShipTooltipsSpecies
-            v-if="tooltip.type === 'species'"
+            v-else-if="tooltip.type === 'species'"
             :data="tooltip.data"
           />
+          <div v-else>{{ tooltip }}</div>
         </template>
         <div v-else v-html="tooltip" />
       </div>

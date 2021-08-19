@@ -63,7 +63,13 @@ function default_1(socket) {
         ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.addItem({ type: itemType, id: itemId });
-        ship.logEntry(`${itemForSale.itemData?.displayName} (${itemType}) bought by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
+        ship.logEntry([
+            {
+                text: itemForSale.itemData.displayName,
+                tooltipData: itemForSale.itemData,
+            },
+            `bought by the captain for ${dist_1.default.r2(price)} credits.`,
+        ], `high`);
         callback({
             data: dist_1.default.stubify(ship),
         });
@@ -108,7 +114,13 @@ function default_1(socket) {
         ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.removeItem(heldItem);
-        ship.logEntry(`${heldItem.displayName} (${itemType}) sold by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
+        ship.logEntry([
+            {
+                text: heldItem.displayName,
+                tooltipData: heldItem,
+            },
+            `sold by the captain for ${dist_1.default.r2(price)} credits.`,
+        ], `high`);
         callback({
             data: dist_1.default.stubify(ship),
         });
@@ -154,7 +166,13 @@ function default_1(socket) {
         ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
         ship.swapChassis(itemForSale.chassisData);
-        ship.logEntry(`${itemForSale.chassisData?.displayName} (chassis) bought by the captain for ${dist_1.default.r2(price)} credits.`, `high`);
+        ship.logEntry([
+            {
+                text: itemForSale.chassisData.displayName,
+                tooltipData: itemForSale.chassisData,
+            },
+            `bought by the captain for ${dist_1.default.r2(price)} credits.`,
+        ], `high`);
         callback({
             data: dist_1.default.stubify(ship),
         });
