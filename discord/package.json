@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc --project ./tsconfig.discord.json -w",
+    "build": "tsc --project /ust/app/discord/tsconfig.discord.json -w",
     "dev": "nodemon dist/index.js"
   },
   "dependencies": {
