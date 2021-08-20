@@ -1,7 +1,9 @@
 {
   "scripts": {
-    "build": "tsc --project /usr/app/discord/tsconfig.discord.json -w",
-    "dev": "nodemon dist/index.js"
+    "build": "tsc --project ./tsconfig.discord.json -w",
+    "buildprod": "tsc --project ./tsconfig.discord.json",
+    "dev": "nodemon dist/index.js",
+    "prod": "node dist/index.js"
   },
   "dependencies": {
     "discord-buttons": "^3.2.1",
@@ -11,5 +13,8 @@
     "nodemon": "^2.0.7",
     "socket.io-client": "^4.0.1",
     "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.2"
   }
 }
