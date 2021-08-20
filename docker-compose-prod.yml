@@ -25,8 +25,6 @@ services:
     working_dir: /usr/app/game
     ports:
       - '4200:4200'
-    expose:
-      - '4200'
     command: 'npm run dev'
     environment:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
@@ -43,8 +41,6 @@ services:
     working_dir: /usr/app/frontend
     ports:
       - '4300:4300'
-    expose:
-      - '4300'
     command: 'npm run start'
     secrets:
       - google_client_email
