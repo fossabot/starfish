@@ -10,6 +10,7 @@ COPY discord/ .
 FROM builder as npm
 WORKDIR /usr/app/discord
 COPY common /usr/app/common
+COPY @types /usr/app/@types
 COPY discord/tsconfig.discord.json ./tsconfig.discord.json
 COPY discord/package*.json .
 RUN npm install --production
@@ -20,6 +21,7 @@ WORKDIR /usr/app/discord
 COPY --from=npm /usr/app/discord/dist ./dist
 COPY --from=npm /usr/app/discord/package.json ./package.json
 COPY common /usr/app/common
+COPY @types /usr/app/@types
 
 
 CMD ["npm", "run", "dev"]
