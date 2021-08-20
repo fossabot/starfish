@@ -1,4 +1,4 @@
 FROM nginx:1.21-alpine
 
-COPY nginx-prod.conf /etc/nginx/nginx.conf
-COPY app.conf /etc/nginx/app.conf
+COPY nginx/nginx-prod.conf /etc/nginx/nginx.conf
+COPY nginx/app.conf /etc/nginx/app.conf
