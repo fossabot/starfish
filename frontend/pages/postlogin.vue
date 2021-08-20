@@ -44,8 +44,9 @@ export default Vue.extend({
       if (
         hostname.indexOf('www.') !== 0 &&
         hostname !== 'localhost'
-      )
+      ){
         hostname = 'www.' + hostname
+      }
       const postLoginPage = `http://${hostname}/postlogin`
       return `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
         postLoginPage,
