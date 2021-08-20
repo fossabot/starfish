@@ -49,7 +49,7 @@ export default {
   io: {
     sockets: [
       {
-        url: `http://game:4200`,
+        url: `http://localhost:4200`,
       },
     ],
   },
