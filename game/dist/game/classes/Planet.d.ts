@@ -29,5 +29,6 @@ export declare class Planet extends Stubbable {
     incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
     decrementAllegiances(): void;
     updateFluctuator(): void;
+    toLogStub(): PlanetStub;
 }
 //# sourceMappingURL=Planet.d.ts.map

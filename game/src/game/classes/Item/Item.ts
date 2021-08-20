@@ -95,8 +95,8 @@ export class Item extends Stubbable {
             `Your`,
             {
               text: this.displayName,
+              color: `var(--item)`,
               tooltipData: this.stubify(),
-              color: `white`,
             },
             `is fully repaired.`,
           ],

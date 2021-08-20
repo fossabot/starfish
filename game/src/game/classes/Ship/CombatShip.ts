@@ -409,6 +409,7 @@ export abstract class CombatShip extends Ship {
               `Your`,
               {
                 text: armor.displayName,
+                color: `var(--item)`,
                 tooltipData: armor.stubify(),
               },
               `has been broken!`,
@@ -434,6 +435,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace's`,
                 {
                   text: armor.displayName,
+                  color: `var(--item)`,
                   tooltipData: armor.stubify(),
                 },
                 `&nospace!`,
@@ -536,6 +538,7 @@ export abstract class CombatShip extends Ship {
             `Your`,
             {
               text: equipmentToAttack.displayName,
+              color: `var(--item)`,
               tooltipData: equipmentToAttack.stubify(),
             },
             `has been disabled!`,
@@ -561,6 +564,7 @@ export abstract class CombatShip extends Ship {
               `&nospace's`,
               {
                 text: equipmentToAttack.displayName,
+                color: `var(--item)`,
                 tooltipData: equipmentToAttack.stubify(),
               },
               `&nospace!`,
@@ -630,6 +634,7 @@ export abstract class CombatShip extends Ship {
           `&nospace's`,
           {
             text: attack.weapon.displayName,
+            color: `var(--item)`,
             tooltipData: {
               type: `weapon`,
               damage: attack.weapon.damage,

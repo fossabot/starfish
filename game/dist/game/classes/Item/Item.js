@@ -69,8 +69,8 @@ class Item extends Stubbable_1.Stubbable {
                     `Your`,
                     {
                         text: this.displayName,
+                        color: `var(--item)`,
                         tooltipData: this.stubify(),
-                        color: `white`,
                     },
                     `is fully repaired.`,
                 ], `medium`);

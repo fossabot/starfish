@@ -178,6 +178,13 @@ class Planet extends Stubbable_1.Stubbable {
         this.toUpdate.priceFluctuator = this.priceFluctuator;
         this.updateFrontendForShipsAt();
     }
+    toLogStub() {
+        const s = this.stubify();
+        return {
+            ...s,
+            vendor: undefined,
+        };
+    }
 }
 exports.Planet = Planet;
 Planet.fluctuatorIntensity = 0.8;

@@ -1225,11 +1225,11 @@ class HumanShip extends CombatShip_1.CombatShip {
         super.die(attacker);
         setTimeout(() => {
             this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
+            this.addTagline(`Delicious with Lemon`, `having your ship destroyed`);
+            if (this.stats.find((s) => s.stat === `deaths`)
+                ?.amount === 2)
+                this.addHeaderBackground(`Gravestone 1`, `having your ship destroyed twice`);
         }, 100);
-        this.addTagline(`Delicious with Lemon`, `having your ship destroyed`);
-        if (this.stats.find((s) => s.stat === `deaths`)
-            ?.amount === 2)
-            this.addHeaderBackground(`Gravestone 1`, `having your ship destroyed twice`);
         const cacheContents = [];
         this.crewMembers.forEach((cm) => {
             // ----- crew member cargo -----

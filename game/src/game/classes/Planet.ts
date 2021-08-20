@@ -228,4 +228,12 @@ export class Planet extends Stubbable {
     this.toUpdate.priceFluctuator = this.priceFluctuator
     this.updateFrontendForShipsAt()
   }
+
+  toLogStub(): PlanetStub {
+    const s: PlanetStub = this.stubify()
+    return {
+      ...s,
+      vendor: undefined,
+    }
+  }
 }

@@ -5,15 +5,16 @@
     </div>
     <hr />
     <div>
-      <div>
+      <span>
         Attack
         {{
           data.miss
             ? 'missed'
             : `hit for ${c.r2(data.damageTaken)} damage`
-        }}
-      </div>
-      <div v-if="data.didDie">Defender was destroyed</div>
+        }}</span
+      ><span v-if="data.didDie"
+        >, destroying the target</span
+      >
       <hr />
       <div class="sub">
         Damage Breakdown:

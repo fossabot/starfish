@@ -7,6 +7,7 @@
       }}</span>
       <span class="sub">{{ c.capitalize(data.type) }}</span>
     </div>
+    <!-- {{ data }} -->
     <hr />
     <div v-if="data.faction">
       <span :style="{ color: data.faction.color }">{{

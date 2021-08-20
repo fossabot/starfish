@@ -2,7 +2,6 @@
   <div class="logentry" :class="level">
     <div class="text flashtextgoodonspawn">
       <span
-        v-if="outputElements"
         v-for="(el, index) in outputElements"
         :key="id + index"
         :style="
@@ -23,9 +22,6 @@
         <span v-else>{{
           (el.text || el).replace(/\s*&nospace/g, '')
         }}</span>
-      </span>
-      <span v-else>
-        {{ outputText }}
       </span>
     </div>
     <div class="sub time flashtextgoodonspawn padtoptiny">
@@ -56,17 +52,9 @@ export default Vue.extend({
   },
   computed: {
     outputElements(): any[] | false {
-      if (!Array.isArray(this.content)) return false
+      if (!Array.isArray(this.content))
+        return [this.content]
       return this.content
-    },
-
-    outputText(): string {
-      return (typeof this.content === 'string'
-        ? this.content
-        : Array.isArray(this.content)
-        ? this.content.map((c) => c.text || c).join(' ')
-        : `${this.content}`
-      ).replace(/\s*&nospace/g, '')
     },
   },
   watch: {},
