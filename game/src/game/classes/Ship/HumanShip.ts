@@ -1018,8 +1018,8 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction,
-                species: this.species,
+                faction: this.faction.id,
+                species: this.species.id,
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },
@@ -1053,8 +1053,8 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction,
-                species: this.species,
+                faction: this.faction.id,
+                species: this.species.id,
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },

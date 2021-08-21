@@ -626,6 +626,11 @@
         "signature": "4f92917486836e30ec8c18667035e7bf15d16fcd5ab2748296994f54a3ae359b",
         "affectsGlobalScope": false
       },
+      "../node_modules/buffer/index.d.ts": {
+        "version": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
+        "signature": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
+        "affectsGlobalScope": false
+      },
       "../node_modules/bson/bson.d.ts": {
         "version": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
         "signature": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
@@ -1130,6 +1135,9 @@
         "../node_modules/@types/node/buffer.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/buffer/index.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/denque/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -1632,6 +1640,9 @@
         "../node_modules/@types/node/buffer.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/buffer/index.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/denque/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -1733,6 +1744,7 @@
       "../node_modules/@types/webidl-conversions/index.d.ts",
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts",
       "../node_modules/bson/bson.d.ts",
+      "../node_modules/buffer/index.d.ts",
       "../node_modules/denque/index.d.ts",
       "../node_modules/mongodb/mongodb.ts34.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",

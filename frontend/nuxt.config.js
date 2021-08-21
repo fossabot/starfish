@@ -46,14 +46,6 @@ export default {
 
   modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 
-  io: {
-    sockets: [
-      {
-        url: `http://game:4200`,
-      },
-    ],
-  },
-
   serverMiddleware: {
     '/api': `~/api`,
   },

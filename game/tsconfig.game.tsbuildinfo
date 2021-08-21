@@ -727,7 +727,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/combatship.ts": {
-        "version": "7d5535bbb793136b2aab240389751c466eb1d0369e10d235ba56b1dbd9ed7b1e",
+        "version": "3d9935e980525f57373e4b56cbf46eeae99a4f9ed8978560e44174205fb16e5c",
         "signature": "f816c4612097d94a204d05c14b9f26f82aee8cfa5522d05b4ff54970b1e01867",
         "affectsGlobalScope": false
       },
@@ -767,7 +767,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "654d6f076bd3ae9f0590142120d62c8c0394517012ec6088089db4e06a185825",
+        "version": "4f57441abc25b8c4a1251880f9a06383b159f6916c27de66353d0b8251ba0615",
         "signature": "03a9054179d670457fb167a1dcfd2581b5c5b0d39be53b70b1fdbf2828c1f6ac",
         "affectsGlobalScope": false
       },
