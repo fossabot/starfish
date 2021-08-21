@@ -4,7 +4,7 @@ COPY nginx/nginx-prod.conf /etc/nginx/nginx.conf
 
 # install certbot
 RUN apk add certbot
-RUN apk add python-certbot-nginx
+RUN apk add python3-certbot-nginx
 # RUN add-apt-repository ppa:certbot/certbot
 # RUN apt-get update -y
 # RUN apt-get install -y certbot python-certbot-nginx
