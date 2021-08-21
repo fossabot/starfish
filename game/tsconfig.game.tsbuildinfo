@@ -862,7 +862,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/general.ts": {
-        "version": "98af1e4bf61eea148bfcf6d9814c9688d1035ca551e39b187b996d84df5f19eb",
+        "version": "825418fa0642a95e8b64994145a45a792f2df78a02e65410c741fbe363dd39d8",
         "signature": "848ac9668b6d48f2715c77ca69de57b877ab05e85bcfb0d618b58964450718c5",
         "affectsGlobalScope": false
       },

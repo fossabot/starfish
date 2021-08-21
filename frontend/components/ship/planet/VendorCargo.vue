@@ -3,9 +3,9 @@
     class="panesection"
     v-if="
       crewMember &&
-        ship.planet.vendor &&
-        ship.planet.vendor.cargo &&
-        ship.planet.vendor.cargo.length
+      ship.planet.vendor &&
+      ship.planet.vendor.cargo &&
+      ship.planet.vendor.cargo.length
     "
   >
     <div>
@@ -20,9 +20,7 @@
         v-for="ca in buyableCargo"
         :key="
           'buycargo' +
-            (ca.cargoData
-              ? ca.cargoData.type
-              : Math.random())
+          (ca.cargoData ? ca.cargoData.type : Math.random())
         "
         v-tooltip="{
           type: 'cargo',
@@ -77,9 +75,7 @@
         v-for="ca in sellableCargo"
         :key="
           'sellcargo' +
-            (ca.cargoData
-              ? ca.cargoData.type
-              : Math.random())
+          (ca.cargoData ? ca.cargoData.type : Math.random())
         "
         v-tooltip="{
           type: 'cargo',
@@ -169,14 +165,6 @@ export default Vue.extend({
                 ? c.factionVendorMultiplier
                 : 1),
             0,
-          )
-          c.log(
-            this.crewMember?.credits / pricePerUnit,
-            c.r2(
-              this.crewMember?.credits / pricePerUnit,
-              2,
-              true,
-            ),
           )
           const maxCanBuy = c.r2(
             Math.min(

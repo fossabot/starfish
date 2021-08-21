@@ -246,7 +246,7 @@ export const actions = {
           return
         }
         userId = idRes.data
-        c.log({ userId })
+        // c.log({ userId })
       }
       if (userId) storage.set(`userId`, userId)
 
@@ -306,8 +306,6 @@ export const actions = {
 
     commit(`set`, { userId, shipIds })
 
-    this.$router.push(`/s`)
-
     if (shipIds?.length > 1) {
       const shipsBasics = []
       for (let id of shipIds) {
@@ -335,13 +333,14 @@ export const actions = {
     }
   },
 
-  logout({ commit }) {
+  logout({ commit, dispatch }) {
     this.$router.push(`/`)
     this.$socket.removeAllListeners()
     commit(`set`, {
       shipIds: [],
       userId: null,
       shipsBasics: null,
+      ship: null,
     })
     storage.remove(`userId`)
     storage.remove(`shipIds`)

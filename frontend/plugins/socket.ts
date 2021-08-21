@@ -11,8 +11,8 @@ c.log(
 )
 const socket = io(socketAddress)
 
-// test
-socket.emit(`hello`)
+// // test
+// socket.emit(`hello`)
 
 export default function ({ app }, inject) {
   inject(`socket`, socket)

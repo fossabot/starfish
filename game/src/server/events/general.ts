@@ -18,7 +18,7 @@ export default function (
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {
-      c.log(`ships:forUser:fromIdArray`, shipIds, userId)
+      // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
       const foundShips = game.ships.filter(
         (s) =>
           s.human &&

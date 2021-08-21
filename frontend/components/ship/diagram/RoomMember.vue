@@ -8,7 +8,7 @@
     }"
   >
     <div>
-      {{ ship.species.icon }}
+      {{ c.species[ship.species.id].icon }}
     </div>
     <div class="name">
       {{ name }}
@@ -17,18 +17,24 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapState } from 'vuex'
+import c from '../../../../common/src'
 
 export default Vue.extend({
   props: {
     name: {},
-    location: {},
-    roomEls: {},
-    highlight: {},
+    location: { type: String as PropType<CrewLocation> },
+    roomEls: {
+      type: Object as PropType<
+        { [key in CrewLocation]: HTMLDivElement }
+      >,
+    },
+    highlight: { type: Boolean },
   },
   data() {
     return {
+      c,
       animate: false,
       hide: false,
       top: 0,
@@ -56,13 +62,16 @@ export default Vue.extend({
       if (Array.isArray(targetElement))
         targetElement = targetElement[0] as HTMLDivElement
       this.hide = false
-      const parentBCR = targetElement.getBoundingClientRect()
+      const parentBCR =
+        targetElement.getBoundingClientRect()
       const parentTop = targetElement.offsetTop
       const parentLeft = targetElement.offsetLeft
       // console.log(parentBCR, parentTop, parentLeft)
 
-      const paddingLeft = this.$el.offsetWidth / 1.5
-      const paddingTop = this.$el.offsetHeight / 1.5
+      const paddingLeft =
+        (this.$el as HTMLElement).offsetWidth / 1.5
+      const paddingTop =
+        (this.$el as HTMLElement).offsetHeight / 1.5
 
       const minLeft = parentLeft + paddingLeft,
         maxLeft =

@@ -47,9 +47,7 @@
       <ShipDead v-if="ship && ship.dead" />
     </div>
 
-    <details
-      style="position: relative; margin-bottom: 2em;"
-    >
+    <details style="position: relative; margin-bottom: 2em">
       <summary>Raw Data</summary>
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
     </details>
@@ -58,7 +56,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import type VueRouter from 'vue-router'
 import c from '../../../common/src'
 import { mapState } from 'vuex'
 import * as storage from '../../assets/scripts/storage'

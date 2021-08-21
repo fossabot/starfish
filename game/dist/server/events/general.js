@@ -13,7 +13,7 @@ function default_1(socket) {
         __1.game.save();
     });
     socket.on(`ships:forUser:fromIdArray`, (shipIds, userId, callback) => {
-        dist_1.default.log(`ships:forUser:fromIdArray`, shipIds, userId);
+        // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
         const foundShips = __1.game.ships.filter((s) => s.human &&
             shipIds.includes(s.id) &&
             s.crewMembers.find((cm) => cm.id === userId));

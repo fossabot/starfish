@@ -4,15 +4,9 @@
       <h2>How to Play {{ c.gameName }}</h2>
       <h3>Game Objectives</h3>
       <ul>
-        <li>
-          Explore the universe
-        </li>
-        <li>
-          Earn credits through trade and conquest
-        </li>
-        <li>
-          Upgrade your ship and its equipment
-        </li>
+        <li>Explore the universe</li>
+        <li>Earn credits through trade and conquest</li>
+        <li>Upgrade your ship and its equipment</li>
         <li>
           Interact with other Discord servers from around
           the world
@@ -20,9 +14,7 @@
         <li>
           Carve out a safe environment for your faction
         </li>
-        <li>
-          Build your character's skills
-        </li>
+        <li>Build your character's skills</li>
         <li>
           Lead your faction to dominance in the global
           faction rankings!
@@ -31,16 +23,24 @@
 
       <h3>Getting Started and Joining the Ship</h3>
       <div>
-        If you haven't already, add the Discord bot(link) to
-        your server.
+        If you haven't already,
+        <a :href="c.discordBotInviteUrl" target="_blank"
+          >add the Discord bot to your server</a
+        >.
       </div>
       <div>
-        Run the <b>start</b> command in Discord to start
-        your server out in the game.
+        Use the <b>help</b> command (<code>.help</code>) to
+        see a list of all of the bot's Discord commands.
+      </div>
+      <div>
+        Run the <b>start</b> command in Discord
+        (<code>.start</code>) to start your server out in
+        the game.
       </div>
       <div>
         Additional crew members can use the
-        <b>join</b> command to join the ship.
+        <b>join</b> command (<code>.join</code>) to join the
+        ship.
       </div>
 
       <h3>Movement</h3>

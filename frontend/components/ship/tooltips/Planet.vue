@@ -10,17 +10,21 @@
     <!-- {{ data }} -->
     <hr />
     <div v-if="data.faction">
-      <span :style="{ color: data.faction.color }">{{
-        data.faction.name
-      }}</span>
+      <span
+        :style="{
+          color: c.factions[data.faction.id].color,
+        }"
+        >{{ c.factions[data.faction.id].name }}</span
+      >
       Homeworld
-      <hr />
     </div>
+    <hr v-if="data.faction" />
+
     <div
       v-if="
         data.vendor &&
-          data.vendor.cargo &&
-          data.vendor.cargo.length
+        data.vendor.cargo &&
+        data.vendor.cargo.length
       "
     >
       Cargo:
@@ -32,8 +36,8 @@
     <div
       v-if="
         data.vendor &&
-          data.vendor.items &&
-          data.vendor.items.length
+        data.vendor.items &&
+        data.vendor.items.length
       "
     >
       Equipment:
@@ -46,8 +50,8 @@
     <div
       v-if="
         data.vendor &&
-          data.vendor.chassis &&
-          data.vendor.chassis.length
+        data.vendor.chassis &&
+        data.vendor.chassis.length
       "
     >
       Chassis:
@@ -57,8 +61,8 @@
     <div
       v-if="
         data.vendor &&
-          data.vendor.passives &&
-          data.vendor.passives.length
+        data.vendor.passives &&
+        data.vendor.passives.length
       "
     >
       Passives:

@@ -327,7 +327,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "bb98ff628751accf4e2af76d22496d2d3d05592908e72bd6a3b426dfa1024cd8",
+        "version": "77dcb078fbe597b9c43484d3ac1f86193afbfd17c23e56f5d0182155bcedf9b3",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },

@@ -17,14 +17,14 @@
     <nuxt-link to="/s" v-if="ship" class="button"
       >My Ship</nuxt-link
     >
-    <a to="#" v-show="userId" @click="logout">
-      Log out
-    </a>
     <a
-      v-show="!userId"
-      href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Fwww.starfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
-      >Log in</a
+      to="#"
+      class="underline pointer"
+      v-show="userId"
+      @click="logout"
+      >Log out</a
     >
+    <a v-show="!userId" :href="loginUrl">Log in</a>
   </nav>
 </template>
 
@@ -45,6 +45,21 @@ export default Vue.extend({
       'shipIds',
       'shipsBasics',
     ]),
+    loginUrl() {
+      const botId =
+        process?.env?.NODE_ENV === 'development'
+          ? '723017262369472603'
+          : '804439178636558396'
+      let hostname = window.location.hostname
+      if (hostname.indexOf('localhost') === 0)
+        hostname = `${hostname}:${window.location.port}`
+      else if (hostname.indexOf('www.') !== 0)
+        hostname = 'www.' + hostname
+      const postLoginPage = `http://${hostname}/postlogin`
+      return `https://discord.com/api/oauth2/authorize?client_id=${botId}&redirect_uri=${encodeURIComponent(
+        postLoginPage,
+      )}&response_type=token&scope=identify%20guilds`
+    },
   },
   watch: {
     ship() {

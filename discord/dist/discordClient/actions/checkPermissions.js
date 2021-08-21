@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const dist_1 = __importDefault(require("../../../../common/dist"));
 const __1 = require("..");
 async function checkPermissions({ requiredPermissions, channel, guild, guildId, }) {
     if (!__1.client || !__1.client.readyAt)
@@ -26,7 +30,9 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
     const useBasePermissions = !channel;
     // -------------- get permissions
     let permissionsToCheck;
-    const botRole = (await guild.roles.fetch()).cache
+    const botRole = (await guild.roles.fetch().catch((e) => {
+        dist_1.default.log(`Error getting bot permissions:`, e);
+    }))?.cache
         .array()
         .find((role) => role.name === __1.client.user?.username);
     permissionsToCheck = botRole?.permissions;

@@ -39,6 +39,7 @@ export default Vue.extend({
     }
   },
   computed: {
+    ...mapState(['userId']),
     loginUrl() {
       let hostname = window.location.hostname
       if (hostname.indexOf('localhost') === 0)
@@ -49,6 +50,11 @@ export default Vue.extend({
       return `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`
+    },
+  },
+  watch: {
+    userId() {
+      if (this.userId) this.$router.push('/s')
     },
   },
   async mounted() {

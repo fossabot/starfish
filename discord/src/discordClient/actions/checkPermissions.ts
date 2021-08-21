@@ -51,9 +51,14 @@ export default async function checkPermissions({
 
   // -------------- get permissions
   let permissionsToCheck
-  const botRole = (await guild.roles.fetch()).cache
+  const botRole = (
+    await guild.roles.fetch().catch((e) => {
+      c.log(`Error getting bot permissions:`, e)
+    })
+  )?.cache
     .array()
     .find((role) => role.name === client.user?.username)
+
   permissionsToCheck = botRole?.permissions
   if (!useBasePermissions && channel && guild.me) {
     permissionsToCheck = channel.permissionsFor(guild.me)
