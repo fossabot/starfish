@@ -16,7 +16,7 @@ RUN chown -R www-data:www-data /var/lib/nginx
 EXPOSE 80 443
 
 # add nginx live conf
-ADD config/climguards-live.com /etc/nginx/sites-available/starfish.cool
+ADD starfish.conf /etc/nginx/sites-available/starfish.cool
 
 # create symlinks
 RUN ln -s /etc/nginx/sites-available/starfish.cool /etc/nginx/sites-enabled/starfish
