@@ -13,6 +13,7 @@ const physics_1 = __importDefault(require("./physics"));
 const discord_1 = __importDefault(require("./discord"));
 const Profiler_1 = require("./Profiler");
 const species_1 = __importDefault(require("./species"));
+const factions_1 = __importDefault(require("./factions"));
 const basePassiveData_1 = __importDefault(require("./basePassiveData"));
 exports.default = {
     ...globals_1.default,
@@ -24,6 +25,7 @@ exports.default = {
     ...physics_1.default,
     ...discord_1.default,
     species: species_1.default,
+    factions: factions_1.default,
     basePassiveData: basePassiveData_1.default,
     Profiler: Profiler_1.Profiler,
 };

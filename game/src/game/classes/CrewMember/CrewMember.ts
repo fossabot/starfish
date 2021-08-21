@@ -12,6 +12,7 @@ export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly basemaxCargoSpace = 10
 
+  readonly type = `crewMember`
   readonly id: string
   readonly ship: HumanShip
   name: string = `crew member`
@@ -55,10 +56,10 @@ export class CrewMember extends Stubbable {
 
     this.stamina = data.stamina || this.maxStamina
     this.lastActive = data.lastActive || Date.now()
-    this.inventory = data.inventory || []
+    this.inventory = data.inventory?.filter((i) => i) || []
     this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 200
-    this.skills = data.skills || [
+    this.skills = data.skills?.filter((s) => s) || [
       { skill: `piloting`, level: 1, xp: 0 },
       { skill: `munitions`, level: 1, xp: 0 },
       { skill: `mechanics`, level: 1, xp: 0 },
@@ -187,7 +188,7 @@ export class CrewMember extends Stubbable {
         xpBoostMultiplier
 
     let skillElement = this.skills.find(
-      (s) => s.skill === skill,
+      (s) => s?.skill === skill,
     )
     if (!skillElement) {
       const index = this.skills.push({
@@ -249,10 +250,9 @@ export class CrewMember extends Stubbable {
   }
 
   get heldWeight() {
-    return this.inventory.reduce(
-      (total, i) => total + i.amount,
-      0,
-    )
+    return this.inventory
+      .filter((i) => i)
+      .reduce((total, i) => total + i.amount, 0)
   }
 
   recalculateMaxCargoSpace() {
@@ -315,20 +315,20 @@ export class CrewMember extends Stubbable {
   }
 
   get piloting() {
-    return this.skills.find((s) => s.skill === `piloting`)
+    return this.skills.find((s) => s?.skill === `piloting`)
   }
 
   get linguistics() {
     return this.skills.find(
-      (s) => s.skill === `linguistics`,
+      (s) => s?.skill === `linguistics`,
     )
   }
 
   get munitions() {
-    return this.skills.find((s) => s.skill === `munitions`)
+    return this.skills.find((s) => s?.skill === `munitions`)
   }
 
   get mechanics() {
-    return this.skills.find((s) => s.skill === `mechanics`)
+    return this.skills.find((s) => s?.skill === `mechanics`)
   }
 }

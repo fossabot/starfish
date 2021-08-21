@@ -8,6 +8,7 @@ import type { Weapon } from '../Item/Weapon'
 import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
+import { AIShip } from './AIShip'
 
 interface DamageResult {
   miss: boolean
@@ -268,12 +269,17 @@ export abstract class CombatShip extends Ship {
               species: target.species.id,
               tagline: target.tagline,
               headerBackground: target.headerBackground,
+              level: (target as AIShip).level,
             },
           },
           `with`,
           {
             text: weapon.displayName,
-            tooltipData: weapon.stubify(),
+            color: `var(--item)`,
+            tooltipData: {
+              ...(weapon.stubify() as any),
+              cooldownRemaining: undefined,
+            },
           },
           `&nospace.`,
         ],
@@ -293,18 +299,25 @@ export abstract class CombatShip extends Ship {
               species: target.species.id,
               tagline: target.tagline,
               headerBackground: target.headerBackground,
+              level: (target as AIShip).level,
             },
           },
           `with`,
           {
             text: weapon.displayName,
-            tooltipData: weapon.stubify(),
+            color: `var(--item)`,
+            tooltipData: {
+              ...(weapon.stubify() as any),
+              cooldownRemaining: undefined,
+              _hp: undefined,
+            },
           },
           `&nospace, dealing`,
           {
             text:
               c.r2(c.r2(attackResult.damageTaken)) +
               ` damage`,
+            color: `var(--success)`,
             tooltipData: {
               type: `damage`,
               ...attackResult,
@@ -430,6 +443,7 @@ export abstract class CombatShip extends Ship {
                     species: this.species.id,
                     tagline: this.tagline,
                     headerBackground: this.headerBackground,
+                    level: (attacker as AIShip).level,
                   },
                 },
                 `&nospace's`,
@@ -559,13 +573,20 @@ export abstract class CombatShip extends Ship {
                   species: this.species.id,
                   tagline: this.tagline,
                   headerBackground: this.headerBackground,
+                  level: (this as AIShip).level,
                 },
               },
               `&nospace's`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
-                tooltipData: equipmentToAttack.stubify(),
+                tooltipData: {
+                  displayName:
+                    equipmentToAttack.displayName,
+                  description:
+                    equipmentToAttack.description,
+                  type: equipmentToAttack.type,
+                },
               },
               `&nospace!`,
             ],
@@ -629,6 +650,7 @@ export abstract class CombatShip extends Ship {
               species: attacker.species.id,
               tagline: attacker.tagline,
               headerBackground: attacker.headerBackground,
+              level: (attacker as AIShip).level,
             },
           },
           `&nospace's`,
@@ -637,12 +659,9 @@ export abstract class CombatShip extends Ship {
             color: `var(--item)`,
             tooltipData: {
               type: `weapon`,
-              damage: attack.weapon.damage,
               description: attack.weapon.description,
-              range: attack.weapon.range,
               displayName: attack.weapon.displayName,
               id: attack.weapon.id,
-              mass: attack.weapon.mass,
             },
           },
           `&nospace.`,

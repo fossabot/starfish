@@ -233,6 +233,7 @@ export class Planet extends Stubbable {
     const s: PlanetStub = this.stubify()
     return {
       ...s,
+      type: `planet`,
       vendor: undefined,
     }
   }

@@ -18,6 +18,12 @@ declare const _default: {
         chickens: BaseSpeciesData;
         flamingos: BaseSpeciesData;
     };
+    factions: {
+        green: BaseFactionData;
+        blue: BaseFactionData;
+        purple: BaseFactionData;
+        red: BaseFactionData;
+    };
     basePassiveData: {
         boostDropAmount: {
             toString: (intensity: number, ...args: any[]) => string;
@@ -134,13 +140,13 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
+    cargoTypes: ("credits" | "salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;
         url: string;
     }[];
-    stubify: <BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[] | undefined) => StubType;
+    stubify: <BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

@@ -825,7 +825,7 @@ class Tutorial {
                     {
                         text: s.planet.name,
                         color: s.planet.color,
-                        tooltipData: s.planet.stubify(),
+                        tooltipData: s.planet.toLogStub(),
                     },
                     `&nospace!`,
                 ]);

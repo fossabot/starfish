@@ -3,8 +3,9 @@
     class="topzone"
     :class="{ captain: isCaptain }"
     :style="{
-      background: `url('/images/headerBackgrounds/${data.headerBackground ||
-        'default.jpg'}')`,
+      background: `url('/images/headerBackgrounds/${
+        data.headerBackground || 'default.jpg'
+      }')`,
     }"
     @click="
       isCaptain &&
@@ -15,16 +16,16 @@
   >
     <div class="bgfade"></div>
     <div class="content">
-      <div v-if="data.species">
+      <div v-if="c.species[data.species.id]">
         <div
           class="icon"
           :class="{ pushup: data.tagline }"
           v-tooltip="{
             type: 'species',
-            data: data.species,
+            data: c.species[data.species.id],
           }"
         >
-          {{ data.species.icon }}
+          {{ c.species[data.species.id].icon }}
         </div>
       </div>
       <div class="right">
@@ -35,10 +36,16 @@
       </div>
     </div>
     <div
-      v-if="data.faction"
+      v-if="c.factions[data.faction.id]"
       class="factiontag"
-      :style="{ background: data.faction.color }"
-      v-tooltip="`<b>Faction:</b> ${data.faction.name}`"
+      :style="{
+        background: c.factions[data.faction.id].color,
+      }"
+      v-tooltip="
+        `<b>Faction:</b> ${
+          c.factions[data.faction.id].name
+        }`
+      "
     ></div>
   </div>
 </template>

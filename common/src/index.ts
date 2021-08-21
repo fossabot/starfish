@@ -8,6 +8,7 @@ import physics from './physics'
 import discord from './discord'
 import { Profiler } from './Profiler'
 import species from './species'
+import factions from './factions'
 import basePassiveData from './basePassiveData'
 
 export default {
@@ -20,6 +21,7 @@ export default {
   ...physics,
   ...discord,
   species,
+  factions,
   basePassiveData,
   Profiler,
 }

@@ -2,6 +2,7 @@ import type { Game } from '../Game';
 import type { Planet } from './Planet';
 import type { Ship } from './Ship/Ship';
 export declare class Faction {
+    readonly type = "faction";
     readonly name: string;
     readonly id: FactionKey;
     readonly color: string;

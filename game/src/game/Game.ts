@@ -16,7 +16,6 @@ import { AIShip } from './classes/Ship/AIShip'
 
 import { generatePlanet as generatePlanetData } from './presets/planets'
 import { generateZoneData } from './presets/zones'
-import defaultFactions from './presets/factions'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
@@ -35,7 +34,7 @@ export class Game {
   constructor() {
     this.startTime = new Date()
 
-    Object.values(defaultFactions).forEach((fd) =>
+    Object.values(c.factions).forEach((fd) =>
       this.addFaction(fd),
     )
     Object.values(c.species).map((sd) =>
@@ -46,7 +45,7 @@ export class Game {
       `Loaded ${
         Object.keys(c.species).length
       } species and ${
-        Object.keys(defaultFactions).length
+        Object.keys(c.factions).length
       } factions.`,
     )
   }

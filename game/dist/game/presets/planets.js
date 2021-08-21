@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generatePlanet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
-const factions_1 = __importDefault(require("./factions"));
 const crewPassives_1 = require("./crewPassives");
 const cargo_1 = require("./cargo");
 const itemData = __importStar(require("./items"));
@@ -86,12 +85,12 @@ function generatePlanet(game, homeworldFactionKey) {
         factionId = homeworldFactionKey;
     else {
         if (Math.random() > 0.6)
-            factionId = dist_1.default.randomFromArray(Object.keys(factions_1.default));
+            factionId = dist_1.default.randomFromArray(Object.keys(dist_1.default.factions));
         if (factionId === `red`)
             factionId = undefined;
     }
     const color = factionId
-        ? factions_1.default[factionId].color
+        ? dist_1.default.factions[factionId].color
         : `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 30}%)`;
     const repairCostMultiplier = dist_1.default.r2(1 + Math.random() * 0.2 - 0.1, 3);
     const vendor = {

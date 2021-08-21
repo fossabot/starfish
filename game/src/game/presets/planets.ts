@@ -2,7 +2,6 @@ import c from '../../../../common/dist'
 import type { Faction } from '../classes/Faction'
 import type { Planet } from '../classes/Planet'
 import type { Game } from '../Game'
-import factions from './factions'
 import { data as passiveData } from './crewPassives'
 import { data as cargoData } from './cargo'
 import * as itemData from './items'
@@ -97,12 +96,12 @@ export function generatePlanet(
   if (homeworldFactionKey) factionId = homeworldFactionKey
   else {
     if (Math.random() > 0.6)
-      factionId = c.randomFromArray(Object.keys(factions))
+      factionId = c.randomFromArray(Object.keys(c.factions))
     if (factionId === `red`) factionId = undefined
   }
 
   const color = factionId
-    ? factions[factionId].color
+    ? c.factions[factionId].color
     : `hsl(${Math.random() * 360}, ${Math.round(
         Math.random() * 80 + 20,
       )}%, ${Math.round(Math.random() * 40) + 30}%)`

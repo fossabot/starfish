@@ -274,7 +274,7 @@ export default Vue.extend({
     pilotingSkill(): number {
       return (
         this.crewMember.skills.find(
-          (s: XPData) => s.skill === 'piloting',
+          (s: XPData) => s && s.skill === 'piloting',
         )?.level || 1
       )
     },

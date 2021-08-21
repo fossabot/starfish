@@ -16,7 +16,6 @@ const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = require("./presets/planets");
 const zones_1 = require("./presets/zones");
-const factions_1 = __importDefault(require("./presets/factions"));
 class Game {
     constructor() {
         this.ships = [];
@@ -35,9 +34,9 @@ class Game {
         this.averageWorstShipTickLag = 0;
         this.averageTickTime = 0;
         this.startTime = new Date();
-        Object.values(factions_1.default).forEach((fd) => this.addFaction(fd));
+        Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
         Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
-        dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(factions_1.default).length} factions.`);
+        dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(dist_1.default.factions).length} factions.`);
     }
     startGame() {
         dist_1.default.log(`----- Starting Game -----`);

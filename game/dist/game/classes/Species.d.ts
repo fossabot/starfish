@@ -2,6 +2,7 @@ import type { Game } from '../Game';
 import type { Faction } from './Faction';
 import type { Ship } from './Ship/Ship';
 export declare class Species {
+    readonly type = "species";
     readonly id: SpeciesKey;
     readonly icon: string;
     readonly singular: string;
