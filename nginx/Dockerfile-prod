@@ -3,9 +3,11 @@ FROM nginx:1.21-alpine
 COPY nginx/nginx-prod.conf /etc/nginx/nginx.conf
 
 # install certbot
-RUN add-apt-repository ppa:certbot/certbot
-RUN apt-get update -y
-RUN apt-get install -y certbot python-certbot-nginx
+RUN apk add certbot
+RUN apk add python-certbot-nginx
+# RUN add-apt-repository ppa:certbot/certbot
+# RUN apt-get update -y
+# RUN apt-get install -y certbot python-certbot-nginx
 
 # deamon mode off
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
