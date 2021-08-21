@@ -12,5 +12,7 @@ export declare class Zone extends Stubbable {
     readonly color: string;
     constructor({ location, radius, id, color, name, effects, }: BaseZoneData, game: Game);
     affectShip(ship: CombatShip): void;
+    getVisibleStub(): unknown;
+    toLogStub(): unknown;
 }
 //# sourceMappingURL=Zone.d.ts.map

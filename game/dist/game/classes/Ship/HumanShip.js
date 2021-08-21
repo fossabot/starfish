@@ -100,6 +100,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         profiler.step(`move`);
         // ----- move -----
         this.move();
+        if (this.planet)
+            this.addStat(`planetTime`, 1);
         profiler.step(`update visible`);
         // ----- scan -----
         const previousVisible = { ...this.visible };
@@ -129,10 +131,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- discover new planets -----
         const newPlanets = this.visible.planets.filter((p) => !this.seenPlanets.includes(p));
         newPlanets.forEach((p) => this.discoverPlanet(p));
-        if (newPlanets.length)
-            db_1.db.ship.addOrUpdateInDb(this);
-        if (this.planet)
-            this.addStat(`planetTime`, 1);
+        // ----- discover new landmarks -----
+        const newLandmarks = this.visible.zones.filter((z) => !this.seenLandmarks.includes(z));
+        newLandmarks.forEach((p) => this.discoverLandmark(p));
         profiler.step(`get caches`);
         // ----- get nearby caches -----
         if (!this.dead)
@@ -207,7 +208,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             {
                 text: p.name,
                 color: p.color,
-                tooltipData: p.stubify(),
+                tooltipData: p.toLogStub(),
             },
             `&nospace!`,
         ], `high`);
@@ -222,6 +223,20 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addTagline(`Migratory`, `discovering 30 planets`);
         if (this.seenPlanets.length >= 100)
             this.addTagline(`EAC-zy Rider`, `discovering 100 planets`);
+    }
+    discoverLandmark(l) {
+        this.seenLandmarks.push(l);
+        this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) => z.getVisibleStub());
+        this.logEntry([
+            `Discovered`,
+            {
+                text: l.name,
+                color: l.color,
+                tooltipData: l.toLogStub(),
+            },
+            `&nospace!`,
+        ], `high`);
+        this.addStat(`seenLandmarks`, 1);
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
     thruster) {
@@ -668,7 +683,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: this.planet.name,
                     color: this.planet.color,
-                    tooltipData: this.planet.stubify(),
+                    tooltipData: this.planet.toLogStub(),
                 },
                 `&nospace.`,
             ], `high`);
@@ -683,8 +698,14 @@ class HumanShip extends CombatShip_1.CombatShip {
                             tooltipData: {
                                 type: `ship`,
                                 name: this.name,
-                                faction: this.faction.id,
-                                species: this.species.id,
+                                faction: {
+                                    type: `faction`,
+                                    id: this.faction.id,
+                                },
+                                species: {
+                                    type: `species`,
+                                    id: this.species.id,
+                                },
                                 tagline: this.tagline,
                                 headerBackground: this.headerBackground,
                             },
@@ -693,7 +714,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.stubify(),
+                            tooltipData: s.planet.toLogStub(),
                         },
                         `&nospace.`,
                     ]);
@@ -705,7 +726,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: previousPlanet.name,
                     color: previousPlanet.color,
-                    tooltipData: previousPlanet.stubify(),
+                    tooltipData: previousPlanet.toLogStub(),
                 },
                 `&nospace.`,
             ]);
@@ -720,8 +741,14 @@ class HumanShip extends CombatShip_1.CombatShip {
                             tooltipData: {
                                 type: `ship`,
                                 name: this.name,
-                                faction: this.faction.id,
-                                species: this.species.id,
+                                faction: {
+                                    type: `faction`,
+                                    id: this.faction.id,
+                                },
+                                species: {
+                                    type: `species`,
+                                    id: this.species.id,
+                                },
                                 tagline: this.tagline,
                                 headerBackground: this.headerBackground,
                             },
@@ -730,7 +757,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.stubify(),
+                            tooltipData: s.planet.toLogStub(),
                         },
                         `&nospace.`,
                     ]);
@@ -842,7 +869,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         this.communicators.forEach((comm) => comm.use());
         this.updateBroadcastRadius();
-        crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 20);
+        crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
         return didSendCount;
     }
     receiveBroadcast(message) {
@@ -1099,7 +1126,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.mainTactic = mainTactic;
         this.toUpdate.mainTactic = mainTactic;
         const attackableShips = this.getEnemiesInAttackRange();
-        this.toUpdate.enemiesInAttackRange = dist_1.default.stubify(attackableShips, [`visible`, `seenPlanets`]);
+        this.toUpdate.enemiesInAttackRange = dist_1.default.stubify(attackableShips, [`visible`, `seenPlanets`, `seenLandmarks`]);
         // ----- gather most common item target -----
         const itemTargetCounts = weaponsRoomMembers.reduce((totals, cm) => {
             if (!cm.itemTarget)

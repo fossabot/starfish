@@ -57,7 +57,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
-    cargoTypes: ("credits" | "salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium")[];
+    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

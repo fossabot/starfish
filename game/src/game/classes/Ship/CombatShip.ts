@@ -265,8 +265,14 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `ship`,
               name: target.name,
-              faction: target.faction.id,
-              species: target.species.id,
+              faction: {
+                type: `faction`,
+                id: target.faction.id,
+              },
+              species: {
+                type: `species`,
+                id: target.species.id,
+              },
               tagline: target.tagline,
               headerBackground: target.headerBackground,
               level: (target as AIShip).level,
@@ -295,8 +301,14 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `ship`,
               name: target.name,
-              faction: target.faction.id,
-              species: target.species.id,
+              faction: {
+                type: `faction`,
+                id: target.faction.id,
+              },
+              species: {
+                type: `species`,
+                id: target.species.id,
+              },
               tagline: target.tagline,
               headerBackground: target.headerBackground,
               level: (target as AIShip).level,
@@ -439,8 +451,14 @@ export abstract class CombatShip extends Ship {
                   tooltipData: {
                     type: `ship`,
                     name: this.name,
-                    faction: this.faction.id,
-                    species: this.species.id,
+                    faction: {
+                      type: `faction`,
+                      id: this.faction.id,
+                    },
+                    species: {
+                      type: `species`,
+                      id: this.species.id,
+                    },
                     tagline: this.tagline,
                     headerBackground: this.headerBackground,
                     level: (attacker as AIShip).level,
@@ -511,9 +529,9 @@ export abstract class CombatShip extends Ship {
       const remainingHp = equipmentToAttack.hp
       // ----- item not destroyed -----
       if (remainingHp >= adjustedRemainingDamage) {
-        c.log(
-          `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`,
-        )
+        // c.log(
+        //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`,
+        // )
         equipmentToAttack.hp -= adjustedRemainingDamage
         equipmentToAttack._stub = null
         remainingDamage = 0
@@ -527,9 +545,9 @@ export abstract class CombatShip extends Ship {
       }
       // ----- item destroyed -----
       else {
-        c.log(
-          `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-        )
+        // c.log(
+        //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+        // )
         equipmentToAttack.hp = 0
         equipmentToAttack._stub = null
         remainingDamage -= remainingHp
@@ -569,8 +587,14 @@ export abstract class CombatShip extends Ship {
                 tooltipData: {
                   type: `ship`,
                   name: this.name,
-                  faction: this.faction.id,
-                  species: this.species.id,
+                  faction: {
+                    type: `faction`,
+                    id: this.faction.id,
+                  },
+                  species: {
+                    type: `species`,
+                    id: this.species.id,
+                  },
                   tagline: this.tagline,
                   headerBackground: this.headerBackground,
                   level: (this as AIShip).level,
@@ -609,18 +633,18 @@ export abstract class CombatShip extends Ship {
 
     this.addStat(`damageTaken`, totalDamageDealt)
 
-    c.log(
-      `gray`,
-      `${this.name} takes ${c.r2(
-        totalDamageDealt,
-      )} damage from ${attacker.name}'s ${
-        attack.weapon
-          ? attack.weapon.displayName
-          : `passive effect`
-      }, and ${
-        didDie ? `dies` : `has ${this.hp} hp left`
-      }.`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `${this.name} takes ${c.r2(
+    //     totalDamageDealt,
+    //   )} damage from ${attacker.name}'s ${
+    //     attack.weapon
+    //       ? attack.weapon.displayName
+    //       : `passive effect`
+    //   }, and ${
+    //     didDie ? `dies` : `has ${this.hp} hp left`
+    //   }.`,
+    // )
 
     this.toUpdate._hp = this.hp
     this.toUpdate.dead = this.dead
@@ -646,8 +670,14 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `ship`,
               name: attacker.name,
-              faction: attacker.faction.id,
-              species: attacker.species.id,
+              faction: {
+                type: `faction`,
+                id: attacker.faction.id,
+              },
+              species: {
+                type: `species`,
+                id: attacker.species.id,
+              },
               tagline: attacker.tagline,
               headerBackground: attacker.headerBackground,
               level: (attacker as AIShip).level,
@@ -689,7 +719,7 @@ export abstract class CombatShip extends Ship {
           attack.miss ? `Missed by` : `Hit by`,
           {
             text: attacker.name,
-            color: attacker.color || `red`,
+            color: attacker.color || `var(--warning)`,
             tooltipData: attacker.stubify
               ? attacker.stubify()
               : undefined,

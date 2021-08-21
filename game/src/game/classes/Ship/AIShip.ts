@@ -75,7 +75,7 @@ export class AIShip extends CombatShip {
       this.location,
       this.radii.sight,
       this.id,
-      [`ship`],
+      [`ship`, `zone`],
     )
     if (this.onlyVisibleToShipId) {
       const onlyVisibleShip = this.game.humanShips.find(
@@ -86,11 +86,13 @@ export class AIShip extends CombatShip {
     }
 
     // recharge weapons
-    this.weapons.forEach(
-      (w) =>
-        (w.cooldownRemaining -=
-          c.getWeaponCooldownReductionPerTick(this.level)),
-    )
+    this.weapons
+      .filter((w) => w.cooldownRemaining > 0)
+      .forEach((w) => {
+        w.cooldownRemaining -=
+          c.getWeaponCooldownReductionPerTick(this.level)
+        if (w.cooldownRemaining < 0) w.cooldownRemaining = 0
+      })
 
     // ----- zone effects -----
     this.applyZoneTickEffects()
@@ -104,6 +106,10 @@ export class AIShip extends CombatShip {
         e.id === this.onlyVisibleToShipId,
     )
     if (enemies.length) {
+      c.log(
+        `ai noticed an enemy in range, available weapons:`,
+        weapons.length,
+      )
       const randomEnemy = c.randomFromArray(
         enemies,
       ) as CombatShip

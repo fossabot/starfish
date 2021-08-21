@@ -4,7 +4,8 @@ interface BaseShipData {
   location?: CoordinatePair
   velocity?: CoordinatePair
   species: { id: SpeciesKey }
-  seenPlanets?: { name: PlanetName }[]
+  seenPlanets?: { name: string }[]
+  seenLandmarks?: { id: string; type: `zone` }[]
   loadout?: LoadoutName
   chassis?: { id: ChassisId }
   items?: BaseItemData[]
@@ -92,6 +93,7 @@ type ShipStatKey =
   | `kills`
   | `deaths`
   | `seenPlanets`
+  | `seenLandmarks`
   | `damageDealt`
   | `damageTaken`
   | `distanceTraveled`

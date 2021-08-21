@@ -1,5 +1,3 @@
-type PlanetName = `Origin` | `Hera` | `Osiris`
-
 interface BasePlanetData {
   name: string
   color: string

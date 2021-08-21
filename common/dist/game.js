@@ -67,8 +67,8 @@ function getMaxCockpitChargeForSingleCrewMember(level = 1) {
     return math_1.default.lerp(1, 5, (level - 1) / 100);
 }
 function getCockpitChargePerTickForSingleCrewMember(level = 1) {
-    const flatMod = 0.2;
-    return math_1.default.lerp(0.002 * flatMod, 0.0005 * flatMod, level / 100); // backwards because you gain max charge
+    const flatMod = 0.1;
+    return (math_1.default.lerp(0.0002 * flatMod, 0.00005 * flatMod, level / 100) * gameSpeedMultiplier); // backwards because you gain max charge
 }
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
     const flatMod = 4;
@@ -190,6 +190,7 @@ function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
             return value.map((v) => stubify(v, [
                 `visible`,
                 `seenPlanets`,
+                `seenLandmarks`,
                 `enemiesInAttackRange`,
             ]));
         // if (!disallowRecursion && value && value.stubify) {

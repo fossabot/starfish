@@ -41,6 +41,7 @@ export declare class Ship extends Stubbable {
         zones: Zone[];
     };
     readonly seenPlanets: Planet[];
+    readonly seenLandmarks: Zone[];
     chassis: BaseChassisData;
     items: Item[];
     previousLocations: CoordinatePair[];
@@ -62,7 +63,7 @@ export declare class Ship extends Stubbable {
     obeysGravity: boolean;
     mass: number;
     stats: ShipStatEntry[];
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }: BaseShipData, game: Game);
+    constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }: BaseShipData, game: Game);
     identify(): void;
     tick(): void;
     rename(newName: string): void;

@@ -69,6 +69,7 @@ export class Ship extends Stubbable {
   }
 
   readonly seenPlanets: Planet[] = []
+  readonly seenLandmarks: Zone[] = []
   chassis: BaseChassisData
   items: Item[] = []
   previousLocations: CoordinatePair[] = []
@@ -100,6 +101,7 @@ export class Ship extends Stubbable {
       items,
       loadout,
       seenPlanets,
+      seenLandmarks,
       location,
       velocity,
       previousLocations,
@@ -147,10 +149,18 @@ export class Ship extends Stubbable {
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
-        .map(({ name }: { name: PlanetName }) =>
+        .map(({ name }: { name: string }) =>
           this.game.planets.find((p) => p.name === name),
         )
         .filter((p) => p) as Planet[]
+
+    if (seenLandmarks)
+      this.seenLandmarks = seenLandmarks
+        .filter((l: any) => l?.type === `zone`)
+        .map(({ id }: { id: string }) =>
+          this.game.zones.find((z) => z.id === id),
+        )
+        .filter((z: Zone | undefined) => z) as Zone[]
 
     if (chassis && chassis.id && chassisPresets[chassis.id])
       this.chassis = chassisPresets[chassis.id]
@@ -625,9 +635,8 @@ export class Ship extends Stubbable {
     this.toUpdate.availableTaglines = this.availableTaglines
     this.logEntry(
       [
-        `Unlocked a new ship tagline for`,
-        { text: reason + `:`, color: `white` },
-        { text: `"${tagline}"`, color: `yellow` },
+        `Unlocked a new ship tagline for ${reason}:`,
+        { text: `"${tagline}"`, color: `var(--success)` },
       ],
       `high`,
     )
@@ -643,9 +652,8 @@ export class Ship extends Stubbable {
       this.availableHeaderBackgrounds
     this.logEntry(
       [
-        `Unlocked a new ship header background for`,
-        { text: reason + `:`, color: `white` },
-        { text: `"${bg}"`, color: `yellow` },
+        `Unlocked a new ship header for ${reason}:`,
+        { text: `"${bg}"`, color: `var(--success)` },
       ],
       `high`,
     )

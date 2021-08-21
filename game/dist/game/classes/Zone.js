@@ -15,7 +15,7 @@ class Zone extends Stubbable_1.Stubbable {
         this.radius = radius;
         this.name = name;
         this.color = color;
-        this.id = id || `${Math.random()}`.substring(2);
+        this.id = id || `zone${Math.random()}`.substring(2);
         this.effects = effects;
     }
     affectShip(ship) {
@@ -44,13 +44,14 @@ class Zone extends Stubbable_1.Stubbable {
                     // random passive miss chance
                     else
                         miss = hitRoll < proximityMod / enemyAgility / 2;
-                    dist_1.default.log({
-                        hitRoll,
-                        enemyAgility,
-                        proximityMod,
-                        miss,
-                        missMustBeLessThan: proximityMod / enemyAgility / 2,
-                    });
+                    // c.log({
+                    //   hitRoll,
+                    //   enemyAgility,
+                    //   proximityMod,
+                    //   miss,
+                    //   missMustBeLessThan:
+                    //     proximityMod / enemyAgility / 2,
+                    // })
                 }
                 // c.log({ miss, intensity })
                 ship.takeDamage(this, {
@@ -72,14 +73,24 @@ class Zone extends Stubbable_1.Stubbable {
                 const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.005;
                 ship.velocity[0] *= accelerateMultiplier;
                 ship.velocity[1] *= accelerateMultiplier;
+                ship.toUpdate.velocity = ship.velocity;
+                ship.toUpdate.speed = dist_1.default.vectorToMagnitude(ship.velocity);
             }
             // decelerate
             else if (effect.type === `decelerate`) {
                 const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.005;
                 ship.velocity[0] *= decelerateMultiplier;
                 ship.velocity[1] *= decelerateMultiplier;
+                ship.toUpdate.velocity = ship.velocity;
+                ship.toUpdate.speed = dist_1.default.vectorToMagnitude(ship.velocity);
             }
         }
+    }
+    getVisibleStub() {
+        return this.stubify();
+    }
+    toLogStub() {
+        return this.stubify();
     }
 }
 exports.Zone = Zone;

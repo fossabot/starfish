@@ -32,6 +32,7 @@ const shipSchemaFields = {
         },
     ],
     seenPlanets: [{ name: String }],
+    seenLandmarks: [{ type: { type: String }, id: String }],
     tutorial: {
         step: Number,
     },
@@ -105,7 +106,7 @@ async function addOrUpdateInDb(data) {
 exports.addOrUpdateInDb = addOrUpdateInDb;
 async function removeFromDb(id) {
     const res = await DBShip.deleteOne({ id });
-    dist_1.default.log(`Deleted ship`, id, res);
+    // c.log(`Deleted ship`, id, res)
 }
 exports.removeFromDb = removeFromDb;
 async function wipe() {

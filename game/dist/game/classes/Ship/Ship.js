@@ -14,7 +14,7 @@ const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
 const items_1 = require("../../presets/items");
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
+    constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
         super();
         this.type = `ship`;
         this.name = `ship`;
@@ -36,6 +36,7 @@ class Ship extends Stubbable_1.Stubbable {
             zones: [],
         };
         this.seenPlanets = [];
+        this.seenLandmarks = [];
         this.items = [];
         this.previousLocations = [];
         this.id = `${Math.random()}`.substring(2); // re-set in subclasses
@@ -90,6 +91,11 @@ class Ship extends Stubbable_1.Stubbable {
             this.seenPlanets = seenPlanets
                 .map(({ name }) => this.game.planets.find((p) => p.name === name))
                 .filter((p) => p);
+        if (seenLandmarks)
+            this.seenLandmarks = seenLandmarks
+                .filter((l) => l?.type === `zone`)
+                .map(({ id }) => this.game.zones.find((z) => z.id === id))
+                .filter((z) => z);
         if (chassis && chassis.id && items_1.chassis[chassis.id])
             this.chassis = items_1.chassis[chassis.id];
         else if (loadout &&
@@ -416,9 +422,8 @@ class Ship extends Stubbable_1.Stubbable {
         this.availableTaglines.push(tagline);
         this.toUpdate.availableTaglines = this.availableTaglines;
         this.logEntry([
-            `Unlocked a new ship tagline for`,
-            { text: reason + `:`, color: `white` },
-            { text: `"${tagline}"`, color: `yellow` },
+            `Unlocked a new ship tagline for ${reason}:`,
+            { text: `"${tagline}"`, color: `var(--success)` },
         ], `high`);
     }
     addHeaderBackground(bg, reason) {
@@ -428,9 +433,8 @@ class Ship extends Stubbable_1.Stubbable {
         this.toUpdate.availableHeaderBackgrounds =
             this.availableHeaderBackgrounds;
         this.logEntry([
-            `Unlocked a new ship header background for`,
-            { text: reason + `:`, color: `white` },
-            { text: `"${bg}"`, color: `yellow` },
+            `Unlocked a new ship header for ${reason}:`,
+            { text: `"${bg}"`, color: `var(--success)` },
         ], `high`);
     }
     // ----- stats -----

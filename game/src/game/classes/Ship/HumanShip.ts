@@ -146,6 +146,7 @@ export class HumanShip extends CombatShip {
     profiler.step(`move`)
     // ----- move -----
     this.move()
+    if (this.planet) this.addStat(`planetTime`, 1)
 
     profiler.step(`update visible`)
     // ----- scan -----
@@ -180,9 +181,11 @@ export class HumanShip extends CombatShip {
       (p) => !this.seenPlanets.includes(p),
     )
     newPlanets.forEach((p) => this.discoverPlanet(p))
-    if (newPlanets.length) db.ship.addOrUpdateInDb(this)
-
-    if (this.planet) this.addStat(`planetTime`, 1)
+    // ----- discover new landmarks -----
+    const newLandmarks = this.visible.zones.filter(
+      (z) => !this.seenLandmarks.includes(z),
+    )
+    newLandmarks.forEach((p) => this.discoverLandmark(p))
 
     profiler.step(`get caches`)
     // ----- get nearby caches -----
@@ -301,6 +304,27 @@ export class HumanShip extends CombatShip {
         `EAC-zy Rider`,
         `discovering 100 planets`,
       )
+  }
+
+  discoverLandmark(l: Zone) {
+    this.seenLandmarks.push(l)
+    this.toUpdate.seenLandmarks = this.seenLandmarks.map(
+      (z) => z.getVisibleStub(),
+    )
+    this.logEntry(
+      [
+        `Discovered`,
+        {
+          text: l.name,
+          color: l.color,
+          tooltipData: l.toLogStub() as any,
+        },
+        `&nospace!`,
+      ],
+      `high`,
+    )
+
+    this.addStat(`seenLandmarks`, 1)
   }
 
   applyThrust(
@@ -1018,8 +1042,14 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction.id,
-                species: this.species.id,
+                faction: {
+                  type: `faction`,
+                  id: this.faction.id,
+                },
+                species: {
+                  type: `species`,
+                  id: this.species.id,
+                },
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },
@@ -1053,8 +1083,14 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction.id,
-                species: this.species.id,
+                faction: {
+                  type: `faction`,
+                  id: this.faction.id,
+                },
+                species: {
+                  type: `species`,
+                  id: this.species.id,
+                },
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },
@@ -1621,7 +1657,7 @@ export class HumanShip extends CombatShip {
     const attackableShips = this.getEnemiesInAttackRange()
     this.toUpdate.enemiesInAttackRange = c.stubify(
       attackableShips,
-      [`visible`, `seenPlanets`],
+      [`visible`, `seenPlanets`, `seenLandmarks`],
     )
 
     // ----- gather most common item target -----

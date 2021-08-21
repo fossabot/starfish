@@ -33,7 +33,7 @@ export class Zone extends Stubbable {
     this.radius = radius
     this.name = name
     this.color = color
-    this.id = id || `${Math.random()}`.substring(2)
+    this.id = id || `zone${Math.random()}`.substring(2)
     this.effects = effects
   }
 
@@ -67,14 +67,14 @@ export class Zone extends Stubbable {
           // random passive miss chance
           else
             miss = hitRoll < proximityMod / enemyAgility / 2
-          c.log({
-            hitRoll,
-            enemyAgility,
-            proximityMod,
-            miss,
-            missMustBeLessThan:
-              proximityMod / enemyAgility / 2,
-          })
+          // c.log({
+          //   hitRoll,
+          //   enemyAgility,
+          //   proximityMod,
+          //   miss,
+          //   missMustBeLessThan:
+          //     proximityMod / enemyAgility / 2,
+          // })
         }
         // c.log({ miss, intensity })
         ship.takeDamage(this, {
@@ -102,6 +102,10 @@ export class Zone extends Stubbable {
           1 + effect.intensity * proximityMod * 0.005
         ship.velocity[0] *= accelerateMultiplier
         ship.velocity[1] *= accelerateMultiplier
+        ship.toUpdate.velocity = ship.velocity
+        ship.toUpdate.speed = c.vectorToMagnitude(
+          ship.velocity,
+        )
       }
 
       // decelerate
@@ -110,7 +114,19 @@ export class Zone extends Stubbable {
           1 - effect.intensity * proximityMod * 0.005
         ship.velocity[0] *= decelerateMultiplier
         ship.velocity[1] *= decelerateMultiplier
+        ship.toUpdate.velocity = ship.velocity
+        ship.toUpdate.speed = c.vectorToMagnitude(
+          ship.velocity,
+        )
       }
     }
+  }
+
+  getVisibleStub() {
+    return this.stubify()
+  }
+
+  toLogStub() {
+    return this.stubify()
   }
 }

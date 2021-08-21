@@ -38,6 +38,7 @@ export declare class HumanShip extends CombatShip {
     tick(): void;
     logEntry(content: LogContent, level?: LogLevel): void;
     discoverPlanet(p: Planet): void;
+    discoverLandmark(l: Zone): void;
     applyThrust(targetLocation: CoordinatePair, charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember): void;
     brake(charge: number, thruster: CrewMember): void;

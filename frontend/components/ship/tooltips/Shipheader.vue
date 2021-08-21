@@ -16,7 +16,13 @@
   >
     <div class="bgfade"></div>
     <div class="content">
-      <div v-if="c.species[data.species.id]">
+      <div
+        v-if="
+          data.species &&
+          data.species.id &&
+          c.species[data.species.id]
+        "
+      >
         <div
           class="icon"
           :class="{ pushup: data.tagline }"
@@ -36,7 +42,11 @@
       </div>
     </div>
     <div
-      v-if="c.factions[data.faction.id]"
+      v-if="
+        data.faction &&
+        data.faction.id &&
+        c.factions[data.faction.id]
+      "
       class="factiontag"
       :style="{
         background: c.factions[data.faction.id].color,

@@ -162,16 +162,27 @@ class CombatShip extends Ship_1.Ship {
                     tooltipData: {
                         type: `ship`,
                         name: target.name,
-                        faction: target.faction.id,
-                        species: target.species.id,
+                        faction: {
+                            type: `faction`,
+                            id: target.faction.id,
+                        },
+                        species: {
+                            type: `species`,
+                            id: target.species.id,
+                        },
                         tagline: target.tagline,
                         headerBackground: target.headerBackground,
+                        level: target.level,
                     },
                 },
                 `with`,
                 {
                     text: weapon.displayName,
-                    tooltipData: weapon.stubify(),
+                    color: `var(--item)`,
+                    tooltipData: {
+                        ...weapon.stubify(),
+                        cooldownRemaining: undefined,
+                    },
                 },
                 `&nospace.`,
             ], `high`);
@@ -184,21 +195,34 @@ class CombatShip extends Ship_1.Ship {
                     tooltipData: {
                         type: `ship`,
                         name: target.name,
-                        faction: target.faction.id,
-                        species: target.species.id,
+                        faction: {
+                            type: `faction`,
+                            id: target.faction.id,
+                        },
+                        species: {
+                            type: `species`,
+                            id: target.species.id,
+                        },
                         tagline: target.tagline,
                         headerBackground: target.headerBackground,
+                        level: target.level,
                     },
                 },
                 `with`,
                 {
                     text: weapon.displayName,
-                    tooltipData: weapon.stubify(),
+                    color: `var(--item)`,
+                    tooltipData: {
+                        ...weapon.stubify(),
+                        cooldownRemaining: undefined,
+                        _hp: undefined,
+                    },
                 },
                 `&nospace, dealing`,
                 {
                     text: dist_1.default.r2(dist_1.default.r2(attackResult.damageTaken)) +
                         ` damage`,
+                    color: `var(--success)`,
                     tooltipData: {
                         type: `damage`,
                         ...attackResult,
@@ -276,10 +300,17 @@ class CombatShip extends Ship_1.Ship {
                                 tooltipData: {
                                     type: `ship`,
                                     name: this.name,
-                                    faction: this.faction.id,
-                                    species: this.species.id,
+                                    faction: {
+                                        type: `faction`,
+                                        id: this.faction.id,
+                                    },
+                                    species: {
+                                        type: `species`,
+                                        id: this.species.id,
+                                    },
                                     tagline: this.tagline,
                                     headerBackground: this.headerBackground,
+                                    level: attacker.level,
                                 },
                             },
                             `&nospace's`,
@@ -323,7 +354,9 @@ class CombatShip extends Ship_1.Ship {
             const remainingHp = equipmentToAttack.hp;
             // ----- item not destroyed -----
             if (remainingHp >= adjustedRemainingDamage) {
-                dist_1.default.log(`hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`);
+                // c.log(
+                //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`,
+                // )
                 equipmentToAttack.hp -= adjustedRemainingDamage;
                 equipmentToAttack._stub = null;
                 remainingDamage = 0;
@@ -337,7 +370,9 @@ class CombatShip extends Ship_1.Ship {
             }
             // ----- item destroyed -----
             else {
-                dist_1.default.log(`destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
+                // c.log(
+                //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+                // )
                 equipmentToAttack.hp = 0;
                 equipmentToAttack._stub = null;
                 remainingDamage -= remainingHp;
@@ -370,17 +405,28 @@ class CombatShip extends Ship_1.Ship {
                             tooltipData: {
                                 type: `ship`,
                                 name: this.name,
-                                faction: this.faction.id,
-                                species: this.species.id,
+                                faction: {
+                                    type: `faction`,
+                                    id: this.faction.id,
+                                },
+                                species: {
+                                    type: `species`,
+                                    id: this.species.id,
+                                },
                                 tagline: this.tagline,
                                 headerBackground: this.headerBackground,
+                                level: this.level,
                             },
                         },
                         `&nospace's`,
                         {
                             text: equipmentToAttack.displayName,
                             color: `var(--item)`,
-                            tooltipData: equipmentToAttack.stubify(),
+                            tooltipData: {
+                                displayName: equipmentToAttack.displayName,
+                                description: equipmentToAttack.description,
+                                type: equipmentToAttack.type,
+                            },
                         },
                         `&nospace!`,
                     ], `high`);
@@ -394,9 +440,18 @@ class CombatShip extends Ship_1.Ship {
                 ? attacker
                 : undefined);
         this.addStat(`damageTaken`, totalDamageDealt);
-        dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(totalDamageDealt)} damage from ${attacker.name}'s ${attack.weapon
-            ? attack.weapon.displayName
-            : `passive effect`}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
+        // c.log(
+        //   `gray`,
+        //   `${this.name} takes ${c.r2(
+        //     totalDamageDealt,
+        //   )} damage from ${attacker.name}'s ${
+        //     attack.weapon
+        //       ? attack.weapon.displayName
+        //       : `passive effect`
+        //   }, and ${
+        //     didDie ? `dies` : `has ${this.hp} hp left`
+        //   }.`,
+        // )
         this.toUpdate._hp = this.hp;
         this.toUpdate.dead = this.dead;
         const damageResult = {
@@ -418,10 +473,17 @@ class CombatShip extends Ship_1.Ship {
                     tooltipData: {
                         type: `ship`,
                         name: attacker.name,
-                        faction: attacker.faction.id,
-                        species: attacker.species.id,
+                        faction: {
+                            type: `faction`,
+                            id: attacker.faction.id,
+                        },
+                        species: {
+                            type: `species`,
+                            id: attacker.species.id,
+                        },
                         tagline: attacker.tagline,
                         headerBackground: attacker.headerBackground,
+                        level: attacker.level,
                     },
                 },
                 `&nospace's`,
@@ -430,12 +492,9 @@ class CombatShip extends Ship_1.Ship {
                     color: `var(--item)`,
                     tooltipData: {
                         type: `weapon`,
-                        damage: attack.weapon.damage,
                         description: attack.weapon.description,
-                        range: attack.weapon.range,
                         displayName: attack.weapon.displayName,
                         id: attack.weapon.id,
-                        mass: attack.weapon.mass,
                     },
                 },
                 `&nospace.`,
@@ -460,7 +519,7 @@ class CombatShip extends Ship_1.Ship {
                 attack.miss ? `Missed by` : `Hit by`,
                 {
                     text: attacker.name,
-                    color: attacker.color || `red`,
+                    color: attacker.color || `var(--warning)`,
                     tooltipData: attacker.stubify
                         ? attacker.stubify()
                         : undefined,

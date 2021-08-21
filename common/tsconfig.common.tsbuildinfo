@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
-        "signature": "986f591fc9235d003e8186d4be208e54084b889671470d6b66077a824841ef50",
+        "version": "3b30d3f28b5092292b1970ce46123803f72e8e3612c2ca864b652b63ce6fb56e",
+        "signature": "3b30d3f28b5092292b1970ce46123803f72e8e3612c2ca864b652b63ce6fb56e",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -277,13 +277,13 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "170ff9a4c76dbe4628df7c3ffdd09ae8216af74e621cd7d7e5860ba2dcf2c830",
-        "signature": "170ff9a4c76dbe4628df7c3ffdd09ae8216af74e621cd7d7e5860ba2dcf2c830",
+        "version": "739f75546f950cbb34bbc489fa1856584c7bb8ffc7be9ab5171b627e160de1e3",
+        "signature": "739f75546f950cbb34bbc489fa1856584c7bb8ffc7be9ab5171b627e160de1e3",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
-        "signature": "0dd003900526a23c4fc8d733a4e3e2c22eceab74a14aa4e13bc6ba63a636eb6d",
+        "version": "eb0f39f44e9477a77bda74d58b0f4d0672e9e6592453565ef25a0755a558a0b4",
+        "signature": "eb0f39f44e9477a77bda74d58b0f4d0672e9e6592453565ef25a0755a558a0b4",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -342,8 +342,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "fe85721fe0ce80b97c0a7ddb59c3b8d4cbef97b2043472b7c6eb3193b2153087",
-        "signature": "78be0ad290684e2cf66cb356fa5b021ab8e266a9205d0b642d8a0b07848ef286",
+        "version": "a45fc767d00807e25235aa7c80778c43c302ea1c3587578b0ba3d709ae74b948",
+        "signature": "3717f69d461a5e0a69e4e7f126ef1c49e97ab618f582a1caadc7543af1617252",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -363,7 +363,7 @@
       },
       "./src/index.ts": {
         "version": "e773ba3440901d45739c43ecdd29d4495cddfa48a81803405f2adf65110508d3",
-        "signature": "50a552b0525dc337682cc4ff5752ac1aca32d87b1b132e8648b4661f70e66471",
+        "signature": "55fdb2ac0dfee60d6d183d26fc57471ac779e3b2195d13888c528a5268c4ffc1",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -1296,7 +1296,16 @@
       ]
     },
     "exportedModulesMap": {
+      "../@types/io.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/log.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../@types/planet.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../@types/ship.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
       "./src/index.ts": [

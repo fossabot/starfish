@@ -117,11 +117,13 @@ function getMaxCockpitChargeForSingleCrewMember(
 function getCockpitChargePerTickForSingleCrewMember(
   level: number = 1,
 ) {
-  const flatMod = 0.2
-  return math.lerp(
-    0.002 * flatMod,
-    0.0005 * flatMod,
-    level / 100,
+  const flatMod = 0.1
+  return (
+    math.lerp(
+      0.0002 * flatMod,
+      0.00005 * flatMod,
+      level / 100,
+    ) * gameSpeedMultiplier
   ) // backwards because you gain max charge
 }
 
@@ -287,6 +289,7 @@ function stubify<BaseType, StubType extends BaseStub>(
             stubify(v, [
               `visible`,
               `seenPlanets`,
+              `seenLandmarks`,
               `enemiesInAttackRange`,
             ]),
           )

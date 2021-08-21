@@ -381,7 +381,13 @@ export default class Drawer {
           0.4,
           Math.min(ship.speed / 2, 0.7),
         ),
-        dash: [2, Math.max(10, ship.speed * 50 * 1000)],
+        dash: [
+          2,
+          Math.min(
+            Math.max(10, ship.speed * 50 * 1000),
+            100,
+          ),
+        ],
       })
     }
 
@@ -431,7 +437,11 @@ export default class Drawer {
       })
 
     // ----- zones
-    ;[...(ship.visible?.zones || [])]
+    ;[
+      ...(ship.seenLandmarks.filter(
+        (l) => l.type === `zone`,
+      ) || []),
+    ]
       .sort((a, b) => a.radius - b.radius)
       .forEach((z) => {
         this.drawPoint({
@@ -471,7 +481,7 @@ export default class Drawer {
             pl[0] * this.flatScale,
             pl[1] * this.flatScale * -1,
           ],
-          color: s.faction?.color,
+          color: c.factions[s.faction.id]?.color,
           opacity:
             (index / (pointsToDraw.length - 1)) * 0.45,
         })

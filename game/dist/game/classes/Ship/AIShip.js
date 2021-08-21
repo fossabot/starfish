@@ -70,15 +70,21 @@ class AIShip extends CombatShip_1.CombatShip {
             return;
         // ----- move -----
         this.move();
-        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`, `zone`]);
         if (this.onlyVisibleToShipId) {
             const onlyVisibleShip = this.game.humanShips.find((s) => s.id === this.onlyVisibleToShipId);
             if (onlyVisibleShip)
                 this.visible.ships.push(onlyVisibleShip);
         }
         // recharge weapons
-        this.weapons.forEach((w) => (w.cooldownRemaining -=
-            dist_1.default.getWeaponCooldownReductionPerTick(this.level)));
+        this.weapons
+            .filter((w) => w.cooldownRemaining > 0)
+            .forEach((w) => {
+            w.cooldownRemaining -=
+                dist_1.default.getWeaponCooldownReductionPerTick(this.level);
+            if (w.cooldownRemaining < 0)
+                w.cooldownRemaining = 0;
+        });
         // ----- zone effects -----
         this.applyZoneTickEffects();
         // attack enemy in range
@@ -88,6 +94,7 @@ class AIShip extends CombatShip_1.CombatShip {
         const enemies = this.getEnemiesInAttackRange().filter((e) => !this.onlyVisibleToShipId ||
             e.id === this.onlyVisibleToShipId);
         if (enemies.length) {
+            dist_1.default.log(`ai noticed an enemy in range, available weapons:`, weapons.length);
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const distance = dist_1.default.distance(randomEnemy.location, this.location);
             const randomWeapon = dist_1.default.randomFromArray(weapons.filter((w) => w.range >= distance));

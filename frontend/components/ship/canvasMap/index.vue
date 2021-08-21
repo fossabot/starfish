@@ -437,17 +437,20 @@ export default Vue.extend({
           })
       })
 
-      s.visible?.zones.forEach((p: ZoneStub) => {
-        const hoverDistance =
-          c.distance(p.location, this.hoverPoint) - p.radius
-        if (hoverDistance <= hoverRadius)
-          hoverableElements.push({
-            hoverDistance,
-            hoverDistanceSubtract: p.radius,
-            type: 'zone',
-            data: p,
-          })
-      })
+      s.seenLandmarks
+        .filter((l: any) => l.type === 'zone')
+        .forEach((p: ZoneStub) => {
+          const hoverDistance =
+            c.distance(p.location, this.hoverPoint) -
+            p.radius
+          if (hoverDistance <= hoverRadius)
+            hoverableElements.push({
+              hoverDistance,
+              hoverDistanceSubtract: p.radius,
+              type: 'zone',
+              data: p,
+            })
+        })
 
       const hd = c.distance(
         this.ship.location,
