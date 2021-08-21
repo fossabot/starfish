@@ -3,8 +3,10 @@ import c from '../../../../common/dist'
 import type { Game } from '../Game'
 import type { Planet } from './Planet'
 import type { Ship } from './Ship/Ship'
+import { Stubbable } from './Stubbable'
 
-export class Faction {
+export class Faction extends Stubbable {
+  readonly type = `faction`
   readonly name: string
   readonly id: FactionKey
   readonly color: string
@@ -16,6 +18,7 @@ export class Faction {
     { name, id, ai, color }: BaseFactionData,
     game: Game,
   ) {
+    super()
     this.name = name
     this.id = id
     this.ai = Boolean(ai)

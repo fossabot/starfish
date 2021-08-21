@@ -7,6 +7,7 @@ import { Stubbable } from '../Stubbable';
 export declare class CrewMember extends Stubbable {
     static readonly levelXPNumbers: number[];
     static readonly basemaxCargoSpace = 10;
+    readonly type = "crewMember";
     readonly id: string;
     readonly ship: HumanShip;
     name: string;

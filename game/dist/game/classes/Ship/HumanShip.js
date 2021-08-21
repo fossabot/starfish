@@ -207,7 +207,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             {
                 text: p.name,
                 color: p.color,
-                tooltipData: p.stubify(),
+                tooltipData: p.toLogStub(),
             },
             `&nospace!`,
         ], `high`);
@@ -668,7 +668,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: this.planet.name,
                     color: this.planet.color,
-                    tooltipData: this.planet.stubify(),
+                    tooltipData: this.planet.toLogStub(),
                 },
                 `&nospace.`,
             ], `high`);
@@ -683,8 +683,8 @@ class HumanShip extends CombatShip_1.CombatShip {
                             tooltipData: {
                                 type: `ship`,
                                 name: this.name,
-                                faction: this.faction,
-                                species: this.species,
+                                faction: this.faction.stubify(),
+                                species: this.species.stubify(),
                                 tagline: this.tagline,
                                 headerBackground: this.headerBackground,
                             },
@@ -693,7 +693,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.stubify(),
+                            tooltipData: s.planet.toLogStub(),
                         },
                         `&nospace.`,
                     ]);
@@ -705,7 +705,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: previousPlanet.name,
                     color: previousPlanet.color,
-                    tooltipData: previousPlanet.stubify(),
+                    tooltipData: previousPlanet.toLogStub(),
                 },
                 `&nospace.`,
             ]);
@@ -720,8 +720,8 @@ class HumanShip extends CombatShip_1.CombatShip {
                             tooltipData: {
                                 type: `ship`,
                                 name: this.name,
-                                faction: this.faction,
-                                species: this.species,
+                                faction: this.faction.stubify(),
+                                species: this.species.stubify(),
                                 tagline: this.tagline,
                                 headerBackground: this.headerBackground,
                             },
@@ -730,7 +730,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.stubify(),
+                            tooltipData: s.planet.toLogStub(),
                         },
                         `&nospace.`,
                     ]);
@@ -842,7 +842,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         this.communicators.forEach((comm) => comm.use());
         this.updateBroadcastRadius();
-        crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 20);
+        crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
         return didSendCount;
     }
     receiveBroadcast(message) {

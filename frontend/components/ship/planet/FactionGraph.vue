@@ -9,16 +9,16 @@
       v-for="a in [...planet.allegiances].sort(
         (a, b) => b.level - a.level,
       )"
-      :key="'fal' + a.faction.id"
+      :key="'fal' + c.factions[a.faction.id]"
       :style="{
         'flex-grow': a.level,
       }"
-      v-tooltip="a.faction.name"
+      v-tooltip="c.factions[a.faction.id].name"
     >
       <div
         class="single"
         :style="{
-          background: a.faction.color,
+          background: c.factions[a.faction.id].color,
           height: 0.05 + (a.level / 100) * 0.95 + 'em',
         }"
       ></div>

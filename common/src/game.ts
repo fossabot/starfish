@@ -5,7 +5,7 @@ import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
 
-const gameSpeedMultiplier = 1 * 12
+const gameSpeedMultiplier = 1 * 12 /* dev boost */ * 10
 
 const baseSightRange = 0.05
 
@@ -242,13 +242,14 @@ const headerBackgroundOptions: {
 ]
 
 function stubify<BaseType, StubType extends BaseStub>(
-  prop: BaseType,
-  disallowPropName?: string[],
+  baseObject: BaseType,
+  disallowPropName: string[] = [],
+  disallowRecursion: boolean = false,
 ): StubType {
   const profiler = new Profiler(10, `stubify`, false, 0)
   profiler.step(`getters`)
-  const gettersIncluded: any = { ...prop }
-  const proto = Object.getPrototypeOf(prop)
+  const gettersIncluded: any = { ...baseObject }
+  const proto = Object.getPrototypeOf(baseObject)
   const getKeyValue =
     (key: string) => (obj: Record<string, any>) =>
       obj[key]
@@ -257,7 +258,7 @@ function stubify<BaseType, StubType extends BaseStub>(
     const desc = Object.getOwnPropertyDescriptor(proto, key)
     const hasGetter = desc && typeof desc.get === `function`
     if (hasGetter) {
-      gettersIncluded[key] = getKeyValue(key)(prop)
+      gettersIncluded[key] = getKeyValue(key)(baseObject)
     }
   }
   profiler.step(`stringify and parse`)
@@ -274,6 +275,8 @@ function stubify<BaseType, StubType extends BaseStub>(
             `defender`,
             `crewMember`,
             `homeworld`,
+            `faction`,
+            `species`,
           ].includes(key)
         )
           return value?.id ? { id: value.id } : null
@@ -287,6 +290,24 @@ function stubify<BaseType, StubType extends BaseStub>(
               `enemiesInAttackRange`,
             ]),
           )
+        // if (!disallowRecursion && value && value.stubify) {
+        //   c.log(
+        //     value.type,
+        //     value.id,
+        //     // Object.keys(value).filter(
+        //     //   (v) =>
+        //     //     ![
+        //     //       `game`,
+        //     //       `ship`,
+        //     //       `attacker`,
+        //     //       `defender`,
+        //     //       `crewMember`,
+        //     //       `homeworld`,
+        //     //     ].includes(v),
+        //     // ),
+        //   )
+        //   return value.stubify([key], true)
+        // } else if (value && value.stubify) return value.id
         return value
       },
     ),

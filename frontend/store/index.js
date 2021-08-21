@@ -147,7 +147,7 @@ export const actions = {
       if (state.ship === null) return connected()
       if (state.ship.id !== id) return
       if (stillWorkingOnTick) return // c.log(`skipping tick because too busy`)
-      // c.log(updates)
+      // c.log(Object.keys(updates))
 
       stillWorkingOnTick = true
       dispatch(`updateShip`, { ...updates })

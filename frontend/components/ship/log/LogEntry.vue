@@ -40,7 +40,7 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   props: {
     content: {
-      type: [String, Object] as PropType<
+      type: [String, Array] as PropType<
         string | RichLogContentElement[]
       >,
     },

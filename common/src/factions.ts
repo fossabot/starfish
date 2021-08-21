@@ -1,4 +1,4 @@
-import c from '../../../../common/dist'
+import species from './species'
 const factions: { [key in FactionKey]: BaseFactionData } = {
   green: {
     name: `Green Grapplers`,
@@ -6,10 +6,10 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
     color: `hsl(140, 70%, 55%)`,
     homeworld: `Origin`,
     species: [
-      c.species.octopi,
-      c.species.squids,
-      c.species.crabs,
-      c.species.lobsters,
+      species.octopi,
+      species.squids,
+      species.crabs,
+      species.lobsters,
     ],
   },
   blue: {
@@ -18,10 +18,10 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
     color: `hsl(190, 80%, 45%)`,
     homeworld: `Neptune`,
     species: [
-      c.species.seals,
-      c.species[`sea turtles`],
-      c.species.dolphins,
-      c.species.whales,
+      species.seals,
+      species[`sea turtles`],
+      species.dolphins,
+      species.whales,
     ],
   },
   purple: {
@@ -30,10 +30,10 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
     color: `hsl(290, 50%, 55%)`,
     homeworld: `Osiris`,
     species: [
-      c.species.angelfish,
-      c.species.blowfish,
-      c.species.tuna,
-      c.species.shrimp,
+      species.angelfish,
+      species.blowfish,
+      species.tuna,
+      species.shrimp,
     ],
   },
   red: {
@@ -42,10 +42,10 @@ const factions: { [key in FactionKey]: BaseFactionData } = {
     color: `hsl(0, 60%, 50%)`,
     ai: true,
     species: [
-      c.species.seagulls,
-      c.species.flamingos,
-      c.species.eagles,
-      c.species.chickens,
+      species.seagulls,
+      species.flamingos,
+      species.eagles,
+      species.chickens,
     ],
   },
 }

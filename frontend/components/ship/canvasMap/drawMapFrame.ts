@@ -488,7 +488,7 @@ export default class Drawer {
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
         radius: (3 / this.zoom) * devicePixelRatio,
-        color: s.faction?.color,
+        color: c.factions[s.faction.id]?.color,
       })
     })
 
@@ -622,8 +622,9 @@ export default class Drawer {
     ) {
       this.ctx.globalAlpha = Math.max(0.35, opacity * 0.5)
       this.ctx.textAlign = `center`
-      this.ctx.font = `bold ${(0.9 / this.zoom) *
-        window.devicePixelRatio}em Prompt`
+      this.ctx.font = `bold ${
+        (0.9 / this.zoom) * window.devicePixelRatio
+      }em Prompt`
       if (labelTop)
         this.ctx.fillText(
           labelTop.toUpperCase(),

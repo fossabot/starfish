@@ -1,1 +1,1 @@
-{"version":3,"file":"zones.d.ts","sourceRoot":"","sources":["../../../src/game/presets/zones.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,SAAS,CAAA;AAQnC,wBAAgB,gBAAgB,CAC9B,IAAI,EAAE,IAAI,GACT,YAAY,GAAG,KAAK,CAsFtB"}
+{"version":3,"file":"zones.d.ts","sourceRoot":"","sources":["../../../src/game/presets/zones.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,SAAS,CAAA;AAOnC,wBAAgB,gBAAgB,CAC9B,IAAI,EAAE,IAAI,GACT,YAAY,GAAG,KAAK,CAsFtB"}

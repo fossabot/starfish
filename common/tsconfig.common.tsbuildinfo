@@ -331,9 +331,19 @@
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
+      "./src/species.ts": {
+        "version": "d1956dde8d5e7e50ffcfa1c87f81be14c938e6b77f0e8e4a2670443474c62153",
+        "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
+        "affectsGlobalScope": false
+      },
+      "./src/factions.ts": {
+        "version": "00e2f0135b09e1cad06dd2a3a9e2d67ce777a21d5d9d8a1bae1ba691088da1a0",
+        "signature": "e57cac9d9ce0e7b6e4262ee27e33678788ccfc0536d843faa41e5b1b6c708e9c",
+        "affectsGlobalScope": false
+      },
       "./src/game.ts": {
-        "version": "f4306800bdf4bc8a328e39be6c60c9c18c0133d7a0c9d421481e1de703864aba",
-        "signature": "8a22f8d3cbafaaab75b5d86267f0e5bc74eaacd4359b1abef1e5457a1229c321",
+        "version": "fe85721fe0ce80b97c0a7ddb59c3b8d4cbef97b2043472b7c6eb3193b2153087",
+        "signature": "3717f69d461a5e0a69e4e7f126ef1c49e97ab618f582a1caadc7543af1617252",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
@@ -351,14 +361,9 @@
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
-      "./src/species.ts": {
-        "version": "d1956dde8d5e7e50ffcfa1c87f81be14c938e6b77f0e8e4a2670443474c62153",
-        "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
-        "affectsGlobalScope": false
-      },
       "./src/index.ts": {
-        "version": "3494e91af3e030e238b8f4599a44251f3f96450f7d22d197a6ba19111b62f9ab",
-        "signature": "4ff2938a91c59df7a8e634e67ca46c0f62fdfcccd37ff849330bac46f1d04671",
+        "version": "e773ba3440901d45739c43ecdd29d4495cddfa48a81803405f2adf65110508d3",
+        "signature": "50a552b0525dc337682cc4ff5752ac1aca32d87b1b132e8648b4661f70e66471",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -626,6 +631,11 @@
         "signature": "4f92917486836e30ec8c18667035e7bf15d16fcd5ab2748296994f54a3ae359b",
         "affectsGlobalScope": false
       },
+      "../node_modules/buffer/index.d.ts": {
+        "version": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
+        "signature": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
+        "affectsGlobalScope": false
+      },
       "../node_modules/bson/bson.d.ts": {
         "version": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
         "signature": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
@@ -730,6 +740,10 @@
       "./src/discord.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
+      "./src/factions.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "./src/species.ts"
+      ],
       "./src/game.ts": [
         "../node_modules/@types/node/util.d.ts",
         "./src/globals.ts",
@@ -744,6 +758,7 @@
         "../node_modules/@types/node/util.d.ts",
         "./src/basepassivedata.ts",
         "./src/discord.ts",
+        "./src/factions.ts",
         "./src/game.ts",
         "./src/globals.ts",
         "./src/log.ts",
@@ -1128,6 +1143,9 @@
       ],
       "../node_modules/bson/bson.d.ts": [
         "../node_modules/@types/node/buffer.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/buffer/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/denque/index.d.ts": [
@@ -1632,6 +1650,9 @@
         "../node_modules/@types/node/buffer.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/buffer/index.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/denque/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -1666,6 +1687,7 @@
       "./src/badwords.ts",
       "./src/basepassivedata.ts",
       "./src/discord.ts",
+      "./src/factions.ts",
       "./src/game.ts",
       "./src/globals.ts",
       "./src/index.ts",
@@ -1733,6 +1755,7 @@
       "../node_modules/@types/webidl-conversions/index.d.ts",
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts",
       "../node_modules/bson/bson.d.ts",
+      "../node_modules/buffer/index.d.ts",
       "../node_modules/denque/index.d.ts",
       "../node_modules/mongodb/mongodb.ts34.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",

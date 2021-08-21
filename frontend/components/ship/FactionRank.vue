@@ -21,14 +21,14 @@
           class="scorebit"
           :style="{
             'flex-grow': score.score,
-            background: score.faction.color,
+            background: c.factions[score.faction.id].color,
           }"
           :key="
             'score' + ranking.category + score.faction.id
           "
           v-tooltip="
             `#${index + 1}) ${c.capitalize(
-              score.faction.name,
+              c.factions[score.faction.id].name,
             )}: ${c.r2(score.score, 0)}`
           "
         ></div>

@@ -31,6 +31,7 @@ const Stubbable_1 = require("../Stubbable");
 class CrewMember extends Stubbable_1.Stubbable {
     constructor(data, ship) {
         super();
+        this.type = `crewMember`;
         this.name = `crew member`;
         this.maxStamina = 1;
         this.targetLocation = null;
@@ -62,10 +63,10 @@ class CrewMember extends Stubbable_1.Stubbable {
                 `bunk`; // failsafe
         this.stamina = data.stamina || this.maxStamina;
         this.lastActive = data.lastActive || Date.now();
-        this.inventory = data.inventory || [];
+        this.inventory = data.inventory?.filter((i) => i) || [];
         this.cockpitCharge = data.cockpitCharge || 0;
         this.credits = data.credits ?? 200;
-        this.skills = data.skills || [
+        this.skills = data.skills?.filter((s) => s) || [
             { skill: `piloting`, level: 1, xp: 0 },
             { skill: `munitions`, level: 1, xp: 0 },
             { skill: `mechanics`, level: 1, xp: 0 },
@@ -161,7 +162,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             xp =
                 (dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.tickInterval)) *
                     xpBoostMultiplier;
-        let skillElement = this.skills.find((s) => s.skill === skill);
+        let skillElement = this.skills.find((s) => s?.skill === skill);
         if (!skillElement) {
             const index = this.skills.push({
                 skill,
@@ -201,7 +202,9 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.ship.recalculateMass();
     }
     get heldWeight() {
-        return this.inventory.reduce((total, i) => total + i.amount, 0);
+        return this.inventory
+            .filter((i) => i)
+            .reduce((total, i) => total + i.amount, 0);
     }
     recalculateMaxCargoSpace() {
         const personalCargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
@@ -250,16 +253,16 @@ class CrewMember extends Stubbable_1.Stubbable {
         return this.stamina <= 0;
     }
     get piloting() {
-        return this.skills.find((s) => s.skill === `piloting`);
+        return this.skills.find((s) => s?.skill === `piloting`);
     }
     get linguistics() {
-        return this.skills.find((s) => s.skill === `linguistics`);
+        return this.skills.find((s) => s?.skill === `linguistics`);
     }
     get munitions() {
-        return this.skills.find((s) => s.skill === `munitions`);
+        return this.skills.find((s) => s?.skill === `munitions`);
     }
     get mechanics() {
-        return this.skills.find((s) => s.skill === `mechanics`);
+        return this.skills.find((s) => s?.skill === `mechanics`);
     }
 }
 exports.CrewMember = CrewMember;

@@ -270,7 +270,7 @@ export class HumanShip extends CombatShip {
         {
           text: p.name,
           color: p.color,
-          tooltipData: p.stubify(),
+          tooltipData: p.toLogStub() as any,
         },
         `&nospace!`,
       ],
@@ -1002,7 +1002,7 @@ export class HumanShip extends CombatShip {
           {
             text: this.planet.name,
             color: this.planet.color,
-            tooltipData: this.planet.stubify(),
+            tooltipData: this.planet.toLogStub() as any,
           },
           `&nospace.`,
         ],
@@ -1018,8 +1018,8 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction,
-                species: this.species,
+                faction: this.faction.stubify(),
+                species: this.species.stubify(),
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },
@@ -1028,7 +1028,7 @@ export class HumanShip extends CombatShip {
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.stubify(),
+              tooltipData: s.planet.toLogStub() as any,
             },
             `&nospace.`,
           ])
@@ -1039,7 +1039,7 @@ export class HumanShip extends CombatShip {
         {
           text: previousPlanet.name,
           color: previousPlanet.color,
-          tooltipData: previousPlanet.stubify(),
+          tooltipData: previousPlanet.toLogStub() as any,
         },
         `&nospace.`,
       ])
@@ -1053,8 +1053,8 @@ export class HumanShip extends CombatShip {
               tooltipData: {
                 type: `ship`,
                 name: this.name,
-                faction: this.faction,
-                species: this.species,
+                faction: this.faction.stubify(),
+                species: this.species.stubify(),
                 tagline: this.tagline,
                 headerBackground: this.headerBackground,
               },
@@ -1063,7 +1063,7 @@ export class HumanShip extends CombatShip {
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.stubify(),
+              tooltipData: s.planet.toLogStub() as any,
             },
             `&nospace.`,
           ])
@@ -1256,7 +1256,7 @@ export class HumanShip extends CombatShip {
 
     this.communicators.forEach((comm) => comm.use())
     this.updateBroadcastRadius()
-    crewMember.addXp(`linguistics`, c.baseXpGain * 20)
+    crewMember.addXp(`linguistics`, c.baseXpGain * 100)
 
     return didSendCount
   }

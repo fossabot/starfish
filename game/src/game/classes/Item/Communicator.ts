@@ -29,7 +29,7 @@ export class Communicator extends Item {
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,
-      ) * 500
+      ) * 100
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()

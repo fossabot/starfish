@@ -6,6 +6,7 @@
       :dangerZone="-1"
       :percent="skill.progress"
       v-for="skill in sortedSkills"
+      v-if="skill"
       :key="'skill' + skill.skill"
     >
       <b>{{ c.capitalize(skill.skill) }}</b
@@ -37,6 +38,7 @@ export default Vue.extend({
     ...mapState(['crewMember']),
     sortedSkills() {
       return [...this.crewMember.skills]
+        .filter((s) => s)
         .sort((a: XPData, b: XPData) => b.xp - a.xp)
         .map((s: XPData) => {
           const toNext = c.levels[s.level] - s.xp

@@ -1,7 +1,9 @@
 import type { Game } from '../Game';
 import type { Planet } from './Planet';
 import type { Ship } from './Ship/Ship';
-export declare class Faction {
+import { Stubbable } from './Stubbable';
+export declare class Faction extends Stubbable {
+    readonly type = "faction";
     readonly name: string;
     readonly id: FactionKey;
     readonly color: string;

@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Species = void 0;
-class Species {
+const Stubbable_1 = require("./Stubbable");
+class Species extends Stubbable_1.Stubbable {
     constructor({ id, factionId, icon, singular, description, passives, }, game) {
+        super();
+        this.type = `species`;
         this.passives = [];
         this.id = id;
         this.icon = icon;

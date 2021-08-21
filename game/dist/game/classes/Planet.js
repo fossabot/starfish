@@ -182,6 +182,7 @@ class Planet extends Stubbable_1.Stubbable {
         const s = this.stubify();
         return {
             ...s,
+            type: `planet`,
             vendor: undefined,
         };
     }

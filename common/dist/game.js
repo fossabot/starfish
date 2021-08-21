@@ -7,7 +7,7 @@ const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
-const gameSpeedMultiplier = 1 * 12;
+const gameSpeedMultiplier = 1 * 12 /* dev boost */ * 10;
 const baseSightRange = 0.05;
 const baseRepairCost = 3000;
 const maxBroadcastLength = 200;
@@ -155,18 +155,18 @@ const headerBackgroundOptions = [
     { id: `Constellation 1`, url: `stars1.jpg` },
     { id: `Gravestone 1`, url: `vintage1.jpg` },
 ];
-function stubify(prop, disallowPropName) {
+function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
     profiler.step(`getters`);
-    const gettersIncluded = { ...prop };
-    const proto = Object.getPrototypeOf(prop);
+    const gettersIncluded = { ...baseObject };
+    const proto = Object.getPrototypeOf(baseObject);
     const getKeyValue = (key) => (obj) => obj[key];
     // c.log(Object.getOwnPropertyNames(proto))
     for (const key of Object.getOwnPropertyNames(proto)) {
         const desc = Object.getOwnPropertyDescriptor(proto, key);
         const hasGetter = desc && typeof desc.get === `function`;
         if (hasGetter) {
-            gettersIncluded[key] = getKeyValue(key)(prop);
+            gettersIncluded[key] = getKeyValue(key)(baseObject);
         }
     }
     profiler.step(`stringify and parse`);
@@ -180,6 +180,8 @@ function stubify(prop, disallowPropName) {
             `defender`,
             `crewMember`,
             `homeworld`,
+            `faction`,
+            `species`,
         ].includes(key))
             return value?.id ? { id: value.id } : null;
         if (disallowPropName?.includes(key))
@@ -190,6 +192,24 @@ function stubify(prop, disallowPropName) {
                 `seenPlanets`,
                 `enemiesInAttackRange`,
             ]));
+        // if (!disallowRecursion && value && value.stubify) {
+        //   c.log(
+        //     value.type,
+        //     value.id,
+        //     // Object.keys(value).filter(
+        //     //   (v) =>
+        //     //     ![
+        //     //       `game`,
+        //     //       `ship`,
+        //     //       `attacker`,
+        //     //       `defender`,
+        //     //       `crewMember`,
+        //     //       `homeworld`,
+        //     //     ].includes(v),
+        //     // ),
+        //   )
+        //   return value.stubify([key], true)
+        // } else if (value && value.stubify) return value.id
         return value;
     }));
     // circularReferencesRemoved.lastUpdated = Date.now()

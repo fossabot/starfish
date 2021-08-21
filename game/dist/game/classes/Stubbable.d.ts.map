@@ -1,1 +1,1 @@
-{"version":3,"file":"Stubbable.d.ts","sourceRoot":"","sources":["../../../src/game/classes/Stubbable.ts"],"names":[],"mappings":"AAEA,qBAAa,SAAS;IACpB,KAAK,EAAE,GAAG,GAAG,IAAI,CAAO;IAExB,OAAO,CAAC,QAAQ,EAAE,mBAAmB,CAAC,EAAE,MAAM,EAAE;CAKjD"}
+{"version":3,"file":"Stubbable.d.ts","sourceRoot":"","sources":["../../../src/game/classes/Stubbable.ts"],"names":[],"mappings":"AAEA,qBAAa,SAAS;IACpB,KAAK,EAAE,GAAG,GAAG,IAAI,CAAO;IAExB,OAAO,CAAC,QAAQ,EACd,mBAAmB,GAAE,MAAM,EAAO,EAClC,iBAAiB,GAAE,OAAe,GACjC,QAAQ;CASZ"}

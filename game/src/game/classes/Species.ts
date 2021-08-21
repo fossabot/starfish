@@ -4,8 +4,10 @@ import type { Game } from '../Game'
 import type { Faction } from './Faction'
 import type { Planet } from './Planet'
 import type { Ship } from './Ship/Ship'
+import { Stubbable } from './Stubbable'
 
-export class Species {
+export class Species extends Stubbable {
+  readonly type = `species`
   readonly id: SpeciesKey
   readonly icon: string
   readonly singular: string
@@ -25,6 +27,7 @@ export class Species {
     }: BaseSpeciesData,
     game: Game,
   ) {
+    super()
     this.id = id
     this.icon = icon
     this.singular = singular

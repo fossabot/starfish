@@ -8,7 +8,7 @@ declare function getRepairAmountPerTickForSingleCrewMember(level: number): numbe
 declare function getStaminaGainPerTickForSingleCrewMember(): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
-declare function stubify<BaseType, StubType extends BaseStub>(prop: BaseType, disallowPropName?: string[]): StubType;
+declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
     gameShipLimit: number;
     gameSpeedMultiplier: number;
