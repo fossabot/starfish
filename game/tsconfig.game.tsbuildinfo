@@ -857,7 +857,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "51eead82d26d90d23225d1381450a78d71b61cce2c1e2e8143ee95374e500a45",
+        "version": "d08d6106d5b6cf330808eb149f61d15c22d05404f6c60242be894e147d343242",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },
@@ -867,7 +867,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/crew.ts": {
-        "version": "70114b8f83617bde3efa41925dc211566caec545c3c5302c39051bc0e411656d",
+        "version": "a6e921aa872adc588c94ded6bea7ddb8b9e3f6e01f11362b4935e8238c08c2fc",
         "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
         "affectsGlobalScope": false
       },

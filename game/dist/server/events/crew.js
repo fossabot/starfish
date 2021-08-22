@@ -164,11 +164,11 @@ function default_1(socket) {
         crewMember.credits = Math.round(crewMember.credits - price);
         crewMember.toUpdate.credits = crewMember.credits;
         crewMember.addCargo(cargoType, amount);
+        crewMember.addStat(`cargoTransactions`, 1);
         callback({
-            data: dist_1.default.stubify(crewMember),
+            data: crewMember.stubify(),
         });
         planet.incrementAllegiance(ship.faction);
-        crewMember.addStat(`cargoTransactions`, 1);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}.`);
     });
     socket.on(`crew:sellCargo`, (shipId, crewId, cargoType, amount, vendorLocation, callback) => {
@@ -201,11 +201,11 @@ function default_1(socket) {
         crewMember.credits = Math.round(crewMember.credits + price);
         crewMember.toUpdate.credits = crewMember.credits;
         crewMember.removeCargo(cargoType, amount);
+        crewMember.addStat(`cargoTransactions`, 1);
         callback({
-            data: dist_1.default.stubify(crewMember),
+            data: crewMember.stubify(),
         });
         planet.incrementAllegiance(ship.faction);
-        crewMember.addStat(`cargoTransactions`, 1);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}.`);
     });
     socket.on(`crew:drop`, (shipId, crewId, cargoType, amount, message, callback) => {
@@ -331,14 +331,6 @@ function default_1(socket) {
                 error: `You're not targeting any location to thrust towards!`,
             });
         ship.applyThrust(targetLocation, chargePercent, crewMember);
-        crewMember._stub = null;
-        ship._stub = null;
-        callback({
-            data: {
-                crewMember: crewMember.stubify(),
-                ship: ship.stubify(),
-            },
-        });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} thrusted.`);
     });
     socket.on(`crew:brake`, (shipId, crewId, chargePercent, callback) => {
@@ -349,14 +341,6 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         ship.brake(chargePercent, crewMember);
-        crewMember._stub = null;
-        ship._stub = null;
-        callback({
-            data: {
-                crewMember: crewMember.stubify(),
-                ship: ship.stubify(),
-            },
-        });
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} thrusted.`);
     });
 }

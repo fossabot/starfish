@@ -36,10 +36,9 @@ export default function (
       const addedCrewMember = ship.addCrewMember(
         crewMemberBaseData,
       )
-      const stub =
-        c.stubify<CrewMember, CrewMemberStub>(
-          addedCrewMember,
-        )
+      const stub = c.stubify<CrewMember, CrewMemberStub>(
+        addedCrewMember,
+      )
       callback({ data: stub })
     },
   )
@@ -308,15 +307,13 @@ export default function (
       )
       crewMember.toUpdate.credits = crewMember.credits
       crewMember.addCargo(cargoType, amount)
+      crewMember.addStat(`cargoTransactions`, 1)
 
       callback({
-        data: c.stubify<CrewMember, CrewMemberStub>(
-          crewMember,
-        ),
+        data: crewMember.stubify(),
       })
 
       planet.incrementAllegiance(ship.faction)
-      crewMember.addStat(`cargoTransactions`, 1)
 
       c.log(
         `gray`,
@@ -386,14 +383,13 @@ export default function (
       )
       crewMember.toUpdate.credits = crewMember.credits
       crewMember.removeCargo(cargoType, amount)
+      crewMember.addStat(`cargoTransactions`, 1)
+
       callback({
-        data: c.stubify<CrewMember, CrewMemberStub>(
-          crewMember,
-        ),
+        data: crewMember.stubify(),
       })
 
       planet.incrementAllegiance(ship.faction)
-      crewMember.addStat(`cargoTransactions`, 1)
 
       c.log(
         `gray`,
@@ -647,15 +643,6 @@ export default function (
         crewMember,
       )
 
-      crewMember._stub = null
-      ship._stub = null
-      callback({
-        data: {
-          crewMember: crewMember.stubify(),
-          ship: ship.stubify(),
-        },
-      })
-
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} thrusted.`,
@@ -678,15 +665,6 @@ export default function (
         return callback({ error: `No crew member found.` })
 
       ship.brake(chargePercent, crewMember)
-
-      crewMember._stub = null
-      ship._stub = null
-      callback({
-        data: {
-          crewMember: crewMember.stubify(),
-          ship: ship.stubify(),
-        },
-      })
 
       c.log(
         `gray`,

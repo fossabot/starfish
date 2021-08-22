@@ -56,7 +56,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .log {
-  width: 380px;
+  width: 360px;
   position: relative;
 }
 .scroll {

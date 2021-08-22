@@ -38,6 +38,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 # # then
 for image in discord frontend game db nginx
 do
+    echo "Building $image_prefix-$image:prod-$VERSION"
     cp -r common ${image}/
     cp -r @types ${image}/
     docker build . -t ${image_prefix}-${image}:prod-${VERSION} --file=${image}/Dockerfile-prod
@@ -47,7 +48,9 @@ done
 # # fi
 
 # if "${PUSH}" = "1"; then
-for image in frontend game discord db nginx; do
-docker image push ${image_prefix}-${image}:prod-${VERSION}
+for image in frontend game discord db nginx
+do
+    echo "Pushing $image_prefix-$image:prod-$VERSION"
+    docker image push ${image_prefix}-${image}:prod-${VERSION}
 done
 # fi

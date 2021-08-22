@@ -81,6 +81,7 @@ export default Vue.extend({
       'crewMember',
       'connected',
       'activeShipId',
+      'lastUpdated',
     ]),
     planet(): PlanetStub {
       return this.ship?.planet
@@ -102,6 +103,9 @@ export default Vue.extend({
     },
     userId(): void {
       if (!this.userId) this.$router.push('/login')
+    },
+    lastUpdated(): void {
+      setTimeout(() => (this.ready = true), 800)
     },
   },
 
@@ -154,7 +158,6 @@ export default Vue.extend({
         this.$refs.container as HTMLElement,
         { centerX: true },
       )
-      setTimeout(() => (this.ready = true), 200)
     },
   },
 })

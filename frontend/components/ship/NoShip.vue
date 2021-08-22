@@ -26,7 +26,7 @@
       </div>
 
       <br /><br /><br />
-      <hr style="opacity: .1" />
+      <hr style="opacity: 0.1" />
 
       <div class="sub">
         This message is appearing because we couldn't find
@@ -49,9 +49,9 @@ export default Vue.extend({
     return { c, selectedShip: null }
   },
   computed: {
-    ...mapState(['ship', 'crewMember']),
+    ...mapState(['ship', 'crewMember', 'lastUpdated']),
     show() {
-      return !this.ship
+      return this.lastUpdated && !this.ship
     },
   },
 })

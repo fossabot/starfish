@@ -342,12 +342,12 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "a45fc767d00807e25235aa7c80778c43c302ea1c3587578b0ba3d709ae74b948",
+        "version": "2ffa4594343852d068594c1da438b95afbf0d944a0cca3ad611c52161c30a4e5",
         "signature": "3717f69d461a5e0a69e4e7f126ef1c49e97ab618f582a1caadc7543af1617252",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "ec372a55bf2d5aab2fae3b47cb0f848b7df0c31c5e4e97b41d6b83c2b162b4c2",
+        "version": "0b05d6b869cbd440ae3825f62dc08df863a1e15b80734ff39211b06d42b40cf1",
         "signature": "195a751fe9a28c09dffa955cb80db6d1727943b28636674c53541f9cb9473757",
         "affectsGlobalScope": false
       },

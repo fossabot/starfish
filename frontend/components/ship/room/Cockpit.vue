@@ -15,6 +15,7 @@
           class="marbottiny"
           :big="true"
           :max="crewMember.cockpitCharge"
+          :animate="1"
           @end="thrust"
           @percent="thrustChargeToUse = arguments[0]"
           @mouseenter.native="
@@ -27,7 +28,10 @@
           @mousedown.native="reset"
         >
           Thrust
-          <span v-if="thrustChargeToUse">
+          <span
+            v-if="thrustChargeToUse"
+            class="chargecounter"
+          >
             &nbsp;({{
               c.r2(
                 thrustChargeToUse *
@@ -46,6 +50,7 @@
           }"
           :big="true"
           :max="crewMember.cockpitCharge"
+          :animate="1"
           :disabled="
             ship.velocity[0] === 0 && ship.velocity[1] === 0
           "
@@ -61,7 +66,10 @@
           @mousedown.native="reset"
         >
           Brake
-          <span v-if="brakeChargeToUse">
+          <span
+            v-if="brakeChargeToUse"
+            class="chargecounter"
+          >
             &nbsp;({{
               c.r2(
                 brakeChargeToUse *
@@ -98,14 +106,14 @@
               100,
             0,
           ) +
-            '% / ' +
-            c.r2(
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) * 100,
-              0,
-            ) +
-            '%'
+          '% / ' +
+          c.r2(
+            c.getMaxCockpitChargeForSingleCrewMember(
+              pilotingSkill,
+            ) * 100,
+            0,
+          ) +
+          '%'
         }}
         <span class="sub"
           >(Full in
@@ -141,8 +149,8 @@
       class="panesection"
       v-if="
         ship.visible.ships.length ||
-          planetsToShow.length ||
-          ship.visible.caches.length
+        planetsToShow.length ||
+        ship.visible.caches.length
       "
     >
       <div>
@@ -227,7 +235,7 @@ export default Vue.extend({
       c,
       thrustChargeToUse: 0,
       brakeChargeToUse: 0,
-      animateThrust: true,
+      animateThrust: false,
     }
   },
   computed: {
@@ -314,6 +322,7 @@ export default Vue.extend({
     thrust(percent: number): void {
       this.animateThrust = true
       setTimeout(() => (this.animateThrust = false), 2000)
+      const initialCharge = this.crewMember.cockpitCharge
       this.$store.commit('updateACrewMember', {
         id: this.crewMember.id,
         cockpitCharge:
@@ -333,19 +342,24 @@ export default Vue.extend({
               type: 'error',
             })
             console.log(res.error)
+            this.$store.commit('updateACrewMember', {
+              id: this.crewMember.id,
+              cockpitCharge: initialCharge,
+            })
             return
           }
-          this.$store.dispatch('updateShip', res.data.ship)
-          this.$store.commit(
-            'updateACrewMember',
-            res.data.crewMember,
-          )
+          //   this.$store.dispatch('updateShip', res.data.ship)
+          //   this.$store.commit(
+          //     'updateACrewMember',
+          //     res.data.crewMember,
+          //   )
         },
       )
     },
     brake(percent: number): void {
       this.animateThrust = true
       setTimeout(() => (this.animateThrust = false), 2000)
+      const initialCharge = this.crewMember.cockpitCharge
       this.$store.commit('updateACrewMember', {
         id: this.crewMember.id,
         cockpitCharge:
@@ -365,13 +379,17 @@ export default Vue.extend({
               type: 'error',
             })
             console.log(res.error)
+            this.$store.commit('updateACrewMember', {
+              id: this.crewMember.id,
+              cockpitCharge: initialCharge,
+            })
             return
           }
-          this.$store.dispatch('updateShip', res.data.ship)
-          this.$store.commit(
-            'updateACrewMember',
-            res.data.crewMember,
-          )
+          //   this.$store.dispatch('updateShip', res.data.ship)
+          //   this.$store.commit(
+          //     'updateACrewMember',
+          //     res.data.crewMember,
+          //   )
         },
       )
     },
@@ -405,6 +423,7 @@ export default Vue.extend({
   opacity: 0;
   pointer-events: none;
 }
+
 .animateThrust {
   animation: 2s thrust ease-out 1;
 }
@@ -421,5 +440,9 @@ export default Vue.extend({
   25% {
     opacity: 0.4;
   }
+}
+
+.chargecounter {
+  width: 5em;
 }
 </style>

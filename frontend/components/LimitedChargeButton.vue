@@ -12,13 +12,21 @@
   >
     <div
       class="hider"
-      :style="{ width: (1 - percent) * 100 + '%' }"
+      :style="{
+        width: (1 - percent) * 100 + '%',
+        transition: this.percent
+          ? 'none'
+          : `width ${animate}s`,
+      }"
     ></div>
     <div
       class="base"
       :style="{
         width: max * 100 + '%',
         background: maxFillColor,
+        transition: this.percent
+          ? 'none'
+          : `width ${animate}s`,
       }"
     ></div>
 
@@ -40,6 +48,7 @@ export default Vue.extend({
     startColor: { default: '#aa0' },
     endColor: { default: '#f50' },
     chargeTime: { default: 5000 },
+    animate: { default: 0 },
   },
   data() {
     return {
