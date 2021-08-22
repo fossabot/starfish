@@ -1,4 +1,26 @@
 FROM nginx:1.21-alpine
 
 COPY nginx/nginx-prod.conf /etc/nginx/nginx.conf
-COPY nginx/app.conf /etc/nginx/app.conf
+
+# install certbot
+RUN apk add certbot
+RUN apk add python3-certbot-nginx
+# RUN add-apt-repository ppa:certbot/certbot
+# RUN apt-get update -y
+# RUN apt-get install -y certbot python-certbot-nginx
+
+# deamon mode off
+RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
+RUN chown -R www-data:www-data /var/lib/nginx
+
+# expose ports
+EXPOSE 80 443
+
+# add nginx live conf
+ADD nginx/starfish.conf /etc/nginx/sites-available/starfish.cool
+
+# create symlinks
+RUN ln -s /etc/nginx/sites-available/starfish.cool /etc/nginx/sites-enabled/starfish
+
+# make certs dir as volume
+VOLUME ["/etc/letsencrypt"]
