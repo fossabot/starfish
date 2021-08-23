@@ -7,4 +7,4 @@ echo "0 23 * * * certbot renew --dry-run" | crontab -
 
 # start nginx
 echo "starting nginx"
-nginx
+nginx -g daemon off
