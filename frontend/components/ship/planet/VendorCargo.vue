@@ -20,7 +20,7 @@
         v-for="ca in buyableCargo"
         :key="
           'buycargo' +
-          (ca.cargoData ? ca.cargoData.type : Math.random())
+          (ca.cargoData ? ca.cargoData.id : Math.random())
         "
         v-tooltip="{
           type: 'cargo',
@@ -75,7 +75,7 @@
         v-for="ca in sellableCargo"
         :key="
           'sellcargo' +
-          (ca.cargoData ? ca.cargoData.type : Math.random())
+          (ca.cargoData ? ca.cargoData.id : Math.random())
         "
         v-tooltip="{
           type: 'cargo',
@@ -158,7 +158,7 @@ export default Vue.extend({
         .filter((cargo: any) => cargo.buyMultiplier)
         .map((cargo: any) => {
           const pricePerUnit = c.r2(
-            cargo.cargoData?.basePrice *
+            (c.cargo as any)[cargo.id]?.basePrice *
               cargo.buyMultiplier *
               this.ship.planet.priceFluctuator *
               (this.isFriendlyToFaction
@@ -179,6 +179,7 @@ export default Vue.extend({
           )
           return {
             ...cargo,
+            cargoData: (c.cargo as any)[cargo.id],
             pricePerUnit,
             maxCanBuy,
             canBuy:
@@ -193,7 +194,7 @@ export default Vue.extend({
         .map((cargo: any) => {
           const pricePerUnit = c.r2(
             Math.min(
-              cargo.cargoData?.basePrice *
+              (c.cargo as any)[cargo.id]?.basePrice *
                 cargo.sellMultiplier *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
@@ -205,16 +206,16 @@ export default Vue.extend({
           )
           const heldAmount =
             this.crewMember?.inventory.find(
-              (i: any) => i.type === cargo.cargoData?.type,
+              (i: any) => i.id === cargo.id,
             )?.amount || 0
           return {
             ...cargo,
+            cargoData: (c.cargo as any)[cargo.id],
             pricePerUnit,
             heldAmount,
             canSell:
               this.crewMember?.inventory.find(
-                (i: any) =>
-                  i.type === cargo.cargoData?.type,
+                (i: any) => i.id === cargo.id,
               )?.amount >= 0.00999,
           }
         })
@@ -243,11 +244,11 @@ export default Vue.extend({
         })
         return console.log('Nope.')
       }
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:buyCargo',
         this.ship.id,
         this.crewMember.id,
-        data.cargoData.type,
+        data.cargoData.id,
         amount,
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
@@ -261,7 +262,7 @@ export default Vue.extend({
           }
           this.$store.commit('updateACrewMember', res.data)
           this.$store.dispatch('notifications/notify', {
-            text: `Bought ${amount} tons of ${data.cargoData.type}.`,
+            text: `Bought ${amount} tons of ${data.cargoData.id}.`,
             type: 'success',
           })
         },
@@ -272,7 +273,7 @@ export default Vue.extend({
       if (amount === 'all')
         amount =
           this.crewMember.inventory.find(
-            (i: any) => i.type === data.cargoData.type,
+            (i: any) => i.id === data.cargoData.id,
           )?.amount || 0
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (
@@ -280,7 +281,7 @@ export default Vue.extend({
         amount < 0 ||
         amount >
           this.crewMember.inventory.find(
-            (i: any) => i.type === data.cargoData.type,
+            (i: any) => i.id === data.cargoData.id,
           )?.amount ||
         0
       ) {
@@ -290,11 +291,11 @@ export default Vue.extend({
         })
         return console.log('Nope.')
       }
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:sellCargo',
         this.ship.id,
         this.crewMember.id,
-        data.cargoData.type,
+        data.cargoData.id,
         amount,
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
@@ -308,7 +309,7 @@ export default Vue.extend({
           }
           this.$store.commit('updateACrewMember', res.data)
           this.$store.dispatch('notifications/notify', {
-            text: `Sold ${amount} tons of ${data.cargoData.type}.`,
+            text: `Sold ${amount} tons of ${data.cargoData.id}.`,
             type: 'success',
           })
         },

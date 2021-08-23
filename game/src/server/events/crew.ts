@@ -265,8 +265,7 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const cargoForSale = planet?.vendor?.cargo?.find(
-        (cfs) =>
-          cfs.cargoId === cargoId && cfs.buyMultiplier,
+        (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
       )
       if (!planet || !cargoForSale)
         return callback({
@@ -287,7 +286,7 @@ export default function (
         })
 
       const price = Math.max(
-        c.cargo[cargoForSale.cargoId].basePrice *
+        c.cargo[cargoForSale.id].basePrice *
           cargoForSale.buyMultiplier *
           amount *
           planet?.priceFluctuator *
@@ -356,8 +355,7 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const cargoBeingBought = planet?.vendor?.cargo?.find(
-        (cbb) =>
-          cbb.cargoId === cargoId && cbb.sellMultiplier,
+        (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
       )
       if (!planet || !cargoBeingBought)
         return callback({
@@ -365,7 +363,7 @@ export default function (
         })
 
       const price = Math.min(
-        c.cargo[cargoBeingBought.cargoId].basePrice *
+        c.cargo[cargoBeingBought.id].basePrice *
           cargoBeingBought.sellMultiplier *
           amount *
           planet.priceFluctuator *
@@ -563,13 +561,12 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const passiveForSale = planet?.vendor?.passives?.find(
-        (pfs) =>
-          pfs.passiveId === passiveId && pfs.buyMultiplier,
+        (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
       )
       if (
         !planet ||
         !passiveForSale ||
-        !c.crewPassives[passiveForSale.passiveId]
+        !c.crewPassives[passiveForSale.id]
       )
         return callback({
           error: `That passive is not for sale here.`,
@@ -579,7 +576,7 @@ export default function (
         crewMember.passives.find((p) => p.id === passiveId)
           ?.level || 0
       const price = c.r2(
-        c.crewPassives[passiveForSale.passiveId].basePrice *
+        c.crewPassives[passiveForSale.id].basePrice *
           passiveForSale.buyMultiplier *
           c.getCrewPassivePriceMultiplier(currentLevel) *
           planet.priceFluctuator *
@@ -596,7 +593,7 @@ export default function (
 
       crewMember.credits -= price
       crewMember.addPassive(
-        c.crewPassives[passiveForSale.passiveId],
+        c.crewPassives[passiveForSale.id],
       )
 
       callback({

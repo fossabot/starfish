@@ -20,14 +20,15 @@ function default_1(socket) {
         const planet = ship.planet;
         if (!planet)
             return callback({ error: `Not at a planet.` });
-        const itemForSale = planet?.vendor?.items?.find((i) => i.itemType === itemType &&
-            i.itemId === itemId &&
+        const itemForSale = planet?.vendor?.items?.find((i) => i.type === itemType &&
+            i.id === itemId &&
             i.buyMultiplier);
         if (!itemForSale || !itemForSale.buyMultiplier)
             return callback({
                 error: `That equipment is not for sale here.`,
             });
-        const price = dist_1.default.r2((dist_1.default.items[itemForSale.itemType][itemForSale.itemId].basePrice || 1) *
+        const price = dist_1.default.r2((dist_1.default.items[itemForSale.type][itemForSale.id]
+            .basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
@@ -45,8 +46,8 @@ function default_1(socket) {
         ship.addItem({ type: itemType, id: itemId });
         ship.logEntry([
             {
-                text: dist_1.default.items[itemForSale.itemType][itemForSale.itemId].displayName,
-                tooltipData: dist_1.default.items[itemForSale.itemType][itemForSale.itemId],
+                text: dist_1.default.items[itemForSale.type][itemForSale.id].displayName,
+                tooltipData: dist_1.default.items[itemForSale.type][itemForSale.id],
             },
             `bought by the captain for ${dist_1.default.r2(price)} credits.`,
         ], `high`);
@@ -75,8 +76,8 @@ function default_1(socket) {
             return callback({
                 error: `Your ship doesn't have that item equipped.`,
             });
-        const itemForSale = planet?.vendor?.items?.find((i) => i.itemType === itemType &&
-            i.itemId === itemId &&
+        const itemForSale = planet?.vendor?.items?.find((i) => i.type === itemType &&
+            i.id === itemId &&
             i.sellMultiplier);
         const itemData = dist_1.default.items[itemType][itemId];
         if (!itemData)
@@ -121,16 +122,15 @@ function default_1(socket) {
         const planet = ship.planet;
         if (!planet)
             return callback({ error: `Not at a planet.` });
-        const itemForSale = planet?.vendor?.chassis?.find((i) => i.chassisId === chassisId);
+        const itemForSale = planet?.vendor?.chassis?.find((i) => i.id === chassisId);
         if (!itemForSale ||
             !itemForSale.buyMultiplier ||
-            !dist_1.default.items.chassis[itemForSale.chassisId])
+            !dist_1.default.items.chassis[itemForSale.id])
             return callback({
                 error: `That equipment is not for sale here.`,
             });
         const currentChassisSellPrice = Math.round(ship.chassis.basePrice / 2);
-        const price = dist_1.default.r2((dist_1.default.items.chassis[itemForSale.chassisId]
-            ?.basePrice || 1) *
+        const price = dist_1.default.r2((dist_1.default.items.chassis[itemForSale.id]?.basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
@@ -140,19 +140,19 @@ function default_1(socket) {
         if (price > ship.commonCredits)
             return callback({ error: `Insufficient funds.` });
         if (ship.items.length >
-            dist_1.default.items.chassis[itemForSale.chassisId]?.slots)
+            dist_1.default.items.chassis[itemForSale.id]?.slots)
             return callback({
                 error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
             });
         ship.commonCredits -= price;
         ship._stub = null;
         ship.toUpdate.commonCredits = ship.commonCredits;
-        ship.swapChassis(dist_1.default.items.chassis[itemForSale.chassisId]);
+        ship.swapChassis(dist_1.default.items.chassis[itemForSale.id]);
         ship.logEntry([
             {
-                text: dist_1.default.items.chassis[itemForSale.chassisId]
+                text: dist_1.default.items.chassis[itemForSale.id]
                     .displayName,
-                tooltipData: dist_1.default.items.chassis[itemForSale.chassisId],
+                tooltipData: dist_1.default.items.chassis[itemForSale.id],
             },
             `bought by the captain for ${dist_1.default.r2(price)} credits.`,
         ], `high`);

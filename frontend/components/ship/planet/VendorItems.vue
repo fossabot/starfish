@@ -10,26 +10,23 @@
         <div class="panesubhead">Ship Outfitter</div>
       </div>
 
-      <div class="sub">
-        <div v-if="isCaptain">
-          Captain, you can use your ship's common fund to
-          purchase equipment for the ship.
+      <div class="sub padbotsmall">
+        <div class="flexbetween">
+          <div>
+            Common Fund:
+            <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
+          </div>
+          <div class="flexcenter">
+            <div class="nowrap">Equipment Slots Used:</div>
+            <PillBar
+              :micro="true"
+              :value="ship.items.length"
+              :max="ship.slots"
+              :dangerZone="-1"
+              class="slots"
+            />
+          </div>
         </div>
-        <div v-else>
-          Your ship's captain can use the common fund to
-          purchase equipment for the ship.
-        </div>
-        <div>
-          Common Fund: 💳{{
-            ship && c.r2(ship.commonCredits)
-          }}
-        </div>
-        <div>
-          Equipment Slots Used: {{ ship.items.length }}/{{
-            ship.slots
-          }}
-        </div>
-        <br />
       </div>
 
       <span
@@ -41,7 +38,7 @@
         </div>
         <span
           v-for="ca in buyableItems"
-          :key="'buyitem' + ca.itemType + ca.itemId"
+          :key="'buyitem' + ca.type + ca.id"
           v-tooltip="{
             type: ca.itemData && ca.itemData.type,
             data: ca.itemData,
@@ -118,6 +115,17 @@
           </button>
         </span>
       </span>
+
+      <div class="sub">
+        <div v-if="isCaptain">
+          Captain, you can use your ship's common fund to
+          purchase equipment for the ship.
+        </div>
+        <div v-else>
+          Your ship's captain can use the common fund to
+          purchase equipment for the ship.
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -152,7 +160,7 @@ export default Vue.extend({
         .map((item: VendorItemPrice) => {
           const price = c.r2(
             Math.max(
-              ((c.items[item.itemType] as any)[item.itemId]
+              ((c.items[item.type] as any)[item.id]
                 ?.basePrice || 1) *
                 item.buyMultiplier! *
                 this.ship.planet.priceFluctuator *
@@ -165,9 +173,7 @@ export default Vue.extend({
           )
           return {
             ...item,
-            itemData: (c.items[item.itemType] as any)[
-              item.itemId
-            ],
+            itemData: (c.items[item.type] as any)[item.id],
             price,
             canBuy:
               this.isCaptain &&
@@ -182,13 +188,14 @@ export default Vue.extend({
             this.ship?.planet?.vendor?.items || []
           ).find(
             (i: VendorItemPrice) =>
-              i.itemType === item.type &&
-              i.itemId === item.id,
+              i.type === item.type && i.id === item.id,
           )
           if (!itemForSale) return
           const price = c.r2(
             Math.min(
-              (itemForSale.itemData?.basePrice || 1) *
+              (((c.items as any)[itemForSale.type] as any)[
+                itemForSale.id
+              ]?.basePrice || 1) * // sorry to the typescript gods
                 itemForSale.sellMultiplier *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
@@ -202,10 +209,8 @@ export default Vue.extend({
           return {
             ...item,
             itemData: (
-              c.items[
-                itemForSale.itemType as ItemType
-              ] as any
-            )[itemForSale.itemId],
+              c.items[itemForSale.type as ItemType] as any
+            )[itemForSale.id],
             price,
             canSell: this.isCaptain,
           }
@@ -220,8 +225,8 @@ export default Vue.extend({
           )
           const price = c.r2(
             Math.min(
-              (c.items.chassis[chassis.chassisId]
-                ?.basePrice || 1) *
+              (c.items.chassis[chassis.id]?.basePrice ||
+                1) *
                 chassis.buyMultiplier *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
@@ -234,12 +239,12 @@ export default Vue.extend({
           )
           return {
             ...chassis,
-            itemData: c.items.chassis[chassis.chassisId],
+            itemData: c.items.chassis[chassis.id],
             price,
             canBuy:
               this.isCaptain &&
               this.ship.commonCredits >= price &&
-              chassis.chassisId !== this.ship.chassis.id,
+              chassis.id !== this.ship.chassis.id,
           }
         },
       )
@@ -253,15 +258,15 @@ export default Vue.extend({
         'items',
         [
           ...this.ship.items,
-          (c.items[data.itemType] as any)[data.itemId],
+          (c.items[data.type] as any)[data.id],
         ],
       ])
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'ship:buyItem',
         this.ship.id,
         this.crewMember?.id,
-        data.itemType,
-        data.itemId,
+        data.type,
+        data.id,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
@@ -284,7 +289,7 @@ export default Vue.extend({
           (i) => i.id === data.id,
         ),
       ])
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'ship:sellItem',
         this.ship.id,
         this.crewMember?.id,
@@ -306,11 +311,11 @@ export default Vue.extend({
     },
 
     swapChassis(data: VendorChassisPrice) {
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'ship:swapChassis',
         this.ship.id,
         this.crewMember?.id,
-        data.chassisId,
+        data.id,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
@@ -328,4 +333,8 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.slots {
+  margin-left: 0.5em;
+}
+</style>

@@ -5,12 +5,10 @@ import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
 
-const gameSpeedMultiplier =
-  1 *
-  12 *
-  (process.env.NODE_ENV === `development`
-    ? /* dev boost */ 10
-    : 1)
+const gameSpeedMultiplier = 1 * 12 * 10
+// (process.env.NODE_ENV === `development`
+//   ? /* dev boost, but doesn't work with frontend */ 10
+//   : 1)
 
 const baseSightRange = 0.05
 

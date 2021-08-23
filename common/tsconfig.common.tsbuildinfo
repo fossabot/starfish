@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "467c5a72d4736f01cf1ef38964bdccc693f8a46d634ba58dd9a2a73112a4a926",
-        "signature": "467c5a72d4736f01cf1ef38964bdccc693f8a46d634ba58dd9a2a73112a4a926",
+        "version": "887c9587563681bc15104de203ca69811696f115c6958199fc68faff28981226",
+        "signature": "887c9587563681bc15104de203ca69811696f115c6958199fc68faff28981226",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
@@ -357,7 +357,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "f6e153451904822227e45d8396f7ef0eb5931f7e4d197cda271a5edda5ef6fdd",
+        "version": "601a35de6fed6defee306ac78fb6e9944dd20443e8215c94927bd614f74f5d43",
         "signature": "e8021791c48264c09ceab38c04d44dc1ab154bdcbbb827e87ef82cd18dea9d66",
         "affectsGlobalScope": false
       },
@@ -418,7 +418,7 @@
       },
       "./src/index.ts": {
         "version": "2dfeed872f1a916eb3a5225d20abce7f26d816c76a36e0b0cb6620523fb82020",
-        "signature": "39a5acf4c44bb438eb9abe3f8dc4013de0127be7a0aa4f2624f01b4af2c6c717",
+        "signature": "0158ab4cc11242dcce301305d542972386406e3dfb62e889233010db59c60f19",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

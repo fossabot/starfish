@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "467c5a72d4736f01cf1ef38964bdccc693f8a46d634ba58dd9a2a73112a4a926",
-        "signature": "467c5a72d4736f01cf1ef38964bdccc693f8a46d634ba58dd9a2a73112a4a926",
+        "version": "887c9587563681bc15104de203ca69811696f115c6958199fc68faff28981226",
+        "signature": "887c9587563681bc15104de203ca69811696f115c6958199fc68faff28981226",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
@@ -727,7 +727,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "5425456faebbdbf3473bc6ce4699c1d1a8c5063f81f13efbcbe8525b5170fae2",
+        "version": "0e7cf9b344a8c4d5392307e5718ad431d13cbc9f33113ff55882b4a9e37be7af",
         "signature": "b7ea64fdb624c0a44b2f31ba3d0f9cc6544b760f1677cef70234c08b484890ef",
         "affectsGlobalScope": false
       },
@@ -737,12 +737,12 @@
         "affectsGlobalScope": false
       },
       "./src/db/models/cache.ts": {
-        "version": "e7e507a872c9a9bc73fa6672fea55e1e1ec1b1791ad70a6064eb54461bfe60de",
+        "version": "6f71420526d906f67a4a59906646ccc66f62fa84eaa57ac18081d0c8b2c7d27a",
         "signature": "6d970e73fe131f1a259052cb78ac8e90a42883604c9c862c0f5b480a5e00a029",
         "affectsGlobalScope": false
       },
       "./src/db/models/ship.ts": {
-        "version": "2ebc5497f7f9725d37afd2b737b66d30930416e332c9fde9700f72e7da211fe9",
+        "version": "080330483137579c3a9da821586a68f3106e8d1f4ed2284ef1b81da3d9a960b2",
         "signature": "e0589f41da7616bf6880144f107b8553b9b8935a9d17764eea58fc626a88f342",
         "affectsGlobalScope": false
       },
@@ -752,7 +752,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/models/planet.ts": {
-        "version": "39e1daffb0976c0d5ab2bbca8318998642e48b32665a2a5f76c8fba76576a913",
+        "version": "f77df22b3af1ddc87c72dcc9a434f9a72cc5173569fa0ef0e69fa5a42a5503b0",
         "signature": "392b9239cc1c46f170f2a3d785eb0cc45a405f4a01e8021ba2871e4c191bcfc3",
         "affectsGlobalScope": false
       },
@@ -767,7 +767,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet.ts": {
-        "version": "c7df8c768de7a7753a71f527fdaa17aa27ab411b84cd43b617f21774dd1bf1b4",
+        "version": "f9f472b7e0c400471f15e527058808565944c5ae706b4b367788b5f8c6efb10d",
         "signature": "406ed397946c769a2b86985d0ba4cb72b3e2b784adb6940d6ba669bdb6ad6e35",
         "affectsGlobalScope": false
       },
@@ -812,7 +812,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "d08d6106d5b6cf330808eb149f61d15c22d05404f6c60242be894e147d343242",
+        "version": "edc7022b5673d3f097e24c90cda19b4686d797dde94306d55904699877333510",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },
@@ -822,12 +822,12 @@
         "affectsGlobalScope": false
       },
       "./src/server/events/crew.ts": {
-        "version": "593dcb6b5551d173ec4c254034f924ae6cc5705d79b15ed1100ee05b48c661c3",
+        "version": "d2ae5ad0064af70475abf5edb4211fc441983e2c84059448bcb0524082568dd6",
         "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
         "affectsGlobalScope": false
       },
       "./src/server/events/items.ts": {
-        "version": "c9137fab9ddf289133ee2613efff22b5a0b1a4debf8ec762559c5454644e3e81",
+        "version": "375b81bec39d42364aaa8e0f9418597be27dbb271b240be0e34ef66ffdbe39de",
         "signature": "bea054ddc1381fd37f72503d1de7f7e3663efacbb19d7386827ff753f8ca8dd8",
         "affectsGlobalScope": false
       },
@@ -837,7 +837,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/presets/planets.ts": {
-        "version": "5b013fe3497a7fe26bb1e0b06383c0ec4187806f958886e8951660c95124b396",
+        "version": "64588050b28da5b0b883e7fb49ac1998fe6bc6f779353e6b89df664d0f63739c",
         "signature": "3ad588957dbd99d07bd18d782c98972f0510eaf641cfbb6204e9a29ee2292942",
         "affectsGlobalScope": false
       },

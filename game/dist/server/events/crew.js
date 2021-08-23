@@ -139,7 +139,7 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
-        const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.cargoId === cargoId && cfs.buyMultiplier);
+        const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
         if (!planet || !cargoForSale)
             return callback({
                 error: `That cargo is not for sale here.`,
@@ -150,7 +150,7 @@ function default_1(socket) {
             return callback({
                 error: `That's too heavy to fit into your cargo space.`,
             });
-        const price = Math.max(dist_1.default.cargo[cargoForSale.cargoId].basePrice *
+        const price = Math.max(dist_1.default.cargo[cargoForSale.id].basePrice *
             cargoForSale.buyMultiplier *
             amount *
             planet?.priceFluctuator *
@@ -184,12 +184,12 @@ function default_1(socket) {
                 error: `Not holding enough stock of that cargo.`,
             });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
-        const cargoBeingBought = planet?.vendor?.cargo?.find((cbb) => cbb.cargoId === cargoId && cbb.sellMultiplier);
+        const cargoBeingBought = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier);
         if (!planet || !cargoBeingBought)
             return callback({
                 error: `The vendor does not buy that.`,
             });
-        const price = Math.min(dist_1.default.cargo[cargoBeingBought.cargoId].basePrice *
+        const price = Math.min(dist_1.default.cargo[cargoBeingBought.id].basePrice *
             cargoBeingBought.sellMultiplier *
             amount *
             planet.priceFluctuator *
@@ -290,16 +290,16 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
-        const passiveForSale = planet?.vendor?.passives?.find((pfs) => pfs.passiveId === passiveId && pfs.buyMultiplier);
+        const passiveForSale = planet?.vendor?.passives?.find((pfs) => pfs.id === passiveId && pfs.buyMultiplier);
         if (!planet ||
             !passiveForSale ||
-            !dist_1.default.crewPassives[passiveForSale.passiveId])
+            !dist_1.default.crewPassives[passiveForSale.id])
             return callback({
                 error: `That passive is not for sale here.`,
             });
         const currentLevel = crewMember.passives.find((p) => p.id === passiveId)
             ?.level || 0;
-        const price = dist_1.default.r2(dist_1.default.crewPassives[passiveForSale.passiveId].basePrice *
+        const price = dist_1.default.r2(dist_1.default.crewPassives[passiveForSale.id].basePrice *
             passiveForSale.buyMultiplier *
             dist_1.default.getCrewPassivePriceMultiplier(currentLevel) *
             planet.priceFluctuator *
@@ -309,7 +309,7 @@ function default_1(socket) {
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
-        crewMember.addPassive(dist_1.default.crewPassives[passiveForSale.passiveId]);
+        crewMember.addPassive(dist_1.default.crewPassives[passiveForSale.id]);
         callback({
             data: dist_1.default.stubify(crewMember),
         });

@@ -51,7 +51,7 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember', 'lastUpdated']),
     show() {
-      return this.lastUpdated && !this.ship
+      return !this.ship
     },
   },
 })

@@ -106,12 +106,9 @@ ${
         </div>
       </div>
 
-      <div
-        v-for="item in inventory"
-        :key="'inv' + item.type"
-      >
+      <div v-for="item in inventory" :key="'inv' + item.id">
         <div class="flashtextgoodonspawn">
-          {{ c.capitalize(item.type) }}:
+          {{ c.capitalize(item.id) }}:
           <NumberChangeHighlighter
             :number="c.r2(item.amount, 2)"
             :display="c.r2(item.amount, 2) + ' tons'"
@@ -119,13 +116,13 @@ ${
           <PromptButton
             class="inlineblock"
             v-if="item.amount >= 1"
-            @done="drop(item.type, ...arguments)"
-            @apply="drop(item.type, ...arguments)"
+            @done="drop(item.id, ...arguments)"
+            @apply="drop(item.id, ...arguments)"
           >
             <template #label> Drop </template>
             <template>
-              How many tons of {{ item.type }} do you want
-              to jettison as a cache? (Max
+              How many tons of {{ item.id }} do you want to
+              jettison as a cache? (Max
               {{
                 c.numberWithCommas(
                   c.r2(item.amount, 2, true),
@@ -198,7 +195,7 @@ export default Vue.extend({
         return console.log('Nope.')
       }
 
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:contribute',
         this.ship.id,
         this.crewMember.id,
@@ -241,8 +238,7 @@ export default Vue.extend({
       }
 
       message = message?.substring(0, 200)
-
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:drop',
         this.ship.id,
         this.crewMember.id,

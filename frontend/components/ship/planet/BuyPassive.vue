@@ -91,7 +91,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     buyPassive(passiveId: CrewPassiveId) {
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:buyPassive',
         this.ship.id,
         this.crewMember?.id,

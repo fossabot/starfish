@@ -137,7 +137,7 @@ export function generatePlanet(
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.cargo.push({
-          cargoId: d.id,
+          id: d.id,
           buyMultiplier,
           sellMultiplier,
         })
@@ -150,7 +150,7 @@ export function generatePlanet(
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.passives.push({
-          passiveId: d.id,
+          id: d.id,
           buyMultiplier,
         })
       }
@@ -166,8 +166,8 @@ export function generatePlanet(
         getBuyAndSellMultipliers(true)
       // vendors will buy any item, but only sell a few
       const itemForSale: VendorItemPrice = {
-        itemType: d.type,
-        itemId: d.id,
+        type: d.type,
+        id: d.id,
         sellMultiplier,
       }
       if (
@@ -185,7 +185,7 @@ export function generatePlanet(
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.chassis.push({
-          chassisId: d.id,
+          id: d.id,
           buyMultiplier,
           sellMultiplier,
         })

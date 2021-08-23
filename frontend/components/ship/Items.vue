@@ -132,10 +132,18 @@
         </div>
       </div>
 
-      <div class="panesection sub">
-        Equipment Slots Used: {{ ship.items.length }}/{{
-          ship.slots
-        }}
+      <div class="panesection sub flexcenter">
+        <div class="nowrap">
+          Equipment Slots Used: {{ ship.items.length }}/{{
+            ship.slots
+          }}
+        </div>
+        <PillBar
+          :micro="true"
+          :value="ship.items.length"
+          :max="ship.slots"
+          class="slots"
+        />
       </div>
     </Box>
   </div>
@@ -217,5 +225,9 @@ export default Vue.extend({
   & > * {
     margin-bottom: 0.5em;
   }
+}
+
+.slots {
+  margin-left: 0.5em;
 }
 </style>

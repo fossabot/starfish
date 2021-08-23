@@ -97,7 +97,7 @@ function generatePlanet(game, homeworldFactionKey) {
             if (Math.random() > cargoDispropensity) {
                 const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
                 vendor.cargo.push({
-                    cargoId: d.id,
+                    id: d.id,
                     buyMultiplier,
                     sellMultiplier,
                 });
@@ -109,7 +109,7 @@ function generatePlanet(game, homeworldFactionKey) {
             if (Math.random() > passiveDispropensity) {
                 const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
                 vendor.passives.push({
-                    passiveId: d.id,
+                    id: d.id,
                     buyMultiplier,
                 });
             }
@@ -124,8 +124,8 @@ function generatePlanet(game, homeworldFactionKey) {
             const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers(true);
             // vendors will buy any item, but only sell a few
             const itemForSale = {
-                itemType: d.type,
-                itemId: d.id,
+                type: d.type,
+                id: d.id,
                 sellMultiplier,
             };
             if (d.rarity < maxRarity &&
@@ -140,7 +140,7 @@ function generatePlanet(game, homeworldFactionKey) {
             if (Math.random() > chassisDispropensity) {
                 const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers();
                 vendor.chassis.push({
-                    chassisId: d.id,
+                    id: d.id,
                     buyMultiplier,
                     sellMultiplier,
                 });

@@ -30,8 +30,8 @@ export default function (
         return callback({ error: `Not at a planet.` })
       const itemForSale = planet?.vendor?.items?.find(
         (i) =>
-          i.itemType === itemType &&
-          i.itemId === itemId &&
+          i.type === itemType &&
+          i.id === itemId &&
           i.buyMultiplier,
       )
       if (!itemForSale || !itemForSale.buyMultiplier)
@@ -40,9 +40,8 @@ export default function (
         })
 
       const price = c.r2(
-        ((c.items[itemForSale.itemType] as any)[
-          itemForSale.itemId
-        ].basePrice || 1) *
+        ((c.items[itemForSale.type] as any)[itemForSale.id]
+          .basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
           ((planet.allegiances.find(
@@ -69,12 +68,12 @@ export default function (
       ship.logEntry(
         [
           {
-            text: (c.items[itemForSale.itemType] as any)[
-              itemForSale.itemId
+            text: (c.items[itemForSale.type] as any)[
+              itemForSale.id
             ]!.displayName,
-            tooltipData: (
-              c.items[itemForSale.itemType] as any
-            )[itemForSale.itemId],
+            tooltipData: (c.items[itemForSale.type] as any)[
+              itemForSale.id
+            ],
           },
           `bought by the captain for ${c.r2(
             price,
@@ -128,8 +127,8 @@ export default function (
 
       const itemForSale = planet?.vendor?.items?.find(
         (i) =>
-          i.itemType === itemType &&
-          i.itemId === itemId &&
+          i.type === itemType &&
+          i.id === itemId &&
           i.sellMultiplier,
       )
 
@@ -203,12 +202,12 @@ export default function (
       if (!planet)
         return callback({ error: `Not at a planet.` })
       const itemForSale = planet?.vendor?.chassis?.find(
-        (i) => i.chassisId === chassisId,
+        (i) => i.id === chassisId,
       )
       if (
         !itemForSale ||
         !itemForSale.buyMultiplier ||
-        !c.items.chassis[itemForSale.chassisId]
+        !c.items.chassis[itemForSale.id]
       )
         return callback({
           error: `That equipment is not for sale here.`,
@@ -218,8 +217,7 @@ export default function (
         ship.chassis.basePrice / 2,
       )
       const price = c.r2(
-        (c.items.chassis[itemForSale.chassisId]
-          ?.basePrice || 1) *
+        (c.items.chassis[itemForSale.id]?.basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
           ((planet.allegiances.find(
@@ -237,7 +235,7 @@ export default function (
 
       if (
         ship.items.length >
-        c.items.chassis[itemForSale.chassisId]?.slots
+        c.items.chassis[itemForSale.id]?.slots
       )
         return callback({
           error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
@@ -247,16 +245,13 @@ export default function (
       ship._stub = null
       ship.toUpdate.commonCredits = ship.commonCredits
 
-      ship.swapChassis(
-        c.items.chassis[itemForSale.chassisId],
-      )
+      ship.swapChassis(c.items.chassis[itemForSale.id])
       ship.logEntry(
         [
           {
-            text: c.items.chassis[itemForSale.chassisId]!
+            text: c.items.chassis[itemForSale.id]!
               .displayName,
-            tooltipData:
-              c.items.chassis[itemForSale.chassisId],
+            tooltipData: c.items.chassis[itemForSale.id],
           },
           `bought by the captain for ${c.r2(
             price,

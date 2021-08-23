@@ -967,7 +967,7 @@ export class HumanShip extends CombatShip {
     trails?: CoordinatePair[][]
     zones: Zone[]
   }) {
-    let planetDataToSend = []
+    let planetDataToSend: Partial<PlanetStub>[] = []
     if (previousVisible?.planets?.length)
       planetDataToSend = this.visible.planets
         .filter((p) => Object.keys(p.toUpdate).length)
