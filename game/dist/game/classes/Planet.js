@@ -1,34 +1,10 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
-const cargo_1 = require("../presets/cargo");
-const crewPassives_1 = require("../presets/crewPassives");
-const crewActives_1 = require("../presets/crewActives");
-const chassis_1 = require("../presets/items/chassis");
-const itemData = __importStar(require("../presets/items/"));
 const Stubbable_1 = require("./Stubbable");
 const db_1 = require("../../db");
 class Planet extends Stubbable_1.Stubbable {
@@ -65,30 +41,26 @@ class Planet extends Stubbable_1.Stubbable {
                     return {
                         sellMultiplier: cargo.sellMultiplier,
                         buyMultiplier: cargo.buyMultiplier,
-                        cargoType: cargo.cargoType,
-                        cargoData: cargo_1.data[cargo.cargoType],
+                        cargoId: cargo.cargoId,
                     };
                 }),
                 passives: vendor.passives?.map((passive) => {
                     return {
                         buyMultiplier: passive.buyMultiplier,
-                        passiveType: passive.passiveType,
-                        passiveData: crewPassives_1.data[passive.passiveType],
+                        passiveId: passive.passiveId,
                     };
                 }),
                 chassis: vendor.chassis?.map((chassis) => {
                     return {
                         buyMultiplier: chassis.buyMultiplier,
                         sellMultiplier: chassis.sellMultiplier,
-                        chassisType: chassis.chassisType,
-                        chassisData: chassis_1.chassis[chassis.chassisType],
+                        chassisId: chassis.chassisId,
                     };
                 }),
                 actives: vendor.actives?.map((active) => {
                     return {
                         buyMultiplier: active.buyMultiplier,
-                        activeType: active.activeType,
-                        activeData: crewActives_1.data[active.activeType],
+                        activeId: active.activeId,
                     };
                 }),
                 items: vendor.items
@@ -98,13 +70,11 @@ class Planet extends Stubbable_1.Stubbable {
                         sellMultiplier: item.sellMultiplier,
                         itemType: item.itemType,
                         itemId: item.itemId,
-                        itemData: itemData[item.itemType][item.itemId],
                     };
                 })
-                    .filter((i) => i.itemData),
+                    .filter((i) => i.itemId in dist_1.default.items[i.itemType]),
             };
         this.mass = (5.974e30 * this.radius) / 36000;
-        // * (1 + Math.random() * 0.1) // todo this shouldn't be randomized on startup
         this.updateFluctuator();
         setInterval(() => this.updateFluctuator(), 1000 * 60 * 60); // every hour
         setInterval(() => this.decrementAllegiances(), 1000 * 60 * 60); // every hour
@@ -189,4 +159,44 @@ class Planet extends Stubbable_1.Stubbable {
 }
 exports.Planet = Planet;
 Planet.fluctuatorIntensity = 0.8;
+//
+//
+//
+// RIGHT NOW
+// planets semirandomly select which items, cargo, chassis, and passives (cargo space only atm) they sell/buy.
+// --
+// planet has a "level" based on how far from the origin it is
+// it uses that level to define a min and max rarity of what it will sell
+// then it loops through all cargo, items, etc and finds the elements within that range, then randomly chooses to add or not add it to its sell pool
+//
+// UPSIDES
+// planets are very randomized, and all generally different
+// DOWNSIDES
+// planets lack thematic consistency — there's no "scanner" planet, no cargo trading hub, etc
+// higher level planets are only ever far away from the origin
+// planets lack personality
+//
+//
+// FUTURE
+// we likely want min rarity to not exist, so that low level cargo like salt doesn't become entirely useless
+// planets need to stay unique in their offerings, but also need to be able to "gain" something on level up
+//
+//
+// APPROACH
+// planets spawn with a RANDOMIZED level, not based on distance from origin (but with a slight bias toward the center being lower)
+// planet levels/progress are visible to players
+// ships can donate to a planet to help it level up
+// when a planet spawns, it "levels up" on the backend up to its current level
+// planets can have "leanings" towards different types of things to sell — item type, cargo, etc
+// planets can also have "never" leanings, meaning they will never sell that type of thing
+// there could also be autogenerated story background text for planets that's based on those leanings
+// the NUMBER of things sold by a planet is influenced by its level
+// the rarity of the thing that gets added to the sell pool on level up is (soft) relative to the planet's level
+//
+//
+//
+//
+//
+//
+//
 //# sourceMappingURL=Planet.js.map

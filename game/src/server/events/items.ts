@@ -3,7 +3,6 @@ import { Socket } from 'socket.io'
 
 import { game } from '../..'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import * as allItemData from '../../game/presets/items'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -41,7 +40,9 @@ export default function (
         })
 
       const price = c.r2(
-        (itemForSale.itemData?.basePrice || 1) *
+        ((c.items[itemForSale.itemType] as any)[
+          itemForSale.itemId
+        ].basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
           ((planet.allegiances.find(
@@ -68,8 +69,12 @@ export default function (
       ship.logEntry(
         [
           {
-            text: itemForSale.itemData!.displayName,
-            tooltipData: itemForSale.itemData,
+            text: (c.items[itemForSale.itemType] as any)[
+              itemForSale.itemId
+            ]!.displayName,
+            tooltipData: (
+              c.items[itemForSale.itemType] as any
+            )[itemForSale.itemId],
           },
           `bought by the captain for ${c.r2(
             price,
@@ -128,9 +133,7 @@ export default function (
           i.sellMultiplier,
       )
 
-      const itemData = (allItemData[itemType] as any)[
-        itemId
-      ]
+      const itemData = (c.items[itemType] as any)[itemId]
       if (!itemData)
         return callback({
           error: `No item found by that id.`,
@@ -180,7 +183,7 @@ export default function (
 
   socket.on(
     `ship:swapChassis`,
-    (shipId, crewId, chassisType, callback) => {
+    (shipId, crewId, chassisId, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -200,12 +203,12 @@ export default function (
       if (!planet)
         return callback({ error: `Not at a planet.` })
       const itemForSale = planet?.vendor?.chassis?.find(
-        (i) => i.chassisType === chassisType,
+        (i) => i.chassisId === chassisId,
       )
       if (
         !itemForSale ||
         !itemForSale.buyMultiplier ||
-        !itemForSale.chassisData
+        !c.items.chassis[itemForSale.chassisId]
       )
         return callback({
           error: `That equipment is not for sale here.`,
@@ -215,7 +218,8 @@ export default function (
         ship.chassis.basePrice / 2,
       )
       const price = c.r2(
-        (itemForSale.chassisData?.basePrice || 1) *
+        (c.items.chassis[itemForSale.chassisId]
+          ?.basePrice || 1) *
           itemForSale.buyMultiplier *
           planet.priceFluctuator *
           ((planet.allegiances.find(
@@ -232,7 +236,8 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       if (
-        ship.items.length > itemForSale.chassisData?.slots
+        ship.items.length >
+        c.items.chassis[itemForSale.chassisId]?.slots
       )
         return callback({
           error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
@@ -242,12 +247,16 @@ export default function (
       ship._stub = null
       ship.toUpdate.commonCredits = ship.commonCredits
 
-      ship.swapChassis(itemForSale.chassisData)
+      ship.swapChassis(
+        c.items.chassis[itemForSale.chassisId],
+      )
       ship.logEntry(
         [
           {
-            text: itemForSale.chassisData!.displayName,
-            tooltipData: itemForSale.chassisData,
+            text: c.items.chassis[itemForSale.chassisId]!
+              .displayName,
+            tooltipData:
+              c.items.chassis[itemForSale.chassisId],
           },
           `bought by the captain for ${c.r2(
             price,
@@ -264,7 +273,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} swapped to the chassis ${chassisType}.`,
+        `${crewMember.name} on ${ship.name} swapped to the chassis ${chassisId}.`,
       )
     },
   )

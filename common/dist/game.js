@@ -47,12 +47,6 @@ const sameFactionShipScanProperties = {
     _maxHp: true,
 };
 const tactics = [`aggressive`, `defensive`];
-const cargoTypes = [
-    `salt`,
-    `water`,
-    `oxygen`,
-    `credits`,
-];
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         (1 + (totalMunitionsSkill - 1) / 50) *
@@ -250,7 +244,6 @@ exports.default = {
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,
     tactics,
-    cargoTypes,
     taglineOptions,
     headerBackgroundOptions,
     stubify,

@@ -77,12 +77,6 @@ const sameFactionShipScanProperties = {
 }
 
 const tactics: Tactic[] = [`aggressive`, `defensive`]
-const cargoTypes: (`credits` | CargoType)[] = [
-  `salt`,
-  `water`,
-  `oxygen`,
-  `credits`,
-]
 
 function getHitDamage(
   weapon: WeaponStub,
@@ -354,7 +348,6 @@ export default {
   getWeaponCooldownReductionPerTick,
   getCrewPassivePriceMultiplier,
   tactics,
-  cargoTypes,
   taglineOptions,
   headerBackgroundOptions,
   stubify,

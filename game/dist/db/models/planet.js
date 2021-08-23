@@ -19,14 +19,14 @@ const planetSchemaFields = {
     vendor: {
         cargo: [
             {
-                cargoType: String,
+                cargoId: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
         chassis: [
             {
-                chassisType: String,
+                chassisId: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
@@ -41,13 +41,13 @@ const planetSchemaFields = {
         ],
         actives: [
             {
-                activeType: String,
+                activeId: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
         passives: [
-            { passiveType: String, buyMultiplier: Number },
+            { passiveId: String, buyMultiplier: Number },
         ],
     },
 };

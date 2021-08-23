@@ -139,7 +139,7 @@ class Tutorial {
                 ],
                 caches: [
                     {
-                        contents: [{ amount: 10, type: `credits` }],
+                        contents: [{ amount: 10, id: `credits` }],
                         location: [0.015, 0],
                     },
                 ],

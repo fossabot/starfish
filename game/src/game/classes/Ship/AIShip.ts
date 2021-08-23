@@ -7,10 +7,8 @@ import type { Planet } from '../Planet'
 import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
-import * as itemData from '../../presets/items'
 import type { Weapon } from '../Item/Weapon'
 import type { HumanShip } from './HumanShip'
-import { data as cargoData } from '../../presets/cargo'
 
 export class AIShip extends CombatShip {
   readonly human: boolean = false
@@ -125,7 +123,7 @@ export class AIShip extends CombatShip {
     }
   }
 
-  cumulativeSkillIn(l: CrewLocation, s: SkillType) {
+  cumulativeSkillIn(l: CrewLocation, s: SkillId) {
     return this.level
   }
 
@@ -133,7 +131,7 @@ export class AIShip extends CombatShip {
     // c.log(`Adding items to level ${this.level} ai...`)
     let itemBudget = this.level * c.aiDifficultyMultiplier
 
-    const validChassis = Object.values(itemData.chassis)
+    const validChassis = Object.values(c.items.chassis)
       .filter(
         (i: BaseChassisData) => i.rarity <= itemBudget / 3,
       )
@@ -142,7 +140,7 @@ export class AIShip extends CombatShip {
           b.rarity - a.rarity,
       )
     const chassisToBuy: BaseChassisData =
-      validChassis[0] || itemData.chassis.starter1
+      validChassis[0] || c.items.chassis.starter1
     this.chassis = chassisToBuy
     itemBudget -= chassisToBuy.rarity
     // c.log(
@@ -161,7 +159,7 @@ export class AIShip extends CombatShip {
           : this.engines.length === 0
           ? `engine`
           : c.randomFromArray([`engine`, `weapon`])
-      const itemPool = itemData[typeToAdd]
+      const itemPool = c.items[typeToAdd]
       const validItems: BaseItemData[] = Object.values(
         itemPool,
       )
@@ -305,13 +303,13 @@ export class AIShip extends CombatShip {
           let amount =
             Math.ceil(Math.random() * itemRarity * 100) *
             100
-          cacheContents.push({ type: `credits`, amount })
+          cacheContents.push({ id: `credits`, amount })
         }
 
         const upperLimit = itemRarity
         const lowerLimit = itemRarity * 0.5 - 0.5
-        for (let ca of Object.values(cargoData)) {
-          // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
+        for (let ca of Object.values(c.cargo)) {
+          // c.log(ca.id, ca.rarity, upperLimit, lowerLimit)
           if (
             ca.rarity <= upperLimit &&
             ca.rarity >= lowerLimit &&
@@ -320,7 +318,7 @@ export class AIShip extends CombatShip {
             const amount = c.r2(
               Math.random() * this.level * 3 + this.level,
             )
-            cacheContents.push({ type: ca.type, amount })
+            cacheContents.push({ id: ca.id, amount })
           }
         }
 

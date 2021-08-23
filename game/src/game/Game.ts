@@ -385,11 +385,12 @@ export class Game {
 
   spawnNewCaches() {
     while (this.caches.length < this.gameSoftArea * 1.5) {
-      const type = c.randomFromArray(c.cargoTypes) as
-        | `credits`
-        | CargoType
+      const id = c.randomFromArray([
+        ...Object.keys(c.cargo),
+        `credits`,
+      ]) as `credits` | CargoId
       const amount =
-        type === `credits`
+        id === `credits`
           ? Math.round(Math.random() * 200) * 100
           : Math.round(Math.random() * 200) / 10 + 1
       const location = c.randomInsideCircle(
@@ -420,7 +421,7 @@ export class Game {
       this.addCache({
         contents: [
           {
-            type,
+            id,
             amount,
           },
         ],
@@ -429,7 +430,7 @@ export class Game {
       })
       c.log(
         `gray`,
-        `Spawned random cache of ${amount} ${type} at ${location}.`,
+        `Spawned random cache of ${amount} ${id} at ${location}.`,
       )
     }
   }

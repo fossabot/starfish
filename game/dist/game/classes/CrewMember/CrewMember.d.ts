@@ -42,9 +42,9 @@ export declare class CrewMember extends Stubbable {
     bunkAction: typeof roomActions.bunk;
     tick(): void;
     active(): void;
-    addXp(skill: SkillType, xp?: number): void;
-    addCargo(type: CargoType, amount: number): number;
-    removeCargo(type: CargoType, amount: number): void;
+    addXp(skill: SkillId, xp?: number): void;
+    addCargo(id: CargoId, amount: number): number;
+    removeCargo(id: CargoId, amount: number): void;
     get heldWeight(): number;
     recalculateMaxCargoSpace(): void;
     addPassive(data: Partial<BaseCrewPassiveData>): void;

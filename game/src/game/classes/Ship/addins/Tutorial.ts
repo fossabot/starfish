@@ -26,7 +26,7 @@ interface TutorialStepData {
   }[]
   forceLocation?: CoordinatePair
   forceCommonCredits?: number
-  forceLoadout?: LoadoutName
+  forceLoadout?: LoadoutId
   visibleTypes: (
     | `ship`
     | `planet`
@@ -180,7 +180,7 @@ export class Tutorial {
         ],
         caches: [
           {
-            contents: [{ amount: 10, type: `credits` }],
+            contents: [{ amount: 10, id: `credits` }],
             location: [0.015, 0],
           },
         ],

@@ -6,7 +6,6 @@
       </template>
 
       <div class="panesection itemlist">
-        <!-- v-if="armor && armor.length" <div class="panesubhead">Armor</div> -->
         <div
           v-for="i in armor"
           v-tooltip="{
@@ -24,27 +23,8 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
         </div>
-        <!-- </div>
-
-      <div class="panesection" v-if="weapons.length">
-        <div class="panesubhead">Weapons</div> -->
         <div
           v-for="i in weapons"
           v-tooltip="{
@@ -62,37 +42,18 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
           <div class="">
             <ProgressBar
               :micro="true"
               :percent="
                 (i.baseCooldown - i.cooldownRemaining) /
-                  i.baseCooldown
+                i.baseCooldown
               "
               :dangerZone="-1"
             />
           </div>
         </div>
-        <!-- </div>
-
-      <div class="panesection" v-if="engines.length">
-        <div class="panesubhead">Engines</div> -->
         <div
           v-for="i in engines"
           v-tooltip="{
@@ -110,27 +71,8 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
         </div>
-        <!-- </div>
-
-      <div class="panesection" v-if="scanners.length">
-        <div class="panesubhead">Scanners</div> -->
         <div
           v-for="i in scanners"
           v-tooltip="{
@@ -148,30 +90,8 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
         </div>
-        <!-- </div>
-
-      <div
-        class="panesection"
-        v-if="communicators && communicators.length"
-      >
-        <div class="panesubhead">Communicators</div> -->
         <div
           v-for="i in communicators"
           v-tooltip="{
@@ -189,27 +109,8 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
         </div>
-        <!-- </div>
-
-      <div class="panesection" v-if="other.length">
-        <div class="panesubhead">Other Items</div> -->
         <div
           v-for="i in other"
           v-tooltip="{
@@ -227,21 +128,6 @@
               :value="i.repair * i.maxHp"
               :max="i.maxHp"
             />
-            <!-- <ProgressBar
-              :mini="true"
-              :percent="(i.repair * i.maxHp) / i.maxHp"
-            >
-              <div>
-                🇨🇭HP:
-                <NumberChangeHighlighter
-                  :number="c.r2(i.repair * i.maxHp)"
-                />/{{ i.maxHp }} ({{
-                  Math.round(
-                    ((i.repair * i.maxHp) / i.maxHp) * 1000,
-                  ) / 10
-                }}%)
-              </div>
-            </ProgressBar> -->
           </div>
         </div>
       </div>

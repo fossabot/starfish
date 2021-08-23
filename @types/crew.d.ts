@@ -8,7 +8,7 @@ interface BaseRoomData {
   description: string
 }
 
-type SkillType =
+type SkillId =
   | `piloting`
   | `munitions`
   | `mechanics`
@@ -23,8 +23,8 @@ type RepairPriority =
   | `communicators`
   | `scanners`
 
-type CrewActiveType = `boost` | `quickFix` | `sightRange`
-type CrewPassiveType = `cargoSpace`
+type CrewActiveId = `boost` | `quickFix` | `sightRange`
+type CrewPassiveId = `cargoSpace`
 
 type CrewStatKey =
   | `totalContributedToCommonFund`
@@ -35,7 +35,7 @@ interface CrewStatEntry {
 }
 
 interface PassiveCrewUpgrade {
-  type: CrewPassiveType
+  id: CrewPassiveId
   level: number
 }
 
@@ -60,20 +60,20 @@ interface BaseCrewMemberData {
 }
 
 interface XPData {
-  skill: SkillType
+  skill: SkillId
   level: number
   xp: number
 }
 
 interface BaseCrewActiveData {
   displayName: string
-  type: CrewActiveType
+  id: CrewActiveId
   basePrice: number
   rarity: number
 }
 interface BaseCrewPassiveData {
   displayName: string
-  type: CrewPassiveType
+  id: CrewPassiveId
   basePrice: number
   level?: number
   factor: number

@@ -1,7 +1,6 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
-import * as passives from '../../presets/crewPassives'
 import type { HumanShip } from '../Ship/HumanShip'
 import { CrewActive } from './addins/CrewActive'
 import { CrewPassive } from './addins/CrewPassive'
@@ -175,7 +174,7 @@ export class CrewMember extends Stubbable {
     this.toUpdate.lastActive = this.lastActive
   }
 
-  addXp(skill: SkillType, xp?: number) {
+  addXp(skill: SkillId, xp?: number) {
     this.active()
 
     const xpBoostMultiplier =
@@ -207,7 +206,7 @@ export class CrewMember extends Stubbable {
     this.toUpdate.skills = this.skills
   }
 
-  addCargo(type: CargoType, amount: number): number {
+  addCargo(id: CargoId, amount: number): number {
     amount = c.r2(amount, 2, true) // round down to 2 decimal places
 
     const canHold =
@@ -216,7 +215,7 @@ export class CrewMember extends Stubbable {
         this.maxCargoSpace,
       ) - this.heldWeight
     const existingStock = this.inventory.find(
-      (cargo) => cargo.type === type,
+      (cargo) => cargo.id === id,
     )
     if (existingStock)
       existingStock.amount = c.r2(
@@ -224,7 +223,7 @@ export class CrewMember extends Stubbable {
       )
     else
       this.inventory.push({
-        type,
+        id,
         amount: Math.min(canHold, amount),
       })
 
@@ -235,10 +234,10 @@ export class CrewMember extends Stubbable {
     return Math.max(0, amount - canHold)
   }
 
-  removeCargo(type: CargoType, amount: number) {
+  removeCargo(id: CargoId, amount: number) {
     this.active()
     const existingStock = this.inventory.find(
-      (cargo) => cargo.type === type,
+      (cargo) => cargo.id === id,
     )
     if (existingStock)
       existingStock.amount = c.r2(
@@ -257,7 +256,7 @@ export class CrewMember extends Stubbable {
 
   recalculateMaxCargoSpace() {
     const personalCargoSpacePassiveBoost =
-      this.passives.find((p) => p.type === `cargoSpace`)
+      this.passives.find((p) => p.id === `cargoSpace`)
         ?.changeAmount || 0
     const shipwideCargoSpacePassiveBoost =
       this.ship.passives.find(
@@ -271,15 +270,15 @@ export class CrewMember extends Stubbable {
 
   addPassive(data: Partial<BaseCrewPassiveData>) {
     this.active()
-    if (!data.type) return
+    if (!data.id) return
     const existing = this.passives.find(
-      (p) => p.type === data.type,
+      (p) => p.id === data.id,
     )
     if (existing) {
       existing.level++
     } else {
       const fullPassiveData = {
-        ...passives[data.type],
+        ...c.crewPassives[data.id],
         level: data.level || 1,
       }
       this.passives.push(

@@ -5,10 +5,10 @@ const activeDefaults = {
     baseCooldown: 10000,
 };
 class CrewActive {
-    constructor({ type }, crewMember) {
+    constructor({ id }, crewMember) {
         this.ready = false;
         this.crewMember = crewMember;
-        this.type = type;
+        this.id = id;
         this.baseCooldown = activeDefaults.baseCooldown;
         this.cooldownRemaining = this.baseCooldown;
     }

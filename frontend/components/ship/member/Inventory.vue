@@ -24,9 +24,7 @@
             @done="addToCommonFund(...arguments)"
             @apply="addToCommonFund(...arguments)"
           >
-            <template #label>
-              Add to common fund
-            </template>
+            <template #label> Add to common fund </template>
             <template>
               How many credits do you want to contribute to
               the ship's common credits? (Max
@@ -43,9 +41,7 @@
             @done="drop('credits', ...arguments)"
             @apply="drop('credits', ...arguments)"
           >
-            <template #label>
-              Drop
-            </template>
+            <template #label> Drop </template>
             <template>
               How many credits do you want to jettison as a
               cache? (Max
@@ -126,9 +122,7 @@ ${
             @done="drop(item.type, ...arguments)"
             @apply="drop(item.type, ...arguments)"
           >
-            <template #label>
-              Drop
-            </template>
+            <template #label> Drop </template>
             <template>
               How many tons of {{ item.type }} do you want
               to jettison as a cache? (Max
@@ -215,15 +209,15 @@ export default Vue.extend({
         type: 'success',
       })
     },
-    drop(type: CargoType | 'credits', res: any[]) {
+    drop(cargoId: CargoId | 'credits', res: any[]) {
       let [amount, message] = res
 
       const totalHeld =
-        type === 'credits'
+        cargoId === 'credits'
           ? c.r2(this.crewMember.credits, 2, true)
           : c.r2(
               this.crewMember.inventory.find(
-                (i: Cargo) => i.type === type,
+                (i: Cargo) => i.id === cargoId,
               ).amount,
               2,
               true,
@@ -252,7 +246,7 @@ export default Vue.extend({
         'crew:drop',
         this.ship.id,
         this.crewMember.id,
-        type,
+        cargoId,
         amount,
         message,
         (cache: CacheStub) => {

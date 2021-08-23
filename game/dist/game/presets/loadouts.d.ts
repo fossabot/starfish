@@ -1,5 +1,5 @@
 declare const loadouts: {
-    [key in LoadoutName]?: Loadout;
+    [key in LoadoutId]: Loadout;
 };
 export default loadouts;
 //# sourceMappingURL=loadouts.d.ts.map

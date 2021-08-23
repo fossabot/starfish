@@ -6,7 +6,7 @@ interface BaseShipData {
   species: { id: SpeciesKey }
   seenPlanets?: { name: string }[]
   seenLandmarks?: { id: string; type: `zone` }[]
-  loadout?: LoadoutName
+  loadout?: LoadoutId
   chassis?: { id: ChassisId }
   items?: BaseItemData[]
   ai?: boolean

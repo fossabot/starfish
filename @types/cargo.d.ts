@@ -1,4 +1,4 @@
-type CargoType =
+type CargoId =
   | `salt`
   | `water`
   | `oxygen`
@@ -9,13 +9,13 @@ type CargoType =
   | `uranium`
 
 type CargoData = {
-  type: CargoType
+  id: CargoId
   name: string
   basePrice: number
   rarity: number
 }
 
 interface Cargo {
-  type: CargoType
+  id: CargoId
   amount: number
 }

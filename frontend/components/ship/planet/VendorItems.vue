@@ -2,7 +2,7 @@
   <div
     v-if="
       crewMember &&
-        (buyableItems.length || sellableItems.length)
+      (buyableItems.length || sellableItems.length)
     "
   >
     <div class="panesection">
@@ -152,7 +152,8 @@ export default Vue.extend({
         .map((item: VendorItemPrice) => {
           const price = c.r2(
             Math.max(
-              (item.itemData?.basePrice || 1) *
+              ((c.items[item.itemType] as any)[item.itemId]
+                ?.basePrice || 1) *
                 item.buyMultiplier! *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
@@ -164,6 +165,9 @@ export default Vue.extend({
           )
           return {
             ...item,
+            itemData: (c.items[item.itemType] as any)[
+              item.itemId
+            ],
             price,
             canBuy:
               this.isCaptain &&
@@ -179,7 +183,7 @@ export default Vue.extend({
           ).find(
             (i: VendorItemPrice) =>
               i.itemType === item.type &&
-              i.itemData?.id === item.id,
+              i.itemId === item.id,
           )
           if (!itemForSale) return
           const price = c.r2(
@@ -197,6 +201,11 @@ export default Vue.extend({
           )
           return {
             ...item,
+            itemData: (
+              c.items[
+                itemForSale.itemType as ItemType
+              ] as any
+            )[itemForSale.itemId],
             price,
             canSell: this.isCaptain,
           }
@@ -211,7 +220,8 @@ export default Vue.extend({
           )
           const price = c.r2(
             Math.min(
-              (chassis.chassisData?.basePrice || 1) *
+              (c.items.chassis[chassis.chassisId]
+                ?.basePrice || 1) *
                 chassis.buyMultiplier *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
@@ -224,11 +234,12 @@ export default Vue.extend({
           )
           return {
             ...chassis,
+            itemData: c.items.chassis[chassis.chassisId],
             price,
             canBuy:
               this.isCaptain &&
               this.ship.commonCredits >= price &&
-              chassis.chassisType !== this.ship.chassis.id,
+              chassis.chassisId !== this.ship.chassis.id,
           }
         },
       )
@@ -240,7 +251,10 @@ export default Vue.extend({
     buyItem(data: VendorItemPrice) {
       this.$store.commit('setShipProp', [
         'items',
-        [...this.ship.items, data.itemData],
+        [
+          ...this.ship.items,
+          (c.items[data.itemType] as any)[data.itemId],
+        ],
       ])
       this.$socket.emit(
         'ship:buyItem',
@@ -296,7 +310,7 @@ export default Vue.extend({
         'ship:swapChassis',
         this.ship.id,
         this.crewMember?.id,
-        data.chassisType,
+        data.chassisId,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
