@@ -5,7 +5,7 @@
       ><span :style="{ color: data.color }">{{
         data.name
       }}</span>
-      <span class="sub">{{ c.capitalize(data.type) }}</span>
+      <!-- <span class="sub">{{ c.capitalize(data.type) }}</span> -->
     </div>
     <!-- {{ data }} -->
     <hr />

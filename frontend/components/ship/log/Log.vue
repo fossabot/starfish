@@ -12,7 +12,7 @@
     <div class="panesection scroll">
       <ShipLogEntry
         v-for="l in flippedLog"
-        :key="'log' + l.time + l.text"
+        :key="'log' + l.time + l.content"
         v-bind="l"
       />
     </div>

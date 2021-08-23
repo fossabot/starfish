@@ -56,6 +56,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .bunk {
   position: relative;
-  width: 250px;
+  width: 260px;
 }
 </style>
