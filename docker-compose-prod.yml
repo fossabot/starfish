@@ -4,7 +4,7 @@ services:
     image: 'xmadsen/starfish-db:latest'
     restart: always
     volumes:
-      - db_data:/data/db
+      - /mnt/disks/mongodb/db_data:/data/db
     ports:
       - 27017:27017
     environment:
@@ -61,7 +61,7 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - letsencrypt:/etc/letsencrypt
+      - /var/lib/nginx/letsencrypt:/etc/letsencrypt
 
 secrets:
   discord_token:
