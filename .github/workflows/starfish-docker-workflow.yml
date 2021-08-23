@@ -3,12 +3,25 @@ name: ci
 on:
   push:
     branches:
-      - 'master'
-
+      - 'main'
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+       include:
+         - dockerfile: db/Dockerfile-prod
+           image: "starfish-db"
+         - dockerfile: game/Dockerfile-prod
+           image: "starfish-game"
+         - dockerfile: discord/Dockerfile-prod
+           image: "starfish-discord"
+         - dockerfile: frontend/Dockerfile-prod
+           image: "starfish-frontend"
+         - dockerfile: nginx/Dockerfile-prod
+           image: "starfish-nginx"
+
     steps:
     
       - name: Check Out Repo 
@@ -24,51 +37,12 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and push db
-        id: docker_build
-        uses: docker/build-push-action@v2
+      - uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: db/Dockerfile-prod
+          file: ${{ matrix.dockerfile }}
+          context: .
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/starfish-db:latest
-      
-      - name: Build and push game
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: game/Dockerfile-prod
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/starfish-game:latest
-      
-      - name: Build and push frontend
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: frontend/Dockerfile-prod
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/starfish-frontend:latest
-
-      - name: Build and push discord
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: discord/Dockerfile-prod
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/starfish-discord:latest
-
-        
-      - name: Build and push nginx
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: nginx/Dockerfile-prod
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/starfish-nginx:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{matrix.image}}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
