@@ -42,7 +42,9 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{matrix.image}}
+          tags: 
+            - ${{ secrets.DOCKER_HUB_USERNAME }}/${{matrix.image}}-latest
+            - ${{ secrets.DOCKER_HUB_USERNAME }}/${{matrix.image}}-${{GITHUB_RUN_NUMBER}}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
