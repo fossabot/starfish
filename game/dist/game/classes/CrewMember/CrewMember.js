@@ -25,7 +25,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const roomActions = __importStar(require("./addins/rooms"));
-const passives = __importStar(require("../../presets/crewPassives"));
 const CrewPassive_1 = require("./addins/CrewPassive");
 const Stubbable_1 = require("../Stubbable");
 class CrewMember extends Stubbable_1.Stubbable {
@@ -177,24 +176,24 @@ class CrewMember extends Stubbable_1.Stubbable {
             CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
         this.toUpdate.skills = this.skills;
     }
-    addCargo(type, amount) {
+    addCargo(id, amount) {
         amount = dist_1.default.r2(amount, 2, true); // round down to 2 decimal places
         const canHold = Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) - this.heldWeight;
-        const existingStock = this.inventory.find((cargo) => cargo.type === type);
+        const existingStock = this.inventory.find((cargo) => cargo.id === id);
         if (existingStock)
             existingStock.amount = dist_1.default.r2(existingStock.amount + Math.min(canHold, amount));
         else
             this.inventory.push({
-                type,
+                id,
                 amount: Math.min(canHold, amount),
             });
         this.toUpdate.inventory = this.inventory;
         this.ship.recalculateMass();
         return Math.max(0, amount - canHold);
     }
-    removeCargo(type, amount) {
+    removeCargo(id, amount) {
         this.active();
-        const existingStock = this.inventory.find((cargo) => cargo.type === type);
+        const existingStock = this.inventory.find((cargo) => cargo.id === id);
         if (existingStock)
             existingStock.amount = dist_1.default.r2(existingStock.amount -
                 Math.min(existingStock.amount, amount));
@@ -207,7 +206,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             .reduce((total, i) => total + i.amount, 0);
     }
     recalculateMaxCargoSpace() {
-        const personalCargoSpacePassiveBoost = this.passives.find((p) => p.type === `cargoSpace`)
+        const personalCargoSpacePassiveBoost = this.passives.find((p) => p.id === `cargoSpace`)
             ?.changeAmount || 0;
         const shipwideCargoSpacePassiveBoost = this.ship.passives.find((p) => p.id === `boostCargoSpace`)?.changeAmount || 0;
         this.maxCargoSpace =
@@ -217,15 +216,15 @@ class CrewMember extends Stubbable_1.Stubbable {
     }
     addPassive(data) {
         this.active();
-        if (!data.type)
+        if (!data.id)
             return;
-        const existing = this.passives.find((p) => p.type === data.type);
+        const existing = this.passives.find((p) => p.id === data.id);
         if (existing) {
             existing.level++;
         }
         else {
             const fullPassiveData = {
-                ...passives[data.type],
+                ...dist_1.default.crewPassives[data.id],
                 level: data.level || 1,
             };
             this.passives.push(new CrewPassive_1.CrewPassive(fullPassiveData, this));

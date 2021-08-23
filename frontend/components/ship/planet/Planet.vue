@@ -12,7 +12,12 @@
     </template>
     <div class="scroller">
       <div
-        class="panesection flexcolumn flexcenter marbotsmall"
+        class="
+          panesection
+          flexcolumn
+          flexcenter
+          marbotsmall
+        "
         :style="{
           '--highlight-color': ship.planet.color,
         }"
@@ -38,26 +43,29 @@
         >
           <span
             :style="{
-              color: ship.planet.faction.color,
+              color:
+                c.factions[ship.planet.faction.id].color,
             }"
           >
-            {{ ship.planet.faction.name }}
+            {{ c.factions[ship.planet.faction.id].name }}
           </span>
           faction homeworld
         </div>
         <div
           class="sub"
           v-else-if="
-            ship.planet.faction && ship.planet.faction.color
+            ship.planet.faction &&
+            c.factions[ship.planet.faction.id].color
           "
         >
           Faction allegiance:
           <span
             :style="{
-              color: ship.planet.faction.color,
+              color:
+                c.factions[ship.planet.faction.id].color,
             }"
           >
-            {{ ship.planet.faction.name }}
+            {{ c.factions[ship.planet.faction.id].name }}
           </span>
         </div>
         <div class="sub">
@@ -89,7 +97,7 @@
         <div class="panesubhead">Faction Allegiances</div>
         <ShipPlanetFactionGraph :planet="ship.planet" />
         <div
-          class="martop"
+          class="martopsmall"
           v-if="isFriendlyToFaction"
           :style="{
             color: ship.faction.color,
@@ -105,7 +113,8 @@
       </div>
       <div class="panesection" v-if="ship.planet">
         <div class="sub">
-          You cannot be attacked while on a planet.
+          You cannot attack or be attacked while on a
+          planet.
         </div>
       </div>
     </div>

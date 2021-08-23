@@ -102,7 +102,7 @@ export default Vue.extend({
       this.masonryElement?.position()
     },
     userId(): void {
-      if (!this.userId) this.$router.push('/login')
+      if (!this.userId) (this as any).$router.push('/login')
     },
     lastUpdated(): void {
       setTimeout(() => (this.ready = true), 800)
@@ -128,6 +128,8 @@ export default Vue.extend({
     window.addEventListener('blur', () => {
       this.$store.dispatch('slowMode', true)
     })
+
+    setTimeout(() => (this.ready = true), 6000)
   },
 
   methods: {

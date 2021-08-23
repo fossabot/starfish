@@ -11,7 +11,7 @@ const cacheSchemaFields = {
     time: { type: Number, default: Date.now() },
     location: [{ type: Number, required: true }],
     message: { type: String, default: `` },
-    contents: [{ type: { type: String }, amount: Number }],
+    contents: [{ id: { type: String }, amount: Number }],
     onlyVisibleToShipId: String,
     droppedBy: String,
 };

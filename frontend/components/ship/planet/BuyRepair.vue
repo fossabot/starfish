@@ -3,8 +3,8 @@
     class="panesection"
     v-if="
       crewMember &&
-        ship.planet &&
-        ship.planet.repairCostMultiplier
+      ship.planet &&
+      ship.planet.repairCostMultiplier
     "
   >
     <div>
@@ -24,7 +24,7 @@
       "
       @click="buyRepair(count)"
     >
-      🇨🇭{{ c.r2(count, 2, true) }}: 💳{{
+      🛠{{ c.r2(count, 2, true) }}HP: 💳{{
         c.numberWithCommas(
           c.r2(
             Math.max(
@@ -82,7 +82,7 @@ export default Vue.extend({
       this.$store.commit('updateShip', {
         _hp: this.ship._hp + hp,
       })
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'crew:buyRepair',
         this.ship.id,
         this.crewMember?.id,

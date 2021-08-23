@@ -2,7 +2,7 @@
   <div class="container">
     <div class="textcolumn">
       <div class="martop">
-        <h2>Support {{ c.gameName }}!</h2>
+        <h1>Support {{ c.gameName }}!</h1>
         <div>
           {{ c.gameName }} is made by
           <a

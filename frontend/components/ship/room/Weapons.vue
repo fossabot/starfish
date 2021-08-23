@@ -32,7 +32,7 @@
               :micro="true"
               :percent="
                 (i.baseCooldown - i.cooldownRemaining) /
-                  i.baseCooldown
+                i.baseCooldown
               "
               :dangerZone="-1"
             />
@@ -64,9 +64,7 @@
         </div>
       </div>
       <div class="panesection">
-        <div class="panesubhead">
-          Your Tactic
-        </div>
+        <div class="panesubhead">Your Tactic</div>
         <div>
           <button
             v-for="tactic in c.tactics"
@@ -80,9 +78,7 @@
         </div>
       </div>
       <div class="panesection">
-        <div class="panesubhead">
-          Your Target
-        </div>
+        <div class="panesubhead">Your Target</div>
         <div>
           <button
             :class="{

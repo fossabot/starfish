@@ -10,8 +10,6 @@ const io_1 = __importDefault(require("../../../server/io"));
 const crew_1 = require("./addins/crew");
 const CombatShip_1 = require("./CombatShip");
 const CrewMember_1 = require("../CrewMember/CrewMember");
-const rooms_1 = require("../../presets/rooms");
-const cargo_1 = require("../../presets/cargo");
 const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
@@ -584,7 +582,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 10 +
                 1.5) *
                 (1 + amountBoostPassive);
-            const type = dist_1.default.randomFromArray([
+            const id = dist_1.default.randomFromArray([
                 `oxygen`,
                 `salt`,
                 `water`,
@@ -592,15 +590,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                 `plastic`,
                 `steel`,
             ]);
-            this.distributeCargoAmongCrew([
-                { type: type, amount },
-            ]);
+            this.distributeCargoAmongCrew([{ id, amount }]);
             this.logEntry([
                 `Encountered some space junk and managed to harvest ${amount} ton${amount === 1 ? `` : `s`} of`,
                 {
-                    text: type,
+                    text: id,
                     tooltipData: {
-                        ...cargo_1.data[type],
+                        ...dist_1.default.cargo[id],
                         type: `cargo`,
                     },
                 },
@@ -773,7 +769,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.logEntry(
         // todo update
         `Picked up a cache with ${cache.contents
-            .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.type === `credits` ? `` : ` tons of`} ${cc.type}`)
+            .map((cc) => `${dist_1.default.r2(cc.amount)}${cc.id === `credits` ? `` : ` tons of`} ${cc.id}`)
             .join(` and `)} inside!${cache.message &&
             ` There was a message attached which said, "${cache.message}".`}`, `medium`);
         this.game.removeCache(cache);
@@ -891,7 +887,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     addRoom(room) {
         if (!(room in this.rooms))
-            this.rooms[room] = rooms_1.rooms[room];
+            this.rooms[room] = dist_1.default.rooms[room];
         this.toUpdate.rooms = this.rooms;
     }
     removeRoom(room) {
@@ -963,12 +959,12 @@ class HumanShip extends CombatShip_1.CombatShip {
             while (canHoldMore.length && toDistribute) {
                 const amountForEach = toDistribute / canHoldMore.length;
                 toDistribute = canHoldMore.reduce((total, cm, index) => {
-                    if (contents.type === `credits`) {
+                    if (contents.id === `credits`) {
                         cm.credits = Math.floor(cm.credits + amountForEach);
                         cm.toUpdate.credits = cm.credits;
                     }
                     else {
-                        const leftOver = cm.addCargo(contents.type, amountForEach);
+                        const leftOver = cm.addCargo(contents.id, amountForEach);
                         if (leftOver) {
                             canHoldMore.splice(index, 1);
                             return total + leftOver;
@@ -979,12 +975,12 @@ class HumanShip extends CombatShip_1.CombatShip {
                 }, 0);
             }
             if (toDistribute > 1) {
-                const existing = leftovers.find((l) => l.type === contents.type);
+                const existing = leftovers.find((l) => l.id === contents.id);
                 if (existing)
                     existing.amount += toDistribute;
                 else
                     leftovers.push({
-                        type: contents.type,
+                        id: contents.id,
                         amount: toDistribute,
                     });
             }
@@ -1262,7 +1258,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             // ----- crew member cargo -----
             while (cm.inventory.length) {
                 const toAdd = cm.inventory.pop();
-                const existing = cacheContents.find((cc) => cc.type === toAdd?.type);
+                const existing = cacheContents.find((cc) => cc.id === toAdd?.id);
                 if (existing)
                     existing.amount += toAdd?.amount || 0;
                 else if (toAdd)
@@ -1273,12 +1269,12 @@ class HumanShip extends CombatShip_1.CombatShip {
                 CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
             cm.credits -=
                 cm.credits * CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
-            const existing = cacheContents.find((cc) => cc.type === `credits`);
+            const existing = cacheContents.find((cc) => cc.id === `credits`);
             if (existing)
                 existing.amount += toCache || 0;
             else if (cm.credits)
                 cacheContents.push({
-                    type: `credits`,
+                    id: `credits`,
                     amount: toCache,
                 });
             cm.location = `bunk`;
@@ -1290,12 +1286,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.commonCredits -=
             this.commonCredits *
                 CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
-        const existing = cacheContents.find((cc) => cc.type === `credits`);
+        const existing = cacheContents.find((cc) => cc.id === `credits`);
         if (existing)
             existing.amount += toCache || 0;
         else if (this.commonCredits)
             cacheContents.push({
-                type: `credits`,
+                id: `credits`,
                 amount: toCache,
             });
         if (cacheContents.length)

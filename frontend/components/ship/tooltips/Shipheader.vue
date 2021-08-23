@@ -146,8 +146,8 @@ export default Vue.extend({
     z-index: 3;
     top: 0;
     right: 0;
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     transform: translateX(50%) translateY(-50%)
       rotate(45deg);
     box-shadow: 0 0 10px -3px var(--bg);

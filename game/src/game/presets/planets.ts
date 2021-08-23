@@ -2,9 +2,6 @@ import c from '../../../../common/dist'
 import type { Faction } from '../classes/Faction'
 import type { Planet } from '../classes/Planet'
 import type { Game } from '../Game'
-import { data as passiveData } from './crewPassives'
-import { data as cargoData } from './cargo'
-import * as itemData from './items'
 import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'
 
@@ -134,43 +131,43 @@ export function generatePlanet(
       ...vendor.passives,
     ].filter((v) => v.buyMultiplier).length < 1
   ) {
-    for (let d of Object.values(cargoData)) {
+    for (let d of Object.values(c.cargo)) {
       if (d.rarity > maxRarity) continue
       if (Math.random() > cargoDispropensity) {
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.cargo.push({
-          cargoType: d.type,
+          id: d.id,
           buyMultiplier,
           sellMultiplier,
         })
       }
     }
-    for (let d of Object.values(passiveData)) {
+    for (let d of Object.values(c.crewPassives)) {
       if (d.rarity > maxRarity || d.rarity < minRarity)
         continue
       if (Math.random() > passiveDispropensity) {
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.passives.push({
-          passiveType: d.type,
+          id: d.id,
           buyMultiplier,
         })
       }
     }
     for (let d of [
-      ...Object.values(itemData.armor),
-      ...Object.values(itemData.engine),
-      ...Object.values(itemData.weapon),
-      ...Object.values(itemData.scanner),
-      ...Object.values(itemData.communicator),
+      ...Object.values(c.items.armor),
+      ...Object.values(c.items.engine),
+      ...Object.values(c.items.weapon),
+      ...Object.values(c.items.scanner),
+      ...Object.values(c.items.communicator),
     ].filter((i) => i.buyable !== false && !i.aiOnly)) {
       const { buyMultiplier, sellMultiplier } =
         getBuyAndSellMultipliers(true)
       // vendors will buy any item, but only sell a few
       const itemForSale: VendorItemPrice = {
-        itemType: d.type,
-        itemId: d.id,
+        type: d.type,
+        id: d.id,
         sellMultiplier,
       }
       if (
@@ -181,14 +178,14 @@ export function generatePlanet(
         itemForSale.buyMultiplier = buyMultiplier
       vendor.items.push(itemForSale)
     }
-    for (let d of Object.values(itemData.chassis)) {
+    for (let d of Object.values(c.items.chassis)) {
       if (d.rarity > maxRarity || d.rarity < minRarity)
         continue
       if (Math.random() > chassisDispropensity) {
         const { buyMultiplier, sellMultiplier } =
           getBuyAndSellMultipliers()
         vendor.chassis.push({
-          chassisType: d.id,
+          id: d.id,
           buyMultiplier,
           sellMultiplier,
         })

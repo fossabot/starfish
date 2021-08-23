@@ -19,36 +19,34 @@ const planetSchemaFields = {
     vendor: {
         cargo: [
             {
-                cargoType: String,
+                id: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
         chassis: [
             {
-                chassisType: String,
+                id: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
         items: [
             {
-                itemType: String,
-                itemId: String,
+                type: String,
+                id: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
         actives: [
             {
-                activeType: String,
+                id: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
             },
         ],
-        passives: [
-            { passiveType: String, buyMultiplier: Number },
-        ],
+        passives: [{ id: String, buyMultiplier: Number }],
     },
 };
 const planetSchema = new mongoose_1.Schema(planetSchemaFields);

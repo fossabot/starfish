@@ -109,7 +109,7 @@ interface BaseItemData {
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 
-type LoadoutName =
+type LoadoutId =
   | `tutorial1`
   | `tutorial2`
   | `tutorial3`

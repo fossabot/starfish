@@ -3,8 +3,8 @@
     class="panesection"
     v-if="
       crewMember &&
-        ship.planet &&
-        ship.planet.vendor.passives.length
+      ship.planet &&
+      ship.planet.vendor.passives.length
     "
   >
     <div>
@@ -16,17 +16,17 @@
       v-if="passive.passiveData"
       :disabled="
         crewMember.credits <
-          passive.passiveData.basePrice *
-            passive.buyMultiplier *
-            ship.planet.priceFluctuator *
-            (isFriendlyToFaction
-              ? c.factionVendorMultiplier
-              : 1) *
-            c.getCrewPassivePriceMultiplier(
-              crewMemberPassiveLevels[
-                passive.passiveData.type
-              ] || 0,
-            )
+        passive.passiveData.basePrice *
+          passive.buyMultiplier *
+          ship.planet.priceFluctuator *
+          (isFriendlyToFaction
+            ? c.factionVendorMultiplier
+            : 1) *
+          c.getCrewPassivePriceMultiplier(
+            crewMemberPassiveLevels[
+              passive.passiveData.type
+            ] || 0,
+          )
       "
       @click="buyPassive(passive.passiveData.type)"
     >
@@ -79,10 +79,10 @@ export default Vue.extend({
 
     crewMemberPassiveLevels() {
       const levels: {
-        [key in CrewPassiveType]?: number
+        [key in CrewPassiveId]?: number
       } = {}
       for (let p of this.crewMember?.passives || []) {
-        levels[p.type as CrewPassiveType] = p.level
+        levels[p.type as CrewPassiveId] = p.level
       }
       return levels
     },
@@ -90,12 +90,12 @@ export default Vue.extend({
   watch: {},
   mounted() {},
   methods: {
-    buyPassive(type: CrewPassiveType) {
-      this.$socket?.emit(
+    buyPassive(passiveId: CrewPassiveId) {
+      ;(this as any).$socket?.emit(
         'crew:buyPassive',
         this.ship.id,
         this.crewMember?.id,
-        type,
+        passiveId,
         this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {

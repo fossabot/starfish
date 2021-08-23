@@ -7,11 +7,10 @@ const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
-const gameSpeedMultiplier = 1 *
-    12 *
-    (process.env.NODE_ENV === `development`
-        ? /* dev boost */ 10
-        : 1);
+const gameSpeedMultiplier = 1 * 12 * 10;
+// (process.env.NODE_ENV === `development`
+//   ? /* dev boost, but doesn't work with frontend */ 10
+//   : 1)
 const baseSightRange = 0.05;
 const baseRepairCost = 3000;
 const maxBroadcastLength = 200;
@@ -47,12 +46,6 @@ const sameFactionShipScanProperties = {
     _maxHp: true,
 };
 const tactics = [`aggressive`, `defensive`];
-const cargoTypes = [
-    `salt`,
-    `water`,
-    `oxygen`,
-    `credits`,
-];
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         (1 + (totalMunitionsSkill - 1) / 50) *
@@ -250,7 +243,6 @@ exports.default = {
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,
     tactics,
-    cargoTypes,
     taglineOptions,
     headerBackgroundOptions,
     stubify,

@@ -34,8 +34,9 @@
             :key="'shipselector' + basics.id"
             :selected="ship && ship.id === basics.id"
             :value="basics.id"
-            >{{ basics.name }}</option
           >
+            {{ basics.name }}
+          </option>
         </select>
 
         <button v-show="userId" @click="logout">
@@ -80,7 +81,7 @@ export default Vue.extend({
   methods: {
     logout() {
       this.$store.dispatch('logout')
-      this.$router.push('/')
+      ;(this as any).$router.push('/')
     },
     shipSelected(e: Event) {
       this.$store.dispatch('socketSetup', this.selectedShip)

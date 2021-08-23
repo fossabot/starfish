@@ -154,12 +154,7 @@
       "
     >
       <div>
-        <div class="panesubhead">Move Toward</div>
-      </div>
-
-      <div class="sub padbotsmall">
-        Click on the map or a button below to set your
-        target destination.
+        <div class="panesubhead">Set Target</div>
       </div>
 
       <span
@@ -220,6 +215,11 @@
           {{ c.r2(cache.distance) }}AU)
         </button>
       </span>
+
+      <div class="sub padtopsmall">
+        Click on the map or a button above to set your
+        target destination.
+      </div>
     </div>
   </Box>
 </template>
@@ -330,7 +330,7 @@ export default Vue.extend({
           this.crewMember.cockpitCharge * percent,
       })
       this.thrustChargeToUse = 0
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'crew:thrust',
         this.ship.id,
         this.crewMember.id,
@@ -367,7 +367,7 @@ export default Vue.extend({
           this.crewMember.cockpitCharge * percent,
       })
       this.brakeChargeToUse = 0
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'crew:brake',
         this.ship.id,
         this.crewMember.id,

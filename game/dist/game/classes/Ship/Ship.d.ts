@@ -76,7 +76,7 @@ export declare class Ship extends Stubbable {
     updateSlots(): void;
     addItem(this: Ship, itemData: Partial<BaseItemData>): boolean;
     removeItem(this: Ship, item: Item): boolean;
-    equipLoadout(this: Ship, name: LoadoutName): boolean;
+    equipLoadout(this: Ship, id: LoadoutId): boolean;
     updateThingsThatCouldChangeOnItemChange(): void;
     recalculateMass(): void;
     updateSightAndScanRadius(): void;
@@ -86,7 +86,7 @@ export declare class Ship extends Stubbable {
     isAt(this: Ship, coords: CoordinatePair): boolean;
     applyTickOfGravity(this: Ship): void;
     membersIn(l: CrewLocation): CrewMember[];
-    cumulativeSkillIn(l: CrewLocation, s: SkillType): number;
+    cumulativeSkillIn(l: CrewLocation, s: SkillId): number;
     canAttack(s: CombatShip): boolean;
     get maxHp(): number;
     recalculateMaxHp(): void;

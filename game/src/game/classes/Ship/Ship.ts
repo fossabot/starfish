@@ -15,15 +15,7 @@ import { Weapon } from '../Item/Weapon'
 import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
-import loadouts from '../../presets/items/loadouts'
-import {
-  weapon as weaponPresets,
-  engine as enginePresets,
-  scanner as scannerPresets,
-  communicator as communicatorPresets,
-  armor as armorPresets,
-  chassis as chassisPresets,
-} from '../../presets/items'
+import loadouts from '../../presets/loadouts'
 import type { Species } from '../Species'
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
@@ -162,15 +154,19 @@ export class Ship extends Stubbable {
         )
         .filter((z: Zone | undefined) => z) as Zone[]
 
-    if (chassis && chassis.id && chassisPresets[chassis.id])
-      this.chassis = chassisPresets[chassis.id]
+    if (
+      chassis &&
+      chassis.id &&
+      c.items.chassis[chassis.id]
+    )
+      this.chassis = c.items.chassis[chassis.id]
     else if (
       loadout &&
-      chassisPresets[loadouts[loadout]?.chassis]
+      c.items.chassis[loadouts[loadout]?.chassis]
     )
       this.chassis =
-        chassisPresets[loadouts[loadout].chassis]
-    else this.chassis = chassisPresets.starter1
+        c.items.chassis[loadouts[loadout].chassis]
+    else this.chassis = c.items.chassis.starter1
 
     this.updateSlots()
 
@@ -249,7 +245,7 @@ export class Ship extends Stubbable {
     chassisData: Partial<BaseChassisData>,
   ) {
     if (!chassisData.id) return
-    const chassisToSwapTo = chassisPresets[chassisData.id]
+    const chassisToSwapTo = c.items.chassis[chassisData.id]
     this.chassis = chassisToSwapTo
     this.recalculateMass()
   }
@@ -277,16 +273,16 @@ export class Ship extends Stubbable {
     if (itemData.type === `engine`) {
       const engineData = itemData as Partial<BaseEngineData>
       let foundItem: BaseEngineData | undefined
-      if (engineData.id && engineData.id in enginePresets)
-        foundItem = enginePresets[engineData.id]
+      if (engineData.id && engineData.id in c.items.engine)
+        foundItem = c.items.engine[engineData.id]
       if (!foundItem) return false
       item = new Engine(foundItem, this, engineData)
     }
     if (itemData.type === `weapon`) {
       const weaponData = itemData as Partial<BaseWeaponData>
       let foundItem: BaseWeaponData | undefined
-      if (weaponData.id && weaponData.id in weaponPresets)
-        foundItem = weaponPresets[weaponData.id]
+      if (weaponData.id && weaponData.id in c.items.weapon)
+        foundItem = c.items.weapon[weaponData.id]
       if (!foundItem) return false
       item = new Weapon(foundItem, this, weaponData)
     }
@@ -296,9 +292,9 @@ export class Ship extends Stubbable {
       let foundItem: BaseScannerData | undefined
       if (
         scannerData.id &&
-        scannerData.id in scannerPresets
+        scannerData.id in c.items.scanner
       )
-        foundItem = scannerPresets[scannerData.id]
+        foundItem = c.items.scanner[scannerData.id]
       if (!foundItem) return false
       item = new Scanner(foundItem, this, scannerData)
     }
@@ -308,9 +304,10 @@ export class Ship extends Stubbable {
       let foundItem: BaseCommunicatorData | undefined
       if (
         communicatorData.id &&
-        communicatorData.id in communicatorPresets
+        communicatorData.id in c.items.communicator
       )
-        foundItem = communicatorPresets[communicatorData.id]
+        foundItem =
+          c.items.communicator[communicatorData.id]
       if (!foundItem) return false
       item = new Communicator(
         foundItem,
@@ -321,8 +318,8 @@ export class Ship extends Stubbable {
     if (itemData.type === `armor`) {
       const armorData = itemData as Partial<BaseArmorData>
       let foundItem: BaseArmorData | undefined
-      if (armorData.id && armorData.id in armorPresets)
-        foundItem = armorPresets[armorData.id]
+      if (armorData.id && armorData.id in c.items.armor)
+        foundItem = c.items.armor[armorData.id]
       if (!foundItem) return false
       item = new Armor(foundItem, this, armorData)
     }
@@ -366,8 +363,8 @@ export class Ship extends Stubbable {
     return true
   }
 
-  equipLoadout(this: Ship, name: LoadoutName): boolean {
-    const loadout = loadouts[name]
+  equipLoadout(this: Ship, id: LoadoutId): boolean {
+    const loadout = loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })
     loadout.items.forEach(
@@ -585,7 +582,7 @@ export class Ship extends Stubbable {
     return []
   }
 
-  cumulativeSkillIn(l: CrewLocation, s: SkillType) {
+  cumulativeSkillIn(l: CrewLocation, s: SkillId) {
     return 1
   }
 

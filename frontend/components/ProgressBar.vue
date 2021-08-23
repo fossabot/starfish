@@ -6,14 +6,18 @@
       :class="{ mini }"
       :style="{
         width: Math.min(percent, 1) * 100 + '%',
-        opacity: percent <= dangerZone && !micro ? 0.4 : 1,
+        opacity: micro
+          ? 1
+          : percent <= dangerZone
+          ? 0.4
+          : 0.4,
         background:
           percent <= dangerZone
             ? 'var(--warning)'
             : micro
             ? ''
             : mini
-            ? 'rgba(255,255,255,.2)'
+            ? 'rgba(255,255,255,.3)'
             : color,
       }"
     ></div>
@@ -40,7 +44,7 @@ export default Vue.extend({
     micro: {},
     mini: {},
     percent: { default: 1 },
-    color: { default: 'rgba(255,255,255,.1)' },
+    color: { default: 'rgba(255,255,255,.3)' },
     dangerZone: { default: 0.2 },
   },
   data() {
@@ -63,11 +67,12 @@ export default Vue.extend({
   align-items: center;
   justify-content: flex-start;
   border-radius: 5px;
+  overflow: hidden;
 
   // border-top: 1px solid var(--pane-border);
   // border-left: 1px solid var(--pane-border);
   // border-bottom: 0;
-  box-shadow: 0 0 0 1px var(--pane-border);
+  // box-shadow: 0 0 0 1px var(--pane-border);
 
   &.mini {
     border: 2px solid transparent;
@@ -76,14 +81,14 @@ export default Vue.extend({
     box-shadow: none;
 
     .label {
-      padding-top: 0.1em;
-      padding-bottom: 0.1em;
+      padding-top: 0.06em;
+      padding-bottom: 0.04em;
       padding-left: 0.5em;
       // padding-left: 0;
     }
 
     .bg {
-      background: rgba(157, 98, 98, 0.1);
+      // background: rgba(157, 98, 98, 0.1);
       border-radius: 0.3em;
     }
   }
@@ -113,6 +118,7 @@ export default Vue.extend({
     position: absolute;
     width: 100%;
     height: 100%;
+    background: rgba(164, 164, 164, 0.1);
     // border-radius: 5px;
   }
 
@@ -132,8 +138,8 @@ export default Vue.extend({
     position: relative;
     width: 100%;
     height: 100%;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
+    padding-top: 0.11em;
+    padding-bottom: 0.09em;
   }
 }
 </style>

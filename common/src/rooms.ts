@@ -18,3 +18,5 @@ export const rooms: {
     description: `Set a course and contribute your thrust to the ship.`,
   },
 }
+
+export default rooms

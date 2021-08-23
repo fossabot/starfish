@@ -237,8 +237,11 @@ class Game {
     }
     spawnNewCaches() {
         while (this.caches.length < this.gameSoftArea * 1.5) {
-            const type = dist_1.default.randomFromArray(dist_1.default.cargoTypes);
-            const amount = type === `credits`
+            const id = dist_1.default.randomFromArray([
+                ...Object.keys(dist_1.default.cargo),
+                `credits`,
+            ]);
+            const amount = id === `credits`
                 ? Math.round(Math.random() * 200) * 100
                 : Math.round(Math.random() * 200) / 10 + 1;
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
@@ -266,14 +269,14 @@ class Game {
             this.addCache({
                 contents: [
                     {
-                        type,
+                        id,
                         amount,
                     },
                 ],
                 location,
                 message,
             });
-            dist_1.default.log(`gray`, `Spawned random cache of ${amount} ${type} at ${location}.`);
+            dist_1.default.log(`gray`, `Spawned random cache of ${amount} ${id} at ${location}.`);
         }
     }
     spawnNewAIs() {

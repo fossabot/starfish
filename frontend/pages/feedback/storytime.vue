@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h2>Share a Story</h2>
+      <h1>Share a Story</h1>
       <div>
         Have you had an interesting, memorable, or
         noteworthy experience in {{ c.gameName }}? Tell us
@@ -31,10 +31,15 @@
 
         <div>
           <label for="Feedback">Tell Your Story!</label>
-          <textarea id="Feedback" ref="Feedback" required />
+          <textarea
+            id="Feedback"
+            ref="Feedback"
+            class="big"
+            required
+          />
         </div>
 
-        <input type="submit" value="Submit" />
+        <input type="submit" class="big" value="Submit" />
       </form>
     </div>
   </div>

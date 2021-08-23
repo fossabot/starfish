@@ -31,9 +31,9 @@
         <div>
           💳{{
             ship &&
-              c.numberWithCommas(
-                c.r2(ship.commonCredits, 0, true),
-              )
+            c.numberWithCommas(
+              c.r2(ship.commonCredits, 0, true),
+            )
           }}
         </div>
       </div>
@@ -43,9 +43,7 @@
         @done="redistributeCommonFund(...arguments)"
         @apply="redistributeCommonFund(...arguments)"
       >
-        <template #label>
-          Redistribute Credits
-        </template>
+        <template #label> Redistribute Credits </template>
         <template>
           How many credits do you want to redistribute
           evenly among the crew? (Max
@@ -106,7 +104,7 @@ export default Vue.extend({
         return console.log('Nope.')
       }
 
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'ship:redistribute',
         this.ship.id,
         this.crewMember?.id,

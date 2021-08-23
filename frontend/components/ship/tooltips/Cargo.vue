@@ -13,6 +13,12 @@
           : data.basePrice
       }}
     </div>
+    <hr v-if="heldAmount" />
+    <div v-if="heldAmount">
+      You have {{ heldAmount }} ton{{
+        heldAmount === 1 ? '' : 's'
+      }}.
+    </div>
     <div
       v-if="data.cargo"
       v-for="(cargo, index) in data.cargo"
@@ -24,7 +30,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import c from '../../../../common/src'
 import { mapState } from 'vuex'
@@ -35,7 +41,14 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['crewMember']),
+    heldAmount(): number {
+      const held = this.crewMember?.inventory?.find(
+        (c: any) => c.id === (this.data as any).id,
+      )
+      if (held) return held.amount
+      return 0
+    },
   },
 })
 </script>

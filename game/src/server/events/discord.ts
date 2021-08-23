@@ -32,7 +32,7 @@ export default function (
       }
 
       data.name = data.name.substring(0, c.maxNameLength)
-      if (process.env.NODE_ENV !== `development`)
+      if (process.env.NODE_ENV === `production`)
         data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,

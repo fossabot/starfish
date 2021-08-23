@@ -7,17 +7,17 @@ const activeDefaults = {
 
 export class CrewActive {
   readonly crewMember: CrewMember
-  readonly type: string
+  readonly id: string
   readonly baseCooldown: number
   cooldownRemaining: number
   ready: Boolean = false
 
   constructor(
-    { type }: BaseCrewActiveData,
+    { id }: BaseCrewActiveData,
     crewMember: CrewMember,
   ) {
     this.crewMember = crewMember
-    this.type = type
+    this.id = id
     this.baseCooldown = activeDefaults.baseCooldown
     this.cooldownRemaining = this.baseCooldown
   }

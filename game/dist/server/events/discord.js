@@ -27,7 +27,7 @@ function default_1(socket) {
                 return;
             }
             data.name = data.name.substring(0, dist_1.default.maxNameLength);
-            if (process.env.NODE_ENV !== `development`)
+            if (process.env.NODE_ENV === `production`)
                 data.tutorial = { step: -1 };
             const ship = __1.game.addHumanShip({
                 ...data,
