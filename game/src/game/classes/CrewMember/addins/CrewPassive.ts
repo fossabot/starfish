@@ -4,22 +4,17 @@ import type { CrewMember } from '../CrewMember'
 export class CrewPassive {
   readonly displayName: string
   readonly crewMember: CrewMember
-  readonly type: CrewPassiveType
+  readonly id: CrewPassiveId
   level = 1
   readonly factor: number
 
   constructor(
-    {
-      displayName,
-      type,
-      level,
-      factor,
-    }: BaseCrewPassiveData,
+    { displayName, id, level, factor }: BaseCrewPassiveData,
     crewMember: CrewMember,
   ) {
     this.displayName = displayName
     this.crewMember = crewMember
-    this.type = type
+    this.id = id
     if (level) this.level = level
     this.factor = factor
   }

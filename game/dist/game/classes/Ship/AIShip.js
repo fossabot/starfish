@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -25,8 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AIShip = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const CombatShip_1 = require("./CombatShip");
-const itemData = __importStar(require("../../presets/items"));
-const cargo_1 = require("../../presets/cargo");
 class AIShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
@@ -108,10 +87,10 @@ class AIShip extends CombatShip_1.CombatShip {
     addLevelAppropriateItems() {
         // c.log(`Adding items to level ${this.level} ai...`)
         let itemBudget = this.level * dist_1.default.aiDifficultyMultiplier;
-        const validChassis = Object.values(itemData.chassis)
+        const validChassis = Object.values(dist_1.default.items.chassis)
             .filter((i) => i.rarity <= itemBudget / 3)
             .sort((a, b) => b.rarity - a.rarity);
-        const chassisToBuy = validChassis[0] || itemData.chassis.starter1;
+        const chassisToBuy = validChassis[0] || dist_1.default.items.chassis.starter1;
         this.chassis = chassisToBuy;
         itemBudget -= chassisToBuy.rarity;
         // c.log(
@@ -125,7 +104,7 @@ class AIShip extends CombatShip_1.CombatShip {
                 : this.engines.length === 0
                     ? `engine`
                     : dist_1.default.randomFromArray([`engine`, `weapon`]);
-            const itemPool = itemData[typeToAdd];
+            const itemPool = dist_1.default.items[typeToAdd];
             const validItems = Object.values(itemPool)
                 .filter(isInBudget)
                 .filter(isBuyable);
@@ -220,17 +199,17 @@ class AIShip extends CombatShip_1.CombatShip {
                 if (Math.random() > 0.6) {
                     let amount = Math.ceil(Math.random() * itemRarity * 100) *
                         100;
-                    cacheContents.push({ type: `credits`, amount });
+                    cacheContents.push({ id: `credits`, amount });
                 }
                 const upperLimit = itemRarity;
                 const lowerLimit = itemRarity * 0.5 - 0.5;
-                for (let ca of Object.values(cargo_1.data)) {
-                    // c.log(ca.type, ca.rarity, upperLimit, lowerLimit)
+                for (let ca of Object.values(dist_1.default.cargo)) {
+                    // c.log(ca.id, ca.rarity, upperLimit, lowerLimit)
                     if (ca.rarity <= upperLimit &&
                         ca.rarity >= lowerLimit &&
                         Math.random() > 0.7) {
                         const amount = dist_1.default.r2(Math.random() * this.level * 3 + this.level);
-                        cacheContents.push({ type: ca.type, amount });
+                        cacheContents.push({ id: ca.id, amount });
                     }
                 }
                 itemRarity -= 0.1;

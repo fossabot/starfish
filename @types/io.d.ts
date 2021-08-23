@@ -82,7 +82,7 @@ interface IOClientEvents {
   [`crew:drop`]: (
     shipId: string,
     crewId: string,
-    cargoType: CargoType | `credits`,
+    cargoId: CargoId | `credits`,
     amount: number,
     message: string,
     callback: (res: IOResponse<CacheStub>) => void,
@@ -90,7 +90,7 @@ interface IOClientEvents {
   [`crew:buyCargo`]: (
     shipId: string,
     crewId: string,
-    cargoType: CargoType,
+    cargoId: CargoId,
     amount: number,
     vendorLocation: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
@@ -98,7 +98,7 @@ interface IOClientEvents {
   [`crew:sellCargo`]: (
     shipId: string,
     crewId: string,
-    cargoType: CargoType,
+    cargoId: CargoId,
     amount: number,
     vendorLocation: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
@@ -113,7 +113,7 @@ interface IOClientEvents {
   [`crew:buyPassive`]: (
     shipId: string,
     crewId: string,
-    type: CrewPassiveType,
+    id: CrewPassiveId,
     vendorLocation: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void

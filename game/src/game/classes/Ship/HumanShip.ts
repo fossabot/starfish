@@ -13,8 +13,6 @@ import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
 import type { Item } from '../Item/Item'
 
-import { rooms as roomData } from '../../presets/rooms'
-import { data as cargoData } from '../../presets/cargo'
 import { Tutorial } from './addins/Tutorial'
 import type { Zone } from '../Zone'
 
@@ -883,25 +881,23 @@ export class HumanShip extends CombatShip {
           1.5) *
         (1 + amountBoostPassive)
 
-      const type: CargoType = c.randomFromArray([
+      const id: CargoId = c.randomFromArray([
         `oxygen`,
         `salt`,
         `water`,
         `carbon`,
         `plastic`,
         `steel`,
-      ] as CargoType[])
-      this.distributeCargoAmongCrew([
-        { type: type, amount },
-      ])
+      ] as CargoId[])
+      this.distributeCargoAmongCrew([{ id, amount }])
       this.logEntry([
         `Encountered some space junk and managed to harvest ${amount} ton${
           amount === 1 ? `` : `s`
         } of`,
         {
-          text: type,
+          text: id,
           tooltipData: {
-            ...cargoData[type],
+            ...c.cargo[id],
             type: `cargo`,
           },
         },
@@ -971,7 +967,7 @@ export class HumanShip extends CombatShip {
     trails?: CoordinatePair[][]
     zones: Zone[]
   }) {
-    let planetDataToSend = []
+    let planetDataToSend: Partial<PlanetStub>[] = []
     if (previousVisible?.planets?.length)
       planetDataToSend = this.visible.planets
         .filter((p) => Object.keys(p.toUpdate).length)
@@ -1130,8 +1126,8 @@ export class HumanShip extends CombatShip {
         .map(
           (cc) =>
             `${c.r2(cc.amount)}${
-              cc.type === `credits` ? `` : ` tons of`
-            } ${cc.type}`,
+              cc.id === `credits` ? `` : ` tons of`
+            } ${cc.id}`,
         )
         .join(` and `)} inside!${
         cache.message &&
@@ -1213,7 +1209,7 @@ export class HumanShip extends CombatShip {
   }
 
   equipLoadout(
-    l: LoadoutName,
+    l: LoadoutId,
     removeExisting = false,
   ): boolean {
     if (removeExisting) this.items = []
@@ -1319,7 +1315,7 @@ export class HumanShip extends CombatShip {
 
   addRoom(room: CrewLocation) {
     if (!(room in this.rooms))
-      this.rooms[room] = roomData[room]
+      this.rooms[room] = c.rooms[room]
     this.toUpdate.rooms = this.rooms
   }
 
@@ -1424,14 +1420,14 @@ export class HumanShip extends CombatShip {
           toDistribute / canHoldMore.length
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
-            if (contents.type === `credits`) {
+            if (contents.id === `credits`) {
               cm.credits = Math.floor(
                 cm.credits + amountForEach,
               )
               cm.toUpdate.credits = cm.credits
             } else {
               const leftOver = cm.addCargo(
-                contents.type,
+                contents.id,
                 amountForEach,
               )
               if (leftOver) {
@@ -1447,12 +1443,12 @@ export class HumanShip extends CombatShip {
       }
       if (toDistribute > 1) {
         const existing = leftovers.find(
-          (l) => l.type === contents.type,
+          (l) => l.id === contents.id,
         )
         if (existing) existing.amount += toDistribute
         else
           leftovers.push({
-            type: contents.type,
+            id: contents.id,
             amount: toDistribute,
           })
       }
@@ -1867,7 +1863,7 @@ export class HumanShip extends CombatShip {
       while (cm.inventory.length) {
         const toAdd = cm.inventory.pop()
         const existing = cacheContents.find(
-          (cc) => cc.type === toAdd?.type,
+          (cc) => cc.id === toAdd?.id,
         )
         if (existing) existing.amount += toAdd?.amount || 0
         else if (toAdd) cacheContents.push(toAdd)
@@ -1880,12 +1876,12 @@ export class HumanShip extends CombatShip {
       cm.credits -=
         cm.credits * CombatShip.percentOfCreditsLostOnDeath
       const existing = cacheContents.find(
-        (cc) => cc.type === `credits`,
+        (cc) => cc.id === `credits`,
       )
       if (existing) existing.amount += toCache || 0
       else if (cm.credits)
         cacheContents.push({
-          type: `credits`,
+          id: `credits`,
           amount: toCache,
         })
 
@@ -1901,12 +1897,12 @@ export class HumanShip extends CombatShip {
       this.commonCredits *
       CombatShip.percentOfCreditsLostOnDeath
     const existing = cacheContents.find(
-      (cc) => cc.type === `credits`,
+      (cc) => cc.id === `credits`,
     )
     if (existing) existing.amount += toCache || 0
     else if (this.commonCredits)
       cacheContents.push({
-        type: `credits`,
+        id: `credits`,
         amount: toCache,
       })
 

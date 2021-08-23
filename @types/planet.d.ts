@@ -12,36 +12,31 @@ interface BasePlanetData {
 }
 
 interface VendorCargoPrice {
-  cargoType: CargoType
-  cargoData?: BaseCargoData
+  id: CargoId
   buyMultiplier: number
   sellMultiplier: number
 }
 
 interface VendorChassisPrice {
-  chassisType: ChassisId
-  chassisData?: BaseChassisData
+  id: ChassisId
   buyMultiplier: number
   sellMultiplier: number
 }
 
 interface VendorItemPrice {
-  itemType: ItemType
-  itemId: ItemId
-  itemData?: BaseItemData
+  type: ItemType
+  id: ItemId
   buyMultiplier?: number
   sellMultiplier: number
 }
 
 interface VendorCrewActivePrice {
-  activeType: CrewActiveType
-  activeData?: BaseActiveData
+  id: CrewActiveId
   buyMultiplier: number
 }
 
 interface VendorCrewPassivePrice {
-  passiveType: CrewPassiveType
-  passiveData?: BaseCrewPassiveData
+  id: CrewPassiveId
   buyMultiplier: number
 }
 

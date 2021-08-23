@@ -30,11 +30,14 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
     const useBasePermissions = !channel;
     // -------------- get permissions
     let permissionsToCheck;
-    const botRole = (await guild.roles.fetch().catch((e) => {
+    const allRoles = await guild.roles.fetch().catch((e) => {
         dist_1.default.log(`Error getting bot permissions:`, e);
-    }))?.cache
-        .array()
-        .find((role) => role.name === __1.client.user?.username);
+    });
+    const botRole = allRoles
+        ? allRoles.cache
+            ?.array()
+            .find((role) => role.name === __1.client.user?.username)
+        : null;
     permissionsToCheck = botRole?.permissions;
     if (!useBasePermissions && channel && guild.me) {
         permissionsToCheck = channel.permissionsFor(guild.me);

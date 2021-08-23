@@ -462,31 +462,6 @@ export default class Drawer {
 
     profiler.step(`draw ships`)
     // ----- ships
-    visible.ships.forEach((s) => {
-      const pointsToDraw = [
-        ...s.previousLocations,
-        s.location,
-      ]
-      pointsToDraw.forEach((pl, index) => {
-        let prevShipLocationPoint
-        prevShipLocationPoint =
-          s.previousLocations[index - 1]
-        if (!prevShipLocationPoint) return
-        this.drawLine({
-          start: [
-            prevShipLocationPoint[0] * this.flatScale,
-            prevShipLocationPoint[1] * this.flatScale * -1,
-          ],
-          end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
-          ],
-          color: c.factions[s.faction.id]?.color,
-          opacity:
-            (index / (pointsToDraw.length - 1)) * 0.45,
-        })
-      })
-    })
     ;[...shipsToDraw].forEach((s) => {
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
@@ -535,6 +510,31 @@ export default class Drawer {
 
     profiler.step(`draw trails`)
     // ----- trails
+    visible.ships.forEach((s) => {
+      const pointsToDraw = [
+        ...s.previousLocations,
+        s.location,
+      ]
+      pointsToDraw.forEach((pl, index) => {
+        let prevShipLocationPoint
+        prevShipLocationPoint =
+          s.previousLocations[index - 1]
+        if (!prevShipLocationPoint) return
+        this.drawLine({
+          start: [
+            prevShipLocationPoint[0] * this.flatScale,
+            prevShipLocationPoint[1] * this.flatScale * -1,
+          ],
+          end: [
+            pl[0] * this.flatScale,
+            pl[1] * this.flatScale * -1,
+          ],
+          color: c.factions[s.faction.id]?.color,
+          opacity:
+            (index / (pointsToDraw.length - 1)) * 0.45,
+        })
+      })
+    })
     ;[...trailsToDraw].forEach((t) => {
       let prevTrailPoint
       t.forEach((pl, index) => {

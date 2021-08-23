@@ -1,5 +1,23 @@
 import { Profiler } from './Profiler';
+import * as cargo from './cargo';
+import * as items from './items';
 declare const _default: {
+    items: typeof items;
+    rooms: {
+        bunk: BaseRoomData;
+        cockpit: BaseRoomData;
+        repair: BaseRoomData;
+        weapons: BaseRoomData;
+    };
+    crewActives: {
+        boost: BaseCrewActiveData;
+        quickFix: BaseCrewActiveData;
+        sightRange: BaseCrewActiveData;
+    };
+    crewPassives: {
+        cargoSpace: BaseCrewPassiveData;
+    };
+    cargo: typeof cargo;
     species: {
         octopi: BaseSpeciesData;
         squids: BaseSpeciesData;
@@ -140,7 +158,6 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
-    cargoTypes: ("salt" | "water" | "oxygen" | "plastic" | "carbon" | "steel" | "titanium" | "uranium" | "credits")[];
     taglineOptions: string[];
     headerBackgroundOptions: {
         id: string;

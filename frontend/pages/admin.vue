@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Admin</h2>
+    <h1>Admin</h1>
     <nuxt-link to="/s">Ship Page</nuxt-link>
     <br />
     <nuxt-link to="/login" v-if="!userId"

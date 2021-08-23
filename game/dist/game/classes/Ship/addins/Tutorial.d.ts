@@ -23,7 +23,7 @@ interface TutorialStepData {
     }[];
     forceLocation?: CoordinatePair;
     forceCommonCredits?: number;
-    forceLoadout?: LoadoutName;
+    forceLoadout?: LoadoutId;
     visibleTypes: (`ship` | `planet` | `cache` | `attackRemnant` | `trail`)[];
     caches?: BaseCacheData[];
     ais?: BaseShipData[];

@@ -65,19 +65,17 @@ const shipSchemaFields: Record<
       ],
       location: String,
       stamina: Number,
-      inventory: [
-        { type: { type: String }, amount: Number },
-      ],
+      inventory: [{ id: { type: String }, amount: Number }],
       credits: Number,
       actives: [
         {
-          type: { required: true, type: String },
+          id: { required: true, type: String },
           cooldownRemaining: Number,
         },
       ],
       passives: [
         {
-          type: { required: true, type: String },
+          id: { required: true, type: String },
           level: Number,
         },
       ],

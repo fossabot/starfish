@@ -9,6 +9,6 @@ interface BaseCacheData {
 }
 
 interface CacheContents {
-  type: CargoType | `credits`
+  id: CargoId | `credits`
   amount: number
 }

@@ -10,8 +10,7 @@ const Weapon_1 = require("../Item/Weapon");
 const Scanner_1 = require("../Item/Scanner");
 const Communicator_1 = require("../Item/Communicator");
 const Armor_1 = require("../Item/Armor");
-const loadouts_1 = __importDefault(require("../../presets/items/loadouts"));
-const items_1 = require("../../presets/items");
+const loadouts_1 = __importDefault(require("../../presets/loadouts"));
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
     constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
@@ -96,14 +95,16 @@ class Ship extends Stubbable_1.Stubbable {
                 .filter((l) => l?.type === `zone`)
                 .map(({ id }) => this.game.zones.find((z) => z.id === id))
                 .filter((z) => z);
-        if (chassis && chassis.id && items_1.chassis[chassis.id])
-            this.chassis = items_1.chassis[chassis.id];
+        if (chassis &&
+            chassis.id &&
+            dist_1.default.items.chassis[chassis.id])
+            this.chassis = dist_1.default.items.chassis[chassis.id];
         else if (loadout &&
-            items_1.chassis[loadouts_1.default[loadout]?.chassis])
+            dist_1.default.items.chassis[loadouts_1.default[loadout]?.chassis])
             this.chassis =
-                items_1.chassis[loadouts_1.default[loadout].chassis];
+                dist_1.default.items.chassis[loadouts_1.default[loadout].chassis];
         else
-            this.chassis = items_1.chassis.starter1;
+            this.chassis = dist_1.default.items.chassis.starter1;
         this.updateSlots();
         if (items)
             items.forEach((i) => this.addItem(i));
@@ -158,7 +159,7 @@ class Ship extends Stubbable_1.Stubbable {
     swapChassis(chassisData) {
         if (!chassisData.id)
             return;
-        const chassisToSwapTo = items_1.chassis[chassisData.id];
+        const chassisToSwapTo = dist_1.default.items.chassis[chassisData.id];
         this.chassis = chassisToSwapTo;
         this.recalculateMass();
     }
@@ -180,8 +181,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (itemData.type === `engine`) {
             const engineData = itemData;
             let foundItem;
-            if (engineData.id && engineData.id in items_1.engine)
-                foundItem = items_1.engine[engineData.id];
+            if (engineData.id && engineData.id in dist_1.default.items.engine)
+                foundItem = dist_1.default.items.engine[engineData.id];
             if (!foundItem)
                 return false;
             item = new Engine_1.Engine(foundItem, this, engineData);
@@ -189,8 +190,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (itemData.type === `weapon`) {
             const weaponData = itemData;
             let foundItem;
-            if (weaponData.id && weaponData.id in items_1.weapon)
-                foundItem = items_1.weapon[weaponData.id];
+            if (weaponData.id && weaponData.id in dist_1.default.items.weapon)
+                foundItem = dist_1.default.items.weapon[weaponData.id];
             if (!foundItem)
                 return false;
             item = new Weapon_1.Weapon(foundItem, this, weaponData);
@@ -199,8 +200,8 @@ class Ship extends Stubbable_1.Stubbable {
             const scannerData = itemData;
             let foundItem;
             if (scannerData.id &&
-                scannerData.id in items_1.scanner)
-                foundItem = items_1.scanner[scannerData.id];
+                scannerData.id in dist_1.default.items.scanner)
+                foundItem = dist_1.default.items.scanner[scannerData.id];
             if (!foundItem)
                 return false;
             item = new Scanner_1.Scanner(foundItem, this, scannerData);
@@ -209,8 +210,9 @@ class Ship extends Stubbable_1.Stubbable {
             const communicatorData = itemData;
             let foundItem;
             if (communicatorData.id &&
-                communicatorData.id in items_1.communicator)
-                foundItem = items_1.communicator[communicatorData.id];
+                communicatorData.id in dist_1.default.items.communicator)
+                foundItem =
+                    dist_1.default.items.communicator[communicatorData.id];
             if (!foundItem)
                 return false;
             item = new Communicator_1.Communicator(foundItem, this, communicatorData);
@@ -218,8 +220,8 @@ class Ship extends Stubbable_1.Stubbable {
         if (itemData.type === `armor`) {
             const armorData = itemData;
             let foundItem;
-            if (armorData.id && armorData.id in items_1.armor)
-                foundItem = items_1.armor[armorData.id];
+            if (armorData.id && armorData.id in dist_1.default.items.armor)
+                foundItem = dist_1.default.items.armor[armorData.id];
             if (!foundItem)
                 return false;
             item = new Armor_1.Armor(foundItem, this, armorData);
@@ -248,8 +250,8 @@ class Ship extends Stubbable_1.Stubbable {
         this.recalculateMass();
         return true;
     }
-    equipLoadout(name) {
-        const loadout = loadouts_1.default[name];
+    equipLoadout(id) {
+        const loadout = loadouts_1.default[id];
         if (!loadout)
             return false;
         this.swapChassis({ id: loadout.chassis });

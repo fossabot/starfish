@@ -59,7 +59,7 @@ export declare class HumanShip extends CombatShip {
     updateBroadcastRadius(): void;
     updateThingsThatCouldChangeOnItemChange(): void;
     recalculateShownPanels(): void;
-    equipLoadout(l: LoadoutName, removeExisting?: boolean): boolean;
+    equipLoadout(l: LoadoutId, removeExisting?: boolean): boolean;
     addCommonCredits(amount: number, member: CrewMember): void;
     broadcast(message: string, crewMember: CrewMember): number;
     receiveBroadcast(message: string): void;

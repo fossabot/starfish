@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,6 +34,11 @@ const Profiler_1 = require("./Profiler");
 const species_1 = __importDefault(require("./species"));
 const factions_1 = __importDefault(require("./factions"));
 const basePassiveData_1 = __importDefault(require("./basePassiveData"));
+const cargo = __importStar(require("./cargo"));
+const crewActives_1 = __importDefault(require("./crewActives"));
+const crewPassives_1 = __importDefault(require("./crewPassives"));
+const rooms_1 = __importDefault(require("./rooms"));
+const items = __importStar(require("./items"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -24,6 +48,11 @@ exports.default = {
     ...game_1.default,
     ...physics_1.default,
     ...discord_1.default,
+    items,
+    rooms: rooms_1.default,
+    crewActives: crewActives_1.default,
+    crewPassives: crewPassives_1.default,
+    cargo,
     species: species_1.default,
     factions: factions_1.default,
     basePassiveData: basePassiveData_1.default,

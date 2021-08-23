@@ -107,7 +107,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     setHeaderBackground(id: string) {
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'ship:headerBackground',
         this.ship.id,
         this.crewMember?.id,
@@ -130,7 +130,7 @@ export default Vue.extend({
       )
     },
     setTagline(tagline: string) {
-      this.$socket?.emit(
+      ;(this as any).$socket?.emit(
         'ship:tagline',
         this.ship.id,
         this.crewMember?.id,

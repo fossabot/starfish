@@ -74,7 +74,7 @@ export default Vue.extend({
   methods: {
     logout() {
       this.$store.dispatch('logout')
-      this.$router.push('/')
+      ;(this as any).$router.push('/')
     },
     shipSelected(e: Event) {
       this.$store.dispatch('socketSetup', this.selectedShip)

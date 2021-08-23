@@ -1,6 +1,6 @@
-import c from '../../../../../common/dist'
+import c from '../../../../common/dist'
 
-const loadouts: { [key in LoadoutName]: Loadout } = {
+const loadouts: { [key in LoadoutId]: Loadout } = {
   tutorial1: {
     chassis: `starter1`,
     items: [

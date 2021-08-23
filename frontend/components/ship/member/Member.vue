@@ -6,13 +6,14 @@
     >
       <template #title>
         <span class="sectionemoji">{{
-          ship.species.icon
+          c.species[ship.species.id].icon
         }}</span
         >{{ crewMember.name }}
       </template>
 
       <div class="panesection">
         <ProgressBar
+          :color="'var(--stamina)'"
           :percent="
             crewMember.stamina / crewMember.maxStamina
           "
@@ -21,7 +22,7 @@
           "
         >
           <div>
-            💪Stamina:
+            Stamina:
             <NumberChangeHighlighter
               :number="
                 c.r2(

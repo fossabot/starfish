@@ -230,7 +230,7 @@ export default function (
         )} credits from the common fund amongst the crew.`,
       )
       ship.distributeCargoAmongCrew([
-        { amount: amount, type: `credits` },
+        { amount: amount, id: `credits` },
       ])
 
       c.log(
@@ -245,7 +245,7 @@ export default function (
     (
       shipId,
       crewId,
-      cargoType,
+      cargoId,
       amount,
       vendorLocation,
       callback,
@@ -265,9 +265,7 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const cargoForSale = planet?.vendor?.cargo?.find(
-        (cfs) =>
-          cfs.cargoData.type === cargoType &&
-          cfs.buyMultiplier,
+        (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
       )
       if (!planet || !cargoForSale)
         return callback({
@@ -288,7 +286,7 @@ export default function (
         })
 
       const price = Math.max(
-        cargoForSale.cargoData.basePrice *
+        c.cargo[cargoForSale.id].basePrice *
           cargoForSale.buyMultiplier *
           amount *
           planet?.priceFluctuator *
@@ -306,7 +304,7 @@ export default function (
         crewMember.credits - price,
       )
       crewMember.toUpdate.credits = crewMember.credits
-      crewMember.addCargo(cargoType, amount)
+      crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
       callback({
@@ -317,7 +315,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought ${amount} ${cargoType} from ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} bought ${amount} ${cargoId} from ${vendorLocation}.`,
       )
     },
   )
@@ -327,7 +325,7 @@ export default function (
     (
       shipId,
       crewId,
-      cargoType,
+      cargoId,
       amount,
       vendorLocation,
       callback,
@@ -346,7 +344,7 @@ export default function (
       amount = c.r2(amount, 2)
 
       const existingStock = crewMember.inventory.find(
-        (cargo) => cargo.type === cargoType,
+        (cargo) => cargo.id === cargoId,
       )
       if (!existingStock || existingStock.amount < amount)
         return callback({
@@ -357,9 +355,7 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const cargoBeingBought = planet?.vendor?.cargo?.find(
-        (cbb) =>
-          cbb.cargoData.type === cargoType &&
-          cbb.sellMultiplier,
+        (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
       )
       if (!planet || !cargoBeingBought)
         return callback({
@@ -367,7 +363,7 @@ export default function (
         })
 
       const price = Math.min(
-        cargoBeingBought.cargoData.basePrice *
+        c.cargo[cargoBeingBought.id].basePrice *
           cargoBeingBought.sellMultiplier *
           amount *
           planet.priceFluctuator *
@@ -382,7 +378,7 @@ export default function (
         crewMember.credits + price,
       )
       crewMember.toUpdate.credits = crewMember.credits
-      crewMember.removeCargo(cargoType, amount)
+      crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
       callback({
@@ -393,7 +389,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoType} to ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${vendorLocation}.`,
       )
     },
   )
@@ -403,7 +399,7 @@ export default function (
     (
       shipId,
       crewId,
-      cargoType,
+      cargoId,
       amount,
       message,
       callback,
@@ -421,7 +417,7 @@ export default function (
 
       amount = c.r2(amount, 2, true)
 
-      if (cargoType === `credits`) {
+      if (cargoId === `credits`) {
         if (crewMember.credits < amount)
           return callback({
             error: `Not enough credits found.`,
@@ -430,7 +426,7 @@ export default function (
         crewMember.toUpdate.credits = crewMember.credits
       } else {
         const existingStock = crewMember.inventory.find(
-          (cargo) => cargo.type === cargoType,
+          (cargo) => cargo.id === cargoId,
         )
         if (!existingStock || existingStock.amount < amount)
           return callback({
@@ -442,7 +438,7 @@ export default function (
 
       const cache = game.addCache({
         location: [...ship.location],
-        contents: [{ type: cargoType, amount }],
+        contents: [{ id: cargoId, amount }],
         droppedBy: ship.id,
         message: c.sanitize(message).result,
       })
@@ -451,8 +447,8 @@ export default function (
         `${
           crewMember.name
         } dropped a cache containing ${amount}${
-          cargoType === `credits` ? `` : ` tons of`
-        } ${cargoType}.`,
+          cargoId === `credits` ? `` : ` tons of`
+        } ${cargoId}.`,
       )
 
       callback({
@@ -461,7 +457,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} dropped ${amount} ${cargoType}.`,
+        `${crewMember.name} on ${ship.name} dropped ${amount} ${cargoId}.`,
       )
     },
   )
@@ -546,7 +542,7 @@ export default function (
     (
       shipId,
       crewId,
-      passiveType,
+      passiveId,
       vendorLocation,
       callback,
     ) => {
@@ -565,25 +561,22 @@ export default function (
         (p) => p.name === vendorLocation,
       )
       const passiveForSale = planet?.vendor?.passives?.find(
-        (pfs) =>
-          pfs.passiveData?.type === passiveType &&
-          pfs.buyMultiplier,
+        (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
       )
       if (
         !planet ||
         !passiveForSale ||
-        !passiveForSale.passiveData
+        !c.crewPassives[passiveForSale.id]
       )
         return callback({
           error: `That passive is not for sale here.`,
         })
 
       const currentLevel =
-        crewMember.passives.find(
-          (p) => p.type === passiveType,
-        )?.level || 0
+        crewMember.passives.find((p) => p.id === passiveId)
+          ?.level || 0
       const price = c.r2(
-        passiveForSale.passiveData.basePrice *
+        c.crewPassives[passiveForSale.id].basePrice *
           passiveForSale.buyMultiplier *
           c.getCrewPassivePriceMultiplier(currentLevel) *
           planet.priceFluctuator *
@@ -599,7 +592,9 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
-      crewMember.addPassive(passiveForSale.passiveData)
+      crewMember.addPassive(
+        c.crewPassives[passiveForSale.id],
+      )
 
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
@@ -611,7 +606,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought passive ${passiveType} from ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} bought passive ${passiveId} from ${vendorLocation}.`,
       )
     },
   )

@@ -136,6 +136,10 @@ export const actions = {
       commit(`set`, { connected: true })
       this.$socket?.emit(`ship:listen`, shipId, (res) => {
         if (`error` in res) return console.log(res.error)
+        // c.log(
+        //   JSON.stringify(res.data).length,
+        //   `characters of data received from initial load`,
+        // )
         commit(`set`, { ship: res.data })
         dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
       })
@@ -147,6 +151,10 @@ export const actions = {
       if (state.ship === null) return connected()
       if (state.ship.id !== id) return
       if (stillWorkingOnTick) return // c.log(`skipping tick because too busy`)
+      // c.log(
+      //   JSON.stringify(updates).length,
+      //   `characters of data received from update`,
+      // )
       // c.log(Object.keys(updates))
 
       stillWorkingOnTick = true
@@ -291,7 +299,7 @@ export const actions = {
           }
 
           shipIds = guildsRes.data
-          c.log({ shipIds })
+          // c.log({ shipIds })
         } catch (e) {
           console.log(
             `failed to get ship ids from discord api`,
@@ -365,6 +373,7 @@ export const actions = {
       }, 60 * 1000)
     } else {
       // c.log(`slow mode off`)
+      slowModeUpdateInterval = null
       dispatch(`socketSetup`, state.activeShipId)
     }
   },

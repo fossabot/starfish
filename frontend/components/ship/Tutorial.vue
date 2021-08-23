@@ -27,7 +27,7 @@
           <button
             v-else-if="
               textToShow &&
-                scriptIndex < textToShow.length - 1
+              scriptIndex < textToShow.length - 1
             "
             @click="scriptIndex++"
           >
@@ -86,7 +86,7 @@ export default Vue.extend({
   methods: {
     advanceTutorial() {
       this.waitingForNextStep = true
-      this.$socket.emit(
+      ;(this as any).$socket.emit(
         'ship:advanceTutorial',
         this.ship.id,
       )

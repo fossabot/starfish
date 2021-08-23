@@ -10,6 +10,11 @@ import { Profiler } from './Profiler'
 import species from './species'
 import factions from './factions'
 import basePassiveData from './basePassiveData'
+import * as cargo from './cargo'
+import crewActives from './crewActives'
+import crewPassives from './crewPassives'
+import rooms from './rooms'
+import * as items from './items'
 
 export default {
   ...globals,
@@ -20,6 +25,11 @@ export default {
   ...game,
   ...physics,
   ...discord,
+  items,
+  rooms,
+  crewActives,
+  crewPassives,
+  cargo,
   species,
   factions,
   basePassiveData,

@@ -8,7 +8,7 @@
         v-for="(ca, index) in data.contents"
         :key="'cachecontentstooltip' + index"
       >
-        Contains {{ c.r2(ca.amount) }} {{ ca.type }}
+        Contains {{ c.r2(ca.amount) }} {{ ca.id }}
       </div>
     </div>
   </div>

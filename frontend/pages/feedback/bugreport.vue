@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h2>Bug Report</h2>
+      <h1>Bug Report</h1>
       <div>
+        Please be as descriptive as possible. If you want to
+        share a screenshot, please post it on the support
+        server(link)!
+      </div>
+      <!-- <div>
         Also consider creating an issue on the github issues
         page! (link)
-      </div>
+      </div> -->
 
       <form @submit.prevent="submit" ref="form">
         <div>
@@ -30,10 +35,15 @@
 
         <div>
           <label for="Feedback">Bug Description</label>
-          <textarea id="Feedback" ref="Feedback" required />
+          <textarea
+            id="Feedback"
+            ref="Feedback"
+            class="big"
+            required
+          />
         </div>
 
-        <input type="submit" value="Submit" />
+        <input type="submit" class="big" value="Submit" />
       </form>
     </div>
   </div>

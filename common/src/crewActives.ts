@@ -1,22 +1,23 @@
-export const data: {
-  [key in CrewActiveType]: BaseCrewActiveData
+const data: {
+  [key in CrewActiveId]: BaseCrewActiveData
 } = {
   boost: {
     basePrice: 10,
     displayName: `Burst of Energy`,
-    type: `boost`,
+    id: `boost`,
     rarity: 0.2,
   },
   quickFix: {
     basePrice: 10,
     displayName: `Crack Sealer`,
-    type: `quickFix`,
+    id: `quickFix`,
     rarity: 0.2,
   },
   sightRange: {
     basePrice: 10,
     displayName: `Refraction Lens`,
-    type: `sightRange`,
+    id: `sightRange`,
     rarity: 0.2,
   },
 }
+export default data
