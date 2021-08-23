@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h2>About {{ c.gameName }}</h2>
+      <h1>About {{ c.gameName }}</h1>
 
       <h3>Remember Earth?</h3>
       <div>

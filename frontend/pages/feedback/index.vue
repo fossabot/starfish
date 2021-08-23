@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h2>Feedback</h2>
+      <h1>Feedback</h1>
       <div>
         Let us know what you think of {{ c.gameName }}!
       </div>
@@ -29,10 +29,15 @@
 
         <div>
           <label for="Feedback">Feedback</label>
-          <textarea id="Feedback" ref="Feedback" required />
+          <textarea
+            id="Feedback"
+            ref="Feedback"
+            class="big"
+            required
+          />
         </div>
 
-        <input type="submit" value="Submit" />
+        <input type="submit" class="big" value="Submit" />
       </form>
     </div>
   </div>

@@ -1,12 +1,10 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h2>Change Log</h2>
+      <h1>Change Log</h1>
 
       <h3>1234</h3>
-      <div>
-        5678
-      </div>
+      <div>5678</div>
     </div>
   </div>
 </template>
