@@ -1,11 +1,10 @@
-const mongoose = require('mongoose')
-const {
+import {
   Schema,
   model,
   Document,
   Types,
   MongooseDocument,
-} = mongoose
+} from 'mongoose'
 import c from '../../../../common/dist'
 import type { AttackRemnant } from '../../game/classes/AttackRemnant'
 
