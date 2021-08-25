@@ -9,7 +9,7 @@ import * as zone from './models/zone'
 dotEnvConfig()
 
 import c from '../../../common/dist'
-import mongoose, { mongo } from 'mongoose'
+const mongoose = require('mongoose')
 export const db = {
   cache,
   ship,
