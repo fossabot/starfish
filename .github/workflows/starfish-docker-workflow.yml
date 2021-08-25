@@ -47,7 +47,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: ${{ steps.docker_tags.outputs.tags, steps.buildnumber.outputs.build_number }}
+          tags: ${{ steps.docker_tags.outputs.tags}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
