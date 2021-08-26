@@ -29,11 +29,15 @@ services:
     environment:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
       MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
+      SERVER_PRIVATE_KEY: /run/secrets/game_server_private_key
+      SERVER_CERTIFICATE:  /run/secrets/game_server_certificate
     depends_on:
       - mongodb
     secrets:
       - mongodb_username
       - mongodb_password
+      - game_server_certificate
+      - game_server_private_key
 
   frontend:
     image: 'xmadsen/starfish-frontend:latest'
@@ -80,6 +84,11 @@ secrets:
     file: frontend/secrets/google_client_email.txt
   google_private_key:
     file: frontend/secrets/google_private_key.txt
+  game_server_certificate:
+    file: /var/lib/nginx/letsencrypt/live/www.starfish.cool/fullchain.pem
+  game_server_private_key:
+    file: /var/lib/nginx/letsencrypt/live/www.starfish.cool/privkey.pem
+
 
 volumes:
   db_data:
