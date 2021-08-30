@@ -1,8 +1,8 @@
 <template>
   <div>
     <button
-      :disabled="disabled"
-      @click="openPrompt"
+      :class="{ disabled }"
+      @click="!disabled && openPrompt()"
       class="mini secondary"
     >
       <slot name="label" />

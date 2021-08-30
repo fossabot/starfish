@@ -26,8 +26,8 @@ export const mutations = {
     for (let prop in updates) state[prop] = updates[prop]
   },
 
-  tooltip(state, text) {
-    state.tooltip = text
+  tooltip(state, newTooltip) {
+    state.tooltip = newTooltip
   },
 
   setShipProp(state, pair) {

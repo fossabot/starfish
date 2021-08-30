@@ -38,6 +38,7 @@ export class Zone extends Stubbable {
   }
 
   affectShip(ship: CombatShip) {
+    if (ship.planet) return
     for (let effect of this.effects) {
       if (
         Math.random() / c.gameSpeedMultiplier >
@@ -118,6 +119,20 @@ export class Zone extends Stubbable {
         ship.toUpdate.speed = c.vectorToMagnitude(
           ship.velocity,
         )
+      }
+
+      // wormhole
+      else if (effect.type === `wormhole`) {
+        ship.location = c.randomInsideCircle(
+          this.game.gameSoftRadius,
+        )
+        ship.logEntry(
+          [
+            `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+          ],
+          `high`,
+        )
+        this.game.removeZone(this)
       }
     }
   }

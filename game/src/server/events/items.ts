@@ -86,6 +86,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
+      planet.addXp(price)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -125,13 +126,6 @@ export default function (
           error: `Your ship doesn't have that item equipped.`,
         })
 
-      const itemForSale = planet?.vendor?.items?.find(
-        (i) =>
-          i.type === itemType &&
-          i.id === itemId &&
-          i.sellMultiplier,
-      )
-
       const itemData = (c.items[itemType] as any)[itemId]
       if (!itemData)
         return callback({
@@ -140,11 +134,10 @@ export default function (
 
       const price = c.r2(
         (itemData?.basePrice || 1) *
-          (itemForSale?.sellMultiplier ||
-            c.baseItemSellMultiplier) *
+          c.baseItemSellMultiplier *
           planet.priceFluctuator *
           (planet.faction === ship.faction
-            ? 1 + (1 - c.factionVendorMultiplier)
+            ? 1 + (1 - c.factionVendorMultiplier || 1)
             : 1),
         0,
         true,
@@ -160,7 +153,8 @@ export default function (
         [
           {
             text: heldItem.displayName,
-            tooltipData: heldItem,
+            color: `var(--item)`,
+            tooltipData: heldItem.stubify(),
           },
           `sold by the captain for ${c.r2(price)} credits.`,
         ],
@@ -214,7 +208,7 @@ export default function (
         })
 
       const currentChassisSellPrice = Math.round(
-        ship.chassis.basePrice / 2,
+        ship.chassis.basePrice * c.baseItemSellMultiplier,
       )
       const price = c.r2(
         (c.items.chassis[itemForSale.id]?.basePrice || 1) *

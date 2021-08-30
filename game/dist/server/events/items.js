@@ -54,6 +54,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(ship),
         });
+        planet.addXp(price);
         planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought the ${itemType} of id ${itemId}.`);
     });
@@ -76,20 +77,16 @@ function default_1(socket) {
             return callback({
                 error: `Your ship doesn't have that item equipped.`,
             });
-        const itemForSale = planet?.vendor?.items?.find((i) => i.type === itemType &&
-            i.id === itemId &&
-            i.sellMultiplier);
         const itemData = dist_1.default.items[itemType][itemId];
         if (!itemData)
             return callback({
                 error: `No item found by that id.`,
             });
         const price = dist_1.default.r2((itemData?.basePrice || 1) *
-            (itemForSale?.sellMultiplier ||
-                dist_1.default.baseItemSellMultiplier) *
+            dist_1.default.baseItemSellMultiplier *
             planet.priceFluctuator *
             (planet.faction === ship.faction
-                ? 1 + (1 - dist_1.default.factionVendorMultiplier)
+                ? 1 + (1 - dist_1.default.factionVendorMultiplier || 1)
                 : 1), 0, true);
         ship.commonCredits += price;
         ship._stub = null;
@@ -98,7 +95,8 @@ function default_1(socket) {
         ship.logEntry([
             {
                 text: heldItem.displayName,
-                tooltipData: heldItem,
+                color: `var(--item)`,
+                tooltipData: heldItem.stubify(),
             },
             `sold by the captain for ${dist_1.default.r2(price)} credits.`,
         ], `high`);
@@ -129,7 +127,7 @@ function default_1(socket) {
             return callback({
                 error: `That equipment is not for sale here.`,
             });
-        const currentChassisSellPrice = Math.round(ship.chassis.basePrice / 2);
+        const currentChassisSellPrice = Math.round(ship.chassis.basePrice * dist_1.default.baseItemSellMultiplier);
         const price = dist_1.default.r2((dist_1.default.items.chassis[itemForSale.id]?.basePrice || 1) *
             itemForSale.buyMultiplier *
             planet.priceFluctuator *

@@ -1,5 +1,5 @@
-<template
-  ><transition name="fadein">
+<template>
+  <transition name="fadein">
     <div
       class="tooltipholder"
       :style="tooltipStyle"
@@ -119,10 +119,7 @@ export default Vue.extend({
 
       await this.$nextTick()
 
-      const {
-        right,
-        width,
-      } = this.$el.getBoundingClientRect()
+      const { width } = this.$el.getBoundingClientRect()
 
       const sidePad = 15
       let left = this.x + sidePad,
@@ -147,12 +144,15 @@ export default Vue.extend({
 
 <style lang="scss">
 .tooltipholder {
+  pointer-events: none;
   position: absolute;
   perspective: 100em;
   --tooltip-pad-lr: 0.75em;
   --tooltip-pad-tb: 0.5em;
   z-index: 100;
   font-size: 0.9rem;
+
+  --panesectionpad-top: 0.6em;
 }
 .hovertooltip {
   max-width: 250px;
@@ -161,7 +161,6 @@ export default Vue.extend({
   background: #282828;
   color: var(--text);
   border-radius: 10px;
-  pointer-events: none;
   overflow: hidden;
   display: flex;
   box-shadow: 0 2em 6em 0 var(--bg), 0 1em 2em 0 var(--bg),

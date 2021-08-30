@@ -4,7 +4,8 @@
     v-if="
       crewMember &&
       ship.planet &&
-      ship.planet.repairCostMultiplier
+      ship.planet.vendor &&
+      ship.planet.vendor.repairCostMultiplier
     "
   >
     <div>
@@ -15,7 +16,7 @@
       :disabled="
         crewMember.credits <
           c.baseRepairCost *
-            ship.planet.repairCostMultiplier *
+            ship.planet.vendor.repairCostMultiplier *
             ship.planet.priceFluctuator *
             (isFriendlyToFaction
               ? c.factionVendorMultiplier
@@ -29,7 +30,7 @@
           c.r2(
             Math.max(
               c.baseRepairCost *
-                ship.planet.repairCostMultiplier *
+                ship.planet.vendor.repairCostMultiplier *
                 ship.planet.priceFluctuator *
                 (isFriendlyToFaction
                   ? c.factionVendorMultiplier
@@ -59,17 +60,18 @@ export default Vue.extend({
     isFriendlyToFaction(): boolean {
       return (
         (this.ship.planet.allegiances.find(
-          (a: AllegianceData) =>
+          (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
-
     repairableHp(): number {
       return this.ship._maxHp - this.ship._hp
     },
     repairOptions(): number[] {
-      const options = [1, 10]
+      const options = [
+        1, 5, 10, 15, 20, 30, 50, 75, 100,
+      ].filter((o) => o <= this.ship._maxHp)
       if (this.repairableHp >= 1)
         options.push(this.repairableHp)
       return options

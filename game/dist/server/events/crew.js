@@ -111,6 +111,33 @@ function default_1(socket) {
         ship.addCommonCredits(amount, crewMember);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`);
     });
+    socket.on(`crew:donateToPlanet`, (shipId, crewId, amount, planetName, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({
+                error: `Couldn't find a ship by that id.`,
+            });
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return callback({
+                error: `Couldn't find a member by that id.`,
+            });
+        amount = dist_1.default.r2(amount, 0, true);
+        if (!amount || amount > crewMember.credits)
+            return callback({
+                error: `Insufficient credits.`,
+            });
+        const planet = ship.game.planets.find((p) => p.name === planetName);
+        if (!planet)
+            return callback({
+                error: `It looks like you're not on a planet.`,
+            });
+        crewMember.credits -= amount;
+        crewMember.toUpdate.credits = crewMember.credits;
+        planet.addXp(amount / dist_1.default.planetContributeCostPerXp, true);
+        planet.incrementAllegiance(ship.faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 200));
+        dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planetName}.`);
+    });
     socket.on(`ship:redistribute`, (shipId, crewId, amount) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
@@ -157,7 +184,7 @@ function default_1(socket) {
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1));
-        dist_1.default.log({ price, credits: crewMember.credits });
+        // c.log({ price, credits: crewMember.credits })
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits = Math.round(crewMember.credits - price);
@@ -167,6 +194,7 @@ function default_1(socket) {
         callback({
             data: crewMember.stubify(),
         });
+        planet.addXp(price);
         planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${amount} ${cargoId} from ${vendorLocation}.`);
     });
@@ -251,10 +279,10 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
-        const repairMultiplier = planet?.repairCostMultiplier;
+        const repairMultiplier = planet?.vendor?.repairCostMultiplier;
         if (!planet || !repairMultiplier)
             return callback({
-                error: `This planet does not offer mechanics.`,
+                error: `This planet does not offer repair services.`,
             });
         const price = dist_1.default.r2(repairMultiplier *
             dist_1.default.baseRepairCost *
@@ -279,6 +307,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.addXp(price);
         planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${vendorLocation}.`);
     });
@@ -313,6 +342,7 @@ function default_1(socket) {
         callback({
             data: dist_1.default.stubify(crewMember),
         });
+        planet.addXp(price);
         planet.incrementAllegiance(ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} bought passive ${passiveId} from ${vendorLocation}.`);
     });

@@ -10,49 +10,25 @@
     <div>
       <div class="panesubhead">Personal Outfitter</div>
     </div>
-    <button
-      v-for="passive in ship.planet.vendor.passives"
+
+    <span
+      v-for="passive in passives"
       :key="'buypassive' + passive.id"
-      v-if="passive.passiveData"
-      :disabled="
-        crewMember.credits <
-        passive.passiveData.basePrice *
-          passive.buyMultiplier *
-          ship.planet.priceFluctuator *
-          (isFriendlyToFaction
-            ? c.factionVendorMultiplier
-            : 1) *
-          c.getCrewPassivePriceMultiplier(
-            crewMemberPassiveLevels[
-              passive.passiveData.type
-            ] || 0,
-          )
-      "
-      @click="buyPassive(passive.passiveData.type)"
+      v-if="passive.data"
+      v-tooltip="passive.data.description"
     >
-      {{ passive.passiveData.displayName }} Lv.{{
-        (crewMemberPassiveLevels[
-          passive.passiveData.type
-        ] || 0) + 1
-      }}: 💳{{
-        c.numberWithCommas(
-          c.r2(
-            passive.passiveData.basePrice *
-              passive.buyMultiplier *
-              (isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1) *
-              c.getCrewPassivePriceMultiplier(
-                crewMemberPassiveLevels[
-                  passive.passiveData.type
-                ] || 0,
-              ),
-            2,
-            true,
-          ),
-        )
-      }}
-    </button>
+      <button
+        :class="{ disabled: !passive.canBuy }"
+        @click="
+          passive.canBuy && buyPassive(passive.data.type)
+        "
+      >
+        {{ passive.data.displayName }} Lv.{{
+          (crewMemberPassiveLevels[passive.data.type] ||
+            0) + 1
+        }}: 💳{{ c.numberWithCommas(passive.price) }}
+      </button>
+    </span>
   </div>
 </template>
 
@@ -68,16 +44,18 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
 
-    isFriendlyToFaction() {
+    isFriendlyToFaction(): boolean {
       return (
         (this.ship.planet.allegiances.find(
-          (a: AllegianceData) =>
+          (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
 
-    crewMemberPassiveLevels() {
+    crewMemberPassiveLevels(): {
+      [key in CrewPassiveId]?: number
+    } {
       const levels: {
         [key in CrewPassiveId]?: number
       } = {}
@@ -85,6 +63,39 @@ export default Vue.extend({
         levels[p.type as CrewPassiveId] = p.level
       }
       return levels
+    },
+
+    passives(): any[] {
+      return this.ship.planet.vendor.passives.map(
+        (passive: PlanetVendorCrewPassivePrice) => ({
+          data: c.crewPassives[passive.id],
+          canBuy:
+            this.crewMember.credits >=
+            c.crewPassives[passive.id].basePrice *
+              passive.buyMultiplier *
+              this.ship.planet.priceFluctuator *
+              (this.isFriendlyToFaction
+                ? c.factionVendorMultiplier
+                : 1) *
+              c.getCrewPassivePriceMultiplier(
+                this.crewMemberPassiveLevels[passive.id] ||
+                  0,
+              ),
+          price: c.r2(
+            c.crewPassives[passive.id].basePrice *
+              passive.buyMultiplier *
+              (this.isFriendlyToFaction
+                ? c.factionVendorMultiplier
+                : 1) *
+              c.getCrewPassivePriceMultiplier(
+                this.crewMemberPassiveLevels[passive.id] ||
+                  0,
+              ),
+            0,
+            true,
+          ),
+        }),
+      )
     },
   },
   watch: {},

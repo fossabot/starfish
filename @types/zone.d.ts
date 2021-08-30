@@ -3,6 +3,7 @@ type ZoneEffectType =
   | `repair over time`
   | `accelerate`
   | `decelerate`
+  | `wormhole`
 
 interface ZoneEffect {
   type: ZoneEffectType

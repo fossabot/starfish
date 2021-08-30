@@ -3,52 +3,70 @@ interface BasePlanetData {
   color: string
   location: CoordinatePair
   radius: number
+  mass: number
+
+  level: number
+  xp: number
+  baseLevel: number
+
+  leanings: PlanetLeaning[]
+
   factionId?: FactionKey
   homeworld?: { id: FactionKey }
   creatures: string[]
-  repairCostMultiplier?: number
-  allegiances?: AllegianceData[]
-  vendor?: Vendor
+  allegiances?: PlanetAllegianceData[]
+  vendor?: PlanetVendor
 }
 
-interface VendorCargoPrice {
+interface PlanetVendorCargoPrice {
   id: CargoId
   buyMultiplier: number
   sellMultiplier: number
 }
 
-interface VendorChassisPrice {
+interface PlanetVendorChassisPrice {
   id: ChassisId
   buyMultiplier: number
-  sellMultiplier: number
 }
 
-interface VendorItemPrice {
+interface PlanetVendorItemPrice {
   type: ItemType
   id: ItemId
-  buyMultiplier?: number
-  sellMultiplier: number
+  buyMultiplier: number
 }
 
-interface VendorCrewActivePrice {
+interface PlanetVendorCrewActivePrice {
   id: CrewActiveId
   buyMultiplier: number
 }
 
-interface VendorCrewPassivePrice {
+interface PlanetVendorCrewPassivePrice {
   id: CrewPassiveId
   buyMultiplier: number
 }
 
-interface Vendor {
-  cargo: VendorCargoPrice[]
-  items: VendorItemPrice[]
-  chassis: VendorChassisPrice[]
-  passives: VendorCrewPassivePrice[]
-  actives: VendorCrewActivePrice[]
+interface PlanetVendor {
+  cargo: PlanetVendorCargoPrice[]
+  items: PlanetVendorItemPrice[]
+  chassis: PlanetVendorChassisPrice[]
+  passives: PlanetVendorCrewPassivePrice[]
+  actives: PlanetVendorCrewActivePrice[]
+  repairCostMultiplier?: number
 }
 
-interface AllegianceData {
+interface PlanetAllegianceData {
   faction: FactionStub
   level: number
+}
+
+interface PlanetLeaning {
+  type:
+    | `items`
+    | `chassis`
+    | `passives`
+    | `actives`
+    | `cargo`
+    | `repair`
+  never?: boolean
+  propensity?: number
 }

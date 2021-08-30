@@ -47,10 +47,10 @@
       <ShipDead v-if="ship && ship.dead" />
     </div>
 
-    <details style="position: relative; margin-bottom: 2em">
+    <!-- <details style="position: relative; margin-bottom: 2em">
       <summary>Raw Data</summary>
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-    </details>
+    </details> -->
   </div>
 </template>
 

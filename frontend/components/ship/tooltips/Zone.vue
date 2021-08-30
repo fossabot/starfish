@@ -14,8 +14,8 @@
         :key="'effecttt' + index"
       >
         <div>{{ c.capitalize(e.type) }}</div>
-        <div class="sub">
-          Intensity: {{ c.r2(e.intensity * 100) }}
+        <div class="sub" v-if="e.intensity">
+          Intensity: {{ c.r2(e.intensity * 100, 0) }}
         </div>
         <div v-if="e.basedOnProximity" class="sub">
           Effect increases with proximity to epicenter

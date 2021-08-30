@@ -9,6 +9,7 @@
     </div>
     <!-- {{ data }} -->
     <hr />
+    <div v-if="data.level">Level {{ data.level }}</div>
     <div v-if="data.faction">
       <span
         :style="{

@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateZoneData = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 function generateZoneData(game) {
+    let radius = (Math.random() + 0.15) * 0.2;
     let locationSearchRadius = game.gameSoftRadius * 0.75;
-    const tooClose = 0.7;
+    const tooClose = radius * 3;
     let location = [0, 0];
     const isTooClose = (p) => dist_1.default.distance(location, p.location) < tooClose;
     // const getClosestPlanet = (closest: Planet, p: Planet) =>
@@ -21,13 +22,13 @@ function generateZoneData(game) {
         location = dist_1.default.randomInsideCircle(locationSearchRadius);
         locationSearchRadius *= 1.01;
     }
-    let radius = (Math.random() + 0.15) * 0.2;
-    const color = `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 30}%)`;
+    const color = `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 45}%)`;
     const weightedTypes = [
         { value: `accelerate`, weight: 2 },
         { value: `decelerate`, weight: 2 },
         { value: `damage over time`, weight: 5 },
         { value: `repair over time`, weight: 1 },
+        { value: `wormhole`, weight: 0.5 },
     ];
     const type = dist_1.default.randomWithWeights(weightedTypes) || `damage over time`;
     let name;
@@ -70,6 +71,15 @@ function generateZoneData(game) {
         });
         radius *= 1.2;
     }
+    else if (type === `wormhole`) {
+        name = dist_1.default.randomFromArray(wormholeZoneNames);
+        effects.push({
+            type: `wormhole`,
+            intensity: 1,
+            procChancePerTick: 1,
+        });
+        radius *= 0.1;
+    }
     if (!name)
         return false;
     return {
@@ -108,5 +118,9 @@ const decelerateZoneNames = [
     `Gravity Well`,
     `Murky Nebula`,
     `Stifling Zone`,
+];
+const wormholeZoneNames = [
+    `Wormhole`,
+    `Universe Flux Point`,
 ];
 //# sourceMappingURL=zones.js.map

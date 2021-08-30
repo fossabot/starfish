@@ -206,6 +206,58 @@ export default function (
   })
 
   socket.on(
+    `crew:donateToPlanet`,
+    (shipId, crewId, amount, planetName, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `Couldn't find a ship by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `Couldn't find a member by that id.`,
+        })
+
+      amount = c.r2(amount, 0, true)
+
+      if (!amount || amount > crewMember.credits)
+        return callback({
+          error: `Insufficient credits.`,
+        })
+
+      const planet = ship.game.planets.find(
+        (p) => p.name === planetName,
+      )
+      if (!planet)
+        return callback({
+          error: `It looks like you're not on a planet.`,
+        })
+
+      crewMember.credits -= amount
+      crewMember.toUpdate.credits = crewMember.credits
+
+      planet.addXp(
+        amount / c.planetContributeCostPerXp,
+        true,
+      )
+      planet.incrementAllegiance(
+        ship.faction,
+        1 + amount / (c.planetContributeCostPerXp * 200),
+      )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planetName}.`,
+      )
+    },
+  )
+
+  socket.on(
     `ship:redistribute`,
     (shipId, crewId, amount) => {
       const ship = game.ships.find(
@@ -296,7 +348,7 @@ export default function (
             ? c.factionVendorMultiplier
             : 1),
       )
-      c.log({ price, credits: crewMember.credits })
+      // c.log({ price, credits: crewMember.credits })
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -311,6 +363,7 @@ export default function (
         data: crewMember.stubify(),
       })
 
+      planet.addXp(price)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -479,10 +532,11 @@ export default function (
       const planet = ship.game.planets.find(
         (p) => p.name === vendorLocation,
       )
-      const repairMultiplier = planet?.repairCostMultiplier
+      const repairMultiplier =
+        planet?.vendor?.repairCostMultiplier
       if (!planet || !repairMultiplier)
         return callback({
-          error: `This planet does not offer mechanics.`,
+          error: `This planet does not offer repair services.`,
         })
 
       const price = c.r2(
@@ -528,6 +582,7 @@ export default function (
         ),
       })
 
+      planet.addXp(price)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -602,6 +657,7 @@ export default function (
         ),
       })
 
+      planet.addXp(price)
       planet.incrementAllegiance(ship.faction)
 
       c.log(

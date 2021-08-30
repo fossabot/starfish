@@ -179,16 +179,14 @@ export class Ship extends Stubbable {
     this._hp = this.hp
 
     if (stats) this.stats = stats
-  }
 
-  identify() {
-    c.log(
-      this.ai ? `gray` : `white`,
-      `Ship: ${this.name} (${this.id}) at ${this.location}`,
-    )
-    if (this.planet)
-      c.log(`      docked at ${this.planet.name}`)
-    else c.log(`      velocity: ${this.velocity}`)
+    // passively lose previous locations over time
+    // so someone who, for example, sits forever at a planet loses their trail eventually
+    setInterval(() => {
+      if (!this.previousLocations.length) return
+      this.previousLocations.shift()
+      // c.log(`removing previous location`)
+    }, (c.tickInterval * 10000) / c.gameSpeedMultiplier)
   }
 
   tick() {

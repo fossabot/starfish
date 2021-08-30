@@ -282,6 +282,10 @@ ol {
   display: flex;
   justify-content: space-between;
 }
+.noflex {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 
 .mar {
   margin: 1em !important;
@@ -310,6 +314,24 @@ ol {
 .marbottiny {
   margin-bottom: 0.2em !important;
 }
+.marleft {
+  margin-left: 1em !important;
+}
+.marleftsmall {
+  margin-left: 0.5em !important;
+}
+.marlefttiny {
+  margin-left: 0.25em !important;
+}
+.marright {
+  margin-right: 1em !important;
+}
+.marrightsmall {
+  margin-right: 0.5em !important;
+}
+.marrighttiny {
+  margin-right: 0.2em !important;
+}
 
 .pad {
   padding: 1em !important;
@@ -337,6 +359,24 @@ ol {
 }
 .padbottiny {
   padding-bottom: 0.2em !important;
+}
+.padleft {
+  padding-left: 1em !important;
+}
+.padleftsmall {
+  padding-left: 0.5em !important;
+}
+.padlefttiny {
+  padding-left: 0.25em !important;
+}
+.padright {
+  padding-right: 1em !important;
+}
+.padrightsmall {
+  padding-right: 0.5em !important;
+}
+.padrighttiny {
+  padding-right: 0.2em !important;
 }
 
 .padnone,

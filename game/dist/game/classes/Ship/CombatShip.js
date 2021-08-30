@@ -68,7 +68,7 @@ class CombatShip extends Ship_1.Ship {
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
-        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos + dist_1.default.randomBetween(-0.00001, 0.00001)));
+        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos + dist_1.default.randomBetween(-0.0001, 0.0001)));
         db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {

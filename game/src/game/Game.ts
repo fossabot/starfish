@@ -95,17 +95,6 @@ export class Game {
     this.recalculateFactionRankings()
   }
 
-  identify() {
-    c.log(
-      `Game of ${c.gameName} started at ${this.startTime}, running for ${this.tickCount} ticks`,
-    )
-    c.log(
-      `${this.ships.length} ships, ${this.planets.length} planets, ${this.caches.length} caches`,
-    )
-    this.planets.forEach((p) => p.identify())
-    this.ships.forEach((s) => s.identify())
-  }
-
   // ----- game loop -----
 
   private tickCount = 0
@@ -334,7 +323,7 @@ export class Game {
     })
   }
 
-  spawnNewPlanets() {
+  async spawnNewPlanets() {
     while (
       this.planets.length < this.gameSoftArea * 0.7 ||
       this.planets.length < this.factions.length - 1
@@ -347,7 +336,7 @@ export class Game {
         factionThatNeedsAHomeworld?.id,
       )
       if (!p) return
-      const planet = this.addPlanet(p)
+      const planet = await this.addPlanet(p)
       c.log(
         `gray`,
         `Spawned planet ${planet.name} at ${
@@ -391,7 +380,7 @@ export class Game {
       ]) as `credits` | CargoId
       const amount =
         id === `credits`
-          ? Math.round(Math.random() * 200) * 100
+          ? Math.round(Math.random() * 200 + 1) * 100
           : Math.round(Math.random() * 200) / 10 + 1
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
@@ -535,7 +524,10 @@ export class Game {
     this.ships.splice(index, 1)
   }
 
-  addPlanet(data: BasePlanetData, save = true): Planet {
+  async addPlanet(
+    data: BasePlanetData,
+    save = true,
+  ): Promise<Planet> {
     const existing = this.planets.find(
       (p) => p.name === data.name,
     )
@@ -546,7 +538,7 @@ export class Game {
       )
       return existing
     }
-    const newPlanet = new Planet(data, this)
+    const newPlanet = await new Planet(data, this)
     this.planets.push(newPlanet)
     if (newPlanet.homeworld)
       newPlanet.homeworld.homeworld = newPlanet
@@ -613,6 +605,27 @@ export class Game {
 
     if (save) db.zone.addOrUpdateInDb(newZone)
     return newZone
+  }
+
+  removeZone(zone: Zone) {
+    c.log(`Removing zone ${zone.name} from the game.`)
+    this.humanShips.forEach((hs) => {
+      const seenThisZone = hs.seenLandmarks.findIndex(
+        (lm) => lm.type === `zone` && lm.id === zone.id,
+      )
+      if (seenThisZone !== -1) {
+        hs.seenLandmarks.splice(seenThisZone, 1)
+        hs.toUpdate.seenLandmarks = hs.seenLandmarks.map(
+          (z) => z.getVisibleStub(),
+        )
+      }
+    })
+    db.zone.removeFromDb(zone.id)
+    const index = this.zones.findIndex(
+      (z) => zone.id === z.id,
+    )
+    if (index === -1) return
+    this.zones.splice(index, 1)
   }
 
   addAttackRemnant(

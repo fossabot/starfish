@@ -21,7 +21,7 @@ function randomWithWeights<E>(
     if (currentCount >= random) return elements[i].value
   }
   console.log(`failed to get weighted random value`)
-  return elements[0].value
+  return elements[0]?.value
 }
 
 function coinFlip() {

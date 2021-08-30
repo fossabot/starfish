@@ -64,7 +64,6 @@ export declare class Ship extends Stubbable {
     mass: number;
     stats: ShipStatEntry[];
     constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }: BaseShipData, game: Game);
-    identify(): void;
     tick(): void;
     rename(newName: string): void;
     get engines(): Engine[];

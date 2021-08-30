@@ -19,6 +19,8 @@ class Zone extends Stubbable_1.Stubbable {
         this.effects = effects;
     }
     affectShip(ship) {
+        if (ship.planet)
+            return;
         for (let effect of this.effects) {
             if (Math.random() / dist_1.default.gameSpeedMultiplier >
                 effect.procChancePerTick)
@@ -83,6 +85,14 @@ class Zone extends Stubbable_1.Stubbable {
                 ship.velocity[1] *= decelerateMultiplier;
                 ship.toUpdate.velocity = ship.velocity;
                 ship.toUpdate.speed = dist_1.default.vectorToMagnitude(ship.velocity);
+            }
+            // wormhole
+            else if (effect.type === `wormhole`) {
+                ship.location = dist_1.default.randomInsideCircle(this.game.gameSoftRadius);
+                ship.logEntry([
+                    `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+                ], `high`);
+                this.game.removeZone(this);
             }
         }
     }

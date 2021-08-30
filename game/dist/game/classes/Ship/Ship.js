@@ -116,13 +116,14 @@ class Ship extends Stubbable_1.Stubbable {
         this._hp = this.hp;
         if (stats)
             this.stats = stats;
-    }
-    identify() {
-        dist_1.default.log(this.ai ? `gray` : `white`, `Ship: ${this.name} (${this.id}) at ${this.location}`);
-        if (this.planet)
-            dist_1.default.log(`      docked at ${this.planet.name}`);
-        else
-            dist_1.default.log(`      velocity: ${this.velocity}`);
+        // passively lose previous locations over time
+        // so someone who, for example, sits forever at a planet loses their trail eventually
+        setInterval(() => {
+            if (!this.previousLocations.length)
+                return;
+            this.previousLocations.shift();
+            // c.log(`removing previous location`)
+        }, (dist_1.default.tickInterval * 10000) / dist_1.default.gameSpeedMultiplier);
     }
     tick() {
         this._stub = null; // invalidate stub

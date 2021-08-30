@@ -20,7 +20,7 @@ export function generatePlanet(
     possibleNames.splice(chosenIndex, 1)
     if (
       thisName &&
-      game.planets.find((p) => p.name === thisName)
+      game.planets.find((p) => p.name == thisName)
     )
       thisName = undefined
     name = thisName
@@ -45,7 +45,8 @@ export function generatePlanet(
   const tooClose = 0.2
   let location: CoordinatePair = [0, 0]
   const isTooClose = (p: Planet | Ship | Zone) =>
-    c.distance(location, p.location) < tooClose
+    c.distance(location, p.location) <
+    tooClose + (p.type === `zone` ? p.radius : 0)
   const getClosestPlanet = (closest: Planet, p: Planet) =>
     c.distance(p.location, location) <
     c.distance(closest?.location || [0, 0], location)
@@ -88,6 +89,9 @@ export function generatePlanet(
   }
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
+  const mass =
+    ((5.974e30 * radius) / 36000) *
+    (1 + 0.2 * (Math.random() - 0.5))
 
   let factionId: FactionKey | undefined
   if (homeworldFactionKey) factionId = homeworldFactionKey
@@ -103,97 +107,134 @@ export function generatePlanet(
         Math.random() * 80 + 20,
       )}%, ${Math.round(Math.random() * 40) + 30}%)`
 
-  const repairCostMultiplier = c.r2(
-    1 + Math.random() * 0.2 - 0.1,
-    3,
-  )
+  const level = 0
+  const baseLevel = homeworldFactionKey
+    ? 7
+    : Math.ceil(
+        Math.random() * 3 +
+          c.distance(location, [0, 0]) / 3,
+      )
+  const xp = 0
 
-  const vendor: Vendor = {
+  const leanings: PlanetLeaning[] = []
+  // homeworlds always CAN have cargo
+  if (homeworldFactionKey)
+    leanings.push({
+      type: `cargo`,
+      never: false,
+      propensity: Math.random() + 0.2,
+    })
+  while (leanings.length < 3 || Math.random() > 0.6) {
+    const leaningType = c.randomFromArray([
+      `items`,
+      `weapon`,
+      `armor`,
+      `scanner`,
+      `communicator`,
+      `engine`,
+      `chassis`,
+      `passives`,
+      // , `actives`
+      `cargo`,
+      `repair`,
+    ])
+    if (leanings.find((l) => l.type === leaningType))
+      continue
+    const never = c.coinFlip()
+    leanings.push({
+      type: leaningType,
+      never,
+      propensity: never ? 0 : Math.random(),
+    })
+  }
+
+  const vendor: PlanetVendor = {
     cargo: [],
     passives: [],
     actives: [],
     items: [],
     chassis: [],
   }
-  const level = c.distance([0, 0], location)
-  let maxRarity = level
-  const minRarity = level * 0.75
-  const cargoDispropensity = 0.8 - Math.random()
-  const passiveDispropensity = 0.85 - Math.random() * 0.8
-  const itemDispropensity = 1 - Math.random() / 2
-  const chassisDispropensity = 1 - Math.random() / 2
+  // const level = c.distance([0, 0], location)
+  // let maxRarity = level
+  // const minRarity = level * 0.75
+  // const cargoDispropensity = 0.8 - Math.random()
+  // const passiveDispropensity = 0.85 - Math.random() * 0.8
+  // const itemDispropensity = 1 - Math.random() / 2
+  // const chassisDispropensity = 1 - Math.random() / 2
 
-  // guarantee we have at least ONE thing for sale
-  while (
-    [
-      ...vendor.cargo,
-      ...vendor.items,
-      ...vendor.passives,
-    ].filter((v) => v.buyMultiplier).length < 1
-  ) {
-    for (let d of Object.values(c.cargo)) {
-      if (d.rarity > maxRarity) continue
-      if (Math.random() > cargoDispropensity) {
-        const { buyMultiplier, sellMultiplier } =
-          getBuyAndSellMultipliers()
-        vendor.cargo.push({
-          id: d.id,
-          buyMultiplier,
-          sellMultiplier,
-        })
-      }
-    }
-    for (let d of Object.values(c.crewPassives)) {
-      if (d.rarity > maxRarity || d.rarity < minRarity)
-        continue
-      if (Math.random() > passiveDispropensity) {
-        const { buyMultiplier, sellMultiplier } =
-          getBuyAndSellMultipliers()
-        vendor.passives.push({
-          id: d.id,
-          buyMultiplier,
-        })
-      }
-    }
-    for (let d of [
-      ...Object.values(c.items.armor),
-      ...Object.values(c.items.engine),
-      ...Object.values(c.items.weapon),
-      ...Object.values(c.items.scanner),
-      ...Object.values(c.items.communicator),
-    ].filter((i) => i.buyable !== false && !i.aiOnly)) {
-      const { buyMultiplier, sellMultiplier } =
-        getBuyAndSellMultipliers(true)
-      // vendors will buy any item, but only sell a few
-      const itemForSale: VendorItemPrice = {
-        type: d.type,
-        id: d.id,
-        sellMultiplier,
-      }
-      if (
-        d.rarity < maxRarity &&
-        d.rarity > minRarity &&
-        Math.random() > itemDispropensity
-      )
-        itemForSale.buyMultiplier = buyMultiplier
-      vendor.items.push(itemForSale)
-    }
-    for (let d of Object.values(c.items.chassis)) {
-      if (d.rarity > maxRarity || d.rarity < minRarity)
-        continue
-      if (Math.random() > chassisDispropensity) {
-        const { buyMultiplier, sellMultiplier } =
-          getBuyAndSellMultipliers()
-        vendor.chassis.push({
-          id: d.id,
-          buyMultiplier,
-          sellMultiplier,
-        })
-      }
-    }
+  // // guarantee we have at least ONE thing for sale
+  // while (
+  //   [
+  //     ...vendor.cargo,
+  //     ...vendor.items,
+  //     ...vendor.passives,
+  //   ].filter((v) => v.buyMultiplier).length < 1
+  // ) {
+  //   for (let d of Object.values(c.cargo)) {
+  //     if (d.rarity > maxRarity) continue
+  //     if (Math.random() > cargoDispropensity) {
+  //       const { buyMultiplier, sellMultiplier } =
+  //         getBuyAndSellMultipliers()
+  //       vendor.cargo.push({
+  //         id: d.id,
+  //         buyMultiplier,
+  //         sellMultiplier,
+  //       })
+  //     }
+  //   }
+  //   for (let d of Object.values(c.crewPassives)) {
+  //     if (d.rarity > maxRarity || d.rarity < minRarity)
+  //       continue
+  //     if (Math.random() > passiveDispropensity) {
+  //       const { buyMultiplier, sellMultiplier } =
+  //         getBuyAndSellMultipliers()
+  //       vendor.passives.push({
+  //         id: d.id,
+  //         buyMultiplier,
+  //       })
+  //     }
+  //   }
+  //   for (let d of [
+  //     ...Object.values(c.items.armor),
+  //     ...Object.values(c.items.engine),
+  //     ...Object.values(c.items.weapon),
+  //     ...Object.values(c.items.scanner),
+  //     ...Object.values(c.items.communicator),
+  //   ].filter((i) => i.buyable !== false && !i.aiOnly)) {
+  //     const { buyMultiplier, sellMultiplier } =
+  //       getBuyAndSellMultipliers(true)
+  //     // vendors will buy any item, but only sell a few
+  //     const itemForSale: PlanetVendorItemPrice = {
+  //       type: d.type,
+  //       id: d.id,
+  //       sellMultiplier,
+  //     }
+  //     if (
+  //       d.rarity < maxRarity &&
+  //       d.rarity > minRarity &&
+  //       Math.random() > itemDispropensity
+  //     )
+  //       itemForSale.buyMultiplier = buyMultiplier
+  //     vendor.items.push(itemForSale)
+  //   }
+  //   for (let d of Object.values(c.items.chassis)) {
+  //     if (d.rarity > maxRarity || d.rarity < minRarity)
+  //       continue
+  //     if (Math.random() > chassisDispropensity) {
+  //       const { buyMultiplier, sellMultiplier } =
+  //         getBuyAndSellMultipliers()
+  //       vendor.chassis.push({
+  //         id: d.id,
+  //         buyMultiplier,
+  //         sellMultiplier,
+  //       })
+  //     }
+  //   }
 
-    maxRarity += 0.2
-  }
+  // maxRarity += 0.2
+  // }
+
   // c.log(
   //   vendor.cargo.filter((v) => v.buyMultiplier).length,
   //   vendor.items.filter((v) => v.buyMultiplier).length,
@@ -216,6 +257,7 @@ export function generatePlanet(
     name,
     color,
     creatures,
+    mass,
     factionId,
     homeworld: homeworldFactionKey
       ? { id: homeworldFactionKey }
@@ -223,7 +265,10 @@ export function generatePlanet(
     radius,
     location,
     vendor,
-    repairCostMultiplier,
+    level,
+    baseLevel,
+    xp,
+    leanings,
   }
 }
 

@@ -114,7 +114,7 @@ export abstract class CombatShip extends Ship {
     this.dead = false
     this.move(
       [...(this.faction.homeworld?.location || [0, 0])].map(
-        (pos) => pos + c.randomBetween(-0.00001, 0.00001),
+        (pos) => pos + c.randomBetween(-0.0001, 0.0001),
       ) as CoordinatePair,
     )
 

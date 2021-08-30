@@ -119,14 +119,6 @@ export class HumanShip extends CombatShip {
       this.radii.game = this.game.gameSoftRadius
       this.toUpdate.radii = this.radii
     }, 100)
-
-    // passively lose previous locations over time
-    // so someone who, for example, sits forever at a planet loses their trail eventually
-    setInterval(() => {
-      if (!this.previousLocations.length) return
-      this.previousLocations.shift()
-      // c.log(`removing previous location`)
-    }, (c.tickInterval * 100000) / c.gameSpeedMultiplier)
   }
 
   tick() {
@@ -351,7 +343,7 @@ export class HumanShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ),
+        ) * c.baseEngineThrustMultiplier,
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
@@ -680,7 +672,7 @@ export class HumanShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ),
+        ) * c.baseEngineThrustMultiplier,
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
@@ -1182,12 +1174,15 @@ export class HumanShip extends CombatShip {
   }
 
   updateBroadcastRadius() {
-    this.radii.broadcast = c.getRadiusDiminishingReturns(
-      this.communicators.reduce((total, comm) => {
-        const currRadius = comm.repair * comm.range
-        return currRadius + total
-      }, 0),
-      this.communicators.length,
+    this.radii.broadcast = Math.max(
+      c.baseBroadcastRange,
+      c.getRadiusDiminishingReturns(
+        this.communicators.reduce((total, comm) => {
+          const currRadius = comm.repair * comm.range
+          return currRadius + total
+        }, 0),
+        this.communicators.length,
+      ),
     )
     this.toUpdate.radii = this.radii
   }

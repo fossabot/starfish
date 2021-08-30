@@ -189,10 +189,10 @@ export default Vue.extend({
         amount > this.crewMember.credits
       ) {
         this.$store.dispatch('notifications/notify', {
-          text: 'Nope.',
+          text: 'Invalid amount.',
           type: 'error',
         })
-        return console.log('Nope.')
+        return
       }
 
       ;(this as any).$socket?.emit(
@@ -224,10 +224,10 @@ export default Vue.extend({
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
       if (!amount || amount > totalHeld) {
         this.$store.dispatch('notifications/notify', {
-          text: 'Nope.',
+          text: 'Invalid amount.',
           type: 'error',
         })
-        return console.log('Nope.')
+        return
       }
       if (amount < 1) {
         this.$store.dispatch('notifications/notify', {

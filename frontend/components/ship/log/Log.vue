@@ -12,7 +12,13 @@
     <div class="panesection scroll">
       <ShipLogEntry
         v-for="l in flippedLog"
-        :key="'log' + l.time + l.content"
+        :key="
+          'log' +
+          l.time +
+          (l.content.map
+            ? l.content.map((c) => c.text || c).join('')
+            : l.content)
+        "
         v-bind="l"
       />
     </div>

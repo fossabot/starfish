@@ -50,7 +50,8 @@ export default class Drawer {
     visible,
     immediate = false,
     crewMemberId,
-  }: {
+  }: // previousData,
+  {
     ship: ShipStub
     center?: CoordinatePair
     zoom?: number
@@ -59,6 +60,12 @@ export default class Drawer {
     }
     immediate?: boolean
     crewMemberId?: string
+    // previousData?: {
+    //   ship: ShipStub
+    //   visible?: {
+    //     [key in keyof VisibleStub]?: VisibleStub[key]
+    //   }
+    // }
   }) {
     if (!ship) return
 
@@ -101,7 +108,7 @@ export default class Drawer {
     const sightRadius =
       (ship?.radii?.sight || 1) * this.flatScale
 
-    const buffer = 0.93
+    const buffer = 0.91
 
     const devicePixelRatio = window.devicePixelRatio
 
@@ -450,7 +457,7 @@ export default class Drawer {
           radius: z.radius * this.flatScale,
           color: z.color,
           outline: `dash`,
-          opacity: 0.3,
+          opacity: 0.4,
         })
         this.drawPoint({
           location: [z.location[0], z.location[1] * -1],
@@ -569,6 +576,7 @@ export default class Drawer {
         grd.addColorStop(0, `yellow`)
         grd.addColorStop(1, `red`)
 
+        // console.log(ar.damageTaken.miss)
         this.drawLine({
           start: [
             ar.start[0] * this.flatScale,
@@ -582,8 +590,8 @@ export default class Drawer {
           opacity:
             (1 -
               (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.miss ? 0.5 : 1),
-          width: ar.damageTaken.miss ? 0.5 : 1,
+            (ar.damageTaken.miss === false ? 0.5 : 1),
+          width: ar.damageTaken.miss === false ? 0.5 : 1,
         })
       },
     )
@@ -610,7 +618,8 @@ export default class Drawer {
     outline = false,
     glow = false,
     alwaysShowLabels = false,
-  }: {
+  }: // previousData = undefined,
+  {
     location: CoordinatePair
     radius: number
     labelTop?: string | false
@@ -621,45 +630,246 @@ export default class Drawer {
     outline?: boolean | `dash`
     glow?: boolean
     alwaysShowLabels?: boolean
+    // previousData?: {
+    //   radius?: number
+    //   location?: CoordinatePair
+    // }
   }) {
     this.drawCalls++
 
-    this.ctx.fillStyle = color
+    // if (previousData?.location)
+    //   location = [
+    //     c.lerp(
+    //       previousData.location[0],
+    //       location[0],
+    //       this.lerpSpeed,
+    //     ),
+    //     c.lerp(
+    //       previousData.location[1],
+    //       location[1],
+    //       this.lerpSpeed,
+    //     ),
+    //   ]
 
+    // if (previousData?.radius) {
+    //   c.log(radius, previousData?.radius)
+    //   radius = c.lerp(
+    //     previousData.radius,
+    //     radius,
+    //     this.lerpSpeed,
+    //   )
+    // }
+
+    /* eslint-disable max-depth */
     if (
       (labelTop || labelBottom || labelCenter) &&
-      (alwaysShowLabels || this.zoom > 0.035)
+      (alwaysShowLabels ||
+        (this.zoom > 0.035 &&
+          (!outline || radius > this.width / 10)))
     ) {
       this.ctx.globalAlpha = Math.max(0.35, opacity * 0.5)
-      this.ctx.textAlign = `center`
+
       this.ctx.font = `bold ${
         (0.9 / this.zoom) * window.devicePixelRatio
       }em Prompt`
-      if (labelTop)
+      const drawLabel = (
+        label: string,
+        position: `top` | `bottom` | `center`,
+      ) => {
+        const labelInMotionRadius =
+          radius + this.width * 0.015
+        this.ctx.fillStyle = color
+        this.ctx.textAlign = `center`
+        this.ctx.textBaseline =
+          position === `top`
+            ? `bottom`
+            : position === `bottom`
+            ? `top`
+            : `middle`
+
+        let targetLocation: CoordinatePair =
+          position === `center`
+            ? [
+                location[0] * this.flatScale,
+                location[1] * this.flatScale,
+              ]
+            : position === `top`
+            ? [
+                location[0] * this.flatScale,
+                location[1] * this.flatScale -
+                  radius -
+                  this.width * 0.003,
+              ]
+            : [
+                location[0] * this.flatScale,
+                location[1] * this.flatScale +
+                  radius +
+                  this.width * 0.007,
+              ]
+
+        if (outline) {
+          let needToMoveDown =
+            this.topLeft[1] +
+            this.height * 0.03 -
+            targetLocation[1]
+
+          let needToMoveUp =
+            targetLocation[1] -
+            (this.height +
+              this.topLeft[1] -
+              this.height * 0.02)
+
+          const elementPositionInRelationToCenterAsPercent =
+            [
+              (this.center[0] - location[0]) / this.width,
+              (this.center[1] - location[1]) / this.height,
+            ]
+
+          const calculatePosition = () => {
+            if (needToMoveDown > 0 || needToMoveUp > 0) {
+              if (position !== `center`) {
+                // drawing outside the outline
+
+                if (
+                  elementPositionInRelationToCenterAsPercent[0] >
+                  0
+                )
+                  this.ctx.textAlign = `left`
+                else this.ctx.textAlign = `right`
+
+                const willMoveDown = needToMoveDown > 0,
+                  willMoveUp = needToMoveUp > 0
+                if (willMoveDown || willMoveUp) {
+                  this.ctx.textBaseline = `middle`
+
+                  const willMoveRight =
+                    elementPositionInRelationToCenterAsPercent[0] >
+                    0
+                  let angle, y
+
+                  let count = 0
+                  while (
+                    count < 100 &&
+                    (!y ||
+                      (willMoveDown
+                        ? y < this.topLeft[1]
+                        : y >
+                          this.topLeft[1] +
+                            this.height -
+                            this.height * 0.1))
+                  ) {
+                    count++
+                    angle =
+                      Math.PI / 2 -
+                      Math.acos(
+                        (labelInMotionRadius -
+                          (willMoveDown
+                            ? needToMoveDown
+                            : needToMoveUp)) /
+                          labelInMotionRadius,
+                      ) +
+                      Math.PI / 2
+                    if (!angle) continue
+                    y =
+                      location[1] * this.flatScale +
+                      labelInMotionRadius * Math.cos(angle)
+                    if (willMoveUp)
+                      y =
+                        location[1] * this.flatScale +
+                        (location[1] * this.flatScale - y)
+
+                    if (!angle || isNaN(angle)) return
+                  }
+
+                  // * angle goes down from pi to 0
+
+                  // * fade as it approaches center point
+                  // this.ctx.globalAlpha =
+                  //   (Math.max(0.35, opacity * 0.5) *
+                  //     (angle - Math.PI / 2)) /
+                  //     (Math.PI / 2)
+
+                  let x =
+                    location[0] * this.flatScale +
+                    labelInMotionRadius * Math.sin(angle)
+
+                  x = willMoveRight
+                    ? x
+                    : location[0] * this.flatScale +
+                      (location[0] * this.flatScale - x)
+                  // if (label === `vision`)
+                  //   c.log({
+                  //     angle,
+                  //     count,
+                  //   })
+
+                  targetLocation = [x, y]
+                }
+              }
+            }
+          }
+          calculatePosition()
+
+          let needToMoveRight =
+            this.topLeft[0] -
+            location[0] * this.flatScale +
+            this.width * 0.01
+
+          let needToMoveLeft =
+            location[0] * this.flatScale -
+            (this.width +
+              this.topLeft[0] -
+              this.width * 0.01)
+
+          if (needToMoveRight > 0 || needToMoveLeft > 0) {
+            let distanceToMoveUpOrDown =
+              labelInMotionRadius -
+              Math.sqrt(
+                labelInMotionRadius ** 2 -
+                  Math.max(
+                    needToMoveLeft,
+                    needToMoveRight,
+                  ) **
+                    2,
+              )
+            if (distanceToMoveUpOrDown < 0)
+              distanceToMoveUpOrDown =
+                labelInMotionRadius -
+                Math.abs(distanceToMoveUpOrDown)
+            if (
+              position === `top` &&
+              needToMoveDown < distanceToMoveUpOrDown
+            )
+              needToMoveDown = distanceToMoveUpOrDown
+            else if (
+              position === `bottom` &&
+              needToMoveUp < distanceToMoveUpOrDown
+            )
+              needToMoveUp = distanceToMoveUpOrDown
+
+            calculatePosition()
+          }
+        }
+
         this.ctx.fillText(
-          labelTop.toUpperCase(),
-          location[0] * this.flatScale,
-          location[1] * this.flatScale -
-            radius -
-            this.width * 0.005,
+          label.toUpperCase(),
+          ...targetLocation,
         )
-      if (labelBottom)
-        this.ctx.fillText(
-          labelBottom.toUpperCase(),
-          location[0] * this.flatScale,
-          location[1] * this.flatScale +
-            radius +
-            this.width * 0.02,
-        )
-      if (labelCenter)
-        this.ctx.fillText(
-          labelCenter.toUpperCase(),
-          location[0] * this.flatScale,
-          location[1] * this.flatScale + this.width * 0.01,
-        )
+
+        // * tracking dot
+        // this.ctx.fillStyle = `red`
+        // this.ctx.beginPath()
+        // this.ctx.arc(...targetLocation, 5, 0, Math.PI * 2)
+        // this.ctx.fill()
+      }
+
+      if (labelTop) drawLabel(labelTop, `top`)
+      if (labelBottom) drawLabel(labelBottom, `bottom`)
+      if (labelCenter) drawLabel(labelCenter, `center`)
     }
 
     this.ctx.globalAlpha = opacity
+    this.ctx.fillStyle = color
 
     this.ctx.beginPath()
     this.ctx.arc(
@@ -737,6 +947,7 @@ export default class Drawer {
   }
 
   isIdle() {
+    // return false
     return (
       Math.abs(this.targetZoom - (this.previousZoom || 0)) <
         0.001 &&

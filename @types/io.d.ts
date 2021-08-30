@@ -122,6 +122,13 @@ interface IOClientEvents {
     crewId: string,
     amount: number,
   ) => void
+  [`crew:donateToPlanet`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    planetName: string,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
   [`crew:thrust`]: (
     shipId: string,
     crewId: string,

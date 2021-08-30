@@ -73,6 +73,7 @@ interface BaseCrewActiveData {
 }
 interface BaseCrewPassiveData {
   displayName: string
+  description: string
   id: CrewPassiveId
   basePrice: number
   level?: number

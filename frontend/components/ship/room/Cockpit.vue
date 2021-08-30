@@ -84,16 +84,16 @@
 
       <div
         v-tooltip="
-          `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and better engines.`
+          `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and more/better engines.`
         "
       >
-        Engine Base Thrust:
+        Engine Max Thrust:
         {{ c.r2(engineThrustAmplification)
         }}<span v-tooltip="`Poseidons`">P</span>
       </div>
       <div
         v-tooltip="
-          `The percent of the engines' max thrust you have charged that can be released as thrust. This percent is unique to you. <br />Your maximum percent goes up as you gain levels in <b>piloting</b>.`
+          `This percent is unique to you. <br />Your charge speed goes up as you gain levels in <b>piloting</b>.`
         "
       >
         Charge:
@@ -105,17 +105,15 @@
               ) *
               100,
             0,
-          ) +
-          '% / ' +
-          c.r2(
+          ) + '%'
+        }}
+        <span
+          class="sub"
+          v-if="
             c.getMaxCockpitChargeForSingleCrewMember(
               pilotingSkill,
-            ) * 100,
-            0,
-          ) +
-          '%'
-        }}
-        <span class="sub"
+            ) > crewMember.cockpitCharge
+          "
           >(Full in
           {{
             c.msToTimeString(
@@ -133,7 +131,7 @@
       </div>
       <div
         v-tooltip="
-          `The maximum amount of thrust that you can generate with your total current amount of charge. Increases with levels in <b>piloting</b> and better engine base thrust.`
+          `The maximum amount of thrust that you can generate currently: charge percent multiplied by maximum engine thrust.`
         "
       >
         Available Thrust:
@@ -276,7 +274,7 @@ export default Vue.extend({
             total +
             (e.thrustAmplification || 0) * (e.repair || 0),
           0,
-        ),
+        ) * c.baseEngineThrustMultiplier,
       )
     },
     pilotingSkill(): number {

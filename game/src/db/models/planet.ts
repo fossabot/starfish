@@ -17,11 +17,26 @@ const planetSchemaFields: Record<
   color: String,
   name: { type: String, required: true },
   radius: Number,
+  mass: Number,
+
+  level: Number,
+  xp: Number,
+  baseLevel: Number,
+
+  leanings: [
+    {
+      type: { type: String },
+      never: Boolean,
+      propensity: Number,
+    },
+  ],
+
   factionId: String,
   creatures: [String],
   homeworld: { id: String },
-  repairCostMultiplier: Number,
+
   allegiances: [{ faction: { id: String }, level: Number }],
+
   vendor: {
     cargo: [
       {
@@ -39,7 +54,7 @@ const planetSchemaFields: Record<
     ],
     items: [
       {
-        type: String,
+        type: { type: String },
         id: String,
         buyMultiplier: Number,
         sellMultiplier: Number,
@@ -53,6 +68,7 @@ const planetSchemaFields: Record<
       },
     ],
     passives: [{ id: String, buyMultiplier: Number }],
+    repairCostMultiplier: Number,
   },
 }
 const planetSchema = new Schema(planetSchemaFields)

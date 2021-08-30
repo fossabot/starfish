@@ -79,14 +79,6 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.radii.game = this.game.gameSoftRadius;
             this.toUpdate.radii = this.radii;
         }, 100);
-        // passively lose previous locations over time
-        // so someone who, for example, sits forever at a planet loses their trail eventually
-        setInterval(() => {
-            if (!this.previousLocations.length)
-                return;
-            this.previousLocations.shift();
-            // c.log(`removing previous location`)
-        }, (dist_1.default.tickInterval * 100000) / dist_1.default.gameSpeedMultiplier);
     }
     tick() {
         const profiler = new dist_1.default.Profiler(4, `human ship tick`, false, 0);
@@ -249,7 +241,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier);
         const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
         const shipMass = this.mass;
         const thrustMagnitudeToApply = (magnitudePerPointOfCharge * charge) / shipMass;
@@ -468,7 +460,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0));
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier);
         const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
         const shipMass = this.mass;
         const finalMagnitude = (magnitudePerPointOfCharge * charge) / shipMass;
@@ -802,10 +794,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
     }
     updateBroadcastRadius() {
-        this.radii.broadcast = dist_1.default.getRadiusDiminishingReturns(this.communicators.reduce((total, comm) => {
+        this.radii.broadcast = Math.max(dist_1.default.baseBroadcastRange, dist_1.default.getRadiusDiminishingReturns(this.communicators.reduce((total, comm) => {
             const currRadius = comm.repair * comm.range;
             return currRadius + total;
-        }, 0), this.communicators.length);
+        }, 0), this.communicators.length));
         this.toUpdate.radii = this.radii;
     }
     updateThingsThatCouldChangeOnItemChange() {

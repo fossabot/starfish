@@ -2,6 +2,7 @@ import math from './math'
 import globals from './globals'
 import c from './log'
 import { Profiler } from './Profiler'
+import { engine } from '../dist/items'
 
 const gameShipLimit = 100
 
@@ -11,8 +12,9 @@ const gameSpeedMultiplier = 1 * 12 * 10
 //   : 1)
 
 const baseSightRange = 0.05
+const baseBroadcastRange = 0.001
 
-const baseRepairCost = 3000
+const baseRepairCost = 1000
 
 const maxBroadcastLength = 200
 
@@ -25,11 +27,13 @@ const itemPriceMultiplier = 1
 const factionVendorMultiplier = 0.98
 const factionAllegianceFriendCutoff = 50
 
-const baseItemSellMultiplier = 0.75
+const baseItemSellMultiplier = 0.4
 
 const noEngineThrustMagnitude = 0.02
 
 const aiDifficultyMultiplier = 0.5
+
+const planetContributeCostPerXp = 10
 
 const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
@@ -108,7 +112,8 @@ function getRadiusDiminishingReturns(
 function getMaxCockpitChargeForSingleCrewMember(
   level: number = 1,
 ) {
-  return math.lerp(1, 5, (level - 1) / 100)
+  return 1
+  // return math.lerp(1, 5, (level - 1) / 100)
 }
 
 function getCockpitChargePerTickForSingleCrewMember(
@@ -118,22 +123,24 @@ function getCockpitChargePerTickForSingleCrewMember(
   return (
     math.lerp(
       0.0002 * flatMod,
-      0.00005 * flatMod,
+      0.0005 * flatMod,
       level / 100,
     ) * gameSpeedMultiplier
-  ) // backwards because you gain max charge
+  )
 }
+const baseEngineThrustMultiplier =
+  gameSpeedMultiplier * 0.02
 
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
-  const flatMod = 4
-  return (
-    math.lerp(0.2 * flatMod, Number(flatMod), level / 100) *
-    engineThrustMultiplier *
-    gameSpeedMultiplier
-  )
+  return engineThrustMultiplier
+  // const flatMod: number = 1
+  // return (
+  //   math.lerp(0.2 * flatMod, flatMod, level / 100) *
+  //   engineThrustMultiplier
+  // )
 }
 
 function getRepairAmountPerTickForSingleCrewMember(
@@ -321,6 +328,7 @@ export default {
   gameShipLimit,
   gameSpeedMultiplier,
   baseSightRange,
+  baseBroadcastRange,
   baseRepairCost,
   maxBroadcastLength,
   baseStaminaUse,
@@ -331,6 +339,7 @@ export default {
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
   aiDifficultyMultiplier,
+  planetContributeCostPerXp,
   attackRemnantExpireTime,
   cacheExpireTime,
   baseShipScanProperties,
@@ -342,6 +351,7 @@ export default {
   getMaxCockpitChargeForSingleCrewMember,
   getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
+  baseEngineThrustMultiplier,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
   getCrewPassivePriceMultiplier,

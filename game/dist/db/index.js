@@ -33,7 +33,7 @@ const planet = __importStar(require("./models/planet"));
 const zone = __importStar(require("./models/zone"));
 dotenv_1.config();
 const dist_1 = __importDefault(require("../../../common/dist"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const mongoose = require('mongoose');
 exports.db = {
     cache,
     ship,
@@ -72,19 +72,19 @@ exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, po
             await Promise.all(promises);
             resolve();
         };
-        if (mongoose_1.default.connection.readyState === 0) {
+        if (mongoose.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
             // c.log(uri)
             dist_1.default.log(`gray`, `No existing db connection, creating...`);
-            mongoose_1.default
+            mongoose
                 .connect(uri, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
                 useFindAndModify: false,
             })
                 .catch(() => { });
-            mongoose_1.default.connection.on(`error`, (error) => dist_1.default.log(`red`, error.message));
-            mongoose_1.default.connection.once(`open`, () => {
+            mongoose.connection.on(`error`, (error) => dist_1.default.log(`red`, error.message));
+            mongoose.connection.once(`open`, () => {
                 onReady();
             });
         }

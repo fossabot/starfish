@@ -11,10 +11,20 @@ const planetSchemaFields = {
     color: String,
     name: { type: String, required: true },
     radius: Number,
+    mass: Number,
+    level: Number,
+    xp: Number,
+    baseLevel: Number,
+    leanings: [
+        {
+            type: { type: String },
+            never: Boolean,
+            propensity: Number,
+        },
+    ],
     factionId: String,
     creatures: [String],
     homeworld: { id: String },
-    repairCostMultiplier: Number,
     allegiances: [{ faction: { id: String }, level: Number }],
     vendor: {
         cargo: [
@@ -33,7 +43,7 @@ const planetSchemaFields = {
         ],
         items: [
             {
-                type: String,
+                type: { type: String },
                 id: String,
                 buyMultiplier: Number,
                 sellMultiplier: Number,
@@ -47,6 +57,7 @@ const planetSchemaFields = {
             },
         ],
         passives: [{ id: String, buyMultiplier: Number }],
+        repairCostMultiplier: Number,
     },
 };
 const planetSchema = new mongoose_1.Schema(planetSchemaFields);

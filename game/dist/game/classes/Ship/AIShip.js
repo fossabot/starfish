@@ -81,6 +81,10 @@ class AIShip extends CombatShip_1.CombatShip {
                 this.attack(randomEnemy, randomWeapon);
         }
     }
+    updateSightAndScanRadius() {
+        this.updateAttackRadius();
+        this.radii.sight = this.radii.attack * 1.3;
+    }
     cumulativeSkillIn(l, s) {
         return this.level;
     }
@@ -132,7 +136,7 @@ class AIShip extends CombatShip_1.CombatShip {
         ];
         const engineThrustMultiplier = this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0);
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier;
         const hasArrived = Math.abs(this.location[0] - this.targetLocation[0]) <
             dist_1.default.arrivalThreshold / 2 &&
             Math.abs(this.location[1] - this.targetLocation[1]) <

@@ -38,7 +38,7 @@
         <span>10,000</span>
       </button>
       <button class="secondary" @click="applyValue('all')">
-        <span>Max</span>
+        <span>{{ c.r2(max) }} (Max)</span>
       </button>
     </div>
     <div class="flex martopsmall combo">
@@ -58,13 +58,12 @@
 
 <script>
 import Vue from 'vue'
+import c from '../../common/src'
 
 export default Vue.extend({
   props: { max: {} },
   data() {
-    return {
-      value: '',
-    }
+    return { c, value: '' }
   },
   async mounted() {
     await this.$nextTick()

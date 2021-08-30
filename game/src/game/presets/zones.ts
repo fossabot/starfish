@@ -8,8 +8,10 @@ import type { Zone } from '../classes/Zone'
 export function generateZoneData(
   game: Game,
 ): BaseZoneData | false {
+  let radius = (Math.random() + 0.15) * 0.2
+
   let locationSearchRadius = game.gameSoftRadius * 0.75
-  const tooClose = 0.7
+  const tooClose = radius * 3
   let location: CoordinatePair = [0, 0]
   const isTooClose = (p: Planet | Ship | Zone) =>
     c.distance(location, p.location) < tooClose
@@ -27,11 +29,9 @@ export function generateZoneData(
     locationSearchRadius *= 1.01
   }
 
-  let radius = (Math.random() + 0.15) * 0.2
-
   const color = `hsl(${Math.random() * 360}, ${Math.round(
     Math.random() * 80 + 20,
-  )}%, ${Math.round(Math.random() * 40) + 30}%)`
+  )}%, ${Math.round(Math.random() * 40) + 45}%)`
 
   const weightedTypes: {
     value: ZoneEffectType
@@ -41,6 +41,7 @@ export function generateZoneData(
     { value: `decelerate`, weight: 2 },
     { value: `damage over time`, weight: 5 },
     { value: `repair over time`, weight: 1 },
+    { value: `wormhole`, weight: 0.5 },
   ]
   const type =
     c.randomWithWeights(weightedTypes) || `damage over time`
@@ -81,6 +82,14 @@ export function generateZoneData(
       basedOnProximity: c.coinFlip(),
     })
     radius *= 1.2
+  } else if (type === `wormhole`) {
+    name = c.randomFromArray(wormholeZoneNames)
+    effects.push({
+      type: `wormhole`,
+      intensity: 1,
+      procChancePerTick: 1,
+    })
+    radius *= 0.1
   }
 
   if (!name) return false
@@ -124,5 +133,10 @@ const decelerateZoneNames = [
   `Gravity Well`,
   `Murky Nebula`,
   `Stifling Zone`,
+  // todo MORE
+]
+const wormholeZoneNames = [
+  `Wormhole`,
+  `Universe Flux Point`,
   // todo MORE
 ]

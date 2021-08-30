@@ -114,6 +114,7 @@ declare const _default: {
     gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
+    baseBroadcastRange: number;
     baseRepairCost: number;
     maxBroadcastLength: number;
     baseStaminaUse: number;
@@ -124,6 +125,7 @@ declare const _default: {
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     aiDifficultyMultiplier: number;
+    planetContributeCostPerXp: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     baseShipScanProperties: {
@@ -138,10 +140,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "factionId" | "homeworld" | "creatures" | "repairCostMultiplier" | "allegiances" | "vendor")[];
+        planet: ("name" | "color" | "location" | "radius" | "mass" | "level" | "xp" | "baseLevel" | "leanings" | "factionId" | "homeworld" | "creatures" | "allegiances" | "vendor")[];
         faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
         species: ("factionId" | "id" | "icon" | "singular" | "description" | "passives")[];
-        chassis: ("id" | "description" | "type" | "mass" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
@@ -154,6 +156,7 @@ declare const _default: {
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number) => number;
+    baseEngineThrustMultiplier: number;
     getStaminaGainPerTickForSingleCrewMember: () => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;

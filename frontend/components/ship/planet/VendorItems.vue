@@ -4,129 +4,131 @@
       crewMember &&
       (buyableItems.length || sellableItems.length)
     "
+    class="panesection"
+    v-tooltip="
+      isCaptain
+        ? null
+        : `The captain can use the ship's common fund to buy and sell equipment for the ship.`
+    "
   >
-    <div class="panesection">
-      <div>
-        <div class="panesubhead">Ship Outfitter</div>
-      </div>
+    <div>
+      <div class="panesubhead">Ship Outfitter</div>
+    </div>
 
-      <div class="sub padbotsmall">
-        <div class="flexbetween">
-          <div>
-            Common Fund:
-            <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
-          </div>
-          <div class="flexcenter">
-            <div class="nowrap">Equipment Slots Used:</div>
-            <PillBar
-              :micro="true"
-              :value="ship.items.length"
-              :max="ship.slots"
-              :dangerZone="-1"
-              class="slots"
-            />
-          </div>
-        </div>
+    <div class="sub marbot">
+      <div v-if="isCaptain">
+        Captain, you can use your ship's common fund to buy
+        and sell equipment for the ship.
       </div>
+    </div>
 
-      <span
-        class="panesection inline"
-        v-if="buyableItems.length"
-      >
+    <div class="sub padbotsmall">
+      <div class="flexbetween">
         <div>
-          <div class="panesubhead">Buy Equipment</div>
+          Common Fund:
+          <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
         </div>
-        <span
-          v-for="ca in buyableItems"
-          :key="'buyitem' + ca.type + ca.id"
-          v-tooltip="{
-            type: ca.itemData && ca.itemData.type,
-            data: ca.itemData,
-          }"
-        >
-          <button
-            :disabled="!ca.canBuy"
-            @click="buyItem(ca)"
-          >
-            <b>{{
-              ca.itemData && ca.itemData.displayName
-            }}</b>
-            <div>
-              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-            </div>
-          </button>
-        </span></span
-      ><span
-        class="panesection inline"
-        v-if="sellableItems.length && isCaptain"
-      >
-        <div>
-          <div class="panesubhead">Sell Equipment</div>
-        </div>
-        <span
-          v-for="(ca, index) in sellableItems"
-          :key="'sellitem' + ca.type + ca.id + index"
-          v-tooltip="{
-            type: ca.type,
-            data: ca,
-          }"
-        >
-          <button
-            :disabled="!ca.canSell"
-            @click="sellItem(ca)"
-          >
-            <b>{{ ca && ca.displayName }}</b>
-            <div>
-              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-            </div>
-          </button>
-        </span> </span
-      ><span
-        class="panesection inline"
-        v-if="swappableChassis.length"
-      >
-        <div>
-          <div class="panesubhead">Swap Chassis</div>
-        </div>
-        <span
-          v-for="ca in swappableChassis"
-          :key="
-            ca.chassisData
-              ? 'swapchassis' +
-                ca.chassisData.type +
-                ca.chassisData.id
-              : Math.random()
+        <div
+          class="flexcenter"
+          v-tooltip="
+            `${ship.items.length} of ${ship.slots} used`
           "
-          v-tooltip="{
-            type: 'chassis',
-            data: ca.chassisData,
-          }"
         >
-          <button
-            :disabled="!ca.canBuy"
-            @click="swapChassis(ca)"
-          >
-            <b>{{
-              ca.chassisData && ca.chassisData.displayName
-            }}</b>
-            <div>
-              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-            </div>
-          </button>
-        </span>
-      </span>
-
-      <div class="sub">
-        <div v-if="isCaptain">
-          Captain, you can use your ship's common fund to
-          purchase equipment for the ship.
-        </div>
-        <div v-else>
-          Your ship's captain can use the common fund to
-          purchase equipment for the ship.
+          <div class="nowrap">Equipment Slots Used:</div>
+          <PillBar
+            :micro="true"
+            :value="ship.items.length"
+            :max="ship.slots"
+            :dangerZone="-1"
+            class="slots"
+          />
         </div>
       </div>
     </div>
+
+    <span
+      class="panesection inline"
+      v-if="buyableItems.length"
+    >
+      <div>
+        <div class="panesubhead">Buy Equipment</div>
+      </div>
+      <span
+        v-for="ca in buyableItems"
+        :key="'buyitem' + ca.type + ca.id"
+        v-tooltip="{
+          type: ca.itemData && ca.itemData.type,
+          data: ca.itemData,
+        }"
+      >
+        <button :disabled="!ca.canBuy" @click="buyItem(ca)">
+          <b>{{
+            ca.itemData && ca.itemData.displayName
+          }}</b>
+          <div>
+            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+          </div>
+        </button>
+      </span></span
+    ><span
+      class="panesection inline"
+      v-if="sellableItems.length && isCaptain"
+    >
+      <div>
+        <div class="panesubhead">Sell Equipment</div>
+      </div>
+      <span
+        v-for="(ca, index) in sellableItems"
+        :key="'sellitem' + ca.type + ca.id + index"
+        v-tooltip="{
+          type: ca.type,
+          data: ca,
+        }"
+      >
+        <button
+          :disabled="!ca.canSell"
+          @click="sellItem(ca)"
+        >
+          <b>{{ ca && ca.displayName }}</b>
+          <div>
+            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+          </div>
+        </button>
+      </span> </span
+    ><span
+      class="panesection inline"
+      v-if="swappableChassis.length"
+    >
+      <div>
+        <div class="panesubhead">Swap Chassis</div>
+      </div>
+      <span
+        v-for="ca in swappableChassis"
+        :key="
+          ca.chassisData
+            ? 'swapchassis' +
+              ca.chassisData.type +
+              ca.chassisData.id
+            : Math.random()
+        "
+        v-tooltip="{
+          type: 'chassis',
+          data: ca.chassisData,
+        }"
+      >
+        <button
+          :disabled="!ca.canBuy"
+          @click="swapChassis(ca)"
+        >
+          <b>{{
+            ca.chassisData && ca.chassisData.displayName
+          }}</b>
+          <div>
+            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+          </div>
+        </button>
+      </span>
+    </span>
   </div>
 </template>
 
@@ -147,7 +149,7 @@ export default Vue.extend({
     isFriendlyToFaction() {
       return (
         (this.ship.planet.allegiances.find(
-          (a: AllegianceData) =>
+          (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
@@ -155,9 +157,10 @@ export default Vue.extend({
     buyableItems() {
       return (this.ship?.planet?.vendor?.items || [])
         .filter(
-          (item: VendorItemPrice) => item.buyMultiplier,
+          (item: PlanetVendorItemPrice) =>
+            item.buyMultiplier,
         )
-        .map((item: VendorItemPrice) => {
+        .map((item: PlanetVendorItemPrice) => {
           const price = c.r2(
             Math.max(
               ((c.items[item.type] as any)[item.id]
@@ -184,19 +187,11 @@ export default Vue.extend({
     sellableItems() {
       return this.ship?.items
         .map((item: ItemStub) => {
-          const itemForSale = (
-            this.ship?.planet?.vendor?.items || []
-          ).find(
-            (i: VendorItemPrice) =>
-              i.type === item.type && i.id === item.id,
-          )
-          if (!itemForSale) return
           const price = c.r2(
             Math.min(
-              (((c.items as any)[itemForSale.type] as any)[
-                itemForSale.id
-              ]?.basePrice || 1) * // sorry to the typescript gods
-                itemForSale.sellMultiplier *
+              ((c.items[item.type] as any)[item.id]
+                ?.basePrice || 1) * // sorry to the typescript gods
+                c.baseItemSellMultiplier *
                 this.ship.planet.priceFluctuator *
                 (this.isFriendlyToFaction
                   ? 1 +
@@ -208,9 +203,7 @@ export default Vue.extend({
           )
           return {
             ...item,
-            itemData: (
-              c.items[itemForSale.type as ItemType] as any
-            )[itemForSale.id],
+            itemData: (c.items[item.type] as any)[item.id],
             price,
             canSell: this.isCaptain,
           }
@@ -219,9 +212,10 @@ export default Vue.extend({
     },
     swappableChassis() {
       return (this.ship.planet?.vendor?.chassis || []).map(
-        (chassis: VendorChassisPrice) => {
+        (chassis: PlanetVendorChassisPrice) => {
           const currentChassisSellPrice = Math.floor(
-            this.ship.chassis?.basePrice / 2,
+            (this.ship.chassis?.basePrice || 0) *
+              c.baseItemSellMultiplier,
           )
           const price = c.r2(
             Math.min(
@@ -239,7 +233,7 @@ export default Vue.extend({
           )
           return {
             ...chassis,
-            itemData: c.items.chassis[chassis.id],
+            chassisData: c.items.chassis[chassis.id],
             price,
             canBuy:
               this.isCaptain &&
@@ -253,7 +247,7 @@ export default Vue.extend({
   watch: {},
   mounted() {},
   methods: {
-    buyItem(data: VendorItemPrice) {
+    buyItem(data: PlanetVendorItemPrice) {
       this.$store.commit('setShipProp', [
         'items',
         [
@@ -310,7 +304,7 @@ export default Vue.extend({
       this.$store.commit('tooltip')
     },
 
-    swapChassis(data: VendorChassisPrice) {
+    swapChassis(data: PlanetVendorChassisPrice) {
       ;(this as any).$socket.emit(
         'ship:swapChassis',
         this.ship.id,

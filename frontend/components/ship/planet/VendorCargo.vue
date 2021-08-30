@@ -12,125 +12,129 @@
       <div class="panesubhead">Merchant District</div>
     </div>
 
-    <span class="panesection inline" v-if="buyableCargo">
-      <div>
-        <div class="panesubhead">Buy Cargo</div>
-      </div>
-      <span
-        v-for="ca in buyableCargo"
-        :key="
-          'buycargo' +
-          (ca.cargoData ? ca.cargoData.id : Math.random())
-        "
-        v-tooltip="{
-          type: 'cargo',
-          data: ca,
-        }"
-      >
-        <PromptButton
-          :disabled="!ca.canBuy"
-          class="inlineblock"
-          :max="ca.maxCanBuy"
-          @done="buyCargo(ca, ...arguments)"
-          @apply="buyCargo(ca, ...arguments)"
+    <div class="flexwrap">
+      <span class="panesection inline" v-if="buyableCargo">
+        <div>
+          <div class="panesubhead">Buy Cargo</div>
+        </div>
+        <span
+          v-for="ca in buyableCargo"
+          :key="
+            'buycargo' +
+            (ca.cargoData ? ca.cargoData.id : Math.random())
+          "
+          v-tooltip="{
+            type: 'cargo',
+            data: ca,
+          }"
         >
-          <template #label>
-            <div class="padsmall">
-              <b>{{ ca.cargoData && ca.cargoData.name }}</b>
-              <div
-                :class="{
-                  good:
-                    ca.cargoData &&
-                    ca.pricePerUnit <
-                      ca.cargoData.basePrice,
-                  bad:
-                    ca.cargoData &&
-                    ca.pricePerUnit >
-                      ca.cargoData.basePrice,
-                }"
-              >
-                💳{{
-                  c.numberWithCommas(
-                    c.r2(ca.pricePerUnit, 2, true),
-                  )
-                }}/ton
+          <PromptButton
+            :disabled="!ca.canBuy"
+            class="inlineblock"
+            :max="ca.maxCanBuy"
+            @done="buyCargo(ca, ...arguments)"
+            @apply="buyCargo(ca, ...arguments)"
+          >
+            <template #label>
+              <div class="padsmall">
+                <b>{{
+                  ca.cargoData && ca.cargoData.name
+                }}</b>
+                <div
+                  :class="{
+                    good:
+                      ca.cargoData &&
+                      ca.pricePerUnit <
+                        ca.cargoData.basePrice,
+                    bad:
+                      ca.cargoData &&
+                      ca.pricePerUnit >
+                        ca.cargoData.basePrice,
+                  }"
+                >
+                  💳{{
+                    c.numberWithCommas(
+                      c.r2(ca.pricePerUnit, 2, true),
+                    )
+                  }}/ton
+                </div>
               </div>
-            </div>
-          </template>
-          <template>
-            How many tons? (Max
-            {{
-              c.numberWithCommas(
-                c.r2(ca.maxCanBuy, 2, true),
-              )
-            }})
-          </template>
-        </PromptButton>
-      </span></span
-    ><span class="panesection inline" v-if="sellableCargo">
-      <div>
-        <div class="panesubhead">Sell Cargo</div>
-      </div>
-      <span
-        v-for="ca in sellableCargo"
-        :key="
-          'sellcargo' +
-          (ca.cargoData ? ca.cargoData.id : Math.random())
-        "
-        v-tooltip="{
-          type: 'cargo',
-          data: ca,
-        }"
+            </template>
+            <template>
+              How many tons of
+              {{ ca.cargoData.name }} will you buy?
+            </template>
+          </PromptButton>
+        </span></span
+      ><span
+        class="panesection inline"
+        v-if="sellableCargo"
       >
-        <PromptButton
-          :disabled="!ca.canSell"
-          class="inlineblock"
-          :max="ca.heldAmount"
-          @done="sellCargo(ca, ...arguments)"
-          @apply="sellCargo(ca, ...arguments)"
+        <div>
+          <div class="panesubhead">Sell Cargo</div>
+        </div>
+        <span
+          v-for="ca in sellableCargo"
+          :key="
+            'sellcargo' +
+            (ca.cargoData ? ca.cargoData.id : Math.random())
+          "
+          v-tooltip="{
+            type: 'cargo',
+            data: ca,
+          }"
         >
-          <template #label>
-            <div class="padsmall">
-              <b>{{ ca.cargoData && ca.cargoData.name }}</b>
-              <div
-                :class="{
-                  good:
-                    ca.cargoData &&
-                    ca.pricePerUnit >
-                      ca.cargoData.basePrice,
-                  bad:
-                    ca.cargoData &&
-                    ca.pricePerUnit <
-                      ca.cargoData.basePrice,
-                }"
-              >
-                💳{{
-                  c.numberWithCommas(
-                    c.r2(ca.pricePerUnit, 2, true),
-                  )
-                }}/ton
+          <PromptButton
+            :disabled="!ca.canSell"
+            class="inlineblock"
+            :max="ca.heldAmount"
+            @done="sellCargo(ca, ...arguments)"
+            @apply="sellCargo(ca, ...arguments)"
+          >
+            <template #label>
+              <div class="padsmall">
+                <b>{{
+                  ca.cargoData && ca.cargoData.name
+                }}</b>
+                <div
+                  :class="{
+                    good:
+                      ca.cargoData &&
+                      ca.pricePerUnit >
+                        ca.cargoData.basePrice,
+                    bad:
+                      ca.cargoData &&
+                      ca.pricePerUnit <
+                        ca.cargoData.basePrice,
+                  }"
+                >
+                  💳{{
+                    c.numberWithCommas(
+                      c.r2(ca.pricePerUnit, 2, true),
+                    )
+                  }}/ton
+                </div>
+                <div
+                  class="sub"
+                  v-if="ca.heldAmount > 0.005"
+                >
+                  ({{
+                    c.numberWithCommas(
+                      c.r2(ca.heldAmount, 2, true),
+                    )
+                  }}
+                  held)
+                </div>
               </div>
-              <div class="sub" v-if="ca.heldAmount > 0.005">
-                ({{
-                  c.numberWithCommas(
-                    c.r2(ca.heldAmount, 2, true),
-                  )
-                }}
-                held)
-              </div>
-            </div>
-          </template>
-          <template>
-            How many tons? (Max
-            {{
-              c.numberWithCommas(
-                c.r2(ca.heldAmount, 2, true),
-              )
-            }})
-          </template>
-        </PromptButton>
+            </template>
+            <template>
+              How many tons of
+              {{ ca.cargoData.name }} will you sell?
+            </template>
+          </PromptButton>
+        </span>
       </span>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -148,7 +152,7 @@ export default Vue.extend({
     isFriendlyToFaction(): boolean {
       return (
         (this.ship.planet.allegiances.find(
-          (a: AllegianceData) =>
+          (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
@@ -239,10 +243,10 @@ export default Vue.extend({
         amount > data.maxCanBuy
       ) {
         this.$store.dispatch('notifications/notify', {
-          text: 'Nope.',
+          text: 'Invalid amount.',
           type: 'error',
         })
-        return console.log('Nope.')
+        return
       }
       ;(this as any).$socket?.emit(
         'crew:buyCargo',
@@ -286,10 +290,10 @@ export default Vue.extend({
         0
       ) {
         this.$store.dispatch('notifications/notify', {
-          text: 'Nope.',
+          text: 'Invalid amount.',
           type: 'error',
         })
-        return console.log('Nope.')
+        return
       }
       ;(this as any).$socket?.emit(
         'crew:sellCargo',

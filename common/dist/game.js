@@ -12,16 +12,18 @@ const gameSpeedMultiplier = 1 * 12 * 10;
 //   ? /* dev boost, but doesn't work with frontend */ 10
 //   : 1)
 const baseSightRange = 0.05;
-const baseRepairCost = 3000;
+const baseBroadcastRange = 0.001;
+const baseRepairCost = 1000;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
 const baseXpGain = 0.05 * gameSpeedMultiplier;
 const itemPriceMultiplier = 1;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
-const baseItemSellMultiplier = 0.75;
+const baseItemSellMultiplier = 0.4;
 const noEngineThrustMagnitude = 0.02;
 const aiDifficultyMultiplier = 0.5;
+const planetContributeCostPerXp = 10;
 const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
 const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 4) / gameSpeedMultiplier;
 const baseShipScanProperties = {
@@ -61,17 +63,21 @@ function getRadiusDiminishingReturns(totalValue, equipmentCount) {
     return totalValue / Math.sqrt(equipmentCount) || 0; // this might be too harsh? 5 and 2 = 4.9
 }
 function getMaxCockpitChargeForSingleCrewMember(level = 1) {
-    return math_1.default.lerp(1, 5, (level - 1) / 100);
+    return 1;
+    // return math.lerp(1, 5, (level - 1) / 100)
 }
 function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
-    return (math_1.default.lerp(0.0002 * flatMod, 0.00005 * flatMod, level / 100) * gameSpeedMultiplier); // backwards because you gain max charge
+    return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
 }
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.02;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    const flatMod = 4;
-    return (math_1.default.lerp(0.2 * flatMod, Number(flatMod), level / 100) *
-        engineThrustMultiplier *
-        gameSpeedMultiplier);
+    return engineThrustMultiplier;
+    // const flatMod: number = 1
+    // return (
+    //   math.lerp(0.2 * flatMod, flatMod, level / 100) *
+    //   engineThrustMultiplier
+    // )
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return ((math_1.default.lerp(0.15, 1.0, level / 100) /
@@ -218,6 +224,7 @@ exports.default = {
     gameShipLimit,
     gameSpeedMultiplier,
     baseSightRange,
+    baseBroadcastRange,
     baseRepairCost,
     maxBroadcastLength,
     baseStaminaUse,
@@ -228,6 +235,7 @@ exports.default = {
     baseItemSellMultiplier,
     noEngineThrustMagnitude,
     aiDifficultyMultiplier,
+    planetContributeCostPerXp,
     attackRemnantExpireTime,
     cacheExpireTime,
     baseShipScanProperties,
@@ -239,6 +247,7 @@ exports.default = {
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
+    baseEngineThrustMultiplier,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,

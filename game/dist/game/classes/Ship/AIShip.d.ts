@@ -22,6 +22,7 @@ export declare class AIShip extends CombatShip {
     obeysGravity: boolean;
     constructor(data: BaseAIShipData, game: Game);
     tick(): void;
+    updateSightAndScanRadius(): void;
     cumulativeSkillIn(l: CrewLocation, s: SkillId): number;
     addLevelAppropriateItems(): void;
     move(toLocation?: CoordinatePair): void;

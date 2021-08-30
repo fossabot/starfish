@@ -93,6 +93,8 @@
       <ShipPlanetBuyRepair />
       <ShipPlanetBuyPassive />
 
+      <ShipPlanetLevel />
+
       <div class="panesection">
         <div class="panesubhead">Faction Allegiances</div>
         <ShipPlanetFactionGraph :planet="ship.planet" />
@@ -149,7 +151,7 @@ export default Vue.extend({
     isFriendlyToFaction() {
       return (
         (this.ship.planet.allegiances.find(
-          (a: AllegianceData) =>
+          (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )

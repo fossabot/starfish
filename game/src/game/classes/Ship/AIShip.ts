@@ -123,6 +123,11 @@ export class AIShip extends CombatShip {
     }
   }
 
+  updateSightAndScanRadius() {
+    this.updateAttackRadius()
+    this.radii.sight = this.radii.attack * 1.3
+  }
+
   cumulativeSkillIn(l: CrewLocation, s: SkillId) {
     return this.level
   }
@@ -190,13 +195,14 @@ export class AIShip extends CombatShip {
       ...this.location,
     ]
 
-    const engineThrustMultiplier = this.engines
-      .filter((e) => e.repair > 0)
-      .reduce(
-        (total, e) =>
-          total + e.thrustAmplification * e.repair,
-        0,
-      )
+    const engineThrustMultiplier =
+      this.engines
+        .filter((e) => e.repair > 0)
+        .reduce(
+          (total, e) =>
+            total + e.thrustAmplification * e.repair,
+          0,
+        ) * c.baseEngineThrustMultiplier
 
     const hasArrived =
       Math.abs(this.location[0] - this.targetLocation[0]) <

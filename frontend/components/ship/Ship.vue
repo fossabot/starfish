@@ -98,10 +98,10 @@ export default Vue.extend({
         amount > this.ship.commonCredits
       ) {
         this.$store.dispatch('notifications/notify', {
-          text: 'Nope.',
+          text: 'Invalid amount.',
           type: 'error',
         })
-        return console.log('Nope.')
+        return
       }
 
       ;(this as any).$socket?.emit(

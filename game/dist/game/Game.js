@@ -63,12 +63,6 @@ class Game {
             this.removeShip(inactiveShip);
         this.recalculateFactionRankings();
     }
-    identify() {
-        dist_1.default.log(`Game of ${dist_1.default.gameName} started at ${this.startTime}, running for ${this.tickCount} ticks`);
-        dist_1.default.log(`${this.ships.length} ships, ${this.planets.length} planets, ${this.caches.length} caches`);
-        this.planets.forEach((p) => p.identify());
-        this.ships.forEach((s) => s.identify());
-    }
     tick() {
         const startTime = Date.now();
         this.tickCount++;
@@ -209,14 +203,14 @@ class Game {
             }
         });
     }
-    spawnNewPlanets() {
+    async spawnNewPlanets() {
         while (this.planets.length < this.gameSoftArea * 0.7 ||
             this.planets.length < this.factions.length - 1) {
             const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
             const p = planets_1.generatePlanet(this, factionThatNeedsAHomeworld?.id);
             if (!p)
                 return;
-            const planet = this.addPlanet(p);
+            const planet = await this.addPlanet(p);
             dist_1.default.log(`gray`, `Spawned planet ${planet.name} at ${planet.location}${factionThatNeedsAHomeworld
                 ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
                 : ``}.`);
@@ -242,7 +236,7 @@ class Game {
                 `credits`,
             ]);
             const amount = id === `credits`
-                ? Math.round(Math.random() * 200) * 100
+                ? Math.round(Math.random() * 200 + 1) * 100
                 : Math.round(Math.random() * 200) / 10 + 1;
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
             const message = Math.random() > 0.9
@@ -353,13 +347,13 @@ class Game {
             return;
         this.ships.splice(index, 1);
     }
-    addPlanet(data, save = true) {
+    async addPlanet(data, save = true) {
         const existing = this.planets.find((p) => p.name === data.name);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing planet ${existing.name}.`);
             return existing;
         }
-        const newPlanet = new Planet_1.Planet(data, this);
+        const newPlanet = await new Planet_1.Planet(data, this);
         this.planets.push(newPlanet);
         if (newPlanet.homeworld)
             newPlanet.homeworld.homeworld = newPlanet;
@@ -410,6 +404,21 @@ class Game {
         if (save)
             db_1.db.zone.addOrUpdateInDb(newZone);
         return newZone;
+    }
+    removeZone(zone) {
+        dist_1.default.log(`Removing zone ${zone.name} from the game.`);
+        this.humanShips.forEach((hs) => {
+            const seenThisZone = hs.seenLandmarks.findIndex((lm) => lm.type === `zone` && lm.id === zone.id);
+            if (seenThisZone !== -1) {
+                hs.seenLandmarks.splice(seenThisZone, 1);
+                hs.toUpdate.seenLandmarks = hs.seenLandmarks.map((z) => z.getVisibleStub());
+            }
+        });
+        db_1.db.zone.removeFromDb(zone.id);
+        const index = this.zones.findIndex((z) => zone.id === z.id);
+        if (index === -1)
+            return;
+        this.zones.splice(index, 1);
     }
     addAttackRemnant(data, save = true) {
         const newAttackRemnant = new AttackRemnant_1.AttackRemnant(data);

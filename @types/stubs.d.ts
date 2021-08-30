@@ -35,6 +35,8 @@ interface ShipStub extends BaseStub {
   targetShip?: ShipStub
   speed?: number
   direction?: number
+  seenPlanets?: PlanetStub[]
+  seenLandmarks?: any[]
   [key: string]: any
 }
 interface VisibleStub extends BaseStub {
@@ -100,7 +102,7 @@ interface FactionStub extends BaseStub {
 }
 
 interface ItemStub extends BaseStub {
-  type?: ItemType
+  type: ItemType
   id: string
   repair?: number
 }
