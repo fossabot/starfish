@@ -3,7 +3,7 @@ name: Starfish build/push
 on:
   push:
     branches:
-      - 'main'
+      - '*'
 
 jobs:
   docker:
@@ -47,7 +47,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: ${{ steps.docker_tags.outputs.tags }}
+          tags: ${{ steps.docker_tags.outputs.tags}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
