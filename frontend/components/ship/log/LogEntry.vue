@@ -1,28 +1,33 @@
 <template>
   <div class="logentry" :class="level">
     <div class="text flashtextgoodonspawn">
-      <span
-        v-for="(el, index) in outputElements"
-        :key="id + index"
-        :style="
-          (el.style || '') +
+      <template v-for="(el, index) in outputElements">
+        <span
+          :key="id + index"
+          :style="
+            (el.style || '') +
             (el.color ? `; color: ${el.color};` : '')
-        "
-        v-tooltip="el.tooltipData"
-        :class="{ tooltip: el.tooltipData }"
-        ><span
-          v-if="
-            (el.text || el).indexOf('&nospace') !== 0 &&
-              index !== 0
           "
-          >&nbsp;</span
-        ><a v-if="el.url" :href="el.url">{{
-          (el.text || el).replace(/\s*&nospace/g, '')
-        }}</a>
-        <span v-else>{{
-          (el.text || el).replace(/\s*&nospace/g, '')
-        }}</span>
-      </span>
+          v-tooltip="el.tooltipData"
+          :class="{ tooltip: el.tooltipData }"
+          ><a v-if="el.url" :href="el.url">{{
+            (el.text || el).replace(/\s*&nospace/g, '')
+          }}</a>
+          <template v-else>{{
+            (el.text || el).replace(/\s*&nospace/g, '')
+          }}</template></span
+        ><span
+          class="space"
+          v-if="
+            outputElements[index + 1] &&
+            (
+              outputElements[index + 1].text ||
+              outputElements[index + 1]
+            ).indexOf('&nospace') !== 0
+          "
+          >&#32;
+        </span>
+      </template>
     </div>
     <div class="sub time flashtextgoodonspawn padtoptiny">
       {{ timeString }}

@@ -82,7 +82,7 @@ export declare class Ship extends Stubbable {
     get canMove(): boolean;
     move(toLocation?: CoordinatePair): void;
     addPreviousLocation(this: Ship, previousLocation: CoordinatePair, currentLocation: CoordinatePair): void;
-    isAt(this: Ship, coords: CoordinatePair): boolean;
+    isAt(this: Ship, coords: CoordinatePair, arrivalThresholdMultiplier?: number): boolean;
     applyTickOfGravity(this: Ship): void;
     membersIn(l: CrewLocation): CrewMember[];
     cumulativeSkillIn(l: CrewLocation, s: SkillId): number;

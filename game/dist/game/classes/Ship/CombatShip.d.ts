@@ -27,6 +27,10 @@ export declare abstract class CombatShip extends Ship {
         [key: string]: any;
     }, attack: DamageResult): TakenDamageResult;
     die(attacker?: CombatShip): void;
+    repair(baseRepairAmount: number, repairPriority?: RepairPriority): {
+        totalRepaired: number;
+        overRepair: boolean;
+    };
 }
 export {};
 //# sourceMappingURL=CombatShip.d.ts.map

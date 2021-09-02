@@ -154,7 +154,7 @@ export default function (
           {
             text: heldItem.displayName,
             color: `var(--item)`,
-            tooltipData: heldItem.stubify(),
+            tooltipData: heldItem.toLogStub() as any,
           },
           `sold by the captain for ${c.r2(price)} credits.`,
         ],

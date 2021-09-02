@@ -75,15 +75,15 @@ function coordPairToArrow(coordPair: CoordinatePair) {
   return degreesToArrow(math.vectorToDegrees(coordPair))
 }
 
-function percentToTextBars(
-  percent: number = 0,
-  barCount = 10,
-): string {
-  const bars = []
-  for (let i = 0; i < 1; i += 1 / barCount)
-    bars.push(i < percent ? `▓` : `░`)
-  return `\`` + bars.join(``) + `\``
-}
+// function percentToTextBars(
+//   percent: number = 0,
+//   barCount = 10,
+// ): string {
+//   const bars = []
+//   for (let i = 0; i < 1; i += 1 / barCount)
+//     bars.push(i < percent ? `▓` : `░`)
+//   return `\`` + bars.join(``) + `\``
+// }
 
 function numberToEmoji(number: number = 0): string {
   return numberEmojis[number] || `❓`
@@ -208,7 +208,7 @@ export default {
   printList,
   degreesToArrow,
   coordPairToArrow,
-  percentToTextBars,
+  // percentToTextBars,
   numberToEmoji,
   emojiToNumber,
   capitalize,

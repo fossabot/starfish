@@ -4,6 +4,8 @@ interface BasePlanetData {
   location: CoordinatePair
   radius: number
   mass: number
+  landingRadiusMultiplier: number
+  repairFactor: number
 
   level: number
   xp: number

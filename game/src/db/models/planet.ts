@@ -18,6 +18,8 @@ const planetSchemaFields: Record<
   name: { type: String, required: true },
   radius: Number,
   mass: Number,
+  landingRadiusMultiplier: Number,
+  repairFactor: Number,
 
   level: Number,
   xp: Number,

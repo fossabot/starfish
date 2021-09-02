@@ -339,8 +339,8 @@ class Ship extends Stubbable_1.Stubbable {
                 this.previousLocations;
         }
     }
-    isAt(coords) {
-        return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.arrivalThreshold);
+    isAt(coords, arrivalThresholdMultiplier = 1) {
+        return dist_1.default.pointIsInsideCircle(this.location, coords, dist_1.default.arrivalThreshold * arrivalThresholdMultiplier);
     }
     applyTickOfGravity() {
         if (!this.human)

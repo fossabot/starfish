@@ -7,8 +7,8 @@ const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
-const gameSpeedMultiplier = 1 * 12 * 10;
-// (process.env.NODE_ENV === `development`
+const gameSpeedMultiplier = 10;
+// * (process.env.NODE_ENV === `development`
 //   ? /* dev boost, but doesn't work with frontend */ 10
 //   : 1)
 const baseSightRange = 0.05;
@@ -20,12 +20,12 @@ const baseXpGain = 0.05 * gameSpeedMultiplier;
 const itemPriceMultiplier = 1;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
-const baseItemSellMultiplier = 0.4;
+const baseItemSellMultiplier = 0.6;
 const noEngineThrustMagnitude = 0.02;
 const aiDifficultyMultiplier = 0.5;
 const planetContributeCostPerXp = 10;
 const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
-const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 4) / gameSpeedMultiplier;
+const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier;
 const baseShipScanProperties = {
     id: true,
     name: true,
@@ -70,14 +70,13 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
     return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
 }
-const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.02;
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.15;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    return engineThrustMultiplier;
-    // const flatMod: number = 1
-    // return (
-    //   math.lerp(0.2 * flatMod, flatMod, level / 100) *
-    //   engineThrustMultiplier
-    // )
+    const min = 1;
+    const max = 1.4;
+    return (math_1.default.lerp(min, max, level / 100) *
+        engineThrustMultiplier *
+        baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return ((math_1.default.lerp(0.15, 1.0, level / 100) /

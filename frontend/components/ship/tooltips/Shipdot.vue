@@ -42,7 +42,10 @@
           data: data.planet,
         }"
       >
-        At planet 🪐{{ data.planet.name }}
+        At planet
+        <span :style="{ color: data.planet.color }"
+          >🪐{{ data.planet.name }}</span
+        >
       </div>
     </div>
 
@@ -59,8 +62,9 @@
         </div>
         <svg
           :style="{
-            transform: `rotate(${data &&
-              data.direction * -1}deg)`,
+            transform: `rotate(${
+              data && data.direction * -1
+            }deg)`,
           }"
           width="404"
           height="233"
@@ -100,10 +104,10 @@
       class="panesection"
       v-if="
         (data._hp === undefined && data._maxHp) ||
-          data.chassis ||
-          data.level ||
-          data.mass ||
-          data.crewMembers
+        data.chassis ||
+        data.level ||
+        data.mass ||
+        data.crewMembers
       "
     >
       <div
@@ -167,13 +171,11 @@
         class="flexbetween"
         v-if="
           data.captain &&
-            data.crewMembers &&
-            Array.isArray(data.crewMembers)
+          data.crewMembers &&
+          Array.isArray(data.crewMembers)
         "
       >
-        <div>
-          Captain
-        </div>
+        <div>Captain</div>
         <div>
           {{
             data.crewMembers.find(

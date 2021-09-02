@@ -136,7 +136,17 @@ export class HumanShip extends CombatShip {
     profiler.step(`move`)
     // ----- move -----
     this.move()
-    if (this.planet) this.addStat(`planetTime`, 1)
+
+    // ----- planet effects -----
+    if (this.planet) {
+      this.addStat(`planetTime`, 1)
+      if (this.planet.repairFactor > 0)
+        this.repair(
+          this.planet.repairFactor *
+            0.000005 *
+            c.gameSpeedMultiplier,
+        )
+    }
 
     profiler.step(`update visible`)
     // ----- scan -----
@@ -622,14 +632,89 @@ export class HumanShip extends CombatShip {
     //   direction: this.direction,
     // })
 
-    if (charge > 0.5)
+    if (charge > 0.5) {
+      let targetData: LogContent | undefined
+      const foundPlanet = this.seenPlanets.find(
+        (planet) =>
+          c.distance(planet.location, targetLocation) <
+          c.arrivalThreshold * 5,
+      )
+      if (foundPlanet)
+        targetData = [
+          {
+            text: foundPlanet.name,
+            color: foundPlanet.color,
+            tooltipData: foundPlanet.toLogStub() as any,
+          },
+        ]
+      if (!targetData) {
+        const foundCache = this.visible.caches.find(
+          (ca) =>
+            ca.location[0] === targetLocation[0] &&
+            ca.location[1] === targetLocation[1],
+        )
+        if (foundCache)
+          targetData = [
+            {
+              text: `a cache`,
+              color: `var(--cache)`,
+              tooltipData: this.cacheToValidScanResult(
+                foundCache,
+              ) as any,
+            },
+            `at ${c.r2(zeroedAngleToTargetInDegrees, 0)}°`,
+          ]
+      }
+      if (!targetData) {
+        const foundLandmark = this.seenLandmarks.find((l) =>
+          c.pointIsInsideCircle(
+            l.location,
+            targetLocation,
+            l.radius,
+          ),
+        )
+        if (foundLandmark)
+          targetData = [
+            {
+              text: foundLandmark.name,
+              color: foundLandmark.color,
+              tooltipData: foundLandmark.toLogStub() as any,
+            },
+          ]
+      }
+      if (!targetData) {
+        const foundShip = this.visible.ships.find(
+          (s) =>
+            c.distance(s.location, targetLocation) <
+            c.arrivalThreshold * 5,
+        )
+        if (foundShip)
+          targetData = [
+            `the ship`,
+            {
+              text: foundShip.name,
+              color: foundShip.faction?.color,
+              tooltipData: foundShip as any,
+            },
+          ]
+      }
+
+      if (!targetData)
+        targetData = [
+          {
+            text: `${c.r2(
+              zeroedAngleToTargetInDegrees,
+              0,
+            )}°`,
+          },
+        ]
+
       this.logEntry(
         [
           thruster.name,
-          `thrusted towards ${c.r2(
-            zeroedAngleToTargetInDegrees,
-            0,
-          )}° with ${c.r2(
+          `thrusted towards`,
+          ...targetData,
+          `with ${c.r2(
             magnitudePerPointOfCharge * charge,
           )}`,
           { text: `&nospaceP`, tooltipData: `Poseidons` },
@@ -637,6 +722,7 @@ export class HumanShip extends CombatShip {
         ],
         `low`,
       )
+    }
 
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge))
@@ -707,7 +793,7 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    if (charge > 1)
+    if (charge > 1.5)
       this.logEntry(
         [
           thruster.name,
@@ -989,7 +1075,7 @@ export class HumanShip extends CombatShip {
     const previousPlanet = this.planet
     this.planet =
       this.game.planets.find((p) =>
-        this.isAt(p.location),
+        this.isAt(p.location, p.landingRadiusMultiplier),
       ) || false
     if (previousPlanet !== this.planet) {
       this.toUpdate.planet = this.planet
@@ -1587,7 +1673,11 @@ export class HumanShip extends CombatShip {
     const partialStub: Partial<CacheStub> | Cache =
       isInRange
         ? cache.stubify()
-        : { location: cache.location, id: cache.id }
+        : {
+            type: `cache`,
+            location: cache.location,
+            id: cache.id,
+          }
     return partialStub
   }
 

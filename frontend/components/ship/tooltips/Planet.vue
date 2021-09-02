@@ -9,7 +9,6 @@
     </div>
     <!-- {{ data }} -->
     <hr />
-    <div v-if="data.level">Level {{ data.level }}</div>
     <div v-if="data.faction">
       <span
         :style="{
@@ -18,9 +17,14 @@
         >{{ c.factions[data.faction.id].name }}</span
       >
       Homeworld
+      <hr />
     </div>
-    <hr v-if="data.faction" />
+    <div v-if="data.level">Level {{ data.level }}</div>
+    <hr />
 
+    <div v-if="data.repairFactor" class="success">
+      Repair field active
+    </div>
     <div
       v-if="
         data.vendor &&
@@ -98,8 +102,4 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped lang="scss">
-.icon {
-  border-radius: 50%;
-}
-</style>
+<style scoped lang="scss"></style>

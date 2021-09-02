@@ -96,7 +96,7 @@ function default_1(socket) {
             {
                 text: heldItem.displayName,
                 color: `var(--item)`,
-                tooltipData: heldItem.stubify(),
+                tooltipData: heldItem.toLogStub(),
             },
             `sold by the captain for ${dist_1.default.r2(price)} credits.`,
         ], `high`);

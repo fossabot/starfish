@@ -24,8 +24,10 @@
     <div v-if="data.thrustAmplification">
       Base Thrust:
       {{
-        data.thrustAmplification *
-        c.baseEngineThrustMultiplier
+        c.r2(
+          data.thrustAmplification *
+            c.baseEngineThrustMultiplier,
+        )
       }}P
     </div>
     <div
@@ -37,9 +39,11 @@
     >
       Effective Thrust:
       {{
-        data.thrustAmplification *
-        data.repair *
-        c.baseEngineThrustMultiplier
+        c.r2(
+          data.thrustAmplification *
+            data.repair *
+            c.baseEngineThrustMultiplier,
+        )
       }}P
     </div>
     <div v-if="data.reliability">

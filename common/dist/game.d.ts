@@ -39,7 +39,7 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "mass" | "level" | "xp" | "baseLevel" | "leanings" | "factionId" | "homeworld" | "creatures" | "allegiances" | "vendor")[];
+        planet: ("name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "repairFactor" | "level" | "xp" | "baseLevel" | "leanings" | "factionId" | "homeworld" | "creatures" | "allegiances" | "vendor")[];
         faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
         species: ("factionId" | "id" | "icon" | "singular" | "description" | "passives")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];

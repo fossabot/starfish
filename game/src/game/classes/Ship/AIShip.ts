@@ -73,7 +73,7 @@ export class AIShip extends CombatShip {
       this.location,
       this.radii.sight,
       this.id,
-      [`ship`, `zone`],
+      [`ship`], // * add 'zone' to allow zones to affect ais
     )
     if (this.onlyVisibleToShipId) {
       const onlyVisibleShip = this.game.humanShips.find(

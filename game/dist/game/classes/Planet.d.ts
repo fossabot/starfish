@@ -38,14 +38,18 @@ export declare class Planet extends Stubbable {
     readonly allegiances: PlanetAllegianceData[];
     readonly homeworld?: Faction;
     readonly leanings: PlanetLeaning[];
+    landingRadiusMultiplier: number;
+    repairFactor: number;
     xp: number;
     level: number;
     priceFluctuator: number;
     toUpdate: {
         allegiances?: PlanetAllegianceData[];
         priceFluctuator?: number;
+        repairFactor?: number;
+        landingRadiusMultiplier?: number;
     };
-    constructor({ name, color, location, mass, vendor, homeworld, creatures, radius, allegiances, leanings, xp, level, baseLevel, }: BasePlanetData, game: Game);
+    constructor({ name, color, location, mass, landingRadiusMultiplier, repairFactor, vendor, homeworld, creatures, radius, allegiances, leanings, xp, level, baseLevel, }: BasePlanetData, game: Game);
     get shipsAt(): import("./Ship/HumanShip").HumanShip[];
     addXp(amount: number, straightUp?: boolean): Promise<void>;
     levelUp(): Promise<void>;

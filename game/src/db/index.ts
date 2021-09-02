@@ -9,7 +9,7 @@ import * as zone from './models/zone'
 dotEnvConfig()
 
 import c from '../../../common/dist'
-const mongoose = require('mongoose')
+const mongoose = require(`mongoose`)
 export const db = {
   cache,
   ship,
@@ -23,19 +23,17 @@ let mongoUsername: string
 let mongoPassword: string
 
 try {
-  mongoUsername = fs.readFileSync(
-    `/run/secrets/mongodb_username`,
-    `utf-8`,
-  ).trim()
+  mongoUsername = fs
+    .readFileSync(`/run/secrets/mongodb_username`, `utf-8`)
+    .trim()
 } catch (e) {
   mongoUsername = process.env
     .MONGODB_ADMINUSERNAME as string
 }
 try {
-  mongoPassword = fs.readFileSync(
-    `/run/secrets/mongodb_password`,
-    `utf-8`,
-  ).trim()
+  mongoPassword = fs
+    .readFileSync(`/run/secrets/mongodb_password`, `utf-8`)
+    .trim()
 } catch (e) {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string

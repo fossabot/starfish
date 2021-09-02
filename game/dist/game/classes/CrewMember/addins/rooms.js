@@ -17,55 +17,14 @@ function cockpit() {
     this.toUpdate.cockpitCharge = this.cockpitCharge;
 }
 exports.cockpit = cockpit;
-function repair(repairAmount) {
-    let totalRepaired = 0;
-    const repairableItems = this.ship.items.filter((i) => i.repair <= 0.9995);
-    if (!repairableItems.length)
-        return totalRepaired;
-    const itemsToRepair = [];
-    if (this.repairPriority === `engines`) {
-        const r = repairableItems.filter((i) => i.type === `engine`);
-        itemsToRepair.push(...r);
-    }
-    else if (this.repairPriority === `weapons`) {
-        const r = repairableItems.filter((i) => i.type === `weapon`);
-        itemsToRepair.push(...r);
-    }
-    else if (this.repairPriority === `scanners`) {
-        const r = repairableItems.filter((i) => i.type === `scanner`);
-        itemsToRepair.push(...r);
-    }
-    else if (this.repairPriority === `communicators`) {
-        const r = repairableItems.filter((i) => i.type === `communicator`);
-        itemsToRepair.push(...r);
-    }
-    if (itemsToRepair.length === 0 ||
-        this.repairPriority === `most damaged`)
-        itemsToRepair.push(repairableItems.reduce((mostBroken, ri) => ri.repair < mostBroken.repair ? ri : mostBroken, repairableItems[0]));
-    const repairBoost = (this.ship.passives.find((p) => p.id === `boostRepairSpeed`)?.intensity || 0) + 1;
-    const amountToRepair = repairAmount ||
-        (dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1) *
-            repairBoost) /
-            (dist_1.default.deltaTime / dist_1.default.tickInterval) /
-            itemsToRepair.length;
-    // c.log(
-    //   this.repairPriority,
-    //   amountToRepair,
-    //   itemsToRepair.map((i) => i.type),
-    // )
-    let overRepair = false;
-    itemsToRepair.forEach((ri) => {
-        const previousRepair = ri.repair;
-        const res = ri.applyRepair(amountToRepair);
-        overRepair = overRepair || res;
-        totalRepaired += ri.repair - previousRepair;
-    });
+function repair() {
+    const repairAmount = dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1);
+    const { overRepair, totalRepaired } = this.ship.repair(repairAmount);
+    this.addStat(`totalHpRepaired`, totalRepaired);
     if (!overRepair) {
         this.addXp(`mechanics`); // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
         this.toUpdate.skills = this.skills;
     }
-    this.ship.updateThingsThatCouldChangeOnItemChange();
-    return totalRepaired;
 }
 exports.repair = repair;
 function weapons() {

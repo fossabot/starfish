@@ -29,6 +29,7 @@ type CrewPassiveId = `cargoSpace`
 type CrewStatKey =
   | `totalContributedToCommonFund`
   | `cargoTransactions`
+  | `totalHpRepaired`
 interface CrewStatEntry {
   stat: CrewStatKey
   amount: number

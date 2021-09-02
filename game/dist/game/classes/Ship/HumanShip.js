@@ -90,8 +90,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         profiler.step(`move`);
         // ----- move -----
         this.move();
-        if (this.planet)
+        // ----- planet effects -----
+        if (this.planet) {
             this.addStat(`planetTime`, 1);
+            if (this.planet.repairFactor > 0)
+                this.repair(this.planet.repairFactor *
+                    0.000005 *
+                    dist_1.default.gameSpeedMultiplier);
+        }
         profiler.step(`update visible`);
         // ----- scan -----
         const previousVisible = { ...this.visible };
@@ -436,13 +442,70 @@ class HumanShip extends CombatShip_1.CombatShip {
         //   speed: this.speed,
         //   direction: this.direction,
         // })
-        if (charge > 0.5)
+        if (charge > 0.5) {
+            let targetData;
+            const foundPlanet = this.seenPlanets.find((planet) => dist_1.default.distance(planet.location, targetLocation) <
+                dist_1.default.arrivalThreshold * 5);
+            if (foundPlanet)
+                targetData = [
+                    {
+                        text: foundPlanet.name,
+                        color: foundPlanet.color,
+                        tooltipData: foundPlanet.toLogStub(),
+                    },
+                ];
+            if (!targetData) {
+                const foundCache = this.visible.caches.find((ca) => ca.location[0] === targetLocation[0] &&
+                    ca.location[1] === targetLocation[1]);
+                if (foundCache)
+                    targetData = [
+                        {
+                            text: `a cache`,
+                            color: `var(--cache)`,
+                            tooltipData: this.cacheToValidScanResult(foundCache),
+                        },
+                        `at ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}°`,
+                    ];
+            }
+            if (!targetData) {
+                const foundLandmark = this.seenLandmarks.find((l) => dist_1.default.pointIsInsideCircle(l.location, targetLocation, l.radius));
+                if (foundLandmark)
+                    targetData = [
+                        {
+                            text: foundLandmark.name,
+                            color: foundLandmark.color,
+                            tooltipData: foundLandmark.toLogStub(),
+                        },
+                    ];
+            }
+            if (!targetData) {
+                const foundShip = this.visible.ships.find((s) => dist_1.default.distance(s.location, targetLocation) <
+                    dist_1.default.arrivalThreshold * 5);
+                if (foundShip)
+                    targetData = [
+                        `the ship`,
+                        {
+                            text: foundShip.name,
+                            color: foundShip.faction?.color,
+                            tooltipData: foundShip,
+                        },
+                    ];
+            }
+            if (!targetData)
+                targetData = [
+                    {
+                        text: `${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}°`,
+                    },
+                ];
             this.logEntry([
                 thruster.name,
-                `thrusted towards ${dist_1.default.r2(zeroedAngleToTargetInDegrees, 0)}° with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
+                `thrusted towards`,
+                ...targetData,
+                `with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
                 { text: `&nospaceP`, tooltipData: `Poseidons` },
                 `of thrust.`,
             ], `low`);
+        }
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
     }
@@ -483,7 +546,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
-        if (charge > 1)
+        if (charge > 1.5)
             this.logEntry([
                 thruster.name,
                 `applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
@@ -651,7 +714,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     async updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
-            this.game.planets.find((p) => this.isAt(p.location)) || false;
+            this.game.planets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
         if (previousPlanet !== this.planet) {
             this.toUpdate.planet = this.planet
                 ? this.planet.stubify()
@@ -1076,7 +1139,11 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.radii.scan;
         const partialStub = isInRange
             ? cache.stubify()
-            : { location: cache.location, id: cache.id };
+            : {
+                type: `cache`,
+                location: cache.location,
+                id: cache.id,
+            };
         return partialStub;
     }
     // ----- respawn -----

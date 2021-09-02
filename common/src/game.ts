@@ -2,12 +2,11 @@ import math from './math'
 import globals from './globals'
 import c from './log'
 import { Profiler } from './Profiler'
-import { engine } from '../dist/items'
 
 const gameShipLimit = 100
 
-const gameSpeedMultiplier = 1 * 12 * 10
-// (process.env.NODE_ENV === `development`
+const gameSpeedMultiplier = 10
+// * (process.env.NODE_ENV === `development`
 //   ? /* dev boost, but doesn't work with frontend */ 10
 //   : 1)
 
@@ -27,7 +26,7 @@ const itemPriceMultiplier = 1
 const factionVendorMultiplier = 0.98
 const factionAllegianceFriendCutoff = 50
 
-const baseItemSellMultiplier = 0.4
+const baseItemSellMultiplier = 0.6
 
 const noEngineThrustMagnitude = 0.02
 
@@ -38,7 +37,7 @@ const planetContributeCostPerXp = 10
 const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
 const cacheExpireTime =
-  (1000 * 60 * 60 * 24 * 7 * 4) / gameSpeedMultiplier
+  (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier
 
 const baseShipScanProperties: {
   id: true
@@ -128,19 +127,21 @@ function getCockpitChargePerTickForSingleCrewMember(
     ) * gameSpeedMultiplier
   )
 }
+
 const baseEngineThrustMultiplier =
-  gameSpeedMultiplier * 0.02
+  gameSpeedMultiplier * 0.15
 
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
-  return engineThrustMultiplier
-  // const flatMod: number = 1
-  // return (
-  //   math.lerp(0.2 * flatMod, flatMod, level / 100) *
-  //   engineThrustMultiplier
-  // )
+  const min: number = 1
+  const max: number = 1.4
+  return (
+    math.lerp(min, max, level / 100) *
+    engineThrustMultiplier *
+    baseEngineThrustMultiplier
+  )
 }
 
 function getRepairAmountPerTickForSingleCrewMember(

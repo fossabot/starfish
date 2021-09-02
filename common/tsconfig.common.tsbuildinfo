@@ -242,8 +242,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "104adc9a809bdf4850e0b4732ca8ef5001ace83699233680935fad83b1fdb44c",
-        "signature": "104adc9a809bdf4850e0b4732ca8ef5001ace83699233680935fad83b1fdb44c",
+        "version": "3d804ac0ef85c97ecf3d923c5ab0e62289f0f777f31187c6aa44f090a58ad4d4",
+        "signature": "3d804ac0ef85c97ecf3d923c5ab0e62289f0f777f31187c6aa44f090a58ad4d4",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "533c7e2b6f57313e9a4b24418896e24dc93187349923d4d275ff1be7b2c3c771",
-        "signature": "533c7e2b6f57313e9a4b24418896e24dc93187349923d4d275ff1be7b2c3c771",
+        "version": "bfc3149fc01f486087b5b7d5395f04067b3e1be501fe72cb35e2b2a35bd0c9e4",
+        "signature": "bfc3149fc01f486087b5b7d5395f04067b3e1be501fe72cb35e2b2a35bd0c9e4",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
@@ -356,19 +356,14 @@
         "signature": "e57cac9d9ce0e7b6e4262ee27e33678788ccfc0536d843faa41e5b1b6c708e9c",
         "affectsGlobalScope": false
       },
-      "./dist/items/index.d.ts": {
-        "version": "32e0498c127b4d6629ce7dec4bad1742cdcbe866ea9736916129c9650e660fa5",
-        "signature": "32e0498c127b4d6629ce7dec4bad1742cdcbe866ea9736916129c9650e660fa5",
-        "affectsGlobalScope": false
-      },
       "./src/game.ts": {
-        "version": "99f740b56bec0fabbc73c8c9fd01d89fbf34df3c3c4d231ff75a86478c13761a",
+        "version": "b4414db6677495300b29d201edbbf29a814a65750834135f7494b1718d6b37b4",
         "signature": "e3e2be98df6f075747b63f99fd443646a6ab80915744b947fd35e532d6c776a9",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "0b05d6b869cbd440ae3825f62dc08df863a1e15b80734ff39211b06d42b40cf1",
-        "signature": "195a751fe9a28c09dffa955cb80db6d1727943b28636674c53541f9cb9473757",
+        "version": "326f7209c71955069e66622f5632b8dec9da7fb8bc1809a71d2f5db0eb652f31",
+        "signature": "3b8f38d3f23a927fda37bd6a16bc68a49920b57bde05ea77624a3e4c526db025",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -423,7 +418,7 @@
       },
       "./src/index.ts": {
         "version": "2dfeed872f1a916eb3a5225d20abce7f26d816c76a36e0b0cb6620523fb82020",
-        "signature": "bfb2e9bf5f1a3b13245386642aaf7789ba3328f18c5ca9d616b77229c8a273c3",
+        "signature": "f6e31d5b0f233d1eb3325ef1b5a1eb5f3d49e53e12085a47036e06fe592a2d1b",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -734,6 +729,7 @@
       "sourceMap": true,
       "noEmit": false,
       "strict": true,
+      "noImplicitAny": false,
       "esModuleInterop": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
@@ -792,9 +788,6 @@
       "../@types/zone.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "./dist/items/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
       "./src/badwords.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -819,7 +812,6 @@
       ],
       "./src/game.ts": [
         "../node_modules/@types/node/util.d.ts",
-        "./dist/items/index.d.ts",
         "./src/globals.ts",
         "./src/log.ts",
         "./src/math.ts",
@@ -1441,9 +1433,6 @@
       "../@types/zone.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "./dist/items/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
       "./src/index.ts": [
         "./src/cargo.ts",
         "./src/items/index.ts",
@@ -1838,8 +1827,16 @@
       "./src/crewpassives.ts",
       "./src/discord.ts",
       "./src/factions.ts",
+      "./src/game.ts",
       "./src/globals.ts",
+      "./src/index.ts",
+      "./src/items/armor.ts",
+      "./src/items/chassis.ts",
+      "./src/items/communicators.ts",
+      "./src/items/engines.ts",
       "./src/items/index.ts",
+      "./src/items/scanners.ts",
+      "./src/items/weapons.ts",
       "./src/log.ts",
       "./src/math.ts",
       "./src/misc.ts",

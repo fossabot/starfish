@@ -44,12 +44,17 @@ export class Planet extends Stubbable {
   readonly homeworld?: Faction
   readonly leanings: PlanetLeaning[]
 
+  landingRadiusMultiplier: number
+  repairFactor: number
+
   xp = 0
   level = 0
   priceFluctuator = 1
   toUpdate: {
     allegiances?: PlanetAllegianceData[]
     priceFluctuator?: number
+    repairFactor?: number
+    landingRadiusMultiplier?: number
   } = {}
 
   constructor(
@@ -58,6 +63,8 @@ export class Planet extends Stubbable {
       color,
       location,
       mass,
+      landingRadiusMultiplier,
+      repairFactor,
       vendor,
       homeworld,
       creatures,
@@ -77,8 +84,12 @@ export class Planet extends Stubbable {
     this.location = location
     this.radius = radius
     this.mass =
-      (mass || (5.974e30 * this.radius) / 36000) *
-      Planet.massAdjuster
+      mass ||
+      ((5.974e30 * this.radius) / 36000) *
+        Planet.massAdjuster
+    this.landingRadiusMultiplier =
+      landingRadiusMultiplier || 1
+    this.repairFactor = repairFactor || 0
     this.creatures = creatures || []
     this.homeworld = game.factions.find(
       (f) => f.id === homeworld?.id,
@@ -111,7 +122,11 @@ export class Planet extends Stubbable {
       this.levelUp()
     }
     // c.log(this.getAddableToVendor())
-    // c.log(this.leanings, this.vendor, this.level)
+    // c.log(
+    //   this.repairFactor,
+    //   this.landingRadiusMultiplier,
+    //   this.level,
+    // )
 
     this.updateFluctuator()
     setInterval(
@@ -162,47 +177,70 @@ export class Planet extends Stubbable {
         Math.floor(Math.random() * 100)
     }
 
-    if (this.vendor) {
-      // add something to vendor
-      const addable = this.getAddableToVendor()
-      if (!addable.length) return
-      const toAddToVendor = c.randomWithWeights(
-        addable.map((a) => ({
-          weight: a.propensity,
-          value: a,
-        })),
-      )
+    const levelUpOptions = [
+      { weight: 100 / this.level, value: `addItemToShop` },
+      {
+        weight: 1.5,
+        value: `expandLandingZone`,
+      },
+      {
+        weight: 2.5,
+        value: `increaseRepairFactor`,
+      },
+    ]
+    let levelUpEffect = c.randomWithWeights(levelUpOptions)
 
-      if (toAddToVendor.class === `repair`)
-        this.vendor.repairCostMultiplier =
-          getRepairCostMultiplier()
-      else {
-        const { buyMultiplier, sellMultiplier } =
-          getBuyAndSellMultipliers()
-        if (toAddToVendor.class === `items`)
-          this.vendor.items.push({
-            buyMultiplier,
-            id: toAddToVendor.id,
-            type: toAddToVendor.type,
-          })
-        if (toAddToVendor.class === `chassis`)
-          this.vendor.chassis.push({
-            buyMultiplier,
-            id: toAddToVendor.id,
-          })
-        if (toAddToVendor.class === `passives`)
-          this.vendor.passives.push({
-            buyMultiplier,
-            id: toAddToVendor.id,
-          })
-        if (toAddToVendor.class === `cargo`)
-          this.vendor.cargo.push({
-            buyMultiplier,
-            sellMultiplier,
-            id: toAddToVendor.id,
-          })
-        // if (toAddToVendor.class === `actives`)
-        //   this.vendor.actives.push({buyMultiplier, sellMultiplier, id: toAddToVendor.id})
+    // homeworlds always have repair factor to some degree
+    if (this.level === 1 && this.homeworld)
+      levelUpEffect = `increaseRepairFactor`
+
+    if (levelUpEffect === `expandLandingZone`) {
+      this.landingRadiusMultiplier += 1
+    } else if (levelUpEffect === `increaseRepairFactor`) {
+      this.repairFactor += 1
+    } else if (levelUpEffect === `addItemToShop`) {
+      if (this.vendor) {
+        // add something to vendor
+        const addable = this.getAddableToVendor()
+        if (!addable.length) return
+        const toAddToVendor = c.randomWithWeights(
+          addable.map((a) => ({
+            weight: a.propensity,
+            value: a,
+          })),
+        )
+
+        if (toAddToVendor.class === `repair`)
+          this.vendor.repairCostMultiplier =
+            getRepairCostMultiplier()
+        else {
+          const { buyMultiplier, sellMultiplier } =
+            getBuyAndSellMultipliers()
+          if (toAddToVendor.class === `items`)
+            this.vendor.items.push({
+              buyMultiplier,
+              id: toAddToVendor.id,
+              type: toAddToVendor.type,
+            })
+          if (toAddToVendor.class === `chassis`)
+            this.vendor.chassis.push({
+              buyMultiplier,
+              id: toAddToVendor.id,
+            })
+          if (toAddToVendor.class === `passives`)
+            this.vendor.passives.push({
+              buyMultiplier,
+              id: toAddToVendor.id,
+            })
+          if (toAddToVendor.class === `cargo`)
+            this.vendor.cargo.push({
+              buyMultiplier,
+              sellMultiplier,
+              id: toAddToVendor.id,
+            })
+          // if (toAddToVendor.class === `actives`)
+          //   this.vendor.actives.push({buyMultiplier, sellMultiplier, id: toAddToVendor.id})
+        }
       }
     }
 
@@ -430,6 +468,8 @@ export class Planet extends Stubbable {
       ...s,
       type: `planet`,
       vendor: undefined,
+      repairFactor: undefined,
+      landingRadiusMultiplier: undefined,
     }
   }
 }

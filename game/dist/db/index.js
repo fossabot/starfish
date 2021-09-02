@@ -33,7 +33,7 @@ const planet = __importStar(require("./models/planet"));
 const zone = __importStar(require("./models/zone"));
 dotenv_1.config();
 const dist_1 = __importDefault(require("../../../common/dist"));
-const mongoose = require('mongoose');
+const mongoose = require(`mongoose`);
 exports.db = {
     cache,
     ship,
@@ -45,14 +45,18 @@ let ready = false;
 let mongoUsername;
 let mongoPassword;
 try {
-    mongoUsername = fs.readFileSync(`/run/secrets/mongodb_username`, `utf-8`).trim();
+    mongoUsername = fs
+        .readFileSync(`/run/secrets/mongodb_username`, `utf-8`)
+        .trim();
 }
 catch (e) {
     mongoUsername = process.env
         .MONGODB_ADMINUSERNAME;
 }
 try {
-    mongoPassword = fs.readFileSync(`/run/secrets/mongodb_password`, `utf-8`).trim();
+    mongoPassword = fs
+        .readFileSync(`/run/secrets/mongodb_password`, `utf-8`)
+        .trim();
 }
 catch (e) {
     mongoPassword = process.env

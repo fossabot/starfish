@@ -283,7 +283,7 @@ export abstract class CombatShip extends Ship {
             text: weapon.displayName,
             color: `var(--item)`,
             tooltipData: {
-              ...(weapon.stubify() as any),
+              ...(weapon.toLogStub() as any),
               cooldownRemaining: undefined,
             },
           },
@@ -319,7 +319,7 @@ export abstract class CombatShip extends Ship {
             text: weapon.displayName,
             color: `var(--item)`,
             tooltipData: {
-              ...(weapon.stubify() as any),
+              ...(weapon.toLogStub() as any),
               cooldownRemaining: undefined,
               _hp: undefined,
             },
@@ -435,7 +435,7 @@ export abstract class CombatShip extends Ship {
               {
                 text: armor.displayName,
                 color: `var(--item)`,
-                tooltipData: armor.stubify(),
+                tooltipData: armor.toLogStub() as any,
               },
               `has been broken!`,
             ],
@@ -468,7 +468,12 @@ export abstract class CombatShip extends Ship {
                 {
                   text: armor.displayName,
                   color: `var(--item)`,
-                  tooltipData: armor.stubify(),
+                  tooltipData: {
+                    type: `armor`,
+                    description: armor.description,
+                    displayName: armor.displayName,
+                    id: armor.id,
+                  },
                 },
                 `&nospace!`,
               ],
@@ -571,7 +576,8 @@ export abstract class CombatShip extends Ship {
             {
               text: equipmentToAttack.displayName,
               color: `var(--item)`,
-              tooltipData: equipmentToAttack.stubify(),
+              tooltipData:
+                equipmentToAttack.toLogStub() as any,
             },
             `has been disabled!`,
           ],
@@ -749,5 +755,77 @@ export abstract class CombatShip extends Ship {
   die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
     this.dead = true
+  }
+
+  repair(
+    baseRepairAmount: number,
+    repairPriority: RepairPriority = `most damaged`,
+  ): { totalRepaired: number; overRepair: boolean } {
+    let totalRepaired = 0
+    const repairableItems = this.items.filter(
+      (i) => i.repair <= 0.9995,
+    )
+    if (!repairableItems.length)
+      return { totalRepaired, overRepair: false }
+    const itemsToRepair: Item[] = []
+
+    if (repairPriority === `engines`) {
+      const r = repairableItems.filter(
+        (i) => i.type === `engine`,
+      )
+      itemsToRepair.push(...r)
+    } else if (repairPriority === `weapons`) {
+      const r = repairableItems.filter(
+        (i) => i.type === `weapon`,
+      )
+      itemsToRepair.push(...r)
+    } else if (repairPriority === `scanners`) {
+      const r = repairableItems.filter(
+        (i) => i.type === `scanner`,
+      )
+      itemsToRepair.push(...r)
+    } else if (repairPriority === `communicators`) {
+      const r = repairableItems.filter(
+        (i) => i.type === `communicator`,
+      )
+      itemsToRepair.push(...r)
+    }
+    if (
+      itemsToRepair.length === 0 ||
+      repairPriority === `most damaged`
+    )
+      itemsToRepair.push(
+        repairableItems.reduce(
+          (mostBroken, ri) =>
+            ri.repair < mostBroken.repair ? ri : mostBroken,
+          repairableItems[0],
+        ),
+      )
+
+    const repairBoost =
+      (this.passives.find(
+        (p) => p.id === `boostRepairSpeed`,
+      )?.intensity || 0) + 1
+
+    const amountToRepair =
+      (baseRepairAmount * repairBoost) /
+      (c.deltaTime / c.tickInterval) /
+      itemsToRepair.length
+
+    // c.log(
+    //   repairPriority,
+    //   amountToRepair,
+    //   itemsToRepair.map((i) => i.type),
+    // )
+    let overRepair = false
+    itemsToRepair.forEach((ri) => {
+      const previousRepair = ri.repair
+      const res = ri.applyRepair(amountToRepair)
+      overRepair = overRepair || res
+      totalRepaired += ri.repair - previousRepair
+    })
+
+    this.updateThingsThatCouldChangeOnItemChange()
+    return { totalRepaired, overRepair }
   }
 }

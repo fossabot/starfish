@@ -49,7 +49,7 @@ class AIShip extends CombatShip_1.CombatShip {
             return;
         // ----- move -----
         this.move();
-        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`, `zone`]);
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
         if (this.onlyVisibleToShipId) {
             const onlyVisibleShip = this.game.humanShips.find((s) => s.id === this.onlyVisibleToShipId);
             if (onlyVisibleShip)

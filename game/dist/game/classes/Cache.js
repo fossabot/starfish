@@ -5,6 +5,7 @@ const Stubbable_1 = require("./Stubbable");
 class Cache extends Stubbable_1.Stubbable {
     constructor({ contents, location, message, time, id, droppedBy, onlyVisibleToShipId, }, game) {
         super();
+        this.type = `cache`;
         this.message = ``;
         this.time = Date.now();
         this.game = game;

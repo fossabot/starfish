@@ -7,6 +7,19 @@
       <b>Level {{ planet.level }}</b>
     </div>
     <div class="success martopsmall marbotsmall">
+      <div v-if="planet.landingRadiusMultiplier > 1">
+        +
+        {{
+          c.r2(
+            (planet.landingRadiusMultiplier - 1) * 100,
+            0,
+          )
+        }}% landing radius
+      </div>
+      <div v-if="planet.repairFactor > 0">
+        + {{ c.r2(planet.repairFactor, 0, true) }} passive
+        repair field speed
+      </div>
       <div v-if="thingsForSale > 0">
         + {{ thingsForSale }} vendor capacity
       </div>

@@ -19,5 +19,6 @@ export declare class Item extends Stubbable {
     set hp(newHp: number);
     use(usePercent?: number): number;
     applyRepair(numericAmount: number): boolean;
+    toLogStub(): Partial<ItemStub>;
 }
 //# sourceMappingURL=Item.d.ts.map

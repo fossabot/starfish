@@ -70,12 +70,15 @@ function degreesToArrow(angle) {
 function coordPairToArrow(coordPair) {
     return degreesToArrow(math_1.default.vectorToDegrees(coordPair));
 }
-function percentToTextBars(percent = 0, barCount = 10) {
-    const bars = [];
-    for (let i = 0; i < 1; i += 1 / barCount)
-        bars.push(i < percent ? `▓` : `░`);
-    return `\`` + bars.join(``) + `\``;
-}
+// function percentToTextBars(
+//   percent: number = 0,
+//   barCount = 10,
+// ): string {
+//   const bars = []
+//   for (let i = 0; i < 1; i += 1 / barCount)
+//     bars.push(i < percent ? `▓` : `░`)
+//   return `\`` + bars.join(``) + `\``
+// }
 function numberToEmoji(number = 0) {
     return numberEmojis[number] || `❓`;
 }
@@ -173,7 +176,7 @@ exports.default = {
     printList,
     degreesToArrow,
     coordPairToArrow,
-    percentToTextBars,
+    // percentToTextBars,
     numberToEmoji,
     emojiToNumber,
     capitalize,

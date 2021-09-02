@@ -513,11 +513,15 @@ export class Ship extends Stubbable {
     }
   }
 
-  isAt(this: Ship, coords: CoordinatePair) {
+  isAt(
+    this: Ship,
+    coords: CoordinatePair,
+    arrivalThresholdMultiplier: number = 1,
+  ): boolean {
     return c.pointIsInsideCircle(
       this.location,
       coords,
-      c.arrivalThreshold,
+      c.arrivalThreshold * arrivalThresholdMultiplier,
     )
   }
 

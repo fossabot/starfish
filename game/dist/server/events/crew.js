@@ -295,13 +295,7 @@ function default_1(socket) {
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;
         crewMember.toUpdate.credits = crewMember.credits;
-        let remainingHp = hp;
-        while (true) {
-            const prev = remainingHp;
-            remainingHp -= crewMember.repairAction(remainingHp);
-            if (prev === remainingHp)
-                break;
-        }
+        ship.repair(hp);
         ship.logEntry(`${crewMember.name} bought ${Math.round(hp * 100) / 100} hp worth of repairs.`, `medium`);
         crewMember.addStat(`totalContributedToCommonFund`, price);
         callback({

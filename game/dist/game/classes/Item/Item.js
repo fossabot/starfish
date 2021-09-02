@@ -70,7 +70,7 @@ class Item extends Stubbable_1.Stubbable {
                     {
                         text: this.displayName,
                         color: `var(--item)`,
-                        tooltipData: this.stubify(),
+                        tooltipData: this.toLogStub(),
                     },
                     `is fully repaired.`,
                 ], `medium`);
@@ -81,6 +81,12 @@ class Item extends Stubbable_1.Stubbable {
         if (this.repair < 0.9)
             this.announceWhenRepaired = true;
         return overRepair;
+    }
+    toLogStub() {
+        return {
+            ...this.stubify(),
+            repair: undefined,
+        };
     }
 }
 exports.Item = Item;

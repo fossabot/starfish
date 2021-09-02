@@ -307,7 +307,10 @@ export default class Drawer {
       })
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
-        radius: c.arrivalThreshold * this.flatScale,
+        radius:
+          c.arrivalThreshold *
+          (p.landingRadiusMultiplier || 1) *
+          this.flatScale,
         color: p.color,
         outline: `dash`,
         opacity: 0.4,
@@ -721,8 +724,12 @@ export default class Drawer {
 
           const elementPositionInRelationToCenterAsPercent =
             [
-              (this.center[0] - location[0]) / this.width,
-              (this.center[1] - location[1]) / this.height,
+              (this.center[0] -
+                location[0] * this.flatScale) /
+                this.width,
+              (this.center[1] -
+                location[1] * this.flatScale) /
+                this.height,
             ]
 
           const calculatePosition = () => {

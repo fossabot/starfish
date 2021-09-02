@@ -17,9 +17,11 @@ class Engine extends Item_1.Item {
     use(usePercent = 1) {
         if (this.ship.tutorial?.currentStep.disableRepair)
             return 0;
+        const flatLoss = 0.001 * dist_1.default.gameSpeedMultiplier;
         let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) *
             usePercent *
-            400;
+            400 +
+            flatLoss;
         this.repair -= repairLoss;
         if (this.repair < 0)
             this.repair = 0;

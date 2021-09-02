@@ -10,7 +10,7 @@
     <div class="thrustbg" :class="{ animateThrust }"></div>
 
     <div class="panesection">
-      <div class="marbot">
+      <div class="marbotsmall">
         <LimitedChargeButton
           class="marbottiny"
           :big="true"
@@ -59,7 +59,7 @@
           @mouseenter.native="
             $store.commit(
               'tooltip',
-              `Click and hold to use your charged thrust to stop the ship.`,
+              `Click and hold to use your charged thrust to stop the ship. More powerful than thrusting.`,
             )
           "
           @mouseleave.native="reset"
@@ -84,29 +84,32 @@
 
       <div
         v-tooltip="
-          `The base amount of thrust that can be generated from the ship's engines. Goes up with higher engine repair and more/better engines.`
-        "
-      >
-        Engine Max Thrust:
-        {{ c.r2(engineThrustAmplification)
-        }}<span v-tooltip="`Poseidons`">P</span>
-      </div>
-      <div
-        v-tooltip="
-          `This percent is unique to you. <br />Your charge speed goes up as you gain levels in <b>piloting</b>.`
+          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>piloting</b>.`
         "
       >
         Charge:
-        {{
-          c.r2(
-            crewMember.cockpitCharge *
-              c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) *
-              100,
-            0,
-          ) + '%'
-        }}
+        <NumberChangeHighlighter
+          :number="
+            c.r2(
+              crewMember.cockpitCharge *
+                c.getMaxCockpitChargeForSingleCrewMember(
+                  pilotingSkill,
+                ) *
+                100,
+              0,
+            )
+          "
+          :display="
+            c.r2(
+              crewMember.cockpitCharge *
+                c.getMaxCockpitChargeForSingleCrewMember(
+                  pilotingSkill,
+                ) *
+                100,
+              0,
+            ) + '%'
+          "
+        />
         <span
           class="sub"
           v-if="
@@ -131,7 +134,17 @@
       </div>
       <div
         v-tooltip="
-          `The maximum amount of thrust that you can generate currently: charge percent multiplied by maximum engine thrust.`
+          `The maximum amount of thrust that you can generate currently. 
+          <p>
+            Equivalent to your charge percent multiplied by base engine thrust, scaled by your current level in <b>piloting</b>.
+          </p>
+          <p>
+            Final speed will take into account the ship's weight and current velocity.
+            <hr />Current base engine thrust: <b>${c.r2(
+              engineThrustAmplification,
+            )}P</b>
+          </p>
+          Engine thrust goes up with higher engine repair and more/better engines.`
         "
       >
         Available Thrust:
@@ -139,6 +152,10 @@
           :number="
             c.r2(memberThrust * crewMember.cockpitCharge)
           "
+        />
+        /
+        <NumberChangeHighlighter
+          :number="c.r2(memberThrust)"
         /><span v-tooltip="`Poseidons`">P</span>
       </div>
     </div>

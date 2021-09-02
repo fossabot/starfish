@@ -194,7 +194,7 @@ export class Tutorial {
         resetView: true,
         shownRooms: [`cockpit`],
         forceCrewLocation: `cockpit`,
-        forceCockpitCharge: 0.75,
+        forceCockpitCharge: 0.9,
         shownPanels: [`mapZoom`, `map`, `room`, `ship`],
         highlightPanel: `room`,
         disableRepair: true,
@@ -231,7 +231,7 @@ export class Tutorial {
         highlightPanel: `inventory`,
         disableRepair: true,
         disableStamina: true,
-        forceCockpitCharge: 0.65,
+        forceCockpitCharge: 0.85,
         visibleTypes: [`planet`, `trail`],
         script: [
           {
@@ -258,7 +258,7 @@ export class Tutorial {
         highlightPanel: `room`,
         disableRepair: true,
         disableStamina: true,
-        forceCockpitCharge: 0.65,
+        forceCockpitCharge: 0.85,
         visibleTypes: [`planet`, `trail`],
         script: [
           {
@@ -408,7 +408,7 @@ export class Tutorial {
         sightRange: 0.03,
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
-        forceCockpitCharge: 0.5,
+        forceCockpitCharge: 0.8,
         shownRooms: [`cockpit`, `weapons`, `bunk`],
         shownPanels: [
           `mapZoom`,
@@ -538,7 +538,7 @@ export class Tutorial {
         sightRange: 0.03,
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
-        forceCockpitCharge: 0.4,
+        forceCockpitCharge: 0.7,
         resetView: true,
         shownRooms: [
           `cockpit`,
@@ -665,7 +665,7 @@ export class Tutorial {
           },
           {
             message: `The real journey starts here. Will your ship be traders? Pirates? Explorers? Peacekeepers? Time will tell.`,
-            advance: `<< Get started >>`,
+            advance: `Get started`,
           },
         ],
         nextStepTrigger: {

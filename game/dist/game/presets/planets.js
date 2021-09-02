@@ -213,6 +213,8 @@ function generatePlanet(game, homeworldFactionKey) {
         color,
         creatures,
         mass,
+        landingRadiusMultiplier: 1,
+        repairFactor: 0,
         factionId,
         homeworld: homeworldFactionKey
             ? { id: homeworldFactionKey }
