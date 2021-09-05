@@ -91,42 +91,28 @@
         <NumberChangeHighlighter
           :number="
             c.r2(
-              crewMember.cockpitCharge *
-                c.getMaxCockpitChargeForSingleCrewMember(
-                  pilotingSkill,
-                ) *
-                100,
+              crewMember.cockpitCharge * maxCharge * 100,
               0,
             )
           "
           :display="
             c.r2(
-              crewMember.cockpitCharge *
-                c.getMaxCockpitChargeForSingleCrewMember(
-                  pilotingSkill,
-                ) *
-                100,
+              crewMember.cockpitCharge * maxCharge * 100,
               0,
             ) + '%'
           "
         />
         <span
           class="sub"
-          v-if="
-            c.getMaxCockpitChargeForSingleCrewMember(
-              pilotingSkill,
-            ) > crewMember.cockpitCharge
-          "
+          v-if="maxCharge > crewMember.cockpitCharge"
           >(Full in
           {{
             c.msToTimeString(
-              ((c.getMaxCockpitChargeForSingleCrewMember(
-                pilotingSkill,
-              ) -
-                crewMember.cockpitCharge) /
+              ((maxCharge - crewMember.cockpitCharge) /
                 c.getCockpitChargePerTickForSingleCrewMember(
                   pilotingSkill,
-                )) *
+                ) /
+                passiveChargeBoost) *
                 c.tickInterval,
             )
           }})</span
@@ -136,11 +122,11 @@
         v-tooltip="
           `The maximum amount of thrust that you can generate currently. 
           <p>
-            Equivalent to your charge percent multiplied by base engine thrust, scaled by your current level in <b>piloting</b>.
+            Equivalent to your charge percent multiplied by engine thrust, scaled by your current level in <b>piloting</b>.
           </p>
           <p>
             Final speed will take into account the ship's weight and current velocity.
-            <hr />Current base engine thrust: <b>${c.r2(
+            <hr />Current engine thrust: <b>${c.r2(
               engineThrustAmplification,
             )}P</b>
           </p>
@@ -305,6 +291,22 @@ export default Vue.extend({
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
         this.engineThrustAmplification,
+      )
+    },
+    maxCharge(): number {
+      const baseMax =
+        c.getMaxCockpitChargeForSingleCrewMember(
+          this.pilotingSkill,
+        )
+      return baseMax
+    },
+    passiveChargeBoost(): number {
+      return (this.ship as ShipStub).passives.reduce(
+        (total, p: ShipPassiveEffect) =>
+          p.id === 'boostCockpitChargeSpeed'
+            ? total + p.intensity
+            : total,
+        1,
       )
     },
     cachesToShow(): CacheStub[] {

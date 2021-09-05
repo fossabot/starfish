@@ -3,6 +3,7 @@ type CrewLocation =
   | `cockpit`
   | `repair`
   | `weapons`
+  | `mine`
 interface BaseRoomData {
   id: CrewLocation
   description: string
@@ -13,6 +14,7 @@ type SkillId =
   | `munitions`
   | `mechanics`
   | `linguistics`
+  | `mining`
 
 type Tactic = `defensive` | `aggressive`
 
@@ -23,6 +25,8 @@ type RepairPriority =
   | `communicators`
   | `scanners`
 
+type MinePriorityType = CargoId | `closest`
+
 type CrewActiveId = `boost` | `quickFix` | `sightRange`
 type CrewPassiveId = `cargoSpace`
 
@@ -30,6 +34,7 @@ type CrewStatKey =
   | `totalContributedToCommonFund`
   | `cargoTransactions`
   | `totalHpRepaired`
+  | `totalTonsMined`
 interface CrewStatEntry {
   stat: CrewStatKey
   amount: number
@@ -54,6 +59,7 @@ interface BaseCrewMemberData {
   cockpitCharge?: number
   tactic?: Tactic
   itemTarget?: ItemType
+  minePriority?: MinePriorityType
   attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority

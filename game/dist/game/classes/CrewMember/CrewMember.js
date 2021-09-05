@@ -40,16 +40,18 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.itemTarget = null;
         this.cockpitCharge = 0;
         this.repairPriority = `most damaged`;
+        this.minePriority = `closest`;
         this.actives = [];
         this.passives = [];
         this.upgrades = [];
         this.stats = [];
-        this.maxCargoSpace = CrewMember.basemaxCargoSpace;
+        this.maxCargoSpace = CrewMember.baseMaxCargoSpace;
         this.toUpdate = {};
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
         this.weaponsAction = roomActions.weapons;
         this.bunkAction = roomActions.bunk;
+        this.mineAction = roomActions.mine;
         this.id = data.id;
         this.ship = ship;
         this.rename(data.name);
@@ -70,6 +72,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             { skill: `munitions`, level: 1, xp: 0 },
             { skill: `mechanics`, level: 1, xp: 0 },
             { skill: `linguistics`, level: 1, xp: 0 },
+            { skill: `mining`, level: 1, xp: 0 },
         ];
         // if (data.actives)
         //   for (let a of data.actives)
@@ -80,6 +83,8 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.tactic = data.tactic;
         if (data.itemTarget)
             this.itemTarget = data.itemTarget;
+        if (data.minePriority)
+            this.minePriority = data.minePriority;
         if (data.targetLocation)
             this.targetLocation = data.targetLocation;
         if (data.attackFactions)
@@ -88,6 +93,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.repairPriority = data.repairPriority;
         if (data.stats)
             this.stats = data.stats;
+        this.recalculateAll();
         this.toUpdate = this;
     }
     rename(newName) {
@@ -149,6 +155,9 @@ class CrewMember extends Stubbable_1.Stubbable {
         // ----- weapons -----
         else if (this.location === `weapons`)
             this.weaponsAction();
+        // ----- mine -----
+        else if (this.location === `mine`)
+            this.mineAction();
     }
     active() {
         this.lastActive = Date.now();
@@ -208,11 +217,12 @@ class CrewMember extends Stubbable_1.Stubbable {
     recalculateMaxCargoSpace() {
         const personalCargoSpacePassiveBoost = this.passives.find((p) => p.id === `cargoSpace`)
             ?.changeAmount || 0;
-        const shipwideCargoSpacePassiveBoost = this.ship.passives.find((p) => p.id === `boostCargoSpace`)?.changeAmount || 0;
+        const shipwideCargoSpacePassiveBoost = this.ship.passives.find((p) => p.id === `boostCargoSpace`)?.intensity || 0;
         this.maxCargoSpace =
-            CrewMember.basemaxCargoSpace +
-                personalCargoSpacePassiveBoost *
-                    shipwideCargoSpacePassiveBoost;
+            CrewMember.baseMaxCargoSpace +
+                personalCargoSpacePassiveBoost +
+                shipwideCargoSpacePassiveBoost;
+        this.toUpdate.maxCargoSpace = this.maxCargoSpace;
     }
     addPassive(data) {
         this.active();
@@ -252,19 +262,38 @@ class CrewMember extends Stubbable_1.Stubbable {
         return this.stamina <= 0;
     }
     get piloting() {
-        return this.skills.find((s) => s?.skill === `piloting`);
+        return (this.skills.find((s) => s?.skill === `piloting`) || {
+            skill: `piloting`,
+            level: 1,
+            xp: 0,
+        });
     }
     get linguistics() {
-        return this.skills.find((s) => s?.skill === `linguistics`);
+        return (this.skills.find((s) => s?.skill === `linguistics`) || { skill: `linguistics`, level: 1, xp: 0 });
     }
     get munitions() {
-        return this.skills.find((s) => s?.skill === `munitions`);
+        return (this.skills.find((s) => s?.skill === `munitions`) || {
+            skill: `munitions`,
+            level: 1,
+            xp: 0,
+        });
     }
     get mechanics() {
-        return this.skills.find((s) => s?.skill === `mechanics`);
+        return (this.skills.find((s) => s?.skill === `mechanics`) || {
+            skill: `mechanics`,
+            level: 1,
+            xp: 0,
+        });
+    }
+    get mining() {
+        return (this.skills.find((s) => s?.skill === `mining`) || {
+            skill: `mining`,
+            level: 1,
+            xp: 0,
+        });
     }
 }
 exports.CrewMember = CrewMember;
 CrewMember.levelXPNumbers = dist_1.default.levels;
-CrewMember.basemaxCargoSpace = 10;
+CrewMember.baseMaxCargoSpace = 10;
 //# sourceMappingURL=CrewMember.js.map

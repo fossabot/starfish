@@ -43,9 +43,16 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship']),
+    roomCount(): number {
+      return this.ship.rooms.length
+    },
   },
   watch: {
     location() {
+      this.calculateNewPosition()
+    },
+    roomCount(n, o) {
+      if (n === o) return
       this.calculateNewPosition()
     },
   },

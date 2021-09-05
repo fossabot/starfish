@@ -576,10 +576,10 @@ export default class Drawer {
           ar.end[0] * this.flatScale,
           ar.end[1] * this.flatScale * -1,
         )
-        grd.addColorStop(0, `yellow`)
-        grd.addColorStop(1, `red`)
+        grd.addColorStop(0, `rgba(255, 0, 0, .5)`)
+        grd.addColorStop(1, `rgba(255, 100, 0, 1)`)
 
-        // console.log(ar.damageTaken.miss)
+        // console.log(ar)
         this.drawLine({
           start: [
             ar.start[0] * this.flatScale,
@@ -593,8 +593,8 @@ export default class Drawer {
           opacity:
             (1 -
               (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.miss === false ? 0.5 : 1),
-          width: ar.damageTaken.miss === false ? 0.5 : 1,
+            (ar.damageTaken.miss === false ? 1 : 0.5),
+          width: ar.damageTaken.miss === false ? 1 : 0.5,
         })
       },
     )
@@ -738,7 +738,7 @@ export default class Drawer {
                 // drawing outside the outline
 
                 if (
-                  elementPositionInRelationToCenterAsPercent[0] >
+                  elementPositionInRelationToCenterAsPercent[0] >=
                   0
                 )
                   this.ctx.textAlign = `left`
@@ -750,7 +750,7 @@ export default class Drawer {
                   this.ctx.textBaseline = `middle`
 
                   const willMoveRight =
-                    elementPositionInRelationToCenterAsPercent[0] >
+                    elementPositionInRelationToCenterAsPercent[0] >=
                     0
                   let angle, y
 

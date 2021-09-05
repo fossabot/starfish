@@ -93,10 +93,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- planet effects -----
         if (this.planet) {
             this.addStat(`planetTime`, 1);
-            if (this.planet.repairFactor > 0)
-                this.repair(this.planet.repairFactor *
-                    0.000005 *
-                    dist_1.default.gameSpeedMultiplier);
+            if (this.planet.planetType === `basic`) {
+                if (this.planet.repairFactor > 0) {
+                    const isAllied = (this.planet.allegiances.find((a) => a.faction.id === this.faction.id)?.level || 0) >=
+                        dist_1.default.factionAllegianceFriendCutoff;
+                    this.repair(this.planet.repairFactor *
+                        0.000005 *
+                        dist_1.default.gameSpeedMultiplier *
+                        (isAllied ? 2 : 1));
+                }
+            }
         }
         profiler.step(`update visible`);
         // ----- scan -----
@@ -719,8 +725,15 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.toUpdate.planet = this.planet
                 ? this.planet.stubify()
                 : false;
-            if (this.planet)
+            if (this.planet) {
                 this.hardStop();
+                this.planet.rooms.forEach((r) => this.addRoom(r));
+                this.planet.passives.forEach((p) => this.applyPassive(p));
+            }
+            else if (previousPlanet) {
+                previousPlanet.rooms.forEach((r) => this.removeRoom(r));
+                previousPlanet.passives.forEach((p) => this.removePassive(p));
+            }
         }
         if (silent)
             return;
@@ -946,6 +959,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.rooms = this.rooms;
     }
     removeRoom(room) {
+        this.crewMembers.forEach((cm) => {
+            if (cm.location === room) {
+                cm.location = `bunk`;
+                cm.toUpdate.location = cm.location;
+            }
+        });
         delete this.rooms[room];
         this.toUpdate.rooms = this.rooms;
     }

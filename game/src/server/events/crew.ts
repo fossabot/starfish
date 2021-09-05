@@ -5,6 +5,8 @@ import { game } from '../..'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
+import type { Planet } from '../../game/classes/Planet/Planet'
+import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -181,6 +183,28 @@ export default function (
     },
   )
 
+  socket.on(
+    `crew:minePriority`,
+    (shipId, crewId, minePriority) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      crewMember.minePriority = minePriority
+      crewMember.toUpdate.minePriority =
+        crewMember.minePriority
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} mine priority to ${minePriority}.`,
+      )
+    },
+  )
+
   socket.on(`crew:contribute`, (shipId, crewId, amount) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,
@@ -232,7 +256,7 @@ export default function (
 
       const planet = ship.game.planets.find(
         (p) => p.name === planetName,
-      )
+      ) as Planet | undefined
       if (!planet)
         return callback({
           error: `It looks like you're not on a planet.`,
@@ -314,8 +338,10 @@ export default function (
         return callback({ error: `No crew member found.` })
 
       const planet = ship.game.planets.find(
-        (p) => p.name === vendorLocation,
-      )
+        (p) =>
+          p.name === vendorLocation &&
+          p.planetType === `basic`,
+      ) as BasicPlanet | undefined
       const cargoForSale = planet?.vendor?.cargo?.find(
         (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
       )
@@ -405,8 +431,10 @@ export default function (
         })
 
       const planet = ship.game.planets.find(
-        (p) => p.name === vendorLocation,
-      )
+        (p) =>
+          p.name === vendorLocation &&
+          p.planetType === `basic`,
+      ) as BasicPlanet | undefined
       const cargoBeingBought = planet?.vendor?.cargo?.find(
         (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
       )
@@ -530,8 +558,10 @@ export default function (
         return callback({ error: `No crew member found.` })
 
       const planet = ship.game.planets.find(
-        (p) => p.name === vendorLocation,
-      )
+        (p) =>
+          p.name === vendorLocation &&
+          p.planetType === `basic`,
+      ) as BasicPlanet | undefined
       const repairMultiplier =
         planet?.vendor?.repairCostMultiplier
       if (!planet || !repairMultiplier)
@@ -609,10 +639,11 @@ export default function (
 
       const planet = ship.game.planets.find(
         (p) => p.name === vendorLocation,
-      )
+      ) as BasicPlanet | undefined
       const passiveForSale = planet?.vendor?.passives?.find(
         (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
       )
+      c.log(planet?.vendor?.passives, passiveId)
       if (
         !planet ||
         !passiveForSale ||

@@ -116,18 +116,14 @@ ${
           <PromptButton
             class="inlineblock"
             v-if="item.amount >= 1"
+            :max="item.amount"
             @done="drop(item.id, ...arguments)"
             @apply="drop(item.id, ...arguments)"
           >
-            <template #label> Drop </template>
+            <template #label>Drop</template>
             <template>
               How many tons of {{ item.id }} do you want to
-              jettison as a cache? (Max
-              {{
-                c.numberWithCommas(
-                  c.r2(item.amount, 2, true),
-                )
-              }})
+              jettison as a cache?
             </template>
             <template #second>
               Would you like to attach a message to the

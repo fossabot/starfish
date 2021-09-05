@@ -10,6 +10,9 @@
     <ShipRoomWeapons
       v-else-if="crewMember.location === 'weapons'"
     />
+    <ShipRoomMine
+      v-else-if="crewMember.location === 'mine'"
+    />
   </div>
 </template>
 

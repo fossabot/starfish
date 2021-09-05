@@ -5,7 +5,7 @@ import type { HumanShip } from './Ship/HumanShip'
 import { Stubbable } from './Stubbable'
 
 export class Cache extends Stubbable {
-  static readonly rePickUpTime = 1000 * 60 // 1 minute
+  static readonly rePickUpTime = 1000 * 60 * 5 // 5 minutes
 
   readonly type = `cache`
   readonly id: string

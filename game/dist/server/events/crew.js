@@ -96,6 +96,18 @@ function default_1(socket) {
             crewMember.repairPriority;
         dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} repair priority to ${repairPriority}.`);
     });
+    socket.on(`crew:minePriority`, (shipId, crewId, minePriority) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return;
+        const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
+        if (!crewMember)
+            return;
+        crewMember.minePriority = minePriority;
+        crewMember.toUpdate.minePriority =
+            crewMember.minePriority;
+        dist_1.default.log(`gray`, `Set ${crewMember.name} on ${ship.name} mine priority to ${minePriority}.`);
+    });
     socket.on(`crew:contribute`, (shipId, crewId, amount) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
@@ -165,7 +177,8 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
-        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation &&
+            p.planetType === `basic`);
         const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
         if (!planet || !cargoForSale)
             return callback({
@@ -211,7 +224,8 @@ function default_1(socket) {
             return callback({
                 error: `Not holding enough stock of that cargo.`,
             });
-        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation &&
+            p.planetType === `basic`);
         const cargoBeingBought = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier);
         if (!planet || !cargoBeingBought)
             return callback({
@@ -278,7 +292,8 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
-        const planet = ship.game.planets.find((p) => p.name === vendorLocation);
+        const planet = ship.game.planets.find((p) => p.name === vendorLocation &&
+            p.planetType === `basic`);
         const repairMultiplier = planet?.vendor?.repairCostMultiplier;
         if (!planet || !repairMultiplier)
             return callback({
@@ -314,6 +329,7 @@ function default_1(socket) {
             return callback({ error: `No crew member found.` });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
         const passiveForSale = planet?.vendor?.passives?.find((pfs) => pfs.id === passiveId && pfs.buyMultiplier);
+        dist_1.default.log(planet?.vendor?.passives, passiveId);
         if (!planet ||
             !passiveForSale ||
             !dist_1.default.crewPassives[passiveForSale.id])

@@ -1,6 +1,6 @@
 import c from '../../../../common/dist'
 import type { Faction } from '../classes/Faction'
-import type { Planet } from '../classes/Planet'
+import type { Planet } from '../classes/Planet/Planet'
 import type { Game } from '../Game'
 import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'

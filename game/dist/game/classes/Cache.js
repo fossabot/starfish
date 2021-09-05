@@ -31,5 +31,5 @@ class Cache extends Stubbable_1.Stubbable {
     }
 }
 exports.Cache = Cache;
-Cache.rePickUpTime = 1000 * 60; // 1 minute
+Cache.rePickUpTime = 1000 * 60 * 5; // 5 minutes
 //# sourceMappingURL=Cache.js.map

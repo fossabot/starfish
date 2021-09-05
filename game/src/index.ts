@@ -24,7 +24,16 @@ runOnDbReady(async () => {
     `Loaded ${savedPlanets.length} saved planets from DB.`,
   )
   for (let planet of savedPlanets)
-    game.addPlanet(planet as BasePlanetData, false)
+    if (planet.planetType === `basic`)
+      game.addBasicPlanet(
+        planet as BaseBasicPlanetData,
+        false,
+      )
+    else if (planet.planetType === `mining`)
+      game.addMiningPlanet(
+        planet as BaseMiningPlanetData,
+        false,
+      )
 
   const savedCaches = await db.cache.getAllConstructible()
   c.log(

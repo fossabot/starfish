@@ -8,7 +8,8 @@ import { CombatShip } from './CombatShip'
 import type { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
-import type { Planet } from '../Planet'
+import type { Planet } from '../Planet/Planet'
+import type { BasicPlanet } from '../Planet/BasicPlanet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
 import type { Item } from '../Item/Item'
@@ -140,12 +141,21 @@ export class HumanShip extends CombatShip {
     // ----- planet effects -----
     if (this.planet) {
       this.addStat(`planetTime`, 1)
-      if (this.planet.repairFactor > 0)
-        this.repair(
-          this.planet.repairFactor *
-            0.000005 *
-            c.gameSpeedMultiplier,
-        )
+      if (this.planet.planetType === `basic`) {
+        if ((this.planet as BasicPlanet).repairFactor > 0) {
+          const isAllied =
+            ((this.planet as BasicPlanet).allegiances.find(
+              (a) => a.faction.id === this.faction.id,
+            )?.level || 0) >=
+            c.factionAllegianceFriendCutoff
+          this.repair(
+            (this.planet as BasicPlanet).repairFactor *
+              0.000005 *
+              c.gameSpeedMultiplier *
+              (isAllied ? 2 : 1),
+          )
+        }
+      }
     }
 
     profiler.step(`update visible`)
@@ -1082,7 +1092,20 @@ export class HumanShip extends CombatShip {
         ? this.planet.stubify()
         : false
 
-      if (this.planet) this.hardStop()
+      if (this.planet) {
+        this.hardStop()
+        this.planet.rooms.forEach((r) => this.addRoom(r))
+        this.planet.passives.forEach((p) =>
+          this.applyPassive(p),
+        )
+      } else if (previousPlanet) {
+        previousPlanet.rooms.forEach((r) =>
+          this.removeRoom(r),
+        )
+        previousPlanet.passives.forEach((p) =>
+          this.removePassive(p),
+        )
+      }
     }
 
     if (silent) return
@@ -1401,6 +1424,12 @@ export class HumanShip extends CombatShip {
   }
 
   removeRoom(room: CrewLocation) {
+    this.crewMembers.forEach((cm) => {
+      if (cm.location === room) {
+        cm.location = `bunk`
+        cm.toUpdate.location = cm.location
+      }
+    })
     delete this.rooms[room]
     this.toUpdate.rooms = this.rooms
   }

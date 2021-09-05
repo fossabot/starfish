@@ -11,7 +11,7 @@
       <Prompt
         @done="done"
         @apply="apply"
-        :max="max"
+        :max="prompt === 1 ? max : null"
         :key="'prompt' + prompt"
       >
         <slot v-if="prompt === 1" />
@@ -73,6 +73,13 @@ export default Vue.extend({
       this.$store.commit('set', { modal: null })
     },
     apply(...args: any[]) {
+      // if two-stage
+      if (this.$slots.second && this.prompt === 1) {
+        this.results.push(...args)
+        this.prompt = 2
+        return
+      }
+
       this.$emit('apply', ...args)
       if (args[0] === 'all') {
         this.results = []

@@ -79,7 +79,12 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return ((math_1.default.lerp(0.15, 1.0, level / 100) /
+    return ((math_1.default.lerp(0.1, 0.3, level / 100) /
+        globals_1.default.tickInterval) *
+        gameSpeedMultiplier);
+}
+function getMineAmountPerTickForSingleCrewMember(level) {
+    return ((math_1.default.lerp(30, 100, level / 100) /
         globals_1.default.tickInterval) *
         gameSpeedMultiplier);
 }
@@ -157,6 +162,74 @@ const headerBackgroundOptions = [
     { id: `Constellation 1`, url: `stars1.jpg` },
     { id: `Gravestone 1`, url: `vintage1.jpg` },
 ];
+function getPlanetTitle(planet) {
+    if (!planet || !planet.level)
+        return ``;
+    let names = [];
+    if (planet.planetType === `mining`)
+        names = [
+            `Wasteland`,
+            `Barrens`,
+            `Raw Wilds`,
+            `Wilds`,
+            // `Fertile Grounds`,
+            `Outcrops`,
+            `Open Pits`,
+            `Sheltered Pits`,
+            `Hollows`,
+            `Quarries`,
+            `Tiered Quarries`,
+            `Raw Shafts`,
+            `Rich Shafts`,
+            `Bare Caverns`,
+            `Caverns`,
+            `Cave Systems`,
+            `Rich Veins`,
+            `Extractors`,
+            `Labyrinths`,
+            `Gilded Halls`,
+        ];
+    if (planet.planetType === `basic`)
+        names = [
+            `Wilderness`,
+            `Frontier`,
+            `Vanguard`,
+            `Outpost`,
+            `Trading Post`,
+            `Community`,
+            `Settlement`,
+            `Colony`,
+            `Dockyard`,
+            `Landing`,
+            `Spaceport`,
+            `Trade Hub`,
+            `Ecosystem`,
+            `Metropolis`,
+            `Megalopolis`,
+            `Sector Hub`,
+            `Stellar Waypoint`,
+            `Galactic Nucleus`,
+        ];
+    return names[Math.floor(planet.level - 1)] || `Domain`;
+    // todo finish
+}
+function getPlanetPopulation(planet) {
+    if (!planet)
+        return 0;
+    return math_1.default.r2(((planet &&
+        planet.name
+            .split(``)
+            .reduce((t, c) => t + c.charCodeAt(0), 0) % 200) +
+        20) **
+        (planet.level / 30) *
+        planet.radius, 0);
+}
+function getPlanetDescription(planet) {
+    if (!planet)
+        return ``;
+    return `The ${getPlanetTitle(planet).toLowerCase()} known as ${planet.name} is...`;
+    // todo finish
+}
 function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
     profiler.step(`getters`);
@@ -173,7 +246,7 @@ function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
     }
     profiler.step(`stringify and parse`);
     const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
-        if ([`toUpdate`, `_stub`].includes(key))
+        if ([`toUpdate`, `_stub`, `_id`].includes(key))
             return;
         if ([
             `game`,
@@ -243,6 +316,7 @@ exports.default = {
     getBaseDurabilityLossPerTick,
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,
+    getMineAmountPerTickForSingleCrewMember,
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
@@ -253,6 +327,9 @@ exports.default = {
     tactics,
     taglineOptions,
     headerBackgroundOptions,
+    getPlanetTitle,
+    getPlanetPopulation,
+    getPlanetDescription,
     stubify,
 };
 //# sourceMappingURL=game.js.map

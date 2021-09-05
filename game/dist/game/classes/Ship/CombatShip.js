@@ -31,15 +31,28 @@ class CombatShip extends Ship_1.Ship {
         this.toUpdate.passives = this.passives;
     }
     removePassive(p) {
-        const index = this.passives.findIndex((ep) => {
-            for (let key in ep)
-                if (ep[key] !== p[key])
-                    return false;
-            return true;
-        });
+        let index;
+        if (p.data?.source?.planetName)
+            index = this.passives.findIndex((ep) => {
+                for (let key in ep) {
+                    if (ep[key] !== p[key])
+                        return false;
+                    if (ep.data?.source?.planetName !==
+                        p.data?.source?.planetName)
+                        return false;
+                }
+                return true;
+            });
+        else
+            index = this.passives.findIndex((ep) => {
+                for (let key in ep)
+                    if (ep[key] !== p[key])
+                        return false;
+                return true;
+            });
         if (index === -1)
             return;
-        dist_1.default.log(`removing passive`, p);
+        // c.log(`removing passive`, p)
         this.passives.splice(index, 1);
         this.updateThingsThatCouldChangeOnItemChange();
         this.updateAttackRadius();
@@ -76,7 +89,8 @@ class CombatShip extends Ship_1.Ship {
             return false;
         if (!otherShip.attackable)
             return false;
-        if (otherShip.planet || this.planet)
+        if ((otherShip.planet && otherShip.planet.pacifist) ||
+            (this.planet && this.planet.pacifist))
             return false;
         if (otherShip.dead || this.dead)
             return false;
@@ -119,7 +133,8 @@ class CombatShip extends Ship_1.Ship {
         if (passiveDamageMultiplier) {
             let factionMembersInRange = 0;
             const range = relevantPassives.reduce((avg, curr) => avg +
-                (curr.distance || 0) / relevantPassives.length, 0);
+                (curr.data?.distance || 0) /
+                    relevantPassives.length, 0);
             this.visible.ships.forEach((s) => {
                 if (s?.faction?.id === this.faction.id &&
                     dist_1.default.distance(s.location, this.location) <= range)
@@ -261,12 +276,10 @@ class CombatShip extends Ship_1.Ship {
         // calculate passive item type damage boosts from attacker
         let itemTypeDamageMultipliers = {};
         (attacker.passives?.filter((p) => p.id === `boostDamageToItemType`) || []).forEach((p) => {
-            if (!itemTypeDamageMultipliers[p.type])
-                itemTypeDamageMultipliers[p.type] =
-                    1 + (p.intensity || 0);
+            if (!itemTypeDamageMultipliers[p.data?.type])
+                itemTypeDamageMultipliers[p.data?.type] = 1 + (p.intensity || 0);
             else
-                itemTypeDamageMultipliers[p.type] +=
-                    p.intensity || 0;
+                itemTypeDamageMultipliers[p.data?.type] += p.intensity || 0;
         });
         let totalDamageDealt = 0;
         const damageTally = [];

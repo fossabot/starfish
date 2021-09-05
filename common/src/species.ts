@@ -22,7 +22,9 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
       {
         id: `boostDamageToItemType`,
         intensity: 0.3,
-        type: `engine`,
+        data: {
+          type: `engine`,
+        },
       },
     ],
   },
@@ -155,7 +157,9 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
       {
         id: `boostAttackWithNumberOfFactionMembersWithinDistance`,
         intensity: 0.1,
-        distance: 0.3,
+        data: {
+          distance: 0.3,
+        },
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { Game } from '../../Game';
 import { CombatShip } from './CombatShip';
 import type { Ship } from './Ship';
-import type { Planet } from '../Planet';
+import type { Planet } from '../Planet/Planet';
 import type { Cache } from '../Cache';
 import type { Zone } from '../Zone';
 import type { AttackRemnant } from '../AttackRemnant';

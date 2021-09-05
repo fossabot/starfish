@@ -74,6 +74,7 @@ const shipSchemaFields = {
             ],
             tactic: String,
             itemTarget: String,
+            minePriority: String,
             attackFactions: [String],
             targetLocation: [Number, Number],
             repairPriority: String,

@@ -5,9 +5,13 @@ declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
 declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThrustMultiplier?: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
+declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
+declare function getPlanetTitle(planet: PlanetStub): string;
+declare function getPlanetPopulation(planet: PlanetStub): number;
+declare function getPlanetDescription(planet: PlanetStub): string;
 declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
     gameShipLimit: number;
@@ -39,9 +43,9 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "repairFactor" | "level" | "xp" | "baseLevel" | "leanings" | "factionId" | "homeworld" | "creatures" | "allegiances" | "vendor")[];
-        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
-        species: ("factionId" | "id" | "icon" | "singular" | "description" | "passives")[];
+        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist")[];
+        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
@@ -52,6 +56,7 @@ declare const _default: {
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
+    getMineAmountPerTickForSingleCrewMember: typeof getMineAmountPerTickForSingleCrewMember;
     getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
     getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
@@ -65,6 +70,9 @@ declare const _default: {
         id: string;
         url: string;
     }[];
+    getPlanetTitle: typeof getPlanetTitle;
+    getPlanetPopulation: typeof getPlanetPopulation;
+    getPlanetDescription: typeof getPlanetDescription;
     stubify: typeof stubify;
 };
 export default _default;

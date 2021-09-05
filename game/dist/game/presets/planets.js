@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generatePlanet = void 0;
+exports.generateBasicPlanet = exports.generateMiningPlanet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
-function generatePlanet(game, homeworldFactionKey) {
+// todo expand on pacifist planets idea — basic planets could still be non-pacifist
+function getName(game) {
     let name;
     const possibleNames = [...planetNames];
     while (!name && possibleNames.length) {
@@ -17,18 +18,19 @@ function generatePlanet(game, homeworldFactionKey) {
             thisName = undefined;
         name = thisName;
     }
-    if (!name) {
+    if (!name || Math.random() > 0.9) {
         const useSuffix = Math.random() > 0.2;
         name = `${!useSuffix
             ? `${dist_1.default.randomFromArray(planetNamePrefixes)} `
             : ``}${dist_1.default.randomFromArray(planetNames)}${useSuffix
-            ? ` ${dist_1.default.randomFromArray(planetNameSuffixes)}`
+            ? `${dist_1.default.randomFromArray(planetNameSuffixes)}`
             : ``}`;
         if (game.planets.find((p) => p.name === name))
             name = undefined;
     }
-    if (!name)
-        return false;
+    return name;
+}
+function getLocation(game, isHomeworld) {
     let locationSearchRadius = game.gameSoftRadius * 0.75;
     const tooClose = 0.2;
     let location = [0, 0];
@@ -49,7 +51,7 @@ function generatePlanet(game, homeworldFactionKey) {
             const distance = dist_1.default.distance(location, closestPlanet.location);
             if (distance < 1) {
                 const vectorTowardsClosestPlanet = dist_1.default.getUnitVectorFromThatBodyToThisBody({ location }, closestPlanet);
-                const magnitude = distance * 0.6 * (homeworldFactionKey ? -1 : 1); // spawn homeworlds as "seeds" so they land farther away from other possible homeworlds
+                const magnitude = distance * 0.6 * (isHomeworld ? -1 : 1); // spawn homeworlds as "seeds" so they land farther away from other possible homeworlds
                 location[0] -=
                     vectorTowardsClosestPlanet[0] * magnitude;
                 location[1] -=
@@ -58,6 +60,52 @@ function generatePlanet(game, homeworldFactionKey) {
         }
         locationSearchRadius *= 1.01;
     }
+    return location;
+}
+function generateMiningPlanet(game) {
+    const name = getName(game);
+    if (!name)
+        return false;
+    const location = getLocation(game);
+    const level = 0;
+    const baseLevel = 1;
+    const xp = 0;
+    const color = `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 40)}%, ${Math.round(Math.random() * 50) + 30}%)`;
+    const radius = Math.floor(Math.random() * 60000 + 10000);
+    const mass = ((5.974e30 * radius) / 36000) *
+        (1 + 0.2 * (Math.random() - 0.5));
+    const creatures = [];
+    while (Math.random() > 0.7) {
+        const viableCreatures = [
+            ...seaCreatures,
+            ...landCreatures,
+        ];
+        const chosen = dist_1.default.randomFromArray(viableCreatures);
+        if (!creatures.find((cre) => cre === chosen.name))
+            creatures.push(chosen.name);
+    }
+    return {
+        planetType: `mining`,
+        pacifist: false,
+        name,
+        location,
+        color,
+        level,
+        baseLevel,
+        xp,
+        creatures,
+        radius,
+        mass,
+        landingRadiusMultiplier: 1,
+    };
+}
+exports.generateMiningPlanet = generateMiningPlanet;
+function generateBasicPlanet(game, homeworldFactionKey) {
+    const planetType = `basic`;
+    const name = getName(game);
+    if (!name)
+        return false;
+    const location = getLocation(game, homeworldFactionKey);
     const radius = Math.floor(Math.random() * 60000 + 10000);
     const mass = ((5.974e30 * radius) / 36000) *
         (1 + 0.2 * (Math.random() - 0.5));
@@ -80,15 +128,15 @@ function generatePlanet(game, homeworldFactionKey) {
             dist_1.default.distance(location, [0, 0]) / 3);
     const xp = 0;
     const leanings = [];
-    // homeworlds always CAN have cargo
+    // homeworlds always CAN have cargo, and lean slightly that way
     if (homeworldFactionKey)
         leanings.push({
             type: `cargo`,
             never: false,
-            propensity: Math.random() + 0.2,
+            propensity: Math.random() + 1,
         });
-    while (leanings.length < 3 || Math.random() > 0.6) {
-        const leaningType = dist_1.default.randomFromArray([
+    while (leanings.length < 4 || Math.random() > 0.4) {
+        const leaningTypes = [
             `items`,
             `weapon`,
             `armor`,
@@ -96,11 +144,13 @@ function generatePlanet(game, homeworldFactionKey) {
             `communicator`,
             `engine`,
             `chassis`,
-            `passives`,
+            `shipPassives`,
+            `crewPassives`,
             // , `actives`
             `cargo`,
             `repair`,
-        ]);
+        ];
+        const leaningType = dist_1.default.randomFromArray(leaningTypes);
         if (leanings.find((l) => l.type === leaningType))
             continue;
         const never = dist_1.default.coinFlip();
@@ -110,6 +160,8 @@ function generatePlanet(game, homeworldFactionKey) {
             propensity: never ? 0 : Math.random(),
         });
     }
+    if (homeworldFactionKey)
+        dist_1.default.log(leanings);
     const vendor = {
         cargo: [],
         passives: [],
@@ -117,104 +169,28 @@ function generatePlanet(game, homeworldFactionKey) {
         items: [],
         chassis: [],
     };
-    // const level = c.distance([0, 0], location)
-    // let maxRarity = level
-    // const minRarity = level * 0.75
-    // const cargoDispropensity = 0.8 - Math.random()
-    // const passiveDispropensity = 0.85 - Math.random() * 0.8
-    // const itemDispropensity = 1 - Math.random() / 2
-    // const chassisDispropensity = 1 - Math.random() / 2
-    // // guarantee we have at least ONE thing for sale
-    // while (
-    //   [
-    //     ...vendor.cargo,
-    //     ...vendor.items,
-    //     ...vendor.passives,
-    //   ].filter((v) => v.buyMultiplier).length < 1
-    // ) {
-    //   for (let d of Object.values(c.cargo)) {
-    //     if (d.rarity > maxRarity) continue
-    //     if (Math.random() > cargoDispropensity) {
-    //       const { buyMultiplier, sellMultiplier } =
-    //         getBuyAndSellMultipliers()
-    //       vendor.cargo.push({
-    //         id: d.id,
-    //         buyMultiplier,
-    //         sellMultiplier,
-    //       })
-    //     }
-    //   }
-    //   for (let d of Object.values(c.crewPassives)) {
-    //     if (d.rarity > maxRarity || d.rarity < minRarity)
-    //       continue
-    //     if (Math.random() > passiveDispropensity) {
-    //       const { buyMultiplier, sellMultiplier } =
-    //         getBuyAndSellMultipliers()
-    //       vendor.passives.push({
-    //         id: d.id,
-    //         buyMultiplier,
-    //       })
-    //     }
-    //   }
-    //   for (let d of [
-    //     ...Object.values(c.items.armor),
-    //     ...Object.values(c.items.engine),
-    //     ...Object.values(c.items.weapon),
-    //     ...Object.values(c.items.scanner),
-    //     ...Object.values(c.items.communicator),
-    //   ].filter((i) => i.buyable !== false && !i.aiOnly)) {
-    //     const { buyMultiplier, sellMultiplier } =
-    //       getBuyAndSellMultipliers(true)
-    //     // vendors will buy any item, but only sell a few
-    //     const itemForSale: PlanetVendorItemPrice = {
-    //       type: d.type,
-    //       id: d.id,
-    //       sellMultiplier,
-    //     }
-    //     if (
-    //       d.rarity < maxRarity &&
-    //       d.rarity > minRarity &&
-    //       Math.random() > itemDispropensity
-    //     )
-    //       itemForSale.buyMultiplier = buyMultiplier
-    //     vendor.items.push(itemForSale)
-    //   }
-    //   for (let d of Object.values(c.items.chassis)) {
-    //     if (d.rarity > maxRarity || d.rarity < minRarity)
-    //       continue
-    //     if (Math.random() > chassisDispropensity) {
-    //       const { buyMultiplier, sellMultiplier } =
-    //         getBuyAndSellMultipliers()
-    //       vendor.chassis.push({
-    //         id: d.id,
-    //         buyMultiplier,
-    //         sellMultiplier,
-    //       })
-    //     }
-    //   }
-    // maxRarity += 0.2
-    // }
-    // c.log(
-    //   vendor.cargo.filter((v) => v.buyMultiplier).length,
-    //   vendor.items.filter((v) => v.buyMultiplier).length,
-    //   vendor.passives.filter((v) => v.buyMultiplier).length,
-    // )
     const creatures = [];
     while (creatures.length === 0 || Math.random() > 0.5) {
         const viableCreatures = factionId
             ? seaCreatures.filter((s) => s.factionKey === factionId)
             : seaCreatures;
         const chosen = dist_1.default.randomFromArray(viableCreatures);
-        if (!creatures.find((cre) => cre === chosen))
+        if (!creatures.find((cre) => cre === chosen.name))
             creatures.push(chosen.name);
     }
+    const pacifist = homeworldFactionKey
+        ? true
+        : Math.random() > 0.2;
     return {
+        planetType,
         name,
         color,
         creatures,
         mass,
         landingRadiusMultiplier: 1,
         repairFactor: 0,
+        allegiances: [],
+        pacifist,
         factionId,
         homeworld: homeworldFactionKey
             ? { id: homeworldFactionKey }
@@ -228,7 +204,7 @@ function generatePlanet(game, homeworldFactionKey) {
         leanings,
     };
 }
-exports.generatePlanet = generatePlanet;
+exports.generateBasicPlanet = generateBasicPlanet;
 function getBuyAndSellMultipliers(item = false) {
     const buyMultiplier = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
     const sellMultiplier = Math.min(buyMultiplier *
@@ -272,7 +248,6 @@ const planetNames = [
     `Auster`,
     `Sirius`,
     `Alpha`,
-    `Beta`,
     `Omega`,
     `Kappa`,
     `Zeta`,
@@ -303,7 +278,6 @@ const planetNames = [
     `Aran`,
     `Woaka`,
     `Shalos`,
-    `Prime`,
     `Hon‘an`,
     `Maztes`,
     `Meron`,
@@ -356,16 +330,16 @@ const planetNames = [
     `Irra`,
     `Ungol`,
 ];
-const planetNamePrefixes = [`New`];
+const planetNamePrefixes = [`New`, `Old`];
 const planetNameSuffixes = [
-    `Prime`,
-    `II`,
-    `IV`,
-    `Beta`,
-    `VI`,
-    `III`,
-    `Landing`,
-    `V`,
+    ` Prime`,
+    ` II`,
+    ` IV`,
+    ` Beta`,
+    ` VI`,
+    ` III`,
+    `'s Landing`,
+    ` V`,
 ];
 const seaCreatures = [
     { name: `crabs`, factionKey: `green` },
@@ -405,7 +379,52 @@ const seaCreatures = [
     { name: `sea turtles`, factionKey: `blue` },
     { name: `sea lions`, factionKey: `blue` },
 ];
-// { name: `penguins`, factionKey: `blue` },
-// { name: `seagulls`, factionKey: `blue` },
-// { name: `pelicans`, factionKey: `blue` },
+const landCreatures = [
+    { name: `penguins` },
+    { name: `seagulls` },
+    { name: `pelicans` },
+    { name: `parrots` },
+    { name: `pigeons` },
+    { name: `crows` },
+    { name: `owls` },
+    { name: `hawks` },
+    { name: `ravens` },
+    { name: `eagles` },
+    { name: `falcons` },
+    { name: `wolves` },
+    { name: `foxes` },
+    { name: `coyotes` },
+    { name: `raccoons` },
+    { name: `bears` },
+    { name: `lions` },
+    { name: `tigers` },
+    { name: `brown bears` },
+    { name: `black bears` },
+    { name: `buffalos` },
+    { name: `ants` },
+    { name: `bees` },
+    { name: `butterflies` },
+    { name: `crickets` },
+    { name: `caterpillars` },
+    { name: `cicadas` },
+    { name: `cockroaches` },
+    { name: `spiders` },
+    { name: `grasshoppers` },
+    { name: `moths` },
+    { name: `mice` },
+    { name: `snakes` },
+    { name: `snails` },
+    { name: `slugs` },
+    { name: `toads` },
+    { name: `turtles` },
+    { name: `pigs` },
+    { name: `sheep` },
+    { name: `chickens` },
+    { name: `goats` },
+    { name: `cows` },
+    { name: `horses` },
+    { name: `donkeys` },
+    { name: `ponies` },
+    { name: `rabbits` },
+];
 //# sourceMappingURL=planets.js.map

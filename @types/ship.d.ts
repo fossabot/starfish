@@ -73,7 +73,13 @@ type ShipPassiveEffectType =
 interface ShipPassiveEffect {
   id: ShipPassiveEffectType
   intensity?: number
-  [key: string]: any
+  data?: {
+    source?: {
+      planetName: string
+    }
+    type?: ItemType
+    distance?: number
+  }
 }
 
 interface TakenDamageResult extends ResponseWithMessage {
@@ -99,6 +105,7 @@ type ShipStatKey =
   | `distanceTraveled`
   | `cachesRecovered`
   | `planetTime`
+  | `totalTonsMined`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

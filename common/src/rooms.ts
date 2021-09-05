@@ -17,6 +17,10 @@ export const rooms: {
     id: `cockpit`,
     description: `Set a course and contribute your thrust to the ship.`,
   },
+  mine: {
+    id: `mine`,
+    description: `Mine the planet's surface for resources.`,
+  },
 }
 
 export default rooms

@@ -148,7 +148,17 @@ function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    (math.lerp(0.15, 1.0, level / 100) /
+    (math.lerp(0.1, 0.3, level / 100) /
+      globals.tickInterval) *
+    gameSpeedMultiplier
+  )
+}
+
+function getMineAmountPerTickForSingleCrewMember(
+  level: number,
+) {
+  return (
+    (math.lerp(30, 100, level / 100) /
       globals.tickInterval) *
     gameSpeedMultiplier
   )
@@ -248,6 +258,83 @@ const headerBackgroundOptions: {
   { id: `Gravestone 1`, url: `vintage1.jpg` }, // die twice
 ]
 
+function getPlanetTitle(planet: PlanetStub) {
+  if (!planet || !planet.level) return ``
+
+  let names: string[] = []
+
+  if (planet.planetType === `mining`)
+    names = [
+      `Wasteland`,
+      `Barrens`,
+      `Raw Wilds`,
+      `Wilds`,
+      // `Fertile Grounds`,
+      `Outcrops`,
+      `Open Pits`,
+      `Sheltered Pits`,
+      `Hollows`,
+      `Quarries`,
+      `Tiered Quarries`,
+      `Raw Shafts`,
+      `Rich Shafts`,
+      `Bare Caverns`,
+      `Caverns`,
+      `Cave Systems`,
+      `Rich Veins`,
+      `Extractors`,
+      `Labyrinths`,
+      `Gilded Halls`,
+    ]
+
+  if (planet.planetType === `basic`)
+    names = [
+      `Wilderness`,
+      `Frontier`,
+      `Vanguard`,
+      `Outpost`,
+      `Trading Post`,
+      `Community`,
+      `Settlement`,
+      `Colony`,
+      `Dockyard`,
+      `Landing`,
+      `Spaceport`,
+      `Trade Hub`,
+      `Ecosystem`,
+      `Metropolis`,
+      `Megalopolis`,
+      `Sector Hub`,
+      `Stellar Waypoint`,
+      `Galactic Nucleus`,
+    ]
+
+  return names[Math.floor(planet.level - 1)] || `Domain`
+  // todo finish
+}
+
+function getPlanetPopulation(planet: PlanetStub): number {
+  if (!planet) return 0
+  return math.r2(
+    ((planet &&
+      planet.name
+        .split(``)
+        .reduce((t, c) => t + c.charCodeAt(0), 0) % 200) +
+      20) **
+      (planet.level / 30) *
+      planet.radius,
+    0,
+  )
+}
+
+function getPlanetDescription(planet: PlanetStub): string {
+  if (!planet) return ``
+  return `The ${getPlanetTitle(
+    planet,
+  ).toLowerCase()} known as ${planet.name} is...`
+  // todo finish
+}
+
 function stubify<BaseType, StubType extends BaseStub>(
   baseObject: BaseType,
   disallowPropName: string[] = [],
@@ -273,7 +360,8 @@ function stubify<BaseType, StubType extends BaseStub>(
     JSON.stringify(
       gettersIncluded,
       (key: string, value: any) => {
-        if ([`toUpdate`, `_stub`].includes(key)) return
+        if ([`toUpdate`, `_stub`, `_id`].includes(key))
+          return
         if (
           [
             `game`,
@@ -349,6 +437,7 @@ export default {
   getBaseDurabilityLossPerTick,
   getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,
+  getMineAmountPerTickForSingleCrewMember,
   getMaxCockpitChargeForSingleCrewMember,
   getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
@@ -359,5 +448,8 @@ export default {
   tactics,
   taglineOptions,
   headerBackgroundOptions,
+  getPlanetTitle,
+  getPlanetPopulation,
+  getPlanetDescription,
   stubify,
 }

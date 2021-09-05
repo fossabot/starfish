@@ -1,5 +1,5 @@
 import { Ship } from './classes/Ship/Ship';
-import { Planet } from './classes/Planet';
+import { Planet } from './classes/Planet/Planet';
 import { Cache } from './classes/Cache';
 import { Faction } from './classes/Faction';
 import { Species } from './classes/Species';
@@ -7,6 +7,8 @@ import { AttackRemnant } from './classes/AttackRemnant';
 import { Zone } from './classes/Zone';
 import { HumanShip } from './classes/Ship/HumanShip';
 import { AIShip } from './classes/Ship/AIShip';
+import { BasicPlanet } from './classes/Planet/BasicPlanet';
+import { MiningPlanet } from './classes/Planet/MiningPlanet';
 export declare class Game {
     static saveTimeInterval: number;
     readonly startTime: Date;
@@ -47,7 +49,8 @@ export declare class Game {
     addHumanShip(data: BaseHumanShipData, save?: boolean): HumanShip;
     addAIShip(data: BaseAIShipData, save?: boolean): AIShip;
     removeShip(ship: Ship): void;
-    addPlanet(data: BasePlanetData, save?: boolean): Promise<Planet>;
+    addBasicPlanet(data: BaseBasicPlanetData, save?: boolean): Promise<Planet>;
+    addMiningPlanet(data: BaseMiningPlanetData, save?: boolean): Promise<Planet>;
     addFaction(data: BaseFactionData): Faction;
     addSpecies(data: BaseSpeciesData): Species;
     addCache(data: BaseCacheData, save?: boolean): Cache;
@@ -58,6 +61,8 @@ export declare class Game {
     removeAttackRemnant(ar: AttackRemnant): void;
     get humanShips(): HumanShip[];
     get aiShips(): AIShip[];
+    get basicPlanets(): BasicPlanet[];
+    get miningPlanets(): MiningPlanet[];
     recalculateFactionRankings(): void;
 }
 //# sourceMappingURL=Game.d.ts.map

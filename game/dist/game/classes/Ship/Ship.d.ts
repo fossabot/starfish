@@ -1,6 +1,6 @@
 import type { Game } from '../../Game';
 import type { Faction } from '../Faction';
-import type { Planet } from '../Planet';
+import type { Planet } from '../Planet/Planet';
 import type { Cache } from '../Cache';
 import type { Zone } from '../Zone';
 import type { AttackRemnant } from '../AttackRemnant';

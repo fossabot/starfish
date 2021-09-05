@@ -57,15 +57,31 @@ export abstract class CombatShip extends Ship {
   }
 
   removePassive(p: ShipPassiveEffect) {
-    const index = this.passives.findIndex(
-      (ep: ShipPassiveEffect) => {
-        for (let key in ep)
-          if (ep[key] !== p[key]) return false
-        return true
-      },
-    )
+    let index
+    if (p.data?.source?.planetName)
+      index = this.passives.findIndex(
+        (ep: ShipPassiveEffect) => {
+          for (let key in ep) {
+            if (ep[key] !== p[key]) return false
+            if (
+              ep.data?.source?.planetName !==
+              p.data?.source?.planetName
+            )
+              return false
+          }
+          return true
+        },
+      )
+    else
+      index = this.passives.findIndex(
+        (ep: ShipPassiveEffect) => {
+          for (let key in ep)
+            if (ep[key] !== p[key]) return false
+          return true
+        },
+      )
     if (index === -1) return
-    c.log(`removing passive`, p)
+    // c.log(`removing passive`, p)
     this.passives.splice(index, 1)
     this.updateThingsThatCouldChangeOnItemChange()
     this.updateAttackRadius()
@@ -128,7 +144,11 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     if (this === otherShip) return false
     if (!otherShip.attackable) return false
-    if (otherShip.planet || this.planet) return false
+    if (
+      (otherShip.planet && otherShip.planet.pacifist) ||
+      (this.planet && this.planet.pacifist)
+    )
+      return false
     if (otherShip.dead || this.dead) return false
     if (
       otherShip.faction &&
@@ -200,7 +220,8 @@ export abstract class CombatShip extends Ship {
       const range = relevantPassives.reduce(
         (avg, curr) =>
           avg +
-          (curr.distance || 0) / relevantPassives.length,
+          (curr.data?.distance || 0) /
+            relevantPassives.length,
         0,
       )
       this.visible.ships.forEach((s: any) => {
@@ -397,12 +418,16 @@ export abstract class CombatShip extends Ship {
           p.id === `boostDamageToItemType`,
       ) || []
     ).forEach((p: ShipPassiveEffect) => {
-      if (!itemTypeDamageMultipliers[p.type as ItemType])
-        itemTypeDamageMultipliers[p.type as ItemType] =
-          1 + (p.intensity || 0)
+      if (
+        !itemTypeDamageMultipliers[p.data?.type as ItemType]
+      )
+        itemTypeDamageMultipliers[
+          p.data?.type as ItemType
+        ] = 1 + (p.intensity || 0)
       else
-        itemTypeDamageMultipliers[p.type as ItemType]! +=
-          p.intensity || 0
+        itemTypeDamageMultipliers[
+          p.data?.type as ItemType
+        ]! += p.intensity || 0
     })
 
     let totalDamageDealt = 0

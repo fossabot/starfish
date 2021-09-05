@@ -1,6 +1,6 @@
 declare const basePassiveData: {
     [key in ShipPassiveEffectType]: {
-        toString: (intensity: number, ...args: any[]) => string;
+        toString: (p: ShipPassiveEffect) => string;
     };
 };
 export default basePassiveData;

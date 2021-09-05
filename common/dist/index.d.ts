@@ -8,6 +8,7 @@ declare const _default: {
         cockpit: BaseRoomData;
         repair: BaseRoomData;
         weapons: BaseRoomData;
+        mine: BaseRoomData;
     };
     crewActives: {
         boost: BaseCrewActiveData;
@@ -44,64 +45,64 @@ declare const _default: {
     };
     basePassiveData: {
         boostDropAmount: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostDropRarity: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostScanRange: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostSightRange: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostBroadcastRange: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostRepairSpeed: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostRestSpeed: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostBrake: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostCockpitChargeSpeed: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostXpGain: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         scaledDamageReduction: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         flatDamageReduction: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         extraEquipmentSlots: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostCargoSpace: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostChassisAgility: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         disguiseCrewMemberCount: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         disguiseChassisType: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostAttackWithNumberOfFactionMembersWithinDistance: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
-            toString: (intensity: number, ...args: any[]) => string;
+            toString: (p: ShipPassiveEffect) => string;
         };
     };
     Profiler: typeof Profiler;
@@ -140,9 +141,9 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "repairFactor" | "level" | "xp" | "baseLevel" | "leanings" | "factionId" | "homeworld" | "creatures" | "allegiances" | "vendor")[];
-        faction: ("name" | "color" | "homeworld" | "id" | "ai" | "species")[];
-        species: ("factionId" | "id" | "icon" | "singular" | "description" | "passives")[];
+        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist")[];
+        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
@@ -153,6 +154,7 @@ declare const _default: {
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
+    getMineAmountPerTickForSingleCrewMember: (level: number) => number;
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number) => number;
@@ -166,12 +168,15 @@ declare const _default: {
         id: string;
         url: string;
     }[];
+    getPlanetTitle: (planet: PlanetStub) => string;
+    getPlanetPopulation: (planet: PlanetStub) => number;
+    getPlanetDescription: (planet: PlanetStub) => string;
     stubify: <BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;
     coinFlip: () => boolean;
-    randomFromArray: (array: any[]) => any;
+    randomFromArray: <T>(array: T[]) => T;
     randomWithWeights: <E>(elements: {
         weight: number;
         value: E;

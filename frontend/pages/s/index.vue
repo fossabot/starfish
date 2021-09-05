@@ -1,7 +1,13 @@
 <template>
   <div class="pagecontainer">
     <div class="bg"></div>
-    <FadeIn :off="ready">{{ c.gameName }}</FadeIn>
+    <FadeIn :off="ready">
+      <div class="flexcenter flexcolumn">
+        <img
+          src="/images/logo.svg"
+          class="fadeinlogo marbotsmall"
+        /></div
+    ></FadeIn>
     <!-- <Starfield class="starfield" /> -->
 
     <div
@@ -166,6 +172,19 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.fadeinlogo {
+  width: 50px;
+  animation: spin 5s infinite linear;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
 .pagecontainer {
   width: 100%;
   min-height: 100vh;

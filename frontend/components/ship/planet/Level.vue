@@ -1,35 +1,95 @@
 <template>
-  <div class="panesection" v-if="crewMember && planet">
+  <div
+    class="panesection"
+    v-if="crewMember && planet && planet.level"
+  >
     <div>
-      <div class="panesubhead">Planet Level</div>
+      <div
+        class="panesubhead"
+        v-if="planet.planetType === 'basic'"
+      >
+        Progression
+      </div>
+      <!-- <div
+        class="panesubhead"
+        v-if="planet.planetType === 'mining'"
+      >
+        Infrastructure
+      </div> -->
     </div>
     <div>
-      <b>Level {{ planet.level }}</b>
+      <b>
+        <!-- Level {{ planet.level
+        }}
+        : -->
+        {{ planetTitle }}
+      </b>
     </div>
-    <div class="success martopsmall marbotsmall">
-      <div v-if="planet.landingRadiusMultiplier > 1">
-        +
+
+    <ul class="small success martopsmall marbotsmall">
+      <li
+        v-if="
+          planet.landingRadiusMultiplier &&
+          planet.landingRadiusMultiplier > 1
+        "
+      >
         {{
           c.r2(
             (planet.landingRadiusMultiplier - 1) * 100,
             0,
           )
-        }}% landing radius
-      </div>
-      <div v-if="planet.repairFactor > 0">
-        + {{ c.r2(planet.repairFactor, 0, true) }} passive
-        repair field speed
-      </div>
-      <div v-if="thingsForSale > 0">
-        + {{ thingsForSale }} vendor capacity
-      </div>
-      <div v-if="planet.vendor.repairCostMultiplier">
-        + Mechanics' Quarter (paid instant repairs)
-      </div>
-    </div>
+        }}% bigger landing radius
+      </li>
+      <li v-if="planet.repairFactor">
+        Level
+        {{ c.r2(planet.repairFactor, 0, true) }} passive
+        repair field
+      </li>
+      <li v-if="thingsForSale > 0">
+        Vendor capacity increased by {{ thingsForSale }}
+      </li>
+      <li
+        v-if="
+          planet.vendor &&
+          planet.vendor.repairCostMultiplier
+        "
+      >
+        Mechanics' Quarter (paid instant repairs)
+      </li>
+
+      <li v-if="planet.mine && planet.mine.length > 0">
+        {{ planet.mine.length }} resource{{
+          planet.mine.length === 1 ? '' : 's'
+        }}
+        discovered
+      </li>
+      <li
+        v-if="
+          planet.baseMineSpeed && planet.baseMineSpeed > 1
+        "
+      >
+        {{ c.r2(planet.baseMineSpeed - 1) * 100 }}%
+        increased mine efficiency
+      </li>
+      <li
+        v-if="
+          planet.planetType === 'mine' && planet.level > 1
+        "
+      >
+        {{
+          c.r2(c.lerp(1, 10, planet.level / 100) - 1) * 100
+        }}% increased mine output
+      </li>
+      <li v-for="p in planet.passives">
+        {{ c.basePassiveData[p.id].toString(p) }}
+      </li>
+    </ul>
+
     <div
       v-tooltip="
-        `Levels advance slowly with purchases, but much faster with direct contributions.`
+        planet.planetType === 'basic'
+          ? `Upgrade progress advances slowly with purchases, and much faster with direct contributions.`
+          : `Upgrade progress advances with financial investment into the colony.`
       "
       class="flex"
     >
@@ -39,7 +99,7 @@
         dangerZone="-1"
       >
         <div>
-          Level Progress:
+          Upgrade Progress:
           <NumberChangeHighlighter
             :number="xpProgressInLevel"
             :display="
@@ -94,7 +154,7 @@ export default Vue.extend({
     },
     isFriendlyToFaction(): boolean {
       return (
-        (this.planet.allegiances.find(
+        (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
@@ -113,6 +173,7 @@ export default Vue.extend({
     },
     thingsForSale(): number {
       const vendor = this.planet.vendor as PlanetVendor
+      if (!vendor) return 0
       return (
         vendor.cargo.length +
         vendor.items.length +
@@ -120,6 +181,9 @@ export default Vue.extend({
         vendor.passives.length +
         vendor.actives.length
       )
+    },
+    planetTitle(): string {
+      return c.getPlanetTitle(this.planet)
     },
   },
   watch: {},

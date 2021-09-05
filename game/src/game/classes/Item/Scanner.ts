@@ -26,11 +26,14 @@ export class Scanner extends Item {
     if (this.ship.tutorial?.currentStep.disableRepair)
       return 0
 
+    const percentLossFromNormalTick = 0.02
+    // we replace most of the default loss
     let repairLoss =
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,
-      ) * -0.97
+      ) *
+      (-1 + percentLossFromNormalTick)
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     repairLoss += super.use()

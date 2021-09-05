@@ -3,6 +3,7 @@ import { Socket } from 'socket.io'
 
 import { game } from '../..'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -25,8 +26,8 @@ export default function (
           error: `Only the captain may buy or sell equipment.`,
         })
 
-      const planet = ship.planet
-      if (!planet)
+      const planet = ship.planet as BasicPlanet
+      if (!planet || planet.planetType !== `basic`)
         return callback({ error: `Not at a planet.` })
       const itemForSale = planet?.vendor?.items?.find(
         (i) =>
@@ -114,8 +115,8 @@ export default function (
           error: `Only the captain may buy or sell equipment.`,
         })
 
-      const planet = ship.planet
-      if (!planet)
+      const planet = ship.planet as BasicPlanet
+      if (!planet || planet.planetType !== `basic`)
         return callback({ error: `Not at a planet.` })
 
       const heldItem = ship.items.find(
@@ -192,8 +193,8 @@ export default function (
           error: `Only the captain may buy or sell equipment.`,
         })
 
-      const planet = ship.planet
-      if (!planet)
+      const planet = ship.planet as BasicPlanet
+      if (!planet || planet.planetType !== `basic`)
         return callback({ error: `Not at a planet.` })
       const itemForSale = planet?.vendor?.chassis?.find(
         (i) => i.id === chassisId,

@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 
 import type { Game } from '../Game'
-import type { Planet } from './Planet'
+import type { Planet } from './Planet/Planet'
 import type { Ship } from './Ship/Ship'
 import { Stubbable } from './Stubbable'
 

@@ -20,7 +20,10 @@ db_1.runOnReady(async () => {
     const savedPlanets = await db_1.db.planet.getAllConstructible();
     dist_1.default.log(`Loaded ${savedPlanets.length} saved planets from DB.`);
     for (let planet of savedPlanets)
-        exports.game.addPlanet(planet, false);
+        if (planet.planetType === `basic`)
+            exports.game.addBasicPlanet(planet, false);
+        else if (planet.planetType === `mining`)
+            exports.game.addMiningPlanet(planet, false);
     const savedCaches = await db_1.db.cache.getAllConstructible();
     dist_1.default.log(`Loaded ${savedCaches.length} saved caches from DB.`);
     savedCaches.forEach((cache) => exports.game.addCache(cache, false));

@@ -3,7 +3,7 @@ import { CombatShip } from './CombatShip';
 import type { Game } from '../../Game';
 import { CrewMember } from '../CrewMember/CrewMember';
 import type { AttackRemnant } from '../AttackRemnant';
-import type { Planet } from '../Planet';
+import type { Planet } from '../Planet/Planet';
 import type { Cache } from '../Cache';
 import type { Ship } from './Ship';
 import type { Item } from '../Item/Item';

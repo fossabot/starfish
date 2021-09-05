@@ -4,7 +4,9 @@
       <span :style="{ color: data.color }">{{
         data.name
       }}</span>
-      <span class="sub">(Zone)</span>
+      <span class="sub normal"
+        ><span class="sub">Zone</span></span
+      >
     </div>
     <hr />
     <div>

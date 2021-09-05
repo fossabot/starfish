@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const db_1 = require("../db");
-const Planet_1 = require("./classes/Planet");
 const Cache_1 = require("./classes/Cache");
 const Faction_1 = require("./classes/Faction");
 const Species_1 = require("./classes/Species");
@@ -16,6 +15,8 @@ const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = require("./presets/planets");
 const zones_1 = require("./presets/zones");
+const BasicPlanet_1 = require("./classes/Planet/BasicPlanet");
+const MiningPlanet_1 = require("./classes/Planet/MiningPlanet");
 class Game {
     constructor() {
         this.ships = [];
@@ -50,6 +51,9 @@ class Game {
         const promises = [];
         this.ships.forEach((s) => {
             promises.push(db_1.db.ship.addOrUpdateInDb(s));
+        });
+        this.planets.forEach((p) => {
+            promises.push(db_1.db.planet.addOrUpdateInDb(p));
         });
         await Promise.all(promises);
         this.recalculateFactionRankings();
@@ -204,20 +208,35 @@ class Game {
         });
     }
     async spawnNewPlanets() {
-        while (this.planets.length < this.gameSoftArea * 0.7 ||
+        while (this.planets.length < this.gameSoftArea * 0.8 ||
             this.planets.length < this.factions.length - 1) {
-            const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
-            const p = planets_1.generatePlanet(this, factionThatNeedsAHomeworld?.id);
-            if (!p)
-                return;
-            const planet = await this.addPlanet(p);
-            dist_1.default.log(`gray`, `Spawned planet ${planet.name} at ${planet.location}${factionThatNeedsAHomeworld
-                ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
-                : ``}.`);
-            // c.log(this.planets.map((p) => p.vendor.items))
-            // c.log(this.planets.map((p) => p.vendor.chassis))
-            // c.log(this.planets.map((p) => p.vendor.cargo))
-            // c.log(this.planets.map((p) => p.priceFluctuator))
+            const weights = [
+                { weight: 1, value: `basic` },
+                { weight: 0.35, value: `mining` },
+            ];
+            const selection = dist_1.default.randomWithWeights(weights);
+            // ----- basic planet -----
+            if (selection === `basic`) {
+                const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
+                const p = planets_1.generateBasicPlanet(this, factionThatNeedsAHomeworld?.id);
+                if (!p)
+                    continue;
+                const planet = await this.addBasicPlanet(p);
+                dist_1.default.log(`gray`, `Spawned basic planet ${planet.name} at ${planet.location}${factionThatNeedsAHomeworld
+                    ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
+                    : ``}.`);
+                // c.log(this.planets.map((p) => p.vendor.items))
+                // c.log(this.planets.map((p) => p.vendor.chassis))
+                // c.log(this.planets.map((p) => p.vendor.cargo))
+                // c.log(this.planets.map((p) => p.priceFluctuator))
+            }
+            else if (selection === `mining`) {
+                const p = planets_1.generateMiningPlanet(this);
+                if (!p)
+                    continue;
+                const planet = await this.addMiningPlanet(p);
+                dist_1.default.log(`gray`, `Spawned mining planet ${planet.name} at ${planet.location}.`);
+            }
         }
     }
     spawnNewZones() {
@@ -347,18 +366,31 @@ class Game {
             return;
         this.ships.splice(index, 1);
     }
-    async addPlanet(data, save = true) {
+    async addBasicPlanet(data, save = true) {
         const existing = this.planets.find((p) => p.name === data.name);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing planet ${existing.name}.`);
             return existing;
         }
-        const newPlanet = await new Planet_1.Planet(data, this);
+        const newPlanet = await new BasicPlanet_1.BasicPlanet(data, this);
         this.planets.push(newPlanet);
-        if (newPlanet.homeworld)
-            newPlanet.homeworld.homeworld = newPlanet;
+        if (`homeworld` in newPlanet && newPlanet.homeworld)
+            newPlanet.homeworld.homeworld =
+                newPlanet;
         if (save)
-            db_1.db.planet.addOrUpdateInDb(newPlanet);
+            await db_1.db.planet.addOrUpdateInDb(newPlanet);
+        return newPlanet;
+    }
+    async addMiningPlanet(data, save = true) {
+        const existing = this.planets.find((p) => p.name === data.name);
+        if (existing) {
+            dist_1.default.log(`red`, `Attempted to add existing planet ${existing.name}.`);
+            return existing;
+        }
+        const newPlanet = await new MiningPlanet_1.MiningPlanet(data, this);
+        this.planets.push(newPlanet);
+        if (save)
+            await db_1.db.planet.addOrUpdateInDb(newPlanet);
         return newPlanet;
     }
     addFaction(data) {
@@ -441,6 +473,12 @@ class Game {
     get aiShips() {
         return this.ships.filter((s) => s instanceof AIShip_1.AIShip);
     }
+    get basicPlanets() {
+        return this.planets.filter((p) => p instanceof BasicPlanet_1.BasicPlanet);
+    }
+    get miningPlanets() {
+        return this.planets.filter((p) => p instanceof MiningPlanet_1.MiningPlanet);
+    }
     recalculateFactionRankings() {
         // credits
         let topCreditsShips = [];
@@ -483,7 +521,7 @@ class Game {
                 score: 0,
             });
         }
-        for (let planet of this.planets) {
+        for (let planet of this.basicPlanets) {
             planet.allegiances.forEach((a) => {
                 if (a.faction.id === `red`)
                     return;

@@ -73,7 +73,10 @@ class AIShip extends CombatShip_1.CombatShip {
         const enemies = this.getEnemiesInAttackRange().filter((e) => !this.onlyVisibleToShipId ||
             e.id === this.onlyVisibleToShipId);
         if (enemies.length) {
-            dist_1.default.log(`ai noticed an enemy in range, available weapons:`, weapons.length);
+            // c.log(
+            //   `ai noticed an enemy in range, available weapons:`,
+            //   weapons.length,
+            // )
             const randomEnemy = dist_1.default.randomFromArray(enemies);
             const distance = dist_1.default.distance(randomEnemy.location, this.location);
             const randomWeapon = dist_1.default.randomFromArray(weapons.filter((w) => w.range >= distance));

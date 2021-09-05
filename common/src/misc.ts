@@ -3,7 +3,7 @@ function sleep(ms: number): Promise<void> {
     setTimeout(resolve, ms)
   })
 }
-function randomFromArray(array: any[]): any {
+function randomFromArray<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]
 }
 

@@ -20,12 +20,12 @@
       <button
         :class="{ disabled: !passive.canBuy }"
         @click="
-          passive.canBuy && buyPassive(passive.data.type)
+          passive.canBuy && buyPassive(passive.data.id)
         "
       >
         {{ passive.data.displayName }} Lv.{{
-          (crewMemberPassiveLevels[passive.data.type] ||
-            0) + 1
+          (crewMemberPassiveLevels[passive.data.id] || 0) +
+          1
         }}: 💳{{ c.numberWithCommas(passive.price) }}
       </button>
     </span>
@@ -102,6 +102,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     buyPassive(passiveId: CrewPassiveId) {
+      c.log(passiveId)
       ;(this as any).$socket?.emit(
         'crew:buyPassive',
         this.ship.id,

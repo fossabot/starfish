@@ -274,10 +274,10 @@ export default Vue.extend({
         this.$store.commit('tooltip')
     },
     async mouseMove(e: MouseEvent) {
-      if (!this.interactive) return
-
       if (e.target === this.$refs.canvas)
         this.checkHoverPointForTooltip(e)
+
+      if (!this.interactive) return
 
       if (!this.mouseIsDown) return
 
@@ -413,7 +413,7 @@ export default Vue.extend({
       this.setHoverPoint(e)
 
       const hoverRadius =
-        (this.drawer?.width || 1) /
+        Math.max(this.drawer?.width || 1, 50) /
         (this.drawer?.flatScale || 1) /
         30
       const hoverableElements: any[] = []

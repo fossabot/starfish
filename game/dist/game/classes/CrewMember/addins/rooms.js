@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bunk = exports.weapons = exports.repair = exports.cockpit = void 0;
+exports.bunk = exports.mine = exports.weapons = exports.repair = exports.cockpit = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
 function cockpit() {
     if (this.cockpitCharge >= 1)
@@ -19,7 +19,7 @@ function cockpit() {
 exports.cockpit = cockpit;
 function repair() {
     const repairAmount = dist_1.default.getRepairAmountPerTickForSingleCrewMember(this.mechanics?.level || 1);
-    const { overRepair, totalRepaired } = this.ship.repair(repairAmount);
+    const { overRepair, totalRepaired } = this.ship.repair(repairAmount, this.repairPriority);
     this.addStat(`totalHpRepaired`, totalRepaired);
     if (!overRepair) {
         this.addXp(`mechanics`); // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
@@ -43,6 +43,16 @@ function weapons() {
     this.toUpdate.skills = this.skills;
 }
 exports.weapons = weapons;
+function mine() {
+    if (this.ship.planet &&
+        this.ship.planet.mine) {
+        const amountToMine = dist_1.default.getMineAmountPerTickForSingleCrewMember(this.mining.level || 1);
+        this.ship.planet.mineResource(this.minePriority, amountToMine);
+        this.addXp(`mining`);
+        this.toUpdate.skills = this.skills;
+    }
+}
+exports.mine = mine;
 function bunk() {
     if (this.stamina >= this.maxStamina)
         return;

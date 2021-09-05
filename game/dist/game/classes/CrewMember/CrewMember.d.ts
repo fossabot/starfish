@@ -6,7 +6,7 @@ import type { CombatShip } from '../Ship/CombatShip';
 import { Stubbable } from '../Stubbable';
 export declare class CrewMember extends Stubbable {
     static readonly levelXPNumbers: number[];
-    static readonly basemaxCargoSpace = 10;
+    static readonly baseMaxCargoSpace = 10;
     readonly type = "crewMember";
     readonly id: string;
     readonly ship: HumanShip;
@@ -23,6 +23,7 @@ export declare class CrewMember extends Stubbable {
     itemTarget: ItemType | null;
     cockpitCharge: number;
     repairPriority: RepairPriority;
+    minePriority: MinePriorityType;
     inventory: Cargo[];
     credits: number;
     actives: CrewActive[];
@@ -40,6 +41,7 @@ export declare class CrewMember extends Stubbable {
     repairAction: typeof roomActions.repair;
     weaponsAction: typeof roomActions.weapons;
     bunkAction: typeof roomActions.bunk;
+    mineAction: typeof roomActions.mine;
     tick(): void;
     active(): void;
     addXp(skill: SkillId, xp?: number): void;
@@ -51,9 +53,10 @@ export declare class CrewMember extends Stubbable {
     recalculateAll(): void;
     addStat(statname: CrewStatKey, amount: number): void;
     get tired(): boolean;
-    get piloting(): XPData | undefined;
-    get linguistics(): XPData | undefined;
-    get munitions(): XPData | undefined;
-    get mechanics(): XPData | undefined;
+    get piloting(): XPData;
+    get linguistics(): XPData;
+    get munitions(): XPData;
+    get mechanics(): XPData;
+    get mining(): XPData;
 }
 //# sourceMappingURL=CrewMember.d.ts.map

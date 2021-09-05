@@ -1,24 +1,42 @@
+type PlanetType = `basic` | `mining`
+
 interface BasePlanetData {
+  planetType: PlanetType
   name: string
   color: string
   location: CoordinatePair
   radius: number
   mass: number
   landingRadiusMultiplier: number
-  repairFactor: number
-
   level: number
   xp: number
   baseLevel: number
+  creatures: string[]
+  passives?: ShipPassiveEffect[]
+  pacifist?: boolean
+}
 
+interface BaseBasicPlanetData extends BasePlanetData {
+  repairFactor: number
   leanings: PlanetLeaning[]
-
   factionId?: FactionKey
   homeworld?: { id: FactionKey }
-  creatures: string[]
-  allegiances?: PlanetAllegianceData[]
-  vendor?: PlanetVendor
+  allegiances: PlanetAllegianceData[]
+  vendor: PlanetVendor
 }
+
+interface BaseMiningPlanetData extends BasePlanetData {
+  mine?: PlanetMine
+  baseMineSpeed?: number
+}
+
+interface PlanetMineEntry {
+  id: CargoId
+  payoutAmount: number
+  mineRequirement: number
+  mineCurrent: number
+}
+type PlanetMine = PlanetMineEntry[]
 
 interface PlanetVendorCargoPrice {
   id: CargoId
@@ -61,14 +79,21 @@ interface PlanetAllegianceData {
   level: number
 }
 
+type PlanetLeaningType =
+  | `items`
+  | `weapon`
+  | `armor`
+  | `scanner`
+  | `communicator`
+  | `engine`
+  | `chassis`
+  | `crewPassives`
+  | `shipPassives`
+  | `actives`
+  | `cargo`
+  | `repair`
 interface PlanetLeaning {
-  type:
-    | `items`
-    | `chassis`
-    | `passives`
-    | `actives`
-    | `cargo`
-    | `repair`
+  type: PlanetLeaningType
   never?: boolean
   propensity?: number
 }

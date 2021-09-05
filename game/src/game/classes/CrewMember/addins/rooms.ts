@@ -1,5 +1,6 @@
 import c from '../../../../../../common/dist'
 import type { Item } from '../../Item/Item'
+import type { MiningPlanet } from '../../Planet/MiningPlanet'
 import type { CrewMember } from '../CrewMember'
 
 export function cockpit(this: CrewMember): void {
@@ -23,8 +24,10 @@ export function repair(this: CrewMember) {
     c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
     )
-  const { overRepair, totalRepaired } =
-    this.ship.repair(repairAmount)
+  const { overRepair, totalRepaired } = this.ship.repair(
+    repairAmount,
+    this.repairPriority,
+  )
 
   this.addStat(`totalHpRepaired`, totalRepaired)
 
@@ -52,6 +55,26 @@ export function weapons(this: CrewMember): void {
 
   this.addXp(`munitions`)
   this.toUpdate.skills = this.skills
+}
+
+export function mine(this: CrewMember): void {
+  if (
+    this.ship.planet &&
+    (this.ship.planet as MiningPlanet).mine
+  ) {
+    const amountToMine =
+      c.getMineAmountPerTickForSingleCrewMember(
+        this.mining.level || 1,
+      )
+
+    ;(this.ship.planet as MiningPlanet).mineResource(
+      this.minePriority,
+      amountToMine,
+    )
+
+    this.addXp(`mining`)
+    this.toUpdate.skills = this.skills
+  }
 }
 
 export function bunk(this: CrewMember): void {

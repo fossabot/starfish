@@ -1,5 +1,5 @@
 declare function sleep(ms: number): Promise<void>;
-declare function randomFromArray(array: any[]): any;
+declare function randomFromArray<T>(array: T[]): T;
 declare function randomWithWeights<E>(elements: {
     weight: number;
     value: E;

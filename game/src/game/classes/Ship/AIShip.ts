@@ -3,7 +3,7 @@ import { Game } from '../../Game'
 import { Faction } from '../Faction'
 import { CombatShip } from './CombatShip'
 import type { Ship } from './Ship'
-import type { Planet } from '../Planet'
+import type { Planet } from '../Planet/Planet'
 import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
@@ -104,10 +104,10 @@ export class AIShip extends CombatShip {
         e.id === this.onlyVisibleToShipId,
     )
     if (enemies.length) {
-      c.log(
-        `ai noticed an enemy in range, available weapons:`,
-        weapons.length,
-      )
+      // c.log(
+      //   `ai noticed an enemy in range, available weapons:`,
+      //   weapons.length,
+      // )
       const randomEnemy = c.randomFromArray(
         enemies,
       ) as CombatShip

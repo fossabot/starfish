@@ -7,16 +7,37 @@ exports.getAllConstructible = exports.wipe = exports.removeFromDb = exports.addO
 const mongoose_1 = require("mongoose");
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const planetSchemaFields = {
+    planetType: String,
     location: [{ type: Number, required: true }],
     color: String,
     name: { type: String, required: true },
     radius: Number,
     mass: Number,
     landingRadiusMultiplier: Number,
-    repairFactor: Number,
+    creatures: [String],
     level: Number,
     xp: Number,
     baseLevel: Number,
+    passives: [
+        {
+            id: String,
+            intensity: Number,
+            data: mongoose_1.Schema.Types.Mixed,
+        },
+    ],
+    pacifist: Boolean,
+    // mining
+    baseMineSpeed: Number,
+    mine: [
+        {
+            id: { type: String },
+            payoutAmount: Number,
+            mineRequirement: Number,
+            mineCurrent: Number,
+        },
+    ],
+    // basic
+    repairFactor: Number,
     leanings: [
         {
             type: { type: String },
@@ -25,7 +46,6 @@ const planetSchemaFields = {
         },
     ],
     factionId: String,
-    creatures: [String],
     homeworld: { id: String },
     allegiances: [{ faction: { id: String }, level: Number }],
     vendor: {

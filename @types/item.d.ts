@@ -167,7 +167,9 @@ interface ShipScanDataShape {
   human: true
   level: true
   attackable: true
-  planet: (keyof BasePlanetData)[]
+  planet:
+    | (keyof BasePlanetData)[]
+    | (keyof BaseBasicPlanetData)[]
   faction: (keyof BaseFactionData)[]
   species: (keyof BaseSpeciesData)[]
   items?: (

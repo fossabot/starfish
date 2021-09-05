@@ -8,8 +8,14 @@ const mongoose_1 = require("mongoose");
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const attackRemnantSchemaFields = {
     id: { type: String, required: true },
-    attacker: { id: String, name: String },
-    defender: { id: String, name: String },
+    attacker: {
+        id: String,
+        name: String,
+    },
+    defender: {
+        id: String,
+        name: String,
+    },
     time: { type: Number, default: Date.now() },
     start: [{ type: Number, required: true }],
     end: [{ type: Number, required: true }],

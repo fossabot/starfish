@@ -13,6 +13,8 @@ export class AttackRemnant extends Stubbable {
   readonly time: number
   readonly onlyVisibleToShipId?: string
 
+  // todo are these being stubified correctly? pre-db-save-and-load, that is
+
   constructor({
     attacker,
     defender,

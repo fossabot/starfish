@@ -150,16 +150,14 @@
       <div
         v-if="data.crewMembers"
         class="flexbetween"
-        @mouseenter="
+        v-tooltip="
           Array.isArray(data.crewMembers) &&
-            data.crewMembers[0] &&
-            data.crewMembers[0].name &&
-            $store.commit(
-              'tooltip',
-              `<b>Crew</b><br/><hr />${data.crewMembers
+          data.crewMembers[0] &&
+          data.crewMembers[0].name
+            ? `<b>Crew</b><br/><hr />${data.crewMembers
                 .map((cm) => cm.name)
-                .join(', ')}`,
-            )
+                .join(', ')}`
+            : null
         "
       >
         <div>Crew Members</div>
@@ -210,7 +208,7 @@
             }}</span>
           </div>
           <PillBar
-            v-if="item.repair && item.maxHp"
+            v-if="item.repair !== undefined && item.maxHp"
             :mini="true"
             :value="item.repair * item.maxHp"
             :max="item.maxHp"

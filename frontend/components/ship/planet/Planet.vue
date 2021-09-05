@@ -4,11 +4,10 @@
     v-if="show"
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/5.jpg"
-    :bgTint="ship.planet.color"
+    :bgTint="planet.color"
   >
-    <template #title v-if="ship.planet">
-      <span class="sectionemoji">🪐</span>Current Planet:
-      {{ ship.planet.name }}
+    <template #title v-if="planet">
+      <span class="sectionemoji">🪐</span>Planet
     </template>
     <div class="scroller">
       <div
@@ -18,106 +17,152 @@
           flexcenter
           marbotsmall
         "
-        :style="{
-          '--highlight-color': ship.planet.color,
-        }"
       >
-        <div>
-          Welcome to
-          <b>{{ ship.planet.name }}!</b>
-        </div>
+        <h3 class="marnone flexcolumn flexcenter">
+          <!-- Welcome to -->
+          <span
+            :style="{
+              color: planet.color,
+            }"
+            ><b>{{ planet.name }}</b></span
+          >
+        </h3>
         <div
-          class="sub textcenter"
-          v-if="ship.planet.creatures"
+          class="sub marbotsmall"
+          :style="{
+            'line-height': 1.1,
+          }"
+        >
+          {{ c.getPlanetTitle(planet) }}
+        </div>
+
+        <hr class="half" />
+
+        <div
+          class="sub textcenter marbottiny"
+          v-if="type === 'mining'"
+        >
+          Mining colony
+        </div>
+
+        <div
+          class="sub textcenter marbottiny"
+          v-if="
+            type === 'mining' &&
+            planet.creatures &&
+            planet.creatures.length
+          "
         >
           Primary creature{{
-            ship.planet.creatures.length === 1 ? '' : 's'
-          }}:
-          {{ c.printList(ship.planet.creatures) }}
+            planet.creatures.length === 1 ? '' : 's'
+          }}: {{ c.printList(planet.creatures) }}
         </div>
+
         <div
-          class="sub"
+          class="sub marbottiny"
           v-if="
-            ship.planet.homeworld && ship.planet.faction
+            type === 'basic' &&
+            planet.homeworld &&
+            planet.faction
           "
         >
           <span
             :style="{
-              color:
-                c.factions[ship.planet.faction.id].color,
+              color: c.factions[planet.faction.id].color,
             }"
           >
-            {{ c.factions[ship.planet.faction.id].name }}
+            {{ c.factions[planet.faction.id].name }}
           </span>
           faction homeworld
         </div>
-        <div
+        <!-- <div
           class="sub"
           v-else-if="
-            ship.planet.faction &&
-            c.factions[ship.planet.faction.id].color
+            planet.faction &&
+            c.factions[planet.faction.id].color
           "
         >
           Faction allegiance:
           <span
             :style="{
               color:
-                c.factions[ship.planet.faction.id].color,
+                c.factions[planet.faction.id].color,
             }"
           >
-            {{ c.factions[ship.planet.faction.id].name }}
+            {{ c.factions[planet.faction.id].name }}
           </span>
-        </div>
-        <div class="sub">
-          Population
+        </div> -->
+        <div class="sub marbottiny" v-if="type === 'basic'">
+          Population:
           {{
             c.numberWithCommas(
-              ((ship.planet &&
-                ship.planet.name
-                  .split('')
-                  .reduce(
-                    (t, c) => t + c.charCodeAt(0),
-                    0,
-                  ) % 200) +
-                80) **
-                2 *
-                8 *
-                ship.planet.radius || 0,
+              c.getPlanetPopulation(planet),
             )
           }}
+          {{ c.printList(planet.creatures) }}
+        </div>
+
+        <div
+          class="sub textcenter marbottiny"
+          v-if="planet.pacifist"
+          v-tooltip="
+            `You cannot attack or be attacked while within this planet's radius.`
+          "
+        >
+          Safe haven
         </div>
       </div>
 
-      <ShipPlanetVendorCargo />
-      <ShipPlanetVendorItems />
-      <ShipPlanetBuyRepair />
-      <ShipPlanetBuyPassive />
+      <ShipPlanetMine v-if="type === 'mining'" />
+
+      <ShipPlanetVendorCargo v-if="type === 'basic'" />
+      <ShipPlanetVendorItems v-if="type === 'basic'" />
+      <ShipPlanetBuyRepair v-if="type === 'basic'" />
+      <ShipPlanetBuyPassive v-if="type === 'basic'" />
 
       <ShipPlanetLevel />
 
-      <div class="panesection">
-        <div class="panesubhead">Faction Allegiances</div>
-        <ShipPlanetFactionGraph :planet="ship.planet" />
+      <div
+        class="panesection"
+        v-if="type === 'basic' && planet.allegiances"
+      >
         <div
-          class="martopsmall"
-          v-if="isFriendlyToFaction"
-          :style="{
-            color: ship.faction.color,
-          }"
+          class="panesubhead"
+          v-tooltip="
+            `Spend money at this planet to increase your faction's allegiance. Allegiances decay slowly over time.`
+          "
         >
-          Friendly faction bonus! Prices improved by
-          {{
-            Math.round(
-              (1 - c.factionVendorMultiplier) * 100,
-            )
-          }}%.
+          Allegiances
+        </div>
+        <ShipPlanetFactionGraph :planet="planet" />
+        <div class="martopsmall" v-if="isFriendlyToFaction">
+          <span
+            :style="{
+              color: c.factions[planet.faction.id].color,
+            }"
+            >Friendly faction</span
+          >
+          bonus!
+          <ul class="small success">
+            <li>
+              Prices improved by
+              {{
+                Math.round(
+                  (1 - c.factionVendorMultiplier) * 100,
+                )
+              }}%
+            </li>
+            <li v-if="planet.repairFactor > 0">
+              Repair field boost
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="panesection" v-if="ship.planet">
-        <div class="sub">
-          You cannot attack or be attacked while on a
-          planet.
-        </div>
+      <div
+        v-if="c.getPlanetDescription(planet)"
+        class="panesection sub"
+      >
+        {{ c.getPlanetDescription(planet) }}
       </div>
     </div>
   </Box>
@@ -134,23 +179,29 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship']),
-    show() {
+    show(): boolean {
       return (
         this.ship &&
-        this.ship.planet &&
+        this.planet &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('planet'))
       )
     },
-    highlight() {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'planet'
       )
     },
-    isFriendlyToFaction() {
+    planet(): PlanetStub {
+      return this.ship?.planet
+    },
+    type(): PlanetType {
+      return this.planet?.planetType
+    },
+    isFriendlyToFaction(): boolean {
       return (
-        (this.ship.planet.allegiances.find(
+        (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
             a.faction.id === this.ship.faction.id,
         )?.level || 0) >= c.factionAllegianceFriendCutoff

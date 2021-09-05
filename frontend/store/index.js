@@ -112,6 +112,17 @@ export const mutations = {
       rp,
     )
   },
+
+  setMinePriority(state, rp) {
+    if (!state.crewMember) return
+    Vue.set(state.crewMember, `minePriority`, rp)
+    this.$socket?.emit(
+      `crew:minePriority`,
+      state.ship.id,
+      state.userId,
+      rp,
+    )
+  },
 }
 
 export const actions = {

@@ -1,6 +1,6 @@
-import { Schema, model, Document, Types } from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 import c from '../../../../common/dist'
-import type { Planet } from '../../game/classes/Planet'
+import type { Planet } from '../../game/classes/Planet/Planet'
 
 interface DBPlanetDoc
   extends BasePlanetData,
@@ -10,20 +10,46 @@ interface DBPlanetDoc
 }
 
 const planetSchemaFields: Record<
-  keyof BasePlanetData,
+  | keyof BasePlanetData
+  | keyof BaseBasicPlanetData
+  | keyof BaseMiningPlanetData,
   any
 > = {
+  planetType: String,
   location: [{ type: Number, required: true }],
   color: String,
   name: { type: String, required: true },
   radius: Number,
   mass: Number,
   landingRadiusMultiplier: Number,
-  repairFactor: Number,
+  creatures: [String],
 
   level: Number,
   xp: Number,
   baseLevel: Number,
+
+  passives: [
+    {
+      id: String,
+      intensity: Number,
+      data: Schema.Types.Mixed,
+    },
+  ],
+  pacifist: Boolean,
+
+  // mining
+  baseMineSpeed: Number,
+  mine: [
+    {
+      id: { type: String },
+      payoutAmount: Number,
+      mineRequirement: Number,
+      mineCurrent: Number,
+    },
+  ],
+
+  // basic
+  repairFactor: Number,
 
   leanings: [
     {
@@ -34,7 +60,6 @@ const planetSchemaFields: Record<
   ],
 
   factionId: String,
-  creatures: [String],
   homeworld: { id: String },
 
   allegiances: [{ faction: { id: String }, level: Number }],

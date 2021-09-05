@@ -1,93 +1,96 @@
 const basePassiveData: {
   [key in ShipPassiveEffectType]: {
-    toString: (intensity: number, ...args: any[]) => string
+    toString: (p: ShipPassiveEffect) => string
   }
 } = {
   boostAttackWithNumberOfFactionMembersWithinDistance: {
-    toString: (intensity, data) =>
-      `+${intensity * 100}% attack damage per ally within ${
-        data.distance
+    toString: (p) =>
+      `+${
+        (p.intensity || 1) * 100
+      }% attack damage per ally within ${
+        p.data?.distance
       }AU`,
   },
   boostBroadcastRange: {
-    toString: (intensity) =>
-      `+${intensity} broadcast range`,
+    toString: (p) => `+${p.intensity || 1} broadcast range`,
   },
   boostCargoSpace: {
-    toString: (intensity) =>
-      `+${intensity} cargo space for crew members`,
+    toString: (p) =>
+      `+${p.intensity || 1} cargo space for crew members`,
   },
   boostChassisAgility: {
-    toString: (intensity) =>
-      `+${intensity * 100}% dodge chance`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% dodge chance`,
   },
   boostDropAmount: {
-    toString: (intensity) =>
-      `+${intensity * 100}% drop amounts`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% drop amounts`,
   },
   boostDropRarity: {
-    toString: (intensity) =>
-      `+${intensity * 100}% ai drop rarity`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% ai drop rarity`,
   },
   boostRepairSpeed: {
-    toString: (intensity) =>
-      `+${intensity}% faster repairs`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% faster repairs`,
   },
   boostRestSpeed: {
-    toString: (intensity) =>
-      `+${intensity * 100}% faster rest`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% faster rest`,
   },
   boostScanRange: {
-    toString: (intensity) =>
-      `+${intensity * 100}% scan range`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% scan range`,
   },
   boostSightRange: {
-    toString: (intensity) =>
-      `+${intensity * 100}% sight range`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% sight range`,
   },
   boostCockpitChargeSpeed: {
-    toString: (intensity) =>
-      `+${intensity * 100}% cockpit charge speed`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% cockpit charge speed`,
   },
   boostBrake: {
-    toString: (intensity) =>
-      `+${intensity * 100}% ship braking`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% ship braking`,
   },
   // boostThrust: {
-  //   toString: (intensity) =>
-  //     `+${intensity * 100}% more thrust`,
+  //   toString: (p) =>
+  //     `+${(p.intensity || 1) * 100}% more thrust`,
   // },
   boostXpGain: {
-    toString: (intensity) =>
-      `+${intensity * 100}% faster xp gain`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% faster xp gain`,
   },
   disguiseChassisType: {
-    toString: (intensity) => `Chassis type hidden`,
+    toString: (p) => `Chassis type hidden`,
   },
   disguiseCrewMemberCount: {
-    toString: (intensity) => `Crew member count hidden`,
+    toString: (p) => `Crew member count hidden`,
   },
   extraEquipmentSlots: {
-    toString: (intensity) =>
-      `+${intensity} item slot${
-        intensity === 1 ? `` : `s`
+    toString: (p) =>
+      `+${p.intensity || 1} item slot${
+        (p.intensity || 1) === 1 ? `` : `s`
       }`,
   },
   boostDamageToItemType: {
-    toString: (intensity, data) =>
-      `+${intensity * 100}% damage to ${data.type}s`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% damage to ${
+        p.data?.type
+      }s`,
   },
   scaledDamageReduction: {
-    toString: (intensity) =>
-      `+${intensity * 100}% damage reduction`,
+    toString: (p) =>
+      `+${(p.intensity || 1) * 100}% damage reduction`,
   },
   flatDamageReduction: {
-    toString: (intensity) =>
-      `+${intensity} flat damage reduction`,
+    toString: (p) =>
+      `+${p.intensity || 1} flat damage reduction`,
   },
   flatSkillBoost: {
-    toString: (intensity) =>
-      `+${intensity} crew skill levels`,
+    toString: (p) =>
+      `+${p.intensity || 1} crew skill levels`,
   },
 }
 export default basePassiveData

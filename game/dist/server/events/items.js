@@ -18,7 +18,7 @@ function default_1(socket) {
                 error: `Only the captain may buy or sell equipment.`,
             });
         const planet = ship.planet;
-        if (!planet)
+        if (!planet || planet.planetType !== `basic`)
             return callback({ error: `Not at a planet.` });
         const itemForSale = planet?.vendor?.items?.find((i) => i.type === itemType &&
             i.id === itemId &&
@@ -70,7 +70,7 @@ function default_1(socket) {
                 error: `Only the captain may buy or sell equipment.`,
             });
         const planet = ship.planet;
-        if (!planet)
+        if (!planet || planet.planetType !== `basic`)
             return callback({ error: `Not at a planet.` });
         const heldItem = ship.items.find((i) => i.type === itemType && i.id === itemId);
         if (!heldItem)
@@ -118,7 +118,7 @@ function default_1(socket) {
                 error: `Only the captain may buy or sell equipment.`,
             });
         const planet = ship.planet;
-        if (!planet)
+        if (!planet || planet.planetType !== `basic`)
             return callback({ error: `Not at a planet.` });
         const itemForSale = planet?.vendor?.chassis?.find((i) => i.id === chassisId);
         if (!itemForSale ||
