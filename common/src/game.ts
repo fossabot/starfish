@@ -1,6 +1,7 @@
 import math from './math'
 import globals from './globals'
 import c from './log'
+import text from './text'
 import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
@@ -180,6 +181,27 @@ function getCrewPassivePriceMultiplier(level: number) {
   return 1 + level ** 2
 }
 
+function statToString(data: {
+  stat: string
+  amount: number
+}): string {
+  const { stat, amount } = data
+  let titleString = text.camelCaseToWords(stat)
+  let amountString = math.r2(amount)
+  let suffix = ``
+
+  if ([`planetTime`].includes(stat)) {
+    amountString = math.r2(amount / 1000 / 60, 0, true)
+    suffix = `h`
+  }
+
+  if ([`distanceTraveled`].includes(stat)) suffix = `AU`
+
+  return `${text.capitalize(
+    titleString,
+  )}: ${text.numberWithCommas(amountString)}${suffix}`
+}
+
 const taglineOptions: string[] = [
   `Tester`,
   `✨Supporter✨`,
@@ -327,13 +349,54 @@ function getPlanetPopulation(planet: PlanetStub): number {
   )
 }
 
-function getPlanetDescription(planet: PlanetStub): string {
-  if (!planet) return ``
-  return `The ${getPlanetTitle(
-    planet,
-  ).toLowerCase()} known as ${planet.name} is...`
-  // todo finish
-}
+// function getPlanetDescription(planet: PlanetStub): string {
+//   if (!planet) return ``
+
+//   const cargoCount = planet.vendor?.cargo?.length
+//   const itemsCount = (planet.vendor as PlanetVendor)?.items
+//     ?.length
+//   const chassisCount = (planet.vendor as PlanetVendor)
+//     ?.chassis?.length
+
+//   let d = `The ${getPlanetTitle(
+//     planet,
+//   ).toLowerCase()} known as ${planet.name} is a ${
+//     planet.radius > 50000
+//       ? `large`
+//       : planet.radius > 30000
+//       ? `medium-sized`
+//       : `small`
+//   } planet`
+
+//   const positiveLeanings = (
+//     (planet.leanings as PlanetLeaning[]) || []
+//   ).filter((l) => !l.never && (l.propensity || 0) > 0.5)
+//   d += positiveLeanings.length
+//     ? ` that specializes in selling ${text.printList(
+//         positiveLeanings.map((l) =>
+//           [
+//             `weapon`,
+//             `engine`,
+//             `scanner`,
+//             `communicator`,
+//             `repair`,
+//           ].includes(l.type)
+//             ? l.type + `s`
+//             : l.type,
+//         ),
+//       )}.`
+//     : `.`
+
+//   d +=
+//     planet.creatures && planet.creatures.length
+//       ? ` It is inhabited by a population of ${text.numberWithCommas(
+//           getPlanetPopulation(planet),
+//         )} ${text.printList(planet.creatures || [])}.`
+//       : ``
+
+//   // todo finish
+//   return d
+// }
 
 function stubify<BaseType, StubType extends BaseStub>(
   baseObject: BaseType,
@@ -361,7 +424,7 @@ function stubify<BaseType, StubType extends BaseStub>(
       gettersIncluded,
       (key: string, value: any) => {
         if ([`toUpdate`, `_stub`, `_id`].includes(key))
-          return
+          return undefined
         if (
           [
             `game`,
@@ -447,9 +510,10 @@ export default {
   getCrewPassivePriceMultiplier,
   tactics,
   taglineOptions,
+  statToString,
   headerBackgroundOptions,
   getPlanetTitle,
   getPlanetPopulation,
-  getPlanetDescription,
+  // getPlanetDescription,
   stubify,
 }

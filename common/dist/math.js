@@ -26,14 +26,14 @@ function radiansToDegrees(radians = 0) {
 function degreesToRadians(degrees = 0) {
     return (degrees * Math.PI) / 180;
 }
-function coordPairToRadians(coordPair = [0, 0]) {
+function vectorToRadians(coordPair = [0, 0]) {
     const [x, y] = coordPair;
     const angle = Math.atan2(y, x);
     return angle;
 }
 function vectorToDegrees(coordPair = [0, 0]) {
-    const angle = coordPairToRadians(coordPair);
-    const degrees = (180 * angle) / Math.PI; // degrees
+    const angle = vectorToRadians(coordPair);
+    const degrees = (180 * angle) / Math.PI;
     return (360 + degrees) % 360;
 }
 function distance(a = [0, 0], b = [0, 0]) {
@@ -135,7 +135,7 @@ exports.default = {
     unitVectorFromThisPointToThatPoint,
     pointIsInsideCircle,
     vectorToDegrees,
-    coordPairToRadians,
+    coordPairToRadians: vectorToRadians,
     vectorToMagnitude,
     randomSign,
     randomInRange,

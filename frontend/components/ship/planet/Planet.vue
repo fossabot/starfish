@@ -3,7 +3,9 @@
     class="planet"
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/5.jpg"
+    :bgImage="`/images/paneBackgrounds/${
+      planet.planetType === 'basic' ? 5 : 19
+    }.jpg`"
     :bgTint="planet.color"
   >
     <template #title v-if="planet">
@@ -18,7 +20,7 @@
           marbotsmall
         "
       >
-        <h3 class="marnone flexcolumn flexcenter">
+        <h2 class="marnone flexcolumn flexcenter">
           <!-- Welcome to -->
           <span
             :style="{
@@ -26,14 +28,16 @@
             }"
             ><b>{{ planet.name }}</b></span
           >
-        </h3>
+        </h2>
         <div
-          class="sub marbotsmall"
+          class="sub"
           :style="{
             'line-height': 1.1,
           }"
         >
-          {{ c.getPlanetTitle(planet) }}
+          <span class="fade">{{
+            c.getPlanetTitle(planet)
+          }}</span>
         </div>
 
         <hr class="half" />
@@ -158,12 +162,12 @@
           </ul>
         </div>
       </div>
-      <div
+      <!-- <div
         v-if="c.getPlanetDescription(planet)"
         class="panesection sub"
       >
         {{ c.getPlanetDescription(planet) }}
-      </div>
+      </div> -->
     </div>
   </Box>
 </template>

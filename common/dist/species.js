@@ -10,6 +10,7 @@ const species = {
         passives: [
             {
                 id: `boostDropAmount`,
+                data: { source: { speciesId: `octopi` } },
                 intensity: 0.3,
             },
         ],
@@ -25,6 +26,7 @@ const species = {
                 id: `boostDamageToItemType`,
                 intensity: 0.3,
                 data: {
+                    source: { speciesId: `squids` },
                     type: `engine`,
                 },
             },
@@ -39,6 +41,7 @@ const species = {
         passives: [
             {
                 id: `boostScanRange`,
+                data: { source: { speciesId: `lobsters` } },
                 intensity: 0.2,
             },
         ],
@@ -52,6 +55,7 @@ const species = {
         passives: [
             {
                 id: `boostBrake`,
+                data: { source: { speciesId: `crabs` } },
                 intensity: 2,
             },
         ],
@@ -65,6 +69,7 @@ const species = {
         passives: [
             {
                 id: `boostRepairSpeed`,
+                data: { source: { speciesId: `seals` } },
                 intensity: 0.25,
             },
         ],
@@ -78,6 +83,7 @@ const species = {
         passives: [
             {
                 id: `scaledDamageReduction`,
+                data: { source: { speciesId: `sea turtles` } },
                 intensity: 0.1,
             },
         ],
@@ -91,6 +97,7 @@ const species = {
         passives: [
             {
                 id: `boostXpGain`,
+                data: { source: { speciesId: `dolphins` } },
                 intensity: 0.1,
             },
         ],
@@ -104,6 +111,7 @@ const species = {
         passives: [
             {
                 id: `extraEquipmentSlots`,
+                data: { source: { speciesId: `whales` } },
                 intensity: 1,
             },
         ],
@@ -117,6 +125,7 @@ const species = {
         passives: [
             {
                 id: `boostChassisAgility`,
+                data: { source: { speciesId: `tuna` } },
                 intensity: 0.1,
             },
         ],
@@ -130,6 +139,7 @@ const species = {
         passives: [
             {
                 id: `boostCockpitChargeSpeed`,
+                data: { source: { speciesId: `angelfish` } },
                 intensity: 0.15,
             },
         ],
@@ -143,9 +153,11 @@ const species = {
         passives: [
             {
                 id: `disguiseChassisType`,
+                data: { source: { speciesId: `blowfish` } },
             },
             {
                 id: `disguiseCrewMemberCount`,
+                data: { source: { speciesId: `blowfish` } },
             },
         ],
     },
@@ -160,6 +172,7 @@ const species = {
                 id: `boostAttackWithNumberOfFactionMembersWithinDistance`,
                 intensity: 0.1,
                 data: {
+                    source: { speciesId: `shrimp` },
                     distance: 0.3,
                 },
             },

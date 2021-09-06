@@ -227,13 +227,24 @@ class Ship extends Stubbable_1.Stubbable {
                 return false;
             item = new Armor_1.Armor(foundItem, this, armorData);
         }
-        if (item) {
-            this.items.push(item);
-            if (item.passives)
-                item.passives.forEach((p) => this.applyPassive(p));
-            this.updateThingsThatCouldChangeOnItemChange();
-            this.recalculateMass();
-        }
+        if (!item)
+            return false;
+        this.items.push(item);
+        if (item.passives)
+            item.passives.forEach((p) => this.applyPassive({
+                ...p,
+                data: {
+                    ...p.data,
+                    source: {
+                        item: {
+                            type: item.type,
+                            id: item.id,
+                        },
+                    },
+                },
+            }));
+        this.updateThingsThatCouldChangeOnItemChange();
+        this.recalculateMass();
         if (this.items.length === 5)
             this.addHeaderBackground(`Flat 1`, `equipping 5 items`);
         else if (this.items.length === 8)
@@ -450,7 +461,7 @@ class Ship extends Stubbable_1.Stubbable {
             });
         else
             existing.amount += amount;
-        this.toUpdate.stats = this.stats;
+        this.toUpdate.stats = dist_1.default.stubify({ ...this.stats });
     }
     // ----- misc stubs -----
     logEntry(s, lv) { }

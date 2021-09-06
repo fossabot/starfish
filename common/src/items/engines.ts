@@ -1,5 +1,13 @@
 import game from '../game'
 
+// todo make brake-specialized engines
+/*
+{
+  id: `boostBrake`,
+  intensity: 0.4,
+},
+*/
+
 export const engines: {
   [key in EngineId]: BaseEngineData
 } = {

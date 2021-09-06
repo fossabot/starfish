@@ -322,15 +322,28 @@ export class Ship extends Stubbable {
       item = new Armor(foundItem, this, armorData)
     }
 
-    if (item) {
-      this.items.push(item)
+    if (!item) return false
 
-      if (item.passives)
-        item.passives.forEach((p) => this.applyPassive(p))
+    this.items.push(item)
 
-      this.updateThingsThatCouldChangeOnItemChange()
-      this.recalculateMass()
-    }
+    if (item.passives)
+      item.passives.forEach((p) =>
+        this.applyPassive({
+          ...p,
+          data: {
+            ...p.data,
+            source: {
+              item: {
+                type: item!.type,
+                id: item!.id,
+              },
+            },
+          },
+        }),
+      )
+
+    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateMass()
 
     if (this.items.length === 5)
       this.addHeaderBackground(
@@ -669,7 +682,7 @@ export class Ship extends Stubbable {
         amount,
       })
     else existing.amount += amount
-    this.toUpdate.stats = this.stats
+    this.toUpdate.stats = c.stubify({ ...this.stats })
   }
 
   // ----- misc stubs -----

@@ -9,9 +9,12 @@ declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
+declare function statToString(data: {
+    stat: string;
+    amount: number;
+}): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getPlanetPopulation(planet: PlanetStub): number;
-declare function getPlanetDescription(planet: PlanetStub): string;
 declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
     gameShipLimit: number;
@@ -66,13 +69,13 @@ declare const _default: {
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
     taglineOptions: string[];
+    statToString: typeof statToString;
     headerBackgroundOptions: {
         id: string;
         url: string;
     }[];
     getPlanetTitle: typeof getPlanetTitle;
     getPlanetPopulation: typeof getPlanetPopulation;
-    getPlanetDescription: typeof getPlanetDescription;
     stubify: typeof stubify;
 };
 export default _default;

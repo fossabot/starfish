@@ -85,7 +85,15 @@ function numberToEmoji(number = 0) {
 function emojiToNumber(emoji = ``) {
     return numberEmojis.findIndex((e) => e === emoji);
 }
-const skipWords = [`a`, `an`, `the`, `of`, `in`];
+const skipWords = [
+    `a`,
+    `an`,
+    `the`,
+    `of`,
+    `in`,
+    `to`,
+    `per`,
+];
 function capitalize(string = ``) {
     return (string || ``)
         .split(` `)
@@ -110,6 +118,12 @@ function sanitize(string = ``) {
             ? `ok`
             : `Sorry, you can't use language like that here.`,
     };
+}
+function camelCaseToWords(string = ``, capitalizeFirst) {
+    let s = string.replace(/([A-Z])/g, ` $1`);
+    if (capitalizeFirst)
+        s = s.replace(/^./, (str) => str.toUpperCase());
+    return s;
 }
 function msToTimeString(ms = 0) {
     let remainingSeconds = Math.floor(ms / 1000);
@@ -180,6 +194,7 @@ exports.default = {
     numberToEmoji,
     emojiToNumber,
     capitalize,
+    camelCaseToWords,
     sanitize,
     msToTimeString,
     garble,

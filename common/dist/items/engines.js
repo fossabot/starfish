@@ -5,6 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.engines = void 0;
 const game_1 = __importDefault(require("../game"));
+// todo make brake-specialized engines
+/*
+{
+  id: `boostBrake`,
+  intensity: 0.4,
+},
+*/
 exports.engines = {
     tutorial1: {
         buyable: false,

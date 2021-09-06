@@ -222,7 +222,9 @@ class Game {
                 if (!p)
                     continue;
                 const planet = await this.addBasicPlanet(p);
-                dist_1.default.log(`gray`, `Spawned basic planet ${planet.name} at ${planet.location}${factionThatNeedsAHomeworld
+                dist_1.default.log(`gray`, `Spawned basic planet ${planet.name} at ${planet.location
+                    .map((l) => dist_1.default.r2(l))
+                    .join(`, `)}${factionThatNeedsAHomeworld
                     ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
                     : ``}.`);
                 // c.log(this.planets.map((p) => p.vendor.items))

@@ -3,7 +3,7 @@ declare function r2(// "round to"
 number: number, decimalPlaces?: number, floor?: boolean): number;
 declare function radiansToDegrees(radians?: number): number;
 declare function degreesToRadians(degrees?: number): number;
-declare function coordPairToRadians(coordPair?: CoordinatePair): number;
+declare function vectorToRadians(coordPair?: CoordinatePair): number;
 declare function vectorToDegrees(coordPair?: CoordinatePair): number;
 declare function distance(a?: CoordinatePair, b?: CoordinatePair): number;
 declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
@@ -36,7 +36,7 @@ declare const _default: {
     unitVectorFromThisPointToThatPoint: typeof unitVectorFromThisPointToThatPoint;
     pointIsInsideCircle: typeof pointIsInsideCircle;
     vectorToDegrees: typeof vectorToDegrees;
-    coordPairToRadians: typeof coordPairToRadians;
+    coordPairToRadians: typeof vectorToRadians;
     vectorToMagnitude: typeof vectorToMagnitude;
     randomSign: typeof randomSign;
     randomInRange: typeof randomInRange;

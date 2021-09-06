@@ -43,6 +43,9 @@
 
         <ShipLog />
 
+        <ShipPassives />
+        <!-- <ShipStats /> -->
+
         <ShipCrewRank />
 
         <ShipFactionRank />

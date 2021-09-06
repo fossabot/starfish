@@ -47,7 +47,7 @@ function generateZoneData(game) {
         name = dist_1.default.randomFromArray(healZoneNames);
         effects.push({
             type: `repair over time`,
-            intensity: Math.random() * 0.01,
+            intensity: Math.min(1, Math.random() + 0.03),
             procChancePerTick: 1,
         });
     }
@@ -55,7 +55,7 @@ function generateZoneData(game) {
         name = dist_1.default.randomFromArray(accelerateZoneNames);
         effects.push({
             type: `accelerate`,
-            intensity: Math.random(),
+            intensity: Math.min(1, Math.random() + 0.03),
             procChancePerTick: 1,
             basedOnProximity: dist_1.default.coinFlip(),
         });
@@ -65,7 +65,7 @@ function generateZoneData(game) {
         name = dist_1.default.randomFromArray(decelerateZoneNames);
         effects.push({
             type: `decelerate`,
-            intensity: Math.random(),
+            intensity: Math.min(1, Math.random() + 0.03),
             procChancePerTick: 1,
             basedOnProximity: dist_1.default.coinFlip(),
         });

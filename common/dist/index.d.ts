@@ -164,13 +164,16 @@ declare const _default: {
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
     taglineOptions: string[];
+    statToString: (data: {
+        stat: string;
+        amount: number;
+    }) => string;
     headerBackgroundOptions: {
         id: string;
         url: string;
     }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getPlanetDescription: (planet: PlanetStub) => string;
     stubify: <BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
@@ -191,6 +194,7 @@ declare const _default: {
     numberToEmoji: (number?: number) => string;
     emojiToNumber: (emoji?: string) => number;
     capitalize: (string?: string) => string;
+    camelCaseToWords: (string?: string, capitalizeFirst?: boolean | undefined) => string;
     sanitize: (string?: string) => SanitizeResult;
     msToTimeString: (ms?: number) => string;
     garble: (string?: string, percent?: number) => string;

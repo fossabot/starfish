@@ -91,10 +91,10 @@
       <ShipPlanetFactionGraph :planet="data" />
     </template>
 
-    <hr v-if="c.getPlanetDescription(data)" />
+    <!-- <hr v-if="c.getPlanetDescription(data)" />
     <div v-if="c.getPlanetDescription(data)" class="sub">
       {{ c.getPlanetDescription(data) }}
-    </div>
+    </div> -->
   </div>
 </template>
 

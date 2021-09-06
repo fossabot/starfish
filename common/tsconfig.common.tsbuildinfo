@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "4ca2dc10c7d25c99250440ad443edb08799937c64950a07eddda0382bdc07b5b",
-        "signature": "4ca2dc10c7d25c99250440ad443edb08799937c64950a07eddda0382bdc07b5b",
+        "version": "ca60a14bbebcffa5b89c84c7c5646095c0b2356b53f24a77a21fa6e4b798ef42",
+        "signature": "ca60a14bbebcffa5b89c84c7c5646095c0b2356b53f24a77a21fa6e4b798ef42",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -307,8 +307,8 @@
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
-        "version": "4ec5772b4d557ca25fa790121551cd2b6a385884cb615b906de894e6d9839137",
-        "signature": "5ec39be0eeb2ac5f6fa47a5575628af6b7e6998bdee4ca95532e75006ae30fee",
+        "version": "d6f0900ac2e6261772155022b96c9ab90f092130d6a5398d0efa2695eb5b65c8",
+        "signature": "4dbf71e86f8b51d0b82180488052409829cffbc6db9706817a22fbab0a5c2e1c",
         "affectsGlobalScope": false
       },
       "./src/profiler.ts": {
@@ -342,12 +342,12 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "77dcb078fbe597b9c43484d3ac1f86193afbfd17c23e56f5d0182155bcedf9b3",
+        "version": "39d808c027b996a350bb2dca867681bff2ed74ebf5702b0ba67d1f0bbe4785d4",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "39abe5ed42e6c55ba6170ec267def3d481cc104b26e0b2aa0176aecda1970dd6",
+        "version": "6ad0d2eb645a6cc2b187950368c8664971d4e84d3538d5cf96cec0d42fe2999f",
         "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },
@@ -356,14 +356,14 @@
         "signature": "e57cac9d9ce0e7b6e4262ee27e33678788ccfc0536d843faa41e5b1b6c708e9c",
         "affectsGlobalScope": false
       },
-      "./src/game.ts": {
-        "version": "9d8b0e4e54b404c9ebcc2bd386b8173f433bc738b776e1a0222b001d5017cb21",
-        "signature": "37087da66ca8929d7492fb128f889ecf6ff898079fa0dc5d7e5c48bc63d726c0",
+      "./src/text.ts": {
+        "version": "9e58d5e4c2cfa661f671889abc45824266be5ed393a8fd98be6e0ddcfcca20f0",
+        "signature": "4891b7c3cdc24fb25c16244d3de0ec5162da836e8e62dfdb44186c106dbe1e5f",
         "affectsGlobalScope": false
       },
-      "./src/text.ts": {
-        "version": "326f7209c71955069e66622f5632b8dec9da7fb8bc1809a71d2f5db0eb652f31",
-        "signature": "3b8f38d3f23a927fda37bd6a16bc68a49920b57bde05ea77624a3e4c526db025",
+      "./src/game.ts": {
+        "version": "9c071a2f1b8498e38e4743c48a96d11c9626af5990ef5c2ee20eca23a9f91d7d",
+        "signature": "179097b32538187cfa746ce5d611a2a764556a3d34c527dc75c7f972b41bda43",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -382,7 +382,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "d74efe759dbdead8c1f36a1ede7d88a2829f47b1fdf2d798eba1395ab39c2856",
+        "version": "83419dee9ea8673b2ce29e7572fb1346a98c818d18c7170ad445ff9949dcbb25",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
@@ -407,7 +407,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/chassis.ts": {
-        "version": "e694026574974f950fad6390c4a87b5cabef378fe80232b9b047049ad68124b5",
+        "version": "d3142d65693112ad1626a4aa72cae22673ce8b7738ba626c4c3acf22ae467b7f",
         "signature": "1d7725b674bd27f36a539257ba157d42320ab06de9fa8aef262a1268e9f6319e",
         "affectsGlobalScope": false
       },
@@ -418,7 +418,7 @@
       },
       "./src/index.ts": {
         "version": "2dfeed872f1a916eb3a5225d20abce7f26d816c76a36e0b0cb6620523fb82020",
-        "signature": "a7a3984e17c1c76264d814bf9a618c4b9285c3b3727d78743659db68c74d3c45",
+        "signature": "8480fa79912416f7b48e8243ea3381a741723f760e8c0520fd9ebbe4b154a36b",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -815,7 +815,8 @@
         "./src/globals.ts",
         "./src/log.ts",
         "./src/math.ts",
-        "./src/profiler.ts"
+        "./src/profiler.ts",
+        "./src/text.ts"
       ],
       "./src/globals.ts": [
         "../node_modules/@types/node/util.d.ts"

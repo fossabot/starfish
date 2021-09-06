@@ -90,7 +90,9 @@ export class Zone extends Stubbable {
           (i) => i.repair <= 0.9995,
         )
         const amountToRepair =
-          (effect.intensity / repairableItems.length) *
+          (effect.intensity /
+            100 /
+            repairableItems.length) *
           proximityMod
         repairableItems.forEach((ri) => {
           ri.applyRepair(amountToRepair)

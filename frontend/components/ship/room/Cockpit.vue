@@ -247,20 +247,6 @@ export default Vue.extend({
         'room'
       )
     },
-    planetsToShow(): PlanetStub[] {
-      const p = [...(this.ship.visible.planets || [])]
-      for (let seen of this.ship.seenPlanets) {
-        if (!p.find((pl) => pl.name === seen.name))
-          p.push(seen)
-      }
-      return p
-        .sort(
-          (a: PlanetStub, b: PlanetStub) =>
-            c.distance(this.ship.location, a.location) -
-            c.distance(this.ship.location, b.location),
-        )
-        .slice(0, 6)
-    },
     activeEngines(): ItemStub[] {
       return (
         this.ship?.items.filter(
@@ -309,6 +295,20 @@ export default Vue.extend({
         1,
       )
     },
+    planetsToShow(): PlanetStub[] {
+      const p = [...(this.ship.visible.planets || [])]
+      for (let seen of this.ship.seenPlanets) {
+        if (!p.find((pl) => pl.name === seen.name))
+          p.push(seen)
+      }
+      return p
+        .sort(
+          (a: PlanetStub, b: PlanetStub) =>
+            c.distance(this.ship.location, a.location) -
+            c.distance(this.ship.location, b.location),
+        )
+        .slice(0, 6)
+    },
     cachesToShow(): CacheStub[] {
       return this.ship?.visible.caches
         .map((cache: CacheStub) => ({
@@ -323,6 +323,7 @@ export default Vue.extend({
           ),
         }))
         .sort((a: any, b: any) => a.distance - b.distance)
+        .slice(0, 6)
     },
   },
   watch: {},

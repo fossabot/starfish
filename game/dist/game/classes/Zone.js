@@ -64,7 +64,9 @@ class Zone extends Stubbable_1.Stubbable {
             // repair
             else if (effect.type === `repair over time`) {
                 const repairableItems = ship.items.filter((i) => i.repair <= 0.9995);
-                const amountToRepair = (effect.intensity / repairableItems.length) *
+                const amountToRepair = (effect.intensity /
+                    100 /
+                    repairableItems.length) *
                     proximityMod;
                 repairableItems.forEach((ri) => {
                     ri.applyRepair(amountToRepair);

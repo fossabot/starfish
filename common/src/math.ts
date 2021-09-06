@@ -37,7 +37,7 @@ function degreesToRadians(degrees: number = 0) {
   return (degrees * Math.PI) / 180
 }
 
-function coordPairToRadians(
+function vectorToRadians(
   coordPair: CoordinatePair = [0, 0],
 ): number {
   const [x, y] = coordPair
@@ -47,8 +47,8 @@ function coordPairToRadians(
 function vectorToDegrees(
   coordPair: CoordinatePair = [0, 0],
 ): number {
-  const angle = coordPairToRadians(coordPair)
-  const degrees = (180 * angle) / Math.PI // degrees
+  const angle = vectorToRadians(coordPair)
+  const degrees = (180 * angle) / Math.PI
   return (360 + degrees) % 360
 }
 
@@ -189,7 +189,7 @@ export default {
   unitVectorFromThisPointToThatPoint,
   pointIsInsideCircle,
   vectorToDegrees,
-  coordPairToRadians,
+  coordPairToRadians: vectorToRadians,
   vectorToMagnitude,
   randomSign,
   randomInRange,

@@ -93,7 +93,15 @@ function emojiToNumber(emoji: string = ``): number {
   return numberEmojis.findIndex((e) => e === emoji)
 }
 
-const skipWords = [`a`, `an`, `the`, `of`, `in`]
+const skipWords = [
+  `a`,
+  `an`,
+  `the`,
+  `of`,
+  `in`,
+  `to`,
+  `per`,
+]
 function capitalize(string: string = ``): string {
   return (string || ``)
     .split(` `)
@@ -123,6 +131,16 @@ function sanitize(string: string = ``): SanitizeResult {
         ? `ok`
         : `Sorry, you can't use language like that here.`,
   }
+}
+
+function camelCaseToWords(
+  string: string = ``,
+  capitalizeFirst?: boolean,
+): string {
+  let s = string.replace(/([A-Z])/g, ` $1`)
+  if (capitalizeFirst)
+    s = s.replace(/^./, (str) => str.toUpperCase())
+  return s
 }
 
 function msToTimeString(ms: number = 0): string {
@@ -212,6 +230,7 @@ export default {
   numberToEmoji,
   emojiToNumber,
   capitalize,
+  camelCaseToWords,
   sanitize,
   msToTimeString,
   garble,

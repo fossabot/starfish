@@ -358,9 +358,11 @@ export class Game {
         const planet = await this.addBasicPlanet(p)
         c.log(
           `gray`,
-          `Spawned basic planet ${planet.name} at ${
-            planet.location
-          }${
+          `Spawned basic planet ${
+            planet.name
+          } at ${planet.location
+            .map((l) => c.r2(l))
+            .join(`, `)}${
             factionThatNeedsAHomeworld
               ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
               : ``

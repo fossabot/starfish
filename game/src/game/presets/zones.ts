@@ -61,14 +61,14 @@ export function generateZoneData(
     name = c.randomFromArray(healZoneNames)
     effects.push({
       type: `repair over time`,
-      intensity: Math.random() * 0.01,
+      intensity: Math.min(1, Math.random() + 0.03),
       procChancePerTick: 1,
     })
   } else if (type === `accelerate`) {
     name = c.randomFromArray(accelerateZoneNames)
     effects.push({
       type: `accelerate`,
-      intensity: Math.random(),
+      intensity: Math.min(1, Math.random() + 0.03),
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })
@@ -77,7 +77,7 @@ export function generateZoneData(
     name = c.randomFromArray(decelerateZoneNames)
     effects.push({
       type: `decelerate`,
-      intensity: Math.random(),
+      intensity: Math.min(1, Math.random() + 0.03),
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })

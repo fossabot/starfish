@@ -75,7 +75,12 @@ interface ShipPassiveEffect {
   intensity?: number
   data?: {
     source?: {
-      planetName: string
+      planetName?: string
+      speciesId?: SpeciesKey
+      item?: {
+        type: ItemType
+        id: ItemId
+      }
     }
     type?: ItemType
     distance?: number

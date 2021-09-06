@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "4ca2dc10c7d25c99250440ad443edb08799937c64950a07eddda0382bdc07b5b",
-        "signature": "4ca2dc10c7d25c99250440ad443edb08799937c64950a07eddda0382bdc07b5b",
+        "version": "ca60a14bbebcffa5b89c84c7c5646095c0b2356b53f24a77a21fa6e4b798ef42",
+        "signature": "ca60a14bbebcffa5b89c84c7c5646095c0b2356b53f24a77a21fa6e4b798ef42",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -312,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "../common/dist/index.d.ts": {
-        "version": "a7a3984e17c1c76264d814bf9a618c4b9285c3b3727d78743659db68c74d3c45",
-        "signature": "a7a3984e17c1c76264d814bf9a618c4b9285c3b3727d78743659db68c74d3c45",
+        "version": "8480fa79912416f7b48e8243ea3381a741723f760e8c0520fd9ebbe4b154a36b",
+        "signature": "8480fa79912416f7b48e8243ea3381a741723f760e8c0520fd9ebbe4b154a36b",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/zone.ts": {
-        "version": "d14b0cbbcecd86638eaf874511d4eb732177b6a1019250f83b4fff2b5565316f",
+        "version": "af061296b38ded2f602d924457070eacc4926d2ef3431bbde4a0e48c9ebaaa16",
         "signature": "77b8e67eeaaf95da1908bf3571d58f211083ba6c5a586c1c11bfcb5fc344d3c8",
         "affectsGlobalScope": false
       },
@@ -812,7 +812,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "39f856db9778aed5e9bb5c63f15912e3a2293f08abda7f3503ea540b08c431d6",
+        "version": "7fcd5a520f7192a9f55dfaa683f88085155eef4b468f17a461f64722c85bd390",
         "signature": "3769d44d3990d18e90cf82bdd7db6df75c2ab169e96ddd7897eaae901572edd1",
         "affectsGlobalScope": false
       },
@@ -852,12 +852,12 @@
         "affectsGlobalScope": false
       },
       "./src/game/presets/zones.ts": {
-        "version": "c821d20b2fccc459e9195378c9747ba34eb5278a9b8bf9cf323c37b05beef928",
+        "version": "36181cb0d53494ce6bc1f8908ea8ae3daf0ac9c66b3c3c028ec1ba76aee3e4f7",
         "signature": "580507a9588a6c65cfc728e518c2ea15e56b19f3107ac15ed51a9f17b64b604d",
         "affectsGlobalScope": false
       },
       "./src/game/game.ts": {
-        "version": "c9b1287f0433b64143cf93b1e0a5d45261a3eaff85a7f6918223145ed5c09631",
+        "version": "215756878bf40d0ecfe41b5b72a45f5536cd1f87181fef73d74a389419b6a454",
         "signature": "67e129b22ce381dff5992be42f76b0b07bc7392b9d4df2614ac628dac68453df",
         "affectsGlobalScope": false
       },

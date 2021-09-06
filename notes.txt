@@ -3,6 +3,112 @@
 
 
 
+
+
+
+
+health bar doesn't look like a health bar
+teach new crew members how to play
+add illustrations
+
+* planets can't spawn themselves inside of zones
+
+--
+made a way to see your passive bonuses
+
+bot link is correct in discord
+added passives for planets (vision, charge, repair, etc etc)
+added planet names
+
+fixed no tooltips on vicinity
+planets can be pacifist or not
+added minable planets
+added mining skill
+
+more planet level upgrades (landing zone, heal field)
+proper spaces in log entries
+flat hp cost for any thrust
+tooltips now update on data update
+
+thrusting towards something specific will reflect that in the log
+
+simplified cockpit charge insanity
+map drag can go outside map bounds
+tooltip disappears on drag
+labels on circles on map adjust to the edge of the box
+
+wormhole like single-use teleporters that randomly plop you somewhere far away on the map
+fixed ai sight range defaulting to minimum
+fixed "Attempted to add existing planet" bug
+made it so items are always sellable at base rate * price fluctuator (planets without items for sale can buy items)
+improved label showing/hiding on map
+added a minimum broadcast range
+
+donate to upgrade planets
+planets now have levels
+planet sold items are now much more thematic, unique, and scalable
+
+reduced intial frontend payload by ~75%
+fixed invisible buttons
+
+thrust returns only thrust result
+rich logs work and are generally flexibile
+
+thrust calculates properly
+favicon is live
+
+items can have passives attached as well
+
+all species have working passives
+added more passives
+
+caches are scannable
+button missing on contribute dialog
+add +1, +10, +100 buttons to contribute, buy, sell (better ui for buying cargo)
+
+header bg rewards for completing tasks as a ship
+improved tooltip tech
+accel/decel zones
+
+tagline rewards for completing tasks as a ship
+made money all whole numbers
+
+add ship rename command
+
+
+
+--- mvp 2 ---
+more things to encounter in space
+  different types of planets
+	  ruins
+crew professions/personalities, party positioning bonuses
+	admiral - non-admirals in the same room are boosted
+	vagabond - being alone in a room boosts effectiveness
+	wired - stamina recovers faster
+	studious - level up faster
+	gift of gab - better prices
+ai ships can chase you
+more transition-animated properties on map
+
+
+--- ideas ---
+passive mode where your server runs a shop on a planet
+more rooms
+actives
+one-time-use items
+zones can have "mass" to create gravity
+a place to see your ship's/your stats
+
+
+
+
+
+
+
+
+
+
+
 "
 Spacecrab to me is about accessibility, it’s about whimsy, it’s got some soul to it
 
