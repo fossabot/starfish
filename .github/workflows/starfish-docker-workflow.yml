@@ -62,7 +62,7 @@ jobs:
         with:
           command: |
             for image in db discord frontend game nginx; do
-              docker image pull xmadsen/starfish-$image:latest
+              docker image pull starfishgame/starfish-$image:latest
             done;
             cd starfish/docker-compose -f docker-compose-prod.yml up
           host: ${{ secrets.HOST }}
