@@ -213,7 +213,9 @@ export default Vue.extend({
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    c.log(this.planet)
+  },
   methods: {},
 })
 </script>
