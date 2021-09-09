@@ -9,9 +9,9 @@ type ChassisId =
   | `mega2`
 
 type EngineId =
+  | `tutorial1`
   | `starter1`
   | `starter2`
-  | `tutorial1`
   | `basic1`
   | `basic2`
   | `glass1`
@@ -30,6 +30,7 @@ type WeaponId =
   | `sniper3`
   | `tiny1`
 type ScannerId =
+  | `tutorial1`
   | `starter1`
   | `starter2`
   | `peek1`
@@ -112,7 +113,6 @@ interface BaseItemData {
 type LoadoutId =
   | `tutorial1`
   | `tutorial2`
-  | `tutorial3`
   | `humanDefault`
   | `aiTutorial1`
 type Loadout = {

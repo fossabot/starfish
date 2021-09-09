@@ -5,7 +5,7 @@ const loadouts = {
         chassis: `starter1`,
         items: [
             { type: `engine`, id: `tutorial1` },
-            { type: `scanner`, id: `starter1` },
+            { type: `scanner`, id: `tutorial1` },
         ],
     },
     tutorial2: {
@@ -13,16 +13,7 @@ const loadouts = {
         items: [
             { type: `engine`, id: `tutorial1` },
             { type: `weapon`, id: `tutorial1` },
-            { type: `scanner`, id: `starter1` },
-        ],
-    },
-    tutorial3: {
-        chassis: `starter1`,
-        items: [
-            { type: `engine`, id: `tutorial1` },
-            { type: `weapon`, id: `tutorial1` },
-            { type: `scanner`, id: `starter1` },
-            { type: `communicator`, id: `starter1` },
+            { type: `scanner`, id: `tutorial1` },
         ],
     },
     aiTutorial1: {

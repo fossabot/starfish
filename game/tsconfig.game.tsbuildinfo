@@ -267,8 +267,8 @@
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "e950abb850e26d753325762c05c25099205f299338bf8b5a394f47a985c950cc",
-        "signature": "e950abb850e26d753325762c05c25099205f299338bf8b5a394f47a985c950cc",
+        "version": "d0ff0236da476ef2b5de7287b49bb2a49547ea03603c783fa6caaea293344526",
+        "signature": "d0ff0236da476ef2b5de7287b49bb2a49547ea03603c783fa6caaea293344526",
         "affectsGlobalScope": true
       },
       "../@types/log.d.ts": {
@@ -307,8 +307,8 @@
         "affectsGlobalScope": false
       },
       "../common/dist/items/index.d.ts": {
-        "version": "32e0498c127b4d6629ce7dec4bad1742cdcbe866ea9736916129c9650e660fa5",
-        "signature": "32e0498c127b4d6629ce7dec4bad1742cdcbe866ea9736916129c9650e660fa5",
+        "version": "927f0d22defbeb9f8da3734724eec425c900188b9a8193aabe8a9a6c61d31a4d",
+        "signature": "927f0d22defbeb9f8da3734724eec425c900188b9a8193aabe8a9a6c61d31a4d",
         "affectsGlobalScope": false
       },
       "../common/dist/index.d.ts": {
@@ -802,7 +802,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/presets/loadouts.ts": {
-        "version": "b177c69de2bc7ededbb64a5072d8d5b3a2da799acdec5aa113b2b1cd5e1f3dc4",
+        "version": "d087c1d0c33855f7052c70fd7b7ac3465e9e2f32cc6afa9605b9caaaf9bed18c",
         "signature": "034447265bb700d5a9e9ea8c0f25f23b1f536cc5e351043e159b2d9113bfa57a",
         "affectsGlobalScope": false
       },

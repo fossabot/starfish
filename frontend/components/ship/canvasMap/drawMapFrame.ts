@@ -999,6 +999,8 @@ export default class Drawer {
     const secondsToGetThere = Math.round(
       r / this.flatScale / ship.speed,
     )
+    if (secondsToGetThere > 100000000) return
+
     let remainingTime = secondsToGetThere
 
     let hours: any = Math.floor(remainingTime / (60 * 60))

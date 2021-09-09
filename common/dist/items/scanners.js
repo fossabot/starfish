@@ -6,6 +6,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scanners = void 0;
 const game_1 = __importDefault(require("../game"));
 exports.scanners = {
+    tutorial1: {
+        type: `scanner`,
+        id: `tutorial1`,
+        displayName: `Echo-locator Mk.1`,
+        description: `Sound doesn't exist in space, so the name is simply a callback to past evolutions of the technology. Uses reflecting beams to determine the distance and position of objects within a small radius.`,
+        mass: 2000,
+        basePrice: 0 * game_1.default.itemPriceMultiplier,
+        rarity: 0.6,
+        sightRange: 0.3,
+        shipScanRange: 0.1,
+        maxHp: 3,
+        shipScanData: {
+            ...game_1.default.baseShipScanProperties,
+            items: [`type`, `displayName`, `description`],
+            chassis: [
+                `id`,
+                `displayName`,
+                `description`,
+                `basePrice`,
+                `slots`,
+            ],
+        },
+    },
     starter1: {
         type: `scanner`,
         id: `starter1`,
