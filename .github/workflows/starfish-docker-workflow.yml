@@ -59,7 +59,15 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-
-
-
+      - name: Pull latest images to host and restart containers
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: |
+            for image in db discord frontend game nginx; do
+              docker image pull xmadsen/starfish-$image:latest
+            done;
+            /home/xander.madsen/starfish/docker-compose -f docker-compose-prod.yml up
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME}}
+          privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
 
