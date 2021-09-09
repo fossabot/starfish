@@ -1,6 +1,7 @@
 import c from '../../../common/dist'
-import { Server, Socket } from 'socket.io'
+import { Server as socketServer, Socket } from 'socket.io'
 import fs from 'fs'
+import path from 'path'
 
 import frontendEvents from './events/frontend'
 import discordEvents from './events/discord'
@@ -9,14 +10,22 @@ import crewEvents from './events/crew'
 import itemEvents from './events/items'
 import https from 'https'
 
-const privateKey = fs.readFileSync(process.env.SERVER_PRIVATE_KEY, 'utf8')
-const certificate = fs.readFileSync(process.env.SERVER_CERTIFICATE, 'utf8')
-const credentials = {
-    key: privateKey, 
-    cert: certificate, 
+const serverConfig = {
+  key: fs.readFileSync(
+    path.resolve('/etc/letsencrypt/live/www.starfish.cool/privkey.pem')
+  ),
+  cert: fs.readFileSync(
+    path.resolve('/etc/letsencrypt/live/www.starfish.cool/fullchain.pem')
+  ),
+  ca: fs.readFileSync(
+    path.resolve('/etc/letsencrypt/live/www.starfish.cool/chain.pem')
+  ),
+  requestCert: true,
+  rejectUnauthorized: false
 }
-const httpsServer = https.createServer(credentials)
-const io = new Server<IOClientEvents, IOServerEvents>(
+const httpsServer = https.createServer(serverConfig)
+console.log({httpsServer})
+const io = new socketServer<IOClientEvents, IOServerEvents>(
   httpsServer,
   {
     cors: {
