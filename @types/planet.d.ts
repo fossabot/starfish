@@ -27,7 +27,6 @@ interface BaseBasicPlanetData extends BasePlanetData {
 
 interface BaseMiningPlanetData extends BasePlanetData {
   mine?: PlanetMine
-  baseMineSpeed?: number
 }
 
 interface PlanetMineEntry {

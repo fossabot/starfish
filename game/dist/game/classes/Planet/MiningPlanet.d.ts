@@ -4,7 +4,6 @@ export declare class MiningPlanet extends Planet {
     readonly pacifist: boolean;
     readonly rooms: CrewLocation[];
     mine: PlanetMine;
-    baseMineSpeed: number;
     constructor(data: BaseMiningPlanetData, game: Game);
     getMineRequirement(cargoId: any): number;
     getPayoutAmount(cargoId: CargoId): number;

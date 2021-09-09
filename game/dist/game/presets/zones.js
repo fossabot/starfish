@@ -92,6 +92,7 @@ function generateZoneData(game) {
     };
 }
 exports.generateZoneData = generateZoneData;
+// todo more names
 const dotZoneNames = [
     `Ripping Field`,
     `Asteroid Field`,
@@ -102,25 +103,31 @@ const dotZoneNames = [
     `Shredder Swarm`,
     `Gamma Cloud`,
     `Planetary Remains`,
+    `Toxic Waste`,
 ];
 const healZoneNames = [
     `Astral Oasis`,
     `Nanorepair Swarm`,
+    `Calming Flux`,
+    `Healing Field`,
 ];
 const accelerateZoneNames = [
     `Gravity Slingshot`,
     `Overcharge Field`,
     `Gravitational Anomaly`,
     `Boost Zone`,
+    `Acceleration Field`,
 ];
 const decelerateZoneNames = [
     `Magnesis Field`,
     `Gravity Well`,
     `Murky Nebula`,
     `Stifling Zone`,
+    `Deceleration Zone`,
 ];
 const wormholeZoneNames = [
     `Wormhole`,
     `Universe Flux Point`,
+    `Gravitational Rift`,
 ];
 //# sourceMappingURL=zones.js.map

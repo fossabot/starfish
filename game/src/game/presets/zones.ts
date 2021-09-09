@@ -104,6 +104,7 @@ export function generateZoneData(
   }
 }
 
+// todo more names
 const dotZoneNames = [
   `Ripping Field`,
   `Asteroid Field`,
@@ -114,29 +115,30 @@ const dotZoneNames = [
   `Shredder Swarm`,
   `Gamma Cloud`,
   `Planetary Remains`,
-  // todo MORE
+  `Toxic Waste`,
 ]
 const healZoneNames = [
   `Astral Oasis`,
   `Nanorepair Swarm`,
-  // todo MORE
+  `Calming Flux`,
+  `Healing Field`,
 ]
 const accelerateZoneNames = [
   `Gravity Slingshot`,
   `Overcharge Field`,
   `Gravitational Anomaly`,
   `Boost Zone`,
-  // todo MORE
+  `Acceleration Field`,
 ]
 const decelerateZoneNames = [
   `Magnesis Field`,
   `Gravity Well`,
   `Murky Nebula`,
   `Stifling Zone`,
-  // todo MORE
+  `Deceleration Zone`,
 ]
 const wormholeZoneNames = [
   `Wormhole`,
   `Universe Flux Point`,
-  // todo MORE
+  `Gravitational Rift`,
 ]

@@ -333,14 +333,14 @@ export class Game {
 
   async spawnNewPlanets() {
     while (
-      this.planets.length < this.gameSoftArea * 0.8 ||
+      this.planets.length < this.gameSoftArea * 0.9 ||
       this.planets.length < this.factions.length - 1
     ) {
       const weights: {
         weight: number
         value: PlanetType
       }[] = [
-        { weight: 1, value: `basic` },
+        { weight: 0.6, value: `basic` },
         { weight: 0.35, value: `mining` },
       ]
       const selection = c.randomWithWeights(weights)

@@ -8,7 +8,6 @@ export class MiningPlanet extends Planet {
   readonly rooms: CrewLocation[] = [`mine`]
 
   mine: PlanetMine = []
-  baseMineSpeed: number = 1
 
   constructor(data: BaseMiningPlanetData, game: Game) {
     super(data, game)
@@ -18,13 +17,6 @@ export class MiningPlanet extends Planet {
 
     if (data.mine) this.mine = data.mine
 
-    if (data.baseMineSpeed && this.baseMineSpeed === 1)
-      this.baseMineSpeed = data.baseMineSpeed
-
-    // this.level = 0
-    // this.mine = []
-    // this.baseMineSpeed = 1
-
     if (!this.mine.length) this.levelUp()
   }
 
@@ -32,7 +24,10 @@ export class MiningPlanet extends Planet {
     const rarity = c.cargo[cargoId].rarity + 1
     return Math.floor(
       ((Math.random() + 0.1) * 70000 * (rarity / 3)) /
-        this.baseMineSpeed /
+        ((this.passives.find(
+          (p) => p.id === `boostMineSpeed`,
+        )?.intensity || 1) +
+          1) /
         c.gameSpeedMultiplier,
     )
   }
@@ -92,7 +87,16 @@ export class MiningPlanet extends Planet {
                 `Your ship helped mine ${c.r2(
                   resource.payoutAmount,
                   0,
-                )} tons of ${cargoId}, which was split with ${
+                )} tons of`,
+                {
+                  text: cargoId,
+                  tooltipData: {
+                    type: `cargo`,
+                    id: cargoId,
+                  },
+                  color: `var(--cargo)`,
+                },
+                `&nospace, which was split with ${
                   shipsToDistributeAmong.length - 1
                 } other ship ${
                   shipsToDistributeAmong.length - 1 === 1
@@ -104,7 +108,16 @@ export class MiningPlanet extends Planet {
                 `Your ship mined ${c.r2(
                   resource.payoutAmount,
                   0,
-                )} tons of ${cargoId}.`,
+                )} tons of`,
+                {
+                  text: cargoId,
+                  tooltipData: {
+                    type: `cargo`,
+                    id: cargoId,
+                  },
+                  color: `var(--cargo)`,
+                },
+                `&nospace.`,
               ],
         )
 
@@ -130,10 +143,6 @@ export class MiningPlanet extends Planet {
           `totalTonsMined`,
           resource.payoutAmount,
         )
-
-        // todo make sure that when things inevitably overflow into caches, that the same ship doesn't get to pick up every cache in one tick
-
-        // todo make it so that if overflow WOULD turn into a cache, that it tries first to distribute among anyone onboard who may still have space in their inventory
 
         ship.distributeCargoAmongCrew([
           {
@@ -161,10 +170,14 @@ export class MiningPlanet extends Planet {
   async levelUp() {
     super.levelUp()
 
-    if (this.level > 1) this.baseMineSpeed *= 1.05
+    if (this.level > 1) {
+      this.addPassive({
+        id: `boostMineSpeed`,
+        intensity: 0.05,
+      })
+    }
 
-    // todo make passives possible
-    // todo add boostMineSpeed passive
+    // todo add more passives
 
     if (this.mine.length === 0 || Math.random() > 0.6) {
       // * randomly selected for now

@@ -1,16 +1,12 @@
 <template>
   <div v-if="data">
     <div>
-      <b>{{
-        data.cargoData ? data.cargoData.name : data.name
-      }}</b>
+      <b>{{ cargoData ? cargoData.name : data.name }}</b>
     </div>
     <hr />
-    <div v-if="data.cargoData">
+    <div v-if="cargoData">
       Base price: 💳{{
-        data.cargoData
-          ? data.cargoData.basePrice
-          : data.basePrice
+        cargoData ? cargoData.basePrice : data.basePrice
       }}
     </div>
     <hr v-if="heldAmount" />
@@ -48,6 +44,13 @@ export default Vue.extend({
       )
       if (held) return held.amount
       return 0
+    },
+    cargoData(): CargoData {
+      return (
+        (this.data as any).cargoData ||
+        c.cargo[(this.data as any).id] ||
+        {}
+      )
     },
   },
 })

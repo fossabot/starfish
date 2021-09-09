@@ -162,20 +162,6 @@ class BasicPlanet extends Planet_1.Planet {
         }
         this.updateFrontendForShipsAt();
     }
-    addPassive(passive) {
-        const existing = this.passives.find((p) => p.id === `boostSightRange`);
-        if (existing)
-            existing.intensity =
-                (existing.intensity || 0) + (passive.intensity || 1);
-        else
-            this.passives.push({
-                ...passive,
-                data: {
-                    ...passive.data,
-                    source: { planetName: this.name },
-                },
-            });
-    }
     getAddableToVendor() {
         const targetRarity = Math.max(0, this.level - 2) / 3;
         const rarityMultiplier = (rarity) => 1 / (Math.abs(rarity - targetRarity) + 1);

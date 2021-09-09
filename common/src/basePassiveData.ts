@@ -5,62 +5,91 @@ const basePassiveData: {
 } = {
   boostAttackWithNumberOfFactionMembersWithinDistance: {
     toString: (p) =>
-      `+${
-        (p.intensity || 1) * 100
-      }% attack damage per ally within ${
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% attack damage per ally within ${
         p.data?.distance
       }AU`,
   },
   boostBroadcastRange: {
-    toString: (p) => `+${p.intensity || 1} broadcast range`,
+    toString: (p) =>
+      `+${Math.round(p.intensity || 1)} broadcast range`,
   },
   boostCargoSpace: {
     toString: (p) =>
-      `+${p.intensity || 1} cargo space for crew members`,
+      `+${Math.round(
+        p.intensity || 1,
+      )} cargo space for crew members`,
   },
   boostChassisAgility: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% dodge chance`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% dodge chance`,
   },
   boostDropAmount: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% drop amounts`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% drop amounts`,
   },
   boostDropRarity: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% ai drop rarity`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% ai drop rarity`,
   },
   boostRepairSpeed: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% faster repairs`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster repairs`,
   },
   boostRestSpeed: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% faster rest`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster rest`,
+  },
+  boostMineSpeed: {
+    toString: (p) =>
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster mining`,
   },
   boostScanRange: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% scan range`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% scan range`,
   },
   boostSightRange: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% sight range`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% sight range`,
   },
   boostCockpitChargeSpeed: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% cockpit charge speed`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% cockpit charge speed`,
   },
   boostBrake: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% ship braking`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% ship braking`,
   },
   // boostThrust: {
   //   toString: (p) =>
-  //     `+${(p.intensity || 1) * 100}% more thrust`,
+  //     `+${Math.round((p.intensity || 1) * 100)}% more thrust`,
   // },
   boostXpGain: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% faster xp gain`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster xp gain`,
   },
   disguiseChassisType: {
     toString: (p) => `Chassis type hidden`,
@@ -70,27 +99,31 @@ const basePassiveData: {
   },
   extraEquipmentSlots: {
     toString: (p) =>
-      `+${p.intensity || 1} item slot${
-        (p.intensity || 1) === 1 ? `` : `s`
+      `+${Math.round(p.intensity || 1)} item slot${
+        Math.round(p.intensity || 1) === 1 ? `` : `s`
       }`,
   },
   boostDamageToItemType: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% damage to ${
-        p.data?.type
-      }s`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% damage to ${p.data?.type}s`,
   },
   scaledDamageReduction: {
     toString: (p) =>
-      `+${(p.intensity || 1) * 100}% damage reduction`,
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% damage reduction`,
   },
   flatDamageReduction: {
     toString: (p) =>
-      `+${p.intensity || 1} flat damage reduction`,
+      `+${Math.round(
+        p.intensity || 1,
+      )} flat damage reduction`,
   },
   flatSkillBoost: {
     toString: (p) =>
-      `+${p.intensity || 1} crew skill levels`,
+      `+${Math.round(p.intensity || 1)} crew skill levels`,
   },
 }
 export default basePassiveData

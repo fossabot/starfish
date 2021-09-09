@@ -199,13 +199,16 @@ export class HumanShip extends CombatShip {
 
     profiler.step(`get caches`)
     // ----- get nearby caches -----
-    if (!this.dead)
-      this.visible.caches.forEach((cache) => {
-        if (this.isAt(cache.location)) {
-          if (!cache.canBePickedUpBy(this)) return
-          this.getCache(cache)
-        }
-      })
+    // * this is on a random timeout so that the "first" ship doesn't always have priority on picking up caches if 2 or more ships could have gotten it
+    setTimeout(() => {
+      if (!this.dead)
+        this.visible.caches.forEach((cache) => {
+          if (this.isAt(cache.location)) {
+            if (!cache.canBePickedUpBy(this)) return
+            this.getCache(cache)
+          }
+        })
+    }, Math.round((Math.random() * c.tickInterval) / 3))
 
     profiler.step(`auto attack`)
     // ----- auto-attacks -----
@@ -1221,19 +1224,37 @@ export class HumanShip extends CombatShip {
       )
 
     this.distributeCargoAmongCrew(cache.contents)
+
+    const contentsToLog: LogContent = []
+    cache.contents.forEach((cc, index) => {
+      contentsToLog.push(
+        `${c.r2(cc.amount)}${
+          cc.id === `credits` ? `` : ` tons of`
+        }`,
+      )
+      contentsToLog.push({
+        text: cc.id,
+        color: `var(--cargo)`,
+        tooltipData:
+          cc.id === `credits`
+            ? undefined
+            : {
+                type: `cargo`,
+                id: cc.id,
+              },
+      })
+      if (index < cache.contents.length - 1)
+        contentsToLog.push(` and `)
+    })
     this.logEntry(
-      // todo update
-      `Picked up a cache with ${cache.contents
-        .map(
-          (cc) =>
-            `${c.r2(cc.amount)}${
-              cc.id === `credits` ? `` : ` tons of`
-            } ${cc.id}`,
-        )
-        .join(` and `)} inside!${
-        cache.message &&
-        ` There was a message attached which said, "${cache.message}".`
-      }`,
+      [
+        `Picked up a cache with`,
+        ...contentsToLog,
+        `inside!${
+          cache.message &&
+          ` There was a message attached which said, "${cache.message}".`
+        }`,
+      ],
       `medium`,
     )
     this.game.removeCache(cache)

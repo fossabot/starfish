@@ -225,23 +225,6 @@ export class BasicPlanet extends Planet {
     this.updateFrontendForShipsAt()
   }
 
-  addPassive(passive: ShipPassiveEffect) {
-    const existing = this.passives.find(
-      (p) => p.id === `boostSightRange`,
-    )
-    if (existing)
-      existing.intensity =
-        (existing.intensity || 0) + (passive.intensity || 1)
-    else
-      this.passives.push({
-        ...passive,
-        data: {
-          ...passive.data,
-          source: { planetName: this.name },
-        },
-      })
-  }
-
   getAddableToVendor(): AddableElement[] {
     const targetRarity = Math.max(0, this.level - 2) / 3
     const rarityMultiplier = (rarity: number) =>

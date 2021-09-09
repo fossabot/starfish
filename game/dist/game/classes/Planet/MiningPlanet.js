@@ -11,25 +11,20 @@ class MiningPlanet extends Planet_1.Planet {
         super(data, game);
         this.rooms = [`mine`];
         this.mine = [];
-        this.baseMineSpeed = 1;
         if (data.pacifist)
             this.pacifist = data.pacifist;
         else
             this.pacifist = false;
         if (data.mine)
             this.mine = data.mine;
-        if (data.baseMineSpeed && this.baseMineSpeed === 1)
-            this.baseMineSpeed = data.baseMineSpeed;
-        // this.level = 0
-        // this.mine = []
-        // this.baseMineSpeed = 1
         if (!this.mine.length)
             this.levelUp();
     }
     getMineRequirement(cargoId) {
         const rarity = dist_1.default.cargo[cargoId].rarity + 1;
         return Math.floor(((Math.random() + 0.1) * 70000 * (rarity / 3)) /
-            this.baseMineSpeed /
+            ((this.passives.find((p) => p.id === `boostMineSpeed`)?.intensity || 1) +
+                1) /
             dist_1.default.gameSpeedMultiplier);
     }
     getPayoutAmount(cargoId) {
@@ -59,12 +54,30 @@ class MiningPlanet extends Planet_1.Planet {
             shipsToDistributeAmong.forEach((ship) => {
                 ship.logEntry(shipsToDistributeAmong.length > 1
                     ? [
-                        `Your ship helped mine ${dist_1.default.r2(resource.payoutAmount, 0)} tons of ${cargoId}, which was split with ${shipsToDistributeAmong.length - 1} other ship ${shipsToDistributeAmong.length - 1 === 1
+                        `Your ship helped mine ${dist_1.default.r2(resource.payoutAmount, 0)} tons of`,
+                        {
+                            text: cargoId,
+                            tooltipData: {
+                                type: `cargo`,
+                                id: cargoId,
+                            },
+                            color: `var(--cargo)`,
+                        },
+                        `&nospace, which was split with ${shipsToDistributeAmong.length - 1} other ship ${shipsToDistributeAmong.length - 1 === 1
                             ? ``
                             : `s`}`,
                     ]
                     : [
-                        `Your ship mined ${dist_1.default.r2(resource.payoutAmount, 0)} tons of ${cargoId}.`,
+                        `Your ship mined ${dist_1.default.r2(resource.payoutAmount, 0)} tons of`,
+                        {
+                            text: cargoId,
+                            tooltipData: {
+                                type: `cargo`,
+                                id: cargoId,
+                            },
+                            color: `var(--cargo)`,
+                        },
+                        `&nospace.`,
                     ]);
                 const crewMembersWhoHelped = ship.crewMembers.filter((cm) => cm.location === `mine` &&
                     (cm.minePriority === cargoId ||
@@ -75,8 +88,6 @@ class MiningPlanet extends Planet_1.Planet {
                         crewMembersWhoHelped.length);
                 });
                 ship.addStat(`totalTonsMined`, resource.payoutAmount);
-                // todo make sure that when things inevitably overflow into caches, that the same ship doesn't get to pick up every cache in one tick
-                // todo make it so that if overflow WOULD turn into a cache, that it tries first to distribute among anyone onboard who may still have space in their inventory
                 ship.distributeCargoAmongCrew([
                     {
                         id: cargoId,
@@ -95,10 +106,13 @@ class MiningPlanet extends Planet_1.Planet {
     }
     async levelUp() {
         super.levelUp();
-        if (this.level > 1)
-            this.baseMineSpeed *= 1.05;
-        // todo make passives possible
-        // todo add boostMineSpeed passive
+        if (this.level > 1) {
+            this.addPassive({
+                id: `boostMineSpeed`,
+                intensity: 0.05,
+            });
+        }
+        // todo add more passives
         if (this.mine.length === 0 || Math.random() > 0.6) {
             // * randomly selected for now
             const mineableResourceToAdd = dist_1.default.randomFromArray(Object.keys(dist_1.default.cargo));

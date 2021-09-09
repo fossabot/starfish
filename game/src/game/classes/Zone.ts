@@ -16,6 +16,8 @@ export class Zone extends Stubbable {
   readonly effects: ZoneEffect[]
   readonly color: string
 
+  // todo zones expire after a certain time
+
   constructor(
     {
       location,
