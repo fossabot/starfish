@@ -44,7 +44,7 @@
         </button>
         <a
           v-show="!userId"
-          href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=http%3A%2F%2Fwww.starfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
+          href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=https%3A%2F%2Fwww.starfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
           >Log in</a
         >
       </div>

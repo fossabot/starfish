@@ -842,8 +842,8 @@
         "affectsGlobalScope": false
       },
       "./src/server/io.ts": {
-        "version": "cc1e3b49aa38c1238d6864551b60b059adbcec69565aa07d72a04fc25a501355",
-        "signature": "28c55433b6b4c6b72fa7e5f7891a4d1b9cd04220f59d4fb2a5794a7dcb31272e",
+        "version": "32d0a8a31ba72d501a2cfb9b7d5706a7feb7e334c1acc68f9435f25e4bb79e2e",
+        "signature": "981fccb54f17535e3cdea62cb85b8faac88d34f8e6bf7ed4c2d24e262194c7b3",
         "affectsGlobalScope": false
       },
       "./src/game/presets/planets.ts": {
@@ -1539,7 +1539,9 @@
       ],
       "./src/server/io.ts": [
         "../common/dist/index.d.ts",
-        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/path.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
         "./src/server/events/crew.ts",
         "./src/server/events/discord.ts",

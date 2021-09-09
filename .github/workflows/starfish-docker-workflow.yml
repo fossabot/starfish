@@ -3,8 +3,7 @@ name: Starfish build/push
 on:
   push:
     branches:
-      - '*'
-
+      - "*"
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -26,6 +25,12 @@ jobs:
     
       - name: Check Out Repo 
         uses: actions/checkout@v2
+      
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3 
+        with:
+          token: ${{secrets.github_token}}        
 
       - name: Generate tags
         id: docker_tags
@@ -47,14 +52,18 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: ${{ steps.docker_tags.outputs.tags}}
+          tags: ${{ steps.docker_tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-
-
-
-
+      - name: Pull latest images to host and restart containers
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: |
+            for image in db discord frontend game nginx; do
+              docker image pull xmadsen/starfish-$image:latest
+            done;
+            cd starfish/docker-compose -f docker-compose-prod.yml up
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME}}
+          privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
