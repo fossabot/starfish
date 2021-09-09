@@ -57,7 +57,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Pull latest images to host VM and restart containers
+      - name: Pull latest images to host and restart containers
         uses: garygrossgarten/github-action-ssh@v0.6.3
         with:
           command: |
