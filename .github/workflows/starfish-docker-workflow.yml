@@ -55,7 +55,7 @@ jobs:
           tags: ${{ steps.docker_tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
+
       - name: Pull latest images to host and restart containers
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -67,4 +67,3 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
-
