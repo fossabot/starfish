@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   mongodb:
-    image: 'xmadsen/starfish-db:latest'
+    image: 'starfishgame/starfish-db:latest'
     restart: always
     volumes:
       - /mnt/disks/mongodb/db_data:/data/db
@@ -20,7 +20,7 @@ services:
       driver: none
 
   game:
-    image: 'xmadsen/starfish-game:latest'
+    image: 'starfishgame/starfish-game:latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -38,7 +38,7 @@ services:
       - mongodb_password
 
   frontend:
-    image: 'xmadsen/starfish-frontend:latest'
+    image: 'starfishgame/starfish-frontend:latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -49,7 +49,7 @@ services:
       - google_private_key
 
   discord:
-    image: 'xmadsen/starfish-discord:latest'
+    image: 'starfishgame/starfish-discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
     command: 'npm run dev'
@@ -58,7 +58,7 @@ services:
       - bot_id
 
   nginx:
-    image: 'xmadsen/starfish-nginx:latest'
+    image: 'starfishgame/starfish-nginx:latest'
     ports:
       - '80:80'
       - '443:443'

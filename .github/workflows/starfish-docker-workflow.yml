@@ -64,7 +64,8 @@ jobs:
             for image in db discord frontend game nginx; do
               docker image pull starfishgame/starfish-$image:latest
             done;
-            cd starfish/docker-compose -f docker-compose-prod.yml up
+            cd starfish;
+            docker-compose -f docker-compose-prod.yml up
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
