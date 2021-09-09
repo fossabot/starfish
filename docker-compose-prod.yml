@@ -29,6 +29,8 @@ services:
     environment:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
       MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
+    volumes:
+      - /var/lib/nginx/letsencrypt:/etc/letsencrypt
     depends_on:
       - mongodb
     secrets:
