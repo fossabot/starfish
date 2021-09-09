@@ -55,10 +55,7 @@ jobs:
           tags: ${{ steps.docker_tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
+          
       - name: Pull latest images to host and restart containers
         uses: garygrossgarten/github-action-ssh@release
         with:
