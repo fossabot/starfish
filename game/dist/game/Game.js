@@ -530,6 +530,7 @@ class Game {
                 const found = controlScores.find((s) => s.faction.id === a.faction.id);
                 if (!found)
                     return;
+                dist_1.default.log(`planet with allegiance:`, found); // todo remove
                 found.score += a.level;
             });
         }
