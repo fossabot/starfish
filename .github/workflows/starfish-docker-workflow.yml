@@ -54,10 +54,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: 
-            - starfishgame:${{ matrix.image }}:latest
-            - starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-latest
-            - starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-${{ steps.buildnumber.outputs.build_number }}
+          tags: starfishgame:${{ matrix.image }}:latest, starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-latest, starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-${{ steps.buildnumber.outputs.build_number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
