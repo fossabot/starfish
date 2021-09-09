@@ -8,3 +8,5 @@ game/secrets
 discord/secrets
 frontend/@types/
 frontend/common/
+private*.md
+push-docker-images-prod.sh
