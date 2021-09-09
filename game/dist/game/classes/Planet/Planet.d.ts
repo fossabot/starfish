@@ -31,6 +31,7 @@ export declare class Planet extends Stubbable {
     updateFrontendForShipsAt(): void;
     getVisibleStub(): PlanetStub;
     toLogStub(): PlanetStub;
+    addPassive(passive: ShipPassiveEffect): void;
     incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
 }
 //# sourceMappingURL=Planet.d.ts.map

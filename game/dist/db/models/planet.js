@@ -27,7 +27,6 @@ const planetSchemaFields = {
     ],
     pacifist: Boolean,
     // mining
-    baseMineSpeed: Number,
     mine: [
         {
             id: { type: String },

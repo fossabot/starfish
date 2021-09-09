@@ -65,6 +65,9 @@ declare const _default: {
         boostRestSpeed: {
             toString: (p: ShipPassiveEffect) => string;
         };
+        boostMineSpeed: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
         boostBrake: {
             toString: (p: ShipPassiveEffect) => string;
         };

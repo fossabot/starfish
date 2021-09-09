@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
-declare const io: Server<IOClientEvents, IOServerEvents>;
+import { Server as socketServer } from 'socket.io';
+declare const io: socketServer<IOClientEvents, IOServerEvents>;
 export default io;
 //# sourceMappingURL=io.d.ts.map

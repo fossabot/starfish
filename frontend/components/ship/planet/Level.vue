@@ -65,14 +65,6 @@
       </li>
       <li
         v-if="
-          planet.baseMineSpeed && planet.baseMineSpeed > 1
-        "
-      >
-        {{ c.r2(planet.baseMineSpeed - 1) * 100 }}%
-        increased mine efficiency
-      </li>
-      <li
-        v-if="
           planet.planetType === 'mine' && planet.level > 1
         "
       >

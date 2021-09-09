@@ -208,10 +208,10 @@ class Game {
         });
     }
     async spawnNewPlanets() {
-        while (this.planets.length < this.gameSoftArea * 0.8 ||
+        while (this.planets.length < this.gameSoftArea * 0.9 ||
             this.planets.length < this.factions.length - 1) {
             const weights = [
-                { weight: 1, value: `basic` },
+                { weight: 0.6, value: `basic` },
                 { weight: 0.35, value: `mining` },
             ];
             const selection = dist_1.default.randomWithWeights(weights);
@@ -530,6 +530,7 @@ class Game {
                 const found = controlScores.find((s) => s.faction.id === a.faction.id);
                 if (!found)
                     return;
+                dist_1.default.log(`planet with allegiance:`, found); // todo remove
                 found.score += a.level;
             });
         }

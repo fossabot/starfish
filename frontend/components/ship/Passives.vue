@@ -11,7 +11,10 @@
           <span class="success">
             {{ c.basePassiveData[p.id].toString(p) }}
           </span>
-          <span class="sub nowrap" v-if="p.data.source">
+          <span
+            class="sub nowrap"
+            v-if="p.data && p.data.source"
+          >
             ({{
               p.data.source.speciesId
                 ? `${c.capitalize(

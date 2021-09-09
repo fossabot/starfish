@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateBasicPlanet = exports.generateMiningPlanet = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
-// todo expand on pacifist planets idea — basic planets could still be non-pacifist
 function getName(game) {
     let name;
     const possibleNames = [...planetNames];

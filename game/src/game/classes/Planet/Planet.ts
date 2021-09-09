@@ -134,6 +134,23 @@ export class Planet extends Stubbable {
     }
   }
 
+  addPassive(passive: ShipPassiveEffect) {
+    const existing = this.passives.find(
+      (p) => p.id === passive.id,
+    )
+    if (existing)
+      existing.intensity =
+        (existing.intensity || 0) + (passive.intensity || 1)
+    else
+      this.passives.push({
+        ...passive,
+        data: {
+          ...passive.data,
+          source: { planetName: this.name },
+        },
+      })
+  }
+
   // function placeholders
   incrementAllegiance(
     faction: Faction | FactionStub,

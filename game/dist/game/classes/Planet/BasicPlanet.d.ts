@@ -40,7 +40,6 @@ export declare class BasicPlanet extends Planet {
     };
     constructor(data: BaseBasicPlanetData, game: Game);
     levelUp(): Promise<void>;
-    addPassive(passive: ShipPassiveEffect): void;
     getAddableToVendor(): AddableElement[];
     incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
     decrementAllegiances(): void;

@@ -38,7 +38,6 @@ const planetSchemaFields: Record<
   pacifist: Boolean,
 
   // mining
-  baseMineSpeed: Number,
   mine: [
     {
       id: { type: String },
