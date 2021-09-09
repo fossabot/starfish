@@ -59,7 +59,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Pull latest images to host VM and restart containers
-        uses: garygrossgarten/github-action-ssh@v0.6.3
+        uses: garygrossgarten/github-action-ssh@v0.6.4
         with:
           command: |
             for image in db discord frontend game nginx; do
