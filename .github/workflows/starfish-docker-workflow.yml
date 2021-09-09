@@ -26,15 +26,16 @@ jobs:
       - name: Check Out Repo 
         uses: actions/checkout@v2
       
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       - name: Generate build number
         id: buildnumber
         uses: einaregilsson/build-number@v3 
         with:
           token: ${{secrets.github_token}}        
-
-      - name: Generate tags
-        id: docker_tags
-        uses: dnaka91/action-docker-tags@v0.1
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -53,7 +54,10 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: ${{ steps.docker_tags.outputs.tags }}
+          tags: 
+            - starfishgame:${{ matrix.image }}:latest
+            - starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-latest
+            - starfishgame:${{ matrix.image }}:${{ steps.extract_branch.outputs.branch }}-${{ steps.buildnumber.outputs.build_number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
