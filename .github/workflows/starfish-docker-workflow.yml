@@ -68,6 +68,7 @@ jobs:
             done;
             cd starfish;
             docker-compose -f docker-compose-prod.yml restart
+            docker image prune -f
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}

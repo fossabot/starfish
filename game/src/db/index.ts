@@ -6,10 +6,11 @@ import * as ship from './models/ship'
 import * as attackRemnant from './models/attackRemnant'
 import * as planet from './models/planet'
 import * as zone from './models/zone'
+import c from '../../../common/dist'
+import mongoose from 'mongoose'
+
 dotEnvConfig()
 
-import c from '../../../common/dist'
-const mongoose = require(`mongoose`)
 export const db = {
   cache,
   ship,
@@ -24,7 +25,7 @@ let mongoPassword: string
 
 try {
   mongoUsername = fs
-    .readFileSync(`/run/secrets/mongodb_username`, `utf-8`)
+    .readFileSync(process.env.MONGODB_USERNAME_FILE as string, `utf-8`)
     .trim()
 } catch (e) {
   mongoUsername = process.env
@@ -32,13 +33,12 @@ try {
 }
 try {
   mongoPassword = fs
-    .readFileSync(`/run/secrets/mongodb_password`, `utf-8`)
+    .readFileSync(process.env.MONGODB_PASSWORD_FILE as string, `utf-8`)
     .trim()
 } catch (e) {
   mongoPassword = process.env
     .MONGODB_ADMINPASSWORD as string
 }
-// c.log({ mongoUsername, mongoPassword })
 
 const toRun: Function[] = []
 
@@ -69,7 +69,7 @@ export const init = ({
 
     if (mongoose.connection.readyState === 0) {
       const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
-      // c.log(uri)
+
       c.log(
         `gray`,
         `No existing db connection, creating...`,
