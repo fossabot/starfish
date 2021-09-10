@@ -10,3 +10,6 @@ frontend/@types/
 frontend/common/
 private*.md
 push-docker-images-prod.sh
+discord/dist/
+frontend/dist/
+game/dist/
