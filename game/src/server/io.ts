@@ -12,19 +12,19 @@ import https from 'https'
 
 const serverConfig = {
   key: fs.readFileSync(
-    path.resolve('/etc/letsencrypt/live/www.starfish.cool/privkey.pem')
+    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/privkey.pem`)
   ),
   cert: fs.readFileSync(
-    path.resolve('/etc/letsencrypt/live/www.starfish.cool/fullchain.pem')
+    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`)
   ),
   ca: fs.readFileSync(
-    path.resolve('/etc/letsencrypt/live/www.starfish.cool/chain.pem')
+    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/chain.pem`)
   ),
   requestCert: true,
   rejectUnauthorized: false
 }
 const httpsServer = https.createServer(serverConfig)
-console.log({httpsServer})
+console.log({ httpsServer })
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   httpsServer,
   {
