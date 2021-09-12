@@ -38,7 +38,6 @@ else {
 }
     
 const httpsServer = https.createServer(serverConfig)
-console.log({ httpsServer })
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   httpsServer,
   {
