@@ -2,7 +2,8 @@
   "scripts": {
     "build-once": "tsc --project ./tsconfig.game.json",
     "build": "tsc --project ./tsconfig.game.json -w",
-    "dev": "nodemon dist/index.js",
+    "dev": "NODE_ENV=development nodemon dist/index.js",
+    "prod": "NODE_ENV=production node dist/index.js",
     "analyze": "NODE_ENV=production node --prof dist/index.js"
   },
   "dependencies": {

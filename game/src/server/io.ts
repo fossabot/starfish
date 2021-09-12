@@ -10,21 +10,34 @@ import crewEvents from './events/crew'
 import itemEvents from './events/items'
 import https from 'https'
 
-const serverConfig = {
-  key: fs.readFileSync(
-    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/privkey.pem`)
-  ),
-  cert: fs.readFileSync(
-    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`)
-  ),
-  ca: fs.readFileSync(
-    path.resolve(`/etc/letsencrypt/live/www.starfish.cool/chain.pem`)
-  ),
-  requestCert: true,
-  rejectUnauthorized: false
+
+let serverConfig = {}
+if (process.env.NODE_ENV === `development`) {
+  serverConfig = {
+    key: fs.readFileSync(
+      path.resolve(`./ssl/localhost.key`)
+    ),
+    cert: fs.readFileSync(
+      path.resolve(`./ssl/localhost.crt`)
+    )
+  }
 }
+else {
+  serverConfig = {
+    key: fs.readFileSync(
+      path.resolve(`/etc/letsencrypt/live/www.starfish.cool/privkey.pem`)
+    ),
+    cert: fs.readFileSync(
+      path.resolve(`/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`)
+    ),
+    ca: fs.readFileSync(
+      path.resolve(`/etc/letsencrypt/live/www.starfish.cool/chain.pem`)
+    ),
+    requestCert: true,
+  }
+}
+    
 const httpsServer = https.createServer(serverConfig)
-console.log({ httpsServer })
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   httpsServer,
   {
