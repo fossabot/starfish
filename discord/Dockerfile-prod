@@ -26,4 +26,4 @@ COPY common /usr/app/common
 COPY @types /usr/app/@types
 
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]
