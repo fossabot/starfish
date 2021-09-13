@@ -130,6 +130,13 @@ class MiningPlanet extends Planet_1.Planet {
             payoutAmount: this.getPayoutAmount(toAdd),
         });
     }
+    toLogStub() {
+        const s = super.toLogStub();
+        return {
+            ...s,
+            mine: undefined,
+        };
+    }
 }
 exports.MiningPlanet = MiningPlanet;
 /*
@@ -158,10 +165,6 @@ random attacks from indigenous creatures/birds
 -- ideas --
 depletion over time?
 
-
-todo verify that adding cargo to a ship with multiple crew members won't skip over a leftover 0.01, and add cargo to a random crew member first so that micro adds won't always give to the same person
-
-todo more planet types?
 
 */
 //# sourceMappingURL=MiningPlanet.js.map

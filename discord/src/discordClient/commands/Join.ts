@@ -29,19 +29,19 @@ export class JoinCommand implements Command {
       return
     }
 
-    const crewRole = await resolveOrCreateRole({
-      type: `crew`,
-      guild: context.guild,
-    })
-    if (!crewRole) {
-      await context.initialMessage.channel.send(
-        `Failed to add you to the \`Crew\` server role.`,
-      )
-    } else {
-      context.guildMember?.roles
-        .add(crewRole)
-        .catch(() => {})
-    }
+    // const crewRole = await resolveOrCreateRole({
+    //   type: `crew`,
+    //   guild: context.guild,
+    // })
+    // if (!crewRole) {
+    //   await context.initialMessage.channel.send(
+    //     `Failed to add you to the \`Crew\` server role.`,
+    //   )
+    // } else {
+    //   context.guildMember?.roles
+    //     .add(crewRole)
+    //     .catch(() => {})
+    // }
 
     if (context.ship.crewMembers?.length === 1)
       await context.sendToGuild(

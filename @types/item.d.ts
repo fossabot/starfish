@@ -107,6 +107,7 @@ interface BaseItemData {
   aiOnly?: boolean
   lastUse?: number
   passives?: ShipPassiveEffect[]
+  rooms?: CrewLocation[]
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 

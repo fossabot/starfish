@@ -25,7 +25,7 @@ export class Engine extends Item {
 
     const flatLoss = 0.001 * c.gameSpeedMultiplier
     let repairLoss = Math.min(
-      1 / this.maxHp,
+      1 / this.maxHp / 2,
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,

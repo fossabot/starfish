@@ -7,6 +7,7 @@ export declare class Weapon extends Item {
     lastUse: number;
     baseCooldown: number;
     cooldownRemaining: number;
+    rooms: CrewLocation[];
     constructor(data: BaseWeaponData, ship: Ship, props?: Partial<BaseWeaponData>);
     use(): number;
 }

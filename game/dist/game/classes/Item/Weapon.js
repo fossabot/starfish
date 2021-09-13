@@ -10,6 +10,7 @@ class Weapon extends Item_1.Item {
     constructor(data, ship, props) {
         super(data, ship, props);
         this.lastUse = 0;
+        this.rooms = [`weapons`];
         this.id = data.id;
         this.range = data.range;
         this.damage = data.damage;

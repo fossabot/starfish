@@ -9,11 +9,8 @@ const text_1 = __importDefault(require("./text"));
 const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
 const gameSpeedMultiplier = 10;
-// * (process.env.NODE_ENV === `development`
-//   ? /* dev boost, but doesn't work with frontend */ 10
-//   : 1)
 const baseSightRange = 0.05;
-const baseBroadcastRange = 0.001;
+const baseBroadcastRange = 0.002;
 const baseRepairCost = 1000;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;

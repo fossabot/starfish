@@ -10,5 +10,6 @@ export declare class MiningPlanet extends Planet {
     mineResource(cargoId: MinePriorityType, amount: number): void;
     levelUp(): Promise<void>;
     addMineResource(toAdd: CargoId): void;
+    toLogStub(): PlanetStub;
 }
 //# sourceMappingURL=MiningPlanet.d.ts.map

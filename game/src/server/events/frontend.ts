@@ -93,6 +93,24 @@ export default function (
     ship.tutorial.advanceStep()
   })
 
+  socket.on(`ship:skipTutorial`, (id) => {
+    const ship = game.ships.find(
+      (s) => s.id === id,
+    ) as HumanShip
+    if (!ship)
+      return c.log(
+        `red`,
+        `No ship found to skip tutorial for: ${id}`,
+      )
+    if (!ship.tutorial)
+      return c.log(
+        `red`,
+        `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot skip.`,
+      )
+    // c.log(`gray`, `Skipping tutorial for ship ${id}`)
+    ship.tutorial.done(true)
+  })
+
   socket.on(
     `ship:headerBackground`,
     (shipId, crewId, bgId, callback) => {

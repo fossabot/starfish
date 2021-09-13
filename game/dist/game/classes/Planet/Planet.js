@@ -7,12 +7,13 @@ exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Stubbable_1 = require("../Stubbable");
 class Planet extends Stubbable_1.Stubbable {
-    constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, }, game) {
+    constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, stats, }, game) {
         super();
         this.type = `planet`;
         this.rooms = [];
         this.xp = 0;
         this.level = 0;
+        this.stats = [];
         this.toUpdate = {};
         this.game = game;
         this.planetType = planetType || `basic`;
@@ -31,6 +32,7 @@ class Planet extends Stubbable_1.Stubbable {
         this.creatures = creatures || [];
         this.level = level;
         this.xp = xp;
+        this.stats = stats || [];
         // * timeout so it has time to run subclass contstructor
         setTimeout(() => {
             if (this.level === 0)
@@ -42,6 +44,12 @@ class Planet extends Stubbable_1.Stubbable {
     }
     get shipsAt() {
         return this.game.humanShips.filter((s) => s.planet === this);
+    }
+    async donate(amount, faction) {
+        this.addXp(amount / dist_1.default.planetContributeCostPerXp, true);
+        this.addStat(`totalDonated`, amount);
+        if (faction)
+            this.incrementAllegiance(faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 200));
     }
     async addXp(amount, straightUp = false) {
         if (!amount)
@@ -89,6 +97,8 @@ class Planet extends Stubbable_1.Stubbable {
             ...s,
             type: `planet`,
             landingRadiusMultiplier: undefined,
+            stats: undefined,
+            passives: undefined,
         };
     }
     addPassive(passive) {
@@ -104,6 +114,17 @@ class Planet extends Stubbable_1.Stubbable {
                     source: { planetName: this.name },
                 },
             });
+    }
+    // ----- stats -----
+    addStat(statname, amount) {
+        const existing = this.stats.find((s) => s.stat === statname);
+        if (!existing)
+            this.stats.push({
+                stat: statname,
+                amount,
+            });
+        else
+            existing.amount += amount;
     }
     // function placeholders
     incrementAllegiance(faction, amount) { }

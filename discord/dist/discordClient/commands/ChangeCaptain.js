@@ -29,9 +29,7 @@ class ChangeCaptainCommand {
         const res = await ioInterface_1.default.ship.setCaptain(context.ship.id, crewMember.id);
         if (res) {
             await context.initialMessage.channel.send(res);
-            return;
         }
-        await context.initialMessage.channel.send(`${crewMember.name} has been promoted to captain!`);
     }
     hasPermissionToRun(commandContext) {
         if (!commandContext.ship)

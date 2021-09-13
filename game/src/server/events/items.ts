@@ -76,8 +76,8 @@ export default function (
               itemForSale.id
             ],
           },
-          `bought by the captain for ${c.r2(
-            price,
+          `bought by the captain for ${c.numberWithCommas(
+            c.r2(price, 0),
           )} credits.`,
         ],
         `high`,
@@ -157,7 +157,9 @@ export default function (
             color: `var(--item)`,
             tooltipData: heldItem.toLogStub() as any,
           },
-          `sold by the captain for ${c.r2(price)} credits.`,
+          `sold by the captain for ${c.numberWithCommas(
+            c.r2(price, 0),
+          )} credits.`,
         ],
         `high`,
       )
@@ -248,8 +250,8 @@ export default function (
               .displayName,
             tooltipData: c.items.chassis[itemForSale.id],
           },
-          `bought by the captain for ${c.r2(
-            price,
+          `bought by the captain for ${c.numberWithCommas(
+            c.r2(price, 0),
           )} credits.`,
         ],
         `high`,

@@ -15,7 +15,10 @@ export default {
 
 // connect to server
 const client = socketIo(
-  `https://${isDocker() ? `game` : `localhost`}:4200`, {secure: true, rejectUnauthorized: false}
+  `http${isDocker() ? `s` : ``}://${
+    isDocker() ? `game` : `localhost`
+  }:4200`,
+  { secure: isDocker(), rejectUnauthorized: false },
 )
 
 export const io: Socket<IOServerEvents, IOClientEvents> =

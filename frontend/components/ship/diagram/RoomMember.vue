@@ -98,7 +98,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .roommember {
   transform-origin: 50% 50%;
-  line-height: 0.8;
+  line-height: 1;
   position: absolute;
   padding: 0;
   top: 0;
@@ -112,7 +112,7 @@ export default Vue.extend({
 
   &:not(.highlight) {
     font-size: 0.8em;
-    color: #bbb;
+    color: #999;
     z-index: 2;
   }
 

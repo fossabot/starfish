@@ -49,7 +49,7 @@ export declare class Tutorial {
     constructor(data: BaseTutorialData, ship: HumanShip);
     tick(): void;
     advanceStep(): void;
-    done(): void;
+    done(skip?: boolean): void;
     cleanUp(): void;
 }
 export {};

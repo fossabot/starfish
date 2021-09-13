@@ -36,7 +36,7 @@ exports.default = {
     crew,
 };
 // connect to server
-const client = socket_io_client_1.default(`https://${is_docker_1.default() ? `game` : `localhost`}:4200`, { secure: true, rejectUnauthorized: false });
+const client = socket_io_client_1.default(`http${is_docker_1.default() ? `s` : ``}://${is_docker_1.default() ? `game` : `localhost`}:4200`, { secure: is_docker_1.default(), rejectUnauthorized: false });
 exports.io = client.connect();
 exports.io.on(`connect`, () => {
     dist_1.default.log(`green`, `Connected to game server.`);

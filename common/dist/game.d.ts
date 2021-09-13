@@ -46,7 +46,7 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist")[];
+        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
         faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];

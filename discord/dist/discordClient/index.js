@@ -98,7 +98,7 @@ exports.client.on(`ready`, async () => {
 ${guilds
         .slice(0, 100)
         .map((g) => g.name.substring(0, 50))
-        .join(`\n`)}${guilds.length > 100
+        .join(`, `)}${guilds.length > 100
         ? `\n(and ${guilds.length - 100} more guilds)`
         : ``}`);
     exports.client.user?.setActivity(`.help`, { type: `LISTENING` });

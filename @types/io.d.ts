@@ -26,7 +26,17 @@ interface IOServerEvents {
 
 interface IOClientEvents {
   [`hello`]: () => void
+
+  // admin events
   [`game:save`]: () => void
+  [`game:resetAllPlanets`]: () => void
+  [`game:resetAllZones`]: () => void
+  [`game:resetAllCaches`]: () => void
+  [`game:resetAllAIShips`]: () => void
+  [`game:resetAllShips`]: () => void
+  [`game:resetAllAttackRemnants`]: () => void
+
+  // general events
   [`ships:forUser:fromIdArray`]: (
     shipIds: Array,
     userId: string,
@@ -182,6 +192,7 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:advanceTutorial`]: (shipId: string) => void
+  [`ship:skipTutorial`]: (shipId: string) => void
   [`ship:headerBackground`]: (
     shipId: string,
     crewId: string,

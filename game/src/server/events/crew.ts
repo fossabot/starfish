@@ -265,14 +265,7 @@ export default function (
       crewMember.credits -= amount
       crewMember.toUpdate.credits = crewMember.credits
 
-      planet.addXp(
-        amount / c.planetContributeCostPerXp,
-        true,
-      )
-      planet.incrementAllegiance(
-        ship.faction,
-        1 + amount / (c.planetContributeCostPerXp * 200),
-      )
+      planet.donate(amount, ship.faction)
 
       c.log(
         `gray`,
@@ -363,7 +356,7 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price = Math.max(
+      const price = Math.ceil(
         c.cargo[cargoForSale.id].basePrice *
           cargoForSale.buyMultiplier *
           amount *
@@ -374,7 +367,21 @@ export default function (
             ? c.factionVendorMultiplier
             : 1),
       )
-      // c.log({ price, credits: crewMember.credits })
+      // c.log({
+      //   price,
+      //   credits: crewMember.credits,
+      //   unit: Math.ceil(
+      //     c.cargo[cargoForSale.id].basePrice *
+      //       cargoForSale.buyMultiplier *
+      //       planet?.priceFluctuator *
+      //       ((planet.allegiances.find(
+      //         (a) => a.faction.id === ship.faction.id,
+      //       )?.level || 0) >=
+      //       c.factionAllegianceFriendCutoff
+      //         ? c.factionVendorMultiplier
+      //         : 1),
+      //   ),
+      // })
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -643,7 +650,7 @@ export default function (
       const passiveForSale = planet?.vendor?.passives?.find(
         (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
       )
-      c.log(planet?.vendor?.passives, passiveId)
+
       if (
         !planet ||
         !passiveForSale ||
@@ -656,7 +663,7 @@ export default function (
       const currentLevel =
         crewMember.passives.find((p) => p.id === passiveId)
           ?.level || 0
-      const price = c.r2(
+      const price = Math.ceil(
         c.crewPassives[passiveForSale.id].basePrice *
           passiveForSale.buyMultiplier *
           c.getCrewPassivePriceMultiplier(currentLevel) *
@@ -666,8 +673,6 @@ export default function (
           )?.level || 0) >= c.factionAllegianceFriendCutoff
             ? c.factionVendorMultiplier
             : 1),
-        2,
-        true,
       )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })

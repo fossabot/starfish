@@ -901,13 +901,17 @@ export class Tutorial {
     }
   }
 
-  done() {
-    c.log(`Tutorial complete for ${this.ship.name}`)
+  done(skip = false) {
+    c.log(
+      `Tutorial ${skip ? `skipped` : `complete`} for ${
+        this.ship.name
+      }`,
+    )
 
     setTimeout(() => {
       this.ship.logEntry(
         [
-          `Good luck out there! If you have more questions about the game, check out the`,
+          `Good luck out there! If you have questions about the game, check out the`,
           { text: `How To Play`, url: `/howtoplay` },
           `page!`,
         ],
@@ -928,13 +932,23 @@ export class Tutorial {
       )} faction`,
     )
     this.ship.addTagline(
-      `Tester`,
+      `Alpha Tester`,
       `helping to test ${c.gameName}`,
     )
 
     this.cleanUp()
     this.ship.tutorial = undefined
     this.ship.toUpdate.tutorial = false
+
+    // reset cash
+    this.ship.commonCredits = 0
+    this.ship.toUpdate.commonCredits =
+      this.ship.commonCredits
+    this.ship.crewMembers.forEach((cm) => {
+      cm.credits = 1000
+      cm.toUpdate.credits = cm.credits
+    })
+
     this.ship.recalculateShownPanels()
     this.ship.respawn(true)
 

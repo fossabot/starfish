@@ -8,7 +8,6 @@ const dist_1 = __importDefault(require("../../../../../../common/dist"));
 function cockpit() {
     if (this.cockpitCharge >= 1)
         return;
-    this.addXp(`piloting`);
     const chargeBoost = (this.ship.passives.find((p) => p.id === `boostCockpitChargeSpeed`)?.intensity || 0) + 1;
     this.cockpitCharge +=
         dist_1.default.getCockpitChargePerTickForSingleCrewMember(this.piloting?.level || 1) * chargeBoost;

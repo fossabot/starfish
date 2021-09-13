@@ -785,21 +785,29 @@ class Tutorial {
             targetLocation: this.targetLocation,
         };
     }
-    done() {
-        dist_1.default.log(`Tutorial complete for ${this.ship.name}`);
+    done(skip = false) {
+        dist_1.default.log(`Tutorial ${skip ? `skipped` : `complete`} for ${this.ship.name}`);
         setTimeout(() => {
             this.ship.logEntry([
-                `Good luck out there! If you have more questions about the game, check out the`,
+                `Good luck out there! If you have questions about the game, check out the`,
                 { text: `How To Play`, url: `/howtoplay` },
                 `page!`,
             ], `high`);
             io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
         }, dist_1.default.tickInterval);
         this.ship.addHeaderBackground(dist_1.default.capitalize(this.ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(this.ship.faction.id)} faction`);
-        this.ship.addTagline(`Tester`, `helping to test ${dist_1.default.gameName}`);
+        this.ship.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
         this.cleanUp();
         this.ship.tutorial = undefined;
         this.ship.toUpdate.tutorial = false;
+        // reset cash
+        this.ship.commonCredits = 0;
+        this.ship.toUpdate.commonCredits =
+            this.ship.commonCredits;
+        this.ship.crewMembers.forEach((cm) => {
+            cm.credits = 1000;
+            cm.toUpdate.credits = cm.credits;
+        });
         this.ship.recalculateShownPanels();
         this.ship.respawn(true);
         if (this.ship.planet)

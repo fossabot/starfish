@@ -228,14 +228,14 @@ export const actions = {
     })
   },
 
-  respawn({ state, commit }) {
+  respawn({ state, dispatch }) {
     if (!state.ship?.dead) return
     this.$socket?.emit(
       `ship:respawn`,
       state.ship.id,
       ({ data, error }) => {
         if (error) return console.log(error)
-        commit(`updateShip`, { ...data, dead: false })
+        dispatch(`updateShip`, { ...data, dead: false })
       },
     )
   },

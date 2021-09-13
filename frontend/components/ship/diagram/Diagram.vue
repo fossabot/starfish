@@ -12,8 +12,9 @@
         :style="
           rotate
             ? {
-                transform: `rotate(${ship &&
-                  ship.direction * -1 + 90}deg)`,
+                transform: `rotate(${
+                  ship && ship.direction * -1 + 90
+                }deg)`,
               }
             : ''
         "
@@ -74,7 +75,7 @@
           "
         >
           <div
-            class="room "
+            class="room"
             :class="{
               current:
                 crewMember && crewMember.location === room,
@@ -95,8 +96,9 @@
               class="roomlabel"
               :style="{
                 transform: rotate
-                  ? `rotate(${ship &&
-                      ship.direction - 90 + 45}deg)`
+                  ? `rotate(${
+                      ship && ship.direction - 90 + 45
+                    }deg)`
                   : '',
               }"
             >
@@ -174,7 +176,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .holder {
   grid-column: span 2;
-  width: 330px;
+  width: 340px;
 }
 .shipdiagram {
   position: relative;

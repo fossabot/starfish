@@ -48,7 +48,7 @@ class BasicPlanet extends Planet_1.Planet {
             ? 0
             : shipPassiveLeaning?.propensity || 1;
         const levelUpOptions = [
-            { weight: 150 / this.level, value: `addItemToShop` },
+            { weight: 200 / this.level, value: `addItemToShop` },
             {
                 weight: 1.5,
                 value: `expandLandingZone`,
@@ -168,7 +168,7 @@ class BasicPlanet extends Planet_1.Planet {
         const addable = [];
         if (!this.leanings.find((p) => p.type === `cargo` && p.never === true)) {
             const propensity = ((this.leanings.find((p) => p.type === `cargo`)
-                ?.propensity || 0.5) /
+                ?.propensity || 1) /
                 Object.keys(dist_1.default.cargo).length) *
                 3;
             // * multiplied to make cargo slightly more common
@@ -182,7 +182,7 @@ class BasicPlanet extends Planet_1.Planet {
         }
         if (!this.leanings.find((l) => l.type === `items` && l.never === true)) {
             const baseItemPropensity = (this.leanings.find((l) => l.type === `items`)
-                ?.propensity || 0.5) * 2;
+                ?.propensity || 1) * 2;
             for (let itemGroup of Object.values(dist_1.default.items)) {
                 if (this.leanings.find((p) => p.type === Object.values(itemGroup)[0].type &&
                     p.never === true))
@@ -192,7 +192,7 @@ class BasicPlanet extends Planet_1.Planet {
                 propensity /= Object.keys(itemGroup).length;
                 // * lightly encourage specialization
                 const alreadySellingOfType = this.vendor?.items.filter((i) => i.type === Object.values(itemGroup)[0].type).length || 0;
-                propensity *= 1 + alreadySellingOfType;
+                propensity *= 2 + alreadySellingOfType;
                 for (let item of Object.values(itemGroup))
                     if (item.buyable !== false &&
                         !this.vendor?.items.find((i) => i.type === item.type && i.id === item.id))
@@ -207,7 +207,7 @@ class BasicPlanet extends Planet_1.Planet {
             }
         }
         if (!this.leanings.find((p) => p.type === `crewPassives` && p.never === true)) {
-            const propensity = (this.leanings.find((p) => p.type === `crewPassives`)?.propensity || 0.2) /
+            const propensity = (this.leanings.find((p) => p.type === `crewPassives`)?.propensity || 1) /
                 Object.keys(dist_1.default.crewPassives).length;
             for (let crewPassive of Object.values(dist_1.default.crewPassives))
                 if (!this.vendor?.passives.find((p) => p.id === crewPassive.id))
@@ -242,7 +242,7 @@ class BasicPlanet extends Planet_1.Planet {
         // }
         if (!this.leanings.find((p) => p.type === `repair` && p.never === true)) {
             const propensity = this.leanings.find((p) => p.type === `repair`)
-                ?.propensity || 0.2;
+                ?.propensity || 1;
             if (!this.vendor?.repairCostMultiplier)
                 addable.push({ class: `repair`, propensity });
         }
@@ -289,13 +289,11 @@ class BasicPlanet extends Planet_1.Planet {
         this.updateFrontendForShipsAt();
     }
     toLogStub() {
-        const s = this.stubify();
+        const s = super.toLogStub();
         return {
             ...s,
-            type: `planet`,
             vendor: undefined,
             repairFactor: undefined,
-            landingRadiusMultiplier: undefined,
             passives: undefined,
         };
     }

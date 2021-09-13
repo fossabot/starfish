@@ -26,9 +26,10 @@ function default_1(socket) {
                 });
                 return;
             }
-            data.name = data.name.substring(0, dist_1.default.maxNameLength);
-            if (process.env.NODE_ENV === `production`)
-                data.tutorial = { step: -1 };
+            data.name =
+                dist_1.default.sanitize(data.name.substring(0, dist_1.default.maxNameLength))
+                    .result || `ship`;
+            data.tutorial = { step: -1 };
             const ship = __1.game.addHumanShip({
                 ...data,
             });
@@ -63,6 +64,10 @@ function default_1(socket) {
         if (!crewMember)
             return callback({ error: `No crew member found.` });
         ship.captain = crewMember.id;
+        ship.logEntry([
+            `${crewMember.name} has been promoted to captain!`,
+            `critical`,
+        ]);
         callback({ data: `ok` });
     });
     socket.on(`ship:kickMember`, (shipId, crewId, callback) => {
@@ -90,10 +95,7 @@ function default_1(socket) {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)
             return dist_1.default.log(`Attempted to rename a ship that did not exist. (ship ${shipId})`);
-        ship.name = dist_1.default
-            .sanitize(newName)
-            .result.substring(0, dist_1.default.maxNameLength);
-        ship.toUpdate.name = ship.name;
+        ship.rename(newName);
         callback({ data: ship.name });
     });
     socket.on(`ship:alertLevel`, (shipId, newLevel, callback) => {

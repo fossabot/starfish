@@ -13,7 +13,7 @@ export declare class HumanShip extends CombatShip {
     static maxLogLength: number;
     static movementIsFree: boolean;
     readonly id: string;
-    readonly log: LogEntry[];
+    log: LogEntry[];
     logAlertLevel: LogAlertLevel;
     readonly crewMembers: CrewMember[];
     captain: string | null;
@@ -66,7 +66,7 @@ export declare class HumanShip extends CombatShip {
     resolveRooms(): void;
     addRoom(room: CrewLocation): void;
     removeRoom(room: CrewLocation): void;
-    addItem(itemData: Partial<BaseItemData>): boolean;
+    addItem(itemData: Partial<BaseItemData>): Item | false;
     removeItem(item: Item): boolean;
     addCrewMember(data: BaseCrewMemberData, silent?: boolean): CrewMember;
     removeCrewMember(id: string): void;

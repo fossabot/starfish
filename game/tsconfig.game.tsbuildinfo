@@ -262,13 +262,13 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "5b97964c2ee2d725a1c313b75a01a10e45901ce45c7877aad498b325a31b51b4",
-        "signature": "5b97964c2ee2d725a1c313b75a01a10e45901ce45c7877aad498b325a31b51b4",
+        "version": "88f62d61a087584ca5991991e03d781ddde53f70a9800c128065c0018693c6de",
+        "signature": "88f62d61a087584ca5991991e03d781ddde53f70a9800c128065c0018693c6de",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "d0ff0236da476ef2b5de7287b49bb2a49547ea03603c783fa6caaea293344526",
-        "signature": "d0ff0236da476ef2b5de7287b49bb2a49547ea03603c783fa6caaea293344526",
+        "version": "b98595a21aef799b9d5800485767ed54aca53b53a12d0556208f846af0289c00",
+        "signature": "b98595a21aef799b9d5800485767ed54aca53b53a12d0556208f846af0289c00",
         "affectsGlobalScope": true
       },
       "../@types/log.d.ts": {
@@ -277,8 +277,8 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "ea461a1aae7ba13fe2bac600a6a8b4298d3b3505b56e0929e61e64aefbcaaed8",
-        "signature": "ea461a1aae7ba13fe2bac600a6a8b4298d3b3505b56e0929e61e64aefbcaaed8",
+        "version": "274a667a9ca7d85ea8b372298cf52d16574dc89c0943c9b2035a3f0353d1170d",
+        "signature": "274a667a9ca7d85ea8b372298cf52d16574dc89c0943c9b2035a3f0353d1170d",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
@@ -312,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "../common/dist/index.d.ts": {
-        "version": "dfb96d90daf2a0544e7197b06caf798083a5f2f15f5f8036c83b27598b650bd6",
-        "signature": "dfb96d90daf2a0544e7197b06caf798083a5f2f15f5f8036c83b27598b650bd6",
+        "version": "6b8bbbbc55cfaf92cc20ac1016f07beddaf4f4d0839cb9712ce1dfd0b63b53d2",
+        "signature": "6b8bbbbc55cfaf92cc20ac1016f07beddaf4f4d0839cb9712ce1dfd0b63b53d2",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert/strict.d.ts": {
@@ -627,8 +627,8 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet/planet.ts": {
-        "version": "13073a5158863912178120e22eb9400d91b106c4fe57b7d54744c4248fbf7d9d",
-        "signature": "e09bad92fef41a7a3bce3773cf040b3df88556f7bcd89355a46f1cb0fad0e9cf",
+        "version": "aed0bd9114c4653a5b5b289cf4e03169003ca28e6e667713872dc023b0a384dd",
+        "signature": "6dcfa1b223af02851fb348e4b05f7f09ba54594d07c22cc9865bf66ec0f89cef",
         "affectsGlobalScope": false
       },
       "./src/game/classes/faction.ts": {
@@ -687,17 +687,17 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/item.ts": {
-        "version": "f4ff73cc4b0402d523059d6fe70c9f5bb1240f00c5a7323af7c57aad6f8526f8",
-        "signature": "7b69c5290e54b28799facd7ce2de1713b58dfc25763a7b128075faba09122ac8",
+        "version": "d377038b5414dece74b987a99aed4eb0b0cc11f12e4264ef7f1021c1e32caa50",
+        "signature": "a76626c447ef29a0cca6ab8f22ce7f170443df5bfe1d78460b84d4f26f18a6e9",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/weapon.ts": {
-        "version": "5d369f3d7f46ea5af81b6775813dcbcb338ce71405ec02269a1e018564956e0c",
-        "signature": "dc9d359fd57cbdcebe10fd705e39293287225a80c8bf71a9a2fbe3edea9d5c75",
+        "version": "4a987a1eb6c81ac3f200d22bf32f0c28290662f69c682d5824eb9f8c4df15733",
+        "signature": "c56c7935f1e2ce70dd5f5bc7209f610b3997de2a8b314297aa50246fcf80ab7a",
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/engine.ts": {
-        "version": "995ad115c7bdc5d868d89854bc79e63c915592f6a2ae5ad3606de8a83b935cb4",
+        "version": "db7cff407f8e737507923f8382b0d39da31146d58dfb871536cbb610bf021298",
         "signature": "1e28700e096dadc6471c1a8d81d3ff3043e9f85b7db1ade415c70d4e45048ec7",
         "affectsGlobalScope": false
       },
@@ -722,7 +722,7 @@
         "affectsGlobalScope": false
       },
       "./src/db/models/planet.ts": {
-        "version": "19ccf79bbb0c36a42afca37bd6f5789a53e595159dce913a2012dee54aac7fc6",
+        "version": "8648c3cb8ff7ee2db203c00a0475cc0c97b87c3c4fb0a49b0707305c169212e8",
         "signature": "32c56ae13788de271c88709b34d9fe50ea0d38ab1dddfa8de7f1bc689ab0495b",
         "affectsGlobalScope": false
       },
@@ -742,12 +742,12 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet/miningplanet.ts": {
-        "version": "0fd55562b5db88d9d13e850555fde248a039ffb3293e80aa7a6a545e9866ca6a",
-        "signature": "2f13039ced39f62c02c2e794fa3da666fff35e5301e79da57e2f27e829862624",
+        "version": "63fd4fa4254bddfffca398542863f871aa23465f727a770f71b2a7c7fc3e0ed1",
+        "signature": "4655723290a5b0fe1f3ae8aea45f4e6b52e6ee887ebef4447e45ee6d33a35f84",
         "affectsGlobalScope": false
       },
       "./src/game/classes/crewmember/addins/rooms.ts": {
-        "version": "ed3a569b08c24903e7f4207ce399bb110ee42925cdd95912ba91dead24da1916",
+        "version": "65cd5ca16ca2b398505baeb97eb3b43603cee52151d88560a02d853f256cdc25",
         "signature": "416cdbccf3747dba3ca5edf6a6c828f4b99d8daa0f8f3cf94b7ce3d92e7a2f70",
         "affectsGlobalScope": false
       },
@@ -767,18 +767,18 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/planet/basicplanet.ts": {
-        "version": "89120fb173744ed89d179175a4f47a569fbcff373eeda1a66a52913f34ca3304",
+        "version": "5b05aab456f4394abb58832367a0e4af320938bd16b1a920e5243c7f8db59588",
         "signature": "b61386ae1db29fe96b3db5e03085f8e413c89eb3afca9cad3918db6db9c3d0cf",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/addins/tutorial.ts": {
-        "version": "d3ea031aad03b7584486e5725f1a0860ca3cf65d25727a355a5aff2c925ed3d1",
-        "signature": "18d08fa6293c4618e6190249c513c6c28ff3dfa591a45e250951fb398bc6b71c",
+        "version": "2fbe2035b48bc5841e0371614137e1b0758bac48084678f91aebf93b9ca31d54",
+        "signature": "2023ade8593f8930119803d83f8a294efad39c69be551bb46ae16983261d57a9",
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "70716c62f3464b2d6ac0da65014d9854b21a1b5161aa86e5b6080a64489d7a7b",
-        "signature": "9dc6678d4cb5364854f94e6174731359030a0f722ba673196bd358a4bb8dd497",
+        "version": "94c7bcfe280df73cdf385af38f647603e5d1d83d896aef1b0f510700d192b90f",
+        "signature": "71a903cbb6857161159d036530ad2e7092968730f6f6229d3eb36d0b8cdb68ad",
         "affectsGlobalScope": false
       },
       "./src/game/classes/cache.ts": {
@@ -792,7 +792,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/item/communicator.ts": {
-        "version": "1a1e49f8656db59fbe2ea5e37d63aa75094456f03b444b47ed83c8c7b1cb8149",
+        "version": "2ccb9203b945efeb6558a10a3df875802ea7a423d895155ea8f5b8592126cc3d",
         "signature": "f10f3dd555dc40e4d8e771b518e9826b1cfbb930d524dfcc30d403feacd6197e",
         "affectsGlobalScope": false
       },
@@ -812,42 +812,47 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/ship.ts": {
-        "version": "7fcd5a520f7192a9f55dfaa683f88085155eef4b468f17a461f64722c85bd390",
-        "signature": "3769d44d3990d18e90cf82bdd7db6df75c2ab169e96ddd7897eaae901572edd1",
+        "version": "3af346df21e28aef86b846d1821888f37c073996aef7c8da83e68360667569f7",
+        "signature": "db9c8fe02848535c7dae70df8f568f6a60c63df7202a30dc877dbe2e09a9e222",
         "affectsGlobalScope": false
       },
       "./src/server/events/frontend.ts": {
-        "version": "cfb2c3eff026868feaaa3260f0fc098af352920c6490090464655969e545b3ef",
+        "version": "f799afefa2caa1860bc03cb92b38bd18a86fa54eb0d6ebaa4d28155511a8f65c",
         "signature": "8ff20149da40afb83512b62bea2427c94c788f63d8be335f86ce1a0ee6968e29",
         "affectsGlobalScope": false
       },
       "./src/server/events/discord.ts": {
-        "version": "edc7022b5673d3f097e24c90cda19b4686d797dde94306d55904699877333510",
+        "version": "c456c1f46c4c6bfc85b5943ff471c4af949ba62f63b9861dc1ab7a82034d02a3",
         "signature": "e5dc245e9233bf9d6f1260ba8f96edfe804733f7e6bb42382e8c4f0c88dcebbc",
         "affectsGlobalScope": false
       },
       "./src/server/events/general.ts": {
-        "version": "825418fa0642a95e8b64994145a45a792f2df78a02e65410c741fbe363dd39d8",
+        "version": "529a2dd810a33d5b7884782bce8c3b6d1f6051213a35dbe0de259733985928b8",
         "signature": "848ac9668b6d48f2715c77ca69de57b877ab05e85bcfb0d618b58964450718c5",
         "affectsGlobalScope": false
       },
       "./src/server/events/crew.ts": {
-        "version": "8a7a19212aa915ac474d947e6abf6f64d1344c085a0bcacb65011a1ea3f04874",
+        "version": "6f005a609d539ade86215fdf3cddd2f1d92c74396b581b6d0c7c4557b0f5575b",
         "signature": "1ab864a3e4965aedff6eb7276d4bde6c7e05092c43034054f8db879311cbb4cd",
         "affectsGlobalScope": false
       },
       "./src/server/events/items.ts": {
-        "version": "cdb06df92371337a368af4864a4cee0889bd52e6f91c72c16c14a91655d02ce2",
+        "version": "f4d533b1875e1c4bbc2a0d25801cae450ed8a9d6fda0750f36180149b5e30b5e",
         "signature": "bea054ddc1381fd37f72503d1de7f7e3663efacbb19d7386827ff753f8ca8dd8",
         "affectsGlobalScope": false
       },
+      "./src/server/events/admin.ts": {
+        "version": "6bac27f643dda2908aaf2dfba0ba3b983dd38baa583727a1f47d62db854b1933",
+        "signature": "b4ee11cb12e12bf7832bbd4ae9c6e73f8635f836c50e67951d990f01ea86bdad",
+        "affectsGlobalScope": false
+      },
       "./src/server/io.ts": {
-        "version": "32d0a8a31ba72d501a2cfb9b7d5706a7feb7e334c1acc68f9435f25e4bb79e2e",
+        "version": "bdf48cac68f5e178572e9ba4ec2435d0bfefb926c33cf53cd2eedd6325232a6c",
         "signature": "981fccb54f17535e3cdea62cb85b8faac88d34f8e6bf7ed4c2d24e262194c7b3",
         "affectsGlobalScope": false
       },
       "./src/game/presets/planets.ts": {
-        "version": "6052c8801debffd970391fa81bdd77ab4553e1e69cb91c6cc6d9a1f2edbbc852",
+        "version": "fd29c94f0513b769c9fda4a773360c7030bdb93b6daae5ac30802ebd67738e78",
         "signature": "0ae6dfbaa32fb326160f929e71ec7b936460bdb651e23f9de114dd3c28498ec8",
         "affectsGlobalScope": false
       },
@@ -857,7 +862,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/game.ts": {
-        "version": "b332245636df65f86ce74036ae42933a34a70e61a79748f0ed260b310994bc0e",
+        "version": "8e290651ef27a66acc69f7176d96fea2eaaf53c62aaf790c45cf9f66866ba579",
         "signature": "67e129b22ce381dff5992be42f76b0b07bc7392b9d4df2614ac628dac68453df",
         "affectsGlobalScope": false
       },
@@ -1498,6 +1503,18 @@
         "./src/game/game.ts",
         "./src/server/io.ts"
       ],
+      "./src/server/events/admin.ts": [
+        "../common/dist/index.d.ts",
+        "./node_modules/socket.io/dist/index.d.ts",
+        "./src/db/index.ts",
+        "./src/game/classes/crewmember/crewmember.ts",
+        "./src/game/classes/planet/basicplanet.ts",
+        "./src/game/classes/planet/planet.ts",
+        "./src/game/classes/ship/combatship.ts",
+        "./src/game/classes/ship/humanship.ts",
+        "./src/game/classes/ship/ship.ts",
+        "./src/index.ts"
+      ],
       "./src/server/events/crew.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
@@ -1540,9 +1557,11 @@
       "./src/server/io.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/http.d.ts",
         "./node_modules/@types/node/https.d.ts",
         "./node_modules/@types/node/path.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
+        "./src/server/events/admin.ts",
         "./src/server/events/crew.ts",
         "./src/server/events/discord.ts",
         "./src/server/events/frontend.ts",
@@ -2067,6 +2086,9 @@
         "./src/game/game.ts",
         "./src/server/io.ts"
       ],
+      "./src/server/events/admin.ts": [
+        "./node_modules/socket.io/dist/index.d.ts"
+      ],
       "./src/server/events/crew.ts": [
         "./node_modules/socket.io/dist/index.d.ts"
       ],
@@ -2212,6 +2234,7 @@
       "./src/game/presets/planets.ts",
       "./src/game/presets/zones.ts",
       "./src/index.ts",
+      "./src/server/events/admin.ts",
       "./src/server/events/crew.ts",
       "./src/server/events/discord.ts",
       "./src/server/events/frontend.ts",

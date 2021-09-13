@@ -8,6 +8,7 @@ import {
   MessageActionRow,
   MessageComponent,
 } from 'discord-buttons'
+import type { Message } from 'discord.js'
 
 export class StartCommand implements Command {
   commandNames = [`start`, `s`, `spawn`, `begin`, `init`]
@@ -19,7 +20,90 @@ export class StartCommand implements Command {
   async run(context: CommandContext): Promise<void> {
     if (!context.guild) return
 
-    const rows: MessageActionRow[] = []
+    const sentMessages: Message[] = []
+
+    const permissionToAddChannelsRow: MessageActionRow =
+      new MessageActionRow()
+    permissionToAddChannelsRow.addComponent(
+      new MessageButton()
+        .setLabel(`Okay!`)
+        .setStyle(1)
+        .setID(`permissionToAddChannelsYes`),
+    )
+    permissionToAddChannelsRow.addComponent(
+      new MessageButton()
+        .setLabel(`Nope.`)
+        .setStyle(2)
+        .setID(`permissionToAddChannelsNo`),
+    )
+
+    const pm = await context.initialMessage.channel.send(
+      `Welcome to **${c.gameName}**!
+This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
+
+This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
+      {
+        // @ts-ignore
+        components: [permissionToAddChannelsRow],
+      },
+    )
+    if (pm && Array.isArray(pm)) sentMessages.push(...pm)
+    else if (pm) sentMessages.push(pm)
+
+    const permissionResult = await new Promise<
+      string | null
+    >((resolve) => {
+      let done = false
+
+      const filter = (button: any) =>
+        button.clicker.user.id ===
+        context.initialMessage.author.id
+
+      // @ts-ignore
+      const collector = pm.createButtonCollector(filter, {
+        time: 5 * 60 * 1000, // 5 mins
+      })
+
+      collector.on?.(`collect`, (b: MessageComponent) => {
+        done = true
+        b.defer()
+        resolve(b.id)
+      })
+      collector.on?.(`end`, () => {
+        if (done) return
+        resolve(null)
+      })
+    })
+
+    if (
+      !permissionResult ||
+      permissionResult === `permissionToAddChannelsNo`
+    ) {
+      await context.initialMessage.channel.send(
+        `Ah, okay. This game might not be for you, then.`,
+      )
+      return
+    }
+
+    // // create role
+    // const crewRole = await resolveOrCreateRole({
+    //   type: `crew`,
+    //   guild: context.guild,
+    // })
+    // if (!crewRole) {
+    //   await context.initialMessage.channel.send(
+    //     `I don't seem to be able to create roles in this server. Please add that permission to the bot!`,
+    //   )
+    //   return
+    // }
+    // context.guildMember?.roles.add(crewRole).catch(async (e) => {
+    //   c.log(e)
+    //   await context.initialMessage.channel.send(
+    //     `I don't seem to be able to assign roles in this server. Please add that permission to the bot!`,
+    //   )
+    // })
+
+    const speciesRows: MessageActionRow[] = []
     for (let s of c.shuffleArray(
       Object.entries(c.species).filter(
         (e: [string, BaseSpeciesData]) => {
@@ -28,11 +112,12 @@ export class StartCommand implements Command {
       ),
     )) {
       if (
-        !rows.length ||
-        rows[rows.length - 1].components.length >= 4
+        !speciesRows.length ||
+        speciesRows[speciesRows.length - 1].components
+          .length >= 4
       )
-        rows.push(new MessageActionRow())
-      let row = rows[rows.length - 1]
+        speciesRows.push(new MessageActionRow())
+      let row = speciesRows[speciesRows.length - 1]
       row.addComponent(
         new MessageButton()
           .setLabel(s[1].icon + c.capitalize(s[1].id))
@@ -41,17 +126,15 @@ export class StartCommand implements Command {
       )
     }
 
-    const sentMessage =
-      await context.initialMessage.channel.send(
-        `Welcome to **${c.gameName}**!
-This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
-
-Choose your ship's species to get started!`,
-        {
-          // @ts-ignore
-          components: rows,
-        },
-      )
+    const sm = await context.initialMessage.channel.send(
+      `Excellent! Choose your ship's species to get started.`,
+      {
+        // @ts-ignore
+        components: speciesRows,
+      },
+    )
+    if (sm && Array.isArray(sm)) sentMessages.push(...sm)
+    else if (sm) sentMessages.push(sm)
 
     const speciesKey = await new Promise<SpeciesKey | null>(
       (resolve) => {
@@ -62,12 +145,9 @@ Choose your ship's species to get started!`,
           context.initialMessage.author.id
 
         // @ts-ignore
-        const collector = sentMessage.createButtonCollector(
-          filter,
-          {
-            time: 5 * 60 * 1000, // 5 mins
-          },
-        )
+        const collector = sm.createButtonCollector(filter, {
+          time: 5 * 60 * 1000, // 5 mins
+        })
 
         collector.on?.(`collect`, (b: MessageComponent) => {
           done = true
@@ -81,10 +161,10 @@ Choose your ship's species to get started!`,
       },
     )
 
-    // clean up buttons
+    // clean up messages
     try {
-      if (sentMessage.deletable)
-        sentMessage.delete().catch(c.log)
+      for (let m of sentMessages)
+        if (m.deletable) m.delete().catch(c.log)
     } catch (e) {}
 
     if (!speciesKey) {
@@ -107,6 +187,7 @@ Choose your ship's species to get started!`,
       return
     }
 
+    // add crew member
     const addedCrewMember = await ioInterface.crew.add(
       createdShip.id,
       {
@@ -114,22 +195,6 @@ Choose your ship's species to get started!`,
         id: context.initialMessage.author.id,
       },
     )
-
-    const crewRole = await resolveOrCreateRole({
-      type: `crew`,
-      guild: context.guild,
-    })
-    if (!crewRole) {
-      await context.initialMessage.channel.send(
-        `Failed to add you to the \`Crew\` server role.`,
-      )
-    } else {
-      context.guildMember?.roles
-        .add(crewRole)
-        .catch(() => {})
-    }
-
-    // add crew member
     if (!addedCrewMember) {
       await context.initialMessage.channel.send(
         `Failed to add you as a member of the crew.`,

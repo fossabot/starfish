@@ -36,6 +36,7 @@ const planetSchemaFields: Record<
     },
   ],
   pacifist: Boolean,
+  stats: [{ stat: String, amount: Number }],
 
   // mining
   mine: [

@@ -109,7 +109,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .boxholder {
-  padding: 0.7em;
+  padding: 0.8em;
 
   @media (max-width: 768px) {
     width: 100% !important;
@@ -170,11 +170,12 @@ export default Vue.extend({
   }
 
   .title {
+    font-size: 1.15em;
     pointer-events: none;
     position: relative;
     width: 100%;
     padding-left: 0.8rem;
-    height: 30px;
+    height: 33px;
     // background: var(--pane-border);
     color: var(--text);
     display: flex;

@@ -104,7 +104,7 @@ export function generateMiningPlanet(
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
   const mass =
-    ((5.974e30 * radius) / 36000) *
+    ((4e30 * radius) / 36000) *
     (1 + 0.2 * (Math.random() - 0.5))
 
   const creatures: string[] = []
@@ -179,7 +179,7 @@ export function generateBasicPlanet(
     leanings.push({
       type: `cargo`,
       never: false,
-      propensity: Math.random() + 1,
+      propensity: Math.random() * 2 + 1,
     })
   while (leanings.length < 4 || Math.random() > 0.4) {
     const leaningTypes: PlanetLeaningType[] = [
@@ -203,7 +203,7 @@ export function generateBasicPlanet(
     leanings.push({
       type: leaningType,
       never,
-      propensity: never ? 0 : Math.random(),
+      propensity: never ? 0 : Math.random() * 2,
     })
   }
   if (homeworldFactionKey) c.log(leanings)

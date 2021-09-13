@@ -68,6 +68,15 @@ function default_1(socket) {
         // c.log(`gray`, `Advancing tutorial for ship ${id}`)
         ship.tutorial.advanceStep();
     });
+    socket.on(`ship:skipTutorial`, (id) => {
+        const ship = __1.game.ships.find((s) => s.id === id);
+        if (!ship)
+            return dist_1.default.log(`red`, `No ship found to skip tutorial for: ${id}`);
+        if (!ship.tutorial)
+            return dist_1.default.log(`red`, `Ship ${ship.name} (${ship.id}) is not in a tutorial, and thus cannot skip.`);
+        // c.log(`gray`, `Skipping tutorial for ship ${id}`)
+        ship.tutorial.done(true);
+    });
     socket.on(`ship:headerBackground`, (shipId, crewId, bgId, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

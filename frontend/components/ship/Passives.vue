@@ -2,8 +2,7 @@
   <div class="passives" v-if="show" :highlight="highlight">
     <Box bgImage="/images/paneBackgrounds/12.jpg">
       <template #title>
-        <span class="sectionemoji">💤</span>Ship Passive
-        Effects
+        <span class="sectionemoji">💤</span>Ship Passives
       </template>
 
       <div class="panesection">
@@ -18,7 +17,8 @@
             ({{
               p.data.source.speciesId
                 ? `${c.capitalize(
-                    p.data.source.speciesId,
+                    c.species[p.data.source.speciesId]
+                      .singular,
                   )} species`
                 : p.data.source.planetName
                 ? `Planet ${p.data.source.planetName}`
@@ -51,6 +51,8 @@ export default Vue.extend({
     show() {
       return (
         this.ship &&
+        this.ship.passives &&
+        this.ship.passives.length &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('passives'))
       )
@@ -70,7 +72,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .passives {
-  width: 270px;
+  width: 250px;
   position: relative;
 }
 </style>

@@ -25,11 +25,13 @@ export class Communicator extends Item {
     if (this.ship.tutorial?.currentStep.disableRepair)
       return 0
 
-    let repairLoss =
+    let repairLoss = Math.min(
+      1 / this.maxHp / 2,
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,
-      ) * 100
+      ) * 100,
+    )
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()

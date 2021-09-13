@@ -109,7 +109,7 @@ export class BasicPlanet extends Planet {
       : shipPassiveLeaning?.propensity || 1
 
     const levelUpOptions = [
-      { weight: 150 / this.level, value: `addItemToShop` },
+      { weight: 200 / this.level, value: `addItemToShop` },
       {
         weight: 1.5,
         value: `expandLandingZone`,
@@ -238,7 +238,7 @@ export class BasicPlanet extends Planet {
     ) {
       const propensity =
         ((this.leanings.find((p) => p.type === `cargo`)
-          ?.propensity || 0.5) /
+          ?.propensity || 1) /
           Object.keys(c.cargo).length) *
         3
       // * multiplied to make cargo slightly more common
@@ -263,7 +263,7 @@ export class BasicPlanet extends Planet {
     ) {
       const baseItemPropensity =
         (this.leanings.find((l) => l.type === `items`)
-          ?.propensity || 0.5) * 2
+          ?.propensity || 1) * 2
       for (let itemGroup of Object.values(c.items)) {
         if (
           this.leanings.find(
@@ -287,7 +287,7 @@ export class BasicPlanet extends Planet {
             (i) =>
               i.type === Object.values(itemGroup)[0].type,
           ).length || 0
-        propensity *= 1 + alreadySellingOfType
+        propensity *= 2 + alreadySellingOfType
 
         for (let item of Object.values(itemGroup))
           if (
@@ -319,7 +319,7 @@ export class BasicPlanet extends Planet {
       const propensity =
         (this.leanings.find(
           (p) => p.type === `crewPassives`,
-        )?.propensity || 0.2) /
+        )?.propensity || 1) /
         Object.keys(c.crewPassives).length
       for (let crewPassive of Object.values(c.crewPassives))
         if (
@@ -366,7 +366,7 @@ export class BasicPlanet extends Planet {
     ) {
       const propensity =
         this.leanings.find((p) => p.type === `repair`)
-          ?.propensity || 0.2
+          ?.propensity || 1
       if (!this.vendor?.repairCostMultiplier)
         addable.push({ class: `repair`, propensity })
     }
@@ -430,13 +430,11 @@ export class BasicPlanet extends Planet {
   }
 
   toLogStub(): PlanetStub {
-    const s: PlanetStub = this.stubify()
+    const s: PlanetStub = super.toLogStub()
     return {
       ...s,
-      type: `planet`,
       vendor: undefined,
       repairFactor: undefined,
-      landingRadiusMultiplier: undefined,
       passives: undefined,
     }
   }

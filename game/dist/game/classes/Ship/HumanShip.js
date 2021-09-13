@@ -14,6 +14,7 @@ const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
+        this.log = [];
         this.logAlertLevel = `medium`;
         this.crewMembers = [];
         this.captain = null;
@@ -184,6 +185,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- log -----
     logEntry(content, level = `low`) {
+        if (!this.log)
+            this.log = [];
         this.log.push({ level, content, time: Date.now() });
         while (this.log.length > HumanShip.maxLogLength)
             this.log.shift();
@@ -245,6 +248,14 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
     thruster) {
+        // add xp
+        const xpBoostMultiplier = (this.passives.find((p) => p.id === `boostXpGain`)
+            ?.intensity || 0) + 1;
+        thruster.addXp(`piloting`, dist_1.default.baseXpGain *
+            2000 *
+            charge *
+            thruster.cockpitCharge *
+            xpBoostMultiplier);
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
@@ -519,6 +530,14 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.engines.forEach((e) => e.use(charge));
     }
     brake(charge, thruster) {
+        // add xp
+        const xpBoostMultiplier = (this.passives.find((p) => p.id === `boostXpGain`)
+            ?.intensity || 0) + 1;
+        thruster.addXp(`piloting`, dist_1.default.baseXpGain *
+            2000 *
+            charge *
+            thruster.cockpitCharge *
+            xpBoostMultiplier);
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
@@ -590,16 +609,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         const speed = (dist_1.default.vectorToMagnitude(this.velocity) *
             (1000 * 60 * 60)) /
             dist_1.default.tickInterval;
-        if (speed > 2)
-            this.addTagline(`River Runner`, `going over 2AU/hr`);
-        if (speed > 4)
-            this.addHeaderBackground(`Crimson Blur`, `going over 4AU/hr`);
+        if (speed > 1)
+            this.addTagline(`River Runner`, `going over 1AU/hr`);
+        if (speed > 3)
+            this.addHeaderBackground(`Crimson Blur`, `going over 3AU/hr`);
         if (speed > 7.21436)
             this.addHeaderBackground(`Lightspeedy`, `breaking the speed of light`);
-        if (speed > 10)
-            this.addTagline(`Flying Fish`, `going over 10AU/hr`);
-        if (speed > 20)
-            this.addTagline(`Hell's Angelfish`, `going over 20AU/hr`);
+        if (speed > 15)
+            this.addTagline(`Flying Fish`, `going over 15AU/hr`);
+        if (speed > 30)
+            this.addTagline(`Hell's Angelfish`, `going over 30AU/hr`);
         // ----- end if in tutorial -----
         if (this.tutorial) {
             // reset position if outside max distance from spawn
@@ -729,9 +748,11 @@ class HumanShip extends CombatShip_1.CombatShip {
                 ? this.planet.stubify()
                 : false;
             if (this.planet) {
+                // * landed!
                 this.hardStop();
                 this.planet.rooms.forEach((r) => this.addRoom(r));
                 this.planet.passives.forEach((p) => this.applyPassive(p));
+                this.planet.addStat(`shipsLanded`, 1);
             }
             else if (previousPlanet) {
                 previousPlanet.rooms.forEach((r) => this.removeRoom(r));
@@ -889,10 +910,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
     }
     updateBroadcastRadius() {
-        this.radii.broadcast = Math.max(dist_1.default.baseBroadcastRange, dist_1.default.getRadiusDiminishingReturns(this.communicators.reduce((total, comm) => {
-            const currRadius = comm.repair * comm.range;
-            return currRadius + total;
-        }, 0), this.communicators.length));
+        const passiveEffect = this.passives
+            .filter((p) => p.id === `boostBroadcastRange`)
+            .reduce((total, p) => total + (p.intensity || 0), 0) + 1;
+        this.radii.broadcast =
+            Math.max(dist_1.default.baseBroadcastRange, dist_1.default.getRadiusDiminishingReturns(this.communicators.reduce((total, comm) => {
+                const currRadius = comm.repair * comm.range;
+                return currRadius + total;
+            }, 0), this.communicators.length)) * passiveEffect;
         this.toUpdate.radii = this.radii;
     }
     updateThingsThatCouldChangeOnItemChange() {
@@ -908,7 +933,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         else
             this.shownPanels =
                 this.tutorial.currentStep.shownPanels;
-        this.toUpdate.shownPanels = this.shownPanels;
+        this.toUpdate.shownPanels = this.shownPanels || false;
     }
     equipLoadout(l, removeExisting = false) {
         if (removeExisting)
@@ -917,8 +942,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!res)
             return res;
         this.toUpdate.items = this.items;
+        this.resolveRooms();
         this.updateThingsThatCouldChangeOnItemChange();
-        this.updateBroadcastRadius();
         return true;
     }
     addCommonCredits(amount, member) {
@@ -932,23 +957,26 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     broadcast(message, crewMember) {
         const sanitized = dist_1.default.sanitize(message.replace(/\n/g, ` `)).result;
-        const range = this.radii.broadcast;
+        let range = this.radii.broadcast;
+        const avgRepair = this.communicators.reduce((total, curr) => curr.repair + total, 0) / this.communicators.length;
         let didSendCount = 0;
-        for (let otherShip of this.visible.ships.filter((s) => s.human)) {
-            const distance = dist_1.default.distance(this.location, otherShip.location);
-            if (distance > range)
-                continue;
-            didSendCount++;
-            const antiGarble = this.communicators.reduce((total, curr) => curr.antiGarble * curr.repair + total, 0);
-            const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level || 0) / 100;
-            const garbleAmount = distance /
-                (range + antiGarble + crewSkillAntiGarble);
-            const garbled = dist_1.default.garble(sanitized, garbleAmount);
-            const toSend = `**🚀${this.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n\`${garbled.substring(0, dist_1.default.maxBroadcastLength)}\``;
-            // can be a stub, so find the real thing
-            const actualShipObject = this.game.humanShips.find((s) => s.id === otherShip.id);
-            if (actualShipObject)
-                actualShipObject.receiveBroadcast(toSend);
+        if (avgRepair > 0.05) {
+            for (let otherShip of this.visible.ships.filter((s) => s.human)) {
+                const distance = dist_1.default.distance(this.location, otherShip.location);
+                if (distance > range)
+                    continue;
+                didSendCount++;
+                const antiGarble = this.communicators.reduce((total, curr) => curr.antiGarble * curr.repair + total, 0);
+                const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level || 0) / 100;
+                const garbleAmount = distance /
+                    (range + antiGarble + crewSkillAntiGarble);
+                const garbled = dist_1.default.garble(sanitized, garbleAmount);
+                const toSend = `**🚀${this.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n\`${garbled.substring(0, dist_1.default.maxBroadcastLength)}\``;
+                // can be a stub, so find the real thing
+                const actualShipObject = this.game.humanShips.find((s) => s.id === otherShip.id);
+                if (actualShipObject)
+                    actualShipObject.receiveBroadcast(toSend);
+            }
         }
         this.communicators.forEach((comm) => comm.use());
         this.updateBroadcastRadius();
@@ -963,12 +991,15 @@ class HumanShip extends CombatShip_1.CombatShip {
     // ----- room mgmt -----
     resolveRooms() {
         this.rooms = {};
-        let roomsToAdd = [];
+        let roomsToAdd = new Set();
         if (this.tutorial)
-            roomsToAdd =
-                this.tutorial.currentStep?.shownRooms || [];
-        else
-            roomsToAdd = [`bunk`, `cockpit`, `repair`, `weapons`];
+            this.tutorial.currentStep?.shownRooms?.forEach((r) => roomsToAdd.add(r));
+        else {
+            roomsToAdd = new Set([`bunk`, `cockpit`, `repair`]);
+            this.items.forEach((item) => {
+                item.rooms.forEach((i) => roomsToAdd.add(i));
+            });
+        }
         for (let room of roomsToAdd)
             this.addRoom(room);
     }
@@ -989,12 +1020,27 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- items -----
     addItem(itemData) {
-        const res = super.addItem(itemData);
-        if (itemData.type === `scanner`)
+        const item = super.addItem(itemData);
+        if (!item)
+            return false;
+        if (item.type === `scanner`)
             this.updateMaxScanProperties();
-        return res;
+        if (!this.rooms)
+            this.rooms = {};
+        item.rooms.forEach((room) => {
+            if (!(room in this.rooms))
+                this.addRoom(room);
+        });
+        return item;
     }
     removeItem(item) {
+        if (item.rooms) {
+            item.rooms.forEach((room) => {
+                if (!this.items.find((otherItem) => otherItem !== item &&
+                    otherItem.rooms.includes(room)))
+                    this.removeRoom(room);
+            });
+        }
         const res = super.removeItem(item);
         if (item.type === `scanner`)
             this.updateMaxScanProperties();

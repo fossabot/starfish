@@ -140,6 +140,11 @@ class Ship extends Stubbable_1.Stubbable {
         if (this.name.replace(/\s/g, ``).length === 0)
             this.name = `ship`;
         this.toUpdate.name = this.name;
+        this.logEntry([
+            `The ship has been renamed to`,
+            { color: `var(--success)`, text: this.name },
+            `&nospace!`,
+        ], `high`);
     }
     // ----- item mgmt -----
     get engines() {
@@ -249,7 +254,7 @@ class Ship extends Stubbable_1.Stubbable {
             this.addHeaderBackground(`Flat 1`, `equipping 5 items`);
         else if (this.items.length === 8)
             this.addHeaderBackground(`Flat 2`, `equipping 8 items`);
-        return true;
+        return item;
     }
     removeItem(item) {
         const itemIndex = this.items.findIndex((i) => i === item);

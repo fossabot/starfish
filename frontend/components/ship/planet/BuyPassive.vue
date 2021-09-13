@@ -67,34 +67,25 @@ export default Vue.extend({
 
     passives(): any[] {
       return this.ship.planet.vendor.passives.map(
-        (passive: PlanetVendorCrewPassivePrice) => ({
-          data: c.crewPassives[passive.id],
-          canBuy:
-            this.crewMember.credits >=
+        (passive: PlanetVendorCrewPassivePrice) => {
+          const price = Math.ceil(
             c.crewPassives[passive.id].basePrice *
               passive.buyMultiplier *
+              c.getCrewPassivePriceMultiplier(
+                this.crewMemberPassiveLevels[passive.id] ||
+                  1,
+              ) *
               this.ship.planet.priceFluctuator *
               (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
-                : 1) *
-              c.getCrewPassivePriceMultiplier(
-                this.crewMemberPassiveLevels[passive.id] ||
-                  0,
-              ),
-          price: c.r2(
-            c.crewPassives[passive.id].basePrice *
-              passive.buyMultiplier *
-              (this.isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1) *
-              c.getCrewPassivePriceMultiplier(
-                this.crewMemberPassiveLevels[passive.id] ||
-                  0,
-              ),
-            0,
-            true,
-          ),
-        }),
+                : 1),
+          )
+          return {
+            data: c.crewPassives[passive.id],
+            canBuy: this.crewMember.credits >= price,
+            price,
+          }
+        },
       )
     },
   },

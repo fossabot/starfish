@@ -95,6 +95,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .repair {
   position: relative;
-  width: 260px;
+  width: 320px;
 }
 </style>

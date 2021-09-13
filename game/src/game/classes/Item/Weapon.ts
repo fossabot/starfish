@@ -10,6 +10,7 @@ export class Weapon extends Item {
   lastUse: number = 0
   baseCooldown: number
   cooldownRemaining: number
+  rooms: CrewLocation[] = [`weapons`]
 
   constructor(
     data: BaseWeaponData,

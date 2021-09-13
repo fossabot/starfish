@@ -14,6 +14,7 @@ interface BasePlanetData {
   creatures: string[]
   passives?: ShipPassiveEffect[]
   pacifist?: boolean
+  stats?: PlanetStats
 }
 
 interface BaseBasicPlanetData extends BasePlanetData {
@@ -95,4 +96,10 @@ interface PlanetLeaning {
   type: PlanetLeaningType
   never?: boolean
   propensity?: number
+}
+
+type PlanetStatKey = `totalDonated` | `shipsLanded`
+interface PlanetStatEntry {
+  stat: PlanetStatKey
+  amount: number
 }

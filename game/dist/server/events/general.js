@@ -9,9 +9,6 @@ function default_1(socket) {
     socket.on(`hello`, () => {
         dist_1.default.log(`hello received`);
     });
-    socket.on(`game:save`, () => {
-        __1.game.save();
-    });
     socket.on(`ships:forUser:fromIdArray`, (shipIds, userId, callback) => {
         // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
         const foundShips = __1.game.ships.filter((s) => s.human &&

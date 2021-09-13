@@ -161,18 +161,20 @@ export default Vue.extend({
       return this.ship?.planet?.vendor?.cargo
         .filter((cargo: any) => cargo.buyMultiplier)
         .map((cargo: any) => {
-          const pricePerUnit = c.r2(
+          const pricePerUnit = Math.ceil(
             (c.cargo as any)[cargo.id]?.basePrice *
               cargo.buyMultiplier *
               this.ship.planet.priceFluctuator *
               (this.isFriendlyToFaction
                 ? c.factionVendorMultiplier
                 : 1),
-            0,
           )
           const maxCanBuy = c.r2(
             Math.min(
-              this.crewMember?.credits / pricePerUnit,
+              Math.floor(
+                (this.crewMember?.credits / pricePerUnit) *
+                  100,
+              ) / 100,
               Math.min(
                 this.ship.chassis.maxCargoSpace,
                 this.crewMember?.maxCargoSpace,

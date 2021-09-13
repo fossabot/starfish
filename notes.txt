@@ -3,10 +3,28 @@
 
 
 
+chassis have slots for different rooms
+	with arrangements
 
+items (equipment) for crew members!
+	slots scale with levels
+	cost less than ship equipment
 
-
-
+global/ship rankings spawn minimized
+crew rankings -> tabs
+left side pane filter (ship, planet, stats, crew member, scanner)
+turn gravity to linear scale
+need security on admin page - use discord, duh
+ambient junk flying by in the background
+fade to different backgrounds with context
+you can still get linguistics xp when you send messages in commsbay
+broadcast is less Perfect at 0AU
+planet pane didn't show up when I switched to another ship also at a planet
+more rewardssss
+handle discord perm failure gracefully (post to captain, alert that perms are missing)
+ask if it's okay to make channels on discord start
+ship names reset to server names when someone joined the crew?
+buyable cosmetics (headers, taglines, etc???)
 health bar doesn't look like a health bar
 teach new crew members how to play
 add illustrations
@@ -14,6 +32,13 @@ add illustrations
 * planets can't spawn themselves inside of zones
 
 --
+added more admin commands to frontend
+fixed fencepost error on buy max cargo
+
+pilot skill goes up when you actually thrust
+made speed rewards scale better
+skip tutorial button
+
 made a way to see your passive bonuses
 
 bot link is correct in discord

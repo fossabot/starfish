@@ -418,7 +418,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .cockpit {
   position: relative;
-  width: 300px;
+  width: 320px;
 
   & > * {
     position: relative;

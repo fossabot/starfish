@@ -33,6 +33,9 @@
           >
             {{ currentScript.next || 'Go on...' }}
           </button>
+          <button class="secondary" @click="skipTutorial">
+            Skip Tutorial
+          </button>
         </div>
       </div>
     </div>
@@ -88,6 +91,12 @@ export default Vue.extend({
       this.waitingForNextStep = true
       ;(this as any).$socket.emit(
         'ship:advanceTutorial',
+        this.ship.id,
+      )
+    },
+    skipTutorial() {
+      ;(this as any).$socket.emit(
+        'ship:skipTutorial',
         this.ship.id,
       )
     },

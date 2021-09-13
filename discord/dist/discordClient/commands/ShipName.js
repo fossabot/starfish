@@ -29,8 +29,7 @@ class ChangeShipNameCommand {
             return;
         }
         typedName = typedName.replace(/(^[\s<]+|[>\s]+$)*/g, ``);
-        const res = await ioInterface_1.default.ship.rename(context.ship.id, typedName);
-        await context.initialMessage.channel.send(`The ship's name has been changed to **${res}**.`);
+        ioInterface_1.default.ship.rename(context.ship.id, typedName);
     }
     hasPermissionToRun(commandContext) {
         if (!commandContext.ship)

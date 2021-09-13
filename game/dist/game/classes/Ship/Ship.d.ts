@@ -73,7 +73,7 @@ export declare class Ship extends Stubbable {
     get armor(): Armor[];
     swapChassis(this: Ship, chassisData: Partial<BaseChassisData>): void;
     updateSlots(): void;
-    addItem(this: Ship, itemData: Partial<BaseItemData>): boolean;
+    addItem(this: Ship, itemData: Partial<BaseItemData>): Item | false;
     removeItem(this: Ship, item: Item): boolean;
     equipLoadout(this: Ship, id: LoadoutId): boolean;
     updateThingsThatCouldChangeOnItemChange(): void;

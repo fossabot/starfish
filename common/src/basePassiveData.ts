@@ -11,10 +11,6 @@ const basePassiveData: {
         p.data?.distance
       }AU`,
   },
-  boostBroadcastRange: {
-    toString: (p) =>
-      `+${Math.round(p.intensity || 1)} broadcast range`,
-  },
   boostCargoSpace: {
     toString: (p) =>
       `+${Math.round(
@@ -69,6 +65,12 @@ const basePassiveData: {
         (p.intensity || 1) * 100,
       )}% sight range`,
   },
+  boostBroadcastRange: {
+    toString: (p) =>
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )} broadcast range`,
+  },
   boostCockpitChargeSpeed: {
     toString: (p) =>
       `+${Math.round(
@@ -89,7 +91,7 @@ const basePassiveData: {
     toString: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
-      )}% faster xp gain`,
+      )}% faster XP gain`,
   },
   disguiseChassisType: {
     toString: (p) => `Chassis type hidden`,

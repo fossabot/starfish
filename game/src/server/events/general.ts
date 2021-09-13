@@ -11,10 +11,6 @@ export default function (
     c.log(`hello received`)
   })
 
-  socket.on(`game:save`, () => {
-    game.save()
-  })
-
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {

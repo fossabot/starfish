@@ -6,7 +6,6 @@ import type { CrewMember } from '../CrewMember'
 export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
-  this.addXp(`piloting`)
   const chargeBoost =
     (this.ship.passives.find(
       (p) => p.id === `boostCockpitChargeSpeed`,

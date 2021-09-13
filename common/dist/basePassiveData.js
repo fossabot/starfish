@@ -4,9 +4,6 @@ const basePassiveData = {
     boostAttackWithNumberOfFactionMembersWithinDistance: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% attack damage per ally within ${p.data?.distance}AU`,
     },
-    boostBroadcastRange: {
-        toString: (p) => `+${Math.round(p.intensity || 1)} broadcast range`,
-    },
     boostCargoSpace: {
         toString: (p) => `+${Math.round(p.intensity || 1)} cargo space for crew members`,
     },
@@ -34,6 +31,9 @@ const basePassiveData = {
     boostSightRange: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% sight range`,
     },
+    boostBroadcastRange: {
+        toString: (p) => `+${Math.round((p.intensity || 1) * 100)} broadcast range`,
+    },
     boostCockpitChargeSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% cockpit charge speed`,
     },
@@ -45,7 +45,7 @@ const basePassiveData = {
     //     `+${Math.round((p.intensity || 1) * 100)}% more thrust`,
     // },
     boostXpGain: {
-        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster xp gain`,
+        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster XP gain`,
     },
     disguiseChassisType: {
         toString: (p) => `Chassis type hidden`,

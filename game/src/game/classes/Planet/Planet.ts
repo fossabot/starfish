@@ -22,6 +22,7 @@ export class Planet extends Stubbable {
   passives: ShipPassiveEffect[]
   xp = 0
   level = 0
+  stats: PlanetStatEntry[] = []
   toUpdate: {
     allegiances?: PlanetAllegianceData[]
     priceFluctuator?: number
@@ -44,6 +45,7 @@ export class Planet extends Stubbable {
       xp,
       level,
       baseLevel,
+      stats,
     }: BasePlanetData,
     game: Game,
   ) {
@@ -65,6 +67,7 @@ export class Planet extends Stubbable {
     this.creatures = creatures || []
     this.level = level
     this.xp = xp
+    this.stats = stats || []
 
     // * timeout so it has time to run subclass contstructor
     setTimeout(() => {
@@ -79,6 +82,16 @@ export class Planet extends Stubbable {
     return this.game.humanShips.filter(
       (s) => s.planet === this,
     )
+  }
+
+  async donate(amount: number, faction?: Faction) {
+    this.addXp(amount / c.planetContributeCostPerXp, true)
+    this.addStat(`totalDonated`, amount)
+    if (faction)
+      this.incrementAllegiance(
+        faction,
+        1 + amount / (c.planetContributeCostPerXp * 200),
+      )
   }
 
   async addXp(amount: number, straightUp: boolean = false) {
@@ -131,6 +144,8 @@ export class Planet extends Stubbable {
       ...s,
       type: `planet`,
       landingRadiusMultiplier: undefined,
+      stats: undefined,
+      passives: undefined,
     }
   }
 
@@ -149,6 +164,19 @@ export class Planet extends Stubbable {
           source: { planetName: this.name },
         },
       })
+  }
+
+  // ----- stats -----
+  addStat(statname: PlanetStatKey, amount: number) {
+    const existing = this.stats.find(
+      (s) => s.stat === statname,
+    )
+    if (!existing)
+      this.stats.push({
+        stat: statname,
+        amount,
+      })
+    else existing.amount += amount
   }
 
   // function placeholders

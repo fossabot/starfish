@@ -25,9 +25,9 @@
       >
         <div>
           {{ option }}
-          <span v-if="currentTagline === option" class="sub"
+          <!-- <span v-if="currentTagline === option" class="sub"
             >(Current)</span
-          >
+          > -->
         </div>
       </div>
     </div>
@@ -53,11 +53,11 @@
         />
         <div class="martopsmall">
           {{ option.id }}
-          <span
+          <!-- <span
             v-if="currentBanner === option.url"
             class="sub"
             >(Current)</span
-          >
+          > -->
         </div>
       </div>
     </div>

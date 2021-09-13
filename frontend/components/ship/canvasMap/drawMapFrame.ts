@@ -220,6 +220,7 @@ export default class Drawer {
     // ----- non-clipped objects -----
 
     // ----- distance circles -----
+    // todo make these fit the current view rather than radiate from the center point
     let auBetweenLines = 1 / 10 ** 6
     const diameter = Math.max(this.width, this.height)
     while (auBetweenLines / diameter < 0.02)

@@ -160,7 +160,7 @@ function msToTimeString(ms: number = 0): string {
   return `${hours}h ${minutes}m ${seconds}s`
 }
 
-const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえお`
+const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`
 function garble(string: string = ``, percent = 0): string {
   if (percent > 0.98) percent = 0.98
   let splitString: string[] = string.split(` `)

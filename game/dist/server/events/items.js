@@ -49,7 +49,7 @@ function default_1(socket) {
                 text: dist_1.default.items[itemForSale.type][itemForSale.id].displayName,
                 tooltipData: dist_1.default.items[itemForSale.type][itemForSale.id],
             },
-            `bought by the captain for ${dist_1.default.r2(price)} credits.`,
+            `bought by the captain for ${dist_1.default.numberWithCommas(dist_1.default.r2(price, 0))} credits.`,
         ], `high`);
         callback({
             data: dist_1.default.stubify(ship),
@@ -98,7 +98,7 @@ function default_1(socket) {
                 color: `var(--item)`,
                 tooltipData: heldItem.toLogStub(),
             },
-            `sold by the captain for ${dist_1.default.r2(price)} credits.`,
+            `sold by the captain for ${dist_1.default.numberWithCommas(dist_1.default.r2(price, 0))} credits.`,
         ], `high`);
         callback({
             data: dist_1.default.stubify(ship),
@@ -152,7 +152,7 @@ function default_1(socket) {
                     .displayName,
                 tooltipData: dist_1.default.items.chassis[itemForSale.id],
             },
-            `bought by the captain for ${dist_1.default.r2(price)} credits.`,
+            `bought by the captain for ${dist_1.default.numberWithCommas(dist_1.default.r2(price, 0))} credits.`,
         ], `high`);
         callback({
             data: dist_1.default.stubify(ship),

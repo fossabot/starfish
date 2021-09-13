@@ -31,9 +31,10 @@ export default function (
         return
       }
 
-      data.name = data.name.substring(0, c.maxNameLength)
-      if (process.env.NODE_ENV === `production`)
-        data.tutorial = { step: -1 }
+      data.name =
+        c.sanitize(data.name.substring(0, c.maxNameLength))
+          .result || `ship`
+      data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,
       })
@@ -89,6 +90,12 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
       ship.captain = crewMember.id
+
+      ship.logEntry([
+        `${crewMember.name} has been promoted to captain!`,
+        `critical`,
+      ])
+
       callback({ data: `ok` })
     },
   )
@@ -143,10 +150,7 @@ export default function (
         `Attempted to rename a ship that did not exist. (ship ${shipId})`,
       )
 
-    ship.name = c
-      .sanitize(newName)
-      .result.substring(0, c.maxNameLength)
-    ship.toUpdate.name = ship.name
+    ship.rename(newName)
 
     callback({ data: ship.name })
   })

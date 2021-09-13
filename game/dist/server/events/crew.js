@@ -146,8 +146,7 @@ function default_1(socket) {
             });
         crewMember.credits -= amount;
         crewMember.toUpdate.credits = crewMember.credits;
-        planet.addXp(amount / dist_1.default.planetContributeCostPerXp, true);
-        planet.incrementAllegiance(ship.faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 200));
+        planet.donate(amount, ship.faction);
         dist_1.default.log(`gray`, `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planetName}.`);
     });
     socket.on(`ship:redistribute`, (shipId, crewId, amount) => {
@@ -190,14 +189,28 @@ function default_1(socket) {
             return callback({
                 error: `That's too heavy to fit into your cargo space.`,
             });
-        const price = Math.max(dist_1.default.cargo[cargoForSale.id].basePrice *
+        const price = Math.ceil(dist_1.default.cargo[cargoForSale.id].basePrice *
             cargoForSale.buyMultiplier *
             amount *
             planet?.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
                 : 1));
-        // c.log({ price, credits: crewMember.credits })
+        // c.log({
+        //   price,
+        //   credits: crewMember.credits,
+        //   unit: Math.ceil(
+        //     c.cargo[cargoForSale.id].basePrice *
+        //       cargoForSale.buyMultiplier *
+        //       planet?.priceFluctuator *
+        //       ((planet.allegiances.find(
+        //         (a) => a.faction.id === ship.faction.id,
+        //       )?.level || 0) >=
+        //       c.factionAllegianceFriendCutoff
+        //         ? c.factionVendorMultiplier
+        //         : 1),
+        //   ),
+        // })
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits = Math.round(crewMember.credits - price);
@@ -329,7 +342,6 @@ function default_1(socket) {
             return callback({ error: `No crew member found.` });
         const planet = ship.game.planets.find((p) => p.name === vendorLocation);
         const passiveForSale = planet?.vendor?.passives?.find((pfs) => pfs.id === passiveId && pfs.buyMultiplier);
-        dist_1.default.log(planet?.vendor?.passives, passiveId);
         if (!planet ||
             !passiveForSale ||
             !dist_1.default.crewPassives[passiveForSale.id])
@@ -338,13 +350,13 @@ function default_1(socket) {
             });
         const currentLevel = crewMember.passives.find((p) => p.id === passiveId)
             ?.level || 0;
-        const price = dist_1.default.r2(dist_1.default.crewPassives[passiveForSale.id].basePrice *
+        const price = Math.ceil(dist_1.default.crewPassives[passiveForSale.id].basePrice *
             passiveForSale.buyMultiplier *
             dist_1.default.getCrewPassivePriceMultiplier(currentLevel) *
             planet.priceFluctuator *
             ((planet.allegiances.find((a) => a.faction.id === ship.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff
                 ? dist_1.default.factionVendorMultiplier
-                : 1), 2, true);
+                : 1));
         if (price > crewMember.credits)
             return callback({ error: `Insufficient funds.` });
         crewMember.credits -= price;

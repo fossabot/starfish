@@ -38,12 +38,7 @@ export class ChangeCaptainCommand implements Command {
     )
     if (res) {
       await context.initialMessage.channel.send(res)
-      return
     }
-
-    await context.initialMessage.channel.send(
-      `${crewMember.name} has been promoted to captain!`,
-    )
   }
 
   hasPermissionToRun(

@@ -204,6 +204,14 @@ export class Ship extends Stubbable {
     if (this.name.replace(/\s/g, ``).length === 0)
       this.name = `ship`
     this.toUpdate.name = this.name
+    this.logEntry(
+      [
+        `The ship has been renamed to`,
+        { color: `var(--success)`, text: this.name },
+        `&nospace!`,
+      ],
+      `high`,
+    )
   }
 
   // ----- item mgmt -----
@@ -261,7 +269,7 @@ export class Ship extends Stubbable {
   addItem(
     this: Ship,
     itemData: Partial<BaseItemData>,
-  ): boolean {
+  ): Item | false {
     let item: Item | undefined
     if (!itemData.type) return false
     if (this.slots <= this.items.length) {
@@ -356,7 +364,7 @@ export class Ship extends Stubbable {
         `equipping 8 items`,
       )
 
-    return true
+    return item
   }
 
   removeItem(this: Ship, item: Item): boolean {

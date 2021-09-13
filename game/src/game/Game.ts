@@ -781,7 +781,7 @@ export class Game {
           (s) => s.faction.id === a.faction.id,
         )
         if (!found) return
-        c.log(`planet with allegiance:`, found) // todo remove
+        // c.log(`planet with allegiance:`, found) // todo remove
         found.score += a.level
       })
     }

@@ -18,20 +18,23 @@ export declare class Planet extends Stubbable {
     passives: ShipPassiveEffect[];
     xp: number;
     level: number;
+    stats: PlanetStatEntry[];
     toUpdate: {
         allegiances?: PlanetAllegianceData[];
         priceFluctuator?: number;
         repairFactor?: number;
         landingRadiusMultiplier?: number;
     };
-    constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, }: BasePlanetData, game: Game);
+    constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, stats, }: BasePlanetData, game: Game);
     get shipsAt(): import("../Ship/HumanShip").HumanShip[];
+    donate(amount: number, faction?: Faction): Promise<void>;
     addXp(amount: number, straightUp?: boolean): Promise<void>;
     levelUp(): Promise<void>;
     updateFrontendForShipsAt(): void;
     getVisibleStub(): PlanetStub;
     toLogStub(): PlanetStub;
     addPassive(passive: ShipPassiveEffect): void;
+    addStat(statname: PlanetStatKey, amount: number): void;
     incrementAllegiance(faction: Faction | FactionStub, amount?: number): void;
 }
 //# sourceMappingURL=Planet.d.ts.map

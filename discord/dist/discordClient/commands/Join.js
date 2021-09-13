@@ -1,11 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JoinCommand = void 0;
 const crew_1 = require("../../ioInterface/crew");
-const resolveOrCreateRole_1 = __importDefault(require("../actions/resolveOrCreateRole"));
 class JoinCommand {
     constructor() {
         this.commandNames = [`join`, `add`, `j`];
@@ -27,18 +23,19 @@ class JoinCommand {
                 `Failed to add you as a member of the crew.`);
             return;
         }
-        const crewRole = await resolveOrCreateRole_1.default({
-            type: `crew`,
-            guild: context.guild,
-        });
-        if (!crewRole) {
-            await context.initialMessage.channel.send(`Failed to add you to the \`Crew\` server role.`);
-        }
-        else {
-            context.guildMember?.roles
-                .add(crewRole)
-                .catch(() => { });
-        }
+        // const crewRole = await resolveOrCreateRole({
+        //   type: `crew`,
+        //   guild: context.guild,
+        // })
+        // if (!crewRole) {
+        //   await context.initialMessage.channel.send(
+        //     `Failed to add you to the \`Crew\` server role.`,
+        //   )
+        // } else {
+        //   context.guildMember?.roles
+        //     .add(crewRole)
+        //     .catch(() => {})
+        // }
         if (context.ship.crewMembers?.length === 1)
             await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
     }
