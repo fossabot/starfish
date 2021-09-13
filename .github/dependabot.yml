@@ -10,23 +10,23 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every weekday
+      # Check for updates to node every weekday
       interval: "daily"
 
   - package-ecosystem: "npm"
     directory: "/game"
     schedule:
-      # Check for updates to GitHub Actions every weekday
+      # Check for updates to node every weekday
       interval: "daily"
 
   - package-ecosystem: "npm"
     directory: "/discord"
     schedule:
-      # Check for updates to GitHub Actions every weekday
+      # Check for updates to node every weekday
       interval: "daily"
 
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      # Check for updates to GitHub Actions every weekday
+      # Check for updates to node every weekday
       interval: "daily"

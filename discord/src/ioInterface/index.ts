@@ -18,7 +18,7 @@ const client = socketIo(
   `http${isDocker() ? `s` : ``}://${
     isDocker() ? `game` : `localhost`
   }:4200`,
-  { secure: isDocker(), rejectUnauthorized: false },
+  { secure: true, rejectUnauthorized: false },
 )
 
 export const io: Socket<IOServerEvents, IOClientEvents> =

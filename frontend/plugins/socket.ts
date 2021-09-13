@@ -9,7 +9,7 @@ const socketAddress =
 //   `initializing frontend socket connection at`,
 //   socketAddress,
 // )
-const socket = io(socketAddress, {secure: true, rejectUnauthorized: false})
+const socket = io(socketAddress, { secure: true, rejectUnauthorized: false })
 
 // // test
 // socket.emit(`hello`)

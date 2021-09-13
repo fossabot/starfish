@@ -9,12 +9,21 @@ import generalEvents from './events/general'
 import crewEvents from './events/crew'
 import itemEvents from './events/items'
 import adminEvents from './events/admin'
-import { createServer as createHTTPServer } from 'http'
 import { createServer as createHTTPSServer } from 'https'
+import isDocker from 'is-docker'
 
-let server
-try {
-  const serverConfig = {
+let serverConfig = {}
+if (!isDocker()) {
+  serverConfig = {
+    key: fs.readFileSync(
+      path.resolve(`./ssl/localhost.key`),
+    ),
+    cert: fs.readFileSync(
+      path.resolve(`./ssl/localhost.crt`),
+    ),
+  }
+} else {
+  serverConfig = {
     key: fs.readFileSync(
       path.resolve(
         `/etc/letsencrypt/live/www.starfish.cool/privkey.pem`,
@@ -31,14 +40,12 @@ try {
       ),
     ),
     requestCert: true,
-    rejectUnauthorized: false,
   }
-  server = createHTTPSServer(serverConfig)
-} catch (e) {
-  server = createHTTPServer()
 }
+
+const httpsServer = createHTTPSServer(serverConfig)
 const io = new socketServer<IOClientEvents, IOServerEvents>(
-  server,
+  httpsServer,
   {
     cors: {
       origin: `*`,
@@ -58,7 +65,7 @@ io.on(
   },
 )
 
-server.listen(4200)
+httpsServer.listen(4200)
 c.log(`io server listening on port 4200`)
 
 export default io

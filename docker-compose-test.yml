@@ -15,46 +15,18 @@ services:
     logging:
       driver: none
 
-  mongo-express:
-    image: 'mongo-express:0.54.0'
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
-      ME_CONFIG_MONGODB_AUTH_DATABASE: starfish
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
-      ME_CONFIG_BASICAUTH_USERNAME: starfish
-      ME_CONFIG_BASICAUTH_PASSWORD: starfish321
-    depends_on:
-      - mongodb
-    ports:
-      - 8081:8081
-    logging:
-      driver: none
-    secrets:
-      - mongodb_root_username
-      - mongodb_root_password
-      - mongodb_username
-      - mongodb_password
-
   game:
-    # build: './game'
-    image: 'xmadsen/starfish-game:prod-latest'
+    image: 'xmadsen/starfish-game:latest'
     user: 'node'
     working_dir: /usr/app/game
     ports:
-      - '4200:4200'
-    # expose:
-    #   - '4200'
+      - 4200:4200
     volumes:
       - ./common:/usr/app/common
       - ./game/dist:/usr/app/game/dist
       - ./game/src:/usr/app/game/src
+      - ./ssl:/usr/app/game/ssl
     command: 'npm run dev'
-    # environment:
-    #   MONGODB_ADMINUSERNAME: starfish
-    #   MONGODB_ADMINPASSWORD: starfish123
     depends_on:
       - mongodb
     secrets:
@@ -62,12 +34,11 @@ services:
       - mongodb_password
 
   frontend:
-    #build: './frontend'
-    image: 'xmadsen/starfish-frontend:prod-latest'
+    image: 'xmadsen/starfish-frontend:latest'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
-      - '4300:4300'
+      - 4300:4300
     volumes:
       - ./@types:/usr/app/@types
       - ./common:/usr/app/common
@@ -78,8 +49,7 @@ services:
       - google_private_key
 
   discord:
-    #build: './discord'
-    image: 'xmadsen/starfish-discord:prod-latest'
+    image: 'xmadsen/starfish-discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
@@ -92,7 +62,7 @@ services:
       - bot_id
 
   nginx:
-    image: 'xmadsen/starfish-nginx:prod-latest'
+    image: 'xmadsen/starfish-nginx:latest'
     ports:
       - '80:80'
 

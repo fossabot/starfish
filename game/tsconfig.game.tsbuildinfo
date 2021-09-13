@@ -847,7 +847,7 @@
         "affectsGlobalScope": false
       },
       "./src/server/io.ts": {
-        "version": "bdf48cac68f5e178572e9ba4ec2435d0bfefb926c33cf53cd2eedd6325232a6c",
+        "version": "e7a82762379af548a2a35910d0780c7b921057ada47fd02aaca4de09d1767124",
         "signature": "981fccb54f17535e3cdea62cb85b8faac88d34f8e6bf7ed4c2d24e262194c7b3",
         "affectsGlobalScope": false
       },
@@ -1557,9 +1557,9 @@
       "./src/server/io.ts": [
         "../common/dist/index.d.ts",
         "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/http.d.ts",
         "./node_modules/@types/node/https.d.ts",
         "./node_modules/@types/node/path.d.ts",
+        "./node_modules/is-docker/index.d.ts",
         "./node_modules/socket.io/dist/index.d.ts",
         "./src/server/events/admin.ts",
         "./src/server/events/crew.ts",
