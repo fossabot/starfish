@@ -14,9 +14,8 @@ const crew_1 = __importDefault(require("./events/crew"));
 const items_1 = __importDefault(require("./events/items"));
 const admin_1 = __importDefault(require("./events/admin"));
 const https_1 = require("https");
-const is_docker_1 = __importDefault(require("is-docker"));
 let serverConfig = {};
-if (!is_docker_1.default()) {
+if (process.env.NODE_ENV !== `production`) {
     serverConfig = {
         key: fs_1.default.readFileSync(path_1.default.resolve(`./ssl/localhost.key`)),
         cert: fs_1.default.readFileSync(path_1.default.resolve(`./ssl/localhost.crt`)),

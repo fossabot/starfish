@@ -13,7 +13,7 @@ import { createServer as createHTTPSServer } from 'https'
 import isDocker from 'is-docker'
 
 let serverConfig = {}
-if (!isDocker()) {
+if (process.env.NODE_ENV !== `production`) {
   serverConfig = {
     key: fs.readFileSync(
       path.resolve(`./ssl/localhost.key`),
