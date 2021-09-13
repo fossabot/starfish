@@ -1,13 +1,35 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
+const Discord = __importStar(require("discord.js"));
 const __1 = require("..");
 async function checkPermissions({ requiredPermissions, channel, guild, guildId, }) {
     if (!__1.client || !__1.client.readyAt)
         return { error: `Client not ready` };
+    if (channel instanceof Discord.DMChannel)
+        return { ok: true };
     // -------------- get Discord guild and channel objects
     if (channel)
         guild = channel.guild;
@@ -25,8 +47,6 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
     //   if (channel.type !== `text`)
     //     return { error: `Wrong channel type: ${channel.type}` }
     // }
-    if (channel && channel.type !== `GUILD_TEXT`)
-        return { error: `Wrong channel type: ${channel.type}` };
     const useBasePermissions = !channel;
     // -------------- get permissions
     let permissionsToCheck;
@@ -66,7 +86,7 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
             ? ``
             : ` in channel \`${channel?.name}\``}`,
         missingPermissions,
-        usedBasePermissions: useBasePermissions,
+        usedChannelSpecificPermissions: !useBasePermissions,
     };
 }
 exports.default = checkPermissions;

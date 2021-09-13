@@ -12,6 +12,7 @@ import {
 import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
 import { GameChannel } from './GameChannel'
 import type { Command } from './Command'
+import checkPermissions from '../actions/checkPermissions'
 
 /** a user-given command extracted from a message. */
 export class CommandContext {
@@ -90,12 +91,28 @@ export class CommandContext {
 
     // try to resolve a channel
     if (this.guild) {
-      channel =
-        this.channels[channelType] ||
-        (await resolveOrCreateChannel({
+      if (this.channels[channelType])
+        channel = this.channels[channelType] || null
+      else {
+        // check to see if we have the necessary permissions to create channels
+        const sendPermissionsCheck = await checkPermissions(
+          {
+            requiredPermissions: [`MANAGE_CHANNELS`],
+            guild: this.guild || undefined,
+          },
+        )
+        if (`error` in sendPermissionsCheck) {
+          c.log(
+            `Failed to create channel!`,
+            sendPermissionsCheck,
+          )
+          return
+        }
+        await resolveOrCreateChannel({
           type: channelType,
           guild: this.guild,
-        }))
+        })
+      }
     }
 
     // otherwise send back to the channel we got the message in in the first place
@@ -111,6 +128,18 @@ export class CommandContext {
         null,
         this.initialMessage.channel,
       )
+
+    // check to see if we have the necessary permissions to send messages at all
+    const sendPermissionsCheck = await checkPermissions({
+      requiredPermissions: [`SEND_MESSAGES`],
+      channel: channel?.channel,
+      guild: this.guild || undefined,
+    })
+    if (`error` in sendPermissionsCheck) {
+      c.log(`Failed to send!`, sendPermissionsCheck)
+      return
+    }
+
     // send
     if (channel) {
       this.channels[channelType] = channel
@@ -130,6 +159,18 @@ export class CommandContext {
       null,
       this.initialMessage.channel,
     )
+
+    // check to see if we have the necessary permissions to send messages at all
+    const sendPermissionsCheck = await checkPermissions({
+      requiredPermissions: [`SEND_MESSAGES`],
+      channel: channel?.channel,
+      guild: this.guild || undefined,
+    })
+    if (`error` in sendPermissionsCheck) {
+      c.log(`Failed to send!`, sendPermissionsCheck)
+      return
+    }
+
     // send
     if (channel) {
       channel.send(message).catch(c.log)

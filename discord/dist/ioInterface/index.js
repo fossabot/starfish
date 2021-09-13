@@ -27,6 +27,7 @@ const dist_1 = __importDefault(require("../../../common/dist"));
 const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const discordClient_1 = require("../discordClient");
 const resolveOrCreateChannel_1 = __importDefault(require("../discordClient/actions/resolveOrCreateChannel"));
+const checkPermissions_1 = __importDefault(require("../discordClient/actions/checkPermissions"));
 const is_docker_1 = __importDefault(require("is-docker"));
 const ship = __importStar(require("./ship"));
 const crew = __importStar(require("./crew"));
@@ -48,6 +49,15 @@ exports.io.on(`ship:message`, async (id, message, channelType = `alert`) => {
     const guild = discordClient_1.client.guilds.cache.find((g) => g.id === id);
     if (!guild)
         return dist_1.default.log(`red`, `Message came for a guild that does not have the bot added on Discord.`);
+    // check to see if we have the necessary permissions to create channels
+    const sendPermissionsCheck = await (0, checkPermissions_1.default)({
+        requiredPermissions: [`MANAGE_CHANNELS`],
+        guild: guild,
+    });
+    if (`error` in sendPermissionsCheck) {
+        dist_1.default.log(`Failed to create channel!`, sendPermissionsCheck);
+        return;
+    }
     const channel = await (0, resolveOrCreateChannel_1.default)({
         type: channelType,
         guild,

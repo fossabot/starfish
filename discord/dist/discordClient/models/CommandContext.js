@@ -8,6 +8,7 @@ const dist_1 = __importDefault(require("../../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const resolveOrCreateChannel_1 = __importDefault(require("../actions/resolveOrCreateChannel"));
 const GameChannel_1 = require("./GameChannel");
+const checkPermissions_1 = __importDefault(require("../actions/checkPermissions"));
 /** a user-given command extracted from a message. */
 class CommandContext {
     /** command name in all lowercase. */
@@ -63,12 +64,23 @@ class CommandContext {
         let channel = null;
         // try to resolve a channel
         if (this.guild) {
-            channel =
-                this.channels[channelType] ||
-                    (await (0, resolveOrCreateChannel_1.default)({
-                        type: channelType,
-                        guild: this.guild,
-                    }));
+            if (this.channels[channelType])
+                channel = this.channels[channelType] || null;
+            else {
+                // check to see if we have the necessary permissions to create channels
+                const sendPermissionsCheck = await (0, checkPermissions_1.default)({
+                    requiredPermissions: [`MANAGE_CHANNELS`],
+                    guild: this.guild || undefined,
+                });
+                if (`error` in sendPermissionsCheck) {
+                    dist_1.default.log(`Failed to create channel!`, sendPermissionsCheck);
+                    return;
+                }
+                await (0, resolveOrCreateChannel_1.default)({
+                    type: channelType,
+                    guild: this.guild,
+                });
+            }
         }
         // otherwise send back to the channel we got the message in in the first place
         if (!channel &&
@@ -76,6 +88,16 @@ class CommandContext {
             !this.initialMessage.channel.partial &&
             this.initialMessage.channel.type === `GUILD_TEXT`)
             channel = new GameChannel_1.GameChannel(null, this.initialMessage.channel);
+        // check to see if we have the necessary permissions to send messages at all
+        const sendPermissionsCheck = await (0, checkPermissions_1.default)({
+            requiredPermissions: [`SEND_MESSAGES`],
+            channel: channel?.channel,
+            guild: this.guild || undefined,
+        });
+        if (`error` in sendPermissionsCheck) {
+            dist_1.default.log(`Failed to send!`, sendPermissionsCheck);
+            return;
+        }
         // send
         if (channel) {
             this.channels[channelType] = channel;
@@ -88,6 +110,16 @@ class CommandContext {
             this.initialMessage.channel.type !== `GUILD_TEXT`)
             return;
         let channel = new GameChannel_1.GameChannel(null, this.initialMessage.channel);
+        // check to see if we have the necessary permissions to send messages at all
+        const sendPermissionsCheck = await (0, checkPermissions_1.default)({
+            requiredPermissions: [`SEND_MESSAGES`],
+            channel: channel?.channel,
+            guild: this.guild || undefined,
+        });
+        if (`error` in sendPermissionsCheck) {
+            dist_1.default.log(`Failed to send!`, sendPermissionsCheck);
+            return;
+        }
         // send
         if (channel) {
             channel.send(message).catch(dist_1.default.log);

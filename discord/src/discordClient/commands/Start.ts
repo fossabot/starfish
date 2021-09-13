@@ -24,40 +24,53 @@ export class StartCommand implements Command {
   async run(context: CommandContext): Promise<void> {
     if (!context.guild) return
 
-    const sentMessages: Message[] = []
-
-    const permissionsOk = await checkPermissions({
+    // first, check to see if we have the necessary permissions to make channels
+    const permissionsCheck = await checkPermissions({
       requiredPermissions: [`MANAGE_CHANNELS`],
+      channel:
+        context.initialMessage.channel.type === `GUILD_TEXT`
+          ? context.initialMessage.channel
+          : undefined,
       guild: context.guild,
     })
-    c.log(permissionsOk)
+    if (`error` in permissionsCheck) {
+      await context.initialMessage.channel.send(
+        `I don't have permission to create channels! Please add that permission and rerun the command.`,
+      )
+      return
+    }
 
-    const { result: permissionResult, sentMessage: pm } =
-      await waitForSingleButtonChoice({
-        context,
-        content: `Welcome to **${c.gameName}**!
+    const sentMessages: Message[] = []
+
+    const {
+      result: permissionToCreateChannelsResult,
+      sentMessage: pm,
+    } = await waitForSingleButtonChoice({
+      context,
+      content: `Welcome to **${c.gameName}**!
 This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
     
 This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
-        allowedUserId: context.initialMessage.author.id,
-        buttons: [
-          {
-            label: `Okay!`,
-            style: `PRIMARY`,
-            customId: `permissionToAddChannelsYes`,
-          },
-          {
-            label: `Nope.`,
-            style: `SECONDARY`,
-            customId: `permissionToAddChannelsNo`,
-          },
-        ],
-      })
+      allowedUserId: context.initialMessage.author.id,
+      buttons: [
+        {
+          label: `Okay!`,
+          style: `PRIMARY`,
+          customId: `permissionToAddChannelsYes`,
+        },
+        {
+          label: `Nope.`,
+          style: `SECONDARY`,
+          customId: `permissionToAddChannelsNo`,
+        },
+      ],
+    })
     pm.delete().catch((e) => {})
 
     if (
-      !permissionResult ||
-      permissionResult === `permissionToAddChannelsNo`
+      !permissionToCreateChannelsResult ||
+      permissionToCreateChannelsResult ===
+        `permissionToAddChannelsNo`
     ) {
       await context.initialMessage.channel.send(
         `Ah, okay. This game might not be for you, then.`,

@@ -16,13 +16,20 @@ class StartCommand {
     async run(context) {
         if (!context.guild)
             return;
-        const sentMessages = [];
-        const permissionsOk = await (0, checkPermissions_1.default)({
+        // first, check to see if we have the necessary permissions to make channels
+        const permissionsCheck = await (0, checkPermissions_1.default)({
             requiredPermissions: [`MANAGE_CHANNELS`],
+            channel: context.initialMessage.channel.type === `GUILD_TEXT`
+                ? context.initialMessage.channel
+                : undefined,
             guild: context.guild,
         });
-        dist_1.default.log(permissionsOk);
-        const { result: permissionResult, sentMessage: pm } = await (0, waitForSingleButtonChoice_1.default)({
+        if (`error` in permissionsCheck) {
+            await context.initialMessage.channel.send(`I don't have permission to create channels! Please add that permission and rerun the command.`);
+            return;
+        }
+        const sentMessages = [];
+        const { result: permissionToCreateChannelsResult, sentMessage: pm, } = await (0, waitForSingleButtonChoice_1.default)({
             context,
             content: `Welcome to **${dist_1.default.gameName}**!
 This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
@@ -43,8 +50,9 @@ This bot will create several channels for game communication and a role for crew
             ],
         });
         pm.delete().catch((e) => { });
-        if (!permissionResult ||
-            permissionResult === `permissionToAddChannelsNo`) {
+        if (!permissionToCreateChannelsResult ||
+            permissionToCreateChannelsResult ===
+                `permissionToAddChannelsNo`) {
             await context.initialMessage.channel.send(`Ah, okay. This game might not be for you, then.`);
             return;
         }

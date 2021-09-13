@@ -2,6 +2,7 @@ import c from '../../../common/dist'
 import socketIo, { Socket } from 'socket.io-client'
 import { client as discordClient } from '../discordClient'
 import resolveOrCreateChannel from '../discordClient/actions/resolveOrCreateChannel'
+import checkPermissions from '../discordClient/actions/checkPermissions'
 import isDocker from 'is-docker'
 
 import * as ship from './ship'
@@ -41,6 +42,20 @@ io.on(
         `red`,
         `Message came for a guild that does not have the bot added on Discord.`,
       )
+
+    // check to see if we have the necessary permissions to create channels
+    const sendPermissionsCheck = await checkPermissions({
+      requiredPermissions: [`MANAGE_CHANNELS`],
+      guild: guild,
+    })
+    if (`error` in sendPermissionsCheck) {
+      c.log(
+        `Failed to create channel!`,
+        sendPermissionsCheck,
+      )
+      return
+    }
+
     const channel = await resolveOrCreateChannel({
       type: channelType,
       guild,

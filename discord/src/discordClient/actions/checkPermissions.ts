@@ -5,7 +5,7 @@ import { client } from '..'
 interface GamePermissionsFailure {
   error: string
   missingPermissions?: Discord.PermissionString[]
-  usedBasePermissions?: boolean
+  usedChannelSpecificPermissions?: boolean
 }
 interface GamePermissionsSuccess {
   ok: true
@@ -22,12 +22,14 @@ export default async function checkPermissions({
   guildId,
 }: {
   requiredPermissions: Discord.PermissionString[]
-  channel?: Discord.TextChannel
+  channel?: Discord.TextChannel | Discord.DMChannel
   guild?: Discord.Guild
   guildId?: string
 }): Promise<GamePermissionsResponse> {
   if (!client || !client.readyAt)
     return { error: `Client not ready` }
+  if (channel instanceof Discord.DMChannel)
+    return { ok: true }
   // -------------- get Discord guild and channel objects
   if (channel) guild = channel.guild
   if (!guild && guildId)
@@ -44,8 +46,6 @@ export default async function checkPermissions({
   //   if (channel.type !== `text`)
   //     return { error: `Wrong channel type: ${channel.type}` }
   // }
-  if (channel && channel.type !== `GUILD_TEXT`)
-    return { error: `Wrong channel type: ${channel.type}` }
 
   const useBasePermissions = !channel
 
@@ -100,6 +100,6 @@ export default async function checkPermissions({
         : ` in channel \`${channel?.name}\``
     }`,
     missingPermissions,
-    usedBasePermissions: useBasePermissions,
+    usedChannelSpecificPermissions: !useBasePermissions,
   }
 }
