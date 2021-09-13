@@ -113,6 +113,7 @@ export async function create(
   )
   return shipStub
 }
+
 export async function destroy(
   id: string,
 ): Promise<string | null> {

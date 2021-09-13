@@ -782,7 +782,7 @@
         "affectsGlobalScope": false
       },
       "./src/game/classes/ship/humanship.ts": {
-        "version": "94c7bcfe280df73cdf385af38f647603e5d1d83d896aef1b0f510700d192b90f",
+        "version": "ba642e8693e04ddc2d3a70ca73aa48b3ec06e35bb0b79bd114d5c10a866b3005",
         "signature": "71a903cbb6857161159d036530ad2e7092968730f6f6229d3eb36d0b8cdb68ad",
         "affectsGlobalScope": false
       },

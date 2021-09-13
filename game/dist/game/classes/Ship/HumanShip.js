@@ -66,11 +66,15 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addCrewMember(cm, true);
         });
         if (!this.log.length)
-            this.logEntry([
+            // timeout so that the first messages don't spawn multiple alerts channels
+            setTimeout(() => this.logEntry([
                 `Your crew boards the ship`,
-                { text: this.name, color: this.faction.color },
+                {
+                    text: this.name,
+                    color: this.faction.color,
+                },
                 `for the first time, and sets out towards the stars.`,
-            ], `medium`);
+            ], `medium`), 2000);
         this.updateMaxScanProperties();
         this.updateVisible();
         this.recalculateMass();
