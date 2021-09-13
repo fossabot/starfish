@@ -45,7 +45,7 @@ async function rename(shipId, newName) {
 }
 exports.rename = rename;
 async function get(id) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return null;
     const shipStub = await new Promise((resolve) => {
         index_1.io.emit(`ship:get`, id, ({ data: ship, error, }) => {
@@ -61,7 +61,7 @@ async function get(id) {
 }
 exports.get = get;
 async function create(data) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return null;
     const shipStub = await new Promise((resolve) => {
         index_1.io.emit(`ship:create`, data, ({ data: ship, error, }) => {
@@ -77,7 +77,7 @@ async function create(data) {
 }
 exports.create = create;
 async function destroy(id) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return null;
     const res = await new Promise((resolve) => {
         index_1.io.emit(`ship:destroy`, id, ({ data, error }) => {
@@ -93,7 +93,7 @@ async function destroy(id) {
 }
 exports.destroy = destroy;
 async function respawn(id) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return null;
     const shipStub = await new Promise((resolve) => {
         index_1.io.emit(`ship:respawn`, id, ({ data: ship, error, }) => {
@@ -109,7 +109,7 @@ async function respawn(id) {
 }
 exports.respawn = respawn;
 async function broadcast(guildId, crewMemberId, message) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return { error: `` };
     const result = await new Promise((resolve) => {
         index_1.io.emit(`ship:broadcast`, guildId, crewMemberId, message, (res) => {
@@ -120,7 +120,7 @@ async function broadcast(guildId, crewMemberId, message) {
 }
 exports.broadcast = broadcast;
 async function alertLevel(guildId, level) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return { error: `` };
     const result = await new Promise((resolve) => {
         index_1.io.emit(`ship:alertLevel`, guildId, level, (res) => {

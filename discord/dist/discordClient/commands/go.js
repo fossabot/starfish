@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class GoCommand {
-    constructor() {
-        this.commandNames = [`go`, `room`, `move`, `moveto`];
-    }
+    commandNames = [`go`, `room`, `move`, `moveto`];
     getHelpMessage(commandPrefix, availableRooms) {
         return `Use \`${commandPrefix}${this.commandNames[0]} <room name>\` to move to a room in the ship.${availableRooms
             ? `\nAvailable rooms: ${availableRooms.join(`, `)}.`

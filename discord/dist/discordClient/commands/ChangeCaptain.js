@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChangeCaptainCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class ChangeCaptainCommand {
-    constructor() {
-        this.commandNames = [`changecaptain`, `captain`, `cc`];
-    }
+    commandNames = [`changecaptain`, `captain`, `cc`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]} <@newcaptain>\` to change the ship's captain.`;
     }

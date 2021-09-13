@@ -10,13 +10,13 @@ items (equipment) for crew members!
 	slots scale with levels
 	cost less than ship equipment
 
-global/ship rankings spawn minimized
-crew rankings -> tabs
-left side pane filter (ship, planet, stats, crew member, scanner)
+! global/ship rankings spawn minimized
+!! crew rankings -> tabs
+! left side pane filter (ship, planet, stats, crew member, scanner)
 turn gravity to linear scale
-need security on admin page - use discord, duh
-ambient junk flying by in the background
-fade to different backgrounds with context
+! need security on admin page - use discord, duh
+! ambient junk flying by in the background
+!! fade to different backgrounds with context
 you can still get linguistics xp when you send messages in commsbay
 broadcast is less Perfect at 0AU
 planet pane didn't show up when I switched to another ship also at a planet

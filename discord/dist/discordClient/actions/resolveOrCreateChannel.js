@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -43,7 +43,7 @@ const channelData = {
 };
 async function resolveOrCreateChannel({ type, guild, }) {
     const { name, topic, permissions } = channelData[type];
-    const permissionsRes = await checkPermissions_1.default({
+    const permissionsRes = await (0, checkPermissions_1.default)({
         requiredPermissions: [`MANAGE_CHANNELS`],
         guild,
     });
@@ -53,7 +53,9 @@ async function resolveOrCreateChannel({ type, guild, }) {
     }
     if (permissionsRes.message)
         dist_1.default.log(permissionsRes.message);
-    const existingChannels = await guild.channels.cache.array();
+    const existingChannels = [
+        ...(await guild.channels.cache).values(),
+    ];
     let existingSubChannels = [];
     let parentCategory = null;
     // ----- get/make category -----
@@ -62,12 +64,12 @@ async function resolveOrCreateChannel({ type, guild, }) {
     if (existingCategory) {
         parentCategory = existingCategory;
         existingSubChannels = existingChannels.filter((c) => c instanceof Discord.TextChannel &&
-            c.parentID === existingCategory.id);
+            c.parentId === existingCategory.id);
     }
     else {
         const createdCategory = await guild.channels
             .create(dist_1.default.gameName, {
-            type: `category`,
+            type: `GUILD_CATEGORY`,
             position: 99999,
             reason: `Game initialization`,
         })

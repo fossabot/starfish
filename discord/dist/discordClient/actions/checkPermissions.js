@@ -25,7 +25,7 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
     //   if (channel.type !== `text`)
     //     return { error: `Wrong channel type: ${channel.type}` }
     // }
-    if (channel && channel.type !== `text`)
+    if (channel && channel.type !== `GUILD_TEXT`)
         return { error: `Wrong channel type: ${channel.type}` };
     const useBasePermissions = !channel;
     // -------------- get permissions
@@ -34,16 +34,23 @@ async function checkPermissions({ requiredPermissions, channel, guild, guildId, 
         dist_1.default.log(`Error getting bot permissions:`, e);
     });
     const botRole = allRoles
-        ? allRoles.cache
-            ?.array()
-            .find((role) => role.name === __1.client.user?.username)
+        ? [...allRoles.values()].find((role) => role.name === __1.client.user?.username)
         : null;
     permissionsToCheck = botRole?.permissions;
     if (!useBasePermissions && channel && guild.me) {
         permissionsToCheck = channel.permissionsFor(guild.me);
     }
-    if (!permissionsToCheck)
-        return { error: `Failed to find bot permissions` };
+    if (!permissionsToCheck) {
+        dist_1.default.log({
+            error: `Failed to find any permissions to check!`,
+            botRole,
+            channel,
+            me: guild.me,
+        });
+        return {
+            error: `Failed to find any permissions to check!`,
+        };
+    }
     // c.log(permissionsToCheck.toArray())
     // -------------- check permissions
     const missingPermissions = [];

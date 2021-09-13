@@ -6,17 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChangeShipNameCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class ChangeShipNameCommand {
-    constructor() {
-        this.commandNames = [
-            `shipname`,
-            `changeshipname`,
-            `rename`,
-            `renameship`,
-            `name`,
-            `changename`,
-            `sn`,
-        ];
-    }
+    commandNames = [
+        `shipname`,
+        `changeshipname`,
+        `rename`,
+        `renameship`,
+        `name`,
+        `changename`,
+        `sn`,
+    ];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]} <new name>\` to change the ship's name.`;
     }

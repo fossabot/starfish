@@ -6,13 +6,12 @@
     "prod": "node dist/index.js"
   },
   "dependencies": {
-    "discord-buttons": "^3.2.1",
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "is-docker": "^2.2.1",
-    "nodemon": "^2.0.7",
-    "socket.io-client": "^4.0.1",
-    "typescript": "^4.3.5"
+    "nodemon": "^2.0.12",
+    "socket.io-client": "^4.2.0",
+    "typescript": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^16.7.1"

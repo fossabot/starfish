@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const checkPermissions_1 = __importDefault(require("./checkPermissions"));
 async function removeRole(guild, roleName = `Crew`) {
-    const permissionsRes = await checkPermissions_1.default({
+    const permissionsRes = await (0, checkPermissions_1.default)({
         requiredPermissions: [`MANAGE_ROLES`],
         guild,
     });
@@ -16,7 +16,9 @@ async function removeRole(guild, roleName = `Crew`) {
     }
     if (permissionsRes.message)
         dist_1.default.log(permissionsRes.message);
-    const existingRoles = await guild.roles.cache.array();
+    const existingRoles = [
+        ...(await guild.roles.cache).values(),
+    ];
     const existing = existingRoles.find((c) => c.name === roleName);
     if (existing) {
         dist_1.default.log(`removing role...`);

@@ -31,7 +31,9 @@ export default async function resolveOrCreateRole({
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
-  const existingRoles = await guild.roles.cache.array()
+  const existingRoles = [
+    ...(await guild.roles.cache).values(),
+  ]
 
   // ----- get/make role -----
   const existing = existingRoles.find(
@@ -47,12 +49,10 @@ export default async function resolveOrCreateRole({
     const role =
       (await guild.roles
         .create({
-          data: {
-            name,
-            hoist: false,
-            mentionable: true,
-            position: 99999,
-          },
+          name,
+          hoist: false,
+          mentionable: true,
+          position: 99999,
           reason: `Game initialization`,
         })
         .catch(c.log)) || null

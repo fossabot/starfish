@@ -3,16 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JoinCommand = void 0;
 const crew_1 = require("../../ioInterface/crew");
 class JoinCommand {
-    constructor() {
-        this.commandNames = [`join`, `add`, `j`];
-    }
+    commandNames = [`join`, `add`, `j`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to join your server's ship.`;
     }
     async run(context) {
         if (!context.ship || !context.guild)
             return;
-        const addedCrewMember = await crew_1.add(context.ship.id, {
+        const addedCrewMember = await (0, crew_1.add)(context.ship.id, {
             name: context.nickname,
             id: context.initialMessage.author.id,
         });

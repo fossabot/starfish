@@ -7,7 +7,7 @@ exports.move = exports.rename = exports.add = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const index_1 = require("./index");
 async function add(shipId, data) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return `Failed to add crew member`;
     const crewMemberStub = await new Promise((resolve) => {
         index_1.io.emit(`crew:add`, shipId, data, ({ data: crewMember, error, }) => {
@@ -23,13 +23,13 @@ async function add(shipId, data) {
 }
 exports.add = add;
 async function rename(shipId, crewId, name) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return `Failed to rename crew member`;
     index_1.io.emit(`crew:rename`, shipId, crewId, name);
 }
 exports.rename = rename;
 async function move(shipId, crewId, target) {
-    if (!(await index_1.connected()))
+    if (!(await (0, index_1.connected)()))
         return `Failed to move crew member`;
     index_1.io.emit(`crew:move`, shipId, crewId, target);
 }

@@ -10,7 +10,6 @@ import crewEvents from './events/crew'
 import itemEvents from './events/items'
 import adminEvents from './events/admin'
 import { createServer as createHTTPSServer } from 'https'
-import isDocker from 'is-docker'
 
 let serverConfig = {}
 if (process.env.NODE_ENV !== `production`) {

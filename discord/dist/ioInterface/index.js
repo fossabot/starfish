@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -36,7 +36,7 @@ exports.default = {
     crew,
 };
 // connect to server
-const client = socket_io_client_1.default(`http${is_docker_1.default() ? `s` : ``}://${is_docker_1.default() ? `game` : `localhost`}:4200`, { secure: true, rejectUnauthorized: false });
+const client = (0, socket_io_client_1.default)(`https://${(0, is_docker_1.default)() ? `game` : `localhost`}:4200`, { secure: true, rejectUnauthorized: false });
 exports.io = client.connect();
 exports.io.on(`connect`, () => {
     dist_1.default.log(`green`, `Connected to game server.`);
@@ -48,7 +48,7 @@ exports.io.on(`ship:message`, async (id, message, channelType = `alert`) => {
     const guild = discordClient_1.client.guilds.cache.find((g) => g.id === id);
     if (!guild)
         return dist_1.default.log(`red`, `Message came for a guild that does not have the bot added on Discord.`);
-    const channel = await resolveOrCreateChannel_1.default({
+    const channel = await (0, resolveOrCreateChannel_1.default)({
         type: channelType,
         guild,
     });

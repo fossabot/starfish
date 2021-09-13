@@ -12,7 +12,7 @@ const roleData = {
 };
 async function resolveOrCreateRole({ type, guild, }) {
     const { name } = roleData[type];
-    const permissionsRes = await checkPermissions_1.default({
+    const permissionsRes = await (0, checkPermissions_1.default)({
         requiredPermissions: [`MANAGE_ROLES`],
         guild,
     });
@@ -22,7 +22,9 @@ async function resolveOrCreateRole({ type, guild, }) {
     }
     if (permissionsRes.message)
         dist_1.default.log(permissionsRes.message);
-    const existingRoles = await guild.roles.cache.array();
+    const existingRoles = [
+        ...(await guild.roles.cache).values(),
+    ];
     // ----- get/make role -----
     const existing = existingRoles.find((c) => c.name === name);
     if (existing) {
@@ -33,12 +35,10 @@ async function resolveOrCreateRole({ type, guild, }) {
         // c.log(`attempting to create role...`)
         const role = (await guild.roles
             .create({
-            data: {
-                name,
-                hoist: false,
-                mentionable: true,
-                position: 99999,
-            },
+            name,
+            hoist: false,
+            mentionable: true,
+            position: 99999,
             reason: `Game initialization`,
         })
             .catch(dist_1.default.log)) || null;

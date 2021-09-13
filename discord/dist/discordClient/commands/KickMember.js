@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.KickMemberCommand = void 0;
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
 class KickMemberCommand {
-    constructor() {
-        this.commandNames = [`kickmember`, `kick`, `km`];
-    }
+    commandNames = [`kickmember`, `kick`, `km`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` to kick a crew member. This action is permanent.`;
     }

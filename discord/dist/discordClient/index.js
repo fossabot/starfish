@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connected = exports.rawWatchers = exports.client = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
-const Discord = __importStar(require("discord.js"));
+const discord_js_1 = __importDefault(require("discord.js"));
 const fs = __importStar(require("fs"));
 let discordToken;
 try {
@@ -35,14 +35,33 @@ catch (e) {
 }
 discordToken = discordToken?.replace(/\n/g, ``);
 const CommandHandler_1 = require("./CommandHandler");
-exports.client = new Discord.Client({
-    restTimeOffset: 0,
-    messageCacheMaxSize: 2,
-    messageCacheLifetime: 30,
-    messageSweepInterval: 60,
+exports.client = new discord_js_1.default.Client({
+    makeCache: discord_js_1.default.Options.cacheWithLimits({
+        MessageManager: 0,
+        GuildMemberManager: Infinity,
+        ThreadManager: 0,
+        ThreadMemberManager: 0,
+        UserManager: {
+            maxSize: 0,
+            keepOverLimit: (value, key, collection) => value.id === exports.client.user?.id,
+        },
+        ApplicationCommandManager: 0,
+        BaseGuildEmojiManager: 0,
+        GuildBanManager: 0,
+        GuildInviteManager: 0,
+        GuildStickerManager: 0,
+        ReactionManager: 0,
+        ReactionUserManager: 0,
+        StageInstanceManager: 0,
+        VoiceStateManager: 0, // guild.voiceStates
+    }),
+    intents: [
+        discord_js_1.default.Intents.FLAGS.GUILDS,
+        discord_js_1.default.Intents.FLAGS.GUILD_MESSAGES,
+        discord_js_1.default.Intents.FLAGS.GUILD_MEMBERS,
+        discord_js_1.default.Intents.FLAGS.DIRECT_MESSAGES,
+    ],
 });
-const discord_buttons_1 = __importDefault(require("discord-buttons"));
-discord_buttons_1.default(exports.client);
 const commandHandler = new CommandHandler_1.CommandHandler(`.`);
 exports.rawWatchers = [];
 let didError = null;
@@ -78,7 +97,7 @@ exports.client.on(`error`, (e) => {
     dist_1.default.log(`red`, `Discord.js error:`, e.message);
     didError = e.message;
 });
-exports.client.on(`message`, async (msg) => {
+exports.client.on(`messageCreate`, async (msg) => {
     if (!msg.author || msg.author.bot)
         return;
     commandHandler.handleMessage(msg);
@@ -93,7 +112,7 @@ exports.client.on(`raw`, async (event) => {
     exports.rawWatchers.forEach((handler) => handler(event));
 });
 exports.client.on(`ready`, async () => {
-    const guilds = await exports.client.guilds.cache.array();
+    const guilds = [...(await exports.client.guilds.cache).values()];
     dist_1.default.log(`green`, `Logged in as ${exports.client.user?.tag} in:
 ${guilds
         .slice(0, 100)

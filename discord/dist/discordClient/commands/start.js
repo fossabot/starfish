@@ -6,11 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StartCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const ioInterface_1 = __importDefault(require("../../ioInterface"));
-const discord_buttons_1 = require("discord-buttons");
+const waitForSingleButtonChoice_1 = __importDefault(require("../actions/waitForSingleButtonChoice"));
+const checkPermissions_1 = __importDefault(require("../actions/checkPermissions"));
 class StartCommand {
-    constructor() {
-        this.commandNames = [`start`, `s`, `spawn`, `begin`, `init`];
-    }
+    commandNames = [`start`, `s`, `spawn`, `begin`, `init`];
     getHelpMessage(commandPrefix) {
         return `Use \`${commandPrefix}${this.commandNames[0]}\` to start your server off in the game.`;
     }
@@ -18,45 +17,32 @@ class StartCommand {
         if (!context.guild)
             return;
         const sentMessages = [];
-        const permissionToAddChannelsRow = new discord_buttons_1.MessageActionRow();
-        permissionToAddChannelsRow.addComponent(new discord_buttons_1.MessageButton()
-            .setLabel(`Okay!`)
-            .setStyle(1)
-            .setID(`permissionToAddChannelsYes`));
-        permissionToAddChannelsRow.addComponent(new discord_buttons_1.MessageButton()
-            .setLabel(`Nope.`)
-            .setStyle(2)
-            .setID(`permissionToAddChannelsNo`));
-        const pm = await context.initialMessage.channel.send(`Welcome to **${dist_1.default.gameName}**!
+        const permissionsOk = await (0, checkPermissions_1.default)({
+            requiredPermissions: [`MANAGE_CHANNELS`],
+            guild: context.guild,
+        });
+        dist_1.default.log(permissionsOk);
+        const { result: permissionResult, sentMessage: pm } = await (0, waitForSingleButtonChoice_1.default)({
+            context,
+            content: `Welcome to **${dist_1.default.gameName}**!
 This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
-
-This bot will create several channels for game communication and a role for crew members. Is that okay with you?`, {
-            // @ts-ignore
-            components: [permissionToAddChannelsRow],
+    
+This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
+            allowedUserId: context.initialMessage.author.id,
+            buttons: [
+                {
+                    label: `Okay!`,
+                    style: `PRIMARY`,
+                    customId: `permissionToAddChannelsYes`,
+                },
+                {
+                    label: `Nope.`,
+                    style: `SECONDARY`,
+                    customId: `permissionToAddChannelsNo`,
+                },
+            ],
         });
-        if (pm && Array.isArray(pm))
-            sentMessages.push(...pm);
-        else if (pm)
-            sentMessages.push(pm);
-        const permissionResult = await new Promise((resolve) => {
-            let done = false;
-            const filter = (button) => button.clicker.user.id ===
-                context.initialMessage.author.id;
-            // @ts-ignore
-            const collector = pm.createButtonCollector(filter, {
-                time: 5 * 60 * 1000,
-            });
-            collector.on?.(`collect`, (b) => {
-                done = true;
-                b.defer();
-                resolve(b.id);
-            });
-            collector.on?.(`end`, () => {
-                if (done)
-                    return;
-                resolve(null);
-            });
-        });
+        pm.delete().catch((e) => { });
         if (!permissionResult ||
             permissionResult === `permissionToAddChannelsNo`) {
             await context.initialMessage.channel.send(`Ah, okay. This game might not be for you, then.`);
@@ -79,47 +65,22 @@ This bot will create several channels for game communication and a role for crew
         //     `I don't seem to be able to assign roles in this server. Please add that permission to the bot!`,
         //   )
         // })
-        const speciesRows = [];
+        const speciesButtonData = [];
         for (let s of dist_1.default.shuffleArray(Object.entries(dist_1.default.species).filter((e) => {
             return e[1].factionId !== `red`;
-        }))) {
-            if (!speciesRows.length ||
-                speciesRows[speciesRows.length - 1].components
-                    .length >= 4)
-                speciesRows.push(new discord_buttons_1.MessageActionRow());
-            let row = speciesRows[speciesRows.length - 1];
-            row.addComponent(new discord_buttons_1.MessageButton()
-                .setLabel(s[1].icon + dist_1.default.capitalize(s[1].id))
-                .setStyle(2)
-                .setID(s[1].id));
-        }
-        const sm = await context.initialMessage.channel.send(`Excellent! Choose your ship's species to get started.`, {
-            // @ts-ignore
-            components: speciesRows,
+        })))
+            speciesButtonData.push({
+                label: s[1].icon + dist_1.default.capitalize(s[1].id),
+                style: `SECONDARY`,
+                customId: s[1].id,
+            });
+        const { result: speciesResult, sentMessage: sm } = await (0, waitForSingleButtonChoice_1.default)({
+            context,
+            content: `Excellent! Choose your ship's species to get started.`,
+            allowedUserId: context.initialMessage.author.id,
+            buttons: speciesButtonData,
         });
-        if (sm && Array.isArray(sm))
-            sentMessages.push(...sm);
-        else if (sm)
-            sentMessages.push(sm);
-        const speciesKey = await new Promise((resolve) => {
-            let done = false;
-            const filter = (button) => button.clicker.user.id ===
-                context.initialMessage.author.id;
-            // @ts-ignore
-            const collector = sm.createButtonCollector(filter, {
-                time: 5 * 60 * 1000,
-            });
-            collector.on?.(`collect`, (b) => {
-                done = true;
-                b.defer();
-                resolve(b.id);
-            });
-            collector.on?.(`end`, () => {
-                if (done)
-                    return;
-                resolve(null);
-            });
-        });
+        sentMessages.push(sm);
         // clean up messages
         try {
             for (let m of sentMessages)
@@ -127,7 +88,7 @@ This bot will create several channels for game communication and a role for crew
                     m.delete().catch(dist_1.default.log);
         }
         catch (e) { }
-        if (!speciesKey) {
+        if (!speciesResult) {
             await context.initialMessage.channel.send(`You didn't pick a species, try again!`);
             return;
         }
@@ -135,7 +96,7 @@ This bot will create several channels for game communication and a role for crew
         const createdShip = await ioInterface_1.default.ship.create({
             id: context.guild.id,
             name: context.guild.name,
-            species: { id: speciesKey },
+            species: { id: speciesResult },
         });
         if (!createdShip) {
             await context.initialMessage.channel.send(`Failed to start your server in the game.`);

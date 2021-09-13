@@ -44,8 +44,9 @@ export default async function resolveOrCreateChannel({
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
-  const existingChannels =
-    await guild.channels.cache.array()
+  const existingChannels = [
+    ...(await guild.channels.cache).values(),
+  ]
   let existingSubChannels: Discord.TextChannel[] = []
   let parentCategory: Discord.CategoryChannel | null = null
 
@@ -60,12 +61,12 @@ export default async function resolveOrCreateChannel({
     existingSubChannels = existingChannels.filter(
       (c) =>
         c instanceof Discord.TextChannel &&
-        c.parentID === existingCategory.id,
+        c.parentId === existingCategory.id,
     ) as Discord.TextChannel[]
   } else {
     const createdCategory = await guild.channels
       .create(c.gameName, {
-        type: `category`,
+        type: `GUILD_CATEGORY`,
         position: 99999,
         reason: `Game initialization`,
       })

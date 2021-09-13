@@ -2,13 +2,17 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
-import resolveOrCreateRole from '../actions/resolveOrCreateRole'
+// import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 import {
-  MessageButton,
+  Message,
   MessageActionRow,
+  MessageButton,
+  MessageButtonOptions,
   MessageComponent,
-} from 'discord-buttons'
-import type { Message } from 'discord.js'
+  MessageComponentInteraction,
+} from 'discord.js'
+import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
+import checkPermissions from '../actions/checkPermissions'
 
 export class StartCommand implements Command {
   commandNames = [`start`, `s`, `spawn`, `begin`, `init`]
@@ -22,58 +26,34 @@ export class StartCommand implements Command {
 
     const sentMessages: Message[] = []
 
-    const permissionToAddChannelsRow: MessageActionRow =
-      new MessageActionRow()
-    permissionToAddChannelsRow.addComponent(
-      new MessageButton()
-        .setLabel(`Okay!`)
-        .setStyle(1)
-        .setID(`permissionToAddChannelsYes`),
-    )
-    permissionToAddChannelsRow.addComponent(
-      new MessageButton()
-        .setLabel(`Nope.`)
-        .setStyle(2)
-        .setID(`permissionToAddChannelsNo`),
-    )
-
-    const pm = await context.initialMessage.channel.send(
-      `Welcome to **${c.gameName}**!
-This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
-
-This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
-      {
-        // @ts-ignore
-        components: [permissionToAddChannelsRow],
-      },
-    )
-    if (pm && Array.isArray(pm)) sentMessages.push(...pm)
-    else if (pm) sentMessages.push(pm)
-
-    const permissionResult = await new Promise<
-      string | null
-    >((resolve) => {
-      let done = false
-
-      const filter = (button: any) =>
-        button.clicker.user.id ===
-        context.initialMessage.author.id
-
-      // @ts-ignore
-      const collector = pm.createButtonCollector(filter, {
-        time: 5 * 60 * 1000, // 5 mins
-      })
-
-      collector.on?.(`collect`, (b: MessageComponent) => {
-        done = true
-        b.defer()
-        resolve(b.id)
-      })
-      collector.on?.(`end`, () => {
-        if (done) return
-        resolve(null)
-      })
+    const permissionsOk = await checkPermissions({
+      requiredPermissions: [`MANAGE_CHANNELS`],
+      guild: context.guild,
     })
+    c.log(permissionsOk)
+
+    const { result: permissionResult, sentMessage: pm } =
+      await waitForSingleButtonChoice({
+        context,
+        content: `Welcome to **${c.gameName}**!
+This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
+    
+This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
+        allowedUserId: context.initialMessage.author.id,
+        buttons: [
+          {
+            label: `Okay!`,
+            style: `PRIMARY`,
+            customId: `permissionToAddChannelsYes`,
+          },
+          {
+            label: `Nope.`,
+            style: `SECONDARY`,
+            customId: `permissionToAddChannelsNo`,
+          },
+        ],
+      })
+    pm.delete().catch((e) => {})
 
     if (
       !permissionResult ||
@@ -103,63 +83,28 @@ This bot will create several channels for game communication and a role for crew
     //   )
     // })
 
-    const speciesRows: MessageActionRow[] = []
+    const speciesButtonData: MessageButtonOptions[] = []
     for (let s of c.shuffleArray(
       Object.entries(c.species).filter(
         (e: [string, BaseSpeciesData]) => {
           return e[1].factionId !== `red`
         },
       ),
-    )) {
-      if (
-        !speciesRows.length ||
-        speciesRows[speciesRows.length - 1].components
-          .length >= 4
-      )
-        speciesRows.push(new MessageActionRow())
-      let row = speciesRows[speciesRows.length - 1]
-      row.addComponent(
-        new MessageButton()
-          .setLabel(s[1].icon + c.capitalize(s[1].id))
-          .setStyle(2)
-          .setID(s[1].id),
-      )
-    }
+    ))
+      speciesButtonData.push({
+        label: s[1].icon + c.capitalize(s[1].id),
+        style: `SECONDARY`,
+        customId: s[1].id,
+      })
 
-    const sm = await context.initialMessage.channel.send(
-      `Excellent! Choose your ship's species to get started.`,
-      {
-        // @ts-ignore
-        components: speciesRows,
-      },
-    )
-    if (sm && Array.isArray(sm)) sentMessages.push(...sm)
-    else if (sm) sentMessages.push(sm)
-
-    const speciesKey = await new Promise<SpeciesKey | null>(
-      (resolve) => {
-        let done = false
-
-        const filter = (button: any) =>
-          button.clicker.user.id ===
-          context.initialMessage.author.id
-
-        // @ts-ignore
-        const collector = sm.createButtonCollector(filter, {
-          time: 5 * 60 * 1000, // 5 mins
-        })
-
-        collector.on?.(`collect`, (b: MessageComponent) => {
-          done = true
-          b.defer()
-          resolve(b.id as SpeciesKey)
-        })
-        collector.on?.(`end`, () => {
-          if (done) return
-          resolve(null)
-        })
-      },
-    )
+    const { result: speciesResult, sentMessage: sm } =
+      await waitForSingleButtonChoice<SpeciesKey>({
+        context,
+        content: `Excellent! Choose your ship's species to get started.`,
+        allowedUserId: context.initialMessage.author.id,
+        buttons: speciesButtonData,
+      })
+    sentMessages.push(sm)
 
     // clean up messages
     try {
@@ -167,7 +112,7 @@ This bot will create several channels for game communication and a role for crew
         if (m.deletable) m.delete().catch(c.log)
     } catch (e) {}
 
-    if (!speciesKey) {
+    if (!speciesResult) {
       await context.initialMessage.channel.send(
         `You didn't pick a species, try again!`,
       )
@@ -178,7 +123,7 @@ This bot will create several channels for game communication and a role for crew
     const createdShip = await ioInterface.ship.create({
       id: context.guild.id,
       name: context.guild.name,
-      species: { id: speciesKey },
+      species: { id: speciesResult },
     })
     if (!createdShip) {
       await context.initialMessage.channel.send(

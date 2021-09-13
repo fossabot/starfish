@@ -4,7 +4,7 @@ import {
   Guild,
   GuildMember,
   Message,
-  MessageEmbed,
+  MessageOptions,
   NewsChannel,
   TextChannel,
   User,
@@ -71,7 +71,7 @@ export class CommandContext {
     this.nickname =
       this.guildMember?.nickname || this.author.username
     this.guild = message.guild
-    this.dm = message.channel.type === `dm`
+    this.dm = message.channel.type === `DM`
     this.isServerAdmin =
       message.guild?.members.cache
         .find((m) => m.id === message.author.id)
@@ -83,10 +83,11 @@ export class CommandContext {
   }
 
   async sendToGuild(
-    message: string | MessageEmbed,
+    message: string | MessageOptions,
     channelType: GameChannelType = `alert`,
   ) {
     let channel: GameChannel | null = null
+
     // try to resolve a channel
     if (this.guild) {
       channel =
@@ -100,7 +101,11 @@ export class CommandContext {
     // otherwise send back to the channel we got the message in in the first place
     if (
       !channel &&
-      !(this.initialMessage.channel instanceof NewsChannel)
+      !(
+        this.initialMessage.channel instanceof NewsChannel
+      ) &&
+      !this.initialMessage.channel.partial &&
+      this.initialMessage.channel.type === `GUILD_TEXT`
     )
       channel = new GameChannel(
         null,
@@ -113,8 +118,12 @@ export class CommandContext {
     }
   }
 
-  async reply(message: string | MessageEmbed) {
-    if (this.initialMessage.channel instanceof NewsChannel)
+  async reply(message: string | MessageOptions) {
+    if (
+      this.initialMessage.channel instanceof NewsChannel ||
+      this.initialMessage.channel.partial ||
+      this.initialMessage.channel.type !== `GUILD_TEXT`
+    )
       return
 
     let channel = new GameChannel(

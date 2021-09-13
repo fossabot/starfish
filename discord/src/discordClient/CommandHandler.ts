@@ -58,7 +58,7 @@ export class CommandHandler {
     }
 
     // ignore DMs for now
-    if (message.channel.type === `dm` || !message.guild) {
+    if (message.channel.type === `DM` || !message.guild) {
       return
     }
 

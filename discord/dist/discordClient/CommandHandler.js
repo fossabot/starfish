@@ -24,6 +24,8 @@ const LeaveGame_1 = require("./commands/LeaveGame");
 const Go_1 = require("./commands/Go");
 const ShipName_1 = require("./commands/ShipName");
 class CommandHandler {
+    commands;
+    prefix;
     constructor(prefix) {
         const commandClasses = [
             Start_1.StartCommand,
@@ -51,7 +53,7 @@ class CommandHandler {
             return;
         }
         // ignore DMs for now
-        if (message.channel.type === `dm` || !message.guild) {
+        if (message.channel.type === `DM` || !message.guild) {
             return;
         }
         // initialize command context

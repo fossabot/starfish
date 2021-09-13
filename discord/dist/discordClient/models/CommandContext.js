@@ -10,12 +10,29 @@ const resolveOrCreateChannel_1 = __importDefault(require("../actions/resolveOrCr
 const GameChannel_1 = require("./GameChannel");
 /** a user-given command extracted from a message. */
 class CommandContext {
+    /** command name in all lowercase. */
+    commandName;
+    correctPrefix;
+    /** arguments (pre-split by space). */
+    args;
+    /** arguments not split by space. */
+    rawArgs;
+    /** original message the command was extracted from. */
+    initialMessage;
+    author;
+    guildMember;
+    nickname;
+    commandPrefix;
+    dm;
+    isServerAdmin;
+    isGameAdmin;
+    guild;
+    ship = null;
+    crewMember = null;
+    isCaptain = false;
+    matchedCommands = [];
+    channels = {};
     constructor(message, prefix) {
-        this.ship = null;
-        this.crewMember = null;
-        this.isCaptain = false;
-        this.matchedCommands = [];
-        this.channels = {};
         this.commandPrefix = prefix;
         const splitMessage = message.content
             .slice(prefix.length)
@@ -32,7 +49,7 @@ class CommandContext {
         this.nickname =
             this.guildMember?.nickname || this.author.username;
         this.guild = message.guild;
-        this.dm = message.channel.type === `dm`;
+        this.dm = message.channel.type === `DM`;
         this.isServerAdmin =
             message.guild?.members.cache
                 .find((m) => m.id === message.author.id)
@@ -48,14 +65,16 @@ class CommandContext {
         if (this.guild) {
             channel =
                 this.channels[channelType] ||
-                    (await resolveOrCreateChannel_1.default({
+                    (await (0, resolveOrCreateChannel_1.default)({
                         type: channelType,
                         guild: this.guild,
                     }));
         }
         // otherwise send back to the channel we got the message in in the first place
         if (!channel &&
-            !(this.initialMessage.channel instanceof discord_js_1.NewsChannel))
+            !(this.initialMessage.channel instanceof discord_js_1.NewsChannel) &&
+            !this.initialMessage.channel.partial &&
+            this.initialMessage.channel.type === `GUILD_TEXT`)
             channel = new GameChannel_1.GameChannel(null, this.initialMessage.channel);
         // send
         if (channel) {
@@ -64,7 +83,9 @@ class CommandContext {
         }
     }
     async reply(message) {
-        if (this.initialMessage.channel instanceof discord_js_1.NewsChannel)
+        if (this.initialMessage.channel instanceof discord_js_1.NewsChannel ||
+            this.initialMessage.channel.partial ||
+            this.initialMessage.channel.type !== `GUILD_TEXT`)
             return;
         let channel = new GameChannel_1.GameChannel(null, this.initialMessage.channel);
         // send

@@ -16,7 +16,9 @@ export default async function removeRole(
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
-  const existingRoles = await guild.roles.cache.array()
+  const existingRoles = [
+    ...(await guild.roles.cache).values(),
+  ]
 
   const existing = existingRoles.find(
     (c) => c.name === roleName,

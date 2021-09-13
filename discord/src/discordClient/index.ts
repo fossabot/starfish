@@ -1,5 +1,5 @@
 import c from '../../../common/dist'
-import * as Discord from 'discord.js'
+import Discord from 'discord.js'
 import * as fs from 'fs'
 let discordToken
 try {
@@ -15,14 +15,33 @@ discordToken = discordToken?.replace(/\n/g, ``)
 import { CommandHandler } from './CommandHandler'
 
 export const client = new Discord.Client({
-  restTimeOffset: 0,
-  messageCacheMaxSize: 2,
-  messageCacheLifetime: 30,
-  messageSweepInterval: 60,
+  makeCache: Discord.Options.cacheWithLimits({
+    MessageManager: 0,
+    GuildMemberManager: Infinity, // guild.members
+    ThreadManager: 0, // channel.threads
+    ThreadMemberManager: 0, // threadchannel.members
+    UserManager: {
+      maxSize: 0,
+      keepOverLimit: (value, key, collection) =>
+        value.id === client.user?.id,
+    }, // client.users
+    ApplicationCommandManager: 0, // guild.commands
+    BaseGuildEmojiManager: 0, // guild.emojis
+    GuildBanManager: 0, // guild.bans
+    GuildInviteManager: 0, // guild.invites
+    GuildStickerManager: 0, // guild.stickers
+    ReactionManager: 0, // message.reactions
+    ReactionUserManager: 0, // reaction.users
+    StageInstanceManager: 0, // guild.stageInstances
+    VoiceStateManager: 0, // guild.voiceStates
+  }),
+  intents: [
+    Discord.Intents.FLAGS.GUILDS,
+    Discord.Intents.FLAGS.GUILD_MESSAGES,
+    Discord.Intents.FLAGS.GUILD_MEMBERS,
+    Discord.Intents.FLAGS.DIRECT_MESSAGES,
+  ],
 })
-
-import disbut from 'discord-buttons'
-disbut(client)
 
 const commandHandler = new CommandHandler(`.`)
 
@@ -60,7 +79,7 @@ client.on(`error`, (e) => {
   c.log(`red`, `Discord.js error:`, e.message)
   didError = e.message
 })
-client.on(`message`, async (msg) => {
+client.on(`messageCreate`, async (msg) => {
   if (!msg.author || msg.author.bot) return
   commandHandler.handleMessage(msg)
 })
@@ -78,7 +97,7 @@ client.on(`raw`, async (event) => {
   rawWatchers.forEach((handler: Function) => handler(event))
 })
 client.on(`ready`, async () => {
-  const guilds = await client.guilds.cache.array()
+  const guilds = [...(await client.guilds.cache).values()]
   c.log(
     `green`,
     `Logged in as ${client.user?.tag} in:

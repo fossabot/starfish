@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HelpCommand = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class HelpCommand {
+    commandsToList = [];
+    commandNames = [`help`, `h`];
     constructor(commands) {
-        this.commandsToList = [];
-        this.commandNames = [`help`, `h`];
         this.commandsToList = [...commands];
         this.commandsToList.push(this);
     }

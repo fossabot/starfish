@@ -15,7 +15,7 @@ export class GameChannel {
     this.channel = channel
   }
 
-  async send(message: string | Discord.MessageEmbed) {
+  async send(message: string | Discord.MessageOptions) {
     return await this.channel.send(message).catch(c.log)
   }
 
