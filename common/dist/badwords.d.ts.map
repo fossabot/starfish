@@ -1,0 +1,1 @@
+{"version":3,"file":"badwords.d.ts","sourceRoot":"","sources":["../src/badwords.ts"],"names":[],"mappings":"AAAA,qBAAa,cAAc;IACzB,IAAI,WAAY;IAChB,UAAU,SAAO;IACjB,WAAW,SAAM;IACjB,KAAK,SAAyB;IAC9B,YAAY,SAAQ;IAEpB,SAAS,CAAC,MAAM,EAAE,MAAM;IAYxB,WAAW,CAAC,MAAM,EAAE,MAAM;IAM1B,KAAK,CAAC,MAAM,EAAE,MAAM;CAUrB"}
