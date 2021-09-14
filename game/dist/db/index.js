@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -31,7 +31,7 @@ const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
 const planet = __importStar(require("./models/planet"));
 const zone = __importStar(require("./models/zone"));
-dotenv_1.config();
+(0, dotenv_1.config)();
 const dist_1 = __importDefault(require("../../../common/dist"));
 const mongoose = require(`mongoose`);
 exports.db = {
@@ -64,8 +64,9 @@ catch (e) {
 }
 // c.log({ mongoUsername, mongoPassword })
 const toRun = [];
-exports.isReady = () => ready;
-exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongoUsername, password = mongoPassword, }) => {
+const isReady = () => ready;
+exports.isReady = isReady;
+const init = ({ hostname = (0, is_docker_1.default)() ? `mongodb` : `localhost`, port = 27017, dbName = `starfish`, username = mongoUsername, password = mongoPassword, }) => {
     return new Promise(async (resolve) => {
         if (ready)
             resolve();
@@ -97,10 +98,12 @@ exports.init = ({ hostname = is_docker_1.default() ? `mongodb` : `localhost`, po
         }
     });
 };
-exports.runOnReady = (f) => {
+exports.init = init;
+const runOnReady = (f) => {
     if (ready)
         f();
     else
         toRun.push(f);
 };
+exports.runOnReady = runOnReady;
 //# sourceMappingURL=index.js.map

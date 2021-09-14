@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Armor = void 0;
 const Item_1 = require("./Item");
 class Armor extends Item_1.Item {
+    id;
+    damageReduction;
     constructor(data, ship, props) {
         super(data, ship, props);
         this.id = data.id;

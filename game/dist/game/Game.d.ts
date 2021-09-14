@@ -11,7 +11,7 @@ import { BasicPlanet } from './classes/Planet/BasicPlanet';
 import { MiningPlanet } from './classes/Planet/MiningPlanet';
 export declare class Game {
     static saveTimeInterval: number;
-    readonly startTime: Date;
+    readonly startTime: number;
     readonly ships: Ship[];
     readonly planets: Planet[];
     readonly caches: Cache[];

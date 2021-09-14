@@ -7,10 +7,17 @@ exports.Zone = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const Stubbable_1 = require("./Stubbable");
 class Zone extends Stubbable_1.Stubbable {
+    type = `zone`;
+    id;
+    name;
+    location;
+    radius;
+    game;
+    effects;
+    color;
     // todo zones expire after a certain time
     constructor({ location, radius, id, color, name, effects, }, game) {
         super();
-        this.type = `zone`;
         this.game = game;
         this.location = location;
         this.radius = radius;

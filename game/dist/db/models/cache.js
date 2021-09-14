@@ -16,7 +16,7 @@ const cacheSchemaFields = {
     droppedBy: String,
 };
 const cacheSchema = new mongoose_1.Schema(cacheSchemaFields);
-const DBCache = mongoose_1.model(`DBCache`, cacheSchema);
+const DBCache = (0, mongoose_1.model)(`DBCache`, cacheSchema);
 async function addOrUpdateInDb(data) {
     const toSave = new DBCache(data)._doc;
     delete toSave._id;

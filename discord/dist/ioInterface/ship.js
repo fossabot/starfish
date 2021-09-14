@@ -35,6 +35,7 @@ async function kickMember(shipId, crewMemberId) {
 }
 exports.kickMember = kickMember;
 async function rename(shipId, newName) {
+    dist_1.default.trace();
     return new Promise(async (resolve) => {
         await index_1.io.emit(`ship:rename`, shipId, newName, (res) => {
             if (`error` in res)

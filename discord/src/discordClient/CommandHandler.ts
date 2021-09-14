@@ -165,19 +165,20 @@ export class CommandHandler {
         `${c.gameName}`,
       )
 
-    // ----- update guild name if necessary -----
-    if (context.ship && context.guild) {
-      if (
-        c
-          .sanitize(context.guild.name)
-          .result.substring(0, c.maxNameLength) !==
-        context.ship.name
-      )
-        ioInterface.ship.rename(
-          context.ship.id,
-          context.guild.name,
-        )
-    }
+    // * removed because it would reset ship names willy-nilly, and they can set it manually
+    // // ----- update guild name if necessary -----
+    // if (context.ship && context.guild) {
+    //   if (
+    //     c
+    //       .sanitize(context.guild.name)
+    //       .result.substring(0, c.maxNameLength) !==
+    //     context.ship.name
+    //   )
+    //     ioInterface.ship.rename(
+    //       context.ship.id,
+    //       context.guild.name,
+    //     )
+    // }
 
     // ----- check for crew member still in guild, and update name if necessary -----
     if (context.crewMember) {

@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Stubbable = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 class Stubbable {
-    constructor() {
-        this._stub = null;
-    }
+    _stub = null;
     stubify(disallowedPropNames = [], disallowRecursion = false) {
         if (!this._stub)
             this._stub = dist_1.default.stubify(this, disallowedPropNames, disallowRecursion);

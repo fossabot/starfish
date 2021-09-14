@@ -940,13 +940,16 @@ export class Tutorial {
     this.ship.tutorial = undefined
     this.ship.toUpdate.tutorial = false
 
-    // reset cash
+    // reset cash and charge
     this.ship.commonCredits = 0
     this.ship.toUpdate.commonCredits =
       this.ship.commonCredits
     this.ship.crewMembers.forEach((cm) => {
       cm.credits = 1000
       cm.toUpdate.credits = cm.credits
+
+      cm.cockpitCharge = 1
+      cm.toUpdate.cockpitCharge = cm.cockpitCharge
     })
 
     this.ship.recalculateShownPanels()

@@ -53,6 +53,7 @@ export async function rename(
   shipId: string,
   newName: string,
 ): Promise<string> {
+  c.trace()
   return new Promise(async (resolve) => {
     await io.emit(`ship:rename`, shipId, newName, (res) => {
       if (`error` in res) return resolve(res.error)
@@ -118,7 +119,6 @@ export async function destroy(
   id: string,
 ): Promise<string | null> {
   if (!(await connected())) return null
-
   const res: string | null = await new Promise(
     (resolve) => {
       io.emit(

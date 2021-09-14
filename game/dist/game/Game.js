@@ -18,23 +18,18 @@ const zones_1 = require("./presets/zones");
 const BasicPlanet_1 = require("./classes/Planet/BasicPlanet");
 const MiningPlanet_1 = require("./classes/Planet/MiningPlanet");
 class Game {
+    static saveTimeInterval = 1 * 60 * 1000;
+    startTime;
+    ships = [];
+    planets = [];
+    caches = [];
+    zones = [];
+    factions = [];
+    species = [];
+    attackRemnants = [];
+    factionRankings = [];
     constructor() {
-        this.ships = [];
-        this.planets = [];
-        this.caches = [];
-        this.zones = [];
-        this.factions = [];
-        this.species = [];
-        this.attackRemnants = [];
-        this.factionRankings = [];
-        // ----- game loop -----
-        this.tickCount = 0;
-        this.lastTickTime = Date.now();
-        this.lastTickExpectedTime = 0;
-        this.averageTickLag = 0;
-        this.averageWorstShipTickLag = 0;
-        this.averageTickTime = 0;
-        this.startTime = new Date();
+        this.startTime = Date.now();
         Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
         Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
         dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(dist_1.default.factions).length} factions.`);
@@ -67,6 +62,13 @@ class Game {
             this.removeShip(inactiveShip);
         this.recalculateFactionRankings();
     }
+    // ----- game loop -----
+    tickCount = 0;
+    lastTickTime = Date.now();
+    lastTickExpectedTime = 0;
+    averageTickLag = 0;
+    averageWorstShipTickLag = 0;
+    averageTickTime = 0;
     tick() {
         const startTime = Date.now();
         this.tickCount++;
@@ -218,7 +220,7 @@ class Game {
             // ----- basic planet -----
             if (selection === `basic`) {
                 const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
-                const p = planets_1.generateBasicPlanet(this, factionThatNeedsAHomeworld?.id);
+                const p = (0, planets_1.generateBasicPlanet)(this, factionThatNeedsAHomeworld?.id);
                 if (!p)
                     continue;
                 const planet = await this.addBasicPlanet(p);
@@ -233,7 +235,7 @@ class Game {
                 // c.log(this.planets.map((p) => p.priceFluctuator))
             }
             else if (selection === `mining`) {
-                const p = planets_1.generateMiningPlanet(this);
+                const p = (0, planets_1.generateMiningPlanet)(this);
                 if (!p)
                     continue;
                 const planet = await this.addMiningPlanet(p);
@@ -243,7 +245,7 @@ class Game {
     }
     spawnNewZones() {
         while (this.zones.length < this.gameSoftArea * 1.25) {
-            const z = zones_1.generateZoneData(this);
+            const z = (0, zones_1.generateZoneData)(this);
             if (!z)
                 return;
             const zone = this.addZone(z);
@@ -582,5 +584,4 @@ class Game {
     }
 }
 exports.Game = Game;
-Game.saveTimeInterval = 1 * 60 * 1000;
 //# sourceMappingURL=Game.js.map

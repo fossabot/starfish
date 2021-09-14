@@ -328,6 +328,7 @@ const planetNames = [
     `Olympus`,
     `Irra`,
     `Ungol`,
+    // todo MORE
 ];
 const planetNamePrefixes = [`New`, `Old`];
 const planetNameSuffixes = [

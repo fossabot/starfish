@@ -29,6 +29,7 @@ services:
     environment:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
       MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
+      ADMIN_KEYS_FILE: /run/secrets/admin_keys
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
     depends_on:
@@ -36,6 +37,7 @@ services:
     secrets:
       - mongodb_username
       - mongodb_password
+      - admin_keys
 
   frontend:
     image: 'starfishgame/starfish-frontend:latest'
@@ -82,6 +84,8 @@ secrets:
     file: frontend/secrets/google_client_email.txt
   google_private_key:
     file: frontend/secrets/google_private_key.txt
+  admin_keys:
+    file: game/secrets/admin_keys.txt
 
 volumes:
   db_data:

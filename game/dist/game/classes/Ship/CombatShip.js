@@ -8,9 +8,11 @@ const dist_1 = __importDefault(require("../../../../../common/dist"));
 const db_1 = require("../../../db");
 const Ship_1 = require("./Ship");
 class CombatShip extends Ship_1.Ship {
+    static percentOfCreditsLostOnDeath = 0.5;
+    static percentOfCreditsDroppedOnDeath = 0.25;
+    attackable = true;
     constructor(props, game) {
         super(props, game);
-        this.attackable = true;
         this.species.passives.forEach((p) => this.applyPassive(p));
         this.updateAttackRadius();
     }
@@ -610,6 +612,4 @@ class CombatShip extends Ship_1.Ship {
     }
 }
 exports.CombatShip = CombatShip;
-CombatShip.percentOfCreditsLostOnDeath = 0.5;
-CombatShip.percentOfCreditsDroppedOnDeath = 0.25;
 //# sourceMappingURL=CombatShip.js.map

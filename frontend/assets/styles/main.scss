@@ -458,6 +458,15 @@ ul {
   opacity: 0;
 }
 
+.fadeslow-enter-active,
+.fadeslow-leave-active {
+  transition: opacity 2s;
+}
+.fadeslow-enter,
+.fadeslow-leave-to {
+  opacity: 0;
+}
+
 .fadein-enter-active {
   transition: opacity 0.25s;
 }

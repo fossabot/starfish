@@ -29,6 +29,7 @@ function default_1(socket) {
             data.name =
                 dist_1.default.sanitize(data.name.substring(0, dist_1.default.maxNameLength))
                     .result || `ship`;
+            dist_1.default.log(`Ship ${data.name} has joined the game.`);
             data.tutorial = { step: -1 };
             const ship = __1.game.addHumanShip({
                 ...data,

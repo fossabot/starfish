@@ -7,9 +7,12 @@ exports.Communicator = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Item_1 = require("./Item");
 class Communicator extends Item_1.Item {
+    id;
+    range;
+    antiGarble;
+    lastUse = 0;
     constructor(data, ship, props) {
         super(data, ship, props);
-        this.lastUse = 0;
         this.id = data.id;
         this.range = data.range;
         this.antiGarble = data.antiGarble;

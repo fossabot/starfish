@@ -293,6 +293,7 @@ function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
         }
     }
     profiler.step(`stringify and parse`);
+    // c.log(Object.keys(gettersIncluded))
     const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
         if ([`toUpdate`, `_stub`, `_id`].includes(key))
             return undefined;

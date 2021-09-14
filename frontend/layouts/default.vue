@@ -1,6 +1,7 @@
 <template>
   <div>
     <client-only>
+      <DynamicBackground />
       <Notifications />
       <Modal />
       <InfoTooltip />
@@ -13,7 +14,7 @@
 
 <script lang="js">
 import Vue from 'vue'
-import c from '../../common/src'
+import c from '../../common/dist'
 import * as storage from '../assets/scripts/storage'
 
 const debounce = (fn, time = 1000) => {

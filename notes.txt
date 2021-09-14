@@ -1,7 +1,7 @@
 
 
 
-
+starting as seals, sea turles, whales and skipping tutorial crashes the game
 
 chassis have slots for different rooms
 	with arrangements

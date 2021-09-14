@@ -13,51 +13,61 @@ const Armor_1 = require("../Item/Armor");
 const loadouts_1 = __importDefault(require("../../presets/loadouts"));
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
+    static maxPreviousLocations = 30;
+    type = `ship`;
+    name;
+    planet = false;
+    faction;
+    species;
+    game;
+    radii = {
+        sight: 0,
+        broadcast: 0,
+        scan: 0,
+        attack: 0,
+        game: 0,
+    };
+    onlyVisibleToShipId;
+    ai;
+    human;
+    crewMembers = [];
+    tutorial;
+    toUpdate = {};
+    visible = {
+        ships: [],
+        planets: [],
+        caches: [],
+        attackRemnants: [],
+        zones: [],
+    };
+    seenPlanets = [];
+    seenLandmarks = [];
+    chassis;
+    items = [];
+    previousLocations = [];
+    id = `${Math.random()}`.substring(2); // re-set in subclasses
+    location = [0, 0];
+    velocity = [0, 0];
+    speed = 0; // just for frontend reference
+    direction = 0; // just for frontend reference
+    // targetLocation: CoordinatePair = [0, 0]
+    tagline = null;
+    availableTaglines = [];
+    headerBackground = null;
+    availableHeaderBackgrounds = [`Default`];
+    passives = [];
+    slots = 1;
+    attackable = false;
+    _hp = 10; // set in hp setter below
+    _maxHp = 10;
+    dead = false; // set in hp setter below
+    obeysGravity = true;
+    mass = 10000;
+    stats = [];
     constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
         super();
-        this.type = `ship`;
-        this.name = `ship`;
-        this.planet = false;
-        this.radii = {
-            sight: 0,
-            broadcast: 0,
-            scan: 0,
-            attack: 0,
-            game: 0,
-        };
-        this.crewMembers = [];
-        this.toUpdate = {};
-        this.visible = {
-            ships: [],
-            planets: [],
-            caches: [],
-            attackRemnants: [],
-            zones: [],
-        };
-        this.seenPlanets = [];
-        this.seenLandmarks = [];
-        this.items = [];
-        this.previousLocations = [];
-        this.id = `${Math.random()}`.substring(2); // re-set in subclasses
-        this.location = [0, 0];
-        this.velocity = [0, 0];
-        this.speed = 0; // just for frontend reference
-        this.direction = 0; // just for frontend reference
-        // targetLocation: CoordinatePair = [0, 0]
-        this.tagline = null;
-        this.availableTaglines = [];
-        this.headerBackground = null;
-        this.availableHeaderBackgrounds = [`Default`];
-        this.passives = [];
-        this.slots = 1;
-        this.attackable = false;
-        this._hp = 10; // set in hp setter below
-        this._maxHp = 10;
-        this.dead = false; // set in hp setter below
-        this.obeysGravity = true;
-        this.mass = 10000;
-        this.stats = [];
         this.game = game;
+        this.name = name;
         this.rename(name);
         this.ai = true;
         this.human = false;
@@ -134,11 +144,17 @@ class Ship extends Stubbable_1.Stubbable {
         // c.log(`tick`, this.name)
     }
     rename(newName) {
+        const prevName = this.name;
         this.name = dist_1.default
             .sanitize(newName)
             .result.substring(0, dist_1.default.maxNameLength);
         if (this.name.replace(/\s/g, ``).length === 0)
             this.name = `ship`;
+        if (this.name === prevName)
+            return;
+        if (this.name) {
+            dist_1.default.log(prevName, newName, this.name);
+        }
         this.toUpdate.name = this.name;
         this.logEntry([
             `The ship has been renamed to`,
@@ -475,5 +491,4 @@ class Ship extends Stubbable_1.Stubbable {
     removePassive(p) { }
 }
 exports.Ship = Ship;
-Ship.maxPreviousLocations = 30;
 //# sourceMappingURL=Ship.js.map

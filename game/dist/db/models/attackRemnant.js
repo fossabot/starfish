@@ -29,7 +29,7 @@ const attackRemnantSchemaFields = {
     onlyVisibleToShipId: { type: String },
 };
 const attackRemnantSchema = new mongoose_1.Schema(attackRemnantSchemaFields);
-const DBAttackRemnant = mongoose_1.model(`DBAttackRemnant`, attackRemnantSchema);
+const DBAttackRemnant = (0, mongoose_1.model)(`DBAttackRemnant`, attackRemnantSchema);
 async function addOrUpdateInDb(data) {
     const toSave = new DBAttackRemnant(data)._doc;
     delete toSave._id;

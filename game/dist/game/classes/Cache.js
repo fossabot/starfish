@@ -3,11 +3,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cache = void 0;
 const Stubbable_1 = require("./Stubbable");
 class Cache extends Stubbable_1.Stubbable {
+    static rePickUpTime = 1000 * 60 * 5; // 5 minutes
+    type = `cache`;
+    id;
+    contents;
+    location;
+    message = ``;
+    time = Date.now();
+    game;
+    droppedBy;
+    onlyVisibleToShipId;
     constructor({ contents, location, message, time, id, droppedBy, onlyVisibleToShipId, }, game) {
         super();
-        this.type = `cache`;
-        this.message = ``;
-        this.time = Date.now();
         this.game = game;
         this.contents = contents;
         this.location = location;
@@ -31,5 +38,4 @@ class Cache extends Stubbable_1.Stubbable {
     }
 }
 exports.Cache = Cache;
-Cache.rePickUpTime = 1000 * 60 * 5; // 5 minutes
 //# sourceMappingURL=Cache.js.map

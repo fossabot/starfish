@@ -10,17 +10,21 @@ class JoinCommand {
     async run(context) {
         if (!context.ship || !context.guild)
             return;
+        // add crew member
         const addedCrewMember = await (0, crew_1.add)(context.ship.id, {
             name: context.nickname,
             id: context.initialMessage.author.id,
         });
-        // add crew member
+        // fail state
         if (!addedCrewMember ||
             typeof addedCrewMember === `string`) {
             await context.initialMessage.channel.send(addedCrewMember ||
                 `Failed to add you as a member of the crew.`);
             return;
         }
+        // create crew chat channel on second member
+        if (context.ship.crewMembers?.length === 1)
+            await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
         // const crewRole = await resolveOrCreateRole({
         //   type: `crew`,
         //   guild: context.guild,
@@ -34,8 +38,6 @@ class JoinCommand {
         //     .add(crewRole)
         //     .catch(() => {})
         // }
-        if (context.ship.crewMembers?.length === 1)
-            await context.sendToGuild(`Use this channel to chat with your crewmates.`, `chat`);
     }
     hasPermissionToRun(commandContext) {
         if (!commandContext.ship)

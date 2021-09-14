@@ -1,6 +1,5 @@
 <template>
   <div class="pagecontainer">
-    <div class="bg"></div>
     <FadeIn :off="ready">
       <div class="flexcenter flexcolumn">
         <img
@@ -8,7 +7,6 @@
           class="fadeinlogo marbotsmall"
         /></div
     ></FadeIn>
-    <!-- <Starfield class="starfield" /> -->
 
     <div
       id="masonrycontainer"
@@ -200,27 +198,6 @@ export default Vue.extend({
   & > * {
     max-width: 100%;
   }
-}
-
-.bg {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-image: url('/images/pageBackgrounds/bg2.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  // filter: blur(0.1vw);
-  opacity: 0.2;
-}
-.starfield {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
 }
 
 .container {

@@ -83,7 +83,7 @@ const planetSchemaFields = {
     },
 };
 const planetSchema = new mongoose_1.Schema(planetSchemaFields);
-const DBPlanet = mongoose_1.model(`DBPlanet`, planetSchema);
+const DBPlanet = (0, mongoose_1.model)(`DBPlanet`, planetSchema);
 async function addOrUpdateInDb(data) {
     const stub = dist_1.default.stubify(data);
     const toSave = new DBPlanet(stub)._doc;

@@ -1,70 +1,116 @@
 <template>
   <div class="container">
-    <h1>Admin</h1>
-    <nuxt-link to="/s">Ship Page</nuxt-link>
-    <br />
-    <nuxt-link to="/login" v-if="!userId"
-      >Login Page</nuxt-link
-    >
-    <div class="flexwrap buttonlist martop">
-      <button @click="save">Save</button>
-      <button @click="resetAllPlanets">
-        Reset All Planets
-      </button>
-      <button @click="resetAllCaches">
-        Reset All Caches
-      </button>
-      <button @click="resetAllZones">
-        Reset All Zones
-      </button>
-      <button @click="resetAllShips">
-        Reset All Ships
-      </button>
-      <button @click="resetAllAIShips">
-        Reset All AI Ships
-      </button>
-      <button @click="resetAllAttackRemnants">
-        Reset All Attack Remnants
-      </button>
-    </div>
+    <template v-if="show">
+      <h1>Admin</h1>
+      <nuxt-link to="/s">Ship Page</nuxt-link>
+      <br />
+      <nuxt-link to="/login" v-if="!userId"
+        >Login Page</nuxt-link
+      >
+      <div class="flexwrap buttonlist martop">
+        <button @click="save">Save</button>
+        <button @click="resetAllPlanets">
+          Reset All Planets
+        </button>
+        <button @click="resetAllCaches">
+          Reset All Caches
+        </button>
+        <button @click="resetAllZones">
+          Reset All Zones
+        </button>
+        <button @click="resetAllShips">
+          Reset All Ships
+        </button>
+        <button @click="resetAllAIShips">
+          Reset All AI Ships
+        </button>
+        <button @click="resetAllAttackRemnants">
+          Reset All Attack Remnants
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import c from '../../common/dist'
 
 export default Vue.extend({
   layout: 'withnavbar',
   data() {
-    return {}
+    return {
+      show: false,
+      password: '',
+    }
   },
   computed: {
     ...mapState(['userId']),
   },
   watch: {},
-  mounted() {},
+  async mounted() {
+    this.password = prompt('password')
+    if (!this.password) this.$router.replace('/')
+    this.$socket.emit(
+      'game:adminCheck',
+      this.$store.state.userId,
+      this.password,
+      (isAdmin) => {
+        if (isAdmin) this.show = true
+        else this.$router.replace('/')
+      },
+    )
+  },
   methods: {
     save() {
-      this.$socket.emit('game:save')
+      this.$socket.emit(
+        'game:save',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllPlanets() {
-      this.$socket.emit('game:resetAllPlanets')
+      this.$socket.emit(
+        'game:resetAllPlanets',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllCaches() {
-      this.$socket.emit('game:resetAllCaches')
+      this.$socket.emit(
+        'game:resetAllCaches',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllZones() {
-      this.$socket.emit('game:resetAllZones')
+      this.$socket.emit(
+        'game:resetAllZones',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllShips() {
-      this.$socket.emit('game:resetAllShips')
+      this.$socket.emit(
+        'game:resetAllShips',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllAIShips() {
-      this.$socket.emit('game:resetAllAIShips')
+      this.$socket.emit(
+        'game:resetAllAIShips',
+        this.$store.state.userId,
+        this.password,
+      )
     },
     resetAllAttackRemnants() {
-      this.$socket.emit('game:resetAllAttackRemnants')
+      this.$socket.emit(
+        'game:resetAllAttackRemnants',
+        this.$store.state.userId,
+        this.password,
+      )
     },
   },
 })

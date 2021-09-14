@@ -416,6 +416,7 @@ function stubify<BaseType, StubType extends BaseStub>(
     }
   }
   profiler.step(`stringify and parse`)
+  // c.log(Object.keys(gettersIncluded))
   const circularReferencesRemoved = JSON.parse(
     JSON.stringify(
       gettersIncluded,

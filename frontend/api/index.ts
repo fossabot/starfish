@@ -1,4 +1,4 @@
-import c from '../../common/src'
+import c from '../../common/dist'
 import * as dotenv from 'dotenv'
 dotenv.config({ path: `../.env` })
 
