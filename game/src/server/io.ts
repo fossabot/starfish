@@ -36,12 +36,12 @@ if (process.env.NODE_ENV !== `production`) {
         `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
       ),
     ),
-    ca: fs.readFileSync(
+    ca: [fs.readFileSync(
       path.resolve(
         `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
       ),
-    ),
-    requestCert: true
+    )],
+    // requestCert: true
   }
 }
 
