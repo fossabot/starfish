@@ -11,6 +11,8 @@ import itemEvents from './events/items'
 import adminEvents from './events/admin'
 import { createServer as createHTTPSServer } from 'https'
 
+require(`events`).captureRejections = true
+
 let serverConfig = {}
 if (process.env.NODE_ENV !== `production`) {
   serverConfig = {
@@ -57,6 +59,9 @@ const io = new socketServer<IOClientEvents, IOServerEvents>(
 io.on(
   `connection`,
   (socket: Socket<IOClientEvents, IOServerEvents>) => {
+    socket[Symbol.for(`nodejs.rejection`)] = (err) => {
+      socket.emit(`disconnect`)
+    }
     frontendEvents(socket)
     discordEvents(socket)
     generalEvents(socket)
@@ -64,6 +69,7 @@ io.on(
     itemEvents(socket)
     adminEvents(socket)
   },
+  
 )
 
 httpsServer.listen(4200)
