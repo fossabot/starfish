@@ -1,1 +1,0 @@
-{"version":3,"file":"baseStatData.d.ts","sourceRoot":"","sources":["../src/baseStatData.ts"],"names":[],"mappings":"AAAA,QAAA,MAAM,eAAe,EAAE;KACpB,GAAG,IAAI,qBAAqB,GAAG;QAC9B,QAAQ,EAAE,CAAC,CAAC,EAAE,iBAAiB,KAAK,MAAM,CAAA;KAC3C;CA2FF,CAAA;AACD,eAAe,eAAe,CAAA"}

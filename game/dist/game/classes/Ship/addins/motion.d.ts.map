@@ -1,1 +1,0 @@
-{"version":3,"file":"motion.d.ts","sourceRoot":"","sources":["../../../../../src/game/classes/Ship/addins/motion.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,IAAI,EAAE,MAAM,SAAS,CAAA;AAE9B,wBAAgB,mBAAmB,CACjC,IAAI,EAAE,IAAI,EACV,sBAAsB,EAAE,cAAc,QAwBvC;AAED,wBAAgB,IAAI,CAAC,IAAI,EAAE,IAAI,EAAE,MAAM,EAAE,cAAc,WAOtD;AACD,wBAAgB,kBAAkB,CAAC,IAAI,EAAE,IAAI,GAAG,IAAI,CAGnD"}
