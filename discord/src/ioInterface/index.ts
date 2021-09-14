@@ -16,8 +16,8 @@ export default {
 
 // connect to server
 const client = socketIo(
-  `https://${isDocker() ? `www.starfish.cool` : `localhost`}:4200`,
-  { secure: true, rejectUnauthorized: false },
+  `https://${isDocker() ? `game` : `localhost`}:4200`,
+  { secure: true },
 )
 
 export const io: Socket<IOServerEvents, IOClientEvents> =
@@ -86,7 +86,6 @@ export function connected(): Promise<boolean> {
     while (timeout < 100) {
       // 10 seconds
       await c.sleep(100)
-      c.log(`Trying to connect to game server...`)
       if (io.connected) {
         resolve(true)
         return
