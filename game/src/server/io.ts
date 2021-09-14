@@ -49,6 +49,7 @@ const io = new socketServer<IOClientEvents, IOServerEvents>(
   {
     cors: {
       origin: `*`,
+      methods: [`GET`, `POST`]
     },
   },
 )
@@ -67,5 +68,5 @@ io.on(
 
 httpsServer.listen(4200)
 c.log(`green`, `io server listening on port 4200`)
-
+c.log({ httpsServer })
 export default io
