@@ -12,19 +12,31 @@ jobs:
        include:
          - dockerfile: db/Dockerfile-prod
            image: "starfish-db"
+           folder: "db"
          - dockerfile: game/Dockerfile-prod
            image: "starfish-game"
+           folder: "game"
          - dockerfile: discord/Dockerfile-prod
            image: "starfish-discord"
+           folder: "discord"
          - dockerfile: frontend/Dockerfile-prod
            image: "starfish-frontend"
+           folder: "frontend"
          - dockerfile: nginx/Dockerfile-prod
            image: "starfish-nginx"
+           folder: "nginx"
 
     steps:
     
       - name: Check Out Repo 
         uses: actions/checkout@v2
+      
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+              - '${{matrix.folder}}/**'
       
       - name: Extract branch name
         shell: bash
@@ -42,6 +54,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker images and push to Dockerhub
+        if: steps.changes.outputs.src == 'true'
         uses: docker/build-push-action@v2
         with:
           file: ${{ matrix.dockerfile }}
