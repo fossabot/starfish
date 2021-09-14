@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 
 const socketAddress =
   process.env.NODE_ENV === `development`
-    ? `http://localhost:4200`
+    ? `https://localhost:4200`
     : `https://www.starfish.cool:4200`
 // c.log(
 //   `initializing frontend socket connection at`,

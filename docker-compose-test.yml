@@ -57,14 +57,23 @@ services:
       - ./discord/dist:/usr/app/discord/dist
       - ./discord/.env:/usr/app/discord/.env
     command: 'npm run dev'
+    environment:
+      BOT_ID: 886820342016925776
+      BOT_ID_FILE: /run/secrets/bot_id
+      DISCORD_TOKEN_FILE: /run/secrets/discord_token
     secrets:
       - discord_token
       - bot_id
 
   nginx:
     image: 'xmadsen/starfish-nginx:latest'
+    volumes:
+      - ./ssl:/etc/nginx/self-signed-ssl
+      - ./nginx/sites-enabled/default-test:/etc/nginx/sites-enabled/default
     ports:
       - '80:80'
+      - '443:443'
+
 
 secrets:
   discord_token:
