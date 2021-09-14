@@ -25,7 +25,7 @@ try {
   adminKeys = JSON.parse(adminKeys)
 } catch (e) {
   adminKeys = false
-  c.log(`red`, `Error loading admin keys!`, e.message)
+  c.log(`red`, `Error loading admin keys!`, e)
 }
 
 function isAdmin(id, password) {
