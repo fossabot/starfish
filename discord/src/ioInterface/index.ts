@@ -17,7 +17,7 @@ export default {
 // connect to server
 const client = socketIo(
   `https://${isDocker() ? `www.starfish.cool` : `localhost`}:4200`,
-  { secure: true, rejectUnauthorized: process.env.NODE_ENV === `production` },
+  { secure: true, rejectUnauthorized: false },
 )
 
 export const io: Socket<IOServerEvents, IOClientEvents> =
