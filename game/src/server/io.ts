@@ -22,6 +22,7 @@ if (process.env.NODE_ENV !== `production`) {
     ),
   }
 } else {
+  c.log(`green`, `Launching production server...`)
   serverConfig = {
     key: fs.readFileSync(
       path.resolve(
@@ -65,6 +66,6 @@ io.on(
 )
 
 httpsServer.listen(4200)
-c.log(`io server listening on port 4200`)
+c.log(`green`, `io server listening on port 4200`)
 
 export default io

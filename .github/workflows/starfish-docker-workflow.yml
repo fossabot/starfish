@@ -67,6 +67,7 @@ jobs:
               docker image pull starfishgame/starfish-$image:latest
             done;
             cd starfish;
+            git pull;
             docker-compose -f docker-compose-prod.yml restart
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}

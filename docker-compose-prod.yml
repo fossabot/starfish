@@ -21,7 +21,7 @@ services:
 
   game:
     image: 'starfishgame/starfish-game:latest'
-    user: 'node'
+    user: 'root'
     working_dir: /usr/app/game
     ports:
       - '4200:4200'
@@ -54,7 +54,7 @@ services:
     image: 'starfishgame/starfish-discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
-    command: 'npm run dev'
+    command: 'npm run prod'
     secrets:
       - discord_token
       - bot_id
