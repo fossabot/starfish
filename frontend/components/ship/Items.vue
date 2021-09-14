@@ -17,7 +17,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -36,7 +36,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -65,7 +65,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -84,7 +84,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -103,7 +103,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -122,7 +122,7 @@
           <span class="sub">{{
             c.capitalize(i.type)
           }}</span>
-          <div>
+          <div class="hpbar">
             <PillBar
               :mini="true"
               :value="i.repair * i.maxHp"
@@ -222,9 +222,14 @@ export default Vue.extend({
   grid-column: span 2;
 }
 .itemlist {
+  line-height: 1.1;
+
   & > * {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.6em;
   }
+}
+.hpbar {
+  margin-top: 0.2em;
 }
 
 .slots {

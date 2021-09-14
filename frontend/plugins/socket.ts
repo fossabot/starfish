@@ -1,4 +1,4 @@
-import c from '../../common/src'
+import c from '../../common/dist'
 import io from 'socket.io-client'
 
 const socketAddress =
@@ -9,7 +9,10 @@ const socketAddress =
 //   `initializing frontend socket connection at`,
 //   socketAddress,
 // )
-const socket = io(socketAddress, { secure: true, rejectUnauthorized: false })
+const socket = io(socketAddress, {
+  secure: true,
+  rejectUnauthorized: false,
+})
 
 // // test
 // socket.emit(`hello`)

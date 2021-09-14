@@ -43,7 +43,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../common/src'
+import c from '../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

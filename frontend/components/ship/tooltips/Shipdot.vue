@@ -252,9 +252,9 @@ export default Vue.extend({
     calc(-1 * var(--tooltip-pad-lr));
 }
 
-.panesection {
-  width: 230px;
-}
+// .panesection {
+//   width: 230px;
+// }
 
 .arrow {
   display: flex;

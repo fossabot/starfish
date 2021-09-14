@@ -1,4 +1,4 @@
-import c from '../common/src'
+import c from '../common/dist'
 export default {
   server: {
     port: 4300,
