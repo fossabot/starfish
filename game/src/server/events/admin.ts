@@ -15,7 +15,7 @@ import type { Ship } from '../../game/classes/Ship/Ship'
 let adminKeys: any
 try {
   adminKeys = fs
-    .readFileSync(`/run/secrets/admin_keys.txt`, `utf-8`)
+    .readFileSync(`/run/secrets/admin_keys`, `utf-8`)
     .trim()
 } catch (e) {
   adminKeys = process.env.ADMIN_KEYS as string
