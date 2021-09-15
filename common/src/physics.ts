@@ -43,22 +43,22 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   if (r === 0) return [0, 0]
 
-  const scalingFunction = (
-    rangeInMeters,
-    massProduct: number,
-  ) =>
-    0.0001 *
-    Math.sqrt(globals.gravitationalConstant * massProduct) *
-    (rangeInMeters /
-      (globals.gravityRange *
-        globals.kmPerAu *
-        globals.mPerKm))
-  const gravityForce = scalingFunction(r, m1 * m2)
+  // const scalingFunction = (
+  //   rangeInMeters,
+  //   massProduct: number,
+  // ) =>
+  //   0.0001 *
+  //   Math.sqrt(globals.gravitationalConstant * massProduct) *
+  //   (rangeInMeters /
+  //     (globals.gravityRange *
+  //       globals.kmPerAu *
+  //       globals.mPerKm))
+  // const gravityForce = scalingFunction(r, m1 * m2)
 
   // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
   // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
-  // const gravityForce =
-  // (-globals.gravitationalConstant * m1 * m2) / r ** 2
+  const gravityForce =
+  (-globals.gravitationalConstant * m1 * m2) / r
 
   const vectorToThisBody: CoordinatePair =
     getUnitVectorFromThatBodyToThisBody(thisBody, thatBody)

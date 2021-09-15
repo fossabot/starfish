@@ -76,12 +76,11 @@ jobs:
         uses: garygrossgarten/github-action-ssh@v0.6.4
         with:
           command: |
-            for image in db discord frontend game nginx; do
-              docker image pull starfishgame/starfish-$image:latest
-            done;
+
             cd starfish;
             git pull;
-            docker-compose -f docker-compose-prod.yml restart
+            docker-compose pull
+            docker-compose -f docker-compose-prod.yml up -d
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
