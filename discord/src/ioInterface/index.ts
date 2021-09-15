@@ -7,6 +7,7 @@ import isDocker from 'is-docker'
 
 import * as ship from './ship'
 import * as crew from './crew'
+import { isRegExp } from 'util/types'
 
 export default {
   connected,
@@ -15,16 +16,17 @@ export default {
 }
 
 // connect to server
-const client = socketIo(
-  `https://${isDocker() ? `game` : `localhost`}:4200`,
+const serverUrl = `https://${isDocker() ? `game` : `localhost`}:4200`
+
+const client = socketIo(serverUrl,
   { secure: true },
 )
-
+c.log(`Attempting to connect to game server at ${serverUrl}`)
 export const io: Socket<IOServerEvents, IOClientEvents> =
   client.connect()
 
 io.on(`connect`, () => {
-  c.log(`green`, `Connected to game server.`)
+  c.log(`green`, `Connected to game server at ${serverUrl}.`)
 })
 
 io.on(`disconnect`, () => {
