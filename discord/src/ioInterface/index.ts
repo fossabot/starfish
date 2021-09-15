@@ -16,7 +16,7 @@ export default {
 }
 
 // connect to server
-const serverUrl = `https://${isDocker() ? `game` : `localhost`}:4200`
+const serverUrl = `https://${isDocker() ? `www.starfish.cool` : `localhost`}:4200`
 
 const client = socketIo(serverUrl,
   { secure: true },
