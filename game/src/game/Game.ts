@@ -455,9 +455,10 @@ export class Game {
   }
 
   spawnNewAIs() {
+    const aiShipCoefficient = 5
     while (
       this.ships.length &&
-      this.aiShips.length < this.gameSoftArea * 1.45
+      this.aiShips.length < this.gameSoftArea * aiShipCoefficient
     ) {
       let radius = this.gameSoftRadius
       let spawnPoint: CoordinatePair | undefined
