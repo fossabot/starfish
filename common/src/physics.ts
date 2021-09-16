@@ -57,10 +57,10 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
   // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
-  // const gravityScaleFactor = 0.15
+  const gravityScaleFactor = 0.5
   // const gravityForce =
   // (-globals.gravitationalConstant * m1 * m2) / Math.abs(r) * gravityScaleFactor
-  const gravityForce = (-globals.gravitationalConstant * m1 * m2) / (r ** 2)
+  const gravityForce = (-globals.gravitationalConstant * m1 * m2) / (r ** 2) * gravityScaleFactor
 
 
   const vectorToThisBody: CoordinatePair =
