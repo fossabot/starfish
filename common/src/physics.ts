@@ -70,7 +70,6 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
       (i) => i * gravityForce,
     ) as CoordinatePair
 
-  // console.log(gravityForce, gravityForceVector)
   // if (gravityForce < -1012223) console.log(gravityForce)
   return gravityForceVector // kg * m / second == N
 }

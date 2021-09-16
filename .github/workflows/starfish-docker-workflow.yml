@@ -37,6 +37,7 @@ jobs:
           filters: |
             src:
               - '${{matrix.folder}}/**'
+              - common/**
       
       - name: Extract branch name
         shell: bash
