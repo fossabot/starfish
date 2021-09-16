@@ -397,7 +397,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "da1e44b21fb39cee055bc43df90718a188faa827f2bf6858c3fe7bc7c1e32d8c",
+        "version": "26baa7dfb66a5e8599f33337d77cea003f71ad96910e1933d42a53557acc001a",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
@@ -447,8 +447,8 @@
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
-        "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
-        "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "version": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
+        "signature": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/node/assert/strict.d.ts": {
