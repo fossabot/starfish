@@ -29,8 +29,6 @@ health bar doesn't look like a health bar
 teach new crew members how to play
 add illustrations
 
-* planets can't spawn themselves inside of zones
-
 --
 added more admin commands to frontend
 fixed fencepost error on buy max cargo

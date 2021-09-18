@@ -7,14 +7,26 @@ exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Stubbable_1 = require("../Stubbable");
 class Planet extends Stubbable_1.Stubbable {
+    static massAdjuster = 1;
+    type = `planet`;
+    pacifist;
+    rooms = [];
+    planetType;
+    name;
+    color;
+    mass;
+    location;
+    game;
+    creatures;
+    radius;
+    landingRadiusMultiplier;
+    passives;
+    xp = 0;
+    level = 0;
+    stats = [];
+    toUpdate = {};
     constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, stats, }, game) {
         super();
-        this.type = `planet`;
-        this.rooms = [];
-        this.xp = 0;
-        this.level = 0;
-        this.stats = [];
-        this.toUpdate = {};
         this.game = game;
         this.planetType = planetType || `basic`;
         this.name = name;
@@ -130,5 +142,4 @@ class Planet extends Stubbable_1.Stubbable {
     incrementAllegiance(faction, amount) { }
 }
 exports.Planet = Planet;
-Planet.massAdjuster = 1;
 //# sourceMappingURL=Planet.js.map

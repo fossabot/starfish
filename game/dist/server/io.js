@@ -29,19 +29,19 @@ else {
         requestCert: true,
     };
 }
-const httpsServer = https_1.createServer(serverConfig);
+const httpsServer = (0, https_1.createServer)(serverConfig);
 const io = new socket_io_1.Server(httpsServer, {
     cors: {
         origin: `*`,
     },
 });
 io.on(`connection`, (socket) => {
-    frontend_1.default(socket);
-    discord_1.default(socket);
-    general_1.default(socket);
-    crew_1.default(socket);
-    items_1.default(socket);
-    admin_1.default(socket);
+    (0, frontend_1.default)(socket);
+    (0, discord_1.default)(socket);
+    (0, general_1.default)(socket);
+    (0, crew_1.default)(socket);
+    (0, items_1.default)(socket);
+    (0, admin_1.default)(socket);
 });
 httpsServer.listen(4200);
 dist_1.default.log(`io server listening on port 4200`);

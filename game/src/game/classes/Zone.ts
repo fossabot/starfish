@@ -104,7 +104,7 @@ export class Zone extends Stubbable {
       // accelerate
       else if (effect.type === `accelerate`) {
         const accelerateMultiplier =
-          1 + effect.intensity * proximityMod * 0.005
+          1 + effect.intensity * proximityMod * 0.003
         ship.velocity[0] *= accelerateMultiplier
         ship.velocity[1] *= accelerateMultiplier
         ship.toUpdate.velocity = ship.velocity
@@ -116,7 +116,7 @@ export class Zone extends Stubbable {
       // decelerate
       else if (effect.type === `decelerate`) {
         const decelerateMultiplier =
-          1 - effect.intensity * proximityMod * 0.005
+          1 - effect.intensity * proximityMod * 0.0025
         ship.velocity[0] *= decelerateMultiplier
         ship.velocity[1] *= decelerateMultiplier
         ship.toUpdate.velocity = ship.velocity

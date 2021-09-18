@@ -2,9 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Species = void 0;
 class Species {
+    type = `species`;
+    id;
+    icon;
+    singular;
+    game;
+    passives = [];
+    description;
+    faction;
     constructor({ id, factionId, icon, singular, description, passives, }, game) {
-        this.type = `species`;
-        this.passives = [];
         this.id = id;
         this.icon = icon;
         this.singular = singular;

@@ -34,6 +34,9 @@ export default function (
       data.name =
         c.sanitize(data.name.substring(0, c.maxNameLength))
           .result || `ship`
+
+      c.log(`Ship ${data.name} has joined the game.`)
+
       data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,

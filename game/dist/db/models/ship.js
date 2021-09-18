@@ -89,7 +89,7 @@ const shipSchemaFields = {
     onlyVisibleToShipId: String,
 };
 const shipSchema = new mongoose_1.Schema(shipSchemaFields);
-const DBShip = mongoose_1.model(`DBShip`, shipSchema);
+const DBShip = (0, mongoose_1.model)(`DBShip`, shipSchema);
 async function addOrUpdateInDb(data) {
     const stub = dist_1.default.stubify(data);
     const toSave = new DBShip(stub)._doc;

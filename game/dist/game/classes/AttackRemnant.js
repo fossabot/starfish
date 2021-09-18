@@ -3,6 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttackRemnant = void 0;
 const Stubbable_1 = require("./Stubbable");
 class AttackRemnant extends Stubbable_1.Stubbable {
+    id;
+    attacker;
+    defender;
+    damageTaken;
+    start;
+    end;
+    time;
+    onlyVisibleToShipId;
     // todo are these being stubified correctly? pre-db-save-and-load, that is
     constructor({ attacker, defender, damageTaken, start, end, time, id, onlyVisibleToShipId, }) {
         super();

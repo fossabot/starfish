@@ -24,7 +24,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../common/src'
+import c from '../../common/dist'
 import * as storage from '../assets/scripts/storage'
 import { mapState } from 'vuex'
 

@@ -25,7 +25,7 @@ import { MiningPlanet } from './classes/Planet/MiningPlanet'
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
 
-  readonly startTime: Date
+  readonly startTime: number
   readonly ships: Ship[] = []
   readonly planets: Planet[] = []
   readonly caches: Cache[] = []
@@ -37,7 +37,7 @@ export class Game {
   factionRankings: FactionRanking[] = []
 
   constructor() {
-    this.startTime = new Date()
+    this.startTime = Date.now()
 
     Object.values(c.factions).forEach((fd) =>
       this.addFaction(fd),

@@ -8,9 +8,9 @@ const dist_1 = __importDefault(require("../../common/dist"));
 const Game_1 = require("./game/Game");
 require("./server/io");
 const db_1 = require("./db");
-db_1.init({});
+(0, db_1.init)({});
 exports.game = new Game_1.Game();
-db_1.runOnReady(async () => {
+(0, db_1.runOnReady)(async () => {
     // await db.attackRemnant.wipe()
     // await db.planet.wipe()
     // await db.ship.wipe()

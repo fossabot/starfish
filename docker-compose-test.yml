@@ -32,6 +32,7 @@ services:
     secrets:
       - mongodb_username
       - mongodb_password
+      - admin_keys
 
   frontend:
     image: 'xmadsen/starfish-frontend:latest'
@@ -83,6 +84,8 @@ secrets:
     file: frontend/secrets/google_client_email.txt
   google_private_key:
     file: frontend/secrets/google_private_key.txt
+  admin_keys:
+    file: game/secrets/admin_keys.txt
 
 volumes:
   db_data:

@@ -24,7 +24,7 @@ export class Ship extends Stubbable {
   static maxPreviousLocations: number = 30
 
   readonly type = `ship`
-  name: string = `ship`
+  name: string
   planet: Planet | false = false
   readonly faction: Faction
   readonly species: Species
@@ -107,6 +107,7 @@ export class Ship extends Stubbable {
   ) {
     super()
     this.game = game
+    this.name = name
     this.rename(name)
 
     this.ai = true
@@ -198,11 +199,19 @@ export class Ship extends Stubbable {
   }
 
   rename(newName: string) {
+    const prevName = this.name
     this.name = c
       .sanitize(newName)
       .result.substring(0, c.maxNameLength)
     if (this.name.replace(/\s/g, ``).length === 0)
       this.name = `ship`
+
+    if (this.name === prevName) return
+
+    if (this.name) {
+      c.log(prevName, newName, this.name)
+    }
+
     this.toUpdate.name = this.name
     this.logEntry(
       [

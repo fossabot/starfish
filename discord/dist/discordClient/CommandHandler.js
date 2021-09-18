@@ -121,14 +121,20 @@ class CommandHandler {
         if (context.initialMessage.guild?.me?.nickname !==
             `${dist_1.default.gameName}`)
             context.initialMessage.guild?.me?.setNickname(`${dist_1.default.gameName}`);
-        // ----- update guild name if necessary -----
-        if (context.ship && context.guild) {
-            if (dist_1.default
-                .sanitize(context.guild.name)
-                .result.substring(0, dist_1.default.maxNameLength) !==
-                context.ship.name)
-                ioInterface_1.default.ship.rename(context.ship.id, context.guild.name);
-        }
+        // * removed because it would reset ship names willy-nilly, and they can set it manually
+        // // ----- update guild name if necessary -----
+        // if (context.ship && context.guild) {
+        //   if (
+        //     c
+        //       .sanitize(context.guild.name)
+        //       .result.substring(0, c.maxNameLength) !==
+        //     context.ship.name
+        //   )
+        //     ioInterface.ship.rename(
+        //       context.ship.id,
+        //       context.guild.name,
+        //     )
+        // }
         // ----- check for crew member still in guild, and update name if necessary -----
         if (context.crewMember) {
             const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);

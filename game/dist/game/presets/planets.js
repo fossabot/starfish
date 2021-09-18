@@ -122,8 +122,8 @@ function generateBasicPlanet(game, homeworldFactionKey) {
         : `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 30}%)`;
     const level = 0;
     const baseLevel = homeworldFactionKey
-        ? 7
-        : Math.ceil(Math.random() * 3 +
+        ? 9
+        : Math.ceil(Math.random() * 5 +
             dist_1.default.distance(location, [0, 0]) / 3);
     const xp = 0;
     const leanings = [];
@@ -328,6 +328,7 @@ const planetNames = [
     `Olympus`,
     `Irra`,
     `Ungol`,
+    // todo MORE
 ];
 const planetNamePrefixes = [`New`, `Old`];
 const planetNameSuffixes = [

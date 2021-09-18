@@ -23,7 +23,7 @@ const zoneSchemaFields = {
     ],
 };
 const zoneSchema = new mongoose_1.Schema(zoneSchemaFields);
-const DBZone = mongoose_1.model(`DBZone`, zoneSchema);
+const DBZone = (0, mongoose_1.model)(`DBZone`, zoneSchema);
 async function addOrUpdateInDb(data) {
     const toSave = new DBZone(data)._doc;
     delete toSave._id;

@@ -7,10 +7,17 @@ exports.Zone = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const Stubbable_1 = require("./Stubbable");
 class Zone extends Stubbable_1.Stubbable {
+    type = `zone`;
+    id;
+    name;
+    location;
+    radius;
+    game;
+    effects;
+    color;
     // todo zones expire after a certain time
     constructor({ location, radius, id, color, name, effects, }, game) {
         super();
-        this.type = `zone`;
         this.game = game;
         this.location = location;
         this.radius = radius;
@@ -75,7 +82,7 @@ class Zone extends Stubbable_1.Stubbable {
             }
             // accelerate
             else if (effect.type === `accelerate`) {
-                const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.005;
+                const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.003;
                 ship.velocity[0] *= accelerateMultiplier;
                 ship.velocity[1] *= accelerateMultiplier;
                 ship.toUpdate.velocity = ship.velocity;
@@ -83,7 +90,7 @@ class Zone extends Stubbable_1.Stubbable {
             }
             // decelerate
             else if (effect.type === `decelerate`) {
-                const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.005;
+                const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.0025;
                 ship.velocity[0] *= decelerateMultiplier;
                 ship.velocity[1] *= decelerateMultiplier;
                 ship.toUpdate.velocity = ship.velocity;

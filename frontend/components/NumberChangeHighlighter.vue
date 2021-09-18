@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../common/src'
+import c from '../../common/dist'
 
 export default Vue.extend({
   props: {

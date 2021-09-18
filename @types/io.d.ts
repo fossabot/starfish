@@ -28,13 +28,36 @@ interface IOClientEvents {
   [`hello`]: () => void
 
   // admin events
-  [`game:save`]: () => void
-  [`game:resetAllPlanets`]: () => void
-  [`game:resetAllZones`]: () => void
-  [`game:resetAllCaches`]: () => void
-  [`game:resetAllAIShips`]: () => void
-  [`game:resetAllShips`]: () => void
-  [`game:resetAllAttackRemnants`]: () => void
+  [`game:adminCheck`]: (
+    adminId: string,
+    password: string,
+    callback: (res: boolean) => void,
+  ) => void
+  [`game:save`]: (adminId: string, password: string) => void
+  [`game:resetAllPlanets`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:resetAllZones`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:resetAllCaches`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:resetAllAIShips`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:resetAllShips`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:resetAllAttackRemnants`]: (
+    adminId: string,
+    password: string,
+  ) => void
 
   // general events
   [`ships:forUser:fromIdArray`]: (

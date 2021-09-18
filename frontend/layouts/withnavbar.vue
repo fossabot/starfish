@@ -7,7 +7,7 @@
 
 <script lang="js">
 import Vue from 'vue'
-import c from '../../common/src'
+import c from '../../common/dist'
 import BaseLayout from '~/layouts/default'
 
 export default Vue.extend({
