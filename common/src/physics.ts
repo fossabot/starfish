@@ -1,5 +1,5 @@
-import math from './math'
-import globals from './globals'
+import math from "./math"
+import globals from "./globals"
 
 function getUnitVectorFromThatBodyToThisBody(
   thisBody: HasLocation,
@@ -11,10 +11,7 @@ function getUnitVectorFromThatBodyToThisBody(
   ) {
     return [0, 0]
   }
-  const angleBetween = math.angleFromAToB(
-    thatBody.location,
-    thisBody.location,
-  )
+  const angleBetween = math.angleFromAToB(thatBody.location, thisBody.location)
   return math.degreesToUnitVector(angleBetween)
 }
 
@@ -22,13 +19,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
   thisBody: HasMassAndLocation,
   thatBody: HasMassAndLocation,
 ): CoordinatePair {
-  if (
-    !thisBody ||
-    !thatBody ||
-    !thisBody.mass ||
-    !thatBody.mass
-  )
-    return [0, 0]
+  if (!thisBody || !thatBody || !thisBody.mass || !thatBody.mass) return [0, 0]
 
   const m1 = thisBody.mass || 0
   const m2 = thatBody.mass || 0
@@ -57,18 +48,19 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
   // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
-  const gravityScaleFactor = 0.5
+  const gravityScaleFactor = 0.25
   // const gravityForce =
   // (-globals.gravitationalConstant * m1 * m2) / Math.abs(r) * gravityScaleFactor
-  const gravityForce = (-globals.gravitationalConstant * m1 * m2) / (r ** 2) * gravityScaleFactor
+  const gravityForce =
+    ((-globals.gravitationalConstant * m1 * m2) / r ** 2) * gravityScaleFactor
 
-
-  const vectorToThisBody: CoordinatePair =
-    getUnitVectorFromThatBodyToThisBody(thisBody, thatBody)
-  const gravityForceVector: CoordinatePair =
-    vectorToThisBody.map(
-      (i) => i * gravityForce,
-    ) as CoordinatePair
+  const vectorToThisBody: CoordinatePair = getUnitVectorFromThatBodyToThisBody(
+    thisBody,
+    thatBody,
+  )
+  const gravityForceVector: CoordinatePair = vectorToThisBody.map(
+    (i) => i * gravityForce,
+  ) as CoordinatePair
 
   // if (gravityForce < -1012223) console.log(gravityForce)
   return gravityForceVector // kg * m / second == N
