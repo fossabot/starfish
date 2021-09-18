@@ -1,1 +1,0 @@
-{"version":3,"file":"combat.js","sourceRoot":"","sources":["../../../../src/game/classes/addins/combat.ts"],"names":[],"mappings":";;;AAGA,SAAgB,OAAO;IACrB,IACE,IAAI,CAAC,IAAI,CAAC,OAAO;QACjB,IAAI,CAAC,cAAc;QACnB,CAAC,IAAI,CAAC,IAAI,CAAC,IAAI,CAAC,IAAI,CAAC,cAAc,CAAC;QAEpC,IAAI,CAAC,KAAK,CAAC,UAAU,CAAC,CAAA;AAC1B,CAAC;AAPD,0BAOC"}
