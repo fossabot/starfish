@@ -28,35 +28,30 @@ const roomActions = __importStar(require("./addins/rooms"));
 const CrewPassive_1 = require("./addins/CrewPassive");
 const Stubbable_1 = require("../Stubbable");
 class CrewMember extends Stubbable_1.Stubbable {
-    static levelXPNumbers = dist_1.default.levels;
-    static baseMaxCargoSpace = 10;
-    type = `crewMember`;
-    id;
-    ship;
-    name = `crew member`;
-    location;
-    skills;
-    stamina;
-    maxStamina = 1;
-    lastActive;
-    targetLocation = null;
-    tactic = `defensive`;
-    attackFactions = [];
-    attackTarget = null;
-    itemTarget = null;
-    cockpitCharge = 0;
-    repairPriority = `most damaged`;
-    minePriority = `closest`;
-    inventory;
-    credits;
-    actives = [];
-    passives = [];
-    upgrades = [];
-    stats = [];
-    maxCargoSpace = CrewMember.baseMaxCargoSpace;
-    toUpdate = {};
     constructor(data, ship) {
         super();
+        this.type = `crewMember`;
+        this.name = `crew member`;
+        this.maxStamina = 1;
+        this.targetLocation = null;
+        this.tactic = `defensive`;
+        this.attackFactions = [];
+        this.attackTarget = null;
+        this.itemTarget = null;
+        this.cockpitCharge = 0;
+        this.repairPriority = `most damaged`;
+        this.minePriority = `closest`;
+        this.actives = [];
+        this.passives = [];
+        this.upgrades = [];
+        this.stats = [];
+        this.maxCargoSpace = CrewMember.baseMaxCargoSpace;
+        this.toUpdate = {};
+        this.cockpitAction = roomActions.cockpit;
+        this.repairAction = roomActions.repair;
+        this.weaponsAction = roomActions.weapons;
+        this.bunkAction = roomActions.bunk;
+        this.mineAction = roomActions.mine;
         this.id = data.id;
         this.ship = ship;
         this.rename(data.name);
@@ -123,11 +118,6 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.ship.addTagline(`Nap Champions`, `having all 10+ crew members asleep at once`);
         return true;
     }
-    cockpitAction = roomActions.cockpit;
-    repairAction = roomActions.repair;
-    weaponsAction = roomActions.weapons;
-    bunkAction = roomActions.bunk;
-    mineAction = roomActions.mine;
     tick() {
         this._stub = null; // invalidate stub
         // ----- reset attack target if out of vision range -----
@@ -304,4 +294,6 @@ class CrewMember extends Stubbable_1.Stubbable {
     }
 }
 exports.CrewMember = CrewMember;
+CrewMember.levelXPNumbers = dist_1.default.levels;
+CrewMember.baseMaxCargoSpace = 10;
 //# sourceMappingURL=CrewMember.js.map

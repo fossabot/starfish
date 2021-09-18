@@ -1,1 +1,0 @@
-{"version":3,"file":"zone.d.ts","sourceRoot":"","sources":["../../../src/db/models/zone.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,yBAAyB,CAAA;AAyBnD,wBAAsB,eAAe,CACnC,IAAI,EAAE,IAAI,GACT,OAAO,CAAC,YAAY,CAAC,CAWvB;AAED,wBAAsB,IAAI,kBAGzB;AAED,wBAAsB,YAAY,CAAC,EAAE,EAAE,MAAM,iBAE5C;AAED,wBAAsB,mBAAmB,IAAI,OAAO,CAClD,YAAY,EAAE,CACf,CAGA"}

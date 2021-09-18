@@ -10,18 +10,18 @@ const __1 = require("../..");
 let adminKeys;
 try {
     adminKeys = fs_1.default
-        .readFileSync(`/run/secrets/admin_keys.txt`, `utf-8`)
+        .readFileSync(process.env.ADMIN_KEYS_FILE, `utf-8`)
         .trim();
 }
 catch (e) {
-    adminKeys = process.env.ADMIN_KEYS;
+    adminKeys = ``;
 }
 try {
     adminKeys = JSON.parse(adminKeys);
 }
 catch (e) {
     adminKeys = false;
-    dist_1.default.log(`red`, `Error loading admin keys!`, e.message);
+    dist_1.default.log(`red`, `Error loading admin keys!`, e);
 }
 function isAdmin(id, password) {
     if (!adminKeys)

@@ -3,7 +3,7 @@ FROM node:16-alpine3.11 as base
 ENV HOST 0.0.0.0
 
 WORKDIR /usr/app/game
-COPY package.json .
+COPY game/package.json .
 
 FROM base AS dependencies
 WORKDIR /usr/app/game

@@ -11,6 +11,8 @@ import itemEvents from './events/items'
 import adminEvents from './events/admin'
 import { createServer as createHTTPSServer } from 'https'
 
+require(`events`).captureRejections = true
+
 let serverConfig = {}
 if (process.env.NODE_ENV !== `production`) {
   serverConfig = {
@@ -22,6 +24,7 @@ if (process.env.NODE_ENV !== `production`) {
     ),
   }
 } else {
+  c.log(`green`, `Launching production server...`)
   serverConfig = {
     key: fs.readFileSync(
       path.resolve(
@@ -33,12 +36,12 @@ if (process.env.NODE_ENV !== `production`) {
         `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
       ),
     ),
-    ca: fs.readFileSync(
+    ca: [fs.readFileSync(
       path.resolve(
         `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
       ),
-    ),
-    requestCert: true,
+    )],
+    // requestCert: true
   }
 }
 
@@ -48,6 +51,7 @@ const io = new socketServer<IOClientEvents, IOServerEvents>(
   {
     cors: {
       origin: `*`,
+      methods: [`GET`, `POST`]
     },
   },
 )
@@ -55,6 +59,9 @@ const io = new socketServer<IOClientEvents, IOServerEvents>(
 io.on(
   `connection`,
   (socket: Socket<IOClientEvents, IOServerEvents>) => {
+    socket[Symbol.for(`nodejs.rejection`)] = (err) => {
+      socket.emit(`disconnect`)
+    }
     frontendEvents(socket)
     discordEvents(socket)
     generalEvents(socket)
@@ -62,9 +69,9 @@ io.on(
     itemEvents(socket)
     adminEvents(socket)
   },
+  
 )
 
 httpsServer.listen(4200)
-c.log(`io server listening on port 4200`)
-
+c.log(`green`, `io server listening on port 4200`)
 export default io

@@ -7,11 +7,10 @@ exports.MiningPlanet = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Planet_1 = require("./Planet");
 class MiningPlanet extends Planet_1.Planet {
-    pacifist;
-    rooms = [`mine`];
-    mine = [];
     constructor(data, game) {
         super(data, game);
+        this.rooms = [`mine`];
+        this.mine = [];
         if (data.pacifist)
             this.pacifist = data.pacifist;
         else

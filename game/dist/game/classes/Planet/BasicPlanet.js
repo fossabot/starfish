@@ -7,18 +7,10 @@ exports.BasicPlanet = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Planet_1 = require("./Planet");
 class BasicPlanet extends Planet_1.Planet {
-    static priceFluctuatorIntensity = 0.8;
-    planetType;
-    vendor;
-    faction;
-    homeworld;
-    allegiances;
-    leanings;
-    repairFactor;
-    priceFluctuator = 1;
-    toUpdate = {};
     constructor(data, game) {
         super(data, game);
+        this.priceFluctuator = 1;
+        this.toUpdate = {};
         this.planetType = `basic`;
         this.repairFactor = data.repairFactor || 0;
         this.homeworld = game.factions.find((f) => f.id === data.homeworld?.id);
@@ -307,6 +299,7 @@ class BasicPlanet extends Planet_1.Planet {
     }
 }
 exports.BasicPlanet = BasicPlanet;
+BasicPlanet.priceFluctuatorIntensity = 0.8;
 function getBuyAndSellMultipliers(item = false) {
     const buyMultiplier = dist_1.default.r2(0.8 + Math.random() * 0.4, 3);
     const sellMultiplier = Math.min(buyMultiplier *

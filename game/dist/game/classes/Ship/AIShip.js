@@ -7,22 +7,19 @@ exports.AIShip = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const CombatShip_1 = require("./CombatShip");
 class AIShip extends CombatShip_1.CombatShip {
-    human = false;
-    id;
-    spawnPoint;
-    level = 1;
-    visible = {
-        ships: [],
-        planets: [],
-        caches: [],
-        attackRemnants: [],
-        zones: [],
-    };
-    keyAngle = Math.random() * 365;
-    targetLocation;
-    obeysGravity = false;
     constructor(data, game) {
         super(data, game);
+        this.human = false;
+        this.level = 1;
+        this.visible = {
+            ships: [],
+            planets: [],
+            caches: [],
+            attackRemnants: [],
+            zones: [],
+        };
+        this.keyAngle = Math.random() * 365;
+        this.obeysGravity = false;
         if (data.id)
             this.id = data.id;
         else

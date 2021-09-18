@@ -12,29 +12,25 @@ const CombatShip_1 = require("./CombatShip");
 const CrewMember_1 = require("../CrewMember/CrewMember");
 const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
-    static maxLogLength = 40;
-    static movementIsFree = false; // true
-    id;
-    log = [];
-    logAlertLevel = `medium`;
-    crewMembers = [];
-    captain = null;
-    rooms = {};
-    maxScanProperties = null;
-    visible = {
-        ships: [],
-        planets: [],
-        caches: [],
-        attackRemnants: [],
-        zones: [],
-    };
-    shownPanels;
-    commonCredits = 0;
-    mainTactic;
-    itemTarget;
-    tutorial = undefined;
     constructor(data, game) {
         super(data, game);
+        this.log = [];
+        this.logAlertLevel = `medium`;
+        this.crewMembers = [];
+        this.captain = null;
+        this.rooms = {};
+        this.maxScanProperties = null;
+        this.visible = {
+            ships: [],
+            planets: [],
+            caches: [],
+            attackRemnants: [],
+            zones: [],
+        };
+        this.commonCredits = 0;
+        this.tutorial = undefined;
+        this.membersIn = crew_1.membersIn;
+        this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
         this.id = data.id;
         // this.availableTaglines = [] // `Tester`, `Very Shallow`
         // this.availableHeaderBackgrounds = [
@@ -549,7 +545,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
-        charge *= 3; // braking is easier than thrusting
+        const brakeToThrustRatio = 5;
+        charge *= brakeToThrustRatio; // braking is easier than thrusting
         // apply passive
         const relevantPassives = this.passives.filter((p) => p.id === `boostBrake`) ||
             [];
@@ -1098,8 +1095,6 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ])
         db_1.db.ship.addOrUpdateInDb(this);
     }
-    membersIn = crew_1.membersIn;
-    cumulativeSkillIn = crew_1.cumulativeSkillIn;
     distributeCargoAmongCrew(cargo) {
         const leftovers = [];
         cargo.forEach((contents) => {
@@ -1459,4 +1454,6 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
 }
 exports.HumanShip = HumanShip;
+HumanShip.maxLogLength = 40;
+HumanShip.movementIsFree = false; // true
 //# sourceMappingURL=HumanShip.js.map

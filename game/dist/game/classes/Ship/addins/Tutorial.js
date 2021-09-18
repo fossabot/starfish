@@ -7,12 +7,20 @@ exports.Tutorial = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
 const io_1 = __importDefault(require("../../../../server/io"));
 class Tutorial {
-    step = 0;
-    steps = [];
-    baseLocation = [0, 0];
-    currentStep;
-    ship;
-    targetLocation;
+    constructor(data, ship) {
+        this.step = 0;
+        this.steps = [];
+        this.baseLocation = [0, 0];
+        this.ship = ship;
+        this.initializeSteps();
+        this.step = data.step;
+        this.baseLocation = [
+            ...(this.ship.faction.homeworld?.location || [0, 0]),
+        ];
+        if (this.step === -1)
+            this.advanceStep();
+        this.currentStep = this.steps[this.step];
+    }
     initializeSteps() {
         this.steps = [
             {
@@ -623,17 +631,6 @@ class Tutorial {
             },
         ];
     }
-    constructor(data, ship) {
-        this.ship = ship;
-        this.initializeSteps();
-        this.step = data.step;
-        this.baseLocation = [
-            ...(this.ship.faction.homeworld?.location || [0, 0]),
-        ];
-        if (this.step === -1)
-            this.advanceStep();
-        this.currentStep = this.steps[this.step];
-    }
     tick() {
         // ----- advance step if all requirements have been met -----
         if (this.currentStep.nextStepTrigger.awaitFrontend)
@@ -807,13 +804,15 @@ class Tutorial {
         this.cleanUp();
         this.ship.tutorial = undefined;
         this.ship.toUpdate.tutorial = false;
-        // reset cash
+        // reset cash and charge
         this.ship.commonCredits = 0;
         this.ship.toUpdate.commonCredits =
             this.ship.commonCredits;
         this.ship.crewMembers.forEach((cm) => {
             cm.credits = 1000;
             cm.toUpdate.credits = cm.credits;
+            cm.cockpitCharge = 1;
+            cm.toUpdate.cockpitCharge = cm.cockpitCharge;
         });
         this.ship.recalculateShownPanels();
         this.ship.respawn(true);

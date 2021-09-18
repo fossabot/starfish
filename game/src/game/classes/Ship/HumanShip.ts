@@ -782,7 +782,8 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
 
-    charge *= 3 // braking is easier than thrusting
+    const brakeToThrustRatio = 5
+    charge *= brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
     const relevantPassives =

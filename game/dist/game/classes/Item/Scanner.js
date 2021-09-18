@@ -7,10 +7,6 @@ exports.Scanner = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Item_1 = require("./Item");
 class Scanner extends Item_1.Item {
-    id;
-    sightRange;
-    shipScanRange;
-    shipScanData;
     constructor(data, ship, props) {
         super(data, ship, props);
         this.id = data.id;

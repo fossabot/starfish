@@ -2,14 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Faction = void 0;
 class Faction {
-    type = `faction`;
-    name;
-    id;
-    color;
-    homeworld = null;
-    ai;
-    game;
     constructor({ name, id, ai, color }, game) {
+        this.type = `faction`;
+        this.homeworld = null;
         this.name = name;
         this.id = id;
         this.ai = Boolean(ai);

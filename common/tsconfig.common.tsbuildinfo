@@ -342,8 +342,18 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "39d808c027b996a350bb2dca867681bff2ed74ebf5702b0ba67d1f0bbe4785d4",
+        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
+        "affectsGlobalScope": false
+      },
+      "./src/discord_dev.ts": {
+        "version": "849ea81e071c9815f2217effe25a85e73ecd098826c932c4ad82b0153e76cdfa",
+        "signature": "2e3a8e854d25cc5861ef612f00cc9bfd8dd13f0a5bc9c2c4cadd3e2eec98c950",
+        "affectsGlobalScope": false
+      },
+      "./src/discord_prod.ts": {
+        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
+        "signature": "43fc7e80ec91998b852d64da4f63ab148a9eb22e6ecd8d66ce2e6905bfbf3656",
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
@@ -362,7 +372,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "d015e28b5318e8edc555f1eb4d55cad774ced6922089ca10974571f5dcef86d8",
+        "version": "cfd4e7ef1811fa45527cd4d420df7ffdd2c3f46718d7fffc465eefd11873fe68",
         "signature": "9a9cf7e7b5dd92b33f8e3672a8bafb2b7bbc2fa81f4db3b2a8a1a196dd9c5a67",
         "affectsGlobalScope": false
       },
@@ -372,7 +382,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "7014a14aaf2e206150e0af80fe36fc48721a6c10c3ab68fa22bbe069603e11b0",
+        "version": "ad94788e8c040064c47449459c1c284ffaa7f743c4ab525d53961eaa0f2a318e",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
@@ -804,6 +814,12 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "./src/discord.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "./src/discord_dev.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "./src/discord_prod.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
       "./src/factions.ts": [
@@ -1974,6 +1990,8 @@
       "./src/crewactives.ts",
       "./src/crewpassives.ts",
       "./src/discord.ts",
+      "./src/discord_dev.ts",
+      "./src/discord_prod.ts",
       "./src/factions.ts",
       "./src/game.ts",
       "./src/globals.ts",
@@ -1988,7 +2006,6 @@
       "./src/log.ts",
       "./src/math.ts",
       "./src/misc.ts",
-      "./src/physics.ts",
       "./src/profiler.ts",
       "./src/rooms.ts",
       "./src/species.ts",

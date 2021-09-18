@@ -2,12 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewPassive = void 0;
 class CrewPassive {
-    displayName;
-    crewMember;
-    id;
-    level = 1;
-    factor;
     constructor({ displayName, id, level, factor }, crewMember) {
+        this.level = 1;
         this.displayName = displayName;
         this.crewMember = crewMember;
         this.id = id;

@@ -18,17 +18,22 @@ const zones_1 = require("./presets/zones");
 const BasicPlanet_1 = require("./classes/Planet/BasicPlanet");
 const MiningPlanet_1 = require("./classes/Planet/MiningPlanet");
 class Game {
-    static saveTimeInterval = 1 * 60 * 1000;
-    startTime;
-    ships = [];
-    planets = [];
-    caches = [];
-    zones = [];
-    factions = [];
-    species = [];
-    attackRemnants = [];
-    factionRankings = [];
     constructor() {
+        this.ships = [];
+        this.planets = [];
+        this.caches = [];
+        this.zones = [];
+        this.factions = [];
+        this.species = [];
+        this.attackRemnants = [];
+        this.factionRankings = [];
+        // ----- game loop -----
+        this.tickCount = 0;
+        this.lastTickTime = Date.now();
+        this.lastTickExpectedTime = 0;
+        this.averageTickLag = 0;
+        this.averageWorstShipTickLag = 0;
+        this.averageTickTime = 0;
         this.startTime = Date.now();
         Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
         Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
@@ -62,13 +67,6 @@ class Game {
             this.removeShip(inactiveShip);
         this.recalculateFactionRankings();
     }
-    // ----- game loop -----
-    tickCount = 0;
-    lastTickTime = Date.now();
-    lastTickExpectedTime = 0;
-    averageTickLag = 0;
-    averageWorstShipTickLag = 0;
-    averageTickTime = 0;
     tick() {
         const startTime = Date.now();
         this.tickCount++;
@@ -297,8 +295,9 @@ class Game {
         }
     }
     spawnNewAIs() {
+        const aiShipCoefficient = 5;
         while (this.ships.length &&
-            this.aiShips.length < this.gameSoftArea * 1.45) {
+            this.aiShips.length < this.gameSoftArea * aiShipCoefficient) {
             let radius = this.gameSoftRadius;
             let spawnPoint;
             while (!spawnPoint) {
@@ -584,4 +583,5 @@ class Game {
     }
 }
 exports.Game = Game;
+Game.saveTimeInterval = 1 * 60 * 1000;
 //# sourceMappingURL=Game.js.map

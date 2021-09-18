@@ -50,7 +50,7 @@ const numberEmojis = [
     `🕗`,
     `🕘`,
     `🕙`,
-    `🕚`,
+    `🕚`, // 23
 ];
 const directionArrows = [
     `:arrow_right:`,

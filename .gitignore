@@ -10,12 +10,13 @@ frontend/@types/
 frontend/common/
 private*.md
 push-docker-images-prod.sh
-common/dist
-discord/dist/
-frontend/dist/
-game/dist/
+game/dist
+discord/dist
+frontend/dist
 .gitignore
 game/ssl/localhost.key
 game/ssl/localhost.crt
 ssl/localhost.key
 ssl/localhost.crt
+game/tsconfig.game.tsbuildinfo
+git

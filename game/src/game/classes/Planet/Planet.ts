@@ -5,7 +5,7 @@ import { Stubbable } from '../Stubbable'
 import type { Faction } from '../Faction'
 
 export class Planet extends Stubbable {
-  static readonly massAdjuster = 1
+  static readonly massAdjuster = 0.5
 
   readonly type = `planet`
   readonly pacifist: boolean

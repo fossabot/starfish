@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "build": "tsc --project ./tsconfig.common.json -w"
+    "build": "tsc --project ./tsconfig.common.json -w",
+    "build-once": "tsc --project ./tsconfig.common.json"
   }
 }
