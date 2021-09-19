@@ -156,13 +156,13 @@ export abstract class CombatShip extends Ship {
     const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`)
     const range = c.distance(this.location, target.location)
     const rangeAsPercent = range / weapon.range
-    const minimumHitChance = 0.1
+    // const maxMissChance = 0.9
     const enemyAgility =
       target.chassis.agility +
       (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity ||
         0)
-    const hitRoll = Math.random() * enemyAgility
-    let miss = hitRoll < minimumHitChance
+    const hitRoll = Math.random()
+    let miss = hitRoll * enemyAgility < rangeAsPercent // + maxMissChance
     // todo this makes it impossible to hit some ships even when they're "in range"... fix
     let damage = miss ? 0 : c.getHitDamage(weapon, totalMunitionsSkill)
 
