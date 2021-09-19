@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -84,6 +84,7 @@ export default Vue.extend({
       ;(this as any).$router.push('/')
     },
     shipSelected(e: Event) {
+      this.$store.commit('set', { mapFollowingShip: true })
       this.$store.dispatch('socketSetup', this.selectedShip)
     },
   },
