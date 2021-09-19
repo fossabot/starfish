@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="tooltipheader">
-      <span :style="{ color: data.color }">{{
-        data.name
+      <span :style="{ color: dataToUse.color }">{{
+        dataToUse.name
       }}</span>
       <span class="sub normal"
         ><span class="sub">Zone</span></span
@@ -12,7 +12,7 @@
     <div>
       <!-- <div class="panesubhead">Zone Effects</div> -->
       <div
-        v-for="(e, index) in data.effects"
+        v-for="(e, index) in dataToUse.effects"
         :key="'effecttt' + index"
       >
         <div>{{ c.capitalize(e.type) }}</div>
@@ -29,7 +29,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -38,11 +38,16 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['ship']),
+    dataToUse() {
+      return (
+        this.ship?.seenLandmarks?.find(
+          (p) => p.type === 'zone' && p.id === this.data.id,
+        ) || this.data
+      )
+    },
   },
-  mounted() {
-    // c.log(this.data)
-  },
+  mounted() {},
 })
 </script>
 

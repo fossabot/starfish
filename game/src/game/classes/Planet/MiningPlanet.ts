@@ -199,14 +199,6 @@ export class MiningPlanet extends Planet {
       payoutAmount: this.getPayoutAmount(toAdd),
     })
   }
-
-  toLogStub(): PlanetStub {
-    const s: PlanetStub = super.toLogStub()
-    return {
-      ...s,
-      mine: undefined,
-    }
-  }
 }
 
 /*

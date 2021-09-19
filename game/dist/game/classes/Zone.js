@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Zone = void 0;
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const Stubbable_1 = require("./Stubbable");
+const zones_1 = require("../presets/zones");
 class Zone extends Stubbable_1.Stubbable {
     // todo zones expire after a certain time
     constructor({ location, radius, id, color, name, effects, }, game) {
@@ -75,7 +76,7 @@ class Zone extends Stubbable_1.Stubbable {
             }
             // accelerate
             else if (effect.type === `accelerate`) {
-                const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.003;
+                const accelerateMultiplier = 1 + effect.intensity * proximityMod * 0.0005;
                 ship.velocity[0] *= accelerateMultiplier;
                 ship.velocity[1] *= accelerateMultiplier;
                 ship.toUpdate.velocity = ship.velocity;
@@ -83,7 +84,7 @@ class Zone extends Stubbable_1.Stubbable {
             }
             // decelerate
             else if (effect.type === `decelerate`) {
-                const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.0025;
+                const decelerateMultiplier = 1 - effect.intensity * proximityMod * 0.001;
                 ship.velocity[0] *= decelerateMultiplier;
                 ship.velocity[1] *= decelerateMultiplier;
                 ship.toUpdate.velocity = ship.velocity;
@@ -95,15 +96,23 @@ class Zone extends Stubbable_1.Stubbable {
                 ship.logEntry([
                     `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
                 ], `high`);
-                this.game.removeZone(this);
+                this.moveToRandomLocation();
+                dist_1.default.log(`Moved wormhole to ${this.location}`);
+                // this.game.removeZone(this)
             }
         }
+    }
+    moveToRandomLocation() {
+        this.location = (0, zones_1.getValidZoneLocation)(this.game, this.radius);
     }
     getVisibleStub() {
         return this.stubify();
     }
     toLogStub() {
-        return this.stubify();
+        return {
+            type: `zone`,
+            id: this.id,
+        };
     }
 }
 exports.Zone = Zone;

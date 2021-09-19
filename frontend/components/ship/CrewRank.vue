@@ -9,51 +9,52 @@
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
 
-    <div class="panesection">
-      <h5>Contributed Credits</h5>
+    <Tabs>
+      <Tab
+        v-for="skill in crewMember.skills"
+        :key="'skillrank' + skill.skill"
+        :title="c.camelCaseToWords(skill.skill)"
+      >
+        <ol>
+          <li
+            v-for="(cm, index) in bestXAtEachSkill[
+              skill.skill
+            ]"
+            :key="'skillrankmember' + skill.skill + cm.id"
+          >
+            {{ cm.name }}
+            <span class="sub">
+              Lv.{{ cm.skill.level }} ({{
+                Math.round(cm.skill.xp)
+              }}xp)
+            </span>
+          </li>
+        </ol>
+      </Tab>
 
-      <ol>
-        <li
-          v-for="(cm, index) in mostShared"
-          :key="'mostShared' + cm.id"
-        >
-          {{ cm.name }}
-          <span class="sub">
-            ({{ Math.round(cm.totalContributed) }})
-          </span>
-        </li>
-      </ol>
-    </div>
-
-    <div
-      class="panesection"
-      v-for="skill in crewMember.skills"
-      :key="'skillrank' + skill.skill"
-    >
-      <h5>{{ c.capitalize(skill.skill) }}</h5>
-
-      <ol>
-        <li
-          v-for="(cm, index) in bestXAtEachSkill[
-            skill.skill
-          ]"
-          :key="'skillrankmember' + skill.skill + cm.id"
-        >
-          {{ cm.name }}
-          <span class="sub">
-            Lv.{{ cm.skill.level }} ({{
-              Math.round(cm.skill.xp)
-            }}xp)
-          </span>
-        </li>
-      </ol>
-    </div>
+      <Tab
+        title="Contributed Credits"
+        v-if="mostShared.length"
+      >
+        <ol>
+          <li
+            v-for="(cm, index) in mostShared"
+            :key="'mostShared' + cm.id"
+          >
+            {{ cm.name }}
+            <span class="sub">
+              ({{ Math.round(cm.totalContributed) }})
+            </span>
+          </li>
+        </ol>
+      </Tab>
+    </Tabs>
   </Box>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

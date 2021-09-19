@@ -1,6 +1,7 @@
 import math from './math'
 import globals from './globals'
 import c from './log'
+import * as cargo from './cargo'
 import text from './text'
 import { Profiler } from './Profiler'
 
@@ -36,6 +37,8 @@ const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
 const cacheExpireTime =
   (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier
+
+const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
 const baseShipScanProperties: {
   id: true
@@ -126,8 +129,7 @@ function getCockpitChargePerTickForSingleCrewMember(
   )
 }
 
-const baseEngineThrustMultiplier =
-  gameSpeedMultiplier * 0.15
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1
 
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
@@ -177,6 +179,8 @@ function getWeaponCooldownReductionPerTick(level: number) {
 function getCrewPassivePriceMultiplier(level: number) {
   return 1 + level ** 2
 }
+
+const baseCargoSellMultiplier = 0.3
 
 function statToString(data: {
   stat: string
@@ -475,6 +479,7 @@ function stubify<BaseType, StubType extends BaseStub>(
 }
 
 export default {
+  supportServerLink,
   gameShipLimit,
   gameSpeedMultiplier,
   baseSightRange,
@@ -507,6 +512,7 @@ export default {
   getWeaponCooldownReductionPerTick,
   getCrewPassivePriceMultiplier,
   tactics,
+  baseCargoSellMultiplier,
   taglineOptions,
   statToString,
   headerBackgroundOptions,

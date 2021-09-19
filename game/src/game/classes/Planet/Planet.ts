@@ -138,14 +138,10 @@ export class Planet extends Stubbable {
     return this.stubify()
   }
 
-  toLogStub(): PlanetStub {
-    const s: PlanetStub = this.stubify()
+  toLogStub(): PlanetLogStub {
     return {
-      ...s,
       type: `planet`,
-      landingRadiusMultiplier: undefined,
-      stats: undefined,
-      passives: undefined,
+      name: this.name,
     }
   }
 

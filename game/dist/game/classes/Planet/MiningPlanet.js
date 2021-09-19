@@ -130,13 +130,6 @@ class MiningPlanet extends Planet_1.Planet {
             payoutAmount: this.getPayoutAmount(toAdd),
         });
     }
-    toLogStub() {
-        const s = super.toLogStub();
-        return {
-            ...s,
-            mine: undefined,
-        };
-    }
 }
 exports.MiningPlanet = MiningPlanet;
 /*

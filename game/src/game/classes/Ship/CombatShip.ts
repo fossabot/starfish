@@ -9,6 +9,7 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import { AIShip } from './AIShip'
+import type { CrewMember } from '../CrewMember/CrewMember'
 
 interface DamageResult {
   miss: boolean
@@ -265,7 +266,7 @@ export abstract class CombatShip extends Ship {
           },
           `&nospace.`,
         ],
-        `high`,
+        `low`,
       )
     else
       this.logEntry(
@@ -317,8 +318,32 @@ export abstract class CombatShip extends Ship {
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
     if (attackResult.didDie) {
+      // extra combat xp for all crew members in the weapons bay
+      const xpBoostMultiplier =
+        this.passives
+          .filter((p) => p.id === `boostXpGain`)
+          .reduce(
+            (total, p) => (p.intensity || 0) + total,
+            0,
+          ) + 1
+      this.crewMembers
+        .filter((cm) => cm.location === `weapons`)
+        .forEach((cm: CrewMember) => {
+          cm.addXp(
+            `munitions`,
+            c.baseXpGain * 3000 * xpBoostMultiplier,
+          )
+        })
+
       this.addStat(`kills`, 1)
-      this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`)
+      if (
+        this.stats.find((s) => s.stat === `kills`)
+          ?.amount === 1
+      )
+        this.addHeaderBackground(
+          `Stone Cold 1`,
+          `destroying an enemy ship`,
+        )
     }
 
     return attackResult
@@ -652,7 +677,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `medium` : `high`,
+        attack.miss ? `low` : `high`,
       )
     // zone or passive damage
     else
@@ -680,7 +705,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `medium` : `high`,
+        attack.miss ? `low` : `high`,
       )
 
     return damageResult

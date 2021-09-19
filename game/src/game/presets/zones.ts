@@ -5,21 +5,15 @@ import type { Game } from '../Game'
 import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'
 
-export function generateZoneData(
+export function getValidZoneLocation(
   game: Game,
-): BaseZoneData | false {
-  let radius = (Math.random() + 0.15) * 0.2
-
+  radius: number,
+) {
   let locationSearchRadius = game.gameSoftRadius * 0.75
   const tooClose = radius * 3
   let location: CoordinatePair = [0, 0]
   const isTooClose = (p: Planet | Ship | Zone) =>
     c.distance(location, p.location) < tooClose
-  // const getClosestPlanet = (closest: Planet, p: Planet) =>
-  //   c.distance(p.location, location) <
-  //   c.distance(closest?.location || [0, 0], location)
-  //     ? p
-  //     : closest
   while (
     game.planets.find(isTooClose) ||
     game.zones.find(isTooClose) ||
@@ -28,6 +22,16 @@ export function generateZoneData(
     location = c.randomInsideCircle(locationSearchRadius)
     locationSearchRadius *= 1.01
   }
+
+  return location
+}
+
+export function generateZoneData(
+  game: Game,
+): BaseZoneData | false {
+  let radius = (Math.random() + 0.15) * 0.2
+
+  const location = getValidZoneLocation(game, radius)
 
   const color = `hsl(${Math.random() * 360}, ${Math.round(
     Math.random() * 80 + 20,
@@ -48,11 +52,15 @@ export function generateZoneData(
 
   let name
   const effects: ZoneEffect[] = []
+  const minimumIntensity = 0.2
+  const intensity =
+    Math.random() * (1 - minimumIntensity) +
+    minimumIntensity
   if (type === `damage over time`) {
     name = c.randomFromArray(dotZoneNames)
     effects.push({
       type: `damage over time`,
-      intensity: Math.min(1, Math.random() + 0.03),
+      intensity,
       procChancePerTick: Math.random() * 0.001,
       dodgeable: true,
     })
@@ -61,14 +69,14 @@ export function generateZoneData(
     name = c.randomFromArray(healZoneNames)
     effects.push({
       type: `repair over time`,
-      intensity: Math.min(1, Math.random() + 0.03),
+      intensity,
       procChancePerTick: 1,
     })
   } else if (type === `accelerate`) {
     name = c.randomFromArray(accelerateZoneNames)
     effects.push({
       type: `accelerate`,
-      intensity: Math.min(1, Math.random() + 0.03),
+      intensity,
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })
@@ -77,7 +85,7 @@ export function generateZoneData(
     name = c.randomFromArray(decelerateZoneNames)
     effects.push({
       type: `decelerate`,
-      intensity: Math.min(1, Math.random() + 0.03),
+      intensity,
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })

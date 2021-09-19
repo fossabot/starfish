@@ -79,7 +79,7 @@ const init = ({ hostname = (0, is_docker_1.default)() ? `mongodb` : `localhost`,
         };
         if (mongoose.connection.readyState === 0) {
             const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`;
-            dist_1.default.log(uri);
+            // c.log(uri)
             dist_1.default.log(`gray`, `No existing db connection, creating...`);
             mongoose
                 .connect(uri, {

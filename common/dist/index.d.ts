@@ -107,6 +107,9 @@ declare const _default: {
         boostDamageToItemType: {
             toString: (p: ShipPassiveEffect) => string;
         };
+        boostStaminaRegeneration: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
     };
     Profiler: typeof Profiler;
     discordBotId: string;
@@ -115,6 +118,7 @@ declare const _default: {
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocation, thatBody: HasMassAndLocation) => CoordinatePair;
+    supportServerLink: string;
     gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
@@ -144,10 +148,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: (keyof BasePlanetData)[];
-        faction: (keyof BaseFactionData)[];
-        species: (keyof BaseSpeciesData)[];
-        chassis: (keyof BaseChassisData)[];
+        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
+        chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
@@ -166,6 +170,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
+    baseCargoSellMultiplier: number;
     taglineOptions: string[];
     statToString: (data: {
         stat: string;

@@ -17,6 +17,7 @@ declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
+    supportServerLink: string;
     gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
@@ -68,6 +69,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
+    baseCargoSellMultiplier: number;
     taglineOptions: string[];
     statToString: typeof statToString;
     headerBackgroundOptions: {

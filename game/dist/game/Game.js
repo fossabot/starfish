@@ -27,6 +27,7 @@ class Game {
         this.species = [];
         this.attackRemnants = [];
         this.factionRankings = [];
+        this.paused = false;
         // ----- game loop -----
         this.tickCount = 0;
         this.lastTickTime = Date.now();
@@ -47,6 +48,8 @@ class Game {
         this.recalculateFactionRankings();
     }
     async save() {
+        if (this.paused)
+            return;
         dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
         const promises = [];
         this.ships.forEach((s) => {
@@ -59,6 +62,8 @@ class Game {
         this.recalculateFactionRankings();
     }
     async daily() {
+        if (this.paused)
+            return;
         dist_1.default.log(`gray`, `----- Running Daily Tasks -----`);
         // remove inactive ships
         const inactiveCutoff = 14 * 24 * 60 * 60 * 1000; // 2 weeks
@@ -68,6 +73,8 @@ class Game {
         this.recalculateFactionRankings();
     }
     tick() {
+        if (this.paused)
+            return;
         const startTime = Date.now();
         this.tickCount++;
         const times = [];
@@ -242,7 +249,7 @@ class Game {
         }
     }
     spawnNewZones() {
-        while (this.zones.length < this.gameSoftArea * 1.25) {
+        while (this.zones.length < this.gameSoftArea * 1.15) {
             const z = (0, zones_1.generateZoneData)(this);
             if (!z)
                 return;
@@ -295,9 +302,10 @@ class Game {
         }
     }
     spawnNewAIs() {
-        const aiShipCoefficient = 5;
+        const aiShipCoefficient = 3;
         while (this.ships.length &&
-            this.aiShips.length < this.gameSoftArea * aiShipCoefficient) {
+            this.aiShips.length <
+                this.gameSoftArea * aiShipCoefficient) {
             let radius = this.gameSoftRadius;
             let spawnPoint;
             while (!spawnPoint) {
@@ -483,9 +491,9 @@ class Game {
         return this.planets.filter((p) => p instanceof MiningPlanet_1.MiningPlanet);
     }
     recalculateFactionRankings() {
-        // credits
-        let topCreditsShips = [];
-        const creditsScores = [];
+        // netWorth
+        let topNetWorthShips = [];
+        const netWorthScores = [];
         for (let faction of this.factions) {
             if (faction.id === `red`)
                 continue;
@@ -495,21 +503,24 @@ class Game {
                 for (let cm of s.crewMembers) {
                     shipTotal += cm.credits;
                 }
-                topCreditsShips.push({
+                for (let i of s.items) {
+                    shipTotal += dist_1.default.items[i.type][i.id].basePrice;
+                }
+                topNetWorthShips.push({
                     name: s.name,
                     color: faction.color,
                     score: shipTotal,
                 });
                 total += shipTotal;
             });
-            creditsScores.push({
+            netWorthScores.push({
                 faction: dist_1.default.stubify(faction, [
                     `members`,
                 ]),
                 score: total,
             });
         }
-        topCreditsShips = topCreditsShips
+        topNetWorthShips = topNetWorthShips
             .sort((a, b) => b.score - a.score)
             .slice(0, 5);
         // control
@@ -563,9 +574,9 @@ class Game {
             .slice(0, 5);
         this.factionRankings = [
             {
-                category: `credits`,
-                scores: creditsScores.sort((a, b) => b.score - a.score),
-                top: topCreditsShips,
+                category: `netWorth`,
+                scores: netWorthScores.sort((a, b) => b.score - a.score),
+                top: topNetWorthShips,
             },
             {
                 category: `control`,

@@ -27,15 +27,21 @@ else {
     serverConfig = {
         key: fs_1.default.readFileSync(path_1.default.resolve(`/etc/letsencrypt/live/www.starfish.cool/privkey.pem`)),
         cert: fs_1.default.readFileSync(path_1.default.resolve(`/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`)),
-        ca: [fs_1.default.readFileSync(path_1.default.resolve(`/etc/letsencrypt/live/www.starfish.cool/chain.pem`))],
+        ca: [
+            fs_1.default.readFileSync(path_1.default.resolve(`/etc/letsencrypt/live/www.starfish.cool/chain.pem`)),
+        ],
         // requestCert: true
     };
 }
 const httpsServer = (0, https_1.createServer)(serverConfig);
+// * test endpoint to check if the server is running and accessible
+httpsServer.on(`request`, (req, res) => {
+    res.end(`ok`);
+});
 const io = new socket_io_1.Server(httpsServer, {
     cors: {
         origin: `*`,
-        methods: [`GET`, `POST`]
+        methods: [`GET`, `POST`],
     },
 });
 io.on(`connection`, (socket) => {

@@ -36,7 +36,7 @@ type SpeciesKey =
   | `flamingos`
 
 type FactionRankingCategory =
-  | `credits`
+  | `netWorth`
   | `control`
   | `members`
 interface FactionRankingScoreEntry {

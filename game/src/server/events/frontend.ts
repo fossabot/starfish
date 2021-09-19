@@ -35,9 +35,9 @@ export default function (
 
     const foundShip = game.ships.find((s) => s.id === id)
     if (foundShip) {
-      const stub = c.stubify<CombatShip, ShipStub>(
-        foundShip as CombatShip,
-      )
+      const stub: ShipStub = foundShip.stubify()
+      // * clearing parts visible here because they're not being properly obfuscated with a raw stubify call
+      delete stub.visible
       callback({ data: stub })
       // c.log(
       //   `gray`,

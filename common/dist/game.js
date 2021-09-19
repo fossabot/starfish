@@ -24,6 +24,7 @@ const aiDifficultyMultiplier = 0.5;
 const planetContributeCostPerXp = 10;
 const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
 const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier;
+const supportServerLink = `https://discord.gg/aEKE3bFR6n`;
 const baseShipScanProperties = {
     id: true,
     name: true,
@@ -68,7 +69,7 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
     return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
 }
-const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.15;
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
     const min = 1;
     const max = 1.4;
@@ -97,6 +98,7 @@ function getWeaponCooldownReductionPerTick(level) {
 function getCrewPassivePriceMultiplier(level) {
     return 1 + level ** 2;
 }
+const baseCargoSellMultiplier = 0.3;
 function statToString(data) {
     const { stat, amount } = data;
     let titleString = text_1.default.camelCaseToWords(stat);
@@ -342,6 +344,7 @@ function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
     return circularReferencesRemoved;
 }
 exports.default = {
+    supportServerLink,
     gameShipLimit,
     gameSpeedMultiplier,
     baseSightRange,
@@ -374,6 +377,7 @@ exports.default = {
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,
     tactics,
+    baseCargoSellMultiplier,
     taglineOptions,
     statToString,
     headerBackgroundOptions,
