@@ -36,6 +36,8 @@ export class Game {
 
   factionRankings: FactionRanking[] = []
 
+  paused: boolean = false
+
   constructor() {
     this.startTime = Date.now()
 
@@ -67,6 +69,8 @@ export class Game {
   }
 
   async save() {
+    if (this.paused) return
+
     c.log(
       `gray`,
       `----- Saving Game ----- (Tick avg: ${c.r2(
@@ -90,6 +94,8 @@ export class Game {
   }
 
   async daily() {
+    if (this.paused) return
+
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
     // remove inactive ships
@@ -113,6 +119,8 @@ export class Game {
   private averageTickTime: number = 0
 
   tick() {
+    if (this.paused) return
+
     const startTime = Date.now()
 
     this.tickCount++
@@ -385,7 +393,7 @@ export class Game {
   }
 
   spawnNewZones() {
-    while (this.zones.length < this.gameSoftArea * 1.25) {
+    while (this.zones.length < this.gameSoftArea * 1.15) {
       const z = generateZoneData(this)
       if (!z) return
       const zone = this.addZone(z)
@@ -455,10 +463,11 @@ export class Game {
   }
 
   spawnNewAIs() {
-    const aiShipCoefficient = 5
+    const aiShipCoefficient = 3
     while (
       this.ships.length &&
-      this.aiShips.length < this.gameSoftArea * aiShipCoefficient
+      this.aiShips.length <
+        this.gameSoftArea * aiShipCoefficient
     ) {
       let radius = this.gameSoftRadius
       let spawnPoint: CoordinatePair | undefined
@@ -734,9 +743,9 @@ export class Game {
   }
 
   recalculateFactionRankings() {
-    // credits
-    let topCreditsShips: FactionRankingTopEntry[] = []
-    const creditsScores: FactionRankingScoreEntry[] = []
+    // netWorth
+    let topNetWorthShips: FactionRankingTopEntry[] = []
+    const netWorthScores: FactionRankingScoreEntry[] = []
     for (let faction of this.factions) {
       if (faction.id === `red`) continue
       let total = 0
@@ -745,7 +754,12 @@ export class Game {
         for (let cm of (s as HumanShip).crewMembers) {
           shipTotal += cm.credits
         }
-        topCreditsShips.push({
+        for (let i of (s as HumanShip).items) {
+          shipTotal += (
+            c.items[i.type][i.id] as BaseItemData
+          ).basePrice
+        }
+        topNetWorthShips.push({
           name: s.name,
           color: faction.color,
           score: shipTotal,
@@ -753,14 +767,14 @@ export class Game {
 
         total += shipTotal
       })
-      creditsScores.push({
+      netWorthScores.push({
         faction: c.stubify(faction, [
           `members`,
         ]) as FactionStub,
         score: total,
       })
     }
-    topCreditsShips = topCreditsShips
+    topNetWorthShips = topNetWorthShips
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
 
@@ -816,11 +830,11 @@ export class Game {
 
     this.factionRankings = [
       {
-        category: `credits`,
-        scores: creditsScores.sort(
+        category: `netWorth`,
+        scores: netWorthScores.sort(
           (a, b) => b.score - a.score,
         ),
-        top: topCreditsShips,
+        top: topNetWorthShips,
       },
       {
         category: `control`,

@@ -62,6 +62,10 @@ class BasicPlanet extends Planet_1.Planet {
                 value: `boostSightRange`,
             },
             {
+                weight: 3 * shipPassiveMultiplier,
+                value: `boostStaminaRegeneration`,
+            },
+            {
                 weight: shipPassiveMultiplier * 1.01,
                 value: `boostBroadcastRange`,
             },
@@ -91,6 +95,12 @@ class BasicPlanet extends Planet_1.Planet {
         else if (levelUpEffect === `boostSightRange`) {
             this.addPassive({
                 id: `boostSightRange`,
+                intensity: 0.1,
+            });
+        }
+        else if (levelUpEffect === `boostStaminaRegeneration`) {
+            this.addPassive({
+                id: `boostStaminaRegeneration`,
                 intensity: 0.1,
             });
         }
@@ -242,7 +252,7 @@ class BasicPlanet extends Planet_1.Planet {
         // }
         if (!this.leanings.find((p) => p.type === `repair` && p.never === true)) {
             const propensity = this.leanings.find((p) => p.type === `repair`)
-                ?.propensity || 1;
+                ?.propensity || 0.1;
             if (!this.vendor?.repairCostMultiplier)
                 addable.push({ class: `repair`, propensity });
         }
@@ -287,15 +297,6 @@ class BasicPlanet extends Planet_1.Planet {
         this._stub = null; // invalidate stub
         this.toUpdate.priceFluctuator = this.priceFluctuator;
         this.updateFrontendForShipsAt();
-    }
-    toLogStub() {
-        const s = super.toLogStub();
-        return {
-            ...s,
-            vendor: undefined,
-            repairFactor: undefined,
-            passives: undefined,
-        };
     }
 }
 exports.BasicPlanet = BasicPlanet;

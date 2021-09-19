@@ -442,17 +442,18 @@ export default function (
           p.name === vendorLocation &&
           p.planetType === `basic`,
       ) as BasicPlanet | undefined
-      const cargoBeingBought = planet?.vendor?.cargo?.find(
-        (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
-      )
-      if (!planet || !cargoBeingBought)
+      const sellMultiplier =
+        planet?.vendor?.cargo?.find(
+          (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
+        )?.sellMultiplier || c.baseCargoSellMultiplier
+      if (!planet)
         return callback({
-          error: `The vendor does not buy that.`,
+          error: `No planet found.`,
         })
 
       const price = Math.min(
-        c.cargo[cargoBeingBought.id].basePrice *
-          cargoBeingBought.sellMultiplier *
+        c.cargo[cargoId].basePrice *
+          sellMultiplier *
           amount *
           planet.priceFluctuator *
           ((planet.allegiances.find(

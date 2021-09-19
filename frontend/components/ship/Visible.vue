@@ -10,8 +10,8 @@
           class="panesection"
           v-if="
             !ship.visible.ships.length &&
-              !ship.visible.planets.length &&
-              !ship.visible.caches.length
+            !ship.visible.planets.length &&
+            !ship.visible.caches.length
           "
         >
           <div class="sub">Nothing on scanners.</div>
@@ -38,12 +38,10 @@
               (<AngleArrow :angle="visibleShip.angle" />
               {{
                 Math.round(visibleShip.distance * 1000) /
-                  1000
+                1000
               }}AU)
             </div>
-            <span v-else>
-              (Here)
-            </span>
+            <span v-else> (Here) </span>
           </div>
 
           <div
@@ -66,12 +64,10 @@
               (<AngleArrow :angle="visiblePlanet.angle" />
               {{
                 Math.round(visiblePlanet.distance * 1000) /
-                  1000
+                1000
               }}AU)
             </div>
-            <span v-else>
-              (Here)
-            </span>
+            <span v-else> (Here) </span>
           </div>
 
           <div
@@ -89,7 +85,7 @@
             />
             {{
               Math.round(visibleCache.distance * 1000) /
-                1000
+              1000
             }}AU)
           </div>
         </div>
@@ -117,7 +113,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

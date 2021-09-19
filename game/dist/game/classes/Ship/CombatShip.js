@@ -81,7 +81,8 @@ class CombatShip extends Ship_1.Ship {
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
-        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos + dist_1.default.randomBetween(-0.0001, 0.0001)));
+        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos +
+            dist_1.default.randomBetween(dist_1.default.arrivalThreshold * -0.4, dist_1.default.arrivalThreshold * 0.4)));
         db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
@@ -118,10 +119,11 @@ class CombatShip extends Ship_1.Ship {
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / weapon.range;
+        // const maxMissChance = 0.9
         const enemyAgility = target.chassis.agility +
             (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity || 0);
         const hitRoll = Math.random();
-        let miss = hitRoll * enemyAgility < rangeAsPercent;
+        let miss = hitRoll * enemyAgility < rangeAsPercent; // + maxMissChance
         // todo this makes it impossible to hit some ships even when they're "in range"... fix
         let damage = miss
             ? 0
@@ -200,7 +202,7 @@ class CombatShip extends Ship_1.Ship {
                     },
                 },
                 `&nospace.`,
-            ], `high`);
+            ], `low`);
         else
             this.logEntry([
                 `Attacked`,
@@ -250,6 +252,15 @@ class CombatShip extends Ship_1.Ship {
             ], `high`);
         this.addStat(`damageDealt`, attackResult.damageTaken);
         if (attackResult.didDie) {
+            // extra combat xp for all crew members in the weapons bay
+            const xpBoostMultiplier = this.passives
+                .filter((p) => p.id === `boostXpGain`)
+                .reduce((total, p) => (p.intensity || 0) + total, 0) + 1;
+            this.crewMembers
+                .filter((cm) => cm.location === `weapons`)
+                .forEach((cm) => {
+                cm.addXp(`munitions`, dist_1.default.baseXpGain * 3000 * xpBoostMultiplier);
+            });
             this.addStat(`kills`, 1);
             this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
         }
@@ -530,7 +541,7 @@ class CombatShip extends Ship_1.Ship {
                         },
                         `&nospace.`,
                     ]),
-            ], attack.miss ? `medium` : `high`);
+            ], attack.miss ? `low` : `high`);
         // zone or passive damage
         else
             this.logEntry([
@@ -557,7 +568,7 @@ class CombatShip extends Ship_1.Ship {
                         },
                         `&nospace.`,
                     ]),
-            ], attack.miss ? `medium` : `high`);
+            ], attack.miss ? `low` : `high`);
         return damageResult;
     }
     die(attacker) {

@@ -5,12 +5,6 @@ import fs from 'fs'
 import { db } from '../../db'
 
 import { game } from '../..'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
-import type { CombatShip } from '../../game/classes/Ship/CombatShip'
-import type { Planet } from '../../game/classes/Planet/Planet'
-import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
-import type { Ship } from '../../game/classes/Ship/Ship'
 
 let adminKeys: any
 try {
@@ -33,8 +27,8 @@ try {
 
 function isAdmin(id, password) {
   if (!adminKeys) return false
-  if (password !== adminKeys.password) return false
-  if (!adminKeys.validIds.includes(id)) return false
+  if (password !== adminKeys?.password) return false
+  if (!adminKeys?.validIds?.includes(id)) return false
   return true
 }
 
@@ -51,6 +45,48 @@ export default function (
         `Non-admin attempted to access game:save`,
       )
     game.save()
+  })
+
+  socket.on(`game:pause`, (id, password) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:pause`,
+      )
+    game.paused = true
+    c.log(`yellow`, `Game paused`)
+  })
+
+  socket.on(`game:unpause`, (id, password) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:unpause`,
+      )
+    game.paused = false
+    c.log(`yellow`, `Game unpaused`)
+  })
+
+  socket.on(`game:messageAll`, (id, password, message) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:messageAll`,
+      )
+
+    if (Array.isArray(message))
+      message.unshift({
+        color: `#888`,
+        text: `Message from game admin:`,
+      })
+    else
+      message = [
+        {
+          color: `#888`,
+          text: `Message from game admin:`,
+        },
+        message,
+      ]
+    game.humanShips.forEach((s) => {
+      s.logEntry(message, `critical`)
+    })
   })
 
   socket.on(

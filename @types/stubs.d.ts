@@ -72,6 +72,10 @@ interface PlanetStub extends BaseStub {
   location: CoordinatePair
   [key: string]: any
 }
+interface PlanetLogStub extends BaseStub {
+  type: `planet`
+  name: string
+}
 interface CacheStub extends BaseStub {
   location: CoordinatePair
   [key: string]: any

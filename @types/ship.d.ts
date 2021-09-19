@@ -71,6 +71,7 @@ type ShipPassiveEffectType =
   | `disguiseChassisType`
   | `boostAttackWithNumberOfFactionMembersWithinDistance`
   | `boostDamageToItemType`
+  | `boostStaminaRegeneration`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectType
   intensity?: number

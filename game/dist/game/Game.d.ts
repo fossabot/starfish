@@ -20,6 +20,7 @@ export declare class Game {
     readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
     factionRankings: FactionRanking[];
+    paused: boolean;
     constructor();
     startGame(): void;
     save(): Promise<void>;

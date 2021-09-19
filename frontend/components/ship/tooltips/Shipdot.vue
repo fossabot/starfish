@@ -1,24 +1,27 @@
 <template>
   <div class="shipdataview">
     <ShipTooltipsShipheader
-      :data="data"
+      :data="dataToUse"
       :interactive="true"
     />
 
     <div
-      v-if="data._hp && data._maxHp"
+      v-if="dataToUse._hp && dataToUse._maxHp"
       class="panesection"
       v-tooltip="
-        `🇨🇭HP: ${c.r2(data._hp)}/${c.r2(
-          data._maxHp,
+        `🇨🇭HP: ${c.r2(dataToUse._hp)}/${c.r2(
+          dataToUse._maxHp,
         )}<br /><br />The sum total of all of the ship's equipment's health.`
       "
     >
-      <PillBar :value="data._hp" :max="data._maxHp" />
+      <PillBar
+        :value="dataToUse._hp"
+        :max="dataToUse._maxHp"
+      />
     </div>
     <!-- <ProgressBar
-      v-if="data._hp && data._maxHp"
-      :percent="data._hp / data._maxHp"
+      v-if="dataToUse._hp && dataToUse._maxHp"
+      :percent="dataToUse._hp / dataToUse._maxHp"
       @mouseenter.native="
         $store.commit(
           'tooltip',
@@ -29,41 +32,44 @@
     >
       <div>
         🇨🇭HP:
-        <NumberChangeHighlighter :number="c.r2(data._hp)" />
+        <NumberChangeHighlighter :number="c.r2(dataToUse._hp)" />
         /
-        {{ c.r2(data._maxHp) }}
+        {{ c.r2(dataToUse._maxHp) }}
       </div>
     </ProgressBar> -->
 
-    <div class="panesection" v-if="data.planet">
+    <div class="panesection" v-if="dataToUse.planet">
       <div
         v-tooltip="{
           type: 'planet',
-          data: data.planet,
+          data: dataToUse.planet,
         }"
       >
         At planet
-        <span :style="{ color: data.planet.color }"
-          >🪐{{ data.planet.name }}</span
+        <span :style="{ color: dataToUse.planet.color }"
+          >🪐{{ dataToUse.planet.name }}</span
         >
       </div>
     </div>
 
     <div
       class="panesection"
-      v-if="data.speed !== undefined"
+      v-if="dataToUse.speed !== undefined"
     >
-      <div class="arrow" v-if="data.speed">
+      <div class="arrow" v-if="dataToUse.speed">
         <div>
-          {{ c.r2(data && data.speed * 60 * 60, 4) }}
+          {{
+            c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
+          }}
           AU/hr
           <br />
-          at {{ c.r2(data && data.direction, 2) }}°
+          at
+          {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
         </div>
         <svg
           :style="{
             transform: `rotate(${
-              data && data.direction * -1
+              dataToUse && dataToUse.direction * -1
             }deg)`,
           }"
           width="404"
@@ -103,39 +109,41 @@
     <div
       class="panesection"
       v-if="
-        (data._hp === undefined && data._maxHp) ||
-        data.chassis ||
-        data.level ||
-        data.mass ||
-        data.crewMembers
+        (dataToUse._hp === undefined && dataToUse._maxHp) ||
+        dataToUse.chassis ||
+        dataToUse.level ||
+        dataToUse.mass ||
+        dataToUse.crewMembers
       "
     >
       <div
-        v-if="data._hp === undefined && data._maxHp"
+        v-if="
+          dataToUse._hp === undefined && dataToUse._maxHp
+        "
         class="flexbetween"
       >
         <div>Max HP</div>
-        <div>{{ data._maxHp }}</div>
+        <div>{{ dataToUse._maxHp }}</div>
       </div>
       <div
-        v-if="data.chassis"
+        v-if="dataToUse.chassis"
         class="flexbetween"
         v-tooltip="{
           type: 'chassis',
-          data: data.chassis,
+          data: dataToUse.chassis,
         }"
       >
         <div>Chassis</div>
-        <div>{{ data.chassis.displayName }}</div>
+        <div>{{ dataToUse.chassis.displayName }}</div>
       </div>
 
-      <div v-if="data.level" class="flexbetween">
+      <div v-if="dataToUse.level" class="flexbetween">
         <div>Level</div>
-        <div>{{ Math.round(data.level) }}</div>
+        <div>{{ Math.round(dataToUse.level) }}</div>
       </div>
 
       <div
-        v-if="data.mass"
+        v-if="dataToUse.mass"
         class="flexbetween"
         v-tooltip="
           `More mass requires more thrust to gain velocity.`
@@ -143,18 +151,20 @@
       >
         <div>Mass</div>
         <div>
-          {{ c.numberWithCommas(c.r2(data.mass, 0)) }}kg
+          {{
+            c.numberWithCommas(c.r2(dataToUse.mass, 0))
+          }}kg
         </div>
       </div>
 
       <div
-        v-if="data.crewMembers"
+        v-if="dataToUse.crewMembers"
         class="flexbetween"
         v-tooltip="
-          Array.isArray(data.crewMembers) &&
-          data.crewMembers[0] &&
-          data.crewMembers[0].name
-            ? `<b>Crew</b><br/><hr />${data.crewMembers
+          Array.isArray(dataToUse.crewMembers) &&
+          dataToUse.crewMembers[0] &&
+          dataToUse.crewMembers[0].name
+            ? `<b>Crew</b><br/><hr />${dataToUse.crewMembers
                 .map((cm) => cm.name)
                 .join(', ')}`
             : null
@@ -162,25 +172,25 @@
       >
         <div>Crew Members</div>
         <div>
-          {{ data.crewMembers.length }}
+          {{ dataToUse.crewMembers.length }}
         </div>
       </div>
       <div
         class="flexbetween"
         v-if="
-          data.captain &&
-          data.crewMembers &&
-          Array.isArray(data.crewMembers)
+          dataToUse.captain &&
+          dataToUse.crewMembers &&
+          Array.isArray(dataToUse.crewMembers)
         "
       >
         <div>Captain</div>
         <div>
           {{
-            data.crewMembers.find(
-              (cm) => cm.id === data.captain,
+            dataToUse.crewMembers.find(
+              (cm) => cm.id === dataToUse.captain,
             )
-              ? data.crewMembers.find(
-                  (cm) => cm.id === data.captain,
+              ? dataToUse.crewMembers.find(
+                  (cm) => cm.id === dataToUse.captain,
                 ).name
               : 'No Captain'
           }}
@@ -190,12 +200,16 @@
 
     <div
       class="panesection"
-      v-if="showItems && data.items && data.items.length"
+      v-if="
+        showItems &&
+        dataToUse.items &&
+        dataToUse.items.length
+      "
     >
       <div>
         <div
-          v-for="(item, index) in data.items || []"
-          :key="'tooltipscanitem' + data.id + index"
+          v-for="(item, index) in dataToUse.items || []"
+          :key="'tooltipscanitem' + dataToUse.id + index"
           v-tooltip="{
             type: item.type,
             data: item,
@@ -233,7 +247,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -241,7 +255,16 @@ export default Vue.extend({
   data() {
     return { c }
   },
-  computed: {},
+  computed: {
+    ...mapState(['ship']),
+    dataToUse() {
+      return (
+        this.ship?.visible?.ships.find(
+          (p) => p.id === this.data.id,
+        ) || this.data
+      )
+    },
+  },
   mounted() {},
 })
 </script>

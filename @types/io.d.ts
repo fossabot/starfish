@@ -34,6 +34,19 @@ interface IOClientEvents {
     callback: (res: boolean) => void,
   ) => void
   [`game:save`]: (adminId: string, password: string) => void
+  [`game:pause`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:unpause`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:messageAll`]: (
+    adminId: string,
+    password: string,
+    message: LogContent,
+  ) => void
   [`game:resetAllPlanets`]: (
     adminId: string,
     password: string,

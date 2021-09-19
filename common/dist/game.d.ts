@@ -17,6 +17,7 @@ declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
+    supportServerLink: string;
     gameShipLimit: number;
     gameSpeedMultiplier: number;
     baseSightRange: number;
@@ -46,10 +47,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: (keyof BasePlanetData)[];
-        faction: (keyof BaseFactionData)[];
-        species: (keyof BaseSpeciesData)[];
-        chassis: (keyof BaseChassisData)[];
+        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
+        chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
@@ -68,6 +69,7 @@ declare const _default: {
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
     tactics: Tactic[];
+    baseCargoSellMultiplier: number;
     taglineOptions: string[];
     statToString: typeof statToString;
     headerBackgroundOptions: {

@@ -149,9 +149,10 @@
     <div
       class="panesection"
       v-if="
-        ship.visible.ships.length ||
-        planetsToShow.length ||
-        ship.visible.caches.length
+        ship.visible &&
+        (ship.visible.ships.length ||
+          planetsToShow.length ||
+          ship.visible.caches.length)
       "
     >
       <div>
@@ -175,6 +176,7 @@
               planet.location[1] !==
                 crewMember.targetLocation[1],
           }"
+          v-tooltip="{ type: 'planet', name: planet.name }"
         >
           <span :style="{ color: planet.color }"
             >🪐{{ planet.name }}</span
@@ -183,6 +185,7 @@
       ><span
         v-for="otherShip in ship.visible.ships"
         :key="'gotoship' + otherShip.id"
+        v-tooltip="{ type: 'ship', id: ship.id }"
       >
         <button
           @click="setTarget(otherShip.location)"
@@ -200,6 +203,7 @@
       ><span
         v-for="cache in cachesToShow"
         :key="'gotocache' + cache.id"
+        v-tooltip="{ type: 'cache', id: cache.id }"
       >
         <button
           @click="setTarget(cache.location)"
@@ -227,7 +231,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -296,7 +300,7 @@ export default Vue.extend({
       )
     },
     planetsToShow(): PlanetStub[] {
-      const p = [...(this.ship.visible.planets || [])]
+      const p = [...(this.ship.visible?.planets || [])]
       for (let seen of this.ship.seenPlanets) {
         if (!p.find((pl) => pl.name === seen.name))
           p.push(seen)
@@ -310,7 +314,7 @@ export default Vue.extend({
         .slice(0, 6)
     },
     cachesToShow(): CacheStub[] {
-      return this.ship?.visible.caches
+      return this.ship?.visible?.caches
         .map((cache: CacheStub) => ({
           ...cache,
           distance: c.distance(
