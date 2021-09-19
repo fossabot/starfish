@@ -33,6 +33,10 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     globals.mPerKm
 
   if (r === 0) return [0, 0]
+<<<<<<< HEAD
+  const gravityForce =
+    (-globals.gravitationalConstant * m1 * m2) / r // real divisor is r ** 2
+=======
 
   // const scalingFunction = (
   //   rangeInMeters,
@@ -47,6 +51,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
   // const gravityForce = scalingFunction(r, m1 * m2)
 
   // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
+>>>>>>> a3f857f825a926c15109728928fc142b6ad0bd60
   // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
   const gravityScaleFactor = 0.25
   // const gravityForce =
@@ -62,7 +67,11 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     (i) => i * gravityForce,
   ) as CoordinatePair
 
+<<<<<<< HEAD
+  console.log(gravityForce, gravityForceVector)
+=======
   // if (gravityForce < -1012223) console.log(gravityForce)
+>>>>>>> a3f857f825a926c15109728928fc142b6ad0bd60
   return gravityForceVector // kg * m / second == N
 }
 

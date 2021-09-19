@@ -166,9 +166,9 @@ export function generateBasicPlanet(
 
   const level = 0
   const baseLevel = homeworldFactionKey
-    ? 7
+    ? 9
     : Math.ceil(
-        Math.random() * 3 +
+        Math.random() * 5 +
           c.distance(location, [0, 0]) / 3,
       )
   const xp = 0

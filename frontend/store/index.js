@@ -19,6 +19,7 @@ export const state = () => ({
   winSize: [1200, 1000],
   modal: null,
   forceMapRedraw: 0,
+  mapFollowingShip: true,
 })
 
 export const mutations = {
@@ -192,7 +193,8 @@ export const actions = {
         updates.crewMembers.forEach((cmStub) =>
           commit(`updateACrewMember`, cmStub),
         )
-      } else if (prop === `visible`) {
+      } else if (prop === `visible` && updates.visible) {
+        c.log(`updating visible`, updates.visible)
         // * planets send only the things that updated, so we update that here
         if (!state.ship?.visible)
           commit(`setShipProp`, [
@@ -217,7 +219,8 @@ export const actions = {
           }
           commit(`setShipProp`, [`visible`, newVisible])
         }
-      } else commit(`setShipProp`, [prop, updates[prop]])
+      } else if (prop !== `visible`)
+        commit(`setShipProp`, [prop, updates[prop]])
     }
     commit(`setShipProp`, [`lastUpdated`, Date.now()])
     commit(`set`, {

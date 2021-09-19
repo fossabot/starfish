@@ -13,11 +13,11 @@ export default Vue.extend({
   },
   watch: {
     userId() {
-      if (this.userId) this.$router.push('/s')
+      if (this.userId) (this as any).$router.push('/s')
     },
   },
   mounted() {
-    if (this.userId) this.$router.push('/s')
+    if (this.userId) (this as any).$router.push('/s')
     else {
       const botId = `804439178636558396`
       const hostname = `www.starfish.cool`

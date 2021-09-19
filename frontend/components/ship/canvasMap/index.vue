@@ -37,7 +37,7 @@
       <div class="floatbuttons">
         <button
           @click="resetCenter"
-          v-if="!followingCenter"
+          v-if="!mapFollowingShip"
           class="secondary"
         >
           Follow Ship
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 import Drawer from './drawMapFrame'
 
@@ -97,7 +97,6 @@ export default Vue.extend({
       dragStartPoint,
       dragEndPoint,
       mapCenterAtDragStart,
-      followingCenter: true,
       followCenterTimeout,
       isZoomingTimeout,
       resetCenterTime: 2 * 60 * 1000,
@@ -110,6 +109,7 @@ export default Vue.extend({
       'userId',
       'lastUpdated',
       'forceMapRedraw',
+      'mapFollowingShip',
     ]),
     show(): boolean {
       return (
@@ -197,11 +197,11 @@ export default Vue.extend({
                   this.drawer.flatScale) /
                   1000000) *
                 2
-              : this.followingCenter
+              : this.mapFollowingShip
               ? undefined
               : this.zoom,
             ship: this.ship,
-            center: this.followingCenter
+            center: this.mapFollowingShip
               ? undefined
               : this.mapCenter,
             visible: this.ship?.visible,
@@ -237,7 +237,7 @@ export default Vue.extend({
     mouseDown(e: MouseEvent) {
       if (!this.interactive) return
       clearTimeout(this.followCenterTimeout)
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
       this.mouseIsDown = true
       this.dragStartPoint = [e.x, e.y]
       this.zoom = this.drawer?.zoom
@@ -294,7 +294,7 @@ export default Vue.extend({
         this.isPanning = true
       else return
 
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
 
       // c.log({
       //   dsp: this.dragStartPoint,
@@ -332,7 +332,7 @@ export default Vue.extend({
         100,
       )
 
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
       clearTimeout(this.followCenterTimeout)
       this.followCenterTimeout = setTimeout(
         this.resetCenter,
@@ -379,7 +379,7 @@ export default Vue.extend({
     },
 
     resetCenter() {
-      this.followingCenter = true
+      this.$store.commit('set', { mapFollowingShip: true })
       this.zoom = undefined
       this.mapCenter = undefined
       this.drawNextFrame()

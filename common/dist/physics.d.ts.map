@@ -1,1 +1,1 @@
-{"version":3,"file":"physics.d.ts","sourceRoot":"","sources":["../src/physics.ts"],"names":[],"mappings":"AAGA,iBAAS,mCAAmC,CAC1C,QAAQ,EAAE,WAAW,EACrB,QAAQ,EAAE,WAAW,GACpB,cAAc,CAYhB;AAED,iBAAS,4CAA4C,CACnD,QAAQ,EAAE,kBAAkB,EAC5B,QAAQ,EAAE,kBAAkB,GAC3B,cAAc,CAoDhB;;;;;AAED,wBAGC"}
+{"version":3,"file":"physics.d.ts","sourceRoot":"","sources":["../src/physics.ts"],"names":[],"mappings":"AAGA,iBAAS,mCAAmC,CAC1C,QAAQ,EAAE,WAAW,EACrB,QAAQ,EAAE,WAAW,GACpB,cAAc,CAShB;AAED,iBAAS,4CAA4C,CACnD,QAAQ,EAAE,kBAAkB,EAC5B,QAAQ,EAAE,kBAAkB,GAC3B,cAAc,CAuDhB;;;;;AAED,wBAGC"}
