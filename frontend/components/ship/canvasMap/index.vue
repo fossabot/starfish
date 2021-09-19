@@ -109,8 +109,13 @@ export default Vue.extend({
       'userId',
       'lastUpdated',
       'forceMapRedraw',
-      'mapFollowingShip',
     ]),
+    mapFollowingShip(): boolean {
+      return (
+        !this.interactive ||
+        this.$store.state.mapFollowingShip
+      )
+    },
     show(): boolean {
       return (
         this.ship &&
