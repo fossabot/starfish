@@ -262,7 +262,9 @@ class CombatShip extends Ship_1.Ship {
                 cm.addXp(`munitions`, dist_1.default.baseXpGain * 3000 * xpBoostMultiplier);
             });
             this.addStat(`kills`, 1);
-            this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
+            if (this.stats.find((s) => s.stat === `kills`)
+                ?.amount === 1)
+                this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
         }
         return attackResult;
     }

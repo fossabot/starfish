@@ -391,12 +391,6 @@ export abstract class CombatShip extends Ship {
         })
 
       this.addStat(`kills`, 1)
-<<<<<<< HEAD
-      this.addHeaderBackground(
-        `Stone Cold 1`,
-        `destroying an enemy ship`,
-      )
-=======
       if (
         this.stats.find((s) => s.stat === `kills`)
           ?.amount === 1
@@ -405,7 +399,6 @@ export abstract class CombatShip extends Ship {
           `Stone Cold 1`,
           `destroying an enemy ship`,
         )
->>>>>>> d5dad4514edf4db6ab96ac731ca6d1e445646547
     }
 
     return attackResult
