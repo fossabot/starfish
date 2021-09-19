@@ -77,6 +77,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .logentry {
+  -webkit-backface-visibility: none;
   line-height: 1.15;
   letter-spacing: -0.01em;
   margin-bottom: 1.5em;

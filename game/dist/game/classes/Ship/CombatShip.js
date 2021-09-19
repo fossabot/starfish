@@ -200,7 +200,7 @@ class CombatShip extends Ship_1.Ship {
                     },
                 },
                 `&nospace.`,
-            ], `high`);
+            ], `low`);
         else
             this.logEntry([
                 `Attacked`,
@@ -250,8 +250,19 @@ class CombatShip extends Ship_1.Ship {
             ], `high`);
         this.addStat(`damageDealt`, attackResult.damageTaken);
         if (attackResult.didDie) {
+            // extra combat xp for all crew members in the weapons bay
+            const xpBoostMultiplier = this.passives
+                .filter((p) => p.id === `boostXpGain`)
+                .reduce((total, p) => (p.intensity || 0) + total, 0) + 1;
+            this.crewMembers
+                .filter((cm) => cm.location === `weapons`)
+                .forEach((cm) => {
+                cm.addXp(`munitions`, dist_1.default.baseXpGain * 3000 * xpBoostMultiplier);
+            });
             this.addStat(`kills`, 1);
-            this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
+            if (this.stats.find((s) => s.stat === `kills`)
+                ?.amount === 1)
+                this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`);
         }
         return attackResult;
     }
@@ -530,7 +541,7 @@ class CombatShip extends Ship_1.Ship {
                         },
                         `&nospace.`,
                     ]),
-            ], attack.miss ? `medium` : `high`);
+            ], attack.miss ? `low` : `high`);
         // zone or passive damage
         else
             this.logEntry([
@@ -557,7 +568,7 @@ class CombatShip extends Ship_1.Ship {
                         },
                         `&nospace.`,
                     ]),
-            ], attack.miss ? `medium` : `high`);
+            ], attack.miss ? `low` : `high`);
         return damageResult;
     }
     die(attacker) {

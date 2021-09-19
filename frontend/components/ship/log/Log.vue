@@ -68,5 +68,6 @@ export default Vue.extend({
 .scroll {
   height: 250px;
   overflow-y: auto;
+  user-select: text;
 }
 </style>

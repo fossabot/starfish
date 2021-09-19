@@ -9,61 +9,65 @@
       <span class="sectionemoji">🏆</span>Global Rankings
     </template>
 
-    <div
-      class="panesection"
-      v-for="ranking in ship.factionRankings"
-      :key="'factionRanking' + ranking.category"
-    >
-      <div class="panesubhead">{{ ranking.category }}</div>
-      <div class="flex rounded">
-        <div
-          v-for="(score, index) in ranking.scores"
-          class="scorebit"
-          :style="{
-            'flex-grow': score.score,
-            background: c.factions[score.faction.id].color,
-          }"
-          :key="
-            'score' + ranking.category + score.faction.id
-          "
-          v-tooltip="
-            `#${index + 1}) ${c.capitalize(
-              c.factions[score.faction.id].name,
-            )}: ${c.r2(score.score, 0)}`
-          "
-        ></div>
-      </div>
-      <div v-if="ranking.top" class="martop">
-        <h5 class="sub">Top Ships</h5>
-        <ol>
-          <li
-            v-for="(score, index) in ranking.top"
-            :key="'scoretop' + ranking.category + index"
-          >
-            <div class="flexbetween">
-              <div
-                :style="{
-                  color: score.color,
-                }"
-              >
-                <b>{{ score.name }}</b>
+    <Tabs>
+      <Tab
+        v-for="ranking in ship.factionRankings"
+        :key="'factionRanking' + ranking.category"
+        :title="c.camelCaseToWords(ranking.category)"
+      >
+        <div class="flex rounded">
+          <div
+            v-for="(score, index) in ranking.scores"
+            class="scorebit"
+            :style="{
+              'flex-grow': score.score,
+              background:
+                c.factions[score.faction.id].color,
+            }"
+            :key="
+              'score' + ranking.category + score.faction.id
+            "
+            v-tooltip="
+              `#${index + 1}) ${c.capitalize(
+                c.factions[score.faction.id].name,
+              )}: ${c.numberWithCommas(
+                c.r2(score.score, 0),
+              )}`
+            "
+          ></div>
+        </div>
+        <div v-if="ranking.top" class="martop">
+          <h5 class="sub">Top Ships</h5>
+          <ol>
+            <li
+              v-for="(score, index) in ranking.top"
+              :key="'scoretop' + ranking.category + index"
+            >
+              <div class="flexbetween">
+                <div
+                  :style="{
+                    color: score.color,
+                  }"
+                >
+                  <b>{{ score.name }}</b>
+                </div>
+                <div class="sub scorenumber">
+                  {{
+                    c.numberWithCommas(c.r2(score.score, 0))
+                  }}
+                </div>
               </div>
-              <div class="sub scorenumber">
-                {{
-                  c.numberWithCommas(c.r2(score.score, 0))
-                }}
-              </div>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </div>
+            </li>
+          </ol>
+        </div>
+      </Tab>
+    </Tabs>
   </Box>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

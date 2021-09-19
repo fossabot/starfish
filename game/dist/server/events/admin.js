@@ -26,9 +26,9 @@ catch (e) {
 function isAdmin(id, password) {
     if (!adminKeys)
         return false;
-    if (password !== adminKeys.password)
+    if (password !== adminKeys?.password)
         return false;
-    if (!adminKeys.validIds.includes(id))
+    if (!adminKeys?.validIds?.includes(id))
         return false;
     return true;
 }
@@ -40,6 +40,38 @@ function default_1(socket) {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access game:save`);
         __1.game.save();
+    });
+    socket.on(`game:pause`, (id, password) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:pause`);
+        __1.game.paused = true;
+        dist_1.default.log(`yellow`, `Game paused`);
+    });
+    socket.on(`game:unpause`, (id, password) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:unpause`);
+        __1.game.paused = false;
+        dist_1.default.log(`yellow`, `Game unpaused`);
+    });
+    socket.on(`game:messageAll`, (id, password, message) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:messageAll`);
+        if (Array.isArray(message))
+            message.unshift({
+                color: `#888`,
+                text: `Message from game admin:`,
+            });
+        else
+            message = [
+                {
+                    color: `#888`,
+                    text: `Message from game admin:`,
+                },
+                message,
+            ];
+        __1.game.humanShips.forEach((s) => {
+            s.logEntry(message, `critical`);
+        });
     });
     socket.on(`game:resetAllPlanets`, async (id, password) => {
         if (!isAdmin(id, password))

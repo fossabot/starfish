@@ -34,7 +34,7 @@
         :micro="true"
         :percent="
           (data.baseCooldown - data.cooldownRemaining) /
-            data.baseCooldown
+          data.baseCooldown
         "
         :dangerZone="-1"
       />
@@ -85,7 +85,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

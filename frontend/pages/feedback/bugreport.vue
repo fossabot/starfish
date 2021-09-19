@@ -4,8 +4,10 @@
       <h1>Bug Report</h1>
       <div>
         Please be as descriptive as possible. If you want to
-        share a screenshot, please post it on the support
-        server(link)!
+        share a screenshot, please post it on the
+        <a :href="c.supportServerLink" target="_blank"
+          >support server</a
+        >!
       </div>
       <!-- <div>
         Also consider creating an issue on the github issues
@@ -51,7 +53,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

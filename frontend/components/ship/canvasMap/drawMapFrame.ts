@@ -3,7 +3,7 @@ interface HoverableElement {
   screenPos: CoordinatePair
 }
 
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 export default class Drawer {
   readonly flatScale = 10000
 
@@ -77,6 +77,7 @@ export default class Drawer {
       false,
       0,
     )
+    if (!visible) visible = {}
 
     profiler.step(`bounds`)
     // ----- determine map bounds etc -----
@@ -521,7 +522,7 @@ export default class Drawer {
 
     profiler.step(`draw trails`)
     // ----- trails
-    visible.ships.forEach((s) => {
+    visible.ships?.forEach((s) => {
       const pointsToDraw = [
         ...s.previousLocations,
         s.location,

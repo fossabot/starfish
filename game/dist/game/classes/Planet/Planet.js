@@ -92,13 +92,9 @@ class Planet extends Stubbable_1.Stubbable {
         return this.stubify();
     }
     toLogStub() {
-        const s = this.stubify();
         return {
-            ...s,
             type: `planet`,
-            landingRadiusMultiplier: undefined,
-            stats: undefined,
-            passives: undefined,
+            name: this.name,
         };
     }
     addPassive(passive) {

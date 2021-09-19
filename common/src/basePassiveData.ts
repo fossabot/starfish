@@ -127,5 +127,11 @@ const basePassiveData: {
     toString: (p) =>
       `+${Math.round(p.intensity || 1)} crew skill levels`,
   },
+  boostStaminaRegeneration: {
+    toString: (p) =>
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster stamina regeneration`,
+  },
 }
 export default basePassiveData

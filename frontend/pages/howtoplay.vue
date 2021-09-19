@@ -318,6 +318,14 @@
 
       <!-- <h3>Passives</h3>
       <div>There are several passives</div> -->
+
+      <h3>Still have questions?</h3>
+      <div>
+        Feel free to reach out on the
+        <a :href="c.supportServerLink" target="_blank"
+          >support server</a
+        >!
+      </div>
     </div>
   </div>
 </template>

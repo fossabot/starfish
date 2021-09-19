@@ -9,11 +9,14 @@ import generalEvents from './events/general'
 import crewEvents from './events/crew'
 import itemEvents from './events/items'
 import adminEvents from './events/admin'
-import { createServer as createHTTPSServer } from 'https'
+import {
+  createServer as createHTTPSServer,
+  ServerOptions,
+} from 'https'
 
 require(`events`).captureRejections = true
 
-let serverConfig = {}
+let serverConfig: ServerOptions = {}
 if (process.env.NODE_ENV !== `production`) {
   serverConfig = {
     key: fs.readFileSync(
@@ -36,22 +39,30 @@ if (process.env.NODE_ENV !== `production`) {
         `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
       ),
     ),
-    ca: [fs.readFileSync(
-      path.resolve(
-        `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+    ca: [
+      fs.readFileSync(
+        path.resolve(
+          `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+        ),
       ),
-    )],
+    ],
     // requestCert: true
   }
 }
 
 const httpsServer = createHTTPSServer(serverConfig)
+
+// * test endpoint to check if the server is running and accessible
+httpsServer.on(`request`, (req, res) => {
+  res.end(`ok`)
+})
+
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   httpsServer,
   {
     cors: {
       origin: `*`,
-      methods: [`GET`, `POST`]
+      methods: [`GET`, `POST`],
     },
   },
 )
@@ -69,7 +80,6 @@ io.on(
     itemEvents(socket)
     adminEvents(socket)
   },
-  
 )
 
 httpsServer.listen(4200)

@@ -1,4 +1,4 @@
-import c from '../../../common/src'
+import c from '../../../common/dist'
 const { GoogleSpreadsheet } = require(`google-spreadsheet`)
 import fs from 'fs'
 

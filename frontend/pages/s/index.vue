@@ -47,11 +47,11 @@
         <ShipCrewRank />
 
         <ShipFactionRank />
-
-        <ShipNavPane v-if="!ship.tutorial" />
       </template>
 
       <ShipDead v-if="ship && ship.dead" />
+
+      <ShipNavPane v-if="ship && !ship.tutorial" />
     </div>
 
     <!-- <details style="position: relative; margin-bottom: 2em">
@@ -63,7 +63,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 import * as storage from '../../assets/scripts/storage'
 

@@ -356,8 +356,12 @@ export class HumanShip extends CombatShip {
   ) {
     // add xp
     const xpBoostMultiplier =
-      (this.passives.find((p) => p.id === `boostXpGain`)
-        ?.intensity || 0) + 1
+      this.passives
+        .filter((p) => p.id === `boostXpGain`)
+        .reduce(
+          (total, p) => (p.intensity || 0) + total,
+          0,
+        ) + 1
     thruster.addXp(
       `piloting`,
       c.baseXpGain *
@@ -668,7 +672,7 @@ export class HumanShip extends CombatShip {
     //   direction: this.direction,
     // })
 
-    if (charge > 0.5) {
+    if (charge > 0.25) {
       let targetData: LogContent | undefined
       const foundPlanet = this.seenPlanets.find(
         (planet) =>
@@ -1001,13 +1005,14 @@ export class HumanShip extends CombatShip {
         0,
       )
 
-      const amount =
+      const amount = c.r2(
         (Math.round(
           Math.random() * 3 * (Math.random() * 3),
         ) /
           10 +
           1.5) *
-        (1 + amountBoostPassive)
+          (1 + amountBoostPassive),
+      )
 
       const id: CargoId = c.randomFromArray([
         `oxygen`,
@@ -1909,25 +1914,34 @@ export class HumanShip extends CombatShip {
 
     // ----- gather most common attack target -----
 
-    const shipTargetCounts = weaponsRoomMembers.reduce(
-      (totals: any, cm) => {
-        if (!cm.attackTarget) return totals
-        const currTotal = totals.find(
-          (t: any) => t.attackTarget === cm.attackTarget,
-        )
-        const toAdd =
-          cm.skills.find((s) => s.skill === `munitions`)
-            ?.level || 1
-        if (currTotal) currTotal.total += toAdd
-        else
-          totals.push({
-            target: cm.attackTarget,
-            total: toAdd,
-          })
-        return totals
-      },
-      [],
-    )
+    const shipTargetCounts = weaponsRoomMembers
+      .reduce(
+        (
+          totals: { target: CombatShip; total: number }[],
+          cm,
+        ) => {
+          if (!cm.attackTarget) return totals
+          const currTotal = totals.find(
+            (t) => t.target === cm.attackTarget,
+          )
+          const toAdd =
+            cm.skills.find((s) => s.skill === `munitions`)
+              ?.level || 1
+          if (currTotal) currTotal.total += toAdd
+          else
+            totals.push({
+              target: cm.attackTarget,
+              total: toAdd,
+            })
+          return totals
+        },
+        [],
+      )
+      .map((totalEntry) => {
+        if (!this.canAttack(totalEntry.target))
+          totalEntry.total -= 1000 // disincentive for ships out of range, etc, but still possible to end up with them if they're the only ones targeted
+        return totalEntry
+      })
     const mainAttackTarget = shipTargetCounts.sort(
       (b: any, a: any) => b.total - a.total,
     )?.[0]?.target as CombatShip | undefined
@@ -1990,6 +2004,7 @@ export class HumanShip extends CombatShip {
       let targetShip = mainAttackTarget
       if (targetShip && !this.canAttack(targetShip))
         targetShip = undefined
+
       if (!targetShip) {
         // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
         const mostRecentCombat =
@@ -2009,29 +2024,32 @@ export class HumanShip extends CombatShip {
                 : ar,
             null,
           )
-        targetShip = mostRecentCombat
-          ? mostRecentCombat.attacker.id === this.id
-            ? mostRecentCombat.defender
-            : mostRecentCombat.attacker
-          : attackableShips.reduce(
-              // ----- if all else fails, just attack whatever's closest -----
-              (
-                closest: CombatShip | undefined,
-                curr: CombatShip,
-              ) => {
-                if (
-                  !closest ||
-                  c.distance(this.location, curr.location) <
-                    c.distance(
-                      this.location,
-                      closest.location,
-                    )
-                )
-                  return curr
-                return closest
-              },
-              undefined,
-            )
+        if (mostRecentCombat)
+          targetShip =
+            mostRecentCombat.attacker.id === this.id
+              ? mostRecentCombat.defender
+              : mostRecentCombat.attacker
+
+        // ----- if there is enemy from recent combat that we can hit, just pick the closest enemy -----
+        if (!targetShip)
+          targetShip = attackableShips.reduce(
+            (
+              closest: CombatShip | undefined,
+              curr: CombatShip,
+            ) => {
+              if (
+                !closest ||
+                c.distance(this.location, curr.location) <
+                  c.distance(
+                    this.location,
+                    closest.location,
+                  )
+              )
+                return curr
+              return closest
+            },
+            undefined,
+          )
       }
 
       // ----- attack with EVERY AVAILABLE WEAPON -----

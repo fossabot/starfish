@@ -68,6 +68,9 @@ const basePassiveData = {
     flatSkillBoost: {
         toString: (p) => `+${Math.round(p.intensity || 1)} crew skill levels`,
     },
+    boostStaminaRegeneration: {
+        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster stamina regeneration`,
+    },
 };
 exports.default = basePassiveData;
 //# sourceMappingURL=basePassiveData.js.map

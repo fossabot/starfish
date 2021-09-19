@@ -14,7 +14,10 @@ function getUnitVectorFromThatBodyToThisBody(thisBody, thatBody) {
     return math_1.default.degreesToUnitVector(angleBetween);
 }
 function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
-    if (!thisBody || !thatBody || !thisBody.mass || !thatBody.mass)
+    if (!thisBody ||
+        !thatBody ||
+        !thisBody.mass ||
+        !thatBody.mass)
         return [0, 0];
     const m1 = thisBody.mass || 0;
     const m2 = thatBody.mass || 0;
@@ -23,14 +26,27 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
         globals_1.default.mPerKm;
     if (r === 0)
         return [0, 0];
-    const gravityForce = (-globals_1.default.gravitationalConstant * m1 * m2) / r; // real divisor is r ** 2
+    // const scalingFunction = (
+    //   rangeInMeters,
+    //   massProduct: number,
+    // ) =>
+    //   0.0001 *
+    //   Math.sqrt(globals.gravitationalConstant * massProduct) *
+    //   (rangeInMeters /
+    //     (globals.gravityRange *
+    //       globals.kmPerAu *
+    //       globals.mPerKm))
+    // const gravityForce = scalingFunction(r, m1 * m2)
+    // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
+    // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
     const gravityScaleFactor = 0.25;
     // const gravityForce =
     // (-globals.gravitationalConstant * m1 * m2) / Math.abs(r) * gravityScaleFactor
-    const gravityForce = ((-globals_1.default.gravitationalConstant * m1 * m2) / r ** 2) * gravityScaleFactor;
+    const gravityForce = ((-globals_1.default.gravitationalConstant * m1 * m2) / r ** 2) *
+        gravityScaleFactor;
     const vectorToThisBody = getUnitVectorFromThatBodyToThisBody(thisBody, thatBody);
     const gravityForceVector = vectorToThisBody.map((i) => i * gravityForce);
-    console.log(gravityForce, gravityForceVector);
+    // if (gravityForce < -1012223) console.log(gravityForce)
     return gravityForceVector; // kg * m / second == N
 }
 exports.default = {

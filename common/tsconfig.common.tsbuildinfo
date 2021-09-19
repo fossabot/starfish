@@ -247,8 +247,8 @@
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
-        "version": "ac550aa953bd63a21ada526ce259cdb147fd822d9ae3bb07b3dab58fa5222cb7",
-        "signature": "ac550aa953bd63a21ada526ce259cdb147fd822d9ae3bb07b3dab58fa5222cb7",
+        "version": "ef6f0c60d4e1b49b99d4d7d2b3e57bb54c2ddda31f16a1addf5b84016ef333b1",
+        "signature": "ef6f0c60d4e1b49b99d4d7d2b3e57bb54c2ddda31f16a1addf5b84016ef333b1",
         "affectsGlobalScope": true
       },
       "../@types/frontend.d.ts": {
@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "869ce926b75888373ef677e22c92a2e6ee797ef1a1e606426b888eda947fb452",
-        "signature": "869ce926b75888373ef677e22c92a2e6ee797ef1a1e606426b888eda947fb452",
+        "version": "5c03c652260998ea5c0d0b87badcdcb89a6b66b690e3e70405b7c93da235b373",
+        "signature": "5c03c652260998ea5c0d0b87badcdcb89a6b66b690e3e70405b7c93da235b373",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,13 +282,13 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "0445423ff29536d42d89be754ec13286e1931c98648815c5ac9d52b55f1ef1ff",
-        "signature": "0445423ff29536d42d89be754ec13286e1931c98648815c5ac9d52b55f1ef1ff",
+        "version": "f8d909bdbe2df57317508954fdc8056bdd452bc22d5ed52f986dc6389701baa2",
+        "signature": "f8d909bdbe2df57317508954fdc8056bdd452bc22d5ed52f986dc6389701baa2",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "e1c84eb5f876aa60e49caf2fe68194aedfff5b2d8a7bfe3c0590e8bc79095491",
-        "signature": "e1c84eb5f876aa60e49caf2fe68194aedfff5b2d8a7bfe3c0590e8bc79095491",
+        "version": "c2ed19411e48134c34b59a4477df1aa8163d1cacde233d89c5d772b76ff9789a",
+        "signature": "c2ed19411e48134c34b59a4477df1aa8163d1cacde233d89c5d772b76ff9789a",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -322,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "687a232c665d66a78dc2fddbb152eda557089501c1447d9e84f08163a82bd509",
+        "version": "f09bda1d1d067a0de675b25db7e6c1f124e1dbbe349e97e38bbfeea790f48d49",
         "signature": "e8f8164e3359c943a9adcb2724a3a5caca628a9b83f7495deb90dee56ec0fa40",
         "affectsGlobalScope": false
       },
@@ -372,8 +372,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "cfd4e7ef1811fa45527cd4d420df7ffdd2c3f46718d7fffc465eefd11873fe68",
-        "signature": "9a9cf7e7b5dd92b33f8e3672a8bafb2b7bbc2fa81f4db3b2a8a1a196dd9c5a67",
+        "version": "8ed56d94e66d96415359ce60bc2fa91d9f68bcb737b9301fa4fc0d020f0d12f8",
+        "signature": "4e14d8bcfe6ebdb6fa8690827b948004df949a943741dddc492bb2b48565c7fd",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -382,7 +382,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "ad94788e8c040064c47449459c1c284ffaa7f743c4ab525d53961eaa0f2a318e",
+        "version": "8df19134b304c815bf692c17a71b80e0210f1b76857532072baf5a0f2949431e",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
@@ -428,7 +428,7 @@
       },
       "./src/index.ts": {
         "version": "2dfeed872f1a916eb3a5225d20abce7f26d816c76a36e0b0cb6620523fb82020",
-        "signature": "6b8bbbbc55cfaf92cc20ac1016f07beddaf4f4d0839cb9712ce1dfd0b63b53d2",
+        "signature": "966aceb749950e81452a78fe14c11fdb1ccd8266a09806d2a393f7e5a04727af",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -828,6 +828,7 @@
       ],
       "./src/game.ts": [
         "../node_modules/@types/node/util.d.ts",
+        "./src/cargo.ts",
         "./src/globals.ts",
         "./src/log.ts",
         "./src/math.ts",
@@ -2006,6 +2007,7 @@
       "./src/log.ts",
       "./src/math.ts",
       "./src/misc.ts",
+      "./src/physics.ts",
       "./src/profiler.ts",
       "./src/rooms.ts",
       "./src/species.ts",
