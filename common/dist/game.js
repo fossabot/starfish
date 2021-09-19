@@ -173,7 +173,7 @@ const headerBackgroundOptions = [
     { id: `Crimson Blur`, url: `gradient2.svg` },
     { id: `Lightspeedy`, url: `gradient3.svg` },
     { id: `Constellation 1`, url: `stars1.jpg` },
-    { id: `Gravestone 1`, url: `vintage1.jpg` },
+    { id: `Gravestone 1`, url: `vintage1.jpg` }, // die twice
 ];
 function getPlanetTitle(planet) {
     if (!planet || !planet.level)
