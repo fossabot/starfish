@@ -100,7 +100,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addStat(`planetTime`, 1);
             if (this.planet.planetType === `basic`) {
                 if (this.planet.repairFactor > 0) {
-                    const isAllied = (this.planet.allegiances.find((a) => a.faction.id === this.faction.id)?.level || 0) >= dist_1.default.factionAllegianceFriendCutoff;
+                    const isAllied = (this.planet.allegiances.find((a) => a.faction.id === this.faction.id)?.level || 0) >=
+                        dist_1.default.factionAllegianceFriendCutoff;
                     this.repair(this.planet.repairFactor *
                         0.000005 *
                         dist_1.default.gameSpeedMultiplier *
@@ -255,18 +256,23 @@ class HumanShip extends CombatShip_1.CombatShip {
         const xpBoostMultiplier = this.passives
             .filter((p) => p.id === `boostXpGain`)
             .reduce((total, p) => (p.intensity || 0) + total, 0) + 1;
-        thruster.addXp(`piloting`, dist_1.default.baseXpGain * 2000 * charge * thruster.cockpitCharge * xpBoostMultiplier);
+        thruster.addXp(`piloting`, dist_1.default.baseXpGain *
+            2000 *
+            charge *
+            thruster.cockpitCharge *
+            xpBoostMultiplier);
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
-        const initialVelocity = [...this.velocity];
+        const initialVelocity = [
+            ...this.velocity,
+        ];
         const initialMagnitude = dist_1.default.vectorToMagnitude(initialVelocity);
         const initialAngle = this.direction;
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) *
-            dist_1.default.baseEngineThrustMultiplier);
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier);
         const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
         const shipMass = this.mass;
         const thrustMagnitudeToApply = (magnitudePerPointOfCharge * charge) / shipMass;
@@ -286,8 +292,10 @@ class HumanShip extends CombatShip_1.CombatShip {
                 2 * Math.PI) %
                 (2 * Math.PI);
             // normalized to 0~2pi
-            const isAcute = angleDifferenceFromVelocityToTargetInRadians < Math.PI / 2 ||
-                angleDifferenceFromVelocityToTargetInRadians > Math.PI * (3 / 2);
+            const isAcute = angleDifferenceFromVelocityToTargetInRadians <
+                Math.PI / 2 ||
+                angleDifferenceFromVelocityToTargetInRadians >
+                    Math.PI * (3 / 2);
             let zeroedAngleToThrustInRadians = 0;
             dist_1.default.log({
                 initialVelocity,
@@ -307,9 +315,11 @@ class HumanShip extends CombatShip_1.CombatShip {
                 // angle from the tip of the velocity line that forms a right angle when it intersects the target line
                 const zeroedAngleFromVelocityVectorToClosestPointOnTargetLineInRadians = Math.PI -
                     Math.PI / 2 -
-                    (angleDifferenceFromVelocityToTargetInRadians <= Math.PI
+                    (angleDifferenceFromVelocityToTargetInRadians <=
+                        Math.PI
                         ? angleDifferenceFromVelocityToTargetInRadians
-                        : Math.PI - angleDifferenceFromVelocityToTargetInRadians);
+                        : Math.PI -
+                            angleDifferenceFromVelocityToTargetInRadians);
                 if (!didHaveExcessMagnitude) {
                     dist_1.default.log(`using line that forms right angle to target`);
                     zeroedAngleToThrustInRadians =
@@ -320,10 +330,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                     dist_1.default.log(`adjusting line to account for excess magnitude`);
                     const additionalDistanceToMoveAlongTargetLine = Math.PI -
                         Math.sqrt(thrustMagnitudeToApply ** 2 -
-                            distanceToClosestPointOnTargetLineFromVelocity ** 2);
-                    const additionalAngleToAddToThrustAngle = Math.acos((distanceToClosestPointOnTargetLineFromVelocity ** 2 +
+                            distanceToClosestPointOnTargetLineFromVelocity **
+                                2);
+                    const additionalAngleToAddToThrustAngle = Math.acos((distanceToClosestPointOnTargetLineFromVelocity **
+                        2 +
                         thrustMagnitudeToApply ** 2 -
-                        additionalDistanceToMoveAlongTargetLine ** 2) /
+                        additionalDistanceToMoveAlongTargetLine **
+                            2) /
                         (2 *
                             distanceToClosestPointOnTargetLineFromVelocity *
                             thrustMagnitudeToApply));
@@ -335,7 +348,8 @@ class HumanShip extends CombatShip_1.CombatShip {
                         additionalDistanceToMoveAlongTargetLine,
                         additionalAngleToAddToThrustAngle,
                     });
-                    zeroedAngleToThrustInRadians += additionalAngleToAddToThrustAngle;
+                    zeroedAngleToThrustInRadians +=
+                        additionalAngleToAddToThrustAngle;
                 }
                 dist_1.default.log({
                     distanceToClosestPointOnTargetLineFromVelocity,
@@ -357,12 +371,16 @@ class HumanShip extends CombatShip_1.CombatShip {
                 // otherwise, we use the excess length to hit the furthest point along the target line that we can
                 else {
                     dist_1.default.log(`targeting point along target angle`);
-                    const distanceDownThrustAngleFromOriginToHit = Math.sqrt(thrustMagnitudeToApply ** 2 - initialMagnitude ** 2);
+                    const distanceDownThrustAngleFromOriginToHit = Math.sqrt(thrustMagnitudeToApply ** 2 -
+                        initialMagnitude ** 2);
                     const angleFromVelocityVectorToPointOnTargetLineInRadians = Math.PI -
                         Math.acos((thrustMagnitudeToApply ** 2 +
                             initialMagnitude ** 2 -
-                            distanceDownThrustAngleFromOriginToHit ** 2) /
-                            (2 * thrustMagnitudeToApply * initialMagnitude));
+                            distanceDownThrustAngleFromOriginToHit **
+                                2) /
+                            (2 *
+                                thrustMagnitudeToApply *
+                                initialMagnitude));
                     // Math.asin(
                     //   (distanceDownThrustAngleFromOriginToHit *
                     //     (Math.sin(
@@ -414,8 +432,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ]
         const unitVectorAlongWhichToThrust = dist_1.default.degreesToUnitVector(angleToThrustInDegrees);
         const thrustVector = [
-            unitVectorAlongWhichToThrust[0] * thrustMagnitudeToApply,
-            unitVectorAlongWhichToThrust[1] * thrustMagnitudeToApply,
+            unitVectorAlongWhichToThrust[0] *
+                thrustMagnitudeToApply,
+            unitVectorAlongWhichToThrust[1] *
+                thrustMagnitudeToApply,
         ];
         this.velocity = [
             this.velocity[0] + thrustVector[0],
@@ -449,7 +469,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         // })
         if (charge > 0.25) {
             let targetData;
-            const foundPlanet = this.seenPlanets.find((planet) => dist_1.default.distance(planet.location, targetLocation) < dist_1.default.arrivalThreshold * 5);
+            const foundPlanet = this.seenPlanets.find((planet) => dist_1.default.distance(planet.location, targetLocation) <
+                dist_1.default.arrivalThreshold * 5);
             if (foundPlanet)
                 targetData = [
                     {
@@ -483,7 +504,8 @@ class HumanShip extends CombatShip_1.CombatShip {
                     ];
             }
             if (!targetData) {
-                const foundShip = this.visible.ships.find((s) => dist_1.default.distance(s.location, targetLocation) < dist_1.default.arrivalThreshold * 5);
+                const foundShip = this.visible.ships.find((s) => dist_1.default.distance(s.location, targetLocation) <
+                    dist_1.default.arrivalThreshold * 5);
                 if (foundShip)
                     targetData = [
                         `the ship`,
@@ -514,8 +536,13 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     brake(charge, thruster) {
         // add xp
-        const xpBoostMultiplier = (this.passives.find((p) => p.id === `boostXpGain`)?.intensity || 0) + 1;
-        thruster.addXp(`piloting`, dist_1.default.baseXpGain * 2000 * charge * thruster.cockpitCharge * xpBoostMultiplier);
+        const xpBoostMultiplier = (this.passives.find((p) => p.id === `boostXpGain`)
+            ?.intensity || 0) + 1;
+        thruster.addXp(`piloting`, dist_1.default.baseXpGain *
+            2000 *
+            charge *
+            thruster.cockpitCharge *
+            xpBoostMultiplier);
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
@@ -527,17 +554,19 @@ class HumanShip extends CombatShip_1.CombatShip {
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) *
-            dist_1.default.baseEngineThrustMultiplier);
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier);
         const magnitudePerPointOfCharge = dist_1.default.getThrustMagnitudeForSingleCrewMember(memberPilotingSkill, engineThrustMultiplier);
         const shipMass = this.mass;
         const finalMagnitude = (magnitudePerPointOfCharge * charge) / shipMass;
-        const currentVelocity = [...this.velocity];
+        const currentVelocity = [
+            ...this.velocity,
+        ];
         const currentMagnitude = dist_1.default.vectorToMagnitude(currentVelocity);
         if (finalMagnitude > currentMagnitude)
             this.hardStop();
         else {
-            const relativeScaleOfMagnitudeShrink = (currentMagnitude - finalMagnitude) / currentMagnitude;
+            const relativeScaleOfMagnitudeShrink = (currentMagnitude - finalMagnitude) /
+                currentMagnitude;
             this.velocity = [
                 this.velocity[0] * relativeScaleOfMagnitudeShrink,
                 this.velocity[1] * relativeScaleOfMagnitudeShrink,
@@ -570,7 +599,9 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.hardStop();
             return;
         }
-        const startingLocation = [...this.location];
+        const startingLocation = [
+            ...this.location,
+        ];
         this.location[0] += this.velocity[0];
         this.location[1] += this.velocity[1];
         this.toUpdate.location = this.location;
@@ -578,7 +609,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.updatePlanet();
         this.notifyZones(startingLocation);
         this.addStat(`distanceTraveled`, dist_1.default.distance(startingLocation, this.location));
-        const speed = (dist_1.default.vectorToMagnitude(this.velocity) * (1000 * 60 * 60)) / dist_1.default.tickInterval;
+        const speed = (dist_1.default.vectorToMagnitude(this.velocity) *
+            (1000 * 60 * 60)) /
+            dist_1.default.tickInterval;
         if (speed > 1)
             this.addTagline(`River Runner`, `going over 1AU/hr`);
         if (speed > 3)
@@ -595,18 +628,19 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (this.tutorial) {
             // reset position if outside max distance from spawn
             if (this.tutorial.currentStep.maxDistanceFromSpawn &&
-                dist_1.default.distance(this.tutorial.baseLocation, this.location) >
-                    this.tutorial.currentStep.maxDistanceFromSpawn) {
+                dist_1.default.distance(this.tutorial.baseLocation, this.location) > this.tutorial.currentStep.maxDistanceFromSpawn) {
                 const unitVectorFromSpawn = dist_1.default.unitVectorFromThisPointToThatPoint(this.tutorial.baseLocation, this.location);
                 this.move([
                     this.tutorial.baseLocation[0] +
                         unitVectorFromSpawn[0] *
                             0.999 *
-                            this.tutorial.currentStep.maxDistanceFromSpawn,
+                            this.tutorial.currentStep
+                                .maxDistanceFromSpawn,
                     this.tutorial.baseLocation[1] +
                         unitVectorFromSpawn[1] *
                             0.999 *
-                            this.tutorial.currentStep.maxDistanceFromSpawn,
+                            this.tutorial.currentStep
+                                .maxDistanceFromSpawn,
                 ]);
                 this.hardStop();
                 this.logEntry(`Automatically stopped the ship — Let's keep it close to home while we're learning the ropes.`, `high`);
@@ -616,8 +650,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- game radius -----
         this.radii.game = this.game.gameSoftRadius;
         this.toUpdate.radii = this.radii;
-        const isOutsideRadius = dist_1.default.distance([0, 0], this.location) > this.game.gameSoftRadius;
-        const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) > this.game.gameSoftRadius;
+        const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
+            this.game.gameSoftRadius;
+        const startedOutsideRadius = dist_1.default.distance([0, 0], startingLocation) >
+            this.game.gameSoftRadius;
         if (isOutsideRadius && !startedOutsideRadius) {
             this.hardStop();
             this.logEntry(`Stopped at the edge of the known universe. You can continue, but nothing but the void awaits out here.`, `high`);
@@ -630,7 +666,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.tickInterval), 2)) {
             // apply "amount boost" passive
             const amountBoostPassive = this.getPassiveIntensity(`boostDropAmount`);
-            const amount = dist_1.default.r2((Math.round(Math.random() * 3 * (Math.random() * 3)) / 10 + 1.5) *
+            const amount = dist_1.default.r2((Math.round(Math.random() * 3 * (Math.random() * 3)) /
+                10 +
+                1.5) *
                 (1 + amountBoostPassive));
             const id = dist_1.default.randomFromArray([
                 `oxygen`,
@@ -711,7 +749,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.planet =
             this.game.planets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
         if (previousPlanet !== this.planet) {
-            this.toUpdate.planet = this.planet ? this.planet.stubify() : false;
+            this.toUpdate.planet = this.planet
+                ? this.planet.stubify()
+                : false;
             if (this.planet) {
                 // * landed!
                 this.hardStop();
@@ -896,7 +936,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.tutorial)
             this.shownPanels = undefined;
         else
-            this.shownPanels = this.tutorial.currentStep.shownPanels;
+            this.shownPanels =
+                this.tutorial.currentStep.shownPanels;
         this.toUpdate.shownPanels = this.shownPanels || false;
     }
     equipLoadout(l, removeExisting = false) {
@@ -922,8 +963,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     broadcast(message, crewMember) {
         const sanitized = dist_1.default.sanitize(message.replace(/\n/g, ` `)).result;
         let range = this.radii.broadcast;
-        const avgRepair = this.communicators.reduce((total, curr) => curr.repair + total, 0) /
-            this.communicators.length;
+        const avgRepair = this.communicators.reduce((total, curr) => curr.repair + total, 0) / this.communicators.length;
         let didSendCount = 0;
         if (avgRepair > 0.05) {
             for (let otherShip of this.visible.ships.filter((s) => s.human)) {
@@ -932,9 +972,9 @@ class HumanShip extends CombatShip_1.CombatShip {
                     continue;
                 didSendCount++;
                 const antiGarble = this.communicators.reduce((total, curr) => curr.antiGarble * curr.repair + total, 0);
-                const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level ||
-                    0) / 100;
-                const garbleAmount = distance / (range + antiGarble + crewSkillAntiGarble);
+                const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level || 0) / 100;
+                const garbleAmount = distance /
+                    (range + antiGarble + crewSkillAntiGarble);
                 const garbled = dist_1.default.garble(sanitized, garbleAmount);
                 const toSend = `**🚀${this.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n\`${garbled.substring(0, dist_1.default.maxBroadcastLength)}\``;
                 // can be a stub, so find the real thing
@@ -945,9 +985,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         this.communicators.forEach((comm) => {
             if (comm.hp > 0) {
+                if (comm.hp > 0.05)
+                    crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
                 comm.use();
                 this.updateBroadcastRadius();
-                crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
             }
         });
         return didSendCount;
@@ -1005,7 +1046,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     removeItem(item) {
         if (item.rooms) {
             item.rooms.forEach((room) => {
-                if (!this.items.find((otherItem) => otherItem !== item && otherItem.rooms.includes(room)))
+                if (!this.items.find((otherItem) => otherItem !== item &&
+                    otherItem.rooms.includes(room)))
                     this.removeRoom(room);
             });
         }
@@ -1123,11 +1165,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                 const value = scanner.shipScanData[key];
                 if (!totalShape[key] && value === true)
                     totalShape[key] = true;
-                if (totalShape[key] === undefined && Array.isArray(value)) {
+                if (totalShape[key] === undefined &&
+                    Array.isArray(value)) {
                     ;
                     totalShape[key] = value;
                 }
-                else if (Array.isArray(totalShape[key]) && Array.isArray(value)) {
+                else if (Array.isArray(totalShape[key]) &&
+                    Array.isArray(value)) {
                     for (let s of value) {
                         if (!totalShape[key].includes(s))
                             totalShape[key].push(s);
@@ -1138,7 +1182,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.maxScanProperties = totalShape;
     }
     shipToValidScanResult(ship) {
-        let scanPropertiesToUse = dist_1.default.distance(this.location, ship.location) < this.radii.scan
+        let scanPropertiesToUse = dist_1.default.distance(this.location, ship.location) <
+            this.radii.scan
             ? this.maxScanProperties || dist_1.default.baseShipScanProperties
             : dist_1.default.baseShipScanProperties;
         // same faction can see a few more properties
@@ -1184,7 +1229,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         return partialShip;
     }
     cacheToValidScanResult(cache) {
-        const isInRange = dist_1.default.distance(this.location, cache.location) <= this.radii.scan;
+        const isInRange = dist_1.default.distance(this.location, cache.location) <=
+            this.radii.scan;
         const partialStub = isInRange
             ? cache.stubify()
             : {
@@ -1217,7 +1263,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- gather most common tactic -----
         const tacticCounts = weaponsRoomMembers.reduce((totals, cm) => {
             const currTotal = totals.find((t) => t.tactic === cm.tactic);
-            const toAdd = cm.skills.find((s) => s.skill === `munitions`)?.level || 1;
+            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1;
             if (currTotal)
                 currTotal.total += toAdd;
             else
@@ -1228,17 +1275,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.mainTactic = mainTactic;
         this.toUpdate.mainTactic = mainTactic;
         const attackableShips = this.getEnemiesInAttackRange();
-        this.toUpdate.enemiesInAttackRange = dist_1.default.stubify(attackableShips, [
-            `visible`,
-            `seenPlanets`,
-            `seenLandmarks`,
-        ]);
+        this.toUpdate.enemiesInAttackRange = dist_1.default.stubify(attackableShips, [`visible`, `seenPlanets`, `seenLandmarks`]);
         // ----- gather most common item target -----
         const itemTargetCounts = weaponsRoomMembers.reduce((totals, cm) => {
             if (!cm.itemTarget)
                 return totals;
             const currTotal = totals.find((t) => t.itemTarget === cm.itemTarget);
-            const toAdd = cm.skills.find((s) => s.skill === `munitions`)?.level || 1;
+            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1;
             if (currTotal)
                 currTotal.total += toAdd;
             else
@@ -1264,7 +1308,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (!cm.attackTarget)
                 return totals;
             const currTotal = totals.find((t) => t.target === cm.attackTarget);
-            const toAdd = cm.skills.find((s) => s.skill === `munitions`)?.level || 1;
+            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1;
             if (currTotal)
                 currTotal.total += toAdd;
             else
@@ -1283,14 +1328,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         // ----- defensive strategy -----
         if (mainTactic === `defensive`) {
             let targetShip;
-            if (mainAttackTarget && this.canAttack(mainAttackTarget)) {
+            if (mainAttackTarget &&
+                this.canAttack(mainAttackTarget)) {
                 const attackedByThatTarget = this.visible.attackRemnants.find((ar) => ar.attacker === mainAttackTarget);
                 if (attackedByThatTarget)
                     targetShip = mainAttackTarget;
             }
             else {
                 const mostRecentDefense = this.visible.attackRemnants
-                    .filter((ar) => ar.attacker.id !== this.id && !ar.attacker.dead)
+                    .filter((ar) => ar.attacker.id !== this.id &&
+                    !ar.attacker.dead)
                     .reduce((mostRecent, ar) => mostRecent &&
                     mostRecent.time > ar.time &&
                     this.canAttack(mostRecent.attacker)
@@ -1304,7 +1351,9 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (!targetShip.stubify)
                 // in some cases we end up with a stub here
                 targetShip = this.game.ships.find((s) => s.attackable && s.id === targetShip?.id);
-            this.toUpdate.targetShip = targetShip ? targetShip.stubify() : undefined;
+            this.toUpdate.targetShip = targetShip
+                ? targetShip.stubify()
+                : undefined;
             if (targetShip)
                 availableWeapons.forEach((w) => {
                     this.attack(targetShip, w, mainItemTarget);
@@ -1360,7 +1409,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         setTimeout(() => {
             this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
             this.addTagline(`Delicious with Lemon`, `having your ship destroyed`);
-            if (this.stats.find((s) => s.stat === `deaths`)?.amount === 2)
+            if (this.stats.find((s) => s.stat === `deaths`)
+                ?.amount === 2)
                 this.addHeaderBackground(`Gravestone 1`, `having your ship destroyed twice`);
         }, 100);
         const cacheContents = [];
@@ -1375,8 +1425,10 @@ class HumanShip extends CombatShip_1.CombatShip {
                     cacheContents.push(toAdd);
             }
             // ----- crew member credits -----
-            const toCache = cm.credits * CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
-            cm.credits -= cm.credits * CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
+            const toCache = cm.credits *
+                CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
+            cm.credits -=
+                cm.credits * CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
             const existing = cacheContents.find((cc) => cc.id === `credits`);
             if (existing)
                 existing.amount += toCache || 0;
@@ -1389,9 +1441,11 @@ class HumanShip extends CombatShip_1.CombatShip {
             cm.stamina = 0;
         });
         // ----- ship common credits -----
-        const toCache = this.commonCredits * CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
+        const toCache = this.commonCredits *
+            CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
         this.commonCredits -=
-            this.commonCredits * CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
+            this.commonCredits *
+                CombatShip_1.CombatShip.percentOfCreditsLostOnDeath;
         const existing = cacheContents.find((cc) => cc.id === `credits`);
         if (existing)
             existing.amount += toCache || 0;
