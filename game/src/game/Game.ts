@@ -119,7 +119,8 @@ export class Game {
   private averageTickTime: number = 0
 
   tick() {
-    if (this.paused) return
+    if (this.paused)
+      return setTimeout(() => this.tick(), c.tickInterval)
 
     const startTime = Date.now()
 
