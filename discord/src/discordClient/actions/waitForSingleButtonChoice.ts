@@ -57,7 +57,7 @@ export default async function <
       `collect`,
       async (i: MessageComponentInteraction) => {
         try {
-          c.log(i)
+          // c.log(i)
           await i.deferUpdate()
           if (done) return
           done = true

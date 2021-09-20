@@ -799,8 +799,11 @@ class Tutorial {
         // timeout to come after any tick-related logs but was breaking if the player went too fast
         // // if (!m.channel) this.ship.logEntry(m.message)
         for (let m of this.currentStep.script)
-            if (m.channel)
-                io_1.default.emit(`ship:message`, this.ship.id, m.message, m.channel);
+            if (m.channel) {
+                const mainShipId = this.ship.crewMembers[0]?.mainShipId;
+                if (mainShipId)
+                    io_1.default.emit(`ship:message`, mainShipId, m.message, m.channel);
+            }
         // }, c.tickInterval)
         this.ship.toUpdate.tutorial = {
             currentStep: this.currentStep,

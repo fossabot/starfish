@@ -52,7 +52,6 @@ interface TutorialStepData {
 
 export class Tutorial {
   step: number = 0
-
   steps: TutorialStepData[] = []
   baseLocation: CoordinatePair = [0, 0]
   currentStep: TutorialStepData
@@ -912,13 +911,17 @@ export class Tutorial {
     // timeout to come after any tick-related logs but was breaking if the player went too fast
     // // if (!m.channel) this.ship.logEntry(m.message)
     for (let m of this.currentStep.script)
-      if (m.channel)
-        io.emit(
-          `ship:message`,
-          this.ship.id,
-          m.message,
-          m.channel,
-        )
+      if (m.channel) {
+        const mainShipId =
+          this.ship.crewMembers[0]?.mainShipId
+        if (mainShipId)
+          io.emit(
+            `ship:message`,
+            mainShipId,
+            m.message,
+            m.channel,
+          )
+      }
     // }, c.tickInterval)
 
     this.ship.toUpdate.tutorial = {

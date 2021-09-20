@@ -533,6 +533,7 @@ class Ship extends Stubbable_1.Stubbable {
     updateMaxScanProperties() { }
     applyPassive(p) { }
     removePassive(p) { }
+    receiveBroadcast(message, from, garbleAmount, recipients) { }
 }
 exports.Ship = Ship;
 Ship.maxPreviousLocations = 30;

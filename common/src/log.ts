@@ -95,7 +95,9 @@ const log = (...args: any[]): void => {
   )
 
   if (prefix.length > longest) longest = prefix.length
-  while (prefix.length < Math.max(25, longest))
+  while (
+    prefix.length < Math.min(45, Math.max(25, longest))
+  )
     prefix += fillCharacter
   prefix += reset
 

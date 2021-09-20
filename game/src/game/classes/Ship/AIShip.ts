@@ -8,7 +8,6 @@ import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Weapon } from '../Item/Weapon'
-import type { HumanShip } from './HumanShip'
 
 export class AIShip extends CombatShip {
   readonly human: boolean = false
@@ -338,5 +337,61 @@ export class AIShip extends CombatShip {
     }
 
     this.game.removeShip(this)
+  }
+
+  async receiveBroadcast(
+    message: string,
+    from: Ship,
+    garbleAmount: number,
+    recipients: Ship[],
+  ) {
+    let oddsToIgnore = 0.9
+    if (recipients.length === 1) oddsToIgnore *= 0.6
+    c.log(oddsToIgnore)
+    if (Math.random() < oddsToIgnore) return
+
+    c.log(`ai ship ${this.name} received broadcast`)
+    await c.sleep(Math.round(Math.random() * 1000 * 60))
+
+    const textOptions = [
+      `Less talk, more squawk!`,
+      `The early bird gets the fish...`,
+      `It's a bird! It's a plane! ...No, it's a bird.`,
+      `My, my, if it isn't a lovely snack!`,
+      `Resistance is futile.`,
+      `You look tasty.`,
+      `Come closer, let's be friends!`,
+      `I miss fresh air.`,
+      `Do you really think you can out-fly us?`,
+      `Some of my best friends are fish.`,
+      `I hope you're more substantial than the last fish I fried!`,
+      `Who ordered the fish filet?`,
+      `Swim closer...`,
+      `Come over this way, see what happens!`,
+      `Get your gills over here!`,
+      `It's been years since we had real fish!`,
+      `Crack the shell. Get the meat.`,
+      `Noisy fish make for good eating.`,
+      `Food sighted. Prepare to engage.`,
+      `Talk all you want, it won't save you.`,
+      `Would you pipe down over there?`,
+      `Leave the singing to the birds`,
+    ]
+    // if (this.getStat('kills') > 1)
+    // textOptions.push()
+    const text = c.randomFromArray(textOptions)
+    const garbled = c.garble(text, garbleAmount)
+    const toSend = `${garbled.substring(
+      0,
+      c.maxBroadcastLength,
+    )}`
+    from.receiveBroadcast(toSend, this, garbleAmount, [
+      from,
+    ])
+    /*
+
+Less talk, more squawk!
+
+    */
   }
 }

@@ -65,7 +65,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         data.crewMembers?.forEach((cm) => {
             this.addCrewMember(cm, true);
         });
-        if (!this.log.length)
+        if (!this.log.length && !this.tutorial)
             // timeout so that the first messages don't spawn multiple alerts channels
             setTimeout(() => this.logEntry([
                 `Your crew boards the ship`,
@@ -947,37 +947,43 @@ class HumanShip extends CombatShip_1.CombatShip {
         const sanitized = dist_1.default.sanitize(message.replace(/\n/g, ` `)).result;
         let range = this.radii.broadcast;
         const avgRepair = this.communicators.reduce((total, curr) => curr.repair + total, 0) / this.communicators.length;
-        let didSendCount = 0;
+        const willSendShips = [];
         if (avgRepair > 0.05) {
-            for (let otherShip of this.visible.ships.filter((s) => s.human)) {
+            crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
+            for (let otherShip of this.game.ships) {
+                if (otherShip === this)
+                    continue;
                 const distance = dist_1.default.distance(this.location, otherShip.location);
                 if (distance > range)
                     continue;
-                didSendCount++;
+                willSendShips.push(otherShip);
+            }
+            for (let otherShip of willSendShips) {
+                const distance = dist_1.default.distance(this.location, otherShip.location);
                 const antiGarble = this.communicators.reduce((total, curr) => curr.antiGarble * curr.repair + total, 0);
                 const crewSkillAntiGarble = (crewMember.skills.find((s) => s.skill === `linguistics`)?.level || 0) / 100;
                 const garbleAmount = distance /
                     (range + antiGarble + crewSkillAntiGarble);
                 const garbled = dist_1.default.garble(sanitized, garbleAmount);
-                const toSend = `**🚀${this.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n\`${garbled.substring(0, dist_1.default.maxBroadcastLength)}\``;
+                const toSend = `${garbled.substring(0, dist_1.default.maxBroadcastLength)}`;
                 // can be a stub, so find the real thing
-                const actualShipObject = this.game.humanShips.find((s) => s.id === otherShip.id);
+                const actualShipObject = this.game.ships.find((s) => s.id === otherShip.id);
                 if (actualShipObject)
-                    actualShipObject.receiveBroadcast(toSend);
+                    actualShipObject.receiveBroadcast(toSend, this, garbleAmount, willSendShips);
             }
         }
         this.communicators.forEach((comm) => {
             if (comm.hp > 0) {
-                if (comm.hp > 0.05)
-                    crewMember.addXp(`linguistics`, dist_1.default.baseXpGain * 100);
                 comm.use();
                 this.updateBroadcastRadius();
             }
         });
-        return didSendCount;
+        return willSendShips.length;
     }
-    receiveBroadcast(message) {
-        io_1.default.emit(`ship:message`, this.id, message, `broadcast`);
+    receiveBroadcast(message, from, garbleAmount, recipients) {
+        const distance = dist_1.default.distance(this.location, from.location);
+        const prefix = `**${from.species.icon}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
+        io_1.default.emit(`ship:message`, this.id, `${prefix}\`${message}\``, `broadcast`);
         this.communicators.forEach((comm) => comm.use());
         this.updateBroadcastRadius();
     }

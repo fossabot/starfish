@@ -779,4 +779,11 @@ export class Ship extends Stubbable {
   applyPassive(p: ShipPassiveEffect) {}
 
   removePassive(p: ShipPassiveEffect) {}
+
+  receiveBroadcast(
+    message: string,
+    from: Ship,
+    garbleAmount: number,
+    recipients: Ship[],
+  ) {}
 }
