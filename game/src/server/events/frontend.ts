@@ -6,6 +6,7 @@ import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
+import { type } from 'os'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -33,6 +34,14 @@ export default function (
   })
 
   socket.on(`ship:listen`, (id, crewMemberId, callback) => {
+    if (!callback) {
+      if (typeof crewMemberId === `function`) {
+        ;(crewMemberId as any)({
+          error: `Please refresh the page.`,
+        })
+      }
+      return
+    }
     let foundShip = game.ships.find((s) => s.id === id)
 
     if (foundShip && crewMemberId) {
