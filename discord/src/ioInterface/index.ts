@@ -15,7 +15,7 @@ export default {
 }
 
 // connect to server
-let serverUrl = `https://${
+let serverUrl = `http${isDocker() ? `s` : ``}://${
   isDocker() ? `www.starfish.cool` : `localhost`
 }:4200`
 

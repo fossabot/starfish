@@ -13,52 +13,56 @@ import {
   createServer as createHTTPSServer,
   ServerOptions,
 } from 'https'
+import { createServer as createHTTPServer } from 'http'
+import isDocker from 'is-docker'
 
 require(`events`).captureRejections = true
 
 let serverConfig: ServerOptions = {}
-if (process.env.NODE_ENV !== `production`) {
-  serverConfig = {
-    key: fs.readFileSync(
-      path.resolve(`./ssl/localhost.key`),
-    ),
-    cert: fs.readFileSync(
-      path.resolve(`./ssl/localhost.crt`),
-    ),
-  }
-} else {
-  c.log(`green`, `Launching production server...`)
-  serverConfig = {
-    key: fs.readFileSync(
-      path.resolve(
-        `/etc/letsencrypt/live/www.starfish.cool/privkey.pem`,
+let webServer
+if (isDocker()) {
+  if (process.env.NODE_ENV !== `production`) {
+    serverConfig = {
+      key: fs.readFileSync(
+        path.resolve(`./ssl/localhost.key`),
       ),
-    ),
-    cert: fs.readFileSync(
-      path.resolve(
-        `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
+      cert: fs.readFileSync(
+        path.resolve(`./ssl/localhost.crt`),
       ),
-    ),
-    ca: [
-      fs.readFileSync(
+    }
+  } else {
+    c.log(`green`, `Launching production server...`)
+    serverConfig = {
+      key: fs.readFileSync(
         path.resolve(
-          `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+          `/etc/letsencrypt/live/www.starfish.cool/privkey.pem`,
         ),
       ),
-    ],
-    // requestCert: true
+      cert: fs.readFileSync(
+        path.resolve(
+          `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
+        ),
+      ),
+      ca: [
+        fs.readFileSync(
+          path.resolve(
+            `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+          ),
+        ),
+      ],
+      // requestCert: true
+    }
   }
-}
-
-const httpsServer = createHTTPSServer(serverConfig)
+  webServer = createHTTPSServer(serverConfig)
+} else webServer = createHTTPServer(serverConfig)
 
 // * test endpoint to check if the server is running and accessible
-httpsServer.on(`request`, (req, res) => {
+webServer.on(`request`, (req, res) => {
   res.end(`ok`)
 })
 
 const io = new socketServer<IOClientEvents, IOServerEvents>(
-  httpsServer,
+  webServer,
   {
     cors: {
       origin: `*`,
@@ -82,6 +86,6 @@ io.on(
   },
 )
 
-httpsServer.listen(4200)
+webServer.listen(4200)
 c.log(`green`, `io server listening on port 4200`)
 export default io

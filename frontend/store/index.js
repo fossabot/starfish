@@ -32,6 +32,7 @@ export const mutations = {
   },
 
   setShipProp(state, pair) {
+    if (!state.ship) state.ship = {}
     Vue.set(state.ship, pair[0], pair[1])
   },
 
@@ -140,11 +141,16 @@ export const actions = {
     commit(`set`, { modal: null, activeShipId: shipId })
     storage.set(`activeShipId`, `${shipId}`)
 
+    let connectionTimeout = setTimeout(() => {
+      c.log(`red`, `Failed to connect to socket.`)
+    }, 5000)
+
     this.$socket.on(`disconnect`, () => {
       commit(`set`, { ship: null, connected: false })
     })
 
     const connected = () => {
+      clearTimeout(connectionTimeout)
       commit(`set`, { connected: true })
       this.$socket?.emit(`ship:listen`, shipId, (res) => {
         if (`error` in res) return console.log(res.error)
@@ -152,7 +158,7 @@ export const actions = {
         //   JSON.stringify(res.data).length,
         //   `characters of data received from initial load`,
         // )
-        commit(`set`, { ship: res.data })
+        if (!state.ship) commit(`set`, { ship: res.data })
         dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
       })
     }
@@ -194,7 +200,6 @@ export const actions = {
           commit(`updateACrewMember`, cmStub),
         )
       } else if (prop === `visible` && updates.visible) {
-        c.log(`updating visible`, updates.visible)
         // * planets send only the things that updated, so we update that here
         if (!state.ship?.visible)
           commit(`setShipProp`, [
@@ -325,6 +330,8 @@ export const actions = {
       if (shipIds)
         storage.set(`shipIds`, JSON.stringify(shipIds))
     }
+
+    // c.log(`logging in`, { userId, shipIds })
 
     commit(`set`, { userId, shipIds })
 
