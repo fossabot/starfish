@@ -182,7 +182,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         else
             skillElement.xp += xp;
         skillElement.level =
-            CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
+            CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) < l);
         this.toUpdate.skills = this.skills;
     }
     addCargo(id, amount) {

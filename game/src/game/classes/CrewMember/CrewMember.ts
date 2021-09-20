@@ -209,7 +209,7 @@ export class CrewMember extends Stubbable {
 
     skillElement.level =
       CrewMember.levelXPNumbers.findIndex(
-        (l) => (skillElement?.xp || 0) <= l,
+        (l) => (skillElement?.xp || 0) < l,
       )
 
     this.toUpdate.skills = this.skills
