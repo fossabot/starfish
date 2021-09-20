@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "5c03c652260998ea5c0d0b87badcdcb89a6b66b690e3e70405b7c93da235b373",
-        "signature": "5c03c652260998ea5c0d0b87badcdcb89a6b66b690e3e70405b7c93da235b373",
+        "version": "8ad562ea7224a7ec4b97cf8a1e7395282b83fed48b6bd157569a4e5750c74316",
+        "signature": "8ad562ea7224a7ec4b97cf8a1e7395282b83fed48b6bd157569a4e5750c74316",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "f8d909bdbe2df57317508954fdc8056bdd452bc22d5ed52f986dc6389701baa2",
-        "signature": "f8d909bdbe2df57317508954fdc8056bdd452bc22d5ed52f986dc6389701baa2",
+        "version": "46920b814920b4e8bd3265355c4c270a9730678ee4cf13203a95ea66bef30d42",
+        "signature": "46920b814920b4e8bd3265355c4c270a9730678ee4cf13203a95ea66bef30d42",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -317,13 +317,13 @@
         "affectsGlobalScope": false
       },
       "./src/badwords.ts": {
-        "version": "4119c79f1f300edfa1a1f16c2f7bf409161b70860e9383b8d6ac73d53254df7b",
+        "version": "64e57ce9facbc6ab3fff9f9d94ad2eb23cc2955a462c6ae97cb10709c7ccc9a3",
         "signature": "7a083ab9fc4a5e0532512cec7bdb2057a9a1c8ada3d99270cedf68e8e44a9ca5",
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "f09bda1d1d067a0de675b25db7e6c1f124e1dbbe349e97e38bbfeea790f48d49",
-        "signature": "e8f8164e3359c943a9adcb2724a3a5caca628a9b83f7495deb90dee56ec0fa40",
+        "version": "1ba2d9f061f55492af7e187c38e48a8d84b1b166ef3b140cf7a66953f8e32d7d",
+        "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
       "./src/cargo.ts": {
@@ -372,7 +372,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "8ed56d94e66d96415359ce60bc2fa91d9f68bcb737b9301fa4fc0d020f0d12f8",
+        "version": "cefb369ee416c236f74bcb1d5b48384045bdeec759c7abc9bc6ed30f67c6e1a4",
         "signature": "4e14d8bcfe6ebdb6fa8690827b948004df949a943741dddc492bb2b48565c7fd",
         "affectsGlobalScope": false
       },

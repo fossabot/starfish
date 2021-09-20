@@ -5,11 +5,22 @@ class LanguageFilter {
     constructor() {
         this.list = localList;
         this.splitRegex = /\b/;
-        this.placeHolder = `*`;
+        this.placeHolder = ``;
         this.regex = /[^a-zA-Z0-9|$|@]|\^/g;
         this.replaceRegex = /\w/g;
     }
     isProfane(string) {
+        // some combo words got through, so adding manual check for those regardless of position/context
+        for (let w of [
+            `fuck`,
+            `shit`,
+            `bitch`,
+            `cock`,
+            `faggot`,
+            `nigger`,
+        ])
+            if (string.indexOf(w) !== -1)
+                return true;
         return (this.list.filter((word) => {
             const wordExp = new RegExp(`\\b${word.replace(/(\W)/g, `\\$1`)}\\b`, `gi`);
             return wordExp.test(string);

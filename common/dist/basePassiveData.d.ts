@@ -1,5 +1,5 @@
 declare const basePassiveData: {
-    [key in ShipPassiveEffectType]: {
+    [key in ShipPassiveEffectId]: {
         toString: (p: ShipPassiveEffect) => string;
     };
 };
