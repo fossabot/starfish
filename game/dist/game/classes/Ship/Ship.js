@@ -177,8 +177,8 @@ class Ship extends Stubbable_1.Stubbable {
     }
     updateSlots() {
         let slots = this.chassis.slots;
-        for (let p of this.passives.filter((p) => p.id === `extraEquipmentSlots`))
-            slots += Math.round(p.intensity || 0);
+        const extraSlots = this.getPassiveIntensity(`extraEquipmentSlots`);
+        slots += Math.round(extraSlots);
         this.slots = slots;
         this.toUpdate.slots = slots;
     }
@@ -462,6 +462,12 @@ class Ship extends Stubbable_1.Stubbable {
             { text: `"${bg}"`, color: `var(--success)` },
         ], `high`);
     }
+    // ----- passives -----
+    getPassiveIntensity(id) {
+        return this.passives
+            .filter((p) => p.id === id)
+            .reduce((total, p) => (p.intensity || 0) + total, 0);
+    }
     // ----- stats -----
     addStat(statname, amount) {
         const existing = this.stats.find((s) => s.stat === statname);
@@ -473,6 +479,23 @@ class Ship extends Stubbable_1.Stubbable {
         else
             existing.amount += amount;
         this.toUpdate.stats = dist_1.default.stubify({ ...this.stats });
+    }
+    setStat(statname, amount) {
+        const existing = this.stats.find((s) => s.stat === statname);
+        if (!existing)
+            this.stats.push({
+                stat: statname,
+                amount,
+            });
+        else
+            existing.amount = amount;
+        this.toUpdate.stats = dist_1.default.stubify({ ...this.stats });
+    }
+    getStat(statname) {
+        const existing = this.stats.find((s) => s.stat === statname);
+        if (!existing)
+            return 0;
+        return existing.amount;
     }
     // ----- misc stubs -----
     logEntry(s, lv) { }

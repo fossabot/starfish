@@ -48,7 +48,7 @@ type RadiusType =
   | `broadcast`
   | `game`
 
-type ShipPassiveEffectType =
+type ShipPassiveEffectId =
   | `boostDropAmount`
   | `boostDropRarity`
   | `boostScanRange`
@@ -73,7 +73,7 @@ type ShipPassiveEffectType =
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
 interface ShipPassiveEffect {
-  id: ShipPassiveEffectType
+  id: ShipPassiveEffectId
   intensity?: number
   data?: {
     source?: {
@@ -113,6 +113,7 @@ type ShipStatKey =
   | `cachesRecovered`
   | `planetTime`
   | `totalTonsMined`
+  | `highestSpeed`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

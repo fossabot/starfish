@@ -74,7 +74,7 @@ class Game {
     }
     tick() {
         if (this.paused)
-            return;
+            return setTimeout(() => this.tick(), dist_1.default.tickInterval);
         const startTime = Date.now();
         this.tickCount++;
         const times = [];

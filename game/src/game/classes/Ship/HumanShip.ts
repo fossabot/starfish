@@ -790,16 +790,8 @@ export class HumanShip extends CombatShip {
     charge *= brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
-    const relevantPassives =
-      this.passives.filter((p) => p.id === `boostBrake`) ||
-      []
     let passiveBrakeMultiplier =
-      1 +
-      relevantPassives.reduce(
-        (total: number, p: ShipPassiveEffect) =>
-          total + (p.intensity || 0),
-        0,
-      )
+      1 + this.getPassiveIntensity(`boostBrake`)
     charge *= passiveBrakeMultiplier
 
     const memberPilotingSkill =
@@ -922,6 +914,8 @@ export class HumanShip extends CombatShip {
         `Hell's Angelfish`,
         `going over 30AU/hr`,
       )
+    if (speed > this.getStat(`highestSpeed`))
+      this.setStat(`highestSpeed`, speed)
 
     // ----- end if in tutorial -----
     if (this.tutorial) {
@@ -995,15 +989,8 @@ export class HumanShip extends CombatShip {
       )
     ) {
       // apply "amount boost" passive
-      const amountBoostPassive = (
-        this.passives.filter(
-          (p) => p.id === `boostDropAmount`,
-        ) || []
-      ).reduce(
-        (total: number, p: ShipPassiveEffect) =>
-          total + (p.intensity || 0),
-        0,
-      )
+      const amountBoostPassive =
+        this.getPassiveIntensity(`boostDropAmount`)
 
       const amount = c.r2(
         (Math.round(
@@ -1253,15 +1240,8 @@ export class HumanShip extends CombatShip {
 
   getCache(cache: Cache) {
     // apply "amount boost" passive
-    const amountBoostPassive = (
-      this.passives.filter(
-        (p) => p.id === `boostDropAmount`,
-      ) || []
-    ).reduce(
-      (total: number, p: ShipPassiveEffect) =>
-        total + (p.intensity || 0),
-      0,
-    )
+    const amountBoostPassive =
+      this.getPassiveIntensity(`boostDropAmount`)
     if (cache.droppedBy !== this.id && amountBoostPassive)
       cache.contents.forEach(
         (c) => (c.amount += c.amount * amountBoostPassive),

@@ -19,7 +19,7 @@ class CombatShip extends Ship_1.Ship {
         this.updateAttackRadius();
     }
     updateAttackRadius() {
-        this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range, highest), 0);
+        this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range * curr.repair, highest), 0);
         this.toUpdate.radii = this.radii;
     }
     applyPassive(p) {
@@ -118,12 +118,13 @@ class CombatShip extends Ship_1.Ship {
         weapon.use();
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
-        const rangeAsPercent = range / weapon.range;
-        // const maxMissChance = 0.9
+        const rangeAsPercent = range / (weapon.range * weapon.repair);
+        const minHitChance = 0.9;
         const enemyAgility = target.chassis.agility +
             (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity || 0);
         const hitRoll = Math.random();
-        let miss = hitRoll * enemyAgility < rangeAsPercent; // + maxMissChance
+        let miss = hitRoll * enemyAgility <
+            Math.min(rangeAsPercent, minHitChance);
         // todo this makes it impossible to hit some ships even when they're "in range"... fix
         let damage = miss
             ? 0

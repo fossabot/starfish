@@ -549,10 +549,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         const brakeToThrustRatio = 5;
         charge *= brakeToThrustRatio; // braking is easier than thrusting
         // apply passive
-        const relevantPassives = this.passives.filter((p) => p.id === `boostBrake`) ||
-            [];
-        let passiveBrakeMultiplier = 1 +
-            relevantPassives.reduce((total, p) => total + (p.intensity || 0), 0);
+        let passiveBrakeMultiplier = 1 + this.getPassiveIntensity(`boostBrake`);
         charge *= passiveBrakeMultiplier;
         const memberPilotingSkill = thruster.piloting?.level || 1;
         const engineThrustMultiplier = Math.max(dist_1.default.noEngineThrustMagnitude, this.engines
@@ -625,6 +622,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addTagline(`Flying Fish`, `going over 15AU/hr`);
         if (speed > 30)
             this.addTagline(`Hell's Angelfish`, `going over 30AU/hr`);
+        if (speed > this.getStat(`highestSpeed`))
+            this.setStat(`highestSpeed`, speed);
         // ----- end if in tutorial -----
         if (this.tutorial) {
             // reset position if outside max distance from spawn
@@ -666,7 +665,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         // - space junk -
         if (dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.tickInterval), 2)) {
             // apply "amount boost" passive
-            const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+            const amountBoostPassive = this.getPassiveIntensity(`boostDropAmount`);
             const amount = dist_1.default.r2((Math.round(Math.random() * 3 * (Math.random() * 3)) /
                 10 +
                 1.5) *
@@ -860,7 +859,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     getCache(cache) {
         // apply "amount boost" passive
-        const amountBoostPassive = (this.passives.filter((p) => p.id === `boostDropAmount`) || []).reduce((total, p) => total + (p.intensity || 0), 0);
+        const amountBoostPassive = this.getPassiveIntensity(`boostDropAmount`);
         if (cache.droppedBy !== this.id && amountBoostPassive)
             cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive));
         this.distributeCargoAmongCrew(cache.contents);

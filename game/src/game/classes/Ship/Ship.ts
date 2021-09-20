@@ -267,10 +267,10 @@ export class Ship extends Stubbable {
 
   updateSlots() {
     let slots = this.chassis.slots
-    for (let p of this.passives.filter(
-      (p) => p.id === `extraEquipmentSlots`,
-    ))
-      slots += Math.round(p.intensity || 0)
+    const extraSlots = this.getPassiveIntensity(
+      `extraEquipmentSlots`,
+    )
+    slots += Math.round(extraSlots)
     this.slots = slots
     this.toUpdate.slots = slots
   }
@@ -688,6 +688,13 @@ export class Ship extends Stubbable {
     )
   }
 
+  // ----- passives -----
+  getPassiveIntensity(id: ShipPassiveEffectId): number {
+    return this.passives
+      .filter((p) => p.id === id)
+      .reduce((total, p) => (p.intensity || 0) + total, 0)
+  }
+
   // ----- stats -----
   addStat(statname: ShipStatKey, amount: number) {
     const existing = this.stats.find(
@@ -700,6 +707,27 @@ export class Ship extends Stubbable {
       })
     else existing.amount += amount
     this.toUpdate.stats = c.stubify({ ...this.stats })
+  }
+
+  setStat(statname: ShipStatKey, amount: number) {
+    const existing = this.stats.find(
+      (s) => s.stat === statname,
+    )
+    if (!existing)
+      this.stats.push({
+        stat: statname,
+        amount,
+      })
+    else existing.amount = amount
+    this.toUpdate.stats = c.stubify({ ...this.stats })
+  }
+
+  getStat(statname: ShipStatKey) {
+    const existing = this.stats.find(
+      (s) => s.stat === statname,
+    )
+    if (!existing) return 0
+    return existing.amount
   }
 
   // ----- misc stubs -----
