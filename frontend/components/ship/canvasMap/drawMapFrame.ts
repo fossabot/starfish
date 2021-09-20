@@ -578,8 +578,8 @@ export default class Drawer {
           ar.end[0] * this.flatScale,
           ar.end[1] * this.flatScale * -1,
         )
-        grd.addColorStop(0, `rgba(255, 0, 0, .5)`)
-        grd.addColorStop(1, `rgba(255, 100, 0, 1)`)
+        grd.addColorStop(0, `rgba(255, 130, 0, 1)`)
+        grd.addColorStop(1, `rgba(255, 200, 0, .3)`)
 
         // console.log(ar)
         this.drawLine({
