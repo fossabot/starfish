@@ -2,10 +2,17 @@
   <div class="pagecontainer">
     <FadeIn :off="ready">
       <div class="flexcenter flexcolumn">
-        <img src="/images/logo.svg" class="fadeinlogo marbotsmall" /></div
+        <img
+          src="/images/logo.svg"
+          class="fadeinlogo marbotsmall"
+        /></div
     ></FadeIn>
 
-    <div id="masonrycontainer" class="container" ref="container">
+    <div
+      id="masonrycontainer"
+      class="container"
+      ref="container"
+    >
       <ShipNoShip />
 
       <template v-if="ship && !ship.dead">
@@ -42,7 +49,6 @@
         <ShipFactionRank />
       </template>
 
-      <ShipNavPane />
       <ShipDead v-if="ship && ship.dead" />
 
       <ShipNavPane v-if="ship && !ship.tutorial" />
@@ -118,7 +124,8 @@ export default Vue.extend({
       })
     }
     const storedActiveId = storage.get('activeShipId')
-    if (storedActiveId) this.changeShip(false, storedActiveId)
+    if (storedActiveId)
+      this.changeShip(false, storedActiveId)
     else this.changeShip(0)
     this.setUpMasonry()
 
@@ -143,7 +150,10 @@ export default Vue.extend({
         this.shipIds[index] &&
         (!this.ship || this.ship.id !== this.shipIds[index])
       ) {
-        this.$store.dispatch('socketSetup', this.shipIds[index])
+        this.$store.dispatch(
+          'socketSetup',
+          this.shipIds[index],
+        )
       }
     },
 
@@ -153,9 +163,12 @@ export default Vue.extend({
         setTimeout(() => this.setUpMasonry(), 100)
         return
       }
-      this.masonryElement = new FreeMase(this.$refs.container as HTMLElement, {
-        centerX: true,
-      })
+      this.masonryElement = new FreeMase(
+        this.$refs.container as HTMLElement,
+        {
+          centerX: true,
+        },
+      )
     },
   },
 })
@@ -196,7 +209,8 @@ export default Vue.extend({
 
   & > * {
     display: inline-block;
-    transition: top 0.5s ease-in-out, left 0.5s ease-in-out, opacity 1s;
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out,
+      opacity 1s;
     margin-bottom: 0px;
     opacity: 0;
 

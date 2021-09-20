@@ -698,14 +698,7 @@ export class HumanShip extends CombatShip {
     charge *= brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
-    const relevantPassives =
-      this.passives.filter((p) => p.id === `boostBrake`) || []
-    let passiveBrakeMultiplier =
-      1 +
-      relevantPassives.reduce(
-        (total: number, p: ShipPassiveEffect) => total + (p.intensity || 0),
-        0,
-      )
+    let passiveBrakeMultiplier = 1 + this.getPassiveIntensity(`boostBrake`)
     charge *= passiveBrakeMultiplier
 
     const memberPilotingSkill = thruster.piloting?.level || 1
@@ -795,6 +788,8 @@ export class HumanShip extends CombatShip {
       this.addHeaderBackground(`Lightspeedy`, `breaking the speed of light`)
     if (speed > 15) this.addTagline(`Flying Fish`, `going over 15AU/hr`)
     if (speed > 30) this.addTagline(`Hell's Angelfish`, `going over 30AU/hr`)
+    if (speed > this.getStat(`highestSpeed`))
+      this.setStat(`highestSpeed`, speed)
 
     // ----- end if in tutorial -----
     if (this.tutorial) {
@@ -850,12 +845,7 @@ export class HumanShip extends CombatShip {
     // - space junk -
     if (c.lottery(distanceTraveled * (c.deltaTime / c.tickInterval), 2)) {
       // apply "amount boost" passive
-      const amountBoostPassive = (
-        this.passives.filter((p) => p.id === `boostDropAmount`) || []
-      ).reduce(
-        (total: number, p: ShipPassiveEffect) => total + (p.intensity || 0),
-        0,
-      )
+      const amountBoostPassive = this.getPassiveIntensity(`boostDropAmount`)
 
       const amount = c.r2(
         (Math.round(Math.random() * 3 * (Math.random() * 3)) / 10 + 1.5) *
@@ -1080,12 +1070,7 @@ export class HumanShip extends CombatShip {
 
   getCache(cache: Cache) {
     // apply "amount boost" passive
-    const amountBoostPassive = (
-      this.passives.filter((p) => p.id === `boostDropAmount`) || []
-    ).reduce(
-      (total: number, p: ShipPassiveEffect) => total + (p.intensity || 0),
-      0,
-    )
+    const amountBoostPassive = this.getPassiveIntensity(`boostDropAmount`)
     if (cache.droppedBy !== this.id && amountBoostPassive)
       cache.contents.forEach((c) => (c.amount += c.amount * amountBoostPassive))
 

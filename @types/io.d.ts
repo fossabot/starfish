@@ -136,7 +136,9 @@ interface IOClientEvents {
     cargoId: CargoId | `credits`,
     amount: number,
     message: string,
-    callback: (res: IOResponse<CacheStub>) => void,
+    callback: (
+      res: IOResponse<CacheStub | undefined>,
+    ) => void,
   ) => void
   [`crew:buyCargo`]: (
     shipId: string,

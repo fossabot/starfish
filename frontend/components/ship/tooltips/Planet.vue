@@ -24,11 +24,17 @@
       <hr />
     </div>
 
-    <div
-      v-if="dataToUse.planetType === 'mining'"
-      class="sub"
-    >
-      Mining colony
+    <div v-if="dataToUse.planetType === 'mining'">
+      <div v-if="dataToUse.mine && dataToUse.mine.length">
+        {{
+          c.printList(
+            dataToUse.mine.map(
+              (cargo) => c.cargo[cargo.id].name,
+            ),
+          )
+        }}
+        mining colony
+      </div>
     </div>
 
     <div v-if="dataToUse.pacifist" class="success">

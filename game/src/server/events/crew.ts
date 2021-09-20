@@ -525,24 +525,29 @@ export default function (
         crewMember.toUpdate.inventory = crewMember.inventory
       }
 
-      const cache = game.addCache({
-        location: [...ship.location],
-        contents: [{ id: cargoId, amount }],
-        droppedBy: ship.id,
-        message: c.sanitize(message).result,
-      })
+      if (amount > 1) {
+        const cache = game.addCache({
+          location: [...ship.location],
+          contents: [{ id: cargoId, amount }],
+          droppedBy: ship.id,
+          message: c.sanitize(message).result,
+        })
 
-      ship.logEntry(
-        `${
-          crewMember.name
-        } dropped a cache containing ${amount}${
-          cargoId === `credits` ? `` : ` tons of`
-        } ${cargoId}.`,
-      )
+        ship.logEntry(
+          `${
+            crewMember.name
+          } dropped a cache containing ${amount}${
+            cargoId === `credits` ? `` : ` tons of`
+          } ${cargoId}.`,
+        )
 
-      callback({
-        data: c.stubify(cache),
-      })
+        callback({
+          data: cache.stubify(),
+        })
+      } else
+        callback({
+          data: undefined,
+        })
 
       c.log(
         `gray`,

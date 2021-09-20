@@ -86,8 +86,7 @@ function getHitDamage(
 ) {
   return (
     weapon.damage *
-    (1 + (totalMunitionsSkill - 1) / 50) *
-    (weapon.repair || 0)
+    math.lerp(1, 4, totalMunitionsSkill / 100)
   )
 }
 
@@ -421,58 +420,67 @@ function stubify<BaseType, StubType extends BaseStub>(
   }
   profiler.step(`stringify and parse`)
   // c.log(Object.keys(gettersIncluded))
-  const circularReferencesRemoved = JSON.parse(
-    JSON.stringify(
-      gettersIncluded,
-      (key: string, value: any) => {
-        if ([`toUpdate`, `_stub`, `_id`].includes(key))
-          return undefined
-        if (
-          [
-            `game`,
-            `ship`,
-            `attacker`,
-            `defender`,
-            `crewMember`,
-            `homeworld`,
-            `faction`,
-            `species`,
-          ].includes(key)
-        )
-          return value?.id ? { id: value.id } : null
-        if (disallowPropName?.includes(key))
-          return value?.id || undefined
-        if ([`ships`].includes(key) && Array.isArray(value))
-          return value.map((v) =>
-            stubify(v, [
-              `visible`,
-              `seenPlanets`,
-              `seenLandmarks`,
-              `enemiesInAttackRange`,
-            ]),
+  let circularReferencesRemoved
+  try {
+    circularReferencesRemoved = JSON.parse(
+      JSON.stringify(
+        gettersIncluded,
+        (key: string, value: any) => {
+          if ([`toUpdate`, `_stub`, `_id`].includes(key))
+            return undefined
+          if (
+            [
+              `game`,
+              `ship`,
+              `attacker`,
+              `defender`,
+              `crewMember`,
+              `homeworld`,
+              `faction`,
+              `species`,
+            ].includes(key)
           )
-        // if (!disallowRecursion && value && value.stubify) {
-        //   c.log(
-        //     value.type,
-        //     value.id,
-        //     // Object.keys(value).filter(
-        //     //   (v) =>
-        //     //     ![
-        //     //       `game`,
-        //     //       `ship`,
-        //     //       `attacker`,
-        //     //       `defender`,
-        //     //       `crewMember`,
-        //     //       `homeworld`,
-        //     //     ].includes(v),
-        //     // ),
-        //   )
-        //   return value.stubify([key], true)
-        // } else if (value && value.stubify) return value.id
-        return value
-      },
-    ),
-  ) as StubType
+            return value?.id ? { id: value.id } : null
+          if (disallowPropName?.includes(key))
+            return value?.id || undefined
+          if (
+            [`ships`].includes(key) &&
+            Array.isArray(value)
+          )
+            return value.map((v) =>
+              stubify(v, [
+                `visible`,
+                `seenPlanets`,
+                `seenLandmarks`,
+                `enemiesInAttackRange`,
+              ]),
+            )
+          // if (!disallowRecursion && value && value.stubify) {
+          //   c.log(
+          //     value.type,
+          //     value.id,
+          //     // Object.keys(value).filter(
+          //     //   (v) =>
+          //     //     ![
+          //     //       `game`,
+          //     //       `ship`,
+          //     //       `attacker`,
+          //     //       `defender`,
+          //     //       `crewMember`,
+          //     //       `homeworld`,
+          //     //     ].includes(v),
+          //     // ),
+          //   )
+          //   return value.stubify([key], true)
+          // } else if (value && value.stubify) return value.id
+          return value
+        },
+      ),
+    ) as StubType
+  } catch (e) {
+    c.log(`red`, `Failed to stubify`, e)
+    c.trace()
+  }
   // circularReferencesRemoved.lastUpdated = Date.now()
   profiler.end()
   return circularReferencesRemoved
