@@ -28,7 +28,7 @@ const mainDirs = [
 const log = (...args) => {
     const regexResult = /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || ``;
-    // const lineNumber: string = regexResult?.[3] || ``
+    const lineNumber = regexResult?.[3] || ``;
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
     const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``;
     for (let index = 0; index < args.length; index++) {
@@ -74,12 +74,14 @@ const log = (...args) => {
                 dim +
                 `:`
             : ``) +
-        pathName);
+        pathName +
+        `:` +
+        lineNumber);
     if (prefix.length > longest)
         longest = prefix.length;
-    prefix =
-        prefix.padEnd(Math.min(25, longest), fillCharacter) +
-            reset;
+    while (prefix.length < Math.max(25, longest))
+        prefix += fillCharacter;
+    prefix += reset;
     console.log(prefix, ...args);
 };
 function trace() {

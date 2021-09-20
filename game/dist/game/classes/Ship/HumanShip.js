@@ -81,7 +81,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.tutorial)
             this.updatePlanet(true);
         setTimeout(() => {
-            this.radii.game = this.game.gameSoftRadius;
+            this.radii.gameSize = this.game.gameSoftRadius;
             this.toUpdate.radii = this.radii;
         }, 100);
     }
@@ -118,7 +118,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         profiler.step(`crew tick & stubify`);
         this.crewMembers.forEach((cm) => cm.tick());
         this.toUpdate.crewMembers = this.crewMembers
-            .filter((cm) => Object.keys(cm.toUpdate).length)
+            .filter((cm) => Object.keys(cm.toUpdate || {}).length)
             .map((cm) => {
             const updates = {
                 ...dist_1.default.stubify(cm.toUpdate),
@@ -179,6 +179,15 @@ class HumanShip extends CombatShip_1.CombatShip {
             //   `characters to frontend for`,
             //   this.name,
             // )
+            // this.toUpdate.log?.forEach((l) => {
+            //   c.log(l)
+            //   if (Array.isArray(l.content))
+            //     l.content.forEach((n) => {
+            //       if (typeof n === `object`) c.log(n.tooltipData)
+            //     })
+            // })
+            // c.log(JSON.stringify(this.toUpdate.log))
+            // c.log(JSON.stringify(this.toUpdate, null, 2))
             io_1.default.to(`ship:${this.id}`).emit(`ship:update`, {
                 id: this.id,
                 updates: this.toUpdate,
@@ -214,7 +223,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     discoverPlanet(p) {
         this.seenPlanets.push(p);
-        this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.getVisibleStub());
+        this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.toVisibleStub());
         this.logEntry([
             `Discovered the planet`,
             {
@@ -238,7 +247,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     discoverLandmark(l) {
         this.seenLandmarks.push(l);
-        this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) => z.getVisibleStub());
+        this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) => z.toVisibleStub());
         this.logEntry([
             `Discovered`,
             {
@@ -512,7 +521,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: foundShip.name,
                             color: foundShip.faction?.color,
-                            tooltipData: foundShip,
+                            tooltipData: foundShip.toLogStub(),
                         },
                     ];
             }
@@ -648,7 +657,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             return;
         }
         // ----- game radius -----
-        this.radii.game = this.game.gameSoftRadius;
+        this.radii.gameSize = this.game.gameSoftRadius;
         this.toUpdate.radii = this.radii;
         const isOutsideRadius = dist_1.default.distance([0, 0], this.location) >
             this.game.gameSoftRadius;
@@ -734,7 +743,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 ...dist_1.default.stubify(p.toUpdate),
             }));
         else
-            planetDataToSend = this.visible.planets.map((p) => p.getVisibleStub());
+            planetDataToSend = this.visible.planets.map((p) => p.toVisibleStub());
         this.toUpdate.visible = {
             ships: this.visible.ships,
             trails: this.visible.trails || [],
@@ -788,20 +797,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: {
-                                type: `ship`,
-                                name: this.name,
-                                faction: {
-                                    type: `faction`,
-                                    id: this.faction.id,
-                                },
-                                species: {
-                                    type: `species`,
-                                    id: this.species.id,
-                                },
-                                tagline: this.tagline,
-                                headerBackground: this.headerBackground,
-                            },
+                            tooltipData: this.toLogStub(),
                         },
                         `landed on`,
                         {
@@ -831,20 +827,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: {
-                                type: `ship`,
-                                name: this.name,
-                                faction: {
-                                    type: `faction`,
-                                    id: this.faction.id,
-                                },
-                                species: {
-                                    type: `species`,
-                                    id: this.species.id,
-                                },
-                                tagline: this.tagline,
-                                headerBackground: this.headerBackground,
-                            },
+                            tooltipData: this.toLogStub(),
                         },
                         `landed on`,
                         {
@@ -1057,8 +1040,16 @@ class HumanShip extends CombatShip_1.CombatShip {
         return res;
     }
     // ----- crew mgmt -----
-    addCrewMember(data, silent = false) {
+    addCrewMember(data, setupAdd = false) {
         const cm = new CrewMember_1.CrewMember(data, this);
+        // if it is a fully new crew member (and not a temporary ship in the tutorial)
+        if (!setupAdd && !this.tutorial) {
+            if (this.crewMembers.length > 1)
+                this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
+            const tutorialShip = Tutorial_1.Tutorial.spawnTutorialShip(cm);
+            cm.tutorialShipId = tutorialShip.id;
+            cm.toUpdate.tutorialShipId = cm.tutorialShipId;
+        }
         this.crewMembers.push(cm);
         if (!this.captain)
             this.captain = cm.id;
@@ -1066,8 +1057,6 @@ class HumanShip extends CombatShip_1.CombatShip {
         //   `gray`,
         //   `Added crew member ${cm.name} to ${this.name}`,
         // )
-        if (!silent && this.crewMembers.length > 1)
-            this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
         if (this.crewMembers.length >= 5)
             this.addTagline(`Guppy`, `having 5 crew members`);
         else if (this.crewMembers.length >= 10)
@@ -1076,7 +1065,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.addTagline(`Pod`, `having 30 crew members`);
         else if (this.crewMembers.length >= 100)
             this.addTagline(`Big Fish`, `having 100 crew members`);
-        db_1.db.ship.addOrUpdateInDb(this);
+        if (!setupAdd)
+            db_1.db.ship.addOrUpdateInDb(this);
         return cm;
     }
     removeCrewMember(id) {

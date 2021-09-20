@@ -19,6 +19,7 @@ import loadouts from '../../presets/loadouts'
 import type { Species } from '../Species'
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
+import { AIShip } from './AIShip'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 30
@@ -34,7 +35,7 @@ export class Ship extends Stubbable {
     broadcast: 0,
     scan: 0,
     attack: 0,
-    game: 0,
+    gameSize: 0,
   }
 
   onlyVisibleToShipId?: string
@@ -116,6 +117,10 @@ export class Ship extends Stubbable {
     this.species = game.species.find(
       (s) => s.id === species.id,
     )!
+    if (!this.species) {
+      c.log(`red`, `no species found for`, species)
+      this.species = game.species[0]
+    }
     this.faction = this.species.faction
 
     this.velocity = velocity || [0, 0]
@@ -124,7 +129,14 @@ export class Ship extends Stubbable {
     } else if (this.faction) {
       this.location = [
         ...(this.faction.homeworld?.location || [0, 0]),
-      ]
+      ].map(
+        (pos) =>
+          pos +
+          c.randomBetween(
+            c.arrivalThreshold * -0.4,
+            c.arrivalThreshold * 0.4,
+          ),
+      ) as CoordinatePair
       // c.log(`fact`, this.location, this.faction.homeworld)
     } else this.location = [0, 0]
 
@@ -179,7 +191,7 @@ export class Ship extends Stubbable {
     this.recalculateMaxHp()
     this._hp = this.hp
 
-    if (stats) this.stats = stats
+    if (stats) this.stats = [...stats]
 
     // passively lose previous locations over time
     // so someone who, for example, sits forever at a planet loses their trail eventually
@@ -461,6 +473,8 @@ export class Ship extends Stubbable {
       (this.passives.find((p) => p.id === `boostScanRange`)
         ?.intensity || 0) + 1
     this.radii.scan *= boostScan
+
+    this.radii.gameSize = this.game.gameSoftRadius
     this.toUpdate.radii = this.radii
   }
 
@@ -706,7 +720,7 @@ export class Ship extends Stubbable {
         amount,
       })
     else existing.amount += amount
-    this.toUpdate.stats = c.stubify({ ...this.stats })
+    this.toUpdate.stats = this.stats
   }
 
   setStat(statname: ShipStatKey, amount: number) {
@@ -719,7 +733,7 @@ export class Ship extends Stubbable {
         amount,
       })
     else existing.amount = amount
-    this.toUpdate.stats = c.stubify({ ...this.stats })
+    this.toUpdate.stats = this.stats
   }
 
   getStat(statname: ShipStatKey) {
@@ -728,6 +742,24 @@ export class Ship extends Stubbable {
     )
     if (!existing) return 0
     return existing.amount
+  }
+
+  toLogStub() {
+    return {
+      type: `ship`,
+      name: this.name,
+      faction: {
+        type: `faction`,
+        id: this.faction.id,
+      },
+      species: {
+        type: `species`,
+        id: this.species.id,
+      },
+      tagline: this.tagline,
+      headerBackground: this.headerBackground,
+      level: (this as any).level,
+    }
   }
 
   // ----- misc stubs -----

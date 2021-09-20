@@ -91,6 +91,7 @@ interface IOClientEvents {
   ) => void
   [`ship:listen`]: (
     id: string,
+    crewMemberId: string | false,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:unlisten`]: (id: string) => void

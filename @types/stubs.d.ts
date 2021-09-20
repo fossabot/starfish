@@ -27,7 +27,7 @@ interface ShipStub extends BaseStub {
   obeysGravity?: boolean
   planet?: PlanetStub | false
   faction: FactionStub
-  species: BaseSpeciesData
+  species: SpeciesStub
   rooms: { [key in CrewLocation]?: BaseRoomData }
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]

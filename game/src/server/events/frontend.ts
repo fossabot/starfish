@@ -27,13 +27,34 @@ export default function (
       })
       callback({ data: stub })
     } else
-      callback({ error: `No ship found by the ID ${id}.` })
+      callback({
+        error: `No ship basics found by the ID ${id}.`,
+      })
   })
 
-  socket.on(`ship:listen`, (id, callback) => {
-    socket.join([`ship:${id}`])
+  socket.on(`ship:listen`, (id, crewMemberId, callback) => {
+    let foundShip = game.ships.find((s) => s.id === id)
 
-    const foundShip = game.ships.find((s) => s.id === id)
+    if (foundShip && crewMemberId) {
+      const crewMember = foundShip.crewMembers.find(
+        (c) => c.id === crewMemberId,
+      )
+      // return crew member tutorial ship instead if it exists
+      if (
+        crewMember &&
+        crewMember.tutorialShipId &&
+        game.ships.find(
+          (s) => s.id === crewMember.tutorialShipId,
+        )
+      ) {
+        c.log(
+          `returning tutorial ship ${crewMember.tutorialShipId} instead of requested ship`,
+        )
+        id = crewMember.tutorialShipId
+        foundShip = game.ships.find((s) => s.id === id)
+      } else delete crewMember?.tutorialShipId // just to clean up in case they have a reference to a missing tutorial ship
+    }
+
     if (foundShip) {
       const stub: ShipStub = foundShip.stubify()
       // * clearing parts of visible here because they're not being properly obfuscated with a raw stubify call
@@ -45,6 +66,8 @@ export default function (
       // )
     } else
       callback({ error: `No ship found by the ID ${id}.` })
+
+    socket.join([`ship:${id}`])
   })
 
   socket.on(`ship:unlisten`, (id) => {

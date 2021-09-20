@@ -22,7 +22,7 @@ class Ship extends Stubbable_1.Stubbable {
             broadcast: 0,
             scan: 0,
             attack: 0,
-            game: 0,
+            gameSize: 0,
         };
         this.crewMembers = [];
         this.toUpdate = {};
@@ -62,6 +62,10 @@ class Ship extends Stubbable_1.Stubbable {
         this.ai = true;
         this.human = false;
         this.species = game.species.find((s) => s.id === species.id);
+        if (!this.species) {
+            dist_1.default.log(`red`, `no species found for`, species);
+            this.species = game.species[0];
+        }
         this.faction = this.species.faction;
         this.velocity = velocity || [0, 0];
         if (location) {
@@ -70,7 +74,8 @@ class Ship extends Stubbable_1.Stubbable {
         else if (this.faction) {
             this.location = [
                 ...(this.faction.homeworld?.location || [0, 0]),
-            ];
+            ].map((pos) => pos +
+                dist_1.default.randomBetween(dist_1.default.arrivalThreshold * -0.4, dist_1.default.arrivalThreshold * 0.4));
             // c.log(`fact`, this.location, this.faction.homeworld)
         }
         else
@@ -115,7 +120,7 @@ class Ship extends Stubbable_1.Stubbable {
         this.recalculateMaxHp();
         this._hp = this.hp;
         if (stats)
-            this.stats = stats;
+            this.stats = [...stats];
         // passively lose previous locations over time
         // so someone who, for example, sits forever at a planet loses their trail eventually
         setInterval(() => {
@@ -314,6 +319,7 @@ class Ship extends Stubbable_1.Stubbable {
         const boostScan = (this.passives.find((p) => p.id === `boostScanRange`)
             ?.intensity || 0) + 1;
         this.radii.scan *= boostScan;
+        this.radii.gameSize = this.game.gameSoftRadius;
         this.toUpdate.radii = this.radii;
     }
     // ----- movement -----
@@ -478,7 +484,7 @@ class Ship extends Stubbable_1.Stubbable {
             });
         else
             existing.amount += amount;
-        this.toUpdate.stats = dist_1.default.stubify({ ...this.stats });
+        this.toUpdate.stats = this.stats;
     }
     setStat(statname, amount) {
         const existing = this.stats.find((s) => s.stat === statname);
@@ -489,13 +495,30 @@ class Ship extends Stubbable_1.Stubbable {
             });
         else
             existing.amount = amount;
-        this.toUpdate.stats = dist_1.default.stubify({ ...this.stats });
+        this.toUpdate.stats = this.stats;
     }
     getStat(statname) {
         const existing = this.stats.find((s) => s.stat === statname);
         if (!existing)
             return 0;
         return existing.amount;
+    }
+    toLogStub() {
+        return {
+            type: `ship`,
+            name: this.name,
+            faction: {
+                type: `faction`,
+                id: this.faction.id,
+            },
+            species: {
+                type: `species`,
+                id: this.species.id,
+            },
+            tagline: this.tagline,
+            headerBackground: this.headerBackground,
+            level: this.level,
+        };
     }
     // ----- misc stubs -----
     logEntry(s, lv) { }

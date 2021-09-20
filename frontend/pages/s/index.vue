@@ -53,6 +53,8 @@
 
       <ShipNavPane v-if="ship && !ship.tutorial" />
     </div>
+    {{ ship && ship.id }}
+    <pre>{{ crewMember }}</pre>
 
     <!-- <details style="position: relative; margin-bottom: 2em">
       <summary>Raw Data</summary>

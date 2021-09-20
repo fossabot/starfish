@@ -21,6 +21,21 @@ class Tutorial {
             this.advanceStep();
         this.currentStep = this.steps[this.step];
     }
+    static spawnTutorialShip(crewMember) {
+        dist_1.default.log(`Spawning tutorial ship for crew member ${crewMember.id}`);
+        const tutorialShip = crewMember.ship.game.addHumanShip({
+            name: crewMember.ship.name,
+            tutorial: { step: -1 },
+            id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
+            species: { id: crewMember.ship.species.id },
+        }, true);
+        tutorialShip.addCrewMember({
+            name: crewMember.name,
+            id: crewMember.id,
+            mainShipId: crewMember.ship.id,
+        });
+        return tutorialShip;
+    }
     initializeSteps() {
         this.steps = [
             {
@@ -791,61 +806,61 @@ class Tutorial {
     }
     done(skip = false) {
         dist_1.default.log(`Tutorial ${skip ? `skipped` : `complete`} for ${this.ship.name}`);
-        setTimeout(() => {
-            this.ship.logEntry([
-                `Good luck out there! If you have questions about the game, check out the`,
-                { text: `How To Play`, url: `/howtoplay` },
-                `page!`,
-            ], `high`);
-            io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
-        }, dist_1.default.tickInterval);
-        this.ship.addHeaderBackground(dist_1.default.capitalize(this.ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(this.ship.faction.id)} faction`);
-        this.ship.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
-        this.cleanUp();
-        this.ship.tutorial = undefined;
-        this.ship.toUpdate.tutorial = false;
-        // reset cash and charge
-        this.ship.commonCredits = 0;
-        this.ship.toUpdate.commonCredits =
-            this.ship.commonCredits;
-        this.ship.crewMembers.forEach((cm) => {
-            cm.credits = 1000;
-            cm.toUpdate.credits = cm.credits;
-            cm.cockpitCharge = 1;
-            cm.toUpdate.cockpitCharge = cm.cockpitCharge;
-        });
-        this.ship.recalculateShownPanels();
-        this.ship.respawn(true);
-        if (this.ship.planet)
-            this.ship.planet.shipsAt
-                .filter((s) => s.faction?.color === this.ship.faction?.color)
-                .forEach((s) => {
-                if (s === this.ship || !s.planet)
-                    return;
-                s.logEntry([
-                    {
-                        text: this.ship.name,
-                        color: this.ship.faction.color,
-                        tooltipData: {
-                            type: `ship`,
-                            name: this.ship.name,
-                            faction: this.ship.faction,
-                            species: this.ship.species,
-                            tagline: this.ship.tagline,
-                            headerBackground: this.ship.headerBackground,
+        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0].mainShipId);
+        if (!mainShip) {
+            this.cleanUp();
+            return;
+        }
+        if (mainShip.crewMembers.length < 2) {
+            setTimeout(() => {
+                this.ship.logEntry([
+                    `Good luck out there! If you have questions about the game, check out the`,
+                    { text: `How To Play`, url: `/howtoplay` },
+                    `page!`,
+                ], `high`);
+                io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
+            }, dist_1.default.tickInterval);
+            mainShip.addHeaderBackground(dist_1.default.capitalize(mainShip.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(mainShip.faction.id)} faction`);
+            mainShip.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
+            // mainShip.tutorial = undefined
+            // mainShip.toUpdate.tutorial = false
+            // reset cash and charge
+            // mainShip.commonCredits = 0
+            // mainShip.toUpdate.commonCredits =
+            //   mainShip.commonCredits
+            // mainShip.crewMembers.forEach((cm) => {
+            //   cm.credits = 1000
+            //   cm.toUpdate.credits = cm.credits
+            //   cm.cockpitCharge = 1
+            //   cm.toUpdate.cockpitCharge = cm.cockpitCharge
+            // })
+            // mainShip.recalculateShownPanels()
+            // mainShip.respawn(true)
+            if (mainShip.planet)
+                mainShip.planet.shipsAt
+                    .filter((s) => s.faction?.color === mainShip.faction?.color)
+                    .forEach((s) => {
+                    if (s === mainShip || !s.planet)
+                        return;
+                    s.logEntry([
+                        {
+                            text: mainShip.name,
+                            color: mainShip.faction.color,
+                            tooltipData: mainShip.toLogStub(),
                         },
-                    },
-                    `has joined the game, starting out from`,
-                    {
-                        text: s.planet.name,
-                        color: s.planet.color,
-                        tooltipData: s.planet.toLogStub(),
-                    },
-                    `&nospace!`,
-                ]);
-            });
+                        `has joined the game, starting out from`,
+                        {
+                            text: s.planet.name,
+                            color: s.planet.color,
+                            tooltipData: s.planet.toLogStub(),
+                        },
+                        `&nospace!`,
+                    ]);
+                });
+        }
+        this.cleanUp();
     }
-    cleanUp() {
+    async cleanUp() {
         dist_1.default.log(`Cleaning up after tutorial...`);
         // c.log(
         //   this.ship.game.caches.length,
@@ -872,6 +887,22 @@ class Tutorial {
             .forEach((s) => {
             this.ship.game.removeShip(s);
         });
+        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0].mainShipId);
+        if (!mainShip) {
+            dist_1.default.log(`red`, `Failed to find main ship for crew member exiting tutorial!`);
+        }
+        else {
+            const mainCrewMember = mainShip.crewMembers.find((cm) => cm.id === this.ship.crewMembers[0].id);
+            if (!mainCrewMember) {
+                dist_1.default.log(`red`, `Failed to find main crew member exiting tutorial!`);
+            }
+            else {
+                mainCrewMember.tutorialShipId = undefined;
+                mainCrewMember.toUpdate.tutorialShipId = undefined;
+            }
+        }
+        if (this.ship.game.ships.includes(this.ship))
+            await this.ship.game.removeShip(this.ship);
     }
 }
 exports.Tutorial = Tutorial;

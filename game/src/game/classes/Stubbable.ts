@@ -5,13 +5,13 @@ export class Stubbable {
 
   stubify<StubType>(
     disallowedPropNames: string[] = [],
-    disallowRecursion: boolean = false,
+    allowRecursion: boolean = true,
   ): StubType {
     if (!this._stub)
       this._stub = c.stubify(
         this,
         disallowedPropNames,
-        disallowRecursion,
+        allowRecursion,
       )
     return this._stub as StubType
   }

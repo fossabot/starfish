@@ -15,7 +15,6 @@ declare function statToString(data: {
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getPlanetPopulation(planet: PlanetStub): number;
-declare function stubify<BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean): StubType;
 declare const _default: {
     supportServerLink: string;
     gameShipLimit: number;
@@ -78,7 +77,6 @@ declare const _default: {
     }[];
     getPlanetTitle: typeof getPlanetTitle;
     getPlanetPopulation: typeof getPlanetPopulation;
-    stubify: typeof stubify;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

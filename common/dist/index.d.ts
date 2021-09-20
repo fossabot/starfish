@@ -1,5 +1,6 @@
 import { Profiler } from './Profiler';
 import * as cargo from './cargo';
+import stubify from './stubify';
 import * as items from './items';
 declare const _default: {
     items: typeof items;
@@ -38,10 +39,10 @@ declare const _default: {
         flamingos: BaseSpeciesData;
     };
     factions: {
+        red: BaseFactionData;
         green: BaseFactionData;
         blue: BaseFactionData;
         purple: BaseFactionData;
-        red: BaseFactionData;
     };
     basePassiveData: {
         boostDropAmount: {
@@ -112,6 +113,7 @@ declare const _default: {
         };
     };
     Profiler: typeof Profiler;
+    stubify: typeof stubify;
     discordBotId: string;
     discordBotPermissionsString: string;
     frontendUrl: string;
@@ -149,7 +151,7 @@ declare const _default: {
         previousLocations: true;
         location: true;
         planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        faction: ("homeworld" | "species" | "name" | "color" | "id" | "ai")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
@@ -182,7 +184,6 @@ declare const _default: {
     }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    stubify: <BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

@@ -9,9 +9,9 @@ class Stubbable {
     constructor() {
         this._stub = null;
     }
-    stubify(disallowedPropNames = [], disallowRecursion = false) {
+    stubify(disallowedPropNames = [], allowRecursion = true) {
         if (!this._stub)
-            this._stub = dist_1.default.stubify(this, disallowedPropNames, disallowRecursion);
+            this._stub = dist_1.default.stubify(this, disallowedPropNames, allowRecursion);
         return this._stub;
     }
 }

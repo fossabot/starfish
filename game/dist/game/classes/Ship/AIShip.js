@@ -29,8 +29,6 @@ class AIShip extends CombatShip_1.CombatShip {
         this.planet = false;
         this.ai = true;
         this.human = false;
-        if (data.headerBackground)
-            this.headerBackground = data.headerBackground;
         if (data.level)
             this.level = data.level;
         if (this.items.length === 0)

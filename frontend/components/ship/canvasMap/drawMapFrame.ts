@@ -71,7 +71,7 @@ export default class Drawer {
       !this.element ||
       !document.body.contains(this.element)
     )
-      return c.log(`missing element`)
+      return
     this.ctx = this.element.getContext(`2d`)
 
     this.drawCalls = 0
@@ -212,11 +212,11 @@ export default class Drawer {
       opacity: 0.5,
     })
 
-    if (ship.radii?.game)
+    if (ship.radii?.gameSize)
       this.drawPoint({
         location: [0, 0],
         labelTop: `known universe`,
-        radius: ship.radii.game * this.flatScale,
+        radius: ship.radii.gameSize * this.flatScale,
         color: `#bbbbbb`,
         outline: true,
         opacity: 0.5,

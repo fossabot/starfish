@@ -35,6 +35,9 @@ export default function (
           0,
           c.maxNameLength,
         )
+
+      crewMemberBaseData.credits = 1000
+      crewMemberBaseData.cockpitCharge = 1
       const addedCrewMember = ship.addCrewMember(
         crewMemberBaseData,
       )

@@ -7,10 +7,10 @@ const socketAddress =
       ? `https://localhost:4200`
       : `http://localhost:4200`
     : `https://www.starfish.cool:4200`
-c.log(
-  `initializing frontend socket connection at`,
-  socketAddress,
-)
+// c.log(
+//   `initializing frontend socket connection at`,
+//   socketAddress,
+// )
 const socket = io(socketAddress, {
   secure: true,
   rejectUnauthorized: false,

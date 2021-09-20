@@ -55,8 +55,8 @@ export default Vue.extend({
   },
   watch: {},
   async mounted() {
-    this.password = prompt('password')
-    if (!this.password) this.$router.replace('/')
+    if (process.env.NODE_ENV !== 'development')
+      this.password = prompt('password')
     this.$socket.emit(
       'game:adminCheck',
       this.$store.state.userId,

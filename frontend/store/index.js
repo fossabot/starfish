@@ -152,15 +152,20 @@ export const actions = {
     const connected = () => {
       clearTimeout(connectionTimeout)
       commit(`set`, { connected: true })
-      this.$socket?.emit(`ship:listen`, shipId, (res) => {
-        if (`error` in res) return console.log(res.error)
-        // c.log(
-        //   JSON.stringify(res.data).length,
-        //   `characters of data received from initial load`,
-        // )
-        if (!state.ship) commit(`set`, { ship: res.data })
-        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
-      })
+      this.$socket?.emit(
+        `ship:listen`,
+        shipId,
+        state.userId,
+        (res) => {
+          if (`error` in res) return console.log(res.error)
+          // c.log(
+          //   JSON.stringify(res.data).length,
+          //   `characters of data received from initial load`,
+          // )
+          if (!state.ship) commit(`set`, { ship: res.data })
+          dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+        },
+      )
     }
     if (this.$socket.connected) connected()
     this.$socket.on(`connect`, connected)

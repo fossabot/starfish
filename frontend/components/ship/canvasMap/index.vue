@@ -203,10 +203,6 @@ export default Vue.extend({
             !document.body.contains(this.element)
           ) {
             await this.$nextTick()
-            c.log(
-              `missing element!`,
-              this.$el.querySelector('#map'),
-            )
 
             this.element = this.$el.querySelector(
               '#map',

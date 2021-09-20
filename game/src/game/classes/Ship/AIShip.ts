@@ -48,9 +48,6 @@ export class AIShip extends CombatShip {
     this.ai = true
     this.human = false
 
-    if (data.headerBackground)
-      this.headerBackground = data.headerBackground
-
     if (data.level) this.level = data.level
     if (this.items.length === 0)
       this.addLevelAppropriateItems()

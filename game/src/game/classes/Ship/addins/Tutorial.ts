@@ -1,6 +1,8 @@
 import c from '../../../../../../common/dist'
 import io from '../../../../server/io'
 import type { HumanShip } from '../HumanShip'
+import type { Game } from '../../../../game/Game'
+import type { CrewMember } from '../../CrewMember/CrewMember'
 
 interface BaseTutorialData {
   step: number
@@ -56,6 +58,27 @@ export class Tutorial {
   currentStep: TutorialStepData
   ship: HumanShip
   targetLocation?: TargetLocation
+
+  static spawnTutorialShip(crewMember: CrewMember) {
+    c.log(
+      `Spawning tutorial ship for crew member ${crewMember.id}`,
+    )
+    const tutorialShip = crewMember.ship.game.addHumanShip(
+      {
+        name: crewMember.ship.name,
+        tutorial: { step: -1 },
+        id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
+        species: { id: crewMember.ship.species.id },
+      },
+      true,
+    )
+    tutorialShip.addCrewMember({
+      name: crewMember.name,
+      id: crewMember.id,
+      mainShipId: crewMember.ship.id,
+    })
+    return tutorialShip
+  }
 
   initializeSteps() {
     this.steps = [
@@ -908,87 +931,90 @@ export class Tutorial {
       }`,
     )
 
-    setTimeout(() => {
-      this.ship.logEntry(
-        [
-          `Good luck out there! If you have questions about the game, check out the`,
-          { text: `How To Play`, url: `/howtoplay` },
-          `page!`,
-        ],
-        `high`,
-      )
-      io.emit(
-        `ship:message`,
-        this.ship.id,
-        `Use this channel to broadcast to and receive messages from nearby ships!`,
-        `broadcast`,
-      )
-    }, c.tickInterval)
+    const mainShip = this.ship.game.humanShips.find(
+      (s) => s.id === this.ship.crewMembers[0].mainShipId,
+    )
+    if (!mainShip) {
+      this.cleanUp()
+      return
+    }
 
-    this.ship.addHeaderBackground(
-      c.capitalize(this.ship.faction.id) + ` Faction 1`,
-      `joining the ${c.capitalize(
-        this.ship.faction.id,
-      )} faction`,
-    )
-    this.ship.addTagline(
-      `Alpha Tester`,
-      `helping to test ${c.gameName}`,
-    )
+    if (mainShip.crewMembers.length < 2) {
+      setTimeout(() => {
+        this.ship.logEntry(
+          [
+            `Good luck out there! If you have questions about the game, check out the`,
+            { text: `How To Play`, url: `/howtoplay` },
+            `page!`,
+          ],
+          `high`,
+        )
+        io.emit(
+          `ship:message`,
+          this.ship.id,
+          `Use this channel to broadcast to and receive messages from nearby ships!`,
+          `broadcast`,
+        )
+      }, c.tickInterval)
+
+      mainShip.addHeaderBackground(
+        c.capitalize(mainShip.faction.id) + ` Faction 1`,
+        `joining the ${c.capitalize(
+          mainShip.faction.id,
+        )} faction`,
+      )
+      mainShip.addTagline(
+        `Alpha Tester`,
+        `helping to test ${c.gameName}`,
+      )
+
+      // mainShip.tutorial = undefined
+      // mainShip.toUpdate.tutorial = false
+
+      // reset cash and charge
+      // mainShip.commonCredits = 0
+      // mainShip.toUpdate.commonCredits =
+      //   mainShip.commonCredits
+      // mainShip.crewMembers.forEach((cm) => {
+      //   cm.credits = 1000
+      //   cm.toUpdate.credits = cm.credits
+
+      //   cm.cockpitCharge = 1
+      //   cm.toUpdate.cockpitCharge = cm.cockpitCharge
+      // })
+
+      // mainShip.recalculateShownPanels()
+      // mainShip.respawn(true)
+
+      if (mainShip.planet)
+        mainShip.planet.shipsAt
+          .filter(
+            (s) =>
+              s.faction?.color === mainShip.faction?.color,
+          )
+          .forEach((s) => {
+            if (s === mainShip || !s.planet) return
+            s.logEntry([
+              {
+                text: mainShip.name,
+                color: mainShip.faction.color,
+                tooltipData: mainShip.toLogStub(),
+              },
+              `has joined the game, starting out from`,
+              {
+                text: s.planet.name,
+                color: s.planet.color,
+                tooltipData: s.planet.toLogStub() as any,
+              },
+              `&nospace!`,
+            ])
+          })
+    }
 
     this.cleanUp()
-    this.ship.tutorial = undefined
-    this.ship.toUpdate.tutorial = false
-
-    // reset cash and charge
-    this.ship.commonCredits = 0
-    this.ship.toUpdate.commonCredits =
-      this.ship.commonCredits
-    this.ship.crewMembers.forEach((cm) => {
-      cm.credits = 1000
-      cm.toUpdate.credits = cm.credits
-
-      cm.cockpitCharge = 1
-      cm.toUpdate.cockpitCharge = cm.cockpitCharge
-    })
-
-    this.ship.recalculateShownPanels()
-    this.ship.respawn(true)
-
-    if (this.ship.planet)
-      this.ship.planet.shipsAt
-        .filter(
-          (s) =>
-            s.faction?.color === this.ship.faction?.color,
-        )
-        .forEach((s) => {
-          if (s === this.ship || !s.planet) return
-          s.logEntry([
-            {
-              text: this.ship.name,
-              color: this.ship.faction.color,
-              tooltipData: {
-                type: `ship`,
-                name: this.ship.name,
-                faction: this.ship.faction,
-                species: this.ship.species,
-                tagline: this.ship.tagline,
-                headerBackground:
-                  this.ship.headerBackground,
-              },
-            },
-            `has joined the game, starting out from`,
-            {
-              text: s.planet.name,
-              color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
-            },
-            `&nospace!`,
-          ])
-        })
   }
 
-  cleanUp() {
+  async cleanUp() {
     c.log(`Cleaning up after tutorial...`)
     // c.log(
     //   this.ship.game.caches.length,
@@ -1015,5 +1041,31 @@ export class Tutorial {
       .forEach((s) => {
         this.ship.game.removeShip(s)
       })
+
+    const mainShip = this.ship.game.humanShips.find(
+      (s) => s.id === this.ship.crewMembers[0].mainShipId,
+    )
+    if (!mainShip) {
+      c.log(
+        `red`,
+        `Failed to find main ship for crew member exiting tutorial!`,
+      )
+    } else {
+      const mainCrewMember = mainShip.crewMembers.find(
+        (cm) => cm.id === this.ship.crewMembers[0].id,
+      )
+      if (!mainCrewMember) {
+        c.log(
+          `red`,
+          `Failed to find main crew member exiting tutorial!`,
+        )
+      } else {
+        mainCrewMember.tutorialShipId = undefined
+        mainCrewMember.toUpdate.tutorialShipId = undefined
+      }
+    }
+
+    if (this.ship.game.ships.includes(this.ship))
+      await this.ship.game.removeShip(this.ship)
   }
 }

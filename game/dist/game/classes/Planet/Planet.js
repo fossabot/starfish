@@ -32,7 +32,7 @@ class Planet extends Stubbable_1.Stubbable {
         this.creatures = creatures || [];
         this.level = level;
         this.xp = xp;
-        this.stats = stats || [];
+        this.stats = [...(stats || [])];
         // * timeout so it has time to run subclass contstructor
         setTimeout(() => {
             if (this.level === 0)
@@ -43,7 +43,7 @@ class Planet extends Stubbable_1.Stubbable {
         }, 100);
     }
     get shipsAt() {
-        return this.game.humanShips.filter((s) => s.planet === this);
+        return this.game.humanShips.filter((s) => !s.tutorial && s.planet === this);
     }
     async donate(amount, faction) {
         this.addXp(amount / dist_1.default.planetContributeCostPerXp, true);
@@ -88,7 +88,7 @@ class Planet extends Stubbable_1.Stubbable {
             s.toUpdate.planet = this.stubify();
         });
     }
-    getVisibleStub() {
+    toVisibleStub() {
         return this.stubify();
     }
     toLogStub() {
