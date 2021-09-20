@@ -98,9 +98,11 @@ export function generateMiningPlanet(
   const baseLevel = 1
   const xp = 0
 
-  const color = `hsl(${Math.random() * 360}, ${Math.round(
-    Math.random() * 40,
-  )}%, ${Math.round(Math.random() * 50) + 30}%)`
+  const color = `hsl(${Math.round(
+    Math.random() * 360,
+  )}, ${Math.round(Math.random() * 40)}%, ${
+    Math.round(Math.random() * 50) + 30
+  }%)`
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
   const mass =
@@ -158,11 +160,42 @@ export function generateBasicPlanet(
     if (factionId === `red`) factionId = undefined
   }
 
-  const color = factionId
-    ? c.factions[factionId].color
-    : `hsl(${Math.random() * 360}, ${Math.round(
-        Math.random() * 80 + 20,
-      )}%, ${Math.round(Math.random() * 40) + 30}%)`
+  let color
+  if (factionId) color = c.factions[factionId].color
+  else {
+    let hue = Math.random() * 360
+
+    // don't let color be too close to a faction color
+    while (
+      Object.values(c.factions).find((f) => {
+        let factionHue: any = /hsl\(([^,]*),.*/g.exec(
+            f.color,
+          )?.[1],
+          potentialHue = hue
+        try {
+          factionHue = parseInt(`${factionHue}`)
+        } catch (e) {
+          return false
+        }
+        if (isNaN(factionHue)) {
+          c.log(`Failed to get faction hue from`, f.color)
+          return false
+        }
+        if (factionHue > 180) factionHue -= 360
+        if (potentialHue > 180) potentialHue -= 360
+        if (Math.abs(factionHue - potentialHue) < 25)
+          return true
+        return false
+      })
+    ) {
+      hue = Math.random() * 360
+    }
+    c.log(hue)
+
+    color = `hsl(${Math.round(hue)}, ${Math.round(
+      Math.random() * 80 + 20,
+    )}%, ${Math.round(Math.random() * 40) + 40}%)`
+  }
 
   const level = 0
   const baseLevel = homeworldFactionKey
