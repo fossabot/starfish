@@ -135,7 +135,8 @@ export const actions = {
       !shipId ||
       !state.shipIds.find((s) => s === shipId)
     ) {
-      return // c.log(`Skipping setup: invalid ship id`)
+      // return c.log(`Skipping setup: invalid ship id`)
+      shipId = state.activeShipId
     }
 
     commit(`set`, { modal: null, activeShipId: shipId })
@@ -187,6 +188,12 @@ export const actions = {
         () => (stillWorkingOnTick = false),
         c.tickInterval * 0.7,
       )
+    })
+
+    this.$socket.on(`ship:forwardTo`, (id) => {
+      c.log(`forwarding from last ship id to new id!`, id)
+      commit(`set`, { ship: null })
+      dispatch(`socketSetup`, id)
     })
   },
 

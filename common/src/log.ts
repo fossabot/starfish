@@ -1,5 +1,3 @@
-// const path = require(`path`)
-
 const fillCharacter = `.`
 
 let longest = 0

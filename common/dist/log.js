@@ -1,5 +1,4 @@
 "use strict";
-// const path = require(`path`)
 Object.defineProperty(exports, "__esModule", { value: true });
 const fillCharacter = `.`;
 let longest = 0;

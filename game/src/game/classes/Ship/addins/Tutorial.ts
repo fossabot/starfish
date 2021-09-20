@@ -59,7 +59,7 @@ export class Tutorial {
   ship: HumanShip
   targetLocation?: TargetLocation
 
-  static spawnTutorialShip(crewMember: CrewMember) {
+  static putCrewMemberInTutorial(crewMember: CrewMember) {
     c.log(
       `Spawning tutorial ship for crew member ${crewMember.id}`,
     )
@@ -77,6 +77,9 @@ export class Tutorial {
       id: crewMember.id,
       mainShipId: crewMember.ship.id,
     })
+    crewMember.tutorialShipId = tutorialShip.id
+    crewMember.toUpdate.tutorialShipId =
+      crewMember.tutorialShipId
     return tutorialShip
   }
 
@@ -939,9 +942,14 @@ export class Tutorial {
       return
     }
 
+    io.to(`ship:${this.ship.id}`).emit(
+      `ship:forwardTo`,
+      mainShip.id,
+    )
+
     if (mainShip.crewMembers.length < 2) {
       setTimeout(() => {
-        this.ship.logEntry(
+        mainShip.logEntry(
           [
             `Good luck out there! If you have questions about the game, check out the`,
             { text: `How To Play`, url: `/howtoplay` },
@@ -951,7 +959,7 @@ export class Tutorial {
         )
         io.emit(
           `ship:message`,
-          this.ship.id,
+          mainShip.id,
           `Use this channel to broadcast to and receive messages from nearby ships!`,
           `broadcast`,
         )

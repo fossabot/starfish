@@ -21,7 +21,7 @@ class Tutorial {
             this.advanceStep();
         this.currentStep = this.steps[this.step];
     }
-    static spawnTutorialShip(crewMember) {
+    static putCrewMemberInTutorial(crewMember) {
         dist_1.default.log(`Spawning tutorial ship for crew member ${crewMember.id}`);
         const tutorialShip = crewMember.ship.game.addHumanShip({
             name: crewMember.ship.name,
@@ -34,6 +34,9 @@ class Tutorial {
             id: crewMember.id,
             mainShipId: crewMember.ship.id,
         });
+        crewMember.tutorialShipId = tutorialShip.id;
+        crewMember.toUpdate.tutorialShipId =
+            crewMember.tutorialShipId;
         return tutorialShip;
     }
     initializeSteps() {
@@ -811,14 +814,15 @@ class Tutorial {
             this.cleanUp();
             return;
         }
+        io_1.default.to(`ship:${this.ship.id}`).emit(`ship:forwardTo`, mainShip.id);
         if (mainShip.crewMembers.length < 2) {
             setTimeout(() => {
-                this.ship.logEntry([
+                mainShip.logEntry([
                     `Good luck out there! If you have questions about the game, check out the`,
                     { text: `How To Play`, url: `/howtoplay` },
                     `page!`,
                 ], `high`);
-                io_1.default.emit(`ship:message`, this.ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
+                io_1.default.emit(`ship:message`, mainShip.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
             }, dist_1.default.tickInterval);
             mainShip.addHeaderBackground(dist_1.default.capitalize(mainShip.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(mainShip.faction.id)} faction`);
             mainShip.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);

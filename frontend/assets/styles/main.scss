@@ -194,6 +194,11 @@ input[type='submit'] {
   background: var(--text);
 }
 
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .panesubhead {
   position: relative;
   margin: 0;

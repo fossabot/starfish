@@ -69,15 +69,16 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.inventory = data.inventory?.filter((i) => i) || [];
         this.cockpitCharge = data.cockpitCharge || 0;
         this.credits = data.credits ?? 200;
-        this.skills = [
-            ...(data.skills?.filter((s) => s) || []),
-        ] || [
-            { skill: `piloting`, level: 1, xp: 0 },
-            { skill: `munitions`, level: 1, xp: 0 },
-            { skill: `mechanics`, level: 1, xp: 0 },
-            { skill: `linguistics`, level: 1, xp: 0 },
-            { skill: `mining`, level: 1, xp: 0 },
-        ];
+        this.skills =
+            data.skills && data.skills.length
+                ? [...(data.skills.filter((s) => s) || [])]
+                : [
+                    { skill: `piloting`, level: 1, xp: 0 },
+                    { skill: `munitions`, level: 1, xp: 0 },
+                    { skill: `mechanics`, level: 1, xp: 0 },
+                    { skill: `linguistics`, level: 1, xp: 0 },
+                    { skill: `mining`, level: 1, xp: 0 },
+                ];
         if (data.tutorialShipId)
             this.tutorialShipId = data.tutorialShipId;
         if (data.mainShipId)

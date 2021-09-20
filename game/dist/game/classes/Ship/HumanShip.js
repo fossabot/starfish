@@ -1046,9 +1046,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!setupAdd && !this.tutorial) {
             if (this.crewMembers.length > 1)
                 this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
-            const tutorialShip = Tutorial_1.Tutorial.spawnTutorialShip(cm);
-            cm.tutorialShipId = tutorialShip.id;
-            cm.toUpdate.tutorialShipId = cm.tutorialShipId;
+            Tutorial_1.Tutorial.putCrewMemberInTutorial(cm);
         }
         this.crewMembers.push(cm);
         if (!this.captain)
@@ -1235,7 +1233,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         super.respawn();
         this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
-        this.toUpdate.dead = this.dead;
+        this.toUpdate.dead = Boolean(this.dead);
         this.crewMembers.forEach((cm) => {
             cm.targetLocation = null;
             cm.location = `bunk`;

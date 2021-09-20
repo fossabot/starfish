@@ -47,9 +47,9 @@ export default function (
           (s) => s.id === crewMember.tutorialShipId,
         )
       ) {
-        c.log(
-          `returning tutorial ship ${crewMember.tutorialShipId} instead of requested ship`,
-        )
+        // c.log(
+        //   `returning tutorial ship ${crewMember.tutorialShipId} instead of requested ship`,
+        // )
         id = crewMember.tutorialShipId
         foundShip = game.ships.find((s) => s.id === id)
       } else delete crewMember?.tutorialShipId // just to clean up in case they have a reference to a missing tutorial ship

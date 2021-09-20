@@ -29,7 +29,7 @@
           }"
         >
           <PromptButton
-            :disabled="!ca.canBuy"
+            :disabled="ca.maxCanBuy < 0.01"
             class="inlineblock"
             :max="ca.maxCanBuy"
             @done="buyCargo(ca, ...arguments)"

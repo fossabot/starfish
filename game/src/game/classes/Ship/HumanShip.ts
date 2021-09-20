@@ -1545,9 +1545,7 @@ export class HumanShip extends CombatShip {
           `high`,
         )
 
-      const tutorialShip = Tutorial.spawnTutorialShip(cm)
-      cm.tutorialShipId = tutorialShip.id
-      cm.toUpdate.tutorialShipId = cm.tutorialShipId
+      Tutorial.putCrewMemberInTutorial(cm)
     }
 
     this.crewMembers.push(cm)
@@ -1807,7 +1805,7 @@ export class HumanShip extends CombatShip {
     this.equipLoadout(`humanDefault`)
 
     this.updatePlanet(true)
-    this.toUpdate.dead = this.dead
+    this.toUpdate.dead = Boolean(this.dead)
 
     this.crewMembers.forEach((cm) => {
       cm.targetLocation = null

@@ -430,6 +430,14 @@ class Ship extends Stubbable_1.Stubbable {
             this.hp = this._maxHp;
     }
     get hp() {
+        // if (this.human)
+        //   c.log(
+        //     `hp total`,
+        //     this.items.map(
+        //       (i) => Math.max(0, i.maxHp * i.repair),
+        //       0,
+        //     ),
+        //   )
         const total = this.items.reduce((total, i) => Math.max(0, i.maxHp * i.repair) + total, 0);
         this._hp = total;
         const wasDead = this.dead;
