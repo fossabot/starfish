@@ -9,6 +9,7 @@
     </button>
     <portal to="prompt" v-if="prompt">
       <Prompt
+        v-if="!yesNo"
         @done="done"
         @apply="apply"
         :max="prompt === 1 ? max : null"
@@ -17,6 +18,14 @@
         <slot v-if="prompt === 1" />
         <slot name="second" v-if="prompt === 2" />
       </Prompt>
+      <PromptYesNo
+        v-else
+        @yes="done"
+        @no="cancel"
+        :key="'ynprompt' + prompt"
+      >
+        <slot />
+      </PromptYesNo>
     </portal>
   </div>
 </template>
@@ -27,7 +36,7 @@ import { mapState } from 'vuex'
 import c from '../../common/dist'
 
 export default Vue.extend({
-  props: { disabled: {}, max: {} },
+  props: { disabled: {}, max: {}, yesNo: {} },
   data() {
     let prompt: any,
       results: any[] = []
@@ -68,6 +77,12 @@ export default Vue.extend({
         return
       }
       this.$emit('done', this.results)
+      this.prompt = null
+      this.results = []
+      this.$store.commit('set', { modal: null })
+    },
+    cancel() {
+      this.$emit('cancel', this.results)
       this.prompt = null
       this.results = []
       this.$store.commit('set', { modal: null })

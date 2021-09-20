@@ -49,7 +49,7 @@
         style="flex-grow: 3"
         @keydown.enter="done"
       />
-      <button class="secondary attach" @click="done">
+      <button class="attach" @click="done">
         <span>Go</span>
       </button>
     </div>
