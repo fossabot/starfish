@@ -2,7 +2,6 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
-import { CrewMember } from '../../../../game/src/game/classes/CrewMember/CrewMember'
 
 export class GoCommand implements Command {
   commandNames = [`go`, `room`, `move`, `moveto`]
@@ -39,7 +38,9 @@ export class GoCommand implements Command {
     }
 
     ioInterface.crew.move(context.ship.id, context.crewMember.id, roomToGoTo)
-    context.reply(`Moved ${CrewMember.name} to: ${roomToGoTo}.`)
+    context.reply(
+      `${context.crewMember.name} moves to ${c.capitalize(roomToGoTo)}.`,
+    )
   }
 
   hasPermissionToRun(commandContext: CommandContext): string | true {
