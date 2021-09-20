@@ -6,11 +6,16 @@ import ioInterface from '../../ioInterface'
 export class GoCommand implements Command {
   commandNames = [`go`, `room`, `move`, `moveto`]
 
-  getHelpMessage(commandPrefix: string, availableRooms?: string[]): string {
+  getHelpMessage(
+    commandPrefix: string,
+    availableRooms?: string[],
+  ): string {
     return `Use \`${commandPrefix}${
       this.commandNames[0]
     } <room name>\` to move to a room in the ship.${
-      availableRooms ? `\nAvailable rooms: ${availableRooms.join(`, `)}.` : ``
+      availableRooms
+        ? `\nAvailable rooms: ${availableRooms.join(`, `)}.`
+        : ``
     }`
   }
 
@@ -26,7 +31,10 @@ export class GoCommand implements Command {
       return
     }
 
-    let roomToGoTo = context.args[0].replace(/[<>]/g, ``) as CrewLocation
+    let roomToGoTo = context.args[0].replace(
+      /[<>]/g,
+      ``,
+    ) as CrewLocation
     if (!context.ship.rooms[roomToGoTo]) {
       context.reply(
         this.getHelpMessage(
@@ -37,13 +45,21 @@ export class GoCommand implements Command {
       return
     }
 
-    ioInterface.crew.move(context.ship.id, context.crewMember.id, roomToGoTo)
+    ioInterface.crew.move(
+      context.ship.id,
+      context.crewMember.id,
+      roomToGoTo,
+    )
     context.reply(
-      `${context.crewMember.name} moves to ${c.capitalize(roomToGoTo)}.`,
+      `${context.crewMember.name} moves to ${c.capitalize(
+        roomToGoTo,
+      )}.`,
     )
   }
 
-  hasPermissionToRun(commandContext: CommandContext): string | true {
+  hasPermissionToRun(
+    commandContext: CommandContext,
+  ): string | true {
     if (!commandContext.ship)
       return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
     if (!commandContext.crewMember)
