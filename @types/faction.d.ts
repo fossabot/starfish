@@ -8,7 +8,10 @@ interface BaseFactionData {
   ai?: boolean
   species?: Species[]
 }
-
+interface SpeciesStub {
+  id: SpeciesKey
+  type?: `species`
+}
 interface BaseSpeciesData {
   icon: string
   factionId: FactionKey

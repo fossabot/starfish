@@ -79,6 +79,8 @@ const shipSchemaFields = {
             targetLocation: [Number, Number],
             repairPriority: String,
             stats: [{ stat: String, amount: Number }],
+            tutorialShipId: String,
+            mainShipId: String,
         },
     ],
     commonCredits: Number,
@@ -91,7 +93,7 @@ const shipSchemaFields = {
 const shipSchema = new mongoose_1.Schema(shipSchemaFields);
 const DBShip = (0, mongoose_1.model)(`DBShip`, shipSchema);
 async function addOrUpdateInDb(data) {
-    const stub = dist_1.default.stubify(data);
+    const stub = data.stubify();
     const toSave = new DBShip(stub)._doc;
     delete toSave._id;
     const dbObject = await DBShip.findOneAndUpdate({ id: data.id }, toSave, {
@@ -119,8 +121,20 @@ async function wipeAI() {
 }
 exports.wipeAI = wipeAI;
 async function getAllConstructible() {
-    const docs = await DBShip.find({});
+    const docs = (await DBShip.find({})).map((d) => d.toObject());
+    // clearExtraneousMongooseIdEntry(docs)
     return docs;
 }
 exports.getAllConstructible = getAllConstructible;
+function clearExtraneousMongooseIdEntry(obj) {
+    if (obj && obj._id)
+        delete obj._id;
+    if (typeof obj !== `object`)
+        return;
+    if (Array.isArray(obj)) {
+        obj.forEach(clearExtraneousMongooseIdEntry);
+        return;
+    }
+    Object.keys(obj).forEach((key) => clearExtraneousMongooseIdEntry(obj[key]));
+}
 //# sourceMappingURL=ship.js.map

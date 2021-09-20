@@ -152,7 +152,7 @@ export class Zone extends Stubbable {
     )
   }
 
-  getVisibleStub() {
+  toVisibleStub() {
     return this.stubify()
   }
 

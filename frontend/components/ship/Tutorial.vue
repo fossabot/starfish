@@ -15,7 +15,7 @@
             v-html="currentScript.message"
           />
         </div>
-        <div class="padtop">
+        <div class="padtop flexbetween">
           <button
             v-if="
               currentScript.advance && !waitingForNextStep

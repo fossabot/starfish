@@ -22,6 +22,7 @@ interface IOServerEvents {
     channelType?: GameChannelType,
   ) => void
   [`ship:resetView`]: () => void
+  [`ship:forwardTo`]: (id: string) => void
 }
 
 interface IOClientEvents {
@@ -91,10 +92,15 @@ interface IOClientEvents {
   ) => void
   [`ship:listen`]: (
     id: string,
+    crewMemberId: string | false,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:unlisten`]: (id: string) => void
 
+  [`crew:toTutorial`]: (
+    shipId: string,
+    crewId: string,
+  ) => void
   [`crew:move`]: (
     shipId: string,
     crewId: string,

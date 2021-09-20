@@ -367,15 +367,24 @@ class Game {
             db_1.db.ship.addOrUpdateInDb(newShip);
         return newShip;
     }
-    removeShip(ship) {
+    async removeShip(ship) {
+        // remove all tutorial ships for members of this ship
+        ship.crewMembers.forEach((cm) => {
+            if (cm.tutorialShipId) {
+                const tutorialShip = this.ships.find((s) => s.id === cm.tutorialShipId);
+                if (tutorialShip) {
+                    dist_1.default.log(`Removing excess tutorial ship`);
+                    tutorialShip.tutorial?.cleanUp();
+                }
+            }
+        });
         dist_1.default.log(`Removing ship ${ship.name} from the game.`);
-        db_1.db.ship.removeFromDb(ship.id);
-        if (ship.tutorial)
-            ship.tutorial.cleanUp();
+        await db_1.db.ship.removeFromDb(ship.id);
         const index = this.ships.findIndex((ec) => ship.id === ec.id);
         if (index === -1)
             return;
         this.ships.splice(index, 1);
+        ship.tutorial?.cleanUp();
     }
     async addBasicPlanet(data, save = true) {
         const existing = this.planets.find((p) => p.name === data.name);
@@ -454,7 +463,7 @@ class Game {
             const seenThisZone = hs.seenLandmarks.findIndex((lm) => lm.type === `zone` && lm.id === zone.id);
             if (seenThisZone !== -1) {
                 hs.seenLandmarks.splice(seenThisZone, 1);
-                hs.toUpdate.seenLandmarks = hs.seenLandmarks.map((z) => z.getVisibleStub());
+                hs.toUpdate.seenLandmarks = hs.seenLandmarks.map((z) => z.toVisibleStub());
             }
         });
         db_1.db.zone.removeFromDb(zone.id);
@@ -498,7 +507,9 @@ class Game {
             if (faction.id === `red`)
                 continue;
             let total = 0;
-            faction.members.forEach((s) => {
+            faction.members
+                .filter((s) => !s.tutorial)
+                .forEach((s) => {
                 let shipTotal = s.commonCredits || 0;
                 for (let cm of s.crewMembers) {
                     shipTotal += cm.credits;
@@ -553,7 +564,9 @@ class Game {
             if (faction.id === `red`)
                 continue;
             let total = 0;
-            faction.members.forEach((s) => {
+            faction.members
+                .filter((s) => !s.tutorial)
+                .forEach((s) => {
                 let shipTotal = s.crewMembers.length || 0;
                 topMembersShips.push({
                     name: s.name,

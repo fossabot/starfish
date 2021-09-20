@@ -46,7 +46,7 @@ type RadiusType =
   | `attack`
   | `scan`
   | `broadcast`
-  | `game`
+  | `gameSize`
 
 type ShipPassiveEffectId =
   | `boostDropAmount`

@@ -69,7 +69,7 @@ function generateMiningPlanet(game) {
     const level = 0;
     const baseLevel = 1;
     const xp = 0;
-    const color = `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 40)}%, ${Math.round(Math.random() * 50) + 30}%)`;
+    const color = `hsl(${Math.round(Math.random() * 360)}, ${Math.round(Math.random() * 40)}%, ${Math.round(Math.random() * 50) + 30}%)`;
     const radius = Math.floor(Math.random() * 60000 + 10000);
     const mass = ((4e30 * radius) / 36000) *
         (1 + 0.2 * (Math.random() - 0.5));
@@ -117,9 +117,36 @@ function generateBasicPlanet(game, homeworldFactionKey) {
         if (factionId === `red`)
             factionId = undefined;
     }
-    const color = factionId
-        ? dist_1.default.factions[factionId].color
-        : `hsl(${Math.random() * 360}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 30}%)`;
+    let color;
+    if (factionId)
+        color = dist_1.default.factions[factionId].color;
+    else {
+        let hue = Math.random() * 360;
+        // don't let color be too close to a faction color
+        while (Object.values(dist_1.default.factions).find((f) => {
+            let factionHue = /hsl\(([^,]*),.*/g.exec(f.color)?.[1], potentialHue = hue;
+            try {
+                factionHue = parseInt(`${factionHue}`);
+            }
+            catch (e) {
+                return false;
+            }
+            if (isNaN(factionHue)) {
+                dist_1.default.log(`Failed to get faction hue from`, f.color);
+                return false;
+            }
+            if (factionHue > 180)
+                factionHue -= 360;
+            if (potentialHue > 180)
+                potentialHue -= 360;
+            if (Math.abs(factionHue - potentialHue) < 25)
+                return true;
+            return false;
+        })) {
+            hue = Math.random() * 360;
+        }
+        color = `hsl(${Math.round(hue)}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 40}%)`;
+    }
     const level = 0;
     const baseLevel = homeworldFactionKey
         ? 9

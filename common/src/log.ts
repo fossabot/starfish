@@ -1,5 +1,3 @@
-// const path = require(`path`)
-
 const fillCharacter = `.`
 
 let longest = 0
@@ -38,7 +36,7 @@ const log = (...args: any[]): void => {
       `${new Error().stack}`,
     )
   const fullPath: string = regexResult?.[1] || ``
-  // const lineNumber: string = regexResult?.[3] || ``
+  const lineNumber: string = regexResult?.[3] || ``
   const mainDir = mainDirs.find(
     (d) => fullPath.indexOf(`/${d}/`) !== -1,
   )
@@ -91,15 +89,17 @@ const log = (...args: any[]): void => {
           dim +
           `:`
         : ``) +
-      pathName,
-    // + `:` +
-    // lineNumber,
+      pathName +
+      `:` +
+      lineNumber,
   )
 
   if (prefix.length > longest) longest = prefix.length
-  prefix =
-    prefix.padEnd(Math.min(25, longest), fillCharacter) +
-    reset
+  while (
+    prefix.length < Math.min(45, Math.max(25, longest))
+  )
+    prefix += fillCharacter
+  prefix += reset
 
   console.log(prefix, ...args)
 }

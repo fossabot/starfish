@@ -85,7 +85,7 @@ const planetSchemaFields = {
 const planetSchema = new mongoose_1.Schema(planetSchemaFields);
 const DBPlanet = (0, mongoose_1.model)(`DBPlanet`, planetSchema);
 async function addOrUpdateInDb(data) {
-    const stub = dist_1.default.stubify(data);
+    const stub = data.stubify();
     const toSave = new DBPlanet(stub)._doc;
     delete toSave._id;
     const dbObject = await DBPlanet.findOneAndUpdate({ name: data.name }, toSave, {
@@ -108,8 +108,22 @@ async function wipe() {
 }
 exports.wipe = wipe;
 async function getAllConstructible() {
-    const docs = await DBPlanet.find({});
+    const docs = (await DBPlanet.find({})).map((d) => d.toObject());
+    // clearExtraneousMongooseIdEntry(docs)
     return docs;
 }
 exports.getAllConstructible = getAllConstructible;
+function clearExtraneousMongooseIdEntry(obj) {
+    if (!obj)
+        return;
+    if (obj._id)
+        delete obj._id;
+    if (typeof obj !== `object`)
+        return;
+    if (Array.isArray(obj)) {
+        obj.forEach(clearExtraneousMongooseIdEntry);
+        return;
+    }
+    Object.keys(obj).forEach((key) => clearExtraneousMongooseIdEntry(obj[key]));
+}
 //# sourceMappingURL=planet.js.map

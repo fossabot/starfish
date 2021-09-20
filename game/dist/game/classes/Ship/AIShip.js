@@ -29,8 +29,6 @@ class AIShip extends CombatShip_1.CombatShip {
         this.planet = false;
         this.ai = true;
         this.human = false;
-        if (data.headerBackground)
-            this.headerBackground = data.headerBackground;
         if (data.level)
             this.level = data.level;
         if (this.items.length === 0)
@@ -230,6 +228,53 @@ class AIShip extends CombatShip_1.CombatShip {
             });
         }
         this.game.removeShip(this);
+    }
+    async receiveBroadcast(message, from, garbleAmount, recipients) {
+        let oddsToIgnore = 0.9;
+        if (recipients.length === 1)
+            oddsToIgnore *= 0.6;
+        dist_1.default.log(oddsToIgnore);
+        if (Math.random() < oddsToIgnore)
+            return;
+        dist_1.default.log(`ai ship ${this.name} received broadcast`);
+        await dist_1.default.sleep(Math.round(Math.random() * 1000 * 60));
+        const textOptions = [
+            `Less talk, more squawk!`,
+            `The early bird gets the fish...`,
+            `It's a bird! It's a plane! ...No, it's a bird.`,
+            `My, my, if it isn't a lovely snack!`,
+            `Resistance is futile.`,
+            `You look tasty.`,
+            `Come closer, let's be friends!`,
+            `I miss fresh air.`,
+            `Do you really think you can out-fly us?`,
+            `Some of my best friends are fish.`,
+            `I hope you're more substantial than the last fish I fried!`,
+            `Who ordered the fish filet?`,
+            `Swim closer...`,
+            `Come over this way, see what happens!`,
+            `Get your gills over here!`,
+            `It's been years since we had real fish!`,
+            `Crack the shell. Get the meat.`,
+            `Noisy fish make for good eating.`,
+            `Food sighted. Prepare to engage.`,
+            `Talk all you want, it won't save you.`,
+            `Would you pipe down over there?`,
+            `Leave the singing to the birds`,
+        ];
+        // if (this.getStat('kills') > 1)
+        // textOptions.push()
+        const text = dist_1.default.randomFromArray(textOptions);
+        const garbled = dist_1.default.garble(text, garbleAmount);
+        const toSend = `${garbled.substring(0, dist_1.default.maxBroadcastLength)}`;
+        from.receiveBroadcast(toSend, this, garbleAmount, [
+            from,
+        ]);
+        /*
+    
+    Less talk, more squawk!
+    
+        */
     }
 }
 exports.AIShip = AIShip;

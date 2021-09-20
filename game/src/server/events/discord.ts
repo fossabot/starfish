@@ -37,7 +37,6 @@ export default function (
 
       c.log(`Ship ${data.name} has joined the game.`)
 
-      data.tutorial = { step: -1 }
       const ship = game.addHumanShip({
         ...data,
       })

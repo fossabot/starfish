@@ -36,6 +36,9 @@ export class CrewMember extends Stubbable {
   stats: CrewStatEntry[] = []
   maxCargoSpace: number = CrewMember.baseMaxCargoSpace
 
+  tutorialShipId: string | undefined = undefined
+  mainShipId: string | undefined = undefined
+
   toUpdate: { [key in keyof CrewMember]?: any } = {}
 
   constructor(data: BaseCrewMemberData, ship: HumanShip) {
@@ -59,13 +62,20 @@ export class CrewMember extends Stubbable {
     this.inventory = data.inventory?.filter((i) => i) || []
     this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 200
-    this.skills = data.skills?.filter((s) => s) || [
-      { skill: `piloting`, level: 1, xp: 0 },
-      { skill: `munitions`, level: 1, xp: 0 },
-      { skill: `mechanics`, level: 1, xp: 0 },
-      { skill: `linguistics`, level: 1, xp: 0 },
-      { skill: `mining`, level: 1, xp: 0 },
-    ]
+    this.skills =
+      data.skills && data.skills.length
+        ? [...(data.skills.filter((s) => s) || [])]
+        : [
+            { skill: `piloting`, level: 1, xp: 0 },
+            { skill: `munitions`, level: 1, xp: 0 },
+            { skill: `mechanics`, level: 1, xp: 0 },
+            { skill: `linguistics`, level: 1, xp: 0 },
+            { skill: `mining`, level: 1, xp: 0 },
+          ]
+
+    if (data.tutorialShipId)
+      this.tutorialShipId = data.tutorialShipId
+    if (data.mainShipId) this.mainShipId = data.mainShipId
 
     // if (data.actives)
     //   for (let a of data.actives)
@@ -83,7 +93,7 @@ export class CrewMember extends Stubbable {
       this.attackFactions = data.attackFactions
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
-    if (data.stats) this.stats = data.stats
+    if (data.stats) this.stats = [...data.stats]
 
     this.recalculateAll()
 
@@ -209,7 +219,7 @@ export class CrewMember extends Stubbable {
 
     skillElement.level =
       CrewMember.levelXPNumbers.findIndex(
-        (l) => (skillElement?.xp || 0) <= l,
+        (l) => (skillElement?.xp || 0) < l,
       )
 
     this.toUpdate.skills = this.skills

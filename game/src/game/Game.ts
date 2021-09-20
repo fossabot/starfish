@@ -554,15 +554,27 @@ export class Game {
     return newShip
   }
 
-  removeShip(ship: Ship) {
+  async removeShip(ship: Ship) {
+    // remove all tutorial ships for members of this ship
+    ship.crewMembers.forEach((cm) => {
+      if (cm.tutorialShipId) {
+        const tutorialShip = this.ships.find(
+          (s) => s.id === cm.tutorialShipId,
+        )
+        if (tutorialShip) {
+          c.log(`Removing excess tutorial ship`)
+          tutorialShip.tutorial?.cleanUp()
+        }
+      }
+    })
     c.log(`Removing ship ${ship.name} from the game.`)
-    db.ship.removeFromDb(ship.id)
-    if (ship.tutorial) ship.tutorial.cleanUp()
+    await db.ship.removeFromDb(ship.id)
     const index = this.ships.findIndex(
       (ec) => ship.id === ec.id,
     )
     if (index === -1) return
     this.ships.splice(index, 1)
+    ship.tutorial?.cleanUp()
   }
 
   async addBasicPlanet(
@@ -686,7 +698,7 @@ export class Game {
       if (seenThisZone !== -1) {
         hs.seenLandmarks.splice(seenThisZone, 1)
         hs.toUpdate.seenLandmarks = hs.seenLandmarks.map(
-          (z) => z.getVisibleStub(),
+          (z) => z.toVisibleStub(),
         )
       }
     })
@@ -750,24 +762,27 @@ export class Game {
     for (let faction of this.factions) {
       if (faction.id === `red`) continue
       let total = 0
-      faction.members.forEach((s) => {
-        let shipTotal = (s as HumanShip).commonCredits || 0
-        for (let cm of (s as HumanShip).crewMembers) {
-          shipTotal += cm.credits
-        }
-        for (let i of (s as HumanShip).items) {
-          shipTotal += (
-            c.items[i.type][i.id] as BaseItemData
-          ).basePrice
-        }
-        topNetWorthShips.push({
-          name: s.name,
-          color: faction.color,
-          score: shipTotal,
-        })
+      faction.members
+        .filter((s) => !s.tutorial)
+        .forEach((s) => {
+          let shipTotal =
+            (s as HumanShip).commonCredits || 0
+          for (let cm of (s as HumanShip).crewMembers) {
+            shipTotal += cm.credits
+          }
+          for (let i of (s as HumanShip).items) {
+            shipTotal += (
+              c.items[i.type][i.id] as BaseItemData
+            ).basePrice
+          }
+          topNetWorthShips.push({
+            name: s.name,
+            color: faction.color,
+            score: shipTotal,
+          })
 
-        total += shipTotal
-      })
+          total += shipTotal
+        })
       netWorthScores.push({
         faction: c.stubify(faction, [
           `members`,
@@ -808,16 +823,18 @@ export class Game {
     for (let faction of this.factions) {
       if (faction.id === `red`) continue
       let total = 0
-      faction.members.forEach((s) => {
-        let shipTotal =
-          (s as HumanShip).crewMembers.length || 0
-        topMembersShips.push({
-          name: s.name,
-          color: faction.color,
-          score: shipTotal,
+      faction.members
+        .filter((s) => !s.tutorial)
+        .forEach((s) => {
+          let shipTotal =
+            (s as HumanShip).crewMembers.length || 0
+          topMembersShips.push({
+            name: s.name,
+            color: faction.color,
+            score: shipTotal,
+          })
+          total += shipTotal
         })
-        total += shipTotal
-      })
       membersScores.push({
         faction: c.stubify(faction, [
           `members`,

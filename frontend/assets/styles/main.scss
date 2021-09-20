@@ -194,6 +194,11 @@ input[type='submit'] {
   background: var(--text);
 }
 
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .panesubhead {
   position: relative;
   margin: 0;
@@ -254,6 +259,9 @@ hr.half {
   margin: 0.7em 0;
 }
 hr + hr {
+  display: none;
+}
+hr:last-child {
   display: none;
 }
 

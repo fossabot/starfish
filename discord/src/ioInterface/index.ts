@@ -46,7 +46,8 @@ io.on(
     if (!guild)
       return c.log(
         `red`,
-        `Message came for a guild that does not have the bot added on Discord.`,
+        `Message came for a guild (${id}) that does not have the bot added on Discord:`,
+        message,
       )
 
     // check to see if we have the necessary permissions to create channels

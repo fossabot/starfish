@@ -29,7 +29,7 @@
           width: width + 'px',
           height: width + 'px',
         }"
-        @mousewheel="mouseWheel"
+        @wheel="mouseWheel"
         @mousedown="mouseDown"
         @mouseleave="mouseLeave"
       />
@@ -52,6 +52,7 @@ import Vue from 'vue'
 import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 import Drawer from './drawMapFrame'
+import { nextTick } from 'process'
 
 export default Vue.extend({
   props: {
@@ -84,7 +85,7 @@ export default Vue.extend({
       element,
       drawer,
       paused: false,
-      widthScaledToDevice: 1,
+      widthScaledToDevice: 0,
       devicePixelRatio: 1,
       lastFrameRes: null,
       mapCenter,
@@ -142,22 +143,32 @@ export default Vue.extend({
       this.drawNextFrame()
     },
     async show() {
-      await this.$nextTick()
-      setTimeout(() => this.drawNextFrame(), 200)
+      if (this.show) {
+        this.start()
+        await this.$nextTick()
+        setTimeout(() => this.drawNextFrame(), 200)
+      }
     },
   },
-  mounted() {
-    this.devicePixelRatio = window.devicePixelRatio || 1
-    this.widthScaledToDevice =
-      this.width * this.devicePixelRatio
-    this.drawNextFrame()
-
-    window.removeEventListener('mousemove', this.mouseMove)
-    window.addEventListener('mousemove', this.mouseMove)
-  },
+  mounted() {},
   methods: {
+    start() {
+      this.devicePixelRatio = window.devicePixelRatio || 1
+      this.widthScaledToDevice =
+        this.width * this.devicePixelRatio
+      this.drawNextFrame()
+
+      window.removeEventListener(
+        'mousemove',
+        this.mouseMove,
+      )
+      window.addEventListener('mousemove', this.mouseMove)
+    },
     drawNextFrame(immediate = false) {
-      if (this.paused) return
+      if (this.paused || !this.show) return
+      if (this.widthScaledToDevice === 0)
+        return this.start()
+
       return new Promise<void>((resolve) => {
         if (!this.$el || !this.$el.querySelector) return
         const profiler = new c.Profiler(
@@ -168,7 +179,7 @@ export default Vue.extend({
         )
         profiler.step('called')
         requestAnimationFrame(async () => {
-          if (this.paused) return
+          if (this.paused || !this.show) return
           profiler.step('framestart')
           if (!this.element) {
             this.element = this.$el.querySelector(
@@ -186,13 +197,25 @@ export default Vue.extend({
               elWidth: this.widthScaledToDevice,
             })
 
-          if (!this.drawer.element || !this.element) {
+          if (
+            !this.drawer.element ||
+            !this.element ||
+            !document.body.contains(this.element)
+          ) {
             await this.$nextTick()
+
             this.element = this.$el.querySelector(
               '#map',
             ) as HTMLCanvasElement
             this.drawer.element = this.element!
           }
+
+          // if (this.interactive)
+          //   c.log(
+          //     this.element,
+          //     this.drawer,
+          //     document.body.contains(this.element),
+          //   )
 
           profiler.step('startdraw')
 

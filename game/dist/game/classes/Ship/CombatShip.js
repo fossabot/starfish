@@ -177,21 +177,7 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: target.name,
                     color: target.faction.color,
-                    tooltipData: {
-                        type: `ship`,
-                        name: target.name,
-                        faction: {
-                            type: `faction`,
-                            id: target.faction.id,
-                        },
-                        species: {
-                            type: `species`,
-                            id: target.species.id,
-                        },
-                        tagline: target.tagline,
-                        headerBackground: target.headerBackground,
-                        level: target.level,
-                    },
+                    tooltipData: target.toLogStub(),
                 },
                 `with`,
                 {
@@ -210,21 +196,7 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: target.name,
                     color: target.faction.color,
-                    tooltipData: {
-                        type: `ship`,
-                        name: target.name,
-                        faction: {
-                            type: `faction`,
-                            id: target.faction.id,
-                        },
-                        species: {
-                            type: `species`,
-                            id: target.species.id,
-                        },
-                        tagline: target.tagline,
-                        headerBackground: target.headerBackground,
-                        level: target.level,
-                    },
+                    tooltipData: target.toLogStub(),
                 },
                 `with`,
                 {
@@ -324,21 +296,7 @@ class CombatShip extends Ship_1.Ship {
                             {
                                 text: this.name,
                                 color: this.faction.color,
-                                tooltipData: {
-                                    type: `ship`,
-                                    name: this.name,
-                                    faction: {
-                                        type: `faction`,
-                                        id: this.faction.id,
-                                    },
-                                    species: {
-                                        type: `species`,
-                                        id: this.species.id,
-                                    },
-                                    tagline: this.tagline,
-                                    headerBackground: this.headerBackground,
-                                    level: attacker.level,
-                                },
+                                tooltipData: this.toLogStub(),
                             },
                             `&nospace's`,
                             {
@@ -434,21 +392,7 @@ class CombatShip extends Ship_1.Ship {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: {
-                                type: `ship`,
-                                name: this.name,
-                                faction: {
-                                    type: `faction`,
-                                    id: this.faction.id,
-                                },
-                                species: {
-                                    type: `species`,
-                                    id: this.species.id,
-                                },
-                                tagline: this.tagline,
-                                headerBackground: this.headerBackground,
-                                level: this.level,
-                            },
+                            tooltipData: this.toLogStub(),
                         },
                         `&nospace's`,
                         {
@@ -502,21 +446,7 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: attacker.name,
                     color: attacker.faction.color,
-                    tooltipData: {
-                        type: `ship`,
-                        name: attacker.name,
-                        faction: {
-                            type: `faction`,
-                            id: attacker.faction.id,
-                        },
-                        species: {
-                            type: `species`,
-                            id: attacker.species.id,
-                        },
-                        tagline: attacker.tagline,
-                        headerBackground: attacker.headerBackground,
-                        level: attacker.level,
-                    },
+                    tooltipData: attacker.toLogStub(),
                 },
                 `&nospace's`,
                 {

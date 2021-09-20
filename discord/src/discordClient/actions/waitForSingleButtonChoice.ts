@@ -56,17 +56,20 @@ export default async function <
     collector.on?.(
       `collect`,
       async (i: MessageComponentInteraction) => {
-        await i.deferUpdate()
-        if (done) return
-        done = true
-        resolve({
-          result: i.customId as ExpectedType,
-          sentMessage,
-        })
-        collector.stop()
-        sentMessage
-          .edit({ components: [] })
-          .catch((e) => {})
+        try {
+          // c.log(i)
+          await i.deferUpdate()
+          if (done) return
+          done = true
+          resolve({
+            result: i.customId as ExpectedType,
+            sentMessage,
+          })
+          collector.stop()
+          sentMessage
+            .edit({ components: [] })
+            .catch((e) => {})
+        } catch (e) {}
       },
     )
     collector.on?.(`end`, () => {

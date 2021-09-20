@@ -7,6 +7,7 @@ import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { Planet } from '../../game/classes/Planet/Planet'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
+import { Tutorial } from '../../game/classes/Ship/addins/Tutorial'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -35,15 +36,41 @@ export default function (
           0,
           c.maxNameLength,
         )
+
+      crewMemberBaseData.credits = 1000
+      crewMemberBaseData.cockpitCharge = 1
       const addedCrewMember = ship.addCrewMember(
         crewMemberBaseData,
       )
+
       const stub = c.stubify<CrewMember, CrewMemberStub>(
         addedCrewMember,
       )
       callback({ data: stub })
     },
   )
+
+  socket.on(`crew:toTutorial`, (shipId, crewId) => {
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship) return
+    const crewMember = ship.crewMembers?.find(
+      (cm) => cm.id === crewId,
+    )
+    if (!crewMember) return
+    if (crewMember.tutorialShipId) return
+
+    Tutorial.putCrewMemberInTutorial(crewMember)
+    socket.emit(
+      `ship:forwardTo`,
+      crewMember.tutorialShipId || ``,
+    )
+    c.log(
+      `gray`,
+      `Put ${crewMember.name} on ${ship.name} into the tutorial.`,
+    )
+  })
 
   socket.on(`crew:move`, (shipId, crewId, target) => {
     const ship = game.ships.find(

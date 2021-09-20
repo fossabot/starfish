@@ -242,13 +242,13 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "96a62d6d01864a0e39f5a6e7bb2fa02588ea051e83507e8d9ce418431fb42b97",
-        "signature": "96a62d6d01864a0e39f5a6e7bb2fa02588ea051e83507e8d9ce418431fb42b97",
+        "version": "181462d4cb752757f5c2f81d7f6c15b0237292f3fa1be684c1ca9ce8e95c5278",
+        "signature": "181462d4cb752757f5c2f81d7f6c15b0237292f3fa1be684c1ca9ce8e95c5278",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
-        "version": "ef6f0c60d4e1b49b99d4d7d2b3e57bb54c2ddda31f16a1addf5b84016ef333b1",
-        "signature": "ef6f0c60d4e1b49b99d4d7d2b3e57bb54c2ddda31f16a1addf5b84016ef333b1",
+        "version": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
+        "signature": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
         "affectsGlobalScope": true
       },
       "../@types/frontend.d.ts": {
@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "8ad562ea7224a7ec4b97cf8a1e7395282b83fed48b6bd157569a4e5750c74316",
-        "signature": "8ad562ea7224a7ec4b97cf8a1e7395282b83fed48b6bd157569a4e5750c74316",
+        "version": "bde5d484b1baa4420e8649115601e0fe2465660ca980073892db98ba59754057",
+        "signature": "bde5d484b1baa4420e8649115601e0fe2465660ca980073892db98ba59754057",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,13 +282,13 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "46920b814920b4e8bd3265355c4c270a9730678ee4cf13203a95ea66bef30d42",
-        "signature": "46920b814920b4e8bd3265355c4c270a9730678ee4cf13203a95ea66bef30d42",
+        "version": "09fe0fe2fe5c8859bb06b5fe9aa3f7bd58cfece95798bd820927a2483d566894",
+        "signature": "09fe0fe2fe5c8859bb06b5fe9aa3f7bd58cfece95798bd820927a2483d566894",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "c2ed19411e48134c34b59a4477df1aa8163d1cacde233d89c5d772b76ff9789a",
-        "signature": "c2ed19411e48134c34b59a4477df1aa8163d1cacde233d89c5d772b76ff9789a",
+        "version": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
+        "signature": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -297,7 +297,7 @@
         "affectsGlobalScope": true
       },
       "./src/log.ts": {
-        "version": "95c6f48b02e06c6771014ce1a0c642d02cba3cab9dc50c2c6d17a4839444811b",
+        "version": "ec6962d0de547b841291db0bbba8f97ad11ce954d7728bdd0fcacd4bcbc80c13",
         "signature": "32f06dbc86fd6b686ee59f5b59490c7f5982bc7a2ac78cfbf3e8ba786173e42f",
         "affectsGlobalScope": false
       },
@@ -341,6 +341,11 @@
         "signature": "577b818ece424c7f5020cd6fff9e05724c5c4ee54bc0cfd29bafc98854c75588",
         "affectsGlobalScope": false
       },
+      "./src/cycle.ts": {
+        "version": "9379b598939599b9afb7378529c89efa1c0a424399a624913a5e8cf513290049",
+        "signature": "8cbc95aa699c7394238fb1cba92e2be72ae28cbe65a6e125be65eb75ecc75dc0",
+        "affectsGlobalScope": false
+      },
       "./src/discord.ts": {
         "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
@@ -372,8 +377,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "cefb369ee416c236f74bcb1d5b48384045bdeec759c7abc9bc6ed30f67c6e1a4",
-        "signature": "4e14d8bcfe6ebdb6fa8690827b948004df949a943741dddc492bb2b48565c7fd",
+        "version": "de7fd0f8d7cfdc249f2bcdfa64d3583aba5b7eb4ddc6fdc78b00e94648096b74",
+        "signature": "86a17db378851dacf2230fa86b6734d4a93fb7be35cbcc8ac0faa75badc690bf",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -389,6 +394,11 @@
       "./src/rooms.ts": {
         "version": "7d749a4d085bcd87ef8c146488fdddb8247bbed94ddf7a6990034238a1491c37",
         "signature": "0478232f1286adfe06039409569a4eb0d66dd3a1c0d081310d44e890341fc25e",
+        "affectsGlobalScope": false
+      },
+      "./src/stubify.ts": {
+        "version": "ce1df9568b6bf4c14bfcbcd174f1ba60574311dd6cd3dc0f5b9fb197dc913a59",
+        "signature": "c85861de251e4387beafe154962f48f031507a8a9435ba721e9b726a3948fd4e",
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
@@ -427,8 +437,8 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "2dfeed872f1a916eb3a5225d20abce7f26d816c76a36e0b0cb6620523fb82020",
-        "signature": "5d83678fb59bfceb8a531a57917d6cb2a86452a01cd61724a6a39fced6f6a91e",
+        "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
+        "signature": "b667ba8cff73038185681885e7d7bb5f84b439147c3611acec6e6989103d974e",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -813,6 +823,9 @@
       "./src/crewpassives.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
+      "./src/cycle.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "./src/discord.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -832,7 +845,6 @@
         "./src/globals.ts",
         "./src/log.ts",
         "./src/math.ts",
-        "./src/profiler.ts",
         "./src/text.ts"
       ],
       "./src/globals.ts": [
@@ -856,6 +868,7 @@
         "./src/profiler.ts",
         "./src/rooms.ts",
         "./src/species.ts",
+        "./src/stubify.ts",
         "./src/text.ts"
       ],
       "./src/items/armor.ts": [
@@ -916,6 +929,11 @@
       ],
       "./src/species.ts": [
         "../node_modules/@types/node/util.d.ts"
+      ],
+      "./src/stubify.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "./src/log.ts",
+        "./src/profiler.ts"
       ],
       "./src/text.ts": [
         "../node_modules/@types/node/util.d.ts",
@@ -1469,7 +1487,8 @@
       "./src/index.ts": [
         "./src/cargo.ts",
         "./src/items/index.ts",
-        "./src/profiler.ts"
+        "./src/profiler.ts",
+        "./src/stubify.ts"
       ],
       "../node_modules/@types/json-schema/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
@@ -1990,6 +2009,7 @@
       "./src/cargo.ts",
       "./src/crewactives.ts",
       "./src/crewpassives.ts",
+      "./src/cycle.ts",
       "./src/discord.ts",
       "./src/discord_dev.ts",
       "./src/discord_prod.ts",
@@ -2011,6 +2031,7 @@
       "./src/profiler.ts",
       "./src/rooms.ts",
       "./src/species.ts",
+      "./src/stubify.ts",
       "./src/text.ts",
       "../node_modules/@types/json-schema/index.d.ts",
       "../node_modules/@types/mongoose/index.d.ts",

@@ -105,7 +105,7 @@ class Zone extends Stubbable_1.Stubbable {
     moveToRandomLocation() {
         this.location = (0, zones_1.getValidZoneLocation)(this.game, this.radius);
     }
-    getVisibleStub() {
+    toVisibleStub() {
         return this.stubify();
     }
     toLogStub() {

@@ -16,7 +16,7 @@
       <ShipNoShip />
 
       <template v-if="ship && !ship.dead">
-        <ShipSpectator />
+        <ShipSpectator v-if="!ship.tutorial" />
 
         <ShipTutorial />
 
@@ -49,10 +49,16 @@
         <ShipFactionRank />
       </template>
 
-      <ShipDead v-if="ship && ship.dead" />
+      <template v-if="ship && ship.dead">
+        <ShipDead />
+        <ShipLog />
+      </template>
 
       <ShipNavPane v-if="ship && !ship.tutorial" />
     </div>
+    <!-- {{ ship && ship.id }}
+    {{ ship && ship.dead }}
+    <pre>{{ crewMember }}</pre> -->
 
     <!-- <details style="position: relative; margin-bottom: 2em">
       <summary>Raw Data</summary>

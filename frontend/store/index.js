@@ -135,7 +135,8 @@ export const actions = {
       !shipId ||
       !state.shipIds.find((s) => s === shipId)
     ) {
-      return // c.log(`Skipping setup: invalid ship id`)
+      // return c.log(`Skipping setup: invalid ship id`)
+      shipId = state.activeShipId
     }
 
     commit(`set`, { modal: null, activeShipId: shipId })
@@ -152,15 +153,20 @@ export const actions = {
     const connected = () => {
       clearTimeout(connectionTimeout)
       commit(`set`, { connected: true })
-      this.$socket?.emit(`ship:listen`, shipId, (res) => {
-        if (`error` in res) return console.log(res.error)
-        // c.log(
-        //   JSON.stringify(res.data).length,
-        //   `characters of data received from initial load`,
-        // )
-        if (!state.ship) commit(`set`, { ship: res.data })
-        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
-      })
+      this.$socket?.emit(
+        `ship:listen`,
+        shipId,
+        state.userId,
+        (res) => {
+          if (`error` in res) return console.log(res.error)
+          // c.log(
+          //   JSON.stringify(res.data).length,
+          //   `characters of data received from initial load`,
+          // )
+          if (!state.ship) commit(`set`, { ship: res.data })
+          dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+        },
+      )
     }
     if (this.$socket.connected) connected()
     this.$socket.on(`connect`, connected)
@@ -182,6 +188,12 @@ export const actions = {
         () => (stillWorkingOnTick = false),
         c.tickInterval * 0.7,
       )
+    })
+
+    this.$socket.on(`ship:forwardTo`, (id) => {
+      c.log(`forwarding from last ship id to new id!`, id)
+      commit(`set`, { ship: null })
+      dispatch(`socketSetup`, id)
     })
   },
 

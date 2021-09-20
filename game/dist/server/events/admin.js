@@ -24,6 +24,8 @@ catch (e) {
     dist_1.default.log(`red`, `Error loading admin keys!`, e);
 }
 function isAdmin(id, password) {
+    if (process.env.NODE_ENV === `development`)
+        return true;
     if (!adminKeys)
         return false;
     if (password !== adminKeys?.password)
@@ -80,6 +82,11 @@ function default_1(socket) {
         await db_1.db.planet.wipe();
         while (__1.game.planets.length)
             __1.game.planets.pop();
+        __1.game.humanShips.forEach((s) => {
+            while (s.seenPlanets.length)
+                s.seenPlanets.pop();
+            s.toUpdate.seenPlanets = [];
+        });
     });
     socket.on(`game:resetAllZones`, async (id, password) => {
         if (!isAdmin(id, password))
@@ -88,6 +95,11 @@ function default_1(socket) {
         await db_1.db.zone.wipe();
         while (__1.game.zones.length)
             __1.game.zones.pop();
+        __1.game.humanShips.forEach((s) => {
+            while (s.seenLandmarks.length)
+                s.seenLandmarks.pop();
+            s.toUpdate.seenLandmarks = [];
+        });
     });
     socket.on(`game:resetAllCaches`, async (id, password) => {
         if (!isAdmin(id, password))

@@ -1,5 +1,6 @@
 import { Profiler } from './Profiler';
 import * as cargo from './cargo';
+import stubify from './stubify';
 import * as items from './items';
 declare const _default: {
     items: typeof items;
@@ -112,6 +113,7 @@ declare const _default: {
         };
     };
     Profiler: typeof Profiler;
+    stubify: typeof stubify;
     discordBotId: string;
     discordBotPermissionsString: string;
     frontendUrl: string;
@@ -182,7 +184,6 @@ declare const _default: {
     }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    stubify: <BaseType, StubType extends BaseStub>(baseObject: BaseType, disallowPropName?: string[], disallowRecursion?: boolean) => StubType;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

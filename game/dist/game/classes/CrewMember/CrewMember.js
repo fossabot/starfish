@@ -46,6 +46,8 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.upgrades = [];
         this.stats = [];
         this.maxCargoSpace = CrewMember.baseMaxCargoSpace;
+        this.tutorialShipId = undefined;
+        this.mainShipId = undefined;
         this.toUpdate = {};
         this.cockpitAction = roomActions.cockpit;
         this.repairAction = roomActions.repair;
@@ -67,13 +69,20 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.inventory = data.inventory?.filter((i) => i) || [];
         this.cockpitCharge = data.cockpitCharge || 0;
         this.credits = data.credits ?? 200;
-        this.skills = data.skills?.filter((s) => s) || [
-            { skill: `piloting`, level: 1, xp: 0 },
-            { skill: `munitions`, level: 1, xp: 0 },
-            { skill: `mechanics`, level: 1, xp: 0 },
-            { skill: `linguistics`, level: 1, xp: 0 },
-            { skill: `mining`, level: 1, xp: 0 },
-        ];
+        this.skills =
+            data.skills && data.skills.length
+                ? [...(data.skills.filter((s) => s) || [])]
+                : [
+                    { skill: `piloting`, level: 1, xp: 0 },
+                    { skill: `munitions`, level: 1, xp: 0 },
+                    { skill: `mechanics`, level: 1, xp: 0 },
+                    { skill: `linguistics`, level: 1, xp: 0 },
+                    { skill: `mining`, level: 1, xp: 0 },
+                ];
+        if (data.tutorialShipId)
+            this.tutorialShipId = data.tutorialShipId;
+        if (data.mainShipId)
+            this.mainShipId = data.mainShipId;
         // if (data.actives)
         //   for (let a of data.actives)
         if (data.passives)
@@ -92,7 +101,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         if (data.repairPriority)
             this.repairPriority = data.repairPriority;
         if (data.stats)
-            this.stats = data.stats;
+            this.stats = [...data.stats];
         this.recalculateAll();
         this.toUpdate = this;
     }
@@ -182,7 +191,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         else
             skillElement.xp += xp;
         skillElement.level =
-            CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) <= l);
+            CrewMember.levelXPNumbers.findIndex((l) => (skillElement?.xp || 0) < l);
         this.toUpdate.skills = this.skills;
     }
     addCargo(id, amount) {

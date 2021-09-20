@@ -39,7 +39,6 @@ export default class Drawer {
     if (!elHeight) elHeight = elWidth
     this.elementScreenSize = [elWidth, elHeight]
     this.element = element
-    this.ctx = element.getContext(`2d`)!
     if (lerpSpeed) this.lerpSpeed = lerpSpeed
   }
 
@@ -68,6 +67,12 @@ export default class Drawer {
     // }
   }) {
     if (!ship) return
+    if (
+      !this.element ||
+      !document.body.contains(this.element)
+    )
+      return
+    this.ctx = this.element.getContext(`2d`)
 
     this.drawCalls = 0
 
@@ -207,11 +212,11 @@ export default class Drawer {
       opacity: 0.5,
     })
 
-    if (ship.radii?.game)
+    if (ship.radii?.gameSize)
       this.drawPoint({
         location: [0, 0],
         labelTop: `known universe`,
-        radius: ship.radii.game * this.flatScale,
+        radius: ship.radii.gameSize * this.flatScale,
         color: `#bbbbbb`,
         outline: true,
         opacity: 0.5,
@@ -502,8 +507,16 @@ export default class Drawer {
     ;[...cachesToDraw].forEach((k) => {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
+        radius: c.arrivalThreshold * this.flatScale,
+        color: `rgb(216, 174, 3)`, // var(--cargo)
+        outline: `dash`,
+        opacity: 0.4,
+      })
+
+      this.drawPoint({
+        location: [k.location[0], k.location[1] * -1],
         radius: (1.5 / this.zoom) * devicePixelRatio,
-        color: `#dddd00`,
+        color: `rgb(216, 174, 3)`,
         opacity: 0.8,
       })
     })

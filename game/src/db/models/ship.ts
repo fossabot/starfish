@@ -86,6 +86,8 @@ const shipSchemaFields: Record<
       targetLocation: [Number, Number],
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
+      tutorialShipId: String,
+      mainShipId: String,
     },
   ],
   commonCredits: Number,
@@ -102,7 +104,7 @@ const DBShip = model<DBShipDoc>(`DBShip`, shipSchema)
 export async function addOrUpdateInDb(
   data: Ship,
 ): Promise<BaseShipData> {
-  const stub = c.stubify<Ship, ShipStub>(data)
+  const stub = data.stubify()
   const toSave = (new DBShip(stub) as any)._doc
   delete toSave._id
   const dbObject: DBShipDoc | null =
@@ -132,6 +134,21 @@ export async function wipeAI() {
 export async function getAllConstructible(): Promise<
   BaseShipData[]
 > {
-  const docs = await DBShip.find({})
+  const docs = (await DBShip.find({})).map((d) =>
+    d.toObject(),
+  )
+  // clearExtraneousMongooseIdEntry(docs)
   return docs
+}
+
+function clearExtraneousMongooseIdEntry(obj: any) {
+  if (obj && obj._id) delete obj._id
+  if (typeof obj !== `object`) return
+  if (Array.isArray(obj)) {
+    obj.forEach(clearExtraneousMongooseIdEntry)
+    return
+  }
+  Object.keys(obj).forEach((key) =>
+    clearExtraneousMongooseIdEntry(obj[key]),
+  )
 }

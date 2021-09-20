@@ -26,6 +26,7 @@ try {
 }
 
 function isAdmin(id, password) {
+  if (process.env.NODE_ENV === `development`) return true
   if (!adminKeys) return false
   if (password !== adminKeys?.password) return false
   if (!adminKeys?.validIds?.includes(id)) return false
@@ -99,6 +100,10 @@ export default function (
       c.log(`Admin resetting all planets`)
       await db.planet.wipe()
       while (game.planets.length) game.planets.pop()
+      game.humanShips.forEach((s) => {
+        while (s.seenPlanets.length) s.seenPlanets.pop()
+        s.toUpdate.seenPlanets = []
+      })
     },
   )
 
@@ -110,6 +115,10 @@ export default function (
     c.log(`Admin resetting all zones`)
     await db.zone.wipe()
     while (game.zones.length) game.zones.pop()
+    game.humanShips.forEach((s) => {
+      while (s.seenLandmarks.length) s.seenLandmarks.pop()
+      s.toUpdate.seenLandmarks = []
+    })
   })
 
   socket.on(`game:resetAllCaches`, async (id, password) => {
