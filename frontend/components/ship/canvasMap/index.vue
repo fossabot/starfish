@@ -29,7 +29,7 @@
           width: width + 'px',
           height: width + 'px',
         }"
-        @mousewheel="mouseWheel"
+        @wheel="mouseWheel"
         @mousedown="mouseDown"
         @mouseleave="mouseLeave"
       />
