@@ -190,7 +190,6 @@ export function generateBasicPlanet(
     ) {
       hue = Math.random() * 360
     }
-    c.log(hue)
 
     color = `hsl(${Math.round(hue)}, ${Math.round(
       Math.random() * 80 + 20,

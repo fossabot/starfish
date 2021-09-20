@@ -145,7 +145,6 @@ function generateBasicPlanet(game, homeworldFactionKey) {
         })) {
             hue = Math.random() * 360;
         }
-        dist_1.default.log(hue);
         color = `hsl(${Math.round(hue)}, ${Math.round(Math.random() * 80 + 20)}%, ${Math.round(Math.random() * 40) + 40}%)`;
     }
     const level = 0;
