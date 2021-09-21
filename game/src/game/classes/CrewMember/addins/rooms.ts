@@ -7,10 +7,9 @@ export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
   const chargeBoost =
-    this.ship.passives
-      .filter((p) => p.id === `boostCockpitChargeSpeed`)
-      .reduce((total, p) => (p.intensity || 0) + total, 0) +
-    1
+    this.ship.getPassiveIntensity(
+      `boostCockpitChargeSpeed`,
+    ) + 1
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
       this.piloting?.level || 1,
@@ -78,13 +77,14 @@ export function mine(this: CrewMember): void {
 }
 
 export function bunk(this: CrewMember): void {
+  this.addStat(`timeInBunk`, 1)
+
   if (this.stamina >= this.maxStamina) return
 
   const staminaRefillBoost =
-    this.ship.passives
-      .filter((p) => p.id === `boostStaminaRegeneration`)
-      .reduce((total, p) => (p.intensity || 0) + total, 0) +
-    1
+    this.ship.getPassiveIntensity(
+      `boostStaminaRegeneration`,
+    ) + 1
 
   this.stamina +=
     (c.getStaminaGainPerTickForSingleCrewMember() *
@@ -95,4 +95,21 @@ export function bunk(this: CrewMember): void {
     this.stamina = this.maxStamina
 
   this.toUpdate.stamina = this.stamina
+
+  // * drip feed of cockpit charge as well
+
+  if (this.cockpitCharge >= 1) return
+
+  const chargeBoost =
+    this.ship.getPassiveIntensity(
+      `boostCockpitChargeSpeed`,
+    ) + 1
+  this.cockpitCharge +=
+    c.getCockpitChargePerTickForSingleCrewMember(
+      this.piloting?.level || 1,
+    ) *
+    chargeBoost *
+    0.1
+  if (this.cockpitCharge > 1) this.cockpitCharge = 1
+  this.toUpdate.cockpitCharge = this.cockpitCharge
 }

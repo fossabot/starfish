@@ -35,6 +35,7 @@ type CrewStatKey =
   | `cargoTransactions`
   | `totalHpRepaired`
   | `totalTonsMined`
+  | `timeInBunk`
 interface CrewStatEntry {
   stat: CrewStatKey
   amount: number
