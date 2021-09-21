@@ -114,6 +114,7 @@ type ShipStatKey =
   | `planetTime`
   | `totalTonsMined`
   | `highestSpeed`
+  | `tutorials`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

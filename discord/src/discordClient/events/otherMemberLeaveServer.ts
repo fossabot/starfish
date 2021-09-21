@@ -11,6 +11,7 @@ export default async function (
 ) {
   const ship = await ioInterface.ship.get(
     guildMember.guild.id,
+    guildMember.id,
   )
   if (!ship) return
   const crewMember = ship.crewMembers?.find(

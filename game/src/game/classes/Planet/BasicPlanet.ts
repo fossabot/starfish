@@ -2,6 +2,7 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import type { Faction } from '../Faction'
+import type { HumanShip } from '../Ship/HumanShip'
 import { Planet } from './Planet'
 
 type AddableElement =
@@ -438,6 +439,98 @@ export class BasicPlanet extends Planet {
     this._stub = null // invalidate stub
     this.toUpdate.priceFluctuator = this.priceFluctuator
     this.updateFrontendForShipsAt()
+  }
+
+  broadcastTo(ship: HumanShip): number | undefined {
+    const distanceAsPercentOfMaxBroadcastRadius =
+      super.broadcastTo(ship)
+    if (!distanceAsPercentOfMaxBroadcastRadius) return
+
+    const garbleAmount = c.randomBetween(
+      0.01,
+      distanceAsPercentOfMaxBroadcastRadius,
+    )
+    let messageOptions = [
+      `Do you read me, ${ship.name}? This is ${this.name}. Come in, over.`,
+      `Hail, ${ship.name}!`,
+    ]
+    if (this.pacifist)
+      messageOptions.push(
+        `Come rest awhile at ${this.name}!`,
+        `Welcome, ${ship.name}. Come rest and recharge.`,
+        `Hail, ${ship.name}! You look a little worse for wear!`,
+      )
+    if (this.level > 5)
+      messageOptions.push(
+        `Come see what we have in stock!`,
+        `Come browse our wares! Nothing but the lowest prices!`,
+      )
+    if (this.faction === ship.faction) {
+      messageOptions.push(
+        `Greetings, fellow creature of the ${ship.faction.name}! Swim swiftly!`,
+      )
+    } else {
+      messageOptions.push(
+        `You there, from the ${ship.faction.name}! You may land, but don't cause any trouble.`,
+        `${ship.faction.name} are welcome here.`,
+      )
+    }
+    if (this.creatures?.includes(ship.species.id))
+      messageOptions.push(
+        `Hail, fellow ${ship.species.singular}! You're always welcome here.`,
+      )
+    const message = c.garble(
+      c.randomFromArray(messageOptions),
+      garbleAmount,
+    )
+    ship.receiveBroadcast(message, this, garbleAmount, [
+      ship,
+    ])
+  }
+
+  respondTo(
+    message: string,
+    ship: HumanShip,
+  ): number | undefined {
+    const distanceAsPercentOfMaxBroadcastRadius =
+      super.respondTo(message, ship)
+    if (!distanceAsPercentOfMaxBroadcastRadius) return
+
+    const garbleAmount = c.randomBetween(
+      0.01,
+      distanceAsPercentOfMaxBroadcastRadius,
+    )
+    const responseOptions = [
+      `I read you, ${ship.name}. Our docking bays are ready to receive, over.`,
+      `You are clear for landing, over.`,
+      `Roger that, over.`,
+      `10-4, over.`,
+      `I read you, ${ship.name}.`,
+      `This is ${this.name}, I read you, ${ship.name}. Commence landing approach when ready.`,
+      `I'm not authorized to respond to you, over.`,
+      `Come down and let's take a swim, over.`,
+      `We love ${ship.species.id} around here, over.`,
+      `${ship.faction.name} are always welcome here, over.`,
+      `${ship.faction.name} are always welcome as long as they don't cause any trouble, over.`,
+      `Meet me at the cantina later, over.`,
+    ]
+    if (this.creatures) {
+      responseOptions.push(
+        `Can't talk now, the ${c.randomFromArray(
+          this.creatures,
+        )} are causing trouble again, over.`,
+        `Aren't ${c.randomFromArray(
+          this.creatures,
+        )} beautiful? Over.`,
+      )
+    }
+    const response = c.garble(
+      c.randomFromArray(responseOptions),
+      garbleAmount,
+    )
+    ship.receiveBroadcast(response, this, garbleAmount, [
+      ship,
+    ])
   }
 }
 

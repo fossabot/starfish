@@ -171,6 +171,10 @@ export class HumanShip extends CombatShip {
     const previousVisible = { ...this.visible }
     this.updateVisible()
     this.generateVisiblePayload(previousVisible)
+    this.takeActionOnVisibleChange(
+      previousVisible,
+      this.visible,
+    )
     this.scanners.forEach((s) => s.use())
 
     profiler.step(`crew tick & stubify`)
@@ -286,7 +290,19 @@ export class HumanShip extends CombatShip {
         this.id,
         Array.isArray(content)
           ? content
-              .map((ce) => (ce as any).text || ce)
+              .map(
+                (ce) =>
+                  ((ce as RichLogContentElement).text ||
+                    ce) +
+                  ((ce as RichLogContentElement).url
+                    ? ` (${c.frontendUrl.replace(
+                        /\/s[^/]*\/?$/,
+                        ``,
+                      )}${
+                        (ce as RichLogContentElement).url
+                      })`
+                    : ``),
+              )
               .join(` `)
               .replace(/\s*&nospace/g, ``)
           : content,
@@ -298,18 +314,19 @@ export class HumanShip extends CombatShip {
     this.toUpdate.seenPlanets = this.seenPlanets.map((p) =>
       p.toVisibleStub(),
     )
-    this.logEntry(
-      [
-        `Discovered the planet`,
-        {
-          text: p.name,
-          color: p.color,
-          tooltipData: p.toLogStub() as any,
-        },
-        `&nospace!`,
-      ],
-      `high`,
-    )
+    if (!this.onlyCrewMemberIsInTutorial)
+      this.logEntry(
+        [
+          `Discovered the planet`,
+          {
+            text: p.name,
+            color: p.color,
+            tooltipData: p.toLogStub() as any,
+          },
+          `&nospace!`,
+        ],
+        `high`,
+      )
 
     this.addStat(`seenPlanets`, 1)
 
@@ -342,18 +359,19 @@ export class HumanShip extends CombatShip {
     this.toUpdate.seenLandmarks = this.seenLandmarks.map(
       (z) => z.toVisibleStub(),
     )
-    this.logEntry(
-      [
-        `Discovered`,
-        {
-          text: l.name,
-          color: l.color,
-          tooltipData: l.toLogStub() as any,
-        },
-        `&nospace!`,
-      ],
-      `high`,
-    )
+    if (!this.onlyCrewMemberIsInTutorial)
+      this.logEntry(
+        [
+          `Discovered`,
+          {
+            text: l.name,
+            color: l.color,
+            tooltipData: l.toLogStub() as any,
+          },
+          `&nospace!`,
+        ],
+        `high`,
+      )
 
     this.addStat(`seenLandmarks`, 1)
   }
@@ -795,8 +813,7 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
 
-    const brakeToThrustRatio = 5
-    charge *= brakeToThrustRatio // braking is easier than thrusting
+    charge *= c.brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
     let passiveBrakeMultiplier =
@@ -927,7 +944,7 @@ export class HumanShip extends CombatShip {
       this.setStat(`highestSpeed`, speed)
 
     // ----- end if in tutorial -----
-    if (this.tutorial) {
+    if (this.tutorial && this.tutorial.currentStep) {
       // reset position if outside max distance from spawn
       if (
         this.tutorial.currentStep.maxDistanceFromSpawn &&
@@ -1069,7 +1086,7 @@ export class HumanShip extends CombatShip {
 
   updateVisible() {
     const targetTypes =
-      this.tutorial?.currentStep.visibleTypes
+      this.tutorial?.currentStep?.visibleTypes
     const visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
@@ -1119,6 +1136,22 @@ export class HumanShip extends CombatShip {
         this.cacheToValidScanResult(c),
       ),
       zones: this.visible.zones.map((z) => z.stubify()),
+    }
+  }
+
+  takeActionOnVisibleChange(
+    previousVisible,
+    currentVisible,
+  ) {
+    if (!this.planet) {
+      const newlyVisiblePlanets =
+        currentVisible.planets.filter(
+          (p) => !previousVisible.planets.includes(p),
+        )
+      newlyVisiblePlanets.forEach((p) => {
+        c.log(`newly visible planet`, p.name)
+        p.broadcastTo(this)
+      })
     }
   }
 
@@ -1344,7 +1377,7 @@ export class HumanShip extends CombatShip {
     if (!this.tutorial) this.shownPanels = undefined
     else
       this.shownPanels =
-        this.tutorial.currentStep.shownPanels
+        this.tutorial.currentStep?.shownPanels
     this.toUpdate.shownPanels = this.shownPanels || false
   }
 
@@ -1398,6 +1431,7 @@ export class HumanShip extends CombatShip {
 
       for (let otherShip of this.game.ships) {
         if (otherShip === this) continue
+        if (otherShip.tutorial) continue
         const distance = c.distance(
           this.location,
           otherShip.location,
@@ -1442,6 +1476,22 @@ export class HumanShip extends CombatShip {
       }
     }
 
+    if (!this.planet) {
+      this.visible.planets
+        .filter(
+          (p) =>
+            c.distance(this.location, p.location) < range,
+        )
+        .forEach((p) => {
+          if (
+            message
+              .toLowerCase()
+              .indexOf(p.name.toLowerCase()) > -1
+          )
+            p.respondTo(message, this)
+        })
+    }
+
     this.communicators.forEach((comm) => {
       if (comm.hp > 0) {
         comm.use()
@@ -1454,7 +1504,7 @@ export class HumanShip extends CombatShip {
 
   receiveBroadcast(
     message: string,
-    from: Ship,
+    from: Ship | Planet,
     garbleAmount: number,
     recipients: Ship[],
   ) {
@@ -1462,9 +1512,12 @@ export class HumanShip extends CombatShip {
       this.location,
       from.location,
     )
-    const prefix = `**${from.species.icon}${
-      from.name
-    }** says: *(${c.r2(distance, 2)}AU away, ${c.r2(
+    const prefix = `**${
+      `species` in from ? from.species.icon : `🪐`
+    }${from.name}** says: *(${c.r2(
+      distance,
+      2,
+    )}AU away, ${c.r2(
       Math.min(100, (1 - garbleAmount) * 100),
       0,
     )}% fidelity)*\n`
@@ -1531,6 +1584,7 @@ export class HumanShip extends CombatShip {
   }
 
   removeItem(item: Item): boolean {
+    c.log(`removing item from`, this.name, item.displayName)
     if (item.rooms) {
       item.rooms.forEach((room) => {
         if (
@@ -1552,10 +1606,11 @@ export class HumanShip extends CombatShip {
 
   // ----- crew mgmt -----
 
-  addCrewMember(
+  async addCrewMember(
     data: BaseCrewMemberData,
     setupAdd = false,
-  ): CrewMember {
+  ): Promise<CrewMember> {
+    c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
@@ -1566,7 +1621,7 @@ export class HumanShip extends CombatShip {
           `high`,
         )
 
-      Tutorial.putCrewMemberInTutorial(cm)
+      await Tutorial.putCrewMemberInTutorial(cm)
     }
 
     this.crewMembers.push(cm)
@@ -1585,8 +1640,17 @@ export class HumanShip extends CombatShip {
     else if (this.crewMembers.length >= 100)
       this.addTagline(`Big Fish`, `having 100 crew members`)
 
-    if (!setupAdd) db.ship.addOrUpdateInDb(this)
+    if (!setupAdd) await db.ship.addOrUpdateInDb(this)
     return cm
+  }
+
+  get onlyCrewMemberIsInTutorial() {
+    // (or, ALL crew members are in tutorials)
+    return (
+      (this.crewMembers.length === 1 &&
+        this.crewMembers[0].tutorialShipId) ||
+      this.crewMembers.every((cm) => cm.tutorialShipId)
+    )
   }
 
   removeCrewMember(id: string) {
@@ -1820,8 +1884,8 @@ export class HumanShip extends CombatShip {
 
   // ----- respawn -----
 
-  respawn(silent = false) {
-    super.respawn()
+  async respawn(silent = false) {
+    await super.respawn()
 
     this.equipLoadout(`humanDefault`)
 
@@ -1839,6 +1903,8 @@ export class HumanShip extends CombatShip {
         `critical`,
       )
     }
+
+    await db.ship.addOrUpdateInDb(this)
   }
 
   // ----- auto attack -----

@@ -87,6 +87,7 @@ function default_1(socket) {
                 s.seenPlanets.pop();
             s.toUpdate.seenPlanets = [];
         });
+        __1.game.factions.forEach((f) => (f.homeworld = null));
     });
     socket.on(`game:resetAllZones`, async (id, password) => {
         if (!isAdmin(id, password))

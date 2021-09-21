@@ -82,6 +82,39 @@ class Planet extends Stubbable_1.Stubbable {
                     Math.floor(Math.random() * 100);
         }
     }
+    broadcastTo(ship) {
+        // baseline chance to say nothing
+        if (Math.random() > dist_1.default.lerp(0.9, 0.6, this.level / 100))
+            return;
+        const maxBroadcastRadius = this.level * 0.1;
+        const distance = dist_1.default.distance(this.location, ship.location);
+        // don't message ships that are too far
+        if (distance > maxBroadcastRadius)
+            return;
+        // don't message ships that are here already
+        if (distance < dist_1.default.arrivalThreshold)
+            return;
+        // don't message ships that are currently at a planet
+        if (ship.planet)
+            return;
+        const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius;
+        return distanceAsPercentOfMaxBroadcastRadius;
+    }
+    respondTo(message, ship) {
+        const maxBroadcastRadius = this.level * 0.1;
+        const distance = dist_1.default.distance(this.location, ship.location);
+        // don't message ships that are too far
+        if (distance > maxBroadcastRadius)
+            return;
+        // don't message ships that are here already
+        if (distance < dist_1.default.arrivalThreshold)
+            return;
+        // don't message ships that are currently at a planet
+        if (ship.planet)
+            return;
+        const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius;
+        return distanceAsPercentOfMaxBroadcastRadius;
+    }
     updateFrontendForShipsAt() {
         this._stub = null;
         this.shipsAt.forEach((s) => {

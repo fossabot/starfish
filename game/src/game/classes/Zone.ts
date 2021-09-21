@@ -71,16 +71,8 @@ export class Zone extends Stubbable {
           // random passive miss chance
           else
             miss = hitRoll < proximityMod / enemyAgility / 2
-          // c.log({
-          //   hitRoll,
-          //   enemyAgility,
-          //   proximityMod,
-          //   miss,
-          //   missMustBeLessThan:
-          //     proximityMod / enemyAgility / 2,
-          // })
         }
-        // c.log({ miss, intensity })
+        if (miss) return // * misses being announced was annoying and just noise
         ship.takeDamage(this, {
           damage: miss ? 0 : intensity,
           miss,
@@ -99,6 +91,23 @@ export class Zone extends Stubbable {
           proximityMod
         repairableItems.forEach((ri) => {
           ri.applyRepair(amountToRepair)
+        })
+      }
+
+      // stamina regen
+      else if (effect.type === `stamina regeneration`) {
+        ship.crewMembers.forEach((cm) => {
+          if (cm.stamina >= cm.maxStamina) return
+
+          cm.stamina +=
+            (c.getStaminaGainPerTickForSingleCrewMember() *
+              intensity) /
+            (c.deltaTime / c.tickInterval)
+
+          if (cm.stamina > cm.maxStamina)
+            cm.stamina = cm.maxStamina
+
+          cm.toUpdate.stamina = cm.stamina
         })
       }
 

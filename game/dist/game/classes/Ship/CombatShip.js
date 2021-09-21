@@ -74,7 +74,7 @@ class CombatShip extends Ship_1.Ship {
             .filter((s) => s && this.canAttack(s, true));
         return combatShipsInRange;
     }
-    respawn() {
+    async respawn() {
         dist_1.default.log(`Respawning`, this.name);
         this.items = [];
         this.previousLocations = [];
@@ -83,7 +83,7 @@ class CombatShip extends Ship_1.Ship {
         this.dead = false;
         this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos +
             dist_1.default.randomBetween(dist_1.default.arrivalThreshold * -0.4, dist_1.default.arrivalThreshold * 0.4)));
-        db_1.db.ship.addOrUpdateInDb(this);
+        await db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
         if (this === otherShip)

@@ -104,6 +104,7 @@ export default function (
         while (s.seenPlanets.length) s.seenPlanets.pop()
         s.toUpdate.seenPlanets = []
       })
+      game.factions.forEach((f) => (f.homeworld = null))
     },
   )
 

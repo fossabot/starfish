@@ -149,7 +149,7 @@ function generateBasicPlanet(game, homeworldFactionKey) {
     }
     const level = 0;
     const baseLevel = homeworldFactionKey
-        ? 9
+        ? 14
         : Math.ceil(Math.random() * 5 +
             dist_1.default.distance(location, [0, 0]) / 3);
     const xp = 0;

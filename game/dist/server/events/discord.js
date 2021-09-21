@@ -10,7 +10,7 @@ function default_1(socket) {
         dist_1.default.log(`Discord process connected to io`);
         socket.join([`discord`]);
     });
-    socket.on(`ship:create`, (data, callback) => {
+    socket.on(`ship:create`, async (data, callback) => {
         const ship = __1.game.ships.find((s) => s.id === data.id);
         if (ship) {
             dist_1.default.log(`Call to create existing ship, returning existing.`);
@@ -30,7 +30,7 @@ function default_1(socket) {
                 dist_1.default.sanitize(data.name.substring(0, dist_1.default.maxNameLength))
                     .result || `ship`;
             dist_1.default.log(`Ship ${data.name} has joined the game.`);
-            const ship = __1.game.addHumanShip({
+            const ship = await __1.game.addHumanShip({
                 ...data,
             });
             const stub = dist_1.default.stubify(ship);

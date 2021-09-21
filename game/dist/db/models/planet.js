@@ -98,7 +98,7 @@ async function addOrUpdateInDb(data) {
 }
 exports.addOrUpdateInDb = addOrUpdateInDb;
 async function removeFromDb(name) {
-    const res = await DBPlanet.deleteOne({ name });
+    const res = await DBPlanet.deleteMany({ name });
     dist_1.default.log(`Deleted planet`, name, res);
 }
 exports.removeFromDb = removeFromDb;

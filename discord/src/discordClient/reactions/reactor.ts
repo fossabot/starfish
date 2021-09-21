@@ -4,6 +4,7 @@ import { Message } from 'discord.js'
 const ACK_REACTIONS = [`👍`]
 const EXPIRED_REACTIONS = [`🖤`]
 const FAILURE_REACTIONS = [`⛔`]
+const WARNING_REACTIONS = [`⚠️`]
 
 /** gets a random element of an array. */
 const getRandom = (array: string[]) =>
@@ -29,6 +30,13 @@ export class Reactor {
 
     await message.reactions.removeAll()
     await message.react(getRandom(FAILURE_REACTIONS))
+  }
+
+  async warning(message: Message) {
+    if (!this.enableReactions) return
+
+    await message.reactions.removeAll()
+    await message.react(getRandom(WARNING_REACTIONS))
   }
 
   /** indicates to the user that the command is no longer active, as intended. */

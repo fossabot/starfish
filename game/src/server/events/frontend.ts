@@ -6,7 +6,6 @@ import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
-import { type } from 'os'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,

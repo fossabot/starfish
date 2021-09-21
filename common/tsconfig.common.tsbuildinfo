@@ -242,8 +242,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "181462d4cb752757f5c2f81d7f6c15b0237292f3fa1be684c1ca9ce8e95c5278",
-        "signature": "181462d4cb752757f5c2f81d7f6c15b0237292f3fa1be684c1ca9ce8e95c5278",
+        "version": "e32195b0bf43a4e9bad4f75798bb31e292b56945b7661c1835dc51baee11db32",
+        "signature": "e32195b0bf43a4e9bad4f75798bb31e292b56945b7661c1835dc51baee11db32",
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "bde5d484b1baa4420e8649115601e0fe2465660ca980073892db98ba59754057",
-        "signature": "bde5d484b1baa4420e8649115601e0fe2465660ca980073892db98ba59754057",
+        "version": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
+        "signature": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "09fe0fe2fe5c8859bb06b5fe9aa3f7bd58cfece95798bd820927a2483d566894",
-        "signature": "09fe0fe2fe5c8859bb06b5fe9aa3f7bd58cfece95798bd820927a2483d566894",
+        "version": "947154506d40d7ca48431214c0537bde9a0a1a65e5cc47ffebf8b36e9cc3175c",
+        "signature": "947154506d40d7ca48431214c0537bde9a0a1a65e5cc47ffebf8b36e9cc3175c",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -292,8 +292,8 @@
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
-        "version": "aa80efc1e2b1e4226fa06e3f7c83ae3a74aa35804b5f01dc230ef3d785cfcb48",
-        "signature": "aa80efc1e2b1e4226fa06e3f7c83ae3a74aa35804b5f01dc230ef3d785cfcb48",
+        "version": "0c80f169c67ea02188880f61ee9d724182613fe173163f2d5b951642560a94f0",
+        "signature": "0c80f169c67ea02188880f61ee9d724182613fe173163f2d5b951642560a94f0",
         "affectsGlobalScope": true
       },
       "./src/log.ts": {
@@ -322,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "1ba2d9f061f55492af7e187c38e48a8d84b1b166ef3b140cf7a66953f8e32d7d",
+        "version": "ec8d0217a27a9fce783f4ce02c769631653fd31188eb787c47a369d942f5ca84",
         "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
@@ -347,7 +347,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
+        "version": "55c763b5c26f40f56ef7e7c95e7ce03f732f16adfae759ebbeae1e112ae3329c",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
@@ -372,13 +372,13 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "082f349306f99446f1f7c156edcb25593a9ddb3b71777fe6809df371b7f32b57",
+        "version": "323e6b9bdccc20a16767380143a6802776920576fc76ecb124f587f7ac0b7163",
         "signature": "4891b7c3cdc24fb25c16244d3de0ec5162da836e8e62dfdb44186c106dbe1e5f",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "de7fd0f8d7cfdc249f2bcdfa64d3583aba5b7eb4ddc6fdc78b00e94648096b74",
-        "signature": "86a17db378851dacf2230fa86b6734d4a93fb7be35cbcc8ac0faa75badc690bf",
+        "version": "c18de75672705260f6adc0e5fa88599a3d807eb9dcdf3ceab1f19c9df91a8dc1",
+        "signature": "3748d69b4584e861e615f7b209a7f6ad98ccc673469e944a4c055c15e03fc7ef",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -402,32 +402,32 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "cf6efed1d2b33ae2a96e6647319fd8d397852e0f7f46a7122ce7302ebd0489a5",
+        "version": "00a3d3cbe24276247f269fd4cf609902aaaef2224e408f809799530ce028d665",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
       "./src/items/weapons.ts": {
-        "version": "0debe3c944b3eef1eaf76078d86a23c730fc4633e47e2cc21b628ef7a1be216d",
+        "version": "662822e8c2de12f0f0863ec3eb2e5e2601112c33873772a57bb55cdaa7195ad1",
         "signature": "befe73d74cb58aac72a4db9241cfd9f7c75ce59573a65c1349259cb1a35b82c2",
         "affectsGlobalScope": false
       },
       "./src/items/scanners.ts": {
-        "version": "b8360408be47c7f98c69374196f8724616081cba83006640b56e415b93a50c11",
+        "version": "1a2d83358a6d9b7dcc39c8b48ef9240c8a429b51521591dc8f4052c4390bae08",
         "signature": "7b3fa96461032282f567ce3825daa43d70d1bc919aa8b6df0ee899721e3f3170",
         "affectsGlobalScope": false
       },
       "./src/items/communicators.ts": {
-        "version": "0b356942765e02197827bea6ac530772f93fa092ff7e9d07d2b8fdc3734999e0",
+        "version": "cd7ba146ccf820bc6ecb106f8b942d51d24085b44109b9d3ebd0a246590e1bc6",
         "signature": "261f06e680cd2b203afe84f45002fb01d589fbcb59ef630f2bb6520739d3e4b4",
         "affectsGlobalScope": false
       },
       "./src/items/armor.ts": {
-        "version": "ece3d3b39843968c65028a2de07741399ccf3b89877107913ef1df3d981a7623",
+        "version": "af8b5846c539587e9537f78e7b84cb5353f2ed47f7324d15378a08a57c7e7ff4",
         "signature": "6b7987494494bef72741f2eabc0a9ed945a0a3112c4abebb5a8e7dc72fbc872e",
         "affectsGlobalScope": false
       },
       "./src/items/chassis.ts": {
-        "version": "d3142d65693112ad1626a4aa72cae22673ce8b7738ba626c4c3acf22ae467b7f",
+        "version": "aa9db9c20f05e0e3aff52b49713c5746c1520997acf028feee149a889002e910",
         "signature": "1d7725b674bd27f36a539257ba157d42320ab06de9fa8aef262a1268e9f6319e",
         "affectsGlobalScope": false
       },
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "b667ba8cff73038185681885e7d7bb5f84b439147c3611acec6e6989103d974e",
+        "signature": "bc49947c5e959bfe4f447da667f6872d4a9337a9868edd9ccba004d8ff00cea2",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

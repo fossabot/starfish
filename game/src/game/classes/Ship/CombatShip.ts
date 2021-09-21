@@ -122,7 +122,7 @@ export abstract class CombatShip extends Ship {
     return combatShipsInRange
   }
 
-  respawn() {
+  async respawn() {
     c.log(`Respawning`, this.name)
     this.items = []
     this.previousLocations = []
@@ -140,7 +140,7 @@ export abstract class CombatShip extends Ship {
       ) as CoordinatePair,
     )
 
-    db.ship.addOrUpdateInDb(this)
+    await db.ship.addOrUpdateInDb(this)
   }
 
   canAttack(

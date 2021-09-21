@@ -32,6 +32,9 @@ exports.game = new Game_1.Game();
     savedZones.forEach((zone) => exports.game.addZone(zone, false));
     const savedShips = await db_1.db.ship.getAllConstructible();
     dist_1.default.log(`Loaded ${savedShips.length} saved ships (${savedShips.filter((s) => !s.ai).length} human) from DB.`);
+    // savedShips
+    //   .filter((s) => !s.ai)
+    //   .forEach((s) => c.log(s.id, s.name, s.items, s.chassis))
     for (let ship of savedShips) {
         if (ship.ai)
             exports.game.addAIShip(ship, false);

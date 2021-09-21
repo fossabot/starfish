@@ -14,7 +14,7 @@ const baseRepairCost = 1000;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
 const baseXpGain = 0.05 * gameSpeedMultiplier;
-const itemPriceMultiplier = 1;
+const itemPriceMultiplier = 1000;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
 const baseItemSellMultiplier = 0.6;
@@ -59,6 +59,7 @@ function getRadiusDiminishingReturns(totalValue, equipmentCount) {
         return 0;
     return totalValue / Math.sqrt(equipmentCount) || 0; // this might be too harsh? 5 and 2 = 4.9
 }
+const brakeToThrustRatio = 5;
 function getMaxCockpitChargeForSingleCrewMember(level = 1) {
     return 1;
     // return math.lerp(1, 5, (level - 1) / 100)
@@ -311,6 +312,7 @@ exports.default = {
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,
     getMineAmountPerTickForSingleCrewMember,
+    brakeToThrustRatio,
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,

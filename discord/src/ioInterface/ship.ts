@@ -64,6 +64,7 @@ export async function rename(
 
 export async function get(
   id: string,
+  crewMemberId: string,
 ): Promise<ShipStub | null> {
   if (!(await connected())) return null
   const shipStub: ShipStub | null = await new Promise(
@@ -71,6 +72,7 @@ export async function get(
       io.emit(
         `ship:get`,
         id,
+        crewMemberId,
         ({
           data: ship,
           error,

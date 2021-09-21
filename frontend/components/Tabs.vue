@@ -1,6 +1,9 @@
 <template>
   <div class="tabs">
-    <div class="tabheader hidescrollbar padbot">
+    <div
+      class="tabheader hidescrollbar padbot"
+      v-if="!dropdown"
+    >
       <div
         v-for="(tab, index) in tabs"
         :key="tab.title"
@@ -10,6 +13,17 @@
       >
         {{ c.capitalize(tab.title) }}
       </div>
+    </div>
+    <div class="tabheader padbot small" v-else>
+      <select v-model="dropdownSelection">
+        <option
+          v-for="(tab, index) in tabs"
+          :key="tab.title"
+          :value="index"
+        >
+          {{ c.capitalize(tab.title) }}
+        </option>
+      </select>
     </div>
     <div class="contents">
       <slot></slot>
@@ -23,11 +37,12 @@ import { mapState } from 'vuex'
 import c from '../../common/dist'
 
 export default Vue.extend({
-  props: {},
+  props: { dropdown: { type: Boolean, default: false } },
   data() {
     let tabs: Vue[] = []
     return {
       c,
+      dropdownSelection: 0,
       selectedIndex: 0,
       tabs,
     }
@@ -35,7 +50,11 @@ export default Vue.extend({
   computed: {
     ...mapState([]),
   },
-  watch: {},
+  watch: {
+    dropdownSelection() {
+      this.selectTab(this.dropdownSelection)
+    },
+  },
   created() {
     this.tabs = this.$children
   },

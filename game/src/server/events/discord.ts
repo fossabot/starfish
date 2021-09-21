@@ -13,7 +13,7 @@ export default function (
     socket.join([`discord`])
   })
 
-  socket.on(`ship:create`, (data, callback) => {
+  socket.on(`ship:create`, async (data, callback) => {
     const ship = game.ships.find((s) => s.id === data.id)
     if (ship) {
       c.log(
@@ -37,7 +37,7 @@ export default function (
 
       c.log(`Ship ${data.name} has joined the game.`)
 
-      const ship = game.addHumanShip({
+      const ship = await game.addHumanShip({
         ...data,
       })
       const stub = c.stubify<Ship, ShipStub>(ship)

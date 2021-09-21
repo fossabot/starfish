@@ -90,8 +90,8 @@ export function connected(): Promise<boolean> {
       return
     }
     let timeout = 0
-    while (timeout < 100) {
-      // 10 seconds
+    while (timeout < 50) {
+      // 5 seconds
       await c.sleep(100)
       if (io.connected) {
         resolve(true)

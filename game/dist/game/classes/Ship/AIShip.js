@@ -233,10 +233,10 @@ class AIShip extends CombatShip_1.CombatShip {
         let oddsToIgnore = 0.9;
         if (recipients.length === 1)
             oddsToIgnore *= 0.6;
-        dist_1.default.log(oddsToIgnore);
+        // c.log(oddsToIgnore)
         if (Math.random() < oddsToIgnore)
             return;
-        dist_1.default.log(`ai ship ${this.name} received broadcast`);
+        // c.log(`ai ship ${this.name} received broadcast`)
         await dist_1.default.sleep(Math.round(Math.random() * 1000 * 60));
         const textOptions = [
             `Less talk, more squawk!`,
@@ -261,6 +261,7 @@ class AIShip extends CombatShip_1.CombatShip {
             `Talk all you want, it won't save you.`,
             `Would you pipe down over there?`,
             `Leave the singing to the birds`,
+            `Don't get salty.`,
         ];
         // if (this.getStat('kills') > 1)
         // textOptions.push()

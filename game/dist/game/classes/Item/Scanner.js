@@ -17,7 +17,7 @@ class Scanner extends Item_1.Item {
     use() {
         if (this.ship.ai)
             return 0;
-        if (this.ship.tutorial?.currentStep.disableRepair)
+        if (this.ship.tutorial?.currentStep?.disableRepair)
             return 0;
         const percentLossFromNormalTick = 0.02;
         // we replace most of the default loss

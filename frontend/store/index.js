@@ -128,16 +128,41 @@ export const mutations = {
 }
 
 export const actions = {
+  async getAndSetShipDataById(
+    { state, dispatch, commit },
+    shipId,
+  ) {
+    if (!shipId) return
+
+    this.$socket?.emit(
+      `ship:get`,
+      shipId,
+      state.userId,
+      (res) => {
+        if (`error` in res) return console.log(res.error)
+        commit(`set`, { ship: res.data })
+        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+      },
+    )
+  },
+
+  async socketStop({ state, commit }) {
+    this.$socket.removeAllListeners()
+  },
   async socketSetup({ state, dispatch, commit }, shipId) {
     this.$socket.removeAllListeners()
+    if (!shipId)
+      shipId = state.ship?.id || state.activeShipId
 
-    if (
-      !shipId ||
-      !state.shipIds.find((s) => s === shipId)
-    ) {
-      // return c.log(`Skipping setup: invalid ship id`)
-      shipId = state.activeShipId
-    }
+    // c.log(
+    //   `setting up socket with id`,
+    //   state.ship?.id,
+    //   state.activeShipId,
+    //   shipId,
+    // )
+
+    const previousShipId =
+      state.ship?.id || state.activeShipId
 
     commit(`set`, { modal: null, activeShipId: shipId })
     storage.set(`activeShipId`, `${shipId}`)
@@ -158,12 +183,14 @@ export const actions = {
         shipId,
         state.userId,
         (res) => {
+          // * here we get the first full load of the ship's data
           if (`error` in res) return console.log(res.error)
           // c.log(
           //   JSON.stringify(res.data).length,
           //   `characters of data received from initial load`,
           // )
-          if (!state.ship) commit(`set`, { ship: res.data })
+          if (previousShipId !== res.data.id)
+            commit(`set`, { ship: res.data })
           dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
         },
       )
@@ -191,9 +218,12 @@ export const actions = {
     })
 
     this.$socket.on(`ship:forwardTo`, (id) => {
-      c.log(`forwarding from last ship id to new id!`, id)
-      commit(`set`, { ship: null })
-      dispatch(`socketSetup`, id)
+      c.log(
+        `forwarding from last ship id to new id!`,
+        state.ship?.id,
+        id,
+      )
+      dispatch(`socketSetup`, id, true)
     })
   },
 
@@ -395,19 +425,18 @@ export const actions = {
     clearInterval(slowModeUpdateInterval)
     if (turnOn) {
       // c.log(`slow mode on`)
-      dispatch(`socketSetup`, null)
+      dispatch(`socketStop`)
       slowModeUpdateInterval = setInterval(() => {
         // c.log(`slow mode update`)
-        dispatch(`socketSetup`, state.activeShipId)
-        setTimeout(() => {
-          if (slowModeUpdateInterval)
-            dispatch(`socketSetup`, null)
-        }, 2 * 1000)
+        dispatch(
+          `getAndSetShipDataById`,
+          state.ship?.id || state.activeShipId,
+        )
       }, 60 * 1000)
     } else {
       // c.log(`slow mode off`)
       slowModeUpdateInterval = null
-      dispatch(`socketSetup`, state.activeShipId)
+      dispatch(`socketSetup`)
     }
   },
 }

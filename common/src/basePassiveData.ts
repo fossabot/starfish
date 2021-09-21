@@ -33,7 +33,7 @@ const basePassiveData: {
     toString: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
-      )}% ai drop rarity`,
+      )}% AI drop rarity`,
   },
   boostRepairSpeed: {
     toString: (p) =>

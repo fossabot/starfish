@@ -53,6 +53,9 @@ runOnDbReady(async () => {
       savedShips.filter((s) => !s.ai).length
     } human) from DB.`,
   )
+  // savedShips
+  //   .filter((s) => !s.ai)
+  //   .forEach((s) => c.log(s.id, s.name, s.items, s.chassis))
   for (let ship of savedShips) {
     if (ship.ai) game.addAIShip(ship, false)
     else game.addHumanShip(ship as BaseHumanShipData)

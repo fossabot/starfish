@@ -73,7 +73,7 @@ export async function wipe() {
 }
 
 export async function removeFromDb(id: string) {
-  const res = await DBAttackRemnant.deleteOne({ id })
+  const res = await DBAttackRemnant.deleteMany({ id })
 }
 
 export async function getAllConstructible(): Promise<

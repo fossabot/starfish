@@ -45,6 +45,7 @@ export function generateZoneData(
     { value: `decelerate`, weight: 2 },
     { value: `damage over time`, weight: 5 },
     { value: `repair over time`, weight: 1 },
+    { value: `stamina regeneration`, weight: 1 },
     { value: `wormhole`, weight: 0.5 },
   ]
   const type =
@@ -71,6 +72,14 @@ export function generateZoneData(
       type: `repair over time`,
       intensity,
       procChancePerTick: 1,
+    })
+  } else if (type === `stamina regeneration`) {
+    name = c.randomFromArray(staminaRegenZoneNames)
+    effects.push({
+      type: `stamina regeneration`,
+      intensity,
+      procChancePerTick: 1,
+      basedOnProximity: c.coinFlip(),
     })
   } else if (type === `accelerate`) {
     name = c.randomFromArray(accelerateZoneNames)
@@ -124,12 +133,25 @@ const dotZoneNames = [
   `Gamma Cloud`,
   `Planetary Remains`,
   `Toxic Waste`,
+  `Polluted Zone`,
+  `Razor Cloud`,
 ]
 const healZoneNames = [
   `Astral Oasis`,
   `Nanorepair Swarm`,
-  `Calming Flux`,
   `Healing Field`,
+  `Restorative Zone`,
+  `Astral Refuge`,
+  `Healing Haven`,
+  `Tidal Pool`,
+  `Warm Current`,
+]
+const staminaRegenZoneNames = [
+  `Energy Spring`,
+  `Energizing Field`,
+  `Relaxation Zone`,
+  `Calming Flux`,
+  `Rejuvenating Tide`,
 ]
 const accelerateZoneNames = [
   `Gravity Slingshot`,
@@ -137,6 +159,9 @@ const accelerateZoneNames = [
   `Gravitational Anomaly`,
   `Boost Zone`,
   `Acceleration Field`,
+  `Deep Eddy`,
+  `Riptide`,
+  `Trade Current`,
 ]
 const decelerateZoneNames = [
   `Magnesis Field`,
@@ -144,9 +169,13 @@ const decelerateZoneNames = [
   `Murky Nebula`,
   `Stifling Zone`,
   `Deceleration Zone`,
+  `Caustic Field`,
+  `Encumbering Tide`,
 ]
 const wormholeZoneNames = [
   `Wormhole`,
+  `Eelhole`,
   `Universe Flux Point`,
   `Gravitational Rift`,
+  `Bermuda Triangle`,
 ]

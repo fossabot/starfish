@@ -1,6 +1,7 @@
 type ZoneEffectType =
   | `damage over time`
   | `repair over time`
+  | `stamina regeneration`
   | `accelerate`
   | `decelerate`
   | `wormhole`

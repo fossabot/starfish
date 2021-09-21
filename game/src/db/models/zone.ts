@@ -46,7 +46,7 @@ export async function wipe() {
 }
 
 export async function removeFromDb(id: string) {
-  const res = await DBZone.deleteOne({ id })
+  const res = await DBZone.deleteMany({ id })
 }
 
 export async function getAllConstructible(): Promise<

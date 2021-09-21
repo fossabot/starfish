@@ -198,8 +198,9 @@ export class Ship extends Stubbable {
     setInterval(() => {
       if (!this.previousLocations.length) return
       this.previousLocations.shift()
-      // c.log(`removing previous location`)
-    }, (c.tickInterval * 10000) / c.gameSpeedMultiplier)
+      if (this.human)
+        c.log(`removing previous location from`, this.name)
+    }, (c.tickInterval * 1000000) / c.gameSpeedMultiplier)
   }
 
   tick() {
@@ -351,7 +352,10 @@ export class Ship extends Stubbable {
       item = new Armor(foundItem, this, armorData)
     }
 
-    if (!item) return false
+    if (!item) {
+      c.log(`Failed to find item for`, itemData)
+      return false
+    }
 
     this.items.push(item)
 
@@ -404,6 +408,7 @@ export class Ship extends Stubbable {
   }
 
   equipLoadout(this: Ship, id: LoadoutId): boolean {
+    c.log(`equipping loadout to`, this.name)
     const loadout = loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })
@@ -438,9 +443,10 @@ export class Ship extends Stubbable {
   updateSightAndScanRadius() {
     if (this.tutorial) {
       this.radii.sight =
-        this.tutorial.currentStep.sightRange
+        this.tutorial.currentStep?.sightRange ||
+        c.baseSightRange
       this.radii.scan =
-        this.tutorial.currentStep.scanRange || 0
+        this.tutorial.currentStep?.scanRange || 0
       this.toUpdate.radii = this.radii
       return
     }
@@ -546,6 +552,30 @@ export class Ship extends Stubbable {
           ],
         ) > 0.000005)
     ) {
+      if (this.human)
+        c.log(
+          `adding previous location to`,
+          this.name,
+          this.previousLocations.length,
+          Math.abs(
+            c.angleFromAToB(
+              this.previousLocations[
+                this.previousLocations.length - 1
+              ],
+              previousLocation,
+            ) -
+              c.angleFromAToB(
+                previousLocation,
+                currentLocation,
+              ),
+          ),
+          c.distance(
+            this.location,
+            this.previousLocations[
+              this.previousLocations.length - 1
+            ],
+          ),
+        )
       this.previousLocations.push([...currentLocation])
       while (
         this.previousLocations.length >
@@ -651,14 +681,6 @@ export class Ship extends Stubbable {
   }
 
   get hp() {
-    // if (this.human)
-    //   c.log(
-    //     `hp total`,
-    //     this.items.map(
-    //       (i) => Math.max(0, i.maxHp * i.repair),
-    //       0,
-    //     ),
-    //   )
     const total = this.items.reduce(
       (total, i) => Math.max(0, i.maxHp * i.repair) + total,
       0,
@@ -782,7 +804,7 @@ export class Ship extends Stubbable {
 
   receiveBroadcast(
     message: string,
-    from: Ship,
+    from: Ship | Planet,
     garbleAmount: number,
     recipients: Ship[],
   ) {}

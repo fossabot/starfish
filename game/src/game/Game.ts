@@ -506,10 +506,10 @@ export class Game {
 
   // ----- entity functions -----
 
-  addHumanShip(
+  async addHumanShip(
     data: BaseHumanShipData,
     save = true,
-  ): HumanShip {
+  ): Promise<HumanShip> {
     const existing = this.ships.find(
       (s) => s instanceof HumanShip && s.id === data.id,
     ) as HumanShip
@@ -528,11 +528,14 @@ export class Game {
     data.loadout = `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
-    if (save) db.ship.addOrUpdateInDb(newShip)
+    if (save) await db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
-  addAIShip(data: BaseAIShipData, save = true): AIShip {
+  async addAIShip(
+    data: BaseAIShipData,
+    save = true,
+  ): Promise<AIShip> {
     const existing = this.ships.find(
       (s) => s && s instanceof AIShip && s.id === data.id,
     ) as AIShip | undefined
@@ -550,31 +553,44 @@ export class Game {
 
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
-    if (save) db.ship.addOrUpdateInDb(newShip)
+    if (save) await db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
   async removeShip(ship: Ship) {
     // remove all tutorial ships for members of this ship
-    ship.crewMembers.forEach((cm) => {
+    for (let cm of ship.crewMembers) {
       if (cm.tutorialShipId) {
         const tutorialShip = this.ships.find(
           (s) => s.id === cm.tutorialShipId,
         )
         if (tutorialShip) {
-          c.log(`Removing excess tutorial ship`)
-          tutorialShip.tutorial?.cleanUp()
+          // c.log(`Removing excess tutorial ship`)
+          await tutorialShip.tutorial?.cleanUp()
         }
       }
-    })
-    c.log(`Removing ship ${ship.name} from the game.`)
+    }
+
+    c.log(
+      `Removing ship ${ship.name} (${ship.id}) from the game.`,
+    )
     await db.ship.removeFromDb(ship.id)
+
     const index = this.ships.findIndex(
       (ec) => ship.id === ec.id,
     )
     if (index === -1) return
     this.ships.splice(index, 1)
+
     ship.tutorial?.cleanUp()
+    // c.log(
+    //   this.humanShips.length,
+    //   (
+    //     await (
+    //       await db.ship.getAllConstructible()
+    //     ).filter((s) => s.ai === false)
+    //   ).map((s) => s.id),
+    // )
   }
 
   async addBasicPlanet(

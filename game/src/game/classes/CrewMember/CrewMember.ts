@@ -166,7 +166,7 @@ export class CrewMember extends Stubbable {
     // ----- stamina check/use -----
     if (this.tired) return
 
-    if (!this.ship.tutorial?.currentStep.disableStamina)
+    if (!this.ship.tutorial?.currentStep?.disableStamina)
       this.stamina -=
         c.baseStaminaUse / (c.deltaTime / c.tickInterval)
     if (this.tired) {

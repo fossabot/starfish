@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tutorial = void 0;
 const dist_1 = __importDefault(require("../../../../../../common/dist"));
 const io_1 = __importDefault(require("../../../../server/io"));
+const db_1 = require("../../../../db");
 class Tutorial {
     constructor(data, ship) {
         this.step = 0;
@@ -17,19 +18,24 @@ class Tutorial {
         this.baseLocation = [
             ...(this.ship.faction.homeworld?.location || [0, 0]),
         ];
-        if (this.step === -1)
-            this.advanceStep();
-        this.currentStep = this.steps[this.step];
+        this.currentStep = this.steps[0];
+        if (this.step === -1) {
+            // * timeout to give a chance to initialize the crew member in the ship
+            setTimeout(() => {
+                this.advanceStep();
+            }, 100);
+            this.currentStep = this.steps[this.step];
+        }
     }
-    static putCrewMemberInTutorial(crewMember) {
+    static async putCrewMemberInTutorial(crewMember) {
         dist_1.default.log(`Spawning tutorial ship for crew member ${crewMember.id}`);
-        const tutorialShip = crewMember.ship.game.addHumanShip({
+        const tutorialShip = await crewMember.ship.game.addHumanShip({
             name: crewMember.ship.name,
             tutorial: { step: -1 },
             id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
             species: { id: crewMember.ship.species.id },
-        }, true);
-        tutorialShip.addCrewMember({
+        });
+        await tutorialShip.addCrewMember({
             name: crewMember.name,
             id: crewMember.id,
             mainShipId: crewMember.ship.id,
@@ -37,6 +43,7 @@ class Tutorial {
         crewMember.tutorialShipId = tutorialShip.id;
         crewMember.toUpdate.tutorialShipId =
             crewMember.tutorialShipId;
+        await db_1.db.ship.addOrUpdateInDb(crewMember.ship);
         return tutorialShip;
     }
     initializeSteps() {
@@ -650,6 +657,8 @@ class Tutorial {
         ];
     }
     tick() {
+        if (!this.currentStep)
+            return;
         // ----- advance step if all requirements have been met -----
         if (this.currentStep.nextStepTrigger.awaitFrontend)
             return;
@@ -800,9 +809,12 @@ class Tutorial {
         // // if (!m.channel) this.ship.logEntry(m.message)
         for (let m of this.currentStep.script)
             if (m.channel) {
-                const mainShipId = this.ship.crewMembers[0]?.mainShipId;
-                if (mainShipId)
-                    io_1.default.emit(`ship:message`, mainShipId, m.message, m.channel);
+                const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
+                // only send messages to the discord server if it's the ship's very first tutorial
+                if (mainShip && mainShip.getStat(`tutorials`) === 0)
+                    io_1.default.emit(`ship:message`, mainShip.id, m.message, m.channel);
+                else
+                    dist_1.default.log(`couldn't find main ship id`, this.ship.crewMembers);
             }
         // }, c.tickInterval)
         this.ship.toUpdate.tutorial = {
@@ -812,13 +824,14 @@ class Tutorial {
     }
     done(skip = false) {
         dist_1.default.log(`Tutorial ${skip ? `skipped` : `complete`} for ${this.ship.name}`);
-        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0].mainShipId);
+        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
         if (!mainShip) {
             this.cleanUp();
             return;
         }
         io_1.default.to(`ship:${this.ship.id}`).emit(`ship:forwardTo`, mainShip.id);
-        if (mainShip.crewMembers.length < 2) {
+        mainShip.addStat(`tutorials`, 1);
+        if (mainShip.getStat(`tutorials`) === 1) {
             setTimeout(() => {
                 mainShip.logEntry([
                     `Good luck out there! If you have questions about the game, check out the`,
@@ -894,12 +907,12 @@ class Tutorial {
             .forEach((s) => {
             this.ship.game.removeShip(s);
         });
-        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0].mainShipId);
+        const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
         if (!mainShip) {
             dist_1.default.log(`red`, `Failed to find main ship for crew member exiting tutorial!`);
         }
         else {
-            const mainCrewMember = mainShip.crewMembers.find((cm) => cm.id === this.ship.crewMembers[0].id);
+            const mainCrewMember = mainShip.crewMembers.find((cm) => cm.id === this.ship.crewMembers[0]?.id);
             if (!mainCrewMember) {
                 dist_1.default.log(`red`, `Failed to find main crew member exiting tutorial!`);
             }
@@ -908,6 +921,7 @@ class Tutorial {
                 mainCrewMember.toUpdate.tutorialShipId = undefined;
             }
         }
+        this.ship.tutorial = undefined;
         if (this.ship.game.ships.includes(this.ship))
             await this.ship.game.removeShip(this.ship);
     }

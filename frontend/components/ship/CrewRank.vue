@@ -9,7 +9,7 @@
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
 
-    <Tabs>
+    <Tabs :dropdown="true">
       <Tab
         v-for="skill in crewMember.skills"
         :key="'skillrank' + skill.skill"
@@ -25,7 +25,7 @@
             {{ cm.name }}
             <span class="sub">
               Lv.{{ cm.skill.level }} ({{
-                Math.round(cm.skill.xp)
+                c.numberWithCommas(Math.round(cm.skill.xp))
               }}xp)
             </span>
           </li>
@@ -43,7 +43,25 @@
           >
             {{ cm.name }}
             <span class="sub">
-              ({{ Math.round(cm.totalContributed) }})
+              ({{
+                c.numberWithCommas(
+                  Math.round(cm.totalContributed),
+                )
+              }})
+            </span>
+          </li>
+        </ol>
+      </Tab>
+
+      <Tab title="Naps" v-if="timeInBunk.length">
+        <ol>
+          <li
+            v-for="(cm, index) in timeInBunk"
+            :key="'timeInBunk' + cm.id"
+          >
+            {{ cm.name }}
+            <span class="sub">
+              ({{ c.msToTimeString(cm.amount * 1000) }})
             </span>
           </li>
         </ol>
@@ -109,6 +127,18 @@ export default Vue.extend({
           (a: any, b: any) =>
             b.totalContributed - a.totalContributed,
         )
+        .slice(0, 3)
+    },
+    timeInBunk() {
+      return [...this.ship.crewMembers]
+        .map((c: CrewMemberStub) => ({
+          ...c,
+          amount: c.stats?.find(
+            (s: CrewStatEntry) => s.stat === 'timeInBunk',
+          )?.amount,
+        }))
+        .filter((c: CrewMemberStub) => c.amount)
+        .sort((a: any, b: any) => b.amount - a.amount)
         .slice(0, 3)
     },
   },

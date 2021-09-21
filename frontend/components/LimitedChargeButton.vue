@@ -6,9 +6,10 @@
       background: `linear-gradient(to right, ${startColor}, ${endColor}`,
     }"
     @mousedown="!disabled && start()"
-    @mouseup="end()"
-    @mouseleave="cancel()"
-    @mouseenter="cancel()"
+    @mouseup="end"
+    @mouseleave="cancel"
+    @mouseenter="cancel"
+    @mousemove="updateMousePosition"
   >
     <div
       class="hider"
@@ -47,7 +48,7 @@ export default Vue.extend({
     maxFillColor: { default: 'rgba(255,230,150,.3)' },
     startColor: { default: '#aa0' },
     endColor: { default: '#f50' },
-    chargeTime: { default: 5000 },
+    chargeTime: { default: 2000 },
     animate: { default: 0 },
   },
   data() {
@@ -55,6 +56,7 @@ export default Vue.extend({
       holdInterval: false,
       percent: 0,
       startTime: null,
+      mousePercent: 0,
     }
   },
   computed: {
@@ -74,16 +76,20 @@ export default Vue.extend({
     tick() {
       this.percent = Math.min(
         this.max,
+        this.mousePercent,
         (Date.now() - this.startTime) / this.chargeTime,
       )
-      this.$emit('percent', this.percent / this.max)
       if (this.percent > this.max) this.percent = this.max
+      this.$emit('percent', this.percent / this.max)
     },
     end() {
       clearInterval(this.holdInterval)
       if (!this.percent) return
       this.$emit('end', this.percent / this.max)
       this.percent = 0
+    },
+    updateMousePosition(e) {
+      this.mousePercent = e.offsetX / this.$el.offsetWidth
     },
   },
 })
@@ -108,6 +114,7 @@ export default Vue.extend({
   }
 
   .hider {
+    pointer-events: none;
     position: absolute;
     overflow: hidden;
     right: 0;
@@ -117,6 +124,7 @@ export default Vue.extend({
   }
 
   .base {
+    pointer-events: none;
     position: absolute;
     height: 100%;
     left: 0;
@@ -127,6 +135,7 @@ export default Vue.extend({
     // border-radius: 5px;
   }
   .content {
+    pointer-events: none;
     position: relative;
     z-index: 3;
     height: 100%;

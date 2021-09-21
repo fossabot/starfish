@@ -23,9 +23,6 @@
           >Share a Story</nuxt-link
         >
         <nuxt-link to="/supportus">Support Us</nuxt-link>
-        <div class="button secondary" @click="toTutorial">
-          Redo Tutorial
-        </div>
 
         <select
           v-if="shipsBasics && shipsBasics.length > 1"
@@ -43,7 +40,14 @@
         </select>
 
         <button
-          class="secondary"
+          class="secondary flexcenter"
+          @click="toTutorial"
+        >
+          Redo Tutorial
+        </button>
+
+        <button
+          class="secondary flexcenter"
           v-show="userId"
           @click="logout"
         >

@@ -3,7 +3,7 @@
     <template #title>
       <span class="sectionemoji">👋</span>Welcome
     </template>
-    <div class="panesection">
+    <div class="panesection" v-if="connected">
       <div class="marbot">
         You're almost done!
         <br />
@@ -33,7 +33,28 @@
         any ships associated with your id. If you're sure
         that your server has a ship in the game, try logging
         out and back in. If that doesn't fix it, please
-        reach out on the support server.
+        reach out on the
+        <a :href="c.supportServerLink" target="_blank"
+          >support server</a
+        >.
+      </div>
+    </div>
+    <div class="panesection" v-else>
+      <div class="marbot">
+        Whoops! It looks like the game server isn't
+        reachable.
+        <br />
+        <br />
+        There could be a few reasons for this. While the
+        game is in development, it's likely that it has
+        crashed. Bear with us while we get it fixed!
+        <br />
+        <br />
+        In the meantime, check the
+        <a :href="c.supportServerLink" target="_blank"
+          >support server</a
+        >
+        for updates!
       </div>
     </div>
   </Box>
@@ -49,7 +70,12 @@ export default Vue.extend({
     return { c, selectedShip: null }
   },
   computed: {
-    ...mapState(['ship', 'crewMember', 'lastUpdated']),
+    ...mapState([
+      'ship',
+      'crewMember',
+      'lastUpdated',
+      'connected',
+    ]),
     show() {
       return !this.ship
     },
