@@ -9,6 +9,12 @@ rule_files:
   # - "first_rules.yml"
   # - "second_rules.yml"
 
+remote_write:
+  - url: https://prometheus-prod-10-prod-us-central-0.grafana.net/api/prom/push
+    basic_auth:
+      username: 209121
+      password: eyJrIjoiZGJiYWUzMDk2OTVlNWNlMmZlMTk5NmU4MGVjNzEwZjU2MWM4YWZhMCIsIm4iOiJBUEkgS2V5IC0gUHJvbWV0aGV1cyIsImlkIjo1NDQxNjd9
+
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
@@ -19,7 +25,7 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ["www.starfish.cool:9090"]
+      - targets: ["localhost:9090"]
 
   - job_name:
       "starfish-docker"
@@ -27,4 +33,4 @@ scrape_configs:
       # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ["www.starfish.cool:9323"]
+      - targets: ["localhost:9323"]
