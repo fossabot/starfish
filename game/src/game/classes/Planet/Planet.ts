@@ -3,6 +3,7 @@ import c from '../../../../../common/dist'
 import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
 import type { Faction } from '../Faction'
+import type { HumanShip } from '../Ship/HumanShip'
 
 export class Planet extends Stubbable {
   static readonly massAdjuster = 0.5
@@ -125,6 +126,53 @@ export class Planet extends Stubbable {
         c.levels[this.level - 1] +
         Math.floor(Math.random() * 100)
     }
+  }
+
+  broadcastTo(ship: HumanShip): number | undefined {
+    // baseline chance to say nothing
+    if (Math.random() > c.lerp(0.9, 0.6, this.level / 100))
+      return
+
+    const maxBroadcastRadius = this.level * 0.1
+    const distance = c.distance(
+      this.location,
+      ship.location,
+    )
+
+    // don't message ships that are too far
+    if (distance > maxBroadcastRadius) return
+    // don't message ships that are here already
+    if (distance < c.arrivalThreshold) return
+    // don't message ships that are currently at a planet
+    if (ship.planet) return
+
+    const distanceAsPercentOfMaxBroadcastRadius =
+      distance / maxBroadcastRadius
+
+    return distanceAsPercentOfMaxBroadcastRadius
+  }
+
+  respondTo(
+    message: string,
+    ship: HumanShip,
+  ): number | undefined {
+    const maxBroadcastRadius = this.level * 0.1
+    const distance = c.distance(
+      this.location,
+      ship.location,
+    )
+
+    // don't message ships that are too far
+    if (distance > maxBroadcastRadius) return
+    // don't message ships that are here already
+    if (distance < c.arrivalThreshold) return
+    // don't message ships that are currently at a planet
+    if (ship.planet) return
+
+    const distanceAsPercentOfMaxBroadcastRadius =
+      distance / maxBroadcastRadius
+
+    return distanceAsPercentOfMaxBroadcastRadius
   }
 
   updateFrontendForShipsAt() {
