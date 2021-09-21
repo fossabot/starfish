@@ -127,8 +127,9 @@ class Ship extends Stubbable_1.Stubbable {
             if (!this.previousLocations.length)
                 return;
             this.previousLocations.shift();
-            // c.log(`removing previous location`)
-        }, (dist_1.default.tickInterval * 10000) / dist_1.default.gameSpeedMultiplier);
+            if (this.human)
+                dist_1.default.log(`removing previous location from`, this.name);
+        }, (dist_1.default.tickInterval * 1000000) / dist_1.default.gameSpeedMultiplier);
     }
     tick() {
         this._stub = null; // invalidate stub
@@ -243,8 +244,10 @@ class Ship extends Stubbable_1.Stubbable {
                 return false;
             item = new Armor_1.Armor(foundItem, this, armorData);
         }
-        if (!item)
+        if (!item) {
+            dist_1.default.log(`Failed to find item for`, itemData);
             return false;
+        }
         this.items.push(item);
         if (item.passives)
             item.passives.forEach((p) => this.applyPassive({
@@ -279,6 +282,7 @@ class Ship extends Stubbable_1.Stubbable {
         return true;
     }
     equipLoadout(id) {
+        dist_1.default.log(`equipping loadout to`, this.name);
         const loadout = loadouts_1.default[id];
         if (!loadout)
             return false;
@@ -303,9 +307,10 @@ class Ship extends Stubbable_1.Stubbable {
     updateSightAndScanRadius() {
         if (this.tutorial) {
             this.radii.sight =
-                this.tutorial.currentStep.sightRange;
+                this.tutorial.currentStep?.sightRange ||
+                    dist_1.default.baseSightRange;
             this.radii.scan =
-                this.tutorial.currentStep.scanRange || 0;
+                this.tutorial.currentStep?.scanRange || 0;
             this.toUpdate.radii = this.radii;
             return;
         }
@@ -359,6 +364,9 @@ class Ship extends Stubbable_1.Stubbable {
             (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
                 dist_1.default.angleFromAToB(previousLocation, currentLocation)) > 5 &&
                 dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.000005)) {
+            if (this.human)
+                dist_1.default.log(`adding previous location to`, this.name, this.previousLocations.length, Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
+                    dist_1.default.angleFromAToB(previousLocation, currentLocation)), dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]));
             this.previousLocations.push([...currentLocation]);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)
@@ -430,14 +438,6 @@ class Ship extends Stubbable_1.Stubbable {
             this.hp = this._maxHp;
     }
     get hp() {
-        // if (this.human)
-        //   c.log(
-        //     `hp total`,
-        //     this.items.map(
-        //       (i) => Math.max(0, i.maxHp * i.repair),
-        //       0,
-        //     ),
-        //   )
         const total = this.items.reduce((total, i) => Math.max(0, i.maxHp * i.repair) + total, 0);
         this._hp = total;
         const wasDead = this.dead;

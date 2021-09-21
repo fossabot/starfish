@@ -106,7 +106,7 @@ async function addOrUpdateInDb(data) {
 }
 exports.addOrUpdateInDb = addOrUpdateInDb;
 async function removeFromDb(id) {
-    const res = await DBShip.deleteOne({ id });
+    const res = await DBShip.deleteMany({ id });
     // c.log(`Deleted ship`, id, res)
 }
 exports.removeFromDb = removeFromDb;

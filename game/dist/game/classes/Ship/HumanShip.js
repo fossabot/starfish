@@ -114,6 +114,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         const previousVisible = { ...this.visible };
         this.updateVisible();
         this.generateVisiblePayload(previousVisible);
+        this.takeActionOnVisibleChange(previousVisible, this.visible);
         this.scanners.forEach((s) => s.use());
         profiler.step(`crew tick & stubify`);
         this.crewMembers.forEach((cm) => cm.tick());
@@ -216,7 +217,11 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (levelsToAlert.includes(level))
             io_1.default.emit(`ship:message`, this.id, Array.isArray(content)
                 ? content
-                    .map((ce) => ce.text || ce)
+                    .map((ce) => (ce.text ||
+                    ce) +
+                    (ce.url
+                        ? ` (${dist_1.default.frontendUrl.replace(/\/s[^/]*\/?$/, ``)}${ce.url})`
+                        : ``))
                     .join(` `)
                     .replace(/\s*&nospace/g, ``)
                 : content);
@@ -224,15 +229,16 @@ class HumanShip extends CombatShip_1.CombatShip {
     discoverPlanet(p) {
         this.seenPlanets.push(p);
         this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.toVisibleStub());
-        this.logEntry([
-            `Discovered the planet`,
-            {
-                text: p.name,
-                color: p.color,
-                tooltipData: p.toLogStub(),
-            },
-            `&nospace!`,
-        ], `high`);
+        if (!this.onlyCrewMemberIsInTutorial)
+            this.logEntry([
+                `Discovered the planet`,
+                {
+                    text: p.name,
+                    color: p.color,
+                    tooltipData: p.toLogStub(),
+                },
+                `&nospace!`,
+            ], `high`);
         this.addStat(`seenPlanets`, 1);
         if (this.seenPlanets.length >= 5)
             this.addTagline(`Small Pond Paddler`, `discovering 5 planets`);
@@ -248,15 +254,16 @@ class HumanShip extends CombatShip_1.CombatShip {
     discoverLandmark(l) {
         this.seenLandmarks.push(l);
         this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) => z.toVisibleStub());
-        this.logEntry([
-            `Discovered`,
-            {
-                text: l.name,
-                color: l.color,
-                tooltipData: l.toLogStub(),
-            },
-            `&nospace!`,
-        ], `high`);
+        if (!this.onlyCrewMemberIsInTutorial)
+            this.logEntry([
+                `Discovered`,
+                {
+                    text: l.name,
+                    color: l.color,
+                    tooltipData: l.toLogStub(),
+                },
+                `&nospace!`,
+            ], `high`);
         this.addStat(`seenLandmarks`, 1);
     }
     applyThrust(targetLocation, charge, // 0 to 1 % of AVAILABLE charge to use
@@ -555,8 +562,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         charge *= thruster.cockpitCharge;
         if (!HumanShip.movementIsFree)
             thruster.cockpitCharge -= charge;
-        const brakeToThrustRatio = 5;
-        charge *= brakeToThrustRatio; // braking is easier than thrusting
+        charge *= dist_1.default.brakeToThrustRatio; // braking is easier than thrusting
         // apply passive
         let passiveBrakeMultiplier = 1 + this.getPassiveIntensity(`boostBrake`);
         charge *= passiveBrakeMultiplier;
@@ -634,7 +640,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (speed > this.getStat(`highestSpeed`))
             this.setStat(`highestSpeed`, speed);
         // ----- end if in tutorial -----
-        if (this.tutorial) {
+        if (this.tutorial && this.tutorial.currentStep) {
             // reset position if outside max distance from spawn
             if (this.tutorial.currentStep.maxDistanceFromSpawn &&
                 dist_1.default.distance(this.tutorial.baseLocation, this.location) > this.tutorial.currentStep.maxDistanceFromSpawn) {
@@ -725,7 +731,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.toUpdate.speed = this.speed;
     }
     updateVisible() {
-        const targetTypes = this.tutorial?.currentStep.visibleTypes;
+        const targetTypes = this.tutorial?.currentStep?.visibleTypes;
         const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, true, Boolean(this.tutorial));
         const shipsWithValidScannedProps = visible.ships.map((s) => this.shipToValidScanResult(s));
         this.visible = {
@@ -752,6 +758,15 @@ class HumanShip extends CombatShip_1.CombatShip {
             caches: this.visible.caches.map((c) => this.cacheToValidScanResult(c)),
             zones: this.visible.zones.map((z) => z.stubify()),
         };
+    }
+    takeActionOnVisibleChange(previousVisible, currentVisible) {
+        if (!this.planet) {
+            const newlyVisiblePlanets = currentVisible.planets.filter((p) => !previousVisible.planets.includes(p));
+            newlyVisiblePlanets.forEach((p) => {
+                dist_1.default.log(`newly visible planet`, p.name);
+                p.broadcastTo(this);
+            });
+        }
     }
     async updatePlanet(silent) {
         const previousPlanet = this.planet;
@@ -920,7 +935,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.shownPanels = undefined;
         else
             this.shownPanels =
-                this.tutorial.currentStep.shownPanels;
+                this.tutorial.currentStep?.shownPanels;
         this.toUpdate.shownPanels = this.shownPanels || false;
     }
     equipLoadout(l, removeExisting = false) {
@@ -953,6 +968,8 @@ class HumanShip extends CombatShip_1.CombatShip {
             for (let otherShip of this.game.ships) {
                 if (otherShip === this)
                     continue;
+                if (otherShip.tutorial)
+                    continue;
                 const distance = dist_1.default.distance(this.location, otherShip.location);
                 if (distance > range)
                     continue;
@@ -972,6 +989,16 @@ class HumanShip extends CombatShip_1.CombatShip {
                     actualShipObject.receiveBroadcast(toSend, this, garbleAmount, willSendShips);
             }
         }
+        if (!this.planet) {
+            this.visible.planets
+                .filter((p) => dist_1.default.distance(this.location, p.location) < range)
+                .forEach((p) => {
+                if (message
+                    .toLowerCase()
+                    .indexOf(p.name.toLowerCase()) > -1)
+                    p.respondTo(message, this);
+            });
+        }
         this.communicators.forEach((comm) => {
             if (comm.hp > 0) {
                 comm.use();
@@ -982,7 +1009,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     receiveBroadcast(message, from, garbleAmount, recipients) {
         const distance = dist_1.default.distance(this.location, from.location);
-        const prefix = `**${from.species.icon}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
+        const prefix = `**${`species` in from ? from.species.icon : `🪐`}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
         io_1.default.emit(`ship:message`, this.id, `${prefix}\`${message}\``, `broadcast`);
         this.communicators.forEach((comm) => comm.use());
         this.updateBroadcastRadius();
@@ -1033,6 +1060,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         return item;
     }
     removeItem(item) {
+        dist_1.default.log(`removing item from`, this.name, item.displayName);
         if (item.rooms) {
             item.rooms.forEach((room) => {
                 if (!this.items.find((otherItem) => otherItem !== item &&
@@ -1072,6 +1100,12 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!setupAdd)
             db_1.db.ship.addOrUpdateInDb(this);
         return cm;
+    }
+    get onlyCrewMemberIsInTutorial() {
+        // (or, ALL crew members are in tutorials)
+        return ((this.crewMembers.length === 1 &&
+            this.crewMembers[0].tutorialShipId) ||
+            this.crewMembers.every((cm) => cm.tutorialShipId));
     }
     removeCrewMember(id) {
         const index = this.crewMembers.findIndex((cm) => cm.id === id);

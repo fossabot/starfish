@@ -42,7 +42,7 @@ async function wipe() {
 }
 exports.wipe = wipe;
 async function removeFromDb(id) {
-    const res = await DBZone.deleteOne({ id });
+    const res = await DBZone.deleteMany({ id });
 }
 exports.removeFromDb = removeFromDb;
 async function getAllConstructible() {

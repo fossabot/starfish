@@ -48,7 +48,7 @@ async function wipe() {
 }
 exports.wipe = wipe;
 async function removeFromDb(id) {
-    const res = await DBAttackRemnant.deleteOne({ id });
+    const res = await DBAttackRemnant.deleteMany({ id });
 }
 exports.removeFromDb = removeFromDb;
 async function getAllConstructible() {

@@ -17,9 +17,13 @@ class Tutorial {
         this.baseLocation = [
             ...(this.ship.faction.homeworld?.location || [0, 0]),
         ];
-        if (this.step === -1)
-            this.advanceStep();
-        this.currentStep = this.steps[this.step];
+        if (this.step === -1) {
+            // * timeout to give a chance to initialize the crew member in the ship
+            setTimeout(() => {
+                this.advanceStep();
+            }, 100);
+            this.currentStep = this.steps[this.step];
+        }
     }
     static putCrewMemberInTutorial(crewMember) {
         dist_1.default.log(`Spawning tutorial ship for crew member ${crewMember.id}`);
@@ -650,6 +654,8 @@ class Tutorial {
         ];
     }
     tick() {
+        if (!this.currentStep)
+            return;
         // ----- advance step if all requirements have been met -----
         if (this.currentStep.nextStepTrigger.awaitFrontend)
             return;
@@ -800,9 +806,11 @@ class Tutorial {
         // // if (!m.channel) this.ship.logEntry(m.message)
         for (let m of this.currentStep.script)
             if (m.channel) {
-                const mainShipId = this.ship.crewMembers[0]?.mainShipId;
-                if (mainShipId)
-                    io_1.default.emit(`ship:message`, mainShipId, m.message, m.channel);
+                const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
+                if (mainShip && mainShip.onlyCrewMemberIsInTutorial)
+                    io_1.default.emit(`ship:message`, mainShip.id, m.message, m.channel);
+                else
+                    dist_1.default.log(`couldn't find main ship id`, this.ship.crewMembers);
             }
         // }, c.tickInterval)
         this.ship.toUpdate.tutorial = {
@@ -908,6 +916,7 @@ class Tutorial {
                 mainCrewMember.toUpdate.tutorialShipId = undefined;
             }
         }
+        this.ship.tutorial = undefined;
         if (this.ship.game.ships.includes(this.ship))
             await this.ship.game.removeShip(this.ship);
     }

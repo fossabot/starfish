@@ -47,7 +47,7 @@ class Item extends Stubbable_1.Stubbable {
     use(usePercent = 1) {
         if (this.ship.ai)
             return 0;
-        if (this.ship.tutorial?.currentStep.disableRepair)
+        if (this.ship.tutorial?.currentStep?.disableRepair)
             return 0;
         const durabilityLost = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * usePercent;
         this.repair -= durabilityLost;

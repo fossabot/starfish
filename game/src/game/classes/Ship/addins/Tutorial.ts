@@ -54,7 +54,7 @@ export class Tutorial {
   step: number = 0
   steps: TutorialStepData[] = []
   baseLocation: CoordinatePair = [0, 0]
-  currentStep: TutorialStepData
+  currentStep?: TutorialStepData
   ship: HumanShip
   targetLocation?: TargetLocation
 
@@ -707,11 +707,18 @@ export class Tutorial {
     this.baseLocation = [
       ...(this.ship.faction.homeworld?.location || [0, 0]),
     ]
-    if (this.step === -1) this.advanceStep()
-    this.currentStep = this.steps[this.step]
+    if (this.step === -1) {
+      // * timeout to give a chance to initialize the crew member in the ship
+      setTimeout(() => {
+        this.advanceStep()
+      }, 100)
+      this.currentStep = this.steps[this.step]
+    }
   }
 
   tick() {
+    if (!this.currentStep) return
+
     // ----- advance step if all requirements have been met -----
     if (this.currentStep.nextStepTrigger.awaitFrontend)
       return
@@ -733,7 +740,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.stamina >
-              this.currentStep.nextStepTrigger
+              this.currentStep!.nextStepTrigger
                 .gainStaminaTo!,
           ),
         )
@@ -744,7 +751,7 @@ export class Tutorial {
         !this.ship.game.aiShips.find(
           (s) =>
             s.id ===
-            this.currentStep.nextStepTrigger.destroyShipId,
+            this.currentStep!.nextStepTrigger.destroyShipId,
         )
 
     if (this.currentStep.nextStepTrigger.crewLocation)
@@ -754,7 +761,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.location ===
-              this.currentStep.nextStepTrigger
+              this.currentStep!.nextStepTrigger
                 .crewLocation!,
           ),
         )
@@ -766,7 +773,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.credits <=
-              this.currentStep.nextStepTrigger
+              this.currentStep!.nextStepTrigger
                 .useCrewCreditsTo!,
           ),
         )
@@ -854,14 +861,14 @@ export class Tutorial {
     // crew location
     if (this.currentStep.forceCrewLocation)
       this.ship.crewMembers.forEach((cm) => {
-        cm.location = this.currentStep.forceCrewLocation!
+        cm.location = this.currentStep!.forceCrewLocation!
         cm.toUpdate.location = cm.location
       })
 
     // crew stamina
     if (this.currentStep.forceStamina !== undefined)
       this.ship.crewMembers.forEach((cm) => {
-        cm.stamina = this.currentStep.forceStamina!
+        cm.stamina = this.currentStep!.forceStamina!
         cm.toUpdate.stamina = cm.stamina
       })
 
@@ -869,7 +876,7 @@ export class Tutorial {
     if (this.currentStep.forceCockpitCharge !== undefined)
       this.ship.crewMembers.forEach((cm) => {
         cm.cockpitCharge =
-          this.currentStep.forceCockpitCharge!
+          this.currentStep!.forceCockpitCharge!
         cm.toUpdate.cockpitCharge = cm.cockpitCharge
       })
 
@@ -912,14 +919,21 @@ export class Tutorial {
     // // if (!m.channel) this.ship.logEntry(m.message)
     for (let m of this.currentStep.script)
       if (m.channel) {
-        const mainShipId =
-          this.ship.crewMembers[0]?.mainShipId
-        if (mainShipId)
+        const mainShip = this.ship.game.humanShips.find(
+          (s) =>
+            s.id === this.ship.crewMembers[0]?.mainShipId,
+        )
+        if (mainShip && mainShip.onlyCrewMemberIsInTutorial)
           io.emit(
             `ship:message`,
-            mainShipId,
+            mainShip.id,
             m.message,
             m.channel,
+          )
+        else
+          c.log(
+            `couldn't find main ship id`,
+            this.ship.crewMembers,
           )
       }
     // }, c.tickInterval)
@@ -1075,6 +1089,8 @@ export class Tutorial {
         mainCrewMember.toUpdate.tutorialShipId = undefined
       }
     }
+
+    this.ship.tutorial = undefined
 
     if (this.ship.game.ships.includes(this.ship))
       await this.ship.game.removeShip(this.ship)

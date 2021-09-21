@@ -369,22 +369,30 @@ class Game {
     }
     async removeShip(ship) {
         // remove all tutorial ships for members of this ship
-        ship.crewMembers.forEach((cm) => {
+        for (let cm of ship.crewMembers) {
             if (cm.tutorialShipId) {
                 const tutorialShip = this.ships.find((s) => s.id === cm.tutorialShipId);
                 if (tutorialShip) {
-                    dist_1.default.log(`Removing excess tutorial ship`);
-                    tutorialShip.tutorial?.cleanUp();
+                    // c.log(`Removing excess tutorial ship`)
+                    await tutorialShip.tutorial?.cleanUp();
                 }
             }
-        });
-        dist_1.default.log(`Removing ship ${ship.name} from the game.`);
+        }
+        dist_1.default.log(`Removing ship ${ship.name} (${ship.id}) from the game.`);
         await db_1.db.ship.removeFromDb(ship.id);
         const index = this.ships.findIndex((ec) => ship.id === ec.id);
         if (index === -1)
             return;
         this.ships.splice(index, 1);
         ship.tutorial?.cleanUp();
+        // c.log(
+        //   this.humanShips.length,
+        //   (
+        //     await (
+        //       await db.ship.getAllConstructible()
+        //     ).filter((s) => s.ai === false)
+        //   ).map((s) => s.id),
+        // )
     }
     async addBasicPlanet(data, save = true) {
         const existing = this.planets.find((p) => p.name === data.name);

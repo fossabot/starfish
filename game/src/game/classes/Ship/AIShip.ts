@@ -347,10 +347,10 @@ export class AIShip extends CombatShip {
   ) {
     let oddsToIgnore = 0.9
     if (recipients.length === 1) oddsToIgnore *= 0.6
-    c.log(oddsToIgnore)
+    // c.log(oddsToIgnore)
     if (Math.random() < oddsToIgnore) return
 
-    c.log(`ai ship ${this.name} received broadcast`)
+    // c.log(`ai ship ${this.name} received broadcast`)
     await c.sleep(Math.round(Math.random() * 1000 * 60))
 
     const textOptions = [
@@ -376,6 +376,7 @@ export class AIShip extends CombatShip {
       `Talk all you want, it won't save you.`,
       `Would you pipe down over there?`,
       `Leave the singing to the birds`,
+      `Don't get salty.`,
     ]
     // if (this.getStat('kills') > 1)
     // textOptions.push()

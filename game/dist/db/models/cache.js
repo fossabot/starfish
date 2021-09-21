@@ -35,7 +35,7 @@ async function wipe() {
 }
 exports.wipe = wipe;
 async function removeFromDb(id) {
-    const res = await DBCache.deleteOne({ id });
+    const res = await DBCache.deleteMany({ id });
 }
 exports.removeFromDb = removeFromDb;
 async function getAllConstructible() {
