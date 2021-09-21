@@ -164,6 +164,7 @@ declare const _default: {
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
+    brakeToThrustRatio: number;
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number) => number;

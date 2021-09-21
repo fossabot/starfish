@@ -60,6 +60,7 @@ declare const _default: {
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
     getMineAmountPerTickForSingleCrewMember: typeof getMineAmountPerTickForSingleCrewMember;
+    brakeToThrustRatio: number;
     getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
     getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;

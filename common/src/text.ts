@@ -145,6 +145,17 @@ function camelCaseToWords(
 
 function msToTimeString(ms: number = 0): string {
   let remainingSeconds = Math.floor(ms / 1000)
+
+  let years: any = Math.floor(
+    remainingSeconds / (60 * 60 * 24 * 365),
+  )
+  remainingSeconds -= years * 60 * 60 * 24 * 365
+
+  let days: any = Math.floor(
+    remainingSeconds / (60 * 60 * 24),
+  )
+  remainingSeconds -= days * 60 * 60 * 24
+
   let hours: any = Math.floor(remainingSeconds / (60 * 60))
   remainingSeconds -= hours * 60 * 60
 
@@ -155,9 +166,13 @@ function msToTimeString(ms: number = 0): string {
   let seconds: any = remainingSeconds
   if (seconds < 10) seconds = `0${seconds}`
 
-  if (!hours) return `${minutes}m ${seconds}s`
-  if (!minutes || minutes === `00`) return `${seconds}s`
-  return `${hours}h ${minutes}m ${seconds}s`
+  if (!years && !days && !hours && !minutes)
+    return `${seconds}s`
+  if (!years && !days && !hours)
+    return `${minutes}m ${seconds}s`
+  if (!years && !days) return `${hours}h ${minutes}m`
+  if (!years) return `${days}d ${hours}h`
+  return `${years}y ${days}d`
 }
 
 const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`
