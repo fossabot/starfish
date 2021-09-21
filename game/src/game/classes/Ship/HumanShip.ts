@@ -761,7 +761,7 @@ export class HumanShip extends CombatShip {
             {
               text: foundShip.name,
               color: foundShip.faction?.color,
-              tooltipData: foundShip.toLogStub(),
+              tooltipData: foundShip.toLogStub() as any,
             },
           ]
       }
@@ -1212,7 +1212,7 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub(),
+              tooltipData: this.toLogStub() as any,
             },
             `landed on`,
             {
@@ -1240,7 +1240,7 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub(),
+              tooltipData: this.toLogStub() as any,
             },
             `landed on`,
             {

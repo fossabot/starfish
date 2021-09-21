@@ -1,7 +1,7 @@
-version: '3.7'
+version: "3.7"
 services:
   mongodb:
-    image: 'mongo:4.0'
+    image: "mongo:4.0"
     restart: always
     volumes:
       - db_data:/data/db
@@ -16,8 +16,8 @@ services:
     #   driver: none
 
   game:
-    image: 'xmadsen/starfish-game:latest'
-    user: 'node'
+    image: "xmadsen/starfish-game:latest"
+    user: "node"
     working_dir: /usr/app/game
     ports:
       - 4200:4200
@@ -26,7 +26,7 @@ services:
       - ./game/dist:/usr/app/game/dist
       - ./game/src:/usr/app/game/src
       - ./ssl:/usr/app/game/ssl
-    command: 'npm run dev'
+    command: "npm run dev"
     depends_on:
       - mongodb
     environment:
@@ -39,8 +39,8 @@ services:
       - admin_keys
 
   frontend:
-    image: 'xmadsen/starfish-frontend:latest'
-    user: 'node'
+    image: "xmadsen/starfish-frontend:latest"
+    user: "node"
     working_dir: /usr/app/frontend
     ports:
       - 4300:4300
@@ -48,20 +48,20 @@ services:
       - ./@types:/usr/app/@types
       - ./common:/usr/app/common
       - ./frontend:/usr/app/frontend/
-    command: 'npm run dev'
+    command: "npm run dev"
     secrets:
       - google_client_email
       - google_private_key
 
   discord:
-    image: 'xmadsen/starfish-discord:latest'
-    user: 'node'
+    image: "xmadsen/starfish-discord:latest"
+    user: "node"
     working_dir: /usr/app/discord
     volumes:
       - ./common:/usr/app/common
       - ./discord/dist:/usr/app/discord/dist
       - ./discord/.env:/usr/app/discord/.env
-    command: 'npm run dev'
+    command: "npm run dev"
     environment:
       BOT_ID: 886820342016925776
       BOT_ID_FILE: /run/secrets/bot_id
@@ -71,28 +71,28 @@ services:
       - bot_id
 
   nginx:
-    image: 'xmadsen/starfish-nginx:latest'
+    image: "xmadsen/starfish-nginx:latest"
     volumes:
       - ./ssl:/etc/nginx/self-signed-ssl
       - ./nginx/sites-enabled/default-test:/etc/nginx/sites-enabled/default
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
     logging:
       driver: none
 
   prometheus:
-    image: 'prom/prometheus:latest'
+    image: "prom/prometheus:latest"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - '9090:9090'
+      - "9090:9090"
 
   grafana:
-    image: 'grafana/grafana:latest'
+    image: "grafana/grafana:latest"
     # volumes:
     ports:
-      - '3000:3000'
+      - "3000:3000"
 
 secrets:
   discord_token:
