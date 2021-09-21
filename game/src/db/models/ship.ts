@@ -118,7 +118,7 @@ export async function addOrUpdateInDb(
 }
 
 export async function removeFromDb(id: string) {
-  const res = await DBShip.deleteOne({ id })
+  const res = await DBShip.deleteMany({ id })
   // c.log(`Deleted ship`, id, res)
 }
 

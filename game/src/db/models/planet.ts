@@ -125,7 +125,7 @@ export async function addOrUpdateInDb(
 }
 
 export async function removeFromDb(name: string) {
-  const res = await DBPlanet.deleteOne({ name })
+  const res = await DBPlanet.deleteMany({ name })
   c.log(`Deleted planet`, name, res)
 }
 

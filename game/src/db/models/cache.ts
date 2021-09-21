@@ -44,7 +44,7 @@ export async function wipe() {
 }
 
 export async function removeFromDb(id: string) {
-  const res = await DBCache.deleteOne({ id })
+  const res = await DBCache.deleteMany({ id })
 }
 
 export async function getAllConstructible(): Promise<
