@@ -33,6 +33,14 @@ export default function (
   })
 
   socket.on(`ship:listen`, (id, crewMemberId, callback) => {
+    if (!callback) {
+      if (typeof crewMemberId === `function`) {
+        ;(crewMemberId as any)({
+          error: `Please refresh the page.`,
+        })
+      }
+      return
+    }
     let foundShip = game.ships.find((s) => s.id === id)
 
     if (foundShip && crewMemberId) {
