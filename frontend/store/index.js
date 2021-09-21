@@ -191,7 +191,7 @@ export const actions = {
     })
 
     this.$socket.on(`ship:forwardTo`, (id) => {
-      c.log(`forwarding from last ship id to new id!`, id)
+      // c.log(`forwarding from last ship id to new id!`, id)
       commit(`set`, { ship: null })
       dispatch(`socketSetup`, id)
     })

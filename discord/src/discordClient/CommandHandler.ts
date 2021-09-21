@@ -1,9 +1,16 @@
 import c from '../../../common/dist'
-import { Message, TextChannel } from 'discord.js'
+import {
+  Message,
+  TextChannel,
+  MessageEmbed,
+} from 'discord.js'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
 import { reactor } from './reactions/reactor'
-import ioInterface from '../ioInterface'
+import {
+  default as ioInterface,
+  io as socketIoObject,
+} from '../ioInterface'
 
 import { StartCommand } from './commands/Start'
 import { InviteCommand } from './commands/Invite'
@@ -93,6 +100,19 @@ export class CommandHandler {
         `I don't recognize that command. Try ${this.prefix}help.`,
       )
       await reactor.failure(message)
+      return
+    }
+
+    // make sure we're connected to the io server
+    if (!socketIoObject.connected) {
+      await message.reply({
+        embeds: [
+          new MessageEmbed({
+            description: `It looks like the game server is down at the moment. Please check the [support server](${c.supportServerLink}) for more details.`,
+          }),
+        ],
+      })
+      await reactor.warning(message)
       return
     }
 

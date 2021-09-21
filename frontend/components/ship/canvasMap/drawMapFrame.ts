@@ -1016,19 +1016,6 @@ export default class Drawer {
     )
     if (secondsToGetThere > 100000000) return
 
-    let remainingTime = secondsToGetThere
-
-    let hours: any = Math.floor(remainingTime / (60 * 60))
-    remainingTime -= hours * 60 * 60
-
-    let minutes: any = Math.floor(remainingTime / 60)
-    remainingTime -= minutes * 60
-    if (minutes < 10 && hours > 0) minutes = `0${minutes}`
-
-    let seconds: any = remainingTime
-    if (seconds < 10) seconds = `0${seconds}`
-
-    if (!hours) return `${minutes}m`
-    return `${hours}h ${minutes}m` // ${seconds}s
+    return c.msToTimeString(secondsToGetThere * 1000)
   }
 }

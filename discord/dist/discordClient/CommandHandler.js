@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -8,7 +27,7 @@ const dist_1 = __importDefault(require("../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const CommandContext_1 = require("./models/CommandContext");
 const reactor_1 = require("./reactions/reactor");
-const ioInterface_1 = __importDefault(require("../ioInterface"));
+const ioInterface_1 = __importStar(require("../ioInterface"));
 const Start_1 = require("./commands/Start");
 const Invite_1 = require("./commands/Invite");
 const Link_1 = require("./commands/Link");
@@ -72,6 +91,18 @@ class CommandHandler {
         if (!matchedCommands.length) {
             await message.reply(`I don't recognize that command. Try ${this.prefix}help.`);
             await reactor_1.reactor.failure(message);
+            return;
+        }
+        // make sure we're connected to the io server
+        if (!ioInterface_1.io.connected) {
+            await message.reply({
+                embeds: [
+                    new discord_js_1.MessageEmbed({
+                        description: `It looks like the game server is down at the moment. Please check the [support server](${dist_1.default.supportServerLink}) for more details.`,
+                    }),
+                ],
+            });
+            await reactor_1.reactor.warning(message);
             return;
         }
         commandContext.matchedCommands = matchedCommands;
