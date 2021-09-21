@@ -25,6 +25,9 @@ jobs:
           - dockerfile: nginx/Dockerfile-prod
             image: 'starfish-nginx'
             folder: 'nginx'
+          - dockerfile: prometheus/Dockerfile-prod
+            image: 'starfish-prometheus'
+            folder: 'prometheus'
 
     steps:
       - name: Check Out Repo
