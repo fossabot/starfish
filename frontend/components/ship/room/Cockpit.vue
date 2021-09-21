@@ -30,16 +30,17 @@
           Thrust
           <span
             v-if="thrustChargeToUse"
-            class="chargecounter"
+            class="chargecounter nowrap"
           >
-            &nbsp;({{
+            &nbsp;(+{{
               c.r2(
-                thrustChargeToUse *
+                maxPossibleSpeedChange *
                   crewMember.cockpitCharge *
-                  memberThrust,
+                  thrustChargeToUse,
+                3,
               )
             }}
-            P)
+            AU/hr)
           </span>
         </LimitedChargeButton>
         <LimitedChargeButton
@@ -68,23 +69,27 @@
           Brake
           <span
             v-if="brakeChargeToUse"
-            class="chargecounter"
+            class="chargecounter nowrap"
           >
-            &nbsp;({{
+            &nbsp;(-{{
               c.r2(
-                brakeChargeToUse *
+                maxPossibleSpeedChange *
+                  c.brakeToThrustRatio *
                   crewMember.cockpitCharge *
-                  memberThrust,
+                  brakeChargeToUse,
+                3,
               )
             }}
-            P)
+            AU/hr)
           </span>
         </LimitedChargeButton>
       </div>
 
       <div
         v-tooltip="
-          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>piloting</b>.`
+          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>piloting</b>.
+          <br /><br />
+          Charge builds slowly even while in the bunk.`
         "
       >
         Charge:
@@ -120,29 +125,27 @@
       </div>
       <div
         v-tooltip="
-          `The maximum amount of thrust that you can generate currently. 
+          `The amount of speed that you can apply to the ship. 
           <p>
-            Equivalent to your charge percent multiplied by engine thrust, scaled by your current level in <b>piloting</b>.
+            Braking is <b>${c.brakeToThrustRatio}x</b> more effective than thrusting.
+          </p>
+          <hr />
+          <p>
+            Scales with your charge percent, engine base thrust and repair, your current level in <b>piloting</b>, and lower ship mass.
           </p>
           <p>
-            Final speed will take into account the ship's weight and current velocity.
-            <hr />Current engine thrust: <b>${c.r2(
-              engineThrustAmplification,
-            )}P</b>
-          </p>
-          Engine thrust goes up with higher engine repair and more/better engines.`
+            Final speed will take into account the ship's current trajectory.
+          </p>`
         "
       >
-        Available Thrust:
+        Applicable Speed:
         <NumberChangeHighlighter
-          :number="
-            c.r2(memberThrust * crewMember.cockpitCharge)
-          "
-        />
-        /
-        <NumberChangeHighlighter
-          :number="c.r2(memberThrust)"
-        /><span v-tooltip="`Poseidons`">P</span>
+          :number="c.r2(possibleSpeedChange, 3)"
+        /><span class="sub marlefttiny"
+          >/<NumberChangeHighlighter
+            :number="c.r2(maxPossibleSpeedChange, 3)"
+        /></span>
+        AU/hr
       </div>
     </div>
 
@@ -281,6 +284,23 @@ export default Vue.extend({
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
         this.engineThrustAmplification,
+      )
+    },
+    maxPossibleSpeedChange(): number {
+      return (
+        (c.getThrustMagnitudeForSingleCrewMember(
+          this.pilotingSkill,
+          this.engineThrustAmplification,
+        ) /
+          this.ship.mass) *
+        60 *
+        60
+      )
+    },
+    possibleSpeedChange(): number {
+      return (
+        this.maxPossibleSpeedChange *
+        this.crewMember.cockpitCharge
       )
     },
     maxCharge(): number {
