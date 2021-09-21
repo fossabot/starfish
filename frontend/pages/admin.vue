@@ -9,6 +9,11 @@
       >
       <div class="flexwrap buttonlist martop">
         <button @click="save">Save</button>
+        <button @click="pause">Pause</button>
+        <button @click="unpause">Unpause</button>
+        <button @click="messageAll">
+          Message All Ships
+        </button>
         <button @click="resetAllPlanets">
           Reset All Planets
         </button>
@@ -50,8 +55,8 @@ export default Vue.extend({
   },
   watch: {},
   async mounted() {
-    this.password = prompt('password')
-    if (!this.password) this.$router.replace('/')
+    if (process.env.NODE_ENV !== 'development')
+      this.password = prompt('password')
     this.$socket.emit(
       'game:adminCheck',
       this.$store.state.userId,
@@ -68,6 +73,30 @@ export default Vue.extend({
         'game:save',
         this.$store.state.userId,
         this.password,
+      )
+    },
+    pause() {
+      this.$socket.emit(
+        'game:pause',
+        this.$store.state.userId,
+        this.password,
+      )
+    },
+    unpause() {
+      this.$socket.emit(
+        'game:unpause',
+        this.$store.state.userId,
+        this.password,
+      )
+    },
+    messageAll() {
+      const message = prompt('Enter message')
+      if (!message || message.length < 3) return
+      this.$socket.emit(
+        'game:messageAll',
+        this.$store.state.userId,
+        this.password,
+        message,
       )
     },
     resetAllPlanets() {

@@ -6,13 +6,7 @@
       </template>
 
       <div class="panesection itemlist">
-        <div
-          v-for="i in armor"
-          v-tooltip="{
-            type: 'armor',
-            data: i,
-          }"
-        >
+        <div v-for="i in armor" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -25,13 +19,7 @@
             />
           </div>
         </div>
-        <div
-          v-for="i in weapons"
-          v-tooltip="{
-            type: 'weapon',
-            data: i,
-          }"
-        >
+        <div v-for="i in weapons" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -54,13 +42,7 @@
             />
           </div>
         </div>
-        <div
-          v-for="i in engines"
-          v-tooltip="{
-            type: 'engine',
-            data: i,
-          }"
-        >
+        <div v-for="i in engines" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -73,13 +55,7 @@
             />
           </div>
         </div>
-        <div
-          v-for="i in scanners"
-          v-tooltip="{
-            type: 'scanner',
-            data: i,
-          }"
-        >
+        <div v-for="i in scanners" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -92,13 +68,7 @@
             />
           </div>
         </div>
-        <div
-          v-for="i in communicators"
-          v-tooltip="{
-            type: 'communicator',
-            data: i,
-          }"
-        >
+        <div v-for="i in communicators" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -111,13 +81,7 @@
             />
           </div>
         </div>
-        <div
-          v-for="i in other"
-          v-tooltip="{
-            type: i.type,
-            data: i,
-          }"
-        >
+        <div v-for="i in other" v-tooltip="i">
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -151,7 +115,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

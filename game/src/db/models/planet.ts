@@ -107,7 +107,7 @@ const DBPlanet = model<DBPlanetDoc>(
 export async function addOrUpdateInDb(
   data: Planet,
 ): Promise<BasePlanetData> {
-  const stub = c.stubify<Planet, PlanetStub>(data)
+  const stub = data.stubify()
   const toSave = (new DBPlanet(stub) as any)._doc
   delete toSave._id
   const dbObject: DBPlanetDoc | null =
@@ -137,6 +137,22 @@ export async function wipe() {
 export async function getAllConstructible(): Promise<
   BasePlanetData[]
 > {
-  const docs = await DBPlanet.find({})
+  const docs = (await DBPlanet.find({})).map((d) =>
+    d.toObject(),
+  )
+  // clearExtraneousMongooseIdEntry(docs)
   return docs
+}
+
+function clearExtraneousMongooseIdEntry(obj: any) {
+  if (!obj) return
+  if (obj._id) delete obj._id
+  if (typeof obj !== `object`) return
+  if (Array.isArray(obj)) {
+    obj.forEach(clearExtraneousMongooseIdEntry)
+    return
+  }
+  Object.keys(obj).forEach((key) =>
+    clearExtraneousMongooseIdEntry(obj[key]),
+  )
 }

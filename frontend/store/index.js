@@ -19,6 +19,7 @@ export const state = () => ({
   winSize: [1200, 1000],
   modal: null,
   forceMapRedraw: 0,
+  mapFollowingShip: true,
 })
 
 export const mutations = {
@@ -31,6 +32,7 @@ export const mutations = {
   },
 
   setShipProp(state, pair) {
+    if (!state.ship) state.ship = {}
     Vue.set(state.ship, pair[0], pair[1])
   },
 
@@ -133,27 +135,38 @@ export const actions = {
       !shipId ||
       !state.shipIds.find((s) => s === shipId)
     ) {
-      return // c.log(`Skipping setup: invalid ship id`)
+      // return c.log(`Skipping setup: invalid ship id`)
+      shipId = state.activeShipId
     }
 
     commit(`set`, { modal: null, activeShipId: shipId })
     storage.set(`activeShipId`, `${shipId}`)
+
+    let connectionTimeout = setTimeout(() => {
+      c.log(`red`, `Failed to connect to socket.`)
+    }, 5000)
 
     this.$socket.on(`disconnect`, () => {
       commit(`set`, { ship: null, connected: false })
     })
 
     const connected = () => {
+      clearTimeout(connectionTimeout)
       commit(`set`, { connected: true })
-      this.$socket?.emit(`ship:listen`, shipId, (res) => {
-        if (`error` in res) return console.log(res.error)
-        // c.log(
-        //   JSON.stringify(res.data).length,
-        //   `characters of data received from initial load`,
-        // )
-        commit(`set`, { ship: res.data })
-        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
-      })
+      this.$socket?.emit(
+        `ship:listen`,
+        shipId,
+        state.userId,
+        (res) => {
+          if (`error` in res) return console.log(res.error)
+          // c.log(
+          //   JSON.stringify(res.data).length,
+          //   `characters of data received from initial load`,
+          // )
+          if (!state.ship) commit(`set`, { ship: res.data })
+          dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+        },
+      )
     }
     if (this.$socket.connected) connected()
     this.$socket.on(`connect`, connected)
@@ -176,6 +189,12 @@ export const actions = {
         c.tickInterval * 0.7,
       )
     })
+
+    this.$socket.on(`ship:forwardTo`, (id) => {
+      c.log(`forwarding from last ship id to new id!`, id)
+      commit(`set`, { ship: null })
+      dispatch(`socketSetup`, id)
+    })
   },
 
   updateShip({ commit, state }, updates) {
@@ -192,7 +211,7 @@ export const actions = {
         updates.crewMembers.forEach((cmStub) =>
           commit(`updateACrewMember`, cmStub),
         )
-      } else if (prop === `visible`) {
+      } else if (prop === `visible` && updates.visible) {
         // * planets send only the things that updated, so we update that here
         if (!state.ship?.visible)
           commit(`setShipProp`, [
@@ -217,7 +236,8 @@ export const actions = {
           }
           commit(`setShipProp`, [`visible`, newVisible])
         }
-      } else commit(`setShipProp`, [prop, updates[prop]])
+      } else if (prop !== `visible`)
+        commit(`setShipProp`, [prop, updates[prop]])
     }
     commit(`setShipProp`, [`lastUpdated`, Date.now()])
     commit(`set`, {
@@ -322,6 +342,8 @@ export const actions = {
       if (shipIds)
         storage.set(`shipIds`, JSON.stringify(shipIds))
     }
+
+    // c.log(`logging in`, { userId, shipIds })
 
     commit(`set`, { userId, shipIds })
 

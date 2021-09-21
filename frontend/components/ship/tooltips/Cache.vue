@@ -2,10 +2,10 @@
   <div>
     <div class="tooltipheader">📦Cache</div>
     <hr />
-    <div v-if="!data.contents">Contents unknown.</div>
+    <div v-if="!dataToUse.contents">Contents unknown.</div>
     <div v-else>
       <div
-        v-for="(ca, index) in data.contents"
+        v-for="(ca, index) in dataToUse.contents"
         :key="'cachecontentstooltip' + index"
       >
         Contains {{ c.r2(ca.amount) }} {{ ca.id }}
@@ -16,7 +16,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -25,7 +25,14 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['ship']),
+    dataToUse() {
+      return (
+        this.ship?.visible?.caches.find(
+          (p) => p.id === this.data.id,
+        ) || this.data
+      )
+    },
   },
 })
 </script>

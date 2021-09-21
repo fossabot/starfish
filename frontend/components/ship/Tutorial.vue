@@ -15,7 +15,7 @@
             v-html="currentScript.message"
           />
         </div>
-        <div class="padtop">
+        <div class="padtop flexbetween">
           <button
             v-if="
               currentScript.advance && !waitingForNextStep
@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({

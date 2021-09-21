@@ -50,7 +50,11 @@ export class GoCommand implements Command {
       context.crewMember.id,
       roomToGoTo,
     )
-    context.reply(`Moved you to: ${roomToGoTo}.`)
+    context.reply(
+      `${context.crewMember.name} moves to ${c.capitalize(
+        roomToGoTo,
+      )}.`,
+    )
   }
 
   hasPermissionToRun(

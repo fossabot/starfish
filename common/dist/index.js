@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -38,6 +38,7 @@ const cargo = __importStar(require("./cargo"));
 const crewActives_1 = __importDefault(require("./crewActives"));
 const crewPassives_1 = __importDefault(require("./crewPassives"));
 const rooms_1 = __importDefault(require("./rooms"));
+const stubify_1 = __importDefault(require("./stubify"));
 const items = __importStar(require("./items"));
 exports.default = {
     ...globals_1.default,
@@ -57,5 +58,6 @@ exports.default = {
     factions: factions_1.default,
     basePassiveData: basePassiveData_1.default,
     Profiler: Profiler_1.Profiler,
+    stubify: stubify_1.default,
 };
 //# sourceMappingURL=index.js.map

@@ -29,7 +29,7 @@
           width: width + 'px',
           height: width + 'px',
         }"
-        @mousewheel="mouseWheel"
+        @wheel="mouseWheel"
         @mousedown="mouseDown"
         @mouseleave="mouseLeave"
       />
@@ -37,7 +37,7 @@
       <div class="floatbuttons">
         <button
           @click="resetCenter"
-          v-if="!followingCenter"
+          v-if="!mapFollowingShip"
           class="secondary"
         >
           Follow Ship
@@ -49,9 +49,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 import Drawer from './drawMapFrame'
+import { nextTick } from 'process'
 
 export default Vue.extend({
   props: {
@@ -84,7 +85,7 @@ export default Vue.extend({
       element,
       drawer,
       paused: false,
-      widthScaledToDevice: 1,
+      widthScaledToDevice: 0,
       devicePixelRatio: 1,
       lastFrameRes: null,
       mapCenter,
@@ -97,7 +98,6 @@ export default Vue.extend({
       dragStartPoint,
       dragEndPoint,
       mapCenterAtDragStart,
-      followingCenter: true,
       followCenterTimeout,
       isZoomingTimeout,
       resetCenterTime: 2 * 60 * 1000,
@@ -111,6 +111,12 @@ export default Vue.extend({
       'lastUpdated',
       'forceMapRedraw',
     ]),
+    mapFollowingShip(): boolean {
+      return (
+        !this.interactive ||
+        this.$store.state.mapFollowingShip
+      )
+    },
     show(): boolean {
       return (
         this.ship &&
@@ -137,22 +143,32 @@ export default Vue.extend({
       this.drawNextFrame()
     },
     async show() {
-      await this.$nextTick()
-      setTimeout(() => this.drawNextFrame(), 200)
+      if (this.show) {
+        this.start()
+        await this.$nextTick()
+        setTimeout(() => this.drawNextFrame(), 200)
+      }
     },
   },
-  mounted() {
-    this.devicePixelRatio = window.devicePixelRatio || 1
-    this.widthScaledToDevice =
-      this.width * this.devicePixelRatio
-    this.drawNextFrame()
-
-    window.removeEventListener('mousemove', this.mouseMove)
-    window.addEventListener('mousemove', this.mouseMove)
-  },
+  mounted() {},
   methods: {
+    start() {
+      this.devicePixelRatio = window.devicePixelRatio || 1
+      this.widthScaledToDevice =
+        this.width * this.devicePixelRatio
+      this.drawNextFrame()
+
+      window.removeEventListener(
+        'mousemove',
+        this.mouseMove,
+      )
+      window.addEventListener('mousemove', this.mouseMove)
+    },
     drawNextFrame(immediate = false) {
-      if (this.paused) return
+      if (this.paused || !this.show) return
+      if (this.widthScaledToDevice === 0)
+        return this.start()
+
       return new Promise<void>((resolve) => {
         if (!this.$el || !this.$el.querySelector) return
         const profiler = new c.Profiler(
@@ -163,7 +179,7 @@ export default Vue.extend({
         )
         profiler.step('called')
         requestAnimationFrame(async () => {
-          if (this.paused) return
+          if (this.paused || !this.show) return
           profiler.step('framestart')
           if (!this.element) {
             this.element = this.$el.querySelector(
@@ -181,13 +197,25 @@ export default Vue.extend({
               elWidth: this.widthScaledToDevice,
             })
 
-          if (!this.drawer.element || !this.element) {
+          if (
+            !this.drawer.element ||
+            !this.element ||
+            !document.body.contains(this.element)
+          ) {
             await this.$nextTick()
+
             this.element = this.$el.querySelector(
               '#map',
             ) as HTMLCanvasElement
             this.drawer.element = this.element!
           }
+
+          // if (this.interactive)
+          //   c.log(
+          //     this.element,
+          //     this.drawer,
+          //     document.body.contains(this.element),
+          //   )
 
           profiler.step('startdraw')
 
@@ -197,11 +225,11 @@ export default Vue.extend({
                   this.drawer.flatScale) /
                   1000000) *
                 2
-              : this.followingCenter
+              : this.mapFollowingShip
               ? undefined
               : this.zoom,
             ship: this.ship,
-            center: this.followingCenter
+            center: this.mapFollowingShip
               ? undefined
               : this.mapCenter,
             visible: this.ship?.visible,
@@ -237,7 +265,7 @@ export default Vue.extend({
     mouseDown(e: MouseEvent) {
       if (!this.interactive) return
       clearTimeout(this.followCenterTimeout)
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
       this.mouseIsDown = true
       this.dragStartPoint = [e.x, e.y]
       this.zoom = this.drawer?.zoom
@@ -294,7 +322,7 @@ export default Vue.extend({
         this.isPanning = true
       else return
 
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
 
       // c.log({
       //   dsp: this.dragStartPoint,
@@ -332,7 +360,7 @@ export default Vue.extend({
         100,
       )
 
-      this.followingCenter = false
+      this.$store.commit('set', { mapFollowingShip: false })
       clearTimeout(this.followCenterTimeout)
       this.followCenterTimeout = setTimeout(
         this.resetCenter,
@@ -379,7 +407,7 @@ export default Vue.extend({
     },
 
     resetCenter() {
-      this.followingCenter = true
+      this.$store.commit('set', { mapFollowingShip: true })
       this.zoom = undefined
       this.mapCenter = undefined
       this.drawNextFrame()

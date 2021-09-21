@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -93,7 +93,6 @@ export default Vue.extend({
   mounted() {},
   methods: {
     buyPassive(passiveId: CrewPassiveId) {
-      c.log(passiveId)
       ;(this as any).$socket?.emit(
         'crew:buyPassive',
         this.ship.id,

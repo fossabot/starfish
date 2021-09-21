@@ -67,7 +67,7 @@ export class Planet extends Stubbable {
     this.creatures = creatures || []
     this.level = level
     this.xp = xp
-    this.stats = stats || []
+    this.stats = [...(stats || [])]
 
     // * timeout so it has time to run subclass contstructor
     setTimeout(() => {
@@ -80,7 +80,7 @@ export class Planet extends Stubbable {
 
   get shipsAt() {
     return this.game.humanShips.filter(
-      (s) => s.planet === this,
+      (s) => !s.tutorial && s.planet === this,
     )
   }
 
@@ -134,18 +134,14 @@ export class Planet extends Stubbable {
     })
   }
 
-  getVisibleStub(): PlanetStub {
+  toVisibleStub(): PlanetStub {
     return this.stubify()
   }
 
-  toLogStub(): PlanetStub {
-    const s: PlanetStub = this.stubify()
+  toLogStub(): PlanetLogStub {
     return {
-      ...s,
       type: `planet`,
-      landingRadiusMultiplier: undefined,
-      stats: undefined,
-      passives: undefined,
+      name: this.name,
     }
   }
 

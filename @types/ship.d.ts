@@ -46,9 +46,9 @@ type RadiusType =
   | `attack`
   | `scan`
   | `broadcast`
-  | `game`
+  | `gameSize`
 
-type ShipPassiveEffectType =
+type ShipPassiveEffectId =
   | `boostDropAmount`
   | `boostDropRarity`
   | `boostScanRange`
@@ -71,8 +71,9 @@ type ShipPassiveEffectType =
   | `disguiseChassisType`
   | `boostAttackWithNumberOfFactionMembersWithinDistance`
   | `boostDamageToItemType`
+  | `boostStaminaRegeneration`
 interface ShipPassiveEffect {
-  id: ShipPassiveEffectType
+  id: ShipPassiveEffectId
   intensity?: number
   data?: {
     source?: {
@@ -112,6 +113,7 @@ type ShipStatKey =
   | `cachesRecovered`
   | `planetTime`
   | `totalTonsMined`
+  | `highestSpeed`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

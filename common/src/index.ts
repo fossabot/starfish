@@ -14,6 +14,7 @@ import * as cargo from './cargo'
 import crewActives from './crewActives'
 import crewPassives from './crewPassives'
 import rooms from './rooms'
+import stubify from './stubify'
 import * as items from './items'
 
 export default {
@@ -34,4 +35,5 @@ export default {
   factions,
   basePassiveData,
   Profiler,
+  stubify,
 }

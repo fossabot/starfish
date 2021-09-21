@@ -5,17 +5,14 @@ import fs from 'fs'
 import { db } from '../../db'
 
 import { game } from '../..'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
-import type { CombatShip } from '../../game/classes/Ship/CombatShip'
-import type { Planet } from '../../game/classes/Planet/Planet'
-import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
-import type { Ship } from '../../game/classes/Ship/Ship'
 
 let adminKeys: any
 try {
   adminKeys = fs
-    .readFileSync(process.env.ADMIN_KEYS_FILE as string, `utf-8`)
+    .readFileSync(
+      process.env.ADMIN_KEYS_FILE as string,
+      `utf-8`,
+    )
     .trim()
 } catch (e) {
   adminKeys = ``
@@ -29,9 +26,10 @@ try {
 }
 
 function isAdmin(id, password) {
+  if (process.env.NODE_ENV === `development`) return true
   if (!adminKeys) return false
-  if (password !== adminKeys.password) return false
-  if (!adminKeys.validIds.includes(id)) return false
+  if (password !== adminKeys?.password) return false
+  if (!adminKeys?.validIds?.includes(id)) return false
   return true
 }
 
@@ -50,6 +48,48 @@ export default function (
     game.save()
   })
 
+  socket.on(`game:pause`, (id, password) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:pause`,
+      )
+    game.paused = true
+    c.log(`yellow`, `Game paused`)
+  })
+
+  socket.on(`game:unpause`, (id, password) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:unpause`,
+      )
+    game.paused = false
+    c.log(`yellow`, `Game unpaused`)
+  })
+
+  socket.on(`game:messageAll`, (id, password, message) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:messageAll`,
+      )
+
+    if (Array.isArray(message))
+      message.unshift({
+        color: `#888`,
+        text: `Message from game admin:`,
+      })
+    else
+      message = [
+        {
+          color: `#888`,
+          text: `Message from game admin:`,
+        },
+        message,
+      ]
+    game.humanShips.forEach((s) => {
+      s.logEntry(message, `critical`)
+    })
+  })
+
   socket.on(
     `game:resetAllPlanets`,
     async (id, password) => {
@@ -60,6 +100,10 @@ export default function (
       c.log(`Admin resetting all planets`)
       await db.planet.wipe()
       while (game.planets.length) game.planets.pop()
+      game.humanShips.forEach((s) => {
+        while (s.seenPlanets.length) s.seenPlanets.pop()
+        s.toUpdate.seenPlanets = []
+      })
     },
   )
 
@@ -71,6 +115,10 @@ export default function (
     c.log(`Admin resetting all zones`)
     await db.zone.wipe()
     while (game.zones.length) game.zones.pop()
+    game.humanShips.forEach((s) => {
+      while (s.seenLandmarks.length) s.seenLandmarks.pop()
+      s.toUpdate.seenLandmarks = []
+    })
   })
 
   socket.on(`game:resetAllCaches`, async (id, password) => {

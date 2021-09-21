@@ -7,6 +7,7 @@ import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { Planet } from '../../game/classes/Planet/Planet'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
+import { Tutorial } from '../../game/classes/Ship/addins/Tutorial'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -35,15 +36,41 @@ export default function (
           0,
           c.maxNameLength,
         )
+
+      crewMemberBaseData.credits = 1000
+      crewMemberBaseData.cockpitCharge = 1
       const addedCrewMember = ship.addCrewMember(
         crewMemberBaseData,
       )
+
       const stub = c.stubify<CrewMember, CrewMemberStub>(
         addedCrewMember,
       )
       callback({ data: stub })
     },
   )
+
+  socket.on(`crew:toTutorial`, (shipId, crewId) => {
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship) return
+    const crewMember = ship.crewMembers?.find(
+      (cm) => cm.id === crewId,
+    )
+    if (!crewMember) return
+    if (crewMember.tutorialShipId) return
+
+    Tutorial.putCrewMemberInTutorial(crewMember)
+    socket.emit(
+      `ship:forwardTo`,
+      crewMember.tutorialShipId || ``,
+    )
+    c.log(
+      `gray`,
+      `Put ${crewMember.name} on ${ship.name} into the tutorial.`,
+    )
+  })
 
   socket.on(`crew:move`, (shipId, crewId, target) => {
     const ship = game.ships.find(
@@ -442,17 +469,18 @@ export default function (
           p.name === vendorLocation &&
           p.planetType === `basic`,
       ) as BasicPlanet | undefined
-      const cargoBeingBought = planet?.vendor?.cargo?.find(
-        (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
-      )
-      if (!planet || !cargoBeingBought)
+      const sellMultiplier =
+        planet?.vendor?.cargo?.find(
+          (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
+        )?.sellMultiplier || c.baseCargoSellMultiplier
+      if (!planet)
         return callback({
-          error: `The vendor does not buy that.`,
+          error: `No planet found.`,
         })
 
       const price = Math.min(
-        c.cargo[cargoBeingBought.id].basePrice *
-          cargoBeingBought.sellMultiplier *
+        c.cargo[cargoId].basePrice *
+          sellMultiplier *
           amount *
           planet.priceFluctuator *
           ((planet.allegiances.find(
@@ -524,24 +552,29 @@ export default function (
         crewMember.toUpdate.inventory = crewMember.inventory
       }
 
-      const cache = game.addCache({
-        location: [...ship.location],
-        contents: [{ id: cargoId, amount }],
-        droppedBy: ship.id,
-        message: c.sanitize(message).result,
-      })
+      if (amount > 1) {
+        const cache = game.addCache({
+          location: [...ship.location],
+          contents: [{ id: cargoId, amount }],
+          droppedBy: ship.id,
+          message: c.sanitize(message).result,
+        })
 
-      ship.logEntry(
-        `${
-          crewMember.name
-        } dropped a cache containing ${amount}${
-          cargoId === `credits` ? `` : ` tons of`
-        } ${cargoId}.`,
-      )
+        ship.logEntry(
+          `${
+            crewMember.name
+          } dropped a cache containing ${amount}${
+            cargoId === `credits` ? `` : ` tons of`
+          } ${cargoId}.`,
+        )
 
-      callback({
-        data: c.stubify(cache),
-      })
+        callback({
+          data: cache.stubify(),
+        })
+      } else
+        callback({
+          data: undefined,
+        })
 
       c.log(
         `gray`,

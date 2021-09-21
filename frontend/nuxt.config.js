@@ -3,6 +3,9 @@ export default {
   server: {
     port: 4300,
   },
+  env: {
+    IS_DOCKER: process.env.IS_DOCKER !== `false`,
+  },
 
   head: {
     title: c.gameName,

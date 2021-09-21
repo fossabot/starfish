@@ -7,7 +7,6 @@ import isDocker from 'is-docker'
 
 import * as ship from './ship'
 import * as crew from './crew'
-import { isRegExp } from 'util/types'
 
 export default {
   connected,
@@ -16,17 +15,22 @@ export default {
 }
 
 // connect to server
-const serverUrl = `https://${isDocker() ? `www.starfish.cool` : `localhost`}:4200`
+let serverUrl = `http${isDocker() ? `s` : ``}://${
+  isDocker() ? `www.starfish.cool` : `localhost`
+}:4200`
 
-const client = socketIo(serverUrl,
-  { secure: true },
+let client = socketIo(serverUrl, { secure: true })
+c.log(
+  `Attempting to connect to game server at ${serverUrl}`,
 )
-c.log(`Attempting to connect to game server at ${serverUrl}`)
 export const io: Socket<IOServerEvents, IOClientEvents> =
   client.connect()
 
 io.on(`connect`, () => {
-  c.log(`green`, `Connected to game server at ${serverUrl}.`)
+  c.log(
+    `green`,
+    `Connected to game server at ${serverUrl}.`,
+  )
 })
 
 io.on(`disconnect`, () => {
@@ -42,7 +46,8 @@ io.on(
     if (!guild)
       return c.log(
         `red`,
-        `Message came for a guild that does not have the bot added on Discord.`,
+        `Message came for a guild (${id}) that does not have the bot added on Discord:`,
+        message,
       )
 
     // check to see if we have the necessary permissions to create channels
@@ -98,6 +103,7 @@ export function connected(): Promise<boolean> {
       `yellow`,
       `Attempted to access game server io while socket was disconnected.`,
     )
+
     resolve(false)
   })
 }

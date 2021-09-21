@@ -23,9 +23,9 @@
           v-for="(otherShip, index) in scannable"
           :key="otherShip.id"
           :value="index"
-          >{{ otherShip.species.icon
-          }}{{ otherShip.name }}</option
         >
+          {{ otherShip.species.icon }}{{ otherShip.name }}
+        </option>
       </select>
     </div>
 
@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -64,7 +64,7 @@ export default Vue.extend({
     },
     scannable(): ShipStub[] {
       if (this.ship.radii.scan === 0) return []
-      return this.ship.visible.ships
+      return (this.ship.visible?.ships || [])
         .filter(
           (s: ShipStub) =>
             c.distance(s.location, this.ship.location) <=

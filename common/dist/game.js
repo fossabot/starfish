@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const text_1 = __importDefault(require("./text"));
-const Profiler_1 = require("./Profiler");
 const gameShipLimit = 100;
 const gameSpeedMultiplier = 10;
 const baseSightRange = 0.05;
@@ -24,6 +23,7 @@ const aiDifficultyMultiplier = 0.5;
 const planetContributeCostPerXp = 10;
 const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
 const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier;
+const supportServerLink = `https://discord.gg/aEKE3bFR6n`;
 const baseShipScanProperties = {
     id: true,
     name: true,
@@ -48,8 +48,7 @@ const sameFactionShipScanProperties = {
 const tactics = [`aggressive`, `defensive`];
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
-        (1 + (totalMunitionsSkill - 1) / 50) *
-        (weapon.repair || 0));
+        math_1.default.lerp(1, 4, totalMunitionsSkill / 100));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability) {
     return ((0.00001 * gameSpeedMultiplier * (10 / maxHp)) /
@@ -68,7 +67,7 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
     return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
 }
-const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.15;
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
     const min = 1;
     const max = 1.4;
@@ -97,6 +96,7 @@ function getWeaponCooldownReductionPerTick(level) {
 function getCrewPassivePriceMultiplier(level) {
     return 1 + level ** 2;
 }
+const baseCargoSellMultiplier = 0.3;
 function statToString(data) {
     const { stat, amount } = data;
     let titleString = text_1.default.camelCaseToWords(stat);
@@ -171,7 +171,7 @@ const headerBackgroundOptions = [
     { id: `Crimson Blur`, url: `gradient2.svg` },
     { id: `Lightspeedy`, url: `gradient3.svg` },
     { id: `Constellation 1`, url: `stars1.jpg` },
-    { id: `Gravestone 1`, url: `vintage1.jpg` }, // die twice
+    { id: `Gravestone 1`, url: `vintage1.jpg` },
 ];
 function getPlanetTitle(planet) {
     if (!planet || !planet.level)
@@ -210,14 +210,21 @@ function getPlanetTitle(planet) {
             `Community`,
             `Settlement`,
             `Colony`,
+            `Municipality`,
             `Dockyard`,
             `Landing`,
-            `Spaceport`,
             `Trade Hub`,
             `Ecosystem`,
+            `Skyport`,
+            `Spaceport`,
+            `Cosmic Quayage`,
+            `Cosmodrome`,
+            `Ecopolis`,
             `Metropolis`,
+            `Cosmopolis`,
             `Megalopolis`,
             `Sector Hub`,
+            `Galactic Marina`,
             `Stellar Waypoint`,
             `Galactic Nucleus`,
         ];
@@ -278,70 +285,8 @@ function getPlanetPopulation(planet) {
 //   // todo finish
 //   return d
 // }
-function stubify(baseObject, disallowPropName = [], disallowRecursion = false) {
-    const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
-    profiler.step(`getters`);
-    const gettersIncluded = { ...baseObject };
-    const proto = Object.getPrototypeOf(baseObject);
-    const getKeyValue = (key) => (obj) => obj[key];
-    // c.log(Object.getOwnPropertyNames(proto))
-    for (const key of Object.getOwnPropertyNames(proto)) {
-        const desc = Object.getOwnPropertyDescriptor(proto, key);
-        const hasGetter = desc && typeof desc.get === `function`;
-        if (hasGetter) {
-            gettersIncluded[key] = getKeyValue(key)(baseObject);
-        }
-    }
-    profiler.step(`stringify and parse`);
-    // c.log(Object.keys(gettersIncluded))
-    const circularReferencesRemoved = JSON.parse(JSON.stringify(gettersIncluded, (key, value) => {
-        if ([`toUpdate`, `_stub`, `_id`].includes(key))
-            return undefined;
-        if ([
-            `game`,
-            `ship`,
-            `attacker`,
-            `defender`,
-            `crewMember`,
-            `homeworld`,
-            `faction`,
-            `species`,
-        ].includes(key))
-            return value?.id ? { id: value.id } : null;
-        if (disallowPropName?.includes(key))
-            return value?.id || undefined;
-        if ([`ships`].includes(key) && Array.isArray(value))
-            return value.map((v) => stubify(v, [
-                `visible`,
-                `seenPlanets`,
-                `seenLandmarks`,
-                `enemiesInAttackRange`,
-            ]));
-        // if (!disallowRecursion && value && value.stubify) {
-        //   c.log(
-        //     value.type,
-        //     value.id,
-        //     // Object.keys(value).filter(
-        //     //   (v) =>
-        //     //     ![
-        //     //       `game`,
-        //     //       `ship`,
-        //     //       `attacker`,
-        //     //       `defender`,
-        //     //       `crewMember`,
-        //     //       `homeworld`,
-        //     //     ].includes(v),
-        //     // ),
-        //   )
-        //   return value.stubify([key], true)
-        // } else if (value && value.stubify) return value.id
-        return value;
-    }));
-    // circularReferencesRemoved.lastUpdated = Date.now()
-    profiler.end();
-    return circularReferencesRemoved;
-}
 exports.default = {
+    supportServerLink,
     gameShipLimit,
     gameSpeedMultiplier,
     baseSightRange,
@@ -374,12 +319,11 @@ exports.default = {
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,
     tactics,
+    baseCargoSellMultiplier,
     taglineOptions,
     statToString,
     headerBackgroundOptions,
     getPlanetTitle,
     getPlanetPopulation,
-    // getPlanetDescription,
-    stubify,
 };
 //# sourceMappingURL=game.js.map

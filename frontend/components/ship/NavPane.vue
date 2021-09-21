@@ -23,6 +23,9 @@
           >Share a Story</nuxt-link
         >
         <nuxt-link to="/supportus">Support Us</nuxt-link>
+        <div class="button secondary" @click="toTutorial">
+          Redo Tutorial
+        </div>
 
         <select
           v-if="shipsBasics && shipsBasics.length > 1"
@@ -39,14 +42,13 @@
           </option>
         </select>
 
-        <button v-show="userId" @click="logout">
+        <button
+          class="secondary"
+          v-show="userId"
+          @click="logout"
+        >
           Log out
         </button>
-        <a
-          v-show="!userId"
-          href="https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=https%3A%2F%2Fwww.starfish.cool%2Fpostlogin&response_type=token&scope=identify%20guilds"
-          >Log in</a
-        >
       </div>
     </nav>
   </Box>
@@ -54,7 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../common/src'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -84,7 +86,15 @@ export default Vue.extend({
       ;(this as any).$router.push('/')
     },
     shipSelected(e: Event) {
+      this.$store.commit('set', { mapFollowingShip: true })
       this.$store.dispatch('socketSetup', this.selectedShip)
+    },
+    toTutorial() {
+      ;(this as any).$socket?.emit(
+        'crew:toTutorial',
+        this.ship.id,
+        this.crewMember?.id,
+      )
     },
   },
 })

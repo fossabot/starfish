@@ -41,7 +41,7 @@
             @done="drop('credits', ...arguments)"
             @apply="drop('credits', ...arguments)"
           >
-            <template #label> Drop </template>
+            <template #label>Drop</template>
             <template>
               How many credits do you want to jettison as a
               cache? (Max
@@ -113,6 +113,7 @@ ${
             :number="c.r2(item.amount, 2)"
             :display="c.r2(item.amount, 2) + ' tons'"
           />
+
           <PromptButton
             class="inlineblock"
             v-if="item.amount >= 1"
@@ -130,6 +131,21 @@ ${
               cache? (Blank for no message)
             </template>
           </PromptButton>
+
+          <PromptButton
+            class="inlineblock"
+            :yesNo="true"
+            v-else
+            :max="item.amount"
+            @done="drop(item.id, ['all'])"
+          >
+            <template #label>Drop</template>
+            <template>
+              You don't have enough {{ item.id }} to form a
+              cache. Do you want to jettison it into
+              nothingness?
+            </template>
+          </PromptButton>
         </div>
       </div>
     </div>
@@ -138,7 +154,7 @@ ${
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -225,7 +241,8 @@ export default Vue.extend({
         })
         return
       }
-      if (amount < 1) {
+
+      if (amount < 1 && amount < totalHeld) {
         this.$store.dispatch('notifications/notify', {
           text: 'You must drop at least 1.',
           type: 'error',
@@ -241,12 +258,19 @@ export default Vue.extend({
         cargoId,
         amount,
         message,
-        (cache: CacheStub) => {
-          console.log('dropped cache!')
-          this.$store.dispatch('notifications/notify', {
-            text: 'Dropped cache!',
-            type: 'success',
-          })
+        (res: IOResponse<CacheStub | undefined>) => {
+          if ('error' in res) return
+          const cache = res.data
+          if (cache)
+            this.$store.dispatch('notifications/notify', {
+              text: 'Dropped cache!',
+              type: 'success',
+            })
+          else
+            this.$store.dispatch('notifications/notify', {
+              text: 'Jettisoned cargo!',
+              type: 'success',
+            })
         },
       )
     },

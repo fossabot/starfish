@@ -9,6 +9,7 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import { AIShip } from './AIShip'
+import type { CrewMember } from '../CrewMember/CrewMember'
 
 interface DamageResult {
   miss: boolean
@@ -26,7 +27,9 @@ export abstract class CombatShip extends Ship {
   constructor(props: BaseShipData, game: Game) {
     super(props, game)
 
-    this.species.passives.forEach((p) => this.applyPassive(p))
+    this.species.passives.forEach((p) =>
+      this.applyPassive(p),
+    )
 
     this.updateAttackRadius()
   }
@@ -38,7 +41,8 @@ export abstract class CombatShip extends Ship {
 
   updateAttackRadius() {
     this.radii.attack = this.weapons.reduce(
-      (highest: number, curr: Weapon): number => Math.max(curr.range, highest),
+      (highest: number, curr: Weapon): number =>
+        Math.max(curr.range * curr.repair, highest),
       0,
     )
     this.toUpdate.radii = this.radii
@@ -56,19 +60,27 @@ export abstract class CombatShip extends Ship {
   removePassive(p: ShipPassiveEffect) {
     let index
     if (p.data?.source?.planetName)
-      index = this.passives.findIndex((ep: ShipPassiveEffect) => {
-        for (let key in ep) {
-          if (ep[key] !== p[key]) return false
-          if (ep.data?.source?.planetName !== p.data?.source?.planetName)
-            return false
-        }
-        return true
-      })
+      index = this.passives.findIndex(
+        (ep: ShipPassiveEffect) => {
+          for (let key in ep) {
+            if (ep[key] !== p[key]) return false
+            if (
+              ep.data?.source?.planetName !==
+              p.data?.source?.planetName
+            )
+              return false
+          }
+          return true
+        },
+      )
     else
-      index = this.passives.findIndex((ep: ShipPassiveEffect) => {
-        for (let key in ep) if (ep[key] !== p[key]) return false
-        return true
-      })
+      index = this.passives.findIndex(
+        (ep: ShipPassiveEffect) => {
+          for (let key in ep)
+            if (ep[key] !== p[key]) return false
+          return true
+        },
+      )
     if (index === -1) return
     // c.log(`removing passive`, p)
     this.passives.splice(index, 1)
@@ -81,18 +93,32 @@ export abstract class CombatShip extends Ship {
 
   applyZoneTickEffects() {
     this.visible.zones
-      .filter((z) => c.pointIsInsideCircle(z.location, this.location, z.radius))
+      .filter((z) =>
+        c.pointIsInsideCircle(
+          z.location,
+          this.location,
+          z.radius,
+        ),
+      )
       .forEach((z) => z.affectShip(this))
   }
 
   availableWeapons(): Weapon[] {
-    return this.weapons.filter((w) => w.cooldownRemaining <= 0)
+    return this.weapons.filter(
+      (w) => w.cooldownRemaining <= 0,
+    )
   }
 
   getEnemiesInAttackRange(): CombatShip[] {
-    const combatShipsInRange = (this.visible.ships as ShipStub[])
-      .map((s) => this.game.ships.find((ship) => ship.id === s.id))
-      .filter((s) => s && this.canAttack(s, true)) as CombatShip[]
+    const combatShipsInRange = (
+      this.visible.ships as ShipStub[]
+    )
+      .map((s) =>
+        this.game.ships.find((ship) => ship.id === s.id),
+      )
+      .filter(
+        (s) => s && this.canAttack(s, true),
+      ) as CombatShip[]
     return combatShipsInRange
   }
 
@@ -105,7 +131,12 @@ export abstract class CombatShip extends Ship {
     this.dead = false
     this.move(
       [...(this.faction.homeworld?.location || [0, 0])].map(
-        (pos) => pos + c.randomBetween(-0.0001, 0.0001),
+        (pos) =>
+          pos +
+          c.randomBetween(
+            c.arrivalThreshold * -0.4,
+            c.arrivalThreshold * 0.4,
+          ),
       ) as CoordinatePair,
     )
 
@@ -131,9 +162,16 @@ export abstract class CombatShip extends Ship {
       otherShip.faction.id === this.faction.id
     )
       return false
-    if (c.distance(otherShip.location, this.location) > this.radii.attack)
+    if (
+      c.distance(otherShip.location, this.location) >
+      this.radii.attack
+    )
       return false
-    if (!ignoreWeaponState && !this.availableWeapons().length) return false
+    if (
+      !ignoreWeaponState &&
+      !this.availableWeapons().length
+    )
+      return false
     return true
   }
 
@@ -153,33 +191,47 @@ export abstract class CombatShip extends Ship {
 
     weapon.use()
 
-    const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`)
+    const totalMunitionsSkill = this.cumulativeSkillIn(
+      `weapons`,
+      `munitions`,
+    )
     const range = c.distance(this.location, target.location)
-    const rangeAsPercent = range / weapon.range
-    // const maxMissChance = 0.9
+    const rangeAsPercent =
+      range / (weapon.range * weapon.repair)
+    const minHitChance = 0.9
     const enemyAgility =
       target.chassis.agility +
-      (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity ||
-        0)
+      (target.passives.find(
+        (p) => p.id === `boostChassisAgility`,
+      )?.intensity || 0)
     const hitRoll = Math.random()
-    let miss = hitRoll * enemyAgility < rangeAsPercent // + maxMissChance
+    let miss =
+      hitRoll * enemyAgility <
+      Math.min(rangeAsPercent, minHitChance)
     // todo this makes it impossible to hit some ships even when they're "in range"... fix
-    let damage = miss ? 0 : c.getHitDamage(weapon, totalMunitionsSkill)
+    let damage = miss
+      ? 0
+      : c.getHitDamage(weapon, totalMunitionsSkill)
 
     // apply passive
     const relevantPassives =
       this.passives.filter(
-        (p) => p.id === `boostAttackWithNumberOfFactionMembersWithinDistance`,
+        (p) =>
+          p.id ===
+          `boostAttackWithNumberOfFactionMembersWithinDistance`,
       ) || []
     let passiveDamageMultiplier = relevantPassives.reduce(
-      (total: number, p: ShipPassiveEffect) => total + (p.intensity || 0),
+      (total: number, p: ShipPassiveEffect) =>
+        total + (p.intensity || 0),
       0,
     )
     if (passiveDamageMultiplier) {
       let factionMembersInRange = 0
       const range = relevantPassives.reduce(
         (avg, curr) =>
-          avg + (curr.data?.distance || 0) / relevantPassives.length,
+          avg +
+          (curr.data?.distance || 0) /
+            relevantPassives.length,
         0,
       )
       this.visible.ships.forEach((s: any) => {
@@ -215,7 +267,10 @@ export abstract class CombatShip extends Ship {
       weapon,
       targetType,
     }
-    const attackResult = target.takeDamage(this, damageResult)
+    const attackResult = target.takeDamage(
+      this,
+      damageResult,
+    )
 
     this.game.addAttackRemnant({
       attacker: this,
@@ -238,21 +293,7 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: {
-              type: `ship`,
-              name: target.name,
-              faction: {
-                type: `faction`,
-                id: target.faction.id,
-              },
-              species: {
-                type: `species`,
-                id: target.species.id,
-              },
-              tagline: target.tagline,
-              headerBackground: target.headerBackground,
-              level: (target as AIShip).level,
-            },
+            tooltipData: target.toLogStub(),
           },
           `with`,
           {
@@ -265,7 +306,7 @@ export abstract class CombatShip extends Ship {
           },
           `&nospace.`,
         ],
-        `high`,
+        `low`,
       )
     else
       this.logEntry(
@@ -274,21 +315,7 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: {
-              type: `ship`,
-              name: target.name,
-              faction: {
-                type: `faction`,
-                id: target.faction.id,
-              },
-              species: {
-                type: `species`,
-                id: target.species.id,
-              },
-              tagline: target.tagline,
-              headerBackground: target.headerBackground,
-              level: (target as AIShip).level,
-            },
+            tooltipData: target.toLogStub(),
           },
           `with`,
           {
@@ -302,7 +329,9 @@ export abstract class CombatShip extends Ship {
           },
           `&nospace, dealing`,
           {
-            text: c.r2(c.r2(attackResult.damageTaken)) + ` damage`,
+            text:
+              c.r2(c.r2(attackResult.damageTaken)) +
+              ` damage`,
             color: `var(--success)`,
             tooltipData: {
               type: `damage`,
@@ -310,15 +339,41 @@ export abstract class CombatShip extends Ship {
             },
           },
           `&nospace.`,
-          attackResult.didDie ? `${target.name} died in the exchange.` : ``,
+          attackResult.didDie
+            ? `${target.name} died in the exchange.`
+            : ``,
         ],
         `high`,
       )
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
     if (attackResult.didDie) {
+      // extra combat xp for all crew members in the weapons bay
+      const xpBoostMultiplier =
+        this.passives
+          .filter((p) => p.id === `boostXpGain`)
+          .reduce(
+            (total, p) => (p.intensity || 0) + total,
+            0,
+          ) + 1
+      this.crewMembers
+        .filter((cm) => cm.location === `weapons`)
+        .forEach((cm: CrewMember) => {
+          cm.addXp(
+            `munitions`,
+            c.baseXpGain * 3000 * xpBoostMultiplier,
+          )
+        })
+
       this.addStat(`kills`, 1)
-      this.addHeaderBackground(`Stone Cold 1`, `destroying an enemy ship`)
+      if (
+        this.stats.find((s) => s.stat === `kills`)
+          ?.amount === 1
+      )
+        this.addHeaderBackground(
+          `Stone Cold 1`,
+          `destroying an enemy ship`,
+        )
     }
 
     return attackResult
@@ -340,7 +395,10 @@ export abstract class CombatShip extends Ship {
       1 -
         this.passives
           .filter((p) => p.id === `scaledDamageReduction`)
-          .reduce((total, p) => total + (p.intensity || 0), 0),
+          .reduce(
+            (total, p) => total + (p.intensity || 0),
+            0,
+          ),
     )
     remainingDamage *= passiveDamageMultiplier
 
@@ -359,14 +417,20 @@ export abstract class CombatShip extends Ship {
     } = {}
     ;(
       attacker.passives?.filter(
-        (p: ShipPassiveEffect) => p.id === `boostDamageToItemType`,
+        (p: ShipPassiveEffect) =>
+          p.id === `boostDamageToItemType`,
       ) || []
     ).forEach((p: ShipPassiveEffect) => {
-      if (!itemTypeDamageMultipliers[p.data?.type as ItemType])
-        itemTypeDamageMultipliers[p.data?.type as ItemType] =
-          1 + (p.intensity || 0)
+      if (
+        !itemTypeDamageMultipliers[p.data?.type as ItemType]
+      )
+        itemTypeDamageMultipliers[
+          p.data?.type as ItemType
+        ] = 1 + (p.intensity || 0)
       else
-        itemTypeDamageMultipliers[p.data?.type as ItemType]! += p.intensity || 0
+        itemTypeDamageMultipliers[
+          p.data?.type as ItemType
+        ]! += p.intensity || 0
     })
 
     let totalDamageDealt = 0
@@ -383,10 +447,14 @@ export abstract class CombatShip extends Ship {
       for (let armor of this.armor) {
         let adjustedRemainingDamage = remainingDamage
         if (itemTypeDamageMultipliers.armor)
-          adjustedRemainingDamage *= itemTypeDamageMultipliers.armor
-        const { remaining, taken } = armor.blockDamage(adjustedRemainingDamage)
+          adjustedRemainingDamage *=
+            itemTypeDamageMultipliers.armor
+        const { remaining, taken } = armor.blockDamage(
+          adjustedRemainingDamage,
+        )
         totalDamageDealt += taken
-        const damageRemovedFromTotal = adjustedRemainingDamage - remaining
+        const damageRemovedFromTotal =
+          adjustedRemainingDamage - remaining
         remainingDamage -= damageRemovedFromTotal
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
@@ -408,21 +476,7 @@ export abstract class CombatShip extends Ship {
                 {
                   text: this.name,
                   color: this.faction.color,
-                  tooltipData: {
-                    type: `ship`,
-                    name: this.name,
-                    faction: {
-                      type: `faction`,
-                      id: this.faction.id,
-                    },
-                    species: {
-                      type: `species`,
-                      id: this.species.id,
-                    },
-                    tagline: this.tagline,
-                    headerBackground: this.headerBackground,
-                    level: (attacker as AIShip).level,
-                  },
+                  tooltipData: this.toLogStub(),
                 },
                 `&nospace's`,
                 {
@@ -455,21 +509,30 @@ export abstract class CombatShip extends Ship {
       let attackableEquipment: Item[] = []
       if (attack.targetType)
         attackableEquipment = this.items.filter(
-          (i) => i.repair > 0 && i.type === attack.targetType,
+          (i) =>
+            i.repair > 0 && i.type === attack.targetType,
         )
       if (!attackableEquipment.length)
-        attackableEquipment = this.items.filter((i) => i.repair > 0)
+        attackableEquipment = this.items.filter(
+          (i) => i.repair > 0,
+        )
       // nothing to attack, so we're done
       if (!attackableEquipment.length) {
         remainingDamage = 0
         break
       }
 
-      const equipmentToAttack: Item = c.randomFromArray(attackableEquipment)
+      const equipmentToAttack: Item = c.randomFromArray(
+        attackableEquipment,
+      )
 
       // apply passive damage boost to item types
       let adjustedRemainingDamage = remainingDamage
-      if (itemTypeDamageMultipliers[equipmentToAttack.type] !== undefined) {
+      if (
+        itemTypeDamageMultipliers[
+          equipmentToAttack.type
+        ] !== undefined
+      ) {
         adjustedRemainingDamage *=
           itemTypeDamageMultipliers[equipmentToAttack.type]!
         c.log(
@@ -517,14 +580,18 @@ export abstract class CombatShip extends Ship {
       }
 
       // ----- notify both sides -----
-      if (equipmentToAttack.hp === 0 && equipmentToAttack.announceWhenBroken) {
+      if (
+        equipmentToAttack.hp === 0 &&
+        equipmentToAttack.announceWhenBroken
+      ) {
         this.logEntry(
           [
             `Your`,
             {
               text: equipmentToAttack.displayName,
               color: `var(--item)`,
-              tooltipData: equipmentToAttack.toLogStub() as any,
+              tooltipData:
+                equipmentToAttack.toLogStub() as any,
             },
             `has been disabled!`,
           ],
@@ -537,29 +604,17 @@ export abstract class CombatShip extends Ship {
               {
                 text: this.name,
                 color: this.faction.color,
-                tooltipData: {
-                  type: `ship`,
-                  name: this.name,
-                  faction: {
-                    type: `faction`,
-                    id: this.faction.id,
-                  },
-                  species: {
-                    type: `species`,
-                    id: this.species.id,
-                  },
-                  tagline: this.tagline,
-                  headerBackground: this.headerBackground,
-                  level: (this as AIShip).level,
-                },
+                tooltipData: this.toLogStub(),
               },
               `&nospace's`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
                 tooltipData: {
-                  displayName: equipmentToAttack.displayName,
-                  description: equipmentToAttack.description,
+                  displayName:
+                    equipmentToAttack.displayName,
+                  description:
+                    equipmentToAttack.description,
                   type: equipmentToAttack.type,
                 },
               },
@@ -570,10 +625,17 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack.announceWhenBroken = false
       }
     }
-    this.toUpdate.items = this.items.map((i) => c.stubify(i))
+    this.toUpdate.items = this.items.map((i) =>
+      c.stubify(i),
+    )
 
     const didDie = previousHp > 0 && this.hp <= 0
-    if (didDie) this.die(attacker instanceof CombatShip ? attacker : undefined)
+    if (didDie)
+      this.die(
+        attacker instanceof CombatShip
+          ? attacker
+          : undefined,
+      )
 
     this.addStat(`damageTaken`, totalDamageDealt)
 
@@ -605,25 +667,13 @@ export abstract class CombatShip extends Ship {
     if (attack.weapon)
       this.logEntry(
         [
-          attack.miss ? `Missed by an attack from` : `Hit by an attack from`,
+          attack.miss
+            ? `Missed by an attack from`
+            : `Hit by an attack from`,
           {
             text: attacker.name,
             color: attacker.faction.color,
-            tooltipData: {
-              type: `ship`,
-              name: attacker.name,
-              faction: {
-                type: `faction`,
-                id: attacker.faction.id,
-              },
-              species: {
-                type: `species`,
-                id: attacker.species.id,
-              },
-              tagline: attacker.tagline,
-              headerBackground: attacker.headerBackground,
-              level: (attacker as AIShip).level,
-            },
+            tooltipData: attacker.toLogStub(),
           },
           `&nospace's`,
           {
@@ -652,7 +702,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `medium` : `high`,
+        attack.miss ? `low` : `high`,
       )
     // zone or passive damage
     else
@@ -662,7 +712,9 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,
-            tooltipData: attacker.stubify ? attacker.stubify() : undefined,
+            tooltipData: attacker.stubify
+              ? attacker.stubify()
+              : undefined,
           },
           `&nospace.`,
           ...(attack.miss
@@ -680,7 +732,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `medium` : `high`,
+        attack.miss ? `low` : `high`,
       )
 
     return damageResult
@@ -696,34 +748,50 @@ export abstract class CombatShip extends Ship {
     repairPriority: RepairPriority = `most damaged`,
   ): { totalRepaired: number; overRepair: boolean } {
     let totalRepaired = 0
-    const repairableItems = this.items.filter((i) => i.repair <= 0.9995)
-    if (!repairableItems.length) return { totalRepaired, overRepair: false }
+    const repairableItems = this.items.filter(
+      (i) => i.repair <= 0.9995,
+    )
+    if (!repairableItems.length)
+      return { totalRepaired, overRepair: false }
     const itemsToRepair: Item[] = []
 
     if (repairPriority === `engines`) {
-      const r = repairableItems.filter((i) => i.type === `engine`)
+      const r = repairableItems.filter(
+        (i) => i.type === `engine`,
+      )
       itemsToRepair.push(...r)
     } else if (repairPriority === `weapons`) {
-      const r = repairableItems.filter((i) => i.type === `weapon`)
+      const r = repairableItems.filter(
+        (i) => i.type === `weapon`,
+      )
       itemsToRepair.push(...r)
     } else if (repairPriority === `scanners`) {
-      const r = repairableItems.filter((i) => i.type === `scanner`)
+      const r = repairableItems.filter(
+        (i) => i.type === `scanner`,
+      )
       itemsToRepair.push(...r)
     } else if (repairPriority === `communicators`) {
-      const r = repairableItems.filter((i) => i.type === `communicator`)
+      const r = repairableItems.filter(
+        (i) => i.type === `communicator`,
+      )
       itemsToRepair.push(...r)
     }
-    if (itemsToRepair.length === 0 || repairPriority === `most damaged`)
+    if (
+      itemsToRepair.length === 0 ||
+      repairPriority === `most damaged`
+    )
       itemsToRepair.push(
         repairableItems.reduce(
-          (mostBroken, ri) => (ri.repair < mostBroken.repair ? ri : mostBroken),
+          (mostBroken, ri) =>
+            ri.repair < mostBroken.repair ? ri : mostBroken,
           repairableItems[0],
         ),
       )
 
     const repairBoost =
-      (this.passives.find((p) => p.id === `boostRepairSpeed`)?.intensity || 0) +
-      1
+      (this.passives.find(
+        (p) => p.id === `boostRepairSpeed`,
+      )?.intensity || 0) + 1
 
     const amountToRepair =
       (baseRepairAmount * repairBoost) /

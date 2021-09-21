@@ -2,8 +2,8 @@
   <div>
     <div class="tooltipheader">
       <span>🪐</span
-      ><span :style="{ color: data.color }">{{
-        data.name
+      ><span :style="{ color: dataToUse.color }">{{
+        dataToUse.name
       }}</span>
       <span class="sub normal"
         ><span class="sub">{{
@@ -13,82 +13,95 @@
     </div>
     <!-- {{ data }} -->
     <hr />
-    <div v-if="data.faction">
+    <div v-if="dataToUse.faction">
       <span
         :style="{
-          color: c.factions[data.faction.id].color,
+          color: c.factions[dataToUse.faction.id].color,
         }"
-        >{{ c.factions[data.faction.id].name }}</span
+        >{{ c.factions[dataToUse.faction.id].name }}</span
       >
       Homeworld
       <hr />
     </div>
 
-    <div v-if="data.planetType === 'mining'" class="sub">
-      Mining colony
+    <div v-if="dataToUse.planetType === 'mining'">
+      <div v-if="dataToUse.mine && dataToUse.mine.length">
+        {{
+          c.printList(
+            dataToUse.mine.map(
+              (cargo) => c.cargo[cargo.id].name,
+            ),
+          )
+        }}
+        mining colony
+      </div>
     </div>
 
-    <div v-if="data.pacifist" class="success">
+    <div v-if="dataToUse.pacifist" class="success">
       Safe haven
     </div>
 
-    <template v-if="data.planetType === 'basic'">
-      <div v-if="data.repairFactor" class="success">
+    <template v-if="dataToUse.planetType === 'basic'">
+      <div v-if="dataToUse.repairFactor" class="success">
         Repair field active
       </div>
       <div
         v-if="
-          data.vendor &&
-          data.vendor.cargo &&
-          data.vendor.cargo.length
+          dataToUse.vendor &&
+          dataToUse.vendor.cargo &&
+          dataToUse.vendor.cargo.length
         "
       >
-        Cargo:
-        {{ data.vendor.cargo.length }} type{{
-          data.vendor.cargo.length === 1 ? '' : 's'
+        {{
+          c.printList(
+            dataToUse.vendor.cargo.map(
+              (cargo) => c.cargo[cargo.id].name,
+            ),
+          )
         }}
-        on sale
+        for sale
       </div>
       <div
         v-if="
-          data.vendor &&
-          data.vendor.items &&
-          data.vendor.items.length
+          dataToUse.vendor &&
+          dataToUse.vendor.items &&
+          dataToUse.vendor.items.length
         "
       >
         Equipment:
         {{
-          data.vendor.items.filter((i) => i.buyMultiplier)
-            .length
+          dataToUse.vendor.items.filter(
+            (i) => i.buyMultiplier,
+          ).length
         }}
         for sale
       </div>
       <div
         v-if="
-          data.vendor &&
-          data.vendor.chassis &&
-          data.vendor.chassis.length
+          dataToUse.vendor &&
+          dataToUse.vendor.chassis &&
+          dataToUse.vendor.chassis.length
         "
       >
         Chassis:
-        {{ data.vendor.chassis.length }}
+        {{ dataToUse.vendor.chassis.length }}
         for sale
       </div>
       <div
         v-if="
-          data.vendor &&
-          data.vendor.passives &&
-          data.vendor.passives.length
+          dataToUse.vendor &&
+          dataToUse.vendor.passives &&
+          dataToUse.vendor.passives.length
         "
       >
         Passives:
-        {{ data.vendor.passives.length }}
+        {{ dataToUse.vendor.passives.length }}
         for sale
       </div>
 
       <hr />
 
-      <ShipPlanetFactionGraph :planet="data" />
+      <ShipPlanetFactionGraph :planet="dataToUse" />
     </template>
 
     <!-- <hr v-if="c.getPlanetDescription(data)" />
@@ -100,7 +113,7 @@
 
 <script>
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -109,7 +122,14 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['ship']),
+    dataToUse() {
+      return (
+        this.ship?.seenPlanets?.find(
+          (p) => p.name === this.data.name,
+        ) || this.data
+      )
+    },
   },
 })
 </script>

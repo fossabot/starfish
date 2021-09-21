@@ -29,7 +29,7 @@
           }"
         >
           <PromptButton
-            :disabled="!ca.canBuy"
+            :disabled="ca.maxCanBuy < 0.01"
             class="inlineblock"
             :max="ca.maxCanBuy"
             @done="buyCargo(ca, ...arguments)"
@@ -68,7 +68,7 @@
         </span></span
       ><span
         class="panesection inline"
-        v-if="sellableCargo"
+        v-if="sellableCargo && sellableCargo.length"
       >
         <div>
           <div class="panesubhead">Sell Cargo</div>
@@ -140,7 +140,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import c from '../../../../common/src'
+import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -195,36 +195,44 @@ export default Vue.extend({
         })
     },
     sellableCargo(): any[] {
-      return this.ship?.planet?.vendor?.cargo
-        .filter((cargo: any) => cargo.sellMultiplier)
-        .map((cargo: any) => {
-          const pricePerUnit = c.r2(
-            Math.min(
-              (c.cargo as any)[cargo.id]?.basePrice *
-                cargo.sellMultiplier *
-                this.ship.planet.priceFluctuator *
-                (this.isFriendlyToFaction
-                  ? 1 +
-                    (1 - (c.factionVendorMultiplier || 1))
-                  : 1),
-            ),
-            0,
-          )
-          const heldAmount =
-            this.crewMember?.inventory.find(
-              (i: any) => i.id === cargo.id,
-            )?.amount || 0
-          return {
-            ...cargo,
-            cargoData: (c.cargo as any)[cargo.id],
-            pricePerUnit,
-            heldAmount,
-            canSell:
+      return (
+        this.crewMember.inventory
+          // .filter((cargo: any) => cargo.sellMultiplier)
+          .map((cargo: Cargo) => {
+            const pricePerUnit = c.r2(
+              Math.min(
+                (c.cargo[cargo.id]?.basePrice || 0) *
+                  ((
+                    this.ship.planet.vendor as PlanetVendor
+                  ).cargo.find(
+                    (planetCargo) =>
+                      planetCargo.id === cargo.id,
+                  )?.sellMultiplier ||
+                    c.baseCargoSellMultiplier) *
+                  this.ship.planet.priceFluctuator *
+                  (this.isFriendlyToFaction
+                    ? 1 +
+                      (1 - (c.factionVendorMultiplier || 1))
+                    : 1),
+              ),
+              0,
+            )
+            const heldAmount =
               this.crewMember?.inventory.find(
                 (i: any) => i.id === cargo.id,
-              )?.amount >= 0.00999,
-          }
-        })
+              )?.amount || 0
+            return {
+              ...cargo,
+              cargoData: (c.cargo as any)[cargo.id],
+              pricePerUnit,
+              heldAmount,
+              canSell:
+                this.crewMember?.inventory.find(
+                  (i: any) => i.id === cargo.id,
+                )?.amount >= 0.00999,
+            }
+          })
+      )
     },
     totalWeight(): number {
       return this.crewMember.inventory.reduce(

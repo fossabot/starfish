@@ -22,6 +22,7 @@ interface IOServerEvents {
     channelType?: GameChannelType,
   ) => void
   [`ship:resetView`]: () => void
+  [`ship:forwardTo`]: (id: string) => void
 }
 
 interface IOClientEvents {
@@ -34,6 +35,19 @@ interface IOClientEvents {
     callback: (res: boolean) => void,
   ) => void
   [`game:save`]: (adminId: string, password: string) => void
+  [`game:pause`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:unpause`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:messageAll`]: (
+    adminId: string,
+    password: string,
+    message: LogContent,
+  ) => void
   [`game:resetAllPlanets`]: (
     adminId: string,
     password: string,
@@ -78,10 +92,15 @@ interface IOClientEvents {
   ) => void
   [`ship:listen`]: (
     id: string,
+    crewMemberId: string | false,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:unlisten`]: (id: string) => void
 
+  [`crew:toTutorial`]: (
+    shipId: string,
+    crewId: string,
+  ) => void
   [`crew:move`]: (
     shipId: string,
     crewId: string,
@@ -123,7 +142,9 @@ interface IOClientEvents {
     cargoId: CargoId | `credits`,
     amount: number,
     message: string,
-    callback: (res: IOResponse<CacheStub>) => void,
+    callback: (
+      res: IOResponse<CacheStub | undefined>,
+    ) => void,
   ) => void
   [`crew:buyCargo`]: (
     shipId: string,

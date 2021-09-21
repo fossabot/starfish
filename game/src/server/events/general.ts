@@ -18,6 +18,7 @@ export default function (
       const foundShips = game.ships.filter(
         (s) =>
           s.human &&
+          !s.tutorial &&
           shipIds.includes(s.id) &&
           s.crewMembers.find((cm) => cm.id === userId),
       )

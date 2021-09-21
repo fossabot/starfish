@@ -1,8 +1,8 @@
 import math from './math'
 import globals from './globals'
 import c from './log'
+import * as cargo from './cargo'
 import text from './text'
-import { Profiler } from './Profiler'
 
 const gameShipLimit = 100
 
@@ -36,6 +36,8 @@ const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
 const cacheExpireTime =
   (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier
+
+const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
 const baseShipScanProperties: {
   id: true
@@ -83,8 +85,7 @@ function getHitDamage(
 ) {
   return (
     weapon.damage *
-    (1 + (totalMunitionsSkill - 1) / 50) *
-    (weapon.repair || 0)
+    math.lerp(1, 4, totalMunitionsSkill / 100)
   )
 }
 
@@ -126,8 +127,7 @@ function getCockpitChargePerTickForSingleCrewMember(
   )
 }
 
-const baseEngineThrustMultiplier =
-  gameSpeedMultiplier * 0.15
+const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1
 
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
@@ -177,6 +177,8 @@ function getWeaponCooldownReductionPerTick(level: number) {
 function getCrewPassivePriceMultiplier(level: number) {
   return 1 + level ** 2
 }
+
+const baseCargoSellMultiplier = 0.3
 
 function statToString(data: {
   stat: string
@@ -316,14 +318,21 @@ function getPlanetTitle(planet: PlanetStub) {
       `Community`,
       `Settlement`,
       `Colony`,
+      `Municipality`,
       `Dockyard`,
       `Landing`,
-      `Spaceport`,
       `Trade Hub`,
       `Ecosystem`,
+      `Skyport`,
+      `Spaceport`,
+      `Cosmic Quayage`,
+      `Cosmodrome`,
+      `Ecopolis`,
       `Metropolis`,
+      `Cosmopolis`,
       `Megalopolis`,
       `Sector Hub`,
+      `Galactic Marina`,
       `Stellar Waypoint`,
       `Galactic Nucleus`,
     ]
@@ -395,86 +404,8 @@ function getPlanetPopulation(planet: PlanetStub): number {
 //   return d
 // }
 
-function stubify<BaseType, StubType extends BaseStub>(
-  baseObject: BaseType,
-  disallowPropName: string[] = [],
-  disallowRecursion: boolean = false,
-): StubType {
-  const profiler = new Profiler(10, `stubify`, false, 0)
-  profiler.step(`getters`)
-  const gettersIncluded: any = { ...baseObject }
-  const proto = Object.getPrototypeOf(baseObject)
-  const getKeyValue =
-    (key: string) => (obj: Record<string, any>) =>
-      obj[key]
-  // c.log(Object.getOwnPropertyNames(proto))
-  for (const key of Object.getOwnPropertyNames(proto)) {
-    const desc = Object.getOwnPropertyDescriptor(proto, key)
-    const hasGetter = desc && typeof desc.get === `function`
-    if (hasGetter) {
-      gettersIncluded[key] = getKeyValue(key)(baseObject)
-    }
-  }
-  profiler.step(`stringify and parse`)
-  // c.log(Object.keys(gettersIncluded))
-  const circularReferencesRemoved = JSON.parse(
-    JSON.stringify(
-      gettersIncluded,
-      (key: string, value: any) => {
-        if ([`toUpdate`, `_stub`, `_id`].includes(key))
-          return undefined
-        if (
-          [
-            `game`,
-            `ship`,
-            `attacker`,
-            `defender`,
-            `crewMember`,
-            `homeworld`,
-            `faction`,
-            `species`,
-          ].includes(key)
-        )
-          return value?.id ? { id: value.id } : null
-        if (disallowPropName?.includes(key))
-          return value?.id || undefined
-        if ([`ships`].includes(key) && Array.isArray(value))
-          return value.map((v) =>
-            stubify(v, [
-              `visible`,
-              `seenPlanets`,
-              `seenLandmarks`,
-              `enemiesInAttackRange`,
-            ]),
-          )
-        // if (!disallowRecursion && value && value.stubify) {
-        //   c.log(
-        //     value.type,
-        //     value.id,
-        //     // Object.keys(value).filter(
-        //     //   (v) =>
-        //     //     ![
-        //     //       `game`,
-        //     //       `ship`,
-        //     //       `attacker`,
-        //     //       `defender`,
-        //     //       `crewMember`,
-        //     //       `homeworld`,
-        //     //     ].includes(v),
-        //     // ),
-        //   )
-        //   return value.stubify([key], true)
-        // } else if (value && value.stubify) return value.id
-        return value
-      },
-    ),
-  ) as StubType
-  // circularReferencesRemoved.lastUpdated = Date.now()
-  profiler.end()
-  return circularReferencesRemoved
-}
-
 export default {
+  supportServerLink,
   gameShipLimit,
   gameSpeedMultiplier,
   baseSightRange,
@@ -507,11 +438,11 @@ export default {
   getWeaponCooldownReductionPerTick,
   getCrewPassivePriceMultiplier,
   tactics,
+  baseCargoSellMultiplier,
   taglineOptions,
   statToString,
   headerBackgroundOptions,
   getPlanetTitle,
   getPlanetPopulation,
   // getPlanetDescription,
-  stubify,
 }

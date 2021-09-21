@@ -5,12 +5,13 @@ import type { Ship } from './Ship/Ship'
 import type { HumanShip } from './Ship/HumanShip'
 import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
+import { getValidZoneLocation } from '../presets/zones'
 
 export class Zone extends Stubbable {
   readonly type = `zone`
   readonly id: string
   readonly name: string
-  readonly location: CoordinatePair
+  location: CoordinatePair // wormholes can change location
   readonly radius: number
   readonly game: Game
   readonly effects: ZoneEffect[]
@@ -104,7 +105,7 @@ export class Zone extends Stubbable {
       // accelerate
       else if (effect.type === `accelerate`) {
         const accelerateMultiplier =
-          1 + effect.intensity * proximityMod * 0.005
+          1 + effect.intensity * proximityMod * 0.0004
         ship.velocity[0] *= accelerateMultiplier
         ship.velocity[1] *= accelerateMultiplier
         ship.toUpdate.velocity = ship.velocity
@@ -116,7 +117,7 @@ export class Zone extends Stubbable {
       // decelerate
       else if (effect.type === `decelerate`) {
         const decelerateMultiplier =
-          1 - effect.intensity * proximityMod * 0.005
+          1 - effect.intensity * proximityMod * 0.001
         ship.velocity[0] *= decelerateMultiplier
         ship.velocity[1] *= decelerateMultiplier
         ship.toUpdate.velocity = ship.velocity
@@ -136,16 +137,29 @@ export class Zone extends Stubbable {
           ],
           `high`,
         )
-        this.game.removeZone(this)
+
+        this.moveToRandomLocation()
+        c.log(`Moved wormhole to ${this.location}`)
+        // this.game.removeZone(this)
       }
     }
   }
 
-  getVisibleStub() {
+  moveToRandomLocation() {
+    this.location = getValidZoneLocation(
+      this.game,
+      this.radius,
+    )
+  }
+
+  toVisibleStub() {
     return this.stubify()
   }
 
   toLogStub() {
-    return this.stubify()
+    return {
+      type: `zone`,
+      id: this.id,
+    }
   }
 }

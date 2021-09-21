@@ -13,4 +13,4 @@ RUN chown node /usr/app/frontend
 # FROM base as release
 # COPY --from=dependencies /usr/app/frontend/node_modules /usr/app/frontend/node_modules
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dockerdev"]

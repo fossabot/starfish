@@ -64,6 +64,8 @@ interface BaseCrewMemberData {
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
   stats?: CrewStatEntry[]
+  tutorialShipId?: string
+  mainShipId?: string
 }
 
 interface XPData {
