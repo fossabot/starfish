@@ -81,6 +81,7 @@ interface IOClientEvents {
   ) => void
   [`ship:get`]: (
     id: string,
+    crewMemberId: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 

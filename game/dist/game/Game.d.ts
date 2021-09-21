@@ -47,8 +47,8 @@ export declare class Game {
     spawnNewZones(): void;
     spawnNewCaches(): void;
     spawnNewAIs(): void;
-    addHumanShip(data: BaseHumanShipData, save?: boolean): HumanShip;
-    addAIShip(data: BaseAIShipData, save?: boolean): AIShip;
+    addHumanShip(data: BaseHumanShipData, save?: boolean): Promise<HumanShip>;
+    addAIShip(data: BaseAIShipData, save?: boolean): Promise<AIShip>;
     removeShip(ship: Ship): Promise<void>;
     addBasicPlanet(data: BaseBasicPlanetData, save?: boolean): Promise<Planet>;
     addMiningPlanet(data: BaseMiningPlanetData, save?: boolean): Promise<Planet>;

@@ -506,10 +506,10 @@ export class Game {
 
   // ----- entity functions -----
 
-  addHumanShip(
+  async addHumanShip(
     data: BaseHumanShipData,
     save = true,
-  ): HumanShip {
+  ): Promise<HumanShip> {
     const existing = this.ships.find(
       (s) => s instanceof HumanShip && s.id === data.id,
     ) as HumanShip
@@ -528,11 +528,14 @@ export class Game {
     data.loadout = `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
-    if (save) db.ship.addOrUpdateInDb(newShip)
+    if (save) await db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
-  addAIShip(data: BaseAIShipData, save = true): AIShip {
+  async addAIShip(
+    data: BaseAIShipData,
+    save = true,
+  ): Promise<AIShip> {
     const existing = this.ships.find(
       (s) => s && s instanceof AIShip && s.id === data.id,
     ) as AIShip | undefined
@@ -550,7 +553,7 @@ export class Game {
 
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
-    if (save) db.ship.addOrUpdateInDb(newShip)
+    if (save) await db.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 

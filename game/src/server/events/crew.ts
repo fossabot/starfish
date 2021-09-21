@@ -14,7 +14,7 @@ export default function (
 ) {
   socket.on(
     `crew:add`,
-    (shipId, crewMemberBaseData, callback) => {
+    async (shipId, crewMemberBaseData, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -39,7 +39,7 @@ export default function (
 
       crewMemberBaseData.credits = 1000
       crewMemberBaseData.cockpitCharge = 1
-      const addedCrewMember = ship.addCrewMember(
+      const addedCrewMember = await ship.addCrewMember(
         crewMemberBaseData,
       )
 
@@ -50,7 +50,7 @@ export default function (
     },
   )
 
-  socket.on(`crew:toTutorial`, (shipId, crewId) => {
+  socket.on(`crew:toTutorial`, async (shipId, crewId) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,
     ) as HumanShip
@@ -61,7 +61,8 @@ export default function (
     if (!crewMember) return
     if (crewMember.tutorialShipId) return
 
-    Tutorial.putCrewMemberInTutorial(crewMember)
+    await Tutorial.putCrewMemberInTutorial(crewMember)
+
     socket.emit(
       `ship:forwardTo`,
       crewMember.tutorialShipId || ``,

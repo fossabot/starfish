@@ -107,7 +107,7 @@ class CommandHandler {
         }
         commandContext.matchedCommands = matchedCommands;
         // get ship data to determine which commands a user should be able to run.
-        const ship = await ioInterface_1.default.ship.get(message.guild?.id || ``);
+        const ship = await ioInterface_1.default.ship.get(message.guild?.id || ``, message.author.id);
         commandContext.ship = ship;
         const crewMember = ship?.crewMembers?.find((cm) => cm.id === message.author.id) || null;
         commandContext.isCaptain =

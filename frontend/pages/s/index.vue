@@ -57,7 +57,8 @@
       <ShipNavPane v-if="ship && !ship.tutorial" />
     </div>
     <!-- {{ ship && ship.id }}
-    {{ ship && ship.dead }}
+    {{ ship && ship.tutorial }} -->
+    <!-- {{ ship && ship.dead }}
     <pre>{{ crewMember }}</pre> -->
 
     <!-- <details style="position: relative; margin-bottom: 2em">

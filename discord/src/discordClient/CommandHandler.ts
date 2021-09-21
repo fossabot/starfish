@@ -121,6 +121,7 @@ export class CommandHandler {
     // get ship data to determine which commands a user should be able to run.
     const ship = await ioInterface.ship.get(
       message.guild?.id || ``,
+      message.author.id,
     )
     commandContext.ship = ship
     const crewMember =

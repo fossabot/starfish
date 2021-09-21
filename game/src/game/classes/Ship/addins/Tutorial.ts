@@ -3,6 +3,7 @@ import io from '../../../../server/io'
 import type { HumanShip } from '../HumanShip'
 import type { Game } from '../../../../game/Game'
 import type { CrewMember } from '../../CrewMember/CrewMember'
+import { db } from '../../../../db'
 
 interface BaseTutorialData {
   step: number
@@ -54,24 +55,24 @@ export class Tutorial {
   step: number = 0
   steps: TutorialStepData[] = []
   baseLocation: CoordinatePair = [0, 0]
-  currentStep?: TutorialStepData
+  currentStep: TutorialStepData
   ship: HumanShip
   targetLocation?: TargetLocation
 
-  static putCrewMemberInTutorial(crewMember: CrewMember) {
+  static async putCrewMemberInTutorial(
+    crewMember: CrewMember,
+  ) {
     c.log(
       `Spawning tutorial ship for crew member ${crewMember.id}`,
     )
-    const tutorialShip = crewMember.ship.game.addHumanShip(
-      {
+    const tutorialShip =
+      await crewMember.ship.game.addHumanShip({
         name: crewMember.ship.name,
         tutorial: { step: -1 },
         id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
         species: { id: crewMember.ship.species.id },
-      },
-      true,
-    )
-    tutorialShip.addCrewMember({
+      })
+    await tutorialShip.addCrewMember({
       name: crewMember.name,
       id: crewMember.id,
       mainShipId: crewMember.ship.id,
@@ -79,6 +80,8 @@ export class Tutorial {
     crewMember.tutorialShipId = tutorialShip.id
     crewMember.toUpdate.tutorialShipId =
       crewMember.tutorialShipId
+
+    await db.ship.addOrUpdateInDb(crewMember.ship)
     return tutorialShip
   }
 
@@ -707,6 +710,7 @@ export class Tutorial {
     this.baseLocation = [
       ...(this.ship.faction.homeworld?.location || [0, 0]),
     ]
+    this.currentStep = this.steps[0]
     if (this.step === -1) {
       // * timeout to give a chance to initialize the crew member in the ship
       setTimeout(() => {
@@ -740,7 +744,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.stamina >
-              this.currentStep!.nextStepTrigger
+              this.currentStep.nextStepTrigger
                 .gainStaminaTo!,
           ),
         )
@@ -751,7 +755,7 @@ export class Tutorial {
         !this.ship.game.aiShips.find(
           (s) =>
             s.id ===
-            this.currentStep!.nextStepTrigger.destroyShipId,
+            this.currentStep.nextStepTrigger.destroyShipId,
         )
 
     if (this.currentStep.nextStepTrigger.crewLocation)
@@ -761,7 +765,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.location ===
-              this.currentStep!.nextStepTrigger
+              this.currentStep.nextStepTrigger
                 .crewLocation!,
           ),
         )
@@ -773,7 +777,7 @@ export class Tutorial {
           this.ship.crewMembers.find(
             (cm) =>
               cm.credits <=
-              this.currentStep!.nextStepTrigger
+              this.currentStep.nextStepTrigger
                 .useCrewCreditsTo!,
           ),
         )
@@ -861,14 +865,14 @@ export class Tutorial {
     // crew location
     if (this.currentStep.forceCrewLocation)
       this.ship.crewMembers.forEach((cm) => {
-        cm.location = this.currentStep!.forceCrewLocation!
+        cm.location = this.currentStep.forceCrewLocation!
         cm.toUpdate.location = cm.location
       })
 
     // crew stamina
     if (this.currentStep.forceStamina !== undefined)
       this.ship.crewMembers.forEach((cm) => {
-        cm.stamina = this.currentStep!.forceStamina!
+        cm.stamina = this.currentStep.forceStamina!
         cm.toUpdate.stamina = cm.stamina
       })
 
@@ -876,7 +880,7 @@ export class Tutorial {
     if (this.currentStep.forceCockpitCharge !== undefined)
       this.ship.crewMembers.forEach((cm) => {
         cm.cockpitCharge =
-          this.currentStep!.forceCockpitCharge!
+          this.currentStep.forceCockpitCharge!
         cm.toUpdate.cockpitCharge = cm.cockpitCharge
       })
 
@@ -923,7 +927,8 @@ export class Tutorial {
           (s) =>
             s.id === this.ship.crewMembers[0]?.mainShipId,
         )
-        if (mainShip && mainShip.onlyCrewMemberIsInTutorial)
+        // only send messages to the discord server if it's the ship's very first tutorial
+        if (mainShip && mainShip.getStat(`tutorials`) === 0)
           io.emit(
             `ship:message`,
             mainShip.id,
@@ -952,7 +957,7 @@ export class Tutorial {
     )
 
     const mainShip = this.ship.game.humanShips.find(
-      (s) => s.id === this.ship.crewMembers[0].mainShipId,
+      (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
     )
     if (!mainShip) {
       this.cleanUp()
@@ -964,7 +969,9 @@ export class Tutorial {
       mainShip.id,
     )
 
-    if (mainShip.crewMembers.length < 2) {
+    mainShip.addStat(`tutorials`, 1)
+
+    if (mainShip.getStat(`tutorials`) === 1) {
       setTimeout(() => {
         mainShip.logEntry(
           [
@@ -1068,7 +1075,7 @@ export class Tutorial {
       })
 
     const mainShip = this.ship.game.humanShips.find(
-      (s) => s.id === this.ship.crewMembers[0].mainShipId,
+      (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
     )
     if (!mainShip) {
       c.log(
@@ -1077,7 +1084,7 @@ export class Tutorial {
       )
     } else {
       const mainCrewMember = mainShip.crewMembers.find(
-        (cm) => cm.id === this.ship.crewMembers[0].id,
+        (cm) => cm.id === this.ship.crewMembers[0]?.id,
       )
       if (!mainCrewMember) {
         c.log(

@@ -48,7 +48,7 @@ export default Vue.extend({
     maxFillColor: { default: 'rgba(255,230,150,.3)' },
     startColor: { default: '#aa0' },
     endColor: { default: '#f50' },
-    chargeTime: { default: 4000 },
+    chargeTime: { default: 2000 },
     animate: { default: 0 },
   },
   data() {

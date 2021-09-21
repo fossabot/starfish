@@ -1606,10 +1606,11 @@ export class HumanShip extends CombatShip {
 
   // ----- crew mgmt -----
 
-  addCrewMember(
+  async addCrewMember(
     data: BaseCrewMemberData,
     setupAdd = false,
-  ): CrewMember {
+  ): Promise<CrewMember> {
+    c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
@@ -1620,7 +1621,7 @@ export class HumanShip extends CombatShip {
           `high`,
         )
 
-      Tutorial.putCrewMemberInTutorial(cm)
+      await Tutorial.putCrewMemberInTutorial(cm)
     }
 
     this.crewMembers.push(cm)
@@ -1639,7 +1640,7 @@ export class HumanShip extends CombatShip {
     else if (this.crewMembers.length >= 100)
       this.addTagline(`Big Fish`, `having 100 crew members`)
 
-    if (!setupAdd) db.ship.addOrUpdateInDb(this)
+    if (!setupAdd) await db.ship.addOrUpdateInDb(this)
     return cm
   }
 
@@ -1883,8 +1884,8 @@ export class HumanShip extends CombatShip {
 
   // ----- respawn -----
 
-  respawn(silent = false) {
-    super.respawn()
+  async respawn(silent = false) {
+    await super.respawn()
 
     this.equipLoadout(`humanDefault`)
 
@@ -1902,6 +1903,8 @@ export class HumanShip extends CombatShip {
         `critical`,
       )
     }
+
+    await db.ship.addOrUpdateInDb(this)
   }
 
   // ----- auto attack -----

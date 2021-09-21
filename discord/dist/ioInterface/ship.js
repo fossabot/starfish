@@ -45,11 +45,11 @@ async function rename(shipId, newName) {
     });
 }
 exports.rename = rename;
-async function get(id) {
+async function get(id, crewMemberId) {
     if (!(await (0, index_1.connected)()))
         return null;
     const shipStub = await new Promise((resolve) => {
-        index_1.io.emit(`ship:get`, id, ({ data: ship, error, }) => {
+        index_1.io.emit(`ship:get`, id, crewMemberId, ({ data: ship, error, }) => {
             if (!ship || error) {
                 dist_1.default.log(error);
                 resolve(null);

@@ -334,7 +334,7 @@ class Game {
         }
     }
     // ----- entity functions -----
-    addHumanShip(data, save = true) {
+    async addHumanShip(data, save = true) {
         const existing = this.ships.find((s) => s instanceof HumanShip_1.HumanShip && s.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing human ship ${existing.name} (${existing.id}).`);
@@ -348,10 +348,10 @@ class Game {
         const newShip = new HumanShip_1.HumanShip(data, this);
         this.ships.push(newShip);
         if (save)
-            db_1.db.ship.addOrUpdateInDb(newShip);
+            await db_1.db.ship.addOrUpdateInDb(newShip);
         return newShip;
     }
-    addAIShip(data, save = true) {
+    async addAIShip(data, save = true) {
         const existing = this.ships.find((s) => s && s instanceof AIShip_1.AIShip && s.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing ai ship ${existing.name} (${existing.id}).`);
@@ -364,7 +364,7 @@ class Game {
         const newShip = new AIShip_1.AIShip(data, this);
         this.ships.push(newShip);
         if (save)
-            db_1.db.ship.addOrUpdateInDb(newShip);
+            await db_1.db.ship.addOrUpdateInDb(newShip);
         return newShip;
     }
     async removeShip(ship) {

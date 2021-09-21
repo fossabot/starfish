@@ -145,7 +145,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         // ----- stamina check/use -----
         if (this.tired)
             return;
-        if (!this.ship.tutorial?.currentStep.disableStamina)
+        if (!this.ship.tutorial?.currentStep?.disableStamina)
             this.stamina -=
                 dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.tickInterval);
         if (this.tired) {

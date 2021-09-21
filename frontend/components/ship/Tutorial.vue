@@ -33,6 +33,7 @@
           >
             {{ currentScript.next || 'Go on...' }}
           </button>
+          <div v-else></div>
           <button class="secondary" @click="skipTutorial">
             Skip Tutorial
           </button>
