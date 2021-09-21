@@ -67,6 +67,13 @@ services:
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
 
+  prometheus:
+    image: 'prom/prometheus:latest'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+
 secrets:
   discord_token:
     file: discord/secrets/discord_token.txt
