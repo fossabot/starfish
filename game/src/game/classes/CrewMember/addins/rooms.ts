@@ -97,6 +97,7 @@ export function bunk(this: CrewMember): void {
   this.toUpdate.stamina = this.stamina
 
   // * drip feed of cockpit charge as well
+  const percentOfNormalChargeToGive = 0.1
 
   if (this.cockpitCharge >= 1) return
 
@@ -109,7 +110,8 @@ export function bunk(this: CrewMember): void {
       this.piloting?.level || 1,
     ) *
     chargeBoost *
-    0.1
+    percentOfNormalChargeToGive
+
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
   this.toUpdate.cockpitCharge = this.cockpitCharge
 }

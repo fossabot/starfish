@@ -117,7 +117,7 @@ function capitalize(string: string = ``): string {
 
 function sanitize(string: string = ``): SanitizeResult {
   if (!string) string = ``
-  string = string.replace(/\n\r\t/g, ``).trim()
+  string = string.replace(/\n\r\t\`/g, ``).trim()
   const withoutURLs = string.replace(
     /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
     ``,
@@ -175,13 +175,14 @@ function msToTimeString(ms: number = 0): string {
   return `${years}y ${days}d`
 }
 
-const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`
+const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`
+
 function garble(string: string = ``, percent = 0): string {
   if (percent > 0.98) percent = 0.98
   let splitString: string[] = string.split(` `)
 
   // move words around
-  while (Math.random() < percent) {
+  while (Math.random() < percent * 0.8) {
     arrayMove(
       splitString,
       Math.floor(splitString.length * Math.random()),
@@ -193,7 +194,7 @@ function garble(string: string = ``, percent = 0): string {
     // move letters around
     splitString = splitString.map((word: string) => {
       let characters: string[] = word.split(``)
-      while (Math.random() < percent * 0.7) {
+      while (Math.random() < percent * 0.6) {
         arrayMove(
           characters,
           Math.floor(characters.length * Math.random()),
@@ -204,7 +205,7 @@ function garble(string: string = ``, percent = 0): string {
       if (percent > 0.3) {
         // randomize letters
         characters = characters.map((char: string) => {
-          if (Math.random() < percent * 0.5) {
+          if (Math.random() < percent * 0.4) {
             char = possibleRandomCharacters.charAt(
               Math.floor(
                 Math.random() *
