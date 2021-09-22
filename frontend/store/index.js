@@ -135,15 +135,22 @@ export const actions = {
     if (!shipId) return
 
     this.$socket?.emit(
-      `ship:get`,
+      `ship:listen`,
       shipId,
       state.userId,
-      (res) => {
+      async (res) => {
         if (`error` in res) return console.log(res.error)
-        commit(`set`, { ship: res.data })
-        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+        // * first load (no visible)
+        dispatch(`updateShip`, { ...res.data })
       },
     )
+    this.$socket.on(`ship:update`, ({ id, updates }) => {
+      if (state.ship === null) return connected()
+      if (state.ship.id !== id) return
+      // * visible update
+      dispatch(`updateShip`, { ...updates })
+      dispatch(`socketStop`)
+    })
   },
 
   async socketStop({ state, commit }) {

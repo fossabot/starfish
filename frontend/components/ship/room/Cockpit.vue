@@ -187,6 +187,7 @@
         </button> </span
       ><span
         v-for="otherShip in ship.visible.ships"
+        v-if="otherShip"
         :key="'gotoship' + otherShip.id"
         v-tooltip="{ type: 'ship', id: ship.id }"
       >
@@ -311,12 +312,14 @@ export default Vue.extend({
       return baseMax
     },
     passiveChargeBoost(): number {
-      return (this.ship as ShipStub).passives.reduce(
-        (total, p: ShipPassiveEffect) =>
-          p.id === 'boostCockpitChargeSpeed'
-            ? total + p.intensity
-            : total,
-        1,
+      return (
+        (this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostCockpitChargeSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1
       )
     },
     planetsToShow(): PlanetStub[] {

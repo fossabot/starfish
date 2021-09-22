@@ -144,7 +144,9 @@ export default class Drawer {
     // ----- planets -----
     const planetsToDraw: PlanetStub[] = (
       ship?.seenPlanets || []
-    ).filter((p) => this.isPointInSightRange(p))
+    )
+      .filter((p) => p)
+      .filter((p) => this.isPointInSightRange(p))
 
     // ----- ships -----
     const shipsToDraw: ShipStub[] = (
