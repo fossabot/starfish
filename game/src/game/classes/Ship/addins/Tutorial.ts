@@ -1030,7 +1030,7 @@ export class Tutorial {
               {
                 text: mainShip.name,
                 color: mainShip.faction.color,
-                tooltipData: mainShip.toLogStub(),
+                tooltipData: mainShip.toLogStub() as any,
               },
               `has joined the game, starting out from`,
               {

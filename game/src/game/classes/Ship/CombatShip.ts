@@ -293,7 +293,7 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: target.toLogStub(),
+            tooltipData: target.toLogStub() as any,
           },
           `with`,
           {
@@ -315,7 +315,7 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: target.toLogStub(),
+            tooltipData: target.toLogStub() as any,
           },
           `with`,
           {
@@ -476,7 +476,7 @@ export abstract class CombatShip extends Ship {
                 {
                   text: this.name,
                   color: this.faction.color,
-                  tooltipData: this.toLogStub(),
+                  tooltipData: this.toLogStub() as any,
                 },
                 `&nospace's`,
                 {
@@ -604,7 +604,7 @@ export abstract class CombatShip extends Ship {
               {
                 text: this.name,
                 color: this.faction.color,
-                tooltipData: this.toLogStub(),
+                tooltipData: this.toLogStub() as any,
               },
               `&nospace's`,
               {
@@ -673,7 +673,7 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.faction.color,
-            tooltipData: attacker.toLogStub(),
+            tooltipData: attacker.toLogStub() as any,
           },
           `&nospace's`,
           {
