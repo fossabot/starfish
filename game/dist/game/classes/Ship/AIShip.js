@@ -47,12 +47,14 @@ class AIShip extends CombatShip_1.CombatShip {
             return;
         // ----- move -----
         this.move();
+        const previousVisible = this.visible;
         this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
         if (this.onlyVisibleToShipId) {
             const onlyVisibleShip = this.game.humanShips.find((s) => s.id === this.onlyVisibleToShipId);
             if (onlyVisibleShip)
                 this.visible.ships.push(onlyVisibleShip);
         }
+        this.takeActionOnVisibleChange(previousVisible, this.visible);
         // recharge weapons
         this.weapons
             .filter((w) => w.cooldownRemaining > 0)
@@ -233,6 +235,10 @@ class AIShip extends CombatShip_1.CombatShip {
         let oddsToIgnore = 0.9;
         if (recipients.length === 1)
             oddsToIgnore *= 0.6;
+        if (message
+            .toLowerCase()
+            .indexOf(this.name.toLowerCase()) > -1)
+            oddsToIgnore = 0.1;
         // c.log(oddsToIgnore)
         if (Math.random() < oddsToIgnore)
             return;
@@ -242,22 +248,11 @@ class AIShip extends CombatShip_1.CombatShip {
             `Less talk, more squawk!`,
             `The early bird gets the fish...`,
             `It's a bird! It's a plane! ...No, it's a bird.`,
-            `My, my, if it isn't a lovely snack!`,
-            `Resistance is futile.`,
-            `You look tasty.`,
-            `Come closer, let's be friends!`,
             `I miss fresh air.`,
             `Do you really think you can out-fly us?`,
             `Some of my best friends are fish.`,
             `I hope you're more substantial than the last fish I fried!`,
-            `Who ordered the fish filet?`,
-            `Swim closer...`,
-            `Come over this way, see what happens!`,
-            `Get your gills over here!`,
-            `It's been years since we had real fish!`,
-            `Crack the shell. Get the meat.`,
             `Noisy fish make for good eating.`,
-            `Food sighted. Prepare to engage.`,
             `Talk all you want, it won't save you.`,
             `Would you pipe down over there?`,
             `Leave the singing to the birds`,
@@ -271,11 +266,48 @@ class AIShip extends CombatShip_1.CombatShip {
         from.receiveBroadcast(toSend, this, garbleAmount, [
             from,
         ]);
-        /*
-    
-    Less talk, more squawk!
-    
-        */
+    }
+    takeActionOnVisibleChange(previousVisible, currentVisible) {
+        const newlyVisibleHumanShips = currentVisible.ships.filter((s) => s.human &&
+            !s.planet &&
+            !previousVisible.ships.includes(s));
+        newlyVisibleHumanShips.forEach((s) => {
+            setTimeout(() => {
+                this.broadcastTo(s);
+            }, Math.random() * 5 * 60 * 1000); // sometime within 5 minutes
+        });
+    }
+    broadcastTo(ship) {
+        // baseline chance to say nothing
+        if (Math.random() > dist_1.default.lerp(0.9, 0.6, this.level / 100))
+            return;
+        const distance = dist_1.default.distance(this.location, ship.location);
+        const maxBroadcastRadius = this.level * 0.05;
+        // don't message ships that are too far
+        if (distance > maxBroadcastRadius)
+            return;
+        // don't message ships that are currently at a planet
+        if (ship.planet)
+            return;
+        const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius;
+        const garbleAmount = dist_1.default.randomBetween(0.01, distanceAsPercentOfMaxBroadcastRadius);
+        let messageOptions = [
+            `My, my, if it isn't a lovely snack!`,
+            `Resistance is futile.`,
+            `You look tasty.`,
+            `Come closer, let's be friends!`,
+            `Who ordered the fish filet?`,
+            `Swim closer...`,
+            `Come over this way, see what happens!`,
+            `Get your gills over here!`,
+            `It's been years since we had real fish!`,
+            `Crack the shell. Get the meat.`,
+            `Food sighted. Prepare to engage.`,
+        ];
+        const message = dist_1.default.garble(dist_1.default.randomFromArray(messageOptions), garbleAmount);
+        ship.receiveBroadcast(message, this, garbleAmount, [
+            ship,
+        ]);
     }
 }
 exports.AIShip = AIShip;

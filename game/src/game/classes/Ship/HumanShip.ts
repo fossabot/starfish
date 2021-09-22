@@ -12,10 +12,11 @@ import type { Planet } from '../Planet/Planet'
 import type { BasicPlanet } from '../Planet/BasicPlanet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
+import type { Zone } from '../Zone'
+import type { AIShip } from './AIShip'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './addins/Tutorial'
-import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 40
@@ -1162,7 +1163,7 @@ export class HumanShip extends CombatShip {
         currentVisible.planets.filter(
           (p) => !previousVisible.planets.includes(p),
         )
-      newlyVisiblePlanets.forEach((p) => {
+      newlyVisiblePlanets.forEach((p: Planet) => {
         c.log(`newly visible planet`, this.name, p.name)
         setTimeout(() => {
           p.broadcastTo(this)
