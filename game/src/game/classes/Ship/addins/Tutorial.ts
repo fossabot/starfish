@@ -949,6 +949,65 @@ export class Tutorial {
     }
   }
 
+  static endMessages(ship: HumanShip) {
+    setTimeout(() => {
+      ship.logEntry(
+        [
+          `Good luck out there! If you have questions about the game, check out the`,
+          { text: `How To Play`, url: `/howtoplay` },
+          `page!`,
+        ],
+        `high`,
+      )
+      io.emit(
+        `ship:message`,
+        ship.id,
+        `Use this channel to broadcast to and receive messages from nearby ships!`,
+        `broadcast`,
+      )
+    }, c.tickInterval)
+
+    ship.addHeaderBackground(
+      c.capitalize(ship.faction.id) + ` Faction 1`,
+      `joining the ${c.capitalize(
+        ship.faction.id,
+      )} faction`,
+    )
+    ship.addHeaderBackground(
+      c.capitalize(ship.faction.id) + ` Faction 2`,
+      `joining the ${c.capitalize(
+        ship.faction.id,
+      )} faction`,
+    )
+    ship.addTagline(
+      `Alpha Tester`,
+      `helping to test ${c.gameName}`,
+    )
+
+    if (ship.planet)
+      ship.planet.shipsAt
+        .filter(
+          (s) => s.faction?.color === ship.faction?.color,
+        )
+        .forEach((s) => {
+          if (s === ship || !s.planet) return
+          s.logEntry([
+            {
+              text: ship.name,
+              color: ship.faction.color,
+              tooltipData: ship.toLogStub() as any,
+            },
+            `has joined the game, starting out from`,
+            {
+              text: s.planet.name,
+              color: s.planet.color,
+              tooltipData: s.planet.toLogStub() as any,
+            },
+            `&nospace!`,
+          ])
+        })
+  }
+
   done(skip = false) {
     c.log(
       `Tutorial ${skip ? `skipped` : `complete`} for ${
@@ -971,77 +1030,8 @@ export class Tutorial {
 
     mainShip.addStat(`tutorials`, 1)
 
-    if (mainShip.getStat(`tutorials`) === 1) {
-      setTimeout(() => {
-        mainShip.logEntry(
-          [
-            `Good luck out there! If you have questions about the game, check out the`,
-            { text: `How To Play`, url: `/howtoplay` },
-            `page!`,
-          ],
-          `high`,
-        )
-        io.emit(
-          `ship:message`,
-          mainShip.id,
-          `Use this channel to broadcast to and receive messages from nearby ships!`,
-          `broadcast`,
-        )
-      }, c.tickInterval)
-
-      mainShip.addHeaderBackground(
-        c.capitalize(mainShip.faction.id) + ` Faction 1`,
-        `joining the ${c.capitalize(
-          mainShip.faction.id,
-        )} faction`,
-      )
-      mainShip.addTagline(
-        `Alpha Tester`,
-        `helping to test ${c.gameName}`,
-      )
-
-      // mainShip.tutorial = undefined
-      // mainShip.toUpdate.tutorial = false
-
-      // reset cash and charge
-      // mainShip.commonCredits = 0
-      // mainShip.toUpdate.commonCredits =
-      //   mainShip.commonCredits
-      // mainShip.crewMembers.forEach((cm) => {
-      //   cm.credits = 1000
-      //   cm.toUpdate.credits = cm.credits
-
-      //   cm.cockpitCharge = 1
-      //   cm.toUpdate.cockpitCharge = cm.cockpitCharge
-      // })
-
-      // mainShip.recalculateShownPanels()
-      // mainShip.respawn(true)
-
-      if (mainShip.planet)
-        mainShip.planet.shipsAt
-          .filter(
-            (s) =>
-              s.faction?.color === mainShip.faction?.color,
-          )
-          .forEach((s) => {
-            if (s === mainShip || !s.planet) return
-            s.logEntry([
-              {
-                text: mainShip.name,
-                color: mainShip.faction.color,
-                tooltipData: mainShip.toLogStub() as any,
-              },
-              `has joined the game, starting out from`,
-              {
-                text: s.planet.name,
-                color: s.planet.color,
-                tooltipData: s.planet.toLogStub() as any,
-              },
-              `&nospace!`,
-            ])
-          })
-    }
+    if (mainShip.getStat(`tutorials`) === 1)
+      Tutorial.endMessages(mainShip)
 
     this.cleanUp()
   }

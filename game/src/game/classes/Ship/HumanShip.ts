@@ -73,6 +73,15 @@ export class HumanShip extends CombatShip {
     //   c.capitalize(this.faction.id) + ` Faction 1`,
     // )
 
+    // todo remove this! this is just a one time thing to give all the ships their fun new headers the first time we added it
+    this.addHeaderBackground(
+      c.capitalize(this.faction.id) + ` Faction 2`,
+      `joining the ${c.capitalize(
+        this.faction.id,
+      )} faction`,
+    )
+    // todo /todo
+
     this.ai = false
     this.human = true
 
@@ -796,11 +805,10 @@ export class HumanShip extends CombatShip {
           thruster.name,
           `thrusted towards`,
           ...targetData,
-          `with ${c.r2(
-            magnitudePerPointOfCharge * charge,
-          )}`,
-          { text: `&nospaceP`, tooltipData: `Poseidons` },
-          `of thrust.`,
+          `at ${c.r2(
+            c.vectorToMagnitude(thrustVector) * 60 * 60,
+            3,
+          )} AU/hr.`,
         ],
         `low`,
       )
@@ -1632,13 +1640,24 @@ export class HumanShip extends CombatShip {
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
     if (!setupAdd && !this.tutorial) {
-      if (this.crewMembers.length > 1)
+      if (this.crewMembers.length > 0)
         this.logEntry(
           `${cm.name} has joined the ship's crew!`,
           `high`,
         )
 
-      await Tutorial.putCrewMemberInTutorial(cm)
+      // if this crew member has already done the tutorial in another ship, skip it
+      const foundInOtherShip = this.game.humanShips.find(
+        (s) =>
+          s.crewMembers.find(
+            (otherCm) => otherCm.id === cm.id,
+          ),
+      )
+      if (!foundInOtherShip)
+        await Tutorial.putCrewMemberInTutorial(cm)
+      // BUT, if they are the first crew member, still send the tutorial-end messages
+      else if (this.crewMembers.length === 0)
+        Tutorial.endMessages(this)
 
       io.to(`user:${cm.id}`).emit(`user:reloadShips`)
     }

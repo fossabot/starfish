@@ -822,6 +822,40 @@ class Tutorial {
             targetLocation: this.targetLocation,
         };
     }
+    static endMessages(ship) {
+        setTimeout(() => {
+            ship.logEntry([
+                `Good luck out there! If you have questions about the game, check out the`,
+                { text: `How To Play`, url: `/howtoplay` },
+                `page!`,
+            ], `high`);
+            io_1.default.emit(`ship:message`, ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
+        }, dist_1.default.tickInterval);
+        ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
+        ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 2`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
+        ship.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
+        if (ship.planet)
+            ship.planet.shipsAt
+                .filter((s) => s.faction?.color === ship.faction?.color)
+                .forEach((s) => {
+                if (s === ship || !s.planet)
+                    return;
+                s.logEntry([
+                    {
+                        text: ship.name,
+                        color: ship.faction.color,
+                        tooltipData: ship.toLogStub(),
+                    },
+                    `has joined the game, starting out from`,
+                    {
+                        text: s.planet.name,
+                        color: s.planet.color,
+                        tooltipData: s.planet.toLogStub(),
+                    },
+                    `&nospace!`,
+                ]);
+            });
+    }
     done(skip = false) {
         dist_1.default.log(`Tutorial ${skip ? `skipped` : `complete`} for ${this.ship.name}`);
         const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
@@ -831,53 +865,8 @@ class Tutorial {
         }
         io_1.default.to(`ship:${this.ship.id}`).emit(`ship:forwardTo`, mainShip.id);
         mainShip.addStat(`tutorials`, 1);
-        if (mainShip.getStat(`tutorials`) === 1) {
-            setTimeout(() => {
-                mainShip.logEntry([
-                    `Good luck out there! If you have questions about the game, check out the`,
-                    { text: `How To Play`, url: `/howtoplay` },
-                    `page!`,
-                ], `high`);
-                io_1.default.emit(`ship:message`, mainShip.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
-            }, dist_1.default.tickInterval);
-            mainShip.addHeaderBackground(dist_1.default.capitalize(mainShip.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(mainShip.faction.id)} faction`);
-            mainShip.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
-            // mainShip.tutorial = undefined
-            // mainShip.toUpdate.tutorial = false
-            // reset cash and charge
-            // mainShip.commonCredits = 0
-            // mainShip.toUpdate.commonCredits =
-            //   mainShip.commonCredits
-            // mainShip.crewMembers.forEach((cm) => {
-            //   cm.credits = 1000
-            //   cm.toUpdate.credits = cm.credits
-            //   cm.cockpitCharge = 1
-            //   cm.toUpdate.cockpitCharge = cm.cockpitCharge
-            // })
-            // mainShip.recalculateShownPanels()
-            // mainShip.respawn(true)
-            if (mainShip.planet)
-                mainShip.planet.shipsAt
-                    .filter((s) => s.faction?.color === mainShip.faction?.color)
-                    .forEach((s) => {
-                    if (s === mainShip || !s.planet)
-                        return;
-                    s.logEntry([
-                        {
-                            text: mainShip.name,
-                            color: mainShip.faction.color,
-                            tooltipData: mainShip.toLogStub(),
-                        },
-                        `has joined the game, starting out from`,
-                        {
-                            text: s.planet.name,
-                            color: s.planet.color,
-                            tooltipData: s.planet.toLogStub(),
-                        },
-                        `&nospace!`,
-                    ]);
-                });
-        }
+        if (mainShip.getStat(`tutorials`) === 1)
+            Tutorial.endMessages(mainShip);
         this.cleanUp();
     }
     async cleanUp() {

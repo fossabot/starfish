@@ -151,7 +151,7 @@ export class BasicPlanet extends Planet {
       levelUpEffect = `increaseRepairFactor`
 
     if (levelUpEffect === `expandLandingZone`) {
-      this.landingRadiusMultiplier += 1
+      this.landingRadiusMultiplier *= 2
     } else if (levelUpEffect === `increaseRepairFactor`) {
       this.repairFactor += 1
     } else if (levelUpEffect === `boostSightRange`) {
