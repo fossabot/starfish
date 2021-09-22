@@ -78,12 +78,8 @@ export default function (
     socket.join([`ship:${id}`])
   })
 
-  socket.on(`ship:unlisten`, (id) => {
-    c.log(
-      `gray`,
-      `Frontend client stopped watching ${id} io`,
-    )
-    socket.leave(`ship:${id}`)
+  socket.on(`user:listen`, (userId) => {
+    socket.join([`user:${userId}`])
   })
 
   socket.on(`ship:respawn`, (id, callback) => {

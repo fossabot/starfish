@@ -12,10 +12,11 @@ import type { Planet } from '../Planet/Planet'
 import type { BasicPlanet } from '../Planet/BasicPlanet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
+import type { Zone } from '../Zone'
+import type { AIShip } from './AIShip'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './addins/Tutorial'
-import type { Zone } from '../Zone'
 
 export class HumanShip extends CombatShip {
   static maxLogLength = 40
@@ -72,6 +73,15 @@ export class HumanShip extends CombatShip {
     //   c.capitalize(this.faction.id) + ` Faction 1`,
     // )
 
+    // todo remove this! this is just a one time thing to give all the ships their fun new headers the first time we added it
+    this.addHeaderBackground(
+      c.capitalize(this.faction.id) + ` Faction 2`,
+      `joining the ${c.capitalize(
+        this.faction.id,
+      )} faction`,
+    )
+    // todo /todo
+
     this.ai = false
     this.human = true
 
@@ -85,6 +95,15 @@ export class HumanShip extends CombatShip {
 
     if (data.tutorial && data.tutorial.step !== undefined)
       this.tutorial = new Tutorial(data.tutorial, this)
+
+    // human ships always know where their homeworld is
+    if (
+      this.faction.homeworld &&
+      !this.seenPlanets.find(
+        (p) => p === this.faction.homeworld,
+      )
+    )
+      this.discoverPlanet(this.faction.homeworld)
 
     this.recalculateShownPanels()
 
@@ -755,15 +774,20 @@ export class HumanShip extends CombatShip {
             c.distance(s.location, targetLocation) <
             c.arrivalThreshold * 5,
         )
-        if (foundShip)
-          targetData = [
-            `the ship`,
-            {
-              text: foundShip.name,
-              color: foundShip.faction?.color,
-              tooltipData: foundShip.toLogStub() as any,
-            },
-          ]
+        if (foundShip) {
+          const fullShip = this.game.ships.find(
+            (s) => s.id === foundShip.id,
+          )
+          if (fullShip)
+            targetData = [
+              `the ship`,
+              {
+                text: fullShip.name,
+                color: fullShip.faction?.color,
+                tooltipData: fullShip.toLogStub() as any,
+              },
+            ]
+        }
       }
 
       if (!targetData)
@@ -781,11 +805,10 @@ export class HumanShip extends CombatShip {
           thruster.name,
           `thrusted towards`,
           ...targetData,
-          `with ${c.r2(
-            magnitudePerPointOfCharge * charge,
-          )}`,
-          { text: `&nospaceP`, tooltipData: `Poseidons` },
-          `of thrust.`,
+          `at ${c.r2(
+            c.vectorToMagnitude(thrustVector) * 60 * 60,
+            3,
+          )} AU/hr.`,
         ],
         `low`,
       )
@@ -1148,9 +1171,11 @@ export class HumanShip extends CombatShip {
         currentVisible.planets.filter(
           (p) => !previousVisible.planets.includes(p),
         )
-      newlyVisiblePlanets.forEach((p) => {
-        c.log(`newly visible planet`, p.name)
-        p.broadcastTo(this)
+      newlyVisiblePlanets.forEach((p: Planet) => {
+        c.log(`newly visible planet`, this.name, p.name)
+        setTimeout(() => {
+          p.broadcastTo(this)
+        }, Math.random() * 15 * 60 * 1000) // sometime within 15 minutes
       })
     }
   }
@@ -1610,18 +1635,31 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
-    c.log(data, this.id)
+    // c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
     if (!setupAdd && !this.tutorial) {
-      if (this.crewMembers.length > 1)
+      if (this.crewMembers.length > 0)
         this.logEntry(
           `${cm.name} has joined the ship's crew!`,
           `high`,
         )
 
-      await Tutorial.putCrewMemberInTutorial(cm)
+      // if this crew member has already done the tutorial in another ship, skip it
+      const foundInOtherShip = this.game.humanShips.find(
+        (s) =>
+          s.crewMembers.find(
+            (otherCm) => otherCm.id === cm.id,
+          ),
+      )
+      if (!foundInOtherShip)
+        await Tutorial.putCrewMemberInTutorial(cm)
+      // BUT, if they are the first crew member, still send the tutorial-end messages
+      else if (this.crewMembers.length === 0)
+        Tutorial.endMessages(this)
+
+      io.to(`user:${cm.id}`).emit(`user:reloadShips`)
     }
 
     this.crewMembers.push(cm)
@@ -1884,8 +1922,19 @@ export class HumanShip extends CombatShip {
 
   // ----- respawn -----
 
-  async respawn(silent = false) {
-    await super.respawn()
+  async respawn(
+    silent = false,
+  ): Promise<Item[] | undefined> {
+    const lostItems = await super.respawn()
+
+    const lostItemValue =
+      lostItems?.reduce(
+        (total, item) => total + item.baseData.basePrice,
+        0,
+      ) || 0
+    const refundAmount =
+      Math.max(0, lostItemValue - 10000) * 0.25
+    this.commonCredits = refundAmount
 
     this.equipLoadout(`humanDefault`)
 
@@ -1905,6 +1954,7 @@ export class HumanShip extends CombatShip {
     }
 
     await db.ship.addOrUpdateInDb(this)
+    return []
   }
 
   // ----- auto attack -----
@@ -1939,10 +1989,8 @@ export class HumanShip extends CombatShip {
     this.toUpdate.mainTactic = mainTactic
 
     const attackableShips = this.getEnemiesInAttackRange()
-    this.toUpdate.enemiesInAttackRange = c.stubify(
-      attackableShips,
-      [`visible`, `seenPlanets`, `seenLandmarks`],
-    )
+    this.toUpdate.enemiesInAttackRange =
+      attackableShips.map((s) => s.stubify())
 
     // ----- gather most common item target -----
 

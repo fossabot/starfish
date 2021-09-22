@@ -46,6 +46,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         // this.availableHeaderBackgrounds.push(
         //   c.capitalize(this.faction.id) + ` Faction 1`,
         // )
+        // todo remove this! this is just a one time thing to give all the ships their fun new headers the first time we added it
+        this.addHeaderBackground(dist_1.default.capitalize(this.faction.id) + ` Faction 2`, `joining the ${dist_1.default.capitalize(this.faction.id)} faction`);
+        // todo /todo
         this.ai = false;
         this.human = true;
         this.speed = dist_1.default.vectorToMagnitude(this.velocity);
@@ -56,6 +59,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.log = data.log || [];
         if (data.tutorial && data.tutorial.step !== undefined)
             this.tutorial = new Tutorial_1.Tutorial(data.tutorial, this);
+        // human ships always know where their homeworld is
+        if (this.faction.homeworld &&
+            !this.seenPlanets.find((p) => p === this.faction.homeworld))
+            this.discoverPlanet(this.faction.homeworld);
         this.recalculateShownPanels();
         if (data.commonCredits)
             this.commonCredits = data.commonCredits;
@@ -522,15 +529,18 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (!targetData) {
                 const foundShip = this.visible.ships.find((s) => dist_1.default.distance(s.location, targetLocation) <
                     dist_1.default.arrivalThreshold * 5);
-                if (foundShip)
-                    targetData = [
-                        `the ship`,
-                        {
-                            text: foundShip.name,
-                            color: foundShip.faction?.color,
-                            tooltipData: foundShip.toLogStub(),
-                        },
-                    ];
+                if (foundShip) {
+                    const fullShip = this.game.ships.find((s) => s.id === foundShip.id);
+                    if (fullShip)
+                        targetData = [
+                            `the ship`,
+                            {
+                                text: fullShip.name,
+                                color: fullShip.faction?.color,
+                                tooltipData: fullShip.toLogStub(),
+                            },
+                        ];
+                }
             }
             if (!targetData)
                 targetData = [
@@ -542,9 +552,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 thruster.name,
                 `thrusted towards`,
                 ...targetData,
-                `with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
-                { text: `&nospaceP`, tooltipData: `Poseidons` },
-                `of thrust.`,
+                `at ${dist_1.default.r2(dist_1.default.vectorToMagnitude(thrustVector) * 60 * 60, 3)} AU/hr.`,
             ], `low`);
         }
         if (!HumanShip.movementIsFree)
@@ -763,8 +771,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.planet) {
             const newlyVisiblePlanets = currentVisible.planets.filter((p) => !previousVisible.planets.includes(p));
             newlyVisiblePlanets.forEach((p) => {
-                dist_1.default.log(`newly visible planet`, p.name);
-                p.broadcastTo(this);
+                dist_1.default.log(`newly visible planet`, this.name, p.name);
+                setTimeout(() => {
+                    p.broadcastTo(this);
+                }, Math.random() * 15 * 60 * 1000); // sometime within 15 minutes
             });
         }
     }
@@ -1075,13 +1085,20 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- crew mgmt -----
     async addCrewMember(data, setupAdd = false) {
-        dist_1.default.log(data, this.id);
+        // c.log(data, this.id)
         const cm = new CrewMember_1.CrewMember(data, this);
         // if it is a fully new crew member (and not a temporary ship in the tutorial)
         if (!setupAdd && !this.tutorial) {
-            if (this.crewMembers.length > 1)
+            if (this.crewMembers.length > 0)
                 this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
-            await Tutorial_1.Tutorial.putCrewMemberInTutorial(cm);
+            // if this crew member has already done the tutorial in another ship, skip it
+            const foundInOtherShip = this.game.humanShips.find((s) => s.crewMembers.find((otherCm) => otherCm.id === cm.id));
+            if (!foundInOtherShip)
+                await Tutorial_1.Tutorial.putCrewMemberInTutorial(cm);
+            // BUT, if they are the first crew member, still send the tutorial-end messages
+            else if (this.crewMembers.length === 0)
+                Tutorial_1.Tutorial.endMessages(this);
+            io_1.default.to(`user:${cm.id}`).emit(`user:reloadShips`);
         }
         this.crewMembers.push(cm);
         if (!this.captain)
@@ -1271,7 +1288,10 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- respawn -----
     async respawn(silent = false) {
-        await super.respawn();
+        const lostItems = await super.respawn();
+        const lostItemValue = lostItems?.reduce((total, item) => total + item.baseData.basePrice, 0) || 0;
+        const refundAmount = Math.max(0, lostItemValue - 10000) * 0.25;
+        this.commonCredits = refundAmount;
         this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
         this.toUpdate.dead = Boolean(this.dead);
@@ -1283,6 +1303,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`, `critical`);
         }
         await db_1.db.ship.addOrUpdateInDb(this);
+        return [];
     }
     // ----- auto attack -----
     autoAttack() {
@@ -1305,7 +1326,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.mainTactic = mainTactic;
         this.toUpdate.mainTactic = mainTactic;
         const attackableShips = this.getEnemiesInAttackRange();
-        this.toUpdate.enemiesInAttackRange = dist_1.default.stubify(attackableShips, [`visible`, `seenPlanets`, `seenLandmarks`]);
+        this.toUpdate.enemiesInAttackRange =
+            attackableShips.map((s) => s.stubify());
         // ----- gather most common item target -----
         const itemTargetCounts = weaponsRoomMembers.reduce((totals, cm) => {
             if (!cm.itemTarget)

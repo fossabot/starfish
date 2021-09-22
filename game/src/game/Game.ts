@@ -178,8 +178,8 @@ export class Game {
     // })
 
     const elapsedTimeInMs = Date.now() - startTime
-    if (elapsedTimeInMs > 50) {
-      if (elapsedTimeInMs < 100)
+    if (elapsedTimeInMs > 100) {
+      if (elapsedTimeInMs < 200)
         c.log(
           `Tick took`,
           `yellow`,
@@ -582,7 +582,13 @@ export class Game {
     if (index === -1) return
     this.ships.splice(index, 1)
 
+    if (!ship.tutorial)
+      ship.crewMembers.forEach((cm) => {
+        io.to(`user:${cm.id}`).emit(`user:reloadShips`)
+      })
+
     ship.tutorial?.cleanUp()
+
     // c.log(
     //   this.humanShips.length,
     //   (

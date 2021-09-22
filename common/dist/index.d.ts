@@ -1,7 +1,7 @@
-import { Profiler } from './Profiler'
-import * as cargo from './cargo'
-import stubify from './stubify'
-import * as items from './items'
+import { Profiler } from './Profiler';
+import * as cargo from './cargo';
+import stubify from './stubify';
+import * as items from './items';
 declare const _default: {
     items: typeof items;
     rooms: {

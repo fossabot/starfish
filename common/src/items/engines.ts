@@ -34,12 +34,7 @@ export const engines: {
     rarity: 0.4,
     thrustAmplification: 0.7,
     maxHp: 5,
-    passives: [
-      // {
-      //   id: `boostBrake`,
-      //   intensity: 0.2,
-      // },
-    ],
+    passives: [],
   },
   starter2: {
     type: `engine`,
@@ -65,7 +60,12 @@ export const engines: {
     rarity: 3,
     thrustAmplification: 1.2,
     maxHp: 4,
-    passives: [],
+    passives: [
+      {
+        id: `boostBrake`,
+        intensity: 0.1,
+      },
+    ],
   },
   basic2: {
     type: `engine`,
@@ -77,7 +77,12 @@ export const engines: {
     rarity: 6,
     thrustAmplification: 1.4,
     maxHp: 4,
-    passives: [],
+    passives: [
+      {
+        id: `boostBrake`,
+        intensity: 0.2,
+      },
+    ],
   },
 
   // glass

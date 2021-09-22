@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
-        "signature": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
+        "version": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
+        "signature": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -287,8 +287,8 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
-        "signature": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
+        "version": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
+        "signature": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -302,7 +302,7 @@
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
-        "version": "cf7fb186fbc1b819c9b4e0adb3654cb08ada8336d2b25550ed81a8882473e364",
+        "version": "467f38821c89b9e173173534e7e2ae8bb05ebf5a54cfff1efc8acb2e1e1f98a8",
         "signature": "d9d84bc04b6b8ea391b8acc5f988a3209a4d1e33cfe482a2439b5b0c46604d0e",
         "affectsGlobalScope": false
       },
@@ -347,7 +347,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "55c763b5c26f40f56ef7e7c95e7ce03f732f16adfae759ebbeae1e112ae3329c",
+        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
@@ -372,12 +372,12 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "323e6b9bdccc20a16767380143a6802776920576fc76ecb124f587f7ac0b7163",
+        "version": "7fad194fc226103384eefac8daa308b918be61911df16382475bb01c990b1c75",
         "signature": "4891b7c3cdc24fb25c16244d3de0ec5162da836e8e62dfdb44186c106dbe1e5f",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "c18de75672705260f6adc0e5fa88599a3d807eb9dcdf3ceab1f19c9df91a8dc1",
+        "version": "18c3824463115ef87d813b0eec72d03cc8affdb9822d18c71ff7e509a0be25a3",
         "signature": "3748d69b4584e861e615f7b209a7f6ad98ccc673469e944a4c055c15e03fc7ef",
         "affectsGlobalScope": false
       },
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "8df19134b304c815bf692c17a71b80e0210f1b76857532072baf5a0f2949431e",
+        "version": "9a53edc4fdc242850782011093c1ac05c96415e57ee5a837d52f225f7840b26e",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
@@ -402,7 +402,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "00a3d3cbe24276247f269fd4cf609902aaaef2224e408f809799530ce028d665",
+        "version": "24f2a67e0d737741ca048b06604aa6fe02811164b056e3a3e2b85c8f89c3a1db",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
@@ -412,7 +412,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/scanners.ts": {
-        "version": "1a2d83358a6d9b7dcc39c8b48ef9240c8a429b51521591dc8f4052c4390bae08",
+        "version": "3f6c0d703e4a5c921d744ca0a68ebb12edefd6cbb18dd56f48f824ab1f6e43fc",
         "signature": "7b3fa96461032282f567ce3825daa43d70d1bc919aa8b6df0ee899721e3f3170",
         "affectsGlobalScope": false
       },
@@ -422,7 +422,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/armor.ts": {
-        "version": "af8b5846c539587e9537f78e7b84cb5353f2ed47f7324d15378a08a57c7e7ff4",
+        "version": "c7ca15c6088b5bdd5ae6093f32f4c593dc842e69aca31f4f102d6f3aa656f2d1",
         "signature": "6b7987494494bef72741f2eabc0a9ed945a0a3112c4abebb5a8e7dc72fbc872e",
         "affectsGlobalScope": false
       },
@@ -917,6 +917,7 @@
       "./src/physics.ts": [
         "../node_modules/@types/node/util.d.ts",
         "./src/globals.ts",
+        "./src/log.ts",
         "./src/math.ts"
       ],
       "./src/profiler.ts": [

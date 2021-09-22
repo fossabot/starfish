@@ -64,6 +64,10 @@ export class Item extends Stubbable {
     this.ship.updateThingsThatCouldChangeOnItemChange()
   }
 
+  get baseData(): BaseItemData {
+    return c.items[this.type][this.id]
+  }
+
   use(usePercent: number = 1) {
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep?.disableRepair)

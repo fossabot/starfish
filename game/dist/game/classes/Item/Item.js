@@ -44,6 +44,9 @@ class Item extends Stubbable_1.Stubbable {
         this.repair = newHp / this.maxHp;
         this.ship.updateThingsThatCouldChangeOnItemChange();
     }
+    get baseData() {
+        return dist_1.default.items[this.type][this.id];
+    }
     use(usePercent = 1) {
         if (this.ship.ai)
             return 0;

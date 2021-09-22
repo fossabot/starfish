@@ -21,32 +21,60 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
         return [0, 0];
     const m1 = thisBody.mass || 0;
     const m2 = thatBody.mass || 0;
-    const r = Math.min(globals_1.default.gravityRange, math_1.default.distance(thisBody.location, thatBody.location)) *
+    const massProduct = m1 * m2;
+    const rangeInMeters = Math.min(globals_1.default.gravityRange, math_1.default.distance(thisBody.location, thatBody.location)) *
         globals_1.default.kmPerAu *
         globals_1.default.mPerKm;
-    if (r === 0)
+    const rangeAsPercentOfGravityRadius = rangeInMeters /
+        (globals_1.default.gravityRange *
+            globals_1.default.kmPerAu *
+            globals_1.default.mPerKm);
+    if (rangeInMeters === 0)
         return [0, 0];
-    // const scalingFunction = (
-    //   rangeInMeters,
-    //   massProduct: number,
-    // ) =>
-    //   0.0001 *
-    //   Math.sqrt(globals.gravitationalConstant * massProduct) *
-    //   (rangeInMeters /
-    //     (globals.gravityRange *
-    //       globals.kmPerAu *
-    //       globals.mPerKm))
-    // const gravityForce = scalingFunction(r, m1 * m2)
-    // real formula is (-globals.gravitationalConstant * m1 * m2) / r ** 2
-    // // * to make gravity feel more 'forceful', we're letting it have an effect over a larger zone
-    const gravityScaleFactor = 0.25;
-    // const gravityForce =
-    // (-globals.gravitationalConstant * m1 * m2) / Math.abs(r) * gravityScaleFactor
-    const gravityForce = ((-globals_1.default.gravitationalConstant * m1 * m2) / r ** 2) *
-        gravityScaleFactor;
+    const scalingFunctions = {
+        defaultRealGravity: () => (-globals_1.default.gravitationalConstant * massProduct) /
+            rangeInMeters ** 2,
+        // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
+        linear: () => -1 *
+            0.000001 *
+            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+            (1 - rangeAsPercentOfGravityRadius),
+        // middle ground between linear and exponential
+        quadratic: () => -1 *
+            0.000001 *
+            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+            (rangeAsPercentOfGravityRadius - 1) ** 2,
+        // stronger lean towards exponential
+        cubic: () => -1 *
+            0.000001 *
+            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+            (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
+        // even stronger lean towards exponential
+        sixthPower: () => -1 *
+            0.000001 *
+            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+            (rangeAsPercentOfGravityRadius - 1) ** 6,
+    };
+    // * ----- current scaling function in use -----
+    const scalingFunction = scalingFunctions.sixthPower;
+    // * ----- flat gravity scaling -----
+    const gravityScaleFactor = 0.2;
+    const gravityForce = scalingFunction() * gravityScaleFactor;
+    // const differenceFromDefault =
+    //   gravityForce -
+    //   scalingFunctions.defaultRealGravity() *
+    //     gravityScaleFactor
+    // c.log({
+    //   name: thatBody.name,
+    //   gravityForce,
+    //   default:
+    //     scalingFunctions.defaultRealGravity() *
+    //     gravityScaleFactor,
+    //   differenceFromDefault,
+    //   rangeAsPercentOfGravityRadius,
+    // })
     const vectorToThisBody = getUnitVectorFromThatBodyToThisBody(thisBody, thatBody);
     const gravityForceVector = vectorToThisBody.map((i) => i * gravityForce);
-    // if (gravityForce < -1012223) console.log(gravityForce)
     return gravityForceVector; // kg * m / second == N
 }
 exports.default = {

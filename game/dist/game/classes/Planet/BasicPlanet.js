@@ -87,7 +87,7 @@ class BasicPlanet extends Planet_1.Planet {
         if (this.level === 1 && this.homeworld)
             levelUpEffect = `increaseRepairFactor`;
         if (levelUpEffect === `expandLandingZone`) {
-            this.landingRadiusMultiplier += 1;
+            this.landingRadiusMultiplier *= 2;
         }
         else if (levelUpEffect === `increaseRepairFactor`) {
             this.repairFactor += 1;

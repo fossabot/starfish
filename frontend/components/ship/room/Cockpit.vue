@@ -7,7 +7,6 @@
     <template #title
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
-    <div class="thrustbg" :class="{ animateThrust }"></div>
 
     <div class="panesection">
       <div class="marbotsmall">
@@ -60,7 +59,10 @@
           @mouseenter.native="
             $store.commit(
               'tooltip',
-              `Click and hold to use your charged thrust to stop the ship. More powerful than thrusting.`,
+              `Click and hold to use your charged thrust to stop the ship. ${
+                c.brakeToThrustRatio *
+                passiveBrakeMultiplier
+              }x more powerful than thrusting.`,
             )
           "
           @mouseleave.native="reset"
@@ -76,7 +78,8 @@
                 maxPossibleSpeedChange *
                   c.brakeToThrustRatio *
                   crewMember.cockpitCharge *
-                  brakeChargeToUse,
+                  brakeChargeToUse *
+                  passiveBrakeMultiplier,
                 3,
               )
             }}
@@ -127,7 +130,9 @@
         v-tooltip="
           `The amount of speed that you can apply to the ship. 
           <p>
-            Braking is <b>${c.brakeToThrustRatio}x</b> more effective than thrusting.
+            Braking is <b>${
+              c.brakeToThrustRatio * passiveBrakeMultiplier
+            }x</b> more effective than thrusting.
           </p>
           <hr />
           <p>
@@ -187,6 +192,7 @@
         </button> </span
       ><span
         v-for="otherShip in ship.visible.ships"
+        v-if="otherShip"
         :key="'gotoship' + otherShip.id"
         v-tooltip="{ type: 'ship', id: ship.id }"
       >
@@ -229,6 +235,8 @@
         target destination.
       </div>
     </div>
+
+    <div class="thrustbg" :class="{ animateThrust }"></div>
   </Box>
 </template>
 
@@ -311,12 +319,25 @@ export default Vue.extend({
       return baseMax
     },
     passiveChargeBoost(): number {
-      return (this.ship as ShipStub).passives.reduce(
-        (total, p: ShipPassiveEffect) =>
-          p.id === 'boostCockpitChargeSpeed'
-            ? total + p.intensity
-            : total,
-        1,
+      return (
+        (this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostCockpitChargeSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1
+      )
+    },
+    passiveBrakeMultiplier(): number {
+      return (
+        (this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostBrake'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1
       )
     },
     planetsToShow(): PlanetStub[] {
@@ -453,6 +474,8 @@ export default Vue.extend({
 .thrustbg {
   position: absolute;
   z-index: 1;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 180%;
   background: radial-gradient(

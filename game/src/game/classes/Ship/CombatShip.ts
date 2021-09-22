@@ -122,8 +122,9 @@ export abstract class CombatShip extends Ship {
     return combatShipsInRange
   }
 
-  async respawn() {
+  async respawn(): Promise<Item[] | undefined> {
     c.log(`Respawning`, this.name)
+    const lostItems = [...this.items]
     this.items = []
     this.previousLocations = []
     this.recalculateMaxHp()
@@ -141,6 +142,7 @@ export abstract class CombatShip extends Ship {
     )
 
     await db.ship.addOrUpdateInDb(this)
+    return lostItems
   }
 
   canAttack(

@@ -10,11 +10,11 @@ const gameShipLimit = 100;
 const gameSpeedMultiplier = 10;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
-const baseRepairCost = 1000;
+const baseRepairCost = 600;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
 const baseXpGain = 0.05 * gameSpeedMultiplier;
-const itemPriceMultiplier = 1000;
+const itemPriceMultiplier = 400;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
 const baseItemSellMultiplier = 0.6;
@@ -70,8 +70,8 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
 }
 const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    const min = 1;
-    const max = 1.4;
+    const min = 0.65;
+    const max = 1.5;
     return (math_1.default.lerp(min, max, level / 100) *
         engineThrustMultiplier *
         baseEngineThrustMultiplier);
@@ -112,6 +112,7 @@ function statToString(data) {
     return `${text_1.default.capitalize(titleString)}: ${text_1.default.numberWithCommas(amountString)}${suffix}`;
 }
 const taglineOptions = [
+    `Alpha Tester`,
     `Tester`,
     `✨Supporter✨`,
     `🔨Admin🔨`,
@@ -150,6 +151,8 @@ const taglineOptions = [
     `Venomous`,
     `Big Chompers`,
     `Bait and Switch`,
+    // sleep time
+    `Bottom Feeder`,
     // dying (implemented)
     `Delicious with Lemon`,
     // crew member numbers (implemented)
@@ -163,9 +166,9 @@ const headerBackgroundOptions = [
     { id: `Blue Faction 1`, url: `blue1.svg` },
     { id: `Purple Faction 1`, url: `purple1.svg` },
     { id: `Green Faction 1`, url: `green1.svg` },
-    // { id: `Blue Faction 2`, url: `blue2.svg` }, // ! no image yet
-    // { id: `Purple Faction 2`, url: `purple2.svg` }, // ! no image yet
-    // { id: `Green Faction 2`, url: `green2.svg` }, // ! no image yet
+    { id: `Blue Faction 2`, url: `blue2.svg` },
+    { id: `Purple Faction 2`, url: `purple2.svg` },
+    { id: `Green Faction 2`, url: `green2.svg` },
     { id: `Flat 1`, url: `flat1.svg` },
     { id: `Flat 2`, url: `flat2.svg` },
     { id: `Stone Cold 1`, url: `gradient1.svg` },
