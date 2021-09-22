@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
+const io_1 = __importDefault(require("../server/io"));
 const db_1 = require("../db");
 const Cache_1 = require("./classes/Cache");
 const Faction_1 = require("./classes/Faction");
@@ -384,6 +385,10 @@ class Game {
         if (index === -1)
             return;
         this.ships.splice(index, 1);
+        if (!ship.tutorial)
+            ship.crewMembers.forEach((cm) => {
+                io_1.default.to(`user:${cm.id}`).emit(`user:reloadShips`);
+            });
         ship.tutorial?.cleanUp();
         // c.log(
         //   this.humanShips.length,

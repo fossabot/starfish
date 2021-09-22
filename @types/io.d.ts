@@ -23,6 +23,9 @@ interface IOServerEvents {
   ) => void
   [`ship:resetView`]: () => void
   [`ship:forwardTo`]: (id: string) => void
+
+  // user
+  [`user:reloadShips`]: () => void
 }
 
 interface IOClientEvents {
@@ -96,7 +99,9 @@ interface IOClientEvents {
     crewMemberId: string | false,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
-  [`ship:unlisten`]: (id: string) => void
+
+  // user
+  [`user:listen`]: (userId: string) => void
 
   [`crew:toTutorial`]: (
     shipId: string,

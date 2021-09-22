@@ -1091,6 +1091,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (this.crewMembers.length > 1)
                 this.logEntry(`${cm.name} has joined the ship's crew!`, `high`);
             await Tutorial_1.Tutorial.putCrewMemberInTutorial(cm);
+            io_1.default.to(`user:${cm.id}`).emit(`user:reloadShips`);
         }
         this.crewMembers.push(cm);
         if (!this.captain)

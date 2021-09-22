@@ -1639,6 +1639,8 @@ export class HumanShip extends CombatShip {
         )
 
       await Tutorial.putCrewMemberInTutorial(cm)
+
+      io.to(`user:${cm.id}`).emit(`user:reloadShips`)
     }
 
     this.crewMembers.push(cm)

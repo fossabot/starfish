@@ -1,4 +1,6 @@
 import * as storage from './storage'
+import c from '../../../common/dist'
+
 export function getUserId({
   tokenType,
   accessToken,
@@ -49,12 +51,10 @@ export async function loadUserGameGuilds({
   tokenType?: string
   accessToken?: string
 }): Promise<IOResponse<string[]>> {
-  if (!tokenType) {
-    tokenType = storage.get(`tokenType`)
-    accessToken = storage.get(`accessToken`)
-  }
+  if (!tokenType) tokenType = storage.get(`tokenType`)
+  if (!accessToken) accessToken = storage.get(`accessToken`)
 
-  // console.log(`Loading user ${userId}'s guilds...`)
+  // c.log(`Loading user ${userId}'s guilds...`)
 
   const allGuilds = await fetch(
     `https://discord.com/api/users/@me/guilds`,
@@ -67,16 +67,17 @@ export async function loadUserGameGuilds({
     .then((result) => result.json())
     .then((guildRes) => {
       if (guildRes.error) {
-        console.log(
+        c.log(
           `Error loading user discord guilds`,
           guildRes.error,
         )
         return []
       }
+      if (guildRes.message) return guildRes.message
       return guildRes.map((g: any) => g?.id)
     })
     .catch((e) => {
-      console.log(`Error loading user discord guilds`, e)
+      c.log(`Error loading user discord guilds`, e)
       storage.set(`tokenType`, tokenType)
       storage.set(`accessToken`, accessToken)
       return `Bad token`

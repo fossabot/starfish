@@ -46,6 +46,13 @@ export const mutations = {
         Vue.set(crewMember, prop, updates[prop])
   },
 
+  setBasicsProp(state, { shipId, prop, value }) {
+    const foundShip = state.shipsBasics.find(
+      (s) => s.id === shipId,
+    )
+    if (foundShip) Vue.set(foundShip, prop, value)
+  },
+
   setRoom(state, target) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `location`, target)
@@ -139,7 +146,7 @@ export const actions = {
       shipId,
       state.userId,
       async (res) => {
-        if (`error` in res) return console.log(res.error)
+        if (`error` in res) return c.log(res.error)
         // * first load (no visible)
         dispatch(`updateShip`, { ...res.data })
       },
@@ -153,9 +160,24 @@ export const actions = {
     })
   },
 
-  async socketStop({ state, commit }) {
+  async socketStop({ state, commit, dispatch }) {
     this.$socket.removeAllListeners()
+    // but we still want updates about new user ships
+    dispatch(`watchUserId`)
   },
+
+  async watchUserId({ state, commit, dispatch }) {
+    // this will give us updates about new user ships
+    this.$socket.emit(`user:listen`, state.userId)
+    this.$socket.on(`user:reloadShips`, () => {
+      // c.log(
+      //   `Reloading ships due to game server instruction...`,
+      // )
+      commit(`set`, { shipIds: null })
+      dispatch(`logIn`)
+    })
+  },
+
   async socketSetup({ state, dispatch, commit }, shipId) {
     this.$socket.removeAllListeners()
     if (!shipId)
@@ -185,13 +207,24 @@ export const actions = {
     const connected = () => {
       clearTimeout(connectionTimeout)
       commit(`set`, { connected: true })
-      this.$socket?.emit(
+
+      dispatch(`watchUserId`)
+
+      this.$socket.emit(
         `ship:listen`,
         shipId,
         state.userId,
         async (res) => {
           // * here we get the first full load of the ship's data
-          if (`error` in res) return console.log(res.error)
+          if (`error` in res) {
+            c.log(res.error, `Reloading ships...`)
+            commit(`set`, {
+              shipIds: null,
+              activeShipId: null,
+            })
+            dispatch(`logIn`)
+            return
+          }
           // c.log(
           //   JSON.stringify(res.data).length,
           //   `characters of data received from initial load`,
@@ -240,7 +273,26 @@ export const actions = {
   updateShip({ commit, state }, updates) {
     // c.log(`updating ship props`, Object.keys(updates))
     if (!state.ship) return
+
+    const basicsIndex = state.shipsBasics?.findIndex(
+      (s) => s.id === state.ship.id,
+    )
+    const basics = state.shipsBasics[basicsIndex]
+
     for (let prop in updates) {
+      // update basics if relevant (i.e. name change)
+      if (
+        basics &&
+        basics[prop] &&
+        basics[prop] !== updates[prop]
+      ) {
+        commit(`setBasicsProp`, {
+          shipId: basics.id,
+          prop,
+          value: updates[prop],
+        })
+      }
+
       if (prop === `crewMembers`) {
         const existingMembers = state.ship.crewMembers
         if (!existingMembers)
@@ -294,7 +346,7 @@ export const actions = {
       `ship:respawn`,
       state.ship.id,
       ({ data, error }) => {
-        if (error) return console.log(error)
+        if (error) return c.log(error)
         dispatch(`updateShip`, { ...data, dead: false })
       },
     )
@@ -325,7 +377,7 @@ export const actions = {
           return
         }
         userId = idRes.data
-        // c.log({ userId })
+        c.log({ userId })
       }
       if (userId) storage.set(`userId`, userId)
 
@@ -353,13 +405,6 @@ export const actions = {
             })
 
             if (guildsRes.error === `Bad token`) {
-              c.log(
-                `failed!`,
-                guildsRes,
-                tokenType,
-                accessToken,
-                userId,
-              )
               // dispatch(`logout`)
               // this.$router.push(`/login`)
               return
@@ -370,9 +415,8 @@ export const actions = {
           }
 
           shipIds = guildsRes.data
-          // c.log({ shipIds })
         } catch (e) {
-          console.log(
+          c.log(
             `failed to get ship ids from discord api`,
             e,
           )
@@ -387,31 +431,29 @@ export const actions = {
 
     commit(`set`, { userId, shipIds })
 
-    if (shipIds?.length > 1) {
-      const shipsBasics = []
-      for (let id of shipIds) {
-        await new Promise((resolve) => {
-          this.$socket?.emit(
-            `ship:basics`,
-            id,
-            ({ data, error }) => {
-              if (error) {
-                c.log(`ship basics error:`, error)
-                // something's up with one of the guilds, so reset the whole deal
-                storage.remove(`shipIds`)
-                commit(`set`, { shipIds: [] })
-                dispatch(`logIn`, { userId })
-                resolve()
-                return
-              }
-              shipsBasics.push(data)
+    const shipsBasics = []
+    for (let id of shipIds) {
+      await new Promise((resolve) => {
+        this.$socket?.emit(
+          `ship:basics`,
+          id,
+          ({ data, error }) => {
+            if (error) {
+              c.log(`ship basics error:`, error)
+              // something's up with one of the guilds, so reset the whole deal
+              storage.remove(`shipIds`)
+              commit(`set`, { shipIds: [] })
+              dispatch(`logIn`, { userId })
               resolve()
-            },
-          )
-        })
-      }
-      commit(`set`, { shipsBasics })
+              return
+            }
+            shipsBasics.push(data)
+            resolve()
+          },
+        )
+      })
     }
+    commit(`set`, { shipsBasics })
   },
 
   logout({ commit, dispatch }) {
@@ -420,7 +462,7 @@ export const actions = {
     commit(`set`, {
       shipIds: [],
       userId: null,
-      shipsBasics: null,
+      shipsBasics: [],
       ship: null,
     })
     storage.remove(`userId`)
