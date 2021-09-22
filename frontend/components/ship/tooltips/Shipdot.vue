@@ -152,8 +152,11 @@
         <div>Mass</div>
         <div>
           {{
-            c.numberWithCommas(c.r2(dataToUse.mass, 0))
-          }}kg
+            c.numberWithCommas(
+              c.r2(dataToUse.mass / 1000, 2),
+            )
+          }}
+          tons
         </div>
       </div>
 

@@ -60,7 +60,10 @@
           @mouseenter.native="
             $store.commit(
               'tooltip',
-              `Click and hold to use your charged thrust to stop the ship. More powerful than thrusting.`,
+              `Click and hold to use your charged thrust to stop the ship. ${
+                c.brakeToThrustRatio *
+                passiveBrakeMultiplier
+              }x more powerful than thrusting.`,
             )
           "
           @mouseleave.native="reset"
@@ -76,7 +79,8 @@
                 maxPossibleSpeedChange *
                   c.brakeToThrustRatio *
                   crewMember.cockpitCharge *
-                  brakeChargeToUse,
+                  brakeChargeToUse *
+                  passiveBrakeMultiplier,
                 3,
               )
             }}
@@ -127,7 +131,9 @@
         v-tooltip="
           `The amount of speed that you can apply to the ship. 
           <p>
-            Braking is <b>${c.brakeToThrustRatio}x</b> more effective than thrusting.
+            Braking is <b>${
+              c.brakeToThrustRatio * passiveBrakeMultiplier
+            }x</b> more effective than thrusting.
           </p>
           <hr />
           <p>
@@ -316,6 +322,17 @@ export default Vue.extend({
         (this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
             p.id === 'boostCockpitChargeSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1
+      )
+    },
+    passiveBrakeMultiplier(): number {
+      return (
+        (this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostBrake'
               ? total + (p.intensity || 0)
               : total,
           1,

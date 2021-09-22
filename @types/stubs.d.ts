@@ -49,9 +49,12 @@ interface ShipStub extends BaseStub {
   slots?: number
   mass?: number
   availableTaglines?: string[]
+  tagline?: string | null
   availableHeaderBackgrounds?: string[]
+  headerBackground?: string | null
   stats?: ShipStatEntry[]
   tutorial?: any
+  captain?: string
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

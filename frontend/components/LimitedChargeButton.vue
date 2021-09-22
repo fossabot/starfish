@@ -90,6 +90,7 @@ export default Vue.extend({
     },
     updateMousePosition(e) {
       this.mousePercent = e.offsetX / this.$el.offsetWidth
+      if (this.mousePercent > 0.95) this.mousePercent = 1
     },
   },
 })
