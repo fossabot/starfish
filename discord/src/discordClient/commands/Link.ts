@@ -13,7 +13,7 @@ export class LinkCommand implements Command {
     initialMessage,
   }: CommandContext): Promise<void> {
     await initialMessage.channel.send(
-      `Your ship's console:\n${c.frontendUrl}/s\n\nBot invite link:\n${c.discordBotInviteUrl}`,
+      `Your ship's console:\n${c.frontendUrl}\n\nBot invite link:\n${c.discordBotInviteUrl}`,
     )
   }
 
