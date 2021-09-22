@@ -31,11 +31,51 @@ export class GoCommand implements Command {
       return
     }
 
-    let roomToGoTo = context.args[0].replace(
-      /[<>]/g,
-      ``,
-    ) as CrewLocation
-    if (!context.ship.rooms[roomToGoTo]) {
+    let enteredString = context.args[0]
+      .replace(/[<>]/g, ``)
+      .toLowerCase()
+
+    let roomToGoTo: CrewLocation | undefined
+    if (
+      [`bunk`, `sleep`, `cabin`, `rest`, `b`].includes(
+        enteredString,
+      )
+    )
+      roomToGoTo = `bunk`
+    if (
+      [
+        `cockpit`,
+        `fly`,
+        `flight`,
+        `flight deck`,
+        `f`,
+      ].includes(enteredString)
+    )
+      roomToGoTo = `cockpit`
+    if (
+      [`mine`, `mining`, `miner`, `dig`, `m`].includes(
+        enteredString,
+      )
+    )
+      roomToGoTo = `mine`
+    if (
+      [`repair`, `fix`, `repairs`, `r`].includes(
+        enteredString,
+      )
+    )
+      roomToGoTo = `repair`
+    if (
+      [
+        `weapon`,
+        `weapons`,
+        `fight`,
+        `combat`,
+        `w`,
+      ].includes(enteredString)
+    )
+      roomToGoTo = `weapons`
+
+    if (!roomToGoTo || !context.ship.rooms[roomToGoTo]) {
       context.reply(
         this.getHelpMessage(
           context.commandPrefix,
