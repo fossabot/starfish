@@ -1,46 +1,20 @@
-declare function getHitDamage(
-  weapon: WeaponStub,
-  totalMunitionsSkill?: number,
-): number
-declare function getBaseDurabilityLossPerTick(
-  maxHp: number,
-  reliability: number,
-): number
-declare function getRadiusDiminishingReturns(
-  totalValue: number,
-  equipmentCount: number,
-): number
-declare function getMaxCockpitChargeForSingleCrewMember(
-  level?: number,
-): number
-declare function getCockpitChargePerTickForSingleCrewMember(
-  level?: number,
-): number
-declare function getThrustMagnitudeForSingleCrewMember(
-  level?: number,
-  engineThrustMultiplier?: number,
-): number
-declare function getRepairAmountPerTickForSingleCrewMember(
-  level: number,
-): number
-declare function getMineAmountPerTickForSingleCrewMember(
-  level: number,
-): number
-declare function getStaminaGainPerTickForSingleCrewMember(): number
-declare function getWeaponCooldownReductionPerTick(
-  level: number,
-): number
-declare function getCrewPassivePriceMultiplier(
-  level: number,
-): number
+declare function getHitDamage(weapon: WeaponStub, totalMunitionsSkill?: number): number;
+declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number): number;
+declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
+declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
+declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
+declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThrustMultiplier?: number): number;
+declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
+declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
+declare function getStaminaGainPerTickForSingleCrewMember(): number;
+declare function getWeaponCooldownReductionPerTick(level: number): number;
+declare function getCrewPassivePriceMultiplier(level: number): number;
 declare function statToString(data: {
-  stat: string
-  amount: number
-}): string
-declare function getPlanetTitle(planet: PlanetStub): string
-declare function getPlanetPopulation(
-  planet: PlanetStub,
-): number
+    stat: string;
+    amount: number;
+}): string;
+declare function getPlanetTitle(planet: PlanetStub): string;
+declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
     supportServerLink: string;
     gameShipLimit: number;

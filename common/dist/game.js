@@ -14,7 +14,7 @@ const baseRepairCost = 1000;
 const maxBroadcastLength = 200;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
 const baseXpGain = 0.05 * gameSpeedMultiplier;
-const itemPriceMultiplier = 1000;
+const itemPriceMultiplier = 400;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
 const baseItemSellMultiplier = 0.6;
@@ -70,8 +70,8 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
 }
 const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    const min = 0.5;
-    const max = 0.8;
+    const min = 0.7;
+    const max = 1.1;
     return (math_1.default.lerp(min, max, level / 100) *
         engineThrustMultiplier *
         baseEngineThrustMultiplier);

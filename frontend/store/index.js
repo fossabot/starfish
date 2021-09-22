@@ -182,15 +182,18 @@ export const actions = {
         `ship:listen`,
         shipId,
         state.userId,
-        (res) => {
+        async (res) => {
           // * here we get the first full load of the ship's data
           if (`error` in res) return console.log(res.error)
           // c.log(
           //   JSON.stringify(res.data).length,
           //   `characters of data received from initial load`,
           // )
-          if (previousShipId !== res.data.id)
+          if (previousShipId !== res.data.id) {
+            commit(`set`, { ship: null })
+            await Vue.nextTick() // testing this to make sure data fully resets
             commit(`set`, { ship: res.data })
+          }
           dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
         },
       )

@@ -86,6 +86,15 @@ export class HumanShip extends CombatShip {
     if (data.tutorial && data.tutorial.step !== undefined)
       this.tutorial = new Tutorial(data.tutorial, this)
 
+    // human ships always know where their homeworld is
+    if (
+      this.faction.homeworld &&
+      !this.seenPlanets.find(
+        (p) => p === this.faction.homeworld,
+      )
+    )
+      this.discoverPlanet(this.faction.homeworld)
+
     this.recalculateShownPanels()
 
     if (data.commonCredits)

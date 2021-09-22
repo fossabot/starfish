@@ -94,7 +94,7 @@ export async function loadUserGameGuilds({
       `ships:forUser:fromIdArray`,
       allGuilds,
       userId,
-      (res: IOResponse<ShipStub>) => {
+      (res: IOResponse<ShipStub[]>) => {
         if (`error` in res) {
           resolve({ error: res.error })
         } else {

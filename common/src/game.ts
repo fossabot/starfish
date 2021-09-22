@@ -19,7 +19,7 @@ const baseStaminaUse = 0.00001 * gameSpeedMultiplier
 
 const baseXpGain = 0.05 * gameSpeedMultiplier
 
-const itemPriceMultiplier = 1000
+const itemPriceMultiplier = 400
 
 const factionVendorMultiplier = 0.98
 const factionAllegianceFriendCutoff = 50
@@ -135,8 +135,8 @@ function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
-  const min: number = 0.5
-  const max: number = 0.8
+  const min: number = 0.7
+  const max: number = 1.1
   return (
     math.lerp(min, max, level / 100) *
     engineThrustMultiplier *

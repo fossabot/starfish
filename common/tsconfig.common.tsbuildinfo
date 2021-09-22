@@ -287,8 +287,8 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
-        "signature": "6cc66df541a4834fc5a1671fa3751eca1bf5d83e27ede8c5c8331709ad3dce2a",
+        "version": "474227b52d36ba7176d95050d878c04870a5f579cbddb2c4ea9c7759c97fb093",
+        "signature": "474227b52d36ba7176d95050d878c04870a5f579cbddb2c4ea9c7759c97fb093",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -347,7 +347,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "55c763b5c26f40f56ef7e7c95e7ce03f732f16adfae759ebbeae1e112ae3329c",
+        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
@@ -377,7 +377,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "c18de75672705260f6adc0e5fa88599a3d807eb9dcdf3ceab1f19c9df91a8dc1",
+        "version": "e33bd336320553b22d82b4ceb0acd946d5e41e7995437a17a5aef40596b044d6",
         "signature": "3748d69b4584e861e615f7b209a7f6ad98ccc673469e944a4c055c15e03fc7ef",
         "affectsGlobalScope": false
       },
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "8df19134b304c815bf692c17a71b80e0210f1b76857532072baf5a0f2949431e",
+        "version": "dae4e5fcefff4fadf170a75f4f4e94514080c038e9e59f5072abb357ec99dd64",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
@@ -402,7 +402,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "00a3d3cbe24276247f269fd4cf609902aaaef2224e408f809799530ce028d665",
+        "version": "24f2a67e0d737741ca048b06604aa6fe02811164b056e3a3e2b85c8f89c3a1db",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
@@ -412,7 +412,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/scanners.ts": {
-        "version": "1a2d83358a6d9b7dcc39c8b48ef9240c8a429b51521591dc8f4052c4390bae08",
+        "version": "3f6c0d703e4a5c921d744ca0a68ebb12edefd6cbb18dd56f48f824ab1f6e43fc",
         "signature": "7b3fa96461032282f567ce3825daa43d70d1bc919aa8b6df0ee899721e3f3170",
         "affectsGlobalScope": false
       },
