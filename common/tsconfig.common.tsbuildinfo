@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
-        "signature": "a36c8db400284e1e8cc87986811f167548c488be27ba115db2725ecc902e0390",
+        "version": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
+        "signature": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -287,8 +287,8 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "474227b52d36ba7176d95050d878c04870a5f579cbddb2c4ea9c7759c97fb093",
-        "signature": "474227b52d36ba7176d95050d878c04870a5f579cbddb2c4ea9c7759c97fb093",
+        "version": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
+        "signature": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -372,7 +372,7 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "a2298e49fde49e458f69633775f67d8d2d9304e39069f7a88cccf19fbaa3b840",
+        "version": "7fad194fc226103384eefac8daa308b918be61911df16382475bb01c990b1c75",
         "signature": "4891b7c3cdc24fb25c16244d3de0ec5162da836e8e62dfdb44186c106dbe1e5f",
         "affectsGlobalScope": false
       },
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "c2362c7e8da231fd1c4257afaab2e42a6a8124c2003d0e7f85f6ce2e398f65f5",
+        "version": "ddb811104be4bfce6435e8ab8089ca7ef145100e9b3ef961a233e75f0c4b90f3",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },

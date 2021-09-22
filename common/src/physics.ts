@@ -61,7 +61,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
     linear: () =>
       -1 *
-      0.000003 *
+      0.0000005 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
@@ -70,24 +70,33 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // middle ground between linear and exponential
     quadratic: () =>
       -1 *
-      0.000003 *
+      0.0000005 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
       (rangeAsPercentOfGravityRadius - 1) ** 2,
 
-    // stronger lean towards default exponential
+    // stronger lean towards exponential
     cubic: () =>
       -1 *
-      0.000003 *
+      0.0000005 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
       (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
+
+    // even stronger lean towards exponential
+    sixthPower: () =>
+      -1 *
+      0.0000005 *
+      Math.sqrt(
+        globals.gravitationalConstant * massProduct,
+      ) *
+      (rangeAsPercentOfGravityRadius - 1) ** 6,
   }
 
   // * ----- current scaling function in use -----
-  const scalingFunction = scalingFunctions.cubic
+  const scalingFunction = scalingFunctions.sixthPower
 
   // * ----- flat gravity scaling -----
   const gravityScaleFactor = 0.2
@@ -95,20 +104,20 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
   const gravityForce =
     scalingFunction() * gravityScaleFactor
 
-  const differenceFromDefault =
-    gravityForce -
-    scalingFunctions.defaultRealGravity() *
-      gravityScaleFactor
+  // const differenceFromDefault =
+  //   gravityForce -
+  //   scalingFunctions.defaultRealGravity() *
+  //     gravityScaleFactor
 
-  c.log({
-    name: thatBody.name,
-    gravityForce,
-    default:
-      scalingFunctions.defaultRealGravity() *
-      gravityScaleFactor,
-    differenceFromDefault,
-    rangeAsPercentOfGravityRadius,
-  })
+  // c.log({
+  //   name: thatBody.name,
+  //   gravityForce,
+  //   default:
+  //     scalingFunctions.defaultRealGravity() *
+  //     gravityScaleFactor,
+  //   differenceFromDefault,
+  //   rangeAsPercentOfGravityRadius,
+  // })
 
   const vectorToThisBody: CoordinatePair =
     getUnitVectorFromThatBodyToThisBody(thisBody, thatBody)

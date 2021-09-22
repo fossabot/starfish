@@ -117,7 +117,7 @@ function capitalize(string: string = ``): string {
 
 function sanitize(string: string = ``): SanitizeResult {
   if (!string) string = ``
-  string = string.replace(/\n\r\t\`/g, ``).trim()
+  string = string.replace(/\n\r\t`/g, ``).trim()
   const withoutURLs = string.replace(
     /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
     ``,
