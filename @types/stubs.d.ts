@@ -37,7 +37,21 @@ interface ShipStub extends BaseStub {
   direction?: number
   seenPlanets?: PlanetStub[]
   seenLandmarks?: any[]
-  [key: string]: any
+  _hp?: number
+  _maxHp?: number
+  shownPanels?: FrontendPanelType[] | false
+  commonCredits?: number
+  mainTactic?: Tactic
+  enemiesInAttackRange?: ShipStub[]
+  itemTarget?: ItemType
+  factionRankings?: FactionRanking[]
+  passives?: ShipPassiveEffect[]
+  slots?: number
+  mass?: number
+  availableTaglines?: string[]
+  availableHeaderBackgrounds?: string[]
+  stats?: ShipStatEntry[]
+  tutorial?: any
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

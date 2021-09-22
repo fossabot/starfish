@@ -755,15 +755,20 @@ export class HumanShip extends CombatShip {
             c.distance(s.location, targetLocation) <
             c.arrivalThreshold * 5,
         )
-        if (foundShip)
-          targetData = [
-            `the ship`,
-            {
-              text: foundShip.name,
-              color: foundShip.faction?.color,
-              tooltipData: foundShip.toLogStub() as any,
-            },
-          ]
+        if (foundShip) {
+          const fullShip = this.game.ships.find(
+            (s) => s.id === foundShip.id,
+          )
+          if (fullShip)
+            targetData = [
+              `the ship`,
+              {
+                text: fullShip.name,
+                color: fullShip.faction?.color,
+                tooltipData: fullShip.toLogStub() as any,
+              },
+            ]
+        }
       }
 
       if (!targetData)
@@ -1951,10 +1956,8 @@ export class HumanShip extends CombatShip {
     this.toUpdate.mainTactic = mainTactic
 
     const attackableShips = this.getEnemiesInAttackRange()
-    this.toUpdate.enemiesInAttackRange = c.stubify(
-      attackableShips,
-      [`visible`, `seenPlanets`, `seenLandmarks`],
-    )
+    this.toUpdate.enemiesInAttackRange =
+      attackableShips.map((s) => s.stubify())
 
     // ----- gather most common item target -----
 
