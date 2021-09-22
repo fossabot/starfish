@@ -61,10 +61,13 @@
     <!-- {{ ship && ship.dead }}
     <pre>{{ crewMember }}</pre> -->
 
-    <!-- <details style="position: relative; margin-bottom: 2em">
+    <details
+      style="position: relative; margin-bottom: 2em"
+      v-if="dev"
+    >
       <summary>Raw Data</summary>
       <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-    </details> -->
+    </details>
   </div>
 </template>
 
@@ -102,6 +105,9 @@ export default Vue.extend({
     },
     room(): CrewLocation {
       return this.crewMember?.location
+    },
+    dev(): boolean {
+      return process.env.NODE_ENV === 'development'
     },
   },
 

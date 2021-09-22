@@ -79,6 +79,8 @@ export default Vue.extend({
         this.mousePercent,
         (Date.now() - this.startTime) / this.chargeTime,
       )
+      if (this.percent >= this.mousePercent)
+        this.startTime = 0
       if (this.percent > this.max) this.percent = this.max
       this.$emit('percent', this.percent / this.max)
     },

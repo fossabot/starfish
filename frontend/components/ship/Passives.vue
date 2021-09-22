@@ -72,7 +72,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .passives {
-  width: 250px;
+  width: 220px;
   position: relative;
 }
 </style>

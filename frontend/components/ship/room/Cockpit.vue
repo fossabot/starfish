@@ -7,7 +7,6 @@
     <template #title
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
-    <div class="thrustbg" :class="{ animateThrust }"></div>
 
     <div class="panesection">
       <div class="marbotsmall">
@@ -236,6 +235,8 @@
         target destination.
       </div>
     </div>
+
+    <div class="thrustbg" :class="{ animateThrust }"></div>
   </Box>
 </template>
 
@@ -473,6 +474,8 @@ export default Vue.extend({
 .thrustbg {
   position: absolute;
   z-index: 1;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 180%;
   background: radial-gradient(

@@ -94,14 +94,6 @@ export default Vue.extend({
         this.ship?.availableTaglines?.includes(o),
       )
     },
-    // unownedHeaderBackgrounds() {
-    //   return c.headerBackgroundOptions.filter(
-    //     (o) =>
-    //       !this.ship?.availableHeaderBackgrounds?.includes(
-    //         o.id,
-    //       ),
-    //   )
-    // },
   },
   watch: {},
   mounted() {},
