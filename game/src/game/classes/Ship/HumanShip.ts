@@ -1610,7 +1610,7 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
-    c.log(data, this.id)
+    // c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
@@ -1884,8 +1884,19 @@ export class HumanShip extends CombatShip {
 
   // ----- respawn -----
 
-  async respawn(silent = false) {
-    await super.respawn()
+  async respawn(
+    silent = false,
+  ): Promise<Item[] | undefined> {
+    const lostItems = await super.respawn()
+
+    const lostItemValue =
+      lostItems?.reduce(
+        (total, item) => total + item.baseData.basePrice,
+        0,
+      ) || 0
+    const refundAmount =
+      Math.max(0, lostItemValue - 10000) * 0.25
+    this.commonCredits = refundAmount
 
     this.equipLoadout(`humanDefault`)
 
@@ -1905,6 +1916,7 @@ export class HumanShip extends CombatShip {
     }
 
     await db.ship.addOrUpdateInDb(this)
+    return []
   }
 
   // ----- auto attack -----

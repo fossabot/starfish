@@ -110,8 +110,8 @@ class Game {
         //   game: c.stubify<Game, GameStub>(this),
         // })
         const elapsedTimeInMs = Date.now() - startTime;
-        if (elapsedTimeInMs > 50) {
-            if (elapsedTimeInMs < 100)
+        if (elapsedTimeInMs > 100) {
+            if (elapsedTimeInMs < 200)
                 dist_1.default.log(`Tick took`, `yellow`, elapsedTimeInMs + ` ms`);
             else
                 dist_1.default.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`);

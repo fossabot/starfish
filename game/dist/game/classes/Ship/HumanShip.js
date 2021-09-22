@@ -1075,7 +1075,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- crew mgmt -----
     async addCrewMember(data, setupAdd = false) {
-        dist_1.default.log(data, this.id);
+        // c.log(data, this.id)
         const cm = new CrewMember_1.CrewMember(data, this);
         // if it is a fully new crew member (and not a temporary ship in the tutorial)
         if (!setupAdd && !this.tutorial) {
@@ -1271,7 +1271,10 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- respawn -----
     async respawn(silent = false) {
-        await super.respawn();
+        const lostItems = await super.respawn();
+        const lostItemValue = lostItems?.reduce((total, item) => total + item.baseData.basePrice, 0) || 0;
+        const refundAmount = Math.max(0, lostItemValue - 10000) * 0.25;
+        this.commonCredits = refundAmount;
         this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
         this.toUpdate.dead = Boolean(this.dead);
@@ -1283,6 +1286,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`, `critical`);
         }
         await db_1.db.ship.addOrUpdateInDb(this);
+        return [];
     }
     // ----- auto attack -----
     autoAttack() {

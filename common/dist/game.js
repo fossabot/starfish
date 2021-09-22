@@ -70,8 +70,8 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
 }
 const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
-    const min = 1;
-    const max = 1.4;
+    const min = 0.5;
+    const max = 0.8;
     return (math_1.default.lerp(min, max, level / 100) *
         engineThrustMultiplier *
         baseEngineThrustMultiplier);

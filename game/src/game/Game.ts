@@ -178,8 +178,8 @@ export class Game {
     // })
 
     const elapsedTimeInMs = Date.now() - startTime
-    if (elapsedTimeInMs > 50) {
-      if (elapsedTimeInMs < 100)
+    if (elapsedTimeInMs > 100) {
+      if (elapsedTimeInMs < 200)
         c.log(
           `Tick took`,
           `yellow`,
