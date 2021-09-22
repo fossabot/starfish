@@ -544,13 +544,13 @@ export class Ship extends Stubbable {
             previousLocation,
             currentLocation,
           ),
-      ) > 5 &&
+      ) >= 2 &&
         c.distance(
           this.location,
           this.previousLocations[
             this.previousLocations.length - 1
           ],
-        ) > 0.000005)
+        ) > 0.000001)
     ) {
       if (this.human)
         c.log(
