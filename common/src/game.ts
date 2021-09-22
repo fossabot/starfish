@@ -11,7 +11,7 @@ const gameSpeedMultiplier = 10
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
-const baseRepairCost = 1000
+const baseRepairCost = 600
 
 const maxBroadcastLength = 200
 
@@ -135,8 +135,8 @@ function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
 ): number {
-  const min: number = 0.75
-  const max: number = 1.2
+  const min: number = 0.65
+  const max: number = 1.5
   return (
     math.lerp(min, max, level / 100) *
     engineThrustMultiplier *
@@ -204,6 +204,7 @@ function statToString(data: {
 }
 
 const taglineOptions: string[] = [
+  `Alpha Tester`,
   `Tester`,
   `✨Supporter✨`,
   `🔨Admin🔨`,
@@ -251,6 +252,9 @@ const taglineOptions: string[] = [
   `Big Chompers`,
   `Bait and Switch`,
 
+  // sleep time
+  `Bottom Feeder`,
+
   // dying (implemented)
   `Delicious with Lemon`,
 
@@ -269,9 +273,9 @@ const headerBackgroundOptions: {
   { id: `Blue Faction 1`, url: `blue1.svg` }, // finish tutorial
   { id: `Purple Faction 1`, url: `purple1.svg` }, // finish tutorial
   { id: `Green Faction 1`, url: `green1.svg` }, // finish tutorial
-  // { id: `Blue Faction 2`, url: `blue2.svg` }, // ! no image yet
-  // { id: `Purple Faction 2`, url: `purple2.svg` }, // ! no image yet
-  // { id: `Green Faction 2`, url: `green2.svg` }, // ! no image yet
+  { id: `Blue Faction 2`, url: `blue2.svg` }, // finish tutorial
+  { id: `Purple Faction 2`, url: `purple2.svg` }, // finish tutorial
+  { id: `Green Faction 2`, url: `green2.svg` }, // finish tutorial
   { id: `Flat 1`, url: `flat1.svg` }, // equipping items
   { id: `Flat 2`, url: `flat2.svg` }, // equipping items
   { id: `Stone Cold 1`, url: `gradient1.svg` }, // killing an enemy

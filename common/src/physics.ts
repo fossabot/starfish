@@ -61,7 +61,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
     linear: () =>
       -1 *
-      0.0000005 *
+      0.000001 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
@@ -70,7 +70,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // middle ground between linear and exponential
     quadratic: () =>
       -1 *
-      0.0000005 *
+      0.000001 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
@@ -79,7 +79,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // stronger lean towards exponential
     cubic: () =>
       -1 *
-      0.0000005 *
+      0.000001 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *
@@ -88,7 +88,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
     // even stronger lean towards exponential
     sixthPower: () =>
       -1 *
-      0.0000005 *
+      0.000001 *
       Math.sqrt(
         globals.gravitationalConstant * massProduct,
       ) *

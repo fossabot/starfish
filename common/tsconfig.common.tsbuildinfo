@@ -377,7 +377,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "e16e0e12b14fc85a05a9478294b7dacc09f474b7cf68b03e063dd29d5d2be536",
+        "version": "18c3824463115ef87d813b0eec72d03cc8affdb9822d18c71ff7e509a0be25a3",
         "signature": "3748d69b4584e861e615f7b209a7f6ad98ccc673469e944a4c055c15e03fc7ef",
         "affectsGlobalScope": false
       },
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "ddb811104be4bfce6435e8ab8089ca7ef145100e9b3ef961a233e75f0c4b90f3",
+        "version": "9a53edc4fdc242850782011093c1ac05c96415e57ee5a837d52f225f7840b26e",
         "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
         "affectsGlobalScope": false
       },
