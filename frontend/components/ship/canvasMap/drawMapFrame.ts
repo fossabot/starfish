@@ -187,7 +187,7 @@ export default class Drawer {
 
     // ----- bg and outline -----
 
-    this.ctx.fillStyle = `#191919`
+    this.ctx.fillStyle = `#111111`
     this.ctx.fillRect(-999999, -999999, 9999999, 9999999)
 
     this.drawPoint({
@@ -195,7 +195,7 @@ export default class Drawer {
         (l) => l / this.flatScale,
       ) as CoordinatePair,
       radius: sightRadius,
-      color: `#111111`,
+      color: `#0b0b0b`,
       opacity: 1,
     })
 

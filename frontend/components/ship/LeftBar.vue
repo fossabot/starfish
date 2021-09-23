@@ -67,8 +67,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .leftbar {
-  --bar-width: 65px;
-  --icon-width: 45px;
+  --bar-width: 55px;
+  --icon-width: 40px;
 }
 
 hr {
@@ -110,7 +110,7 @@ hr {
   justify-content: center;
 
   .activeicon {
-    --activewidth: 3px;
+    --activewidth: calc(var(--bar-width) / 20);
     position: absolute;
     top: 50%;
     left: 0;
@@ -121,8 +121,8 @@ hr {
     border-bottom-right-radius: 5px;
 
     left: calc(-1 * var(--activewidth));
-    transition: left 0.2s ease-in-out, top 0.2s ease-in-out,
-      height 0.2s ease-in-out;
+    transition: left 0.15s ease-in-out,
+      top 0.15s ease-in-out, height 0.15s ease-in-out;
   }
 
   .iconholder {
@@ -138,9 +138,9 @@ hr {
       border-radius: calc(var(--icon-width) / 2);
       width: 100%;
       height: 100%;
-      transition: background 0.2s ease-in-out,
-        box-shadow 0.2s ease-in-out,
-        border-radius 0.2s ease-in-out;
+      transition: background 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out,
+        border-radius 0.15s ease-in-out;
     }
     .underimage {
       position: relative;
@@ -178,6 +178,10 @@ hr {
 
     .underimage {
       background: rgba(255, 255, 255, 0.4);
+    }
+
+    .image {
+      border-radius: calc(var(--icon-width) / 3.5);
     }
   }
 
