@@ -66,7 +66,7 @@ export default class Drawer {
     //   }
     // }
   }) {
-    if (!ship) return
+    if (!ship || !visible) return
     if (
       !this.element ||
       !document.body.contains(this.element)

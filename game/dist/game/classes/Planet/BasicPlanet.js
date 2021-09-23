@@ -354,6 +354,27 @@ class BasicPlanet extends Planet_1.Planet {
             ship,
         ]);
     }
+    resetLevels() {
+        dist_1.default.log(`resetLevels`, this.name);
+        const targetLevel = this.level;
+        const targetXp = this.xp;
+        this.level = 0;
+        this.xp = 0;
+        this.vendor = {
+            cargo: [],
+            items: [],
+            chassis: [],
+            passives: [],
+            actives: [],
+        };
+        this.repairFactor = 0;
+        this.landingRadiusMultiplier = 1;
+        while (this.level < targetLevel) {
+            this.levelUp();
+        }
+        this.xp = targetXp;
+        this.updateFrontendForShipsAt();
+    }
 }
 exports.BasicPlanet = BasicPlanet;
 BasicPlanet.priceFluctuatorIntensity = 0.8;

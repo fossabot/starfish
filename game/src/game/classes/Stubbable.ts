@@ -5,7 +5,7 @@ export class Stubbable {
 
   stubify<StubType>(
     disallowedPropNames: string[] = [],
-    allowRecursionDepth: number = 3,
+    allowRecursionDepth: number = 10,
   ): StubType {
     if (!this._stub)
       this._stub = c.stubify(

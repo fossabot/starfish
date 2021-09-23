@@ -186,8 +186,7 @@ function generateBasicPlanet(game, homeworldFactionKey) {
             propensity: never ? 0 : Math.random() * 2,
         });
     }
-    if (homeworldFactionKey)
-        dist_1.default.log(leanings);
+    // if (homeworldFactionKey) c.log(leanings)
     const vendor = {
         cargo: [],
         passives: [],

@@ -75,7 +75,7 @@ io.on(
   `connection`,
   (socket: Socket<IOClientEvents, IOServerEvents>) => {
     socket[Symbol.for(`nodejs.rejection`)] = (err) => {
-      socket.emit(`disconnect`)
+      socket.emit(`disconnectFromServer`)
     }
     frontendEvents(socket)
     discordEvents(socket)

@@ -203,7 +203,7 @@ export const actions = {
       commit(`set`, { ship: null, connected: false })
     }, 5000)
 
-    this.$socket.on(`disconnect`, () => {
+    this.$socket.on(`disconnectFromServer`, () => {
       commit(`set`, { ship: null, connected: false })
     })
 

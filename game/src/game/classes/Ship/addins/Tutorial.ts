@@ -712,10 +712,18 @@ export class Tutorial {
     ]
     this.currentStep = this.steps[0]
     if (this.step === -1) {
-      // * timeout to give a chance to initialize the crew member in the ship
-      setTimeout(() => {
+      // * timeout to give a chance to initialize the crew member in the ship and save it, THEN start
+      setTimeout(async () => {
+        let retries = 0
+        while (
+          this.ship.crewMembers.length === 0 &&
+          retries < 100
+        ) {
+          await c.sleep(100)
+          retries++
+        }
         this.advanceStep()
-      }, 100)
+      }, 1)
       this.currentStep = this.steps[this.step]
     }
   }

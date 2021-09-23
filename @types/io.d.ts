@@ -1,6 +1,6 @@
 interface IOServerEvents {
   [`connect`]: () => void
-  [`disconnect`]: () => void
+  [`disconnectFromServer`]: () => void
   [`hello`]: () => void
   [`game:tick`]: ({
     deltaTime,
@@ -52,6 +52,10 @@ interface IOClientEvents {
     message: LogContent,
   ) => void
   [`game:resetAllPlanets`]: (
+    adminId: string,
+    password: string,
+  ) => void
+  [`game:reLevelAllPlanets`]: (
     adminId: string,
     password: string,
   ) => void

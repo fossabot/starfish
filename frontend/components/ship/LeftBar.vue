@@ -12,7 +12,7 @@
         @click="shipSelected(s.id)"
       >
         <div class="underimage flexcenter">
-          {{ c.acronym(s.guildName).substring(0, 3) }}
+          {{ c.acronym(s.name).substring(0, 3) }}
         </div>
         <div
           class="image"

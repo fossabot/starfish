@@ -98,6 +98,12 @@ function default_1(socket) {
         });
         __1.game.factions.forEach((f) => (f.homeworld = null));
     });
+    socket.on(`game:reLevelAllPlanets`, async (id, password) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:reLevelAllPlanets`);
+        dist_1.default.log(`Admin releveling all planets`);
+        __1.game.planets.forEach((p) => p.resetLevels());
+    });
     socket.on(`game:resetAllZones`, async (id, password) => {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access game:resetAllZones`);

@@ -238,7 +238,7 @@ export function generateBasicPlanet(
       propensity: never ? 0 : Math.random() * 2,
     })
   }
-  if (homeworldFactionKey) c.log(leanings)
+  // if (homeworldFactionKey) c.log(leanings)
 
   const vendor: PlanetVendor = {
     cargo: [],

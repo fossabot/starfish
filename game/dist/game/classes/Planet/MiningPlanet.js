@@ -130,6 +130,18 @@ class MiningPlanet extends Planet_1.Planet {
             payoutAmount: this.getPayoutAmount(toAdd),
         });
     }
+    resetLevels() {
+        const targetLevel = this.level;
+        const targetXp = this.xp;
+        this.level = 0;
+        this.xp = 0;
+        this.mine = [];
+        while (this.level < targetLevel) {
+            this.levelUp();
+        }
+        this.xp = targetXp;
+        this.updateFrontendForShipsAt();
+    }
 }
 exports.MiningPlanet = MiningPlanet;
 /*

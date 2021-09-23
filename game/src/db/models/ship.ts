@@ -19,9 +19,9 @@ const shipSchemaFields: Record<
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
-  species: { id: String },
+  species: { id: { type: String, required: true } },
   loadout: String,
-  chassis: { id: String },
+  chassis: { id: { type: String, required: true } },
   items: [
     {
       type: { type: String, required: true },
@@ -95,7 +95,7 @@ const shipSchemaFields: Record<
   commonCredits: Number,
 
   // ---- ai
-  ai: { type: Boolean, default: false },
+  ai: { type: Boolean, default: false, required: true },
   spawnPoint: [Number, Number],
   level: Number,
   onlyVisibleToShipId: String,
@@ -115,15 +115,16 @@ export async function addOrUpdateInDb(
     )?.toObject()
   alreadyUpdating.add(data.id)
 
+  // c.log(`will update`, data)
   const stub = data.stubify()
   // if (data.human)
-  // // stub.items = []
-  // c.log(
-  //   `updating`,
-  //   stub.id,
-  //   data.items.map((i) => i.id + ` ` + i.type)
-  //   stub
-  // )
+  //   // stub.items = []
+  //   c.log(
+  //     `updating`,
+  //     stub.id,
+  //     Boolean(data.tutorial),
+  //     stub.tutorial,
+  //   )
   const toSave = (new DBShip(stub) as any)._doc
   delete toSave._id
   const dbObject: DBShipDoc | null =
@@ -138,7 +139,7 @@ export async function addOrUpdateInDb(
 
   // if (data.human) {
   //   const found = await DBShip.findOne({ id: data.id })
-  //   if (found) c.log(`updated`, found.id, found.items)
+  //   if (found) c.log(`updated`, found)
   // }
   return dbObject
 }

@@ -7,6 +7,7 @@ exports.scanners = void 0;
 const game_1 = __importDefault(require("../game"));
 exports.scanners = {
     tutorial1: {
+        buyable: false,
         type: `scanner`,
         id: `tutorial1`,
         displayName: `Echo-locator Mk.1`,

@@ -53,7 +53,7 @@ const io = new socket_io_1.Server(webServer, {
 });
 io.on(`connection`, (socket) => {
     socket[Symbol.for(`nodejs.rejection`)] = (err) => {
-        socket.emit(`disconnect`);
+        socket.emit(`disconnectFromServer`);
     };
     (0, frontend_1.default)(socket);
     (0, discord_1.default)(socket);
