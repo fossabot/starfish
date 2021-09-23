@@ -152,7 +152,7 @@ class CommandHandler {
         if (context.initialMessage.guild?.me?.nickname !==
             `${dist_1.default.gameName}`)
             context.initialMessage.guild?.me?.setNickname(`${dist_1.default.gameName}`);
-        // * removed because it would reset ship names willy-nilly, and they can set it manually
+        // * removed because it would reset the ship name to the guild name whenever a command was used and not respect manally entered custom names
         // // ----- update guild name if necessary -----
         // if (context.ship && context.guild) {
         //   if (
@@ -169,11 +169,10 @@ class CommandHandler {
         // ----- check for crew member still in guild, and update name if necessary -----
         if (context.crewMember) {
             const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
-            if (!guildMember) {
-                dist_1.default.log(`NO GUILD MEMBER BY THAT NAME`);
-            }
-            else if (context.ship &&
+            if (guildMember &&
+                context.ship &&
                 context.nickname !== context.crewMember.name) {
+                dist_1.default.log(`gray`, `Auto-renaming crew member with different name:`, context.crewMember.name, `to`, context.nickname);
                 ioInterface_1.default.crew.rename(context.ship.id, context.crewMember.id, context.nickname);
             }
         }
