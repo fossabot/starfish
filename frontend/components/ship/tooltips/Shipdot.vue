@@ -164,6 +164,7 @@
         v-if="dataToUse.crewMembers"
         class="flexbetween"
         v-tooltip="
+          !dataToUse.tutorial &&
           Array.isArray(dataToUse.crewMembers) &&
           dataToUse.crewMembers[0] &&
           dataToUse.crewMembers[0].name
@@ -181,6 +182,7 @@
       <div
         class="flexbetween"
         v-if="
+          !dataToUse.tutorial &&
           dataToUse.captain &&
           dataToUse.crewMembers &&
           Array.isArray(dataToUse.crewMembers)

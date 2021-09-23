@@ -20,6 +20,8 @@ export const state = () => ({
   modal: null,
   forceMapRedraw: 0,
   mapFollowingShip: true,
+
+  adminPassword: false,
 })
 
 export const mutations = {
@@ -271,7 +273,7 @@ export const actions = {
   },
 
   updateShip({ commit, state }, updates) {
-    // c.log(`updating ship props`, Object.keys(updates))
+    c.log(`updating ship props`, Object.keys(updates))
     if (!state.ship) return
 
     const basicsIndex = state.shipsBasics?.findIndex(
