@@ -49,6 +49,7 @@ export class GoCommand implements Command {
         `flight`,
         `flight deck`,
         `f`,
+        `c`,
       ].includes(enteredString)
     )
       roomToGoTo = `cockpit`
