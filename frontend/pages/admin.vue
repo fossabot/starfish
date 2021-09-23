@@ -48,6 +48,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import c from '../../common/dist'
+import { get, set, remove } from '../assets/scripts/storage'
 
 export default Vue.extend({
   layout: 'withnavbar',
@@ -62,6 +63,10 @@ export default Vue.extend({
   },
   watch: {},
   async mounted() {
+    if (get('adminPassword'))
+      this.$store.commit('set', {
+        adminPassword: get('adminPassword'),
+      })
     if (
       process.env.NODE_ENV !== 'development' &&
       !this.adminPassword
@@ -77,11 +82,14 @@ export default Vue.extend({
       this.userId,
       this.adminPassword,
       (isAdmin) => {
-        if (isAdmin) this.show = true
-        else {
+        if (isAdmin) {
+          this.show = true
+          set('adminPassword', this.adminPassword)
+        } else {
           this.$store.commit('set', {
             adminPassword: false,
           })
+          remove('adminPassword')
           this.$router.replace('/')
         }
       },
