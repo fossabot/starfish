@@ -39,10 +39,10 @@ declare const _default: {
         flamingos: BaseSpeciesData;
     };
     factions: {
-        red: BaseFactionData;
         green: BaseFactionData;
         blue: BaseFactionData;
         purple: BaseFactionData;
+        red: BaseFactionData;
     };
     basePassiveData: {
         boostDropAmount: {
@@ -153,7 +153,7 @@ declare const _default: {
         previousLocations: true;
         location: true;
         planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("homeworld" | "species" | "name" | "color" | "id" | "ai")[];
+        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };

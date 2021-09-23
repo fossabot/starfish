@@ -15,11 +15,16 @@ export declare const engine: {
     tutorial1: BaseEngineData;
     starter1: BaseEngineData;
     starter2: BaseEngineData;
+    starter3: BaseEngineData;
     basic1: BaseEngineData;
     basic2: BaseEngineData;
+    basic3: BaseEngineData;
     glass1: BaseEngineData;
     glass2: BaseEngineData;
     glass3: BaseEngineData;
+    heavy1: BaseEngineData;
+    heavy2: BaseEngineData;
+    heavy3: BaseEngineData;
 };
 export declare const scanner: {
     tutorial1: BaseScannerData;
@@ -61,11 +66,18 @@ export declare const armor: {
 export declare const chassis: {
     starter1: BaseChassisData;
     starter2: BaseChassisData;
+    starter3: BaseChassisData;
+    fighter1: BaseChassisData;
+    fighter2: BaseChassisData;
+    fighter3: BaseChassisData;
     hauler1: BaseChassisData;
     hauler2: BaseChassisData;
+    hauler3: BaseChassisData;
     sailer1: BaseChassisData;
     sailer2: BaseChassisData;
+    sailer3: BaseChassisData;
     mega1: BaseChassisData;
     mega2: BaseChassisData;
+    mega3: BaseChassisData;
 };
 //# sourceMappingURL=index.d.ts.map

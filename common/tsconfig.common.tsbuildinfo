@@ -267,8 +267,8 @@
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "b98595a21aef799b9d5800485767ed54aca53b53a12d0556208f846af0289c00",
-        "signature": "b98595a21aef799b9d5800485767ed54aca53b53a12d0556208f846af0289c00",
+        "version": "deda38a829d2652507b88440d042f739b7f820d2032e86f368189542374c4b8e",
+        "signature": "deda38a829d2652507b88440d042f739b7f820d2032e86f368189542374c4b8e",
         "affectsGlobalScope": true
       },
       "../@types/log.d.ts": {
@@ -402,7 +402,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "24f2a67e0d737741ca048b06604aa6fe02811164b056e3a3e2b85c8f89c3a1db",
+        "version": "8fcb66ce23c5a9293ca19444ac924af23d5231b978e725a07a624349acfe0cae",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
@@ -427,7 +427,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/chassis.ts": {
-        "version": "aa9db9c20f05e0e3aff52b49713c5746c1520997acf028feee149a889002e910",
+        "version": "4905c3aa58c9b2f37c793ef62c8ad50a760709ee7eddfa85abb6ef4746ce79e4",
         "signature": "1d7725b674bd27f36a539257ba157d42320ab06de9fa8aef262a1268e9f6319e",
         "affectsGlobalScope": false
       },

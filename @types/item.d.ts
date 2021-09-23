@@ -1,22 +1,35 @@
 type ChassisId =
   | `starter1`
   | `starter2`
+  | `starter3`
+  | `fighter1`
+  | `fighter2`
+  | `fighter3`
   | `hauler1`
   | `hauler2`
+  | `hauler3`
   | `sailer1`
   | `sailer2`
+  | `sailer3`
   | `mega1`
   | `mega2`
+  | `mega3`
 
 type EngineId =
   | `tutorial1`
   | `starter1`
   | `starter2`
+  | `starter3`
   | `basic1`
   | `basic2`
+  | `basic3`
   | `glass1`
   | `glass2`
   | `glass3`
+  | `heavy1`
+  | `heavy2`
+  | `heavy3`
+
 type WeaponId =
   | `tutorial1`
   | `cannon1`

@@ -269,7 +269,7 @@ class Game {
                 `credits`,
             ]);
             const amount = id === `credits`
-                ? Math.round(Math.random() * 200 + 1) * 100
+                ? Math.round(Math.random() * 150 + 1) * 100
                 : Math.round(Math.random() * 200) / 10 + 1;
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
             const message = Math.random() > 0.9
