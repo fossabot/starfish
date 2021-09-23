@@ -393,11 +393,11 @@ export class Game {
     }
   }
 
-  spawnNewZones() {
+  async spawnNewZones() {
     while (this.zones.length < this.gameSoftArea * 1.15) {
       const z = generateZoneData(this)
       if (!z) return
-      const zone = this.addZone(z)
+      const zone = await this.addZone(z)
       c.log(
         `gray`,
         `Spawned zone ${zone.name} at ${zone.location.map(
@@ -662,7 +662,10 @@ export class Game {
     return newSpecies
   }
 
-  addCache(data: BaseCacheData, save = true): Cache {
+  async addCache(
+    data: BaseCacheData,
+    save = true,
+  ): Promise<Cache> {
     const existing = this.caches.find(
       (cache) => cache.id === data.id,
     )
@@ -677,7 +680,7 @@ export class Game {
     this.caches.push(newCache)
     // c.log(`adding`, newCache)
 
-    if (save) db.cache.addOrUpdateInDb(newCache)
+    if (save) await db.cache.addOrUpdateInDb(newCache)
     return newCache
   }
 
@@ -693,7 +696,10 @@ export class Game {
     // c.log(this.caches.length, `remaining`)
   }
 
-  addZone(data: BaseZoneData, save = true): Zone {
+  async addZone(
+    data: BaseZoneData,
+    save = true,
+  ): Promise<Zone> {
     const existing = this.zones.find(
       (zone) => zone.id === data.id,
     )
@@ -707,7 +713,7 @@ export class Game {
     const newZone = new Zone(data, this)
     this.zones.push(newZone)
 
-    if (save) db.zone.addOrUpdateInDb(newZone)
+    if (save) await db.zone.addOrUpdateInDb(newZone)
     return newZone
   }
 

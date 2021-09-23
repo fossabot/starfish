@@ -513,7 +513,7 @@ export default function (
 
   socket.on(
     `crew:drop`,
-    (
+    async (
       shipId,
       crewId,
       cargoId,
@@ -554,7 +554,7 @@ export default function (
       }
 
       if (amount > 1) {
-        const cache = game.addCache({
+        const cache = await game.addCache({
           location: [...ship.location],
           contents: [{ id: cargoId, amount }],
           droppedBy: ship.id,
@@ -784,7 +784,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} thrusted.`,
+        `${crewMember.name} on ${ship.name} braked.`,
       )
     },
   )

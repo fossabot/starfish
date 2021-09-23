@@ -118,7 +118,7 @@ export class Planet extends Stubbable {
     }
   }
 
-  async levelUp() {
+  levelUp() {
     this.level++
     if (this.xp < c.levels[this.level - 1]) {
       // this will only happen when levelling up from 0, randomize a bit so it's not clear if NO one has ever been here before
