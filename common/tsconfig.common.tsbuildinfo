@@ -377,7 +377,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "8810d1397d0b5f58761b53b35e476d5ace1dc632a9cb274b16e3f9253a72018e",
+        "version": "e38d950adcb4579c8a1c94c5c983c20b9367b45a09b4d446b7bd114c95d926fc",
         "signature": "7ca8105c69faed24e740cb8e4c958015669bf388cb33008303a34e0d0ac3cd16",
         "affectsGlobalScope": false
       },

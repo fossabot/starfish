@@ -111,12 +111,16 @@ class Game {
         //   game: c.stubify<Game, GameStub>(this),
         // })
         const elapsedTimeInMs = Date.now() - startTime;
-        if (elapsedTimeInMs > 100) {
-            if (elapsedTimeInMs < 200)
-                dist_1.default.log(`Tick took`, `yellow`, elapsedTimeInMs + ` ms`);
-            else
-                dist_1.default.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`);
-        }
+        // if (elapsedTimeInMs > 100) {
+        //   if (elapsedTimeInMs < 200)
+        //     c.log(
+        //       `Tick took`,
+        //       `yellow`,
+        //       elapsedTimeInMs + ` ms`,
+        //     )
+        //   else
+        //     c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
+        // }
         this.averageTickTime = dist_1.default.lerp(this.averageTickTime, elapsedTimeInMs, 0.1);
     }
     // ----- scan function -----

@@ -39,7 +39,7 @@ const planetContributeCostPerXp = 10
 const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
 const cacheExpireTime =
-  (1000 * 60 * 60 * 24 * 7 * 10) / gameSpeedMultiplier
+  (1000 * 60 * 60 * 24 * 7 * 15) / gameSpeedMultiplier
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 

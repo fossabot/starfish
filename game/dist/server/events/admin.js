@@ -25,13 +25,13 @@ catch (e) {
 }
 try {
     adminKeys = JSON.parse(adminKeys);
-    dist_1.default.log(`loaded admin keys`, adminKeys); // todo delete!!!!
 }
 catch (e) {
     adminKeys = false;
     dist_1.default.log(`red`, `Error loading admin keys!`, e);
 }
 function isAdmin(id, password) {
+    dist_1.default.log(id, password, adminKeys);
     if (process.env.NODE_ENV === `development`)
         return true;
     if (!adminKeys)

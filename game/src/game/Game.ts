@@ -178,16 +178,16 @@ export class Game {
     // })
 
     const elapsedTimeInMs = Date.now() - startTime
-    if (elapsedTimeInMs > 100) {
-      if (elapsedTimeInMs < 200)
-        c.log(
-          `Tick took`,
-          `yellow`,
-          elapsedTimeInMs + ` ms`,
-        )
-      else
-        c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
-    }
+    // if (elapsedTimeInMs > 100) {
+    //   if (elapsedTimeInMs < 200)
+    //     c.log(
+    //       `Tick took`,
+    //       `yellow`,
+    //       elapsedTimeInMs + ` ms`,
+    //     )
+    //   else
+    //     c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
+    // }
     this.averageTickTime = c.lerp(
       this.averageTickTime,
       elapsedTimeInMs,

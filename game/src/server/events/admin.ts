@@ -26,13 +26,13 @@ try {
 
 try {
   adminKeys = JSON.parse(adminKeys)
-  c.log(`loaded admin keys`, adminKeys) // todo delete!!!!
 } catch (e) {
   adminKeys = false
   c.log(`red`, `Error loading admin keys!`, e)
 }
 
 function isAdmin(id, password) {
+  c.log(id, password, adminKeys)
   if (process.env.NODE_ENV === `development`) return true
   if (!adminKeys) return false
   if (password !== adminKeys?.password) return false
