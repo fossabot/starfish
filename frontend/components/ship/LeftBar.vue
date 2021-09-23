@@ -17,7 +17,9 @@
         <div
           class="image"
           :style="{
-            'background-image': `url('${s.guildIcon}')`,
+            'background-image': s.guildIcon
+              ? `url('${s.guildIcon}')`
+              : '',
           }"
         ></div>
       </div>

@@ -116,6 +116,10 @@ export default Vue.extend({
               text: 'Banner set!',
               type: 'success',
             })
+            this.$store.commit('setShipProp', [
+              'headerBackground',
+              id,
+            ])
             this.$store.commit('set', { modal: null })
           }
         },
@@ -139,6 +143,10 @@ export default Vue.extend({
               text: 'Tagline set!',
               type: 'success',
             })
+            this.$store.commit('setShipProp', [
+              'tagline',
+              tagline,
+            ])
             this.$store.commit('set', { modal: null })
           }
         },
