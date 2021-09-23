@@ -123,9 +123,11 @@ declare const _default: {
     supportServerLink: string;
     gameShipLimit: number;
     gameSpeedMultiplier: number;
+    damageMultiplier: number;
     baseSightRange: number;
     baseBroadcastRange: number;
     baseRepairCost: number;
+    defaultHomeworldLevel: number;
     maxBroadcastLength: number;
     baseStaminaUse: number;
     baseXpGain: number;

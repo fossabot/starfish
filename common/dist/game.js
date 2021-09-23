@@ -8,10 +8,12 @@ const globals_1 = __importDefault(require("./globals"));
 const text_1 = __importDefault(require("./text"));
 const gameShipLimit = 100;
 const gameSpeedMultiplier = 10;
+const damageMultiplier = 1;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
 const baseRepairCost = 600;
 const maxBroadcastLength = 200;
+const defaultHomeworldLevel = 14;
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
 const baseXpGain = 0.05 * gameSpeedMultiplier;
 const itemPriceMultiplier = 400;
@@ -293,9 +295,11 @@ exports.default = {
     supportServerLink,
     gameShipLimit,
     gameSpeedMultiplier,
+    damageMultiplier,
     baseSightRange,
     baseBroadcastRange,
     baseRepairCost,
+    defaultHomeworldLevel,
     maxBroadcastLength,
     baseStaminaUse,
     baseXpGain,

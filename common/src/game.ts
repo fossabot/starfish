@@ -8,12 +8,16 @@ const gameShipLimit = 100
 
 const gameSpeedMultiplier = 10
 
+const damageMultiplier = 1
+
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
 const baseRepairCost = 600
 
 const maxBroadcastLength = 200
+
+const defaultHomeworldLevel = 14
 
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier
 
@@ -414,9 +418,11 @@ export default {
   supportServerLink,
   gameShipLimit,
   gameSpeedMultiplier,
+  damageMultiplier,
   baseSightRange,
   baseBroadcastRange,
   baseRepairCost,
+  defaultHomeworldLevel,
   maxBroadcastLength,
   baseStaminaUse,
   baseXpGain,
