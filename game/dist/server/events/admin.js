@@ -31,17 +31,14 @@ catch (e) {
     dist_1.default.log(`red`, `Error loading admin keys!`, e);
 }
 function isAdmin(id, password) {
-    dist_1.default.log(id, password, adminKeys);
     if (process.env.NODE_ENV === `development`)
         return true;
     if (!adminKeys)
         return false;
     if (password !== adminKeys?.password) {
-        dist_1.default.log(`invalid password`, password, adminKeys?.password, password === adminKeys?.password);
         return false;
     }
-    if (!adminKeys?.validIds?.includes(id)) {
-        dist_1.default.log(`invalid user id`, id, typeof id, adminKeys?.validIds, adminKeys?.validIds?.includes(id));
+    if (!adminKeys?.allowedIds?.includes(id)) {
         return false;
     }
     return true;

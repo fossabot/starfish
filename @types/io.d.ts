@@ -86,6 +86,7 @@ interface IOClientEvents {
           id: string
           faction: { id: string }
           species: { id: string }
+          crewMemberCount: number
         }[]
       >,
     ) => void,
