@@ -121,7 +121,7 @@ export class Planet extends Stubbable {
   levelUp() {
     this.level++
     if (this.xp < c.levels[this.level - 1]) {
-      // this will only happen when levelling up from 0, randomize a bit so it's not clear if NO one has ever been here before
+      // this will only happen when levelling up from 0: randomize a bit so it's not clear if NO one has ever been here before
       this.xp =
         c.levels[this.level - 1] +
         Math.floor(Math.random() * 100)
@@ -228,4 +228,6 @@ export class Planet extends Stubbable {
     faction: Faction | FactionStub,
     amount?: number,
   ) {}
+
+  resetLevels() {}
 }

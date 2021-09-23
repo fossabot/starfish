@@ -17,6 +17,9 @@
         <button @click="resetAllPlanets">
           Reset All Planets
         </button>
+        <button @click="reLevelAllPlanets">
+          Re-Level All Planets
+        </button>
         <button @click="resetAllCaches">
           Reset All Caches
         </button>
@@ -119,6 +122,13 @@ export default Vue.extend({
     resetAllPlanets() {
       this.$socket.emit(
         'game:resetAllPlanets',
+        this.userId,
+        this.adminPassword,
+      )
+    },
+    reLevelAllPlanets() {
+      this.$socket.emit(
+        'game:reLevelAllPlanets',
         this.userId,
         this.adminPassword,
       )

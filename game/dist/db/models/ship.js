@@ -13,9 +13,9 @@ const shipSchemaFields = {
     location: [{ type: Number, required: true }],
     velocity: [{ type: Number, required: true }],
     name: { type: String, required: true },
-    species: { id: String },
+    species: { id: { type: String, required: true } },
     loadout: String,
-    chassis: { id: String },
+    chassis: { id: { type: String, required: true } },
     items: [
         {
             type: { type: String, required: true },
@@ -87,7 +87,7 @@ const shipSchemaFields = {
     ],
     commonCredits: Number,
     // ---- ai
-    ai: { type: Boolean, default: false },
+    ai: { type: Boolean, default: false, required: true },
     spawnPoint: [Number, Number],
     level: Number,
     onlyVisibleToShipId: String,
@@ -100,15 +100,16 @@ async function addOrUpdateInDb(data) {
     if (alreadyUpdating.has(data.id))
         return (await DBShip.findOne({ id: data.id }))?.toObject();
     alreadyUpdating.add(data.id);
+    // c.log(`will update`, data)
     const stub = data.stubify();
     // if (data.human)
-    // // stub.items = []
-    // c.log(
-    //   `updating`,
-    //   stub.id,
-    //   data.items.map((i) => i.id + ` ` + i.type)
-    //   stub
-    // )
+    //   // stub.items = []
+    //   c.log(
+    //     `updating`,
+    //     stub.id,
+    //     Boolean(data.tutorial),
+    //     stub.tutorial,
+    //   )
     const toSave = new DBShip(stub)._doc;
     delete toSave._id;
     const dbObject = await DBShip.findOneAndUpdate({ id: data.id }, toSave, {
@@ -120,7 +121,7 @@ async function addOrUpdateInDb(data) {
     alreadyUpdating.delete(data.id);
     // if (data.human) {
     //   const found = await DBShip.findOne({ id: data.id })
-    //   if (found) c.log(`updated`, found.id, found.items)
+    //   if (found) c.log(`updated`, found)
     // }
     return dbObject;
 }

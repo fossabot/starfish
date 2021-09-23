@@ -430,7 +430,7 @@ export default Vue.extend({
     },
 
     checkHoverPointForTooltip(e: MouseEvent) {
-      if (!this.ship) return
+      if (!this.ship || !this.ship.visible) return
 
       if (this.isPanning) {
         if (this.$store.state.tooltip)

@@ -118,6 +118,18 @@ export default function (
     },
   )
 
+  socket.on(
+    `game:reLevelAllPlanets`,
+    async (id, password) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:reLevelAllPlanets`,
+        )
+      c.log(`Admin releveling all planets`)
+      game.planets.forEach((p) => p.resetLevels())
+    },
+  )
+
   socket.on(`game:resetAllZones`, async (id, password) => {
     if (!isAdmin(id, password))
       return c.log(

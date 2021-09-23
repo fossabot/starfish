@@ -30,17 +30,19 @@ export class BasicPlanet extends Planet {
   static readonly priceFluctuatorIntensity = 0.8
 
   readonly planetType: PlanetType
-  readonly vendor: PlanetVendor
   readonly faction?: Faction
   readonly homeworld?: Faction
   readonly allegiances: PlanetAllegianceData[]
   readonly leanings: PlanetLeaning[]
+
+  vendor: PlanetVendor
 
   repairFactor: number
 
   priceFluctuator = 1
 
   toUpdate: {
+    vendor?: PlanetVendor
     allegiances?: PlanetAllegianceData[]
     priceFluctuator?: number
     repairFactor?: number
@@ -535,6 +537,29 @@ export class BasicPlanet extends Planet {
     ship.receiveBroadcast(response, this, garbleAmount, [
       ship,
     ])
+  }
+
+  resetLevels() {
+    c.log(`resetLevels`, this.name)
+    const targetLevel = this.level
+    const targetXp = this.xp
+    this.level = 0
+    this.xp = 0
+    this.vendor = {
+      cargo: [],
+      items: [],
+      chassis: [],
+      passives: [],
+      actives: [],
+    }
+    this.repairFactor = 0
+    this.landingRadiusMultiplier = 1
+
+    while (this.level < targetLevel) {
+      this.levelUp()
+    }
+    this.xp = targetXp
+    this.updateFrontendForShipsAt()
   }
 }
 

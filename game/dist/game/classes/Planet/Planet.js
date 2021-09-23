@@ -76,7 +76,7 @@ class Planet extends Stubbable_1.Stubbable {
     levelUp() {
         this.level++;
         if (this.xp < dist_1.default.levels[this.level - 1]) {
-            // this will only happen when levelling up from 0, randomize a bit so it's not clear if NO one has ever been here before
+            // this will only happen when levelling up from 0: randomize a bit so it's not clear if NO one has ever been here before
             this.xp =
                 dist_1.default.levels[this.level - 1] +
                     Math.floor(Math.random() * 100);
@@ -157,6 +157,7 @@ class Planet extends Stubbable_1.Stubbable {
     }
     // function placeholders
     incrementAllegiance(faction, amount) { }
+    resetLevels() { }
 }
 exports.Planet = Planet;
 Planet.massAdjuster = 0.5;
