@@ -33,6 +33,10 @@
           Reset All Attack Remnants
         </button>
       </div>
+
+      <div class="martop">
+        <AdminShipDataBrowser />
+      </div>
     </template>
   </div>
 </template>
@@ -51,19 +55,29 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['userId']),
+    ...mapState(['userId', 'adminPassword']),
   },
   watch: {},
   async mounted() {
-    if (process.env.NODE_ENV !== 'development')
-      this.password = prompt('password')
+    if (
+      process.env.NODE_ENV !== 'development' &&
+      !this.adminPassword
+    )
+      this.$store.commit('set', {
+        adminPassword: prompt('password'),
+      })
     this.$socket.emit(
       'game:adminCheck',
-      this.$store.state.userId,
-      this.password,
+      this.userId,
+      this.adminPassword,
       (isAdmin) => {
         if (isAdmin) this.show = true
-        else this.$router.replace('/')
+        else {
+          this.$store.commit('set', {
+            adminPassword: false,
+          })
+          this.$router.replace('/')
+        }
       },
     )
   },
@@ -71,22 +85,22 @@ export default Vue.extend({
     save() {
       this.$socket.emit(
         'game:save',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     pause() {
       this.$socket.emit(
         'game:pause',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     unpause() {
       this.$socket.emit(
         'game:unpause',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     messageAll() {
@@ -94,51 +108,51 @@ export default Vue.extend({
       if (!message || message.length < 3) return
       this.$socket.emit(
         'game:messageAll',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
         message,
       )
     },
     resetAllPlanets() {
       this.$socket.emit(
         'game:resetAllPlanets',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     resetAllCaches() {
       this.$socket.emit(
         'game:resetAllCaches',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     resetAllZones() {
       this.$socket.emit(
         'game:resetAllZones',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     resetAllShips() {
       this.$socket.emit(
         'game:resetAllShips',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     resetAllAIShips() {
       this.$socket.emit(
         'game:resetAllAIShips',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
     resetAllAttackRemnants() {
       this.$socket.emit(
         'game:resetAllAttackRemnants',
-        this.$store.state.userId,
-        this.password,
+        this.userId,
+        this.adminPassword,
       )
     },
   },

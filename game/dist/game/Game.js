@@ -249,12 +249,12 @@ class Game {
             }
         }
     }
-    spawnNewZones() {
+    async spawnNewZones() {
         while (this.zones.length < this.gameSoftArea * 1.15) {
             const z = (0, zones_1.generateZoneData)(this);
             if (!z)
                 return;
-            const zone = this.addZone(z);
+            const zone = await this.addZone(z);
             dist_1.default.log(`gray`, `Spawned zone ${zone.name} at ${zone.location.map((l) => dist_1.default.r2(l))} of radius ${dist_1.default.r2(zone.radius)} and intensity ${dist_1.default.r2(zone.effects[0].intensity)}.`);
         }
     }
@@ -436,7 +436,7 @@ class Game {
         this.species.push(newSpecies);
         return newSpecies;
     }
-    addCache(data, save = true) {
+    async addCache(data, save = true) {
         const existing = this.caches.find((cache) => cache.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing cache (${existing.id}).`);
@@ -446,7 +446,7 @@ class Game {
         this.caches.push(newCache);
         // c.log(`adding`, newCache)
         if (save)
-            db_1.db.cache.addOrUpdateInDb(newCache);
+            await db_1.db.cache.addOrUpdateInDb(newCache);
         return newCache;
     }
     removeCache(cache) {
@@ -458,7 +458,7 @@ class Game {
         this.caches.splice(index, 1);
         // c.log(this.caches.length, `remaining`)
     }
-    addZone(data, save = true) {
+    async addZone(data, save = true) {
         const existing = this.zones.find((zone) => zone.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing zone (${existing.id}).`);
@@ -467,7 +467,7 @@ class Game {
         const newZone = new Zone_1.Zone(data, this);
         this.zones.push(newZone);
         if (save)
-            db_1.db.zone.addOrUpdateInDb(newZone);
+            await db_1.db.zone.addOrUpdateInDb(newZone);
         return newZone;
     }
     removeZone(zone) {

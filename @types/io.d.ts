@@ -75,6 +75,21 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:shipList`]: (
+    adminId: string,
+    password: string,
+    humanOnly: boolean,
+    callback: (
+      res: IOResponse<
+        {
+          name: string
+          id: string
+          faction: { id: string }
+          species: { id: string }
+        }[]
+      >,
+    ) => void,
+  ) => void
 
   // general events
   [`ships:forUser:fromIdArray`]: (

@@ -335,6 +335,26 @@ code {
   padding: 0.1em 0.3em;
 }
 
+.codeblock {
+  padding: 0.1em 0.3em;
+  border-radius: 0.1em;
+  background: rgba(255, 255, 255, 0.1);
+  line-height: 1.3;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow: auto;
+
+  .highlight {
+    color: var(--success);
+  }
+  .sub {
+    white-space: auto;
+    opacity: 0.4;
+    font-size: 0.7em;
+    line-height: 1em;
+  }
+}
+
 ol,
 ul {
   padding-left: 1.4em;
@@ -412,6 +432,11 @@ ul {
 .flexbetween {
   display: flex;
   justify-content: space-between;
+}
+.flexstretch {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
 }
 .noflex {
   flex-grow: 0;
