@@ -76,6 +76,7 @@ export default Vue.extend({
       this.userId,
       this.adminPassword,
       (isAdmin) => {
+        c.log(isAdmin)
         if (isAdmin) this.show = true
         else {
           this.$store.commit('set', {
