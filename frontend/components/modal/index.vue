@@ -64,7 +64,7 @@ export default Vue.extend({
   height: 100%;
   position: absolute;
   z-index: 1;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
 }
 
 .modalbox {

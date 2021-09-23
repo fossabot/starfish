@@ -9,10 +9,11 @@
       <hr />
 
       <div
-        class="icon guildicon marbot"
+        class="icon guildicon"
         v-for="s in shipsBasics"
         @click="shipSelected(s.id)"
         :class="{ active: ship && ship.id === s.id }"
+        v-tooltip="{ type: 'ship', ...s }"
       >
         <div class="activeicon"></div>
 
@@ -59,6 +60,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     shipSelected(id) {
+      if (this.ship && this.ship.id === id) return
       this.$store.dispatch('socketSetup', id)
     },
   },
@@ -88,6 +90,7 @@ hr {
   background: rgba(0, 0, 0, 0.4);
   align-items: center;
   padding: 1.5em 0;
+  padding-left: 1px;
   justify-content: flex-start;
   width: var(--bar-width);
   height: 100vh;
@@ -108,9 +111,10 @@ hr {
   width: var(--bar-width);
   display: flex;
   justify-content: center;
+  margin-bottom: 0.7em;
 
   .activeicon {
-    --activewidth: calc(var(--bar-width) / 20);
+    --activewidth: calc(var(--bar-width) / 18);
     position: absolute;
     top: 50%;
     left: 0;
@@ -168,7 +172,7 @@ hr {
   }
 
   &:hover {
-    cursor: pointer;
+    cursor: var(--cursor-pointer);
 
     .activeicon {
       left: 0;
@@ -178,6 +182,7 @@ hr {
 
     .underimage {
       background: rgba(255, 255, 255, 0.4);
+      border-radius: calc(var(--icon-width) / 3.5);
     }
 
     .image {

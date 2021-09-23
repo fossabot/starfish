@@ -121,7 +121,7 @@ export default Vue.extend({
 
       const { width } = this.$el.getBoundingClientRect()
 
-      const sidePad = 15
+      const sidePad = 25
       let left = this.x + sidePad,
         top = this.y - 5,
         transform = ''

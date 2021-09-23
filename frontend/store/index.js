@@ -49,6 +49,7 @@ export const mutations = {
   },
 
   setBasicsProp(state, { shipId, prop, value }) {
+    // c.log(`setBasicsProp`, shipId, prop, value)
     const foundShip = state.shipsBasics.find(
       (s) => s.id === shipId,
     )

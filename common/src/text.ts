@@ -145,6 +145,7 @@ function camelCaseToWords(
 
 function acronym(string: string = ``): string {
   return string
+    .replace(/[^a-z A-Z]/g, ``)
     .split(` `)
     .map((s) => {
       if (skipWords.includes(s.toLowerCase())) return ``

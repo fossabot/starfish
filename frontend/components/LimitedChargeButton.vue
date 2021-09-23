@@ -105,7 +105,7 @@ export default Vue.extend({
   border: 1px solid var(--text);
   border-radius: 5px;
   overflow: hidden;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
 
   &.big {
     height: 3em;
@@ -113,7 +113,7 @@ export default Vue.extend({
   }
 
   &.disabled {
-    cursor: not-allowed;
+    cursor: var(--cursor-not-allowed);
   }
 
   .hider {

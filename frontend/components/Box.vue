@@ -215,7 +215,7 @@ export default Vue.extend({
 .minimize {
   width: 2em;
   height: 100%;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,7 +290,7 @@ export default Vue.extend({
 // .minimize {
 //   width: 2em;
 //   height: 100%;
-//   cursor: pointer;
+//   cursor: var(--cursor-pointer);
 //   display: flex;
 //   align-items: center;
 //   justify-content: center;

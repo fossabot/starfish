@@ -1,13 +1,23 @@
 <template>
   <div>
     <client-only>
-      <DynamicBackground />
-      <Notifications />
-      <Modal />
-      <InfoTooltip />
-      <slot>
-        <Nuxt />
-      </slot>
+      <div
+        :style="
+          ship
+            ? `--cursor-pointer: var(--cursor-pointer-${ship.faction.id})`
+            : ''
+        "
+      >
+        <DynamicBackground />
+        <Notifications />
+        <transition name="fade">
+          <Modal />
+        </transition>
+        <InfoTooltip />
+        <slot>
+          <Nuxt />
+        </slot>
+      </div>
     </client-only>
   </div>
 </template>
@@ -16,6 +26,7 @@
 import Vue from 'vue'
 import c from '../../common/dist'
 import * as storage from '../assets/scripts/storage'
+import { mapState } from 'vuex'
 
 const debounce = (fn, time = 1000) => {
     let timeout
@@ -41,6 +52,11 @@ const debounce = (fn, time = 1000) => {
 }
 
 export default Vue.extend({
+  computed: {
+    ...mapState([
+      'ship',
+    ]),
+  },
   mounted() {
     const userId = storage.get('userId')
     const shipIds = JSON.parse(

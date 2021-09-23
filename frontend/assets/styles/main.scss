@@ -16,6 +16,7 @@ html {
   max-width: 100%;
   min-width: 100%;
   overflow-x: hidden;
+  cursor: url('/images/cursors/cursor_default.svg'), auto;
 
   @media only screen and (max-device-width: 768px) {
     font-size: 15px;
@@ -95,7 +96,7 @@ textarea {
 *:disabled,
 .disabled {
   opacity: 0.3;
-  cursor: not-allowed;
+  cursor: var(--cursor-not-allowed);
   pointer-events: auto;
 }
 
@@ -115,7 +116,7 @@ input[type='submit'] {
   padding: 0.3em 0.5em;
   margin-right: 0.1em;
   margin-bottom: 0.1em;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
   // overflow: hidden;
 
   &:after,
@@ -261,7 +262,7 @@ select {
 
 .link {
   text-decoration: underline;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
 }
 
 .panesubhead {
@@ -403,7 +404,7 @@ ul {
   text-decoration: underline;
 }
 .pointer {
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
 }
 
 .fullwidth {

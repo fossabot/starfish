@@ -99,6 +99,11 @@ export default Vue.extend({
   mounted() {},
   methods: {
     setHeaderBackground(id: string) {
+      this.$store.commit('setShipProp', [
+        'headerBackground',
+        c.headerBackgroundOptions.find((o) => o.id === id)
+          ?.url,
+      ])
       ;(this as any).$socket?.emit(
         'ship:headerBackground',
         this.ship.id,
@@ -116,16 +121,17 @@ export default Vue.extend({
               text: 'Banner set!',
               type: 'success',
             })
-            this.$store.commit('setShipProp', [
-              'headerBackground',
-              id,
-            ])
+
             this.$store.commit('set', { modal: null })
           }
         },
       )
     },
     setTagline(tagline: string) {
+      this.$store.commit('setShipProp', [
+        'tagline',
+        tagline,
+      ])
       ;(this as any).$socket?.emit(
         'ship:tagline',
         this.ship.id,
@@ -143,10 +149,7 @@ export default Vue.extend({
               text: 'Tagline set!',
               type: 'success',
             })
-            this.$store.commit('setShipProp', [
-              'tagline',
-              tagline,
-            ])
+
             this.$store.commit('set', { modal: null })
           }
         },
@@ -162,7 +165,7 @@ export default Vue.extend({
 
   &:hover {
     background: rgba(255, 255, 255, 0.04);
-    cursor: pointer;
+    cursor: var(--cursor-pointer);
   }
 
   &.current {

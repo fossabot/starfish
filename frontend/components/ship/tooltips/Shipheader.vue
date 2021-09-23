@@ -2,11 +2,6 @@
   <div
     class="topzone"
     :class="{ captain: isCaptain }"
-    :style="{
-      background: `url('/images/headerBackgrounds/${
-        data.headerBackground || 'default.jpg'
-      }')`,
-    }"
     @click="
       isCaptain &&
         $store.commit('set', {
@@ -14,6 +9,14 @@
         })
     "
   >
+    <div
+      class="bg"
+      :style="{
+        background: `url('/images/headerBackgrounds/${
+          data.headerBackground || 'default.jpg'
+        }')`,
+      }"
+    ></div>
     <div class="bgfade"></div>
     <div class="content">
       <div
@@ -88,6 +91,7 @@ export default Vue.extend({
 <style scoped lang="scss">
 .topzone {
   width: 100%;
+  min-width: 200px;
   background-size: cover !important;
   background-position: center center !important;
   position: relative;
@@ -95,11 +99,20 @@ export default Vue.extend({
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);
 
   &.captain {
-    cursor: pointer;
+    cursor: var(--cursor-pointer);
 
     &:hover {
-      background-size: 110% !important;
+      .bg {
+        transform: scale(1.05);
+      }
     }
+  }
+
+  .bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: all 0.2s ease-in-out;
   }
 
   .bgfade {
