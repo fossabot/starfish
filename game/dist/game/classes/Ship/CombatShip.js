@@ -121,7 +121,7 @@ class CombatShip extends Ship_1.Ship {
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / (weapon.range * weapon.repair);
-        const minHitChance = 0.9;
+        const minHitChance = 0.95;
         const enemyAgility = target.chassis.agility +
             (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity || 0);
         const hitRoll = Math.random();
@@ -152,7 +152,7 @@ class CombatShip extends Ship_1.Ship {
         // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
-        dist_1.default.log(`need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
+        dist_1.default.log(`need to beat ${Math.min(rangeAsPercent, minHitChance)}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,
             damage,
@@ -346,9 +346,7 @@ class CombatShip extends Ship_1.Ship {
             const remainingHp = equipmentToAttack.hp;
             // ----- item not destroyed -----
             if (remainingHp >= adjustedRemainingDamage) {
-                // c.log(
-                //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`,
-                // )
+                dist_1.default.log(`hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`);
                 equipmentToAttack.hp -= adjustedRemainingDamage;
                 equipmentToAttack._stub = null;
                 remainingDamage = 0;
@@ -362,9 +360,7 @@ class CombatShip extends Ship_1.Ship {
             }
             // ----- item destroyed -----
             else {
-                // c.log(
-                //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-                // )
+                dist_1.default.log(`destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
                 equipmentToAttack.hp = 0;
                 equipmentToAttack._stub = null;
                 remainingDamage -= remainingHp;
@@ -418,18 +414,9 @@ class CombatShip extends Ship_1.Ship {
                 ? attacker
                 : undefined);
         this.addStat(`damageTaken`, totalDamageDealt);
-        // c.log(
-        //   `gray`,
-        //   `${this.name} takes ${c.r2(
-        //     totalDamageDealt,
-        //   )} damage from ${attacker.name}'s ${
-        //     attack.weapon
-        //       ? attack.weapon.displayName
-        //       : `passive effect`
-        //   }, and ${
-        //     didDie ? `dies` : `has ${this.hp} hp left`
-        //   }.`,
-        // )
+        dist_1.default.log(`gray`, `${this.name} takes ${dist_1.default.r2(totalDamageDealt)} damage from ${attacker.name}'s ${attack.weapon
+            ? attack.weapon.displayName
+            : `passive effect`}, and ${didDie ? `dies` : `has ${this.hp} hp left`}.`);
         this.toUpdate._hp = this.hp;
         this.toUpdate.dead = this.dead;
         const damageResult = {

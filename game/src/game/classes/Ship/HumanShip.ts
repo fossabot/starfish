@@ -134,6 +134,16 @@ export class HumanShip extends CombatShip {
 
     if (!this.tutorial) this.updatePlanet(true)
 
+    if (!this.items.length) {
+      c.log(
+        `red`,
+        `Attempted to spawn a human ship with no items!`,
+        data.name,
+        data.items,
+      )
+      this.equipLoadout(`humanDefault`)
+    }
+
     setTimeout(() => {
       this.radii.gameSize = this.game.gameSoftRadius
       this.toUpdate.radii = this.radii
@@ -1404,7 +1414,7 @@ export class HumanShip extends CombatShip {
     if (removeExisting) this.items = []
     const res = super.equipLoadout(l)
     if (!res) return res
-    this.toUpdate.items = this.items
+    this.toUpdate.items = [...this.items]
     this.resolveRooms()
     this.updateThingsThatCouldChangeOnItemChange()
     return true

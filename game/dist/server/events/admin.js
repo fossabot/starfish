@@ -157,6 +157,10 @@ function default_1(socket) {
                 faction: { id: s.faction.id },
                 species: { id: s.species.id },
                 crewMemberCount: s.crewMembers.length,
+                isTutorial: s.tutorial
+                    ? s.tutorial.ship?.crewMembers[0]?.name ||
+                        `unknown crew member`
+                    : false,
             })),
         });
     });

@@ -39,7 +39,7 @@ exports.game = new Game_1.Game();
         if (ship.ai)
             exports.game.addAIShip(ship, false);
         else
-            exports.game.addHumanShip(ship);
+            exports.game.addHumanShip(ship, false);
     }
     const savedAttackRemnants = await db_1.db.attackRemnant.getAllConstructible();
     dist_1.default.log(`Loaded ${exports.game.attackRemnants.length} saved attack remnants from DB.`);

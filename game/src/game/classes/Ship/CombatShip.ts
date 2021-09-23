@@ -200,7 +200,7 @@ export abstract class CombatShip extends Ship {
     const range = c.distance(this.location, target.location)
     const rangeAsPercent =
       range / (weapon.range * weapon.repair)
-    const minHitChance = 0.9
+    const minHitChance = 0.95
     const enemyAgility =
       target.chassis.agility +
       (target.passives.find(
@@ -259,7 +259,10 @@ export abstract class CombatShip extends Ship {
     if (damage === 0) miss = true
 
     c.log(
-      `need to beat ${rangeAsPercent}, rolled ${hitRoll} for a ${
+      `need to beat ${Math.min(
+        rangeAsPercent,
+        minHitChance,
+      )}, rolled ${hitRoll} for a ${
         miss ? `miss` : `hit`
       } of damage ${damage}`,
     )
@@ -550,9 +553,9 @@ export abstract class CombatShip extends Ship {
       const remainingHp = equipmentToAttack.hp
       // ----- item not destroyed -----
       if (remainingHp >= adjustedRemainingDamage) {
-        // c.log(
-        //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage`,
-        // )
+        c.log(
+          `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
+        )
         equipmentToAttack.hp -= adjustedRemainingDamage
         equipmentToAttack._stub = null
         remainingDamage = 0
@@ -566,9 +569,9 @@ export abstract class CombatShip extends Ship {
       }
       // ----- item destroyed -----
       else {
-        // c.log(
-        //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-        // )
+        c.log(
+          `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+        )
         equipmentToAttack.hp = 0
         equipmentToAttack._stub = null
         remainingDamage -= remainingHp
@@ -641,18 +644,18 @@ export abstract class CombatShip extends Ship {
 
     this.addStat(`damageTaken`, totalDamageDealt)
 
-    // c.log(
-    //   `gray`,
-    //   `${this.name} takes ${c.r2(
-    //     totalDamageDealt,
-    //   )} damage from ${attacker.name}'s ${
-    //     attack.weapon
-    //       ? attack.weapon.displayName
-    //       : `passive effect`
-    //   }, and ${
-    //     didDie ? `dies` : `has ${this.hp} hp left`
-    //   }.`,
-    // )
+    c.log(
+      `gray`,
+      `${this.name} takes ${c.r2(
+        totalDamageDealt,
+      )} damage from ${attacker.name}'s ${
+        attack.weapon
+          ? attack.weapon.displayName
+          : `passive effect`
+      }, and ${
+        didDie ? `dies` : `has ${this.hp} hp left`
+      }.`,
+    )
 
     this.toUpdate._hp = this.hp
     this.toUpdate.dead = this.dead

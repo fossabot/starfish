@@ -1,31 +1,39 @@
 <template>
   <div class="shipdatabrowser">
-    <div class="flex marbotsmall topbar">
-      <ModelSelect
-        class=""
-        :options="
-          shipsBasics.map((s) => ({
-            value: s.id,
-            text: c.species[s.species.id].icon + s.name,
-          }))
-        "
-        v-model="selectedShipId"
-        placeholder="Select ship to inspect..."
+    <ModelSelect
+      class="marbotsmall"
+      :options="
+        shipsBasics.map((s) => ({
+          value: s.id,
+          text:
+            c.species[s.species.id].icon +
+            s.name +
+            (s.isTutorial
+              ? ` (tutorial for ${c.isTutorial})`
+              : ''),
+        }))
+      "
+      v-model="selectedShipId"
+      placeholder="Select ship to inspect..."
+    />
+
+    <div
+      v-if="displayShipData"
+      class="property flexstretch marbotsmall"
+    >
+      <input
+        placeholder="Select property to search..."
+        v-model="propertySearchTerm"
       />
-      <div v-if="displayShipData" class="property flex">
-        <input
-          placeholder="Select property to search..."
-          v-model="propertySearchTerm"
-        />
-        <div
-          class="button flexcenter"
-          v-if="propertySearchTerm"
-          @click="propertySearchTerm = null"
-        >
-          Clear
-        </div>
+      <div
+        class="button flexcenter"
+        v-if="propertySearchTerm"
+        @click="propertySearchTerm = null"
+      >
+        Clear
       </div>
     </div>
+
     <div
       class="codeblock displaybox"
       :class="{ searching: propertySearchTerm }"
@@ -130,6 +138,7 @@ export default Vue.extend({
               faction: { id: string }
               species: { id: string }
               crewMemberCount: number
+              isTutorial: string | false
             }[]
           >,
         ) => {
@@ -154,17 +163,14 @@ export default Vue.extend({
   width: 100%;
   max-width: 600px;
 
-  .topbar {
+  .property {
+    width: 100%;
     height: 2.5em;
 
-    .property {
-      width: 50%;
-      flex-shrink: 0;
-      position: relative;
-
-      input {
-        height: 100%;
-      }
+    input {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
     }
   }
 

@@ -84,6 +84,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.recalculateMass();
         if (!this.tutorial)
             this.updatePlanet(true);
+        if (!this.items.length) {
+            dist_1.default.log(`red`, `Attempted to spawn a human ship with no items!`, data.name, data.items);
+            this.equipLoadout(`humanDefault`);
+        }
         setTimeout(() => {
             this.radii.gameSize = this.game.gameSoftRadius;
             this.toUpdate.radii = this.radii;
@@ -951,7 +955,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         const res = super.equipLoadout(l);
         if (!res)
             return res;
-        this.toUpdate.items = this.items;
+        this.toUpdate.items = [...this.items];
         this.resolveRooms();
         this.updateThingsThatCouldChangeOnItemChange();
         return true;

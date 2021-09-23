@@ -92,8 +92,21 @@ const shipSchemaFields = {
 };
 const shipSchema = new mongoose_1.Schema(shipSchemaFields);
 const DBShip = (0, mongoose_1.model)(`DBShip`, shipSchema);
+const alreadyUpdating = new Set();
 async function addOrUpdateInDb(data) {
+    // * make sure we don't overwrite an update in progress
+    if (alreadyUpdating.has(data.id))
+        return (await DBShip.findOne({ id: data.id }))?.toObject();
+    alreadyUpdating.add(data.id);
     const stub = data.stubify();
+    // if (data.human)
+    // // stub.items = []
+    // c.log(
+    //   `updating`,
+    //   stub.id,
+    //   data.items.map((i) => i.id + ` ` + i.type)
+    //   stub
+    // )
     const toSave = new DBShip(stub)._doc;
     delete toSave._id;
     const dbObject = await DBShip.findOneAndUpdate({ id: data.id }, toSave, {
@@ -102,6 +115,11 @@ async function addOrUpdateInDb(data) {
         lean: true,
         setDefaultsOnInsert: true,
     });
+    alreadyUpdating.delete(data.id);
+    // if (data.human) {
+    //   const found = await DBShip.findOne({ id: data.id })
+    //   if (found) c.log(`updated`, found.id, found.items)
+    // }
     return dbObject;
 }
 exports.addOrUpdateInDb = addOrUpdateInDb;

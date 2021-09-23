@@ -58,7 +58,7 @@ runOnDbReady(async () => {
   //   .forEach((s) => c.log(s.id, s.name, s.items, s.chassis))
   for (let ship of savedShips) {
     if (ship.ai) game.addAIShip(ship, false)
-    else game.addHumanShip(ship as BaseHumanShipData)
+    else game.addHumanShip(ship as BaseHumanShipData, false)
   }
 
   const savedAttackRemnants =

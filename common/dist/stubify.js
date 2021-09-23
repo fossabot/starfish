@@ -5,7 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const log_1 = __importDefault(require("./log"));
 const Profiler_1 = require("./Profiler");
-function stubify(baseObject, disallowPropName = [], allowRecursion = true) {
+function stubify(baseObject, disallowPropNames = [], allowRecursionDepth = 3) {
+    allowRecursionDepth--;
     if (!baseObject)
         return undefined;
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
@@ -39,25 +40,51 @@ function stubify(baseObject, disallowPropName = [], allowRecursion = true) {
                 `species`,
             ].includes(key))
                 return value?.id ? { id: value.id } : null;
-            if (disallowPropName?.includes(key))
-                return value?.id ? { id: value.id } : undefined;
-            if (Array.isArray(value) &&
-                value.length > 0 &&
-                value.reduce((allStubbable, v) => v && allStubbable && Boolean(v.stubify), true)) {
-                if (allowRecursion)
-                    return value.map((v) => v.stubify(undefined, false));
-                return value.map((v) => v?.id
-                    ? { id: v.id }
-                    : v?.name
-                        ? { name: v.name }
-                        : null);
-            }
+            if (disallowPropNames?.includes(key))
+                return value?.id ? { id: value.id } : null;
+            // ! this was breaking saving any array of stubbable objects
+            // if (
+            //   Array.isArray(value) &&
+            //   value.length > 0 &&
+            //   value.reduce(
+            //     (allStubbable, v) =>
+            //       v && allStubbable && Boolean(v.stubify),
+            //     true,
+            //   )
+            // ) {
+            //   if (baseObject.ai === false && key === `items`)
+            //     c.log(
+            //       baseObject.name,
+            //       allowRecursionDepth,
+            //       value.map(
+            //         (v) =>
+            //           v.stubify(
+            //             disallowPropNames,
+            //             allowRecursionDepth,
+            //           ).type,
+            //       ),
+            //     )
+            //   if (allowRecursionDepth)
+            //     return value.map((v) =>
+            //       v.stubify(
+            //         disallowPropNames,
+            //         allowRecursionDepth,
+            //       ),
+            //     )
+            //   return value.map((v) =>
+            //     v?.id
+            //       ? { id: v.id }
+            //       : v?.name
+            //       ? { name: v.name }
+            //       : null,
+            //   )
+            // }
             if (value &&
                 typeof value === `object` &&
                 !Array.isArray(value) &&
                 value.stubify) {
-                if (allowRecursion)
-                    return value.stubify(undefined, false);
+                if (allowRecursionDepth)
+                    return value.stubify(disallowPropNames, allowRecursionDepth);
                 return value?.id
                     ? { id: value.id }
                     : value?.name
@@ -66,13 +93,13 @@ function stubify(baseObject, disallowPropName = [], allowRecursion = true) {
             }
             if ([`ships`].includes(key) &&
                 Array.isArray(value))
-                if (allowRecursion)
+                if (allowRecursionDepth)
                     return value.map((v) => v?.stubify?.([
                         `visible`,
                         `seenPlanets`,
                         `seenLandmarks`,
                         `enemiesInAttackRange`,
-                    ], false));
+                    ], allowRecursionDepth));
                 else
                     return value.map((v) => v?.id
                         ? { id: v.id }

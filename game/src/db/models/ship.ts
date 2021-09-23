@@ -101,10 +101,27 @@ const shipSchemaFields: Record<
 const shipSchema = new Schema(shipSchemaFields)
 const DBShip = model<DBShipDoc>(`DBShip`, shipSchema)
 
+const alreadyUpdating = new Set<string>()
+
 export async function addOrUpdateInDb(
   data: Ship,
-): Promise<BaseShipData> {
+): Promise<BaseShipData | null> {
+  // * make sure we don't overwrite an update in progress
+  if (alreadyUpdating.has(data.id))
+    return (
+      await DBShip.findOne({ id: data.id })
+    )?.toObject()
+  alreadyUpdating.add(data.id)
+
   const stub = data.stubify()
+  // if (data.human)
+  // // stub.items = []
+  // c.log(
+  //   `updating`,
+  //   stub.id,
+  //   data.items.map((i) => i.id + ` ` + i.type)
+  //   stub
+  // )
   const toSave = (new DBShip(stub) as any)._doc
   delete toSave._id
   const dbObject: DBShipDoc | null =
@@ -114,6 +131,13 @@ export async function addOrUpdateInDb(
       lean: true,
       setDefaultsOnInsert: true,
     })
+
+  alreadyUpdating.delete(data.id)
+
+  // if (data.human) {
+  //   const found = await DBShip.findOne({ id: data.id })
+  //   if (found) c.log(`updated`, found.id, found.items)
+  // }
   return dbObject
 }
 

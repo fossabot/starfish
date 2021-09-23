@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "b4c8ab56be3531fec683344e6380b5db643bf50abd392ad1cfc2e5034833d174",
-        "signature": "b4c8ab56be3531fec683344e6380b5db643bf50abd392ad1cfc2e5034833d174",
+        "version": "cce6e3e9204f689d7497466658943b16c87ec1258e0a4650c2dbdbbf9355450d",
+        "signature": "cce6e3e9204f689d7497466658943b16c87ec1258e0a4650c2dbdbbf9355450d",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -397,8 +397,8 @@
         "affectsGlobalScope": false
       },
       "./src/stubify.ts": {
-        "version": "ce1df9568b6bf4c14bfcbcd174f1ba60574311dd6cd3dc0f5b9fb197dc913a59",
-        "signature": "c85861de251e4387beafe154962f48f031507a8a9435ba721e9b726a3948fd4e",
+        "version": "94a86a724f80b6c91a0d03e7053c9cc70268b92582c1d279ec2cb8745e547b7f",
+        "signature": "35df348c73aa46eceb3ecab02c44b94002900348b9e15a3bb59ae4d44123446a",
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "48b02e9bec31d19ac7bc98b09b048119e2d440039acd50cd5d043805f7221b66",
+        "signature": "bd8a69646d67a815c52b0d024c80ffd9eccdb6a0980a9a5a8417f44d16a07890",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

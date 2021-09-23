@@ -115,7 +115,6 @@ class Ship extends Stubbable_1.Stubbable {
             items.forEach((i) => this.addItem(i));
         if (!items && loadout)
             this.equipLoadout(loadout);
-        this.hp = this.maxHp;
         this.updateSightAndScanRadius();
         this.recalculateMaxHp();
         this._hp = this.hp;
@@ -460,6 +459,10 @@ class Ship extends Stubbable_1.Stubbable {
     }
     get hp() {
         const total = this.items.reduce((total, i) => Math.max(0, i.maxHp * i.repair) + total, 0);
+        // if (this.human)
+        //   c.log(
+        //     `hp for ${this.name} is ${total} (${this.items.length} items)`,
+        //   )
         this._hp = total;
         const wasDead = this.dead;
         this.dead = total <= 0;

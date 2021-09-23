@@ -185,7 +185,6 @@ export class Ship extends Stubbable {
 
     if (items) items.forEach((i) => this.addItem(i))
     if (!items && loadout) this.equipLoadout(loadout)
-    this.hp = this.maxHp
 
     this.updateSightAndScanRadius()
     this.recalculateMaxHp()
@@ -685,6 +684,10 @@ export class Ship extends Stubbable {
       (total, i) => Math.max(0, i.maxHp * i.repair) + total,
       0,
     )
+    // if (this.human)
+    //   c.log(
+    //     `hp for ${this.name} is ${total} (${this.items.length} items)`,
+    //   )
     this._hp = total
     const wasDead = this.dead
     this.dead = total <= 0
