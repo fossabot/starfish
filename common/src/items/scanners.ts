@@ -4,6 +4,7 @@ export const scanners: {
   [key in ScannerId]: BaseScannerData
 } = {
   tutorial1: {
+    buyable: false,
     type: `scanner`,
     id: `tutorial1`,
     displayName: `Echo-locator Mk.1`,
