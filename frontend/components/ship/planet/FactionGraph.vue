@@ -6,9 +6,9 @@
     <div
       class="singleholder flexcenter"
       v-if="planet.allegiances.length"
-      v-for="a in [...planet.allegiances].sort(
-        (a, b) => b.level - a.level,
-      )"
+      v-for="a in [...planet.allegiances]
+        .filter((a) => a.level >= 1)
+        .sort((a, b) => b.level - a.level)"
       :key="'fal' + c.factions[a.faction.id]"
       :style="{
         'flex-grow': a.level,

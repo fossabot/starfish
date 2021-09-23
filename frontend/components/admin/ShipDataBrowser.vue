@@ -1,21 +1,29 @@
 <template>
   <div class="shipdatabrowser">
-    <ModelSelect
-      class="marbotsmall"
-      :options="
-        shipsBasics.map((s) => ({
-          value: s.id,
-          text:
-            c.species[s.species.id].icon +
-            s.name +
-            (s.isTutorial
-              ? ` (tutorial for ${c.isTutorial})`
-              : ''),
-        }))
-      "
-      v-model="selectedShipId"
-      placeholder="Select ship to inspect..."
-    />
+    <div class="flex marbotsmall">
+      <ModelSelect
+        :options="
+          shipsBasics.map((s) => ({
+            value: s.id,
+            text:
+              c.species[s.species.id].icon +
+              s.name +
+              (s.isTutorial
+                ? ` (tutorial for ${c.isTutorial})`
+                : ''),
+          }))
+        "
+        v-model="selectedShipId"
+        placeholder="Select ship to inspect..."
+      />
+      <div
+        class="button"
+        v-if="selectedShipId"
+        @click="getShipData(selectedShipId)"
+      >
+        Reload
+      </div>
+    </div>
 
     <div
       v-if="displayShipData"

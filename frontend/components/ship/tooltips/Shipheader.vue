@@ -87,7 +87,7 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .topzone {
-  width: 230px;
+  width: 100%;
   background-size: cover !important;
   background-position: center center !important;
   position: relative;
