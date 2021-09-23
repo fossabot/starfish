@@ -397,8 +397,8 @@
         "affectsGlobalScope": false
       },
       "./src/stubify.ts": {
-        "version": "aa5943f18d8afd01914d4f103f70642589a004f2d98f0a6796636be09f1d333e",
-        "signature": "fef82c763725222a645ae27efe41fd49846d58ef3541fdddb9e18a75d06eb4b9",
+        "version": "a6bcb40b2e61d438b55cb41d853d5c3b37545721431ae71faa40f4a0afe1b05b",
+        "signature": "5791b228c7ab210e7d42e47f452014ac42d5ec04eab07ee42c0e5c6ae3ded7b5",
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "f3f799e0ca29b0445a8944ce3d855498703b53bf86a0549654653b4ea44c4564",
+        "signature": "68b744a526cc8535e86f1625a7f1434681bc2792d90c76ba43d74d0965e69a85",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

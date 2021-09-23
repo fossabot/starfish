@@ -1,12 +1,24 @@
 import c from './log'
 import { Profiler } from './Profiler'
 
+const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`]
+const alwaysReferencize = [
+  `ship`,
+  `ships`,
+  `attacker`,
+  `defender`,
+  `crewMember`,
+  `homeworld`,
+  `faction`,
+  `species`,
+]
+
 export default function stubify<
   BaseType,
   StubType extends BaseStub,
 >(
   baseObject: BaseType,
-  disallowKeys: string[] = [],
+  keysToReferencize: string[] = [],
   allowRecursionDepth: number = 10,
 ): StubType {
   if (!baseObject) return undefined as any
@@ -14,7 +26,7 @@ export default function stubify<
   profiler.step(`apply getters`)
   const objectWithGetters: StubType = applyGettersToObject(
     baseObject,
-    disallowKeys,
+    keysToReferencize,
   )
   profiler.step(`stringify and parse`)
   // c.log(`with getters`, Object.keys(gettersIncluded))
@@ -22,11 +34,9 @@ export default function stubify<
   const objectWithCircularReferencesRemoved: StubType =
     removeCircularReferences(
       objectWithGetters,
-      disallowKeys,
+      keysToReferencize,
       allowRecursionDepth,
     )
-
-  // c.log(`stubify`, objectWithCircularReferencesRemoved)
 
   profiler.end()
   return objectWithCircularReferencesRemoved
@@ -35,9 +45,12 @@ export default function stubify<
 // * getters aren't naturally included in functions like Object.keys(), so we apply their result now
 function applyGettersToObject<T>(
   baseObject: any,
-  disallowKeys: string[] = [],
+  keysToReferencize: string[] = [],
 ): T {
-  const toDisallow = [...alwaysDisallow, ...disallowKeys]
+  const toReference = [
+    ...alwaysReferencize,
+    ...keysToReferencize,
+  ]
   const gettersIncluded: any = { ...baseObject }
   const objectPrototype = Object.getPrototypeOf(baseObject)
   const getKeyValue =
@@ -47,7 +60,11 @@ function applyGettersToObject<T>(
   for (const key of Object.getOwnPropertyNames(
     objectPrototype,
   )) {
-    if (toDisallow.includes(key)) continue
+    if (
+      toReference.includes(key) ||
+      neverInclude.includes(key)
+    )
+      continue
     const descriptor = Object.getOwnPropertyDescriptor(
       objectPrototype,
       key,
@@ -60,6 +77,7 @@ function applyGettersToObject<T>(
   return gettersIncluded as T
 }
 
+const doNotSetFlag = `%%[do not set]%%`
 const recursivelyRemoveCircularReferencesInObject = (
   obj: any,
   disallowedKeys: string[],
@@ -67,53 +85,56 @@ const recursivelyRemoveCircularReferencesInObject = (
   passedKey?: string,
   track?: boolean,
 ) => {
-  let newObj = {}
+  let newObj: any = {}
   if (remainingDepth <= 0) {
     if (track)
       c.log(
         `reached depth limit`,
         obj,
-        toStubOrUndefined(obj),
+        toRefOrUndefined(obj),
       )
-    return toStubOrUndefined(obj)
+    return toRefOrUndefined(obj)
   }
 
   // array
   if (Array.isArray(obj)) {
-    newObj = obj.map((v) =>
-      recursivelyRemoveCircularReferencesInObject(
-        v,
-        disallowedKeys,
-        remainingDepth - 1,
-        passedKey,
-        track,
-      ),
-    )
-    // if (passedKey === `steps`)
-    //   c.log(`tutorial`, remainingDepth, obj, newObj)
+    newObj = obj
+      .map((v) =>
+        recursivelyRemoveCircularReferencesInObject(
+          v,
+          disallowedKeys,
+          remainingDepth - 1,
+          passedKey,
+          track,
+        ),
+      )
+      .filter((v) => v !== doNotSetFlag)
   }
   // string
   else if (typeof obj === `string` || obj instanceof String)
     newObj = obj
   // object
-  else if (obj && typeof obj === `object`)
+  else if (obj && typeof obj === `object`) {
     for (const key of Object.keys(obj)) {
       const value = obj[key]
       // null/undefined
       if (value === null || value === undefined) {
         newObj[key] = undefined
       }
+      // never include key => marker to not set value
+      else if (neverInclude.includes(key))
+        newObj[key] = doNotSetFlag
       // disallowed key => stub
       else if (
         disallowedKeys.includes(key) &&
         typeof value === `object` &&
         !Array.isArray(value)
       ) {
-        newObj[key] = toStubOrUndefined(value)
+        newObj[key] = toRefOrUndefined(value)
       }
       // nested object
       else if (typeof value === `object`) {
-        newObj[key] =
+        const res =
           recursivelyRemoveCircularReferencesInObject(
             value,
             disallowedKeys,
@@ -121,12 +142,16 @@ const recursivelyRemoveCircularReferencesInObject = (
             key,
             track,
           )
+        if (res !== doNotSetFlag) newObj[key] = res
       }
       // anything else
       else {
         newObj[key] = value
       }
+      // clear anything that came back as a DNS flag
+      if (newObj[key] === doNotSetFlag) delete newObj[key]
     }
+  }
   // fallback
   else newObj = obj
 
@@ -137,19 +162,22 @@ const recursivelyRemoveCircularReferencesInObject = (
 
 function removeCircularReferences<T>(
   baseObject: T,
-  disallowKeys: string[] = [],
+  keysToReferencize: string[] = [],
   allowRecursionDepth,
 ): T {
-  const toDisallow = [...alwaysDisallow, ...disallowKeys]
+  const toReference = [
+    ...alwaysReferencize,
+    ...keysToReferencize,
+  ]
 
   return recursivelyRemoveCircularReferencesInObject(
     baseObject,
-    toDisallow,
+    toReference,
     allowRecursionDepth,
   ) as T
 }
 
-const toStubOrUndefined = (obj: any) => {
+const toRefOrUndefined = (obj: any) => {
   if (!obj) return null
   if (typeof obj === `string` || obj instanceof String)
     return obj
@@ -161,21 +189,6 @@ const toStubOrUndefined = (obj: any) => {
   if (Object.keys(returnObj).length === 0) return undefined
   return returnObj
 }
-
-const alwaysDisallow = [
-  `toUpdate`,
-  `_stub`,
-  `_id`,
-  `game`,
-  `ship`,
-  `ships`,
-  `attacker`,
-  `defender`,
-  `crewMember`,
-  `homeworld`,
-  `faction`,
-  `species`,
-]
 
 // try {
 //   circularReferencesRemoved = JSON.parse(
@@ -208,7 +221,7 @@ const alwaysDisallow = [
 //             ? { id: value.id }
 //             : null
 
-//         if (disallowKeys?.includes(key))
+//         if (keysToReferencize?.includes(key))
 //           return value?.id ? { id: value.id } : null
 
 //         if (
@@ -219,7 +232,7 @@ const alwaysDisallow = [
 //           // if (allowRecursionDepth)
 //           //   return stubify(
 //           //     value,
-//           //     disallowKeys,
+//           //     keysToReferencize,
 //           //     allowRecursionDepth,
 //           //   )
 //           return value?.id

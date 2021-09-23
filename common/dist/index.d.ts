@@ -153,7 +153,7 @@ declare const _default: {
         previousLocations: true;
         location: true;
         planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
+        faction: ("homeworld" | "species" | "name" | "color" | "id" | "ai")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
