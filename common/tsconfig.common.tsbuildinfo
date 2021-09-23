@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "68b744a526cc8535e86f1625a7f1434681bc2792d90c76ba43d74d0965e69a85",
+        "signature": "f3f799e0ca29b0445a8944ce3d855498703b53bf86a0549654653b4ea44c4564",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
