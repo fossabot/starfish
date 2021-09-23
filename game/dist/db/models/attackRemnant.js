@@ -52,7 +52,7 @@ async function removeFromDb(id) {
 }
 exports.removeFromDb = removeFromDb;
 async function getAllConstructible() {
-    const docs = await DBAttackRemnant.find({});
+    const docs = (await DBAttackRemnant.find({})).map((z) => z.toObject());
     return docs;
 }
 exports.getAllConstructible = getAllConstructible;

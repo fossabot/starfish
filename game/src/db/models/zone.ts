@@ -52,6 +52,8 @@ export async function removeFromDb(id: string) {
 export async function getAllConstructible(): Promise<
   BaseZoneData[]
 > {
-  const docs = await DBZone.find({})
+  const docs = (await DBZone.find({})).map((z) =>
+    z.toObject(),
+  )
   return docs
 }

@@ -50,6 +50,8 @@ export async function removeFromDb(id: string) {
 export async function getAllConstructible(): Promise<
   BaseCacheData[]
 > {
-  const docs = await DBCache.find({})
+  const docs = (await DBCache.find({})).map((z) =>
+    z.toObject(),
+  )
   return docs
 }

@@ -39,7 +39,7 @@ async function removeFromDb(id) {
 }
 exports.removeFromDb = removeFromDb;
 async function getAllConstructible() {
-    const docs = await DBCache.find({});
+    const docs = (await DBCache.find({})).map((z) => z.toObject());
     return docs;
 }
 exports.getAllConstructible = getAllConstructible;

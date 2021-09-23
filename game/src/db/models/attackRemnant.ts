@@ -79,6 +79,8 @@ export async function removeFromDb(id: string) {
 export async function getAllConstructible(): Promise<
   BaseAttackRemnantData[]
 > {
-  const docs = await DBAttackRemnant.find({})
+  const docs = (await DBAttackRemnant.find({})).map((z) =>
+    z.toObject(),
+  )
   return docs
 }
