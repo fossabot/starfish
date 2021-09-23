@@ -14,10 +14,18 @@ try {
         .trim();
 }
 catch (e) {
-    adminKeys = ``;
+    try {
+        adminKeys = fs_1.default
+            .readFileSync(`/run/secrets/admin_keys`, `utf-8`)
+            .trim();
+    }
+    catch (e) {
+        adminKeys = ``;
+    }
 }
 try {
     adminKeys = JSON.parse(adminKeys);
+    dist_1.default.log(`loaded admin keys`, adminKeys); // todo delete!!!!
 }
 catch (e) {
     adminKeys = false;
@@ -135,6 +143,21 @@ function default_1(socket) {
         await db_1.db.ship.wipe();
         while (__1.game.ships.length)
             __1.game.ships.pop();
+    });
+    socket.on(`game:shipList`, async (id, password, humanOnly, callback) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:shipList`);
+        callback({
+            data: __1.game.ships
+                .filter((s) => (humanOnly ? s.human : true))
+                .map((s) => ({
+                name: s.name,
+                id: s.id,
+                faction: { id: s.faction.id },
+                species: { id: s.species.id },
+                crewMemberCount: s.crewMembers.length,
+            })),
+        });
     });
 }
 exports.default = default_1;

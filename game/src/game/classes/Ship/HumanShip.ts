@@ -73,15 +73,6 @@ export class HumanShip extends CombatShip {
     //   c.capitalize(this.faction.id) + ` Faction 1`,
     // )
 
-    // todo remove this! this is just a one time thing to give all the ships their fun new headers the first time we added it
-    this.addHeaderBackground(
-      c.capitalize(this.faction.id) + ` Faction 2`,
-      `joining the ${c.capitalize(
-        this.faction.id,
-      )} faction`,
-    )
-    // todo /todo
-
     this.ai = false
     this.human = true
 
@@ -1422,6 +1413,16 @@ export class HumanShip extends CombatShip {
   addCommonCredits(amount: number, member: CrewMember) {
     this.commonCredits += amount
     this.toUpdate.commonCredits = this.commonCredits
+
+    if (amount > 100)
+      this.logEntry(
+        `${member.name} added ${c.r2(
+          amount,
+          0,
+        )} credits to the ship's common fund.`,
+        `low`,
+      )
+
     member.addStat(`totalContributedToCommonFund`, amount)
 
     if (this.commonCredits > 50000)

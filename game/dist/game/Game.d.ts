@@ -44,7 +44,7 @@ export declare class Game {
     get gameSoftArea(): number;
     expireOldAttackRemnantsAndCaches(): void;
     spawnNewPlanets(): Promise<void>;
-    spawnNewZones(): void;
+    spawnNewZones(): Promise<void>;
     spawnNewCaches(): void;
     spawnNewAIs(): void;
     addHumanShip(data: BaseHumanShipData, save?: boolean): Promise<HumanShip>;
@@ -54,9 +54,9 @@ export declare class Game {
     addMiningPlanet(data: BaseMiningPlanetData, save?: boolean): Promise<Planet>;
     addFaction(data: BaseFactionData): Faction;
     addSpecies(data: BaseSpeciesData): Species;
-    addCache(data: BaseCacheData, save?: boolean): Cache;
+    addCache(data: BaseCacheData, save?: boolean): Promise<Cache>;
     removeCache(cache: Cache): void;
-    addZone(data: BaseZoneData, save?: boolean): Zone;
+    addZone(data: BaseZoneData, save?: boolean): Promise<Zone>;
     removeZone(zone: Zone): void;
     addAttackRemnant(data: BaseAttackRemnantData, save?: boolean): AttackRemnant;
     removeAttackRemnant(ar: AttackRemnant): void;

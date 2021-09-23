@@ -46,9 +46,6 @@ class HumanShip extends CombatShip_1.CombatShip {
         // this.availableHeaderBackgrounds.push(
         //   c.capitalize(this.faction.id) + ` Faction 1`,
         // )
-        // todo remove this! this is just a one time thing to give all the ships their fun new headers the first time we added it
-        this.addHeaderBackground(dist_1.default.capitalize(this.faction.id) + ` Faction 2`, `joining the ${dist_1.default.capitalize(this.faction.id)} faction`);
-        // todo /todo
         this.ai = false;
         this.human = true;
         this.speed = dist_1.default.vectorToMagnitude(this.velocity);
@@ -962,6 +959,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     addCommonCredits(amount, member) {
         this.commonCredits += amount;
         this.toUpdate.commonCredits = this.commonCredits;
+        if (amount > 100)
+            this.logEntry(`${member.name} added ${dist_1.default.r2(amount, 0)} credits to the ship's common fund.`, `low`);
         member.addStat(`totalContributedToCommonFund`, amount);
         if (this.commonCredits > 50000)
             this.addTagline(`Easy Target`, `having 50000 credits in the common fund`);

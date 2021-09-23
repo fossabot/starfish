@@ -91,7 +91,7 @@ export class GoCommand implements Command {
       roomToGoTo,
     )
     context.reply(
-      `${context.crewMember.name} moves to ${c.capitalize(
+      `${context.nickname} moves to ${c.capitalize(
         roomToGoTo,
       )}.`,
     )

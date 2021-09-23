@@ -15,11 +15,18 @@ try {
     )
     .trim()
 } catch (e) {
-  adminKeys = ``
+  try {
+    adminKeys = fs
+      .readFileSync(`/run/secrets/admin_keys`, `utf-8`)
+      .trim()
+  } catch (e) {
+    adminKeys = ``
+  }
 }
 
 try {
   adminKeys = JSON.parse(adminKeys)
+  c.log(`loaded admin keys`, adminKeys) // todo delete!!!!
 } catch (e) {
   adminKeys = false
   c.log(`red`, `Error loading admin keys!`, e)
@@ -174,4 +181,25 @@ export default function (
     await db.ship.wipe()
     while (game.ships.length) game.ships.pop()
   })
+
+  socket.on(
+    `game:shipList`,
+    async (id, password, humanOnly, callback) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:shipList`,
+        )
+      callback({
+        data: game.ships
+          .filter((s) => (humanOnly ? s.human : true))
+          .map((s) => ({
+            name: s.name,
+            id: s.id,
+            faction: { id: s.faction.id },
+            species: { id: s.species.id },
+            crewMemberCount: s.crewMembers.length,
+          })),
+      })
+    },
+  )
 }

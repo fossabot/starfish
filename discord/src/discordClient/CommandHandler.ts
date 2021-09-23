@@ -186,7 +186,7 @@ export class CommandHandler {
         `${c.gameName}`,
       )
 
-    // * removed because it would reset ship names willy-nilly, and they can set it manually
+    // * removed because it would reset the ship name to the guild name whenever a command was used and not respect manally entered custom names
     // // ----- update guild name if necessary -----
     // if (context.ship && context.guild) {
     //   if (
@@ -207,12 +207,18 @@ export class CommandHandler {
         context.initialMessage.guild?.members.cache.find(
           (m) => m.user.id === context.crewMember?.id,
         )
-      if (!guildMember) {
-        c.log(`NO GUILD MEMBER BY THAT NAME`)
-      } else if (
+      if (
+        guildMember &&
         context.ship &&
         context.nickname !== context.crewMember.name
       ) {
+        c.log(
+          `gray`,
+          `Auto-renaming crew member with different name:`,
+          context.crewMember.name,
+          `to`,
+          context.nickname,
+        )
         ioInterface.crew.rename(
           context.ship.id,
           context.crewMember.id,

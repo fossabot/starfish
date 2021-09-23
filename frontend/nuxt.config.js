@@ -7,6 +7,12 @@ export default {
     IS_DOCKER: process.env.IS_DOCKER !== `false`,
   },
 
+  vue: {
+    config: {
+      productionTip: false,
+    },
+  },
+
   head: {
     title: c.gameName,
     htmlAttrs: {
@@ -39,6 +45,7 @@ export default {
   css: [`~/assets/styles/main.scss`],
 
   plugins: [
+    { src: `~/plugins/profiler.ts` },
     { src: `~/plugins/socket.ts` },
     { src: `~/plugins/tooltip.ts` },
   ],

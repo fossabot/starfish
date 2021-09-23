@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
-        "signature": "2ec29f42769d7112ab06236d4e90e82f7e67058e83d5af49ff6765908cea6bef",
+        "version": "ba86eadcb90ca2f07eb12a5c12777da0d6c87a6f7e4eaf76a9bdd9f4c4c858b6",
+        "signature": "ba86eadcb90ca2f07eb12a5c12777da0d6c87a6f7e4eaf76a9bdd9f4c4c858b6",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -377,8 +377,8 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "18c3824463115ef87d813b0eec72d03cc8affdb9822d18c71ff7e509a0be25a3",
-        "signature": "3748d69b4584e861e615f7b209a7f6ad98ccc673469e944a4c055c15e03fc7ef",
+        "version": "8810d1397d0b5f58761b53b35e476d5ace1dc632a9cb274b16e3f9253a72018e",
+        "signature": "7ca8105c69faed24e740cb8e4c958015669bf388cb33008303a34e0d0ac3cd16",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -407,7 +407,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/weapons.ts": {
-        "version": "662822e8c2de12f0f0863ec3eb2e5e2601112c33873772a57bb55cdaa7195ad1",
+        "version": "6c2bb04a27d29b0a73658256abf6933c89ea80e13ae57c4e00872ff5c69830da",
         "signature": "befe73d74cb58aac72a4db9241cfd9f7c75ce59573a65c1349259cb1a35b82c2",
         "affectsGlobalScope": false
       },
@@ -417,7 +417,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/communicators.ts": {
-        "version": "cd7ba146ccf820bc6ecb106f8b942d51d24085b44109b9d3ebd0a246590e1bc6",
+        "version": "85435945a282b6efdb506754fff2190b505f6ff6be783026762194ac0dd48860",
         "signature": "261f06e680cd2b203afe84f45002fb01d589fbcb59ef630f2bb6520739d3e4b4",
         "affectsGlobalScope": false
       },
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "bc49947c5e959bfe4f447da667f6872d4a9337a9868edd9ccba004d8ff00cea2",
+        "signature": "48b02e9bec31d19ac7bc98b09b048119e2d440039acd50cd5d043805f7221b66",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
