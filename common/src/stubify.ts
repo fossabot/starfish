@@ -86,7 +86,7 @@ const recursivelyRemoveCircularReferencesInObject = (
         disallowedKeys,
         remainingDepth - 1,
         passedKey,
-        passedKey === `steps`,
+        track,
       ),
     )
     // if (passedKey === `steps`)

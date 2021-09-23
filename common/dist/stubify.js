@@ -45,7 +45,7 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
     }
     // array
     if (Array.isArray(obj)) {
-        newObj = obj.map((v) => recursivelyRemoveCircularReferencesInObject(v, disallowedKeys, remainingDepth - 1, passedKey, passedKey === `steps`));
+        newObj = obj.map((v) => recursivelyRemoveCircularReferencesInObject(v, disallowedKeys, remainingDepth - 1, passedKey, track));
         // if (passedKey === `steps`)
         //   c.log(`tutorial`, remainingDepth, obj, newObj)
     }
