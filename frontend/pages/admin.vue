@@ -50,8 +50,8 @@ export default Vue.extend({
   layout: 'withnavbar',
   data() {
     return {
+      c,
       show: false,
-      password: '',
     }
   },
   computed: {
@@ -62,10 +62,15 @@ export default Vue.extend({
     if (
       process.env.NODE_ENV !== 'development' &&
       !this.adminPassword
-    )
+    ) {
+      const p = prompt('password')
       this.$store.commit('set', {
-        adminPassword: prompt('password'),
+        adminPassword: p,
       })
+    }
+
+    c.log(this.userId, this.adminPassword)
+
     this.$socket.emit(
       'game:adminCheck',
       this.userId,
