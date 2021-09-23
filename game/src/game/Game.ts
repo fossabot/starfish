@@ -419,7 +419,7 @@ export class Game {
       ]) as `credits` | CargoId
       const amount =
         id === `credits`
-          ? Math.round(Math.random() * 150 + 1) * 100
+          ? Math.round(Math.random() * 80 + 1) * 100
           : Math.round(Math.random() * 200) / 10 + 1
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
