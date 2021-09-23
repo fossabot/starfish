@@ -35,8 +35,25 @@ function isAdmin(id, password) {
   c.log(id, password, adminKeys)
   if (process.env.NODE_ENV === `development`) return true
   if (!adminKeys) return false
-  if (password !== adminKeys?.password) return false
-  if (!adminKeys?.validIds?.includes(id)) return false
+  if (password !== adminKeys?.password) {
+    c.log(
+      `invalid password`,
+      password,
+      adminKeys?.password,
+      password === adminKeys?.password,
+    )
+    return false
+  }
+  if (!adminKeys?.validIds?.includes(id)) {
+    c.log(
+      `invalid user id`,
+      id,
+      typeof id,
+      adminKeys?.validIds,
+      adminKeys?.validIds?.includes(id),
+    )
+    return false
+  }
   return true
 }
 

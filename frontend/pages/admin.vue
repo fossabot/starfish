@@ -69,14 +69,11 @@ export default Vue.extend({
       })
     }
 
-    c.log(this.userId, this.adminPassword)
-
     this.$socket.emit(
       'game:adminCheck',
       this.userId,
       this.adminPassword,
       (isAdmin) => {
-        c.log(isAdmin)
         if (isAdmin) this.show = true
         else {
           this.$store.commit('set', {
