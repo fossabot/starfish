@@ -125,6 +125,36 @@ hr {
       height 0.2s ease-in-out;
   }
 
+  .iconholder {
+    position: relative;
+    width: var(--icon-width);
+    height: var(--icon-width);
+
+    .underimage,
+    .image {
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      border-radius: calc(var(--icon-width) / 2);
+      width: 100%;
+      height: 100%;
+      transition: background 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        border-radius 0.2s ease-in-out;
+    }
+    .underimage {
+      position: relative;
+      font-weight: bold;
+      top: 0.037em;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .image {
+      position: absolute;
+      // box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+      background-size: cover;
+    }
+  }
+
   &.active {
     .underimage {
       background: rgba(255, 255, 255, 0.3);
@@ -156,36 +186,6 @@ hr {
       left: 0;
       top: 10%;
       height: 80%;
-    }
-  }
-
-  .iconholder {
-    position: relative;
-    width: var(--icon-width);
-    height: var(--icon-width);
-
-    .underimage,
-    .image {
-      top: 0;
-      left: 0;
-      overflow: hidden;
-      border-radius: calc(var(--icon-width) / 2);
-      width: 100%;
-      height: 100%;
-      transition: background 0.2s ease-in-out,
-        box-shadow 0.2s ease-in-out,
-        border-radius 0.2s ease-in-out;
-    }
-    .underimage {
-      position: relative;
-      font-weight: bold;
-      top: 0.037em;
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .image {
-      position: absolute;
-      // box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
-      background-size: cover;
     }
   }
 }
