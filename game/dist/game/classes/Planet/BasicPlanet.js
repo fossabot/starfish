@@ -15,9 +15,6 @@ class BasicPlanet extends Planet_1.Planet {
         this.repairFactor = data.repairFactor || 0;
         this.homeworld = game.factions.find((f) => f.id === data.homeworld?.id);
         this.faction = this.homeworld;
-        if (this.homeworld)
-            while (this.level < dist_1.default.defaultHomeworldLevel)
-                this.levelUp();
         this.leanings = data.leanings || [];
         this.allegiances = [];
         if (data.allegiances) {
@@ -43,6 +40,9 @@ class BasicPlanet extends Planet_1.Planet {
         setInterval(() => this.decrementAllegiances(), (1000 * 60 * 60 * 24) / dist_1.default.gameSpeedMultiplier); // every day
         if (this.faction)
             this.incrementAllegiance(this.faction, 100);
+        if (this.homeworld)
+            while (this.level < dist_1.default.defaultHomeworldLevel)
+                this.levelUp();
     }
     levelUp() {
         super.levelUp();
