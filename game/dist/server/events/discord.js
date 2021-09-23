@@ -98,6 +98,16 @@ function default_1(socket) {
         ship.rename(newName);
         callback({ data: ship.name });
     });
+    socket.on(`ship:guildData`, (shipId, guildData, callback) => {
+        const ship = __1.game.ships.find((s) => s.id === shipId);
+        if (!ship)
+            return callback({
+                error: `no ship found to update guild data`,
+            });
+        ship.guildName = guildData.guildName;
+        ship.guildIcon = guildData.guildIcon;
+        callback({ data: true });
+    });
     socket.on(`ship:alertLevel`, (shipId, newLevel, callback) => {
         const ship = __1.game.ships.find((s) => s.id === shipId);
         if (!ship)

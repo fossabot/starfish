@@ -200,6 +200,7 @@ export const actions = {
 
     let connectionTimeout = setTimeout(() => {
       c.log(`red`, `Failed to connect to socket.`)
+      commit(`set`, { ship: null, connected: false })
     }, 5000)
 
     this.$socket.on(`disconnect`, () => {
@@ -273,7 +274,7 @@ export const actions = {
   },
 
   updateShip({ commit, state }, updates) {
-    c.log(`updating ship props`, Object.keys(updates))
+    // c.log(`updating ship props`, Object.keys(updates))
     if (!state.ship) return
 
     const basicsIndex = state.shipsBasics?.findIndex(

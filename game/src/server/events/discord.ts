@@ -158,6 +158,24 @@ export default function (
   })
 
   socket.on(
+    `ship:guildData`,
+    (shipId, guildData, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `no ship found to update guild data`,
+        })
+
+      ship.guildName = guildData.guildName
+      ship.guildIcon = guildData.guildIcon
+
+      callback({ data: true })
+    },
+  )
+
+  socket.on(
     `ship:alertLevel`,
     (shipId, newLevel, callback) => {
       const ship = game.ships.find(

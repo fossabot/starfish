@@ -23,6 +23,9 @@ export class HumanShip extends CombatShip {
   static movementIsFree = false // true
 
   readonly id: string
+  guildName: string = `guild`
+  guildIcon: string | undefined
+
   log: LogEntry[] = []
   logAlertLevel: LogAlertLevel = `medium`
   readonly crewMembers: CrewMember[] = []
@@ -72,6 +75,9 @@ export class HumanShip extends CombatShip {
     // this.availableHeaderBackgrounds.push(
     //   c.capitalize(this.faction.id) + ` Faction 1`,
     // )
+
+    if (data.guildName) this.guildName = data.guildName
+    if (data.guildIcon) this.guildIcon = data.guildIcon
 
     this.ai = false
     this.human = true

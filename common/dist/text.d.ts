@@ -7,6 +7,7 @@ declare function emojiToNumber(emoji?: string): number;
 declare function capitalize(string?: string): string;
 declare function sanitize(string?: string): SanitizeResult;
 declare function camelCaseToWords(string?: string, capitalizeFirst?: boolean): string;
+declare function acronym(string?: string): string;
 declare function msToTimeString(ms?: number): string;
 declare function garble(string?: string, percent?: number): string;
 declare const _default: {
@@ -22,6 +23,7 @@ declare const _default: {
     sanitize: typeof sanitize;
     msToTimeString: typeof msToTimeString;
     garble: typeof garble;
+    acronym: typeof acronym;
 };
 export default _default;
 //# sourceMappingURL=text.d.ts.map

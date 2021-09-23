@@ -8,6 +8,8 @@ const mongoose_1 = require("mongoose");
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const shipSchemaFields = {
     id: { type: String, required: true },
+    guildIcon: { type: String },
+    guildName: { type: String },
     location: [{ type: Number, required: true }],
     velocity: [{ type: Number, required: true }],
     name: { type: String, required: true },
@@ -124,7 +126,7 @@ async function addOrUpdateInDb(data) {
 }
 exports.addOrUpdateInDb = addOrUpdateInDb;
 async function removeFromDb(id) {
-    const res = await DBShip.deleteMany({ id });
+    const res = await DBShip.deleteOne({ id });
     // c.log(`Deleted ship`, id, res)
 }
 exports.removeFromDb = removeFromDb;

@@ -303,6 +303,11 @@ interface IOClientEvents {
     crewMemberId: string,
     callback: (res: IOResponse<string>) => void,
   ) => void
+  [`ship:guildData`]: (
+    shipId: string,
+    guildData: { guildName: string; guildIcon: string },
+    callback: (res: IOResponse<boolean>) => void,
+  ) => void
   [`ship:kickMember`]: (
     shipId: string,
     crewMemberId: string,

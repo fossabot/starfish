@@ -262,8 +262,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "cce6e3e9204f689d7497466658943b16c87ec1258e0a4650c2dbdbbf9355450d",
-        "signature": "cce6e3e9204f689d7497466658943b16c87ec1258e0a4650c2dbdbbf9355450d",
+        "version": "15c4d4fe0e5e6a136c4dc226f07c2d76b773a487b73164d8641724aa824d227f",
+        "signature": "15c4d4fe0e5e6a136c4dc226f07c2d76b773a487b73164d8641724aa824d227f",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,13 +282,13 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "947154506d40d7ca48431214c0537bde9a0a1a65e5cc47ffebf8b36e9cc3175c",
-        "signature": "947154506d40d7ca48431214c0537bde9a0a1a65e5cc47ffebf8b36e9cc3175c",
+        "version": "a8fc90b6add32a7c940188518d83b886cdf67ff993075dfaa736cb8c981fb653",
+        "signature": "a8fc90b6add32a7c940188518d83b886cdf67ff993075dfaa736cb8c981fb653",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
-        "signature": "79c997ca254d6d0f2f095e9ecf641a036b2c37d9dcbe3b3162ff7aeea4e78511",
+        "version": "c02539af4fe1a537f365871e0e38da4d4ed2afe94251adb036ff3bf1a58100cd",
+        "signature": "c02539af4fe1a537f365871e0e38da4d4ed2afe94251adb036ff3bf1a58100cd",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -372,8 +372,8 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "7fad194fc226103384eefac8daa308b918be61911df16382475bb01c990b1c75",
-        "signature": "4891b7c3cdc24fb25c16244d3de0ec5162da836e8e62dfdb44186c106dbe1e5f",
+        "version": "a12c3b09d5b95e7eedc23261a647825b80327eb7f6819216bdeadb475d1b3695",
+        "signature": "f9ac02a2fd50e143724018a4fe5e813a11fc6601573481f8db171b61edcd79c1",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "bd8a69646d67a815c52b0d024c80ffd9eccdb6a0980a9a5a8417f44d16a07890",
+        "signature": "f3f799e0ca29b0445a8944ce3d855498703b53bf86a0549654653b4ea44c4564",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

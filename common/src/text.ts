@@ -143,6 +143,18 @@ function camelCaseToWords(
   return s
 }
 
+function acronym(string: string = ``): string {
+  return string
+    .split(` `)
+    .map((s) => {
+      if (skipWords.includes(s.toLowerCase())) return ``
+      return s.substring(0, 1)
+    })
+    .filter((w) => w)
+    .join(``)
+    .toUpperCase()
+}
+
 function msToTimeString(ms: number = 0): string {
   let remainingSeconds = Math.floor(ms / 1000)
 
@@ -250,4 +262,5 @@ export default {
   sanitize,
   msToTimeString,
   garble,
+  acronym,
 }

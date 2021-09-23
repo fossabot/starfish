@@ -3,7 +3,7 @@
     <div class="stars fullsize"></div>
     <transition name="fadeslow">
       <div v-if="state === 'planet'">
-        <div class="planet fullsize"></div>
+        <div class="planet fullsize coverothers"></div>
         <div
           class="tint fullsize"
           :style="{ 'background-color': ship.planet.color }"
@@ -44,6 +44,9 @@ export default Vue.extend({
   top: 0;
   left: 0;
   z-index: -1;
+  background: #000;
+}
+.coverothers {
   background: #000;
 }
 .fullsize {

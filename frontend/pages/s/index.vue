@@ -8,53 +8,57 @@
         /></div
     ></FadeIn>
 
-    <div
-      id="masonrycontainer"
-      class="container"
-      ref="container"
-    >
-      <ShipNoShip />
+    <div class="flex">
+      <ShipLeftBar v-if="shipsBasics.length > 1" />
 
-      <template v-if="ship && !ship.dead">
-        <ShipSpectator v-if="!ship.tutorial" />
+      <div
+        id="masonrycontainer"
+        class="container"
+        ref="container"
+      >
+        <ShipNoShip />
 
-        <ShipTutorial />
+        <template v-if="ship && !ship.dead">
+          <ShipSpectator v-if="!ship.tutorial" />
 
-        <Ship />
+          <ShipTutorial />
 
-        <ShipCanvasMap />
-        <ShipPlanet />
+          <Ship />
 
-        <ShipCanvasMapZoom />
+          <ShipCanvasMap />
+          <ShipPlanet />
 
-        <ShipMemberInventory />
+          <ShipCanvasMapZoom />
 
-        <ShipDiagram />
-        <ShipRoom />
+          <ShipMemberInventory />
 
-        <ShipMember />
+          <ShipDiagram />
+          <ShipRoom />
 
-        <!-- <ShipVisible /> -->
-        <ShipScanShip />
+          <ShipMember />
 
-        <ShipItems />
+          <!-- <ShipVisible /> -->
+          <ShipScanShip />
 
-        <ShipLog />
+          <ShipItems />
 
-        <ShipPassives />
-        <!-- <ShipStats /> -->
+          <ShipLog />
 
-        <ShipCrewRank />
+          <ShipPassives />
+          <!-- <ShipStats /> -->
 
-        <ShipFactionRank />
-      </template>
+          <ShipCrewRank />
 
-      <template v-if="ship && ship.dead">
-        <ShipDead />
-        <ShipLog />
-      </template>
+          <ShipFactionRank />
+        </template>
 
-      <ShipNavPane v-if="ship && !ship.tutorial" />
+        <template v-if="ship && ship.dead">
+          <ShipDead />
+          <ShipLog />
+        </template>
+
+        <ShipNavPane v-if="ship && !ship.tutorial" />
+      </div>
     </div>
     <!-- {{ ship && ship.id }}
     {{ ship && ship.tutorial }} -->

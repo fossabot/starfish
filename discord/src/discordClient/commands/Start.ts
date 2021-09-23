@@ -137,6 +137,12 @@ This bot will create several channels for game communication and a role for crew
       id: context.guild.id,
       name: context.guild.name,
       species: { id: speciesResult },
+      guildName:
+        c
+          .sanitize(context.guild.name)
+          .result.substring(0, c.maxNameLength) || `guild`,
+      guildIcon:
+        context.guild.iconURL({ size: 128 }) || undefined,
     })
     if (!createdShip) {
       await context.initialMessage.channel.send(

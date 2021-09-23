@@ -14,6 +14,8 @@ const shipSchemaFields: Record<
   any
 > = {
   id: { type: String, required: true },
+  guildIcon: { type: String },
+  guildName: { type: String },
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
@@ -142,7 +144,7 @@ export async function addOrUpdateInDb(
 }
 
 export async function removeFromDb(id: string) {
-  const res = await DBShip.deleteMany({ id })
+  const res = await DBShip.deleteOne({ id })
   // c.log(`Deleted ship`, id, res)
 }
 

@@ -210,6 +210,7 @@ declare const _default: {
     sanitize: (string?: string) => SanitizeResult;
     msToTimeString: (ms?: number) => string;
     garble: (string?: string, percent?: number) => string;
+    acronym: (string?: string) => string;
     lerp: (v0?: number, v1?: number, t?: number) => number;
     r2: (number: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
     radiansToDegrees: (radians?: number) => number;

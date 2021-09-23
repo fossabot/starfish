@@ -20,6 +20,10 @@ export default function (
       const stub = c.stubify({
         name: foundShip.name,
         id: foundShip.id,
+        guildName:
+          (foundShip as HumanShip).guildName ||
+          foundShip.name,
+        guildIcon: (foundShip as HumanShip).guildIcon,
         faction: foundShip.faction,
         species: foundShip.species,
         tagline: foundShip.tagline,

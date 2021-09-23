@@ -55,6 +55,8 @@ interface ShipStub extends BaseStub {
   stats?: ShipStatEntry[]
   tutorial?: any
   captain?: string
+  guildName?: string
+  guildIcon?: string
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

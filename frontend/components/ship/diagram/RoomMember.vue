@@ -26,9 +26,9 @@ export default Vue.extend({
     name: {},
     location: { type: String as PropType<CrewLocation> },
     roomEls: {
-      type: Object as PropType<
-        { [key in CrewLocation]: HTMLDivElement }
-      >,
+      type: Object as PropType<{
+        [key in CrewLocation]: HTMLDivElement
+      }>,
     },
     highlight: { type: Boolean },
   },
@@ -97,6 +97,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .roommember {
+  pointer-events: none;
   transform-origin: 50% 50%;
   line-height: 1;
   position: absolute;

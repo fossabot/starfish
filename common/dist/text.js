@@ -125,6 +125,18 @@ function camelCaseToWords(string = ``, capitalizeFirst) {
         s = s.replace(/^./, (str) => str.toUpperCase());
     return s;
 }
+function acronym(string = ``) {
+    return string
+        .split(` `)
+        .map((s) => {
+        if (skipWords.includes(s.toLowerCase()))
+            return ``;
+        return s.substring(0, 1);
+    })
+        .filter((w) => w)
+        .join(``)
+        .toUpperCase();
+}
 function msToTimeString(ms = 0) {
     let remainingSeconds = Math.floor(ms / 1000);
     let years = Math.floor(remainingSeconds / (60 * 60 * 24 * 365));
@@ -206,5 +218,6 @@ exports.default = {
     sanitize,
     msToTimeString,
     garble,
+    acronym,
 };
 //# sourceMappingURL=text.js.map

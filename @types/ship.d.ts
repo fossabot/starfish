@@ -28,6 +28,8 @@ interface BaseHumanShipData extends BaseShipData {
   logAlertLevel?: LogLevel
   commonCredits?: number
   tutorial?: { step: number }
+  guildIcon?: string
+  guildName?: string
 }
 
 interface BaseAIShipData extends BaseShipData {

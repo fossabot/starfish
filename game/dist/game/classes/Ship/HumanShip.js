@@ -14,6 +14,7 @@ const Tutorial_1 = require("./addins/Tutorial");
 class HumanShip extends CombatShip_1.CombatShip {
     constructor(data, game) {
         super(data, game);
+        this.guildName = `guild`;
         this.log = [];
         this.logAlertLevel = `medium`;
         this.crewMembers = [];
@@ -46,6 +47,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         // this.availableHeaderBackgrounds.push(
         //   c.capitalize(this.faction.id) + ` Faction 1`,
         // )
+        if (data.guildName)
+            this.guildName = data.guildName;
+        if (data.guildIcon)
+            this.guildIcon = data.guildIcon;
         this.ai = false;
         this.human = true;
         this.speed = dist_1.default.vectorToMagnitude(this.velocity);

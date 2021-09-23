@@ -49,11 +49,27 @@ export async function kickMember(
   return error // null = ok
 }
 
+export async function setGuildData(
+  shipId,
+  guildData,
+): Promise<boolean> {
+  return new Promise(async (resolve) => {
+    await io.emit(
+      `ship:guildData`,
+      shipId,
+      guildData,
+      (res) => {
+        if (`error` in res) return resolve(false)
+        return resolve(true)
+      },
+    )
+  })
+}
+
 export async function rename(
   shipId: string,
   newName: string,
 ): Promise<string> {
-  c.trace()
   return new Promise(async (resolve) => {
     await io.emit(`ship:rename`, shipId, newName, (res) => {
       if (`error` in res) return resolve(res.error)
