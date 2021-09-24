@@ -354,7 +354,7 @@ export default Vue.extend({
     show(): boolean {
       return (
         this.ship &&
-        // this.ship.crewMembers.length > 1 &&
+        this.ship.crewMembers.length > 1 &&
         this.captain &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes(
