@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import FreeMase from 'freemase'
+import FreeMase from '../assets/scripts/freemase'
 
 export default Vue.extend({
   data() {

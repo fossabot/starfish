@@ -93,7 +93,7 @@ import c from '../../../common/dist'
 import { mapState } from 'vuex'
 import * as storage from '../../assets/scripts/storage'
 
-import FreeMase from 'freemase'
+import FreeMase from '../../assets/scripts/freemase'
 
 export default Vue.extend({
   data() {
