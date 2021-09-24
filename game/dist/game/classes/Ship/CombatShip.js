@@ -179,7 +179,7 @@ class CombatShip extends Ship_1.Ship {
         // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
-        dist_1.default.log(`need to beat ${Math.min(rangeAsPercent, minHitChance)}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
+        dist_1.default.log(`gray`, `need to beat ${Math.min(rangeAsPercent, minHitChance)}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
         const damageResult = {
             miss,
             damage,
@@ -373,7 +373,7 @@ class CombatShip extends Ship_1.Ship {
             const remainingHp = equipmentToAttack.hp;
             // ----- item not destroyed -----
             if (remainingHp >= adjustedRemainingDamage) {
-                dist_1.default.log(`hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`);
+                dist_1.default.log(`gray`, `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`);
                 equipmentToAttack.hp -= adjustedRemainingDamage;
                 equipmentToAttack._stub = null;
                 remainingDamage = 0;
@@ -387,7 +387,7 @@ class CombatShip extends Ship_1.Ship {
             }
             // ----- item destroyed -----
             else {
-                dist_1.default.log(`destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
+                dist_1.default.log(`gray`, `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`);
                 equipmentToAttack.hp = 0;
                 equipmentToAttack._stub = null;
                 remainingDamage -= remainingHp;
@@ -402,35 +402,38 @@ class CombatShip extends Ship_1.Ship {
             // ----- notify both sides -----
             if (equipmentToAttack.hp === 0 &&
                 equipmentToAttack.announceWhenBroken) {
-                this.logEntry([
-                    `Your`,
-                    {
-                        text: equipmentToAttack.displayName,
-                        color: `var(--item)`,
-                        tooltipData: equipmentToAttack.toLogStub(),
-                    },
-                    `has been disabled!`,
-                ], `high`);
-                if (`logEntry` in attacker)
-                    attacker.logEntry([
-                        `You have disabled`,
-                        {
-                            text: this.name,
-                            color: this.faction.color,
-                            tooltipData: this.toLogStub(),
-                        },
-                        `&nospace's`,
+                // timeout so the hit message comes first
+                setTimeout(() => {
+                    this.logEntry([
+                        `Your`,
                         {
                             text: equipmentToAttack.displayName,
                             color: `var(--item)`,
-                            tooltipData: {
-                                displayName: equipmentToAttack.displayName,
-                                description: equipmentToAttack.description,
-                                type: equipmentToAttack.type,
-                            },
+                            tooltipData: equipmentToAttack.toLogStub(),
                         },
-                        `&nospace!`,
+                        `has been disabled!`,
                     ], `high`);
+                    if (`logEntry` in attacker)
+                        attacker.logEntry([
+                            `You have disabled`,
+                            {
+                                text: this.name,
+                                color: this.faction.color,
+                                tooltipData: this.toLogStub(),
+                            },
+                            `&nospace's`,
+                            {
+                                text: equipmentToAttack.displayName,
+                                color: `var(--item)`,
+                                tooltipData: {
+                                    displayName: equipmentToAttack.displayName,
+                                    description: equipmentToAttack.description,
+                                    type: equipmentToAttack.type,
+                                },
+                            },
+                            `&nospace!`,
+                        ], `high`);
+                }, 100);
                 equipmentToAttack.announceWhenBroken = false;
             }
         }

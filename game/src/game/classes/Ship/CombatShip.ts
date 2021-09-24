@@ -311,6 +311,7 @@ export abstract class CombatShip extends Ship {
     if (damage === 0) miss = true
 
     c.log(
+      `gray`,
       `need to beat ${Math.min(
         rangeAsPercent,
         minHitChance,
@@ -606,6 +607,7 @@ export abstract class CombatShip extends Ship {
       // ----- item not destroyed -----
       if (remainingHp >= adjustedRemainingDamage) {
         c.log(
+          `gray`,
           `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
         )
         equipmentToAttack.hp -= adjustedRemainingDamage
@@ -622,6 +624,7 @@ export abstract class CombatShip extends Ship {
       // ----- item destroyed -----
       else {
         c.log(
+          `gray`,
           `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
         )
         equipmentToAttack.hp = 0
@@ -641,44 +644,47 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack.hp === 0 &&
         equipmentToAttack.announceWhenBroken
       ) {
-        this.logEntry(
-          [
-            `Your`,
-            {
-              text: equipmentToAttack.displayName,
-              color: `var(--item)`,
-              tooltipData:
-                equipmentToAttack.toLogStub() as any,
-            },
-            `has been disabled!`,
-          ],
-          `high`,
-        )
-        if (`logEntry` in attacker)
-          attacker.logEntry(
+        // timeout so the hit message comes first
+        setTimeout(() => {
+          this.logEntry(
             [
-              `You have disabled`,
-              {
-                text: this.name,
-                color: this.faction.color,
-                tooltipData: this.toLogStub() as any,
-              },
-              `&nospace's`,
+              `Your`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
-                tooltipData: {
-                  displayName:
-                    equipmentToAttack.displayName,
-                  description:
-                    equipmentToAttack.description,
-                  type: equipmentToAttack.type,
-                },
+                tooltipData:
+                  equipmentToAttack.toLogStub() as any,
               },
-              `&nospace!`,
+              `has been disabled!`,
             ],
             `high`,
           )
+          if (`logEntry` in attacker)
+            attacker.logEntry(
+              [
+                `You have disabled`,
+                {
+                  text: this.name,
+                  color: this.faction.color,
+                  tooltipData: this.toLogStub() as any,
+                },
+                `&nospace's`,
+                {
+                  text: equipmentToAttack.displayName,
+                  color: `var(--item)`,
+                  tooltipData: {
+                    displayName:
+                      equipmentToAttack.displayName,
+                    description:
+                      equipmentToAttack.description,
+                    type: equipmentToAttack.type,
+                  },
+                },
+                `&nospace!`,
+              ],
+              `high`,
+            )
+        }, 100)
         equipmentToAttack.announceWhenBroken = false
       }
     }

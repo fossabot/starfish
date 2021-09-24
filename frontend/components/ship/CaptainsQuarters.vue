@@ -12,6 +12,7 @@
       <div>
         "<span>{{ validOrders.verb }}</span
         ><span
+          class="nowrap"
           v-if="validOrders.target"
           v-tooltip="validOrders.target"
           :style="{ color: validOrders.target.color }"
@@ -21,8 +22,9 @@
             validOrders.target.name ||
             validOrders.target.displayName
           }}</span
-        ><span v-if="validOrders.addendum"
-          >, {{ validOrders.addendum }}</span
+        ><span v-if="validOrders.addendum">{{
+          validOrders.addendum
+        }}</span
         ><span v-else>!</span>"
 
         <div class="sub martopsmall">
@@ -36,7 +38,7 @@
       v-if="isCaptain && ship.visible"
     >
       <div class="panesubhead">Set new orders</div>
-      <select v-model="orders.verb">
+      <select v-model="verb">
         <option value="">Select a verb...</option>
         <option value="Go to">Go to</option>
         <option
@@ -48,6 +50,16 @@
           "
         >
           Attack
+        </option>
+        <option
+          value="Run away from"
+          v-if="
+            ship.visible.ships.filter(
+              (s) => s.faction.id !== ship.faction.id,
+            ).length
+          "
+        >
+          Run away from
         </option>
         <option
           value="Get"
@@ -76,18 +88,29 @@
         >
           Repair
         </option>
-        <option value="">(none)</option>
+        <option
+          value="Just chill and do whatever, you know, have fun"
+        >
+          Whatever
+        </option>
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Attack'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Attack', 'Run away from'].includes(verb)"
       >
-        <option value="">Select a ship...</option>
+        <option value="">Select an enemy...</option>
         <option
-          v-for="s in ship.visible.ships.filter(
-            (vs) => vs.faction.id !== ship.faction.id,
-          )"
+          v-for="s in ship.visible.ships
+            .filter(
+              (vs) => vs.faction.id !== ship.faction.id,
+            )
+            .sort(
+              (a, b) =>
+                c.distance(ship.location, a.location) -
+                c.distance(ship.location, b.location),
+            )
+            .slice(0, 10)"
           :key="'cqo' + s.id"
           :value="{ type: 'ship', id: s.id, name: s.name }"
         >
@@ -96,14 +119,19 @@
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Help'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Help'].includes(verb)"
       >
         <option value="">Select a ship...</option>
         <option
-          v-for="s in ship.visible.ships.filter(
-            (vs) => vs.id !== ship.id,
-          )"
+          v-for="s in ship.visible.ships
+            .filter((vs) => vs.id !== ship.id)
+            .sort(
+              (a, b) =>
+                c.distance(ship.location, a.location) -
+                c.distance(ship.location, b.location),
+            )
+            .slice(0, 10)"
           :key="'cqo' + s.id"
           :value="{ type: 'ship', id: s.id, name: s.name }"
         >
@@ -112,12 +140,18 @@
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Get'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Get'].includes(verb)"
       >
         <option value="">Select a cache...</option>
         <option
-          v-for="s in ship.visible.caches"
+          v-for="s in [...ship.visible.caches]
+            .sort(
+              (a, b) =>
+                c.distance(ship.location, a.location) -
+                c.distance(ship.location, b.location),
+            )
+            .slice(0, 10)"
           :key="'cqo' + s.id"
           :value="{ type: 'cache', id: s.id, name: s.name }"
         >
@@ -133,14 +167,19 @@
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Mine at'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Mine at'].includes(verb)"
       >
         <option value="">Select a planet...</option>
         <option
-          v-for="s in ship.seenPlanets.filter(
-            (p) => p.mine,
-          )"
+          v-for="s in ship.seenPlanets
+            .filter((p) => p.mine)
+            .sort(
+              (a, b) =>
+                c.distance(ship.location, a.location) -
+                c.distance(ship.location, b.location),
+            )
+            .slice(0, 10)"
           :key="'cqo' + (s.id || s.name)"
           :value="{
             type: 'planet',
@@ -152,18 +191,40 @@
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Go to'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Go to'].includes(verb)"
       >
         <option value="">Select a destination...</option>
         <option
           v-for="s in [
-            ...ship.seenPlanets,
-            ...ship.seenLandmarks,
-            ...ship.visible.ships.filter(
-              (vs) => vs.id !== ship.id,
-            ),
-            ...ship.visible.caches,
+            ...[...ship.seenPlanets]
+              .sort(
+                (a, b) =>
+                  c.distance(ship.location, a.location) -
+                  c.distance(ship.location, b.location),
+              )
+              .slice(0, 10),
+            ...[...ship.seenLandmarks]
+              .sort(
+                (a, b) =>
+                  c.distance(ship.location, a.location) -
+                  c.distance(ship.location, b.location),
+              )
+              .slice(0, 10),
+            ...[...ship.visible.ships]
+              .sort(
+                (a, b) =>
+                  c.distance(ship.location, a.location) -
+                  c.distance(ship.location, b.location),
+              )
+              .slice(0, 10),
+            ...[...ship.visible.caches]
+              .sort(
+                (a, b) =>
+                  c.distance(ship.location, a.location) -
+                  c.distance(ship.location, b.location),
+              )
+              .slice(0, 10),
           ]"
           :key="'cqo' + (s.id || s.name)"
           :value="{
@@ -187,14 +248,14 @@
       </select>
 
       <select
-        v-model="orders.target"
-        v-if="['Repair'].includes(orders.verb)"
+        v-model="target"
+        v-if="['Repair'].includes(verb)"
       >
         <option value="">Select equipment...</option>
         <option
-          v-for="s in ship.items.filter(
-            (i) => i.repair < 0.95,
-          )"
+          v-for="s in [...ship.items]
+            .filter((i) => i.repair < 0.95)
+            .sort((a, b) => a.repair - b.repair)"
           :key="'cqo' + s.type + s.id"
           :value="{
             type: s.type,
@@ -207,32 +268,54 @@
         <option value="">Anything</option>
       </select>
 
-      <select v-model="orders.addendum" v-if="orders.verb">
+      <select v-model="addendum" v-if="verb">
         <option value="">Select an addendum...</option>
-        <option value="quickly!">Quickly!</option>
-        <option value="but no rush.">No rush.</option>
-        <option value="all together now!">
+        <option value=", quickly!">Quickly!</option>
+        <option value=", but no rush.">No rush.</option>
+        <option value=", all together now!">
           All together, now!
         </option>
-        <option value="or else!">Or else!</option>
-        <option value="I dare you.">I dare you.</option>
-        <option value="please 🙂">Please 🙂</option>
+        <option value=" if you feel like it.">
+          If you feel like it.
+        </option>
+        <option value=" just a little.">
+          Just a little.
+        </option>
+        <option value=", or else!">Or else!</option>
+        <option value=", I dare you.">I dare you.</option>
+        <option value=", please 🙂">Please 🙂</option>
+        <option value=", pretty please 🥺">
+          Pretty please 🥺
+        </option>
         <option
-          :value="`my fellow ${
+          :value="`, my fellow ${
             c.species[ship.species.id].id
           }!`"
         >
           Fellow {{ c.species[ship.species.id].id }}!
         </option>
-        <option value="if you know what I mean 😉">
+        <option
+          :value="`, in the name of the ${
+            c.factions[ship.faction.id].name
+          }!`"
+        >
+          In the name of the
+          {{ c.factions[ship.faction.id].name }}!
+        </option>
+        <option value=", you've earned it.">
+          You've earned it.
+        </option>
+        <option value=", see if I care.">
+          See if I care.
+        </option>
+        <option value=", if you know what I mean 😉">
           IFKWIM 😉
         </option>
-        <option value="">(none)</option>
       </select>
 
       <div class="martop flexbetween">
         <button
-          v-if="toValidOrders(orders)"
+          v-if="toValidOrders(inputOrders)"
           @click="setOrders"
         >
           Set Orders
@@ -259,14 +342,11 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
   data() {
-    const orders: ShipOrders = {
+    return {
+      c,
       verb: '',
       target: '' as any,
       addendum: '',
-    }
-    return {
-      c,
-      orders,
     }
   },
   computed: {
@@ -290,11 +370,23 @@ export default Vue.extend({
     isCaptain(): boolean {
       return this.captain?.id === this.userId
     },
+    inputOrders(): ShipOrders {
+      return {
+        verb: this.verb,
+        target: this.target,
+        addendum: this.addendum,
+      }
+    },
     validOrders(): false | ShipOrders {
       return this.toValidOrders(this.ship.orders)
     },
   },
-  watch: {},
+  watch: {
+    verb() {
+      this.target = ''
+      this.addendum = ''
+    },
+  },
   mounted() {},
   methods: {
     setOrders(clear = false): void {
@@ -302,7 +394,7 @@ export default Vue.extend({
         'ship:orders',
         this.ship.id,
         this.crewMember?.id,
-        clear === true ? null : (this as any).orders,
+        clear === true ? null : this.inputOrders,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
@@ -328,6 +420,7 @@ export default Vue.extend({
         [
           'Go to',
           'Attack',
+          'Run away from',
           'Get',
           'Help',
           'Mine at',
