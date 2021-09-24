@@ -38,7 +38,7 @@ export class HumanShip extends CombatShip {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
-    trails?: CoordinatePair[][]
+    trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   } = {
     ships: [],
@@ -51,6 +51,7 @@ export class HumanShip extends CombatShip {
   shownPanels?: any[]
 
   commonCredits: number = 0
+  orders: ShipOrders | null = null
 
   mainTactic: Tactic | undefined
   itemTarget: ItemType | undefined
@@ -88,6 +89,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.direction = this.direction
 
     this.captain = data.captain || null
+    this.orders = data.orders || null
     this.log = data.log || []
 
     if (data.tutorial && data.tutorial.step !== undefined)
@@ -1117,12 +1119,15 @@ export class HumanShip extends CombatShip {
   updateVisible() {
     const targetTypes =
       this.tutorial?.currentStep?.visibleTypes
+    const alwaysShowTrailColors = this.passives.find(
+      (p) => p.id === `alwaysSeeTrailColors`,
+    )
     const visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
       this.id,
       targetTypes,
-      true,
+      alwaysShowTrailColors ? `withColors` : true,
       Boolean(this.tutorial),
     )
     const shipsWithValidScannedProps: ShipStub[] =
@@ -1140,7 +1145,7 @@ export class HumanShip extends CombatShip {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
-    trails?: CoordinatePair[][]
+    trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   }) {
     let planetDataToSend: Partial<PlanetStub>[] = []
@@ -1190,7 +1195,7 @@ export class HumanShip extends CombatShip {
   async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
-      this.game.planets.find((p) =>
+      this.seenPlanets.find((p) =>
         this.isAt(p.location, p.landingRadiusMultiplier),
       ) || false
     if (previousPlanet !== this.planet) {
@@ -1510,7 +1515,7 @@ export class HumanShip extends CombatShip {
         )
         if (actualShipObject)
           actualShipObject.receiveBroadcast(
-            toSend,
+            actualShipObject.ai ? message : toSend,
             this,
             garbleAmount,
             willSendShips,
@@ -1570,8 +1575,9 @@ export class HumanShip extends CombatShip {
       `broadcast`,
     )
 
-    this.communicators.forEach((comm) => comm.use())
-    this.updateBroadcastRadius()
+    // * this was annoying and not useful
+    // this.communicators.forEach((comm) => comm.use())
+    // this.updateBroadcastRadius()
   }
 
   // ----- room mgmt -----

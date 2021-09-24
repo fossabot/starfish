@@ -1,7 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const basePassiveData = {
-    boostAttackWithNumberOfFactionMembersWithinDistance: {
+    boostDamage: {
+        toString: (p) => `${(p.intensity || 1) * 100}% increased damage`,
+    },
+    alwaysSeeTrailColors: {
+        toString: (p) => `Trail colors always visible`,
+    },
+    boostDamageWhenNoAlliesWithinDistance: {
+        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% attack damage when no allies are within ${p.data?.distance}AU`,
+    },
+    boostDamageWithNumberOfFactionMembersWithinDistance: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% attack damage per ally within ${p.data?.distance}AU`,
     },
     boostCargoSpace: {
@@ -18,9 +27,6 @@ const basePassiveData = {
     },
     boostRepairSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster repairs`,
-    },
-    boostRestSpeed: {
-        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster rest`,
     },
     boostMineSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster mining`,

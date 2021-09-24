@@ -8,7 +8,7 @@ const dist_1 = __importDefault(require("../../../../common/dist"));
 const Stubbable_1 = require("./Stubbable");
 const zones_1 = require("../presets/zones");
 class Zone extends Stubbable_1.Stubbable {
-    // todo zones expire after a certain time
+    // ? should zones expire after a certain time?
     constructor({ location, radius, id, color, name, effects, }, game) {
         super();
         this.type = `zone`;

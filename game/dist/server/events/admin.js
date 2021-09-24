@@ -142,6 +142,7 @@ function default_1(socket) {
             if (ship.ai)
                 __1.game.ships.splice(__1.game.ships.findIndex((s) => s === ship), 1);
         });
+        __1.game.spawnNewAIs();
     });
     socket.on(`game:resetAllShips`, async (id, password) => {
         if (!isAdmin(id, password))

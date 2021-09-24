@@ -32,9 +32,12 @@ export declare class Game {
     private averageWorstShipTickLag;
     private averageTickTime;
     tick(): any;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail` | `zone`)[], includeTrails?: boolean, tutorial?: boolean): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail` | `zone`)[], includeTrails?: boolean | `withColors`, tutorial?: boolean): {
         ships: Ship[];
-        trails: CoordinatePair[][];
+        trails: {
+            color?: string;
+            points: CoordinatePair[];
+        }[];
         planets: Planet[];
         caches: Cache[];
         attackRemnants: AttackRemnant[];

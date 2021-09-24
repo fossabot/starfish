@@ -143,10 +143,6 @@ export class BasicPlanet extends Planet {
       },
       {
         weight: shipPassiveMultiplier * 1.01,
-        value: `boostRestSpeed`,
-      },
-      {
-        weight: shipPassiveMultiplier * 1.01,
         value: `boostCockpitChargeSpeed`,
       },
     ]
@@ -180,11 +176,6 @@ export class BasicPlanet extends Planet {
     } else if (levelUpEffect === `boostRepairSpeed`) {
       this.addPassive({
         id: `boostRepairSpeed`,
-        intensity: 0.1,
-      })
-    } else if (levelUpEffect === `boostRestSpeed`) {
-      this.addPassive({
-        id: `boostRestSpeed`,
         intensity: 0.1,
       })
     } else if (
@@ -512,6 +503,7 @@ export class BasicPlanet extends Planet {
       `Roger that, over.`,
       `10-4, over.`,
       `I read you, ${ship.name}.`,
+      `Loud and clear, ${ship.name}.`,
       `This is ${this.name}, I read you, ${ship.name}. Commence landing approach when ready.`,
       `I'm not authorized to respond to you, over.`,
       `Come down and let's take a swim, over.`,
@@ -552,6 +544,7 @@ export class BasicPlanet extends Planet {
       passives: [],
       actives: [],
     }
+    this.passives = []
     this.repairFactor = 0
     this.landingRadiusMultiplier = 1
 

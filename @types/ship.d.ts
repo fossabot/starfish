@@ -30,6 +30,7 @@ interface BaseHumanShipData extends BaseShipData {
   tutorial?: { step: number }
   guildIcon?: string
   guildName?: string
+  orders?: ShipOrders
 }
 
 interface BaseAIShipData extends BaseShipData {
@@ -57,7 +58,6 @@ type ShipPassiveEffectId =
   | `boostSightRange`
   | `boostBroadcastRange`
   | `boostRepairSpeed`
-  | `boostRestSpeed`
   | `boostMineSpeed`
   | `boostBrake`
   // | `boostThrust`
@@ -71,7 +71,10 @@ type ShipPassiveEffectId =
   | `boostChassisAgility`
   | `disguiseCrewMemberCount`
   | `disguiseChassisType`
-  | `boostAttackWithNumberOfFactionMembersWithinDistance`
+  | `alwaysSeeTrailColors`
+  | `boostDamage`
+  | `boostDamageWhenNoAlliesWithinDistance`
+  | `boostDamageWithNumberOfFactionMembersWithinDistance`
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
 interface ShipPassiveEffect {
@@ -81,6 +84,7 @@ interface ShipPassiveEffect {
     source?: {
       planetName?: string
       speciesId?: SpeciesKey
+      chassisId?: ChassisId
       item?: {
         type: ItemType
         id: ItemId
@@ -120,4 +124,16 @@ type ShipStatKey =
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number
+}
+
+interface ShipOrders {
+  verb: string
+  target?: {
+    id?: string
+    type?: string
+    name?: string
+    species?: { id: string }
+    [key: string]: any
+  }
+  addendum?: string
 }

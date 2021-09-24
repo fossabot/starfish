@@ -9,7 +9,7 @@
       <hr />
 
       <div
-        class="icon guildicon"
+        class="icon guildicon pointer"
         v-for="s in shipsBasics"
         @click="shipSelected(s.id)"
         :class="{ active: ship && ship.id === s.id }"
@@ -59,8 +59,10 @@ export default Vue.extend({
   watch: {},
   mounted() {},
   methods: {
-    shipSelected(id) {
+    async shipSelected(id) {
       if (this.ship && this.ship.id === id) return
+      c.log('ship selected in left bar')
+      this.$store.commit('set', { loading: true })
       this.$store.dispatch('socketSetup', id)
     },
   },
@@ -172,8 +174,6 @@ hr {
   }
 
   &:hover {
-    cursor: var(--cursor-pointer);
-
     .activeicon {
       left: 0;
       top: 30%;

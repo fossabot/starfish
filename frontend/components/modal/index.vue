@@ -1,7 +1,7 @@
 <template>
   <div v-if="modal" class="modal flexcenter">
     <div
-      class="bg"
+      class="bg pointer"
       @click="$store.commit('set', { modal: null })"
     ></div>
     <div class="modalbox">
@@ -64,7 +64,6 @@ export default Vue.extend({
   height: 100%;
   position: absolute;
   z-index: 1;
-  cursor: var(--cursor-pointer);
 }
 
 .modalbox {

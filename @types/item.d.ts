@@ -101,6 +101,7 @@ interface BaseChassisData {
   agility: number
   maxCargoSpace: number
   rarity: number
+  passives?: ShipPassiveEffect[]
 }
 
 interface BaseItemData {

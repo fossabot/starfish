@@ -21,7 +21,7 @@
         </div>
         <div
           v-if="minimizable"
-          class="minimize"
+          class="minimize pointer"
           @click="minimized = !minimized"
         >
           -
@@ -215,7 +215,6 @@ export default Vue.extend({
 .minimize {
   width: 2em;
   height: 100%;
-  cursor: var(--cursor-pointer);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,7 +289,6 @@ export default Vue.extend({
 // .minimize {
 //   width: 2em;
 //   height: 100%;
-//   cursor: var(--cursor-pointer);
 //   display: flex;
 //   align-items: center;
 //   justify-content: center;

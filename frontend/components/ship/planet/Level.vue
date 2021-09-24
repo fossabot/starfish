@@ -72,7 +72,10 @@
           c.r2(c.lerp(1, 10, planet.level / 100) - 1) * 100
         }}% increased mine output
       </li>
-      <li v-for="p in planet.passives">
+      <li
+        v-for="p in planet.passives"
+        v-if="c.basePassiveData[p.id]"
+      >
         {{ c.basePassiveData[p.id].toString(p) }}
       </li>
     </ul>

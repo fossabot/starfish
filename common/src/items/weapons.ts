@@ -30,6 +30,8 @@ export const weapons: {
     damage: 0.5 * game.damageMultiplier,
     baseCooldown: 2 * 60 * 1000,
     maxHp: 2,
+    reliability: 3,
+    repairDifficulty: 0.4,
   },
   // cannons
   cannon1: {
@@ -44,6 +46,7 @@ export const weapons: {
     damage: 0.85 * game.damageMultiplier,
     baseCooldown: 1 * 60 * 1000,
     maxHp: 3,
+    repairDifficulty: 0.9,
   },
   cannon2: {
     type: `weapon`,
@@ -57,6 +60,7 @@ export const weapons: {
     damage: Number(game.damageMultiplier),
     baseCooldown: 1 * 60 * 1000,
     maxHp: 3,
+    repairDifficulty: 0.85,
   },
   cannon3: {
     type: `weapon`,
@@ -70,6 +74,7 @@ export const weapons: {
     damage: 1.7 * game.damageMultiplier,
     baseCooldown: 1 * 60 * 1000,
     maxHp: 3,
+    repairDifficulty: 0.8,
   },
 
   // snipers
@@ -85,6 +90,7 @@ export const weapons: {
     damage: 0.7 * game.damageMultiplier,
     baseCooldown: 2 * 60 * 1000,
     maxHp: 2,
+    repairDifficulty: 1.2,
   },
   sniper2: {
     type: `weapon`,
@@ -98,6 +104,7 @@ export const weapons: {
     damage: 0.8 * game.damageMultiplier,
     baseCooldown: 2.5 * 60 * 1000,
     maxHp: 2,
+    repairDifficulty: 1.2,
   },
   sniper3: {
     type: `weapon`,
@@ -111,6 +118,7 @@ export const weapons: {
     damage: 0.9 * game.damageMultiplier,
     baseCooldown: 3 * 60 * 1000,
     maxHp: 2,
+    repairDifficulty: 1.2,
   },
 
   // sabers
@@ -126,6 +134,7 @@ export const weapons: {
     damage: 1.7 * game.damageMultiplier,
     baseCooldown: 0.8 * 60 * 1000,
     maxHp: 4,
+    reliability: 1.5,
   },
   saber2: {
     type: `weapon`,
@@ -139,6 +148,7 @@ export const weapons: {
     damage: 2 * game.damageMultiplier,
     baseCooldown: 0.8 * 60 * 1000,
     maxHp: 4,
+    reliability: 1.5,
   },
   saber3: {
     type: `weapon`,
@@ -152,5 +162,6 @@ export const weapons: {
     damage: 2.3 * game.damageMultiplier,
     baseCooldown: 0.7 * 60 * 1000,
     maxHp: 4,
+    reliability: 1.5,
   },
 }

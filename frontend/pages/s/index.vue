@@ -1,63 +1,75 @@
 <template>
   <div class="pagecontainer">
-    <FadeIn :off="ready">
-      <div class="flexcenter flexcolumn">
-        <img
-          src="/images/logo.svg"
-          class="fadeinlogo marbotsmall"
-        /></div
-    ></FadeIn>
-
     <div class="flex">
       <ShipLeftBar v-if="shipsBasics.length > 1" />
 
       <div
-        id="masonrycontainer"
-        class="container"
-        ref="container"
+        style="
+          position: relative;
+          display: block;
+          width: 100%;
+          height: 100%;
+        "
       >
-        <ShipNoShip />
+        <FadeIn :off="!loading && ready">
+          <div>
+            <img
+              src="/images/logo.svg"
+              class="fadeinlogo marbotsmall"
+            />
+          </div>
+        </FadeIn>
 
-        <template v-if="ship && !ship.dead">
-          <ShipSpectator v-if="!ship.tutorial" />
+        <div
+          id="masonrycontainer"
+          class="container"
+          ref="container"
+        >
+          <ShipNoShip />
 
-          <ShipTutorial />
+          <template v-if="ship && !ship.dead">
+            <ShipSpectator v-if="!ship.tutorial" />
 
-          <Ship />
+            <ShipTutorial />
 
-          <ShipCanvasMap />
-          <ShipPlanet />
+            <Ship />
 
-          <ShipCanvasMapZoom />
+            <ShipCanvasMap />
+            <ShipPlanet />
 
-          <ShipMemberInventory />
+            <ShipCanvasMapZoom />
 
-          <ShipDiagram />
-          <ShipRoom />
+            <ShipMemberInventory />
 
-          <ShipMember />
+            <ShipDiagram />
+            <ShipRoom />
 
-          <!-- <ShipVisible /> -->
-          <ShipScanShip />
+            <ShipMember />
 
-          <ShipItems />
+            <ShipCaptainsQuarters />
 
-          <ShipLog />
+            <!-- <ShipVisible /> -->
+            <ShipScanShip />
 
-          <ShipPassives />
-          <!-- <ShipStats /> -->
+            <ShipItems />
 
-          <ShipCrewRank />
+            <ShipLog />
 
-          <ShipFactionRank />
-        </template>
+            <ShipPassives />
+            <!-- <ShipStats /> -->
 
-        <template v-if="ship && ship.dead">
-          <ShipDead />
-          <ShipLog />
-        </template>
+            <ShipCrewRank />
 
-        <ShipNavPane v-if="ship && !ship.tutorial" />
+            <ShipFactionRank />
+          </template>
+
+          <template v-if="ship && ship.dead">
+            <ShipDead />
+            <ShipLog />
+          </template>
+
+          <ShipNavPane v-if="ship && !ship.tutorial" />
+        </div>
       </div>
     </div>
     <!-- {{ ship && ship.id }}
@@ -101,6 +113,7 @@ export default Vue.extend({
       'shipsBasics',
       'crewMember',
       'connected',
+      'loading',
       'activeShipId',
       'lastUpdated',
     ]),
@@ -119,7 +132,7 @@ export default Vue.extend({
     shipIds(): void {
       if (!this.activeShipId) this.changeShip(0)
     },
-    ship(): void {
+    ship(curr, prev): void {
       this.masonryElement?.position()
     },
     connected(): void {
@@ -129,7 +142,7 @@ export default Vue.extend({
       if (!this.userId) (this as any).$router.push('/login')
     },
     lastUpdated(): void {
-      setTimeout(() => (this.ready = true), 800)
+      setTimeout(() => (this.ready = true), 600)
     },
   },
 
@@ -223,6 +236,7 @@ export default Vue.extend({
   display: inline-block;
   position: relative;
   margin: 0 auto;
+  height: 100%;
 
   & > * {
     display: inline-block;

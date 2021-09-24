@@ -57,10 +57,11 @@ interface ShipStub extends BaseStub {
   captain?: string
   guildName?: string
   guildIcon?: string
+  orders?: ShipOrders | null
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
-  trails: CoordinatePair[][]
+  trails: { color?: string; points: CoordinatePair[] }[]
   planets: Partial<PlanetStub>[]
   caches: CacheStub[] | Partial<CacheStub>[]
   attackRemnants: AttackRemnantStub[]

@@ -29,6 +29,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             zones: [],
         };
         this.commonCredits = 0;
+        this.orders = null;
         this.tutorial = undefined;
         this.membersIn = crew_1.membersIn;
         this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
@@ -58,6 +59,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
         this.captain = data.captain || null;
+        this.orders = data.orders || null;
         this.log = data.log || [];
         if (data.tutorial && data.tutorial.step !== undefined)
             this.tutorial = new Tutorial_1.Tutorial(data.tutorial, this);
@@ -746,7 +748,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     updateVisible() {
         const targetTypes = this.tutorial?.currentStep?.visibleTypes;
-        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, true, Boolean(this.tutorial));
+        const alwaysShowTrailColors = this.passives.find((p) => p.id === `alwaysSeeTrailColors`);
+        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, alwaysShowTrailColors ? `withColors` : true, Boolean(this.tutorial));
         const shipsWithValidScannedProps = visible.ships.map((s) => this.shipToValidScanResult(s));
         this.visible = {
             ...visible,
@@ -787,7 +790,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     async updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
-            this.game.planets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
+            this.seenPlanets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
         if (previousPlanet !== this.planet) {
             this.toUpdate.planet = this.planet
                 ? this.planet.stubify()
@@ -1004,7 +1007,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 // can be a stub, so find the real thing
                 const actualShipObject = this.game.ships.find((s) => s.id === otherShip.id);
                 if (actualShipObject)
-                    actualShipObject.receiveBroadcast(toSend, this, garbleAmount, willSendShips);
+                    actualShipObject.receiveBroadcast(actualShipObject.ai ? message : toSend, this, garbleAmount, willSendShips);
             }
         }
         if (!this.planet) {
@@ -1029,8 +1032,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         const distance = dist_1.default.distance(this.location, from.location);
         const prefix = `**${`species` in from ? from.species.icon : `🪐`}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
         io_1.default.emit(`ship:message`, this.id, `${prefix}\`${message}\``, `broadcast`);
-        this.communicators.forEach((comm) => comm.use());
-        this.updateBroadcastRadius();
+        // * this was annoying and not useful
+        // this.communicators.forEach((comm) => comm.use())
+        // this.updateBroadcastRadius()
     }
     // ----- room mgmt -----
     resolveRooms() {

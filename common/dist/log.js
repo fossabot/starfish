@@ -73,9 +73,7 @@ const log = (...args) => {
                 dim +
                 `:`
             : ``) +
-        pathName +
-        `:` +
-        lineNumber);
+        pathName);
     if (prefix.length > longest)
         longest = prefix.length;
     while (prefix.length < Math.min(45, Math.max(25, longest)))

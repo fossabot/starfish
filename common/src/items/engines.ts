@@ -1,13 +1,5 @@
 import game from '../game'
 
-// todo make brake-specialized engines
-/*
-{
-  id: `boostBrake`,
-  intensity: 0.4,
-},
-*/
-
 export const engines: {
   [key in EngineId]: BaseEngineData
 } = {
@@ -34,6 +26,7 @@ export const engines: {
     rarity: 0.4,
     thrustAmplification: 0.7,
     maxHp: 5,
+    repairDifficulty: 0.9,
     passives: [],
   },
   starter2: {
@@ -46,6 +39,7 @@ export const engines: {
     rarity: 1,
     thrustAmplification: 0.8,
     maxHp: 5,
+    repairDifficulty: 0.85,
     passives: [],
   },
   starter3: {
@@ -58,6 +52,7 @@ export const engines: {
     rarity: 1.5,
     thrustAmplification: 0.9,
     maxHp: 5,
+    repairDifficulty: 0.8,
     passives: [],
   },
 
@@ -126,6 +121,7 @@ export const engines: {
     thrustAmplification: 1.7,
     reliability: 0.3,
     maxHp: 1,
+    repairDifficulty: 1.2,
     passives: [
       { id: `boostChassisAgility`, intensity: 0.03 },
     ],
@@ -141,6 +137,7 @@ export const engines: {
     thrustAmplification: 2,
     reliability: 0.4,
     maxHp: 1,
+    repairDifficulty: 1.2,
     passives: [
       { id: `boostChassisAgility`, intensity: 0.06 },
     ],
@@ -156,6 +153,7 @@ export const engines: {
     thrustAmplification: 2.3,
     reliability: 0.0,
     maxHp: 1,
+    repairDifficulty: 1.2,
     passives: [
       { id: `boostChassisAgility`, intensity: 0.1 },
     ],
@@ -171,9 +169,9 @@ export const engines: {
     basePrice: 70 * game.itemPriceMultiplier,
     rarity: 5,
     thrustAmplification: 1.1,
-    reliability: 2,
+    reliability: 3,
     maxHp: 6,
-    passives: [],
+    repairDifficulty: 0.8,
   },
   heavy2: {
     type: `engine`,
@@ -184,9 +182,9 @@ export const engines: {
     basePrice: 130 * game.itemPriceMultiplier,
     rarity: 9,
     thrustAmplification: 1.2,
-    reliability: 3,
+    reliability: 4,
     maxHp: 7,
-    passives: [],
+    repairDifficulty: 0.8,
   },
   heavy3: {
     type: `engine`,
@@ -197,8 +195,8 @@ export const engines: {
     basePrice: 400 * game.itemPriceMultiplier,
     rarity: 12,
     thrustAmplification: 1.3,
-    reliability: 4,
+    reliability: 5,
     maxHp: 8,
-    passives: [],
+    repairDifficulty: 0.8,
   },
 }

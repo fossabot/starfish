@@ -1,1 +1,1 @@
-{"version":3,"file":"basePassiveData.d.ts","sourceRoot":"","sources":["../src/basePassiveData.ts"],"names":[],"mappings":"AAAA,QAAA,MAAM,eAAe,EAAE;KACpB,GAAG,IAAI,mBAAmB,GAAG;QAC5B,QAAQ,EAAE,CAAC,CAAC,EAAE,iBAAiB,KAAK,MAAM,CAAA;KAC3C;CAoIF,CAAA;AACD,eAAe,eAAe,CAAA"}
+{"version":3,"file":"basePassiveData.d.ts","sourceRoot":"","sources":["../src/basePassiveData.ts"],"names":[],"mappings":"AAAA,QAAA,MAAM,eAAe,EAAE;KACpB,GAAG,IAAI,mBAAmB,GAAG;QAC5B,QAAQ,EAAE,CAAC,CAAC,EAAE,iBAAiB,KAAK,MAAM,CAAA;KAC3C;CA8IF,CAAA;AACD,eAAe,eAAe,CAAA"}

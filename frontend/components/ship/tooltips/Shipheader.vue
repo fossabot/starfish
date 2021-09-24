@@ -1,6 +1,6 @@
 <template>
   <div
-    class="topzone"
+    class="topzone pointer"
     :class="{ captain: isCaptain }"
     @click="
       isCaptain &&
@@ -99,8 +99,6 @@ export default Vue.extend({
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);
 
   &.captain {
-    cursor: var(--cursor-pointer);
-
     &:hover {
       .bg {
         transform: scale(1.05);

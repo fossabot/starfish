@@ -51,7 +51,7 @@ export class Ship extends Stubbable {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
-    trails?: CoordinatePair[][]
+    trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   } = {
     ships: [],
@@ -167,19 +167,21 @@ export class Ship extends Stubbable {
         )
         .filter((z: Zone | undefined) => z) as Zone[]
 
+    this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
     if (
       chassis &&
       chassis.id &&
       c.items.chassis[chassis.id]
     )
-      this.chassis = c.items.chassis[chassis.id]
+      this.swapChassis(c.items.chassis[chassis.id])
     else if (
       loadout &&
       c.items.chassis[loadouts[loadout]?.chassis]
     )
-      this.chassis =
-        c.items.chassis[loadouts[loadout].chassis]
-    else this.chassis = c.items.chassis.starter1
+      this.swapChassis(
+        c.items.chassis[loadouts[loadout].chassis],
+      )
+    else this.swapChassis(c.items.chassis.starter1)
 
     this.updateSlots()
 
@@ -269,11 +271,40 @@ export class Ship extends Stubbable {
 
   swapChassis(
     this: Ship,
-    chassisData: Partial<BaseChassisData>,
+    partialChassisData: Partial<BaseChassisData>,
   ) {
-    if (!chassisData.id) return
-    const chassisToSwapTo = c.items.chassis[chassisData.id]
+    if (!partialChassisData.id) return
+
+    const chassisToSwapTo =
+      c.items.chassis[partialChassisData.id]
+
+    if (this.chassis && this.chassis.passives)
+      this.chassis.passives.forEach((p) =>
+        this.removePassive({
+          ...p,
+          data: {
+            ...p.data,
+            source: {
+              chassisId: this.chassis.id,
+            },
+          },
+        }),
+      )
+
     this.chassis = chassisToSwapTo
+
+    if (chassisToSwapTo.passives)
+      chassisToSwapTo.passives.forEach((p) =>
+        this.applyPassive({
+          ...p,
+          data: {
+            ...p.data,
+            source: {
+              chassisId: chassisToSwapTo.id,
+            },
+          },
+        }),
+      )
     this.recalculateMass()
   }
 

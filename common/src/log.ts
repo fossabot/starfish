@@ -89,9 +89,10 @@ const log = (...args: any[]): void => {
           dim +
           `:`
         : ``) +
-      pathName +
-      `:` +
-      lineNumber,
+      pathName,
+    // +
+    // `:` +
+    // lineNumber,
   )
 
   if (prefix.length > longest) longest = prefix.length

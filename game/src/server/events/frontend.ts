@@ -239,4 +239,41 @@ export default function (
       callback({ data: `ok` })
     },
   )
+
+  socket.on(
+    `ship:orders`,
+    (shipId, crewId, orders, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may change the ship orders.`,
+        })
+
+      if (!orders) {
+        ship.orders = null
+        ship.toUpdate.orders = null
+        callback({ data: false })
+      } else {
+        ship.orders = orders
+        ship.toUpdate.orders = orders
+        callback({ data: true })
+      }
+
+      c.log(
+        `gray`,
+        `${ship.name} orders ${
+          orders ? `set` : `cleared`
+        }.`,
+      )
+    },
+  )
 }

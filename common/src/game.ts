@@ -17,7 +17,7 @@ const baseRepairCost = 600
 
 const maxBroadcastLength = 200
 
-const defaultHomeworldLevel = 14
+const defaultHomeworldLevel = 12
 
 const baseStaminaUse = 0.00001 * gameSpeedMultiplier
 

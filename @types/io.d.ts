@@ -268,13 +268,19 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     bgId: string,
-    callback: (res: IOResponse<String>) => void,
+    callback: (res: IOResponse<string>) => void,
   ) => void
   [`ship:tagline`]: (
     shipId: string,
     crewId: string,
     tagline: string,
-    callback: (res: IOResponse<String>) => void,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
+  [`ship:orders`]: (
+    shipId: string,
+    crewId: string,
+    orders: ShipOrders,
+    callback: (res: IOResponse<boolean>) => void,
   ) => void
 
   // discord

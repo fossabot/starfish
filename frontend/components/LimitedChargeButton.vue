@@ -1,6 +1,6 @@
 <template>
   <div
-    class="chargebutton"
+    class="chargebutton pointer"
     :class="{ big, disabled }"
     :style="{
       background: `linear-gradient(to right, ${startColor}, ${endColor}`,
@@ -105,15 +105,10 @@ export default Vue.extend({
   border: 1px solid var(--text);
   border-radius: 5px;
   overflow: hidden;
-  cursor: var(--cursor-pointer);
 
   &.big {
     height: 3em;
     border-radius: 8px;
-  }
-
-  &.disabled {
-    cursor: var(--cursor-not-allowed);
   }
 
   .hider {

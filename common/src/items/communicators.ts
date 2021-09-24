@@ -42,7 +42,8 @@ export const communicators: {
     range: 0.75,
     antiGarble: -0.15,
     maxHp: 2,
-    reliability: 1,
+    reliability: 1.2,
+    repairDifficulty: 0.75,
   },
   distance2: {
     type: `communicator`,
@@ -55,7 +56,8 @@ export const communicators: {
     range: 0.9,
     antiGarble: -0.1,
     maxHp: 2,
-    reliability: 1.2,
+    reliability: 1.3,
+    repairDifficulty: 0.75,
   },
   distance3: {
     type: `communicator`,
@@ -68,7 +70,8 @@ export const communicators: {
     range: 1.3,
     antiGarble: -0.1,
     maxHp: 3,
-    reliability: 1.3,
+    reliability: 1.4,
+    repairDifficulty: 0.75,
   },
   distance4: {
     type: `communicator`,
@@ -81,7 +84,8 @@ export const communicators: {
     range: 1.7,
     antiGarble: -0.1,
     maxHp: 3,
-    reliability: 1.4,
+    reliability: 1.5,
+    repairDifficulty: 0.75,
   },
 
   // clarity

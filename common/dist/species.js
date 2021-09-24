@@ -169,7 +169,7 @@ const species = {
         description: `For something so small, strength lies in numbers.`,
         passives: [
             {
-                id: `boostAttackWithNumberOfFactionMembersWithinDistance`,
+                id: `boostDamageWithNumberOfFactionMembersWithinDistance`,
                 intensity: 0.1,
                 data: {
                     source: { speciesId: `shrimp` },

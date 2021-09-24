@@ -98,7 +98,7 @@ class AIShip extends CombatShip_1.CombatShip {
             .filter((i) => i.rarity <= itemBudget / 3)
             .sort((a, b) => b.rarity - a.rarity);
         const chassisToBuy = validChassis[0] || dist_1.default.items.chassis.starter1;
-        this.chassis = chassisToBuy;
+        this.swapChassis(chassisToBuy);
         itemBudget -= chassisToBuy.rarity;
         // c.log(
         //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
@@ -239,7 +239,6 @@ class AIShip extends CombatShip_1.CombatShip {
             .toLowerCase()
             .indexOf(this.name.toLowerCase()) > -1)
             oddsToIgnore = 0.1;
-        // c.log(oddsToIgnore)
         if (Math.random() < oddsToIgnore)
             return;
         // c.log(`ai ship ${this.name} received broadcast`)
@@ -279,7 +278,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     broadcastTo(ship) {
         // baseline chance to say nothing
-        if (Math.random() > dist_1.default.lerp(0.9, 0.6, this.level / 100))
+        if (Math.random() > dist_1.default.lerp(0.3, 0.3, this.level / 100))
             return;
         const distance = dist_1.default.distance(this.location, ship.location);
         const maxBroadcastRadius = this.level * 0.05;
@@ -303,6 +302,7 @@ class AIShip extends CombatShip_1.CombatShip {
             `It's been years since we had real fish!`,
             `Crack the shell. Get the meat.`,
             `Food sighted. Prepare to engage.`,
+            `PREY SIGHTED! PREPARE FOR COMBA— Oops, wrong channel. Disregard.`,
         ];
         const message = dist_1.default.garble(dist_1.default.randomFromArray(messageOptions), garbleAmount);
         ship.receiveBroadcast(message, this, garbleAmount, [

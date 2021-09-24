@@ -184,6 +184,7 @@ export default function (
             1,
           )
       })
+      game.spawnNewAIs()
     },
   )
 

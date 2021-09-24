@@ -10,14 +10,14 @@
     <h3 class="padtop padbot">Choose Ship Tagline</h3>
     <div class="flexcenter flexwrap marbot">
       <div
-        class="preview flexcenter"
+        class="preview flexcenter pointer"
         @click="setTagline(null)"
         :class="{ current: !currentTagline }"
       >
         (No tagline)
       </div>
       <div
-        class="preview flexcenter"
+        class="preview flexcenter pointer"
         :class="{ current: option === currentTagline }"
         v-for="option in ownedTaglines || []"
         :key="'to' + option"
@@ -36,7 +36,7 @@
 
     <div class="flexcenter flexwrap">
       <div
-        class="preview flexcenter flexcolumn"
+        class="preview flexcenter flexcolumn pointer"
         :class="{
           current:
             option.url === currentBanner ||
@@ -165,7 +165,6 @@ export default Vue.extend({
 
   &:hover {
     background: rgba(255, 255, 255, 0.04);
-    cursor: var(--cursor-pointer);
   }
 
   &.current {
