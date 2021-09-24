@@ -346,7 +346,7 @@ export default function (
           else logEntry.push(`&nospace${orders.addendum}`)
           logEntry.push(`&nospace"`)
 
-          ship.logEntry(logEntry, `medium`)
+          ship.logEntry(logEntry, `high`)
         }
         /*
 
