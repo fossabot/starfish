@@ -263,9 +263,110 @@ export default function (
         ship.toUpdate.orders = null
         callback({ data: false })
       } else {
+        const prevOrders = ship.orders
+        if (
+          prevOrders?.verb === orders.verb &&
+          prevOrders?.target?.id === orders.target?.id &&
+          prevOrders?.target?.type ===
+            orders.target?.type &&
+          prevOrders?.addendum === orders.addendum
+        )
+          return
+
         ship.orders = orders
         ship.toUpdate.orders = orders
         callback({ data: true })
+
+        // don't log if it's mostly the same
+        if (
+          prevOrders?.verb === orders.verb &&
+          prevOrders?.target?.type ===
+            orders.target?.type &&
+          prevOrders?.target?.id === orders.target?.id
+        )
+          return
+
+        const captain = ship.crewMembers.find(
+          (cm) => cm.id === ship.captain,
+        )
+        if (captain) {
+          const logEntry: LogContent = [
+            `New orders from captain ${captain.name}: "${orders.verb}`,
+          ]
+          if (orders.target)
+            logEntry.push({
+              text: orders.target.name
+                ? orders.target.name
+                : orders.target.type === `cache`
+                ? `that cache`
+                : [
+                    `weapon`,
+                    `armor`,
+                    `engine`,
+                    `communicator`,
+                    `scanner`,
+                  ].includes(orders.target.type as any)
+                ? c.items[orders.target.type as ItemType][
+                    orders.target.id as ItemId
+                  ]
+                : orders.target.id,
+              tooltipData: [
+                `weapon`,
+                `armor`,
+                `engine`,
+                `communicator`,
+                `scanner`,
+              ].includes(orders.target.type as any)
+                ? ship.items
+                    .find(
+                      (i) =>
+                        i.type === orders.target?.type &&
+                        i.id === orders.target.id,
+                    )
+                    ?.stubify()
+                : (orders.target as any),
+              color:
+                orders.target.type === `planet`
+                  ? game.planets.find(
+                      (p) => p.name === orders.target!.name,
+                    )?.color
+                  : orders.target.type === `zone`
+                  ? game.zones.find(
+                      (p) => p.id === orders.target!.id,
+                    )?.color
+                  : orders.target.type === `ship`
+                  ? ship.visible.ships.find(
+                      (s) => s.id === orders.target!.id,
+                    )?.faction.color
+                  : orders.target.type === `cache`
+                  ? `var(--cache)`
+                  : `var(--item)`,
+            })
+          if (!orders.addendum) logEntry.push(`&nospace!`)
+          else logEntry.push(`&nospace${orders.addendum}`)
+          logEntry.push(`&nospace"`)
+
+          ship.logEntry(logEntry, `medium`)
+        }
+        /*
+
+        "<span>{{ validOrders.verb }}</span
+        ><span
+          class="nowrap"
+          v-if="validOrders.target"
+          v-tooltip="validOrders.target"
+          :style="{ color: validOrders.target.color }"
+        >
+          {{ validOrders.target.icon || ''
+          }}{{
+            validOrders.target.name ||
+            validOrders.target.displayName
+          }}</span
+        ><span v-if="validOrders.addendum">{{
+          validOrders.addendum
+        }}</span
+        ><span v-else>!</span>"
+        */
       }
 
       c.log(

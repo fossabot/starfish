@@ -12,13 +12,13 @@
       <div>
         "<span>{{ validOrders.verb }}</span
         ><span
-          class="nowrap"
           v-if="validOrders.target"
           v-tooltip="validOrders.target"
           :style="{ color: validOrders.target.color }"
         >
-          {{ validOrders.target.icon || ''
-          }}{{
+          <!--{{ validOrders.target.icon || ''
+          }}-->
+          {{
             validOrders.target.name ||
             validOrders.target.displayName
           }}</span
@@ -30,6 +30,14 @@
         <div class="sub martopsmall">
           - {{ captain.name }}
         </div>
+
+        <button
+          class="martopsmall secondary"
+          v-if="validOrders"
+          @click="setOrders(true)"
+        >
+          Clear Orders
+        </button>
       </div>
     </div>
 
@@ -313,24 +321,16 @@
         </option>
       </select>
 
-      <div class="martop flexbetween">
-        <button
-          v-if="toValidOrders(inputOrders)"
-          @click="setOrders"
-        >
-          Set Orders
-        </button>
-        <div v-else></div>
-        <button
-          class="secondary"
-          v-if="validOrders"
-          @click="setOrders(true)"
-        >
-          Clear Orders
-        </button>
+      <div
+        class="martop flexbetween"
+        v-if="toValidOrders(inputOrders)"
+      >
+        <button @click="setOrders">Set Orders</button>
       </div>
 
-      <div class="martop sub">Only you can set orders.</div>
+      <div class="martop sub">
+        Only the captain can set orders.
+      </div>
     </div>
   </Box>
 </template>
@@ -354,7 +354,7 @@ export default Vue.extend({
     show(): boolean {
       return (
         this.ship &&
-        this.ship.crewMembers.length > 1 &&
+        // this.ship.crewMembers.length > 1 &&
         this.captain &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes(
@@ -409,6 +409,9 @@ export default Vue.extend({
             text: `New orders set!`,
             type: 'success',
           })
+          this.target = ''
+          this.addendum = ''
+          this.verb = ''
         },
       )
     },
@@ -476,6 +479,9 @@ export default Vue.extend({
           this.ship.location,
           found.location,
         )
+        o.target!.name = `the cache ${c.r2(
+          o.target!.distance,
+        )}AU away at ${c.r2(o.target!.angle, 0)}deg`
         o.target!.color = `var(--cache)`
       } else if (
         itemTypes.includes(o.target!.type as any)
