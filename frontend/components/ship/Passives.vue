@@ -53,11 +53,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .passives {
-  width: 220px;
+  width: 250px;
   position: relative;
 }
 .panesection {
-  font-size: 0.9em;
+  // font-size: 0.9em;
   line-height: 1.25;
 }
 </style>

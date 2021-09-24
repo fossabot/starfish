@@ -30,6 +30,7 @@ interface BaseHumanShipData extends BaseShipData {
   tutorial?: { step: number }
   guildIcon?: string
   guildName?: string
+  orders?: ShipOrders
 }
 
 interface BaseAIShipData extends BaseShipData {
@@ -123,4 +124,16 @@ type ShipStatKey =
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number
+}
+
+interface ShipOrders {
+  verb: string
+  target?: {
+    id?: string
+    type?: string
+    name?: string
+    species?: { id: string }
+    [key: string]: any
+  }
+  addendum?: string
 }

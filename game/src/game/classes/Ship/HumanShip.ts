@@ -51,6 +51,7 @@ export class HumanShip extends CombatShip {
   shownPanels?: any[]
 
   commonCredits: number = 0
+  orders: ShipOrders | null = null
 
   mainTactic: Tactic | undefined
   itemTarget: ItemType | undefined
@@ -88,6 +89,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.direction = this.direction
 
     this.captain = data.captain || null
+    this.orders = data.orders || null
     this.log = data.log || []
 
     if (data.tutorial && data.tutorial.step !== undefined)
@@ -1193,7 +1195,7 @@ export class HumanShip extends CombatShip {
   async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     this.planet =
-      this.game.planets.find((p) =>
+      this.seenPlanets.find((p) =>
         this.isAt(p.location, p.landingRadiusMultiplier),
       ) || false
     if (previousPlanet !== this.planet) {

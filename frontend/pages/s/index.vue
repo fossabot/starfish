@@ -46,6 +46,8 @@
 
             <ShipMember />
 
+            <ShipCaptainsQuarters />
+
             <!-- <ShipVisible /> -->
             <ShipScanShip />
 

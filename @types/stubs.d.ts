@@ -57,6 +57,7 @@ interface ShipStub extends BaseStub {
   captain?: string
   guildName?: string
   guildIcon?: string
+  orders?: ShipOrders | null
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

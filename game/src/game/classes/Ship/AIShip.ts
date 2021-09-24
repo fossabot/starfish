@@ -410,7 +410,7 @@ export class AIShip extends CombatShip {
 
   broadcastTo(ship: Ship) {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.9, 0.6, this.level / 100))
+    if (Math.random() > c.lerp(0.3, 0.3, this.level / 100))
       return
 
     const distance = c.distance(

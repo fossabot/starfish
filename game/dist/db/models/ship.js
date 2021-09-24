@@ -86,6 +86,15 @@ const shipSchemaFields = {
         },
     ],
     commonCredits: Number,
+    orders: {
+        verb: String,
+        target: {
+            name: String,
+            id: { type: String },
+            type: { type: String },
+        },
+        addendum: String,
+    },
     // ---- ai
     ai: { type: Boolean, default: false, required: true },
     spawnPoint: [Number, Number],

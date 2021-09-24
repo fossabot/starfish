@@ -278,7 +278,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     broadcastTo(ship) {
         // baseline chance to say nothing
-        if (Math.random() > dist_1.default.lerp(0.9, 0.6, this.level / 100))
+        if (Math.random() > dist_1.default.lerp(0.3, 0.3, this.level / 100))
             return;
         const distance = dist_1.default.distance(this.location, ship.location);
         const maxBroadcastRadius = this.level * 0.05;

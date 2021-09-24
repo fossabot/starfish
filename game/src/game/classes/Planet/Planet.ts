@@ -130,7 +130,7 @@ export class Planet extends Stubbable {
 
   broadcastTo(ship: HumanShip): number | undefined {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.9, 0.6, this.level / 100))
+    if (Math.random() > c.lerp(0.5, 0.2, this.level / 100))
       return
 
     const maxBroadcastRadius = this.level * 0.1

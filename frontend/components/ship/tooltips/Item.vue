@@ -135,7 +135,7 @@
     >
       Repair Difficulty:
       {{ data.repairDifficulty >= 1 ? '+' : ''
-      }}{{ (data.repairDifficulty - 1) * 100 }}%
+      }}{{ c.r2(data.repairDifficulty - 1) * 100 }}%
     </div>
 
     <div v-if="data.mass">

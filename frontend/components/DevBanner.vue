@@ -1,8 +1,6 @@
 <template>
   <div class="devbanner position">
-    <div v-if="isDev && !isStaging" class="dev">
-      Local Dev
-    </div>
+    <div v-if="isDev" class="dev">Local Dev</div>
   </div>
 </template>
 

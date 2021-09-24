@@ -29,6 +29,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             zones: [],
         };
         this.commonCredits = 0;
+        this.orders = null;
         this.tutorial = undefined;
         this.membersIn = crew_1.membersIn;
         this.cumulativeSkillIn = crew_1.cumulativeSkillIn;
@@ -58,6 +59,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
         this.toUpdate.direction = this.direction;
         this.captain = data.captain || null;
+        this.orders = data.orders || null;
         this.log = data.log || [];
         if (data.tutorial && data.tutorial.step !== undefined)
             this.tutorial = new Tutorial_1.Tutorial(data.tutorial, this);
@@ -788,7 +790,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     async updatePlanet(silent) {
         const previousPlanet = this.planet;
         this.planet =
-            this.game.planets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
+            this.seenPlanets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
         if (previousPlanet !== this.planet) {
             this.toUpdate.planet = this.planet
                 ? this.planet.stubify()
