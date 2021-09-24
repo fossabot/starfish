@@ -24,7 +24,7 @@
         >
         <nuxt-link to="/supportus">Support Us</nuxt-link>
 
-        <select
+        <!-- <select
           v-if="shipsBasics && shipsBasics.length > 1"
           @change="shipSelected"
           v-model="selectedShip"
@@ -37,7 +37,7 @@
           >
             {{ basics.name }}
           </option>
-        </select>
+        </select> -->
 
         <button
           class="secondary flexcenter"
