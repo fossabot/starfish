@@ -94,7 +94,7 @@
           dataToUse.vendor.passives.length
         "
       >
-        Passives:
+        Crew passives:
         {{ dataToUse.vendor.passives.length }}
         for sale
       </div>

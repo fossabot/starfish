@@ -3,7 +3,23 @@ const basePassiveData: {
     toString: (p: ShipPassiveEffect) => string
   }
 } = {
-  boostAttackWithNumberOfFactionMembersWithinDistance: {
+  boostDamage: {
+    toString: (p: ShipPassiveEffect) =>
+      `${(p.intensity || 1) * 100}% increased damage`,
+  },
+  alwaysSeeTrailColors: {
+    toString: (p: ShipPassiveEffect) =>
+      `Trail colors always visible`,
+  },
+  boostDamageWhenNoAlliesWithinDistance: {
+    toString: (p: ShipPassiveEffect) =>
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% attack damage when no allies are within ${
+        p.data?.distance
+      }AU`,
+  },
+  boostDamageWithNumberOfFactionMembersWithinDistance: {
     toString: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,

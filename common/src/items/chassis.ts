@@ -9,7 +9,7 @@ export const chassis: {
     displayName: `Fishbowl 01`,
     description: `They say that a goldfish will grow to the size of its container. The goldfish in this bowl are feeling cramped, restrained to shallower waters.`,
     mass: 5000,
-    basePrice: Number(game.itemPriceMultiplier),
+    basePrice: 2 * game.itemPriceMultiplier,
     slots: 5,
     agility: 1.0,
     maxCargoSpace: 15,
@@ -28,7 +28,6 @@ export const chassis: {
     rarity: 1,
   },
   starter3: {
-    // todo passives: somethin basic
     type: `chassis`,
     id: `starter3`,
     displayName: `Fishbowl 03`,
@@ -39,11 +38,11 @@ export const chassis: {
     agility: 1.0,
     maxCargoSpace: 30,
     rarity: 1.5,
+    passives: [{ id: `boostRepairSpeed`, intensity: 0.05 }],
   },
+
+  // fighter
   fighter1: {
-    // todo Passives may be related to damage-over-time (blood), or seeing attacks and their faction-colored trail on map from farther away,
-    // (shark smells blood from far away)
-    // Get a boost to damage if no allies are nearby
     type: `chassis`,
     id: `fighter1`,
     displayName: `Shark Tank v1`,
@@ -54,11 +53,18 @@ export const chassis: {
     agility: 1.2,
     maxCargoSpace: 20,
     rarity: 1,
+    passives: [
+      {
+        id: `boostDamageWhenNoAlliesWithinDistance`,
+        intensity: 0.1,
+        data: { distance: 0.3 },
+      },
+      {
+        id: `alwaysSeeTrailColors`,
+      },
+    ],
   },
   fighter2: {
-    // todo Passives may be related to damage-over-time (blood), or seeing attacks and their faction-colored trail on map from farther away,
-    // (shark smells blood from far away)
-    // Get a boost to damage if no allies are nearby
     type: `chassis`,
     id: `fighter2`,
     displayName: `Shark Tank v2`,
@@ -69,11 +75,19 @@ export const chassis: {
     agility: 1.3,
     maxCargoSpace: 30,
     rarity: 2,
+    passives: [
+      { id: `boostDamage`, intensity: 0.05 },
+      {
+        id: `boostDamageWhenNoAlliesWithinDistance`,
+        intensity: 0.2,
+        data: { distance: 0.3 },
+      },
+      {
+        id: `alwaysSeeTrailColors`,
+      },
+    ],
   },
   fighter3: {
-    // todo Passives may be related to damage-over-time (blood), or seeing attacks and their faction-colored trail on map from farther away,
-    // (shark smells blood from far away)
-    // Get a boost to damage if no allies are nearby
     type: `chassis`,
     id: `fighter3`,
     displayName: `Shark Tank v3`,
@@ -84,6 +98,17 @@ export const chassis: {
     agility: 1.35,
     maxCargoSpace: 40,
     rarity: 3,
+    passives: [
+      { id: `boostDamage`, intensity: 0.1 },
+      {
+        id: `boostDamageWhenNoAlliesWithinDistance`,
+        intensity: 0.25,
+        data: { distance: 0.3 },
+      },
+      {
+        id: `alwaysSeeTrailColors`,
+      },
+    ],
   },
 
   // hauler
@@ -103,25 +128,37 @@ export const chassis: {
     type: `chassis`,
     id: `hauler2`,
     displayName: `Long Hauler 12`,
-    description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range.`,
+    description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range. Equipped with CV radio extender.`,
     mass: 9600,
     basePrice: 160 * game.itemPriceMultiplier,
     slots: 6,
     agility: 0.75,
     maxCargoSpace: 60,
     rarity: 8,
+    passives: [
+      {
+        id: `boostBroadcastRange`,
+        intensity: 0.8,
+      },
+    ],
   },
   hauler3: {
     type: `chassis`,
     id: `hauler3`,
     displayName: `Long Hauler 13`,
-    description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range.`,
+    description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range. Equipped with CV radio extender.`,
     mass: 12600,
     basePrice: 300 * game.itemPriceMultiplier,
     slots: 7,
     agility: 0.75,
     maxCargoSpace: 80,
     rarity: 10,
+    passives: [
+      {
+        id: `boostBroadcastRange`,
+        intensity: 0.15,
+      },
+    ],
   },
 
   // sailer
@@ -136,6 +173,9 @@ export const chassis: {
     agility: 1.4,
     maxCargoSpace: 20,
     rarity: 4,
+    passives: [
+      { id: `boostCockpitChargeSpeed`, intensity: 0.4 },
+    ],
   },
   sailer2: {
     type: `chassis`,
@@ -148,6 +188,9 @@ export const chassis: {
     agility: 1.45,
     maxCargoSpace: 30,
     rarity: 7,
+    passives: [
+      { id: `boostCockpitChargeSpeed`, intensity: 0.8 },
+    ],
   },
   sailer3: {
     type: `chassis`,
@@ -160,6 +203,9 @@ export const chassis: {
     agility: 1.5,
     maxCargoSpace: 40,
     rarity: 10,
+    passives: [
+      { id: `boostCockpitChargeSpeed`, intensity: 0.12 },
+    ],
   },
 
   // mega
@@ -174,6 +220,7 @@ export const chassis: {
     agility: 0.45,
     maxCargoSpace: 300,
     rarity: 12,
+    passives: [{ id: `boostBrake`, intensity: 0.05 }],
   },
   mega2: {
     type: `chassis`,
@@ -186,6 +233,10 @@ export const chassis: {
     agility: 0.35,
     maxCargoSpace: 400,
     rarity: 18,
+    passives: [
+      { id: `boostBrake`, intensity: 0.05 },
+      { id: `boostDropAmount`, intensity: 0.03 },
+    ],
   },
   mega3: {
     type: `chassis`,
@@ -198,5 +249,9 @@ export const chassis: {
     agility: 0.25,
     maxCargoSpace: 500,
     rarity: 25,
+    passives: [
+      { id: `boostBrake`, intensity: 0.09 },
+      { id: `boostDropAmount`, intensity: 0.05 },
+    ],
   },
 }

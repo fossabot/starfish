@@ -212,6 +212,7 @@ exports.scanners = {
         sightRange: 0.38,
         shipScanRange: 0.35,
         reliability: 0.7,
+        repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
             ...game_1.default.baseShipScanProperties,
@@ -247,6 +248,7 @@ exports.scanners = {
         sightRange: 0.45,
         shipScanRange: 0.42,
         reliability: 0.7,
+        repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
             ...game_1.default.baseShipScanProperties,
@@ -282,6 +284,7 @@ exports.scanners = {
         sightRange: 0.6,
         shipScanRange: 0.57,
         reliability: 0.7,
+        repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
             ...game_1.default.baseShipScanProperties,
@@ -310,12 +313,13 @@ exports.scanners = {
         type: `scanner`,
         id: `treasure1`,
         displayName: `Beachcomber v1`,
-        description: ``,
+        description: `Uses magnetic fields to probe deep into the depths of any wreckage. The perfect companion to the sunburned few among us who are dedicated enough to seek out treasure wherever it may lie.`,
         mass: 4200,
         basePrice: 250 * game_1.default.itemPriceMultiplier,
         rarity: 4,
         sightRange: 0.47,
         shipScanRange: 0.35,
+        repairDifficulty: 1.3,
         maxHp: 3,
         shipScanData: {
             ...game_1.default.baseShipScanProperties,

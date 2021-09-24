@@ -196,7 +196,7 @@ export class Game {
   }
 
   // ----- scan function -----
-  // todo mega-optimize this with a chunks system
+  // todo optimize this with a chunks system
   scanCircle(
     center: CoordinatePair,
     radius: number,
@@ -209,18 +209,21 @@ export class Game {
       | `trail`
       | `zone`
     )[],
-    includeTrails: boolean = false,
+    includeTrails: boolean | `withColors` = false,
     tutorial: boolean = false,
   ): {
     ships: Ship[]
-    trails: CoordinatePair[][]
+    trails: { color?: string; points: CoordinatePair[] }[]
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
     zones: Zone[]
   } {
     let ships: Ship[] = [],
-      trails: CoordinatePair[][] = [],
+      trails: {
+        color?: string
+        points: CoordinatePair[]
+      }[] = [],
       planets: Planet[] = [],
       caches: Cache[] = [],
       attackRemnants: AttackRemnant[] = [],
@@ -247,7 +250,8 @@ export class Game {
     if (
       (!types || types.includes(`trail`)) &&
       includeTrails
-    )
+    ) {
+      const showColors = includeTrails === `withColors`
       trails = this.ships
         .filter((s) => {
           if (tutorial) return false
@@ -260,7 +264,16 @@ export class Game {
           }
           return false
         })
-        .map((s) => [...s.previousLocations, s.location])
+        .map((s) => {
+          return {
+            color: showColors ? s.faction.color : undefined,
+            points: [
+              ...s.previousLocations,
+              s.location,
+            ] as CoordinatePair[],
+          }
+        })
+    }
     if (!types || types.includes(`planet`))
       planets = this.planets.filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
@@ -419,8 +432,8 @@ export class Game {
       ]) as `credits` | CargoId
       const amount =
         id === `credits`
-          ? Math.round(Math.random() * 80 + 1) * 100
-          : Math.round(Math.random() * 200) / 10 + 1
+          ? Math.round(Math.random() * 5000 + 1)
+          : Math.round(Math.random() * 20 + 1)
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
       )

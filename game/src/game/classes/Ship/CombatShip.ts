@@ -210,49 +210,101 @@ export abstract class CombatShip extends Ship {
     let miss =
       hitRoll * enemyAgility <
       Math.min(rangeAsPercent, minHitChance)
-    // todo this makes it impossible to hit some ships even when they're "in range"... fix
+
     let damage = miss
       ? 0
       : c.getHitDamage(weapon, totalMunitionsSkill)
 
-    // apply passive
-    const relevantPassives =
-      this.passives.filter(
-        (p) =>
-          p.id ===
-          `boostAttackWithNumberOfFactionMembersWithinDistance`,
-      ) || []
-    let passiveDamageMultiplier = relevantPassives.reduce(
-      (total: number, p: ShipPassiveEffect) =>
-        total + (p.intensity || 0),
-      0,
-    )
-    if (passiveDamageMultiplier) {
-      let factionMembersInRange = 0
-      const range = relevantPassives.reduce(
-        (avg, curr) =>
-          avg +
-          (curr.data?.distance || 0) /
-            relevantPassives.length,
-        0,
-      )
-      this.visible.ships.forEach((s: any) => {
-        if (
-          s?.faction?.id === this.faction.id &&
-          c.distance(s.location, this.location) <= range
+    if (!miss) {
+      // ----- apply passives -----
+      const factionMembersWithinDistancePassives =
+        this.passives.filter(
+          (p) =>
+            p.id ===
+            `boostDamageWithNumberOfFactionMembersWithinDistance`,
+        ) || []
+
+      if (factionMembersWithinDistancePassives.length) {
+        let damageMultiplier = 1
+
+        factionMembersWithinDistancePassives.forEach(
+          (p) => {
+            let factionMembersInRange = 0
+            const range = p.data?.distance || 0
+
+            this.visible.ships.forEach((s: any) => {
+              if (
+                s?.faction?.id === this.faction.id &&
+                c.distance(s.location, this.location) <=
+                  range
+              )
+                factionMembersInRange++
+            })
+
+            c.log(
+              `damage boosted by`,
+              (p.intensity || 0) * factionMembersInRange,
+              `because there are`,
+              factionMembersInRange,
+              `faction members within`,
+              range,
+            )
+
+            damageMultiplier +=
+              (p.intensity || 0) * factionMembersInRange
+          },
         )
-          factionMembersInRange++
-      })
-      passiveDamageMultiplier *= factionMembersInRange
-      c.log(
-        `damage boosted from passive by`,
-        passiveDamageMultiplier,
-        `because there are`,
-        factionMembersInRange,
-        `faction members within`,
-        range,
-      )
-      damage *= 1 + passiveDamageMultiplier
+
+        damage *= damageMultiplier
+      }
+
+      const soloPassives =
+        this.passives.filter(
+          (p) =>
+            p.id ===
+            `boostDamageWhenNoAlliesWithinDistance`,
+        ) || []
+
+      if (soloPassives.length) {
+        let damageMultiplier = 1
+
+        soloPassives.forEach((p) => {
+          let factionMembersInRange = 0
+          const range = p.data?.distance || 0
+
+          this.visible.ships.forEach((s: any) => {
+            if (
+              s?.faction?.id === this.faction.id &&
+              c.distance(s.location, this.location) <= range
+            )
+              factionMembersInRange++
+          })
+
+          if (!factionMembersInRange)
+            damageMultiplier += p.intensity || 0
+        })
+
+        if (damageMultiplier > 1)
+          c.log(
+            `damage multiplied by`,
+            damageMultiplier,
+            `because there are no faction members within`,
+            range,
+          )
+        damage *= damageMultiplier
+      }
+
+      const boostDamagePassiveMultiplier =
+        this.getPassiveIntensity(`boostDamage`) + 1
+      if (boostDamagePassiveMultiplier > 1)
+        c.log(
+          `damage multiplied by`,
+          boostDamagePassiveMultiplier,
+          `because of damage boost passive(s)`,
+        )
+      damage *= boostDamagePassiveMultiplier
+
+      // ----- done with passives -----
     }
 
     // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?

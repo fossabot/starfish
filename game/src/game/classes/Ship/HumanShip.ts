@@ -38,7 +38,7 @@ export class HumanShip extends CombatShip {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
-    trails?: CoordinatePair[][]
+    trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   } = {
     ships: [],
@@ -1117,12 +1117,15 @@ export class HumanShip extends CombatShip {
   updateVisible() {
     const targetTypes =
       this.tutorial?.currentStep?.visibleTypes
+    const alwaysShowTrailColors = this.passives.find(
+      (p) => p.id === `alwaysSeeTrailColors`,
+    )
     const visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
       this.id,
       targetTypes,
-      true,
+      alwaysShowTrailColors ? `withColors` : true,
       Boolean(this.tutorial),
     )
     const shipsWithValidScannedProps: ShipStub[] =
@@ -1140,7 +1143,7 @@ export class HumanShip extends CombatShip {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: AttackRemnant[]
-    trails?: CoordinatePair[][]
+    trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   }) {
     let planetDataToSend: Partial<PlanetStub>[] = []
@@ -1510,7 +1513,7 @@ export class HumanShip extends CombatShip {
         )
         if (actualShipObject)
           actualShipObject.receiveBroadcast(
-            toSend,
+            actualShipObject.ai ? message : toSend,
             this,
             garbleAmount,
             willSendShips,

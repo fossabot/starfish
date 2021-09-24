@@ -8,33 +8,10 @@
       <div class="panesection">
         <div
           v-for="p in ship.passives"
-          class="marbotsmall"
+          class="marbot"
           v-if="c.basePassiveData[p.id]"
         >
-          <span class="success">
-            {{ c.basePassiveData[p.id].toString(p) }}
-          </span>
-          <span
-            class="sub nowrap"
-            v-if="p.data && p.data.source"
-          >
-            ({{
-              p.data.source.speciesId
-                ? `${c.capitalize(
-                    c.species[p.data.source.speciesId]
-                      .singular,
-                  )} species`
-                : p.data.source.planetName
-                ? `Planet ${p.data.source.planetName}`
-                : p.data.source.item
-                ? `${
-                    c.items[p.data.source.item.type][
-                      p.data.source.item.id
-                    ].displayName
-                  }`
-                : p.data.source
-            }})
-          </span>
+          <ShipPassiveText :passive="p" />
         </div>
       </div>
     </Box>
@@ -78,5 +55,9 @@ export default Vue.extend({
 .passives {
   width: 220px;
   position: relative;
+}
+.panesection {
+  font-size: 0.9em;
+  line-height: 1.25;
 }
 </style>

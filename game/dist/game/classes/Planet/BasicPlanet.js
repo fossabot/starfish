@@ -328,6 +328,7 @@ class BasicPlanet extends Planet_1.Planet {
             `Roger that, over.`,
             `10-4, over.`,
             `I read you, ${ship.name}.`,
+            `Loud and clear, ${ship.name}.`,
             `This is ${this.name}, I read you, ${ship.name}. Commence landing approach when ready.`,
             `I'm not authorized to respond to you, over.`,
             `Come down and let's take a swim, over.`,

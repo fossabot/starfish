@@ -33,6 +33,8 @@ exports.weapons = {
         damage: 0.5 * game_1.default.damageMultiplier,
         baseCooldown: 2 * 60 * 1000,
         maxHp: 2,
+        reliability: 3,
+        repairDifficulty: 0.4,
     },
     // cannons
     cannon1: {
@@ -47,6 +49,7 @@ exports.weapons = {
         damage: 0.85 * game_1.default.damageMultiplier,
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
+        repairDifficulty: 0.9,
     },
     cannon2: {
         type: `weapon`,
@@ -60,6 +63,7 @@ exports.weapons = {
         damage: Number(game_1.default.damageMultiplier),
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
+        repairDifficulty: 0.85,
     },
     cannon3: {
         type: `weapon`,
@@ -73,6 +77,7 @@ exports.weapons = {
         damage: 1.7 * game_1.default.damageMultiplier,
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
+        repairDifficulty: 0.8,
     },
     // snipers
     sniper1: {
@@ -87,6 +92,7 @@ exports.weapons = {
         damage: 0.7 * game_1.default.damageMultiplier,
         baseCooldown: 2 * 60 * 1000,
         maxHp: 2,
+        repairDifficulty: 1.2,
     },
     sniper2: {
         type: `weapon`,
@@ -100,6 +106,7 @@ exports.weapons = {
         damage: 0.8 * game_1.default.damageMultiplier,
         baseCooldown: 2.5 * 60 * 1000,
         maxHp: 2,
+        repairDifficulty: 1.2,
     },
     sniper3: {
         type: `weapon`,
@@ -113,6 +120,7 @@ exports.weapons = {
         damage: 0.9 * game_1.default.damageMultiplier,
         baseCooldown: 3 * 60 * 1000,
         maxHp: 2,
+        repairDifficulty: 1.2,
     },
     // sabers
     saber1: {
@@ -127,6 +135,7 @@ exports.weapons = {
         damage: 1.7 * game_1.default.damageMultiplier,
         baseCooldown: 0.8 * 60 * 1000,
         maxHp: 4,
+        reliability: 1.5,
     },
     saber2: {
         type: `weapon`,
@@ -140,6 +149,7 @@ exports.weapons = {
         damage: 2 * game_1.default.damageMultiplier,
         baseCooldown: 0.8 * 60 * 1000,
         maxHp: 4,
+        reliability: 1.5,
     },
     saber3: {
         type: `weapon`,
@@ -153,6 +163,7 @@ exports.weapons = {
         damage: 2.3 * game_1.default.damageMultiplier,
         baseCooldown: 0.7 * 60 * 1000,
         maxHp: 4,
+        reliability: 1.5,
     },
 };
 //# sourceMappingURL=weapons.js.map

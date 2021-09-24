@@ -2,6 +2,7 @@
   <div>
     <client-only>
       <div :class="ship ? `${ship.faction.id}faction` : ''">
+        <DevBanner />
         <DynamicBackground />
         <Notifications />
         <transition name="fade">

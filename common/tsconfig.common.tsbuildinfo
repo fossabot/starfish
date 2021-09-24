@@ -267,8 +267,8 @@
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
-        "version": "deda38a829d2652507b88440d042f739b7f820d2032e86f368189542374c4b8e",
-        "signature": "deda38a829d2652507b88440d042f739b7f820d2032e86f368189542374c4b8e",
+        "version": "fcbcab5d70fd9367999e03c4f760158a27cfad736c1b4253a76b0cbff2d77c39",
+        "signature": "fcbcab5d70fd9367999e03c4f760158a27cfad736c1b4253a76b0cbff2d77c39",
         "affectsGlobalScope": true
       },
       "../@types/log.d.ts": {
@@ -282,13 +282,13 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "d8bc0819d2192660721830ed8fb115e926168e3ebb1f3f175d21886e1e12b4f2",
-        "signature": "d8bc0819d2192660721830ed8fb115e926168e3ebb1f3f175d21886e1e12b4f2",
+        "version": "543fb96a2be4e429aaa97456d7b2b8620398c7c47d55cfe114b4fba48d187bb5",
+        "signature": "543fb96a2be4e429aaa97456d7b2b8620398c7c47d55cfe114b4fba48d187bb5",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "c02539af4fe1a537f365871e0e38da4d4ed2afe94251adb036ff3bf1a58100cd",
-        "signature": "c02539af4fe1a537f365871e0e38da4d4ed2afe94251adb036ff3bf1a58100cd",
+        "version": "b1c90350922fd1db79659ec7ff55817ffe66d1a8680954d1778a0d7b2275053e",
+        "signature": "b1c90350922fd1db79659ec7ff55817ffe66d1a8680954d1778a0d7b2275053e",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -297,7 +297,7 @@
         "affectsGlobalScope": true
       },
       "./src/log.ts": {
-        "version": "ec6962d0de547b841291db0bbba8f97ad11ce954d7728bdd0fcacd4bcbc80c13",
+        "version": "3d4647a08dcd45628264e81e9cb65ae1b61fdc5aeab92bcc744da5d64b3af478",
         "signature": "32f06dbc86fd6b686ee59f5b59490c7f5982bc7a2ac78cfbf3e8ba786173e42f",
         "affectsGlobalScope": false
       },
@@ -322,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "ef46350dc02cced9cfd82bfbc4b5a5c9057871b9c3d28aecc4d5e534ef0cda7f",
+        "version": "6f5af26db9946e08b48e98063b4104681599fb3c8f3fcd3ab24827aababfb0fe",
         "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
@@ -362,7 +362,7 @@
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "6ad0d2eb645a6cc2b187950368c8664971d4e84d3538d5cf96cec0d42fe2999f",
+        "version": "f6a40323b3acaef84e889eb194a96bc85e149da63599948a06b96c8931f2d16e",
         "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },
@@ -377,7 +377,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "e38d950adcb4579c8a1c94c5c983c20b9367b45a09b4d446b7bd114c95d926fc",
+        "version": "589dfb6e196c406d1e914b30478875a266fe05c4dac12cc6867bec900e5aa748",
         "signature": "7ca8105c69faed24e740cb8e4c958015669bf388cb33008303a34e0d0ac3cd16",
         "affectsGlobalScope": false
       },
@@ -402,22 +402,22 @@
         "affectsGlobalScope": false
       },
       "./src/items/engines.ts": {
-        "version": "8fcb66ce23c5a9293ca19444ac924af23d5231b978e725a07a624349acfe0cae",
+        "version": "f9d6312aec2e4925f8211239ad4f35f0e2fd2d23a8beb2f5a3056011b8b10b22",
         "signature": "1c03f5479e2028e727a47fb511559531527239529c8932c39d4021e0c2e8819c",
         "affectsGlobalScope": false
       },
       "./src/items/weapons.ts": {
-        "version": "6c2bb04a27d29b0a73658256abf6933c89ea80e13ae57c4e00872ff5c69830da",
+        "version": "e9e3072204b3c7aedb5f211cbd418c4d8ec750f8f8a05f18f7d1ad63a244b589",
         "signature": "befe73d74cb58aac72a4db9241cfd9f7c75ce59573a65c1349259cb1a35b82c2",
         "affectsGlobalScope": false
       },
       "./src/items/scanners.ts": {
-        "version": "d8498fc2f016443e4ef33d110f5205db580eb3db69f27b07b52b2a94c3267818",
+        "version": "1b3e8a8380846838b0421f252a06f6abc47fcd1a0787ce6ffeee3cd89069626d",
         "signature": "7b3fa96461032282f567ce3825daa43d70d1bc919aa8b6df0ee899721e3f3170",
         "affectsGlobalScope": false
       },
       "./src/items/communicators.ts": {
-        "version": "85435945a282b6efdb506754fff2190b505f6ff6be783026762194ac0dd48860",
+        "version": "ad45dc11a59e6c079f33257bc00f135f0eb7044b3957a861645acd5c920fa50e",
         "signature": "261f06e680cd2b203afe84f45002fb01d589fbcb59ef630f2bb6520739d3e4b4",
         "affectsGlobalScope": false
       },
@@ -427,7 +427,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/chassis.ts": {
-        "version": "4905c3aa58c9b2f37c793ef62c8ad50a760709ee7eddfa85abb6ef4746ce79e4",
+        "version": "7b2035c5b204a227546caa08b59e31b438b4eb8e35f5963a5c2cb42307d1cea9",
         "signature": "1d7725b674bd27f36a539257ba157d42320ab06de9fa8aef262a1268e9f6319e",
         "affectsGlobalScope": false
       },

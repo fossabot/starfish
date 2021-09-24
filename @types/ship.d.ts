@@ -70,7 +70,10 @@ type ShipPassiveEffectId =
   | `boostChassisAgility`
   | `disguiseCrewMemberCount`
   | `disguiseChassisType`
-  | `boostAttackWithNumberOfFactionMembersWithinDistance`
+  | `alwaysSeeTrailColors`
+  | `boostDamage`
+  | `boostDamageWhenNoAlliesWithinDistance`
+  | `boostDamageWithNumberOfFactionMembersWithinDistance`
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
 interface ShipPassiveEffect {
@@ -80,6 +83,7 @@ interface ShipPassiveEffect {
     source?: {
       planetName?: string
       speciesId?: SpeciesKey
+      chassisId?: ChassisId
       item?: {
         type: ItemType
         id: ItemId

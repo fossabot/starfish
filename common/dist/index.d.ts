@@ -99,7 +99,16 @@ declare const _default: {
         disguiseChassisType: {
             toString: (p: ShipPassiveEffect) => string;
         };
-        boostAttackWithNumberOfFactionMembersWithinDistance: {
+        alwaysSeeTrailColors: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
+        boostDamage: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWhenNoAlliesWithinDistance: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWithNumberOfFactionMembersWithinDistance: {
             toString: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
@@ -152,7 +161,7 @@ declare const _default: {
         planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
         faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
-        chassis: ("mass" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        chassis: ("mass" | "passives" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;

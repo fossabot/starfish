@@ -124,7 +124,7 @@ class Game {
         this.averageTickTime = dist_1.default.lerp(this.averageTickTime, elapsedTimeInMs, 0.1);
     }
     // ----- scan function -----
-    // todo mega-optimize this with a chunks system
+    // todo optimize this with a chunks system
     scanCircle(center, radius, ignoreSelf, types, includeTrails = false, tutorial = false) {
         let ships = [], trails = [], planets = [], caches = [], attackRemnants = [], zones = [];
         if (!types || types.includes(`ship`))
@@ -145,7 +145,8 @@ class Game {
                 return false;
             });
         if ((!types || types.includes(`trail`)) &&
-            includeTrails)
+            includeTrails) {
+            const showColors = includeTrails === `withColors`;
             trails = this.ships
                 .filter((s) => {
                 if (tutorial)
@@ -162,7 +163,16 @@ class Game {
                 }
                 return false;
             })
-                .map((s) => [...s.previousLocations, s.location]);
+                .map((s) => {
+                return {
+                    color: showColors ? s.faction.color : undefined,
+                    points: [
+                        ...s.previousLocations,
+                        s.location,
+                    ],
+                };
+            });
+        }
         if (!types || types.includes(`planet`))
             planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
         if (!types || types.includes(`cache`))
@@ -269,8 +279,8 @@ class Game {
                 `credits`,
             ]);
             const amount = id === `credits`
-                ? Math.round(Math.random() * 80 + 1) * 100
-                : Math.round(Math.random() * 200) / 10 + 1;
+                ? Math.round(Math.random() * 5000 + 1)
+                : Math.round(Math.random() * 20 + 1);
             const location = dist_1.default.randomInsideCircle(this.gameSoftRadius);
             const message = Math.random() > 0.9
                 ? dist_1.default.randomFromArray([

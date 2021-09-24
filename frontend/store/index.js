@@ -9,6 +9,7 @@ let slowModeUpdateInterval = null
 export const state = () => ({
   lastUpdated: 0,
   connected: false,
+  loading: false,
   userId: null,
   shipIds: [],
   shipsBasics: [],
@@ -219,6 +220,8 @@ export const actions = {
         shipId,
         state.userId,
         async (res) => {
+          if (state.loading)
+            commit(`set`, { loading: false })
           // * here we get the first full load of the ship's data
           if (`error` in res) {
             c.log(res.error, `Reloading ships...`)

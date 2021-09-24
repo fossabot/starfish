@@ -154,9 +154,12 @@ export default class Drawer {
     ).filter((p) => this.isPointInSightRange(p))
 
     // ----- trails -----
-    const trailsToDraw: CoordinatePair[][] = (
-      visible?.trails || []
-    ).filter((p) => this.isTrailInSightRange(p))
+    const trailsToDraw: {
+      color?: string
+      points: CoordinatePair[]
+    }[] = (visible?.trails || []).filter((p) =>
+      this.isTrailInSightRange(p.points),
+    )
 
     // ----- caches -----
     const cachesToDraw: Partial<CacheStub>[] = (
@@ -563,9 +566,10 @@ export default class Drawer {
       })
     })
     ;[...trailsToDraw].forEach((t) => {
+      c.log(t)
       let prevTrailPoint
-      t.forEach((pl, index) => {
-        prevTrailPoint = t[index - 1]
+      t.points.forEach((pl, index) => {
+        prevTrailPoint = t.points[index - 1]
         if (!prevTrailPoint) return
         this.drawLine({
           start: [
@@ -577,8 +581,10 @@ export default class Drawer {
             pl[1] * this.flatScale * -1,
           ],
           width: 1.5,
-          color: `#ffffff`,
-          opacity: (index / (t.length - 1)) * 0.2,
+          color: t.color || `#ffffff`,
+          opacity:
+            (index / (t.points.length - 1)) *
+            (t.color ? 0.45 : 0.2),
         })
       })
     })

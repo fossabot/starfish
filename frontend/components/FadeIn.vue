@@ -1,5 +1,5 @@
 <template>
-  <div class="fader flexcenter flexcolumn" :class="{ off }">
+  <div class="fader" :class="{ off }">
     <slot />
   </div>
 </template>
@@ -26,10 +26,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .fader {
-  pointer-events: none;
-  width: 100vw;
+  pointer-events: auto;
   height: 100vh;
-  position: fixed;
+  margin-bottom: -100vh;
+  width: 100%;
+  position: sticky;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -39,6 +40,18 @@ export default Vue.extend({
 
   &.off {
     opacity: 0;
+    pointer-events: none;
+  }
+
+  & > * {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
   }
 }
 </style>

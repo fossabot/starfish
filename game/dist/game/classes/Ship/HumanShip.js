@@ -746,7 +746,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     updateVisible() {
         const targetTypes = this.tutorial?.currentStep?.visibleTypes;
-        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, true, Boolean(this.tutorial));
+        const alwaysShowTrailColors = this.passives.find((p) => p.id === `alwaysSeeTrailColors`);
+        const visible = this.game.scanCircle(this.location, this.radii.sight, this.id, targetTypes, alwaysShowTrailColors ? `withColors` : true, Boolean(this.tutorial));
         const shipsWithValidScannedProps = visible.ships.map((s) => this.shipToValidScanResult(s));
         this.visible = {
             ...visible,
@@ -1004,7 +1005,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 // can be a stub, so find the real thing
                 const actualShipObject = this.game.ships.find((s) => s.id === otherShip.id);
                 if (actualShipObject)
-                    actualShipObject.receiveBroadcast(toSend, this, garbleAmount, willSendShips);
+                    actualShipObject.receiveBroadcast(actualShipObject.ai ? message : toSend, this, garbleAmount, willSendShips);
             }
         }
         if (!this.planet) {

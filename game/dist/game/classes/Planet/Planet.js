@@ -112,6 +112,9 @@ class Planet extends Stubbable_1.Stubbable {
         // don't message ships that are currently at a planet
         if (ship.planet)
             return;
+        // passive chance to ignore
+        if (Math.random() > dist_1.default.lerp(0.6, 1, this.level / 100))
+            return;
         const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius;
         return distanceAsPercentOfMaxBroadcastRadius;
     }

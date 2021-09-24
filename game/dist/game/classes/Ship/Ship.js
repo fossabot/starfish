@@ -100,16 +100,16 @@ class Ship extends Stubbable_1.Stubbable {
                 .filter((l) => l?.type === `zone`)
                 .map(({ id }) => this.game.zones.find((z) => z.id === id))
                 .filter((z) => z);
+        this.chassis = dist_1.default.items.chassis.starter1; // this is just here to placate typescript, chassis is definitely assigned
         if (chassis &&
             chassis.id &&
             dist_1.default.items.chassis[chassis.id])
-            this.chassis = dist_1.default.items.chassis[chassis.id];
+            this.swapChassis(dist_1.default.items.chassis[chassis.id]);
         else if (loadout &&
             dist_1.default.items.chassis[loadouts_1.default[loadout]?.chassis])
-            this.chassis =
-                dist_1.default.items.chassis[loadouts_1.default[loadout].chassis];
+            this.swapChassis(dist_1.default.items.chassis[loadouts_1.default[loadout].chassis]);
         else
-            this.chassis = dist_1.default.items.chassis.starter1;
+            this.swapChassis(dist_1.default.items.chassis.starter1);
         this.updateSlots();
         if (items)
             items.forEach((i) => this.addItem(i));
@@ -173,11 +173,31 @@ class Ship extends Stubbable_1.Stubbable {
     get armor() {
         return this.items.filter((i) => i instanceof Armor_1.Armor);
     }
-    swapChassis(chassisData) {
-        if (!chassisData.id)
+    swapChassis(partialChassisData) {
+        if (!partialChassisData.id)
             return;
-        const chassisToSwapTo = dist_1.default.items.chassis[chassisData.id];
+        const chassisToSwapTo = dist_1.default.items.chassis[partialChassisData.id];
+        if (this.chassis && this.chassis.passives)
+            this.chassis.passives.forEach((p) => this.removePassive({
+                ...p,
+                data: {
+                    ...p.data,
+                    source: {
+                        chassisId: this.chassis.id,
+                    },
+                },
+            }));
         this.chassis = chassisToSwapTo;
+        if (chassisToSwapTo.passives)
+            chassisToSwapTo.passives.forEach((p) => this.applyPassive({
+                ...p,
+                data: {
+                    ...p.data,
+                    source: {
+                        chassisId: chassisToSwapTo.id,
+                    },
+                },
+            }));
         this.recalculateMass();
     }
     updateSlots() {

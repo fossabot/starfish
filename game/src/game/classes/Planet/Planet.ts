@@ -168,6 +168,9 @@ export class Planet extends Stubbable {
     if (distance < c.arrivalThreshold) return
     // don't message ships that are currently at a planet
     if (ship.planet) return
+    // passive chance to ignore
+    if (Math.random() > c.lerp(0.6, 1, this.level / 100))
+      return
 
     const distanceAsPercentOfMaxBroadcastRadius =
       distance / maxBroadcastRadius

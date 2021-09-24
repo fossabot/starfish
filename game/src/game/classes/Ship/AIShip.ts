@@ -147,7 +147,7 @@ export class AIShip extends CombatShip {
       )
     const chassisToBuy: BaseChassisData =
       validChassis[0] || c.items.chassis.starter1
-    this.chassis = chassisToBuy
+    this.swapChassis(chassisToBuy)
     itemBudget -= chassisToBuy.rarity
     // c.log(
     //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
@@ -358,7 +358,6 @@ export class AIShip extends CombatShip {
         .indexOf(this.name.toLowerCase()) > -1
     )
       oddsToIgnore = 0.1
-    // c.log(oddsToIgnore)
     if (Math.random() < oddsToIgnore) return
 
     // c.log(`ai ship ${this.name} received broadcast`)
@@ -444,6 +443,7 @@ export class AIShip extends CombatShip {
       `It's been years since we had real fish!`,
       `Crack the shell. Get the meat.`,
       `Food sighted. Prepare to engage.`,
+      `PREY SIGHTED! PREPARE FOR COMBA— Oops, wrong channel. Disregard.`,
     ]
     const message = c.garble(
       c.randomFromArray(messageOptions),

@@ -149,7 +149,7 @@ export default Vue.extend({
   perspective: 100em;
   --tooltip-pad-lr: 0.75em;
   --tooltip-pad-tb: 0.5em;
-  z-index: 100;
+  z-index: 1001;
   font-size: 0.9rem;
 
   --panesectionpad-top: 0.6em;
