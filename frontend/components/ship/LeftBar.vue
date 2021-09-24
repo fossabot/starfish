@@ -89,7 +89,7 @@ hr {
 }
 
 .actualbar {
-  background: rgba(0, 0, 0, 0.4);
+  // background: rgba(0, 0, 0, 0.4);
   align-items: center;
   padding: 1.5em 0;
   padding-left: 1px;

@@ -7,44 +7,14 @@
         v-for="(box, index) in boxes"
         :key="index"
         :style="{
-          width:
-            10 +
-            (((Math.random() + scrambler) % 1) * 15) ** 2 +
-            'px',
-          height:
-            10 +
-            (((Math.random() + scrambler) % 1) * 15) ** 2 +
-            'px',
+          width: box.width,
+          height: box.height,
         }"
       >
         <div
           class="box"
           :style="{
-            background: `hsl(${Math.random() *
-              360}, 70%, 60%)`,
-          }"
-        ></div>
-      </div>
-      <div
-        class="boxholder"
-        v-for="(box, index) in boxes"
-        :key="'b2' + index"
-        :style="{
-          width:
-            10 +
-            (((Math.random() + scrambler) % 1) * 10) ** 2 +
-            'px',
-          height:
-            10 +
-            (((Math.random() + scrambler) % 1) * 10) ** 2 +
-            'px',
-        }"
-      >
-        <div
-          class="box"
-          :style="{
-            background: `hsl(${Math.random() *
-              360}, 70%, 60%)`,
+            background: box.color,
           }"
         ></div>
       </div>
@@ -60,7 +30,8 @@ export default Vue.extend({
   data() {
     let masonryElement: FreeMase | undefined
     return {
-      boxes: 150,
+      boxCount: 3,
+      boxes: [],
       scrambler: Math.random(),
       masonryElement,
     }
@@ -73,6 +44,7 @@ export default Vue.extend({
     while (!this.$refs.container) await this.$nextTick()
     this.masonryElement = new FreeMase(
       this.$refs.container as HTMLElement,
+      { centerX: true, verbose: true },
     )
 
     window.addEventListener('keydown', this.reset)
@@ -83,6 +55,20 @@ export default Vue.extend({
   methods: {
     reset() {
       this.scrambler = Math.random()
+      this.boxCount++
+      while (this.boxes.length < this.boxCount) {
+        ;(this.boxes as any).push({
+          width:
+            50 +
+            ((Math.random() * this.scrambler) % 1) * 250 +
+            'px',
+          height:
+            50 +
+            ((Math.random() * this.scrambler) % 1) * 250 +
+            'px',
+          color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+        })
+      }
     },
   },
 })
@@ -96,7 +82,7 @@ export default Vue.extend({
 .boxholder {
   top: 0;
   padding: 3px;
-  transition: width 0.2s, height 0.2s, top 1s, left 1s;
+  transition: width 0.2s, height 0.2s, top 0.5s, left 0.5s;
 }
 .box {
   border-radius: 6px;
