@@ -74,24 +74,12 @@ export class CommandContext {
     this.guild = message.guild
     this.dm = message.channel.type === `DM`
     this.isCaptain = Boolean(
-      this.ship &&
-        this.guildMember?.id === this.ship?.captain,
+      this.ship && this.author.id === this.ship?.captain,
     )
     this.isServerAdmin =
       message.guild?.members.cache
         .find((m) => m.id === message.author.id)
         ?.permissions.has(`BAN_MEMBERS`) || false
-    c.log(
-      this.nickname,
-      message.guild?.members.cache.find(
-        (m) => m.id === message.author.id,
-      ),
-      message.guild?.members.cache
-        .find((m) => m.id === message.author.id)
-        ?.permissions.has(`BAN_MEMBERS`),
-      this.guild?.name,
-      this.isServerAdmin,
-    )
     this.isGameAdmin = [
       `244651135984467968`,
       `395634705120100367`,
