@@ -1573,8 +1573,9 @@ export class HumanShip extends CombatShip {
       `broadcast`,
     )
 
-    this.communicators.forEach((comm) => comm.use())
-    this.updateBroadcastRadius()
+    // * this was annoying and not useful
+    // this.communicators.forEach((comm) => comm.use())
+    // this.updateBroadcastRadius()
   }
 
   // ----- room mgmt -----

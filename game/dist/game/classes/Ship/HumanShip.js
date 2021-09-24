@@ -1030,8 +1030,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         const distance = dist_1.default.distance(this.location, from.location);
         const prefix = `**${`species` in from ? from.species.icon : `🪐`}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
         io_1.default.emit(`ship:message`, this.id, `${prefix}\`${message}\``, `broadcast`);
-        this.communicators.forEach((comm) => comm.use());
-        this.updateBroadcastRadius();
+        // * this was annoying and not useful
+        // this.communicators.forEach((comm) => comm.use())
+        // this.updateBroadcastRadius()
     }
     // ----- room mgmt -----
     resolveRooms() {
