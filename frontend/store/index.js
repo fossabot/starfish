@@ -277,6 +277,8 @@ export const actions = {
   updateShip({ commit, state }, updates) {
     // c.log(`updating ship props`, Object.keys(updates))
     if (!state.ship) return
+    if (updates.id && state.ship.id !== updates.id)
+      return c.log(`skipping late update for previous ship`)
 
     const basicsIndex = state.shipsBasics?.findIndex(
       (s) => s.id === state.ship.id,
