@@ -79,6 +79,12 @@ export class CommandContext {
         ?.permissions.has(`BAN_MEMBERS`) || false
     c.log(
       this.nickname,
+      message.guild?.members.cache.find(
+        (m) => m.id === message.author.id,
+      ),
+      message.guild?.members.cache
+        .find((m) => m.id === message.author.id)
+        ?.permissions.has(`BAN_MEMBERS`),
       this.guild?.name,
       this.isServerAdmin,
     )
