@@ -791,25 +791,27 @@ class HumanShip extends CombatShip_1.CombatShip {
         const previousPlanet = this.planet;
         this.planet =
             this.seenPlanets.find((p) => this.isAt(p.location, p.landingRadiusMultiplier)) || false;
-        if (previousPlanet !== this.planet) {
-            this.toUpdate.planet = this.planet
-                ? this.planet.stubify()
-                : false;
-            if (this.planet) {
-                // * landed!
-                this.hardStop();
-                this.planet.rooms.forEach((r) => this.addRoom(r));
-                this.planet.passives.forEach((p) => this.applyPassive(p));
-                this.planet.addStat(`shipsLanded`, 1);
-            }
-            else if (previousPlanet) {
-                previousPlanet.rooms.forEach((r) => this.removeRoom(r));
-                previousPlanet.passives.forEach((p) => this.removePassive(p));
-            }
+        if (previousPlanet == this.planet)
+            return;
+        this.toUpdate.planet = this.planet
+            ? this.planet.stubify()
+            : false;
+        if (this.planet) {
+            // * landed!
+            dist_1.default.log(`gray`, `${this.name} landed at ${this.planet.name}`);
+            this.hardStop();
+            this.planet.rooms.forEach((r) => this.addRoom(r));
+            this.planet.passives.forEach((p) => this.applyPassive(p));
+            this.planet.addStat(`shipsLanded`, 1);
+        }
+        else if (previousPlanet) {
+            dist_1.default.log(`gray`, `${this.name} departed from ${previousPlanet ? previousPlanet.name : ``}`);
+            previousPlanet.rooms.forEach((r) => this.removeRoom(r));
+            previousPlanet.passives.forEach((p) => this.removePassive(p));
         }
         if (silent)
             return;
-        await dist_1.default.sleep(100); // to resolve the constructor; this.tutorial doesn't exist yet
+        await dist_1.default.sleep(1); // to resolve the constructor; this.tutorial doesn't exist yet
         // -----  log for you and other ships on that planet when you land/depart -----
         if ((!this.tutorial || this.tutorial.step > 0) &&
             this.planet &&

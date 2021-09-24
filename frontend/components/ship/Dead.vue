@@ -22,7 +22,8 @@
 
       <div class="marbot">
         <div v-if="!isCaptain">
-          Waiting for the captain to start a new ship.
+          Waiting for the captain ({{ captain.name }}) to
+          start a new ship.
         </div>
         <div v-if="isCaptain">
           Captain, click to start a new ship.
@@ -51,11 +52,16 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember', 'userId']),
-    show() {
+    show(): boolean {
       return this.ship && !this.crewMember
     },
-    isCaptain() {
-      return this.ship.captain === this.userId
+    captain(): CrewMemberStub | undefined {
+      return this.ship?.crewMembers.find(
+        (cm) => cm.id === this.ship?.captain,
+      )
+    },
+    isCaptain(): boolean {
+      return this.captain?.id === this.userId
     },
   },
 })

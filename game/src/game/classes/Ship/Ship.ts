@@ -623,8 +623,8 @@ export class Ship extends Stubbable {
     arrivalThresholdMultiplier: number = 1,
   ): boolean {
     return c.pointIsInsideCircle(
-      this.location,
       coords,
+      this.location,
       c.arrivalThreshold * arrivalThresholdMultiplier,
     )
   }

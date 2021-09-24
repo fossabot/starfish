@@ -42,7 +42,11 @@ export class ChangeShipNameCommand implements Command {
       !commandContext.isCaptain &&
       !commandContext.isServerAdmin
     )
-      return `Only the captain or a server admin can run this command.`
+      return `Only the captain (${
+        commandContext.ship.crewMembers?.find(
+          (cm) => cm.id === commandContext.ship?.captain,
+        )?.name
+      }) or a server admin can run this command.`
     return true
   }
 }

@@ -72,13 +72,13 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .leftbar {
   --bar-width: 55px;
-  --icon-width: 40px;
+  --icon-width: 38px;
 }
 
 hr {
   margin: 0.7em auto;
   border: 0;
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.22);
   width: 50%;
 }
 
@@ -101,7 +101,7 @@ hr {
   position: fixed;
   top: 0;
   left: 0;
-  border-right: 1px solid rgba(165, 65, 65, 0.1);
+  // border-right: 1px solid rgba(165, 65, 65, 0.1);
 }
 
 .logo {
