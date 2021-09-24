@@ -44,7 +44,7 @@ export class CommandContext {
 
   crewMember: CrewMemberStub | null = null
 
-  isCaptain: boolean = false
+  isCaptain: boolean
 
   matchedCommands: Command[] = []
 
@@ -73,6 +73,10 @@ export class CommandContext {
       this.guildMember?.nickname || this.author.username
     this.guild = message.guild
     this.dm = message.channel.type === `DM`
+    this.isCaptain = Boolean(
+      this.ship &&
+        this.guildMember?.id === this.ship?.captain,
+    )
     this.isServerAdmin =
       message.guild?.members.cache
         .find((m) => m.id === message.author.id)
