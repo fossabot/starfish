@@ -282,8 +282,8 @@
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "a8fc90b6add32a7c940188518d83b886cdf67ff993075dfaa736cb8c981fb653",
-        "signature": "a8fc90b6add32a7c940188518d83b886cdf67ff993075dfaa736cb8c981fb653",
+        "version": "d8bc0819d2192660721830ed8fb115e926168e3ebb1f3f175d21886e1e12b4f2",
+        "signature": "d8bc0819d2192660721830ed8fb115e926168e3ebb1f3f175d21886e1e12b4f2",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
@@ -322,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "ec8d0217a27a9fce783f4ce02c769631653fd31188eb787c47a369d942f5ca84",
+        "version": "ef46350dc02cced9cfd82bfbc4b5a5c9057871b9c3d28aecc4d5e534ef0cda7f",
         "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },

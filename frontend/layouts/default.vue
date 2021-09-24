@@ -1,13 +1,7 @@
 <template>
   <div>
     <client-only>
-      <div
-        :style="
-          ship
-            ? `--cursor-pointer: var(--cursor-pointer-${ship.faction.id})`
-            : ''
-        "
-      >
+      <div :class="ship ? `${ship.faction.id}faction` : ''">
         <DynamicBackground />
         <Notifications />
         <transition name="fade">

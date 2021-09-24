@@ -19,9 +19,6 @@ const basePassiveData = {
     boostRepairSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster repairs`,
     },
-    boostRestSpeed: {
-        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster rest`,
-    },
     boostMineSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster mining`,
     },

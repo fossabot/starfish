@@ -75,7 +75,7 @@
           "
         >
           <div
-            class="room"
+            class="room pointer"
             :class="{
               current:
                 crewMember && crewMember.location === room,
@@ -223,7 +223,6 @@ export default Vue.extend({
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    cursor: var(--cursor-pointer);
     z-index: 2;
     background: rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 0 1px var(--text);

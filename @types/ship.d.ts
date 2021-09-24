@@ -57,7 +57,6 @@ type ShipPassiveEffectId =
   | `boostSightRange`
   | `boostBroadcastRange`
   | `boostRepairSpeed`
-  | `boostRestSpeed`
   | `boostMineSpeed`
   | `boostBrake`
   // | `boostThrust`

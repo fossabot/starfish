@@ -9,7 +9,7 @@
       <hr />
 
       <div
-        class="icon guildicon"
+        class="icon guildicon pointer"
         v-for="s in shipsBasics"
         @click="shipSelected(s.id)"
         :class="{ active: ship && ship.id === s.id }"
@@ -172,8 +172,6 @@ hr {
   }
 
   &:hover {
-    cursor: var(--cursor-pointer);
-
     .activeicon {
       left: 0;
       top: 30%;

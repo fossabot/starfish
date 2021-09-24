@@ -6,7 +6,11 @@
       </template>
 
       <div class="panesection">
-        <div v-for="p in ship.passives" class="marbotsmall">
+        <div
+          v-for="p in ship.passives"
+          class="marbotsmall"
+          v-if="c.basePassiveData[p.id]"
+        >
           <span class="success">
             {{ c.basePassiveData[p.id].toString(p) }}
           </span>
