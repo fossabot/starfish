@@ -148,7 +148,14 @@ export class CommandHandler {
         continue
       }
 
-      c.log(`gray`, message.content)
+      c.log(
+        `gray`,
+        `${message.content} (${commandContext.nickname} - ${
+          commandContext.ship?.name ||
+          commandContext.guild?.name ||
+          `PM`
+        })`,
+      )
 
       // run command
       await matchedCommand

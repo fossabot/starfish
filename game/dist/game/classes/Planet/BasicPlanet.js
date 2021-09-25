@@ -198,7 +198,8 @@ class BasicPlanet extends Planet_1.Planet {
                 propensity *= 2 + alreadySellingOfType;
                 for (let item of Object.values(itemGroup))
                     if (item.buyable !== false &&
-                        !this.vendor?.items.find((i) => i.type === item.type && i.id === item.id))
+                        !this.vendor?.items.find((i) => i.type === item.type && i.id === item.id) &&
+                        !this.vendor?.chassis.find((i) => item.type === `chassis` && i.id === item.id))
                         addable.push({
                             class: item.type === `chassis`
                                 ? `chassis`
@@ -346,7 +347,7 @@ class BasicPlanet extends Planet_1.Planet {
         ]);
     }
     resetLevels() {
-        dist_1.default.log(`resetLevels`, this.name);
+        // c.log(`resetLevels`, this.name)
         const targetLevel = this.level;
         const targetXp = this.xp;
         this.level = 0;

@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const maxNameLength = 16;
 function numberWithCommas(x) {
+    if (x < 1000)
+        return x;
     const decimal = x % 1;
     const total = Math.floor(x)
         .toString()

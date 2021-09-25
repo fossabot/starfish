@@ -126,7 +126,9 @@ class CommandHandler {
                 }
                 continue;
             }
-            dist_1.default.log(`gray`, message.content);
+            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} - ${commandContext.ship?.name ||
+                commandContext.guild?.name ||
+                `PM`})`);
             // run command
             await matchedCommand
                 .run(commandContext)

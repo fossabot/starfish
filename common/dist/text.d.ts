@@ -1,4 +1,4 @@
-declare function numberWithCommas(x: number): string;
+declare function numberWithCommas(x: number): string | number;
 declare function printList(list: string[]): string;
 declare function degreesToArrow(angle: number): string;
 declare function coordPairToArrow(coordPair: CoordinatePair): string;

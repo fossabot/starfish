@@ -507,7 +507,7 @@ class Game {
         return newAttackRemnant;
     }
     removeAttackRemnant(ar) {
-        dist_1.default.log(`Removing attack remnant ${ar.id} from the game.`);
+        // c.log(`Removing attack remnant ${ar.id} from the game.`)
         db_1.db.attackRemnant.removeFromDb(ar.id);
         const index = this.attackRemnants.findIndex((eAr) => ar.id === eAr.id);
         if (index === -1)

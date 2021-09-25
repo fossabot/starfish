@@ -1184,7 +1184,7 @@ export class HumanShip extends CombatShip {
           (p) => !previousVisible.planets.includes(p),
         )
       newlyVisiblePlanets.forEach((p: Planet) => {
-        c.log(`newly visible planet`, this.name, p.name)
+        // c.log(`newly visible planet`, this.name, p.name)
         setTimeout(() => {
           p.broadcastTo(this)
         }, Math.random() * 15 * 60 * 1000) // sometime within 15 minutes

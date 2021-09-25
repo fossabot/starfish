@@ -763,7 +763,7 @@ export class Game {
   }
 
   removeAttackRemnant(ar: AttackRemnant) {
-    c.log(`Removing attack remnant ${ar.id} from the game.`)
+    // c.log(`Removing attack remnant ${ar.id} from the game.`)
     db.attackRemnant.removeFromDb(ar.id)
     const index = this.attackRemnants.findIndex(
       (eAr) => ar.id === eAr.id,

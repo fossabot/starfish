@@ -58,7 +58,7 @@
         :key="'buyitem' + ca.type + ca.id"
         v-tooltip="{
           type: ca.itemData && ca.itemData.type,
-          data: ca.itemData,
+          data: { ...ca.itemData, compare: true },
         }"
       >
         <button :disabled="!ca.canBuy" @click="buyItem(ca)">
@@ -113,7 +113,7 @@
         "
         v-tooltip="{
           type: 'chassis',
-          data: ca.chassisData,
+          data: { ...ca.chassisData, compare: true },
         }"
       >
         <button

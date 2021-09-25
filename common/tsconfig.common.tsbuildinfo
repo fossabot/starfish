@@ -372,8 +372,8 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "2e4bd981649bae84bd037caabd04e9ea1e4334857c664671318345181e50f69b",
-        "signature": "f9ac02a2fd50e143724018a4fe5e813a11fc6601573481f8db171b61edcd79c1",
+        "version": "b3078dc62685580979dee43309997898ec269ed1c46b51398859301a796f900b",
+        "signature": "a3c3a31bd6ba882dba93a8e918d41a4d0914edb5c7cd3524023361cb4622e0b2",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
@@ -438,7 +438,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "8a4ba67fdc96d0cba509d5ef6868d2890e6790850a0471cfb0d091600712f6e9",
+        "signature": "e09f73d39cf4fd72248c54f6ad60177ee36ad4fbadcefed035a028665f82fe2d",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {

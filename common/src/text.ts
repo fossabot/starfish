@@ -3,6 +3,7 @@ import math from './math'
 const maxNameLength = 16
 
 function numberWithCommas(x: number) {
+  if (x < 1000) return x
   const decimal = x % 1
   const total =
     Math.floor(x)

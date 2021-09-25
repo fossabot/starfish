@@ -780,7 +780,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.planet) {
             const newlyVisiblePlanets = currentVisible.planets.filter((p) => !previousVisible.planets.includes(p));
             newlyVisiblePlanets.forEach((p) => {
-                dist_1.default.log(`newly visible planet`, this.name, p.name);
+                // c.log(`newly visible planet`, this.name, p.name)
                 setTimeout(() => {
                     p.broadcastTo(this);
                 }, Math.random() * 15 * 60 * 1000); // sometime within 15 minutes
