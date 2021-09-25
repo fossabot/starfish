@@ -77,6 +77,7 @@ type ShipPassiveEffectId =
   | `boostDamageWithNumberOfFactionMembersWithinDistance`
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
+  | `autoRepair`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectId
   intensity?: number

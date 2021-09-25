@@ -225,6 +225,16 @@ export class HumanShip extends CombatShip {
     //   )} crew members on ${this.name}`,
     // )
 
+    // ----- auto-repair -----
+    const autoRepairIntensity =
+      (this.getPassiveIntensity(`autoRepair`) / // comes in per hour, we need per tick
+        60 /
+        60 /
+        1000) *
+      c.tickInterval
+    if (autoRepairIntensity)
+      this.repair(autoRepairIntensity)
+
     profiler.step(`discover planets`)
     // ----- discover new planets -----
     const newPlanets = this.visible.planets.filter(

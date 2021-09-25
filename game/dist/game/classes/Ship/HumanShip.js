@@ -150,6 +150,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         //     Object.keys(cm.toUpdate),
         //   )} crew members on ${this.name}`,
         // )
+        // ----- auto-repair -----
+        const autoRepairIntensity = (this.getPassiveIntensity(`autoRepair`) / // comes in per hour, we need per tick
+            60 /
+            60 /
+            1000) *
+            dist_1.default.tickInterval;
+        if (autoRepairIntensity)
+            this.repair(autoRepairIntensity);
         profiler.step(`discover planets`);
         // ----- discover new planets -----
         const newPlanets = this.visible.planets.filter((p) => !this.seenPlanets.includes(p));

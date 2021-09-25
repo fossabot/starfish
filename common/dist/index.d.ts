@@ -117,6 +117,9 @@ declare const _default: {
         boostStaminaRegeneration: {
             toString: (p: ShipPassiveEffect) => string;
         };
+        autoRepair: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
