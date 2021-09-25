@@ -34,7 +34,7 @@ export class StartCommand implements Command {
       guild: context.guild,
     })
     if (`error` in permissionsCheck) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `I don't have permission to create channels! Please add that permission and rerun the command.`,
       )
       return
@@ -65,14 +65,14 @@ This bot will create several channels for game communication and a role for crew
         },
       ],
     })
-    pm.delete().catch((e) => {})
+    if (pm) pm.delete().catch((e) => {})
 
     if (
       !permissionToCreateChannelsResult ||
       permissionToCreateChannelsResult ===
         `permissionToAddChannelsNo`
     ) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `Ah, okay. This game might not be for you, then.`,
       )
       return
@@ -84,14 +84,14 @@ This bot will create several channels for game communication and a role for crew
     //   guild: context.guild,
     // })
     // if (!crewRole) {
-    //   await context.initialMessage.channel.send(
+    //   await context.reply(
     //     `I don't seem to be able to create roles in this server. Please add that permission to the bot!`,
     //   )
     //   return
     // }
     // context.guildMember?.roles.add(crewRole).catch(async (e) => {
     //   c.log(e)
-    //   await context.initialMessage.channel.send(
+    //   await context.reply(
     //     `I don't seem to be able to assign roles in this server. Please add that permission to the bot!`,
     //   )
     // })
@@ -117,7 +117,7 @@ This bot will create several channels for game communication and a role for crew
         allowedUserId: context.initialMessage.author.id,
         buttons: speciesButtonData,
       })
-    sentMessages.push(sm)
+    if (sm) sentMessages.push(sm)
 
     // clean up messages
     try {
@@ -126,7 +126,7 @@ This bot will create several channels for game communication and a role for crew
     } catch (e) {}
 
     if (!speciesResult) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `You didn't pick a species, try again!`,
       )
       return
@@ -145,7 +145,7 @@ This bot will create several channels for game communication and a role for crew
         context.guild.iconURL({ size: 128 }) || undefined,
     })
     if (!createdShip) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `Failed to start your server in the game.`,
       )
       return
@@ -160,7 +160,7 @@ This bot will create several channels for game communication and a role for crew
       },
     )
     if (!addedCrewMember) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `Failed to add you as a member of the crew.`,
       )
     }

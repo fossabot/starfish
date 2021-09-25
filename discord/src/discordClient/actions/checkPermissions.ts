@@ -2,19 +2,6 @@ import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import { client } from '..'
 
-interface GamePermissionsFailure {
-  error: string
-  missingPermissions?: Discord.PermissionString[]
-  usedChannelSpecificPermissions?: boolean
-}
-interface GamePermissionsSuccess {
-  ok: true
-  message?: string
-}
-type GamePermissionsResponse =
-  | GamePermissionsFailure
-  | GamePermissionsSuccess
-
 export default async function checkPermissions({
   requiredPermissions,
   channel,
@@ -92,12 +79,12 @@ export default async function checkPermissions({
   return {
     error: `Missing ${
       useBasePermissions ? `overall ` : ``
-    }bot permissions \`${missingPermissions.join(
-      `\`, \``,
-    )}\`${
+    }bot permission${
+      missingPermissions.length === 1 ? `` : `s`
+    } \`${missingPermissions.join(`\`, \``)}\`${
       useBasePermissions
         ? ``
-        : ` in channel \`${channel?.name}\``
+        : ` in channel \`#${channel?.name}\``
     }`,
     missingPermissions,
     usedChannelSpecificPermissions: !useBasePermissions,

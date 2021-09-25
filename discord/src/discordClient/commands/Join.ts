@@ -25,7 +25,7 @@ export class JoinCommand implements Command {
       !addedCrewMember ||
       typeof addedCrewMember === `string`
     ) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         addedCrewMember ||
           `Failed to add you as a member of the crew.`,
       )
@@ -44,7 +44,7 @@ export class JoinCommand implements Command {
     //   guild: context.guild,
     // })
     // if (!crewRole) {
-    //   await context.initialMessage.channel.send(
+    //   await context.reply(
     //     `Failed to add you to the \`Crew\` server role.`,
     //   )
     // } else {

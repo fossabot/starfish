@@ -16,7 +16,7 @@ export class HelpCommand implements Command {
   }
 
   async run(context: CommandContext): Promise<void> {
-    await context.initialMessage.channel.send(
+    await context.reply(
       this.commandsToList
         .map((cm) =>
           cm.getHelpMessage(context.commandPrefix),

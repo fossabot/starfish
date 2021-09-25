@@ -10,7 +10,7 @@ export class InviteCommand implements Command {
   }
 
   async run(context: CommandContext): Promise<void> {
-    await context.initialMessage.channel.send(
+    await context.reply(
       `Add ${c.gameName} to your server!\n${c.discordBotInviteUrl}`,
     )
   }

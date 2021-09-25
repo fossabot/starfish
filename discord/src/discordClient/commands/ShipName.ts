@@ -23,7 +23,7 @@ export class ChangeShipNameCommand implements Command {
 
     let typedName = context.rawArgs
     if (!typedName) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `Use this command in the format \`${context.commandPrefix}${this.commandNames[0]} <new name>\`.`,
       )
       return

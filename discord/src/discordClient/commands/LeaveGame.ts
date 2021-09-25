@@ -19,7 +19,7 @@ export class LeaveGameCommand implements Command {
       context.guild.id,
     )
     c.log(res)
-    if (res) context.initialMessage.channel.send(res)
+    if (res) context.reply(res)
   }
 
   hasPermissionToRun(

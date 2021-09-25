@@ -14,18 +14,12 @@ export class RespawnCommand implements Command {
     initialMessage,
   }: CommandContext): Promise<void> {
     // add ship
-    const respawnedShip = await respawn(
-      initialMessage.guild!.id,
-    )
+    const respawnedShip = await respawn(guild!.id)
     if (!respawnedShip) {
-      await initialMessage.channel.send(
-        `Failed to respawn your server.`,
-      )
+      await reply(`Failed to respawn your server.`)
       return
     }
-    await initialMessage.channel.send(
-      `Respawned your server!`,
-    )
+    await reply(`Respawned your server!`)
   }
 
   hasPermissionToRun(

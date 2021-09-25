@@ -12,7 +12,7 @@ export class LinkCommand implements Command {
   async run({
     initialMessage,
   }: CommandContext): Promise<void> {
-    await initialMessage.channel.send(
+    await reply(
       `Your ship's console:\n${c.frontendUrl}\n\nBot invite link:\n${c.discordBotInviteUrl}`,
     )
   }

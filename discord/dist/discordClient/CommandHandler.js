@@ -95,7 +95,7 @@ class CommandHandler {
         }
         // make sure we're connected to the io server
         if (!ioInterface_1.io.connected) {
-            await message.reply({
+            await commandContext.reply({
                 embeds: [
                     new discord_js_1.MessageEmbed({
                         description: `It looks like the game server is down at the moment. Please check the [support server](${dist_1.default.supportServerLink}) for more details.`,
@@ -117,11 +117,11 @@ class CommandHandler {
         // side effects!
         this.sideEffects(commandContext);
         for (let matchedCommand of matchedCommands) {
-            // check run permissions and get error message if relevant
-            const permissionRes = matchedCommand.hasPermissionToRun(commandContext);
-            if (permissionRes !== true) {
-                if (permissionRes.length) {
-                    await message.channel.send(permissionRes);
+            // check runnability and get error message if relevant
+            const runnable = matchedCommand.hasPermissionToRun(commandContext);
+            if (runnable !== true) {
+                if (runnable.length) {
+                    await commandContext.reply(runnable);
                     await reactor_1.reactor.failure(message);
                 }
                 continue;
@@ -151,9 +151,8 @@ class CommandHandler {
     }
     sideEffects(context) {
         // ----- set nickname -----
-        if (context.initialMessage.guild?.me?.nickname !==
-            `${dist_1.default.gameName}`)
-            context.initialMessage.guild?.me?.setNickname(`${dist_1.default.gameName}`);
+        if (context.guild?.me?.nickname !== `${dist_1.default.gameName}`)
+            context.guild?.me?.setNickname(`${dist_1.default.gameName}`);
         // ----- update guild name/icon if necessary -----
         if (context.ship && context.guild) {
             if (dist_1.default
@@ -173,7 +172,7 @@ class CommandHandler {
         }
         // ----- check for crew member still in guild, and update name if necessary -----
         if (context.crewMember) {
-            const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
+            const guildMember = context.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
             if (guildMember &&
                 context.ship &&
                 context.nickname !== context.crewMember.name) {
