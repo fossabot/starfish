@@ -6,7 +6,6 @@ import {
 } from 'discord.js'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
-import { reactor } from './reactions/reactor'
 import {
   default as ioInterface,
   io as socketIoObject,
@@ -99,20 +98,18 @@ export class CommandHandler {
       await message.reply(
         `I don't recognize that command. Try ${this.prefix}help.`,
       )
-      await reactor.failure(message)
       return
     }
 
     // make sure we're connected to the io server
     if (!socketIoObject.connected) {
-      await message.reply({
+      await commandContext.reply({
         embeds: [
           new MessageEmbed({
             description: `It looks like the game server is down at the moment. Please check the [support server](${c.supportServerLink}) for more details.`,
           }),
         ],
       })
-      await reactor.warning(message)
       return
     }
 
@@ -137,31 +134,34 @@ export class CommandHandler {
     this.sideEffects(commandContext)
 
     for (let matchedCommand of matchedCommands) {
-      // check run permissions and get error message if relevant
-      const permissionRes =
+      // check runnability and get error message if relevant
+      const runnable =
         matchedCommand.hasPermissionToRun(commandContext)
-      if (permissionRes !== true) {
-        if (permissionRes.length) {
-          await message.channel.send(permissionRes)
-          await reactor.failure(message)
+      if (runnable !== true) {
+        if (runnable.length) {
+          await commandContext.reply(runnable)
         }
         continue
       }
 
-      c.log(`gray`, message.content)
+      c.log(
+        `gray`,
+        `${message.content} (${commandContext.nickname} - ${
+          commandContext.ship?.name ||
+          commandContext.guild?.name ||
+          `PM`
+        })`,
+      )
 
       // run command
       await matchedCommand
         .run(commandContext)
-        .then(() => {
-          // reactor.success(message)
-        })
+        .then(() => {})
         .catch((reason) => {
           c.log(
             `red`,
             `Failed to run command ${commandContext.commandName}: ${reason}`,
           )
-          reactor.failure(message)
         })
     }
   }
@@ -178,13 +178,8 @@ export class CommandHandler {
 
   private sideEffects(context: CommandContext) {
     // ----- set nickname -----
-    if (
-      context.initialMessage.guild?.me?.nickname !==
-      `${c.gameName}`
-    )
-      context.initialMessage.guild?.me?.setNickname(
-        `${c.gameName}`,
-      )
+    if (context.guild?.me?.nickname !== `${c.gameName}`)
+      context.guild?.me?.setNickname(`${c.gameName}`)
 
     // ----- update guild name/icon if necessary -----
     if (context.ship && context.guild) {
@@ -210,10 +205,9 @@ export class CommandHandler {
 
     // ----- check for crew member still in guild, and update name if necessary -----
     if (context.crewMember) {
-      const guildMember =
-        context.initialMessage.guild?.members.cache.find(
-          (m) => m.user.id === context.crewMember?.id,
-        )
+      const guildMember = context.guild?.members.cache.find(
+        (m) => m.user.id === context.crewMember?.id,
+      )
       if (
         guildMember &&
         context.ship &&

@@ -47,6 +47,18 @@ function default_1(socket) {
     socket.on(`game:adminCheck`, (id, password, callback) => {
         return callback(isAdmin(id, password));
     });
+    socket.on(`admin:respawnShip`, (id, password, shipId) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access admin:respawnShip`);
+        __1.game.humanShips
+            .find((s) => s.id === shipId)
+            ?.respawn(true);
+    });
+    socket.on(`admin:deleteShip`, (id, password, shipId) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access admin:deleteShip`);
+        __1.game.removeShip(shipId);
+    });
     socket.on(`game:save`, (id, password) => {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access game:save`);

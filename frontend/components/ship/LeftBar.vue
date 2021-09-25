@@ -1,37 +1,97 @@
 <template>
   <nav class="leftbar">
     <div class="placeholder"></div>
-    <div class="actualbar flexcolumn flexcenter">
-      <nuxt-link class="logoholder" to="/"
-        ><img src="/images/logo.svg" class="logo"
-      /></nuxt-link>
+    <div class="actualbar flexcolumn flexbetween">
+      <div class="flexcolumn flexcenter">
+        <nuxt-link class="logoholder" to="/"
+          ><img src="/images/logo.svg" class="logo"
+        /></nuxt-link>
 
-      <hr />
-
-      <div
-        class="icon guildicon pointer"
-        v-for="s in shipsBasics"
-        @click="shipSelected(s.id)"
-        :class="{ active: ship && ship.id === s.id }"
-        v-tooltip="{ type: 'ship', ...s }"
-      >
-        <div class="activeicon"></div>
+        <hr />
 
         <div
-          class="iconholder"
+          class="icon guildicon pointer"
+          v-for="s in shipsBasics"
+          @click="shipSelected(s.id)"
           :class="{ active: ship && ship.id === s.id }"
+          v-tooltip="{ type: 'ship', ...s }"
         >
-          <div class="underimage flexcenter">
-            {{ c.acronym(s.name).substring(0, 3) }}
-          </div>
+          <div class="activeicon"></div>
+
           <div
-            class="image"
-            :style="{
-              'background-image': s.guildIcon
-                ? `url('${s.guildIcon}')`
-                : '',
-            }"
-          ></div>
+            class="iconholder"
+            :class="{ active: ship && ship.id === s.id }"
+          >
+            <div class="underimage flexcenter">
+              {{ c.acronym(s.name).substring(0, 3) }}
+            </div>
+            <div
+              class="image"
+              :style="{
+                'background-image': s.guildIcon
+                  ? `url('${s.guildIcon}')`
+                  : '',
+              }"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flexcolumn flexcenter bottombuttons">
+        <div
+          class="icon subicon smaller pointer martopbig"
+          v-tooltip="`About Starfish`"
+        >
+          <nuxt-link to="/about">
+            <img
+              src="/images/icons/icon-about.svg"
+              alt="link to about page"
+            />
+          </nuxt-link>
+        </div>
+        <div
+          class="icon subicon smaller pointer martopbig"
+          v-tooltip="`How to Play`"
+        >
+          <nuxt-link to="/how to play">
+            <img
+              src="/images/icons/icon-howtoplay.svg"
+              alt="link to how to play page"
+            />
+          </nuxt-link>
+        </div>
+        <div
+          class="icon subicon smaller pointer martopbig"
+          v-tooltip="`Give Feedback`"
+        >
+          <nuxt-link to="/feedback">
+            <img
+              src="/images/icons/icon-feedback.svg"
+              alt="link to feedback page"
+            />
+          </nuxt-link>
+        </div>
+        <div
+          v-if="ship && !ship.tutorial"
+          class="icon smaller pointer martopbig"
+          @click="toTutorial"
+          v-tooltip="`Launch Tutorial`"
+        >
+          <img
+            src="/images/icons/icon-tutorial.svg"
+            alt="tutorial button"
+          />
+        </div>
+        <hr />
+        <div
+          class="icon subicon smaller pointer"
+          @click="logout"
+          v-tooltip="`Log Out`"
+        >
+          <img
+            src="/images/icons/icon-logout.svg"
+            alt="log out button"
+          />
         </div>
       </div>
     </div>
@@ -62,8 +122,22 @@ export default Vue.extend({
     async shipSelected(id) {
       if (this.ship && this.ship.id === id) return
       c.log('ship selected in left bar')
-      this.$store.commit('set', { loading: true })
+      this.$store.commit('set', {
+        loading: true,
+        mapFollowingShip: true,
+      })
       this.$store.dispatch('socketSetup', id)
+    },
+    logout() {
+      this.$store.dispatch('logout')
+      ;(this as any).$router.push('/')
+    },
+    toTutorial() {
+      ;(this as any).$socket?.emit(
+        'crew:toTutorial',
+        this.ship.id,
+        this.crewMember?.id,
+      )
     },
   },
 })
@@ -71,7 +145,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .leftbar {
-  --bar-width: 55px;
+  --bar-width: 53px;
   --icon-width: 38px;
 }
 
@@ -89,11 +163,10 @@ hr {
 }
 
 .actualbar {
-  // background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4);
   align-items: center;
   padding: 1.5em 0;
   padding-left: 1px;
-  justify-content: flex-start;
   width: var(--bar-width);
   height: 100vh;
   flex-grow: 0;
@@ -101,7 +174,32 @@ hr {
   position: fixed;
   top: 0;
   left: 0;
-  // border-right: 1px solid rgba(165, 65, 65, 0.1);
+  // border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+  & > * {
+    width: 100%;
+  }
+}
+
+.icon {
+  width: var(--icon-width);
+  transition: opacity 0.2s;
+
+  &.smaller {
+    width: calc(var(--icon-width) - 13px);
+  }
+
+  img {
+    width: 100%;
+  }
+
+  &.subicon {
+    opacity: 0.4;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .logo {

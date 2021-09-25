@@ -50,6 +50,24 @@ export default function (
     return callback(isAdmin(id, password))
   })
 
+  socket.on(`admin:respawnShip`, (id, password, shipId) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:respawnShip`,
+      )
+    game.humanShips
+      .find((s) => s.id === shipId)
+      ?.respawn(true)
+  })
+
+  socket.on(`admin:deleteShip`, (id, password, shipId) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:deleteShip`,
+      )
+    game.removeShip(shipId)
+  })
+
   socket.on(`game:save`, (id, password) => {
     if (!isAdmin(id, password))
       return c.log(

@@ -323,7 +323,7 @@ export default function (
                         i.type === orders.target?.type &&
                         i.id === orders.target.id,
                     )
-                    ?.stubify()
+                    ?.toLogStub()
                 : (orders.target as any),
               color:
                 orders.target.type === `planet`

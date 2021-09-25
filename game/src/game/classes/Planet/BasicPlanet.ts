@@ -304,6 +304,10 @@ export class BasicPlanet extends Planet {
             !this.vendor?.items.find(
               (i) =>
                 i.type === item.type && i.id === item.id,
+            ) &&
+            !this.vendor?.chassis.find(
+              (i) =>
+                item.type === `chassis` && i.id === item.id,
             )
           )
             addable.push({
@@ -532,7 +536,7 @@ export class BasicPlanet extends Planet {
   }
 
   resetLevels() {
-    c.log(`resetLevels`, this.name)
+    // c.log(`resetLevels`, this.name)
     const targetLevel = this.level
     const targetXp = this.xp
     this.level = 0

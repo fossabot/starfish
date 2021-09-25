@@ -350,8 +350,8 @@ export class AIShip extends CombatShip {
     garbleAmount: number,
     recipients: Ship[],
   ) {
-    let oddsToIgnore = 0.9
-    if (recipients.length === 1) oddsToIgnore *= 0.6
+    let oddsToIgnore = 0.99
+    if (recipients.length === 1) oddsToIgnore *= 0.4
     if (
       message
         .toLowerCase()
@@ -417,12 +417,12 @@ export class AIShip extends CombatShip {
       this.location,
       ship.location,
     )
-    const maxBroadcastRadius = this.level * 0.05
+    const maxBroadcastRadius = this.level * 0.04
 
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
-    // don't message ships that are currently at a planet
-    if (ship.planet) return
+    // // don't message ships that are currently at a planet
+    // if (ship.planet) return
 
     const distanceAsPercentOfMaxBroadcastRadius =
       distance / maxBroadcastRadius
@@ -438,10 +438,14 @@ export class AIShip extends CombatShip {
       `Come closer, let's be friends!`,
       `Who ordered the fish filet?`,
       `Swim closer...`,
+      `Hi, little fishy...`,
+      `I think I smell something delicious!`,
+      `I spy a fish!!`,
       `Come over this way, see what happens!`,
       `Get your gills over here!`,
       `It's been years since we had real fish!`,
       `Crack the shell. Get the meat.`,
+      `Prepare to go belly-up.`,
       `Food sighted. Prepare to engage.`,
       `PREY SIGHTED! PREPARE FOR COMBA— Oops, wrong channel. Disregard.`,
     ]

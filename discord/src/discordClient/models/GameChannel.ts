@@ -1,6 +1,6 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
-import { client } from '..'
+import checkPermissions from '../actions/checkPermissions'
 
 export class GameChannel {
   private readonly guild: Discord.Guild | null
@@ -15,8 +15,36 @@ export class GameChannel {
     this.channel = channel
   }
 
-  async send(message: string | Discord.MessageOptions) {
-    return await this.channel.send(message).catch(c.log)
+  async send(
+    message: string | Discord.MessageOptions,
+  ): Promise<GamePermissionsFailure | Discord.Message> {
+    const permissionsRes = await this.canSend()
+    if (`error` in permissionsRes) {
+      return permissionsRes
+    }
+
+    try {
+      const sent = await this.channel
+        .send(message)
+        .catch(c.log)
+      if (sent) return sent
+    } catch (e) {
+      c.log(e)
+    }
+
+    return {
+      error: `Failed to send in ${
+        (this.channel as Discord.TextChannel).name
+      }`,
+    }
+  }
+
+  async canSend() {
+    return checkPermissions({
+      requiredPermissions: [`SEND_MESSAGES`],
+      channel: this.channel,
+      guild: this.guild || undefined,
+    })
   }
 
   registerListener(listener: Function) {}

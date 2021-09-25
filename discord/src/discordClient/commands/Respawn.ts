@@ -10,21 +10,19 @@ export class RespawnCommand implements Command {
     return `Use \`${commandPrefix}${this.commandNames[0]}\` to get your crew a new ship once you've died.`
   }
 
-  async run({
-    initialMessage,
-  }: CommandContext): Promise<void> {
+  async run(context: CommandContext): Promise<void> {
     // add ship
-    const respawnedShip = await respawn(
-      initialMessage.guild!.id,
-    )
+    const respawnedShip = await respawn(context.guild!.id)
     if (!respawnedShip) {
-      await initialMessage.channel.send(
-        `Failed to respawn your server.`,
+      await context.reply(
+        `Failed to respawn ${
+          context.ship?.name || `your server`
+        }.`,
       )
       return
     }
-    await initialMessage.channel.send(
-      `Respawned your server!`,
+    await context.reply(
+      `Respawned ${context.ship?.name || `your server`}!`,
     )
   }
 

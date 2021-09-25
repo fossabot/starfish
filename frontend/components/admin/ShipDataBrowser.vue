@@ -9,19 +9,35 @@
               c.species[s.species.id].icon +
               s.name +
               (s.isTutorial
-                ? ` (tutorial for ${c.isTutorial})`
+                ? ` (tutorial for ${s.isTutorial})`
                 : ''),
           }))
         "
         v-model="selectedShipId"
         placeholder="Select ship to inspect..."
       />
-      <div
-        class="button"
-        v-if="selectedShipId"
-        @click="getShipData(selectedShipId)"
-      >
-        Reload
+      <div class="buttonrow flex">
+        <div
+          class="button combo flexcenter marleftsmall"
+          v-if="selectedShipId"
+          @click="getShipData(selectedShipId)"
+        >
+          Reload
+        </div>
+        <div
+          class="button combo flexcenter"
+          v-if="selectedShipId"
+          @click="respawnShip(selectedShipId)"
+        >
+          Respawn
+        </div>
+        <div
+          class="button combo flexcenter"
+          v-if="selectedShipId"
+          @click="deleteShip(selectedShipId)"
+        >
+          Delete
+        </div>
       </div>
     </div>
 
@@ -159,6 +175,68 @@ export default Vue.extend({
             return
           }
           this.shipsBasics = res.data
+        },
+      )
+    },
+
+    async respawnShip(shipId: string) {
+      if (
+        !window.confirm(
+          `Are you sure you want to respawn ${shipId}?`,
+        )
+      )
+        return
+      ;(this as any).$socket?.emit(
+        `admin:respawnShip`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+        (res: IOResponse<ShipStub>) => {
+          if (`error` in res) {
+            this.$store.dispatch(`notifications/notify`, {
+              text: res.error,
+              type: `error`,
+            })
+            console.log(res.error)
+            return
+          }
+          this.displayShipData = JSON.stringify(
+            res.data,
+            null,
+            2,
+          )
+          this.updateFilteredShipData()
+        },
+      )
+    },
+
+    async deleteShip(shipId: string) {
+      if (
+        !window.confirm(
+          `Are you sure you want to DELETE ${shipId}?`,
+        )
+      )
+        return
+      ;(this as any).$socket?.emit(
+        `admin:deleteShip`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+        (res: IOResponse<ShipStub>) => {
+          if (`error` in res) {
+            this.$store.dispatch(`notifications/notify`, {
+              text: res.error,
+              type: `error`,
+            })
+            console.log(res.error)
+            return
+          }
+          this.displayShipData = JSON.stringify(
+            res.data,
+            null,
+            2,
+          )
+          this.updateFilteredShipData()
         },
       )
     },

@@ -26,7 +26,6 @@ exports.CommandHandler = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const CommandContext_1 = require("./models/CommandContext");
-const reactor_1 = require("./reactions/reactor");
 const ioInterface_1 = __importStar(require("../ioInterface"));
 const Start_1 = require("./commands/Start");
 const Invite_1 = require("./commands/Invite");
@@ -90,19 +89,17 @@ class CommandHandler {
         // handle prefix but no valid command case
         if (!matchedCommands.length) {
             await message.reply(`I don't recognize that command. Try ${this.prefix}help.`);
-            await reactor_1.reactor.failure(message);
             return;
         }
         // make sure we're connected to the io server
         if (!ioInterface_1.io.connected) {
-            await message.reply({
+            await commandContext.reply({
                 embeds: [
                     new discord_js_1.MessageEmbed({
                         description: `It looks like the game server is down at the moment. Please check the [support server](${dist_1.default.supportServerLink}) for more details.`,
                     }),
                 ],
             });
-            await reactor_1.reactor.warning(message);
             return;
         }
         commandContext.matchedCommands = matchedCommands;
@@ -117,25 +114,23 @@ class CommandHandler {
         // side effects!
         this.sideEffects(commandContext);
         for (let matchedCommand of matchedCommands) {
-            // check run permissions and get error message if relevant
-            const permissionRes = matchedCommand.hasPermissionToRun(commandContext);
-            if (permissionRes !== true) {
-                if (permissionRes.length) {
-                    await message.channel.send(permissionRes);
-                    await reactor_1.reactor.failure(message);
+            // check runnability and get error message if relevant
+            const runnable = matchedCommand.hasPermissionToRun(commandContext);
+            if (runnable !== true) {
+                if (runnable.length) {
+                    await commandContext.reply(runnable);
                 }
                 continue;
             }
-            dist_1.default.log(`gray`, message.content);
+            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} - ${commandContext.ship?.name ||
+                commandContext.guild?.name ||
+                `PM`})`);
             // run command
             await matchedCommand
                 .run(commandContext)
-                .then(() => {
-                // reactor.success(message)
-            })
+                .then(() => { })
                 .catch((reason) => {
                 dist_1.default.log(`red`, `Failed to run command ${commandContext.commandName}: ${reason}`);
-                reactor_1.reactor.failure(message);
             });
         }
     }
@@ -149,9 +144,8 @@ class CommandHandler {
     }
     sideEffects(context) {
         // ----- set nickname -----
-        if (context.initialMessage.guild?.me?.nickname !==
-            `${dist_1.default.gameName}`)
-            context.initialMessage.guild?.me?.setNickname(`${dist_1.default.gameName}`);
+        if (context.guild?.me?.nickname !== `${dist_1.default.gameName}`)
+            context.guild?.me?.setNickname(`${dist_1.default.gameName}`);
         // ----- update guild name/icon if necessary -----
         if (context.ship && context.guild) {
             if (dist_1.default
@@ -171,7 +165,7 @@ class CommandHandler {
         }
         // ----- check for crew member still in guild, and update name if necessary -----
         if (context.crewMember) {
-            const guildMember = context.initialMessage.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
+            const guildMember = context.guild?.members.cache.find((m) => m.user.id === context.crewMember?.id);
             if (guildMember &&
                 context.ship &&
                 context.nickname !== context.crewMember.name) {

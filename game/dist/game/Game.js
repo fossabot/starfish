@@ -383,6 +383,14 @@ class Game {
         return newShip;
     }
     async removeShip(ship) {
+        if (typeof ship === `string`) {
+            const foundShip = this.ships.find((s) => s.id === ship);
+            if (!foundShip) {
+                dist_1.default.log(`red`, `Attempted to remove a ship that does not exist from the game.`, ship);
+                return;
+            }
+            ship = foundShip;
+        }
         // remove all tutorial ships for members of this ship
         for (let cm of ship.crewMembers) {
             if (cm.tutorialShipId) {
@@ -507,7 +515,7 @@ class Game {
         return newAttackRemnant;
     }
     removeAttackRemnant(ar) {
-        dist_1.default.log(`Removing attack remnant ${ar.id} from the game.`);
+        // c.log(`Removing attack remnant ${ar.id} from the game.`)
         db_1.db.attackRemnant.removeFromDb(ar.id);
         const index = this.attackRemnants.findIndex((eAr) => ar.id === eAr.id);
         if (index === -1)

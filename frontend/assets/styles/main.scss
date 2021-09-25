@@ -180,7 +180,6 @@ input[type='submit'] {
   position: relative;
   display: inline-block;
   color: var(--bg) !important;
-  background: var(--text);
   text-decoration: none;
   border-radius: 5px;
   // box-shadow: inset 0 0 0 0.5px var(--bg),
@@ -201,8 +200,15 @@ input[type='submit'] {
     right: 0;
     left: 0;
     bottom: 0;
-    background: var(--text);
     border-radius: 5px;
+  }
+
+  &:after {
+    background: var(--text);
+  }
+
+  &:hover:after {
+    opacity: 0.9;
   }
 
   &.secondary {
@@ -211,16 +217,16 @@ input[type='submit'] {
     // box-shadow: 0 0 0 0.5px var(--pane-border),
     //   inset 0 0 0 0.5px var(--pane-border);
 
-    &:after {
+    &:before {
       opacity: 0.5;
       background: transparent;
       box-shadow: inset 0 0 0 1px var(--text);
     }
 
-    &:before {
+    &:after {
       opacity: 0;
     }
-    &:hover:before {
+    &:hover:after {
       opacity: 0.1;
     }
   }
@@ -240,7 +246,12 @@ input[type='submit'] {
     margin-left: 0;
     border-radius: 0;
 
-    &:after {
+    &:not(.secondary) {
+      margin-right: 1px;
+    }
+
+    &:after,
+    &:before {
       border-radius: 0;
     }
 
@@ -248,7 +259,8 @@ input[type='submit'] {
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
 
-      &:after {
+      &:after,
+      &:before {
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
       }
@@ -257,7 +269,8 @@ input[type='submit'] {
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
 
-      &:after {
+      &:after,
+      &:before {
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
       }
@@ -636,8 +649,11 @@ ul {
 .mar {
   margin: 1em !important;
 }
-.marsmall {
-  margin: 0.5em !important;
+.mar {
+  margin: 1em !important;
+}
+.marbig {
+  margin: 0.5e1.5important;
 }
 .martiny {
   margin: 0.25em !important;
@@ -645,8 +661,11 @@ ul {
 .martop {
   margin-top: 1em !important;
 }
-.martopsmall {
-  margin-top: 0.5em !important;
+.martop {
+  margin-top: 1em !important;
+}
+.martopbig {
+  margin-top: 1.5em !important;
 }
 .martoptiny {
   margin-top: 0.25em !important;
@@ -654,8 +673,11 @@ ul {
 .marbot {
   margin-bottom: 1em !important;
 }
-.marbotsmall {
-  margin-bottom: 0.5em !important;
+.marbot {
+  margin-bottom: 1em !important;
+}
+.marbotbig {
+  margin-bottom: 1.5em !important;
 }
 .marbottiny {
   margin-bottom: 0.2em !important;
@@ -663,8 +685,11 @@ ul {
 .marleft {
   margin-left: 1em !important;
 }
-.marleftsmall {
-  margin-left: 0.5em !important;
+.marleft {
+  margin-left: 1em !important;
+}
+.marleftbig {
+  margin-left: 1.5em !important;
 }
 .marlefttiny {
   margin-left: 0.25em !important;
@@ -672,8 +697,11 @@ ul {
 .marright {
   margin-right: 1em !important;
 }
-.marrightsmall {
-  margin-right: 0.5em !important;
+.marright {
+  margin-right: 1em !important;
+}
+.marrightbig {
+  margin-right: 1.5em !important;
 }
 .marrighttiny {
   margin-right: 0.2em !important;
@@ -682,8 +710,11 @@ ul {
 .pad {
   padding: 1em !important;
 }
-.padsmall {
-  padding: 0.5em !important;
+.pad {
+  padding: 1em !important;
+}
+.padbig {
+  padding: 1.5em !important;
 }
 .padtiny {
   padding: 0.25em !important;
@@ -691,8 +722,11 @@ ul {
 .padtop {
   padding-top: 1em !important;
 }
-.padtopsmall {
-  padding-top: 0.5em !important;
+.padtop {
+  padding-top: 1em !important;
+}
+.padtopbig {
+  padding-top: 1.5em !important;
 }
 .padtoptiny {
   padding-top: 0.25em !important;
@@ -700,8 +734,11 @@ ul {
 .padbot {
   padding-bottom: 1em !important;
 }
-.padbotsmall {
-  padding-bottom: 0.5em !important;
+.padbot {
+  padding-bottom: 1em !important;
+}
+.padbotbig {
+  padding-bottom: 1.5em !important;
 }
 .padbottiny {
   padding-bottom: 0.2em !important;
@@ -709,8 +746,11 @@ ul {
 .padleft {
   padding-left: 1em !important;
 }
-.padleftsmall {
-  padding-left: 0.5em !important;
+.padleft {
+  padding-left: 1em !important;
+}
+.padleftbig {
+  padding-left: 1.5em !important;
 }
 .padlefttiny {
   padding-left: 0.25em !important;
@@ -718,8 +758,11 @@ ul {
 .padright {
   padding-right: 1em !important;
 }
-.padrightsmall {
-  padding-right: 0.5em !important;
+.padright {
+  padding-right: 1em !important;
+}
+.padrightbig {
+  padding-right: 1.5em !important;
 }
 .padrighttiny {
   padding-right: 0.2em !important;

@@ -936,17 +936,15 @@ export class Tutorial {
             s.id === this.ship.crewMembers[0]?.mainShipId,
         )
         // only send messages to the discord server if it's the ship's very first tutorial
-        if (mainShip && mainShip.getStat(`tutorials`) === 0)
+        if (
+          this.ship.crewMembers[0]?.mainShipId &&
+          (!mainShip || mainShip.getStat(`tutorials`) === 0)
+        )
           io.emit(
             `ship:message`,
-            mainShip.id,
+            this.ship.crewMembers[0].mainShipId,
             m.message,
             m.channel,
-          )
-        else
-          c.log(
-            `couldn't find main ship id`,
-            this.ship.crewMembers,
           )
       }
     // }, c.tickInterval)

@@ -7,12 +7,14 @@ import {
   MessageOptions,
   NewsChannel,
   TextChannel,
+  MessageEmbed,
   User,
 } from 'discord.js'
 import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
 import { GameChannel } from './GameChannel'
 import type { Command } from './Command'
 import checkPermissions from '../actions/checkPermissions'
+import { error } from 'console'
 
 /** a user-given command extracted from a message. */
 export class CommandContext {
@@ -98,16 +100,18 @@ export class CommandContext {
         channel = this.channels[channelType] || null
       else {
         // check to see if we have the necessary permissions to create channels
-        const sendPermissionsCheck = await checkPermissions(
-          {
+        const channelCreatePermissionsCheck =
+          await checkPermissions({
             requiredPermissions: [`MANAGE_CHANNELS`],
             guild: this.guild || undefined,
-          },
-        )
-        if (`error` in sendPermissionsCheck) {
+          })
+        if (`error` in channelCreatePermissionsCheck) {
           c.log(
             `Failed to create channel!`,
-            sendPermissionsCheck,
+            channelCreatePermissionsCheck.error,
+          )
+          this.contactGuildAdmin(
+            channelCreatePermissionsCheck,
           )
           return
         }
@@ -132,21 +136,12 @@ export class CommandContext {
         this.initialMessage.channel,
       )
 
-    // check to see if we have the necessary permissions to send messages at all
-    const sendPermissionsCheck = await checkPermissions({
-      requiredPermissions: [`SEND_MESSAGES`],
-      channel: channel?.channel,
-      guild: this.guild || undefined,
-    })
-    if (`error` in sendPermissionsCheck) {
-      c.log(`Failed to send!`, sendPermissionsCheck)
-      return
-    }
-
-    // send
+    // send (permissions checks handled on channel object)
     if (channel) {
       this.channels[channelType] = channel
-      channel.send(message).catch(c.log)
+      const didSend = await channel.send(message)
+      if (`error` in didSend)
+        this.contactGuildAdmin(didSend)
     }
   }
 
@@ -163,24 +158,132 @@ export class CommandContext {
       this.initialMessage.channel,
     )
 
-    // check to see if we have the necessary permissions to send messages at all
-    const sendPermissionsCheck = await checkPermissions({
-      requiredPermissions: [`SEND_MESSAGES`],
-      channel: channel?.channel,
-      guild: this.guild || undefined,
-    })
-    if (`error` in sendPermissionsCheck) {
-      c.log(`Failed to send!`, sendPermissionsCheck)
-      return
-    }
-
-    // send
+    // send (permissions checks handled on channel object)
     if (channel) {
-      channel.send(message).catch(c.log)
+      const didSend = await channel.send(message)
+      if (`error` in didSend)
+        this.contactGuildAdmin(didSend)
+      else return didSend
+    }
+  }
+
+  async contactGuildAdmin(error: GamePermissionsFailure) {
+    const possibleContacts = await this.getAdminContacts()
+    if (!possibleContacts.length) return
+
+    c.log(
+      `gray`,
+      `Contacting guild admin in ${this.guild?.name}`,
+    )
+
+    const contact = possibleContacts[0]
+    try {
+      const message = `**Hello from Starfish!**
+Sorry to bother you, but it looks like I've run into a problem in your server \`${this.guild?.name}\`.
+The error message that I generated is:
+
+> ${error.error}
+
+I hope that that looks like something you can sort out!
+If you're not sure what to do, please reach out in the [support server](${c.supportServerLink}).`
+      contact.send({
+        embeds: [
+          new MessageEmbed({
+            description: message,
+          }),
+        ],
+      })
+    } catch (e) {
+      c.log(`Failed to contact guild admin.`)
     }
   }
 
   async reactToInitialMessage(emoji: string) {
+    if (this.initialMessage.channel.type !== `GUILD_TEXT`)
+      return
+    const canReact = await checkPermissions({
+      requiredPermissions: [`ADD_REACTIONS`],
+      channel: this.initialMessage.channel,
+      guild: this.guild || undefined,
+    })
+    if (`error` in canReact) {
+      this.contactGuildAdmin(canReact)
+      return
+    }
     await this.initialMessage.react(emoji).catch(c.log)
+  }
+
+  async getGuildMembers(ids?: string[]) {
+    if (!this.guild) return []
+    let members: GuildMember[] = []
+    if (!ids) {
+      // just get everything
+      try {
+        members = [
+          ...(
+            await this.guild.members.fetch().catch((e) => {
+              console.log(e)
+              return []
+            })
+          ).values(),
+        ]
+      } catch (e) {
+        members = [
+          ...(await this.guild.members.fetch()).values(),
+        ]
+        c.log(
+          `failed to get ${members.length} guild members`,
+        )
+      }
+    }
+    // get specific ids
+    else {
+      try {
+        members = [
+          ...(
+            await this.guild.members
+              .fetch({ user: ids })
+              .catch((e) => {
+                console.log(e)
+                return []
+              })
+          ).values(),
+        ]
+      } catch (e) {
+        c.log(
+          `failed to get ${members.length} guild members`,
+        )
+      }
+    }
+
+    return members
+  }
+
+  async getUserInGuildFromId(id?: string) {
+    if (!this.guild || !id) return
+    try {
+      const userInGuild = await this.guild.members.fetch({
+        user: id,
+      })
+      return userInGuild
+    } catch (e) {}
+  }
+
+  async getAdminContacts(): Promise<GuildMember[]> {
+    if (!this.guild) return []
+
+    // check guild.owner
+    const owner = await this.getUserInGuildFromId(
+      this.guild.ownerId,
+    )
+    if (owner) return [owner]
+
+    // at this point, we just look for an admin of any kind
+    const usersToContact = (
+      await this.getGuildMembers()
+    ).filter((member) =>
+      member.permissions.has(`ADMINISTRATOR`),
+    )
+    return usersToContact
   }
 }

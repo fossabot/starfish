@@ -24,7 +24,7 @@ export default async function <
   allowedUserId: string
 }): Promise<{
   result: ExpectedType | null
-  sentMessage: Message
+  sentMessage: Message | null
 }> {
   const rows: MessageActionRow[] = []
   for (let i = 0; i < buttons.length / 4; i++)
@@ -34,11 +34,12 @@ export default async function <
       new MessageButton(buttons[i]),
     ])
 
-  const sentMessage =
-    await context.initialMessage.channel.send({
-      content: content,
-      components: rows,
-    })
+  const sentMessage = await context.reply({
+    content: content,
+    components: rows,
+  })
+  if (!sentMessage)
+    return { result: null, sentMessage: null }
 
   return new Promise((resolve) => {
     let done = false

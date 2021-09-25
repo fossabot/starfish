@@ -15,7 +15,7 @@ export class ChangeCaptainCommand implements Command {
 
     let typedId = context.args[0]
     if (!typedId) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `Use this command in the format \`${context.commandPrefix}${this.commandNames[0]} <@newcaptain>\`.`,
       )
       return
@@ -26,7 +26,7 @@ export class ChangeCaptainCommand implements Command {
       (cm) => cm.id === typedId,
     )
     if (!crewMember) {
-      await context.initialMessage.channel.send(
+      await context.reply(
         `No ship crew member found for that server member. Are you sure they've joined the crew?`,
       )
       return
@@ -37,7 +37,7 @@ export class ChangeCaptainCommand implements Command {
       crewMember.id,
     )
     if (res) {
-      await context.initialMessage.channel.send(res)
+      await context.reply(res)
     }
   }
 

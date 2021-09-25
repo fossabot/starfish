@@ -205,7 +205,7 @@ declare const _default: {
     debounce: (fn: Function, time?: number) => (...params: any[]) => void;
     shuffleArray: (array: any[]) => any[];
     maxNameLength: number;
-    numberWithCommas: (x: number) => string;
+    numberWithCommas: (x: number) => string | number;
     printList: (list: string[]) => string;
     degreesToArrow: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;

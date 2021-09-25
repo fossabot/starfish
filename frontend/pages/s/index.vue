@@ -1,16 +1,9 @@
 <template>
   <div class="pagecontainer">
     <div class="flex">
-      <ShipLeftBar v-if="shipsBasics.length > 1" />
+      <ShipLeftBar />
 
-      <div
-        style="
-          position: relative;
-          display: block;
-          width: 100%;
-          height: 100%;
-        "
-      >
+      <div class="maincontentsholder">
         <FadeIn :off="!loading && ready">
           <div>
             <img
@@ -68,22 +61,17 @@
             <ShipLog />
           </template>
 
-          <ShipNavPane v-if="ship && !ship.tutorial" />
+          <!-- <ShipNavPane v-if="ship && !ship.tutorial" /> -->
         </div>
+        <details
+          style="position: relative; margin-bottom: 2em"
+          v-if="dev"
+        >
+          <summary>Raw Data</summary>
+          <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
+        </details>
       </div>
     </div>
-    <!-- {{ ship && ship.id }}
-    {{ ship && ship.tutorial }} -->
-    <!-- {{ ship && ship.dead }}
-    <pre>{{ crewMember }}</pre> -->
-
-    <details
-      style="position: relative; margin-bottom: 2em"
-      v-if="dev"
-    >
-      <summary>Raw Data</summary>
-      <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-    </details>
   </div>
 </template>
 
@@ -251,7 +239,10 @@ export default Vue.extend({
   }
 }
 
-.dead {
+.maincontentsholder {
   position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 </style>
