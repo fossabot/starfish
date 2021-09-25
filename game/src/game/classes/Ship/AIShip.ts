@@ -417,12 +417,12 @@ export class AIShip extends CombatShip {
       this.location,
       ship.location,
     )
-    const maxBroadcastRadius = this.level * 0.05
+    const maxBroadcastRadius = this.level * 0.04
 
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
-    // don't message ships that are currently at a planet
-    if (ship.planet) return
+    // // don't message ships that are currently at a planet
+    // if (ship.planet) return
 
     const distanceAsPercentOfMaxBroadcastRadius =
       distance / maxBroadcastRadius
