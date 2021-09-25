@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="panesection"
-    v-if="crewMember && planet && planet.level"
-  >
+  <div class="panesection" v-if="planet && planet.level">
     <div>
       <div
         class="panesubhead"
@@ -114,6 +111,7 @@
       </ProgressBar>
 
       <PromptButton
+        v-if="crewMember"
         :disabled="crewMember.credits < 1"
         class="noflex marleftsmall"
         :max="crewMember.credits"

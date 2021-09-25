@@ -1959,19 +1959,8 @@ export class HumanShip extends CombatShip {
 
   // ----- respawn -----
 
-  async respawn(
-    silent = false,
-  ): Promise<Item[] | undefined> {
-    const lostItems = await super.respawn()
-
-    const lostItemValue =
-      lostItems?.reduce(
-        (total, item) => total + item.baseData.basePrice,
-        0,
-      ) || 0
-    const refundAmount =
-      Math.max(0, lostItemValue - 20000) * 0.2
-    this.commonCredits = refundAmount
+  async respawn(silent = false) {
+    await super.respawn()
 
     this.equipLoadout(`humanDefault`)
 
@@ -1991,7 +1980,6 @@ export class HumanShip extends CombatShip {
     }
 
     await db.ship.addOrUpdateInDb(this)
-    return []
   }
 
   // ----- auto attack -----
@@ -2276,6 +2264,15 @@ export class HumanShip extends CombatShip {
     })
 
     // ----- ship common credits -----
+    const lostItemValue =
+      this.items?.reduce(
+        (total, item) => total + item.baseData.basePrice,
+        0,
+      ) || 0
+    const refundAmount =
+      Math.max(0, lostItemValue - 20000) * 0.2
+    this.commonCredits = refundAmount
+
     const toCache =
       this.commonCredits *
       CombatShip.percentOfCreditsDroppedOnDeath

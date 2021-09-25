@@ -1302,10 +1302,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- respawn -----
     async respawn(silent = false) {
-        const lostItems = await super.respawn();
-        const lostItemValue = lostItems?.reduce((total, item) => total + item.baseData.basePrice, 0) || 0;
-        const refundAmount = Math.max(0, lostItemValue - 20000) * 0.2;
-        this.commonCredits = refundAmount;
+        await super.respawn();
         this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
         this.toUpdate.dead = Boolean(this.dead);
@@ -1317,7 +1314,6 @@ class HumanShip extends CombatShip_1.CombatShip {
             this.logEntry(`Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`, `critical`);
         }
         await db_1.db.ship.addOrUpdateInDb(this);
-        return [];
     }
     // ----- auto attack -----
     autoAttack() {
@@ -1507,6 +1503,9 @@ class HumanShip extends CombatShip_1.CombatShip {
             cm.stamina = 0;
         });
         // ----- ship common credits -----
+        const lostItemValue = this.items?.reduce((total, item) => total + item.baseData.basePrice, 0) || 0;
+        const refundAmount = Math.max(0, lostItemValue - 20000) * 0.2;
+        this.commonCredits = refundAmount;
         const toCache = this.commonCredits *
             CombatShip_1.CombatShip.percentOfCreditsDroppedOnDeath;
         this.commonCredits -=
