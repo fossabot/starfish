@@ -26,7 +26,6 @@ exports.CommandHandler = void 0;
 const dist_1 = __importDefault(require("../../../common/dist"));
 const discord_js_1 = require("discord.js");
 const CommandContext_1 = require("./models/CommandContext");
-const reactor_1 = require("./reactions/reactor");
 const ioInterface_1 = __importStar(require("../ioInterface"));
 const Start_1 = require("./commands/Start");
 const Invite_1 = require("./commands/Invite");
@@ -90,7 +89,6 @@ class CommandHandler {
         // handle prefix but no valid command case
         if (!matchedCommands.length) {
             await message.reply(`I don't recognize that command. Try ${this.prefix}help.`);
-            await reactor_1.reactor.failure(message);
             return;
         }
         // make sure we're connected to the io server
@@ -102,7 +100,6 @@ class CommandHandler {
                     }),
                 ],
             });
-            await reactor_1.reactor.warning(message);
             return;
         }
         commandContext.matchedCommands = matchedCommands;
@@ -122,7 +119,6 @@ class CommandHandler {
             if (runnable !== true) {
                 if (runnable.length) {
                     await commandContext.reply(runnable);
-                    await reactor_1.reactor.failure(message);
                 }
                 continue;
             }
@@ -132,12 +128,9 @@ class CommandHandler {
             // run command
             await matchedCommand
                 .run(commandContext)
-                .then(() => {
-                // reactor.success(message)
-            })
+                .then(() => { })
                 .catch((reason) => {
                 dist_1.default.log(`red`, `Failed to run command ${commandContext.commandName}: ${reason}`);
-                reactor_1.reactor.failure(message);
             });
         }
     }

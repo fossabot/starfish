@@ -6,7 +6,6 @@ import {
 } from 'discord.js'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
-import { reactor } from './reactions/reactor'
 import {
   default as ioInterface,
   io as socketIoObject,
@@ -99,7 +98,6 @@ export class CommandHandler {
       await message.reply(
         `I don't recognize that command. Try ${this.prefix}help.`,
       )
-      await reactor.failure(message)
       return
     }
 
@@ -112,7 +110,6 @@ export class CommandHandler {
           }),
         ],
       })
-      await reactor.warning(message)
       return
     }
 
@@ -143,7 +140,6 @@ export class CommandHandler {
       if (runnable !== true) {
         if (runnable.length) {
           await commandContext.reply(runnable)
-          await reactor.failure(message)
         }
         continue
       }
@@ -160,15 +156,12 @@ export class CommandHandler {
       // run command
       await matchedCommand
         .run(commandContext)
-        .then(() => {
-          // reactor.success(message)
-        })
+        .then(() => {})
         .catch((reason) => {
           c.log(
             `red`,
             `Failed to run command ${commandContext.commandName}: ${reason}`,
           )
-          reactor.failure(message)
         })
     }
   }

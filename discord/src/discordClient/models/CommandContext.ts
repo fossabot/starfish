@@ -199,6 +199,17 @@ If you're not sure what to do, please reach out in the [support server](${c.supp
   }
 
   async reactToInitialMessage(emoji: string) {
+    if (this.initialMessage.channel.type !== `GUILD_TEXT`)
+      return
+    const canReact = await checkPermissions({
+      requiredPermissions: [`ADD_REACTIONS`],
+      channel: this.initialMessage.channel,
+      guild: this.guild || undefined,
+    })
+    if (`error` in canReact) {
+      this.contactGuildAdmin(canReact)
+      return
+    }
     await this.initialMessage.react(emoji).catch(c.log)
   }
 
