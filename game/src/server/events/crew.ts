@@ -748,7 +748,7 @@ export default function (
 
       const targetLocation: CoordinatePair | null =
         crewMember.targetLocation
-      if (!targetLocation)
+      if (!targetLocation || !targetLocation.length)
         return callback({
           error: `You're not targeting any location to thrust towards!`,
         })

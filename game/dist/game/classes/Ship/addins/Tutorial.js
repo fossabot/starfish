@@ -817,10 +817,9 @@ class Tutorial {
             if (m.channel) {
                 const mainShip = this.ship.game.humanShips.find((s) => s.id === this.ship.crewMembers[0]?.mainShipId);
                 // only send messages to the discord server if it's the ship's very first tutorial
-                if (mainShip && mainShip.getStat(`tutorials`) === 0)
-                    io_1.default.emit(`ship:message`, mainShip.id, m.message, m.channel);
-                else
-                    dist_1.default.log(`couldn't find main ship id`, this.ship.crewMembers);
+                if (this.ship.crewMembers[0]?.mainShipId &&
+                    (!mainShip || mainShip.getStat(`tutorials`) === 0))
+                    io_1.default.emit(`ship:message`, this.ship.crewMembers[0].mainShipId, m.message, m.channel);
             }
         // }, c.tickInterval)
         this.ship.toUpdate.tutorial = {
