@@ -2,6 +2,36 @@
   <div class="container">
     <div class="textcolumn">
       <h1>Feedback</h1>
+
+      <div class="flex">
+        <nuxt-link
+          to="/feedback"
+          class="button combo"
+          :class="{
+            secondary: $route.path !== '/feedback',
+          }"
+          >Feedback</nuxt-link
+        >
+        <nuxt-link
+          to="/feedback/bugreport"
+          class="button combo"
+          :class="{
+            secondary:
+              $route.path !== '/feedback/bugreport',
+          }"
+          >Bug Report</nuxt-link
+        >
+        <nuxt-link
+          to="/feedback/storytime"
+          class="button combo"
+          :class="{
+            secondary:
+              $route.path !== '/feedback/storytime',
+          }"
+          >Share a Story</nuxt-link
+        >
+      </div>
+
       <div>
         Let us know what you think of {{ c.gameName }}!
       </div>

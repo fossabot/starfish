@@ -246,6 +246,11 @@
         "signature": "e32195b0bf43a4e9bad4f75798bb31e292b56945b7661c1835dc51baee11db32",
         "affectsGlobalScope": true
       },
+      "../@types/discord.d.ts": {
+        "version": "fe646cf9a15deda21834e9914a2e2301819943367d13346567c6b56d1c5ace74",
+        "signature": "fe646cf9a15deda21834e9914a2e2301819943367d13346567c6b56d1c5ace74",
+        "affectsGlobalScope": true
+      },
       "../@types/faction.d.ts": {
         "version": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
         "signature": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
@@ -776,6 +781,9 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../@types/crew.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../@types/discord.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
       "../@types/faction.d.ts": [
@@ -1455,6 +1463,9 @@
       "../@types/crew.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../@types/discord.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/faction.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -1995,6 +2006,7 @@
       "../@types/cargo.d.ts",
       "../@types/common.d.ts",
       "../@types/crew.d.ts",
+      "../@types/discord.d.ts",
       "../@types/faction.d.ts",
       "../@types/frontend.d.ts",
       "../@types/generic.d.ts",

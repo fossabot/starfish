@@ -177,7 +177,10 @@ export const actions = {
       // c.log(
       //   `Reloading ships due to game server instruction...`,
       // )
-      commit(`set`, { shipIds: null })
+      commit(`set`, {
+        shipIds: null,
+        mapFollowingShip: true,
+      })
       dispatch(`logIn`)
     })
   },

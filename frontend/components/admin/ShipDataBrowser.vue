@@ -9,7 +9,7 @@
               c.species[s.species.id].icon +
               s.name +
               (s.isTutorial
-                ? ` (tutorial for ${c.isTutorial})`
+                ? ` (tutorial for ${s.isTutorial})`
                 : ''),
           }))
         "

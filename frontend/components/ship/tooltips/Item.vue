@@ -204,7 +204,7 @@
     </div>
 
     <!-- general -->
-    <div v-if="data.type !== 'chassis'">
+    <div v-if="data.type !== 'chassis' && data.maxHp">
       Reliability:
       <span
         v-if="!data.reliability || data.reliability === 1"
@@ -221,7 +221,7 @@
         addendum="%"
       />
     </div>
-    <div v-if="data.type !== 'chassis'">
+    <div v-if="data.type !== 'chassis' && data.maxHp">
       Repair Difficulty:
       <span
         v-if="
