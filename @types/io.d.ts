@@ -37,6 +37,16 @@ interface IOClientEvents {
     password: string,
     callback: (res: boolean) => void,
   ) => void
+  [`admin:respawnShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
+  [`admin:deleteShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`game:save`]: (adminId: string, password: string) => void
   [`game:pause`]: (
     adminId: string,

@@ -383,6 +383,14 @@ class Game {
         return newShip;
     }
     async removeShip(ship) {
+        if (typeof ship === `string`) {
+            const foundShip = this.ships.find((s) => s.id === ship);
+            if (!foundShip) {
+                dist_1.default.log(`red`, `Attempted to remove a ship that does not exist from the game.`, ship);
+                return;
+            }
+            ship = foundShip;
+        }
         // remove all tutorial ships for members of this ship
         for (let cm of ship.crewMembers) {
             if (cm.tutorialShipId) {

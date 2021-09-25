@@ -570,7 +570,21 @@ export class Game {
     return newShip
   }
 
-  async removeShip(ship: Ship) {
+  async removeShip(ship: Ship | string) {
+    if (typeof ship === `string`) {
+      const foundShip = this.ships.find(
+        (s) => s.id === ship,
+      )
+      if (!foundShip) {
+        c.log(
+          `red`,
+          `Attempted to remove a ship that does not exist from the game.`,
+          ship,
+        )
+        return
+      }
+      ship = foundShip
+    }
     // remove all tutorial ships for members of this ship
     for (let cm of ship.crewMembers) {
       if (cm.tutorialShipId) {
@@ -590,7 +604,7 @@ export class Game {
     await db.ship.removeFromDb(ship.id)
 
     const index = this.ships.findIndex(
-      (ec) => ship.id === ec.id,
+      (ec) => (ship as Ship).id === ec.id,
     )
     if (index === -1) return
     this.ships.splice(index, 1)

@@ -52,7 +52,7 @@ export declare class Game {
     spawnNewAIs(): void;
     addHumanShip(data: BaseHumanShipData, save?: boolean): Promise<HumanShip>;
     addAIShip(data: BaseAIShipData, save?: boolean): Promise<AIShip>;
-    removeShip(ship: Ship): Promise<void>;
+    removeShip(ship: Ship | string): Promise<void>;
     addBasicPlanet(data: BaseBasicPlanetData, save?: boolean): Promise<Planet>;
     addMiningPlanet(data: BaseMiningPlanetData, save?: boolean): Promise<Planet>;
     addFaction(data: BaseFactionData): Faction;

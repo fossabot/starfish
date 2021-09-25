@@ -232,9 +232,9 @@ class AIShip extends CombatShip_1.CombatShip {
         this.game.removeShip(this);
     }
     async receiveBroadcast(message, from, garbleAmount, recipients) {
-        let oddsToIgnore = 0.9;
+        let oddsToIgnore = 0.99;
         if (recipients.length === 1)
-            oddsToIgnore *= 0.6;
+            oddsToIgnore *= 0.4;
         if (message
             .toLowerCase()
             .indexOf(this.name.toLowerCase()) > -1)
@@ -296,10 +296,14 @@ class AIShip extends CombatShip_1.CombatShip {
             `Come closer, let's be friends!`,
             `Who ordered the fish filet?`,
             `Swim closer...`,
+            `Hi, little fishy...`,
+            `I think I smell something delicious!`,
+            `I spy a fish!!`,
             `Come over this way, see what happens!`,
             `Get your gills over here!`,
             `It's been years since we had real fish!`,
             `Crack the shell. Get the meat.`,
+            `Prepare to go belly-up.`,
             `Food sighted. Prepare to engage.`,
             `PREY SIGHTED! PREPARE FOR COMBA— Oops, wrong channel. Disregard.`,
         ];

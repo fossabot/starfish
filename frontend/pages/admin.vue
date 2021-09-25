@@ -8,33 +8,41 @@
         >Login Page</nuxt-link
       >
       <div class="flexwrap buttonlist martop">
-        <button @click="save">Save</button>
-        <button @click="pause">Pause</button>
-        <button @click="unpause">Unpause</button>
-        <button @click="messageAll">
+        <div class="button combo" @click="save">Save</div>
+        <div class="button combo" @click="pause">Pause</div>
+        <div class="button combo" @click="unpause">
+          Unpause
+        </div>
+        <div class="button combo" @click="messageAll">
           Message All Ships
-        </button>
-        <button @click="resetAllPlanets">
+        </div>
+        <div class="button combo" @click="resetAllPlanets">
           Reset All Planets
-        </button>
-        <button @click="reLevelAllPlanets">
+        </div>
+        <div
+          class="button combo"
+          @click="reLevelAllPlanets"
+        >
           Re-Level All Planets
-        </button>
-        <button @click="resetAllCaches">
+        </div>
+        <div class="button combo" @click="resetAllCaches">
           Reset All Caches
-        </button>
-        <button @click="resetAllZones">
+        </div>
+        <div class="button combo" @click="resetAllZones">
           Reset All Zones
-        </button>
-        <button @click="resetAllShips">
+        </div>
+        <div class="button combo" @click="resetAllShips">
           Reset All Ships
-        </button>
-        <button @click="resetAllAIShips">
+        </div>
+        <div class="button combo" @click="resetAllAIShips">
           Reset All AI Ships
-        </button>
-        <button @click="resetAllAttackRemnants">
+        </div>
+        <div
+          class="button combo"
+          @click="resetAllAttackRemnants"
+        >
           Reset All Attack Remnants
-        </button>
+        </div>
       </div>
 
       <div class="martop">
@@ -128,6 +136,12 @@ export default Vue.extend({
       )
     },
     resetAllPlanets() {
+      if (
+        !window.confirm(
+          'Are you sure you want to RESET ALL PLANETS?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllPlanets',
         this.userId,
@@ -135,6 +149,12 @@ export default Vue.extend({
       )
     },
     reLevelAllPlanets() {
+      if (
+        !window.confirm(
+          'Are you sure you want to re-level all planets?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:reLevelAllPlanets',
         this.userId,
@@ -142,6 +162,12 @@ export default Vue.extend({
       )
     },
     resetAllCaches() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset all caches?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllCaches',
         this.userId,
@@ -149,6 +175,12 @@ export default Vue.extend({
       )
     },
     resetAllZones() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset all zones?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllZones',
         this.userId,
@@ -156,6 +188,12 @@ export default Vue.extend({
       )
     },
     resetAllShips() {
+      if (
+        !window.confirm(
+          'Are you sure you want to RESET ALL SHIPS?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllShips',
         this.userId,
@@ -163,6 +201,12 @@ export default Vue.extend({
       )
     },
     resetAllAIShips() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset all AI ships?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllAIShips',
         this.userId,
@@ -170,6 +214,12 @@ export default Vue.extend({
       )
     },
     resetAllAttackRemnants() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset all attack remnants?',
+        )
+      )
+        return
       this.$socket.emit(
         'game:resetAllAttackRemnants',
         this.userId,
@@ -181,10 +231,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.buttonlist {
-  & > * {
-    margin-right: 1em;
-    margin-bottom: 1em;
-  }
-}
+// .buttonlist {
+//   & > * {
+//   }
+// }
 </style>

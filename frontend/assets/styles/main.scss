@@ -180,7 +180,6 @@ input[type='submit'] {
   position: relative;
   display: inline-block;
   color: var(--bg) !important;
-  background: var(--text);
   text-decoration: none;
   border-radius: 5px;
   // box-shadow: inset 0 0 0 0.5px var(--bg),
@@ -201,8 +200,15 @@ input[type='submit'] {
     right: 0;
     left: 0;
     bottom: 0;
-    background: var(--text);
     border-radius: 5px;
+  }
+
+  &:after {
+    background: var(--text);
+  }
+
+  &:hover:after {
+    opacity: 0.9;
   }
 
   &.secondary {
@@ -211,16 +217,16 @@ input[type='submit'] {
     // box-shadow: 0 0 0 0.5px var(--pane-border),
     //   inset 0 0 0 0.5px var(--pane-border);
 
-    &:after {
+    &:before {
       opacity: 0.5;
       background: transparent;
       box-shadow: inset 0 0 0 1px var(--text);
     }
 
-    &:before {
+    &:after {
       opacity: 0;
     }
-    &:hover:before {
+    &:hover:after {
       opacity: 0.1;
     }
   }
@@ -240,7 +246,12 @@ input[type='submit'] {
     margin-left: 0;
     border-radius: 0;
 
-    &:after {
+    &:not(.secondary) {
+      margin-right: 1px;
+    }
+
+    &:after,
+    &:before {
       border-radius: 0;
     }
 
@@ -248,7 +259,8 @@ input[type='submit'] {
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
 
-      &:after {
+      &:after,
+      &:before {
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
       }
@@ -257,7 +269,8 @@ input[type='submit'] {
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
 
-      &:after {
+      &:after,
+      &:before {
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
       }

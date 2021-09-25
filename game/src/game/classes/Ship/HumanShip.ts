@@ -1970,7 +1970,7 @@ export class HumanShip extends CombatShip {
         0,
       ) || 0
     const refundAmount =
-      Math.max(0, lostItemValue - 10000) * 0.25
+      Math.max(0, lostItemValue - 20000) * 0.2
     this.commonCredits = refundAmount
 
     this.equipLoadout(`humanDefault`)

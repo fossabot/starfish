@@ -1304,7 +1304,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     async respawn(silent = false) {
         const lostItems = await super.respawn();
         const lostItemValue = lostItems?.reduce((total, item) => total + item.baseData.basePrice, 0) || 0;
-        const refundAmount = Math.max(0, lostItemValue - 10000) * 0.25;
+        const refundAmount = Math.max(0, lostItemValue - 20000) * 0.2;
         this.commonCredits = refundAmount;
         this.equipLoadout(`humanDefault`);
         this.updatePlanet(true);
