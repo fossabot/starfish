@@ -1,68 +1,76 @@
 <template>
-  <div class="shipdatabrowser">
-    <div class="flex marbotsmall">
-      <ModelSelect
-        :options="
-          shipsBasics.map((s) => ({
-            value: s.id,
-            text:
-              c.species[s.species.id].icon +
-              s.name +
-              (s.isTutorial
-                ? ` (tutorial for ${s.isTutorial})`
-                : ''),
-          }))
-        "
-        v-model="selectedShipId"
-        placeholder="Select ship to inspect..."
-      />
-      <div class="buttonrow flex">
-        <div
-          class="button combo flexcenter marleftsmall"
-          v-if="selectedShipId"
-          @click="getShipData(selectedShipId)"
-        >
-          Reload
-        </div>
-        <div
-          class="button combo flexcenter"
-          v-if="selectedShipId"
-          @click="respawnShip(selectedShipId)"
-        >
-          Respawn
-        </div>
-        <div
-          class="button combo flexcenter"
-          v-if="selectedShipId"
-          @click="deleteShip(selectedShipId)"
-        >
-          Delete
+  <div class="shipdatabrowser fullwidth">
+    <div class="flexcolumn">
+      <h5>Ship Data</h5>
+      <div class="flex marbotsmall">
+        <ModelSelect
+          :options="
+            shipsBasics.map((s) => ({
+              value: s.id,
+              text:
+                c.species[s.species.id].icon +
+                s.name +
+                (s.isTutorial
+                  ? ` (tutorial for ${s.isTutorial})`
+                  : ''),
+            }))
+          "
+          v-model="selectedShipId"
+          placeholder="Select ship to inspect..."
+        />
+        <div class="buttonrow flex">
+          <div
+            class="button combo flexcenter marleftsmall"
+            v-if="selectedShipId"
+            @click="getShipData(selectedShipId)"
+          >
+            Reload
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="respawnShip(selectedShipId)"
+          >
+            Respawn
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="deleteShip(selectedShipId)"
+          >
+            Delete
+          </div>
         </div>
       </div>
-    </div>
 
-    <div
-      v-if="displayShipData"
-      class="property flexstretch marbotsmall"
-    >
-      <input
-        placeholder="Select property to search..."
-        v-model="propertySearchTerm"
-      />
       <div
-        class="button flexcenter"
-        v-if="propertySearchTerm"
-        @click="propertySearchTerm = null"
+        v-if="displayShipData"
+        class="property flexstretch marbotsmall"
       >
-        Clear
+        <input
+          placeholder="Select property to search..."
+          v-model="propertySearchTerm"
+        />
+        <div
+          class="button flexcenter"
+          v-if="propertySearchTerm"
+          @click="propertySearchTerm = null"
+        >
+          Clear
+        </div>
       </div>
-    </div>
 
-    <div
-      class="codeblock displaybox"
-      :class="{ searching: propertySearchTerm }"
-      v-html="filteredShipData"
-    ></div>
+      <div
+        class="codeblock displaybox"
+        :class="{ searching: propertySearchTerm }"
+        v-html="filteredShipData"
+      ></div>
+    </div>
+    <AdminShipCrewMemberBrowser
+      class=""
+      :text="displayShipData"
+      @reload="getShipData(selectedShipId)"
+    />
   </div>
 </template>
 
@@ -247,7 +255,9 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .shipdatabrowser {
   width: 100%;
-  max-width: 600px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 1em;
 
   .property {
     width: 100%;

@@ -5,6 +5,7 @@ import fs from 'fs'
 import { db } from '../../db'
 
 import { game } from '../..'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 
 let adminKeys: any
 try {
@@ -79,6 +80,24 @@ export default function (
       )
     game.removeShip(shipId)
   })
+
+  socket.on(
+    `admin:deleteCrewMember`,
+    (id, password, shipId, crewMemberId) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:deleteCrewMember`,
+        )
+      const foundShip = game.ships.find(
+        (s) => s.id == shipId,
+      )
+      if (foundShip && `removeCrewMember` in foundShip)
+        (foundShip as HumanShip).removeCrewMember(
+          crewMemberId,
+          true,
+        )
+    },
+  )
 
   socket.on(`game:save`, (id, password) => {
     if (!isAdmin(id, password))

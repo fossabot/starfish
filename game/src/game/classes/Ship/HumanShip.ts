@@ -1731,7 +1731,7 @@ export class HumanShip extends CombatShip {
     )
   }
 
-  removeCrewMember(id: string) {
+  async removeCrewMember(id: string, force = false) {
     const index = this.crewMembers.findIndex(
       (cm) => cm.id === id,
     )
@@ -1746,11 +1746,22 @@ export class HumanShip extends CombatShip {
     }
 
     if (this.captain === cm.id) {
-      c.log(
-        `red`,
-        `Attempted to kick the captain from ship ${this.id}`,
-      )
-      return
+      if (force) {
+        // set someone random to captain if we deleted the captain by force
+        const anyoneElse = this.crewMembers.find(
+          (cm) => cm.id !== id,
+        )
+        if (anyoneElse) {
+          this.captain = anyoneElse.id
+          this.toUpdate.captain = anyoneElse.id
+        }
+      } else {
+        c.log(
+          `red`,
+          `Attempted to kick the captain from ship ${this.id}`,
+        )
+        return
+      }
     }
 
     this.crewMembers.splice(index, 1)
@@ -1758,13 +1769,21 @@ export class HumanShip extends CombatShip {
       `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
       `critical`,
     )
+
     // * this could be abused to generate infinite money
     // ${cm.name}'s cargo has been distributed amongst the crew.
     // this.distributeCargoAmongCrew([
     //   ...cm.inventory,
     //   { type: `credits`, amount: cm.credits },
     // ])
-    db.ship.addOrUpdateInDb(this)
+
+    await db.ship.addOrUpdateInDb(this)
+    if (this.crewMembers.length === 0) {
+      c.log(
+        `Removed last crew member from ${this.name}, deleting ship...`,
+      )
+      await this.game.removeShip(this)
+    }
   }
 
   membersIn = membersIn

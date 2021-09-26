@@ -272,8 +272,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "9e22c7e711d050a6a5101e2ce7b5c1d34421b88a6f67413f94adc7cc0511ae9a",
-        "signature": "9e22c7e711d050a6a5101e2ce7b5c1d34421b88a6f67413f94adc7cc0511ae9a",
+        "version": "ac929bf48c014005b7d591cd03dcf7968c89e23c02ae007f316cec481277d149",
+        "signature": "ac929bf48c014005b7d591cd03dcf7968c89e23c02ae007f316cec481277d149",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "686eac2af180d1c85f2c29d0781f2c7facc844c914b961dc144447811e2b008d",
+        "version": "838c4515a9abeffd7d573d6dfe3322ab0f2bd61d1863fe365268704cdacd16f4",
         "signature": "bd0346392901e43c731fceb5b78ac20f89b2cfd5eb7809eab3bff14160311b43",
         "affectsGlobalScope": false
       },

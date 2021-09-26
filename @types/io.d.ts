@@ -52,6 +52,12 @@ interface IOClientEvents {
     password: string,
     shipId: string,
   ) => void
+  [`admin:deleteCrewMember`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+    crewMemberId: string,
+  ) => void
   [`game:save`]: (adminId: string, password: string) => void
   [`game:pause`]: (
     adminId: string,

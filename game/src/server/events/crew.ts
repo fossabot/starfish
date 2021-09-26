@@ -97,23 +97,25 @@ export default function (
         (s) => s.id === shipId,
       ) as HumanShip
       if (!ship)
-        return { error: `No ship found by that id.` }
+        return callback({
+          error: `No ship found by that id.`,
+        })
       const crewMember = ship.crewMembers?.find(
         (cm) => cm.id === crewId,
       )
       if (!crewMember)
-        return { error: `No crew member found.` }
+        return callback({ error: `No crew member found.` })
       if (!crewMember.cockpitCharge)
-        return { error: `No charge.` }
+        return callback({ error: `No charge.` })
       if (
         ship.velocity.reduce(
           (total, v) => total + Math.abs(v),
           0,
         ) < 0.000001
       )
-        return {
+        return callback({
           error: `The ship is not moving, so it has no direction along which to thrust!`,
-        }
+        })
 
       const targetLocation = ship.location.map(
         (l, index) => l + ship.velocity[index] * 500,

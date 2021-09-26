@@ -839,6 +839,12 @@ class Tutorial {
         ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
         ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 2`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
         ship.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
+        if ([
+            `244651135984467968`,
+            `395634705120100367`,
+            `481159946197794816`,
+        ].includes(ship.crewMembers[0]?.id))
+            ship.addTagline(`🔨Admin🔨`, `being an admin`);
         if (ship.planet)
             ship.planet.shipsAt
                 .filter((s) => s.faction?.color === ship.faction?.color)

@@ -285,13 +285,19 @@ input[type='submit'] {
 button,
 .button,
 input,
-select {
+select,
+details {
   cursor: url('/images/cursors/cursor_pointer.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer.png') 1x,
       url('/images/cursors/cursor_pointer_2x.png') 2x
     ),
     pointer;
+}
+
+summary:hover {
+  user-select: none;
+  text-decoration: underline;
 }
 
 .bluefaction button,

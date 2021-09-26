@@ -198,10 +198,10 @@ function statToString(data: {
 }
 
 const taglineOptions: string[] = [
-  `Alpha Tester`,
+  `Alpha Tester`, // implemented
   `Tester`,
   `✨Supporter✨`,
-  `🔨Admin🔨`,
+  `🔨Admin🔨`, // implemented
 
   // to be assigned
   `Big Flipper`,

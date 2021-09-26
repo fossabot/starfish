@@ -989,6 +989,14 @@ export class Tutorial {
       `Alpha Tester`,
       `helping to test ${c.gameName}`,
     )
+    if (
+      [
+        `244651135984467968`,
+        `395634705120100367`,
+        `481159946197794816`,
+      ].includes(ship.crewMembers[0]?.id)
+    )
+      ship.addTagline(`🔨Admin🔨`, `being an admin`)
 
     if (ship.planet)
       ship.planet.shipsAt
