@@ -91,7 +91,7 @@
         dangerZone="-1"
       >
         <div>
-          Upgrade Progress:
+          Upgrade:
           <NumberChangeHighlighter
             :number="xpProgressInLevel"
             :display="
@@ -104,8 +104,10 @@
             "
           />
           <span class="sub"
-            >({{ xpProgressInLevel }} /
-            {{ xpInCurrentLevel }})</span
+            >({{ c.numberWithCommas(xpProgressInLevel) }} /
+            {{
+              c.numberWithCommas(xpInCurrentLevel)
+            }})</span
           >
         </div>
       </ProgressBar>
@@ -123,7 +125,9 @@
           <div>How many credits will you contribute?</div>
           <div>
             Exchange rate: 1xp =
-            {{ c.planetContributeCostPerXp }} credits
+            {{ c.planetContributeCostPerXp }} credit{{
+              c.planetContributeCostPerXp === 1 ? '' : 's'
+            }}
           </div>
         </template>
       </PromptButton>
@@ -155,13 +159,17 @@ export default Vue.extend({
     },
     xpInCurrentLevel(): number {
       return (
-        c.levels[this.planet.level + 1] -
-        c.levels[this.planet.level]
+        c.levels[this.planet.level + 1] *
+          c.planetLevelXpRequirementMultiplier -
+        c.levels[this.planet.level] *
+          c.planetLevelXpRequirementMultiplier
       )
     },
     xpProgressInLevel(): number {
       return (
-        this.planet.xp - c.levels[this.planet.level - 1]
+        this.planet.xp -
+        c.levels[this.planet.level - 1] *
+          c.planetLevelXpRequirementMultiplier
       )
     },
     thingsForSale(): number {

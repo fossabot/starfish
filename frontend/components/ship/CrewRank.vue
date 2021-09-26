@@ -9,64 +9,68 @@
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings
     </template>
 
-    <Tabs :dropdown="true">
-      <Tab
-        v-for="skill in crewMember.skills"
-        :key="'skillrank' + skill.skill"
-        :title="c.camelCaseToWords(skill.skill)"
-      >
-        <ol>
-          <li
-            v-for="(cm, index) in bestXAtEachSkill[
-              skill.skill
-            ]"
-            :key="'skillrankmember' + skill.skill + cm.id"
-          >
-            {{ cm.name }}
-            <span class="sub">
-              Lv.{{ cm.skill.level }} ({{
-                c.numberWithCommas(Math.round(cm.skill.xp))
-              }}xp)
-            </span>
-          </li>
-        </ol>
-      </Tab>
+    <div class="crewrankholder">
+      <Tabs :dropdown="true">
+        <Tab
+          v-for="skill in crewMember.skills"
+          :key="'skillrank' + skill.skill"
+          :title="c.camelCaseToWords(skill.skill)"
+        >
+          <ol>
+            <li
+              v-for="(cm, index) in bestXAtEachSkill[
+                skill.skill
+              ]"
+              :key="'skillrankmember' + skill.skill + cm.id"
+            >
+              {{ cm.name }}
+              <span class="sub">
+                Lv.{{ cm.skill.level }} ({{
+                  c.numberWithCommas(
+                    Math.round(cm.skill.xp),
+                  )
+                }}xp)
+              </span>
+            </li>
+          </ol>
+        </Tab>
 
-      <Tab
-        title="Contributed Credits"
-        v-if="mostShared.length"
-      >
-        <ol>
-          <li
-            v-for="(cm, index) in mostShared"
-            :key="'mostShared' + cm.id"
-          >
-            {{ cm.name }}
-            <span class="sub">
-              ({{
-                c.numberWithCommas(
-                  Math.round(cm.totalContributed),
-                )
-              }})
-            </span>
-          </li>
-        </ol>
-      </Tab>
+        <Tab
+          title="Contributed Credits"
+          v-if="mostShared.length"
+        >
+          <ol>
+            <li
+              v-for="(cm, index) in mostShared"
+              :key="'mostShared' + cm.id"
+            >
+              {{ cm.name }}
+              <span class="sub">
+                ({{
+                  c.numberWithCommas(
+                    Math.round(cm.totalContributed),
+                  )
+                }})
+              </span>
+            </li>
+          </ol>
+        </Tab>
 
-      <Tab title="Naps" v-if="timeInBunk.length">
-        <ol>
-          <li
-            v-for="(cm, index) in timeInBunk"
-            :key="'timeInBunk' + cm.id"
-          >
-            {{ cm.name }}
-            <span class="sub">
-              ({{ c.msToTimeString(cm.amount * 1000) }})
-            </span>
-          </li>
-        </ol>
-      </Tab>
-    </Tabs>
+        <Tab title="Naps" v-if="timeInBunk.length">
+          <ol>
+            <li
+              v-for="(cm, index) in timeInBunk"
+              :key="'timeInBunk' + cm.id"
+            >
+              {{ cm.name }}
+              <span class="sub">
+                ({{ c.msToTimeString(cm.amount * 1000) }})
+              </span>
+            </li>
+          </ol>
+        </Tab>
+      </Tabs>
+    </div>
   </Box>
 </template>
 
@@ -109,7 +113,6 @@ export default Vue.extend({
           .sort((a: any, b: any) => {
             return b.skill.xp - a.skill.xp
           })
-          .slice(0, 3)
       }
       return best
     },
@@ -127,7 +130,6 @@ export default Vue.extend({
           (a: any, b: any) =>
             b.totalContributed - a.totalContributed,
         )
-        .slice(0, 3)
     },
     timeInBunk() {
       return [...this.ship.crewMembers]
@@ -139,7 +141,6 @@ export default Vue.extend({
         }))
         .filter((c: CrewMemberStub) => c.amount)
         .sort((a: any, b: any) => b.amount - a.amount)
-        .slice(0, 3)
     },
   },
   watch: {},
@@ -152,5 +153,9 @@ export default Vue.extend({
 .crewrank {
   width: 300px;
   position: relative;
+}
+.crewrankholder {
+  max-height: 300px;
+  overflow-y: auto;
 }
 </style>

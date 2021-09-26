@@ -37,7 +37,6 @@ const planetSchemaFields = {
         },
     ],
     // basic
-    repairFactor: Number,
     leanings: [
         {
             type: { type: String },

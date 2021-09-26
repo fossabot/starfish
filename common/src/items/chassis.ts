@@ -1,5 +1,7 @@
 import game from '../game'
 
+// todo use autoRepair passive on a chassis
+
 export const chassis: {
   [key in ChassisId]: BaseChassisData
 } = {

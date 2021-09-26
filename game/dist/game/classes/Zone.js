@@ -73,7 +73,7 @@ class Zone extends Stubbable_1.Stubbable {
                     if (cm.stamina >= cm.maxStamina)
                         return;
                     cm.stamina +=
-                        (dist_1.default.getStaminaGainPerTickForSingleCrewMember() *
+                        (dist_1.default.getStaminaGainPerTickForSingleCrewMember(this.game.settings.baseStaminaUse) *
                             intensity) /
                             (dist_1.default.deltaTime / dist_1.default.tickInterval);
                     if (cm.stamina > cm.maxStamina)

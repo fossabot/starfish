@@ -20,7 +20,8 @@ function default_1(socket) {
             });
         }
         else {
-            if (__1.game.humanShips.length >= dist_1.default.gameShipLimit) {
+            if (__1.game.humanShips.length >=
+                __1.game.settings.humanShipLimit) {
                 callback({
                     error: `There are already the maximum number of ships in the game! Please check back later or ask in the support server when more space will be opening up. Priority goes to supporters!`,
                 });

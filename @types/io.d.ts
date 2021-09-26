@@ -37,6 +37,11 @@ interface IOClientEvents {
     password: string,
     callback: (res: boolean) => void,
   ) => void
+  [`game:setSettings`]: (
+    adminId: string,
+    password: string,
+    settings: Partial<AdminGameSettings>,
+  ) => void
   [`admin:respawnShip`]: (
     adminId: string,
     password: string,
@@ -117,6 +122,9 @@ interface IOClientEvents {
     id: string,
     crewMemberId: string,
     callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`game:settings`]: (
+    callback: (res: IOResponse<AdminGameSettings>) => void,
   ) => void
 
   // client

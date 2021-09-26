@@ -3,10 +3,10 @@ declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
-declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThrustMultiplier?: number): number;
+declare function getThrustMagnitudeForSingleCrewMember(level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
-declare function getStaminaGainPerTickForSingleCrewMember(): number;
+declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 declare function getCrewPassivePriceMultiplier(level: number): number;
 declare function statToString(data: {
@@ -17,23 +17,20 @@ declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
     supportServerLink: string;
-    gameShipLimit: number;
     gameSpeedMultiplier: number;
-    damageMultiplier: number;
     baseSightRange: number;
     baseBroadcastRange: number;
     baseRepairCost: number;
     defaultHomeworldLevel: number;
     maxBroadcastLength: number;
-    baseStaminaUse: number;
-    baseXpGain: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
-    itemPriceMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
-    aiDifficultyMultiplier: number;
     planetContributeCostPerXp: number;
+    planetLevelXpRequirementMultiplier: number;
+    itemPriceMultiplier: number;
+    weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     baseShipScanProperties: {
@@ -62,11 +59,9 @@ declare const _default: {
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
     getMineAmountPerTickForSingleCrewMember: typeof getMineAmountPerTickForSingleCrewMember;
-    brakeToThrustRatio: number;
     getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
     getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
-    baseEngineThrustMultiplier: number;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;

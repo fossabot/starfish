@@ -6,6 +6,7 @@ import * as ship from './models/ship'
 import * as attackRemnant from './models/attackRemnant'
 import * as planet from './models/planet'
 import * as zone from './models/zone'
+import * as gameSettings from './models/gameSettings'
 dotEnvConfig()
 
 import c from '../../../common/dist'
@@ -16,6 +17,7 @@ export const db = {
   attackRemnant,
   planet,
   zone,
+  gameSettings,
 }
 let ready = false
 

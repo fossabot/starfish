@@ -221,6 +221,11 @@
         "signature": "d96fa8a56871904776165ceb8e00bd56127e1a017bb2664cae76223b5f815141",
         "affectsGlobalScope": false
       },
+      "../@types/admin.d.ts": {
+        "version": "caa9e6dfa7fc4fc7c1b0d2d57607b93624f5904e7c1cf493cdb8189f86585ee6",
+        "signature": "caa9e6dfa7fc4fc7c1b0d2d57607b93624f5904e7c1cf493cdb8189f86585ee6",
+        "affectsGlobalScope": true
+      },
       "../@types/attackremnant.d.ts": {
         "version": "49508ac9b5c9f38941fc6430640d2cf2657a0126b97fda12b8eb18bb1432354d",
         "signature": "49508ac9b5c9f38941fc6430640d2cf2657a0126b97fda12b8eb18bb1432354d",
@@ -267,8 +272,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "1de94c55410b1ab884d025f5359901501ad1145de54fd85731034905509da7ea",
-        "signature": "1de94c55410b1ab884d025f5359901501ad1145de54fd85731034905509da7ea",
+        "version": "eb3988c970274ad16c7d8f792df8c4c8f7859c0f2e27e697d19e10b8a1f75798",
+        "signature": "eb3988c970274ad16c7d8f792df8c4c8f7859c0f2e27e697d19e10b8a1f75798",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {
@@ -282,18 +287,18 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "274a667a9ca7d85ea8b372298cf52d16574dc89c0943c9b2035a3f0353d1170d",
-        "signature": "274a667a9ca7d85ea8b372298cf52d16574dc89c0943c9b2035a3f0353d1170d",
+        "version": "d33e0c2002c9618a0567f5e5fa29de93d970200328541249fdf38bd9212c8c68",
+        "signature": "d33e0c2002c9618a0567f5e5fa29de93d970200328541249fdf38bd9212c8c68",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "2ed2a454103b81039cbd3c7441fece973ebdf70d3495756519d1409fb7697565",
-        "signature": "2ed2a454103b81039cbd3c7441fece973ebdf70d3495756519d1409fb7697565",
+        "version": "faef59b9392bda818667b77ad469457e6f1d70148b38064a429b31c772e591b0",
+        "signature": "faef59b9392bda818667b77ad469457e6f1d70148b38064a429b31c772e591b0",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "1d2bec66438774420b63cc613f767afc424438bc62f230e5b3607a132e0f6a76",
-        "signature": "1d2bec66438774420b63cc613f767afc424438bc62f230e5b3607a132e0f6a76",
+        "version": "5d438475e7c49ad74e60187f33c55bfce583d4793cc64c53beac44f3b0d9423a",
+        "signature": "5d438475e7c49ad74e60187f33c55bfce583d4793cc64c53beac44f3b0d9423a",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -307,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "./src/globals.ts": {
-        "version": "467f38821c89b9e173173534e7e2ae8bb05ebf5a54cfff1efc8acb2e1e1f98a8",
-        "signature": "d9d84bc04b6b8ea391b8acc5f988a3209a4d1e33cfe482a2439b5b0c46604d0e",
+        "version": "b87718e09d2afa4b132743c0681cff23ea791dc39fa2164be470b8af4e25f2c8",
+        "signature": "db31fd9b7ecc706c09b0bd258ea8bb209fd68ee59601c08f4b222a9d4676f8bb",
         "affectsGlobalScope": false
       },
       "./src/math.ts": {
@@ -327,7 +332,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "6f5af26db9946e08b48e98063b4104681599fb3c8f3fcd3ab24827aababfb0fe",
+        "version": "79bc4489c3d6208dc1c5d135520731ad9441e883b2e09fe23c91b03f54fc9f46",
         "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
@@ -377,23 +382,23 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "b3078dc62685580979dee43309997898ec269ed1c46b51398859301a796f900b",
+        "version": "805de450a414a78ce2699a7940eede130789ccebd3eea35e3f77ff3df6bf7169",
         "signature": "a3c3a31bd6ba882dba93a8e918d41a4d0914edb5c7cd3524023361cb4622e0b2",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "589dfb6e196c406d1e914b30478875a266fe05c4dac12cc6867bec900e5aa748",
-        "signature": "23d531a6a88105d4c66b2357700677a9d57e916c9062e968c6149c9b71334e00",
+        "version": "686eac2af180d1c85f2c29d0781f2c7facc844c914b961dc144447811e2b008d",
+        "signature": "bd0346392901e43c731fceb5b78ac20f89b2cfd5eb7809eab3bff14160311b43",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
-        "version": "060e32ca423406afa6b2eff50a71ef9ff06cb1ce518830fda282c042b36f631d",
+        "version": "0114c5ad69b4f3dd9e7b0a99c900386756ed4bb68fefd95a58f2f10a00b36977",
         "signature": "56cfc2cf293204b861e9cbbd9a6998794495fe6209aad5b78f546d256bab7264",
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "b3297210c959828c20ad5aa72513f68a0875148955baa41151cf65d8b43fb7a9",
-        "signature": "e8d5f0c3f7041e89246e57010e40c451d6ec51647c701225c0e2422b05c897c2",
+        "version": "8581c7cbda70b392b8a0635244693e4a078281cdf27b67a0a27a4f73a7acbafa",
+        "signature": "44fdb029fd49e873edfab3f6883614145eda88ee291e917aea3c75a1ce477c58",
         "affectsGlobalScope": false
       },
       "./src/rooms.ts": {
@@ -412,7 +417,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/weapons.ts": {
-        "version": "e9e3072204b3c7aedb5f211cbd418c4d8ec750f8f8a05f18f7d1ad63a244b589",
+        "version": "2aacfe1a3ee6145501e0907d3739b42bf1600f42168b9b84f4f6f94af85d1090",
         "signature": "befe73d74cb58aac72a4db9241cfd9f7c75ce59573a65c1349259cb1a35b82c2",
         "affectsGlobalScope": false
       },
@@ -432,7 +437,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/chassis.ts": {
-        "version": "7b2035c5b204a227546caa08b59e31b438b4eb8e35f5963a5c2cb42307d1cea9",
+        "version": "6082fcf7affb00ed29a4649333f61517f3c51b81dfea02fcf52521be0c1a84fb",
         "signature": "1d7725b674bd27f36a539257ba157d42320ab06de9fa8aef262a1268e9f6319e",
         "affectsGlobalScope": false
       },
@@ -443,7 +448,7 @@
       },
       "./src/index.ts": {
         "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
-        "signature": "e09f73d39cf4fd72248c54f6ad60177ee36ad4fbadcefed035a028665f82fe2d",
+        "signature": "130ca0021da2619a700cd118e5a9985e68ad4cc0a664534d408c866b78d414af",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
@@ -768,6 +773,9 @@
       "configFilePath": "./tsconfig.common.json"
     },
     "referencedMap": {
+      "../@types/admin.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/attackremnant.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -849,7 +857,6 @@
       ],
       "./src/game.ts": [
         "../node_modules/@types/node/util.d.ts",
-        "./src/cargo.ts",
         "./src/globals.ts",
         "./src/log.ts",
         "./src/math.ts",
@@ -1448,6 +1455,9 @@
       ]
     },
     "exportedModulesMap": {
+      "../@types/admin.d.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../@types/attackremnant.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -2001,6 +2011,7 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../@types/admin.d.ts",
       "../@types/attackremnant.d.ts",
       "../@types/cache.d.ts",
       "../@types/cargo.d.ts",

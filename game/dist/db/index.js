@@ -31,6 +31,7 @@ const ship = __importStar(require("./models/ship"));
 const attackRemnant = __importStar(require("./models/attackRemnant"));
 const planet = __importStar(require("./models/planet"));
 const zone = __importStar(require("./models/zone"));
+const gameSettings = __importStar(require("./models/gameSettings"));
 (0, dotenv_1.config)();
 const dist_1 = __importDefault(require("../../../common/dist"));
 const mongoose = require(`mongoose`);
@@ -40,6 +41,7 @@ exports.db = {
     attackRemnant,
     planet,
     zone,
+    gameSettings,
 };
 let ready = false;
 let mongoUsername;

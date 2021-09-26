@@ -50,7 +50,7 @@ export class Ship extends Stubbable {
     ships: Ship[] | Partial<ShipStub>[]
     planets: Planet[]
     caches: Cache[]
-    attackRemnants: AttackRemnant[]
+    attackRemnants: (AttackRemnant | AttackRemnantStub)[]
     trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   } = {
@@ -133,8 +133,8 @@ export class Ship extends Stubbable {
         (pos) =>
           pos +
           c.randomBetween(
-            c.arrivalThreshold * -0.4,
-            c.arrivalThreshold * 0.4,
+            this.game.settings.arrivalThreshold * -0.4,
+            this.game.settings.arrivalThreshold * 0.4,
           ),
       ) as CoordinatePair
       // c.log(`fact`, this.location, this.faction.homeworld)
@@ -625,7 +625,8 @@ export class Ship extends Stubbable {
     return c.pointIsInsideCircle(
       coords,
       this.location,
-      c.arrivalThreshold * arrivalThresholdMultiplier,
+      this.game.settings.arrivalThreshold *
+        arrivalThresholdMultiplier,
     )
   }
 
@@ -640,13 +641,16 @@ export class Ship extends Stubbable {
         this.location,
       )
       if (
-        distance <= c.gravityRange &&
-        distance > c.arrivalThreshold
+        distance <= this.game.settings.gravityRadius &&
+        distance > this.game.settings.arrivalThreshold
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
+            this.game.settings.gravityScalingFunction,
+            this.game.settings.gravityMultiplier,
+            this.game.settings.gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(

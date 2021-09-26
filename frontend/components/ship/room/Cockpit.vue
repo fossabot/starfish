@@ -60,7 +60,7 @@
             $store.commit(
               'tooltip',
               `Click and hold to use your charged thrust to stop the ship. ${
-                c.brakeToThrustRatio *
+                ship.gameSettings.brakeToThrustRatio *
                 passiveBrakeMultiplier
               }x more powerful than thrusting.`,
             )
@@ -76,7 +76,7 @@
             &nbsp;(-{{
               c.r2(
                 maxPossibleSpeedChange *
-                  c.brakeToThrustRatio *
+                  ship.gameSettings.brakeToThrustRatio *
                   crewMember.cockpitCharge *
                   brakeChargeToUse *
                   passiveBrakeMultiplier,
@@ -131,7 +131,8 @@
           `The amount of speed that you can apply to the ship. 
           <p>
             Braking is <b>${
-              c.brakeToThrustRatio * passiveBrakeMultiplier
+              ship.gameSettings.brakeToThrustRatio *
+              passiveBrakeMultiplier
             }x</b> more effective than thrusting.
           </p>
           <hr />
@@ -278,7 +279,8 @@ export default Vue.extend({
             total +
             (e.thrustAmplification || 0) * (e.repair || 0),
           0,
-        ) * c.baseEngineThrustMultiplier,
+        ) *
+          this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
     pilotingSkill(): number {
@@ -292,6 +294,7 @@ export default Vue.extend({
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
         this.engineThrustAmplification,
+        this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
     maxPossibleSpeedChange(): number {
@@ -299,6 +302,7 @@ export default Vue.extend({
         (c.getThrustMagnitudeForSingleCrewMember(
           this.pilotingSkill,
           this.engineThrustAmplification,
+          this.ship.gameSettings.baseEngineThrustMultiplier,
         ) /
           this.ship.mass) *
         60 *

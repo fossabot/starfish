@@ -19,9 +19,11 @@ export declare class Game {
     readonly factions: Faction[];
     readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
+    settings: AdminGameSettings;
     factionRankings: FactionRanking[];
     paused: boolean;
     constructor();
+    setSettings(newSettings: Partial<AdminGameSettings>): void;
     startGame(): void;
     save(): Promise<void>;
     daily(): Promise<void>;

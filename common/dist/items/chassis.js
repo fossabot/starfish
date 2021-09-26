@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chassis = void 0;
 const game_1 = __importDefault(require("../game"));
+// todo use autoRepair passive on a chassis
 exports.chassis = {
     starter1: {
         type: `chassis`,

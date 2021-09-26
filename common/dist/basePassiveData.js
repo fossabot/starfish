@@ -77,6 +77,9 @@ const basePassiveData = {
     boostStaminaRegeneration: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster stamina regeneration`,
     },
+    autoRepair: {
+        toString: (p) => `+${Math.round((p.intensity || 1) * 10) / 10}HP/hr auto-repair`,
+    },
 };
 exports.default = basePassiveData;
 //# sourceMappingURL=basePassiveData.js.map

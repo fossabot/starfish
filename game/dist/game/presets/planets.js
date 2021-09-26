@@ -213,7 +213,6 @@ function generateBasicPlanet(game, homeworldFactionKey) {
         creatures,
         mass,
         landingRadiusMultiplier: 1,
-        repairFactor: 0,
         allegiances: [],
         pacifist,
         factionId,

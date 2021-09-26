@@ -46,20 +46,21 @@ class Planet extends Stubbable_1.Stubbable {
         return this.game.humanShips.filter((s) => !s.tutorial && s.planet === this);
     }
     async donate(amount, faction) {
-        this.addXp(amount / dist_1.default.planetContributeCostPerXp, true);
+        this.addXp(amount / dist_1.default.planetContributeCostPerXp);
         this.addStat(`totalDonated`, amount);
         if (faction)
-            this.incrementAllegiance(faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 200));
+            this.incrementAllegiance(faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 2000));
     }
-    async addXp(amount, straightUp = false) {
+    async addXp(amount) {
         if (!amount)
             return;
-        if (!straightUp)
-            amount /= 100;
         this.xp = Math.round(this.xp + amount);
         const previousLevel = this.level;
-        this.level = dist_1.default.levels.findIndex((l) => (this.xp || 0) <= l);
-        const levelDifference = this.level - previousLevel;
+        this.level = dist_1.default.levels.findIndex((l) => (this.xp || 0) /
+            dist_1.default.planetLevelXpRequirementMultiplier <=
+            l);
+        const levelDifference = this.level * dist_1.default.planetLevelXpRequirementMultiplier -
+            previousLevel * dist_1.default.planetLevelXpRequirementMultiplier;
         dist_1.default.log({
             amount,
             previousLevel,
@@ -75,11 +76,17 @@ class Planet extends Stubbable_1.Stubbable {
     }
     levelUp() {
         this.level++;
-        if (this.xp < dist_1.default.levels[this.level - 1]) {
+        if (this.xp <
+            dist_1.default.levels[this.level - 1] *
+                dist_1.default.planetLevelXpRequirementMultiplier) {
             // this will only happen when levelling up from 0: randomize a bit so it's not clear if NO one has ever been here before
             this.xp =
-                dist_1.default.levels[this.level - 1] +
-                    Math.floor(Math.random() * 100);
+                dist_1.default.levels[this.level - 1] *
+                    dist_1.default.planetLevelXpRequirementMultiplier +
+                    Math.floor(Math.random() *
+                        100 *
+                        dist_1.default.planetLevelXpRequirementMultiplier);
+            dist_1.default.log(`bumping`, this.xp);
         }
     }
     broadcastTo(ship) {
@@ -92,7 +99,7 @@ class Planet extends Stubbable_1.Stubbable {
         if (distance > maxBroadcastRadius)
             return;
         // don't message ships that are here already
-        if (distance < dist_1.default.arrivalThreshold)
+        if (distance < this.game.settings.arrivalThreshold)
             return;
         // don't message ships that are currently at a planet
         if (ship.planet)
@@ -107,7 +114,7 @@ class Planet extends Stubbable_1.Stubbable {
         if (distance > maxBroadcastRadius)
             return;
         // don't message ships that are here already
-        if (distance < dist_1.default.arrivalThreshold)
+        if (distance < this.game.settings.arrivalThreshold)
             return;
         // don't message ships that are currently at a planet
         if (ship.planet)
@@ -136,8 +143,8 @@ class Planet extends Stubbable_1.Stubbable {
     addPassive(passive) {
         const existing = this.passives.find((p) => p.id === passive.id);
         if (existing)
-            existing.intensity =
-                (existing.intensity || 0) + (passive.intensity || 1);
+            existing.intensity = dist_1.default.r2((existing.intensity || 0) +
+                (passive.intensity || 1), 5);
         else
             this.passives.push({
                 ...passive,

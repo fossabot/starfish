@@ -56,7 +56,11 @@
       class="panesection"
       v-if="dataToUse.speed !== undefined"
     >
-      <div class="arrow" v-if="dataToUse.speed">
+      <div
+        class="arrow"
+        v-if="dataToUse.speed"
+        @click="setTargetAlongPath"
+      >
         <div>
           {{
             c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
@@ -270,7 +274,17 @@ export default Vue.extend({
       )
     },
   },
-  mounted() {},
+  methods: {
+    setTargetAlongPath() {
+      if (this.dataToUse.id !== this.ship.id) return
+      this.$store.commit(
+        'setTarget',
+        this.ship.location.map(
+          (l, index) => l + this.ship.velocity[index] * 500,
+        ),
+      )
+    },
+  },
 })
 </script>
 

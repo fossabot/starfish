@@ -21,6 +21,7 @@ import {
 import { generateZoneData } from './presets/zones'
 import { BasicPlanet } from './classes/Planet/BasicPlanet'
 import { MiningPlanet } from './classes/Planet/MiningPlanet'
+import defaultGameSettings from './presets/gameSettings'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
@@ -34,12 +35,15 @@ export class Game {
   readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
 
+  settings: AdminGameSettings
+
   factionRankings: FactionRanking[] = []
 
   paused: boolean = false
 
   constructor() {
     this.startTime = Date.now()
+    this.settings = defaultGameSettings()
 
     Object.values(c.factions).forEach((fd) =>
       this.addFaction(fd),
@@ -55,6 +59,15 @@ export class Game {
         Object.keys(c.factions).length
       } factions.`,
     )
+  }
+
+  setSettings(newSettings: Partial<AdminGameSettings>) {
+    this.settings = {
+      ...defaultGameSettings(),
+      ...this.settings,
+      ...newSettings,
+    }
+    db.gameSettings.addOrUpdateInDb(this.settings)
   }
 
   startGame() {

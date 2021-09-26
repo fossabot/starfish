@@ -1,14 +1,9 @@
 import math from './math'
 import globals from './globals'
 import c from './log'
-import * as cargo from './cargo'
 import text from './text'
 
-const gameShipLimit = 100
-
 const gameSpeedMultiplier = 10
-
-const damageMultiplier = 1
 
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
@@ -19,11 +14,8 @@ const maxBroadcastLength = 200
 
 const defaultHomeworldLevel = 12
 
-const baseStaminaUse = 0.00001 * gameSpeedMultiplier
-
-const baseXpGain = 0.05 * gameSpeedMultiplier
-
 const itemPriceMultiplier = 400
+const weaponDamageMultiplier = 1
 
 const factionVendorMultiplier = 0.98
 const factionAllegianceFriendCutoff = 50
@@ -32,9 +24,8 @@ const baseItemSellMultiplier = 0.6
 
 const noEngineThrustMagnitude = 0.02
 
-const aiDifficultyMultiplier = 0.5
-
-const planetContributeCostPerXp = 10
+const planetContributeCostPerXp = 1
+const planetLevelXpRequirementMultiplier = 10
 
 const attackRemnantExpireTime =
   (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
@@ -111,8 +102,6 @@ function getRadiusDiminishingReturns(
   return totalValue / Math.sqrt(equipmentCount) || 0 // this might be too harsh? 5 and 2 = 4.9
 }
 
-const brakeToThrustRatio = 5
-
 function getMaxCockpitChargeForSingleCrewMember(
   level: number = 1,
 ) {
@@ -133,11 +122,10 @@ function getCockpitChargePerTickForSingleCrewMember(
   )
 }
 
-const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1
-
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
+  baseEngineThrustMultiplier: number,
 ): number {
   const min: number = 0.65
   const max: number = 1.5
@@ -168,7 +156,9 @@ function getMineAmountPerTickForSingleCrewMember(
   )
 }
 
-function getStaminaGainPerTickForSingleCrewMember() {
+function getStaminaGainPerTickForSingleCrewMember(
+  baseStaminaUse: number,
+) {
   return baseStaminaUse * 1.5
 }
 
@@ -416,23 +406,20 @@ function getPlanetPopulation(planet: PlanetStub): number {
 
 export default {
   supportServerLink,
-  gameShipLimit,
   gameSpeedMultiplier,
-  damageMultiplier,
   baseSightRange,
   baseBroadcastRange,
   baseRepairCost,
   defaultHomeworldLevel,
   maxBroadcastLength,
-  baseStaminaUse,
-  baseXpGain,
   factionVendorMultiplier,
   factionAllegianceFriendCutoff,
-  itemPriceMultiplier,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
-  aiDifficultyMultiplier,
   planetContributeCostPerXp,
+  planetLevelXpRequirementMultiplier,
+  itemPriceMultiplier,
+  weaponDamageMultiplier,
   attackRemnantExpireTime,
   cacheExpireTime,
   baseShipScanProperties,
@@ -442,11 +429,9 @@ export default {
   getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,
   getMineAmountPerTickForSingleCrewMember,
-  brakeToThrustRatio,
   getMaxCockpitChargeForSingleCrewMember,
   getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
-  baseEngineThrustMultiplier,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
   getCrewPassivePriceMultiplier,

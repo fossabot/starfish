@@ -37,7 +37,7 @@ export class HumanShip extends CombatShip {
     ships: ShipStub[]
     planets: Planet[]
     caches: Cache[]
-    attackRemnants: AttackRemnant[]
+    attackRemnants: (AttackRemnant | AttackRemnantStub)[]
     trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   } = {
@@ -177,21 +177,6 @@ export class HumanShip extends CombatShip {
     // ----- planet effects -----
     if (this.planet) {
       this.addStat(`planetTime`, 1)
-      if (this.planet.planetType === `basic`) {
-        if ((this.planet as BasicPlanet).repairFactor > 0) {
-          const isAllied =
-            ((this.planet as BasicPlanet).allegiances.find(
-              (a) => a.faction.id === this.faction.id,
-            )?.level || 0) >=
-            c.factionAllegianceFriendCutoff
-          this.repair(
-            (this.planet as BasicPlanet).repairFactor *
-              0.000005 *
-              c.gameSpeedMultiplier *
-              (isAllied ? 2 : 1),
-          )
-        }
-      }
     }
 
     profiler.step(`update visible`)
@@ -224,6 +209,16 @@ export class HumanShip extends CombatShip {
     //     Object.keys(cm.toUpdate),
     //   )} crew members on ${this.name}`,
     // )
+
+    // ----- auto-repair -----
+    const autoRepairIntensity =
+      (this.getPassiveIntensity(`autoRepair`) / // comes in per hour, we need per tick
+        60 /
+        60 /
+        1000) *
+      c.tickInterval
+    if (autoRepairIntensity)
+      this.repair(autoRepairIntensity)
 
     profiler.step(`discover planets`)
     // ----- discover new planets -----
@@ -419,7 +414,7 @@ export class HumanShip extends CombatShip {
         ) + 1
     thruster.addXp(
       `piloting`,
-      c.baseXpGain *
+      this.game.settings.baseXpGain *
         2000 *
         charge *
         thruster.cockpitCharge *
@@ -448,12 +443,13 @@ export class HumanShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ) * c.baseEngineThrustMultiplier,
+        ) * this.game.settings.baseEngineThrustMultiplier,
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
         memberPilotingSkill,
         engineThrustMultiplier,
+        this.game.settings.baseEngineThrustMultiplier,
       )
     const shipMass = this.mass
     const thrustMagnitudeToApply =
@@ -732,7 +728,7 @@ export class HumanShip extends CombatShip {
       const foundPlanet = this.seenPlanets.find(
         (planet) =>
           c.distance(planet.location, targetLocation) <
-          c.arrivalThreshold * 5,
+          this.game.settings.arrivalThreshold * 5,
       )
       if (foundPlanet)
         targetData = [
@@ -781,7 +777,7 @@ export class HumanShip extends CombatShip {
         const foundShip = this.visible.ships.find(
           (s) =>
             c.distance(s.location, targetLocation) <
-            c.arrivalThreshold * 5,
+            this.game.settings.arrivalThreshold * 5,
         )
         if (foundShip) {
           const fullShip = this.game.ships.find(
@@ -834,7 +830,7 @@ export class HumanShip extends CombatShip {
         ?.intensity || 0) + 1
     thruster.addXp(
       `piloting`,
-      c.baseXpGain *
+      this.game.settings.baseXpGain *
         2000 *
         charge *
         thruster.cockpitCharge *
@@ -845,7 +841,7 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
 
-    charge *= c.brakeToThrustRatio // braking is easier than thrusting
+    charge *= this.game.settings.brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
     let passiveBrakeMultiplier =
@@ -862,12 +858,13 @@ export class HumanShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ) * c.baseEngineThrustMultiplier,
+        ) * this.game.settings.baseEngineThrustMultiplier,
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
         memberPilotingSkill,
         engineThrustMultiplier,
+        this.game.settings.baseEngineThrustMultiplier,
       )
     const shipMass = this.mass
 
@@ -1092,20 +1089,20 @@ export class HumanShip extends CombatShip {
         5,
       )
     ) {
-      let miss = false
-      const hitRoll = Math.random()
-      if (hitRoll < 0.1) miss = true
-      // random passive miss chance
-      else miss = hitRoll < this.chassis.agility * 0.5
-      const damage =
-        this._maxHp * c.randomBetween(0.01, 0.15)
-      this.takeDamage(
-        { name: `an asteroid` },
-        {
-          damage: miss ? 0 : damage,
-          miss,
-        },
-      )
+      if (
+        Math.random() > 0.1 &&
+        Math.random() > this.chassis.agility * 0.5
+      ) {
+        const damage =
+          this._maxHp * c.randomBetween(0.01, 0.15)
+        this.takeDamage(
+          { name: `an asteroid` },
+          {
+            damage,
+            miss: false,
+          },
+        )
+      }
     }
   }
 
@@ -1144,7 +1141,7 @@ export class HumanShip extends CombatShip {
     ships: ShipStub[]
     planets: Planet[]
     caches: Cache[]
-    attackRemnants: AttackRemnant[]
+    attackRemnants: (AttackRemnant | AttackRemnantStub)[]
     trails?: { color?: string; points: CoordinatePair[] }[]
     zones: Zone[]
   }) {
@@ -1488,7 +1485,10 @@ export class HumanShip extends CombatShip {
     const willSendShips: Ship[] = []
 
     if (avgRepair > 0.05) {
-      crewMember.addXp(`linguistics`, c.baseXpGain * 100)
+      crewMember.addXp(
+        `linguistics`,
+        this.game.settings.baseXpGain * 100,
+      )
 
       for (let otherShip of this.game.ships) {
         if (otherShip === this) continue
@@ -1968,7 +1968,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.dead = Boolean(this.dead)
 
     this.crewMembers.forEach((cm) => {
-      cm.targetLocation = null
+      cm.targetLocation = false
       cm.location = `bunk`
     })
 
@@ -1984,6 +1984,8 @@ export class HumanShip extends CombatShip {
 
   // ----- auto attack -----
   autoAttack() {
+    this.toUpdate.targetShip = undefined
+
     const weaponsRoomMembers = this.membersIn(`weapons`)
     if (!weaponsRoomMembers.length) return
 
@@ -2058,19 +2060,24 @@ export class HumanShip extends CombatShip {
           totals: { target: CombatShip; total: number }[],
           cm,
         ) => {
-          if (!cm.attackTarget) return totals
+          if (!cm.attackTargetId) return totals
           const currTotal = totals.find(
-            (t) => t.target === cm.attackTarget,
+            (t) => t.target.id === cm.attackTargetId,
           )
           const toAdd =
             cm.skills.find((s) => s.skill === `munitions`)
               ?.level || 1
           if (currTotal) currTotal.total += toAdd
-          else
-            totals.push({
-              target: cm.attackTarget,
-              total: toAdd,
-            })
+          else {
+            const foundShip = this.game.ships.find(
+              (s) => s.id === cm.attackTargetId,
+            ) as CombatShip
+            if (foundShip)
+              totals.push({
+                target: foundShip,
+                total: toAdd,
+              })
+          }
           return totals
         },
         [],
@@ -2094,31 +2101,45 @@ export class HumanShip extends CombatShip {
       ) {
         const attackedByThatTarget =
           this.visible.attackRemnants.find(
-            (ar) => ar.attacker === mainAttackTarget,
+            (ar) => ar.attacker.id === mainAttackTarget.id,
           )
         if (attackedByThatTarget)
           targetShip = mainAttackTarget
       } else {
-        const mostRecentDefense =
-          this.visible.attackRemnants
-            .filter(
-              (ar) =>
-                ar.attacker.id !== this.id &&
-                !ar.attacker.dead,
+        const attackedRemnants =
+          this.visible.attackRemnants.filter(
+            (ar) =>
+              ar.attacker.id !== this.id &&
+              ar.defender.id === this.id &&
+              !ar.attacker.dead,
+          )
+        const mostRecentDefense = attackedRemnants.reduce(
+          (
+            mostRecent:
+              | AttackRemnant
+              | AttackRemnantStub
+              | null,
+            ar,
+          ): AttackRemnant | AttackRemnantStub | null => {
+            const foundAttacker = this.game.ships.find(
+              (s) => s.id === ar.attacker.id,
             )
-            .reduce(
-              (
-                mostRecent: AttackRemnant | null,
-                ar,
-              ): AttackRemnant | null =>
-                mostRecent &&
-                mostRecent.time > ar.time &&
-                this.canAttack(mostRecent.attacker)
-                  ? mostRecent
-                  : ar,
-              null,
-            )
-        targetShip = mostRecentDefense?.attacker
+            if (!foundAttacker) return mostRecent
+            return ar.time > (mostRecent?.time || 0) &&
+              this.canAttack(foundAttacker, true)
+              ? ar
+              : mostRecent
+          },
+          null,
+        )
+        if (mostRecentDefense) {
+          const foundAttacker = this.game.ships.find(
+            (s) => s.id === mostRecentDefense.attacker.id,
+          ) as CombatShip
+          if (foundAttacker) {
+            targetShip = foundAttacker
+          } else targetShip = undefined
+        } else targetShip = undefined
       }
       // c.log(`defensive, targeting`, targetShip?.name)
       if (!targetShip) return
@@ -2148,25 +2169,39 @@ export class HumanShip extends CombatShip {
         const mostRecentCombat =
           this.visible.attackRemnants.reduce(
             (
-              mostRecent: AttackRemnant | null,
+              mostRecent:
+                | AttackRemnant
+                | AttackRemnantStub
+                | null,
               ar,
-            ): AttackRemnant =>
-              mostRecent &&
-              mostRecent.time > ar.time &&
-              this.canAttack(
-                mostRecent.attacker.id === this.id
-                  ? mostRecent.defender
-                  : mostRecent.attacker,
+            ): AttackRemnant | AttackRemnantStub | null => {
+              const targetId =
+                ar.attacker.id === this.id
+                  ? ar.defender
+                  : ar.attacker
+              const foundShip = this.game.ships.find(
+                (s) => s.id === targetId.id,
               )
-                ? mostRecent
-                : ar,
+              if (!foundShip) return mostRecent
+              return ar.time > (mostRecent?.time || 0) &&
+                this.canAttack(foundShip, true)
+                ? ar
+                : mostRecent
+            },
             null,
           )
-        if (mostRecentCombat)
-          targetShip =
-            mostRecentCombat.attacker.id === this.id
-              ? mostRecentCombat.defender
-              : mostRecentCombat.attacker
+        if (mostRecentCombat) {
+          const foundAttacker = this.game.ships.find(
+            (s) =>
+              s.id ===
+              (mostRecentCombat.attacker.id === this.id
+                ? mostRecentCombat.defender.id
+                : mostRecentCombat.attacker.id),
+          ) as CombatShip
+          if (foundAttacker) {
+            targetShip = foundAttacker
+          } else targetShip = undefined
+        } else targetShip = undefined
 
         // ----- if there is enemy from recent combat that we can hit, just pick the closest enemy -----
         if (!targetShip)
@@ -2299,5 +2334,9 @@ export class HumanShip extends CombatShip {
 
   get factionRankings() {
     return this.game.factionRankings
+  }
+
+  get gameSettings() {
+    return this.game.settings
   }
 }

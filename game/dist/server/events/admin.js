@@ -47,6 +47,12 @@ function default_1(socket) {
     socket.on(`game:adminCheck`, (id, password, callback) => {
         return callback(isAdmin(id, password));
     });
+    socket.on(`game:setSettings`, (id, password, newSettings) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:setSettings`);
+        dist_1.default.log(`Game settings updated:`, newSettings);
+        __1.game.setSettings(newSettings);
+    });
     socket.on(`admin:respawnShip`, (id, password, shipId) => {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access admin:respawnShip`);

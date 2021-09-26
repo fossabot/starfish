@@ -134,8 +134,8 @@ export abstract class CombatShip extends Ship {
         (pos) =>
           pos +
           c.randomBetween(
-            c.arrivalThreshold * -0.4,
-            c.arrivalThreshold * 0.4,
+            this.game.settings.arrivalThreshold * -0.4,
+            this.game.settings.arrivalThreshold * 0.4,
           ),
       ) as CoordinatePair,
     )
@@ -417,7 +417,9 @@ export abstract class CombatShip extends Ship {
         .forEach((cm: CrewMember) => {
           cm.addXp(
             `munitions`,
-            c.baseXpGain * 3000 * xpBoostMultiplier,
+            this.game.settings.baseXpGain *
+              3000 *
+              xpBoostMultiplier,
           )
         })
 

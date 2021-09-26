@@ -11,11 +11,9 @@ exports.default = {
     tickInterval: 1000,
     mPerKm: 1000,
     kmPerAu: 149597900,
-    gravityRange: 0.5,
     gravitationalConstant: 6.6743 * 10 ** -11,
     lightspeed: 72.1935409205,
     deltaTime: 1000,
-    arrivalThreshold: 0.001,
     levels,
 };
 //# sourceMappingURL=globals.js.map

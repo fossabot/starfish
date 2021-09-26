@@ -23,7 +23,7 @@ function randomWithWeights(elements) {
 function coinFlip() {
     return Math.random() > 0.5;
 }
-function debounce(fn, time = 500) {
+function debounce(fn, time = 700) {
     let timeout;
     return (...params) => {
         if (timeout)

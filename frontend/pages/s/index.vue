@@ -228,7 +228,7 @@ export default Vue.extend({
 
   & > * {
     display: inline-block;
-    transition: top 0.5s ease-in-out, left 0.5s ease-in-out,
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out,
       opacity 1s;
     margin-bottom: 0px;
     opacity: 0;

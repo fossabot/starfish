@@ -18,6 +18,7 @@ const planets_1 = require("./presets/planets");
 const zones_1 = require("./presets/zones");
 const BasicPlanet_1 = require("./classes/Planet/BasicPlanet");
 const MiningPlanet_1 = require("./classes/Planet/MiningPlanet");
+const gameSettings_1 = __importDefault(require("./presets/gameSettings"));
 class Game {
     constructor() {
         this.ships = [];
@@ -37,9 +38,18 @@ class Game {
         this.averageWorstShipTickLag = 0;
         this.averageTickTime = 0;
         this.startTime = Date.now();
+        this.settings = (0, gameSettings_1.default)();
         Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
         Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
         dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(dist_1.default.factions).length} factions.`);
+    }
+    setSettings(newSettings) {
+        this.settings = {
+            ...(0, gameSettings_1.default)(),
+            ...this.settings,
+            ...newSettings,
+        };
+        db_1.db.gameSettings.addOrUpdateInDb(this.settings);
     }
     startGame() {
         dist_1.default.log(`----- Starting Game -----`);

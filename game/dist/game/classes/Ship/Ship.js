@@ -75,7 +75,7 @@ class Ship extends Stubbable_1.Stubbable {
             this.location = [
                 ...(this.faction.homeworld?.location || [0, 0]),
             ].map((pos) => pos +
-                dist_1.default.randomBetween(dist_1.default.arrivalThreshold * -0.4, dist_1.default.arrivalThreshold * 0.4));
+                dist_1.default.randomBetween(this.game.settings.arrivalThreshold * -0.4, this.game.settings.arrivalThreshold * 0.4));
             // c.log(`fact`, this.location, this.faction.homeworld)
         }
         else
@@ -416,7 +416,8 @@ class Ship extends Stubbable_1.Stubbable {
         }
     }
     isAt(coords, arrivalThresholdMultiplier = 1) {
-        return dist_1.default.pointIsInsideCircle(coords, this.location, dist_1.default.arrivalThreshold * arrivalThresholdMultiplier);
+        return dist_1.default.pointIsInsideCircle(coords, this.location, this.game.settings.arrivalThreshold *
+            arrivalThresholdMultiplier);
     }
     applyTickOfGravity() {
         if (!this.human)
@@ -427,10 +428,10 @@ class Ship extends Stubbable_1.Stubbable {
             return;
         for (let planet of this.seenPlanets || []) {
             const distance = dist_1.default.distance(planet.location, this.location);
-            if (distance <= dist_1.default.gravityRange &&
-                distance > dist_1.default.arrivalThreshold) {
+            if (distance <= this.game.settings.gravityRadius &&
+                distance > this.game.settings.arrivalThreshold) {
                 const vectorToAdd = dist_1.default
-                    .getGravityForceVectorOnThisBodyDueToThatBody(this, planet)
+                    .getGravityForceVectorOnThisBodyDueToThatBody(this, planet, this.game.settings.gravityScalingFunction, this.game.settings.gravityMultiplier, this.game.settings.gravityRadius)
                     // comes back as kg * m / second == N
                     .map((g) => (g *
                     Math.min(dist_1.default.deltaTime / dist_1.default.tickInterval, 2) *

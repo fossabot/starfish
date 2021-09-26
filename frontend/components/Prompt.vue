@@ -38,7 +38,9 @@
         <span>10,000</span>
       </button>
       <button class="secondary" @click="applyValue('all')">
-        <span>{{ c.r2(max) }} (Max)</span>
+        <span
+          >{{ c.numberWithCommas(c.r2(max)) }} (Max)</span
+        >
       </button>
     </div>
     <div class="flex martopsmall combo">

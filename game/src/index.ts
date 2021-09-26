@@ -19,6 +19,15 @@ runOnDbReady(async () => {
   // await db.zone.wipe()
   // await db.ship.wipeAI()
 
+  const savedGameData =
+    await db.gameSettings.getAllConstructible()
+  if (savedGameData && savedGameData[0]) {
+    c.log(`Loaded game settings.`)
+    game.setSettings(savedGameData[0])
+  } else {
+    c.log(`Starting game with default settings.`)
+  }
+
   const savedPlanets = await db.planet.getAllConstructible()
   c.log(
     `Loaded ${savedPlanets.length} saved planets from DB.`,

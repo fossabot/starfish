@@ -42,7 +42,9 @@ export default Vue.extend({
       return c.msToTimeString(
         ((this.crewMember.maxStamina -
           this.crewMember.stamina) /
-          c.getStaminaGainPerTickForSingleCrewMember()) *
+          c.getStaminaGainPerTickForSingleCrewMember(
+            this.ship.gameSettings.baseStaminaUse,
+          )) *
           c.tickInterval,
       )
     },

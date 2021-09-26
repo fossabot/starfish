@@ -29,7 +29,7 @@ class Weapon extends Item_1.Item {
             return 0;
         if (this.ship.tutorial?.currentStep.disableRepair)
             return 0;
-        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * 150;
+        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * 200;
         this.repair -= repairLoss;
         if (this.repair < 0)
             this.repair = 0;

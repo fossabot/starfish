@@ -20,11 +20,11 @@ export class CrewMember extends Stubbable {
   stamina: number
   maxStamina: number = 1
   lastActive: number
-  targetLocation: CoordinatePair | null = null
+  targetLocation: CoordinatePair | false = false
   tactic: Tactic = `defensive`
   attackFactions: FactionKey[] = []
-  attackTarget: CombatShip | null = null
-  itemTarget: ItemType | null = null
+  attackTargetId: string | false = false
+  itemTarget: ItemType | false = false
   cockpitCharge: number = 0
   repairPriority: RepairPriority = `most damaged`
   minePriority: MinePriorityType = `closest`
@@ -145,13 +145,13 @@ export class CrewMember extends Stubbable {
 
     // ----- reset attack target if out of vision range -----
     if (
-      this.attackTarget &&
+      this.attackTargetId &&
       !this.ship.visible.ships.find(
-        (s) => s.id === this.attackTarget?.id,
+        (s) => s.id === this.attackTargetId,
       )
     ) {
-      this.attackTarget = null
-      this.toUpdate.attackTarget = this.attackTarget
+      this.attackTargetId = false
+      this.toUpdate.attackTargetId = this.attackTargetId
     }
 
     // ----- actives -----
@@ -168,7 +168,8 @@ export class CrewMember extends Stubbable {
 
     if (!this.ship.tutorial?.currentStep?.disableStamina)
       this.stamina -=
-        c.baseStaminaUse / (c.deltaTime / c.tickInterval)
+        this.ship.game.settings.baseStaminaUse /
+        (c.deltaTime / c.tickInterval)
     if (this.tired) {
       this.stamina = 0
       this.goTo(`bunk`)
@@ -202,7 +203,8 @@ export class CrewMember extends Stubbable {
       )?.intensity || 0) + 1
     if (!xp)
       xp =
-        (c.baseXpGain / (c.deltaTime / c.tickInterval)) *
+        (this.ship.game.settings.baseXpGain /
+          (c.deltaTime / c.tickInterval)) *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(

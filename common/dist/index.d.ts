@@ -117,6 +117,9 @@ declare const _default: {
         boostStaminaRegeneration: {
             toString: (p: ShipPassiveEffect) => string;
         };
+        autoRepair: {
+            toString: (p: ShipPassiveEffect) => string;
+        };
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
@@ -125,25 +128,22 @@ declare const _default: {
     frontendUrl: string;
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
-    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocation, thatBody: HasMassAndLocation) => CoordinatePair;
+    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocation, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
     supportServerLink: string;
-    gameShipLimit: number;
     gameSpeedMultiplier: number;
-    damageMultiplier: number;
     baseSightRange: number;
     baseBroadcastRange: number;
     baseRepairCost: number;
     defaultHomeworldLevel: number;
     maxBroadcastLength: number;
-    baseStaminaUse: number;
-    baseXpGain: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
-    itemPriceMultiplier: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
-    aiDifficultyMultiplier: number;
     planetContributeCostPerXp: number;
+    planetLevelXpRequirementMultiplier: number;
+    itemPriceMultiplier: number;
+    weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     baseShipScanProperties: {
@@ -172,12 +172,10 @@ declare const _default: {
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
-    brakeToThrustRatio: number;
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
-    getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number) => number;
-    baseEngineThrustMultiplier: number;
-    getStaminaGainPerTickForSingleCrewMember: () => number;
+    getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
+    getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
     tactics: Tactic[];
@@ -241,11 +239,9 @@ declare const _default: {
     tickInterval: number;
     mPerKm: number;
     kmPerAu: number;
-    gravityRange: number;
     gravitationalConstant: number;
     lightspeed: number;
     deltaTime: number;
-    arrivalThreshold: number;
     levels: number[];
 };
 export default _default;

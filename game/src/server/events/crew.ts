@@ -158,12 +158,14 @@ export default function (
           (s) => s.id === targetId,
         ) as CombatShip) || null
 
-      crewMember.attackTarget = targetShip
-      crewMember.toUpdate.attackTarget =
-        crewMember.attackTarget
+      crewMember.attackTargetId = targetShip?.id || false
+      crewMember.toUpdate.attackTargetId =
+        crewMember.attackTargetId
       c.log(
         `gray`,
-        `Set ${crewMember.name} on ${ship.name} attack target to ${targetShip?.name}.`,
+        `Set ${crewMember.name} on ${
+          ship.name
+        } attack target to ${targetShip?.name || `any`}.`,
       )
     },
   )
@@ -180,7 +182,7 @@ export default function (
       )
       if (!crewMember) return
 
-      crewMember.itemTarget = targetId
+      crewMember.itemTarget = targetId || false
       crewMember.toUpdate.itemTarget = crewMember.itemTarget
       c.log(
         `gray`,
@@ -424,7 +426,7 @@ export default function (
         data: crewMember.stubify(),
       })
 
-      planet.addXp(price)
+      planet.addXp(price / 100)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -648,7 +650,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price)
+      planet.addXp(price / 100)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -722,7 +724,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price)
+      planet.addXp(price / 100)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -746,7 +748,7 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const targetLocation: CoordinatePair | null =
+      const targetLocation: CoordinatePair | false =
         crewMember.targetLocation
       if (!targetLocation || !targetLocation.length)
         return callback({

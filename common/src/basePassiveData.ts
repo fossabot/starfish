@@ -143,5 +143,11 @@ const basePassiveData: {
         (p.intensity || 1) * 100,
       )}% faster stamina regeneration`,
   },
+  autoRepair: {
+    toString: (p) =>
+      `+${
+        Math.round((p.intensity || 1) * 10) / 10
+      }HP/hr auto-repair`,
+  },
 }
 export default basePassiveData

@@ -50,6 +50,18 @@ export default function (
     return callback(isAdmin(id, password))
   })
 
+  socket.on(
+    `game:setSettings`,
+    (id, password, newSettings) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:setSettings`,
+        )
+      c.log(`Game settings updated:`, newSettings)
+      game.setSettings(newSettings)
+    },
+  )
+
   socket.on(`admin:respawnShip`, (id, password, shipId) => {
     if (!isAdmin(id, password))
       return c.log(
