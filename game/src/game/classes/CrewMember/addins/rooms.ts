@@ -79,25 +79,6 @@ export function mine(this: CrewMember): void {
 export function bunk(this: CrewMember): void {
   this.addStat(`timeInBunk`, 1)
 
-  if (this.stamina >= this.maxStamina) return
-
-  const staminaRefillBoost =
-    this.ship.getPassiveIntensity(
-      `boostStaminaRegeneration`,
-    ) + 1
-
-  this.stamina +=
-    (c.getStaminaGainPerTickForSingleCrewMember(
-      this.ship.game.settings.baseStaminaUse,
-    ) *
-      staminaRefillBoost) /
-    (c.deltaTime / c.tickInterval)
-
-  if (this.stamina > this.maxStamina)
-    this.stamina = this.maxStamina
-
-  this.toUpdate.stamina = this.stamina
-
   // * drip feed of cockpit charge as well
   const percentOfNormalChargeToGive = 0.1
 
@@ -116,4 +97,23 @@ export function bunk(this: CrewMember): void {
 
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
   this.toUpdate.cockpitCharge = this.cockpitCharge
+
+  if (this.stamina >= this.maxStamina) return
+
+  const staminaRefillBoost =
+    this.ship.getPassiveIntensity(
+      `boostStaminaRegeneration`,
+    ) + 1
+
+  this.stamina +=
+    (c.getStaminaGainPerTickForSingleCrewMember(
+      this.ship.game.settings.baseStaminaUse,
+    ) *
+      staminaRefillBoost) /
+    (c.deltaTime / c.tickInterval)
+
+  if (this.stamina > this.maxStamina)
+    this.stamina = this.maxStamina
+
+  this.toUpdate.stamina = this.stamina
 }
