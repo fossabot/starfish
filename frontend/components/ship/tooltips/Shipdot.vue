@@ -280,7 +280,7 @@ export default Vue.extend({
       this.$store.commit(
         'setTarget',
         this.ship.location.map(
-          (l, index) => l + this.ship.velocity[index] * 200,
+          (l, index) => l + this.ship.velocity[index] * 500,
         ),
       )
     },

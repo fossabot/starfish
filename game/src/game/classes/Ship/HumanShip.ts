@@ -1089,20 +1089,20 @@ export class HumanShip extends CombatShip {
         5,
       )
     ) {
-      let miss = false
-      const hitRoll = Math.random()
-      if (hitRoll < 0.1) miss = true
-      // random passive miss chance
-      else miss = hitRoll < this.chassis.agility * 0.5
-      const damage =
-        this._maxHp * c.randomBetween(0.01, 0.15)
-      this.takeDamage(
-        { name: `an asteroid` },
-        {
-          damage: miss ? 0 : damage,
-          miss,
-        },
-      )
+      if (
+        Math.random() > 0.1 &&
+        Math.random() > this.chassis.agility * 0.5
+      ) {
+        const damage =
+          this._maxHp * c.randomBetween(0.01, 0.15)
+        this.takeDamage(
+          { name: `an asteroid` },
+          {
+            damage,
+            miss: false,
+          },
+        )
+      }
     }
   }
 
@@ -1968,7 +1968,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.dead = Boolean(this.dead)
 
     this.crewMembers.forEach((cm) => {
-      cm.targetLocation = null
+      cm.targetLocation = false
       cm.location = `bunk`
     })
 

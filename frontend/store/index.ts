@@ -248,6 +248,7 @@ export const actions = {
 
     const connected = () => {
       clearTimeout(connectionTimeout)
+      const wasDisconnected = !state.connected
       commit(`set`, { connected: true })
 
       dispatch(`watchUserId`)
@@ -273,7 +274,10 @@ export const actions = {
           //   JSON.stringify(res.data).length,
           //   `characters of data received from initial load`,
           // )
-          if (previousShipId !== res.data.id) {
+          if (
+            previousShipId !== res.data.id ||
+            wasDisconnected
+          ) {
             commit(`set`, { ship: null })
             await Vue.nextTick() // testing this to make sure data fully resets
             commit(`set`, { ship: res.data })

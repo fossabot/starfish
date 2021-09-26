@@ -724,18 +724,14 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (!this.planet &&
             this.attackable &&
             dist_1.default.lottery(distanceTraveled * (dist_1.default.deltaTime / dist_1.default.tickInterval), 5)) {
-            let miss = false;
-            const hitRoll = Math.random();
-            if (hitRoll < 0.1)
-                miss = true;
-            // random passive miss chance
-            else
-                miss = hitRoll < this.chassis.agility * 0.5;
-            const damage = this._maxHp * dist_1.default.randomBetween(0.01, 0.15);
-            this.takeDamage({ name: `an asteroid` }, {
-                damage: miss ? 0 : damage,
-                miss,
-            });
+            if (Math.random() > 0.1 &&
+                Math.random() > this.chassis.agility * 0.5) {
+                const damage = this._maxHp * dist_1.default.randomBetween(0.01, 0.15);
+                this.takeDamage({ name: `an asteroid` }, {
+                    damage,
+                    miss: false,
+                });
+            }
         }
     }
     hardStop() {
@@ -1305,7 +1301,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.updatePlanet(true);
         this.toUpdate.dead = Boolean(this.dead);
         this.crewMembers.forEach((cm) => {
-            cm.targetLocation = null;
+            cm.targetLocation = false;
             cm.location = `bunk`;
         });
         if (!silent && this instanceof HumanShip) {
