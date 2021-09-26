@@ -332,7 +332,7 @@
         "affectsGlobalScope": false
       },
       "./src/basepassivedata.ts": {
-        "version": "79bc4489c3d6208dc1c5d135520731ad9441e883b2e09fe23c91b03f54fc9f46",
+        "version": "3dd1aadd423aa15c01cd460b414c6a0917f263e980cf4666fb452af693139333",
         "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
@@ -387,7 +387,7 @@
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "838c4515a9abeffd7d573d6dfe3322ab0f2bd61d1863fe365268704cdacd16f4",
+        "version": "aea1324d9d3932002b66147ed7763f9db4e84e0cefdf65f2f14e58faa66f4c47",
         "signature": "bd0346392901e43c731fceb5b78ac20f89b2cfd5eb7809eab3bff14160311b43",
         "affectsGlobalScope": false
       },

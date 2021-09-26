@@ -79,7 +79,7 @@ const basePassiveData: {
     toString: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
-      )} broadcast range`,
+      )}% broadcast range`,
   },
   boostCockpitChargeSpeed: {
     toString: (p) =>

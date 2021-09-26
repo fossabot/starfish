@@ -201,7 +201,7 @@ const taglineOptions: string[] = [
   `Alpha Tester`, // implemented
   `Tester`,
   `✨Supporter✨`,
-  `🔨Admin🔨`, // implemented
+  `⚡Admin⚡`, // implemented
 
   // to be assigned
   `Big Flipper`,

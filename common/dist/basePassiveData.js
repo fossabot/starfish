@@ -38,7 +38,7 @@ const basePassiveData = {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% sight range`,
     },
     boostBroadcastRange: {
-        toString: (p) => `+${Math.round((p.intensity || 1) * 100)} broadcast range`,
+        toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% broadcast range`,
     },
     boostCockpitChargeSpeed: {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% cockpit charge speed`,

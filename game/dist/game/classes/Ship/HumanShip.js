@@ -1110,8 +1110,15 @@ class HumanShip extends CombatShip_1.CombatShip {
             io_1.default.to(`user:${cm.id}`).emit(`user:reloadShips`);
         }
         this.crewMembers.push(cm);
-        if (!this.captain)
+        if (!this.captain) {
             this.captain = cm.id;
+            if ([
+                `244651135984467968`,
+                `395634705120100367`,
+                `481159946197794816`,
+            ].includes(cm.id))
+                this.addTagline(`⚡Admin⚡`, `being an admin`);
+        }
         // c.log(
         //   `gray`,
         //   `Added crew member ${cm.name} to ${this.name}`,

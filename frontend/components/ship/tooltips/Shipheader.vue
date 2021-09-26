@@ -92,8 +92,6 @@ export default Vue.extend({
 .topzone {
   width: 100%;
   min-width: 200px;
-  background-size: cover !important;
-  background-position: center center !important;
   position: relative;
   overflow: hidden;
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);
@@ -111,6 +109,8 @@ export default Vue.extend({
     height: 100%;
     position: absolute;
     transition: all 0.2s ease-in-out;
+    background-size: cover !important;
+    background-position: center center !important;
   }
 
   .bgfade {

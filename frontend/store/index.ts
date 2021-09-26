@@ -309,11 +309,11 @@ export const actions = {
     })
 
     this.$socket.on(`ship:forwardTo`, (id) => {
-      c.log(
-        `forwarding from last ship id to new id!`,
-        state.ship?.id,
-        id,
-      )
+      // c.log(
+      //   `forwarding from last ship id to new id!`,
+      //   state.ship?.id,
+      //   id,
+      // )
       dispatch(`socketSetup`, id, true)
     })
   },

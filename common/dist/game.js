@@ -112,7 +112,7 @@ const taglineOptions = [
     `Alpha Tester`,
     `Tester`,
     `✨Supporter✨`,
-    `🔨Admin🔨`,
+    `⚡Admin⚡`,
     // to be assigned
     `Big Flipper`,
     `Whale, I'll be!`,
