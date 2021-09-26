@@ -91,6 +91,53 @@ export default function (
   })
 
   socket.on(
+    `crew:thrustInCurrentDirection`,
+    (shipId, crewId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return { error: `No ship found by that id.` }
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return { error: `No crew member found.` }
+      if (!crewMember.cockpitCharge)
+        return { error: `No charge.` }
+      if (
+        ship.velocity.reduce(
+          (total, v) => total + Math.abs(v),
+          0,
+        ) < 0.000001
+      )
+        return {
+          error: `The ship is not moving, so it has no direction along which to thrust!`,
+        }
+
+      const targetLocation = ship.location.map(
+        (l, index) => l + ship.velocity[index] * 500,
+      ) as CoordinatePair
+      const speedDifference = ship.applyThrust(
+        targetLocation,
+        crewMember.cockpitCharge,
+        crewMember,
+      )
+
+      crewMember.cockpitCharge = 0
+      crewMember.toUpdate.cockpitCharge = 0
+      crewMember.targetLocation = targetLocation
+      crewMember.toUpdate.targetLocation = targetLocation
+
+      callback({ data: speedDifference })
+      c.log(
+        `gray`,
+        `Auto-thrusted ${crewMember.name} on ${ship.name}.`,
+      )
+    },
+  )
+
+  socket.on(
     `crew:targetLocation`,
     (shipId, crewId, targetLocation) => {
       const ship = game.ships.find(
@@ -782,7 +829,12 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      ship.brake(chargePercent, crewMember)
+      const brakeSpeed = ship.brake(
+        chargePercent,
+        crewMember,
+      )
+
+      callback({ data: brakeSpeed })
 
       c.log(
         `gray`,

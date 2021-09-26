@@ -41,6 +41,8 @@ const KickMember_1 = require("./commands/KickMember");
 const LeaveGame_1 = require("./commands/LeaveGame");
 const Go_1 = require("./commands/Go");
 const ShipName_1 = require("./commands/ShipName");
+const ThrustInCurrentDirection_1 = require("./commands/ThrustInCurrentDirection");
+const Brake_1 = require("./commands/Brake");
 class CommandHandler {
     commands;
     prefix;
@@ -59,6 +61,8 @@ class CommandHandler {
             KickMember_1.KickMemberCommand,
             Go_1.GoCommand,
             ShipName_1.ChangeShipNameCommand,
+            ThrustInCurrentDirection_1.ThrustInCurrentDirectionCommand,
+            Brake_1.BrakeCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         this.commands.push(new Help_1.HelpCommand(this.commands));

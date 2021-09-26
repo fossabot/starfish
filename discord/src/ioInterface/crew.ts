@@ -53,3 +53,48 @@ export async function move(
 
   io.emit(`crew:move`, shipId, crewId, target)
 }
+
+export async function thrustInCurrentDirection(
+  shipId: string,
+  crewId: string,
+) {
+  if (!(await connected()))
+    return { error: `Failed to thrust.` }
+
+  const res: IOResponse<number> = await new Promise(
+    (resolve) => {
+      io.emit(
+        `crew:thrustInCurrentDirection`,
+        shipId,
+        crewId,
+        (response) => {
+          resolve(response)
+        },
+      )
+    },
+  )
+  return res
+}
+
+export async function brake(
+  shipId: string,
+  crewId: string,
+) {
+  if (!(await connected()))
+    return { error: `Failed to thrust.` }
+
+  const res: IOResponse<number> = await new Promise(
+    (resolve) => {
+      io.emit(
+        `crew:brake`,
+        shipId,
+        crewId,
+        1,
+        (response) => {
+          resolve(response)
+        },
+      )
+    },
+  )
+  return res
+}

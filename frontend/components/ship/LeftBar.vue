@@ -121,7 +121,6 @@ export default Vue.extend({
   methods: {
     async shipSelected(id) {
       if (this.ship && this.ship.id === id) return
-      c.log('ship selected in left bar')
       this.$store.commit('set', {
         loading: true,
         mapFollowingShip: true,

@@ -403,7 +403,7 @@ export class HumanShip extends CombatShip {
     targetLocation: CoordinatePair,
     charge: number, // 0 to 1 % of AVAILABLE charge to use
     thruster: CrewMember,
-  ) {
+  ): number {
     // add xp
     const xpBoostMultiplier =
       this.passives
@@ -662,7 +662,7 @@ export class HumanShip extends CombatShip {
           360) %
         360
 
-      if (isNaN(angleToThrustInDegrees)) return c.log(`nan`)
+      if (isNaN(angleToThrustInDegrees)) return 0
 
       // ----- done with big math -----
     }
@@ -821,9 +821,11 @@ export class HumanShip extends CombatShip {
 
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge))
+
+    return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
 
-  brake(charge: number, thruster: CrewMember) {
+  brake(charge: number, thruster: CrewMember): number {
     // add xp
     const xpBoostMultiplier =
       (this.passives.find((p) => p.id === `boostXpGain`)
@@ -889,6 +891,7 @@ export class HumanShip extends CombatShip {
     }
 
     this.toUpdate.velocity = this.velocity
+    const previousSpeed = this.speed
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
@@ -898,17 +901,17 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `applied the brakes with ${c.r2(
-            magnitudePerPointOfCharge * charge,
-          )}`,
-          { text: `&nospaceP`, tooltipData: `Poseidons` },
-          `of thrust.`,
+          `braked, slowing the ship by ${c.r2(
+            (this.speed - previousSpeed) * 60 * 60 * -1,
+          )}AU/hr.`,
         ],
         `low`,
       )
 
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge))
+
+    return (this.speed - previousSpeed) * 60 * 60
   }
 
   // ----- move -----

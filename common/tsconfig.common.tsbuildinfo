@@ -272,8 +272,8 @@
         "affectsGlobalScope": true
       },
       "../@types/io.d.ts": {
-        "version": "eb3988c970274ad16c7d8f792df8c4c8f7859c0f2e27e697d19e10b8a1f75798",
-        "signature": "eb3988c970274ad16c7d8f792df8c4c8f7859c0f2e27e697d19e10b8a1f75798",
+        "version": "9e22c7e711d050a6a5101e2ce7b5c1d34421b88a6f67413f94adc7cc0511ae9a",
+        "signature": "9e22c7e711d050a6a5101e2ce7b5c1d34421b88a6f67413f94adc7cc0511ae9a",
         "affectsGlobalScope": true
       },
       "../@types/item.d.ts": {

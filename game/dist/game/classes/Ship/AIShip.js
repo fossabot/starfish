@@ -278,7 +278,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     broadcastTo(ship) {
         // baseline chance to say nothing
-        if (Math.random() > dist_1.default.lerp(0.3, 0.3, this.level / 100))
+        if (Math.random() > dist_1.default.lerp(0.15, 0.3, this.level / 100))
             return;
         const distance = dist_1.default.distance(this.location, ship.location);
         const maxBroadcastRadius = this.level * 0.04;
@@ -288,7 +288,7 @@ class AIShip extends CombatShip_1.CombatShip {
         // // don't message ships that are currently at a planet
         // if (ship.planet) return
         const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius;
-        const garbleAmount = dist_1.default.randomBetween(0.01, distanceAsPercentOfMaxBroadcastRadius);
+        const garbleAmount = distanceAsPercentOfMaxBroadcastRadius;
         let messageOptions = [
             `My, my, if it isn't a lovely snack!`,
             `Resistance is futile.`,

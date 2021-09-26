@@ -443,7 +443,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     360) %
                     360;
             if (isNaN(angleToThrustInDegrees))
-                return dist_1.default.log(`nan`);
+                return 0;
             // ----- done with big math -----
         }
         // const unitVectorToTarget =
@@ -563,6 +563,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
+        return dist_1.default.vectorToMagnitude(thrustVector) * 60 * 60;
     }
     brake(charge, thruster) {
         // add xp
@@ -602,6 +603,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             ];
         }
         this.toUpdate.velocity = this.velocity;
+        const previousSpeed = this.speed;
         this.speed = dist_1.default.vectorToMagnitude(this.velocity);
         this.toUpdate.speed = this.speed;
         this.direction = dist_1.default.vectorToDegrees(this.velocity);
@@ -609,12 +611,11 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (charge > 1.5)
             this.logEntry([
                 thruster.name,
-                `applied the brakes with ${dist_1.default.r2(magnitudePerPointOfCharge * charge)}`,
-                { text: `&nospaceP`, tooltipData: `Poseidons` },
-                `of thrust.`,
+                `braked, slowing the ship by ${dist_1.default.r2((this.speed - previousSpeed) * 60 * 60 * -1)}AU/hr.`,
             ], `low`);
         if (!HumanShip.movementIsFree)
             this.engines.forEach((e) => e.use(charge));
+        return (this.speed - previousSpeed) * 60 * 60;
     }
     // ----- move -----
     move(toLocation) {

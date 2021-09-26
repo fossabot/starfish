@@ -411,7 +411,7 @@ export class AIShip extends CombatShip {
 
   broadcastTo(ship: Ship) {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.3, 0.3, this.level / 100))
+    if (Math.random() > c.lerp(0.15, 0.3, this.level / 100))
       return
 
     const distance = c.distance(
@@ -428,10 +428,8 @@ export class AIShip extends CombatShip {
     const distanceAsPercentOfMaxBroadcastRadius =
       distance / maxBroadcastRadius
 
-    const garbleAmount = c.randomBetween(
-      0.01,
-      distanceAsPercentOfMaxBroadcastRadius,
-    )
+    const garbleAmount =
+      distanceAsPercentOfMaxBroadcastRadius
     let messageOptions = [
       `My, my, if it isn't a lovely snack!`,
       `Resistance is futile.`,
