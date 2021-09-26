@@ -6,7 +6,14 @@
       </template>
 
       <div class="panesection itemlist">
-        <div v-for="i in armor" v-tooltip="i">
+        <div
+          v-for="i in armor"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -19,7 +26,14 @@
             />
           </div>
         </div>
-        <div v-for="i in weapons" v-tooltip="i">
+        <div
+          v-for="i in weapons"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -42,7 +56,14 @@
             />
           </div>
         </div>
-        <div v-for="i in engines" v-tooltip="i">
+        <div
+          v-for="i in engines"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -55,7 +76,14 @@
             />
           </div>
         </div>
-        <div v-for="i in scanners" v-tooltip="i">
+        <div
+          v-for="i in scanners"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -68,7 +96,14 @@
             />
           </div>
         </div>
-        <div v-for="i in communicators" v-tooltip="i">
+        <div
+          v-for="i in communicators"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)
@@ -81,7 +116,14 @@
             />
           </div>
         </div>
-        <div v-for="i in other" v-tooltip="i">
+        <div
+          v-for="i in other"
+          v-tooltip="{
+            type: i.type,
+            id: i.id,
+            ownerId: ship.id,
+          }"
+        >
           {{ i.displayName }}
           <span class="sub">{{
             c.capitalize(i.type)

@@ -62,4 +62,8 @@ export default function (
     } else
       callback({ error: `No ship found by the ID ${id}.` })
   })
+
+  socket.on(`game:settings`, (callback) => {
+    callback({ data: game.settings })
+  })
 }

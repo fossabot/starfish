@@ -87,7 +87,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.addXp(price)
+      planet.addXp(price / 100)
       planet.incrementAllegiance(ship.faction)
 
       c.log(
@@ -262,6 +262,7 @@ export default function (
       })
 
       planet.incrementAllegiance(ship.faction)
+      planet.addXp(price / 100)
 
       c.log(
         `gray`,

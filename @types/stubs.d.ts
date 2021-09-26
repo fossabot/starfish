@@ -58,6 +58,7 @@ interface ShipStub extends BaseStub {
   guildName?: string
   guildIcon?: string
   orders?: ShipOrders | null
+  gameSettings?: AdminGameSettings
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
@@ -129,6 +130,7 @@ interface ItemStub extends BaseStub {
   type: ItemType
   id: string
   repair?: number
+  ownerId?: string
 }
 interface WeaponStub extends ItemStub {
   cooldownRemaining?: number

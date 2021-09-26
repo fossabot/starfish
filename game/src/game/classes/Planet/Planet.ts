@@ -24,11 +24,13 @@ export class Planet extends Stubbable {
   xp = 0
   level = 0
   stats: PlanetStatEntry[] = []
+
   toUpdate: {
     allegiances?: PlanetAllegianceData[]
     priceFluctuator?: number
     repairFactor?: number
     landingRadiusMultiplier?: number
+    passives?: ShipPassiveEffect[]
   } = {}
 
   constructor(
@@ -86,24 +88,28 @@ export class Planet extends Stubbable {
   }
 
   async donate(amount: number, faction?: Faction) {
-    this.addXp(amount / c.planetContributeCostPerXp, true)
+    this.addXp(amount / c.planetContributeCostPerXp)
     this.addStat(`totalDonated`, amount)
     if (faction)
       this.incrementAllegiance(
         faction,
-        1 + amount / (c.planetContributeCostPerXp * 200),
+        1 + amount / (c.planetContributeCostPerXp * 2000),
       )
   }
 
-  async addXp(amount: number, straightUp: boolean = false) {
+  async addXp(amount: number) {
     if (!amount) return
-    if (!straightUp) amount /= 100
     this.xp = Math.round(this.xp + amount)
     const previousLevel = this.level
     this.level = c.levels.findIndex(
-      (l) => (this.xp || 0) <= l,
+      (l) =>
+        (this.xp || 0) /
+          c.planetLevelXpRequirementMultiplier <=
+        l,
     )
-    const levelDifference = this.level - previousLevel
+    const levelDifference =
+      this.level * c.planetLevelXpRequirementMultiplier -
+      previousLevel * c.planetLevelXpRequirementMultiplier
     c.log({
       amount,
       previousLevel,
@@ -120,11 +126,21 @@ export class Planet extends Stubbable {
 
   levelUp() {
     this.level++
-    if (this.xp < c.levels[this.level - 1]) {
+    if (
+      this.xp <
+      c.levels[this.level - 1] *
+        c.planetLevelXpRequirementMultiplier
+    ) {
       // this will only happen when levelling up from 0: randomize a bit so it's not clear if NO one has ever been here before
       this.xp =
-        c.levels[this.level - 1] +
-        Math.floor(Math.random() * 100)
+        c.levels[this.level - 1] *
+          c.planetLevelXpRequirementMultiplier +
+        Math.floor(
+          Math.random() *
+            100 *
+            c.planetLevelXpRequirementMultiplier,
+        )
+      c.log(`bumping`, this.xp)
     }
   }
 
@@ -142,7 +158,8 @@ export class Planet extends Stubbable {
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
     // don't message ships that are here already
-    if (distance < c.arrivalThreshold) return
+    if (distance < this.game.settings.arrivalThreshold)
+      return
     // don't message ships that are currently at a planet
     if (ship.planet) return
 
@@ -165,7 +182,8 @@ export class Planet extends Stubbable {
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
     // don't message ships that are here already
-    if (distance < c.arrivalThreshold) return
+    if (distance < this.game.settings.arrivalThreshold)
+      return
     // don't message ships that are currently at a planet
     if (ship.planet) return
     // passive chance to ignore
@@ -201,8 +219,11 @@ export class Planet extends Stubbable {
       (p) => p.id === passive.id,
     )
     if (existing)
-      existing.intensity =
-        (existing.intensity || 0) + (passive.intensity || 1)
+      existing.intensity = c.r2(
+        (existing.intensity || 0) +
+          (passive.intensity || 1),
+        5,
+      )
     else
       this.passives.push({
         ...passive,

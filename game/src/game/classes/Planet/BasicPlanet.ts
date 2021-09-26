@@ -37,23 +37,19 @@ export class BasicPlanet extends Planet {
 
   vendor: PlanetVendor
 
-  repairFactor: number
-
   priceFluctuator = 1
 
   toUpdate: {
     vendor?: PlanetVendor
     allegiances?: PlanetAllegianceData[]
     priceFluctuator?: number
-    repairFactor?: number
     landingRadiusMultiplier?: number
+    passives?: ShipPassiveEffect[]
   } = {}
 
   constructor(data: BaseBasicPlanetData, game: Game) {
     super(data, game)
     this.planetType = `basic`
-
-    this.repairFactor = data.repairFactor || 0
 
     this.homeworld = game.factions.find(
       (f) => f.id === data.homeworld?.id,
@@ -118,12 +114,12 @@ export class BasicPlanet extends Planet {
     const levelUpOptions = [
       { weight: 200 / this.level, value: `addItemToShop` },
       {
-        weight: 1.5,
+        weight: 1,
         value: `expandLandingZone`,
       },
       {
-        weight: 2.5,
-        value: `increaseRepairFactor`,
+        weight: 6,
+        value: `increaseAutoRepair`,
       },
       {
         weight: 3 * shipPassiveMultiplier,
@@ -150,12 +146,15 @@ export class BasicPlanet extends Planet {
 
     // homeworlds always have repair factor to some degree
     if (this.level === 1 && this.homeworld)
-      levelUpEffect = `increaseRepairFactor`
+      levelUpEffect = `increaseAutoRepair`
 
     if (levelUpEffect === `expandLandingZone`) {
       this.landingRadiusMultiplier *= 2
-    } else if (levelUpEffect === `increaseRepairFactor`) {
-      this.repairFactor += 1
+    } else if (levelUpEffect === `increaseAutoRepair`) {
+      this.addPassive({
+        id: `autoRepair`,
+        intensity: 0.4,
+      })
     } else if (levelUpEffect === `boostSightRange`) {
       this.addPassive({
         id: `boostSightRange`,
@@ -549,13 +548,17 @@ export class BasicPlanet extends Planet {
       actives: [],
     }
     this.passives = []
-    this.repairFactor = 0
     this.landingRadiusMultiplier = 1
 
     while (this.level < targetLevel) {
       this.levelUp()
     }
-    this.xp = targetXp
+    if (
+      targetXp >
+      c.levels[this.level - 1] *
+        c.planetLevelXpRequirementMultiplier
+    )
+      this.xp = targetXp
     this.updateFrontendForShipsAt()
   }
 }

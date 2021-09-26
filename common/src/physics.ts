@@ -22,6 +22,9 @@ function getUnitVectorFromThatBodyToThisBody(
 function getGravityForceVectorOnThisBodyDueToThatBody(
   thisBody: HasMassAndLocation,
   thatBody: HasMassAndLocation,
+  gravityScalingFunction: string = `defaultRealGravity`,
+  gravityMultiplier: number = 1,
+  gravityRange: number = 0.5,
 ): CoordinatePair {
   if (
     !thisBody ||
@@ -37,7 +40,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   const rangeInMeters =
     Math.min(
-      globals.gravityRange,
+      gravityRange,
       math.distance(thisBody.location, thatBody.location),
     ) *
     globals.kmPerAu *
@@ -45,9 +48,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   const rangeAsPercentOfGravityRadius =
     rangeInMeters /
-    (globals.gravityRange *
-      globals.kmPerAu *
-      globals.mPerKm)
+    (gravityRange * globals.kmPerAu * globals.mPerKm)
 
   if (rangeInMeters === 0) return [0, 0]
 
@@ -96,13 +97,13 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
   }
 
   // * ----- current scaling function in use -----
-  const scalingFunction = scalingFunctions.sixthPower
+  const scalingFunction =
+    scalingFunctions[gravityScalingFunction] ||
+    scalingFunctions.defaultRealGravity
 
   // * ----- flat gravity scaling -----
-  const gravityScaleFactor = 0.2
 
-  const gravityForce =
-    scalingFunction() * gravityScaleFactor
+  const gravityForce = scalingFunction() * gravityMultiplier
 
   // const differenceFromDefault =
   //   gravityForce -

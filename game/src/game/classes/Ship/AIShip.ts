@@ -135,7 +135,8 @@ export class AIShip extends CombatShip {
 
   addLevelAppropriateItems() {
     // c.log(`Adding items to level ${this.level} ai...`)
-    let itemBudget = this.level * c.aiDifficultyMultiplier
+    let itemBudget =
+      this.level * this.game.settings.aiDifficultyMultiplier
 
     const validChassis = Object.values(c.items.chassis)
       .filter(
@@ -203,13 +204,13 @@ export class AIShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ) * c.baseEngineThrustMultiplier
+        ) * this.game.settings.baseEngineThrustMultiplier
 
     const hasArrived =
       Math.abs(this.location[0] - this.targetLocation[0]) <
-        c.arrivalThreshold / 2 &&
+        this.game.settings.arrivalThreshold / 2 &&
       Math.abs(this.location[1] - this.targetLocation[1]) <
-        c.arrivalThreshold / 2
+        this.game.settings.arrivalThreshold / 2
     if (!hasArrived) {
       const unitVectorToTarget = c.degreesToUnitVector(
         c.angleFromAToB(this.location, this.targetLocation),

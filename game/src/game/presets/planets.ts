@@ -271,7 +271,6 @@ export function generateBasicPlanet(
     creatures,
     mass,
     landingRadiusMultiplier: 1,
-    repairFactor: 0,
     allegiances: [],
     pacifist,
     factionId,

@@ -93,7 +93,7 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     addLevelAppropriateItems() {
         // c.log(`Adding items to level ${this.level} ai...`)
-        let itemBudget = this.level * dist_1.default.aiDifficultyMultiplier;
+        let itemBudget = this.level * this.game.settings.aiDifficultyMultiplier;
         const validChassis = Object.values(dist_1.default.items.chassis)
             .filter((i) => i.rarity <= itemBudget / 3)
             .sort((a, b) => b.rarity - a.rarity);
@@ -139,11 +139,11 @@ class AIShip extends CombatShip_1.CombatShip {
         ];
         const engineThrustMultiplier = this.engines
             .filter((e) => e.repair > 0)
-            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * dist_1.default.baseEngineThrustMultiplier;
+            .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * this.game.settings.baseEngineThrustMultiplier;
         const hasArrived = Math.abs(this.location[0] - this.targetLocation[0]) <
-            dist_1.default.arrivalThreshold / 2 &&
+            this.game.settings.arrivalThreshold / 2 &&
             Math.abs(this.location[1] - this.targetLocation[1]) <
-                dist_1.default.arrivalThreshold / 2;
+                this.game.settings.arrivalThreshold / 2;
         if (!hasArrived) {
             const unitVectorToTarget = dist_1.default.degreesToUnitVector(dist_1.default.angleFromAToB(this.location, this.targetLocation));
             const thrustMagnitude = dist_1.default.lerp(0.00001, 0.0001, this.level / 100) *

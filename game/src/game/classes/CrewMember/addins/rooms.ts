@@ -87,7 +87,9 @@ export function bunk(this: CrewMember): void {
     ) + 1
 
   this.stamina +=
-    (c.getStaminaGainPerTickForSingleCrewMember() *
+    (c.getStaminaGainPerTickForSingleCrewMember(
+      this.ship.game.settings.baseStaminaUse,
+    ) *
       staminaRefillBoost) /
     (c.deltaTime / c.tickInterval)
 

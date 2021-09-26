@@ -672,7 +672,7 @@ class Tutorial {
         if (this.targetLocation)
             shouldAdvance =
                 shouldAdvance &&
-                    dist_1.default.distance(this.ship.location, this.targetLocation.coordinates) <= dist_1.default.arrivalThreshold;
+                    dist_1.default.distance(this.ship.location, this.targetLocation.coordinates) <= this.ship.game.settings.arrivalThreshold;
         if (this.currentStep.nextStepTrigger.gainStaminaTo)
             shouldAdvance =
                 shouldAdvance &&

@@ -7,8 +7,10 @@
 
       <div class="panesection">
         <div
-          v-for="p in ship.passives"
-          class="marbot"
+          v-for="(p, index) in ship.passives"
+          :class="{
+            marbot: index < ship.passives.length - 1,
+          }"
           v-if="c.basePassiveData[p.id]"
         >
           <ShipPassiveText :passive="p" />

@@ -145,7 +145,9 @@ const basePassiveData: {
   },
   autoRepair: {
     toString: (p) =>
-      `+${Math.round(p.intensity || 1)}HP/hr auto-repair`,
+      `+${
+        Math.round((p.intensity || 1) * 10) / 10
+      }HP/hr auto-repair`,
   },
 }
 export default basePassiveData

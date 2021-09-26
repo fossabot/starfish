@@ -743,7 +743,7 @@ export class Tutorial {
         c.distance(
           this.ship.location,
           this.targetLocation.coordinates,
-        ) <= c.arrivalThreshold
+        ) <= this.ship.game.settings.arrivalThreshold
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
       shouldAdvance =

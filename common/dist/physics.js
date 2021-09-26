@@ -13,7 +13,7 @@ function getUnitVectorFromThatBodyToThisBody(thisBody, thatBody) {
     const angleBetween = math_1.default.angleFromAToB(thatBody.location, thisBody.location);
     return math_1.default.degreesToUnitVector(angleBetween);
 }
-function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
+function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravityScalingFunction = `defaultRealGravity`, gravityMultiplier = 1, gravityRange = 0.5) {
     if (!thisBody ||
         !thatBody ||
         !thisBody.mass ||
@@ -22,13 +22,11 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
     const m1 = thisBody.mass || 0;
     const m2 = thatBody.mass || 0;
     const massProduct = m1 * m2;
-    const rangeInMeters = Math.min(globals_1.default.gravityRange, math_1.default.distance(thisBody.location, thatBody.location)) *
+    const rangeInMeters = Math.min(gravityRange, math_1.default.distance(thisBody.location, thatBody.location)) *
         globals_1.default.kmPerAu *
         globals_1.default.mPerKm;
     const rangeAsPercentOfGravityRadius = rangeInMeters /
-        (globals_1.default.gravityRange *
-            globals_1.default.kmPerAu *
-            globals_1.default.mPerKm);
+        (gravityRange * globals_1.default.kmPerAu * globals_1.default.mPerKm);
     if (rangeInMeters === 0)
         return [0, 0];
     const scalingFunctions = {
@@ -56,10 +54,10 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody) {
             (rangeAsPercentOfGravityRadius - 1) ** 6,
     };
     // * ----- current scaling function in use -----
-    const scalingFunction = scalingFunctions.sixthPower;
+    const scalingFunction = scalingFunctions[gravityScalingFunction] ||
+        scalingFunctions.defaultRealGravity;
     // * ----- flat gravity scaling -----
-    const gravityScaleFactor = 0.2;
-    const gravityForce = scalingFunction() * gravityScaleFactor;
+    const gravityForce = scalingFunction() * gravityMultiplier;
     // const differenceFromDefault =
     //   gravityForce -
     //   scalingFunctions.defaultRealGravity() *

@@ -4,11 +4,9 @@ declare const _default: {
     tickInterval: number;
     mPerKm: number;
     kmPerAu: number;
-    gravityRange: number;
     gravitationalConstant: number;
     lightspeed: number;
     deltaTime: number;
-    arrivalThreshold: number;
     levels: number[];
 };
 export default _default;

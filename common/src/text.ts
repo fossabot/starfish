@@ -4,13 +4,18 @@ const maxNameLength = 16
 
 function numberWithCommas(x: number) {
   if (x < 1000) return x
+  let negative = false
+  if (x < 0) {
+    negative = true
+    x = -x
+  }
   const decimal = x % 1
   const total =
     Math.floor(x)
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
     (decimal ? `${math.r2(decimal, 6)}`.substring(1) : ``)
-  return total
+  return (negative ? `-` : ``) + total
 }
 
 function printList(list: string[]) {

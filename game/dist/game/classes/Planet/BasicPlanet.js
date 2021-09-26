@@ -12,7 +12,6 @@ class BasicPlanet extends Planet_1.Planet {
         this.priceFluctuator = 1;
         this.toUpdate = {};
         this.planetType = `basic`;
-        this.repairFactor = data.repairFactor || 0;
         this.homeworld = game.factions.find((f) => f.id === data.homeworld?.id);
         this.faction = this.homeworld;
         this.leanings = data.leanings || [];
@@ -53,12 +52,12 @@ class BasicPlanet extends Planet_1.Planet {
         const levelUpOptions = [
             { weight: 200 / this.level, value: `addItemToShop` },
             {
-                weight: 1.5,
+                weight: 1,
                 value: `expandLandingZone`,
             },
             {
-                weight: 2.5,
-                value: `increaseRepairFactor`,
+                weight: 6,
+                value: `increaseAutoRepair`,
             },
             {
                 weight: 3 * shipPassiveMultiplier,
@@ -84,12 +83,15 @@ class BasicPlanet extends Planet_1.Planet {
         let levelUpEffect = dist_1.default.randomWithWeights(levelUpOptions);
         // homeworlds always have repair factor to some degree
         if (this.level === 1 && this.homeworld)
-            levelUpEffect = `increaseRepairFactor`;
+            levelUpEffect = `increaseAutoRepair`;
         if (levelUpEffect === `expandLandingZone`) {
             this.landingRadiusMultiplier *= 2;
         }
-        else if (levelUpEffect === `increaseRepairFactor`) {
-            this.repairFactor += 1;
+        else if (levelUpEffect === `increaseAutoRepair`) {
+            this.addPassive({
+                id: `autoRepair`,
+                intensity: 0.4,
+            });
         }
         else if (levelUpEffect === `boostSightRange`) {
             this.addPassive({
@@ -360,12 +362,14 @@ class BasicPlanet extends Planet_1.Planet {
             actives: [],
         };
         this.passives = [];
-        this.repairFactor = 0;
         this.landingRadiusMultiplier = 1;
         while (this.level < targetLevel) {
             this.levelUp();
         }
-        this.xp = targetXp;
+        if (targetXp >
+            dist_1.default.levels[this.level - 1] *
+                dist_1.default.planetLevelXpRequirementMultiplier)
+            this.xp = targetXp;
         this.updateFrontendForShipsAt();
     }
 }

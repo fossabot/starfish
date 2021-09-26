@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="admin container">
     <template v-if="show">
       <h1>Admin</h1>
       <nuxt-link to="/s">Ship Page</nuxt-link>
@@ -16,34 +16,88 @@
         <div class="button combo" @click="messageAll">
           Message All Ships
         </div>
-        <div class="button combo" @click="resetAllPlanets">
-          Reset All Planets
-        </div>
-        <div
-          class="button combo"
-          @click="reLevelAllPlanets"
-        >
-          Re-Level All Planets
-        </div>
-        <div class="button combo" @click="resetAllCaches">
-          Reset All Caches
-        </div>
-        <div class="button combo" @click="resetAllZones">
-          Reset All Zones
-        </div>
-        <div class="button combo" @click="resetAllShips">
-          Reset All Ships
-        </div>
-        <div class="button combo" @click="resetAllAIShips">
-          Reset All AI Ships
-        </div>
-        <div
-          class="button combo"
-          @click="resetAllAttackRemnants"
-        >
-          Reset All Attack Remnants
-        </div>
       </div>
+
+      <details class="martop">
+        <summary>Resetters</summary>
+        <div class="flexwrap buttonlist">
+          <div
+            class="button combo"
+            @click="resetAllPlanets"
+          >
+            Reset All Planets
+          </div>
+          <div
+            class="button combo"
+            @click="reLevelAllPlanets"
+          >
+            Re-Level All Planets
+          </div>
+          <div class="button combo" @click="resetAllCaches">
+            Reset All Caches
+          </div>
+          <div class="button combo" @click="resetAllZones">
+            Reset All Zones
+          </div>
+          <div class="button combo" @click="resetAllShips">
+            Reset All Ships
+          </div>
+          <div
+            class="button combo"
+            @click="resetAllAIShips"
+          >
+            Reset All AI Ships
+          </div>
+          <div
+            class="button combo"
+            @click="resetAllAttackRemnants"
+          >
+            Reset All Attack Remnants
+          </div>
+        </div>
+      </details>
+
+      <details class="martop">
+        <summary>Game Settings</summary>
+
+        <div class="flexwrap">
+          <div
+            class="setting marright"
+            v-for="numberSettingKey in Object.keys(
+              inputSettings,
+            ).filter((s) => !isNaN(inputSettings[s]))"
+          >
+            <label>{{
+              c.camelCaseToWords(numberSettingKey)
+            }}</label>
+            <input
+              type="number"
+              v-model="inputSettings[numberSettingKey]"
+            />
+          </div>
+
+          <div
+            class="setting marright"
+            v-for="numberSettingKey in Object.keys(
+              inputSettings,
+            ).filter(
+              (s) =>
+                !['id'].includes(s) &&
+                isNaN(inputSettings[s]),
+            )"
+          >
+            <label>{{
+              c.camelCaseToWords(numberSettingKey)
+            }}</label>
+            <input
+              v-model="inputSettings[numberSettingKey]"
+            />
+          </div>
+        </div>
+        <button @click="updateSettings">
+          Update Settings
+        </button>
+      </details>
 
       <div class="martop">
         <AdminShipDataBrowser />
@@ -64,6 +118,8 @@ export default Vue.extend({
     return {
       c,
       show: false,
+      initialSettings: {},
+      inputSettings: {},
     }
   },
   computed: {
@@ -93,6 +149,18 @@ export default Vue.extend({
         if (isAdmin) {
           this.show = true
           set('adminPassword', this.adminPassword)
+
+          this.$socket.emit(
+            'game:settings',
+            (gameSettings) => {
+              this.inputSettings = gameSettings.data
+              delete this.inputSettings._id
+              delete this.inputSettings.__v
+              this.initialSettings = {
+                ...this.inputSettings,
+              }
+            },
+          )
         } else {
           this.$store.commit('set', {
             adminPassword: false,
@@ -104,6 +172,28 @@ export default Vue.extend({
     )
   },
   methods: {
+    updateSettings() {
+      const updatedSettings = {}
+      for (let key in this.inputSettings) {
+        if (
+          this.initialSettings[key] !==
+          this.inputSettings[key]
+        ) {
+          updatedSettings[key] = parseFloat(
+            this.inputSettings[key],
+          )
+          if (isNaN(updatedSettings[key]))
+            updatedSettings[key] = this.inputSettings[key]
+        }
+      }
+      this.$socket.emit(
+        'game:setSettings',
+        this.userId,
+        this.adminPassword,
+        updatedSettings,
+      )
+      this.initialSettings = { ...this.inputSettings }
+    },
     save() {
       this.$socket.emit(
         'game:save',
@@ -231,8 +321,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-// .buttonlist {
-//   & > * {
-//   }
-// }
+.admin {
+  padding: 5vw;
+}
+.setting {
+  width: 150px;
+  align-self: flex-end;
+}
 </style>

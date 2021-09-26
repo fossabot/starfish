@@ -82,7 +82,7 @@ class CombatShip extends Ship_1.Ship {
         this.hp = this.maxHp;
         this.dead = false;
         this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos +
-            dist_1.default.randomBetween(dist_1.default.arrivalThreshold * -0.4, dist_1.default.arrivalThreshold * 0.4)));
+            dist_1.default.randomBetween(this.game.settings.arrivalThreshold * -0.4, this.game.settings.arrivalThreshold * 0.4)));
         await db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
@@ -259,7 +259,9 @@ class CombatShip extends Ship_1.Ship {
             this.crewMembers
                 .filter((cm) => cm.location === `weapons`)
                 .forEach((cm) => {
-                cm.addXp(`munitions`, dist_1.default.baseXpGain * 3000 * xpBoostMultiplier);
+                cm.addXp(`munitions`, this.game.settings.baseXpGain *
+                    3000 *
+                    xpBoostMultiplier);
             });
             this.addStat(`kills`, 1);
             if (this.stats.find((s) => s.stat === `kills`)

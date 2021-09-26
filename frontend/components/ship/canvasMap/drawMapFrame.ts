@@ -320,7 +320,7 @@ export default class Drawer {
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
         radius:
-          c.arrivalThreshold *
+          (ship.gameSettings?.arrivalThreshold || 0.001) *
           (p.landingRadiusMultiplier || 1) *
           this.flatScale,
         color: p.color,
@@ -512,7 +512,9 @@ export default class Drawer {
     ;[...cachesToDraw].forEach((k) => {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
-        radius: c.arrivalThreshold * this.flatScale,
+        radius:
+          (ship.gameSettings?.arrivalThreshold || 0.001) *
+          this.flatScale,
         color: `rgb(216, 174, 3)`, // var(--cargo)
         outline: `dash`,
         opacity: 0.4,
@@ -566,7 +568,6 @@ export default class Drawer {
       })
     })
     ;[...trailsToDraw].forEach((t) => {
-      c.log(t)
       let prevTrailPoint
       t.points.forEach((pl, index) => {
         prevTrailPoint = t.points[index - 1]
@@ -616,8 +617,8 @@ export default class Drawer {
           opacity:
             (1 -
               (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.miss === false ? 1 : 0.5),
-          width: ar.damageTaken.miss === false ? 1 : 0.5,
+            (ar.damageTaken.damageTaken > 0 ? 1 : 0.5),
+          width: ar.damageTaken.damageTaken > 0 ? 1 : 0.5,
         })
       },
     )

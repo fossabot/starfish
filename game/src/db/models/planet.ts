@@ -49,8 +49,6 @@ const planetSchemaFields: Record<
   ],
 
   // basic
-  repairFactor: Number,
-
   leanings: [
     {
       type: { type: String },
@@ -58,12 +56,9 @@ const planetSchemaFields: Record<
       propensity: Number,
     },
   ],
-
   factionId: String,
   homeworld: { id: String },
-
   allegiances: [{ faction: { id: String }, level: Number }],
-
   vendor: {
     cargo: [
       {

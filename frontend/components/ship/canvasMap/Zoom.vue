@@ -5,7 +5,7 @@
     :buffer="false"
     :interactive="false"
     background="black"
-    :radius="c.arrivalThreshold"
+    :radius="ship.gameSettings.arrivalThreshold"
     :width="200"
     label="vicinity"
   />

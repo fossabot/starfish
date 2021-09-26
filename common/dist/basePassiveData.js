@@ -78,7 +78,7 @@ const basePassiveData = {
         toString: (p) => `+${Math.round((p.intensity || 1) * 100)}% faster stamina regeneration`,
     },
     autoRepair: {
-        toString: (p) => `+${Math.round(p.intensity || 1)}HP/hr auto-repair`,
+        toString: (p) => `+${Math.round((p.intensity || 1) * 10) / 10}HP/hr auto-repair`,
     },
 };
 exports.default = basePassiveData;

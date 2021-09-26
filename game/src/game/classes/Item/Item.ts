@@ -116,10 +116,11 @@ export class Item extends Stubbable {
     return overRepair
   }
 
-  toLogStub(): Partial<ItemStub> {
+  toLogStub(): ItemStub {
     return {
-      ...this.stubify(),
-      repair: undefined,
+      type: this.type,
+      id: this.id,
+      ownerId: this.ship.id,
     }
   }
 }

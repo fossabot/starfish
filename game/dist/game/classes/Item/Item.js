@@ -90,8 +90,9 @@ class Item extends Stubbable_1.Stubbable {
     }
     toLogStub() {
         return {
-            ...this.stubify(),
-            repair: undefined,
+            type: this.type,
+            id: this.id,
+            ownerId: this.ship.id,
         };
     }
 }

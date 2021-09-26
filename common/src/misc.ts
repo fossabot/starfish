@@ -28,7 +28,7 @@ function coinFlip() {
   return Math.random() > 0.5
 }
 
-function debounce(fn: Function, time = 500) {
+function debounce(fn: Function, time = 700) {
   let timeout: NodeJS.Timeout
   return (...params: any[]) => {
     if (timeout) clearTimeout(timeout)

@@ -17,6 +17,14 @@ exports.game = new Game_1.Game();
     // await db.cache.wipe()
     // await db.zone.wipe()
     // await db.ship.wipeAI()
+    const savedGameData = await db_1.db.gameSettings.getAllConstructible();
+    if (savedGameData && savedGameData[0]) {
+        dist_1.default.log(`Loaded game settings.`);
+        exports.game.setSettings(savedGameData[0]);
+    }
+    else {
+        dist_1.default.log(`Starting game with default settings.`);
+    }
     const savedPlanets = await db_1.db.planet.getAllConstructible();
     dist_1.default.log(`Loaded ${savedPlanets.length} saved planets from DB.`);
     for (let planet of savedPlanets)

@@ -18,7 +18,6 @@ interface BasePlanetData {
 }
 
 interface BaseBasicPlanetData extends BasePlanetData {
-  repairFactor: number
   leanings: PlanetLeaning[]
   factionId?: FactionKey
   homeworld?: { id: FactionKey }

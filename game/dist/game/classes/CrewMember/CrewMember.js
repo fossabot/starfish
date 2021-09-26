@@ -33,11 +33,11 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.type = `crewMember`;
         this.name = `crew member`;
         this.maxStamina = 1;
-        this.targetLocation = null;
+        this.targetLocation = false;
         this.tactic = `defensive`;
         this.attackFactions = [];
-        this.attackTarget = null;
-        this.itemTarget = null;
+        this.attackTargetId = false;
+        this.itemTarget = false;
         this.cockpitCharge = 0;
         this.repairPriority = `most damaged`;
         this.minePriority = `closest`;
@@ -130,10 +130,10 @@ class CrewMember extends Stubbable_1.Stubbable {
     tick() {
         this._stub = null; // invalidate stub
         // ----- reset attack target if out of vision range -----
-        if (this.attackTarget &&
-            !this.ship.visible.ships.find((s) => s.id === this.attackTarget?.id)) {
-            this.attackTarget = null;
-            this.toUpdate.attackTarget = this.attackTarget;
+        if (this.attackTargetId &&
+            !this.ship.visible.ships.find((s) => s.id === this.attackTargetId)) {
+            this.attackTargetId = false;
+            this.toUpdate.attackTargetId = this.attackTargetId;
         }
         // ----- actives -----
         this.actives.forEach((a) => a.tick());
@@ -147,7 +147,8 @@ class CrewMember extends Stubbable_1.Stubbable {
             return;
         if (!this.ship.tutorial?.currentStep?.disableStamina)
             this.stamina -=
-                dist_1.default.baseStaminaUse / (dist_1.default.deltaTime / dist_1.default.tickInterval);
+                this.ship.game.settings.baseStaminaUse /
+                    (dist_1.default.deltaTime / dist_1.default.tickInterval);
         if (this.tired) {
             this.stamina = 0;
             this.goTo(`bunk`);
@@ -177,7 +178,8 @@ class CrewMember extends Stubbable_1.Stubbable {
         const xpBoostMultiplier = (this.ship.passives.find((p) => p.id === `boostXpGain`)?.intensity || 0) + 1;
         if (!xp)
             xp =
-                (dist_1.default.baseXpGain / (dist_1.default.deltaTime / dist_1.default.tickInterval)) *
+                (this.ship.game.settings.baseXpGain /
+                    (dist_1.default.deltaTime / dist_1.default.tickInterval)) *
                     xpBoostMultiplier;
         let skillElement = this.skills.find((s) => s?.skill === skill);
         if (!skillElement) {

@@ -70,7 +70,13 @@ export const mutations = {
 
   setTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `targetLocation`, target)
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `targetLocation`,
+      target,
+    )
     state.forceMapRedraw++
     this.$socket?.emit(
       `crew:targetLocation`,
@@ -82,7 +88,13 @@ export const mutations = {
 
   setTactic(state, tactic) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `tactic`, tactic)
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `tactic`,
+      tactic,
+    )
     this.$socket?.emit(
       `crew:tactic`,
       state.ship.id,
@@ -93,9 +105,13 @@ export const mutations = {
 
   setAttackTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `attackTarget`, {
-      id: target,
-    })
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `attackTarget`,
+      target || false,
+    )
     this.$socket?.emit(
       `crew:attackTarget`,
       state.ship.id,
@@ -106,7 +122,13 @@ export const mutations = {
 
   setItemTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `itemTarget`, target)
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `itemTarget`,
+      target,
+    )
     this.$socket?.emit(
       `crew:itemTarget`,
       state.ship.id,
@@ -117,7 +139,13 @@ export const mutations = {
 
   setRepairPriority(state, rp) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `repairPriority`, rp)
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `repairPriority`,
+      rp,
+    )
     this.$socket?.emit(
       `crew:repairPriority`,
       state.ship.id,
@@ -128,7 +156,13 @@ export const mutations = {
 
   setMinePriority(state, rp) {
     if (!state.crewMember) return
-    Vue.set(state.crewMember, `minePriority`, rp)
+    Vue.set(
+      state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.userId,
+      ),
+      `minePriority`,
+      rp,
+    )
     this.$socket?.emit(
       `crew:minePriority`,
       state.ship.id,
@@ -156,7 +190,7 @@ export const actions = {
       },
     )
     this.$socket.on(`ship:update`, ({ id, updates }) => {
-      if (state.ship === null) return connected()
+      if (state.ship === null) return
       if (state.ship.id !== id) return
       // * visible update
       dispatch(`updateShip`, { ...updates })
@@ -335,7 +369,7 @@ export const actions = {
             if (!existingData)
               newVisible.planets.push(updatedPlanet)
             else
-              for (let prop in updatedData)
+              for (let prop in updatedPlanet)
                 existingData[prop] = updatedPlanet[prop]
           }
           commit(`setShipProp`, [`visible`, newVisible])
@@ -366,7 +400,10 @@ export const actions = {
 
   async logIn(
     { commit, state, dispatch },
-    { userId, shipIds } = {},
+    {
+      userId,
+      shipIds,
+    }: { userId?: string; shipIds?: string[] } = {},
   ) {
     if (!userId || !shipIds || !shipIds?.length) {
       const tokenType = storage.get(`tokenType`)
@@ -380,7 +417,7 @@ export const actions = {
           tokenType,
           accessToken,
         })
-        if (idRes.error) {
+        if (`error` in idRes) {
           dispatch(`notifications/notify`, {
             text: idRes.error,
             type: `error`,
@@ -410,7 +447,7 @@ export const actions = {
               )
             })
 
-          if (guildsRes.error) {
+          if (guildsRes && `error` in guildsRes) {
             dispatch(`notifications/notify`, {
               text: guildsRes.error,
               type: `error`,
@@ -424,9 +461,9 @@ export const actions = {
 
             c.log(`login error!`, guildsRes.error)
             return
+          } else if (guildsRes && !(`error` in guildsRes)) {
+            shipIds = guildsRes ? guildsRes.data : undefined
           }
-
-          shipIds = guildsRes.data
         } catch (e) {
           c.log(
             `failed to get ship ids from discord api`,
@@ -445,7 +482,7 @@ export const actions = {
 
     const shipsBasics = []
     for (let id of shipIds) {
-      await new Promise((resolve) => {
+      await new Promise<void>((resolve) => {
         this.$socket?.emit(
           `ship:basics`,
           id,

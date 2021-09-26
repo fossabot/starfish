@@ -1,172 +1,181 @@
 <template>
-  <div v-if="data">
+  <div v-if="dataToUse">
     <div>
-      <b>{{ data.displayName }}</b>
-      <span class="sub">{{ c.capitalize(data.type) }}</span>
+      <h3 style="display: inline">
+        {{ dataToUse.displayName }}
+      </h3>
+      <span class="sub">{{
+        c.capitalize(dataToUse.type)
+      }}</span>
     </div>
 
-    <hr v-if="Object.keys(data).length > 3" />
+    <hr v-if="Object.keys(dataToUse).length > 3" />
 
     <PillBar
-      v-if="data.repair && data.maxHp"
+      v-if="dataToUse.repair && dataToUse.maxHp"
       :mini="true"
-      :value="data.repair * data.maxHp"
-      :max="data.maxHp"
+      :value="dataToUse.repair * dataToUse.maxHp"
+      :max="dataToUse.maxHp"
       class="marbotsmall"
     />
-    <div v-else-if="data.repair">
-      Repair: {{ c.r2(data.repair * 100) }}%
+    <div v-else-if="dataToUse.repair">
+      Repair: {{ c.r2(dataToUse.repair * 100) }}%
     </div>
-    <div v-else-if="data.maxHp">
-      Max HP: {{ c.r2(data.maxHp) }}
+    <div v-else-if="dataToUse.maxHp">
+      Max HP: {{ c.r2(dataToUse.maxHp) }}
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.maxHp"
-        :b="data.maxHp"
+        :b="dataToUse.maxHp"
       />
     </div>
 
     <!-- chassis -->
-    <div v-if="data.slots">
-      Equipment Slots: {{ data.slots }}
+    <div v-if="dataToUse.slots">
+      Equipment Slots: {{ dataToUse.slots }}
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.slots"
-        :b="data.slots"
+        :b="dataToUse.slots"
       />
     </div>
-    <div v-if="data.agility">
+    <div v-if="dataToUse.agility">
       Passive Dodge Modifier:
-      {{ data.agility >= 1 ? '+' : ''
-      }}{{ c.r2((data.agility - 1) * 100) + '%' }}
+      {{ dataToUse.agility >= 1 ? '+' : ''
+      }}{{ c.r2((dataToUse.agility - 1) * 100) + '%' }}
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.agility * 100"
-        :b="data.agility * 100"
+        :b="dataToUse.agility * 100"
         addendum="%"
       />
     </div>
-    <div v-if="data.maxCargoSpace">
+    <div v-if="dataToUse.maxCargoSpace">
       Cargo Space / Crew Member:
-      {{ data.maxCargoSpace }} tons
+      {{ dataToUse.maxCargoSpace }} tons
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.maxCargoSpace"
-        :b="data.maxCargoSpace"
+        :b="dataToUse.maxCargoSpace"
       />
     </div>
 
     <!-- engine -->
-    <div v-if="data.thrustAmplification">
+    <div v-if="dataToUse.thrustAmplification">
       Base Thrust:
       {{
         c.r2(
-          data.thrustAmplification *
-            c.baseEngineThrustMultiplier,
+          dataToUse.thrustAmplification *
+            ship.gameSettings.baseEngineThrustMultiplier,
         )
       }}P
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="
           compareTo.thrustAmplification *
-          c.baseEngineThrustMultiplier
+          ship.gameSettings.baseEngineThrustMultiplier
         "
         :b="
-          data.thrustAmplification *
-          c.baseEngineThrustMultiplier
+          dataToUse.thrustAmplification *
+          ship.gameSettings.baseEngineThrustMultiplier
         "
       />
     </div>
     <div
       v-if="
-        data.thrustAmplification &&
-        data.repair !== undefined &&
-        data.repair !== 1
+        dataToUse.thrustAmplification &&
+        dataToUse.repair !== undefined &&
+        dataToUse.repair !== 1
       "
     >
       Effective Thrust:
       {{
         c.r2(
-          data.thrustAmplification *
-            data.repair *
-            c.baseEngineThrustMultiplier,
+          dataToUse.thrustAmplification *
+            dataToUse.repair *
+            ship.gameSettings.baseEngineThrustMultiplier,
         )
       }}P
     </div>
 
     <!-- scanner -->
-    <div v-if="data.sightRange">
-      Max Sight Range: {{ data.sightRange }}AU
+    <div v-if="dataToUse.sightRange">
+      Max Sight Range: {{ dataToUse.sightRange }}AU
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.sightRange"
-        :b="data.sightRange"
+        :b="dataToUse.sightRange"
       />
     </div>
-    <div v-if="data.shipScanRange">
-      Max Ship Scan Range: {{ data.shipScanRange }}AU
+    <div v-if="dataToUse.shipScanRange">
+      Max Ship Scan Range: {{ dataToUse.shipScanRange }}AU
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.shipScanRange"
-        :b="data.shipScanRange"
+        :b="dataToUse.shipScanRange"
       />
     </div>
-    <div v-if="data.shipScanData">
+    <div v-if="dataToUse.shipScanData">
       Scannable Properties:
       <div class="marleft">{{ scanPropertyString }}</div>
     </div>
 
     <!-- weapon -->
-    <div v-if="data.cooldownRemaining !== undefined">
+    <div v-if="dataToUse.cooldownRemaining !== undefined">
       Charge:
       {{
         Math.floor(
-          ((data.baseCooldown - data.cooldownRemaining) /
-            data.baseCooldown) *
+          ((dataToUse.baseCooldown -
+            dataToUse.cooldownRemaining) /
+            dataToUse.baseCooldown) *
             100,
         )
       }}%
       <ProgressBar
         :micro="true"
         :percent="
-          (data.baseCooldown - data.cooldownRemaining) /
-          data.baseCooldown
+          (dataToUse.baseCooldown -
+            dataToUse.cooldownRemaining) /
+          dataToUse.baseCooldown
         "
         :dangerZone="-1"
       />
     </div>
-    <div v-if="data.type === 'weapon' && data.range">
-      Max Range: {{ data.range }}AU
+    <div
+      v-if="dataToUse.type === 'weapon' && dataToUse.range"
+    >
+      Max Range: {{ dataToUse.range }}AU
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.range"
-        :b="data.range"
+        :b="dataToUse.range"
       />
     </div>
-    <div v-if="data.damage">
-      Base Damage: {{ data.damage }}
+    <div v-if="dataToUse.damage">
+      Base Damage: {{ dataToUse.damage }}
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.damage"
-        :b="data.damage"
+        :b="dataToUse.damage"
       />
     </div>
-    <div v-if="data.baseCooldown">
+    <div v-if="dataToUse.baseCooldown">
       Charge Required:
-      {{ c.numberWithCommas(data.baseCooldown) }}
+      {{ c.numberWithCommas(dataToUse.baseCooldown) }}
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.baseCooldown"
-        :b="data.baseCooldown"
+        :b="dataToUse.baseCooldown"
         :higherIsBetter="false"
       />
     </div>
-    <div v-if="data.cooldownRemaining">
+    <div v-if="dataToUse.cooldownRemaining">
       Charge Progress:
       {{
         c.numberWithCommas(
           c.r2(
-            data.baseCooldown - data.cooldownRemaining,
+            dataToUse.baseCooldown -
+              dataToUse.cooldownRemaining,
             0,
           ),
         )
@@ -174,97 +183,109 @@
     </div>
 
     <!-- armor -->
-    <div v-if="data.damageReduction">
-      Damage Reduction: {{ data.damageReduction * 100 }}%
+    <div v-if="dataToUse.damageReduction">
+      Damage Reduction:
+      {{ dataToUse.damageReduction * 100 }}%
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.damageReduction * 100"
-        :b="data.damageReduction * 100"
+        :b="dataToUse.damageReduction * 100"
         addendum="%"
       />
     </div>
 
     <!-- communicator -->
-    <div v-if="data.type === 'communicator' && data.range">
-      Max Broadast Range: {{ data.range }}AU
+    <div
+      v-if="
+        dataToUse.type === 'communicator' && dataToUse.range
+      "
+    >
+      Max Broadast Range: {{ dataToUse.range }}AU
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.range"
-        :b="data.range"
+        :b="dataToUse.range"
       />
     </div>
-    <div v-if="data.antiGarble">
-      Clarity Boost: {{ data.antiGarble * 100 }}%
+    <div v-if="dataToUse.antiGarble">
+      Clarity Boost: {{ dataToUse.antiGarble * 100 }}%
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.antiGarble * 100"
-        :b="data.antiGarble * 100"
+        :b="dataToUse.antiGarble * 100"
         addendum="%"
       />
     </div>
 
     <!-- general -->
-    <div v-if="data.type !== 'chassis' && data.maxHp">
+    <div
+      v-if="dataToUse.type !== 'chassis' && dataToUse.maxHp"
+    >
       Reliability:
       <span
-        v-if="!data.reliability || data.reliability === 1"
-        >Normal</span
-      >
-      <span v-else>
-        {{ data.reliability > 1 ? '+' : ''
-        }}{{ c.r2(data.reliability - 1) * 100 }}%
-      </span>
-      <ShipTooltipsCompareProp
-        v-if="compareTo"
-        :a="(compareTo.reliability || 1) * 100"
-        :b="(data.reliability || 1) * 100"
-        addendum="%"
-      />
-    </div>
-    <div v-if="data.type !== 'chassis' && data.maxHp">
-      Repair Difficulty:
-      <span
         v-if="
-          !data.repairDifficulty ||
-          data.repairDifficulty === 1
+          !dataToUse.reliability ||
+          dataToUse.reliability === 1
         "
         >Normal</span
       >
       <span v-else>
-        {{ data.repairDifficulty > 1 ? '+' : ''
-        }}{{ c.r2(data.repairDifficulty - 1) * 100 }}%
+        {{ dataToUse.reliability > 1 ? '+' : ''
+        }}{{ c.r2(dataToUse.reliability - 1) * 100 }}%
+      </span>
+      <ShipTooltipsCompareProp
+        v-if="compareTo"
+        :a="(compareTo.reliability || 1) * 100"
+        :b="(dataToUse.reliability || 1) * 100"
+        addendum="%"
+      />
+    </div>
+    <div
+      v-if="dataToUse.type !== 'chassis' && dataToUse.maxHp"
+    >
+      Repair Difficulty:
+      <span
+        v-if="
+          !dataToUse.repairDifficulty ||
+          dataToUse.repairDifficulty === 1
+        "
+        >Normal</span
+      >
+      <span v-else>
+        {{ dataToUse.repairDifficulty > 1 ? '+' : ''
+        }}{{ c.r2(dataToUse.repairDifficulty - 1) * 100 }}%
       </span>
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="(compareTo.repairDifficulty || 1) * 100"
-        :b="(data.repairDifficulty || 1) * 100"
+        :b="(dataToUse.repairDifficulty || 1) * 100"
         :higherIsBetter="false"
         addendum="%"
       />
     </div>
 
-    <div v-if="data.mass">
-      Mass: {{ c.numberWithCommas(data.mass) }}kg
+    <div v-if="dataToUse.mass">
+      Mass: {{ c.numberWithCommas(dataToUse.mass) }}kg
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.mass"
-        :b="data.mass"
+        :b="dataToUse.mass"
         :higherIsBetter="false"
       />
     </div>
 
-    <hr v-if="data.passives && data.passives.length" />
-    <div v-for="passive in data.passives" class="success">
-      {{
-        c.basePassiveData[passive.id].toString(
-          passive.intensity,
-          passive,
-        )
-      }}
+    <hr
+      v-if="dataToUse.passives && dataToUse.passives.length"
+    />
+    <div
+      v-for="passive in dataToUse.passives"
+      class="success marbotsmall"
+    >
+      {{ c.basePassiveData[passive.id].toString(passive) }}
     </div>
 
-    <hr v-if="data.description" />
-    <div class="sub">{{ data.description }}</div>
+    <hr v-if="dataToUse.description" />
+    <div class="sub">{{ dataToUse.description }}</div>
   </div>
 </template>
 
@@ -280,8 +301,35 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship']),
+    dataToUse() {
+      if (
+        !this.ship ||
+        (this.data as ItemStub).ownerId !== this.ship?.id
+      ) {
+        if (
+          this.data &&
+          typeof this.data === 'object' &&
+          Object.keys(this.data).length < 5
+        )
+          return (
+            c.items[(this.data as ItemStub).type][
+              (this.data as ItemStub).id
+            ] || this.data
+          )
+        return this.data
+      }
+      return (
+        this.ship.items?.find(
+          (i) =>
+            i.type === (this.data as ItemStub).type &&
+            i.id === (this.data as ItemStub).id,
+        ) || this.data
+      )
+    },
     compareTo(): any {
       if (!(this.data as any).compare) return
+      if ((this.data as any).type === 'chassis')
+        return this.ship.chassis
       return this.ship?.items.find(
         (i) => i.type === (this.data as any).type,
       )
@@ -321,7 +369,9 @@ export default Vue.extend({
       return s
     },
   },
-  mounted() {},
+  mounted() {
+    // c.log(this.dataToUse)
+  },
 })
 </script>
 

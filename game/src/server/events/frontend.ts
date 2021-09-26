@@ -308,7 +308,7 @@ export default function (
                   ].includes(orders.target.type as any)
                 ? c.items[orders.target.type as ItemType][
                     orders.target.id as ItemId
-                  ]
+                  ].displayName
                 : orders.target.id,
               tooltipData: [
                 `weapon`,

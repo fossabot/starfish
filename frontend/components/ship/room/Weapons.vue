@@ -18,7 +18,11 @@
           v-for="i in weapons"
           v-tooltip="{
             type: 'weapon',
-            data: i,
+            data: {
+              type: 'weapon',
+              id: i.id,
+              ownerId: ship.id,
+            },
           }"
         >
           {{ i.displayName }}
@@ -82,7 +86,7 @@
         <div>
           <button
             :class="{
-              secondary: crewMember.attackTarget,
+              secondary: crewMember.attackTargetId,
             }"
             @click="$store.commit('setAttackTarget', null)"
           >
@@ -95,8 +99,8 @@
             "
             :class="{
               secondary:
-                !crewMember.attackTarget ||
-                crewMember.attackTarget.id !== ship.id,
+                !crewMember.attackTargetId ||
+                crewMember.attackTargetId !== ship.id,
             }"
           >
             🚀{{ ship.name }}

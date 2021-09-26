@@ -6,23 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const text_1 = __importDefault(require("./text"));
-const gameShipLimit = 100;
 const gameSpeedMultiplier = 10;
-const damageMultiplier = 1;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
 const baseRepairCost = 600;
 const maxBroadcastLength = 200;
 const defaultHomeworldLevel = 12;
-const baseStaminaUse = 0.00001 * gameSpeedMultiplier;
-const baseXpGain = 0.05 * gameSpeedMultiplier;
 const itemPriceMultiplier = 400;
+const weaponDamageMultiplier = 1;
 const factionVendorMultiplier = 0.98;
 const factionAllegianceFriendCutoff = 50;
 const baseItemSellMultiplier = 0.6;
 const noEngineThrustMagnitude = 0.02;
-const aiDifficultyMultiplier = 0.5;
-const planetContributeCostPerXp = 10;
+const planetContributeCostPerXp = 1;
+const planetLevelXpRequirementMultiplier = 10;
 const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
 const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 15) / gameSpeedMultiplier;
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`;
@@ -61,7 +58,6 @@ function getRadiusDiminishingReturns(totalValue, equipmentCount) {
         return 0;
     return totalValue / Math.sqrt(equipmentCount) || 0; // this might be too harsh? 5 and 2 = 4.9
 }
-const brakeToThrustRatio = 5;
 function getMaxCockpitChargeForSingleCrewMember(level = 1) {
     return 1;
     // return math.lerp(1, 5, (level - 1) / 100)
@@ -70,8 +66,7 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
     return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
 }
-const baseEngineThrustMultiplier = gameSpeedMultiplier * 0.1;
-function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1) {
+function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
     const min = 0.65;
     const max = 1.5;
     return (math_1.default.lerp(min, max, level / 100) *
@@ -88,7 +83,7 @@ function getMineAmountPerTickForSingleCrewMember(level) {
         globals_1.default.tickInterval) *
         gameSpeedMultiplier);
 }
-function getStaminaGainPerTickForSingleCrewMember() {
+function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
     return baseStaminaUse * 1.5;
 }
 function getWeaponCooldownReductionPerTick(level) {
@@ -293,23 +288,20 @@ function getPlanetPopulation(planet) {
 // }
 exports.default = {
     supportServerLink,
-    gameShipLimit,
     gameSpeedMultiplier,
-    damageMultiplier,
     baseSightRange,
     baseBroadcastRange,
     baseRepairCost,
     defaultHomeworldLevel,
     maxBroadcastLength,
-    baseStaminaUse,
-    baseXpGain,
     factionVendorMultiplier,
     factionAllegianceFriendCutoff,
-    itemPriceMultiplier,
     baseItemSellMultiplier,
     noEngineThrustMagnitude,
-    aiDifficultyMultiplier,
     planetContributeCostPerXp,
+    planetLevelXpRequirementMultiplier,
+    itemPriceMultiplier,
+    weaponDamageMultiplier,
     attackRemnantExpireTime,
     cacheExpireTime,
     baseShipScanProperties,
@@ -319,11 +311,9 @@ exports.default = {
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,
     getMineAmountPerTickForSingleCrewMember,
-    brakeToThrustRatio,
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
-    baseEngineThrustMultiplier,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
     getCrewPassivePriceMultiplier,

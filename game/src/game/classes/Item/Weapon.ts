@@ -41,7 +41,7 @@ export class Weapon extends Item {
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,
-      ) * 150
+      ) * 200
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()
