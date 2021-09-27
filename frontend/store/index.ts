@@ -10,6 +10,7 @@ export const state = () => ({
   lastUpdated: 0,
   connected: false,
   loading: false,
+  slowMode: false,
   userId: null,
   shipIds: [],
   shipsBasics: [],
@@ -36,6 +37,7 @@ export const mutations = {
 
   setShipProp(state, pair) {
     if (!state.ship) state.ship = {}
+    if (pair[0] === `itemTarget`) c.log(pair)
     Vue.set(state.ship, pair[0], pair[1])
   },
 
@@ -70,14 +72,8 @@ export const mutations = {
 
   setTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
-      `targetLocation`,
-      target,
-    )
     state.forceMapRedraw++
+    Vue.set(state.crewMember, `targetLocation`, target)
     this.$socket?.emit(
       `crew:targetLocation`,
       state.ship.id,
@@ -88,13 +84,7 @@ export const mutations = {
 
   setTactic(state, tactic) {
     if (!state.crewMember) return
-    Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
-      `tactic`,
-      tactic,
-    )
+    Vue.set(state.crewMember, `combatTactic`, tactic)
     this.$socket?.emit(
       `crew:tactic`,
       state.ship.id,
@@ -105,13 +95,7 @@ export const mutations = {
 
   setAttackTarget(state, target) {
     if (!state.crewMember) return
-    Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
-      `attackTarget`,
-      target || false,
-    )
+    Vue.set(state.crewMember, `attackTargetId`, target)
     this.$socket?.emit(
       `crew:attackTarget`,
       state.ship.id,
@@ -120,15 +104,9 @@ export const mutations = {
     )
   },
 
-  setItemTarget(state, target) {
+  setTargetItemType(state, target) {
     if (!state.crewMember) return
-    Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
-      `itemTarget`,
-      target,
-    )
+    Vue.set(state.crewMember, `targetItemType`, target)
     this.$socket?.emit(
       `crew:itemTarget`,
       state.ship.id,
@@ -178,6 +156,8 @@ export const actions = {
     shipId,
   ) {
     if (!shipId) return
+    c.log(`getAndSetShipDataById`, shipId)
+    c.trace()
 
     this.$socket?.emit(
       `ship:listen`,
@@ -192,6 +172,7 @@ export const actions = {
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return
       if (state.ship.id !== id) return
+      c.log(`slow mode update pt 2`)
       // * visible update
       dispatch(`updateShip`, { ...updates })
       dispatch(`socketStop`)
@@ -199,6 +180,7 @@ export const actions = {
   },
 
   async socketStop({ state, commit, dispatch }) {
+    this.$socket.emit(`frontend:unlistenAll`)
     this.$socket.removeAllListeners()
     // but we still want updates about new user ships
     dispatch(`watchUserId`)
@@ -238,7 +220,7 @@ export const actions = {
     storage.set(`activeShipId`, `${shipId}`)
 
     let connectionTimeout = setTimeout(() => {
-      c.log(`red`, `Failed to connect to socket.`)
+      // c.log(`red`, `Failed to connect to socket.`)
       commit(`set`, { ship: null, connected: false })
     }, 5000)
 
@@ -292,13 +274,15 @@ export const actions = {
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return connected()
       if (state.ship.id !== id) return
-      if (stillWorkingOnTick) return // c.log(`skipping tick because too busy`)
+      if (stillWorkingOnTick)
+        return c.log(`skipping tick because too busy`)
       // c.log(
       //   JSON.stringify(updates).length,
       //   `characters of data received from update`,
       // )
       // c.log(Object.keys(updates))
 
+      // c.log(`ship:update`, id, updates)
       stillWorkingOnTick = true
       dispatch(`updateShip`, { ...updates })
 
@@ -320,6 +304,7 @@ export const actions = {
 
   updateShip({ commit, state }, updates) {
     // c.log(`updating ship props`, Object.keys(updates))
+    // c.log(`update`)
     if (!state.ship) return
     if (updates.id && state.ship.id !== updates.id)
       return c.log(`skipping late update for previous ship`)
@@ -526,17 +511,20 @@ export const actions = {
     })
   },
 
-  slowMode({ state, dispatch }, turnOn) {
+  slowMode({ state, commit, dispatch }, turnOn) {
     clearInterval(slowModeUpdateInterval)
+    commit(`set`, { slowMode: Boolean(turnOn) })
     if (turnOn) {
       // c.log(`slow mode on`)
       dispatch(`socketStop`)
       slowModeUpdateInterval = setInterval(() => {
-        // c.log(`slow mode update`)
-        dispatch(
-          `getAndSetShipDataById`,
-          state.ship?.id || state.activeShipId,
-        )
+        if (state.slowMode) {
+          // c.log(`slow mode update`)
+          dispatch(
+            `getAndSetShipDataById`,
+            state.ship?.id || state.activeShipId,
+          )
+        }
       }, 60 * 1000)
     } else {
       // c.log(`slow mode off`)

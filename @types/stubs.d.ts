@@ -16,7 +16,6 @@ interface ShipStub extends BaseStub {
   previousLocations: CoordinatePair[]
   location: CoordinatePair
   velocity?: CoordinatePair
-  targetLocation?: CoordinatePair
   visible?: VisibleStub
   human: boolean
   ai: boolean
@@ -32,7 +31,6 @@ interface ShipStub extends BaseStub {
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]
   channelReferences?: GameChannelReference[]
-  targetShip?: ShipStub
   speed?: number
   direction?: number
   seenPlanets?: PlanetStub[]
@@ -41,9 +39,11 @@ interface ShipStub extends BaseStub {
   _maxHp?: number
   shownPanels?: FrontendPanelType[] | false
   commonCredits?: number
-  mainTactic?: Tactic
-  enemiesInAttackRange?: ShipStub[]
-  itemTarget?: ItemType
+
+  combatTactic?: CombatTactic
+  targetItemType?: ItemType | `any`
+  targetShip?: Reference | null
+
   factionRankings?: FactionRanking[]
   passives?: ShipPassiveEffect[]
   slots?: number
@@ -81,7 +81,7 @@ interface CrewMemberStub extends BaseStub {
   actives: BaseCrewActiveData[]
   passives: BaseCrewPassiveData[]
   cockpitCharge: number
-  tactic: Tactic
+  tactic: CombatTactic
   itemTarget: ItemType
   attackFactions?: FactionKey[]
   targetLocation: CoordinatePair | null

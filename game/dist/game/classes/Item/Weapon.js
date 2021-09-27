@@ -9,6 +9,7 @@ const Item_1 = require("./Item");
 class Weapon extends Item_1.Item {
     constructor(data, ship, props) {
         super(data, ship, props);
+        this.critChance = 0;
         this.lastUse = 0;
         this.rooms = [`weapons`];
         this.id = data.id;
@@ -16,12 +17,17 @@ class Weapon extends Item_1.Item {
         this.damage = data.damage;
         this.baseCooldown = data.baseCooldown;
         this.lastUse = data.lastUse || 0;
+        if (data.critChance !== undefined)
+            this.critChance = data.critChance;
         this.cooldownRemaining =
             data.cooldownRemaining ||
                 props?.cooldownRemaining ||
                 0;
         if (this.cooldownRemaining > this.baseCooldown)
             this.cooldownRemaining = this.baseCooldown;
+    }
+    get effectiveRange() {
+        return this.range * this.repair;
     }
     use() {
         this.cooldownRemaining = this.baseCooldown;

@@ -135,7 +135,9 @@ export class Game {
     if (this.paused)
       return setTimeout(() => this.tick(), c.tickInterval)
 
-    const startTime = Date.now()
+    // c.log(`tick`, Date.now() - this.lastTickTime)
+
+    const tickStartTime = Date.now()
 
     this.tickCount++
     const times: any[] = []
@@ -165,10 +167,11 @@ export class Game {
 
     // ----- timing
 
-    c.deltaTime = Date.now() - this.lastTickTime
+    const tickDoneTime = Date.now()
 
-    const thisTickLag =
-      c.deltaTime - this.lastTickExpectedTime
+    c.deltaTime = tickDoneTime - this.lastTickTime
+
+    const thisTickLag = c.deltaTime - c.tickInterval
     this.averageTickLag = c.lerp(
       this.averageTickLag,
       thisTickLag,
@@ -178,7 +181,7 @@ export class Game {
       c.tickInterval,
       c.tickInterval - this.averageTickLag,
     )
-    this.lastTickTime = startTime
+    this.lastTickTime = tickStartTime
     this.lastTickExpectedTime = nextTickTime
 
     // ----- schedule next tick -----
@@ -190,7 +193,7 @@ export class Game {
     //   game: c.stubify<Game, GameStub>(this),
     // })
 
-    const elapsedTimeInMs = Date.now() - startTime
+    const elapsedTimeInMs = tickDoneTime - tickStartTime
     // if (elapsedTimeInMs > 100) {
     //   if (elapsedTimeInMs < 200)
     //     c.log(
@@ -368,7 +371,8 @@ export class Game {
 
   async spawnNewPlanets() {
     while (
-      this.planets.length < this.gameSoftArea * 0.9 ||
+      this.planets.length <
+        this.gameSoftArea * this.settings.planetDensity ||
       this.planets.length < this.factions.length - 1
     ) {
       const weights: {
@@ -420,7 +424,10 @@ export class Game {
   }
 
   async spawnNewZones() {
-    while (this.zones.length < this.gameSoftArea * 1.15) {
+    while (
+      this.zones.length <
+      this.gameSoftArea * this.settings.zoneDensity
+    ) {
       const z = generateZoneData(this)
       if (!z) return
       const zone = await this.addZone(z)
@@ -438,7 +445,10 @@ export class Game {
   }
 
   spawnNewCaches() {
-    while (this.caches.length < this.gameSoftArea * 1.5) {
+    while (
+      this.caches.length <
+      this.gameSoftArea * this.settings.cacheDensity
+    ) {
       const id = c.randomFromArray([
         ...Object.keys(c.cargo),
         `credits`,
@@ -490,11 +500,10 @@ export class Game {
   }
 
   spawnNewAIs() {
-    const aiShipCoefficient = 3
     while (
       this.ships.length &&
       this.aiShips.length <
-        this.gameSoftArea * aiShipCoefficient
+        this.gameSoftArea * this.settings.aiShipDensity
     ) {
       let radius = this.gameSoftRadius
       let spawnPoint: CoordinatePair | undefined

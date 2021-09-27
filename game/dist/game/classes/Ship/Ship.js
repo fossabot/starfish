@@ -573,11 +573,19 @@ class Ship extends Stubbable_1.Stubbable {
             level: this.level,
         };
     }
+    toReference() {
+        return {
+            type: `ship`,
+            name: this.name,
+            id: this.id,
+        };
+    }
     // ----- misc stubs -----
     logEntry(s, lv) { }
     updateMaxScanProperties() { }
     applyPassive(p) { }
     removePassive(p) { }
+    takeActionOnVisibleChange(previousVisible, currentVisible) { }
     receiveBroadcast(message, from, garbleAmount, recipients) { }
 }
 exports.Ship = Ship;

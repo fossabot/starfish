@@ -10,4 +10,11 @@ interface AdminGameSettings {
   gravityScalingFunction: string
   gravityRadius: number
   arrivalThreshold: number
+  baseCritChance: number
+  baseCritDamageMultiplier: number
+
+  planetDensity: number
+  zoneDensity: number
+  aiShipDensity: number
+  cacheDensity: number
 }

@@ -10,6 +10,9 @@ const Ship_1 = require("./Ship");
 class CombatShip extends Ship_1.Ship {
     constructor(props, game) {
         super(props, game);
+        this.targetShip = null;
+        this.targetItemType = `any`;
+        this.combatTactic = `defensive`;
         this.attackable = true;
         this.species.passives.forEach((p) => this.applyPassive(p));
         this.updateAttackRadius();
@@ -19,7 +22,7 @@ class CombatShip extends Ship_1.Ship {
         this.updateAttackRadius();
     }
     updateAttackRadius() {
-        this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.range * curr.repair, highest), 0);
+        this.radii.attack = this.weapons.reduce((highest, curr) => Math.max(curr.effectiveRange, highest), 0);
         this.toUpdate.radii = this.radii;
     }
     applyPassive(p) {
@@ -71,8 +74,20 @@ class CombatShip extends Ship_1.Ship {
     getEnemiesInAttackRange() {
         const combatShipsInRange = this.visible.ships
             .map((s) => this.game.ships.find((ship) => ship.id === s.id))
+            .filter((s) => s &&
+            (!this.onlyVisibleToShipId ||
+                s.id === this.onlyVisibleToShipId))
             .filter((s) => s && this.canAttack(s, true));
         return combatShipsInRange;
+    }
+    recalculateTargetShip() {
+        const enemies = this.getEnemiesInAttackRange();
+        if (!enemies.length) {
+            this.targetShip = null;
+            return this.targetShip;
+        }
+        this.targetShip = dist_1.default.randomFromArray(enemies);
+        return this.targetShip;
     }
     async respawn() {
         dist_1.default.log(`Respawning`, this.name);
@@ -86,28 +101,38 @@ class CombatShip extends Ship_1.Ship {
         await db_1.db.ship.addOrUpdateInDb(this);
     }
     canAttack(otherShip, ignoreWeaponState = false) {
+        // self
         if (this === otherShip)
             return false;
+        // not attackable
         if (!otherShip.attackable)
             return false;
+        // can't see it
+        if (!this.visible.ships.find((s) => s.id === otherShip.id))
+            return false;
+        // either is at pacifist planet
         if ((otherShip.planet && otherShip.planet.pacifist) ||
             (this.planet && this.planet.pacifist))
             return false;
+        // dead
         if (otherShip.dead || this.dead)
             return false;
+        // same faction
         if (otherShip.faction &&
             this.faction &&
             otherShip.faction.id === this.faction.id)
             return false;
+        // too far, or not in sight range
         if (dist_1.default.distance(otherShip.location, this.location) >
-            this.radii.attack)
+            Math.min(this.radii.attack, this.radii.sight))
             return false;
+        // no weapons available
         if (!ignoreWeaponState &&
             !this.availableWeapons().length)
             return false;
         return true;
     }
-    attack(target, weapon, targetType) {
+    attack(target, weapon, targetType = `any`) {
         if (!this.canAttack(target))
             return {
                 damageTaken: 0,
@@ -125,9 +150,16 @@ class CombatShip extends Ship_1.Ship {
         const hitRoll = Math.random();
         let miss = hitRoll * enemyAgility <
             Math.min(rangeAsPercent, minHitChance);
+        const didCrit = Math.random() <=
+            (weapon.critChance === undefined
+                ? this.game.settings.baseCritChance
+                : weapon.critChance);
         let damage = miss
             ? 0
-            : dist_1.default.getHitDamage(weapon, totalMunitionsSkill);
+            : dist_1.default.getHitDamage(weapon, totalMunitionsSkill) *
+                (didCrit
+                    ? this.game.settings.baseCritDamageMultiplier
+                    : 1);
         if (!miss) {
             // ----- apply passives -----
             const factionMembersWithinDistancePassives = this.passives.filter((p) => p.id ===
@@ -174,15 +206,18 @@ class CombatShip extends Ship_1.Ship {
             damage *= boostDamagePassiveMultiplier;
             // ----- done with passives -----
         }
-        // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
+        // * using weapon repair level only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
         if (damage === 0)
             miss = true;
-        dist_1.default.log(`gray`, `need to beat ${Math.min(rangeAsPercent, minHitChance)}, rolled ${hitRoll} for a ${miss ? `miss` : `hit`} of damage ${damage}`);
+        dist_1.default.log(`gray`, `need to beat ${Math.min(rangeAsPercent, minHitChance)}, rolled ${hitRoll} for a ${miss
+            ? `miss`
+            : `${didCrit ? `crit` : `hit`} of damage ${damage}`}`);
         const damageResult = {
             miss,
             damage,
             weapon,
-            targetType,
+            targetType: targetType || `any`,
+            didCrit,
         };
         const attackResult = target.takeDamage(this, damageResult);
         this.game.addAttackRemnant({
@@ -245,7 +280,7 @@ class CombatShip extends Ship_1.Ship {
                         ...attackResult,
                     },
                 },
-                `&nospace.`,
+                `&nospace${didCrit ? ` in a critical hit` : ``}.`,
                 attackResult.didDie
                     ? `${target.name} died in the exchange.`
                     : ``,
@@ -461,7 +496,9 @@ class CombatShip extends Ship_1.Ship {
             this.logEntry([
                 attack.miss
                     ? `Missed by an attack from`
-                    : `Hit by an attack from`,
+                    : `${attack.didCrit
+                        ? `Critical hit`
+                        : `Hit by an attack`} from`,
                 {
                     text: attacker.name,
                     color: attacker.faction.color,
@@ -497,7 +534,9 @@ class CombatShip extends Ship_1.Ship {
         // zone or passive damage
         else
             this.logEntry([
-                attack.miss ? `Missed by` : `Hit by`,
+                attack.miss
+                    ? `Missed by`
+                    : `${attack.didCrit ? `Critical hit` : `Hit`} by`,
                 {
                     text: attacker.name,
                     color: attacker.color || `var(--warning)`,

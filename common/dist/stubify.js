@@ -8,6 +8,7 @@ const Profiler_1 = require("./Profiler");
 const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`];
 const alwaysReferencize = [
     `ship`,
+    `targetShip`,
     `ships`,
     `attacker`,
     `defender`,

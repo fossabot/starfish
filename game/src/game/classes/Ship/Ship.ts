@@ -830,6 +830,14 @@ export class Ship extends Stubbable {
     }
   }
 
+  toReference(): Reference {
+    return {
+      type: `ship`,
+      name: this.name,
+      id: this.id,
+    }
+  }
+
   // ----- misc stubs -----
 
   logEntry(s: LogContent, lv: LogLevel) {}
@@ -839,6 +847,11 @@ export class Ship extends Stubbable {
   applyPassive(p: ShipPassiveEffect) {}
 
   removePassive(p: ShipPassiveEffect) {}
+
+  takeActionOnVisibleChange(
+    previousVisible,
+    currentVisible,
+  ) {}
 
   receiveBroadcast(
     message: string,

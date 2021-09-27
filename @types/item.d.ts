@@ -142,6 +142,7 @@ interface BaseWeaponData extends BaseItemData {
   damage: number
   baseCooldown: number
   cooldownRemaining?: number
+  critChance?: number
 }
 
 interface BaseEngineData extends BaseItemData {

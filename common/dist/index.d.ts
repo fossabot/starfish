@@ -178,7 +178,7 @@ declare const _default: {
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getCrewPassivePriceMultiplier: (level: number) => number;
-    tactics: Tactic[];
+    tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
     taglineOptions: string[];
     statToString: (data: {

@@ -1,1 +1,1 @@
-{"version":3,"file":"stubify.d.ts","sourceRoot":"","sources":["../src/stubify.ts"],"names":[],"mappings":"AAeA,MAAM,CAAC,OAAO,UAAU,OAAO,CAC7B,QAAQ,EACR,QAAQ,SAAS,QAAQ,EAEzB,UAAU,EAAE,QAAQ,EACpB,iBAAiB,GAAE,MAAM,EAAO,EAChC,mBAAmB,GAAE,MAAW,GAC/B,QAAQ,CAoBV"}
+{"version":3,"file":"stubify.d.ts","sourceRoot":"","sources":["../src/stubify.ts"],"names":[],"mappings":"AAgBA,MAAM,CAAC,OAAO,UAAU,OAAO,CAC7B,QAAQ,EACR,QAAQ,SAAS,QAAQ,EAEzB,UAAU,EAAE,QAAQ,EACpB,iBAAiB,GAAE,MAAM,EAAO,EAChC,mBAAmB,GAAE,MAAW,GAC/B,QAAQ,CAoBV"}

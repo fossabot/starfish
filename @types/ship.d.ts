@@ -101,6 +101,14 @@ interface TakenDamageResult extends ResponseWithMessage {
   didDie: boolean
   weapon: Weapon
   miss: boolean
+  didCrit?: boolean
+}
+interface AttackDamageResult {
+  miss: boolean
+  damage: number
+  weapon?: Weapon
+  targetType: ItemType | `any`
+  didCrit?: boolean
 }
 
 interface TargetLocation {

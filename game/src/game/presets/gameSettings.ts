@@ -15,6 +15,13 @@ export default function (): AdminGameSettings {
     gravityScalingFunction: `sixthPower`,
     gravityRadius: 0.5,
     arrivalThreshold: 0.001,
+    baseCritChance: 0.01,
+    baseCritDamageMultiplier: 2,
+
+    planetDensity: 0.9,
+    zoneDensity: 1.15,
+    aiShipDensity: 3,
+    cacheDensity: 1.5,
   }
   return defaultGameSettings
 }

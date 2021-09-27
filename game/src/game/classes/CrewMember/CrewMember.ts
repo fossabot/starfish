@@ -21,10 +21,9 @@ export class CrewMember extends Stubbable {
   maxStamina: number = 1
   lastActive: number
   targetLocation: CoordinatePair | false = false
-  tactic: Tactic = `defensive`
-  attackFactions: FactionKey[] = []
-  attackTargetId: string | false = false
-  itemTarget: ItemType | false = false
+  combatTactic: CombatTactic = `defensive`
+  attackTargetId: string | `any` = `any`
+  targetItemType: ItemType | `any` = `any`
   cockpitCharge: number = 0
   repairPriority: RepairPriority = `most damaged`
   minePriority: MinePriorityType = `closest`
@@ -83,14 +82,14 @@ export class CrewMember extends Stubbable {
     if (data.passives)
       for (let p of data.passives) this.addPassive(p)
 
-    if (data.tactic) this.tactic = data.tactic
-    if (data.itemTarget) this.itemTarget = data.itemTarget
+    if (data.combatTactic)
+      this.combatTactic = data.combatTactic
+    if (data.targetItemType)
+      this.targetItemType = data.targetItemType
     if (data.minePriority)
       this.minePriority = data.minePriority
     if (data.targetLocation)
       this.targetLocation = data.targetLocation
-    if (data.attackFactions)
-      this.attackFactions = data.attackFactions
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
     if (data.stats) this.stats = [...data.stats]
@@ -112,10 +111,26 @@ export class CrewMember extends Stubbable {
   }
 
   goTo(location: CrewLocation) {
+    const previousLocation = this.location
     if (!(location in this.ship.rooms)) return false
     this.location = location
     this.toUpdate.location = this.location
     this.active()
+
+    if (this.location !== previousLocation) {
+      if (
+        this.location === `weapons` ||
+        previousLocation === `weapons`
+      ) {
+        // don't attack immediately on returning to weapons bay
+        this.combatTactic = `pacifist`
+        this.toUpdate.combatTactic = this.combatTactic
+
+        // recalculate ship combat strategy on joining/leaving weapons bay
+        this.ship.recalculateTargetItemType()
+        this.ship.recalculateCombatTactic()
+      }
+    }
 
     if (
       this.ship.crewMembers.length > 10 &&
@@ -150,7 +165,7 @@ export class CrewMember extends Stubbable {
         (s) => s.id === this.attackTargetId,
       )
     ) {
-      this.attackTargetId = false
+      this.attackTargetId = `any`
       this.toUpdate.attackTargetId = this.attackTargetId
     }
 

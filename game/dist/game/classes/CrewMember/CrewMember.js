@@ -34,10 +34,9 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.name = `crew member`;
         this.maxStamina = 1;
         this.targetLocation = false;
-        this.tactic = `defensive`;
-        this.attackFactions = [];
-        this.attackTargetId = false;
-        this.itemTarget = false;
+        this.combatTactic = `defensive`;
+        this.attackTargetId = `any`;
+        this.targetItemType = `any`;
         this.cockpitCharge = 0;
         this.repairPriority = `most damaged`;
         this.minePriority = `closest`;
@@ -88,16 +87,14 @@ class CrewMember extends Stubbable_1.Stubbable {
         if (data.passives)
             for (let p of data.passives)
                 this.addPassive(p);
-        if (data.tactic)
-            this.tactic = data.tactic;
-        if (data.itemTarget)
-            this.itemTarget = data.itemTarget;
+        if (data.combatTactic)
+            this.combatTactic = data.combatTactic;
+        if (data.targetItemType)
+            this.targetItemType = data.targetItemType;
         if (data.minePriority)
             this.minePriority = data.minePriority;
         if (data.targetLocation)
             this.targetLocation = data.targetLocation;
-        if (data.attackFactions)
-            this.attackFactions = data.attackFactions;
         if (data.repairPriority)
             this.repairPriority = data.repairPriority;
         if (data.stats)
@@ -115,11 +112,23 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.toUpdate.name = this.name;
     }
     goTo(location) {
+        const previousLocation = this.location;
         if (!(location in this.ship.rooms))
             return false;
         this.location = location;
         this.toUpdate.location = this.location;
         this.active();
+        if (this.location !== previousLocation) {
+            if (this.location === `weapons` ||
+                previousLocation === `weapons`) {
+                // don't attack immediately on returning to weapons bay
+                this.combatTactic = `pacifist`;
+                this.toUpdate.combatTactic = this.combatTactic;
+                // recalculate ship combat strategy on joining/leaving weapons bay
+                this.ship.recalculateTargetItemType();
+                this.ship.recalculateCombatTactic();
+            }
+        }
         if (this.ship.crewMembers.length > 10 &&
             this.ship.crewMembers.reduce((all, cm) => {
                 return Boolean(all && cm.location === `bunk`);
@@ -132,7 +141,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         // ----- reset attack target if out of vision range -----
         if (this.attackTargetId &&
             !this.ship.visible.ships.find((s) => s.id === this.attackTargetId)) {
-            this.attackTargetId = false;
+            this.attackTargetId = `any`;
             this.toUpdate.attackTargetId = this.attackTargetId;
         }
         // ----- actives -----

@@ -162,11 +162,11 @@ function default_1(socket) {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access game:resetAllAIShips`);
         dist_1.default.log(`Admin resetting all AI ships`);
-        await db_1.db.ship.wipeAI();
-        __1.game.ships.forEach((ship) => {
+        for (let ship of __1.game.ships) {
             if (ship.ai)
-                __1.game.ships.splice(__1.game.ships.findIndex((s) => s === ship), 1);
-        });
+                await __1.game.removeShip(ship);
+        }
+        dist_1.default.log(__1.game.aiShips.length, `AI ships reset`);
         __1.game.spawnNewAIs();
     });
     socket.on(`game:resetAllShips`, async (id, password) => {

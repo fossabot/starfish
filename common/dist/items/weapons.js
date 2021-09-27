@@ -35,6 +35,7 @@ exports.weapons = {
         maxHp: 2,
         reliability: 3,
         repairDifficulty: 0.4,
+        critChance: 0.2,
     },
     // cannons
     cannon1: {
@@ -50,6 +51,7 @@ exports.weapons = {
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
         repairDifficulty: 0.9,
+        critChance: 0,
     },
     cannon2: {
         type: `weapon`,
@@ -64,6 +66,7 @@ exports.weapons = {
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
         repairDifficulty: 0.85,
+        critChance: 0,
     },
     cannon3: {
         type: `weapon`,
@@ -78,6 +81,7 @@ exports.weapons = {
         baseCooldown: 1 * 60 * 1000,
         maxHp: 3,
         repairDifficulty: 0.8,
+        critChance: 0,
     },
     // snipers
     sniper1: {
@@ -93,6 +97,7 @@ exports.weapons = {
         baseCooldown: 2 * 60 * 1000,
         maxHp: 2,
         repairDifficulty: 1.2,
+        critChance: 0.15,
     },
     sniper2: {
         type: `weapon`,
@@ -107,6 +112,7 @@ exports.weapons = {
         baseCooldown: 2.5 * 60 * 1000,
         maxHp: 2,
         repairDifficulty: 1.2,
+        critChance: 0.2,
     },
     sniper3: {
         type: `weapon`,
@@ -121,6 +127,7 @@ exports.weapons = {
         baseCooldown: 3 * 60 * 1000,
         maxHp: 2,
         repairDifficulty: 1.2,
+        critChance: 0.25,
     },
     // sabers
     saber1: {
@@ -136,6 +143,7 @@ exports.weapons = {
         baseCooldown: 0.8 * 60 * 1000,
         maxHp: 4,
         reliability: 1.5,
+        critChance: 0.1,
     },
     saber2: {
         type: `weapon`,
@@ -150,6 +158,7 @@ exports.weapons = {
         baseCooldown: 0.8 * 60 * 1000,
         maxHp: 4,
         reliability: 1.5,
+        critChance: 0.1,
     },
     saber3: {
         type: `weapon`,
@@ -164,6 +173,7 @@ exports.weapons = {
         baseCooldown: 0.7 * 60 * 1000,
         maxHp: 4,
         reliability: 1.5,
+        critChance: 0.1,
     },
 };
 //# sourceMappingURL=weapons.js.map

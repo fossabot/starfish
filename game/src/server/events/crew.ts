@@ -84,6 +84,7 @@ export default function (
     if (!crewMember) return
 
     crewMember.goTo(target)
+
     c.log(
       `gray`,
       `Set ${crewMember.name} on ${ship.name} location to ${target}.`,
@@ -182,8 +183,12 @@ export default function (
     )
     if (!crewMember) return
 
-    crewMember.tactic = tactic
-    crewMember.toUpdate.tactic = crewMember.tactic
+    crewMember.combatTactic = tactic
+    crewMember.toUpdate.combatTactic =
+      crewMember.combatTactic
+
+    ship.recalculateCombatTactic()
+
     c.log(
       `gray`,
       `Set ${crewMember.name} on ${ship.name} tactic to ${tactic}.`,
@@ -207,9 +212,12 @@ export default function (
           (s) => s.id === targetId,
         ) as CombatShip) || null
 
-      crewMember.attackTargetId = targetShip?.id || false
+      crewMember.attackTargetId = targetShip?.id || `any`
       crewMember.toUpdate.attackTargetId =
         crewMember.attackTargetId
+
+      ship.recalculateTargetShip()
+
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${
@@ -231,8 +239,12 @@ export default function (
       )
       if (!crewMember) return
 
-      crewMember.itemTarget = targetId || false
-      crewMember.toUpdate.itemTarget = crewMember.itemTarget
+      crewMember.targetItemType = targetId || `any`
+      crewMember.toUpdate.targetItemType =
+        crewMember.targetItemType
+
+      ship.recalculateTargetItemType()
+
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} item target to ${targetId}.`,

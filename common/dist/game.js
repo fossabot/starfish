@@ -44,7 +44,11 @@ const sameFactionShipScanProperties = {
     _hp: true,
     _maxHp: true,
 };
-const tactics = [`aggressive`, `defensive`];
+const tactics = [
+    `aggressive`,
+    `defensive`,
+    `pacifist`,
+];
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         math_1.default.lerp(1, 4, totalMunitionsSkill / 100));

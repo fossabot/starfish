@@ -19,6 +19,8 @@ class AIShip extends CombatShip_1.CombatShip {
             zones: [],
         };
         this.keyAngle = Math.random() * 365;
+        this.combatTactic = `aggressive`;
+        this.lastAttackedById = null;
         this.obeysGravity = false;
         if (data.id)
             this.id = data.id;
@@ -275,6 +277,29 @@ class AIShip extends CombatShip_1.CombatShip {
                 this.broadcastTo(s);
             }, Math.random() * 5 * 60 * 1000); // sometime within 5 minutes
         });
+        if (!this.targetShip ||
+            !this.canAttack(this.targetShip))
+            this.recalculateTargetShip();
+    }
+    recalculateTargetShip() {
+        // aggressive
+        if (this.combatTactic === `aggressive`)
+            return super.recalculateTargetShip();
+        // defensive
+        else if (this.combatTactic === `defensive`) {
+            const foundLastAttacker = this.lastAttackedById &&
+                this.visible.ships.find((s) => s.id === this.lastAttackedById);
+            if (foundLastAttacker)
+                return foundLastAttacker;
+        }
+        // pacifist
+        return null;
+    }
+    takeDamage(attacker, attack) {
+        const res = super.takeDamage(attacker, attack);
+        this.lastAttackedById = attacker.id;
+        this.recalculateTargetShip();
+        return res;
     }
     broadcastTo(ship) {
         // baseline chance to say nothing

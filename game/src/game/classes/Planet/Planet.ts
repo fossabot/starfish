@@ -72,12 +72,26 @@ export class Planet extends Stubbable {
     this.xp = xp
     this.stats = [...(stats || [])]
 
-    // * timeout so it has time to run subclass contstructor
+    // * timeout so it has time to run subclass constructor
     setTimeout(() => {
       if (this.level === 0) this.levelUp()
 
       const levelsToApply = baseLevel - this.level
       for (let i = 0; i < levelsToApply; i++) this.levelUp()
+
+      if (
+        this.xp <
+        c.levels[this.level - 1] *
+          c.planetLevelXpRequirementMultiplier
+      )
+        this.xp =
+          c.levels[this.level - 1] *
+            c.planetLevelXpRequirementMultiplier +
+          Math.floor(
+            Math.random() *
+              100 *
+              c.planetLevelXpRequirementMultiplier,
+          )
     }, 100)
   }
 

@@ -65,7 +65,7 @@ declare const _default: {
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
-    tactics: Tactic[];
+    tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
     taglineOptions: string[];
     statToString: typeof statToString;
