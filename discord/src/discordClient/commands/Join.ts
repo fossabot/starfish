@@ -5,10 +5,12 @@ import { add } from '../../ioInterface/crew'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class JoinCommand implements Command {
+  requiresShip = true
+
   commandNames = [`join`, `add`, `j`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to join your server's ship.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Join your server's ship.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -52,13 +54,5 @@ export class JoinCommand implements Command {
     //     .add(crewRole)
     //     .catch(() => {})
     // }
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    return true
   }
 }

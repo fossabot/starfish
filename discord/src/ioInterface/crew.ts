@@ -98,3 +98,14 @@ export async function brake(
   )
   return res
 }
+
+export async function repairType(
+  shipId: string,
+  crewId: string,
+  target: RepairPriority,
+) {
+  if (!(await connected()))
+    return `Failed to move crew member`
+
+  io.emit(`crew:repairPriority`, shipId, crewId, target)
+}

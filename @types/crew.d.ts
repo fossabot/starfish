@@ -24,6 +24,7 @@ type RepairPriority =
   | `weapons`
   | `communicators`
   | `scanners`
+  | `armor`
 
 type MinePriorityType = CargoId | `closest`
 

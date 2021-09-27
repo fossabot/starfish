@@ -28,6 +28,10 @@ import { ChangeShipNameCommand } from './commands/ShipName'
 import { ThrustInCurrentDirectionCommand } from './commands/ThrustInCurrentDirection'
 import { BrakeCommand } from './commands/Brake'
 import { StatusCommand } from './commands/Status'
+import { RepairCommand } from './commands/Repair'
+import { BunkCommand } from './commands/Bunk'
+import { WeaponsCommand } from './commands/Weapons'
+import { CockpitCommand } from './commands/Cockpit'
 
 export class CommandHandler {
   private commands: Command[]
@@ -37,21 +41,25 @@ export class CommandHandler {
   constructor(prefix: string) {
     const commandClasses = [
       StartCommand,
-      LeaveGameCommand,
+      JoinCommand,
       InviteCommand,
       LinkCommand,
-      JoinCommand,
-      RespawnCommand,
-      RepairChannelsCommand,
+      StatusCommand,
       BroadcastCommand,
+      GoCommand,
+      ThrustInCurrentDirectionCommand,
+      BrakeCommand,
+      RepairCommand,
+      BunkCommand,
+      WeaponsCommand,
+      CockpitCommand,
+      RespawnCommand,
+      ChangeShipNameCommand,
       AlertLevelCommand,
       ChangeCaptainCommand,
       KickMemberCommand,
-      GoCommand,
-      ChangeShipNameCommand,
-      ThrustInCurrentDirectionCommand,
-      BrakeCommand,
-      StatusCommand,
+      RepairChannelsCommand,
+      LeaveGameCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),
@@ -141,12 +149,45 @@ export class CommandHandler {
 
     for (let matchedCommand of matchedCommands) {
       // check runnability and get error message if relevant
-      const runnable =
-        matchedCommand.hasPermissionToRun(commandContext)
+      let runnable: string | true
+
+      if (commandContext.dm && !matchedCommand.allowDm)
+        runnable = `The \`${matchedCommand.commandNames[0]}\` can only be invoked in a server.`
+      // ship required and no ship
+      if (
+        !commandContext.ship &&
+        matchedCommand.requiresShip
+      )
+        runnable = `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
+      // crewMember required and no crewMember
+      else if (
+        !commandContext.crewMember &&
+        matchedCommand.requiresCrewMember
+      )
+        runnable = `Only crew members can run the \`${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`
+      // captain-only command and not captain or admin
+      else if (
+        matchedCommand.requiresCaptain &&
+        !commandContext.isCaptain &&
+        !commandContext.isServerAdmin &&
+        !commandContext.isGameAdmin
+      )
+        runnable = `Only captain ${
+          commandContext.ship!.crewMembers?.find(
+            (cm) => cm.id === commandContext.ship?.captain,
+          )?.name
+        } or a server admin can run the \`${
+          matchedCommand.commandNames[0]
+        }\` command.`
+      // anything else command-specific
+      else if (!matchedCommand.hasPermissionToRun)
+        runnable = true
+      else
+        runnable =
+          matchedCommand.hasPermissionToRun(commandContext)
       if (runnable !== true) {
-        if (runnable.length) {
+        if (runnable.length)
           await commandContext.reply(runnable)
-        }
         continue
       }
 

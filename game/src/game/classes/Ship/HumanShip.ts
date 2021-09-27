@@ -1213,13 +1213,15 @@ export class HumanShip extends CombatShip {
     if (
       this.targetShip &&
       !this.canAttack(this.targetShip, true)
-    )
+    ) {
       this.recalculateTargetShip()
+    }
     // if the most "voted" ship comes into range/attackability, switch to it
     else if (
       this.idealTargetShip &&
       this.idealTargetShip !== this.targetShip &&
-      this.canAttack(this.idealTargetShip, true)
+      this.canAttack(this.idealTargetShip, true) &&
+      this.combatTactic !== `defensive` // defensive tactic waits until being attacked to switch
     ) {
       this.recalculateTargetShip()
     }
@@ -2066,6 +2068,7 @@ export class HumanShip extends CombatShip {
       //   this.targetItemType,
       //   this.combatTactic,
       // )
+      // c.trace()
       this.targetShip = t
       this.toUpdate.targetShip = t?.toReference() || null
       return t
@@ -2080,6 +2083,7 @@ export class HumanShip extends CombatShip {
       return setTarget(null)
     }
 
+    let closestShip: CombatShip
     // ----- gather most common attack target -----
     const shipTargetCounts = this.membersIn(
       `weapons`,
@@ -2089,8 +2093,15 @@ export class HumanShip extends CombatShip {
         cm,
       ) => {
         if (cm.attackTargetId === `any`) return totals
+        let targetId = cm.attackTargetId
+        if (cm.attackTargetId === `closest`) {
+          if (!closestShip)
+            closestShip = this.getEnemiesInAttackRange()[0]
+          if (closestShip) targetId = closestShip.id
+          else return totals
+        }
         const currTotal = totals.find(
-          (t) => t.target.id === cm.attackTargetId,
+          (t) => t.target.id === targetId,
         )
         const toAdd =
           cm.skills.find((s) => s.skill === `munitions`)
@@ -2098,7 +2109,7 @@ export class HumanShip extends CombatShip {
         if (currTotal) currTotal.total += toAdd
         else {
           const foundShip = this.game.ships.find(
-            (s) => s.id === cm.attackTargetId,
+            (s) => s.id === targetId,
           ) as CombatShip
           if (foundShip)
             totals.push({
@@ -2258,6 +2269,8 @@ export class HumanShip extends CombatShip {
   recalculateCombatTactic() {
     const tacticCounts = this.membersIn(`weapons`).reduce(
       (totals: any, cm) => {
+        if (!cm.combatTactic || cm.combatTactic === `none`)
+          return totals
         const currTotal = totals.find(
           (t: any) => t.tactic === cm.combatTactic,
         )
@@ -2277,7 +2290,7 @@ export class HumanShip extends CombatShip {
     const mainTactic =
       (tacticCounts.sort(
         (b: any, a: any) => b.total - a.total,
-      )?.[0]?.tactic as CombatTactic) || `defensive`
+      )?.[0]?.tactic as CombatTactic) || `pacifist`
 
     this.combatTactic = mainTactic
     this.toUpdate.combatTactic = mainTactic
@@ -2344,7 +2357,7 @@ export class HumanShip extends CombatShip {
 
     setTimeout(() => {
       this.logEntry(
-        `Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
+        `Your ship has been destroyed! All of your cargo and most of your credits have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
         `critical`,
       )
 

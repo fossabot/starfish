@@ -5,10 +5,13 @@ import ioInterface from '../../ioInterface'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class LeaveGameCommand implements Command {
+  requiresShip = true
+  requiresCaptain = true
+
   commandNames = [`leavegame`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to remove your server from the game.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Remove your server from the game.`
   }
 
   async run(context: CommandContext): Promise<void> {

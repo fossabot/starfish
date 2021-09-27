@@ -4,10 +4,13 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class KickMemberCommand implements Command {
+  requiresShip = true
+  requiresCaptain = true
+
   commandNames = [`kickmember`, `kick`, `km`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` to kick a crew member. This action is permanent.`
+    return `\`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` - kick a crew member. This action is permanent.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -39,22 +42,5 @@ export class KickMemberCommand implements Command {
     if (res) {
       await context.reply(res)
     }
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Run \`${commandContext.commandPrefix}start\` to get started.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain (${
-        commandContext.ship.crewMembers?.find(
-          (cm) => cm.id === commandContext.ship?.captain,
-        )?.name
-      }) or a server admin can run this command.`
-    return true
   }
 }

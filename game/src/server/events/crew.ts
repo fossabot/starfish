@@ -207,12 +207,15 @@ export default function (
       )
       if (!crewMember) return
 
-      const targetShip =
-        (game.ships.find(
-          (s) => s.id === targetId,
-        ) as CombatShip) || null
+      let targetShip: CombatShip | undefined
+      if (![`any`, `closest`].includes(targetId)) {
+        targetShip =
+          (game.ships.find(
+            (s) => s.id === targetId,
+          ) as CombatShip) || null
+      }
 
-      crewMember.attackTargetId = targetShip?.id || `any`
+      crewMember.attackTargetId = targetShip?.id || targetId // could also be 'any' or 'closest'
       crewMember.toUpdate.attackTargetId =
         crewMember.attackTargetId
 
@@ -222,7 +225,9 @@ export default function (
         `gray`,
         `Set ${crewMember.name} on ${
           ship.name
-        } attack target to ${targetShip?.name || `any`}.`,
+        } attack target to ${
+          targetShip?.name || targetId
+        }.`,
       )
     },
   )

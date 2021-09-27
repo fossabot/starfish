@@ -2,16 +2,37 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
+import checkPermissions from '../actions/checkPermissions'
 
 export class RepairChannelsCommand implements Command {
-  commandNames = [`repairchannels`, `repair`, `rc`, `rch`]
+  requiresShip = true
+  requiresCaptain = true
+
+  commandNames = [`repairchannels`, `rc`, `rch`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to repair the game's Discord channels (should they become unlinked).`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Repair the game's Discord channels (should they become unlinked).`
   }
 
   async run(context: CommandContext): Promise<void> {
     if (!context.guild) return
+
+    // first, check to see if we have the necessary permissions to make channels
+    const permissionsCheck = await checkPermissions({
+      requiredPermissions: [`MANAGE_CHANNELS`],
+      channel:
+        context.initialMessage.channel.type === `GUILD_TEXT`
+          ? context.initialMessage.channel
+          : undefined,
+      guild: context.guild,
+    })
+    if (`error` in permissionsCheck) {
+      await context.reply(
+        `I don't have permission to create channels! Please add that permission and rerun the command.`,
+      )
+      return
+    }
+
     await resolveOrCreateChannel({
       type: `alert`,
       guild: context.guild,
@@ -25,20 +46,5 @@ export class RepairChannelsCommand implements Command {
       guild: context.guild,
     })
     context.sendToGuild(`Channels repaired.`)
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (commandContext.dm)
-      return `This command can only be invoked in a server.`
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain or a server admin may run this command.`
-    return true
   }
 }

@@ -790,12 +790,15 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         // if target leaves range/attackability, choose a new target
         if (this.targetShip &&
-            !this.canAttack(this.targetShip, true))
+            !this.canAttack(this.targetShip, true)) {
             this.recalculateTargetShip();
+        }
         // if the most "voted" ship comes into range/attackability, switch to it
         else if (this.idealTargetShip &&
             this.idealTargetShip !== this.targetShip &&
-            this.canAttack(this.idealTargetShip, true)) {
+            this.canAttack(this.idealTargetShip, true) &&
+            this.combatTactic !== `defensive` // defensive tactic waits until being attacked to switch
+        ) {
             this.recalculateTargetShip();
         }
     }
@@ -1362,6 +1365,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             //   this.targetItemType,
             //   this.combatTactic,
             // )
+            // c.trace()
             this.targetShip = t;
             this.toUpdate.targetShip = t?.toReference() || null;
             return t;
@@ -1372,17 +1376,27 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (this.combatTactic === `pacifist`) {
             return setTarget(null);
         }
+        let closestShip;
         // ----- gather most common attack target -----
         const shipTargetCounts = this.membersIn(`weapons`).reduce((totals, cm) => {
             if (cm.attackTargetId === `any`)
                 return totals;
-            const currTotal = totals.find((t) => t.target.id === cm.attackTargetId);
+            let targetId = cm.attackTargetId;
+            if (cm.attackTargetId === `closest`) {
+                if (!closestShip)
+                    closestShip = this.getEnemiesInAttackRange()[0];
+                if (closestShip)
+                    targetId = closestShip.id;
+                else
+                    return totals;
+            }
+            const currTotal = totals.find((t) => t.target.id === targetId);
             const toAdd = cm.skills.find((s) => s.skill === `munitions`)
                 ?.level || 1;
             if (currTotal)
                 currTotal.total += toAdd;
             else {
-                const foundShip = this.game.ships.find((s) => s.id === cm.attackTargetId);
+                const foundShip = this.game.ships.find((s) => s.id === targetId);
                 if (foundShip)
                     totals.push({
                         target: foundShip,
@@ -1480,6 +1494,8 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     recalculateCombatTactic() {
         const tacticCounts = this.membersIn(`weapons`).reduce((totals, cm) => {
+            if (!cm.combatTactic || cm.combatTactic === `none`)
+                return totals;
             const currTotal = totals.find((t) => t.tactic === cm.combatTactic);
             const toAdd = cm.skills.find((s) => s.skill === `munitions`)
                 ?.level || 1;
@@ -1492,7 +1508,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 });
             return totals;
         }, []);
-        const mainTactic = tacticCounts.sort((b, a) => b.total - a.total)?.[0]?.tactic || `defensive`;
+        const mainTactic = tacticCounts.sort((b, a) => b.total - a.total)?.[0]?.tactic || `pacifist`;
         this.combatTactic = mainTactic;
         this.toUpdate.combatTactic = mainTactic;
         this.recalculateTargetShip();
@@ -1535,7 +1551,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     die(attacker) {
         super.die(attacker);
         setTimeout(() => {
-            this.logEntry(`Your ship has been destroyed! All cargo and equipment are lost, along with most of your credits, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
+            this.logEntry(`Your ship has been destroyed! All of your cargo and most of your credits have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`, `critical`);
             this.addTagline(`Delicious with Lemon`, `having your ship destroyed`);
             if (this.stats.find((s) => s.stat === `deaths`)
                 ?.amount === 2)

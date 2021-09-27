@@ -21,8 +21,8 @@ export class CrewMember extends Stubbable {
   maxStamina: number = 1
   lastActive: number
   targetLocation: CoordinatePair | false = false
-  combatTactic: CombatTactic = `defensive`
-  attackTargetId: string | `any` = `any`
+  combatTactic: CombatTactic | `none` = `none`
+  attackTargetId: string | `any` | `closest` = `any`
   targetItemType: ItemType | `any` = `any`
   cockpitCharge: number = 0
   repairPriority: RepairPriority = `most damaged`
@@ -123,7 +123,7 @@ export class CrewMember extends Stubbable {
         previousLocation === `weapons`
       ) {
         // don't attack immediately on returning to weapons bay
-        this.combatTactic = `pacifist`
+        this.combatTactic = `none`
         this.toUpdate.combatTactic = this.combatTactic
 
         // recalculate ship combat strategy on joining/leaving weapons bay
@@ -161,6 +161,7 @@ export class CrewMember extends Stubbable {
     // ----- reset attack target if out of vision range -----
     if (
       this.attackTargetId &&
+      ![`closest`, `any`].includes(this.attackTargetId) &&
       !this.ship.visible.ships.find(
         (s) => s.id === this.attackTargetId,
       )

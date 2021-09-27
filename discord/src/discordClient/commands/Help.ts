@@ -12,7 +12,7 @@ export class HelpCommand implements Command {
   }
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to see the game's Discord commands.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - See the game's Discord commands.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -30,9 +30,5 @@ Bot invite link:\n<${c.discordBotInviteUrl}>
 
 Support server:\n<${c.supportServerLink}>`,
     )
-  }
-
-  hasPermissionToRun(): string | true {
-    return true
   }
 }

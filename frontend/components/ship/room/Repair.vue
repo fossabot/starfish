@@ -79,6 +79,12 @@ export default Vue.extend({
         )
       )
         choices.push('communicators')
+      if (
+        this.ship.items.find(
+          (i: ItemStub) => i.type === 'armor',
+        )
+      )
+        choices.push('armor')
       return choices
     },
     selected() {

@@ -4,10 +4,13 @@ import type { Command } from '../models/Command'
 import { respawn } from '../../ioInterface/ship'
 
 export class RespawnCommand implements Command {
-  commandNames = [`respawn`, `r`]
+  requiresShip = true
+  requiresCaptain = true
+
+  commandNames = [`respawn`, `rs`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to get your crew a new ship once you've died.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Get your crew a new ship once you've died.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -29,18 +32,7 @@ export class RespawnCommand implements Command {
   hasPermissionToRun(
     commandContext: CommandContext,
   ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain (${
-        commandContext.ship.crewMembers?.find(
-          (cm) => cm.id === commandContext.ship?.captain,
-        )?.name
-      }) or a server admin can run this command.`
-    if (!commandContext.ship.dead)
+    if (commandContext.ship && !commandContext.ship.dead)
       return `Can't respawn because your ship isn't dead!`
     return true
   }

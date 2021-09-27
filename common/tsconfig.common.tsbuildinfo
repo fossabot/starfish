@@ -247,8 +247,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "4d7ad9c65853bfc792e83dd8d8d3641f5c7e4021686b4890f2ff7516c7c617cc",
-        "signature": "4d7ad9c65853bfc792e83dd8d8d3641f5c7e4021686b4890f2ff7516c7c617cc",
+        "version": "aff89f6c739e26b52e08b3faf8f9269f7e4a1434eee1765855e3f44b5c6d803f",
+        "signature": "aff89f6c739e26b52e08b3faf8f9269f7e4a1434eee1765855e3f44b5c6d803f",
         "affectsGlobalScope": true
       },
       "../@types/discord.d.ts": {

@@ -4,6 +4,9 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class ChangeShipNameCommand implements Command {
+  requiresShip = true
+  requiresCaptain = true
+
   commandNames = [
     `shipname`,
     `changeshipname`,
@@ -15,7 +18,7 @@ export class ChangeShipNameCommand implements Command {
   ]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]} <new name>\` to change the ship's name.`
+    return `\`${commandPrefix}${this.commandNames[0]} <new name>\` - Change the ship's name.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -31,22 +34,5 @@ export class ChangeShipNameCommand implements Command {
     typedName = typedName.replace(/(^[\s<]+|[>\s]+$)*/g, ``)
 
     ioInterface.ship.rename(context.ship.id, typedName)
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Run \`${commandContext.commandPrefix}start\` to get started.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain (${
-        commandContext.ship.crewMembers?.find(
-          (cm) => cm.id === commandContext.ship?.captain,
-        )?.name
-      }) or a server admin can run this command.`
-    return true
   }
 }
