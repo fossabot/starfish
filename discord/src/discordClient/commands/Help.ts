@@ -24,7 +24,7 @@ export class HelpCommand implements Command {
         .filter((m) => m)
         .join(`\n`) +
         `\n\n` +
-        `Your ship's console:\n<${c.frontendUrl}/s>
+        `Your ship's console:\n<${c.frontendUrl}>
 
 Bot invite link:\n<${c.discordBotInviteUrl}>
 

@@ -9,7 +9,13 @@ import {
 } from 'discord.js'
 
 export class StatusCommand implements Command {
-  commandNames = [`status`, `vitals`, `ship`, `shipinfo`]
+  commandNames = [
+    `status`,
+    `s`,
+    `vitals`,
+    `ship`,
+    `shipinfo`,
+  ]
 
   getHelpMessage(
     commandPrefix: string,
@@ -47,51 +53,119 @@ export class StatusCommand implements Command {
 ${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
     })
 
-    if (context.crewMember)
-      fields.push({
-        name: `You`,
-        value: `Stamina: ${c.r2(
-          context.crewMember.stamina * 100,
-          0,
-        )}%
-Location: ${c.capitalize(
-          context.crewMember.location || `bunk`,
-        )}`,
-      })
-
     if (ship.items)
       for (let i of ship.items) {
         fields.push({
           inline: true,
           name: c.items[i.type][i.id].displayName,
-          value: `${c.percentToTextBars(
-            ((i.repair || 0) *
-              c.items[i.type][i.id].maxHp) /
-              c.items[i.type][i.id].maxHp,
-          )}
+          value: `(${c.capitalize(i.type)})
+${c.percentToTextBars(
+  ((i.repair || 0) * c.items[i.type][i.id].maxHp) /
+    c.items[i.type][i.id].maxHp,
+)}
 ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
             c.items[i.type][i.id].maxHp
           } HP`,
         })
       }
-    context.reply({
-      embeds: [
+
+    const embeds: MessageEmbed[] = [
+      new MessageEmbed({
+        title: ship.name,
+        color: color as ColorResolvable,
+        description: ship.speed
+          ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
+              ship.direction
+                ? `at ${c.degreesToArrowEmoji(
+                    ship.direction,
+                  )}${c.r2(ship.direction, 2)}°`
+                : ``
+            }`
+          : `Stopped`,
+        fields,
+      }),
+    ]
+
+    if (context.crewMember) {
+      const youFields: EmbedFieldData[] = []
+      if (context.crewMember) {
+        youFields.push({
+          inline: true,
+          name: `Location`,
+          value: `${c.capitalize(
+            context.crewMember.location || `bunk`,
+          )}`,
+        })
+        youFields.push({
+          inline: true,
+          name: `Stamina`,
+          value: `${c.percentToTextBars(
+            context.crewMember.stamina,
+          )}
+${c.r2(context.crewMember.stamina * 100, 0)}%`,
+        })
+        youFields.push({
+          inline: true,
+          name: `Cockpit Charge`,
+          value: `${c.percentToTextBars(
+            context.crewMember.cockpitCharge,
+          )}
+${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
+        })
+        youFields.push({
+          inline: true,
+          name: `Credits`,
+          value: `${c.numberWithCommas(
+            c.r2(context.crewMember.credits, 0),
+          )}`,
+        })
+        youFields.push({
+          inline: true,
+          name: `Inventory`,
+          value:
+            `${c.percentToTextBars(
+              context.crewMember.inventory.reduce(
+                (total, i) => total + i.amount,
+                0,
+              ) /
+                Math.min(
+                  context.crewMember.maxCargoSpace,
+                  ship.chassis?.maxCargoSpace || 0,
+                ),
+            )}
+${c.r2(
+  context.crewMember.inventory.reduce(
+    (total, i) => total + i.amount,
+    0,
+  ),
+)}/${Math.min(
+              context.crewMember.maxCargoSpace,
+              ship.chassis?.maxCargoSpace || 0,
+            )} tons` +
+            (context.crewMember.inventory.length === 0
+              ? ``
+              : `\n${context.crewMember.inventory
+                  .map(
+                    (i) =>
+                      `${c.cargo[i.id].name} (${
+                        i.amount
+                      } ton${i.amount === 1 ? `` : `s`})`,
+                  )
+                  .join(`\n`)}`),
+        })
+      }
+
+      embeds.push(
         new MessageEmbed({
-          title: ship.name,
+          title: context.crewMember.name,
           color: color as ColorResolvable,
-          image: { url: ship.guildIcon },
-          description: ship.speed
-            ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
-                ship.direction
-                  ? `at ${c.degreesToArrowEmoji(
-                      ship.direction,
-                    )}${c.r2(ship.direction, 2)}°`
-                  : ``
-              }`
-            : `Stopped`,
-          fields,
+          fields: youFields,
         }),
-      ],
+      )
+    }
+
+    context.reply({
+      embeds,
     })
   }
 

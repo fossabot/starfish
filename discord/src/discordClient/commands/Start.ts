@@ -15,7 +15,7 @@ import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import checkPermissions from '../actions/checkPermissions'
 
 export class StartCommand implements Command {
-  commandNames = [`start`, `s`, `spawn`, `begin`, `init`]
+  commandNames = [`start`, `st`, `spawn`, `begin`, `init`]
 
   getHelpMessage(commandPrefix: string): string {
     return `Use \`${commandPrefix}${this.commandNames[0]}\` to start your server off in the game.`

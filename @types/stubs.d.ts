@@ -12,6 +12,7 @@ interface GameStub extends BaseStub {
 interface ShipStub extends BaseStub {
   id: string
   name: string
+  chassis?: BaseChassisData
   items?: ItemStub[]
   previousLocations: CoordinatePair[]
   location: CoordinatePair

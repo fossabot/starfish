@@ -60,7 +60,7 @@ export class GoCommand implements Command {
     )
       roomToGoTo = `mine`
     if (
-      [`repair`, `fix`, `repairs`, `r`].includes(
+      [`repair`, `fix`, `repairs`, `r`, `rep`].includes(
         enteredString,
       )
     )
@@ -71,6 +71,8 @@ export class GoCommand implements Command {
         `weapons`,
         `fight`,
         `combat`,
+        `kill`,
+        `attack`,
         `w`,
       ].includes(enteredString)
     )

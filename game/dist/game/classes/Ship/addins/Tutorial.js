@@ -65,7 +65,7 @@ class Tutorial {
                 visibleTypes: [],
                 script: [
                     {
-                        message: `Welcome to ${dist_1.default.gameName}! To get started, log in at ${dist_1.default.frontendUrl}`,
+                        message: `Welcome to ${dist_1.default.gameName}! To get started, log in at ${dist_1.default.frontendUrl.replace(/\/s$/gi, ``)}`,
                         channel: `alert`,
                     },
                     {

@@ -95,8 +95,9 @@ function coordPairToArrow(coordPair) {
 function percentToTextBars(percent = 0, barCount = 10) {
     const bars = [];
     const barGap = 1 / barCount;
-    for (let i = 0; i < 1; i += 1 / barCount)
-        bars.push(i - barGap / 2 < percent ? `▓` : `░`);
+    for (let i = 0; i < 1; i += 1 / barCount) {
+        bars.push(Math.max(i - barGap / 2, 0) < percent ? `▓` : `░`);
+    }
     return `\`` + bars.join(``) + `\``;
 }
 function numberToEmoji(number = 0) {

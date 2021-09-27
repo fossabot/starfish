@@ -98,7 +98,12 @@ export class Tutorial {
         visibleTypes: [],
         script: [
           {
-            message: `Welcome to ${c.gameName}! To get started, log in at ${c.frontendUrl}`,
+            message: `Welcome to ${
+              c.gameName
+            }! To get started, log in at ${c.frontendUrl.replace(
+              /\/s$/gi,
+              ``,
+            )}`,
             channel: `alert`,
           },
           {

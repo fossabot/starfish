@@ -297,8 +297,8 @@
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "c02719c891b73bcb8d2455a594cebf45dfacf19eed7e01264ccb483e1bd970de",
-        "signature": "c02719c891b73bcb8d2455a594cebf45dfacf19eed7e01264ccb483e1bd970de",
+        "version": "9dc40eb00203579eddb5c2d0420dca3023c4d280f02dadea86bf9e292f63a143",
+        "signature": "9dc40eb00203579eddb5c2d0420dca3023c4d280f02dadea86bf9e292f63a143",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
@@ -357,7 +357,7 @@
         "affectsGlobalScope": false
       },
       "./src/discord.ts": {
-        "version": "df5412575b03f0ccb2f9d3729dc3c4b37ffe823f70d1f347e0f44840fc1d444b",
+        "version": "55c763b5c26f40f56ef7e7c95e7ce03f732f16adfae759ebbeae1e112ae3329c",
         "signature": "61754a63b64d887549069df87d9a822e0a338a149b9c05d7404811c817d65416",
         "affectsGlobalScope": false
       },
@@ -382,7 +382,7 @@
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "7f203f120646c26a3b90c148fd3930b890f655c8f266f0239a3149b13082189a",
+        "version": "5c72ff7eff1e3c9a3b574b25b129f8e5fb9cc99a88a688ed9148946c41cb286f",
         "signature": "0d67c8e13663787cc7619fafabaa9cf3404cabc530c1d9e59ab278c9e3a1cc23",
         "affectsGlobalScope": false
       },
