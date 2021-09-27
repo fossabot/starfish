@@ -382,31 +382,31 @@ class Ship extends Stubbable_1.Stubbable {
         if (this.previousLocations.length < 1 ||
             (Math.abs(dist_1.default.angleFromAToB(this.previousLocations[this.previousLocations.length - 1], previousLocation) -
                 dist_1.default.angleFromAToB(previousLocation, currentLocation)) >= 2 &&
-                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.000001)) {
+                dist_1.default.distance(this.location, this.previousLocations[this.previousLocations.length - 1]) > 0.00005)) {
             // if (this.human)
-            // c.log(
-            //   `adding previous location to`,
-            //   this.name,
-            //   this.previousLocations.length,
-            //   Math.abs(
-            //     c.angleFromAToB(
+            //   c.log(
+            //     `adding previous location to`,
+            //     this.name,
+            //     this.previousLocations.length,
+            //     Math.abs(
+            //       c.angleFromAToB(
+            //         this.previousLocations[
+            //           this.previousLocations.length - 1
+            //         ],
+            //         previousLocation,
+            //       ) -
+            //         c.angleFromAToB(
+            //           previousLocation,
+            //           currentLocation,
+            //         ),
+            //     ),
+            //     c.distance(
+            //       this.location,
             //       this.previousLocations[
             //         this.previousLocations.length - 1
             //       ],
-            //       previousLocation,
-            //     ) -
-            //       c.angleFromAToB(
-            //         previousLocation,
-            //         currentLocation,
-            //       ),
-            //   ),
-            //   c.distance(
-            //     this.location,
-            //     this.previousLocations[
-            //       this.previousLocations.length - 1
-            //     ],
-            //   ),
-            // )
+            //     ),
+            //   )
             this.previousLocations.push([...currentLocation]);
             while (this.previousLocations.length >
                 Ship.maxPreviousLocations)

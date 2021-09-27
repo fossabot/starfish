@@ -44,27 +44,39 @@ const ShipName_1 = require("./commands/ShipName");
 const ThrustInCurrentDirection_1 = require("./commands/ThrustInCurrentDirection");
 const Brake_1 = require("./commands/Brake");
 const Status_1 = require("./commands/Status");
+const Repair_1 = require("./commands/Repair");
+const Bunk_1 = require("./commands/Bunk");
+const Weapons_1 = require("./commands/Weapons");
+const Cockpit_1 = require("./commands/Cockpit");
+const Buy_1 = require("./commands/Buy");
+const Sell_1 = require("./commands/Sell");
 class CommandHandler {
     commands;
     prefix;
     constructor(prefix) {
         const commandClasses = [
             Start_1.StartCommand,
-            LeaveGame_1.LeaveGameCommand,
+            Join_1.JoinCommand,
             Invite_1.InviteCommand,
             Link_1.LinkCommand,
-            Join_1.JoinCommand,
-            Respawn_1.RespawnCommand,
-            RepairChannels_1.RepairChannelsCommand,
+            Status_1.StatusCommand,
             Broadcast_1.BroadcastCommand,
+            Go_1.GoCommand,
+            ThrustInCurrentDirection_1.ThrustInCurrentDirectionCommand,
+            Brake_1.BrakeCommand,
+            Buy_1.BuyCommand,
+            Sell_1.SellCommand,
+            Repair_1.RepairCommand,
+            Bunk_1.BunkCommand,
+            Weapons_1.WeaponsCommand,
+            Cockpit_1.CockpitCommand,
+            Respawn_1.RespawnCommand,
+            ShipName_1.ChangeShipNameCommand,
             AlertLevel_1.AlertLevelCommand,
             ChangeCaptain_1.ChangeCaptainCommand,
             KickMember_1.KickMemberCommand,
-            Go_1.GoCommand,
-            ShipName_1.ChangeShipNameCommand,
-            ThrustInCurrentDirection_1.ThrustInCurrentDirectionCommand,
-            Brake_1.BrakeCommand,
-            Status_1.StatusCommand,
+            RepairChannels_1.RepairChannelsCommand,
+            LeaveGame_1.LeaveGameCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         this.commands.push(new Help_1.HelpCommand(this.commands));
@@ -121,14 +133,39 @@ class CommandHandler {
         this.sideEffects(commandContext);
         for (let matchedCommand of matchedCommands) {
             // check runnability and get error message if relevant
-            const runnable = matchedCommand.hasPermissionToRun(commandContext);
+            let runnable;
+            if (commandContext.dm && !matchedCommand.allowDm)
+                runnable = `The \`${matchedCommand.commandNames[0]}\` can only be invoked in a server.`;
+            // ship required and no ship
+            if (!commandContext.ship &&
+                matchedCommand.requiresShip)
+                runnable = `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`;
+            // crewMember required and no crewMember
+            else if (!commandContext.crewMember &&
+                matchedCommand.requiresCrewMember)
+                runnable = `Only crew members can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`;
+            // planet-only command and no planet
+            else if (!commandContext.ship?.planet &&
+                matchedCommand.requiresPlanet)
+                runnable = `Your ship must be on a planet to use the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`;
+            // captain-only command and not captain or admin
+            else if (matchedCommand.requiresCaptain &&
+                !commandContext.isCaptain &&
+                !commandContext.isServerAdmin &&
+                !commandContext.isGameAdmin)
+                runnable = `Only captain ${commandContext.ship.crewMembers?.find((cm) => cm.id === commandContext.ship?.captain)?.name} or a server admin can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`;
+            // anything else command-specific
+            else if (!matchedCommand.hasPermissionToRun)
+                runnable = true;
+            else
+                runnable =
+                    matchedCommand.hasPermissionToRun(commandContext);
             if (runnable !== true) {
-                if (runnable.length) {
+                if (runnable.length)
                     await commandContext.reply(runnable);
-                }
                 continue;
             }
-            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} - ${commandContext.ship?.name ||
+            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} on ${commandContext.ship?.name ||
                 commandContext.guild?.name ||
                 `PM`})`);
             // run command

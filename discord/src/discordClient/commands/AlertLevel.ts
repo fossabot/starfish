@@ -4,10 +4,13 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class AlertLevelCommand implements Command {
+  requiresShip = true
+  requiresCaptain = true
+
   commandNames = [`alertlevel`, `al`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]} <1, 2, 3, 4, or 5>\` to set the severity of alerts that will appear in the \`alerts\` channel.`
+    return `\`${commandPrefix}${this.commandNames[0]} <1, 2, 3, 4, or 5>\` - Set the severity of alerts that will appear in the \`alerts\` channel.`
   }
 
   async run(context: CommandContext) {
@@ -47,22 +50,5 @@ export class AlertLevelCommand implements Command {
       context.sendToGuild(
         `You will receive alerts for anything of priority ${newLevel.data} and above.`,
       )
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain (${
-        commandContext.ship.crewMembers?.find(
-          (cm) => cm.id === commandContext.ship?.captain,
-        )?.name
-      }) or a server admin can run this command.`
-    return true
   }
 }

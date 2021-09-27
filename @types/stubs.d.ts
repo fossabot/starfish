@@ -92,6 +92,10 @@ interface CrewMemberStub extends BaseStub {
 
 interface PlanetStub extends BaseStub {
   location: CoordinatePair
+  name: string
+  vendor?: PlanetVendor
+  allegiances: PlanetAllegianceData[]
+  priceFluctuator: number
   [key: string]: any
 }
 interface PlanetLogStub extends BaseStub {

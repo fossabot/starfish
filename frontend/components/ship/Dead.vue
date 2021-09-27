@@ -15,15 +15,15 @@
       </div>
 
       <div class="marbot">
-        All cargo and equipment are lost, along with most of
-        your credits, but the crew managed to escape back to
-        their homeworld.
+        All of your cargo and most of your credits have been
+        jettisoned, and only shreds of your equipment are
+        salvageable for scrap, but the crew managed to
+        escape back to their homeworld.
       </div>
 
       <div class="marbot">
         <div v-if="!isCaptain">
-          Waiting for the captain ({{ captain.name }}) to
-          start a new ship.
+          Waiting for captain {{ captain.name }} to respawn.
         </div>
         <div v-if="isCaptain">
           Captain, click to start a new ship.

@@ -4,10 +4,13 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class ChangeCaptainCommand implements Command {
+  requiresShip = true
+  requiresCaptain = true
+
   commandNames = [`changecaptain`, `captain`, `cc`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]} <@newcaptain>\` to change the ship's captain.`
+    return `\`${commandPrefix}${this.commandNames[0]} <@newcaptain>\` - Change the ship's captain.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -27,7 +30,7 @@ export class ChangeCaptainCommand implements Command {
     )
     if (!crewMember) {
       await context.reply(
-        `No ship crew member found for that server member. Are you sure they've joined the crew?`,
+        `No ship crew member found for that server member. Are you sure they've \`${context.commandPrefix}join\`ed the crew?`,
       )
       return
     }
@@ -39,22 +42,5 @@ export class ChangeCaptainCommand implements Command {
     if (res) {
       await context.reply(res)
     }
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Run \`${commandContext.commandPrefix}start\` to get started.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain (${
-        commandContext.ship.crewMembers?.find(
-          (cm) => cm.id === commandContext.ship?.captain,
-        )?.name
-      }) or a server admin can run this command.`
-    return true
   }
 }

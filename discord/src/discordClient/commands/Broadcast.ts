@@ -5,6 +5,9 @@ import { Message, TextChannel } from 'discord.js'
 import ioInterface from '../../ioInterface'
 
 export class BroadcastCommand implements Command {
+  requiresShip = true
+  requiresCrewMember = true
+
   commandNames = []
 
   getHelpMessage(commandPrefix: string): string {
@@ -40,7 +43,6 @@ export class BroadcastCommand implements Command {
     commandContext: CommandContext,
   ): string | true {
     if (commandContext.matchedCommands.length > 1) return ``
-    // commandContext.ship.items.find(antenna)
     return true
   }
 }

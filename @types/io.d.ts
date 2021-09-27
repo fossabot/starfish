@@ -209,7 +209,13 @@ interface IOClientEvents {
     cargoId: CargoId,
     amount: number,
     vendorLocation: string,
-    callback: (res: IOResponse<CrewMemberStub>) => void,
+    callback: (
+      res: IOResponse<{
+        cargoId: CargoId
+        amount: number
+        price: number
+      }>,
+    ) => void,
   ) => void
   [`crew:sellCargo`]: (
     shipId: string,
@@ -217,7 +223,13 @@ interface IOClientEvents {
     cargoId: CargoId,
     amount: number,
     vendorLocation: string,
-    callback: (res: IOResponse<CrewMemberStub>) => void,
+    callback: (
+      res: IOResponse<{
+        cargoId: CargoId
+        amount: number
+        price: number
+      }>,
+    ) => void,
   ) => void
   [`crew:buyRepair`]: (
     shipId: string,

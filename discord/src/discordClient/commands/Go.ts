@@ -4,15 +4,18 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class GoCommand implements Command {
+  requiresShip = true
+  requiresCrewMember = true
+
   commandNames = [`go`, `room`, `move`, `moveto`]
 
   getHelpMessage(
     commandPrefix: string,
     availableRooms?: string[],
   ): string {
-    return `Use \`${commandPrefix}${
+    return `\`${commandPrefix}${
       this.commandNames[0]
-    } <room name>\` to move to a room in the ship.${
+    } <room name>\` - Move to a room in the ship.${
       availableRooms
         ? `\nAvailable rooms: ${availableRooms.join(`, `)}.`
         : ``
@@ -98,15 +101,5 @@ export class GoCommand implements Command {
         roomToGoTo,
       )}.`,
     )
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (!commandContext.crewMember)
-      return `Only crew members can run this command. Join the ship first!`
-    return true
   }
 }

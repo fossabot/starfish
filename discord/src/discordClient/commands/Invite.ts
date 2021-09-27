@@ -7,7 +7,7 @@ export class InviteCommand implements Command {
   commandNames = [`invite`, `inv`, `i`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to get a game bot invite link.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Get a game bot invite link.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -18,9 +18,5 @@ export class InviteCommand implements Command {
         }),
       ],
     })
-  }
-
-  hasPermissionToRun(): string | true {
-    return true
   }
 }

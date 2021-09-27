@@ -34,7 +34,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.name = `crew member`;
         this.maxStamina = 1;
         this.targetLocation = false;
-        this.combatTactic = `defensive`;
+        this.combatTactic = `none`;
         this.attackTargetId = `any`;
         this.targetItemType = `any`;
         this.cockpitCharge = 0;
@@ -122,7 +122,7 @@ class CrewMember extends Stubbable_1.Stubbable {
             if (this.location === `weapons` ||
                 previousLocation === `weapons`) {
                 // don't attack immediately on returning to weapons bay
-                this.combatTactic = `pacifist`;
+                this.combatTactic = `none`;
                 this.toUpdate.combatTactic = this.combatTactic;
                 // recalculate ship combat strategy on joining/leaving weapons bay
                 this.ship.recalculateTargetItemType();
@@ -140,6 +140,7 @@ class CrewMember extends Stubbable_1.Stubbable {
         this._stub = null; // invalidate stub
         // ----- reset attack target if out of vision range -----
         if (this.attackTargetId &&
+            ![`closest`, `any`].includes(this.attackTargetId) &&
             !this.ship.visible.ships.find((s) => s.id === this.attackTargetId)) {
             this.attackTargetId = `any`;
             this.toUpdate.attackTargetId = this.attackTargetId;

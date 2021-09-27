@@ -445,15 +445,28 @@ export abstract class CombatShip extends Ship {
       )
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
+
+    // extra combat xp on attack for all crew members in the weapons bay
+    const xpBoostMultiplier =
+      this.passives
+        .filter((p) => p.id === `boostXpGain`)
+        .reduce(
+          (total, p) => (p.intensity || 0) + total,
+          0,
+        ) + 1
+    this.crewMembers
+      .filter((cm) => cm.location === `weapons`)
+      .forEach((cm: CrewMember) => {
+        cm.addXp(
+          `munitions`,
+          this.game.settings.baseXpGain *
+            Math.round(weapon.damage * 40) *
+            xpBoostMultiplier,
+        )
+      })
+
     if (attackResult.didDie) {
-      // extra combat xp for all crew members in the weapons bay
-      const xpBoostMultiplier =
-        this.passives
-          .filter((p) => p.id === `boostXpGain`)
-          .reduce(
-            (total, p) => (p.intensity || 0) + total,
-            0,
-          ) + 1
+      // extra combat xp on kill for all crew members in the weapons bay
       this.crewMembers
         .filter((cm) => cm.location === `weapons`)
         .forEach((cm: CrewMember) => {

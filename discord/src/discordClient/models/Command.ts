@@ -9,6 +9,12 @@ export interface Command {
    */
   readonly commandNames: string[]
 
+  readonly requiresShip?: boolean
+  readonly requiresCrewMember?: boolean
+  readonly requiresCaptain?: boolean
+  readonly requiresPlanet?: boolean
+  readonly allowDm?: boolean
+
   /** usage documentation. */
   getHelpMessage(commandPrefix: string): string
 
@@ -16,7 +22,7 @@ export interface Command {
   run(parsedUserCommand: CommandContext): Promise<void>
 
   /** returns true if the requesting user can use the command in the current context, or an error message otherwise. Returns an empty string to fail silently. */
-  hasPermissionToRun(
+  hasPermissionToRun?(
     parsedUserCommand: CommandContext,
   ): string | true
 

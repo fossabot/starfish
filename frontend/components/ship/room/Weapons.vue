@@ -75,7 +75,15 @@
         <div class="panesubhead">Your Tactic</div>
         <div>
           <button
+            @click="$store.commit('setTactic', 'none')"
+            :class="{
+              secondary: crewMember.combatTactic !== 'none',
+            }"
+          >
+            No Preference</button
+          ><button
             v-for="tactic in c.tactics"
+            :key="'tactic' + tactic"
             @click="$store.commit('setTactic', tactic)"
             :class="{
               secondary: crewMember.combatTactic !== tactic,
@@ -97,6 +105,16 @@
             @click="$store.commit('setAttackTarget', 'any')"
           >
             Any Target</button
+          ><button
+            :class="{
+              secondary:
+                crewMember.attackTargetId !== 'closest',
+            }"
+            @click="
+              $store.commit('setAttackTarget', 'closest')
+            "
+          >
+            Closest Target</button
           ><button
             v-for="targetShip in visibleEnemies"
             :key="'inattackrange' + targetShip.id"

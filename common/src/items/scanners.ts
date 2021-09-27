@@ -1,5 +1,7 @@
 import game from '../game'
 
+// todo a scanner that can only see and not scan
+
 export const scanners: {
   [key in ScannerId]: BaseScannerData
 } = {

@@ -15,10 +15,12 @@ import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import checkPermissions from '../actions/checkPermissions'
 
 export class StartCommand implements Command {
+  requiresCaptain = true
+
   commandNames = [`start`, `st`, `spawn`, `begin`, `init`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to start your server off in the game.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Start your server off in the game.`
   }
 
   async run(context: CommandContext): Promise<void> {
@@ -169,13 +171,6 @@ This bot will create several channels for game communication and a role for crew
   hasPermissionToRun(
     commandContext: CommandContext,
   ): string | true {
-    if (commandContext.dm)
-      return `This command can only be invoked in a server.`
-    if (
-      !commandContext.isCaptain &&
-      !commandContext.isServerAdmin
-    )
-      return `Only the captain or a server admin may run this command.`
     if (commandContext.ship)
       return `Your server already has a ship! It's called ${commandContext.ship.name}.`
     return true

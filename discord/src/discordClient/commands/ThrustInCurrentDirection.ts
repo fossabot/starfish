@@ -6,13 +6,13 @@ import ioInterface from '../../ioInterface'
 export class ThrustInCurrentDirectionCommand
   implements Command
 {
+  requiresShip = true
+  requiresCrewMember = true
+
   commandNames = [`thrust`, `thrustincurrentdirection`]
 
-  getHelpMessage(
-    commandPrefix: string,
-    availableRooms?: string[],
-  ): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to use all of your current available thrust in the ship's current direction.`
+  getHelpMessage(commandPrefix: string): string {
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Use all of your current available thrust in the ship's current direction.`
   }
 
   async run(context: CommandContext) {
@@ -32,15 +32,5 @@ export class ThrustInCurrentDirectionCommand
           3,
         )}AU/hr in the current direction.`,
       )
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (!commandContext.crewMember)
-      return `Only crew members can run this command. Join the ship first!`
-    return true
   }
 }

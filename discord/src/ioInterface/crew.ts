@@ -36,22 +36,24 @@ export async function rename(
   shipId: string,
   crewId: string,
   name: string,
-) {
+): Promise<IOResponse<true>> {
   if (!(await connected()))
-    return `Failed to rename crew member`
+    return { error: `Failed to rename crew member` }
 
   io.emit(`crew:rename`, shipId, crewId, name)
+  return { data: true }
 }
 
 export async function move(
   shipId: string,
   crewId: string,
   target: CrewLocation,
-) {
+): Promise<IOResponse<true>> {
   if (!(await connected()))
-    return `Failed to move crew member`
+    return { error: `Failed to move crew member` }
 
   io.emit(`crew:move`, shipId, crewId, target)
+  return { data: true }
 }
 
 export async function thrustInCurrentDirection(
@@ -81,7 +83,7 @@ export async function brake(
   crewId: string,
 ) {
   if (!(await connected()))
-    return { error: `Failed to thrust.` }
+    return { error: `Failed to brake.` }
 
   const res: IOResponse<number> = await new Promise(
     (resolve) => {
@@ -97,4 +99,78 @@ export async function brake(
     },
   )
   return res
+}
+
+export async function repairType(
+  shipId: string,
+  crewId: string,
+  target: RepairPriority,
+): Promise<IOResponse<true>> {
+  if (!(await connected()))
+    return { error: `Failed to move crew member.` }
+
+  io.emit(`crew:repairPriority`, shipId, crewId, target)
+  return { data: true }
+}
+
+export async function sell(
+  shipId: string,
+  crewId: string,
+  type: CargoId,
+  amount: number,
+  location: string,
+): Promise<
+  IOResponse<{
+    cargoId: CargoId
+    amount: number
+    price: number
+  }>
+> {
+  if (!(await connected()))
+    return { error: `Failed to move crew member` }
+
+  return new Promise((resolve) => {
+    io.emit(
+      `crew:sellCargo`,
+      shipId,
+      crewId,
+      type,
+      amount,
+      location,
+      (res) => {
+        resolve(res)
+      },
+    )
+  })
+}
+
+export async function buy(
+  shipId: string,
+  crewId: string,
+  type: CargoId,
+  amount: number,
+  location: string,
+): Promise<
+  IOResponse<{
+    cargoId: CargoId
+    amount: number
+    price: number
+  }>
+> {
+  if (!(await connected()))
+    return { error: `Failed to move crew member` }
+
+  return new Promise((resolve) => {
+    io.emit(
+      `crew:buyCargo`,
+      shipId,
+      crewId,
+      type,
+      amount,
+      location,
+      (res) => {
+        resolve(res)
+      },
+    )
+  })
 }

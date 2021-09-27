@@ -9,6 +9,8 @@ import {
 } from 'discord.js'
 
 export class StatusCommand implements Command {
+  requiresShip = true
+
   commandNames = [
     `status`,
     `s`,
@@ -17,11 +19,8 @@ export class StatusCommand implements Command {
     `shipinfo`,
   ]
 
-  getHelpMessage(
-    commandPrefix: string,
-    availableRooms?: string[],
-  ): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to apply the brakes with all of your current available charge.`
+  getHelpMessage(commandPrefix: string): string {
+    return `\`${commandPrefix}${this.commandNames[0]}\` - See your and your ship's current status.`
   }
 
   async run(context: CommandContext) {
@@ -48,9 +47,9 @@ export class StatusCommand implements Command {
       name: `Ship HP`,
       value: `${c.percentToTextBars(
         (ship._hp || 0) / (ship._maxHp || 0),
-        20,
+        (ship._maxHp || 0) * 2,
       )}
-${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
+🇨🇭 ${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
     })
 
     if (ship.items)
@@ -62,8 +61,9 @@ ${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
 ${c.percentToTextBars(
   ((i.repair || 0) * c.items[i.type][i.id].maxHp) /
     c.items[i.type][i.id].maxHp,
+  c.items[i.type][i.id].maxHp * 2,
 )}
-${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
+🇨🇭 ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
             c.items[i.type][i.id].maxHp
           } HP`,
         })
@@ -71,17 +71,22 @@ ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
 
     const embeds: MessageEmbed[] = [
       new MessageEmbed({
-        title: ship.name,
+        title: `${c.species[ship.species.id].icon} ${
+          ship.name
+        }`,
         color: color as ColorResolvable,
-        description: ship.speed
-          ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
-              ship.direction
-                ? `at ${c.degreesToArrowEmoji(
-                    ship.direction,
-                  )}${c.r2(ship.direction, 2)}°`
-                : ``
-            }`
-          : `Stopped`,
+        description:
+          `**` +
+          (ship.speed
+            ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
+                ship.direction
+                  ? `at ${c.degreesToArrowEmoji(
+                      ship.direction,
+                    )}${c.r2(ship.direction, 2)}°`
+                  : ``
+              }`
+            : `Stopped`) +
+          `**`,
         fields,
       }),
     ]
@@ -92,7 +97,7 @@ ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
         youFields.push({
           inline: true,
           name: `Location`,
-          value: `${c.capitalize(
+          value: `🚪 ${c.capitalize(
             context.crewMember.location || `bunk`,
           )}`,
         })
@@ -102,7 +107,7 @@ ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
           value: `${c.percentToTextBars(
             context.crewMember.stamina,
           )}
-${c.r2(context.crewMember.stamina * 100, 0)}%`,
+🔋 ${c.r2(context.crewMember.stamina * 100, 0)}%`,
         })
         youFields.push({
           inline: true,
@@ -110,12 +115,12 @@ ${c.r2(context.crewMember.stamina * 100, 0)}%`,
           value: `${c.percentToTextBars(
             context.crewMember.cockpitCharge,
           )}
-${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
+🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
         })
         youFields.push({
           inline: true,
           name: `Credits`,
-          value: `${c.numberWithCommas(
+          value: `💳 ${c.numberWithCommas(
             c.r2(context.crewMember.credits, 0),
           )}`,
         })
@@ -133,12 +138,12 @@ ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
                   ship.chassis?.maxCargoSpace || 0,
                 ),
             )}
-${c.r2(
-  context.crewMember.inventory.reduce(
-    (total, i) => total + i.amount,
-    0,
-  ),
-)}/${Math.min(
+📦 ${c.r2(
+              context.crewMember.inventory.reduce(
+                (total, i) => total + i.amount,
+                0,
+              ),
+            )}/${Math.min(
               context.crewMember.maxCargoSpace,
               ship.chassis?.maxCargoSpace || 0,
             )} tons` +
@@ -157,7 +162,9 @@ ${c.r2(
 
       embeds.push(
         new MessageEmbed({
-          title: context.crewMember.name,
+          title: `${c.species[ship.species.id].icon} ${
+            context.crewMember.name
+          }`,
           color: color as ColorResolvable,
           fields: youFields,
         }),
@@ -167,13 +174,5 @@ ${c.r2(
     context.reply({
       embeds,
     })
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    return true
   }
 }

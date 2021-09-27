@@ -4,13 +4,13 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
 export class BrakeCommand implements Command {
+  requiresShip = true
+  requiresCrewMember = true
+
   commandNames = [`brake`]
 
-  getHelpMessage(
-    commandPrefix: string,
-    availableRooms?: string[],
-  ): string {
-    return `Use \`${commandPrefix}${this.commandNames[0]}\` to apply the brakes with all of your current available charge.`
+  getHelpMessage(commandPrefix: string): string {
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Apply the brakes with all of your current available charge.`
   }
 
   async run(context: CommandContext) {
@@ -31,15 +31,5 @@ export class BrakeCommand implements Command {
           3,
         )}AU/hr.`,
       )
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (!commandContext.ship)
-      return `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
-    if (!commandContext.crewMember)
-      return `Only crew members can run this command. Join the ship first!`
-    return true
   }
 }
