@@ -488,9 +488,7 @@ export default function (
       crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      callback({
-        data: crewMember.stubify(),
-      })
+      callback({ data: { cargoId, amount, price } })
 
       planet.addXp(price / 100)
       planet.incrementAllegiance(ship.faction)
@@ -566,16 +564,14 @@ export default function (
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      callback({
-        data: crewMember.stubify(),
-      })
-
       planet.incrementAllegiance(ship.faction)
 
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${vendorLocation}.`,
       )
+
+      callback({ data: { cargoId, amount, price } })
     },
   )
 

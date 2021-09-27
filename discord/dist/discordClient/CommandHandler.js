@@ -48,6 +48,8 @@ const Repair_1 = require("./commands/Repair");
 const Bunk_1 = require("./commands/Bunk");
 const Weapons_1 = require("./commands/Weapons");
 const Cockpit_1 = require("./commands/Cockpit");
+const Buy_1 = require("./commands/Buy");
+const Sell_1 = require("./commands/Sell");
 class CommandHandler {
     commands;
     prefix;
@@ -62,6 +64,8 @@ class CommandHandler {
             Go_1.GoCommand,
             ThrustInCurrentDirection_1.ThrustInCurrentDirectionCommand,
             Brake_1.BrakeCommand,
+            Buy_1.BuyCommand,
+            Sell_1.SellCommand,
             Repair_1.RepairCommand,
             Bunk_1.BunkCommand,
             Weapons_1.WeaponsCommand,
@@ -139,13 +143,17 @@ class CommandHandler {
             // crewMember required and no crewMember
             else if (!commandContext.crewMember &&
                 matchedCommand.requiresCrewMember)
-                runnable = `Only crew members can run the \`${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`;
+                runnable = `Only crew members can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`;
+            // planet-only command and no planet
+            else if (!commandContext.ship?.planet &&
+                matchedCommand.requiresPlanet)
+                runnable = `Your ship must be on a planet to use the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`;
             // captain-only command and not captain or admin
             else if (matchedCommand.requiresCaptain &&
                 !commandContext.isCaptain &&
                 !commandContext.isServerAdmin &&
                 !commandContext.isGameAdmin)
-                runnable = `Only captain ${commandContext.ship.crewMembers?.find((cm) => cm.id === commandContext.ship?.captain)?.name} or a server admin can run the \`${matchedCommand.commandNames[0]}\` command.`;
+                runnable = `Only captain ${commandContext.ship.crewMembers?.find((cm) => cm.id === commandContext.ship?.captain)?.name} or a server admin can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`;
             // anything else command-specific
             else if (!matchedCommand.hasPermissionToRun)
                 runnable = true;
@@ -157,7 +165,7 @@ class CommandHandler {
                     await commandContext.reply(runnable);
                 continue;
             }
-            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} - ${commandContext.ship?.name ||
+            dist_1.default.log(`gray`, `${message.content} (${commandContext.nickname} on ${commandContext.ship?.name ||
                 commandContext.guild?.name ||
                 `PM`})`);
             // run command

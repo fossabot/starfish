@@ -12,6 +12,7 @@ export interface Command {
   readonly requiresShip?: boolean
   readonly requiresCrewMember?: boolean
   readonly requiresCaptain?: boolean
+  readonly requiresPlanet?: boolean
   readonly allowDm?: boolean
 
   /** usage documentation. */

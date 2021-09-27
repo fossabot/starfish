@@ -274,9 +274,13 @@ export default Vue.extend({
             console.log(res.error)
             return
           }
-          this.$store.commit('updateACrewMember', res.data)
           this.$store.dispatch('notifications/notify', {
-            text: `Bought ${amount} tons of ${data.cargoData.id}.`,
+            text: `Bought ${c.r2(res.data.amount)} ton${
+              res.data.amount === 1 ? '' : 's'
+            } of ${data.cargoData.id} for ${c.r2(
+              res.data.price,
+              0,
+            )} credits.`,
             type: 'success',
           })
         },
@@ -312,7 +316,12 @@ export default Vue.extend({
         data.cargoData.id,
         amount,
         this.ship?.planet?.name,
-        (res: IOResponse<CrewMemberStub>) => {
+        (
+          res: IOResponse<{
+            amount: number
+            price: number
+          }>,
+        ) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
               text: res.error,
@@ -321,9 +330,13 @@ export default Vue.extend({
             console.log(res.error)
             return
           }
-          this.$store.commit('updateACrewMember', res.data)
           this.$store.dispatch('notifications/notify', {
-            text: `Sold ${amount} tons of ${data.cargoData.id}.`,
+            text: `Sold ${c.r2(res.data.amount)} ton${
+              res.data.amount === 1 ? '' : 's'
+            } of ${data.cargoData.id} for ${c.r2(
+              res.data.price,
+              0,
+            )} credits.`,
             type: 'success',
           })
         },

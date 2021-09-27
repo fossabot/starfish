@@ -580,32 +580,32 @@ export class Ship extends Stubbable {
           this.previousLocations[
             this.previousLocations.length - 1
           ],
-        ) > 0.000001)
+        ) > 0.00005)
     ) {
       // if (this.human)
-      // c.log(
-      //   `adding previous location to`,
-      //   this.name,
-      //   this.previousLocations.length,
-      //   Math.abs(
-      //     c.angleFromAToB(
+      //   c.log(
+      //     `adding previous location to`,
+      //     this.name,
+      //     this.previousLocations.length,
+      //     Math.abs(
+      //       c.angleFromAToB(
+      //         this.previousLocations[
+      //           this.previousLocations.length - 1
+      //         ],
+      //         previousLocation,
+      //       ) -
+      //         c.angleFromAToB(
+      //           previousLocation,
+      //           currentLocation,
+      //         ),
+      //     ),
+      //     c.distance(
+      //       this.location,
       //       this.previousLocations[
       //         this.previousLocations.length - 1
       //       ],
-      //       previousLocation,
-      //     ) -
-      //       c.angleFromAToB(
-      //         previousLocation,
-      //         currentLocation,
-      //       ),
-      //   ),
-      //   c.distance(
-      //     this.location,
-      //     this.previousLocations[
-      //       this.previousLocations.length - 1
-      //     ],
-      //   ),
-      // )
+      //     ),
+      //   )
       this.previousLocations.push([...currentLocation])
       while (
         this.previousLocations.length >

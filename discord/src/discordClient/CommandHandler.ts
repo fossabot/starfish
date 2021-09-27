@@ -32,6 +32,8 @@ import { RepairCommand } from './commands/Repair'
 import { BunkCommand } from './commands/Bunk'
 import { WeaponsCommand } from './commands/Weapons'
 import { CockpitCommand } from './commands/Cockpit'
+import { BuyCommand } from './commands/Buy'
+import { SellCommand } from './commands/Sell'
 
 export class CommandHandler {
   private commands: Command[]
@@ -49,6 +51,8 @@ export class CommandHandler {
       GoCommand,
       ThrustInCurrentDirectionCommand,
       BrakeCommand,
+      BuyCommand,
+      SellCommand,
       RepairCommand,
       BunkCommand,
       WeaponsCommand,
@@ -164,7 +168,13 @@ export class CommandHandler {
         !commandContext.crewMember &&
         matchedCommand.requiresCrewMember
       )
-        runnable = `Only crew members can run the \`${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`
+        runnable = `Only crew members can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`
+      // planet-only command and no planet
+      else if (
+        !commandContext.ship?.planet &&
+        matchedCommand.requiresPlanet
+      )
+        runnable = `Your ship must be on a planet to use the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`
       // captain-only command and not captain or admin
       else if (
         matchedCommand.requiresCaptain &&
@@ -177,8 +187,8 @@ export class CommandHandler {
             (cm) => cm.id === commandContext.ship?.captain,
           )?.name
         } or a server admin can run the \`${
-          matchedCommand.commandNames[0]
-        }\` command.`
+          commandContext.commandPrefix
+        }${matchedCommand.commandNames[0]}\` command.`
       // anything else command-specific
       else if (!matchedCommand.hasPermissionToRun)
         runnable = true
@@ -193,7 +203,9 @@ export class CommandHandler {
 
       c.log(
         `gray`,
-        `${message.content} (${commandContext.nickname} - ${
+        `${message.content} (${
+          commandContext.nickname
+        } on ${
           commandContext.ship?.name ||
           commandContext.guild?.name ||
           `PM`

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scanners = void 0;
 const game_1 = __importDefault(require("../game"));
+// todo a scanner that can only see and not scan
 exports.scanners = {
     tutorial1: {
         buyable: false,
