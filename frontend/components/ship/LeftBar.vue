@@ -167,7 +167,7 @@ hr {
   padding: 1.5em 0;
   padding-left: 1px;
   width: var(--bar-width);
-  height: 100vh;
+  height: 100%;
   flex-grow: 0;
   flex-shrink: 0;
   position: fixed;

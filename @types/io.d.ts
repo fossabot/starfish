@@ -132,6 +132,7 @@ interface IOClientEvents {
   [`game:settings`]: (
     callback: (res: IOResponse<AdminGameSettings>) => void,
   ) => void
+  [`frontend:unlistenAll`]: () => void
 
   // client
   [`god`]: () => void
@@ -170,7 +171,7 @@ interface IOClientEvents {
   [`crew:tactic`]: (
     shipId: string,
     crewId: string,
-    tactic: Tactic,
+    tactic: CombatTactic,
   ) => void
   [`crew:repairPriority`]: (
     shipId: string,

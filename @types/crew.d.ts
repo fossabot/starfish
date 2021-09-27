@@ -16,7 +16,7 @@ type SkillId =
   | `linguistics`
   | `mining`
 
-type Tactic = `defensive` | `aggressive`
+type CombatTactic = `defensive` | `aggressive` | `pacifist`
 
 type RepairPriority =
   | `most damaged`
@@ -58,8 +58,8 @@ interface BaseCrewMemberData {
   actives?: BaseCrewActiveData[]
   passives?: BaseCrewPassiveData[]
   cockpitCharge?: number
-  tactic?: Tactic
-  itemTarget?: ItemType
+  combatTactic?: CombatTactic
+  targetItemType?: ItemType
   minePriority?: MinePriorityType
   attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null

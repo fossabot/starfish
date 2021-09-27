@@ -49,24 +49,28 @@
         </div>
         <div>
           <div>
-            <b>{{ c.capitalize(ship.mainTactic) }}</b>
+            <b>{{ c.capitalize(ship.combatTactic) }}</b>
           </div>
           <div>
-            <span v-if="ship.targetShip">
+            <span v-if="targetShip">
               Targeting
-              <b>🚀{{ ship.targetShip.name }}</b></span
+              <b
+                >{{ c.species[targetShip.species.id].icon
+                }}{{ targetShip.name }}</b
+              ></span
             ><span v-else>No specific target ship</span>
           </div>
           <div>
-            <span v-if="ship.itemTarget">
+            <span v-if="ship.targetItemType !== 'any'">
               Focusing fire on
-              <b>{{ ship.itemTarget }}s</b></span
+              <b>{{ ship.targetItemType }}s</b></span
             ><span v-else>
               No specific target equipment
             </span>
           </div>
         </div>
       </div>
+
       <div class="panesection">
         <div class="panesubhead">Your Tactic</div>
         <div>
@@ -74,36 +78,42 @@
             v-for="tactic in c.tactics"
             @click="$store.commit('setTactic', tactic)"
             :class="{
-              secondary: crewMember.tactic !== tactic,
+              secondary: crewMember.combatTactic !== tactic,
             }"
           >
             {{ c.capitalize(tactic) }}
           </button>
         </div>
       </div>
+
       <div class="panesection">
         <div class="panesubhead">Your Target</div>
         <div>
           <button
             :class="{
-              secondary: crewMember.attackTargetId,
+              secondary:
+                crewMember.attackTargetId !== 'any',
             }"
-            @click="$store.commit('setAttackTarget', null)"
+            @click="$store.commit('setAttackTarget', 'any')"
           >
             Any Target</button
           ><button
-            v-for="ship in ship.enemiesInAttackRange"
-            :key="'inattackrange' + ship.id"
+            v-for="targetShip in visibleEnemies"
+            :key="'inattackrange' + targetShip.id"
             @click="
-              $store.commit('setAttackTarget', ship.id)
+              $store.commit(
+                'setAttackTarget',
+                targetShip.id,
+              )
             "
             :class="{
               secondary:
                 !crewMember.attackTargetId ||
-                crewMember.attackTargetId !== ship.id,
+                crewMember.attackTargetId !== targetShip.id,
             }"
           >
-            🚀{{ ship.name }}
+            {{ c.species[targetShip.species.id].icon
+            }}{{ targetShip.name }}
           </button>
         </div>
       </div>
@@ -115,29 +125,28 @@
         <div>
           <button
             :class="{
-              secondary: crewMember.itemTarget,
+              secondary:
+                crewMember.targetItemType !== 'any',
             }"
-            @click="$store.commit('setItemTarget', null)"
+            @click="
+              $store.commit('setTargetItemType', 'any')
+            "
           >
             Any Equipment</button
           ><button
-            v-for="i in itemTargets"
-            :key="'itemtarget' + i"
-            @click="$store.commit('setItemTarget', i)"
+            v-for="i in targetItemTypes"
+            :key="'targetitemtype' + i"
+            @click="$store.commit('setTargetItemType', i)"
             :class="{
               secondary:
-                !crewMember.itemTarget ||
-                crewMember.itemTarget !== i,
+                !crewMember.targetItemType ||
+                crewMember.targetItemType !== i,
             }"
           >
             {{ c.capitalize(i) }}s
           </button>
         </div>
       </div>
-      <!-- <div class="panesection">
-        toggle always attack factions:
-        green/gray/red/blue/etc
-      </div> -->
     </div>
   </Box>
 </template>
@@ -164,7 +173,7 @@ export default Vue.extend({
         (i: ItemStub) => i.type === 'weapon',
       )
     },
-    itemTargets() {
+    targetItemTypes() {
       const its: ItemType[] = [
         'weapon',
         'engine',
@@ -173,6 +182,25 @@ export default Vue.extend({
         'armor',
       ]
       return its
+    },
+    targetShip() {
+      return (
+        this.ship.targetShip &&
+        this.ship.visible?.ships.find(
+          (s) => s.id === this.ship.targetShip.id,
+        )
+      )
+    },
+    visibleEnemies() {
+      return this.ship.visible?.ships
+        .filter(
+          (s) => s.faction.id !== this.ship.faction.id,
+        )
+        .sort(
+          (a, b) =>
+            c.distance(a.location, this.ship.location) -
+            c.distance(b.location, this.ship.location),
+        )
     },
   },
   watch: {},

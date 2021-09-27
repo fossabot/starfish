@@ -72,7 +72,11 @@ const sameFactionShipScanProperties = {
   _maxHp: true,
 }
 
-const tactics: Tactic[] = [`aggressive`, `defensive`]
+const tactics: CombatTactic[] = [
+  `aggressive`,
+  `defensive`,
+  `pacifist`,
+]
 
 function getHitDamage(
   weapon: WeaponStub,

@@ -159,6 +159,32 @@
         :b="dataToUse.damage"
       />
     </div>
+    <div
+      v-if="
+        dataToUse.type === 'weapon' &&
+        dataToUse.critChance !== undefined
+      "
+    >
+      Crit Chance:
+      {{
+        (dataToUse.critChance === undefined
+          ? ship.gameSettings.baseCritChance
+          : dataToUse.critChance) * 100
+      }}%
+      <ShipTooltipsCompareProp
+        v-if="compareTo"
+        :a="
+          (compareTo.critChance === undefined
+            ? ship.gameSettings.baseCritChance
+            : compareTo.critChance) * 100
+        "
+        :b="
+          (dataToUse.critChance === undefined
+            ? ship.gameSettings.baseCritChance
+            : dataToUse.critChance) * 100
+        "
+      />
+    </div>
     <div v-if="dataToUse.baseCooldown">
       Charge Required:
       {{ c.numberWithCommas(dataToUse.baseCooldown) }}

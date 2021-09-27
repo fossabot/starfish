@@ -76,6 +76,7 @@ export class Zone extends Stubbable {
         ship.takeDamage(this, {
           damage: miss ? 0 : intensity,
           miss,
+          targetType: `any`,
         })
       }
 

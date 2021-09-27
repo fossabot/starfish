@@ -33,13 +33,22 @@ class Planet extends Stubbable_1.Stubbable {
         this.level = level;
         this.xp = xp;
         this.stats = [...(stats || [])];
-        // * timeout so it has time to run subclass contstructor
+        // * timeout so it has time to run subclass constructor
         setTimeout(() => {
             if (this.level === 0)
                 this.levelUp();
             const levelsToApply = baseLevel - this.level;
             for (let i = 0; i < levelsToApply; i++)
                 this.levelUp();
+            if (this.xp <
+                dist_1.default.levels[this.level - 1] *
+                    dist_1.default.planetLevelXpRequirementMultiplier)
+                this.xp =
+                    dist_1.default.levels[this.level - 1] *
+                        dist_1.default.planetLevelXpRequirementMultiplier +
+                        Math.floor(Math.random() *
+                            100 *
+                            dist_1.default.planetLevelXpRequirementMultiplier);
         }, 100);
     }
     get shipsAt() {

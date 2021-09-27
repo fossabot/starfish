@@ -1,5 +1,11 @@
 type CoordinatePair = [number, number]
 
+interface Reference {
+  type: string
+  name?: string
+  id?: string
+}
+
 interface ResponseWithMessage {
   message?: string
 }

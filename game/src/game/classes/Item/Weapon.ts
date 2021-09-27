@@ -7,6 +7,7 @@ export class Weapon extends Item {
   readonly id: WeaponId
   readonly range: number
   readonly damage: number
+  readonly critChance: number = 0
   lastUse: number = 0
   baseCooldown: number
   cooldownRemaining: number
@@ -23,12 +24,18 @@ export class Weapon extends Item {
     this.damage = data.damage
     this.baseCooldown = data.baseCooldown
     this.lastUse = data.lastUse || 0
+    if (data.critChance !== undefined)
+      this.critChance = data.critChance
     this.cooldownRemaining =
       data.cooldownRemaining ||
       props?.cooldownRemaining ||
       0
     if (this.cooldownRemaining > this.baseCooldown)
       this.cooldownRemaining = this.baseCooldown
+  }
+
+  get effectiveRange(): number {
+    return this.range * this.repair
   }
 
   use() {

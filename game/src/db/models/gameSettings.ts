@@ -25,6 +25,16 @@ const gameSettingsSchemaFields: Record<
   gravityScalingFunction: { type: String, required: true },
   gravityRadius: { type: Number, required: true },
   arrivalThreshold: { type: Number, required: true },
+  baseCritChance: { type: Number, required: true },
+  baseCritDamageMultiplier: {
+    type: Number,
+    required: true,
+  },
+
+  planetDensity: { type: Number, required: true },
+  zoneDensity: { type: Number, required: true },
+  aiShipDensity: { type: Number, required: true },
+  cacheDensity: { type: Number, required: true },
 }
 const gameSettingsSchema = new Schema(
   gameSettingsSchemaFields,

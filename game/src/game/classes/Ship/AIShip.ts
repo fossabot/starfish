@@ -32,6 +32,9 @@ export class AIShip extends CombatShip {
   keyAngle = Math.random() * 365
   targetLocation: CoordinatePair
 
+  combatTactic: CombatTactic = `aggressive`
+  lastAttackedById: string | null = null
+
   obeysGravity = false
 
   constructor(data: BaseAIShipData, game: Game) {
@@ -407,6 +410,40 @@ export class AIShip extends CombatShip {
         this.broadcastTo(s)
       }, Math.random() * 5 * 60 * 1000) // sometime within 5 minutes
     })
+
+    if (
+      !this.targetShip ||
+      !this.canAttack(this.targetShip)
+    )
+      this.recalculateTargetShip()
+  }
+
+  recalculateTargetShip(): CombatShip | null {
+    // aggressive
+    if (this.combatTactic === `aggressive`)
+      return super.recalculateTargetShip()
+    // defensive
+    else if (this.combatTactic === `defensive`) {
+      const foundLastAttacker =
+        this.lastAttackedById &&
+        this.visible.ships.find(
+          (s) => s.id === this.lastAttackedById,
+        )
+      if (foundLastAttacker)
+        return foundLastAttacker as CombatShip
+    }
+    // pacifist
+    return null
+  }
+
+  takeDamage(
+    attacker: { name: string; [key: string]: any },
+    attack: AttackDamageResult,
+  ): TakenDamageResult {
+    const res = super.takeDamage(attacker, attack)
+    this.lastAttackedById = attacker.id
+    this.recalculateTargetShip()
+    return res
   }
 
   broadcastTo(ship: Ship) {

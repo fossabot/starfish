@@ -21,6 +21,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         this.captain = null;
         this.rooms = {};
         this.maxScanProperties = null;
+        this.combatTactic = `pacifist`;
+        this.idealTargetShip = null;
         this.visible = {
             ships: [],
             planets: [],
@@ -98,6 +100,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         setTimeout(() => {
             this.radii.gameSize = this.game.gameSoftRadius;
             this.toUpdate.radii = this.radii;
+            // give all the AI a chance to spawn and become visible
+            this.updateVisible();
+            this.recalculateTargetItemType();
+            this.recalculateCombatTactic();
         }, 100);
     }
     tick() {
@@ -731,6 +737,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 this.takeDamage({ name: `an asteroid` }, {
                     damage,
                     miss: false,
+                    targetType: `any`,
                 });
             }
         }
@@ -780,6 +787,16 @@ class HumanShip extends CombatShip_1.CombatShip {
                     p.broadcastTo(this);
                 }, Math.random() * 15 * 60 * 1000); // sometime within 15 minutes
             });
+        }
+        // if target leaves range/attackability, choose a new target
+        if (this.targetShip &&
+            !this.canAttack(this.targetShip, true))
+            this.recalculateTargetShip();
+        // if the most "voted" ship comes into range/attackability, switch to it
+        else if (this.idealTargetShip &&
+            this.idealTargetShip !== this.targetShip &&
+            this.canAttack(this.idealTargetShip, true)) {
+            this.recalculateTargetShip();
         }
     }
     async updatePlanet(silent) {
@@ -1331,60 +1348,33 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         await db_1.db.ship.addOrUpdateInDb(this);
     }
-    // ----- auto attack -----
-    autoAttack() {
-        this.toUpdate.targetShip = undefined;
-        const weaponsRoomMembers = this.membersIn(`weapons`);
-        if (!weaponsRoomMembers.length)
-            return;
-        this.toUpdate.targetShip = undefined;
-        // ----- gather most common tactic -----
-        const tacticCounts = weaponsRoomMembers.reduce((totals, cm) => {
-            const currTotal = totals.find((t) => t.tactic === cm.tactic);
-            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
-                ?.level || 1;
-            if (currTotal)
-                currTotal.total += toAdd;
-            else
-                totals.push({ tactic: cm.tactic, total: toAdd });
-            return totals;
-        }, []);
-        const mainTactic = tacticCounts.sort((b, a) => b.total - a.total)?.[0]?.tactic;
-        this.mainTactic = mainTactic;
-        this.toUpdate.mainTactic = mainTactic;
-        const attackableShips = this.getEnemiesInAttackRange();
-        this.toUpdate.enemiesInAttackRange =
-            attackableShips.map((s) => s.stubify());
-        // ----- gather most common item target -----
-        const itemTargetCounts = weaponsRoomMembers.reduce((totals, cm) => {
-            if (!cm.itemTarget)
-                return totals;
-            const currTotal = totals.find((t) => t.itemTarget === cm.itemTarget);
-            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
-                ?.level || 1;
-            if (currTotal)
-                currTotal.total += toAdd;
-            else
-                totals.push({
-                    target: cm.itemTarget,
-                    total: toAdd,
-                });
-            return totals;
-        }, []);
-        let mainItemTarget = itemTargetCounts.sort((b, a) => b.total - a.total)?.[0]?.target;
-        this.itemTarget = mainItemTarget;
-        this.toUpdate.itemTarget = mainItemTarget;
-        if (!mainTactic)
-            return;
-        if (!attackableShips.length)
-            return;
-        const availableWeapons = this.availableWeapons();
-        if (!availableWeapons)
-            return;
+    takeDamage(attacker, attack) {
+        const res = super.takeDamage(attacker, attack);
+        this.recalculateTargetShip();
+        return res;
+    }
+    recalculateTargetShip() {
+        const setTarget = (t) => {
+            // c.log(
+            //   `updating ${this.name} target ship to ${
+            //     t?.name || null
+            //   }`,
+            //   this.targetItemType,
+            //   this.combatTactic,
+            // )
+            this.targetShip = t;
+            this.toUpdate.targetShip = t?.toReference() || null;
+            return t;
+        };
+        if (this.membersIn(`weapons`).length === 0)
+            return setTarget(null);
+        // ----- pacifist strategy -----
+        if (this.combatTactic === `pacifist`) {
+            return setTarget(null);
+        }
         // ----- gather most common attack target -----
-        const shipTargetCounts = weaponsRoomMembers
-            .reduce((totals, cm) => {
-            if (!cm.attackTargetId)
+        const shipTargetCounts = this.membersIn(`weapons`).reduce((totals, cm) => {
+            if (cm.attackTargetId === `any`)
                 return totals;
             const currTotal = totals.find((t) => t.target.id === cm.attackTargetId);
             const toAdd = cm.skills.find((s) => s.skill === `munitions`)
@@ -1400,117 +1390,147 @@ class HumanShip extends CombatShip_1.CombatShip {
                     });
             }
             return totals;
-        }, [])
-            .map((totalEntry) => {
+        }, []);
+        this.idealTargetShip =
+            shipTargetCounts.sort((b, a) => b.total - a.total)?.[0]?.target || null;
+        const shipTargetCountsWeightedByAttackable = shipTargetCounts.map((totalEntry) => {
             if (!this.canAttack(totalEntry.target))
                 totalEntry.total -= 1000; // disincentive for ships out of range, etc, but still possible to end up with them if they're the only ones targeted
             return totalEntry;
         });
-        const mainAttackTarget = shipTargetCounts.sort((b, a) => b.total - a.total)?.[0]?.target;
+        const mostViableManuallyTargetedShip = shipTargetCountsWeightedByAttackable.sort((b, a) => b.total - a.total)?.[0]?.target;
         // ----- defensive strategy -----
-        if (mainTactic === `defensive`) {
-            let targetShip;
-            if (mainAttackTarget &&
-                this.canAttack(mainAttackTarget)) {
-                const attackedByThatTarget = this.visible.attackRemnants.find((ar) => ar.attacker.id === mainAttackTarget.id);
-                if (attackedByThatTarget)
-                    targetShip = mainAttackTarget;
+        if (this.combatTactic === `defensive`) {
+            if (mostViableManuallyTargetedShip &&
+                this.canAttack(mostViableManuallyTargetedShip)) {
+                const attackedByThatTarget = this.visible.attackRemnants.find((ar) => ar.attacker.id ===
+                    mostViableManuallyTargetedShip.id);
+                if (attackedByThatTarget) {
+                    return setTarget(mostViableManuallyTargetedShip);
+                }
             }
             else {
-                const attackedRemnants = this.visible.attackRemnants.filter((ar) => ar.attacker.id !== this.id &&
-                    ar.defender.id === this.id &&
-                    !ar.attacker.dead);
-                const mostRecentDefense = attackedRemnants.reduce((mostRecent, ar) => {
+                const mostRecentDefense = this.visible.attackRemnants.reduce((mostRecent, ar) => {
+                    // was defense
+                    if (ar.attacker.id === this.id ||
+                        ar.defender.id !== this.id)
+                        return mostRecent;
+                    // attacker still exists
                     const foundAttacker = this.game.ships.find((s) => s.id === ar.attacker.id);
                     if (!foundAttacker)
                         return mostRecent;
+                    // was most recent and can still attack
                     return ar.time > (mostRecent?.time || 0) &&
                         this.canAttack(foundAttacker, true)
-                        ? ar
+                        ? {
+                            ...ar,
+                            attacker: foundAttacker,
+                        }
                         : mostRecent;
                 }, null);
-                if (mostRecentDefense) {
-                    const foundAttacker = this.game.ships.find((s) => s.id === mostRecentDefense.attacker.id);
-                    if (foundAttacker) {
-                        targetShip = foundAttacker;
-                    }
-                    else
-                        targetShip = undefined;
-                }
-                else
-                    targetShip = undefined;
+                return setTarget(mostRecentDefense?.attacker ||
+                    null);
             }
-            // c.log(`defensive, targeting`, targetShip?.name)
-            if (!targetShip)
-                return;
-            if (!targetShip.stubify)
-                // in some cases we end up with a stub here
-                targetShip = this.game.ships.find((s) => s.attackable && s.id === targetShip?.id);
-            this.toUpdate.targetShip = targetShip
-                ? targetShip.stubify()
-                : undefined;
-            if (targetShip)
-                availableWeapons.forEach((w) => {
-                    this.attack(targetShip, w, mainItemTarget);
-                });
         }
         // ----- aggressive strategy -----
-        if (mainTactic === `aggressive`) {
-            let targetShip = mainAttackTarget;
-            if (targetShip && !this.canAttack(targetShip))
-                targetShip = undefined;
-            if (!targetShip) {
-                // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
-                const mostRecentCombat = this.visible.attackRemnants.reduce((mostRecent, ar) => {
-                    const targetId = ar.attacker.id === this.id
-                        ? ar.defender
-                        : ar.attacker;
-                    const foundShip = this.game.ships.find((s) => s.id === targetId.id);
-                    if (!foundShip)
-                        return mostRecent;
-                    return ar.time > (mostRecent?.time || 0) &&
-                        this.canAttack(foundShip, true)
-                        ? ar
-                        : mostRecent;
-                }, null);
-                if (mostRecentCombat) {
-                    const foundAttacker = this.game.ships.find((s) => s.id ===
-                        (mostRecentCombat.attacker.id === this.id
-                            ? mostRecentCombat.defender.id
-                            : mostRecentCombat.attacker.id));
-                    if (foundAttacker) {
-                        targetShip = foundAttacker;
-                    }
-                    else
-                        targetShip = undefined;
+        else if (this.combatTactic === `aggressive`) {
+            let targetShip = mostViableManuallyTargetedShip;
+            if (targetShip && this.canAttack(targetShip, true)) {
+                return setTarget(targetShip);
+            }
+            // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
+            const mostRecentCombat = this.visible.attackRemnants.reduce((mostRecent, ar) => {
+                const targetId = ar.attacker.id === this.id
+                    ? ar.defender
+                    : ar.attacker;
+                const foundShip = this.game.ships.find((s) => s.id === targetId.id);
+                if (!foundShip)
+                    return mostRecent;
+                return ar.time > (mostRecent?.time || 0) &&
+                    this.canAttack(foundShip, true)
+                    ? ar
+                    : mostRecent;
+            }, null);
+            if (mostRecentCombat) {
+                const foundAttacker = this.game.ships.find((s) => s.id ===
+                    (mostRecentCombat.attacker.id === this.id
+                        ? mostRecentCombat.defender.id
+                        : mostRecentCombat.attacker.id));
+                if (foundAttacker) {
+                    targetShip = foundAttacker;
                 }
                 else
                     targetShip = undefined;
-                // ----- if there is enemy from recent combat that we can hit, just pick the closest enemy -----
-                if (!targetShip)
-                    targetShip = attackableShips.reduce((closest, curr) => {
-                        if (!closest ||
-                            dist_1.default.distance(this.location, curr.location) <
-                                dist_1.default.distance(this.location, closest.location))
-                            return curr;
-                        return closest;
-                    }, undefined);
-            }
-            // ----- attack with EVERY AVAILABLE WEAPON -----
-            if (!targetShip)
-                return;
-            if (!targetShip.stubify)
-                // in some cases we end up with a stub here
-                targetShip = this.game.ships.find((s) => s.attackable && s.id === targetShip?.id);
-            this.toUpdate.targetShip = targetShip?.stubify();
-            if (targetShip) {
-                availableWeapons.forEach((w) => {
-                    this.attack(targetShip, w, mainItemTarget);
-                });
             }
             else
-                this.toUpdate.targetShip = undefined;
+                targetShip = undefined;
+            // ----- if there is no enemy from recent combat that we can hit, just pick the closest enemy -----
+            if (!targetShip) {
+                targetShip = this.getEnemiesInAttackRange().reduce((closest, curr) => {
+                    if (!closest ||
+                        dist_1.default.distance(this.location, curr.location) <
+                            dist_1.default.distance(this.location, closest.location))
+                        return curr;
+                    return closest;
+                }, undefined);
+            }
+            return setTarget(targetShip || null);
         }
+        return setTarget(null);
+    }
+    recalculateCombatTactic() {
+        const tacticCounts = this.membersIn(`weapons`).reduce((totals, cm) => {
+            const currTotal = totals.find((t) => t.tactic === cm.combatTactic);
+            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1;
+            if (currTotal)
+                currTotal.total += toAdd;
+            else
+                totals.push({
+                    tactic: cm.combatTactic,
+                    total: toAdd,
+                });
+            return totals;
+        }, []);
+        const mainTactic = tacticCounts.sort((b, a) => b.total - a.total)?.[0]?.tactic || `defensive`;
+        this.combatTactic = mainTactic;
+        this.toUpdate.combatTactic = mainTactic;
+        this.recalculateTargetShip();
+    }
+    recalculateTargetItemType() {
+        const memberTargetItemTypeCounts = this.membersIn(`weapons`).reduce((totals, cm) => {
+            if (cm.targetItemType === `any`)
+                return totals;
+            const currTotal = totals.find((t) => t.targetItemType === cm.targetItemType);
+            const toAdd = cm.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1;
+            if (currTotal)
+                currTotal.total += toAdd;
+            else
+                totals.push({
+                    target: cm.targetItemType,
+                    total: toAdd,
+                });
+            return totals;
+        }, []);
+        let mainTargetItemType = memberTargetItemTypeCounts.sort((b, a) => b.total - a.total)?.[0]?.target || `any`;
+        this.targetItemType = mainTargetItemType;
+        this.toUpdate.targetItemType = mainTargetItemType;
+    }
+    // ----- auto attack -----
+    autoAttack() {
+        const weaponsRoomMembers = this.membersIn(`weapons`);
+        if (!weaponsRoomMembers.length)
+            return;
+        // ----- if there is a target, attack with EVERY AVAILABLE WEAPON -----
+        // canAttack is handled in attack function
+        if (this.targetShip)
+            this.availableWeapons()
+                .filter((w) => w.effectiveRange >=
+                dist_1.default.distance(this.targetShip.location, this.location))
+                .forEach((w) => {
+                this.attack(this.targetShip, w, this.targetItemType);
+            });
     }
     die(attacker) {
         super.die(attacker);

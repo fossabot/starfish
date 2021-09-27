@@ -225,14 +225,10 @@ export default function (
           `Non-admin attempted to access game:resetAllAIShips`,
         )
       c.log(`Admin resetting all AI ships`)
-      await db.ship.wipeAI()
-      game.ships.forEach((ship) => {
-        if (ship.ai)
-          game.ships.splice(
-            game.ships.findIndex((s) => s === ship),
-            1,
-          )
-      })
+      for (let ship of game.ships) {
+        if (ship.ai) await game.removeShip(ship)
+      }
+      c.log(game.aiShips.length, `AI ships reset`)
       game.spawnNewAIs()
     },
   )

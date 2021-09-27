@@ -27,6 +27,7 @@ import { GoCommand } from './commands/Go'
 import { ChangeShipNameCommand } from './commands/ShipName'
 import { ThrustInCurrentDirectionCommand } from './commands/ThrustInCurrentDirection'
 import { BrakeCommand } from './commands/Brake'
+import { StatusCommand } from './commands/Status'
 
 export class CommandHandler {
   private commands: Command[]
@@ -50,6 +51,7 @@ export class CommandHandler {
       ChangeShipNameCommand,
       ThrustInCurrentDirectionCommand,
       BrakeCommand,
+      StatusCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),

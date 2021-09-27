@@ -86,7 +86,8 @@ class Game {
     tick() {
         if (this.paused)
             return setTimeout(() => this.tick(), dist_1.default.tickInterval);
-        const startTime = Date.now();
+        // c.log(`tick`, Date.now() - this.lastTickTime)
+        const tickStartTime = Date.now();
         this.tickCount++;
         const times = [];
         this.ships.forEach((s) => {
@@ -107,11 +108,12 @@ class Game {
         this.spawnNewPlanets();
         this.spawnNewZones();
         // ----- timing
-        dist_1.default.deltaTime = Date.now() - this.lastTickTime;
-        const thisTickLag = dist_1.default.deltaTime - this.lastTickExpectedTime;
+        const tickDoneTime = Date.now();
+        dist_1.default.deltaTime = tickDoneTime - this.lastTickTime;
+        const thisTickLag = dist_1.default.deltaTime - dist_1.default.tickInterval;
         this.averageTickLag = dist_1.default.lerp(this.averageTickLag, thisTickLag, 0.1);
         const nextTickTime = Math.min(dist_1.default.tickInterval, dist_1.default.tickInterval - this.averageTickLag);
-        this.lastTickTime = startTime;
+        this.lastTickTime = tickStartTime;
         this.lastTickExpectedTime = nextTickTime;
         // ----- schedule next tick -----
         setTimeout(() => this.tick(), nextTickTime);
@@ -120,7 +122,7 @@ class Game {
         //   deltaTime: c.deltaTime,
         //   game: c.stubify<Game, GameStub>(this),
         // })
-        const elapsedTimeInMs = Date.now() - startTime;
+        const elapsedTimeInMs = tickDoneTime - tickStartTime;
         // if (elapsedTimeInMs > 100) {
         //   if (elapsedTimeInMs < 200)
         //     c.log(
@@ -240,7 +242,8 @@ class Game {
         });
     }
     async spawnNewPlanets() {
-        while (this.planets.length < this.gameSoftArea * 0.9 ||
+        while (this.planets.length <
+            this.gameSoftArea * this.settings.planetDensity ||
             this.planets.length < this.factions.length - 1) {
             const weights = [
                 { weight: 0.6, value: `basic` },
@@ -274,7 +277,8 @@ class Game {
         }
     }
     async spawnNewZones() {
-        while (this.zones.length < this.gameSoftArea * 1.15) {
+        while (this.zones.length <
+            this.gameSoftArea * this.settings.zoneDensity) {
             const z = (0, zones_1.generateZoneData)(this);
             if (!z)
                 return;
@@ -283,7 +287,8 @@ class Game {
         }
     }
     spawnNewCaches() {
-        while (this.caches.length < this.gameSoftArea * 1.5) {
+        while (this.caches.length <
+            this.gameSoftArea * this.settings.cacheDensity) {
             const id = dist_1.default.randomFromArray([
                 ...Object.keys(dist_1.default.cargo),
                 `credits`,
@@ -327,10 +332,9 @@ class Game {
         }
     }
     spawnNewAIs() {
-        const aiShipCoefficient = 3;
         while (this.ships.length &&
             this.aiShips.length <
-                this.gameSoftArea * aiShipCoefficient) {
+                this.gameSoftArea * this.settings.aiShipDensity) {
             let radius = this.gameSoftRadius;
             let spawnPoint;
             while (!spawnPoint) {

@@ -11,6 +11,12 @@ export default function (
     c.log(`hello received`)
   })
 
+  socket.on(`frontend:unlistenAll`, () => {
+    socket.rooms.forEach((room) => {
+      socket.leave(room)
+    })
+  })
+
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {

@@ -11,17 +11,13 @@ import type { Game } from '../../Game'
 import { AIShip } from './AIShip'
 import type { CrewMember } from '../CrewMember/CrewMember'
 
-interface DamageResult {
-  miss: boolean
-  damage: number
-  weapon?: Weapon
-  targetType?: ItemType
-}
-
 export abstract class CombatShip extends Ship {
   static percentOfCreditsLostOnDeath = 0.5
   static percentOfCreditsDroppedOnDeath = 0.25
 
+  targetShip: CombatShip | null = null
+  targetItemType: ItemType | `any` = `any`
+  combatTactic: CombatTactic = `defensive`
   attackable = true
 
   constructor(props: BaseShipData, game: Game) {
@@ -42,7 +38,7 @@ export abstract class CombatShip extends Ship {
   updateAttackRadius() {
     this.radii.attack = this.weapons.reduce(
       (highest: number, curr: Weapon): number =>
-        Math.max(curr.range * curr.repair, highest),
+        Math.max(curr.effectiveRange, highest),
       0,
     )
     this.toUpdate.radii = this.radii
@@ -117,9 +113,29 @@ export abstract class CombatShip extends Ship {
         this.game.ships.find((ship) => ship.id === s.id),
       )
       .filter(
+        (s) =>
+          s &&
+          (!this.onlyVisibleToShipId ||
+            s.id === this.onlyVisibleToShipId),
+      )
+      .filter(
         (s) => s && this.canAttack(s, true),
       ) as CombatShip[]
     return combatShipsInRange
+  }
+
+  recalculateTargetShip(): CombatShip | null {
+    const enemies = this.getEnemiesInAttackRange()
+    if (!enemies.length) {
+      this.targetShip = null
+      return this.targetShip
+    }
+
+    this.targetShip = c.randomFromArray(
+      enemies,
+    ) as CombatShip
+
+    return this.targetShip
   }
 
   async respawn() {
@@ -148,25 +164,39 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
+    // self
     if (this === otherShip) return false
+    // not attackable
     if (!otherShip.attackable) return false
+    // can't see it
+    if (
+      !(this.visible.ships as any).find(
+        (s) => s.id === otherShip.id,
+      )
+    )
+      return false
+    // either is at pacifist planet
     if (
       (otherShip.planet && otherShip.planet.pacifist) ||
       (this.planet && this.planet.pacifist)
     )
       return false
+    // dead
     if (otherShip.dead || this.dead) return false
+    // same faction
     if (
       otherShip.faction &&
       this.faction &&
       otherShip.faction.id === this.faction.id
     )
       return false
+    // too far, or not in sight range
     if (
       c.distance(otherShip.location, this.location) >
-      this.radii.attack
+      Math.min(this.radii.attack, this.radii.sight)
     )
       return false
+    // no weapons available
     if (
       !ignoreWeaponState &&
       !this.availableWeapons().length
@@ -179,7 +209,7 @@ export abstract class CombatShip extends Ship {
     this: CombatShip,
     target: CombatShip,
     weapon: Weapon,
-    targetType?: ItemType,
+    targetType: ItemType | `any` = `any`,
   ): TakenDamageResult {
     if (!this.canAttack(target))
       return {
@@ -196,8 +226,7 @@ export abstract class CombatShip extends Ship {
       `munitions`,
     )
     const range = c.distance(this.location, target.location)
-    const rangeAsPercent =
-      range / (weapon.range * weapon.repair)
+    const rangeAsPercent = range / weapon.effectiveRange
     const minHitChance = 0.95
     const enemyAgility =
       target.chassis.agility +
@@ -209,9 +238,17 @@ export abstract class CombatShip extends Ship {
       hitRoll * enemyAgility <
       Math.min(rangeAsPercent, minHitChance)
 
+    const didCrit =
+      Math.random() <=
+      (weapon.critChance === undefined
+        ? this.game.settings.baseCritChance
+        : weapon.critChance)
     let damage = miss
       ? 0
-      : c.getHitDamage(weapon, totalMunitionsSkill)
+      : c.getHitDamage(weapon, totalMunitionsSkill) *
+        (didCrit
+          ? this.game.settings.baseCritDamageMultiplier
+          : 1)
 
     if (!miss) {
       // ----- apply passives -----
@@ -305,7 +342,7 @@ export abstract class CombatShip extends Ship {
       // ----- done with passives -----
     }
 
-    // * using repair only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
+    // * using weapon repair level only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
     c.log(
@@ -314,14 +351,19 @@ export abstract class CombatShip extends Ship {
         rangeAsPercent,
         minHitChance,
       )}, rolled ${hitRoll} for a ${
-        miss ? `miss` : `hit`
-      } of damage ${damage}`,
+        miss
+          ? `miss`
+          : `${
+              didCrit ? `crit` : `hit`
+            } of damage ${damage}`
+      }`,
     )
-    const damageResult: DamageResult = {
+    const damageResult: AttackDamageResult = {
       miss,
       damage,
       weapon,
-      targetType,
+      targetType: targetType || `any`,
+      didCrit,
     }
     const attackResult = target.takeDamage(
       this,
@@ -394,7 +436,7 @@ export abstract class CombatShip extends Ship {
               ...attackResult,
             },
           },
-          `&nospace.`,
+          `&nospace${didCrit ? ` in a critical hit` : ``}.`,
           attackResult.didDie
             ? `${target.name} died in the exchange.`
             : ``,
@@ -440,7 +482,7 @@ export abstract class CombatShip extends Ship {
   takeDamage(
     this: CombatShip,
     attacker: { name: string; [key: string]: any },
-    attack: DamageResult,
+    attack: AttackDamageResult,
   ): TakenDamageResult {
     const previousHp = this.hp
 
@@ -732,7 +774,11 @@ export abstract class CombatShip extends Ship {
         [
           attack.miss
             ? `Missed by an attack from`
-            : `Hit by an attack from`,
+            : `${
+                attack.didCrit
+                  ? `Critical hit`
+                  : `Hit by an attack`
+              } from`,
           {
             text: attacker.name,
             color: attacker.faction.color,
@@ -771,7 +817,11 @@ export abstract class CombatShip extends Ship {
     else
       this.logEntry(
         [
-          attack.miss ? `Missed by` : `Hit by`,
+          attack.miss
+            ? `Missed by`
+            : `${
+                attack.didCrit ? `Critical hit` : `Hit`
+              } by`,
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,

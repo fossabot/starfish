@@ -423,19 +423,22 @@ export default class Drawer {
         !crewMember ||
         (crewMember?.location === `weapons` &&
           ship.targetShip)
-      )
-        this.drawLine({
-          end: [...shipLocation],
-          start: [
-            ship.targetShip.location[0] * this.flatScale,
-            ship.targetShip.location[1] *
-              this.flatScale *
-              -1,
-          ],
-          color: `red`,
-          opacity: 1,
-          dash: 10,
-        })
+      ) {
+        const foundShip = ship.visible?.ships.find(
+          (s) => s.id === ship.targetShip.id,
+        )
+        if (foundShip)
+          this.drawLine({
+            end: [...shipLocation],
+            start: [
+              foundShip.location[0] * this.flatScale,
+              foundShip.location[1] * this.flatScale * -1,
+            ],
+            color: `red`,
+            opacity: 1,
+            dash: 10,
+          })
+      }
     }
 
     // ----- target points -----

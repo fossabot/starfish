@@ -54,6 +54,7 @@ class Zone extends Stubbable_1.Stubbable {
                 ship.takeDamage(this, {
                     damage: miss ? 0 : intensity,
                     miss,
+                    targetType: `any`,
                 });
             }
             // repair
