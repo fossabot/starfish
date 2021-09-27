@@ -226,8 +226,7 @@ export abstract class CombatShip extends Ship {
       `munitions`,
     )
     const range = c.distance(this.location, target.location)
-    const rangeAsPercent =
-      range / (weapon.range * weapon.repair)
+    const rangeAsPercent = range / weapon.effectiveRange
     const minHitChance = 0.95
     const enemyAgility =
       target.chassis.agility +

@@ -1,7 +1,9 @@
 declare function numberWithCommas(x: number): string | number;
 declare function printList(list: string[]): string;
 declare function degreesToArrow(angle: number): string;
+declare function degreesToArrowEmoji(angle: number): string;
 declare function coordPairToArrow(coordPair: CoordinatePair): string;
+declare function percentToTextBars(percent?: number, barCount?: number): string;
 declare function numberToEmoji(number?: number): string;
 declare function emojiToNumber(emoji?: string): number;
 declare function capitalize(string?: string): string;
@@ -15,7 +17,9 @@ declare const _default: {
     numberWithCommas: typeof numberWithCommas;
     printList: typeof printList;
     degreesToArrow: typeof degreesToArrow;
+    degreesToArrowEmoji: typeof degreesToArrowEmoji;
     coordPairToArrow: typeof coordPairToArrow;
+    percentToTextBars: typeof percentToTextBars;
     numberToEmoji: typeof numberToEmoji;
     emojiToNumber: typeof emojiToNumber;
     capitalize: typeof capitalize;

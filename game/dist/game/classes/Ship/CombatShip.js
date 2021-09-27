@@ -143,7 +143,7 @@ class CombatShip extends Ship_1.Ship {
         weapon.use();
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
-        const rangeAsPercent = range / (weapon.range * weapon.repair);
+        const rangeAsPercent = range / weapon.effectiveRange;
         const minHitChance = 0.95;
         const enemyAgility = target.chassis.agility +
             (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity || 0);

@@ -43,6 +43,7 @@ const Go_1 = require("./commands/Go");
 const ShipName_1 = require("./commands/ShipName");
 const ThrustInCurrentDirection_1 = require("./commands/ThrustInCurrentDirection");
 const Brake_1 = require("./commands/Brake");
+const Status_1 = require("./commands/Status");
 class CommandHandler {
     commands;
     prefix;
@@ -63,6 +64,7 @@ class CommandHandler {
             ShipName_1.ChangeShipNameCommand,
             ThrustInCurrentDirection_1.ThrustInCurrentDirectionCommand,
             Brake_1.BrakeCommand,
+            Status_1.StatusCommand,
         ];
         this.commands = commandClasses.map((CommandClass) => new CommandClass());
         this.commands.push(new Help_1.HelpCommand(this.commands));

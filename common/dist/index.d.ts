@@ -158,7 +158,7 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        planet: ("pacifist" | "planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "stats")[];
         faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
         species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
         chassis: ("mass" | "passives" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
@@ -206,7 +206,9 @@ declare const _default: {
     numberWithCommas: (x: number) => string | number;
     printList: (list: string[]) => string;
     degreesToArrow: (angle: number) => string;
+    degreesToArrowEmoji: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;
+    percentToTextBars: (percent?: number, barCount?: number) => string;
     numberToEmoji: (number?: number) => string;
     emojiToNumber: (emoji?: string) => number;
     capitalize: (string?: string) => string;

@@ -4,7 +4,7 @@ import type { Command } from '../models/Command'
 
 export class HelpCommand implements Command {
   commandsToList: Command[] = []
-  commandNames = [`help`, `h`]
+  commandNames = [`help`, `h`, `info`]
 
   constructor(commands: Command[]) {
     this.commandsToList = [...commands]

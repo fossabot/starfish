@@ -67,7 +67,17 @@ const directionArrows = [
   `:arrow_lower_left:`,
   `:arrow_down:`,
   `:arrow_lower_right:`,
-] // ['→', '↗', '↑', '↖︎', '←', '↙', '↓', '↘︎']
+]
+const directionArrowEmoji = [
+  `→`,
+  `↗`,
+  `↑`,
+  `↖︎`,
+  `←`,
+  `↙`,
+  `↓`,
+  `↘︎`,
+]
 
 function degreesToArrow(angle: number): string {
   const normalizedAngle = ((angle + 45 / 2) % 360) / 360
@@ -76,20 +86,27 @@ function degreesToArrow(angle: number): string {
   )
   return directionArrows[arrayIndex]
 }
+function degreesToArrowEmoji(angle: number): string {
+  const normalizedAngle = ((angle + 45 / 2) % 360) / 360
+  const arrayIndex = Math.floor(
+    normalizedAngle * directionArrows.length,
+  )
+  return directionArrowEmoji[arrayIndex]
+}
 
 function coordPairToArrow(coordPair: CoordinatePair) {
   return degreesToArrow(math.vectorToDegrees(coordPair))
 }
 
-// function percentToTextBars(
-//   percent: number = 0,
-//   barCount = 10,
-// ): string {
-//   const bars = []
-//   for (let i = 0; i < 1; i += 1 / barCount)
-//     bars.push(i < percent ? `▓` : `░`)
-//   return `\`` + bars.join(``) + `\``
-// }
+function percentToTextBars(
+  percent: number = 0,
+  barCount = 10,
+): string {
+  const bars: string[] = []
+  for (let i = 0; i < 1; i += 1 / barCount)
+    bars.push(i < percent ? `▓` : `░`)
+  return `\`` + bars.join(``) + `\``
+}
 
 function numberToEmoji(number: number = 0): string {
   return numberEmojis[number] || `❓`
@@ -260,8 +277,9 @@ export default {
   numberWithCommas,
   printList,
   degreesToArrow,
+  degreesToArrowEmoji,
   coordPairToArrow,
-  // percentToTextBars,
+  percentToTextBars,
   numberToEmoji,
   emojiToNumber,
   capitalize,
