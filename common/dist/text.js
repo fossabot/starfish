@@ -94,8 +94,9 @@ function coordPairToArrow(coordPair) {
 }
 function percentToTextBars(percent = 0, barCount = 10) {
     const bars = [];
+    const barGap = 1 / barCount;
     for (let i = 0; i < 1; i += 1 / barCount)
-        bars.push(i < percent ? `▓` : `░`);
+        bars.push(i - barGap / 2 < percent ? `▓` : `░`);
     return `\`` + bars.join(``) + `\``;
 }
 function numberToEmoji(number = 0) {
@@ -182,7 +183,7 @@ function msToTimeString(ms = 0) {
         return `${days}d ${hours}h`;
     return `${years}y ${days}d`;
 }
-const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`;
+const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土월화수목금토일`;
 function garble(string = ``, percent = 0) {
     if (percent > 0.98)
         percent = 0.98;

@@ -103,8 +103,9 @@ function percentToTextBars(
   barCount = 10,
 ): string {
   const bars: string[] = []
+  const barGap = 1 / barCount
   for (let i = 0; i < 1; i += 1 / barCount)
-    bars.push(i < percent ? `▓` : `░`)
+    bars.push(i - barGap / 2 < percent ? `▓` : `░`)
   return `\`` + bars.join(``) + `\``
 }
 
@@ -211,7 +212,7 @@ function msToTimeString(ms: number = 0): string {
   return `${years}y ${days}d`
 }
 
-const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土`
+const possibleRandomCharacters: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土월화수목금토일`
 
 function garble(string: string = ``, percent = 0): string {
   if (percent > 0.98) percent = 0.98
