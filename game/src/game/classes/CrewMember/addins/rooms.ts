@@ -19,6 +19,7 @@ export function cockpit(this: CrewMember): void {
 }
 
 export function repair(this: CrewMember) {
+  const previousShipHp = this.ship.hp
   const repairAmount =
     c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
@@ -30,7 +31,7 @@ export function repair(this: CrewMember) {
 
   this.addStat(`totalHpRepaired`, totalRepaired)
 
-  if (!overRepair) {
+  if (this.ship.maxHp - previousShipHp > 0.01) {
     this.addXp(`mechanics`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
     this.toUpdate.skills = this.skills
   }
@@ -79,24 +80,24 @@ export function mine(this: CrewMember): void {
 export function bunk(this: CrewMember): void {
   this.addStat(`timeInBunk`, 1)
 
-  // * drip feed of cockpit charge as well
-  const percentOfNormalChargeToGive = 0.1
+  // * drip feed of cockpit charge
+  if (this.cockpitCharge < 1) {
+    const percentOfNormalChargeToGive = 0.1
 
-  if (this.cockpitCharge >= 1) return
+    const chargeBoost =
+      this.ship.getPassiveIntensity(
+        `boostCockpitChargeSpeed`,
+      ) + 1
+    this.cockpitCharge +=
+      c.getCockpitChargePerTickForSingleCrewMember(
+        this.piloting?.level || 1,
+      ) *
+      chargeBoost *
+      percentOfNormalChargeToGive
 
-  const chargeBoost =
-    this.ship.getPassiveIntensity(
-      `boostCockpitChargeSpeed`,
-    ) + 1
-  this.cockpitCharge +=
-    c.getCockpitChargePerTickForSingleCrewMember(
-      this.piloting?.level || 1,
-    ) *
-    chargeBoost *
-    percentOfNormalChargeToGive
-
-  if (this.cockpitCharge > 1) this.cockpitCharge = 1
-  this.toUpdate.cockpitCharge = this.cockpitCharge
+    if (this.cockpitCharge > 1) this.cockpitCharge = 1
+    this.toUpdate.cockpitCharge = this.cockpitCharge
+  }
 
   if (this.stamina >= this.maxStamina) return
 
