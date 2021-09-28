@@ -452,16 +452,11 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price = Math.ceil(
-        c.cargo[cargoForSale.id].basePrice *
-          cargoForSale.buyMultiplier *
-          amount *
-          planet?.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? c.factionVendorMultiplier
-            : 1),
+      const price = c.getCargoBuyPrice(
+        cargoId,
+        planet,
+        amount,
+        ship.faction.id,
       )
       // c.log({
       //   price,
@@ -536,25 +531,17 @@ export default function (
           p.name === vendorLocation &&
           p.planetType === `basic`,
       ) as BasicPlanet | undefined
-      const sellMultiplier =
-        planet?.vendor?.cargo?.find(
-          (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
-        )?.sellMultiplier || c.baseCargoSellMultiplier
+
       if (!planet)
         return callback({
           error: `No planet found.`,
         })
 
-      const price = Math.min(
-        c.cargo[cargoId].basePrice *
-          sellMultiplier *
-          amount *
-          planet.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? 1 + (1 - (c.factionVendorMultiplier || 1))
-            : 1),
+      const price = c.getCargoSellPrice(
+        cargoId,
+        planet,
+        amount,
+        ship.faction.id,
       )
 
       crewMember.credits = Math.round(

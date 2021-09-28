@@ -933,10 +933,19 @@ export class HumanShip extends CombatShip {
 
   // ----- move -----
   move(toLocation?: CoordinatePair) {
+    const startingLocation: CoordinatePair = [
+      ...this.location,
+    ]
+
     super.move(toLocation)
+
     if (toLocation) {
       this.updateVisible()
       this.updatePlanet()
+      this.game.chunkManager.addOrUpdate(
+        this,
+        startingLocation,
+      )
       return
     }
 
@@ -945,13 +954,17 @@ export class HumanShip extends CombatShip {
       return
     }
 
-    const startingLocation: CoordinatePair = [
-      ...this.location,
-    ]
+    if (this.velocity[0] === 0 && this.velocity[1] === 0)
+      return
 
     this.location[0] += this.velocity[0]
     this.location[1] += this.velocity[1]
     this.toUpdate.location = this.location
+
+    this.game.chunkManager.addOrUpdate(
+      this,
+      startingLocation,
+    )
 
     this.addPreviousLocation(
       startingLocation,

@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const text_1 = __importDefault(require("./text"));
+const cargo = __importStar(require("./cargo"));
 const gameSpeedMultiplier = 10;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
@@ -236,6 +256,28 @@ function getPlanetTitle(planet) {
     return names[Math.floor(planet.level - 1)] || `Domain`;
     // todo finish
 }
+function getCargoSellPrice(cargoId, planet, amount, factionId) {
+    const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier || baseCargoSellMultiplier;
+    return Math.floor(cargo[cargoId].basePrice *
+        sellMultiplier *
+        amount *
+        planet.priceFluctuator *
+        ((planet.allegiances.find((a) => a.faction.id === factionId)?.level || 0) >= factionAllegianceFriendCutoff
+            ? 1 + (1 - (factionVendorMultiplier || 1))
+            : 1));
+}
+function getCargoBuyPrice(cargoId, planet, amount, factionId) {
+    const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
+    if (!cargoForSale)
+        return 99999;
+    return Math.ceil(cargo[cargoId].basePrice *
+        cargoForSale.buyMultiplier *
+        amount *
+        planet?.priceFluctuator *
+        ((planet.allegiances.find((a) => a.faction.id === factionId)?.level || 0) >= factionAllegianceFriendCutoff
+            ? factionVendorMultiplier
+            : 1));
+}
 function getPlanetPopulation(planet) {
     if (!planet)
         return 0;
@@ -328,5 +370,7 @@ exports.default = {
     headerBackgroundOptions,
     getPlanetTitle,
     getPlanetPopulation,
+    getCargoSellPrice,
+    getCargoBuyPrice,
 };
 //# sourceMappingURL=game.js.map

@@ -111,7 +111,11 @@ class Zone extends Stubbable_1.Stubbable {
         }
     }
     moveToRandomLocation() {
+        const startingLocation = [
+            ...this.location,
+        ];
         this.location = (0, zones_1.getValidZoneLocation)(this.game, this.radius);
+        this.game.chunkManager.addOrUpdate(this, startingLocation);
     }
     toVisibleStub() {
         return this.stubify();

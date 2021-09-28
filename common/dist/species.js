@@ -42,7 +42,7 @@ const species = {
             {
                 id: `boostScanRange`,
                 data: { source: { speciesId: `lobsters` } },
-                intensity: 0.2,
+                intensity: 0.3,
             },
         ],
     },

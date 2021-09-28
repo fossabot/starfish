@@ -2,6 +2,7 @@ import math from './math'
 import globals from './globals'
 import c from './log'
 import text from './text'
+import * as cargo from './cargo'
 
 const gameSpeedMultiplier = 10
 
@@ -345,6 +346,52 @@ function getPlanetTitle(planet: PlanetStub) {
   // todo finish
 }
 
+function getCargoSellPrice(
+  cargoId: CargoId,
+  planet: PlanetStub,
+  amount: number,
+  factionId: FactionKey,
+) {
+  const sellMultiplier =
+    planet?.vendor?.cargo?.find(
+      (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
+    )?.sellMultiplier || baseCargoSellMultiplier
+  return Math.floor(
+    cargo[cargoId].basePrice *
+      sellMultiplier *
+      amount *
+      planet.priceFluctuator *
+      ((planet.allegiances.find(
+        (a) => a.faction.id === factionId,
+      )?.level || 0) >= factionAllegianceFriendCutoff
+        ? 1 + (1 - (factionVendorMultiplier || 1))
+        : 1),
+  )
+}
+
+function getCargoBuyPrice(
+  cargoId: CargoId,
+  planet: PlanetStub,
+  amount: number,
+  factionId: FactionKey,
+) {
+  const cargoForSale = planet?.vendor?.cargo?.find(
+    (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
+  )
+  if (!cargoForSale) return 99999
+  return Math.ceil(
+    cargo[cargoId].basePrice *
+      cargoForSale.buyMultiplier *
+      amount *
+      planet?.priceFluctuator *
+      ((planet.allegiances.find(
+        (a) => a.faction.id === factionId,
+      )?.level || 0) >= factionAllegianceFriendCutoff
+        ? factionVendorMultiplier
+        : 1),
+  )
+}
+
 function getPlanetPopulation(planet: PlanetStub): number {
   if (!planet) return 0
   return math.r2(
@@ -446,5 +493,7 @@ export default {
   headerBackgroundOptions,
   getPlanetTitle,
   getPlanetPopulation,
+  getCargoSellPrice,
+  getCargoBuyPrice,
   // getPlanetDescription,
 }

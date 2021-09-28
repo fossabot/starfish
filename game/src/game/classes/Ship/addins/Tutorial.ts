@@ -31,7 +31,8 @@ interface TutorialStepData {
   forceCommonCredits?: number
   forceLoadout?: LoadoutId
   visibleTypes: (
-    | `ship`
+    | `humanShip`
+    | `aiShip`
     | `planet`
     | `cache`
     | `attackRemnant`
@@ -244,7 +245,7 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            coordinates: [0.015, 0],
+            location: [0.015, 0],
             label: `cache`,
           },
         },
@@ -344,7 +345,7 @@ export class Tutorial {
         ],
         disableRepair: true,
         disableStamina: true,
-        visibleTypes: [`planet`, `ship`, `trail`],
+        visibleTypes: [`planet`, `aiShip`, `trail`],
         script: [
           {
             message: `Well it's not THAT dangero— Oh no, what is that...?<br />
@@ -386,7 +387,7 @@ export class Tutorial {
         disableStamina: true,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -422,7 +423,7 @@ export class Tutorial {
         disableRepair: true,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -456,7 +457,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -498,7 +499,7 @@ export class Tutorial {
         highlightPanel: `diagram`,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -543,7 +544,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -593,7 +594,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -605,7 +606,7 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            coordinates: [0, 0],
+            location: [0, 0],
             label: `back home`,
           },
         },
@@ -637,7 +638,7 @@ export class Tutorial {
         highlightPanel: `planet`,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -686,7 +687,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -747,7 +748,7 @@ export class Tutorial {
         shouldAdvance &&
         c.distance(
           this.ship.location,
-          this.targetLocation.coordinates,
+          this.targetLocation.location,
         ) <= this.ship.game.settings.arrivalThreshold
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
@@ -905,13 +906,13 @@ export class Tutorial {
     // target locations
     if (this.currentStep.nextStepTrigger.location)
       this.targetLocation = {
-        coordinates: [
+        location: [
           this.baseLocation[0] +
             this.currentStep.nextStepTrigger.location
-              .coordinates[0],
+              .location[0],
           this.baseLocation[1] +
             this.currentStep.nextStepTrigger.location
-              .coordinates[1],
+              .location[1],
         ],
         label:
           this.currentStep.nextStepTrigger.location.label,

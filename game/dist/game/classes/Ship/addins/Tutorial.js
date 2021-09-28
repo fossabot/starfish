@@ -205,7 +205,7 @@ class Tutorial {
                 ],
                 nextStepTrigger: {
                     location: {
-                        coordinates: [0.015, 0],
+                        location: [0.015, 0],
                         label: `cache`,
                     },
                 },
@@ -303,7 +303,7 @@ class Tutorial {
                 ],
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`, `ship`, `trail`],
+                visibleTypes: [`planet`, `aiShip`, `trail`],
                 script: [
                     {
                         message: `Well it's not THAT dangero— Oh no, what is that...?<br />
@@ -345,7 +345,7 @@ class Tutorial {
                 disableStamina: true,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -381,7 +381,7 @@ class Tutorial {
                 disableRepair: true,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -415,7 +415,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -456,7 +456,7 @@ class Tutorial {
                 highlightPanel: `diagram`,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -500,7 +500,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -550,7 +550,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -562,7 +562,7 @@ class Tutorial {
                 ],
                 nextStepTrigger: {
                     location: {
-                        coordinates: [0, 0],
+                        location: [0, 0],
                         label: `back home`,
                     },
                 },
@@ -593,7 +593,7 @@ class Tutorial {
                 highlightPanel: `planet`,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -641,7 +641,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -672,7 +672,7 @@ class Tutorial {
         if (this.targetLocation)
             shouldAdvance =
                 shouldAdvance &&
-                    dist_1.default.distance(this.ship.location, this.targetLocation.coordinates) <= this.ship.game.settings.arrivalThreshold;
+                    dist_1.default.distance(this.ship.location, this.targetLocation.location) <= this.ship.game.settings.arrivalThreshold;
         if (this.currentStep.nextStepTrigger.gainStaminaTo)
             shouldAdvance =
                 shouldAdvance &&
@@ -788,13 +788,13 @@ class Tutorial {
         // target locations
         if (this.currentStep.nextStepTrigger.location)
             this.targetLocation = {
-                coordinates: [
+                location: [
                     this.baseLocation[0] +
                         this.currentStep.nextStepTrigger.location
-                            .coordinates[0],
+                            .location[0],
                     this.baseLocation[1] +
                         this.currentStep.nextStepTrigger.location
-                            .coordinates[1],
+                            .location[1],
                 ],
                 label: this.currentStep.nextStepTrigger.location.label,
                 color: this.currentStep.nextStepTrigger.location.color,

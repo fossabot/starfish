@@ -191,6 +191,8 @@ declare const _default: {
     }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

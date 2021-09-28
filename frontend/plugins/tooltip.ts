@@ -21,3 +21,25 @@ Vue.directive(`tooltip`, {
   },
   unbind: (el, binding, vnode) => {},
 })
+
+Vue.directive(`targetpoint`, {
+  bind: (el, binding, vnode) => {
+    let targetPointData = binding.value
+    const $store = vnode.context.$store
+
+    el.targetPointData = targetPointData
+
+    el.addEventListener(`mouseenter`, () =>
+      $store.commit(`targetPoint`, el.targetPointData),
+    )
+
+    el.addEventListener(`mouseleave`, () => {
+      $store.commit(`targetPoint`)
+    })
+  },
+  componentUpdated: (el, binding, vnode) => {
+    let targetPointData = binding.value
+    ;(el as any).targetPointData = targetPointData
+  },
+  unbind: (el, binding, vnode) => {},
+})

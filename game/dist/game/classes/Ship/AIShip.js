@@ -50,7 +50,7 @@ class AIShip extends CombatShip_1.CombatShip {
         // ----- move -----
         this.move();
         const previousVisible = this.visible;
-        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`ship`]);
+        this.visible = this.game.scanCircle(this.location, this.radii.sight, this.id, [`humanShip`]);
         if (this.onlyVisibleToShipId) {
             const onlyVisibleShip = this.game.humanShips.find((s) => s.id === this.onlyVisibleToShipId);
             if (onlyVisibleShip)
@@ -131,14 +131,16 @@ class AIShip extends CombatShip_1.CombatShip {
     }
     // ----- move -----
     move(toLocation) {
-        super.move(toLocation);
-        if (toLocation)
-            return;
-        if (!this.canMove)
-            return;
         const startingLocation = [
             ...this.location,
         ];
+        super.move(toLocation);
+        if (toLocation) {
+            this.game.chunkManager.addOrUpdate(this, startingLocation);
+            return;
+        }
+        if (!this.canMove)
+            return;
         const engineThrustMultiplier = this.engines
             .filter((e) => e.repair > 0)
             .reduce((total, e) => total + e.thrustAmplification * e.repair, 0) * this.game.settings.baseEngineThrustMultiplier;
@@ -159,6 +161,7 @@ class AIShip extends CombatShip_1.CombatShip {
                 unitVectorToTarget[1] *
                     thrustMagnitude *
                     (dist_1.default.deltaTime / dist_1.default.tickInterval);
+            this.game.chunkManager.addOrUpdate(this, startingLocation);
         }
         // ----- set new target location -----
         if (Math.random() < 0.000005 * dist_1.default.tickInterval) {

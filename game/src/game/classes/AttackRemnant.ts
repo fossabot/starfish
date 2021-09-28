@@ -5,6 +5,7 @@ import { Stubbable } from './Stubbable'
 
 export class AttackRemnant extends Stubbable {
   readonly id: string
+  readonly type = `attackRemnant`
   readonly attacker: CombatShip
   readonly defender: CombatShip
   readonly damageTaken: TakenDamageResult

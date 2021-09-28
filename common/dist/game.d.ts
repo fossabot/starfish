@@ -14,6 +14,8 @@ declare function statToString(data: {
     amount: number;
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
+declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
+declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
     supportServerLink: string;
@@ -75,6 +77,8 @@ declare const _default: {
     }[];
     getPlanetTitle: typeof getPlanetTitle;
     getPlanetPopulation: typeof getPlanetPopulation;
+    getCargoSellPrice: typeof getCargoSellPrice;
+    getCargoBuyPrice: typeof getCargoBuyPrice;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

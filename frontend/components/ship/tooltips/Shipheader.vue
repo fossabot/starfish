@@ -31,7 +31,7 @@
           :class="{ pushup: data.tagline }"
           v-tooltip="{
             type: 'species',
-            data: c.species[data.species.id],
+            ...c.species[data.species.id],
           }"
         >
           {{ c.species[data.species.id].icon }}
