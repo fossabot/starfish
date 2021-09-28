@@ -84,9 +84,30 @@ export class Game {
   async save() {
     if (this.paused) return
 
+    const saveStartTime = Date.now()
+
+    const promises: Promise<any>[] = []
+    this.planets.forEach((p) => {
+      promises.push(db.planet.addOrUpdateInDb(p))
+    })
+    await Promise.all(promises)
+
+    // * we were doing it this way but at a certain pointwe got a stack overflow (I think this was the cause)
+    // this.ships.forEach((s) => {
+    //   promises.push(db.ship.addOrUpdateInDb(s))
+    // })
+
+    for (let s of this.ships) {
+      await db.ship.addOrUpdateInDb(s)
+    }
+
+    this.recalculateFactionRankings()
+
     c.log(
       `gray`,
-      `----- Saving Game ----- (Tick avg: ${c.r2(
+      `----- Saved Game in ${c.r2(
+        (Date.now() - saveStartTime) / 1000,
+      )}s ----- (Tick avg: ${c.r2(
         this.averageTickTime,
         2,
       )}ms, Worst human ship avg: ${c.r2(
@@ -94,16 +115,6 @@ export class Game {
         2,
       )}ms)`,
     )
-    const promises: Promise<any>[] = []
-    this.ships.forEach((s) => {
-      promises.push(db.ship.addOrUpdateInDb(s))
-    })
-    this.planets.forEach((p) => {
-      promises.push(db.planet.addOrUpdateInDb(p))
-    })
-    await Promise.all(promises)
-
-    this.recalculateFactionRankings()
   }
 
   async daily() {

@@ -291,11 +291,13 @@
     </div>
 
     <div v-if="dataToUse.mass">
-      Mass: {{ c.numberWithCommas(dataToUse.mass) }}kg
+      Mass:
+      {{ c.numberWithCommas(c.r2(dataToUse.mass / 1000)) }}
+      tons
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.mass"
-        :b="dataToUse.mass"
+        :a="compareTo.mass / 1000"
+        :b="dataToUse.mass / 1000"
         :higherIsBetter="false"
       />
     </div>

@@ -61,16 +61,21 @@ class Game {
     async save() {
         if (this.paused)
             return;
-        dist_1.default.log(`gray`, `----- Saving Game ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
+        const saveStartTime = Date.now();
         const promises = [];
-        this.ships.forEach((s) => {
-            promises.push(db_1.db.ship.addOrUpdateInDb(s));
-        });
         this.planets.forEach((p) => {
             promises.push(db_1.db.planet.addOrUpdateInDb(p));
         });
         await Promise.all(promises);
+        // * we were doing it this way but at a certain pointwe got a stack overflow (I think this was the cause)
+        // this.ships.forEach((s) => {
+        //   promises.push(db.ship.addOrUpdateInDb(s))
+        // })
+        for (let s of this.ships) {
+            await db_1.db.ship.addOrUpdateInDb(s);
+        }
         this.recalculateFactionRankings();
+        dist_1.default.log(`gray`, `----- Saved Game in ${dist_1.default.r2((Date.now() - saveStartTime) / 1000)}s ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
     }
     async daily() {
         if (this.paused)

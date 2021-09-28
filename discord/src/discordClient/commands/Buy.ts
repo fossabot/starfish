@@ -11,7 +11,7 @@ export class BuyCommand implements Command {
   commandNames = [`buy`, `buyall`, `purchase`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <cargo type (optional)>\` - Buy as much <cargo type> as possible at your current planet's going rate.`
+    return `\`${commandPrefix}${this.commandNames[0]} <cargo type (optional)>\` - Buy as much <cargo type> as possible at your current planet's going rate. Without a provided type, prints purchase options.`
   }
 
   async run(context: CommandContext) {

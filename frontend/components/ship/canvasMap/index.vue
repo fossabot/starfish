@@ -12,36 +12,41 @@
       <span class="sectionemoji">{{ emoji }}</span
       >{{ label }}
     </template>
-    <div
-      class="panesection padnone"
-      :style="{
-        width: width + 'px',
-        height: width + 'px',
-        background,
-      }"
-    >
-      <canvas
-        ref="canvas"
-        id="map"
-        :width="widthScaledToDevice + 'px'"
-        :height="widthScaledToDevice + 'px'"
+    <div class="resizewatcher">
+      <div
+        class="panesection padnone mappane"
+        :class="{ killtouchevents: interactive }"
         :style="{
-          width: width + 'px',
-          height: width + 'px',
+          width: widthAdjustedToWindowSize + 'px',
+          height: widthAdjustedToWindowSize + 'px',
+          background,
         }"
-        @wheel="mouseWheel"
-        @mousedown="mouseDown"
-        @mouseleave="mouseLeave"
-      />
+      >
+        <canvas
+          ref="canvas"
+          id="map"
+          :width="widthScaledToDevice + 'px'"
+          :height="widthScaledToDevice + 'px'"
+          :style="{
+            width: widthAdjustedToWindowSize + 'px',
+            height: widthAdjustedToWindowSize + 'px',
+          }"
+          @wheel="mouseWheel"
+          @touchstart="mouseDown"
+          @touchend="mouseLeave"
+          @mousedown="mouseDown"
+          @mouseleave="mouseLeave"
+        />
 
-      <div class="floatbuttons">
-        <button
-          @click="resetCenter"
-          v-if="!mapFollowingShip"
-          class="secondary"
-        >
-          Follow Ship
-        </button>
+        <div class="floatbuttons">
+          <button
+            @click="resetCenter"
+            v-if="!mapFollowingShip"
+            class="secondary"
+          >
+            Follow Ship
+          </button>
+        </div>
       </div>
     </div>
   </Box>
@@ -52,7 +57,6 @@ import Vue from 'vue'
 import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 import Drawer from './drawMapFrame'
-import { nextTick } from 'process'
 
 export default Vue.extend({
   props: {
@@ -80,11 +84,14 @@ export default Vue.extend({
     //   | { ship: ShipStub; visible: VisibleStub }
     //   | undefined
 
+    let resizeObserver: ResizeObserver | undefined
     return {
       c,
+      resizeObserver,
       element,
       drawer,
       paused: false,
+      widthAdjustedToWindowSize: 0,
       widthScaledToDevice: 0,
       devicePixelRatio: 1,
       lastFrameRes: null,
@@ -150,12 +157,38 @@ export default Vue.extend({
       }
     },
   },
-  mounted() {},
+  async mounted() {
+    await this.$nextTick()
+    this.resizeObserver = new ResizeObserver(this.resize)
+    const el = this.$el.querySelector(
+      '.resizewatcher',
+    ) as HTMLElement
+    this.resizeObserver.observe(el)
+  },
   methods: {
+    resize(e: ResizeObserverEntry[]) {
+      const parentWidth =
+        this.$el.parentElement?.clientWidth || 0
+
+      this.widthAdjustedToWindowSize =
+        e[0].contentBoxSize[0].inlineSize
+
+      c.log(
+        'resized',
+        e[0].contentBoxSize[0].inlineSize,
+        this.width,
+        parentWidth,
+        this.widthAdjustedToWindowSize,
+      )
+      this.start()
+    },
     start() {
       this.devicePixelRatio = window.devicePixelRatio || 1
+      if (!this.widthAdjustedToWindowSize)
+        this.widthAdjustedToWindowSize = this.width
       this.widthScaledToDevice =
-        this.width * this.devicePixelRatio
+        this.widthAdjustedToWindowSize *
+        this.devicePixelRatio
       this.drawNextFrame()
 
       window.removeEventListener(
@@ -163,6 +196,11 @@ export default Vue.extend({
         this.mouseMove,
       )
       window.addEventListener('mousemove', this.mouseMove)
+      window.removeEventListener(
+        'touchmove',
+        this.mouseMove,
+      )
+      window.addEventListener('touchmove', this.mouseMove)
     },
     drawNextFrame(immediate = false) {
       if (this.paused || !this.show) return
@@ -262,19 +300,22 @@ export default Vue.extend({
       })
     },
 
-    mouseDown(e: MouseEvent) {
+    mouseDown(e: MouseEvent | TouchEvent) {
       if (!this.interactive) return
       clearTimeout(this.followCenterTimeout)
       this.$store.commit('set', { mapFollowingShip: false })
       this.mouseIsDown = true
-      this.dragStartPoint = [e.x, e.y]
+      this.dragStartPoint =
+        'x' in e
+          ? [e.x, e.y]
+          : [e.touches[0].clientX, e.touches[0].clientY]
       this.zoom = this.drawer?.zoom
       this.mapCenterAtDragStart = [
         ...(this.mapCenter || [0, 0]),
       ]
       window.addEventListener('mouseup', this.mouseUp)
     },
-    mouseUp(e: MouseEvent) {
+    mouseUp(e: MouseEvent | TouchEvent) {
       if (!this.interactive) return
       if (!this.mouseIsDown) return
       this.followCenterTimeout = setTimeout(
@@ -301,8 +342,8 @@ export default Vue.extend({
       if (this.$store.state.tooltip)
         this.$store.commit('tooltip')
     },
-    async mouseMove(e: MouseEvent) {
-      if (e.target === this.$refs.canvas)
+    async mouseMove(e: MouseEvent | TouchEvent) {
+      if (e.target === this.$refs.canvas && 'clientX' in e)
         this.checkHoverPointForTooltip(e)
 
       if (!this.interactive) return
@@ -314,7 +355,10 @@ export default Vue.extend({
         !this.mapCenterAtDragStart
       )
         return
-      this.dragEndPoint = [e.x, e.y]
+      this.dragEndPoint =
+        'x' in e
+          ? [e.x, e.y]
+          : [e.touches[0].clientX, e.touches[0].clientY]
       if (
         c.distance(this.dragStartPoint, this.dragEndPoint) >
         4
@@ -334,11 +378,11 @@ export default Vue.extend({
       this.awaitingDragFrame = true
       const dx =
         ((this.dragStartPoint[0] - this.dragEndPoint[0]) /
-          this.width) *
+          this.widthAdjustedToWindowSize) *
         (this.drawer?.width || 1)
       const dy =
         ((this.dragStartPoint[1] - this.dragEndPoint[1]) /
-          this.width) *
+          this.widthAdjustedToWindowSize) *
         (this.drawer?.height || 1)
       this.mapCenter = [
         this.mapCenterAtDragStart[0] + dx,
@@ -346,6 +390,8 @@ export default Vue.extend({
       ]
       await this.drawNextFrame(true)
       this.awaitingDragFrame = false
+
+      e.preventDefault()
     },
     async mouseWheel(e: WheelEvent) {
       if (!this.interactive) return
@@ -386,8 +432,8 @@ export default Vue.extend({
       sizeDifference /= this.zoom
       sizeDifference -= 1
 
-      const mx = e.offsetX / this.width
-      const my = e.offsetY / this.width
+      const mx = e.offsetX / this.widthAdjustedToWindowSize
+      const my = e.offsetY / this.widthAdjustedToWindowSize
 
       const mapDistanceFromMouseToCenter = this.drawer
         ? [
@@ -417,11 +463,11 @@ export default Vue.extend({
       const tl = this.drawer?.topLeft || [0, 0]
 
       this.hoverPoint = [
-        ((e.offsetX / this.width) *
+        ((e.offsetX / this.widthAdjustedToWindowSize) *
           (this.drawer?.width || 1) +
           tl[0]) /
           (this.drawer?.flatScale || 1),
-        (((e.offsetY / this.width) *
+        (((e.offsetY / this.widthAdjustedToWindowSize) *
           (this.drawer?.height || 1) +
           tl[1]) *
           -1) /
@@ -556,6 +602,10 @@ export default Vue.extend({
 .panesection {
   background: var(--bg);
 
+  &.killtouchevents {
+    touch-action: none;
+  }
+
   @media (max-width: 768px) {
     width: 100% !important;
   }
@@ -565,5 +615,10 @@ export default Vue.extend({
     bottom: 0.5em;
     right: 0.5em;
   }
+}
+
+.resizewatcher,
+canvas {
+  max-width: 100%;
 }
 </style>
