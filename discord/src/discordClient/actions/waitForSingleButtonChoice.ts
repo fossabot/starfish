@@ -27,10 +27,10 @@ export default async function <
   sentMessage: Message | null
 }> {
   const rows: MessageActionRow[] = []
-  for (let i = 0; i < buttons.length / 4; i++)
+  for (let i = 0; i < buttons.length / 3; i++)
     rows.push(new MessageActionRow())
   for (let i = 0; i < buttons.length; i++)
-    rows[Math.floor(i / 4)].addComponents([
+    rows[Math.floor(i / 3)].addComponents([
       new MessageButton(buttons[i]),
     ])
 
@@ -57,8 +57,8 @@ export default async function <
     collector.on?.(
       `collect`,
       async (i: MessageComponentInteraction) => {
+        if (i.message.id !== sentMessage.id) return
         try {
-          // c.log(i)
           await i.deferUpdate()
           if (done) return
           done = true
