@@ -115,6 +115,8 @@ export default Vue.extend({
       'userId',
       'lastUpdated',
       'forceMapRedraw',
+      'tooltip',
+      'targetPoint',
     ]),
     mapFollowingShip(): boolean {
       return (
@@ -153,6 +155,12 @@ export default Vue.extend({
         await this.$nextTick()
         setTimeout(() => this.drawNextFrame(), 200)
       }
+    },
+    tooltip() {
+      this.drawNextFrame()
+    },
+    targetPoint() {
+      this.drawNextFrame()
     },
   },
   async mounted() {
@@ -259,6 +267,61 @@ export default Vue.extend({
           //     document.body.contains(this.element),
           //   )
 
+          // *  ----- calculate the target point from the tooltip or targetPoint -----
+          const targetPoints: TargetLocation[] = []
+          const tp =
+            this.targetPoint || this.tooltip
+              ? {
+                  ...(this.targetPoint || this.tooltip),
+                }
+              : null
+
+          if (tp) {
+            if (tp.location) {
+              targetPoints.push({
+                location: tp.location,
+                color: tp.faction
+                  ? c.factions[tp.faction.id].color
+                  : tp.color,
+              })
+            } else if (tp.type) {
+              if (
+                tp.type === 'ship' &&
+                (
+                  this.ship.visible as VisibleStub
+                )?.ships.find((s) => s.id === tp.id)
+              ) {
+                targetPoints.push({
+                  location: this.ship.visible.ships.find(
+                    (s) => s.id === tp.id,
+                  )?.location,
+                  color: tp.faction
+                    ? c.factions[tp.faction.id].color
+                    : tp.color,
+                })
+              }
+              if (
+                tp.type === 'planet' &&
+                this.ship.seenPlanets.find(
+                  (s) => s.name === tp.name,
+                )
+              ) {
+                targetPoints.push({
+                  location: this.ship.seenPlanets.find(
+                    (s) => s.name === tp.name,
+                  )?.location,
+                  color:
+                    (
+                      tp.name &&
+                      this.ship.seenPlanets.find(
+                        (sp) => sp.name === tp.name,
+                      )
+                    )?.color || tp.color,
+                })
+              }
+            }
+          }
+
           profiler.step('startdraw')
 
           this.drawer.draw({
@@ -277,6 +340,7 @@ export default Vue.extend({
             visible: this.ship?.visible,
             immediate: !!immediate,
             crewMemberId: this.userId,
+            targetPoints,
             // previousData: this.previousData,
           })
 
@@ -331,7 +395,7 @@ export default Vue.extend({
         this.$store.commit(
           'setTarget',
           this.$store.state.tooltip?.type !== 'zone'
-            ? this.$store.state.tooltip?.data?.location ||
+            ? this.$store.state.tooltip?.location ||
                 this.hoverPoint
             : this.hoverPoint,
         )
@@ -507,7 +571,7 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             type: 'planet',
-            data: p,
+            ...p,
           })
       })
 
@@ -520,7 +584,7 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             type: 'cache',
-            data: p,
+            ...p,
           })
       })
 
@@ -533,7 +597,7 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             type: 'ship',
-            data: p,
+            ...p,
           })
       })
 
@@ -547,7 +611,7 @@ export default Vue.extend({
             hoverDistance,
             hoverDistanceSubtract: p.radius,
             type: 'zone',
-            data: p,
+            ...p,
           })
       })
 
@@ -559,7 +623,7 @@ export default Vue.extend({
         hoverableElements.push({
           hoverDistance: hd,
           type: 'ship',
-          data: this.ship,
+          ...this.ship,
         })
 
       const toShow = hoverableElements.reduce(

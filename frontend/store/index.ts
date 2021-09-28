@@ -18,6 +18,7 @@ export const state = () => ({
   ship: null,
   crewMember: null,
   tooltip: null,
+  targetPoint: null,
   winSize: [1200, 1000],
   modal: null,
   forceMapRedraw: 0,
@@ -33,6 +34,9 @@ export const mutations = {
 
   tooltip(state, newTooltip) {
     state.tooltip = newTooltip
+  },
+  targetPoint(state, newTargetPoint) {
+    state.targetPoint = newTargetPoint
   },
 
   setShipProp(state, pair) {

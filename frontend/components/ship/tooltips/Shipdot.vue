@@ -42,7 +42,7 @@
       <div
         v-tooltip="{
           type: 'planet',
-          data: dataToUse.planet,
+          ...dataToUse.planet,
         }"
       >
         At planet
@@ -219,10 +219,7 @@
         <div
           v-for="(item, index) in dataToUse.items || []"
           :key="'tooltipscanitem' + dataToUse.id + index"
-          v-tooltip="{
-            type: item.type,
-            data: item,
-          }"
+          v-tooltip="item"
         >
           <div>
             {{ item.displayName }}

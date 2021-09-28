@@ -24,7 +24,7 @@
           "
           v-tooltip="{
             type: 'cargo',
-            data: ca,
+            ...ca,
           }"
         >
           <PromptButton
@@ -80,7 +80,7 @@
           "
           v-tooltip="{
             type: 'cargo',
-            data: ca,
+            ...ca,
           }"
         >
           <PromptButton

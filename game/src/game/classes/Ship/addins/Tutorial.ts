@@ -245,7 +245,7 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            coordinates: [0.015, 0],
+            location: [0.015, 0],
             label: `cache`,
           },
         },
@@ -606,7 +606,7 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            coordinates: [0, 0],
+            location: [0, 0],
             label: `back home`,
           },
         },
@@ -748,7 +748,7 @@ export class Tutorial {
         shouldAdvance &&
         c.distance(
           this.ship.location,
-          this.targetLocation.coordinates,
+          this.targetLocation.location,
         ) <= this.ship.game.settings.arrivalThreshold
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
@@ -906,13 +906,13 @@ export class Tutorial {
     // target locations
     if (this.currentStep.nextStepTrigger.location)
       this.targetLocation = {
-        coordinates: [
+        location: [
           this.baseLocation[0] +
             this.currentStep.nextStepTrigger.location
-              .coordinates[0],
+              .location[0],
           this.baseLocation[1] +
             this.currentStep.nextStepTrigger.location
-              .coordinates[1],
+              .location[1],
         ],
         label:
           this.currentStep.nextStepTrigger.location.label,

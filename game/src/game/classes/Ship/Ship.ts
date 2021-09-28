@@ -815,6 +815,7 @@ export class Ship extends Stubbable {
   toLogStub() {
     return {
       type: `ship`,
+      id: this.id,
       name: this.name,
       faction: {
         type: `faction`,

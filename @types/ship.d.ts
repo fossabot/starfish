@@ -112,9 +112,10 @@ interface AttackDamageResult {
 }
 
 interface TargetLocation {
-  coordinates: CoordinatePair
-  label: string
+  location: CoordinatePair
+  label?: string
   color?: string
+  radius?: number
 }
 
 type ShipStatKey =
