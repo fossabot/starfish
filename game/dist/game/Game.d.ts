@@ -5,6 +5,7 @@ import { Faction } from './classes/Faction';
 import { Species } from './classes/Species';
 import { AttackRemnant } from './classes/AttackRemnant';
 import { Zone } from './classes/Zone';
+import { ChunkManager } from './classes/Chunks/ChunkManager';
 import { HumanShip } from './classes/Ship/HumanShip';
 import { AIShip } from './classes/Ship/AIShip';
 import { BasicPlanet } from './classes/Planet/BasicPlanet';
@@ -19,6 +20,7 @@ export declare class Game {
     readonly factions: Faction[];
     readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
+    readonly chunkManager: ChunkManager;
     settings: AdminGameSettings;
     factionRankings: FactionRanking[];
     paused: boolean;
@@ -34,7 +36,7 @@ export declare class Game {
     private averageWorstShipTickLag;
     private averageTickTime;
     tick(): any;
-    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`ship` | `planet` | `cache` | `attackRemnant` | `trail` | `zone`)[], includeTrails?: boolean | `withColors`, tutorial?: boolean): {
+    scanCircle(center: CoordinatePair, radius: number, ignoreSelf: string | null, types?: (`humanShip` | `aiShip` | `planet` | `cache` | `attackRemnant` | `trail` | `zone`)[], includeTrails?: boolean | `withColors`, tutorial?: boolean): {
         ships: Ship[];
         trails: {
             color?: string;

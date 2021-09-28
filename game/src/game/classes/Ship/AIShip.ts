@@ -73,7 +73,7 @@ export class AIShip extends CombatShip {
       this.location,
       this.radii.sight,
       this.id,
-      [`ship`], // * add 'zone' to allow zones to affect ais
+      [`humanShip`], // * add 'zone' to allow zones to affect ais
     )
     if (this.onlyVisibleToShipId) {
       const onlyVisibleShip = this.game.humanShips.find(
@@ -192,13 +192,19 @@ export class AIShip extends CombatShip {
 
   // ----- move -----
   move(toLocation?: CoordinatePair) {
-    super.move(toLocation)
-    if (toLocation) return
-    if (!this.canMove) return
-
     const startingLocation: CoordinatePair = [
       ...this.location,
     ]
+
+    super.move(toLocation)
+    if (toLocation) {
+      this.game.chunkManager.addOrUpdate(
+        this,
+        startingLocation,
+      )
+      return
+    }
+    if (!this.canMove) return
 
     const engineThrustMultiplier =
       this.engines
@@ -232,6 +238,11 @@ export class AIShip extends CombatShip {
         unitVectorToTarget[1] *
         thrustMagnitude *
         (c.deltaTime / c.tickInterval)
+
+      this.game.chunkManager.addOrUpdate(
+        this,
+        startingLocation,
+      )
     }
 
     // ----- set new target location -----

@@ -31,7 +31,8 @@ interface TutorialStepData {
   forceCommonCredits?: number
   forceLoadout?: LoadoutId
   visibleTypes: (
-    | `ship`
+    | `humanShip`
+    | `aiShip`
     | `planet`
     | `cache`
     | `attackRemnant`
@@ -344,7 +345,7 @@ export class Tutorial {
         ],
         disableRepair: true,
         disableStamina: true,
-        visibleTypes: [`planet`, `ship`, `trail`],
+        visibleTypes: [`planet`, `aiShip`, `trail`],
         script: [
           {
             message: `Well it's not THAT dangero— Oh no, what is that...?<br />
@@ -386,7 +387,7 @@ export class Tutorial {
         disableStamina: true,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -422,7 +423,7 @@ export class Tutorial {
         disableRepair: true,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -456,7 +457,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
         ],
@@ -498,7 +499,7 @@ export class Tutorial {
         highlightPanel: `diagram`,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -543,7 +544,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -593,7 +594,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -637,7 +638,7 @@ export class Tutorial {
         highlightPanel: `planet`,
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,
@@ -686,7 +687,7 @@ export class Tutorial {
         ],
         visibleTypes: [
           `planet`,
-          `ship`,
+          `aiShip`,
           `attackRemnant`,
           `trail`,
           `cache`,

@@ -5,6 +5,7 @@ const Stubbable_1 = require("./Stubbable");
 class AttackRemnant extends Stubbable_1.Stubbable {
     constructor({ attacker, defender, damageTaken, start, end, time, id, onlyVisibleToShipId, }) {
         super();
+        this.type = `attackRemnant`;
         this.id = id || `${Math.random()}`.substring(2);
         this.attacker = attacker;
         this.defender = defender;

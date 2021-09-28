@@ -303,7 +303,7 @@ class Tutorial {
                 ],
                 disableRepair: true,
                 disableStamina: true,
-                visibleTypes: [`planet`, `ship`, `trail`],
+                visibleTypes: [`planet`, `aiShip`, `trail`],
                 script: [
                     {
                         message: `Well it's not THAT dangero— Oh no, what is that...?<br />
@@ -345,7 +345,7 @@ class Tutorial {
                 disableStamina: true,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -381,7 +381,7 @@ class Tutorial {
                 disableRepair: true,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -415,7 +415,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                 ],
@@ -456,7 +456,7 @@ class Tutorial {
                 highlightPanel: `diagram`,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -500,7 +500,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -550,7 +550,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -593,7 +593,7 @@ class Tutorial {
                 highlightPanel: `planet`,
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,
@@ -641,7 +641,7 @@ class Tutorial {
                 ],
                 visibleTypes: [
                     `planet`,
-                    `ship`,
+                    `aiShip`,
                     `attackRemnant`,
                     `trail`,
                     `cache`,

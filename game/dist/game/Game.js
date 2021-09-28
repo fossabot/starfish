@@ -12,6 +12,7 @@ const Faction_1 = require("./classes/Faction");
 const Species_1 = require("./classes/Species");
 const AttackRemnant_1 = require("./classes/AttackRemnant");
 const Zone_1 = require("./classes/Zone");
+const ChunkManager_1 = require("./classes/Chunks/ChunkManager");
 const HumanShip_1 = require("./classes/Ship/HumanShip");
 const AIShip_1 = require("./classes/Ship/AIShip");
 const planets_1 = require("./presets/planets");
@@ -28,6 +29,7 @@ class Game {
         this.factions = [];
         this.species = [];
         this.attackRemnants = [];
+        this.chunkManager = new ChunkManager_1.ChunkManager();
         this.factionRankings = [];
         this.paused = false;
         // ----- game loop -----
@@ -42,6 +44,14 @@ class Game {
         Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
         Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
         dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(dist_1.default.factions).length} factions.`);
+        // setTimeout(() => {
+        //   c.log(
+        //     this.chunkManager.getElementsWithinRadius(
+        //       [0, 0],
+        //       0.1,
+        //     ).length,
+        //   )
+        // }, 1000)
     }
     setSettings(newSettings) {
         this.settings = {
@@ -67,7 +77,7 @@ class Game {
             promises.push(db_1.db.planet.addOrUpdateInDb(p));
         });
         await Promise.all(promises);
-        // * we were doing it this way but at a certain pointwe got a stack overflow (I think this was the cause)
+        // * we were doing it this way but at a certain point we got a stack overflow (I think this was the cause)
         // this.ships.forEach((s) => {
         //   promises.push(db.ship.addOrUpdateInDb(s))
         // })
@@ -128,6 +138,7 @@ class Game {
         //   game: c.stubify<Game, GameStub>(this),
         // })
         const elapsedTimeInMs = tickDoneTime - tickStartTime;
+        // c.log(`Tick: ${c.r2(elapsedTimeInMs)}ms`)
         // if (elapsedTimeInMs > 100) {
         //   if (elapsedTimeInMs < 200)
         //     c.log(
@@ -144,76 +155,276 @@ class Game {
     // todo optimize this with a chunks system
     scanCircle(center, radius, ignoreSelf, types, includeTrails = false, tutorial = false) {
         let ships = [], trails = [], planets = [], caches = [], attackRemnants = [], zones = [];
-        if (!types || types.includes(`ship`))
-            ships = this.ships.filter((s) => {
-                if (s.onlyVisibleToShipId &&
-                    ((ignoreSelf &&
-                        s.onlyVisibleToShipId !== ignoreSelf) ||
-                        !ignoreSelf))
-                    return false;
-                if (tutorial && !s.onlyVisibleToShipId)
-                    return false;
-                if (s.tutorial && s.id !== ignoreSelf && !tutorial)
-                    return false;
-                if (s.id === ignoreSelf)
-                    return false;
-                if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
-                    return true;
-                return false;
-            });
-        if ((!types || types.includes(`trail`)) &&
-            includeTrails) {
-            const showColors = includeTrails === `withColors`;
-            trails = this.ships
-                .filter((s) => {
-                if (tutorial)
-                    return false;
-                if (s.tutorial)
-                    return false;
-                if (s.id === ignoreSelf)
-                    return false;
-                if (ships.find((ship) => ship === s))
-                    return false;
-                for (let l of s.previousLocations) {
-                    if (dist_1.default.pointIsInsideCircle(center, l, radius))
+        const method = `chunks1`; // * this is just to compare scan algorithms. with about 1500 ships, original took 220ms, original2 took 48ms, chunks1 took 13ms
+        if (method === `chunks1`) {
+            const visible = this.chunkManager.getElementsWithinRadius(center, radius);
+            if (!types || types.includes(`humanShip`))
+                ships.push(...visible.filter((s) => s.type === `ship` && s.ai === false).filter((s) => {
+                    if (s.onlyVisibleToShipId &&
+                        ((ignoreSelf &&
+                            s.onlyVisibleToShipId !== ignoreSelf) ||
+                            !ignoreSelf))
+                        return false;
+                    if (tutorial && !s.onlyVisibleToShipId)
+                        return false;
+                    if (s.tutorial &&
+                        s.id !== ignoreSelf &&
+                        !tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
                         return true;
-                }
-                return false;
-            })
-                .map((s) => {
-                return {
-                    color: showColors ? s.faction.color : undefined,
-                    points: [
-                        ...s.previousLocations,
-                        s.location,
-                    ],
-                };
-            });
+                    return false;
+                }));
+            if (!types || types.includes(`aiShip`))
+                ships.push(...visible.filter((s) => s.type === `ship` && s.ai === true).filter((s) => {
+                    if (s.onlyVisibleToShipId &&
+                        ((ignoreSelf &&
+                            s.onlyVisibleToShipId !== ignoreSelf) ||
+                            !ignoreSelf))
+                        return false;
+                    if (tutorial && !s.onlyVisibleToShipId)
+                        return false;
+                    if (s.tutorial &&
+                        s.id !== ignoreSelf &&
+                        !tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
+                        return true;
+                    return false;
+                }));
+            if ((!types || types.includes(`trail`)) &&
+                includeTrails) {
+                const showColors = includeTrails === `withColors`;
+                trails = visible.filter((s) => s.type === `ship`)
+                    .filter((s) => {
+                    if (tutorial)
+                        return false;
+                    if (s.tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (ships.find((ship) => ship === s))
+                        return false;
+                    for (let l of s.previousLocations) {
+                        if (dist_1.default.pointIsInsideCircle(center, l, radius))
+                            return true;
+                    }
+                    return false;
+                })
+                    .map((s) => {
+                    return {
+                        color: showColors
+                            ? s.faction.color
+                            : undefined,
+                        points: [
+                            ...s.previousLocations,
+                            s.location,
+                        ],
+                    };
+                });
+            }
+            if (!types || types.includes(`planet`))
+                planets = visible.filter((s) => s.type === `planet`).filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
+            if (!types || types.includes(`cache`))
+                caches = visible.filter((s) => s.type === `cache`).filter((k) => {
+                    if (k.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        k.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return dist_1.default.pointIsInsideCircle(center, k.location, radius);
+                });
+            if (!types || types.includes(`attackRemnant`))
+                attackRemnants = visible.filter((s) => s.type === `attackRemnant`).filter((a) => {
+                    if (a.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        a.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return (dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
+                        dist_1.default.pointIsInsideCircle(center, a.end, radius));
+                });
+            if (!types || types.includes(`zone`))
+                zones = visible.filter((s) => s.type === `zone`).filter((z) => {
+                    return (dist_1.default.distance(center, z.location) - z.radius <=
+                        radius);
+                });
         }
-        if (!types || types.includes(`planet`))
-            planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
-        if (!types || types.includes(`cache`))
-            caches = this.caches.filter((k) => {
-                if (k.onlyVisibleToShipId &&
-                    ignoreSelf &&
-                    k.onlyVisibleToShipId !== ignoreSelf)
+        if (method === `original2`) {
+            if (!types || types.includes(`humanShip`))
+                ships.push(...this.humanShips.filter((s) => {
+                    if (s.onlyVisibleToShipId &&
+                        ((ignoreSelf &&
+                            s.onlyVisibleToShipId !== ignoreSelf) ||
+                            !ignoreSelf))
+                        return false;
+                    if (tutorial && !s.onlyVisibleToShipId)
+                        return false;
+                    if (s.tutorial &&
+                        s.id !== ignoreSelf &&
+                        !tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
+                        return true;
                     return false;
-                return dist_1.default.pointIsInsideCircle(center, k.location, radius);
-            });
-        if (!types || types.includes(`attackRemnant`))
-            attackRemnants = this.attackRemnants.filter((a) => {
-                if (a.onlyVisibleToShipId &&
-                    ignoreSelf &&
-                    a.onlyVisibleToShipId !== ignoreSelf)
+                }));
+            if (!types || types.includes(`aiShip`))
+                ships.push(...this.aiShips.filter((s) => {
+                    if (s.onlyVisibleToShipId &&
+                        ((ignoreSelf &&
+                            s.onlyVisibleToShipId !== ignoreSelf) ||
+                            !ignoreSelf))
+                        return false;
+                    if (tutorial && !s.onlyVisibleToShipId)
+                        return false;
+                    if (s.tutorial &&
+                        s.id !== ignoreSelf &&
+                        !tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
+                        return true;
                     return false;
-                return (dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
-                    dist_1.default.pointIsInsideCircle(center, a.end, radius));
-            });
-        if (!types || types.includes(`zone`))
-            zones = this.zones.filter((z) => {
-                return (dist_1.default.distance(center, z.location) - z.radius <=
-                    radius);
-            });
+                }));
+            if ((!types || types.includes(`trail`)) &&
+                includeTrails) {
+                const showColors = includeTrails === `withColors`;
+                trails = this.ships
+                    .filter((s) => {
+                    if (tutorial)
+                        return false;
+                    if (s.tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (ships.find((ship) => ship === s))
+                        return false;
+                    for (let l of s.previousLocations) {
+                        if (dist_1.default.pointIsInsideCircle(center, l, radius))
+                            return true;
+                    }
+                    return false;
+                })
+                    .map((s) => {
+                    return {
+                        color: showColors
+                            ? s.faction.color
+                            : undefined,
+                        points: [
+                            ...s.previousLocations,
+                            s.location,
+                        ],
+                    };
+                });
+            }
+            if (!types || types.includes(`planet`))
+                planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
+            if (!types || types.includes(`cache`))
+                caches = this.caches.filter((k) => {
+                    if (k.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        k.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return dist_1.default.pointIsInsideCircle(center, k.location, radius);
+                });
+            if (!types || types.includes(`attackRemnant`))
+                attackRemnants = this.attackRemnants.filter((a) => {
+                    if (a.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        a.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return (dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
+                        dist_1.default.pointIsInsideCircle(center, a.end, radius));
+                });
+            if (!types || types.includes(`zone`))
+                zones = this.zones.filter((z) => {
+                    return (dist_1.default.distance(center, z.location) - z.radius <=
+                        radius);
+                });
+        }
+        if (method === `original`) {
+            if (!types ||
+                types.includes(`humanShip`) ||
+                types.includes(`aiShip`))
+                ships.push(...this.ships.filter((s) => {
+                    if (s.onlyVisibleToShipId &&
+                        ((ignoreSelf &&
+                            s.onlyVisibleToShipId !== ignoreSelf) ||
+                            !ignoreSelf))
+                        return false;
+                    if (tutorial && !s.onlyVisibleToShipId)
+                        return false;
+                    if (s.tutorial &&
+                        s.id !== ignoreSelf &&
+                        !tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (dist_1.default.pointIsInsideCircle(center, s.location, radius))
+                        return true;
+                    return false;
+                }));
+            if ((!types || types.includes(`trail`)) &&
+                includeTrails) {
+                const showColors = includeTrails === `withColors`;
+                trails = this.ships
+                    .filter((s) => {
+                    if (tutorial)
+                        return false;
+                    if (s.tutorial)
+                        return false;
+                    if (s.id === ignoreSelf)
+                        return false;
+                    if (ships.find((ship) => ship === s))
+                        return false;
+                    for (let l of s.previousLocations) {
+                        if (dist_1.default.pointIsInsideCircle(center, l, radius))
+                            return true;
+                    }
+                    return false;
+                })
+                    .map((s) => {
+                    return {
+                        color: showColors
+                            ? s.faction.color
+                            : undefined,
+                        points: [
+                            ...s.previousLocations,
+                            s.location,
+                        ],
+                    };
+                });
+            }
+            if (!types || types.includes(`planet`))
+                planets = this.planets.filter((p) => dist_1.default.pointIsInsideCircle(center, p.location, radius));
+            if (!types || types.includes(`cache`))
+                caches = this.caches.filter((k) => {
+                    if (k.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        k.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return dist_1.default.pointIsInsideCircle(center, k.location, radius);
+                });
+            if (!types || types.includes(`attackRemnant`))
+                attackRemnants = this.attackRemnants.filter((a) => {
+                    if (a.onlyVisibleToShipId &&
+                        ignoreSelf &&
+                        a.onlyVisibleToShipId !== ignoreSelf)
+                        return false;
+                    return (dist_1.default.pointIsInsideCircle(center, a.start, radius) ||
+                        dist_1.default.pointIsInsideCircle(center, a.end, radius));
+                });
+            if (!types || types.includes(`zone`))
+                zones = this.zones.filter((z) => {
+                    return (dist_1.default.distance(center, z.location) - z.radius <=
+                        radius);
+                });
+        }
         return {
             ships,
             trails,
@@ -381,6 +592,7 @@ class Game {
         data.loadout = `humanDefault`;
         const newShip = new HumanShip_1.HumanShip(data, this);
         this.ships.push(newShip);
+        this.chunkManager.addOrUpdate(newShip);
         if (save)
             await db_1.db.ship.addOrUpdateInDb(newShip);
         return newShip;
@@ -397,6 +609,7 @@ class Game {
         // )
         const newShip = new AIShip_1.AIShip(data, this);
         this.ships.push(newShip);
+        this.chunkManager.addOrUpdate(newShip);
         if (save)
             await db_1.db.ship.addOrUpdateInDb(newShip);
         return newShip;
@@ -426,6 +639,7 @@ class Game {
         if (index === -1)
             return;
         this.ships.splice(index, 1);
+        this.chunkManager.remove(ship);
         if (!ship.tutorial)
             ship.crewMembers.forEach((cm) => {
                 io_1.default.to(`user:${cm.id}`).emit(`user:reloadShips`);
@@ -448,6 +662,7 @@ class Game {
         }
         const newPlanet = await new BasicPlanet_1.BasicPlanet(data, this);
         this.planets.push(newPlanet);
+        this.chunkManager.addOrUpdate(newPlanet);
         if (`homeworld` in newPlanet && newPlanet.homeworld)
             newPlanet.homeworld.homeworld =
                 newPlanet;
@@ -463,6 +678,7 @@ class Game {
         }
         const newPlanet = await new MiningPlanet_1.MiningPlanet(data, this);
         this.planets.push(newPlanet);
+        this.chunkManager.addOrUpdate(newPlanet);
         if (save)
             await db_1.db.planet.addOrUpdateInDb(newPlanet);
         return newPlanet;
@@ -485,6 +701,7 @@ class Game {
         }
         const newCache = new Cache_1.Cache(data, this);
         this.caches.push(newCache);
+        this.chunkManager.addOrUpdate(newCache);
         // c.log(`adding`, newCache)
         if (save)
             await db_1.db.cache.addOrUpdateInDb(newCache);
@@ -497,6 +714,7 @@ class Game {
         if (index === -1)
             return dist_1.default.log(`Failed to find cache in list.`);
         this.caches.splice(index, 1);
+        this.chunkManager.remove(cache);
         // c.log(this.caches.length, `remaining`)
     }
     async addZone(data, save = true) {
@@ -507,6 +725,7 @@ class Game {
         }
         const newZone = new Zone_1.Zone(data, this);
         this.zones.push(newZone);
+        this.chunkManager.addOrUpdate(newZone);
         if (save)
             await db_1.db.zone.addOrUpdateInDb(newZone);
         return newZone;
@@ -521,6 +740,7 @@ class Game {
             }
         });
         db_1.db.zone.removeFromDb(zone.id);
+        this.chunkManager.remove(zone);
         const index = this.zones.findIndex((z) => zone.id === z.id);
         if (index === -1)
             return;
@@ -529,6 +749,7 @@ class Game {
     addAttackRemnant(data, save = true) {
         const newAttackRemnant = new AttackRemnant_1.AttackRemnant(data);
         this.attackRemnants.push(newAttackRemnant);
+        this.chunkManager.addOrUpdate(newAttackRemnant);
         if (save)
             db_1.db.attackRemnant.addOrUpdateInDb(newAttackRemnant);
         return newAttackRemnant;
@@ -540,6 +761,7 @@ class Game {
         if (index === -1)
             return;
         this.attackRemnants.splice(index, 1);
+        this.chunkManager.remove(ar);
     }
     get humanShips() {
         return this.ships.filter((s) => s instanceof HumanShip_1.HumanShip);
