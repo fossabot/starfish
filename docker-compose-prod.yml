@@ -75,6 +75,14 @@ services:
     logging:
       driver: loki
 
+  promtail:
+    image: 'grafana/promtail:latest'
+    volumes:
+      - /var/lib/promtail:/etc/promtail
+      - /var/log:/var/log
+    logging:
+      driver: loki
+
 secrets:
   discord_token:
     file: discord/secrets/discord_token.txt
