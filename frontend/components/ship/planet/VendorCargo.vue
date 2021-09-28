@@ -4,8 +4,7 @@
     v-if="
       crewMember &&
       ship.planet.vendor &&
-      ship.planet.vendor.cargo &&
-      ship.planet.vendor.cargo.length
+      (buyableCargo.length || sellableCargo.length)
     "
   >
     <div>
@@ -25,7 +24,7 @@
           "
           v-tooltip="{
             type: 'cargo',
-            data: ca,
+            ...ca,
           }"
         >
           <PromptButton
@@ -81,7 +80,7 @@
           "
           v-tooltip="{
             type: 'cargo',
-            data: ca,
+            ...ca,
           }"
         >
           <PromptButton
@@ -161,13 +160,11 @@ export default Vue.extend({
       return this.ship?.planet?.vendor?.cargo
         .filter((cargo: any) => cargo.buyMultiplier)
         .map((cargo: any) => {
-          const pricePerUnit = Math.ceil(
-            (c.cargo as any)[cargo.id]?.basePrice *
-              cargo.buyMultiplier *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1),
+          const pricePerUnit = c.getCargoBuyPrice(
+            cargo.id,
+            this.ship.planet,
+            1,
+            this.ship.faction.id,
           )
           const maxCanBuy = c.r2(
             Math.min(
@@ -199,23 +196,11 @@ export default Vue.extend({
         this.crewMember.inventory
           // .filter((cargo: any) => cargo.sellMultiplier)
           .map((cargo: Cargo) => {
-            const pricePerUnit = c.r2(
-              Math.min(
-                (c.cargo[cargo.id]?.basePrice || 0) *
-                  ((
-                    this.ship.planet.vendor as PlanetVendor
-                  ).cargo.find(
-                    (planetCargo) =>
-                      planetCargo.id === cargo.id,
-                  )?.sellMultiplier ||
-                    c.baseCargoSellMultiplier) *
-                  this.ship.planet.priceFluctuator *
-                  (this.isFriendlyToFaction
-                    ? 1 +
-                      (1 - (c.factionVendorMultiplier || 1))
-                    : 1),
-              ),
-              0,
+            const pricePerUnit = c.getCargoSellPrice(
+              cargo.id,
+              this.ship.planet,
+              1,
+              this.ship.faction.id,
             )
             const heldAmount =
               this.crewMember?.inventory.find(

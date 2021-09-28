@@ -89,7 +89,7 @@
             "
             v-tooltip="{
               type: 'room',
-              data: room,
+              ...room,
             }"
           >
             <div

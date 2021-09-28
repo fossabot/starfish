@@ -127,7 +127,9 @@ export async function sell(
   }>
 > {
   if (!(await connected()))
-    return { error: `Failed to move crew member` }
+    return {
+      error: `Failed to sell: not connected to game server`,
+    }
 
   return new Promise((resolve) => {
     io.emit(
@@ -158,7 +160,9 @@ export async function buy(
   }>
 > {
   if (!(await connected()))
-    return { error: `Failed to move crew member` }
+    return {
+      error: `Failed to buy: not connected to game server`,
+    }
 
   return new Promise((resolve) => {
     io.emit(

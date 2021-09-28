@@ -40,7 +40,7 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
       {
         id: `boostScanRange`,
         data: { source: { speciesId: `lobsters` } },
-        intensity: 0.2,
+        intensity: 0.3,
       },
     ],
   },

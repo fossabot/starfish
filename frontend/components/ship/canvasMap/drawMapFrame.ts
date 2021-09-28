@@ -49,6 +49,7 @@ export default class Drawer {
     visible,
     immediate = false,
     crewMemberId,
+    targetPoints = [],
   }: // previousData,
   {
     ship: ShipStub
@@ -59,6 +60,7 @@ export default class Drawer {
     }
     immediate?: boolean
     crewMemberId?: string
+    targetPoints?: TargetLocation[]
     // previousData?: {
     //   ship: ShipStub
     //   visible?: {
@@ -169,6 +171,13 @@ export default class Drawer {
         `location` in p &&
         this.isPointInSightRange(p as HasLocation),
     )
+
+    // ----- target points -----
+    const targetPointsToDraw: TargetLocation[] = [
+      ...targetPoints,
+    ]
+    if (ship.tutorial?.targetLocation)
+      targetPointsToDraw.push(ship.tutorial?.targetLocation)
 
     // ----- actually draw -----
 
@@ -389,6 +398,8 @@ export default class Drawer {
       }
     }
 
+    // ship trajectory line
+
     if ((ship.speed || 0) > 0 && ship.velocity) {
       this.drawLine({
         start: [...shipLocation],
@@ -413,6 +424,7 @@ export default class Drawer {
       })
     }
 
+    // attack target line
     if (ship?.targetShip) {
       let crewMember: any
       if (crewMemberId)
@@ -443,19 +455,15 @@ export default class Drawer {
 
     // ----- target points -----
 
-    ;[ship.tutorial?.targetLocation]
+    targetPointsToDraw
       .filter((p) => p)
       .forEach((p) => {
         this.drawPoint({
-          location: [
-            p.coordinates[0],
-            p.coordinates[1] * -1,
-          ],
-          labelTop: p.label,
+          location: [p.location[0], p.location[1] * -1],
+          labelTop: p.label || ``,
           radius: p.radius
             ? p.radius / this.zoom
-            : Math.min(20, 25 / this.zoom) *
-              devicePixelRatio,
+            : (25 / this.zoom) * devicePixelRatio,
           color: p.color || `yellow`,
           outline: true,
         })

@@ -17,12 +17,8 @@
         <div
           v-for="i in weapons"
           v-tooltip="{
-            type: 'weapon',
-            data: {
-              type: 'weapon',
-              id: i.id,
-              ownerId: ship.id,
-            },
+            id: i.id,
+            ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
@@ -129,6 +125,7 @@
                 !crewMember.attackTargetId ||
                 crewMember.attackTargetId !== targetShip.id,
             }"
+            v-targetpoint="targetShip"
           >
             {{ c.species[targetShip.species.id].icon
             }}{{ targetShip.name }}

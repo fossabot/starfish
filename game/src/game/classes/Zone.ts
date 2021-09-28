@@ -158,9 +158,16 @@ export class Zone extends Stubbable {
   }
 
   moveToRandomLocation() {
+    const startingLocation: CoordinatePair = [
+      ...this.location,
+    ]
     this.location = getValidZoneLocation(
       this.game,
       this.radius,
+    )
+    this.game.chunkManager.addOrUpdate(
+      this,
+      startingLocation,
     )
   }
 

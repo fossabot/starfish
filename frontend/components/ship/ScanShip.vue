@@ -33,6 +33,7 @@
       :key="toShow && 'scanship' + toShow.id"
       v-if="toShow"
       :data="toShow"
+      v-targetpoint="toShow"
     />
   </Box>
 </template>

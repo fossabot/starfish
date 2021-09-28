@@ -17,6 +17,7 @@ export class StatusCommand implements Command {
     `vitals`,
     `ship`,
     `shipinfo`,
+    `report`,
   ]
 
   getHelpMessage(commandPrefix: string): string {

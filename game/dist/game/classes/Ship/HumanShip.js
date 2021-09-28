@@ -625,22 +625,26 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     // ----- move -----
     move(toLocation) {
+        const startingLocation = [
+            ...this.location,
+        ];
         super.move(toLocation);
         if (toLocation) {
             this.updateVisible();
             this.updatePlanet();
+            this.game.chunkManager.addOrUpdate(this, startingLocation);
             return;
         }
         if (!this.canMove) {
             this.hardStop();
             return;
         }
-        const startingLocation = [
-            ...this.location,
-        ];
+        if (this.velocity[0] === 0 && this.velocity[1] === 0)
+            return;
         this.location[0] += this.velocity[0];
         this.location[1] += this.velocity[1];
         this.toUpdate.location = this.location;
+        this.game.chunkManager.addOrUpdate(this, startingLocation);
         this.addPreviousLocation(startingLocation, this.location);
         this.updatePlanet();
         this.notifyZones(startingLocation);

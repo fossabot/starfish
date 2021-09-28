@@ -18,6 +18,7 @@ export const state = () => ({
   ship: null,
   crewMember: null,
   tooltip: null,
+  targetPoint: null,
   winSize: [1200, 1000],
   modal: null,
   forceMapRedraw: 0,
@@ -33,6 +34,9 @@ export const mutations = {
 
   tooltip(state, newTooltip) {
     state.tooltip = newTooltip
+  },
+  targetPoint(state, newTargetPoint) {
+    state.targetPoint = newTargetPoint
   },
 
   setShipProp(state, pair) {
@@ -156,8 +160,8 @@ export const actions = {
     shipId,
   ) {
     if (!shipId) return
-    c.log(`getAndSetShipDataById`, shipId)
-    c.trace()
+    // c.log(`getAndSetShipDataById`, shipId)
+    // c.trace()
 
     this.$socket?.emit(
       `ship:listen`,
@@ -172,7 +176,6 @@ export const actions = {
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return
       if (state.ship.id !== id) return
-      c.log(`slow mode update pt 2`)
       // * visible update
       dispatch(`updateShip`, { ...updates })
       dispatch(`socketStop`)
@@ -216,7 +219,11 @@ export const actions = {
     const previousShipId =
       state.ship?.id || state.activeShipId
 
-    commit(`set`, { modal: null, activeShipId: shipId })
+    commit(`set`, {
+      modal: null,
+      activeShipId: shipId,
+      tooltip: null,
+    })
     storage.set(`activeShipId`, `${shipId}`)
 
     let connectionTimeout = setTimeout(() => {
