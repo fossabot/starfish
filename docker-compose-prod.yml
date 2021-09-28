@@ -17,7 +17,7 @@ services:
       - mongodb_username
       - mongodb_password
     logging:
-      driver: none
+      driver: loki
 
   game:
     image: 'starfishgame/starfish-game:latest'
@@ -38,6 +38,8 @@ services:
       - mongodb_username
       - mongodb_password
       - admin_keys
+    logging:
+      driver: loki
 
   frontend:
     image: 'starfishgame/starfish-frontend:latest'
@@ -49,6 +51,8 @@ services:
     secrets:
       - google_client_email
       - google_private_key
+    logging:
+      driver: loki
 
   discord:
     image: 'starfishgame/starfish-discord:latest'
@@ -58,6 +62,8 @@ services:
     secrets:
       - discord_token
       - bot_id
+    logging:
+      driver: loki
 
   nginx:
     image: 'starfishgame/starfish-nginx:latest'
@@ -66,13 +72,8 @@ services:
       - '443:443'
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
-
-  prometheus:
-    image: 'prom/prometheus:latest'
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - '9090:9090'
+    logging:
+      driver: loki
 
 secrets:
   discord_token:
