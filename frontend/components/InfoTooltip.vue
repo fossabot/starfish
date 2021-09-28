@@ -117,23 +117,29 @@ export default Vue.extend({
 
       await this.$nextTick()
 
-      const { width } = this.$el.getBoundingClientRect()
+      try {
+        const { width } = this.$el.getBoundingClientRect()
 
-      const sidePad = 25
-      let left = this.x + sidePad,
-        top = this.y - 5,
-        transform = ''
+        const sidePad = 25
+        let left = this.x + sidePad,
+          top = this.y - 5,
+          transform = ''
 
-      if (left + width >= this.winWidth - sidePad) {
-        left = this.winWidth - width - sidePad
-        transform = 'translateY(30px)'
-      }
+        if (left + width >= this.winWidth - sidePad) {
+          left = this.winWidth - width - sidePad
+          transform = 'translateY(30px)'
+        }
 
-      this.tooltipStyle = {
-        left: left + 'px',
-        top: top + 'px',
-        transform,
-        opacity: 1,
+        this.tooltipStyle = {
+          left: left + 'px',
+          top: top + 'px',
+          transform,
+          opacity: 1,
+        }
+      } catch (e) {
+        this.tooltipStyle = {
+          opacity: 0,
+        }
       }
     },
   },

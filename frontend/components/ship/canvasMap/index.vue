@@ -12,7 +12,7 @@
       <span class="sectionemoji">{{ emoji }}</span
       >{{ label }}
     </template>
-    <div class="resizewatcher">
+    <div ref="resizewatcher">
       <div
         class="panesection padnone mappane"
         :class="{ killtouchevents: interactive }"
@@ -84,10 +84,8 @@ export default Vue.extend({
     //   | { ship: ShipStub; visible: VisibleStub }
     //   | undefined
 
-    let resizeObserver: ResizeObserver | undefined
     return {
       c,
-      resizeObserver,
       element,
       drawer,
       paused: false,
@@ -159,27 +157,29 @@ export default Vue.extend({
   },
   async mounted() {
     await this.$nextTick()
-    this.resizeObserver = new ResizeObserver(this.resize)
-    const el = this.$el.querySelector(
-      '.resizewatcher',
-    ) as HTMLElement
-    this.resizeObserver.observe(el)
+    window.addEventListener('resize', this.resize)
+    this.resize()
   },
   methods: {
-    resize(e: ResizeObserverEntry[]) {
+    resize() {
       const parentWidth =
-        this.$el.parentElement?.clientWidth || 0
+        this.$el.parentElement?.offsetWidth || 0
 
       this.widthAdjustedToWindowSize =
-        e[0].contentBoxSize[0].inlineSize
+        this.$el.clientWidth === parentWidth
+          ? (this.$refs.resizewatcher as HTMLElement)
+              ?.offsetWidth
+          : this.width
 
-      c.log(
-        'resized',
-        e[0].contentBoxSize[0].inlineSize,
-        this.width,
-        parentWidth,
-        this.widthAdjustedToWindowSize,
-      )
+      // c.log(
+      //   'resized',
+      //   (this.$refs.resizewatcher as HTMLElement)
+      //     ?.offsetWidth,
+      //   this.width,
+      //   this.$el.clientWidth,
+      //   parentWidth,
+      //   this.widthAdjustedToWindowSize,
+      // )
       this.start()
     },
     start() {
@@ -229,7 +229,11 @@ export default Vue.extend({
           }
           if (this.radius) immediate = true
 
-          if (!this.drawer)
+          if (
+            !this.drawer ||
+            this.drawer.elementScreenSize[0] !==
+              this.widthScaledToDevice
+          )
             this.drawer = new Drawer({
               element: this.element,
               elWidth: this.widthScaledToDevice,
