@@ -71,9 +71,9 @@
       </li>
       <li
         v-for="p in planet.passives"
-        v-if="c.basePassiveData[p.id]"
+        v-if="c.baseShipPassiveData[p.id]"
       >
-        {{ c.basePassiveData[p.id].toString(p) }}
+        {{ c.baseShipPassiveData[p.id].toString(p) }}
       </li>
     </ul>
 

@@ -54,6 +54,8 @@ function default_1(socket) {
         const crewMember = ship.crewMembers?.find((cm) => cm.id === crewId);
         if (!crewMember)
             return callback({ error: `No crew member found.` });
+        if (ship.dead)
+            return callback({ error: `Your ship is dead!` });
         const broadcastRes = ship.broadcast(message, crewMember);
         callback({ data: broadcastRes });
     });

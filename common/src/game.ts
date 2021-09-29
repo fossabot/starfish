@@ -35,6 +35,8 @@ const cacheExpireTime =
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
+const userIsOfflineTimeout = 1000 * 60 * 60
+
 const baseShipScanProperties: {
   id: true
   name: true
@@ -92,9 +94,13 @@ function getHitDamage(
 function getBaseDurabilityLossPerTick(
   maxHp: number,
   reliability: number,
+  useLevel: number = 1,
 ) {
   return (
-    (0.00001 * gameSpeedMultiplier * (10 / maxHp)) /
+    (0.00001 *
+      gameSpeedMultiplier *
+      (10 / maxHp) *
+      math.lerp(1, 0.5, useLevel / 100)) /
     reliability
   )
 }
@@ -350,22 +356,33 @@ function getCargoSellPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   amount: number,
-  factionId: FactionKey,
+  factionId: FactionId,
 ) {
+  const buyPrice = getCargoBuyPrice(
+    cargoId,
+    planet,
+    amount,
+    factionId,
+  )
+
   const sellMultiplier =
     planet?.vendor?.cargo?.find(
       (cbb) => cbb.id === cargoId && cbb.sellMultiplier,
     )?.sellMultiplier || baseCargoSellMultiplier
-  return Math.floor(
-    cargo[cargoId].basePrice *
-      sellMultiplier *
-      amount *
-      planet.priceFluctuator *
-      ((planet.allegiances.find(
-        (a) => a.faction.id === factionId,
-      )?.level || 0) >= factionAllegianceFriendCutoff
-        ? 1 + (1 - (factionVendorMultiplier || 1))
-        : 1),
+
+  return Math.min(
+    buyPrice,
+    Math.floor(
+      cargo[cargoId].basePrice *
+        sellMultiplier *
+        amount *
+        planet.priceFluctuator *
+        ((planet.allegiances.find(
+          (a) => a.faction.id === factionId,
+        )?.level || 0) >= factionAllegianceFriendCutoff
+          ? 1 + (1 - (factionVendorMultiplier || 1))
+          : 1),
+    ),
   )
 }
 
@@ -373,7 +390,7 @@ function getCargoBuyPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   amount: number,
-  factionId: FactionKey,
+  factionId: FactionId,
 ) {
   const cargoForSale = planet?.vendor?.cargo?.find(
     (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
@@ -465,6 +482,7 @@ export default {
   maxBroadcastLength,
   factionVendorMultiplier,
   factionAllegianceFriendCutoff,
+  userIsOfflineTimeout,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
   planetContributeCostPerXp,

@@ -224,6 +224,8 @@ class HumanShip extends CombatShip_1.CombatShip {
         while (this.log.length > HumanShip.maxLogLength)
             this.log.shift();
         this.toUpdate.log = this.log;
+        if (this.tutorial)
+            return;
         if (this.logAlertLevel === `off`)
             return;
         const levelsToAlert = [this.logAlertLevel];
@@ -568,7 +570,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             ], `low`);
         }
         if (!HumanShip.movementIsFree)
-            this.engines.forEach((e) => e.use(charge));
+            this.engines.forEach((e) => e.use(charge, thruster));
         return dist_1.default.vectorToMagnitude(thrustVector) * 60 * 60;
     }
     brake(charge, thruster) {
@@ -620,7 +622,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 `braked, slowing the ship by ${dist_1.default.r2((this.speed - previousSpeed) * 60 * 60 * -1)}AU/hr.`,
             ], `low`);
         if (!HumanShip.movementIsFree)
-            this.engines.forEach((e) => e.use(charge));
+            this.engines.forEach((e) => e.use(charge, thruster));
         return (this.speed - previousSpeed) * 60 * 60;
     }
     // ----- move -----
@@ -953,6 +955,11 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
     }
     updateBroadcastRadius() {
+        if (this.tutorial) {
+            this.radii.broadcast = 0;
+            this.toUpdate.radii = this.radii;
+            return;
+        }
         const passiveEffect = this.passives
             .filter((p) => p.id === `boostBroadcastRange`)
             .reduce((total, p) => total + (p.intensity || 0), 0) + 1;
@@ -1043,7 +1050,7 @@ class HumanShip extends CombatShip_1.CombatShip {
         }
         this.communicators.forEach((comm) => {
             if (comm.hp > 0) {
-                comm.use();
+                comm.use(1, crewMember);
                 this.updateBroadcastRadius();
             }
         });

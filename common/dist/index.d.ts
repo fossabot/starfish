@@ -11,25 +11,31 @@ declare const _default: {
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
-    crewActives: {
-        boost: BaseCrewActiveData;
-        quickFix: BaseCrewActiveData;
-        sightRange: BaseCrewActiveData;
-    };
     crewPassives: {
-        cargoSpace: BaseCrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
+        generalImprovementWhenAlone: CrewPassiveData;
+        generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
+        boostDropAmounts: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
+        lessDamageOnEquipmentUse: CrewPassiveData;
+        boostBrake: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
         octopi: BaseSpeciesData;
-        squids: BaseSpeciesData;
         lobsters: BaseSpeciesData;
         crabs: BaseSpeciesData;
-        seals: BaseSpeciesData;
         "sea turtles": BaseSpeciesData;
+        sharks: BaseSpeciesData;
         dolphins: BaseSpeciesData;
         whales: BaseSpeciesData;
-        tuna: BaseSpeciesData;
         angelfish: BaseSpeciesData;
         blowfish: BaseSpeciesData;
         shrimp: BaseSpeciesData;
@@ -44,81 +50,84 @@ declare const _default: {
         purple: BaseFactionData;
         red: BaseFactionData;
     };
-    basePassiveData: {
-        boostDropAmount: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostDropRarity: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostScanRange: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostSightRange: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostBroadcastRange: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
+    baseShipPassiveData: {
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
         };
         boostMineSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
-        boostBrake: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostCockpitChargeSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        flatSkillBoost: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        scaledDamageReduction: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        flatDamageReduction: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        extraEquipmentSlots: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostCargoSpace: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostChassisAgility: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        disguiseCrewMemberCount: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        disguiseChassisType: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        alwaysSeeTrailColors: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostDamage: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostDamageWhenNoAlliesWithinDistance: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostDamageWithNumberOfFactionMembersWithinDistance: {
-            toString: (p: ShipPassiveEffect) => string;
-        };
-        boostDamageToItemType: {
-            toString: (p: ShipPassiveEffect) => string;
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
         };
         boostStaminaRegeneration: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBrake: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDropAmount: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDropRarity: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostScanRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostSightRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMinePayouts: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        flatSkillBoost: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        scaledDamageReduction: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        flatDamageReduction: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        extraEquipmentSlots: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCargoSpace: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostChassisAgility: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        disguiseCrewMemberCount: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        disguiseChassisType: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        alwaysSeeTrailColors: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamage: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWhenNoAlliesWithinDistance: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWithNumberOfFactionMembersWithinDistance: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageToItemType: {
+            description: (p: ShipPassiveEffect) => string;
         };
         autoRepair: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
     };
     Profiler: typeof Profiler;
@@ -138,6 +147,7 @@ declare const _default: {
     maxBroadcastLength: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
+    userIsOfflineTimeout: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
@@ -160,7 +170,7 @@ declare const _default: {
         location: true;
         planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
         faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
-        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
+        species: ("passives" | "id" | "icon" | "aiOnly" | "singular" | "description")[];
         chassis: ("mass" | "passives" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
@@ -168,7 +178,7 @@ declare const _default: {
         _maxHp: boolean;
     };
     getHitDamage: (weapon: WeaponStub, totalMunitionsSkill?: number) => number;
-    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
+    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number, useLevel?: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
@@ -191,8 +201,8 @@ declare const _default: {
     }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionId) => number;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionId) => number;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

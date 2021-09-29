@@ -1,4 +1,5 @@
 import c from '../../../../../common/dist'
+import type { CrewMember } from '../CrewMember/CrewMember'
 
 import type { Ship } from '../Ship/Ship'
 import { Stubbable } from '../Stubbable'

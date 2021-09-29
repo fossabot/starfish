@@ -29,13 +29,16 @@ class Weapon extends Item_1.Item {
     get effectiveRange() {
         return this.range * this.repair;
     }
-    use() {
+    use(usePercent = 1, users) {
         this.cooldownRemaining = this.baseCooldown;
         if (this.ship.ai)
             return 0;
         if (this.ship.tutorial?.currentStep.disableRepair)
             return 0;
-        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) * 200;
+        const avgLevel = (users?.reduce((acc, user) => acc +
+            (user.skills.find((s) => s.skill === `munitions`)
+                ?.level || 1), 0) || 1) / (users?.length || 1);
+        let repairLoss = dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability, avgLevel) * 200;
         this.repair -= repairLoss;
         if (this.repair < 0)
             this.repair = 0;

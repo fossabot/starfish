@@ -1,5 +1,5 @@
 declare const data: {
-    [key in CrewPassiveId]: BaseCrewPassiveData;
+    [key in CrewPassiveId]: CrewPassiveData;
 };
 export default data;
 //# sourceMappingURL=crewPassives.d.ts.map

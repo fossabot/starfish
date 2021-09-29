@@ -54,13 +54,13 @@ export default async function checkPermissions({
   }
   if (!permissionsToCheck) {
     c.log({
-      error: `Failed to find any permissions to check!`,
+      error: `Was looking for permissions in ${guild.name} (${guild.id}), but failed to find any bot-applicable permissions.`,
       botRole,
       channel,
       me: guild.me,
     })
     return {
-      error: `Failed to find any permissions to check!`,
+      error: `Was looking for permissions in your server, but failed to find any bot-applicable permissions.`,
     }
   }
 

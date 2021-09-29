@@ -1,1 +1,1 @@
-{"version":3,"file":"factions.d.ts","sourceRoot":"","sources":["../src/factions.ts"],"names":[],"mappings":"AACA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,UAAU,GAAG,eAAe;CAiDrD,CAAA;AAgBD,eAAe,QAAQ,CAAA"}
+{"version":3,"file":"factions.d.ts","sourceRoot":"","sources":["../src/factions.ts"],"names":[],"mappings":"AACA,QAAA,MAAM,QAAQ,EAAE;KAAG,GAAG,IAAI,SAAS,GAAG,eAAe;CAiDpD,CAAA;AAgBD,eAAe,QAAQ,CAAA"}

@@ -1,35 +1,34 @@
-type FactionKey = `green` | `blue` | `purple` | `red`
+type FactionId = `green` | `blue` | `purple` | `red`
 
 interface BaseFactionData {
   name: string
-  id: FactionKey
+  id: FactionId
   color: string
   homeworld?: string
   ai?: boolean
   species?: Species[]
 }
+
 interface SpeciesStub {
-  id: SpeciesKey
+  id: SpeciesId
   type?: `species`
 }
 interface BaseSpeciesData {
   icon: string
-  factionId: FactionKey
-  id: SpeciesKey
+  id: SpeciesId
+  aiOnly?: true
   singular: string
   description: string
-  passives?: ShipPassiveEffect[]
+  passives: CrewPassiveData[]
 }
-type SpeciesKey =
+type SpeciesId =
   | `octopi`
-  | `squids`
   | `lobsters`
   | `crabs`
-  | `seals`
   | `sea turtles`
+  | `sharks`
   | `dolphins`
   | `whales`
-  | `tuna`
   | `angelfish`
   | `blowfish`
   | `shrimp`

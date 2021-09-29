@@ -17,7 +17,7 @@ exports.communicators = {
         range: 0.32,
         antiGarble: 0.1,
         maxHp: 2,
-        reliability: 0.5,
+        reliability: 0.2,
     },
     starter2: {
         type: `communicator`,

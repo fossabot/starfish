@@ -1,5 +1,5 @@
 import species from './species'
-const factions: { [key in FactionKey]: BaseFactionData } = {
+const factions: { [key in FactionId]: BaseFactionData } = {
   green: {
     name: `Green Grapplers`,
     id: `green`,

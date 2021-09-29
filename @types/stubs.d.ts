@@ -79,12 +79,11 @@ interface CrewMemberStub extends BaseStub {
   stats: CrewStatEntry[]
   inventory: Cargo[]
   credits: number
-  actives: BaseCrewActiveData[]
   passives: BaseCrewPassiveData[]
   cockpitCharge: number
   tactic: CombatTactic
   itemTarget: ItemType
-  attackFactions?: FactionKey[]
+  attackFactions?: FactionId[]
   targetLocation: CoordinatePair | null
   repairPriority: RepairPriority
   [key: string]: any
@@ -124,7 +123,7 @@ interface AttackRemnantStub extends BaseStub {
   [key: string]: any
 }
 interface FactionStub extends BaseStub {
-  id: FactionKey
+  id: FactionId
   name?: string
   color?: string
   ai?: boolean

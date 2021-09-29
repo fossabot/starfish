@@ -11,7 +11,7 @@
           :class="{
             marbot: index < ship.passives.length - 1,
           }"
-          v-if="c.basePassiveData[p.id]"
+          v-if="c.baseShipPassiveData[p.id]"
         >
           <ShipPassiveText :passive="p" />
         </div>

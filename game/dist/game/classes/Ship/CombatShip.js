@@ -17,6 +17,13 @@ class CombatShip extends Ship_1.Ship {
         this.species.passives.forEach((p) => this.applyPassive(p));
         this.updateAttackRadius();
     }
+    // move(toLocation?: CoordinatePair) {
+    //   const previousLocation: CoordinatePair = [
+    //     ...this.location,
+    //   ]
+    //   super.move(toLocation)
+    //   // * this does nothing yet, just chilling
+    // }
     updateThingsThatCouldChangeOnItemChange() {
         super.updateThingsThatCouldChangeOnItemChange();
         this.updateAttackRadius();
@@ -140,7 +147,7 @@ class CombatShip extends Ship_1.Ship {
                 weapon,
                 miss: true,
             };
-        weapon.use();
+        weapon.use(1, this.membersIn(`weapons`));
         const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `munitions`);
         const range = dist_1.default.distance(this.location, target.location);
         const rangeAsPercent = range / weapon.effectiveRange;
@@ -456,7 +463,7 @@ class CombatShip extends Ship_1.Ship {
                         },
                         `has been disabled!`,
                     ], `high`);
-                    if (`logEntry` in attacker)
+                    if (`logEntry` in attacker && !didDie)
                         attacker.logEntry([
                             `You have disabled`,
                             {

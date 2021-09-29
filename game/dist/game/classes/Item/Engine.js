@@ -14,11 +14,13 @@ class Engine extends Item_1.Item {
         this.thrustAmplification = data.thrustAmplification;
         this.lastUse = data.lastUse || 0;
     }
-    use(usePercent = 1) {
+    use(usePercent = 1, user) {
         if (this.ship.tutorial?.currentStep.disableRepair)
             return 0;
+        const skillLevel = user?.skills.find((s) => s.skill === `piloting`)
+            ?.level || 1;
         const flatLoss = 0.001 * dist_1.default.gameSpeedMultiplier;
-        let repairLoss = Math.min(1 / this.maxHp / 2, dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability) *
+        let repairLoss = Math.min(1 / this.maxHp / 2, dist_1.default.getBaseDurabilityLossPerTick(this.maxHp, this.reliability, skillLevel) *
             usePercent *
             400 +
             flatLoss);

@@ -19,6 +19,66 @@ function getUnitVectorFromThatBodyToThisBody(
   return math.degreesToUnitVector(angleBetween)
 }
 
+const scalingFunctions: {
+  [key: string]: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) => number
+} = {
+  defaultRealGravity: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    (-globals.gravitationalConstant * massProduct) /
+    rangeInMeters ** 2,
+
+  // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
+  linear: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (1 - rangeAsPercentOfGravityRadius),
+
+  // middle ground between linear and exponential
+  quadratic: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (rangeAsPercentOfGravityRadius - 1) ** 2,
+
+  // stronger lean towards exponential
+  cubic: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
+
+  // even stronger lean towards exponential
+  sixthPower: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (rangeAsPercentOfGravityRadius - 1) ** 6,
+}
+
 function getGravityForceVectorOnThisBodyDueToThatBody(
   thisBody: HasMassAndLocation,
   thatBody: HasMassAndLocation,
@@ -52,50 +112,6 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   if (rangeInMeters === 0) return [0, 0]
 
-  const scalingFunctions: {
-    [key: string]: () => number
-  } = {
-    defaultRealGravity: () =>
-      (-globals.gravitationalConstant * massProduct) /
-      rangeInMeters ** 2,
-
-    // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
-    linear: () =>
-      -1 *
-      0.0000015 *
-      Math.sqrt(
-        globals.gravitationalConstant * massProduct,
-      ) *
-      (1 - rangeAsPercentOfGravityRadius),
-
-    // middle ground between linear and exponential
-    quadratic: () =>
-      -1 *
-      0.0000015 *
-      Math.sqrt(
-        globals.gravitationalConstant * massProduct,
-      ) *
-      (rangeAsPercentOfGravityRadius - 1) ** 2,
-
-    // stronger lean towards exponential
-    cubic: () =>
-      -1 *
-      0.0000015 *
-      Math.sqrt(
-        globals.gravitationalConstant * massProduct,
-      ) *
-      (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
-
-    // even stronger lean towards exponential
-    sixthPower: () =>
-      -1 *
-      0.0000015 *
-      Math.sqrt(
-        globals.gravitationalConstant * massProduct,
-      ) *
-      (rangeAsPercentOfGravityRadius - 1) ** 6,
-  }
-
   // * ----- current scaling function in use -----
   const scalingFunction =
     scalingFunctions[gravityScalingFunction] ||
@@ -103,7 +119,12 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   // * ----- flat gravity scaling -----
 
-  const gravityForce = scalingFunction() * gravityMultiplier
+  const gravityForce =
+    scalingFunction({
+      massProduct,
+      rangeInMeters,
+      rangeAsPercentOfGravityRadius,
+    }) * gravityMultiplier
 
   // const differenceFromDefault =
   //   gravityForce -

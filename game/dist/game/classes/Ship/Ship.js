@@ -13,7 +13,7 @@ const Armor_1 = require("../Item/Armor");
 const loadouts_1 = __importDefault(require("../../presets/loadouts"));
 const Stubbable_1 = require("../Stubbable");
 class Ship extends Stubbable_1.Stubbable {
-    constructor({ name, species, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
+    constructor({ name, factionId, chassis, items, loadout, seenPlanets, seenLandmarks, location, velocity, previousLocations, tagline, availableTaglines, headerBackground, availableHeaderBackgrounds, stats, }, game) {
         super();
         this.type = `ship`;
         this.planet = false;
@@ -61,25 +61,26 @@ class Ship extends Stubbable_1.Stubbable {
         this.rename(name);
         this.ai = true;
         this.human = false;
-        this.species = game.species.find((s) => s.id === species.id);
-        if (!this.species) {
-            dist_1.default.log(`red`, `no species found for`, species);
-            this.species = game.species[0];
-        }
-        this.faction = this.species.faction;
+        this.factionId =
+            factionId && dist_1.default.factions[factionId]
+                ? factionId
+                : undefined;
         this.velocity = velocity || [0, 0];
         if (location) {
             this.location = location;
         }
-        else if (this.faction) {
+        else if (this.factionId) {
             this.location = [
-                ...(this.faction.homeworld?.location || [0, 0]),
+                ...(this.game.planets.find((p) => p.homeworld?.id ===
+                    this.factionId)?.location || [0, 0]),
             ].map((pos) => pos +
                 dist_1.default.randomBetween(this.game.settings.arrivalThreshold * -0.4, this.game.settings.arrivalThreshold * 0.4));
             // c.log(`fact`, this.location, this.faction.homeworld)
         }
         else
-            this.location = [0, 0];
+            this.location = [
+                ...dist_1.default.randomFromArray(this.game.planets).location,
+            ];
         if (previousLocations)
             this.previousLocations = previousLocations;
         if (tagline)
@@ -156,6 +157,10 @@ class Ship extends Stubbable_1.Stubbable {
             { color: `var(--success)`, text: this.name },
             `&nospace!`,
         ], `high`);
+    }
+    changeFaction(id) {
+        // todo
+        a;
     }
     // ----- item mgmt -----
     get engines() {

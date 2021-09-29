@@ -224,28 +224,6 @@ class BasicPlanet extends Planet_1.Planet {
                             rarityMultiplier(crewPassive.rarity),
                     });
         }
-        // if (
-        //   !this.leanings.find(
-        //     (p) => p.type === `actives` && p.never === true,
-        //   )
-        // ) {
-        //   const propensity =
-        //     (this.leanings.find((p) => p.type === `actives`)
-        //       ?.propensity || 0.2) / Object.keys(c.crewActives).length
-        //   for (let crewActive of Object.values(c.crewActives))
-        //     if (
-        //       !this.vendor?.actives.find(
-        //         (p) => p.id === crewActive.id,
-        //       )
-        //     )
-        //       addable.push({
-        //         class: `actives`,
-        //         id: crewActive.id,
-        //         propensity:
-        //           propensity *
-        //           rarityMultiplier(crewActive.rarity),
-        //       })
-        // }
         if (!this.leanings.find((p) => p.type === `repair` && p.never === true)) {
             const propensity = this.leanings.find((p) => p.type === `repair`)
                 ?.propensity || 0.1;

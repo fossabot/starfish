@@ -9,9 +9,8 @@ import discord from './discord'
 import { Profiler } from './Profiler'
 import species from './species'
 import factions from './factions'
-import basePassiveData from './basePassiveData'
+import baseShipPassiveData from './baseShipPassiveData'
 import * as cargo from './cargo'
-import crewActives from './crewActives'
 import crewPassives from './crewPassives'
 import rooms from './rooms'
 import stubify from './stubify'
@@ -28,12 +27,11 @@ export default {
   ...discord,
   items,
   rooms,
-  crewActives,
   crewPassives,
   cargo,
   species,
   factions,
-  basePassiveData,
+  baseShipPassiveData,
   Profiler,
   stubify,
 }

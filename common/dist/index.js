@@ -33,9 +33,8 @@ const discord_1 = __importDefault(require("./discord"));
 const Profiler_1 = require("./Profiler");
 const species_1 = __importDefault(require("./species"));
 const factions_1 = __importDefault(require("./factions"));
-const basePassiveData_1 = __importDefault(require("./basePassiveData"));
+const baseShipPassiveData_1 = __importDefault(require("./baseShipPassiveData"));
 const cargo = __importStar(require("./cargo"));
-const crewActives_1 = __importDefault(require("./crewActives"));
 const crewPassives_1 = __importDefault(require("./crewPassives"));
 const rooms_1 = __importDefault(require("./rooms"));
 const stubify_1 = __importDefault(require("./stubify"));
@@ -51,12 +50,11 @@ exports.default = {
     ...discord_1.default,
     items,
     rooms: rooms_1.default,
-    crewActives: crewActives_1.default,
     crewPassives: crewPassives_1.default,
     cargo,
     species: species_1.default,
     factions: factions_1.default,
-    basePassiveData: basePassiveData_1.default,
+    baseShipPassiveData: baseShipPassiveData_1.default,
     Profiler: Profiler_1.Profiler,
     stubify: stubify_1.default,
 };

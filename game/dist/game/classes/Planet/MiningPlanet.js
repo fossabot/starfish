@@ -23,8 +23,7 @@ class MiningPlanet extends Planet_1.Planet {
     getMineRequirement(cargoId) {
         const rarity = dist_1.default.cargo[cargoId].rarity + 1;
         return Math.floor(((Math.random() + 0.1) * 70000 * (rarity / 3)) /
-            ((this.passives.find((p) => p.id === `boostMineSpeed`)?.intensity || 1) +
-                1) /
+            2 /
             dist_1.default.gameSpeedMultiplier);
     }
     getPayoutAmount(cargoId) {
@@ -44,17 +43,22 @@ class MiningPlanet extends Planet_1.Planet {
         if (!resource)
             return;
         resource.mineCurrent += amount;
+        // * ----- done mining, pay out -----
         if (resource.mineCurrent >= resource.mineRequirement) {
             // distribute among all current mining ships
             const shipsToDistributeAmong = this.shipsAt.filter((s) => s.crewMembers.find((cm) => cm.location === `mine` &&
                 (cm.minePriority === cargoId ||
                     cm.minePriority === `closest` ||
                     !this.mine.find((m) => m.id === cm.minePriority))));
-            dist_1.default.log(`gray`, `${shipsToDistributeAmong.length} ships mined ${resource.payoutAmount} tons of ${cargoId} from ${this.name}.`);
+            const amountBoostPassive = shipsToDistributeAmong.reduce((total, s) => s.getPassiveIntensity(`boostMinePayouts`) +
+                total, 0);
+            const finalPayoutAmount = resource.payoutAmount * (amountBoostPassive + 1);
+            const didBoost = amountBoostPassive > 0;
+            dist_1.default.log(`gray`, `${shipsToDistributeAmong.length} ships mined ${finalPayoutAmount} tons of ${cargoId} from ${this.name}.`);
             shipsToDistributeAmong.forEach((ship) => {
                 ship.logEntry(shipsToDistributeAmong.length > 1
                     ? [
-                        `Your ship helped mine ${dist_1.default.r2(resource.payoutAmount, 0)} tons of`,
+                        `Your ship helped mine ${dist_1.default.r2(finalPayoutAmount, 0)} tons of`,
                         {
                             text: cargoId,
                             tooltipData: {
@@ -63,12 +67,14 @@ class MiningPlanet extends Planet_1.Planet {
                             },
                             color: `var(--cargo)`,
                         },
-                        `&nospace, which was split with ${shipsToDistributeAmong.length - 1} other ship ${shipsToDistributeAmong.length - 1 === 1
+                        `&nospace, ${didBoost
+                            ? `(passive payout boost: +${dist_1.default.r2(amountBoostPassive) * 100}%) `
+                            : ``}which was split with ${shipsToDistributeAmong.length - 1} other ship ${shipsToDistributeAmong.length - 1 === 1
                             ? ``
                             : `s`}`,
                     ]
                     : [
-                        `Your ship mined ${dist_1.default.r2(resource.payoutAmount, 0)} tons of`,
+                        `Your ship mined ${dist_1.default.r2(finalPayoutAmount, 0)} tons of`,
                         {
                             text: cargoId,
                             tooltipData: {
@@ -77,21 +83,24 @@ class MiningPlanet extends Planet_1.Planet {
                             },
                             color: `var(--cargo)`,
                         },
-                        `&nospace.`,
+                        `&nospace${didBoost
+                            ? ` (passive payout boost: +${dist_1.default.r2(amountBoostPassive) * 100}%)`
+                            : ``}.`,
                     ]);
                 const crewMembersWhoHelped = ship.crewMembers.filter((cm) => cm.location === `mine` &&
                     (cm.minePriority === cargoId ||
                         cm.minePriority === `closest` ||
                         !this.mine.find((m) => m.id === cm.minePriority)));
                 crewMembersWhoHelped.forEach((cm) => {
-                    cm.addStat(`totalTonsMined`, resource.payoutAmount /
+                    cm.addStat(`totalTonsMined`, finalPayoutAmount /
+                        shipsToDistributeAmong.length /
                         crewMembersWhoHelped.length);
                 });
-                ship.addStat(`totalTonsMined`, resource.payoutAmount);
+                ship.addStat(`totalTonsMined`, finalPayoutAmount);
                 ship.distributeCargoAmongCrew([
                     {
                         id: cargoId,
-                        amount: dist_1.default.r2(resource.payoutAmount /
+                        amount: dist_1.default.r2(finalPayoutAmount /
                             shipsToDistributeAmong.length, 0, true),
                     },
                 ]);

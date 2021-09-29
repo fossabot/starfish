@@ -33,7 +33,7 @@
 
         <button
           class="martopsmall secondary"
-          v-if="validOrders"
+          v-if="validOrders && isCaptain"
           @click="setOrders(true)"
         >
           Clear Orders
@@ -325,7 +325,9 @@
         class="martop flexbetween"
         v-if="toValidOrders(inputOrders)"
       >
-        <button @click="setOrders">Set Orders</button>
+        <div class="button" @click="setOrders">
+          Set Orders
+        </div>
       </div>
 
       <div class="martop sub">

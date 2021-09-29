@@ -19,8 +19,8 @@ interface BasePlanetData {
 
 interface BaseBasicPlanetData extends BasePlanetData {
   leanings: PlanetLeaning[]
-  factionId?: FactionKey
-  homeworld?: { id: FactionKey }
+  factionId?: FactionId
+  homeworld?: { id: FactionId }
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
 }
@@ -54,11 +54,6 @@ interface PlanetVendorItemPrice {
   buyMultiplier: number
 }
 
-interface PlanetVendorCrewActivePrice {
-  id: CrewActiveId
-  buyMultiplier: number
-}
-
 interface PlanetVendorCrewPassivePrice {
   id: CrewPassiveId
   buyMultiplier: number
@@ -69,7 +64,6 @@ interface PlanetVendor {
   items: PlanetVendorItemPrice[]
   chassis: PlanetVendorChassisPrice[]
   passives: PlanetVendorCrewPassivePrice[]
-  actives: PlanetVendorCrewActivePrice[]
   repairCostMultiplier?: number
 }
 

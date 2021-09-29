@@ -1,18 +1,18 @@
-const basePassiveData: {
+const baseShipPassiveData: {
   [key in ShipPassiveEffectId]: {
-    toString: (p: ShipPassiveEffect) => string
+    description: (p: ShipPassiveEffect) => string
   }
 } = {
   boostDamage: {
-    toString: (p: ShipPassiveEffect) =>
+    description: (p: ShipPassiveEffect) =>
       `${(p.intensity || 1) * 100}% increased damage`,
   },
   alwaysSeeTrailColors: {
-    toString: (p: ShipPassiveEffect) =>
+    description: (p: ShipPassiveEffect) =>
       `Trail colors always visible`,
   },
   boostDamageWhenNoAlliesWithinDistance: {
-    toString: (p: ShipPassiveEffect) =>
+    description: (p: ShipPassiveEffect) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% attack damage when no allies are within ${
@@ -20,7 +20,7 @@ const basePassiveData: {
       }AU`,
   },
   boostDamageWithNumberOfFactionMembersWithinDistance: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% attack damage per ally within ${
@@ -28,67 +28,73 @@ const basePassiveData: {
       }AU`,
   },
   boostCargoSpace: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         p.intensity || 1,
       )} cargo space for crew members`,
   },
   boostChassisAgility: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% dodge chance`,
   },
   boostDropAmount: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% drop amounts`,
   },
   boostDropRarity: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% AI drop rarity`,
   },
   boostRepairSpeed: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% faster repairs`,
   },
   boostMineSpeed: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% faster mining`,
   },
+  boostMinePayouts: {
+    description: (p) =>
+      `+${Math.round(
+        (p.intensity || 1) * 100,
+      )}% higher mining payouts`,
+  },
   boostScanRange: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% scan range`,
   },
   boostSightRange: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% sight range`,
   },
   boostBroadcastRange: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% broadcast range`,
   },
   boostCockpitChargeSpeed: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% cockpit charge speed`,
   },
   boostBrake: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% ship braking`,
@@ -98,56 +104,56 @@ const basePassiveData: {
   //     `+${Math.round((p.intensity || 1) * 100)}% more thrust`,
   // },
   boostXpGain: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% faster XP gain`,
   },
   disguiseChassisType: {
-    toString: (p) => `Chassis type hidden`,
+    description: (p) => `Chassis type hidden`,
   },
   disguiseCrewMemberCount: {
-    toString: (p) => `Crew member count hidden`,
+    description: (p) => `Crew member count hidden`,
   },
   extraEquipmentSlots: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(p.intensity || 1)} item slot${
         Math.round(p.intensity || 1) === 1 ? `` : `s`
       }`,
   },
   boostDamageToItemType: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% damage to ${p.data?.type}s`,
   },
   scaledDamageReduction: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% damage reduction`,
   },
   flatDamageReduction: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         p.intensity || 1,
       )} flat damage reduction`,
   },
   flatSkillBoost: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(p.intensity || 1)} crew skill levels`,
   },
   boostStaminaRegeneration: {
-    toString: (p) =>
+    description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,
       )}% faster stamina regeneration`,
   },
   autoRepair: {
-    toString: (p) =>
+    description: (p) =>
       `+${
         Math.round((p.intensity || 1) * 10) / 10
       }HP/hr auto-repair`,
   },
 }
-export default basePassiveData
+export default baseShipPassiveData

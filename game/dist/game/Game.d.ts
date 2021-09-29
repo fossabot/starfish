@@ -1,8 +1,6 @@
 import { Ship } from './classes/Ship/Ship';
 import { Planet } from './classes/Planet/Planet';
 import { Cache } from './classes/Cache';
-import { Faction } from './classes/Faction';
-import { Species } from './classes/Species';
 import { AttackRemnant } from './classes/AttackRemnant';
 import { Zone } from './classes/Zone';
 import { ChunkManager } from './classes/Chunks/ChunkManager';
@@ -17,13 +15,12 @@ export declare class Game {
     readonly planets: Planet[];
     readonly caches: Cache[];
     readonly zones: Zone[];
-    readonly factions: Faction[];
-    readonly species: Species[];
     readonly attackRemnants: AttackRemnant[];
     readonly chunkManager: ChunkManager;
     settings: AdminGameSettings;
     factionRankings: FactionRanking[];
     paused: boolean;
+    activePlayers: number;
     constructor();
     setSettings(newSettings: Partial<AdminGameSettings>): void;
     startGame(): void;
@@ -59,8 +56,6 @@ export declare class Game {
     removeShip(ship: Ship | string): Promise<void>;
     addBasicPlanet(data: BaseBasicPlanetData, save?: boolean): Promise<Planet>;
     addMiningPlanet(data: BaseMiningPlanetData, save?: boolean): Promise<Planet>;
-    addFaction(data: BaseFactionData): Faction;
-    addSpecies(data: BaseSpeciesData): Species;
     addCache(data: BaseCacheData, save?: boolean): Promise<Cache>;
     removeCache(cache: Cache): void;
     addZone(data: BaseZoneData, save?: boolean): Promise<Zone>;

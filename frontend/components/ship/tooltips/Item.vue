@@ -309,7 +309,9 @@
       v-for="passive in dataToUse.passives"
       class="success marbotsmall"
     >
-      {{ c.basePassiveData[passive.id].toString(passive) }}
+      {{
+        c.baseShipPassiveData[passive.id].toString(passive)
+      }}
     </div>
 
     <hr v-if="dataToUse.description" />

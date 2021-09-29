@@ -25,7 +25,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrewMember = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const roomActions = __importStar(require("./addins/rooms"));
-const CrewPassive_1 = require("./addins/CrewPassive");
 const Stubbable_1 = require("../Stubbable");
 class CrewMember extends Stubbable_1.Stubbable {
     constructor(data, ship) {
@@ -40,11 +39,10 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.cockpitCharge = 0;
         this.repairPriority = `most damaged`;
         this.minePriority = `closest`;
-        this.actives = [];
         this.passives = [];
+        this.permanentPassives = [];
         this.upgrades = [];
         this.stats = [];
-        this.maxCargoSpace = CrewMember.baseMaxCargoSpace;
         this.tutorialShipId = undefined;
         this.mainShipId = undefined;
         this.toUpdate = {};
@@ -56,6 +54,8 @@ class CrewMember extends Stubbable_1.Stubbable {
         this.id = data.id;
         this.ship = ship;
         this.rename(data.name);
+        if (data.speciesId && dist_1.default.species[data.speciesId])
+            this.setSpecies(data.speciesId);
         const hasBunk = ship.rooms.bunk;
         this.location =
             data.location ||
@@ -82,11 +82,10 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.tutorialShipId = data.tutorialShipId;
         if (data.mainShipId)
             this.mainShipId = data.mainShipId;
-        // if (data.actives)
-        //   for (let a of data.actives)
-        if (data.passives)
-            for (let p of data.passives)
-                this.addPassive(p);
+        if (data.permanentPassives) {
+            for (let p of data.permanentPassives)
+                this.addToPermanentPassive(p);
+        }
         if (data.combatTactic)
             this.combatTactic = data.combatTactic;
         if (data.targetItemType)
@@ -145,21 +144,19 @@ class CrewMember extends Stubbable_1.Stubbable {
             this.attackTargetId = `any`;
             this.toUpdate.attackTargetId = this.attackTargetId;
         }
-        // ----- actives -----
-        this.actives.forEach((a) => a.tick());
         // ----- bunk -----
         if (this.location === `bunk`) {
             this.bunkAction();
             return;
         }
         // ----- stamina check/use -----
-        if (this.tired)
+        if (this.stamina <= 0)
             return;
         if (!this.ship.tutorial?.currentStep?.disableStamina)
             this.stamina -=
                 this.ship.game.settings.baseStaminaUse /
                     (dist_1.default.deltaTime / dist_1.default.tickInterval);
-        if (this.tired) {
+        if (this.stamina <= 0) {
             this.stamina = 0;
             this.goTo(`bunk`);
             this.toUpdate.stamina = this.stamina;
@@ -182,6 +179,18 @@ class CrewMember extends Stubbable_1.Stubbable {
     active() {
         this.lastActive = Date.now();
         this.toUpdate.lastActive = this.lastActive;
+    }
+    setSpecies(speciesId) {
+        // if somehow there already was one, remove its passives
+        if (this.speciesId)
+            for (let p of dist_1.default.species[this.speciesId].passives)
+                this.removePassive(p);
+        if (dist_1.default.species[speciesId]) {
+            this.speciesId = speciesId;
+            this.toUpdate.speciesId = speciesId;
+            for (let p of dist_1.default.species[speciesId].passives)
+                this.applyPassive(p);
+        }
     }
     addXp(skill, xp) {
         this.active();
@@ -235,38 +244,42 @@ class CrewMember extends Stubbable_1.Stubbable {
             .filter((i) => i)
             .reduce((total, i) => total + i.amount, 0);
     }
-    recalculateMaxCargoSpace() {
-        const personalCargoSpacePassiveBoost = this.passives.find((p) => p.id === `cargoSpace`)
-            ?.changeAmount || 0;
-        const shipwideCargoSpacePassiveBoost = this.ship.passives.find((p) => p.id === `boostCargoSpace`)?.intensity || 0;
-        this.maxCargoSpace =
-            CrewMember.baseMaxCargoSpace +
-                personalCargoSpacePassiveBoost +
-                shipwideCargoSpacePassiveBoost;
-        this.toUpdate.maxCargoSpace = this.maxCargoSpace;
+    get maxCargoSpace() {
+        return Math.max(CrewMember.baseMaxCargoSpace, this.getPassiveIntensity(`cargoSpace`));
     }
-    addPassive(data) {
-        this.active();
-        if (!data.id)
-            return;
-        const existing = this.passives.find((p) => p.id === data.id);
-        if (existing) {
-            existing.level++;
+    // ----- passives -----
+    getPassiveIntensity(id) {
+        return this.passives
+            .filter((p) => p.id === id)
+            .reduce((total, p) => (p.intensity || 0) + total, 0);
+    }
+    addToPermanentPassive(passive) {
+        const found = this.permanentPassives.find((p) => p.id === passive.id);
+        if (found) {
+            if (found.intensity)
+                found.intensity += passive.intensity || 0;
+            else
+                found.intensity = passive.intensity || 0;
         }
-        else {
-            const fullPassiveData = {
-                ...dist_1.default.crewPassives[data.id],
-                level: data.level || 1,
-            };
-            this.passives.push(new CrewPassive_1.CrewPassive(fullPassiveData, this));
-        }
+        else
+            this.permanentPassives.push(passive);
+        this.applyPassive(passive);
+    }
+    applyPassive(p) {
+        this.passives.push(p);
         this.toUpdate.passives = this.passives;
         // reset all variables that might have changed because of this
         this.recalculateAll();
     }
-    recalculateAll() {
-        this.recalculateMaxCargoSpace();
+    removePassive(p) {
+        this.active();
+        const foundIndex = this.passives.findIndex((p2) => p2.id === p.id);
+        this.passives.splice(foundIndex, 1);
+        this.toUpdate.passives = this.passives;
+        // reset all variables that might have changed because of this
+        this.recalculateAll();
     }
+    recalculateAll() { }
     addStat(statname, amount) {
         this.active();
         const existing = this.stats.find((s) => s.stat === statname);
@@ -278,9 +291,6 @@ class CrewMember extends Stubbable_1.Stubbable {
         else
             existing.amount += amount;
         this.toUpdate.stats = this.stats;
-    }
-    get tired() {
-        return this.stamina <= 0;
     }
     get piloting() {
         return (this.skills.find((s) => s?.skill === `piloting`) || {

@@ -1,9 +1,9 @@
 interface BaseShipData {
   name: string
   id?: string
+  factionId: FactionId
   location?: CoordinatePair
   velocity?: CoordinatePair
-  species: { id: SpeciesKey }
   seenPlanets?: { name: string }[]
   seenLandmarks?: { id: string; type: `zone` }[]
   loadout?: LoadoutId
@@ -59,6 +59,7 @@ type ShipPassiveEffectId =
   | `boostBroadcastRange`
   | `boostRepairSpeed`
   | `boostMineSpeed`
+  | `boostMinePayouts`
   | `boostBrake`
   // | `boostThrust`
   | `boostCockpitChargeSpeed`
@@ -84,7 +85,7 @@ interface ShipPassiveEffect {
   data?: {
     source?: {
       planetName?: string
-      speciesId?: SpeciesKey
+      speciesId?: SpeciesId
       chassisId?: ChassisId
       item?: {
         type: ItemType

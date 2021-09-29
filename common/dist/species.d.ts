@@ -1,5 +1,5 @@
 declare const species: {
-    [key in SpeciesKey]: BaseSpeciesData;
+    [key in SpeciesId]: BaseSpeciesData;
 };
 export default species;
 //# sourceMappingURL=species.d.ts.map

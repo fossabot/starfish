@@ -3,12 +3,10 @@ import io from '../../../server/io'
 import { db } from '../../../db'
 
 import { Ship } from './Ship'
-import { Zone } from '../Zone'
 import type { Weapon } from '../Item/Weapon'
 import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
-import { AIShip } from './AIShip'
 import type { CrewMember } from '../CrewMember/CrewMember'
 
 export abstract class CombatShip extends Ship {
@@ -29,6 +27,14 @@ export abstract class CombatShip extends Ship {
 
     this.updateAttackRadius()
   }
+
+  // move(toLocation?: CoordinatePair) {
+  //   const previousLocation: CoordinatePair = [
+  //     ...this.location,
+  //   ]
+  //   super.move(toLocation)
+  //   // * this does nothing yet, just chilling
+  // }
 
   updateThingsThatCouldChangeOnItemChange() {
     super.updateThingsThatCouldChangeOnItemChange()
@@ -219,7 +225,7 @@ export abstract class CombatShip extends Ship {
         miss: true,
       }
 
-    weapon.use()
+    weapon.use(1, this.membersIn(`weapons`))
 
     const totalMunitionsSkill = this.cumulativeSkillIn(
       `weapons`,
@@ -714,7 +720,7 @@ export abstract class CombatShip extends Ship {
             ],
             `high`,
           )
-          if (`logEntry` in attacker)
+          if (`logEntry` in attacker && !didDie)
             attacker.logEntry(
               [
                 `You have disabled`,

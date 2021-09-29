@@ -18,7 +18,7 @@ class Tutorial {
         this.baseLocation = [
             ...(this.ship.faction.homeworld?.location || [0, 0]),
         ];
-        this.currentStep = this.steps[0];
+        this.currentStep = this.steps[this.step];
         if (this.step === -1) {
             // * timeout to give a chance to initialize the crew member in the ship and save it, THEN start
             setTimeout(async () => {

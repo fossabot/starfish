@@ -5,7 +5,25 @@ import { game } from '../..'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
+
+// ----- online count -----
+const connectedIds: { id: string; lastSeen: number }[] = []
+const idConnected = (id: string) => {
+  const found = connectedIds.find((e) => e.id === id)
+  if (!found) {
+    connectedIds.push({ id, lastSeen: Date.now() })
+    game.activePlayers++
+  } else found.lastSeen = Date.now()
+}
+const clearInactive = () => {
+  const now = Date.now()
+  connectedIds.forEach((e) => {
+    if (now - e.lastSeen > c.userIsOfflineTimeout)
+      connectedIds.splice(connectedIds.indexOf(e), 1)
+  })
+  game.activePlayers = connectedIds.length
+}
+setInterval(clearInactive, 20 * 1000)
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -64,6 +82,7 @@ export default function (
       // * clearing parts of visible here because they're not being properly obfuscated with a raw stubify call
       delete stub.visible
       callback({ data: stub })
+      if (crewMemberId) idConnected(crewMemberId)
       // c.log(
       //   `gray`,
       //   `Frontend client started watching ship ${id} io`,
@@ -76,6 +95,7 @@ export default function (
 
   socket.on(`user:listen`, (userId) => {
     socket.join([`user:${userId}`])
+    idConnected(userId)
   })
 
   socket.on(`ship:respawn`, (id, callback) => {

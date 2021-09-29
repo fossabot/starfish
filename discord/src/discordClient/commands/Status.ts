@@ -148,9 +148,12 @@ ${c.percentToTextBars(
               context.crewMember.maxCargoSpace,
               ship.chassis?.maxCargoSpace || 0,
             )} tons` +
-            (context.crewMember.inventory.length === 0
+            (context.crewMember.inventory.filter(
+              (i) => i.amount,
+            ).length === 0
               ? ``
               : `\n${context.crewMember.inventory
+                  .filter((i) => i.amount)
                   .map(
                     (i) =>
                       `${c.cargo[i.id].name} (${

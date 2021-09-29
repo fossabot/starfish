@@ -16,10 +16,10 @@ const shipSchemaFields: Record<
   id: { type: String, required: true },
   guildIcon: { type: String },
   guildName: { type: String },
+  factionId: { type: String },
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
-  species: { id: { type: String, required: true } },
   loadout: String,
   chassis: { id: { type: String, required: true } },
   items: [
@@ -75,10 +75,11 @@ const shipSchemaFields: Record<
           cooldownRemaining: Number,
         },
       ],
-      passives: [
+      speciesId: String,
+      permanentPassives: [
         {
           id: { required: true, type: String },
-          level: Number,
+          intensity: Number,
         },
       ],
       combatTactic: String,

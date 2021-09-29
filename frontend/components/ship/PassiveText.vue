@@ -1,7 +1,11 @@
 <template>
   <span>
     <span class="success">
-      {{ c.basePassiveData[passive.id].toString(passive) }}
+      {{
+        c.baseShipPassiveData[passive.id].description(
+          passive,
+        )
+      }}
     </span>
     <span
       class="sub nowrap"

@@ -1,7 +1,6 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
-import type { Faction } from '../Faction'
 import type { Planet } from '../Planet/Planet'
 import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
@@ -16,10 +15,9 @@ import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
 import loadouts from '../../presets/loadouts'
-import type { Species } from '../Species'
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
-import { AIShip } from './AIShip'
+import type { BasicPlanet } from '../Planet/BasicPlanet'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 30
@@ -27,8 +25,7 @@ export class Ship extends Stubbable {
   readonly type = `ship`
   name: string
   planet: Planet | false = false
-  readonly faction: Faction
-  readonly species: Species
+  factionId?: FactionId
   readonly game: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
@@ -89,7 +86,7 @@ export class Ship extends Stubbable {
   constructor(
     {
       name,
-      species,
+      factionId,
       chassis,
       items,
       loadout,
@@ -114,21 +111,21 @@ export class Ship extends Stubbable {
     this.ai = true
     this.human = false
 
-    this.species = game.species.find(
-      (s) => s.id === species.id,
-    )!
-    if (!this.species) {
-      c.log(`red`, `no species found for`, species)
-      this.species = game.species[0]
-    }
-    this.faction = this.species.faction
+    this.factionId =
+      factionId && c.factions[factionId]
+        ? factionId
+        : undefined
 
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
-    } else if (this.faction) {
+    } else if (this.factionId) {
       this.location = [
-        ...(this.faction.homeworld?.location || [0, 0]),
+        ...(this.game.planets.find(
+          (p) =>
+            (p as BasicPlanet).homeworld?.id ===
+            this.factionId,
+        )?.location || [0, 0]),
       ].map(
         (pos) =>
           pos +
@@ -138,7 +135,10 @@ export class Ship extends Stubbable {
           ),
       ) as CoordinatePair
       // c.log(`fact`, this.location, this.faction.homeworld)
-    } else this.location = [0, 0]
+    } else
+      this.location = [
+        ...c.randomFromArray(this.game.planets).location,
+      ]
 
     if (previousLocations)
       this.previousLocations = previousLocations
@@ -235,6 +235,11 @@ export class Ship extends Stubbable {
       ],
       `high`,
     )
+  }
+
+  changeFaction(id: FactionId) {
+    // todo
+    a
   }
 
   // ----- item mgmt -----

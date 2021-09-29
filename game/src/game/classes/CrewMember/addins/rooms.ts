@@ -62,10 +62,13 @@ export function mine(this: CrewMember): void {
     this.ship.planet &&
     (this.ship.planet as MiningPlanet).mine
   ) {
+    const passiveSpeedBonus =
+      this.ship.getPassiveIntensity(`boostMineSpeed`) + 1
+
     const amountToMine =
       c.getMineAmountPerTickForSingleCrewMember(
         this.mining.level || 1,
-      )
+      ) * passiveSpeedBonus
 
     ;(this.ship.planet as MiningPlanet).mineResource(
       this.minePriority,

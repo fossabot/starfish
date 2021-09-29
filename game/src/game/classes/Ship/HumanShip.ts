@@ -17,6 +17,7 @@ import type { AIShip } from './AIShip'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './addins/Tutorial'
+import { timeStamp } from 'console'
 
 interface HumanVisibleShape {
   ships: ShipStub[]
@@ -315,6 +316,8 @@ export class HumanShip extends CombatShip {
       this.log.shift()
 
     this.toUpdate.log = this.log
+
+    if (this.tutorial) return
 
     if (this.logAlertLevel === `off`) return
     const levelsToAlert = [this.logAlertLevel]
@@ -837,7 +840,7 @@ export class HumanShip extends CombatShip {
     }
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge))
+      this.engines.forEach((e) => e.use(charge, thruster))
 
     return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
@@ -926,7 +929,7 @@ export class HumanShip extends CombatShip {
       )
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge))
+      this.engines.forEach((e) => e.use(charge, thruster))
 
     return (this.speed - previousSpeed) * 60 * 60
   }
@@ -1443,6 +1446,12 @@ export class HumanShip extends CombatShip {
   }
 
   updateBroadcastRadius() {
+    if (this.tutorial) {
+      this.radii.broadcast = 0
+      this.toUpdate.radii = this.radii
+
+      return
+    }
     const passiveEffect =
       this.passives
         .filter((p) => p.id === `boostBroadcastRange`)
@@ -1606,7 +1615,7 @@ export class HumanShip extends CombatShip {
 
     this.communicators.forEach((comm) => {
       if (comm.hp > 0) {
-        comm.use()
+        comm.use(1, crewMember)
         this.updateBroadcastRadius()
       }
     })

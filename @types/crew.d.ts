@@ -28,8 +28,21 @@ type RepairPriority =
 
 type MinePriorityType = CargoId | `closest`
 
-type CrewActiveId = `boost` | `quickFix` | `sightRange`
-type CrewPassiveId = `cargoSpace`
+type CrewPassiveId =
+  | `cargoSpace`
+  | `boostCockpitChargeSpeed`
+  | `boostThrust`
+  | `boostMineSpeed`
+  | `boostRepairSpeed`
+  | `boostWeaponChargeSpeed`
+  | `boostStaminaRegeneration`
+  | `boostXpGain`
+  | `generalImprovementWhenAlone`
+  | `generalImprovementPerCrewMemberInSameRoom`
+  | `boostDropAmounts`
+  | `boostBroadcastRange`
+  | `lessDamageOnEquipmentUse`
+  | `boostBrake`
 
 type CrewStatKey =
   | `totalContributedToCommonFund`
@@ -50,19 +63,19 @@ interface PassiveCrewUpgrade {
 interface BaseCrewMemberData {
   name: string
   id: string
+  speciesId?: SpeciesId
   lastActive?: number
   skills?: XPData[]
   location?: CrewLocation
   stamina?: number
   inventory?: Cargo[]
   credits?: number
-  actives?: BaseCrewActiveData[]
-  passives?: BaseCrewPassiveData[]
+  permanentPassives?: BaseCrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic
   targetItemType?: ItemType
   minePriority?: MinePriorityType
-  attackFactions?: FactionKey[]
+  attackFactions?: FactionId[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
   stats?: CrewStatEntry[]
@@ -76,18 +89,26 @@ interface XPData {
   xp: number
 }
 
-interface BaseCrewActiveData {
-  displayName: string
-  id: CrewActiveId
-  basePrice: number
-  rarity: number
-}
-interface BaseCrewPassiveData {
-  displayName: string
-  description: string
+interface CrewPassiveData {
   id: CrewPassiveId
-  basePrice: number
-  level?: number
-  factor: number
-  rarity: number
+  intensity?: number
+  displayName?: string
+  description?: (data: CrewPassiveData) => string
+  buyable?: {
+    rarity: number
+    basePrice: number
+  }
+  data?: {
+    source?: {
+      planetName?: string
+      speciesId?: SpeciesId
+      chassisId?: ChassisId
+      item?: {
+        type: ItemType
+        id: ItemId
+      }
+    }
+    type?: ItemType
+    distance?: number
+  }
 }

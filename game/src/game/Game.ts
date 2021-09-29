@@ -6,8 +6,6 @@ import { db } from '../db'
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet/Planet'
 import { Cache } from './classes/Cache'
-import { Faction } from './classes/Faction'
-import { Species } from './classes/Species'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
 
@@ -33,8 +31,6 @@ export class Game {
   readonly planets: Planet[] = []
   readonly caches: Cache[] = []
   readonly zones: Zone[] = []
-  readonly factions: Faction[] = []
-  readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
 
   readonly chunkManager = new ChunkManager()
@@ -44,17 +40,11 @@ export class Game {
   factionRankings: FactionRanking[] = []
 
   paused: boolean = false
+  activePlayers: number = 0
 
   constructor() {
     this.startTime = Date.now()
     this.settings = defaultGameSettings()
-
-    Object.values(c.factions).forEach((fd) =>
-      this.addFaction(fd),
-    )
-    Object.values(c.species).map((sd) =>
-      this.addSpecies(sd),
-    )
 
     c.log(
       `Loaded ${
@@ -120,13 +110,25 @@ export class Game {
       `gray`,
       `----- Saved Game in ${c.r2(
         (Date.now() - saveStartTime) / 1000,
-      )}s ----- (Tick avg: ${c.r2(
+      )}s -----`,
+    )
+    c.log(
+      `gray`,
+      `    - ${this.activePlayers} player${
+        this.activePlayers === 1 ? `` : `s`
+      } online in the last ${c.msToTimeString(
+        c.userIsOfflineTimeout,
+      )}`,
+    )
+    c.log(
+      `gray`,
+      `    - Tick avg: ${c.r2(
         this.averageTickTime,
         2,
       )}ms, Worst human ship avg: ${c.r2(
         this.averageWorstShipTickLag,
         2,
-      )}ms)`,
+      )}ms`,
     )
   }
 
@@ -729,7 +731,8 @@ export class Game {
     while (
       this.planets.length <
         this.gameSoftArea * this.settings.planetDensity ||
-      this.planets.length < this.factions.length - 1
+      this.planets.length <
+        Object.keys(c.factions).length - 1
     ) {
       const weights: {
         weight: number
@@ -741,10 +744,17 @@ export class Game {
       const selection = c.randomWithWeights(weights)
       // ----- basic planet -----
       if (selection === `basic`) {
-        const factionThatNeedsAHomeworld =
-          this.factions.find(
-            (f) => f.id !== `red` && !f.homeworld,
-          )
+        const factionThatNeedsAHomeworld = Object.values(
+          c.factions,
+        ).find(
+          (f) =>
+            f.id !== `red` &&
+            !this.planets.find(
+              (p) =>
+                p.planetType === `basic` &&
+                (p as BasicPlanet).homeworld?.id === f.id,
+            ),
+        )
         const p = generateBasicPlanetData(
           this,
           factionThatNeedsAHomeworld?.id,
@@ -876,10 +886,10 @@ export class Game {
 
       const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
       const species = c.randomFromArray(
-        this.species
-          .filter((s) => s.faction.id === `red`)
+        Object.values(c.species)
+          .filter((s) => s.aiOnly)
           .map((s) => s.id),
-      ) as SpeciesKey
+      ) as SpeciesId
 
       this.addAIShip({
         location: spawnPoint,
@@ -1064,18 +1074,6 @@ export class Game {
     return newPlanet
   }
 
-  addFaction(data: BaseFactionData): Faction {
-    const newFaction = new Faction(data, this)
-    this.factions.push(newFaction)
-    return newFaction
-  }
-
-  addSpecies(data: BaseSpeciesData): Species {
-    const newSpecies = new Species(data, this)
-    this.species.push(newSpecies)
-    return newSpecies
-  }
-
   async addCache(
     data: BaseCacheData,
     save = true,
@@ -1208,10 +1206,11 @@ export class Game {
     // netWorth
     let topNetWorthShips: FactionRankingTopEntry[] = []
     const netWorthScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
+    for (let faction of Object.values(c.factions)) {
       if (faction.id === `red`) continue
       let total = 0
-      faction.members
+      this.ships
+        .filter((s) => s.faction.id === faction.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
@@ -1245,7 +1244,7 @@ export class Game {
 
     // control
     const controlScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
+    for (let faction of Object.values(c.factions)) {
       if (faction.id === `red`) continue
       controlScores.push({
         faction: c.stubify(faction, [
@@ -1269,10 +1268,11 @@ export class Game {
     // members
     let topMembersShips: FactionRankingTopEntry[] = []
     const membersScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
+    for (let faction of Object.values(c.factions)) {
       if (faction.id === `red`) continue
       let total = 0
-      faction.members
+      this.ships
+        .filter((s) => s.faction.id === faction.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =

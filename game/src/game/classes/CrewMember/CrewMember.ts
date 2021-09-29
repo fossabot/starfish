@@ -2,9 +2,6 @@ import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
 import type { HumanShip } from '../Ship/HumanShip'
-import { CrewActive } from './addins/CrewActive'
-import { CrewPassive } from './addins/CrewPassive'
-import type { CombatShip } from '../Ship/CombatShip'
 import { Stubbable } from '../Stubbable'
 
 export class CrewMember extends Stubbable {
@@ -18,6 +15,7 @@ export class CrewMember extends Stubbable {
   location: CrewLocation
   skills: XPData[]
   stamina: number
+  speciesId?: SpeciesId
   maxStamina: number = 1
   lastActive: number
   targetLocation: CoordinatePair | false = false
@@ -29,11 +27,10 @@ export class CrewMember extends Stubbable {
   minePriority: MinePriorityType = `closest`
   inventory: Cargo[]
   credits: number
-  actives: CrewActive[] = []
-  passives: CrewPassive[] = []
+  passives: CrewPassiveData[] = []
+  permanentPassives: CrewPassiveData[] = []
   upgrades: PassiveCrewUpgrade[] = []
   stats: CrewStatEntry[] = []
-  maxCargoSpace: number = CrewMember.baseMaxCargoSpace
 
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
@@ -45,6 +42,9 @@ export class CrewMember extends Stubbable {
     this.id = data.id
     this.ship = ship
     this.rename(data.name)
+
+    if (data.speciesId && c.species[data.speciesId])
+      this.setSpecies(data.speciesId)
 
     const hasBunk = ship.rooms.bunk
     this.location =
@@ -76,11 +76,10 @@ export class CrewMember extends Stubbable {
       this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
-    // if (data.actives)
-    //   for (let a of data.actives)
-
-    if (data.passives)
-      for (let p of data.passives) this.addPassive(p)
+    if (data.permanentPassives) {
+      for (let p of data.permanentPassives)
+        this.addToPermanentPassive(p)
+    }
 
     if (data.combatTactic)
       this.combatTactic = data.combatTactic
@@ -170,9 +169,6 @@ export class CrewMember extends Stubbable {
       this.toUpdate.attackTargetId = this.attackTargetId
     }
 
-    // ----- actives -----
-    this.actives.forEach((a) => a.tick())
-
     // ----- bunk -----
     if (this.location === `bunk`) {
       this.bunkAction()
@@ -180,13 +176,13 @@ export class CrewMember extends Stubbable {
     }
 
     // ----- stamina check/use -----
-    if (this.tired) return
+    if (this.stamina <= 0) return
 
     if (!this.ship.tutorial?.currentStep?.disableStamina)
       this.stamina -=
         this.ship.game.settings.baseStaminaUse /
         (c.deltaTime / c.tickInterval)
-    if (this.tired) {
+    if (this.stamina <= 0) {
       this.stamina = 0
       this.goTo(`bunk`)
       this.toUpdate.stamina = this.stamina
@@ -208,6 +204,20 @@ export class CrewMember extends Stubbable {
   active() {
     this.lastActive = Date.now()
     this.toUpdate.lastActive = this.lastActive
+  }
+
+  setSpecies(speciesId: SpeciesId) {
+    // if somehow there already was one, remove its passives
+    if (this.speciesId)
+      for (let p of c.species[this.speciesId].passives)
+        this.removePassive(p)
+
+    if (c.species[speciesId]) {
+      this.speciesId = speciesId
+      this.toUpdate.speciesId = speciesId
+      for (let p of c.species[speciesId].passives)
+        this.applyPassive(p)
+    }
   }
 
   addXp(skill: SkillId, xp?: number) {
@@ -291,48 +301,54 @@ export class CrewMember extends Stubbable {
       .reduce((total, i) => total + i.amount, 0)
   }
 
-  recalculateMaxCargoSpace() {
-    const personalCargoSpacePassiveBoost =
-      this.passives.find((p) => p.id === `cargoSpace`)
-        ?.changeAmount || 0
-    const shipwideCargoSpacePassiveBoost =
-      this.ship.passives.find(
-        (p) => p.id === `boostCargoSpace`,
-      )?.intensity || 0
-    this.maxCargoSpace =
-      CrewMember.baseMaxCargoSpace +
-      personalCargoSpacePassiveBoost +
-      shipwideCargoSpacePassiveBoost
-
-    this.toUpdate.maxCargoSpace = this.maxCargoSpace
+  get maxCargoSpace() {
+    return Math.max(
+      CrewMember.baseMaxCargoSpace,
+      this.getPassiveIntensity(`cargoSpace`),
+    )
   }
 
-  addPassive(data: Partial<BaseCrewPassiveData>) {
-    this.active()
-    if (!data.id) return
-    const existing = this.passives.find(
-      (p) => p.id === data.id,
-    )
-    if (existing) {
-      existing.level++
-    } else {
-      const fullPassiveData = {
-        ...c.crewPassives[data.id],
-        level: data.level || 1,
-      }
-      this.passives.push(
-        new CrewPassive(fullPassiveData, this),
-      )
-    }
+  // ----- passives -----
+  getPassiveIntensity(id: CrewPassiveId): number {
+    return this.passives
+      .filter((p) => p.id === id)
+      .reduce((total, p) => (p.intensity || 0) + total, 0)
+  }
 
+  addToPermanentPassive(passive: CrewPassiveData) {
+    const found = this.permanentPassives.find(
+      (p) => p.id === passive.id,
+    )
+    if (found) {
+      if (found.intensity)
+        found.intensity += passive.intensity || 0
+      else found.intensity = passive.intensity || 0
+    } else this.permanentPassives.push(passive)
+    this.applyPassive(passive)
+  }
+
+  applyPassive(p: CrewPassiveData) {
+    this.passives.push(p)
     this.toUpdate.passives = this.passives
+
     // reset all variables that might have changed because of this
     this.recalculateAll()
   }
 
-  recalculateAll() {
-    this.recalculateMaxCargoSpace()
+  removePassive(p: CrewPassiveData) {
+    this.active()
+
+    const foundIndex = this.passives.findIndex(
+      (p2) => p2.id === p.id,
+    )
+    this.passives.splice(foundIndex, 1)
+    this.toUpdate.passives = this.passives
+
+    // reset all variables that might have changed because of this
+    this.recalculateAll()
   }
+
+  recalculateAll() {}
 
   addStat(statname: CrewStatKey, amount: number) {
     this.active()
@@ -346,10 +362,6 @@ export class CrewMember extends Stubbable {
       })
     else existing.amount += amount
     this.toUpdate.stats = this.stats
-  }
-
-  get tired() {
-    return this.stamina <= 0
   }
 
   get piloting() {

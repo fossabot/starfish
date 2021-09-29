@@ -138,7 +138,7 @@ export function generateMiningPlanet(
 
 export function generateBasicPlanet(
   game: Game,
-  homeworldFactionKey?: FactionKey,
+  homeworldFactionKey?: FactionId,
 ): BaseBasicPlanetData | false {
   const planetType: PlanetType = `basic`
   const name = getName(game)
@@ -150,13 +150,13 @@ export function generateBasicPlanet(
     ((5.974e30 * radius) / 36000) *
     (1 + 0.2 * (Math.random() - 0.5))
 
-  let factionId: FactionKey | undefined
+  let factionId: FactionId | undefined
   if (homeworldFactionKey) factionId = homeworldFactionKey
   else {
     if (Math.random() > 0.6)
       factionId = c.randomFromArray(
         Object.keys(c.factions),
-      ) as FactionKey
+      ) as FactionId
     if (factionId === `red`) factionId = undefined
   }
 
@@ -432,7 +432,7 @@ const planetNameSuffixes = [
 
 const seaCreatures: {
   name: string
-  factionKey: FactionKey
+  factionKey: FactionId
 }[] = [
   { name: `crabs`, factionKey: `green` },
   { name: `oysters`, factionKey: `green` },

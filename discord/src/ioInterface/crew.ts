@@ -53,6 +53,9 @@ export async function move(
     return { error: `Failed to move crew member` }
 
   io.emit(`crew:move`, shipId, crewId, target)
+
+  if (target === `weapons`)
+    io.emit(`crew:tactic`, shipId, crewId, `aggressive`)
   return { data: true }
 }
 

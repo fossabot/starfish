@@ -73,6 +73,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import c from '../../common/dist'
 
 export default Vue.extend({
   name: 'infoTooltip',
@@ -92,6 +93,7 @@ export default Vue.extend({
   },
   watch: {
     tooltip() {
+      c.log(this.tooltip)
       this.recalcTooltipStyle()
     },
     winWidth() {

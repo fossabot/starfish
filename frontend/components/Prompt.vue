@@ -51,9 +51,9 @@
         style="flex-grow: 3"
         @keydown.enter="done"
       />
-      <button class="attach" @click="done">
+      <div class="button attach" @click="done">
         <span>Go</span>
-      </button>
+      </div>
     </div>
   </div>
 </template>

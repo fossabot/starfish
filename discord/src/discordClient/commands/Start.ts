@@ -113,7 +113,7 @@ This bot will create several channels for game communication and a role for crew
       })
 
     const { result: speciesResult, sentMessage: sm } =
-      await waitForSingleButtonChoice<SpeciesKey>({
+      await waitForSingleButtonChoice<SpeciesId>({
         context,
         content: `Excellent! Choose your ship's species to get started.`,
         allowedUserId: context.initialMessage.author.id,

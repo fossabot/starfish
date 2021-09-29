@@ -8,8 +8,6 @@ const dist_1 = __importDefault(require("../../../common/dist"));
 const io_1 = __importDefault(require("../server/io"));
 const db_1 = require("../db");
 const Cache_1 = require("./classes/Cache");
-const Faction_1 = require("./classes/Faction");
-const Species_1 = require("./classes/Species");
 const AttackRemnant_1 = require("./classes/AttackRemnant");
 const Zone_1 = require("./classes/Zone");
 const ChunkManager_1 = require("./classes/Chunks/ChunkManager");
@@ -26,12 +24,11 @@ class Game {
         this.planets = [];
         this.caches = [];
         this.zones = [];
-        this.factions = [];
-        this.species = [];
         this.attackRemnants = [];
         this.chunkManager = new ChunkManager_1.ChunkManager();
         this.factionRankings = [];
         this.paused = false;
+        this.activePlayers = 0;
         // ----- game loop -----
         this.tickCount = 0;
         this.lastTickTime = Date.now();
@@ -41,8 +38,6 @@ class Game {
         this.averageTickTime = 0;
         this.startTime = Date.now();
         this.settings = (0, gameSettings_1.default)();
-        Object.values(dist_1.default.factions).forEach((fd) => this.addFaction(fd));
-        Object.values(dist_1.default.species).map((sd) => this.addSpecies(sd));
         dist_1.default.log(`Loaded ${Object.keys(dist_1.default.species).length} species and ${Object.keys(dist_1.default.factions).length} factions.`);
         // setTimeout(() => {
         //   c.log(
@@ -85,7 +80,9 @@ class Game {
             await db_1.db.ship.addOrUpdateInDb(s);
         }
         this.recalculateFactionRankings();
-        dist_1.default.log(`gray`, `----- Saved Game in ${dist_1.default.r2((Date.now() - saveStartTime) / 1000)}s ----- (Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms)`);
+        dist_1.default.log(`gray`, `----- Saved Game in ${dist_1.default.r2((Date.now() - saveStartTime) / 1000)}s -----`);
+        dist_1.default.log(`gray`, `    - ${this.activePlayers} player${this.activePlayers === 1 ? `` : `s`} online in the last ${dist_1.default.msToTimeString(dist_1.default.userIsOfflineTimeout)}`);
+        dist_1.default.log(`gray`, `    - Tick avg: ${dist_1.default.r2(this.averageTickTime, 2)}ms, Worst human ship avg: ${dist_1.default.r2(this.averageWorstShipTickLag, 2)}ms`);
     }
     async daily() {
         if (this.paused)
@@ -460,7 +457,8 @@ class Game {
     async spawnNewPlanets() {
         while (this.planets.length <
             this.gameSoftArea * this.settings.planetDensity ||
-            this.planets.length < this.factions.length - 1) {
+            this.planets.length <
+                Object.keys(dist_1.default.factions).length - 1) {
             const weights = [
                 { weight: 0.6, value: `basic` },
                 { weight: 0.35, value: `mining` },
@@ -468,7 +466,9 @@ class Game {
             const selection = dist_1.default.randomWithWeights(weights);
             // ----- basic planet -----
             if (selection === `basic`) {
-                const factionThatNeedsAHomeworld = this.factions.find((f) => f.id !== `red` && !f.homeworld);
+                const factionThatNeedsAHomeworld = Object.values(dist_1.default.factions).find((f) => f.id !== `red` &&
+                    !this.planets.find((p) => p.planetType === `basic` &&
+                        p.homeworld?.id === f.id));
                 const p = (0, planets_1.generateBasicPlanet)(this, factionThatNeedsAHomeworld?.id);
                 if (!p)
                     continue;
@@ -564,8 +564,8 @@ class Game {
                 radius += 0.1;
             }
             const level = dist_1.default.distance([0, 0], spawnPoint) * 2 + 0.1;
-            const species = dist_1.default.randomFromArray(this.species
-                .filter((s) => s.faction.id === `red`)
+            const species = dist_1.default.randomFromArray(Object.values(dist_1.default.species)
+                .filter((s) => s.aiOnly)
                 .map((s) => s.id));
             this.addAIShip({
                 location: spawnPoint,
@@ -683,16 +683,6 @@ class Game {
             await db_1.db.planet.addOrUpdateInDb(newPlanet);
         return newPlanet;
     }
-    addFaction(data) {
-        const newFaction = new Faction_1.Faction(data, this);
-        this.factions.push(newFaction);
-        return newFaction;
-    }
-    addSpecies(data) {
-        const newSpecies = new Species_1.Species(data, this);
-        this.species.push(newSpecies);
-        return newSpecies;
-    }
     async addCache(data, save = true) {
         const existing = this.caches.find((cache) => cache.id === data.id);
         if (existing) {
@@ -779,11 +769,12 @@ class Game {
         // netWorth
         let topNetWorthShips = [];
         const netWorthScores = [];
-        for (let faction of this.factions) {
+        for (let faction of Object.values(dist_1.default.factions)) {
             if (faction.id === `red`)
                 continue;
             let total = 0;
-            faction.members
+            this.ships
+                .filter((s) => s.faction.id === faction.id)
                 .filter((s) => !s.tutorial)
                 .forEach((s) => {
                 let shipTotal = s.commonCredits || 0;
@@ -812,7 +803,7 @@ class Game {
             .slice(0, 5);
         // control
         const controlScores = [];
-        for (let faction of this.factions) {
+        for (let faction of Object.values(dist_1.default.factions)) {
             if (faction.id === `red`)
                 continue;
             controlScores.push({
@@ -836,11 +827,12 @@ class Game {
         // members
         let topMembersShips = [];
         const membersScores = [];
-        for (let faction of this.factions) {
+        for (let faction of Object.values(dist_1.default.factions)) {
             if (faction.id === `red`)
                 continue;
             let total = 0;
-            faction.members
+            this.ships
+                .filter((s) => s.faction.id === faction.id)
                 .filter((s) => !s.tutorial)
                 .forEach((s) => {
                 let shipTotal = s.crewMembers.length || 0;
