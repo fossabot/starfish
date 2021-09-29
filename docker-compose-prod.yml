@@ -21,6 +21,7 @@ services:
 
   game:
     image: 'starfishgame/starfish-game:latest'
+    restart: always
     user: 'root'
     working_dir: /usr/app/game
     ports:
@@ -72,14 +73,6 @@ services:
       - '443:443'
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
-    logging:
-      driver: loki
-
-  promtail:
-    image: 'grafana/promtail:latest'
-    volumes:
-      - /var/lib/promtail:/etc/promtail
-      - /var/log:/var/log
     logging:
       driver: loki
 
