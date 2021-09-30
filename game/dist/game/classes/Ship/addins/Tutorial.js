@@ -16,7 +16,8 @@ class Tutorial {
         this.initializeSteps();
         this.step = data.step;
         this.baseLocation = [
-            ...(this.ship.faction.homeworld?.location || [0, 0]),
+            ...(this.ship.game.getHomeworld(this.ship.factionId)
+                ?.location || [0, 0]),
         ];
         this.currentStep = this.steps[this.step];
         if (this.step === -1) {
@@ -39,7 +40,7 @@ class Tutorial {
             name: crewMember.ship.name,
             tutorial: { step: -1 },
             id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
-            species: { id: crewMember.ship.species.id },
+            factionId: crewMember.ship.factionId,
         });
         await tutorialShip.addCrewMember({
             name: crewMember.name,
@@ -316,9 +317,9 @@ class Tutorial {
                     {
                         loadout: `aiTutorial1`,
                         id: `tutorialAI1` + this.ship.id,
+                        factionId: `red`,
                         level: 1,
                         name: `Enemy Ship`,
-                        species: { id: `flamingos` },
                         location: [0.015, 0.01],
                     },
                 ],
@@ -836,19 +837,23 @@ class Tutorial {
             ], `high`);
             io_1.default.emit(`ship:message`, ship.id, `Use this channel to broadcast to and receive messages from nearby ships!`, `broadcast`);
         }, dist_1.default.tickInterval);
-        ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 1`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
-        ship.addHeaderBackground(dist_1.default.capitalize(ship.faction.id) + ` Faction 2`, `joining the ${dist_1.default.capitalize(ship.faction.id)} faction`);
+        ship.addHeaderBackground(dist_1.default.capitalize(ship.factionId) + ` Faction 1`, `joining the ${dist_1.default.capitalize(ship.factionId)} faction`);
+        ship.addHeaderBackground(dist_1.default.capitalize(ship.factionId) + ` Faction 2`, `joining the ${dist_1.default.capitalize(ship.factionId)} faction`);
         ship.addTagline(`Alpha Tester`, `helping to test ${dist_1.default.gameName}`);
         if (ship.planet)
             ship.planet.shipsAt
-                .filter((s) => s.faction?.color === ship.faction?.color)
+                .filter((s) => (s.factionId &&
+                dist_1.default.factions[s.factionId].color) ===
+                (ship.factionId &&
+                    dist_1.default.factions[ship.factionId].color))
                 .forEach((s) => {
                 if (s === ship || !s.planet)
                     return;
                 s.logEntry([
                     {
                         text: ship.name,
-                        color: ship.faction.color,
+                        color: ship.factionId &&
+                            dist_1.default.factions[ship.factionId].color,
                         tooltipData: ship.toReference(),
                     },
                     `has joined the game, starting out from`,

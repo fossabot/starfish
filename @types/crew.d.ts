@@ -97,6 +97,8 @@ interface CrewPassiveData {
   buyable?: {
     rarity: number
     basePrice: number
+    baseIntensity: number
+    wholeNumbersOnly: boolean
   }
   data?: {
     source?: {

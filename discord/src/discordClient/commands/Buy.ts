@@ -35,7 +35,7 @@ export class BuyCommand implements Command {
         cargoForSale.id,
         planet,
         1,
-        context.ship!.faction.id,
+        context.ship!.factionId,
       )
     }
 
@@ -94,7 +94,7 @@ export class BuyCommand implements Command {
           context.crewMember!.id,
           forSaleEntry.id,
           amountToBuy,
-          planet.name,
+          planet.id,
         )
         if (`data` in res)
           await context.reply(

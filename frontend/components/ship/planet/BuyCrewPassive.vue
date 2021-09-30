@@ -48,7 +48,7 @@ export default Vue.extend({
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
+            a.factionId === this.ship.factionId,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
@@ -68,17 +68,11 @@ export default Vue.extend({
     passives(): any[] {
       return this.ship.planet.vendor.passives.map(
         (passive: PlanetVendorCrewPassivePrice) => {
-          const price = Math.ceil(
-            c.crewPassives[passive.id].basePrice *
-              passive.buyMultiplier *
-              c.getCrewPassivePriceMultiplier(
-                this.crewMemberPassiveLevels[passive.id] ||
-                  1,
-              ) *
-              this.ship.planet.priceFluctuator *
-              (this.isFriendlyToFaction
-                ? c.factionVendorMultiplier
-                : 1),
+          const price = c.getCrewPassivePrice(
+            passive,
+            this.crewMemberPassiveLevels[passive.id] || 0,
+            this.ship.planet,
+            this.ship.factionId,
           )
           return {
             data: c.crewPassives[passive.id],

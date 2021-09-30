@@ -53,7 +53,7 @@
           value="Attack"
           v-if="
             ship.visible.ships.filter(
-              (s) => s.faction.id !== ship.faction.id,
+              (s) => s.faction.id !== ship.factionId,
             ).length
           "
         >
@@ -63,7 +63,7 @@
           value="Run away from"
           v-if="
             ship.visible.ships.filter(
-              (s) => s.faction.id !== ship.faction.id,
+              (s) => s.faction.id !== ship.factionId,
             ).length
           "
         >
@@ -111,7 +111,7 @@
         <option
           v-for="s in ship.visible.ships
             .filter(
-              (vs) => vs.faction.id !== ship.faction.id,
+              (vs) => vs.faction.id !== ship.factionId,
             )
             .sort(
               (a, b) =>
@@ -304,11 +304,11 @@
         </option>
         <option
           :value="`, in the name of the ${
-            c.factions[ship.faction.id].name
+            c.factions[ship.factionId].name
           }!`"
         >
           In the name of the
-          {{ c.factions[ship.faction.id].name }}!
+          {{ c.factions[ship.factionId].name }}!
         </option>
         <option value=", you've earned it.">
           You've earned it.

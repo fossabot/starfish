@@ -1,9 +1,9 @@
-declare type SpacecrabGuildKey = `fowls`;
+declare type SpacecrabGuildKey = `fowl` | `trader` | `hunter` | `miner` | `explorer` | `peacekeeper`;
 interface SpacecrabBaseGuildData {
     name: string;
     id: SpacecrabGuildKey;
     color: string;
-    aiOnly: undefined | true;
+    aiOnly?: undefined | true;
     passives: ShipPassiveEffect[];
 }
 declare const guilds: {

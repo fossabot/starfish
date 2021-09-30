@@ -360,7 +360,7 @@ export const actions = {
           for (let updatedPlanet of updates.visible
             ?.planets || []) {
             const existingData = newVisible.planets.find(
-              (p) => updatedPlanet.name === p.name,
+              (p) => updatedPlanet.id === p.id,
             )
             if (!existingData)
               newVisible.planets.push(updatedPlanet)

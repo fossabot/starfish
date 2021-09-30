@@ -71,8 +71,8 @@ class Ship extends Stubbable_1.Stubbable {
         }
         else if (this.factionId) {
             this.location = [
-                ...(this.game.planets.find((p) => p.homeworld?.id ===
-                    this.factionId)?.location || [0, 0]),
+                ...(this.game.getHomeworld(this.factionId)
+                    ?.location || [0, 0]),
             ].map((pos) => pos +
                 dist_1.default.randomBetween(this.game.settings.arrivalThreshold * -0.4, this.game.settings.arrivalThreshold * 0.4));
             // c.log(`fact`, this.location, this.faction.homeworld)
@@ -160,7 +160,6 @@ class Ship extends Stubbable_1.Stubbable {
     }
     changeFaction(id) {
         // todo
-        a;
     }
     // ----- item mgmt -----
     get engines() {
@@ -564,18 +563,11 @@ class Ship extends Stubbable_1.Stubbable {
     toReference() {
         return {
             type: `ship`,
-            id: this.id,
             name: this.name,
-            faction: {
-                type: `faction`,
-                id: this.faction.id,
-            },
-            species: {
-                type: `species`,
-                id: this.species.id,
-            },
-            tagline: this.tagline,
-            headerBackground: this.headerBackground,
+            id: this.id,
+            factionId: this.factionId,
+            tagline: this.tagline || undefined,
+            headerBackground: this.headerBackground || undefined,
             level: this.level,
         };
     }

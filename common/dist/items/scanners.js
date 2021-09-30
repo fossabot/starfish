@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scanners = void 0;
-const game_1 = __importDefault(require("../game"));
+const gameConstants_1 = __importDefault(require("../gameConstants"));
 // todo a scanner that can only see and not scan
 exports.scanners = {
     tutorial1: {
@@ -14,13 +14,13 @@ exports.scanners = {
         displayName: `Echo-locator Mk.1`,
         description: `Sound doesn't exist in space, so the name is simply a callback to past evolutions of the technology. Uses reflecting beams to determine the distance and position of objects within a small radius.`,
         mass: 2000,
-        basePrice: 0 * game_1.default.itemPriceMultiplier,
+        basePrice: 0 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 0.6,
         sightRange: 0.3,
         shipScanRange: 0.1,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [`type`, `displayName`, `description`],
             chassis: [
                 `id`,
@@ -37,13 +37,13 @@ exports.scanners = {
         displayName: `Echo-locator Mk.1`,
         description: `Sound doesn't exist in space, so the name is simply a callback to past evolutions of the technology. Uses reflecting beams to determine the distance and position of objects within a small radius.`,
         mass: 2000,
-        basePrice: 14 * game_1.default.itemPriceMultiplier,
+        basePrice: 14 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 0.6,
         sightRange: 0.3,
         shipScanRange: 0.1,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [`type`, `displayName`, `description`],
             chassis: [
                 `id`,
@@ -60,14 +60,14 @@ exports.scanners = {
         displayName: `Echo-locator Mk.2`,
         description: `Sound doesn't exist in space, so the name is simply a callback to past evolutions of the technology. Uses reflecting beams to determine the distance and position of objects within a small radius. The makers stuck to their guns (figuratively) in version two, providing slight upgrades to both sight and ship scanning range.`,
         mass: 2000,
-        basePrice: 43 * game_1.default.itemPriceMultiplier,
+        basePrice: 43 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 3,
         sightRange: 0.35,
         shipScanRange: 0.13,
         reliability: 1.2,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [`type`, `displayName`, `description`],
             chassis: [
                 `id`,
@@ -85,13 +85,13 @@ exports.scanners = {
         displayName: `HP Scan Module`,
         description: `Specifically calibrated to determine the exact remaining HP of enemy craft. Has little range on its own, but works well when it can take advantage of another equipped scanner's range.`,
         mass: 1200,
-        basePrice: 16 * game_1.default.itemPriceMultiplier,
+        basePrice: 16 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 5,
         sightRange: 0.1,
         shipScanRange: 0.1,
         maxHp: 1,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             _hp: true,
             _maxHp: true,
         },
@@ -102,13 +102,13 @@ exports.scanners = {
         displayName: `Crew Scan Module`,
         description: `Specifically calibrated to determine the crew status of enemy craft. Has little range on its own, but works well when it can take advantage of another equipped scanner's range.`,
         mass: 1100,
-        basePrice: 10 * game_1.default.itemPriceMultiplier,
+        basePrice: 10 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 8,
         sightRange: 0.1,
         shipScanRange: 0.1,
         maxHp: 1,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             crewMembers: [`location`, `stamina`],
         },
     },
@@ -118,13 +118,13 @@ exports.scanners = {
         displayName: `Equipment Scan Module`,
         description: `Specifically calibrated to determine the equipment status of enemy craft. Has little range on its own, but works well when it can take advantage of another equipped scanner's range.`,
         mass: 1500,
-        basePrice: 25 * game_1.default.itemPriceMultiplier,
+        basePrice: 25 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 10,
         sightRange: 0.1,
         shipScanRange: 0.1,
         maxHp: 1,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [
                 `repair`,
                 `maxHp`,
@@ -141,13 +141,13 @@ exports.scanners = {
         displayName: `Twilight Oculus 01`,
         description: `Inspired by the evolution of hyper-sensitive eyes that evolved in the deep waters of Earth's oceans, this scanner has a wider range than most, but can only see a limited amount of information about nearby ships.`,
         mass: 3000,
-        basePrice: 71 * game_1.default.itemPriceMultiplier,
+        basePrice: 71 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 1.3,
         sightRange: 0.45,
         shipScanRange: 0.2,
         maxHp: 4,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [
                 `maxHp`,
                 `type`,
@@ -163,13 +163,13 @@ exports.scanners = {
         displayName: `Twilight Oculus 02`,
         description: `Inspired by the evolution of hyper-sensitive eyes that evolved in the deep waters of Earth's oceans, this scanner has a wider range than most, but can only see a limited amount of information about nearby ships.`,
         mass: 3400,
-        basePrice: 120 * game_1.default.itemPriceMultiplier,
+        basePrice: 120 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 4,
         sightRange: 0.6,
         shipScanRange: 0.28,
         maxHp: 4,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [
                 `maxHp`,
                 `type`,
@@ -185,13 +185,13 @@ exports.scanners = {
         displayName: `Twilight Oculus 03`,
         description: `Inspired by the evolution of hyper-sensitive eyes that evolved in the deep waters of Earth's oceans, this scanner has a wider range than most, but can only see a limited amount of information about nearby ships.`,
         mass: 3800,
-        basePrice: 310 * game_1.default.itemPriceMultiplier,
+        basePrice: 310 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 8,
         sightRange: 0.75,
         shipScanRange: 0.35,
         maxHp: 4,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [
                 `maxHp`,
                 `type`,
@@ -208,7 +208,7 @@ exports.scanners = {
         displayName: `Periscope v1`,
         description: `The distance that this part protrudes from the ship makes it an easy target, but it excels at seeing exactly who's around you.`,
         mass: 700,
-        basePrice: 50 * game_1.default.itemPriceMultiplier,
+        basePrice: 50 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 2.2,
         sightRange: 0.38,
         shipScanRange: 0.35,
@@ -216,7 +216,7 @@ exports.scanners = {
         repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             _hp: true,
             _maxHp: true,
             items: [
@@ -244,7 +244,7 @@ exports.scanners = {
         displayName: `Periscope v2`,
         description: `The distance that this part protrudes from the ship makes it an easy target, but it excels at seeing exactly who's around you.`,
         mass: 700,
-        basePrice: 130 * game_1.default.itemPriceMultiplier,
+        basePrice: 130 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 5.5,
         sightRange: 0.45,
         shipScanRange: 0.42,
@@ -252,7 +252,7 @@ exports.scanners = {
         repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             _hp: true,
             _maxHp: true,
             items: [
@@ -280,7 +280,7 @@ exports.scanners = {
         displayName: `Periscope v3`,
         description: `The distance that this part protrudes from the ship makes it an easy target, but it excels at seeing exactly who's around you.`,
         mass: 700,
-        basePrice: 270 * game_1.default.itemPriceMultiplier,
+        basePrice: 270 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 8.5,
         sightRange: 0.6,
         shipScanRange: 0.57,
@@ -288,7 +288,7 @@ exports.scanners = {
         repairDifficulty: 0.85,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             _hp: true,
             _maxHp: true,
             items: [
@@ -316,14 +316,14 @@ exports.scanners = {
         displayName: `Beachcomber v1`,
         description: `Uses magnetic fields to probe deep into the depths of any wreckage. The perfect companion to the sunburned few among us who are dedicated enough to seek out treasure wherever it may lie.`,
         mass: 4200,
-        basePrice: 250 * game_1.default.itemPriceMultiplier,
+        basePrice: 250 * gameConstants_1.default.itemPriceMultiplier,
         rarity: 4,
         sightRange: 0.47,
         shipScanRange: 0.35,
         repairDifficulty: 1.3,
         maxHp: 3,
         shipScanData: {
-            ...game_1.default.baseShipScanProperties,
+            ...gameConstants_1.default.baseShipScanProperties,
             items: [
                 `maxHp`,
                 `type`,

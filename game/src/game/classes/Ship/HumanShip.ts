@@ -9,15 +9,12 @@ import type { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Planet } from '../Planet/Planet'
-import type { BasicPlanet } from '../Planet/BasicPlanet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
 import type { Zone } from '../Zone'
-import type { AIShip } from './AIShip'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './addins/Tutorial'
-import { timeStamp } from 'console'
 
 interface HumanVisibleShape {
   ships: ShipStub[]
@@ -109,13 +106,12 @@ export class HumanShip extends CombatShip {
       this.tutorial = new Tutorial(data.tutorial, this)
 
     // human ships always know where their homeworld is
+    const homeworld = this.game.getHomeworld(this.factionId)
     if (
-      this.faction.homeworld &&
-      !this.seenPlanets.find(
-        (p) => p === this.faction.homeworld,
-      )
+      homeworld &&
+      !this.seenPlanets.find((p) => p === homeworld)
     )
-      this.discoverPlanet(this.faction.homeworld)
+      this.discoverPlanet(homeworld)
 
     this.recalculateShownPanels()
 
@@ -140,7 +136,9 @@ export class HumanShip extends CombatShip {
               `Your crew boards the ship`,
               {
                 text: this.name,
-                color: this.faction.color,
+                color: this.factionId
+                  ? c.factions[this.factionId].color
+                  : undefined,
               },
               `for the first time, and sets out towards the stars.`,
             ],
@@ -809,7 +807,9 @@ export class HumanShip extends CombatShip {
               `the ship`,
               {
                 text: fullShip.name,
-                color: fullShip.faction?.color,
+                color: fullShip.factionId
+                  ? c.factions[fullShip.factionId].color
+                  : undefined,
                 tooltipData: fullShip.toReference() as any,
               },
             ]
@@ -1315,7 +1315,9 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.faction.color,
+              color: this.factionId
+                ? c.factions[this.factionId].color
+                : undefined,
               tooltipData: this.toReference() as any,
             },
             `landed on`,
@@ -1343,7 +1345,9 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.faction.color,
+              color: this.factionId
+                ? c.factions[this.factionId].color
+                : undefined,
               tooltipData: this.toReference() as any,
             },
             `landed on`,
@@ -1637,9 +1641,7 @@ export class HumanShip extends CombatShip {
       this.location,
       from.location,
     )
-    const prefix = `**${
-      `species` in from ? from.species.icon : `🪐`
-    }${from.name}** says: *(${c.r2(
+    const prefix = `**${from.name}** says: *(${c.r2(
       distance,
       2,
     )}AU away, ${c.r2(
@@ -1975,7 +1977,7 @@ export class HumanShip extends CombatShip {
         : c.baseShipScanProperties
 
     // same faction can see a few more properties
-    if (ship.faction === this.faction)
+    if (ship.factionId && ship.factionId === this.factionId)
       scanPropertiesToUse = {
         ...scanPropertiesToUse,
         ...c.sameFactionShipScanProperties,

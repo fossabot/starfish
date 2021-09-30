@@ -4,6 +4,7 @@ import text from './text'
 import misc from './misc'
 import log from './log'
 import game from './game'
+import gameConstants from './gameConstants'
 import physics from './physics'
 import discord from './discord'
 import { Profiler } from './Profiler'
@@ -23,6 +24,7 @@ export default {
   ...misc,
   ...log,
   ...game,
+  ...gameConstants,
   ...physics,
   ...discord,
   items,

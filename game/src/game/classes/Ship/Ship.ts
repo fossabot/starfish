@@ -121,11 +121,8 @@ export class Ship extends Stubbable {
       this.location = location
     } else if (this.factionId) {
       this.location = [
-        ...(this.game.planets.find(
-          (p) =>
-            (p as BasicPlanet).homeworld?.id ===
-            this.factionId,
-        )?.location || [0, 0]),
+        ...(this.game.getHomeworld(this.factionId)
+          ?.location || [0, 0]),
       ].map(
         (pos) =>
           pos +
@@ -239,7 +236,6 @@ export class Ship extends Stubbable {
 
   changeFaction(id: FactionId) {
     // todo
-    a
   }
 
   // ----- item mgmt -----
@@ -817,21 +813,14 @@ export class Ship extends Stubbable {
     return existing.amount
   }
 
-  toReference() {
+  toReference(): Reference {
     return {
       type: `ship`,
-      id: this.id,
       name: this.name,
-      faction: {
-        type: `faction`,
-        id: this.faction.id,
-      },
-      species: {
-        type: `species`,
-        id: this.species.id,
-      },
-      tagline: this.tagline,
-      headerBackground: this.headerBackground,
+      id: this.id,
+      factionId: this.factionId,
+      tagline: this.tagline || undefined,
+      headerBackground: this.headerBackground || undefined,
       level: (this as any).level,
     }
   }

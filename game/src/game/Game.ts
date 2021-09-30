@@ -373,9 +373,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.factionId
+                  ? c.factions[s.factionId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -523,9 +524,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.factionId
+                  ? c.factions[s.factionId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -632,9 +634,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.factionId
+                  ? c.factions[s.factionId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -752,7 +755,7 @@ export class Game {
             !this.planets.find(
               (p) =>
                 p.planetType === `basic` &&
-                (p as BasicPlanet).homeworld?.id === f.id,
+                (p as BasicPlanet).homeworld === f.id,
             ),
         )
         const p = generateBasicPlanetData(
@@ -896,9 +899,7 @@ export class Game {
         name: `${c.capitalize(
           species.substring(0, species.length - 1),
         )}${`${Math.random().toFixed(3)}`.substring(2)}`,
-        species: {
-          id: species,
-        },
+        factionId: `red`,
         level,
         headerBackground: `ai.jpg`,
       })
@@ -1023,7 +1024,7 @@ export class Game {
     save = true,
   ): Promise<Planet> {
     const existing = this.planets.find(
-      (p) => p.name === data.name,
+      (p) => p.id === data.id,
     )
     if (existing) {
       c.log(
@@ -1040,9 +1041,12 @@ export class Game {
 
     this.chunkManager.addOrUpdate(newPlanet)
 
-    if (`homeworld` in newPlanet && newPlanet.homeworld)
-      (newPlanet as BasicPlanet).homeworld!.homeworld =
-        newPlanet
+    if (`homeworld` in newPlanet && newPlanet.homeworld) {
+      ;(newPlanet as BasicPlanet).homeworld =
+        newPlanet.factionId
+      ;(newPlanet as BasicPlanet).factionId =
+        newPlanet.factionId
+    }
 
     if (save) await db.planet.addOrUpdateInDb(newPlanet)
     return newPlanet
@@ -1053,7 +1057,7 @@ export class Game {
     save = true,
   ) {
     const existing = this.planets.find(
-      (p) => p.name === data.name,
+      (p) => p.id === data.id,
     )
     if (existing) {
       c.log(
@@ -1196,6 +1200,15 @@ export class Game {
     ) as BasicPlanet[]
   }
 
+  getHomeworld(
+    factionId?: FactionId,
+  ): BasicPlanet | undefined {
+    if (!factionId) return
+    return this.basicPlanets.find(
+      (p) => p.factionId === factionId && p.homeworld,
+    )
+  }
+
   get miningPlanets(): MiningPlanet[] {
     return this.planets.filter(
       (p) => p instanceof MiningPlanet,
@@ -1210,7 +1223,7 @@ export class Game {
       if (faction.id === `red`) continue
       let total = 0
       this.ships
-        .filter((s) => s.faction.id === faction.id)
+        .filter((s) => s.factionId === faction.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
@@ -1232,9 +1245,7 @@ export class Game {
           total += shipTotal
         })
       netWorthScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        factionId: faction.id,
         score: total,
       })
     }
@@ -1247,17 +1258,15 @@ export class Game {
     for (let faction of Object.values(c.factions)) {
       if (faction.id === `red`) continue
       controlScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        factionId: faction.id,
         score: 0,
       })
     }
     for (let planet of this.basicPlanets) {
       planet.allegiances.forEach((a) => {
-        if (a.faction.id === `red`) return
+        if (a.factionId === `red`) return
         const found = controlScores.find(
-          (s) => s.faction.id === a.faction.id,
+          (s) => s.factionId === a.factionId,
         )
         if (!found) return
         // c.log(`planet with allegiance:`, found) // todo remove
@@ -1272,7 +1281,7 @@ export class Game {
       if (faction.id === `red`) continue
       let total = 0
       this.ships
-        .filter((s) => s.faction.id === faction.id)
+        .filter((s) => s.factionId === faction.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
@@ -1285,9 +1294,7 @@ export class Game {
           total += shipTotal
         })
       membersScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        factionId: faction.id,
         score: total,
       })
     }

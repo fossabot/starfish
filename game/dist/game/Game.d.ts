@@ -65,6 +65,7 @@ export declare class Game {
     get humanShips(): HumanShip[];
     get aiShips(): AIShip[];
     get basicPlanets(): BasicPlanet[];
+    getHomeworld(factionId?: FactionId): BasicPlanet | undefined;
     get miningPlanets(): MiningPlanet[];
     recalculateFactionRankings(): void;
 }

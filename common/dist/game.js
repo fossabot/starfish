@@ -26,57 +26,16 @@ const math_1 = __importDefault(require("./math"));
 const globals_1 = __importDefault(require("./globals"));
 const text_1 = __importDefault(require("./text"));
 const cargo = __importStar(require("./cargo"));
-const gameSpeedMultiplier = 10;
-const baseSightRange = 0.05;
-const baseBroadcastRange = 0.002;
-const baseRepairCost = 600;
-const maxBroadcastLength = 200;
-const defaultHomeworldLevel = 12;
-const itemPriceMultiplier = 400;
-const weaponDamageMultiplier = 1;
-const factionVendorMultiplier = 0.98;
-const factionAllegianceFriendCutoff = 50;
-const baseItemSellMultiplier = 0.6;
-const noEngineThrustMagnitude = 0.02;
-const planetContributeCostPerXp = 1;
-const planetLevelXpRequirementMultiplier = 10;
-const attackRemnantExpireTime = (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier;
-const cacheExpireTime = (1000 * 60 * 60 * 24 * 7 * 15) / gameSpeedMultiplier;
-const supportServerLink = `https://discord.gg/aEKE3bFR6n`;
-const userIsOfflineTimeout = 1000 * 60 * 60;
-const baseShipScanProperties = {
-    id: true,
-    name: true,
-    human: true,
-    ai: true,
-    headerBackground: true,
-    tagline: true,
-    level: true,
-    dead: true,
-    attackable: true,
-    previousLocations: true,
-    location: true,
-    planet: [`name`, `location`],
-    faction: [`ai`, `name`, `id`, `color`],
-    species: [`id`, `singular`, `icon`],
-    chassis: [`displayName`],
-};
-const sameFactionShipScanProperties = {
-    _hp: true,
-    _maxHp: true,
-};
-const tactics = [
-    `aggressive`,
-    `defensive`,
-    `pacifist`,
-];
+const crewPassives_1 = __importDefault(require("./crewPassives"));
+const items = __importStar(require("./items"));
+const gameConstants_1 = __importDefault(require("./gameConstants"));
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         math_1.default.lerp(1, 4, totalMunitionsSkill / 100));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability, useLevel = 1) {
     return ((0.00001 *
-        gameSpeedMultiplier *
+        gameConstants_1.default.gameSpeedMultiplier *
         (10 / maxHp) *
         math_1.default.lerp(1, 0.5, useLevel / 100)) /
         reliability);
@@ -92,7 +51,7 @@ function getMaxCockpitChargeForSingleCrewMember(level = 1) {
 }
 function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
-    return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameSpeedMultiplier);
+    return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameConstants_1.default.gameSpeedMultiplier);
 }
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
     const min = 0.65;
@@ -104,12 +63,12 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return ((math_1.default.lerp(0.1, 0.3, level / 100) /
         globals_1.default.tickInterval) *
-        gameSpeedMultiplier);
+        gameConstants_1.default.gameSpeedMultiplier);
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
     return ((math_1.default.lerp(30, 100, level / 100) /
         globals_1.default.tickInterval) *
-        gameSpeedMultiplier);
+        gameConstants_1.default.gameSpeedMultiplier);
 }
 function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
     return baseStaminaUse * 1.5;
@@ -117,12 +76,8 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
 function getWeaponCooldownReductionPerTick(level) {
     return ((2 + math_1.default.lerp(1, 20, level / 100)) *
         3 *
-        gameSpeedMultiplier);
+        gameConstants_1.default.gameSpeedMultiplier);
 }
-function getCrewPassivePriceMultiplier(level) {
-    return 1 + level ** 2;
-}
-const baseCargoSellMultiplier = 0.3;
 function statToString(data) {
     const { stat, amount } = data;
     let titleString = text_1.default.camelCaseToWords(stat);
@@ -136,72 +91,6 @@ function statToString(data) {
         suffix = `AU`;
     return `${text_1.default.capitalize(titleString)}: ${text_1.default.numberWithCommas(amountString)}${suffix}`;
 }
-const taglineOptions = [
-    `Alpha Tester`,
-    `Tester`,
-    `✨Supporter✨`,
-    `⚡Admin⚡`,
-    // to be assigned
-    `Big Flipper`,
-    `Whale, I'll be!`,
-    `Splish Splash`,
-    `Holy Mackerel!`,
-    `Small Pond 4 Life`,
-    `Nautical Nonsense`,
-    `Very Shallow`,
-    // flight (implemented)
-    `River Runner`,
-    `Hell's Angelfish`,
-    `Flying Fish`,
-    // todo more flight taglines for distance traveled
-    // exploration (implemented)
-    `Small Pond Paddler`,
-    `Current Rider`,
-    `Migratory`,
-    `EAC-zy Rider`,
-    // credits (implemented)
-    `Easy Target`,
-    `Moneybags`,
-    // bunk (implemented)
-    `Nap Champions`,
-    // upgrade to x chassis
-    `Big Kahuna`,
-    // planet time
-    `Home Schooled`,
-    // combat achievements
-    `Nibbler`,
-    `On the Hunt`,
-    `Blood in the Water`,
-    `Feeding Frenzied`,
-    `Venomous`,
-    `Big Chompers`,
-    `Bait and Switch`,
-    // sleep time
-    `Bottom Feeder`,
-    // dying (implemented)
-    `Delicious with Lemon`,
-    // crew member numbers (implemented)
-    `Guppy`,
-    `Schoolin'`,
-    `Pod`,
-    `Big Fish`,
-];
-const headerBackgroundOptions = [
-    { id: `Default`, url: `default.jpg` },
-    { id: `Blue Faction 1`, url: `blue1.svg` },
-    { id: `Purple Faction 1`, url: `purple1.svg` },
-    { id: `Green Faction 1`, url: `green1.svg` },
-    { id: `Blue Faction 2`, url: `blue2.svg` },
-    { id: `Purple Faction 2`, url: `purple2.svg` },
-    { id: `Green Faction 2`, url: `green2.svg` },
-    { id: `Flat 1`, url: `flat1.svg` },
-    { id: `Flat 2`, url: `flat2.svg` },
-    { id: `Stone Cold 1`, url: `gradient1.svg` },
-    { id: `Crimson Blur`, url: `gradient2.svg` },
-    { id: `Lightspeedy`, url: `gradient3.svg` },
-    { id: `Constellation 1`, url: `stars1.jpg` },
-    { id: `Gravestone 1`, url: `vintage1.jpg` },
-];
 function getPlanetTitle(planet) {
     if (!planet || !planet.level)
         return ``;
@@ -262,13 +151,17 @@ function getPlanetTitle(planet) {
 }
 function getCargoSellPrice(cargoId, planet, amount, factionId) {
     const buyPrice = getCargoBuyPrice(cargoId, planet, amount, factionId);
-    const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier || baseCargoSellMultiplier;
+    const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
+        gameConstants_1.default.baseCargoSellMultiplier;
     return Math.min(buyPrice, Math.floor(cargo[cargoId].basePrice *
         sellMultiplier *
         amount *
         planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.faction.id === factionId)?.level || 0) >= factionAllegianceFriendCutoff
-            ? 1 + (1 - (factionVendorMultiplier || 1))
+        ((planet.allegiances.find((a) => a.factionId === factionId)?.level || 0) >=
+            gameConstants_1.default.factionAllegianceFriendCutoff
+            ? 1 +
+                (1 -
+                    (gameConstants_1.default.factionVendorMultiplier || 1))
             : 1)));
 }
 function getCargoBuyPrice(cargoId, planet, amount, factionId) {
@@ -279,9 +172,65 @@ function getCargoBuyPrice(cargoId, planet, amount, factionId) {
         cargoForSale.buyMultiplier *
         amount *
         planet?.priceFluctuator *
-        ((planet.allegiances.find((a) => a.faction.id === factionId)?.level || 0) >= factionAllegianceFriendCutoff
-            ? factionVendorMultiplier
+        ((planet.allegiances.find((a) => a.factionId === factionId)?.level || 0) >=
+            gameConstants_1.default.factionAllegianceFriendCutoff
+            ? gameConstants_1.default.factionVendorMultiplier
             : 1));
+}
+function getRepairPrice(planet, hp, factionId) {
+    return math_1.default.r2((planet.vendor?.repairCostMultiplier || 1) *
+        gameConstants_1.default.baseRepairCost *
+        hp *
+        planet.priceFluctuator *
+        ((planet.allegiances.find((a) => a.factionId === factionId)?.level || 0) >=
+            gameConstants_1.default.factionAllegianceFriendCutoff
+            ? gameConstants_1.default.factionVendorMultiplier
+            : 1), 0, true);
+}
+function getCrewPassivePrice(passiveForSale, currentLevel, planet, factionId) {
+    return Math.ceil((crewPassives_1.default[passiveForSale.id].buyable?.basePrice ||
+        99999) *
+        passiveForSale.buyMultiplier *
+        (1 + currentLevel ** 2) *
+        planet.priceFluctuator *
+        ((planet.allegiances.find((a) => a.factionId === factionId)?.level || 0) >=
+            gameConstants_1.default.factionAllegianceFriendCutoff
+            ? gameConstants_1.default.factionVendorMultiplier
+            : 1));
+}
+function getItemBuyPrice(itemForSale, planet, factionId) {
+    return math_1.default.r2((items[itemForSale.type][itemForSale.id].basePrice ||
+        1) *
+        itemForSale.buyMultiplier *
+        planet.priceFluctuator *
+        ((planet.allegiances.find((a) => a.factionId === factionId)?.level || 0) >=
+            gameConstants_1.default.factionAllegianceFriendCutoff
+            ? gameConstants_1.default.factionVendorMultiplier
+            : 1), 0, true);
+}
+function getItemSellPrice(itemType, itemId, planet, factionId) {
+    const itemData = items[itemType][itemId];
+    if (!itemData)
+        return 9999999;
+    return math_1.default.r2((itemData?.basePrice || 9999999) *
+        gameConstants_1.default.baseItemSellMultiplier *
+        planet.priceFluctuator *
+        (planet.faction === factionId
+            ? 1 +
+                (1 - gameConstants_1.default.factionVendorMultiplier || 1)
+            : 1), 0, true);
+}
+function getChassisSwapPrice(chassis, planet, currentChassisId, factionId) {
+    const currentChassisSellPrice = Math.floor((items.chassis[currentChassisId]?.basePrice || 0) *
+        gameConstants_1.default.baseItemSellMultiplier);
+    return math_1.default.r2(Math.min((items.chassis[chassis.id]?.basePrice || 1) *
+        chassis.buyMultiplier *
+        planet.priceFluctuator *
+        (planet.faction === factionId
+            ? 1 +
+                (1 - gameConstants_1.default.factionVendorMultiplier || 1)
+            : 1) -
+        currentChassisSellPrice), 0, true);
 }
 function getPlanetPopulation(planet) {
     if (!planet)
@@ -338,26 +287,6 @@ function getPlanetPopulation(planet) {
 //   return d
 // }
 exports.default = {
-    supportServerLink,
-    gameSpeedMultiplier,
-    baseSightRange,
-    baseBroadcastRange,
-    baseRepairCost,
-    defaultHomeworldLevel,
-    maxBroadcastLength,
-    factionVendorMultiplier,
-    factionAllegianceFriendCutoff,
-    userIsOfflineTimeout,
-    baseItemSellMultiplier,
-    noEngineThrustMagnitude,
-    planetContributeCostPerXp,
-    planetLevelXpRequirementMultiplier,
-    itemPriceMultiplier,
-    weaponDamageMultiplier,
-    attackRemnantExpireTime,
-    cacheExpireTime,
-    baseShipScanProperties,
-    sameFactionShipScanProperties,
     getHitDamage,
     getBaseDurabilityLossPerTick,
     getRadiusDiminishingReturns,
@@ -368,15 +297,15 @@ exports.default = {
     getThrustMagnitudeForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
-    getCrewPassivePriceMultiplier,
-    tactics,
-    baseCargoSellMultiplier,
-    taglineOptions,
     statToString,
-    headerBackgroundOptions,
     getPlanetTitle,
     getPlanetPopulation,
     getCargoSellPrice,
     getCargoBuyPrice,
+    getRepairPrice,
+    getCrewPassivePrice,
+    getItemBuyPrice,
+    getItemSellPrice,
+    getChassisSwapPrice,
 };
 //# sourceMappingURL=game.js.map

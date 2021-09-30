@@ -12,18 +12,18 @@ class BasicPlanet extends Planet_1.Planet {
         this.priceFluctuator = 1;
         this.toUpdate = {};
         this.planetType = `basic`;
-        this.homeworld = game.factions.find((f) => f.id === data.homeworld?.id);
-        this.faction = this.homeworld;
+        this.factionId = data.factionId
+            ? data.factionId
+            : undefined;
+        this.homeworld = this.factionId;
         this.leanings = data.leanings || [];
         this.allegiances = [];
         if (data.allegiances) {
             for (let a of data.allegiances) {
-                const foundFaction = this.game.factions.find((f) => f.id === a.faction.id);
-                if (foundFaction)
-                    this.allegiances.push({
-                        faction: foundFaction,
-                        level: a.level,
-                    });
+                this.allegiances.push({
+                    factionId: a.factionId,
+                    level: a.level,
+                });
             }
             this.toUpdate.allegiances = this.allegiances;
         }
@@ -37,8 +37,8 @@ class BasicPlanet extends Planet_1.Planet {
         this.updateFluctuator();
         setInterval(() => this.updateFluctuator(), (1000 * 60 * 60 * 24) / dist_1.default.gameSpeedMultiplier); // every day
         setInterval(() => this.decrementAllegiances(), (1000 * 60 * 60 * 24) / dist_1.default.gameSpeedMultiplier); // every day
-        if (this.faction)
-            this.incrementAllegiance(this.faction, 100);
+        if (this.factionId)
+            this.incrementAllegiance(this.factionId, 100);
         if (this.homeworld)
             while (this.level < dist_1.default.defaultHomeworldLevel)
                 this.levelUp();
@@ -153,6 +153,7 @@ class BasicPlanet extends Planet_1.Planet {
                         this.vendor.passives.push({
                             buyMultiplier,
                             id: toAddToVendor.id,
+                            intensity: toAddToVendor.intensity,
                         });
                     if (toAddToVendor.class === `cargo`)
                         this.vendor.cargo.push({
@@ -216,12 +217,20 @@ class BasicPlanet extends Planet_1.Planet {
             const propensity = (this.leanings.find((p) => p.type === `crewPassives`)?.propensity || 1) /
                 Object.keys(dist_1.default.crewPassives).length;
             for (let crewPassive of Object.values(dist_1.default.crewPassives))
-                if (!this.vendor?.passives.find((p) => p.id === crewPassive.id))
+                if (!this.vendor?.passives.find((p) => p.id === crewPassive.id) &&
+                    crewPassive.buyable)
                     addable.push({
                         class: `crewPassives`,
                         id: crewPassive.id,
                         propensity: propensity *
-                            rarityMultiplier(crewPassive.rarity),
+                            rarityMultiplier(crewPassive.buyable.rarity),
+                        intensity: dist_1.default.r2(dist_1.default.crewPassives[crewPassive.id].buyable
+                            .baseIntensity *
+                            Math.random() +
+                            0.5, dist_1.default.crewPassives[crewPassive.id].buyable
+                            .wholeNumbersOnly
+                            ? 0
+                            : 2),
                     });
         }
         if (!this.leanings.find((p) => p.type === `repair` && p.never === true)) {
@@ -232,16 +241,18 @@ class BasicPlanet extends Planet_1.Planet {
         }
         return addable;
     }
-    incrementAllegiance(faction, amount) {
+    incrementAllegiance(factionId, amount) {
+        if (!factionId)
+            return;
         const allegianceAmountToIncrement = amount || 1;
         // c.log(`allegiance`, allegianceAmountToIncrement)
         const maxAllegiance = 100;
-        const found = this.allegiances.find((a) => a.faction.id === faction.id);
+        const found = this.allegiances.find((a) => a.factionId === factionId);
         if (found)
             found.level = Math.min(maxAllegiance, found.level + allegianceAmountToIncrement);
         else
             this.allegiances.push({
-                faction,
+                factionId,
                 level: Math.min(maxAllegiance, allegianceAmountToIncrement),
             });
         this.toUpdate.allegiances = this.allegiances;
@@ -249,7 +260,7 @@ class BasicPlanet extends Planet_1.Planet {
     }
     decrementAllegiances() {
         this.allegiances.forEach((a) => {
-            if (this.faction?.id !== a.faction.id)
+            if (this.factionId !== a.factionId)
                 a.level *= 0.99;
         });
         this.toUpdate.allegiances = this.allegiances;
@@ -285,14 +296,12 @@ class BasicPlanet extends Planet_1.Planet {
             messageOptions.push(`Come rest awhile at ${this.name}!`, `Welcome, ${ship.name}. Come rest and recharge.`, `Hail, ${ship.name}! You look a little worse for wear!`);
         if (this.level > 5)
             messageOptions.push(`Come see what we have in stock!`, `Come browse our wares! Nothing but the lowest prices!`);
-        if (this.faction === ship.faction) {
-            messageOptions.push(`Greetings, fellow creature of the ${ship.faction.name}! Swim swiftly!`);
+        if (this.factionId === ship.factionId) {
+            messageOptions.push(`Greetings, fellow creature of the ${ship.factionId && dist_1.default.factions[ship.factionId].name}! Swim swiftly!`);
         }
         else {
-            messageOptions.push(`You there, from the ${ship.faction.name}! You may land, but don't cause any trouble.`, `${ship.faction.name} are welcome here.`);
+            messageOptions.push(`You there, from the ${ship.factionId && dist_1.default.factions[ship.factionId].name}! You may land, but don't cause any trouble.`, `${ship.factionId && dist_1.default.factions[ship.factionId].name} are welcome here.`);
         }
-        if (this.creatures?.includes(ship.species.id))
-            messageOptions.push(`Hail, fellow ${ship.species.singular}! You're always welcome here.`);
         const message = dist_1.default.garble(dist_1.default.randomFromArray(messageOptions), garbleAmount);
         ship.receiveBroadcast(message, this, garbleAmount, [
             ship,
@@ -313,9 +322,8 @@ class BasicPlanet extends Planet_1.Planet {
             `This is ${this.name}, I read you, ${ship.name}. Commence landing approach when ready.`,
             `I'm not authorized to respond to you, over.`,
             `Come down and let's take a swim, over.`,
-            `We love ${ship.species.id} around here, over.`,
-            `${ship.faction.name} are always welcome here, over.`,
-            `${ship.faction.name} are always welcome as long as they don't cause any trouble, over.`,
+            `${ship.factionId && dist_1.default.factions[ship.factionId].name} are always welcome here, over.`,
+            `${ship.factionId && dist_1.default.factions[ship.factionId].name} are always welcome as long as they don't cause any trouble, over.`,
             `Meet me at the cantina later, over.`,
         ];
         if (this.creatures) {
@@ -337,7 +345,6 @@ class BasicPlanet extends Planet_1.Planet {
             items: [],
             chassis: [],
             passives: [],
-            actives: [],
         };
         this.passives = [];
         this.landingRadiusMultiplier = 1;

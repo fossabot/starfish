@@ -9,6 +9,8 @@ const data: {
     buyable: {
       rarity: 1,
       basePrice: 1000,
+      baseIntensity: 10,
+      wholeNumbersOnly: true,
     },
     description: (data: CrewPassiveData) =>
       `Boost personal cargo capacity by ${math.r2(

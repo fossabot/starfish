@@ -42,8 +42,7 @@ export default function (
           (foundShip as HumanShip).guildName ||
           foundShip.name,
         guildIcon: (foundShip as HumanShip).guildIcon,
-        faction: foundShip.faction,
-        species: foundShip.species,
+        factionId: foundShip.factionId,
         tagline: foundShip.tagline,
         headerBackground: foundShip.headerBackground,
       })
@@ -349,7 +348,13 @@ export default function (
                   : orders.target.type === `ship`
                   ? ship.visible.ships.find(
                       (s) => s.id === orders.target!.id,
-                    )?.faction.color
+                    )?.factionId
+                    ? c.factions[
+                        ship.visible.ships.find(
+                          (s) => s.id === orders.target!.id,
+                        )?.factionId as any
+                      ].color
+                    : undefined
                   : orders.target.type === `cache`
                   ? `var(--cache)`
                   : `var(--item)`,

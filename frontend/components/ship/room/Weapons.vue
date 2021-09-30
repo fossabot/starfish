@@ -208,9 +208,7 @@ export default Vue.extend({
     },
     visibleEnemies() {
       return this.ship.visible?.ships
-        .filter(
-          (s) => s.faction.id !== this.ship.faction.id,
-        )
+        .filter((s) => s.faction.id !== this.ship.factionId)
         .sort(
           (a, b) =>
             c.distance(a.location, this.ship.location) -

@@ -41,8 +41,9 @@ type FactionRankingCategory =
   | `netWorth`
   | `control`
   | `members`
+
 interface FactionRankingScoreEntry {
-  faction: Faction
+  factionId: FactionId
   score: number
 }
 interface FactionRankingTopEntry {

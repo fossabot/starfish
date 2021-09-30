@@ -2,7 +2,6 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
-import type { Faction } from '../Faction'
 import type { HumanShip } from '../Ship/HumanShip'
 
 export class Planet extends Stubbable {
@@ -12,7 +11,6 @@ export class Planet extends Stubbable {
   readonly type = `planet`
   readonly pacifist: boolean
   readonly rooms: CrewLocation[] = []
-  readonly planetType: PlanetType
   readonly name: string
   readonly color: string
   readonly mass: number
@@ -20,6 +18,9 @@ export class Planet extends Stubbable {
   readonly game: Game
   readonly creatures?: string[]
   readonly radius: number
+  planetType: PlanetType
+  factionId?: FactionId
+  homeworld?: FactionId
   landingRadiusMultiplier: number
   passives: ShipPassiveEffect[]
   xp = 0
@@ -28,8 +29,6 @@ export class Planet extends Stubbable {
 
   toUpdate: {
     allegiances?: PlanetAllegianceData[]
-    priceFluctuator?: number
-    repairFactor?: number
     landingRadiusMultiplier?: number
     passives?: ShipPassiveEffect[]
   } = {}
@@ -104,12 +103,12 @@ export class Planet extends Stubbable {
     )
   }
 
-  async donate(amount: number, faction?: Faction) {
+  async donate(amount: number, factionId?: FactionId) {
     this.addXp(amount / c.planetContributeCostPerXp)
     this.addStat(`totalDonated`, amount)
-    if (faction)
+    if (factionId)
       this.incrementAllegiance(
-        faction,
+        factionId,
         1 + amount / (c.planetContributeCostPerXp * 2000),
       )
   }
@@ -267,7 +266,7 @@ export class Planet extends Stubbable {
 
   // function placeholders
   incrementAllegiance(
-    faction: Faction | FactionStub,
+    factionId: FactionId,
     amount?: number,
   ) {}
 

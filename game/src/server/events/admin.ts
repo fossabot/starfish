@@ -163,7 +163,6 @@ export default function (
         while (s.seenPlanets.length) s.seenPlanets.pop()
         s.toUpdate.seenPlanets = []
       })
-      game.factions.forEach((f) => (f.homeworld = null))
     },
   )
 
@@ -256,8 +255,7 @@ export default function (
           .map((s) => ({
             name: s.name,
             id: s.id,
-            faction: { id: s.faction.id },
-            species: { id: s.species.id },
+            factionId: s.factionId,
             crewMemberCount: s.crewMembers.length,
             isTutorial: s.tutorial
               ? s.tutorial.ship?.crewMembers[0]?.name ||

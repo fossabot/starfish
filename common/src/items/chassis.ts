@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 // todo use autoRepair passive on a chassis
 

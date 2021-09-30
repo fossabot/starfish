@@ -121,7 +121,7 @@ export async function sell(
   crewId: string,
   type: CargoId,
   amount: number,
-  location: string,
+  planetId: string,
 ): Promise<
   IOResponse<{
     cargoId: CargoId
@@ -141,7 +141,7 @@ export async function sell(
       crewId,
       type,
       amount,
-      location,
+      planetId,
       (res) => {
         resolve(res)
       },
@@ -154,7 +154,7 @@ export async function buy(
   crewId: string,
   type: CargoId,
   amount: number,
-  location: string,
+  planetId: string,
 ): Promise<
   IOResponse<{
     cargoId: CargoId
@@ -174,7 +174,7 @@ export async function buy(
       crewId,
       type,
       amount,
-      location,
+      planetId,
       (res) => {
         resolve(res)
       },

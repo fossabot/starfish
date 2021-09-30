@@ -58,6 +58,7 @@ interface PlanetVendorItemPrice {
 interface PlanetVendorCrewPassivePrice {
   id: CrewPassiveId
   buyMultiplier: number
+  intensity: number
 }
 
 interface PlanetVendor {
@@ -69,7 +70,7 @@ interface PlanetVendor {
 }
 
 interface PlanetAllegianceData {
-  faction: FactionStub
+  factionId: FactionId
   level: number
 }
 

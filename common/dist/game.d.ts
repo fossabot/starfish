@@ -1,7 +1,7 @@
 declare function getHitDamage(weapon: {
     damage: number;
 }, totalMunitionsSkill?: number): number;
-declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number): number;
+declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number, useLevel?: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
@@ -10,54 +10,20 @@ declare function getRepairAmountPerTickForSingleCrewMember(level: number): numbe
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
-declare function getCrewPassivePriceMultiplier(level: number): number;
 declare function statToString(data: {
     stat: string;
     amount: number;
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
-declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
-declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
+declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId?: FactionId): number;
+declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId?: FactionId): number;
+declare function getRepairPrice(planet: PlanetStub, hp: number, factionId?: FactionId): number;
+declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentLevel: number, planet: PlanetStub, factionId?: FactionId): number;
+declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, factionId?: FactionId): number;
+declare function getItemSellPrice(itemType: ItemType, itemId: ItemId, planet: PlanetStub, factionId?: FactionId): number;
+declare function getChassisSwapPrice(chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, factionId?: FactionId): number;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
-    supportServerLink: string;
-    gameSpeedMultiplier: number;
-    baseSightRange: number;
-    baseBroadcastRange: number;
-    baseRepairCost: number;
-    defaultHomeworldLevel: number;
-    maxBroadcastLength: number;
-    factionVendorMultiplier: number;
-    factionAllegianceFriendCutoff: number;
-    baseItemSellMultiplier: number;
-    noEngineThrustMagnitude: number;
-    planetContributeCostPerXp: number;
-    planetLevelXpRequirementMultiplier: number;
-    itemPriceMultiplier: number;
-    weaponDamageMultiplier: number;
-    attackRemnantExpireTime: number;
-    cacheExpireTime: number;
-    baseShipScanProperties: {
-        id: true;
-        name: true;
-        human: true;
-        ai: true;
-        headerBackground: true;
-        tagline: true;
-        level: true;
-        dead: true;
-        attackable: true;
-        previousLocations: true;
-        location: true;
-        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("id" | "name" | "color" | "homeworld" | "ai" | "species")[];
-        species: ("id" | "passives" | "icon" | "factionId" | "singular" | "description")[];
-        chassis: ("id" | "mass" | "passives" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
-    };
-    sameFactionShipScanProperties: {
-        _hp: boolean;
-        _maxHp: boolean;
-    };
     getHitDamage: typeof getHitDamage;
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
@@ -68,19 +34,16 @@ declare const _default: {
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
-    getCrewPassivePriceMultiplier: typeof getCrewPassivePriceMultiplier;
-    tactics: CombatTactic[];
-    baseCargoSellMultiplier: number;
-    taglineOptions: string[];
     statToString: typeof statToString;
-    headerBackgroundOptions: {
-        id: string;
-        url: string;
-    }[];
     getPlanetTitle: typeof getPlanetTitle;
     getPlanetPopulation: typeof getPlanetPopulation;
     getCargoSellPrice: typeof getCargoSellPrice;
     getCargoBuyPrice: typeof getCargoBuyPrice;
+    getRepairPrice: typeof getRepairPrice;
+    getCrewPassivePrice: typeof getCrewPassivePrice;
+    getItemBuyPrice: typeof getItemBuyPrice;
+    getItemSellPrice: typeof getItemSellPrice;
+    getChassisSwapPrice: typeof getChassisSwapPrice;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

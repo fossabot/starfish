@@ -1,14 +1,5 @@
 interface BaseStub {}
 
-interface GameStub extends BaseStub {
-  ships: ShipStub[]
-  planets: PlanetStub[]
-  factions: FactionStub[]
-  caches: CacheStub[]
-  attackRemnants: AttackRemnantStub[]
-  [key: string]: any
-}
-
 interface ShipStub extends BaseStub {
   id: string
   name: string
@@ -26,8 +17,7 @@ interface ShipStub extends BaseStub {
   radii?: { [key in RadiusType]?: number }
   obeysGravity?: boolean
   planet?: PlanetStub | false
-  faction: FactionStub
-  species: SpeciesStub
+  factionId: FactionId
   rooms: { [key in CrewLocation]?: BaseRoomData }
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]
@@ -75,6 +65,7 @@ interface CrewMemberStub extends BaseStub {
   name: string
   skills: XPData[]
   location?: CrewLocation
+  speciesId?: SpeciesId
   stamina: number
   stats: CrewStatEntry[]
   inventory: Cargo[]
@@ -123,17 +114,10 @@ interface AttackRemnantStub extends BaseStub {
   id: string
   [key: string]: any
 }
-interface FactionStub extends BaseStub {
-  id: FactionId
-  name?: string
-  color?: string
-  ai?: boolean
-  [key: string]: any
-}
 
 interface ItemStub extends BaseStub {
   type: ItemType
-  id: string
+  id: ItemId
   repair?: number
   ownerId?: string
   displayName?: string

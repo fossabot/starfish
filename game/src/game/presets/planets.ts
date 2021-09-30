@@ -244,7 +244,6 @@ export function generateBasicPlanet(
   const vendor: PlanetVendor = {
     cargo: [],
     passives: [],
-    actives: [],
     items: [],
     chassis: [],
   }

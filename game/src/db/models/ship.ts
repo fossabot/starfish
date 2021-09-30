@@ -40,7 +40,7 @@ const shipSchemaFields: Record<
       level: String,
     },
   ],
-  seenPlanets: [{ name: String }],
+  seenPlanets: [{ name: String, id: String }],
   seenLandmarks: [{ type: { type: String }, id: String }],
   tutorial: {
     step: Number,

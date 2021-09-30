@@ -98,28 +98,28 @@ This bot will create several channels for game communication and a role for crew
     //   )
     // })
 
-    const speciesButtonData: MessageButtonOptions[] = []
-    for (let s of c.shuffleArray(
-      Object.entries(c.species).filter(
-        (e: [string, BaseSpeciesData]) => {
-          return e[1].factionId !== `red`
-        },
-      ),
-    ))
-      speciesButtonData.push({
-        label: s[1].icon + c.capitalize(s[1].id),
-        style: `SECONDARY`,
-        customId: s[1].id,
-      })
+    // const speciesButtonData: MessageButtonOptions[] = []
+    // for (let s of c.shuffleArray(
+    //   Object.entries(c.species).filter(
+    //     (e: [string, BaseSpeciesData]) => {
+    //       return e[1].factionId !== `red`
+    //     },
+    //   ),
+    // ))
+    //   speciesButtonData.push({
+    //     label: s[1].icon + c.capitalize(s[1].id),
+    //     style: `SECONDARY`,
+    //     customId: s[1].id,
+    //   })
 
-    const { result: speciesResult, sentMessage: sm } =
-      await waitForSingleButtonChoice<SpeciesId>({
-        context,
-        content: `Excellent! Choose your ship's species to get started.`,
-        allowedUserId: context.initialMessage.author.id,
-        buttons: speciesButtonData,
-      })
-    if (sm) sentMessages.push(sm)
+    // const { result: speciesResult, sentMessage: sm } =
+    //   await waitForSingleButtonChoice<SpeciesId>({
+    //     context,
+    //     content: `Excellent! Choose your ship's species to get started.`,
+    //     allowedUserId: context.initialMessage.author.id,
+    //     buttons: speciesButtonData,
+    //   })
+    // if (sm) sentMessages.push(sm)
 
     // clean up messages
     try {
@@ -127,18 +127,17 @@ This bot will create several channels for game communication and a role for crew
         if (m.deletable) m.delete().catch(c.log)
     } catch (e) {}
 
-    if (!speciesResult) {
-      await context.reply(
-        `You didn't pick a species, try again!`,
-      )
-      return
-    }
+    // if (!speciesResult) {
+    //   await context.reply(
+    //     `You didn't pick a species, try again!`,
+    //   )
+    //   return
+    // }
 
     // add ship
     const createdShip = await ioInterface.ship.create({
       id: context.guild.id,
       name: context.guild.name,
-      species: { id: speciesResult },
       guildName:
         c
           .sanitize(context.guild.name)

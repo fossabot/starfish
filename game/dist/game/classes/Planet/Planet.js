@@ -55,11 +55,11 @@ class Planet extends Stubbable_1.Stubbable {
     get shipsAt() {
         return this.game.humanShips.filter((s) => !s.tutorial && s.planet === this);
     }
-    async donate(amount, faction) {
+    async donate(amount, factionId) {
         this.addXp(amount / dist_1.default.planetContributeCostPerXp);
         this.addStat(`totalDonated`, amount);
-        if (faction)
-            this.incrementAllegiance(faction, 1 + amount / (dist_1.default.planetContributeCostPerXp * 2000));
+        if (factionId)
+            this.incrementAllegiance(factionId, 1 + amount / (dist_1.default.planetContributeCostPerXp * 2000));
     }
     async addXp(amount) {
         if (!amount)
@@ -177,7 +177,7 @@ class Planet extends Stubbable_1.Stubbable {
             existing.amount += amount;
     }
     // function placeholders
-    incrementAllegiance(faction, amount) { }
+    incrementAllegiance(factionId, amount) { }
     resetLevels() { }
 }
 exports.Planet = Planet;

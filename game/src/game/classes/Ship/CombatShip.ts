@@ -21,9 +21,10 @@ export abstract class CombatShip extends Ship {
   constructor(props: BaseShipData, game: Game) {
     super(props, game)
 
-    this.species.passives.forEach((p) =>
-      this.applyPassive(p),
-    )
+    // todo replace when there are passives
+    // if (this.factionId) c.factions[this.factionId]?.passives.forEach((p) =>
+    //   this.applyPassive(p),
+    // )
 
     this.updateAttackRadius()
   }
@@ -152,7 +153,10 @@ export abstract class CombatShip extends Ship {
     this.hp = this.maxHp
     this.dead = false
     this.move(
-      [...(this.faction.homeworld?.location || [0, 0])].map(
+      [
+        ...(this.game.getHomeworld(this.factionId)
+          ?.location || [0, 0]),
+      ].map(
         (pos) =>
           pos +
           c.randomBetween(
@@ -191,9 +195,8 @@ export abstract class CombatShip extends Ship {
     if (otherShip.dead || this.dead) return false
     // same faction
     if (
-      otherShip.faction &&
-      this.faction &&
-      otherShip.faction.id === this.faction.id
+      otherShip.factionId &&
+      otherShip.factionId === this.factionId
     )
       return false
     // too far, or not in sight range
@@ -277,7 +280,8 @@ export abstract class CombatShip extends Ship {
 
             this.visible.ships.forEach((s: any) => {
               if (
-                s?.faction?.id === this.faction.id &&
+                s?.factionId &&
+                s?.factionId === this.factionId &&
                 c.distance(s.location, this.location) <=
                   range
               )
@@ -317,7 +321,8 @@ export abstract class CombatShip extends Ship {
 
           this.visible.ships.forEach((s: any) => {
             if (
-              s?.faction?.id === this.faction.id &&
+              s?.factionId &&
+              s?.factionId === this.factionId &&
               c.distance(s.location, this.location) <= range
             )
               factionMembersInRange++
@@ -398,7 +403,9 @@ export abstract class CombatShip extends Ship {
           `Missed`,
           {
             text: target.name,
-            color: target.faction.color,
+            color:
+              target.factionId &&
+              c.factions[target.factionId].color,
             tooltipData: target.toReference() as any,
           },
           `with`,
@@ -420,7 +427,9 @@ export abstract class CombatShip extends Ship {
           `Attacked`,
           {
             text: target.name,
-            color: target.faction.color,
+            color:
+              target.factionId &&
+              c.factions[target.factionId].color,
             tooltipData: target.toReference() as any,
           },
           `with`,
@@ -594,7 +603,9 @@ export abstract class CombatShip extends Ship {
                 `You have broken through`,
                 {
                   text: this.name,
-                  color: this.faction.color,
+                  color:
+                    this.factionId &&
+                    c.factions[this.factionId].color,
                   tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,
@@ -726,7 +737,9 @@ export abstract class CombatShip extends Ship {
                 `You have disabled`,
                 {
                   text: this.name,
-                  color: this.faction.color,
+                  color:
+                    this.factionId &&
+                    c.factions[this.factionId].color,
                   tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,

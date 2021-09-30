@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 export const communicators: {
   [key in CommunicatorId]: BaseCommunicatorData

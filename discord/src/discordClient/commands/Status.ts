@@ -38,7 +38,7 @@ export class StatusCommand implements Command {
     //       {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
     //     </div>
 
-    const color = c.factions[ship.faction.id].name
+    const color = c.factions[ship.factionId].name
       .split(` `)[0]
       ?.toUpperCase()
 
@@ -72,9 +72,7 @@ ${c.percentToTextBars(
 
     const embeds: MessageEmbed[] = [
       new MessageEmbed({
-        title: `${c.species[ship.species.id].icon} ${
-          ship.name
-        }`,
+        title: `${ship.name}`,
         color: color as ColorResolvable,
         description:
           `**` +
@@ -166,9 +164,10 @@ ${c.percentToTextBars(
 
       embeds.push(
         new MessageEmbed({
-          title: `${c.species[ship.species.id].icon} ${
-            context.crewMember.name
-          }`,
+          title: `${
+            context.crewMember.speciesId &&
+            c.species[context.crewMember.speciesId].icon
+          } ${context.crewMember.name}`,
           color: color as ColorResolvable,
           fields: youFields,
         }),

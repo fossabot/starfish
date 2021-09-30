@@ -191,7 +191,6 @@ function generateBasicPlanet(game, homeworldFactionKey) {
     const vendor = {
         cargo: [],
         passives: [],
-        actives: [],
         items: [],
         chassis: [],
     };

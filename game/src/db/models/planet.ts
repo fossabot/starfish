@@ -83,14 +83,13 @@ const planetSchemaFields: Record<
         sellMultiplier: Number,
       },
     ],
-    actives: [
+    passives: [
       {
         id: String,
         buyMultiplier: Number,
-        sellMultiplier: Number,
+        intensity: Number,
       },
     ],
-    passives: [{ id: String, buyMultiplier: Number }],
     repairCostMultiplier: Number,
   },
 }
@@ -108,7 +107,7 @@ export async function addOrUpdateInDb(
   delete toSave._id
   const dbObject: DBPlanetDoc | null =
     await DBPlanet.findOneAndUpdate(
-      { name: data.name },
+      { id: data.id },
       toSave,
       {
         upsert: true,
@@ -120,9 +119,9 @@ export async function addOrUpdateInDb(
   return dbObject
 }
 
-export async function removeFromDb(name: string) {
-  const res = await DBPlanet.deleteMany({ name })
-  c.log(`Deleted planet`, name, res)
+export async function removeFromDb(id: string) {
+  const res = await DBPlanet.deleteMany({ id })
+  c.log(`Deleted planet`, id, res)
 }
 
 export async function wipe() {

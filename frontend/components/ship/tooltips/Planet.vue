@@ -126,7 +126,7 @@ export default Vue.extend({
     dataToUse() {
       return (
         this.ship?.seenPlanets?.find(
-          (p) => p.name === this.data.name,
+          (p) => p.id === this.data.id,
         ) || this.data
       )
     },

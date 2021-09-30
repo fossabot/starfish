@@ -15,30 +15,16 @@
       v-for="count in repairOptions"
       :disabled="
         crewMember.credits <
-          c.baseRepairCost *
-            ship.planet.vendor.repairCostMultiplier *
-            ship.planet.priceFluctuator *
-            (isFriendlyToFaction
-              ? c.factionVendorMultiplier
-              : 1) *
-            count || repairableHp < count
+        c.getRepairPrice(ship.planet, count, ship.factionId)
       "
       @click="buyRepair(count)"
     >
       🛠{{ c.r2(count, 2, true) }}HP: 💳{{
         c.numberWithCommas(
-          c.r2(
-            Math.max(
-              c.baseRepairCost *
-                ship.planet.vendor.repairCostMultiplier *
-                ship.planet.priceFluctuator *
-                (isFriendlyToFaction
-                  ? c.factionVendorMultiplier
-                  : 1) *
-                count,
-            ),
-            0,
-            true,
+          c.getRepairPrice(
+            ship.planet,
+            count,
+            ship.factionId,
           ),
         )
       }}
@@ -61,7 +47,7 @@ export default Vue.extend({
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
+            a.factionId === this.ship.factionId,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },

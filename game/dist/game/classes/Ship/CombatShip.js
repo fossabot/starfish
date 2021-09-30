@@ -14,7 +14,10 @@ class CombatShip extends Ship_1.Ship {
         this.targetItemType = `any`;
         this.combatTactic = `defensive`;
         this.attackable = true;
-        this.species.passives.forEach((p) => this.applyPassive(p));
+        // todo replace when there are passives
+        // if (this.factionId) c.factions[this.factionId]?.passives.forEach((p) =>
+        //   this.applyPassive(p),
+        // )
         this.updateAttackRadius();
     }
     // move(toLocation?: CoordinatePair) {
@@ -103,7 +106,10 @@ class CombatShip extends Ship_1.Ship {
         this.recalculateMaxHp();
         this.hp = this.maxHp;
         this.dead = false;
-        this.move([...(this.faction.homeworld?.location || [0, 0])].map((pos) => pos +
+        this.move([
+            ...(this.game.getHomeworld(this.factionId)
+                ?.location || [0, 0]),
+        ].map((pos) => pos +
             dist_1.default.randomBetween(this.game.settings.arrivalThreshold * -0.4, this.game.settings.arrivalThreshold * 0.4)));
         await db_1.db.ship.addOrUpdateInDb(this);
     }
@@ -125,9 +131,8 @@ class CombatShip extends Ship_1.Ship {
         if (otherShip.dead || this.dead)
             return false;
         // same faction
-        if (otherShip.faction &&
-            this.faction &&
-            otherShip.faction.id === this.faction.id)
+        if (otherShip.factionId &&
+            otherShip.factionId === this.factionId)
             return false;
         // too far, or not in sight range
         if (dist_1.default.distance(otherShip.location, this.location) >
@@ -177,7 +182,8 @@ class CombatShip extends Ship_1.Ship {
                     let factionMembersInRange = 0;
                     const range = p.data?.distance || 0;
                     this.visible.ships.forEach((s) => {
-                        if (s?.faction?.id === this.faction.id &&
+                        if (s?.factionId &&
+                            s?.factionId === this.factionId &&
                             dist_1.default.distance(s.location, this.location) <=
                                 range)
                             factionMembersInRange++;
@@ -196,7 +202,8 @@ class CombatShip extends Ship_1.Ship {
                     let factionMembersInRange = 0;
                     const range = p.data?.distance || 0;
                     this.visible.ships.forEach((s) => {
-                        if (s?.faction?.id === this.faction.id &&
+                        if (s?.factionId &&
+                            s?.factionId === this.factionId &&
                             dist_1.default.distance(s.location, this.location) <= range)
                             factionMembersInRange++;
                     });
@@ -245,7 +252,8 @@ class CombatShip extends Ship_1.Ship {
                 `Missed`,
                 {
                     text: target.name,
-                    color: target.faction.color,
+                    color: target.factionId &&
+                        dist_1.default.factions[target.factionId].color,
                     tooltipData: target.toReference(),
                 },
                 `with`,
@@ -264,7 +272,8 @@ class CombatShip extends Ship_1.Ship {
                 `Attacked`,
                 {
                     text: target.name,
-                    color: target.faction.color,
+                    color: target.factionId &&
+                        dist_1.default.factions[target.factionId].color,
                     tooltipData: target.toReference(),
                 },
                 `with`,
@@ -372,7 +381,8 @@ class CombatShip extends Ship_1.Ship {
                             `You have broken through`,
                             {
                                 text: this.name,
-                                color: this.faction.color,
+                                color: this.factionId &&
+                                    dist_1.default.factions[this.factionId].color,
                                 tooltipData: this.toReference(),
                             },
                             `&nospace's`,
@@ -466,7 +476,8 @@ class CombatShip extends Ship_1.Ship {
                             `You have disabled`,
                             {
                                 text: this.name,
-                                color: this.faction.color,
+                                color: this.factionId &&
+                                    dist_1.default.factions[this.factionId].color,
                                 tooltipData: this.toReference(),
                             },
                             `&nospace's`,

@@ -214,8 +214,8 @@ class Game {
                 })
                     .map((s) => {
                     return {
-                        color: showColors
-                            ? s.faction.color
+                        color: showColors && s.factionId
+                            ? dist_1.default.factions[s.factionId].color
                             : undefined,
                         points: [
                             ...s.previousLocations,
@@ -309,8 +309,8 @@ class Game {
                 })
                     .map((s) => {
                     return {
-                        color: showColors
-                            ? s.faction.color
+                        color: showColors && s.factionId
+                            ? dist_1.default.factions[s.factionId].color
                             : undefined,
                         points: [
                             ...s.previousLocations,
@@ -387,8 +387,8 @@ class Game {
                 })
                     .map((s) => {
                     return {
-                        color: showColors
-                            ? s.faction.color
+                        color: showColors && s.factionId
+                            ? dist_1.default.factions[s.factionId].color
                             : undefined,
                         points: [
                             ...s.previousLocations,
@@ -468,7 +468,7 @@ class Game {
             if (selection === `basic`) {
                 const factionThatNeedsAHomeworld = Object.values(dist_1.default.factions).find((f) => f.id !== `red` &&
                     !this.planets.find((p) => p.planetType === `basic` &&
-                        p.homeworld?.id === f.id));
+                        p.homeworld === f.id));
                 const p = (0, planets_1.generateBasicPlanet)(this, factionThatNeedsAHomeworld?.id);
                 if (!p)
                     continue;
@@ -570,9 +570,7 @@ class Game {
             this.addAIShip({
                 location: spawnPoint,
                 name: `${dist_1.default.capitalize(species.substring(0, species.length - 1))}${`${Math.random().toFixed(3)}`.substring(2)}`,
-                species: {
-                    id: species,
-                },
+                factionId: `red`,
                 level,
                 headerBackground: `ai.jpg`,
             });
@@ -655,7 +653,7 @@ class Game {
         // )
     }
     async addBasicPlanet(data, save = true) {
-        const existing = this.planets.find((p) => p.name === data.name);
+        const existing = this.planets.find((p) => p.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing planet ${existing.name}.`);
             return existing;
@@ -663,15 +661,19 @@ class Game {
         const newPlanet = await new BasicPlanet_1.BasicPlanet(data, this);
         this.planets.push(newPlanet);
         this.chunkManager.addOrUpdate(newPlanet);
-        if (`homeworld` in newPlanet && newPlanet.homeworld)
-            newPlanet.homeworld.homeworld =
-                newPlanet;
+        if (`homeworld` in newPlanet && newPlanet.homeworld) {
+            ;
+            newPlanet.homeworld =
+                newPlanet.factionId;
+            newPlanet.factionId =
+                newPlanet.factionId;
+        }
         if (save)
             await db_1.db.planet.addOrUpdateInDb(newPlanet);
         return newPlanet;
     }
     async addMiningPlanet(data, save = true) {
-        const existing = this.planets.find((p) => p.name === data.name);
+        const existing = this.planets.find((p) => p.id === data.id);
         if (existing) {
             dist_1.default.log(`red`, `Attempted to add existing planet ${existing.name}.`);
             return existing;
@@ -762,6 +764,11 @@ class Game {
     get basicPlanets() {
         return this.planets.filter((p) => p instanceof BasicPlanet_1.BasicPlanet);
     }
+    getHomeworld(factionId) {
+        if (!factionId)
+            return;
+        return this.basicPlanets.find((p) => p.factionId === factionId && p.homeworld);
+    }
     get miningPlanets() {
         return this.planets.filter((p) => p instanceof MiningPlanet_1.MiningPlanet);
     }
@@ -774,7 +781,7 @@ class Game {
                 continue;
             let total = 0;
             this.ships
-                .filter((s) => s.faction.id === faction.id)
+                .filter((s) => s.factionId === faction.id)
                 .filter((s) => !s.tutorial)
                 .forEach((s) => {
                 let shipTotal = s.commonCredits || 0;
@@ -792,9 +799,7 @@ class Game {
                 total += shipTotal;
             });
             netWorthScores.push({
-                faction: dist_1.default.stubify(faction, [
-                    `members`,
-                ]),
+                factionId: faction.id,
                 score: total,
             });
         }
@@ -807,17 +812,15 @@ class Game {
             if (faction.id === `red`)
                 continue;
             controlScores.push({
-                faction: dist_1.default.stubify(faction, [
-                    `members`,
-                ]),
+                factionId: faction.id,
                 score: 0,
             });
         }
         for (let planet of this.basicPlanets) {
             planet.allegiances.forEach((a) => {
-                if (a.faction.id === `red`)
+                if (a.factionId === `red`)
                     return;
-                const found = controlScores.find((s) => s.faction.id === a.faction.id);
+                const found = controlScores.find((s) => s.factionId === a.factionId);
                 if (!found)
                     return;
                 // c.log(`planet with allegiance:`, found) // todo remove
@@ -832,7 +835,7 @@ class Game {
                 continue;
             let total = 0;
             this.ships
-                .filter((s) => s.faction.id === faction.id)
+                .filter((s) => s.factionId === faction.id)
                 .filter((s) => !s.tutorial)
                 .forEach((s) => {
                 let shipTotal = s.crewMembers.length || 0;
@@ -844,9 +847,7 @@ class Game {
                 total += shipTotal;
             });
             membersScores.push({
-                faction: dist_1.default.stubify(faction, [
-                    `members`,
-                ]),
+                factionId: faction.id,
                 score: total,
             });
         }

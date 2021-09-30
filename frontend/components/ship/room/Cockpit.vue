@@ -185,7 +185,7 @@
               planet.location[1] !==
                 crewMember.targetLocation[1],
           }"
-          v-tooltip="{ type: 'planet', name: planet.name }"
+          v-tooltip="{ type: 'planet', id: planet.id }"
         >
           <span :style="{ color: planet.color }"
             >🪐{{ planet.name }}</span

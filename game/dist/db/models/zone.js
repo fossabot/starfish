@@ -12,6 +12,13 @@ const zoneSchemaFields = {
     radius: { type: Number },
     color: { type: String },
     location: [{ type: Number, required: true }],
+    passives: [
+        {
+            id: String,
+            intensity: Number,
+            data: mongoose_1.Schema.Types.Mixed,
+        },
+    ],
     effects: [
         {
             type: { type: String },

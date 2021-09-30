@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 // todo a scanner that can only see and not scan
 

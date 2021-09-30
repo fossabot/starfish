@@ -71,7 +71,7 @@ export class Tutorial {
         name: crewMember.ship.name,
         tutorial: { step: -1 },
         id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
-        species: { id: crewMember.ship.species.id },
+        factionId: crewMember.ship.factionId,
       })
     await tutorialShip.addCrewMember({
       name: crewMember.name,
@@ -358,9 +358,9 @@ export class Tutorial {
           {
             loadout: `aiTutorial1`,
             id: `tutorialAI1` + this.ship.id,
+            factionId: `red`,
             level: 1,
             name: `Enemy Ship`,
-            species: { id: `flamingos` },
             location: [0.015, 0.01],
           },
         ],
@@ -714,7 +714,8 @@ export class Tutorial {
     this.initializeSteps()
     this.step = data.step
     this.baseLocation = [
-      ...(this.ship.faction.homeworld?.location || [0, 0]),
+      ...(this.ship.game.getHomeworld(this.ship.factionId)
+        ?.location || [0, 0]),
     ]
     this.currentStep = this.steps[this.step]
     if (this.step === -1) {
@@ -980,16 +981,12 @@ export class Tutorial {
     }, c.tickInterval)
 
     ship.addHeaderBackground(
-      c.capitalize(ship.faction.id) + ` Faction 1`,
-      `joining the ${c.capitalize(
-        ship.faction.id,
-      )} faction`,
+      c.capitalize(ship.factionId) + ` Faction 1`,
+      `joining the ${c.capitalize(ship.factionId)} faction`,
     )
     ship.addHeaderBackground(
-      c.capitalize(ship.faction.id) + ` Faction 2`,
-      `joining the ${c.capitalize(
-        ship.faction.id,
-      )} faction`,
+      c.capitalize(ship.factionId) + ` Faction 2`,
+      `joining the ${c.capitalize(ship.factionId)} faction`,
     )
     ship.addTagline(
       `Alpha Tester`,
@@ -999,14 +996,20 @@ export class Tutorial {
     if (ship.planet)
       ship.planet.shipsAt
         .filter(
-          (s) => s.faction?.color === ship.faction?.color,
+          (s) =>
+            (s.factionId &&
+              c.factions[s.factionId].color) ===
+            (ship.factionId &&
+              c.factions[ship.factionId].color),
         )
         .forEach((s) => {
           if (s === ship || !s.planet) return
           s.logEntry([
             {
               text: ship.name,
-              color: ship.faction.color,
+              color:
+                ship.factionId &&
+                c.factions[ship.factionId].color,
               tooltipData: ship.toReference() as any,
             },
             `has joined the game, starting out from`,

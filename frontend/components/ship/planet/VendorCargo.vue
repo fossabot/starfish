@@ -152,7 +152,7 @@ export default Vue.extend({
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
+            a.factionId === this.ship.factionId,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },
@@ -164,7 +164,7 @@ export default Vue.extend({
             cargo.id,
             this.ship.planet,
             1,
-            this.ship.faction.id,
+            this.ship.factionId,
           )
           const maxCanBuy = c.r2(
             Math.min(
@@ -200,7 +200,7 @@ export default Vue.extend({
               cargo.id,
               this.ship.planet,
               1,
-              this.ship.faction.id,
+              this.ship.factionId,
             )
             const heldAmount =
               this.crewMember?.inventory.find(

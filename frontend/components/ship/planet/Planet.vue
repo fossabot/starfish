@@ -122,7 +122,7 @@
       <ShipPlanetVendorCargo v-if="type === 'basic'" />
       <ShipPlanetVendorItems v-if="type === 'basic'" />
       <ShipPlanetBuyRepair v-if="type === 'basic'" />
-      <ShipPlanetBuyPassive v-if="type === 'basic'" />
+      <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
 
       <ShipPlanetLevel />
 
@@ -207,7 +207,7 @@ export default Vue.extend({
       return (
         (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
+            a.factionId === this.ship.factionId,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },

@@ -2,8 +2,13 @@ type CoordinatePair = [number, number]
 
 interface Reference {
   type: string
-  name?: string
   id?: string
+  name?: string
+  factionId?: FactionId
+  speciesId?: SpeciesId
+  tagline?: string
+  headerBackground?: string
+  level?: number
 }
 
 interface ResponseWithMessage {

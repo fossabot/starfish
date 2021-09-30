@@ -11,6 +11,8 @@ const data = {
         buyable: {
             rarity: 1,
             basePrice: 1000,
+            baseIntensity: 10,
+            wholeNumbersOnly: true,
         },
         description: (data) => `Boost personal cargo capacity by ${math_1.default.r2(data.intensity || 0)} tons, assuming that your ship's chassis can support the weight.`,
     },

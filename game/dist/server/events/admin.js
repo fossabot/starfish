@@ -121,7 +121,6 @@ function default_1(socket) {
                 s.seenPlanets.pop();
             s.toUpdate.seenPlanets = [];
         });
-        __1.game.factions.forEach((f) => (f.homeworld = null));
     });
     socket.on(`game:reLevelAllPlanets`, async (id, password) => {
         if (!isAdmin(id, password))
@@ -186,8 +185,7 @@ function default_1(socket) {
                 .map((s) => ({
                 name: s.name,
                 id: s.id,
-                faction: { id: s.faction.id },
-                species: { id: s.species.id },
+                factionId: s.factionId,
                 crewMemberCount: s.crewMembers.length,
                 isTutorial: s.tutorial
                     ? s.tutorial.ship?.crewMembers[0]?.name ||

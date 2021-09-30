@@ -153,7 +153,7 @@ export default Vue.extend({
       return (
         (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
+            a.factionId === this.ship.factionId,
         )?.level || 0) >= c.factionAllegianceFriendCutoff
       )
     },

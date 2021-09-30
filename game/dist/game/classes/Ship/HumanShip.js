@@ -66,9 +66,10 @@ class HumanShip extends CombatShip_1.CombatShip {
         if (data.tutorial && data.tutorial.step !== undefined)
             this.tutorial = new Tutorial_1.Tutorial(data.tutorial, this);
         // human ships always know where their homeworld is
-        if (this.faction.homeworld &&
-            !this.seenPlanets.find((p) => p === this.faction.homeworld))
-            this.discoverPlanet(this.faction.homeworld);
+        const homeworld = this.game.getHomeworld(this.factionId);
+        if (homeworld &&
+            !this.seenPlanets.find((p) => p === homeworld))
+            this.discoverPlanet(homeworld);
         this.recalculateShownPanels();
         if (data.commonCredits)
             this.commonCredits = data.commonCredits;
@@ -84,7 +85,9 @@ class HumanShip extends CombatShip_1.CombatShip {
                 `Your crew boards the ship`,
                 {
                     text: this.name,
-                    color: this.faction.color,
+                    color: this.factionId
+                        ? dist_1.default.factions[this.factionId].color
+                        : undefined,
                 },
                 `for the first time, and sets out towards the stars.`,
             ], `medium`), 2000);
@@ -550,7 +553,9 @@ class HumanShip extends CombatShip_1.CombatShip {
                             `the ship`,
                             {
                                 text: fullShip.name,
-                                color: fullShip.faction?.color,
+                                color: fullShip.factionId
+                                    ? dist_1.default.factions[fullShip.factionId].color
+                                    : undefined,
                                 tooltipData: fullShip.toReference(),
                             },
                         ];
@@ -854,7 +859,9 @@ class HumanShip extends CombatShip_1.CombatShip {
                     s.logEntry([
                         {
                             text: this.name,
-                            color: this.faction.color,
+                            color: this.factionId
+                                ? dist_1.default.factions[this.factionId].color
+                                : undefined,
                             tooltipData: this.toReference(),
                         },
                         `landed on`,
@@ -884,7 +891,9 @@ class HumanShip extends CombatShip_1.CombatShip {
                     s.logEntry([
                         {
                             text: this.name,
-                            color: this.faction.color,
+                            color: this.factionId
+                                ? dist_1.default.factions[this.factionId].color
+                                : undefined,
                             tooltipData: this.toReference(),
                         },
                         `landed on`,
@@ -1061,7 +1070,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     receiveBroadcast(message, from, garbleAmount, recipients) {
         const distance = dist_1.default.distance(this.location, from.location);
-        const prefix = `**${`species` in from ? from.species.icon : `🪐`}${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
+        const prefix = `**${from.name}** says: *(${dist_1.default.r2(distance, 2)}AU away, ${dist_1.default.r2(Math.min(100, (1 - garbleAmount) * 100), 0)}% fidelity)*\n`;
         io_1.default.emit(`ship:message`, this.id, `${prefix}\`${message}\``, `broadcast`);
         // * this was annoying and not useful
         // this.communicators.forEach((comm) => comm.use())
@@ -1297,7 +1306,7 @@ class HumanShip extends CombatShip_1.CombatShip {
             ? this.maxScanProperties || dist_1.default.baseShipScanProperties
             : dist_1.default.baseShipScanProperties;
         // same faction can see a few more properties
-        if (ship.faction === this.faction)
+        if (ship.factionId && ship.factionId === this.factionId)
             scanPropertiesToUse = {
                 ...scanPropertiesToUse,
                 ...dist_1.default.sameFactionShipScanProperties,

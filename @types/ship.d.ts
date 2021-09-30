@@ -1,7 +1,7 @@
 interface BaseShipData {
   name: string
   id?: string
-  factionId: FactionId
+  factionId?: FactionId
   location?: CoordinatePair
   velocity?: CoordinatePair
   seenPlanets?: { name: string }[]
