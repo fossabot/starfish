@@ -106,8 +106,10 @@ const DBShip = (0, mongoose_1.model)(`DBShip`, shipSchema);
 const alreadyUpdating = new Set();
 async function addOrUpdateInDb(data) {
     // * make sure we don't overwrite an update in progress
-    if (alreadyUpdating.has(data.id))
-        return (await DBShip.findOne({ id: data.id }))?.toObject();
+    if (alreadyUpdating.has(data.id)) {
+        const existing = (await DBShip.findOne({ id: data.id }))?.toObject();
+        return existing;
+    }
     alreadyUpdating.add(data.id);
     // c.log(`will update`, data)
     const stub = data.stubify();

@@ -1,10 +1,4 @@
-import {
-  Schema,
-  model,
-  Document,
-  Types,
-  MongooseDocument,
-} from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 import c from '../../../../common/dist'
 import type { AttackRemnant } from '../../game/classes/AttackRemnant'
 
@@ -81,6 +75,6 @@ export async function getAllConstructible(): Promise<
 > {
   const docs = (await DBAttackRemnant.find({})).map((z) =>
     z.toObject(),
-  )
+  ) as any
   return docs
 }

@@ -59,6 +59,12 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
             log_1.default.log(`reached depth limit`, obj, toRefOrUndefined(obj));
         return toRefOrUndefined(obj);
     }
+    // undefined
+    if (obj === undefined)
+        return doNotSetFlag;
+    // null
+    if (obj === null)
+        return null;
     // array
     if (Array.isArray(obj)) {
         newObj = obj
@@ -69,7 +75,7 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
     else if (typeof obj === `string` || obj instanceof String)
         newObj = obj;
     // object
-    else if (obj && typeof obj === `object`) {
+    else if (obj !== undefined && typeof obj === `object`) {
         for (const key of Object.keys(obj)) {
             const value = obj[key];
             // null/undefined
@@ -121,6 +127,8 @@ const toRefOrUndefined = (obj) => {
         return obj;
     if (typeof obj !== `object`)
         return obj;
+    if (obj.toReference)
+        return obj.toReference();
     const returnObj = {};
     if (obj.id)
         returnObj.id = obj.id;
@@ -132,86 +140,4 @@ const toRefOrUndefined = (obj) => {
         return undefined;
     return returnObj;
 };
-// try {
-//   circularReferencesRemoved = JSON.parse(
-//     JSON.stringify(
-//       gettersIncluded,
-//       (key: string, value: any) => {
-//         if ([`toUpdate`, `_stub`, `_id`].includes(key))
-//           return undefined
-//         // if (baseObject.ai === false)
-//         //   c.log(`key`, key, value)
-//         if (
-//           [
-//             `game`,
-//             `ship`,
-//             `ships`,
-//             `attacker`,
-//             `defender`,
-//             `crewMember`,
-//             `homeworld`,
-//             `faction`,
-//             `species`,
-//           ].includes(key)
-//         )
-//           return Array.isArray(value)
-//             ? value.map((v) =>
-//                 v.id ? { id: v.id } : null,
-//               )
-//             : value?.id
-//             ? { id: value.id }
-//             : null
-//         if (keysToReferencize?.includes(key))
-//           return value?.id ? { id: value.id } : null
-//         if (
-//           value &&
-//           typeof value === `object` &&
-//           !Array.isArray(value)
-//         ) {
-//           // if (allowRecursionDepth)
-//           //   return stubify(
-//           //     value,
-//           //     keysToReferencize,
-//           //     allowRecursionDepth,
-//           //   )
-//           return value?.id
-//             ? { id: value.id }
-//             : value?.name
-//             ? { name: value.name }
-//             : null
-//         }
-//         // if (
-//         //   [`ships`].includes(key) &&
-//         //   Array.isArray(value)
-//         // )
-//         //   if (allowRecursionDepth)
-//         //     return value.map((v) =>
-//         //       stubify(
-//         //         v,
-//         //         [
-//         //           `visible`,
-//         //           `seenPlanets`,
-//         //           `seenLandmarks`,
-//         //           `enemiesInAttackRange`,
-//         //         ],
-//         //         allowRecursionDepth,
-//         //       ),
-//         //     )
-//         //   else
-//         //     return value.map((v) =>
-//         //       v?.id
-//         //         ? { id: v.id }
-//         //         : v?.name
-//         //         ? { name: v.name }
-//         //         : null,
-//         //     )
-//         return value
-//       },
-//     ),
-//   ) as StubType
-// } catch (e) {
-//   c.log(`red`, `Failed to stubify`, baseObject, e)
-//   c.trace()
-// }
-// circularReferencesRemoved.lastUpdated = Date.now()
 //# sourceMappingURL=stubify.js.map

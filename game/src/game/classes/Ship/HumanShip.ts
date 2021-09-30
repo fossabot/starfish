@@ -1181,6 +1181,7 @@ export class HumanShip extends CombatShip {
     zones: Zone[]
   }) {
     let planetDataToSend: Partial<PlanetStub>[] = []
+    // send newly visible planets (only once)
     if (previousVisible?.planets?.length)
       planetDataToSend = this.visible.planets
         .filter((p) => Object.keys(p.toUpdate).length)

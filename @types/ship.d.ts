@@ -99,7 +99,7 @@ interface ShipPassiveEffect {
 interface TakenDamageResult extends ResponseWithMessage {
   damageTaken: number
   didDie: boolean
-  weapon: Weapon
+  weapon: { id: WeaponId }
   miss: boolean
   didCrit?: boolean
 }

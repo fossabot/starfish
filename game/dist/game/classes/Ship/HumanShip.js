@@ -764,6 +764,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     generateVisiblePayload(previousVisible) {
         let planetDataToSend = [];
+        // send newly visible planets (only once)
         if (previousVisible?.planets?.length)
             planetDataToSend = this.visible.planets
                 .filter((p) => Object.keys(p.toUpdate).length)
