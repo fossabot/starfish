@@ -2003,11 +2003,11 @@ export class HumanShip extends CombatShip {
           partialShip[key] = (
             ship[key as keyof Ship] as Array<any>
           ).map((el) => {
-            const returnVal: any = {}
+            const returnVal: any = []
             Object.keys(el)
               .filter((elKey: any) => value.includes(elKey))
               .forEach((elKey: any) => {
-                returnVal[elKey] = el[elKey]
+                returnVal.push(el[elKey])
               })
             return c.stubify(returnVal)
           })
