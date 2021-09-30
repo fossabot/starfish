@@ -1,1 +1,0 @@
-{"version":3,"file":"baseShipPassiveData.d.ts","sourceRoot":"","sources":["../src/baseShipPassiveData.ts"],"names":[],"mappings":"AAAA,QAAA,MAAM,mBAAmB,EAAE;KACxB,GAAG,IAAI,mBAAmB,GAAG;QAC5B,WAAW,EAAE,CAAC,CAAC,EAAE,iBAAiB,KAAK,MAAM,CAAA;KAC9C;CA0JF,CAAA;AACD,eAAe,mBAAmB,CAAA"}
