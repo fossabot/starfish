@@ -158,7 +158,7 @@ const recursivelyRemoveCircularReferencesInObject = (
 
   if (track) c.log(`tracked`, passedKey, obj, newObj)
 
-  c.log(newObj)
+  c.log(passedKey)
   return newObj
 }
 
