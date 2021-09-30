@@ -2012,14 +2012,12 @@ export class HumanShip extends CombatShip {
             return c.stubify(returnVal)
           })
         } else {
-          partialShip[key] = []
+          partialShip[key] = {}
           Object.keys(ship[key as keyof Ship]).forEach(
             (elKey) => {
               if (value.includes(elKey))
-                partialShip[key].push(
-                  c.stubify(
-                    (ship[key as keyof Ship] as any)[elKey],
-                  ),
+                partialShip[key][elKey] = c.stubify(
+                  (ship[key as keyof Ship] as any)[elKey],
                 )
             },
           )
