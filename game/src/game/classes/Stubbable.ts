@@ -8,13 +8,13 @@ export class Stubbable {
     allowRecursionDepth: number = 8,
   ): StubType {
     if (!this._stub) {
-      c.log(
-        `stubifying`,
-        (this as any).name,
-        (this as any).id,
-        (this as any).type,
-        (this as any).displayName,
-      )
+      // c.log(
+      //   `stubifying`,
+      //   (this as any).name,
+      //   (this as any).id,
+      //   (this as any).type,
+      //   (this as any).displayName,
+      // )
 
       this._stub = c.stubify(
         this,
