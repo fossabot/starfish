@@ -24,6 +24,6 @@
     "sass-loader": "^10.1.1",
     "socket.io-client": "^4.2.0",
     "utf-8-validate": "^5.0.6",
-    "vue-search-select": "^2.9.4"
+    "vue-search-select": "^2.9.5"
   }
 }
