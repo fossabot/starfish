@@ -1995,7 +1995,9 @@ export class HumanShip extends CombatShip {
       )
         return
       if (value === true)
-        partialShip[key] = ship[key as keyof Ship]
+        partialShip[key] = c.stubify(
+          ship[key as keyof Ship],
+        )
       if (Array.isArray(value)) {
         if (Array.isArray(ship[key as keyof Ship])) {
           partialShip[key] = (
@@ -2007,16 +2009,16 @@ export class HumanShip extends CombatShip {
               .forEach((elKey: any) => {
                 returnVal[elKey] = el[elKey]
               })
-            return returnVal
+            return c.stubify(returnVal)
           })
         } else {
           partialShip[key] = {}
           Object.keys(ship[key as keyof Ship]).forEach(
             (elKey) => {
               if (value.includes(elKey))
-                partialShip[key][elKey] = (
-                  ship[key as keyof Ship] as any
-                )[elKey]
+                partialShip[key][elKey] = c.stubify(
+                  (ship[key as keyof Ship] as any)[elKey],
+                )
             },
           )
         }

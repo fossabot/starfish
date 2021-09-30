@@ -1307,7 +1307,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 ship.passives.find((p) => p.id === `disguiseChassisType`))
                 return;
             if (value === true)
-                partialShip[key] = ship[key];
+                partialShip[key] = dist_1.default.stubify(ship[key]);
             if (Array.isArray(value)) {
                 if (Array.isArray(ship[key])) {
                     partialShip[key] = ship[key].map((el) => {
@@ -1317,14 +1317,14 @@ class HumanShip extends CombatShip_1.CombatShip {
                             .forEach((elKey) => {
                             returnVal[elKey] = el[elKey];
                         });
-                        return returnVal;
+                        return dist_1.default.stubify(returnVal);
                     });
                 }
                 else {
                     partialShip[key] = {};
                     Object.keys(ship[key]).forEach((elKey) => {
                         if (value.includes(elKey))
-                            partialShip[key][elKey] = ship[key][elKey];
+                            partialShip[key][elKey] = dist_1.default.stubify(ship[key][elKey]);
                     });
                 }
             }
