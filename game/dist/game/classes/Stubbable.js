@@ -10,8 +10,10 @@ class Stubbable {
         this._stub = null;
     }
     stubify(disallowedPropNames = [], allowRecursionDepth = 8) {
-        if (!this._stub)
+        if (!this._stub) {
+            dist_1.default.log(`stubifying`, this.name, this.id, this.type, this.displayName);
             this._stub = dist_1.default.stubify(this, disallowedPropNames, allowRecursionDepth);
+        }
         return this._stub;
     }
 }

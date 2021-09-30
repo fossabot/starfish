@@ -105,7 +105,6 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
         newObj = obj;
     if (track)
         log_1.default.log(`tracked`, passedKey, obj, newObj);
-    log_1.default.log(passedKey);
     return newObj;
 };
 function removeCircularReferences(baseObject, keysToReferencize = [], allowRecursionDepth) {
