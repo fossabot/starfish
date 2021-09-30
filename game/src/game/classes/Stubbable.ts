@@ -15,6 +15,7 @@ export class Stubbable {
         (this as any).type,
         (this as any).displayName,
       )
+
       this._stub = c.stubify(
         this,
         disallowedPropNames,
