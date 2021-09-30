@@ -28,6 +28,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "git-last-commit": "^1.0.1",
     "nodemon": "^2.0.7"
   }
 }

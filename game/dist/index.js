@@ -5,6 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.game = void 0;
 const dist_1 = __importDefault(require("../../common/dist"));
+const lastCommit = require(`git-last-commit`);
+lastCommit.getLastCommit((err, commit) => {
+    dist_1.default.log(`blue`, `Latest commit:`, commit?.subject, `(${new Date(parseInt(commit?.committedOn) * 1000).toLocaleString()})`);
+});
 const Game_1 = require("./game/Game");
 require("./server/io");
 const db_1 = require("./db");

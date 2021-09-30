@@ -452,8 +452,8 @@
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
-        "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
-        "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "version": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
+        "signature": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/node/assert/strict.d.ts": {
@@ -716,31 +716,6 @@
         "signature": "4f92917486836e30ec8c18667035e7bf15d16fcd5ab2748296994f54a3ae359b",
         "affectsGlobalScope": false
       },
-      "../node_modules/buffer/index.d.ts": {
-        "version": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
-        "signature": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/bson/bson.d.ts": {
-        "version": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
-        "signature": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/denque/index.d.ts": {
-        "version": "460f30d6ea494bbf076853e1588d30ec4651efcc26cbfcd2c91362f7efc87e89",
-        "signature": "460f30d6ea494bbf076853e1588d30ec4651efcc26cbfcd2c91362f7efc87e89",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/mongodb/mongodb.ts34.d.ts": {
-        "version": "e40c6c6da0638edb1fc56d49b822d300dbab1d1869dfc064c1cdb2ec68eafaee",
-        "signature": "e40c6c6da0638edb1fc56d49b822d300dbab1d1869dfc064c1cdb2ec68eafaee",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/mongoose/index.d.ts": {
-        "version": "d80c4e0d4038d812d74f6e711e4e15fb06c483cc5e0f0c9b392f698f577136c9",
-        "signature": "d80c4e0d4038d812d74f6e711e4e15fb06c483cc5e0f0c9b392f698f577136c9",
-        "affectsGlobalScope": false
-      },
       "../node_modules/@types/webidl-conversions/index.d.ts": {
         "version": "95d085761c8e8d469a9066a9cc7bd4b5bc671098d2f8442ae657fb35b3215cf1",
         "signature": "95d085761c8e8d469a9066a9cc7bd4b5bc671098d2f8442ae657fb35b3215cf1",
@@ -960,14 +935,6 @@
       "../node_modules/@types/json-schema/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/@types/mongoose/index.d.ts": [
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongodb/mongodb.ts34.d.ts"
-      ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts",
         "../node_modules/@types/node/util.d.ts"
@@ -1300,27 +1267,6 @@
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts": [
         "../node_modules/@types/node/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/bson/bson.d.ts": [
-        "../node_modules/@types/node/buffer.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/buffer/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/denque/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/mongodb/mongodb.ts34.d.ts": [
-        "../node_modules/@types/node/dns.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/net.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/tls.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/bson/bson.d.ts",
-        "../node_modules/denque/index.d.ts"
       ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../node_modules/@types/node/util.d.ts"
@@ -1516,14 +1462,6 @@
       "../node_modules/@types/json-schema/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/@types/mongoose/index.d.ts": [
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongodb/mongodb.ts34.d.ts"
-      ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts",
         "../node_modules/@types/node/util.d.ts"
@@ -1857,27 +1795,6 @@
         "../node_modules/@types/node/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/bson/bson.d.ts": [
-        "../node_modules/@types/node/buffer.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/buffer/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/denque/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/mongodb/mongodb.ts34.d.ts": [
-        "../node_modules/@types/node/dns.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/net.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/tls.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/bson/bson.d.ts",
-        "../node_modules/denque/index.d.ts"
-      ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -2059,7 +1976,6 @@
       "./src/stubify.ts",
       "./src/text.ts",
       "../node_modules/@types/json-schema/index.d.ts",
-      "../node_modules/@types/mongoose/index.d.ts",
       "../node_modules/@types/node/assert.d.ts",
       "../node_modules/@types/node/assert/strict.d.ts",
       "../node_modules/@types/node/async_hooks.d.ts",
@@ -2114,10 +2030,6 @@
       "../node_modules/@types/node/zlib.d.ts",
       "../node_modules/@types/webidl-conversions/index.d.ts",
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts",
-      "../node_modules/bson/bson.d.ts",
-      "../node_modules/buffer/index.d.ts",
-      "../node_modules/denque/index.d.ts",
-      "../node_modules/mongodb/mongodb.ts34.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
