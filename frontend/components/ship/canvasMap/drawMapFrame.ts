@@ -555,7 +555,9 @@ export default class Drawer {
     // ----- trails
     visible.ships?.forEach((s) => {
       const pointsToDraw = [
-        ...s.previousLocations,
+        ...(Array.isArray(s.previousLocations)
+          ? s.previousLocations
+          : []),
         s.location,
       ]
       pointsToDraw.forEach((pl, index) => {
