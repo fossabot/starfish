@@ -144,7 +144,7 @@ class Planet extends Stubbable_1.Stubbable {
     toVisibleStub() {
         return this.stubify();
     }
-    toLogStub() {
+    toReference() {
         return {
             type: `planet`,
             name: this.name,

@@ -155,7 +155,7 @@ export default function (
           {
             text: heldItem.displayName,
             color: `var(--item)`,
-            tooltipData: heldItem.toLogStub() as any,
+            tooltipData: heldItem.toReference() as any,
           },
           `sold by the captain for ${c.numberWithCommas(
             c.r2(price, 0),

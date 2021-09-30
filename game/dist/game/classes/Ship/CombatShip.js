@@ -356,7 +356,7 @@ class CombatShip extends Ship_1.Ship {
                         {
                             text: armor.displayName,
                             color: `var(--item)`,
-                            tooltipData: armor.toLogStub(),
+                            tooltipData: armor.toReference(),
                         },
                         `has been broken!`,
                     ], `high`);
@@ -366,7 +366,7 @@ class CombatShip extends Ship_1.Ship {
                             {
                                 text: this.name,
                                 color: this.faction.color,
-                                tooltipData: this.toLogStub(),
+                                tooltipData: this.toReference(),
                             },
                             `&nospace's`,
                             {
@@ -450,7 +450,7 @@ class CombatShip extends Ship_1.Ship {
                         {
                             text: equipmentToAttack.displayName,
                             color: `var(--item)`,
-                            tooltipData: equipmentToAttack.toLogStub(),
+                            tooltipData: equipmentToAttack.toReference(),
                         },
                         `has been disabled!`,
                     ], `high`);
@@ -460,7 +460,7 @@ class CombatShip extends Ship_1.Ship {
                             {
                                 text: this.name,
                                 color: this.faction.color,
-                                tooltipData: this.toLogStub(),
+                                tooltipData: this.toReference(),
                             },
                             `&nospace's`,
                             {
@@ -494,7 +494,7 @@ class CombatShip extends Ship_1.Ship {
             miss: attackDamageAfterPassives === 0,
             damageTaken: totalDamageDealt,
             didDie: didDie,
-            weapon: attack.weapon?.toLogStub(),
+            weapon: attack.weapon?.toReference(),
             damageTally,
         };
         // ship damage

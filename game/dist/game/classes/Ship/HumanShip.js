@@ -254,7 +254,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: p.name,
                     color: p.color,
-                    tooltipData: p.toLogStub(),
+                    tooltipData: p.toReference(),
                 },
                 `&nospace!`,
             ], `high`);
@@ -279,7 +279,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: l.name,
                     color: l.color,
-                    tooltipData: l.toLogStub(),
+                    tooltipData: l.toReference(),
                 },
                 `&nospace!`,
             ], `high`);
@@ -511,7 +511,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: foundPlanet.name,
                         color: foundPlanet.color,
-                        tooltipData: foundPlanet.toLogStub(),
+                        tooltipData: foundPlanet.toReference(),
                     },
                 ];
             if (!targetData) {
@@ -534,7 +534,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: foundLandmark.name,
                             color: foundLandmark.color,
-                            tooltipData: foundLandmark.toLogStub(),
+                            tooltipData: foundLandmark.toReference(),
                         },
                     ];
             }
@@ -549,7 +549,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                             {
                                 text: fullShip.name,
                                 color: fullShip.faction?.color,
-                                tooltipData: fullShip.toLogStub(),
+                                tooltipData: fullShip.toReference(),
                             },
                         ];
                 }
@@ -742,7 +742,6 @@ class HumanShip extends CombatShip_1.CombatShip {
                     damage,
                     miss: false,
                     targetType: `any`,
-                    weapon: null,
                 });
             }
         }
@@ -841,7 +840,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: this.planet.name,
                     color: this.planet.color,
-                    tooltipData: this.planet.toLogStub(),
+                    tooltipData: this.planet.toReference(),
                 },
                 `&nospace.`,
             ], `high`);
@@ -853,13 +852,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: this.toLogStub(),
+                            tooltipData: this.toReference(),
                         },
                         `landed on`,
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.toLogStub(),
+                            tooltipData: s.planet.toReference(),
                         },
                         `&nospace.`,
                     ]);
@@ -871,7 +870,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: previousPlanet.name,
                     color: previousPlanet.color,
-                    tooltipData: previousPlanet.toLogStub(),
+                    tooltipData: previousPlanet.toReference(),
                 },
                 `&nospace.`,
             ]);
@@ -883,13 +882,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: this.toLogStub(),
+                            tooltipData: this.toReference(),
                         },
                         `landed on`,
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.toLogStub(),
+                            tooltipData: s.planet.toReference(),
                         },
                         `&nospace.`,
                     ]);

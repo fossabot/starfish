@@ -120,12 +120,6 @@ class Zone extends Stubbable_1.Stubbable {
     toVisibleStub() {
         return this.stubify();
     }
-    toLogStub() {
-        return {
-            type: `zone`,
-            id: this.id,
-        };
-    }
     toReference() {
         return {
             type: `zone`,

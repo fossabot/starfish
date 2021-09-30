@@ -361,7 +361,7 @@ export class HumanShip extends CombatShip {
           {
             text: p.name,
             color: p.color,
-            tooltipData: p.toLogStub() as any,
+            tooltipData: p.toReference() as any,
           },
           `&nospace!`,
         ],
@@ -406,7 +406,7 @@ export class HumanShip extends CombatShip {
           {
             text: l.name,
             color: l.color,
-            tooltipData: l.toLogStub() as any,
+            tooltipData: l.toReference() as any,
           },
           `&nospace!`,
         ],
@@ -752,7 +752,7 @@ export class HumanShip extends CombatShip {
           {
             text: foundPlanet.name,
             color: foundPlanet.color,
-            tooltipData: foundPlanet.toLogStub() as any,
+            tooltipData: foundPlanet.toReference() as any,
           },
         ]
       if (!targetData) {
@@ -786,7 +786,8 @@ export class HumanShip extends CombatShip {
             {
               text: foundLandmark.name,
               color: foundLandmark.color,
-              tooltipData: foundLandmark.toLogStub() as any,
+              tooltipData:
+                foundLandmark.toReference() as any,
             },
           ]
       }
@@ -806,7 +807,7 @@ export class HumanShip extends CombatShip {
               {
                 text: fullShip.name,
                 color: fullShip.faction?.color,
-                tooltipData: fullShip.toLogStub() as any,
+                tooltipData: fullShip.toReference() as any,
               },
             ]
         }
@@ -1134,7 +1135,6 @@ export class HumanShip extends CombatShip {
             damage,
             miss: false,
             targetType: `any`,
-            weapon: null,
           },
         )
       }
@@ -1299,7 +1299,7 @@ export class HumanShip extends CombatShip {
           {
             text: this.planet.name,
             color: this.planet.color,
-            tooltipData: this.planet.toLogStub() as any,
+            tooltipData: this.planet.toReference() as any,
           },
           `&nospace.`,
         ],
@@ -1312,13 +1312,13 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub() as any,
+              tooltipData: this.toReference() as any,
             },
             `landed on`,
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
+              tooltipData: s.planet.toReference() as any,
             },
             `&nospace.`,
           ])
@@ -1329,7 +1329,7 @@ export class HumanShip extends CombatShip {
         {
           text: previousPlanet.name,
           color: previousPlanet.color,
-          tooltipData: previousPlanet.toLogStub() as any,
+          tooltipData: previousPlanet.toReference() as any,
         },
         `&nospace.`,
       ])
@@ -1340,13 +1340,13 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub() as any,
+              tooltipData: this.toReference() as any,
             },
             `landed on`,
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
+              tooltipData: s.planet.toReference() as any,
             },
             `&nospace.`,
           ])

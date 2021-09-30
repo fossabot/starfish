@@ -17,7 +17,7 @@ const alwaysReferencize = [
     `faction`,
     `species`,
 ];
-function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 10) {
+function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
     if (!baseObject)
         return undefined;
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
@@ -105,6 +105,7 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
         newObj = obj;
     if (track)
         log_1.default.log(`tracked`, passedKey, obj, newObj);
+    log_1.default.log(newObj);
     return newObj;
 };
 function removeCircularReferences(baseObject, keysToReferencize = [], allowRecursionDepth) {

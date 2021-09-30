@@ -407,7 +407,7 @@
         "affectsGlobalScope": false
       },
       "./src/stubify.ts": {
-        "version": "229b2c4224ef90023f5ab50c220f401013876ee284e0d3e2a3bcc030ab0c9547",
+        "version": "d2cf0790f5a3bed8c14244ed008c0707bd0a92bb9b1ecfc12267d3870a43e433",
         "signature": "5791b228c7ab210e7d42e47f452014ac42d5ec04eab07ee42c0e5c6ae3ded7b5",
         "affectsGlobalScope": false
       },

@@ -576,7 +576,7 @@ export abstract class CombatShip extends Ship {
               {
                 text: armor.displayName,
                 color: `var(--item)`,
-                tooltipData: armor.toLogStub() as any,
+                tooltipData: armor.toReference() as any,
               },
               `has been broken!`,
             ],
@@ -589,7 +589,7 @@ export abstract class CombatShip extends Ship {
                 {
                   text: this.name,
                   color: this.faction.color,
-                  tooltipData: this.toLogStub() as any,
+                  tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,
                 {
@@ -708,7 +708,7 @@ export abstract class CombatShip extends Ship {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
                 tooltipData:
-                  equipmentToAttack.toLogStub() as any,
+                  equipmentToAttack.toReference() as any,
               },
               `has been disabled!`,
             ],
@@ -721,7 +721,7 @@ export abstract class CombatShip extends Ship {
                 {
                   text: this.name,
                   color: this.faction.color,
-                  tooltipData: this.toLogStub() as any,
+                  tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,
                 {
@@ -775,7 +775,7 @@ export abstract class CombatShip extends Ship {
       miss: attackDamageAfterPassives === 0,
       damageTaken: totalDamageDealt,
       didDie: didDie,
-      weapon: attack.weapon?.toLogStub(),
+      weapon: attack.weapon?.toReference(),
       damageTally,
     }
 

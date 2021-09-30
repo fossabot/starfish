@@ -315,7 +315,7 @@ export default function (
                         i.type === orders.target?.type &&
                         i.id === orders.target.id,
                     )
-                    ?.toLogStub()
+                    ?.toReference()
                 : (orders.target as any),
               color:
                 orders.target.type === `planet`

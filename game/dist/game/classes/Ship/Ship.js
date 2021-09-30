@@ -556,7 +556,7 @@ class Ship extends Stubbable_1.Stubbable {
             return 0;
         return existing.amount;
     }
-    toLogStub() {
+    toReference() {
         return {
             type: `ship`,
             id: this.id,
@@ -572,13 +572,6 @@ class Ship extends Stubbable_1.Stubbable {
             tagline: this.tagline,
             headerBackground: this.headerBackground,
             level: this.level,
-        };
-    }
-    toReference() {
-        return {
-            type: `ship`,
-            name: this.name,
-            id: this.id,
         };
     }
     // ----- misc stubs -----

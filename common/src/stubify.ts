@@ -20,7 +20,7 @@ export default function stubify<
 >(
   baseObject: BaseType,
   keysToReferencize: string[] = [],
-  allowRecursionDepth: number = 10,
+  allowRecursionDepth: number = 8,
 ): StubType {
   if (!baseObject) return undefined as any
   const profiler = new Profiler(10, `stubify`, false, 0)
@@ -158,6 +158,7 @@ const recursivelyRemoveCircularReferencesInObject = (
 
   if (track) c.log(`tracked`, passedKey, obj, newObj)
 
+  c.log(newObj)
   return newObj
 }
 

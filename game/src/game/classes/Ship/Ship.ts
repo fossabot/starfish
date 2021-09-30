@@ -812,7 +812,7 @@ export class Ship extends Stubbable {
     return existing.amount
   }
 
-  toLogStub() {
+  toReference() {
     return {
       type: `ship`,
       id: this.id,
@@ -828,14 +828,6 @@ export class Ship extends Stubbable {
       tagline: this.tagline,
       headerBackground: this.headerBackground,
       level: (this as any).level,
-    }
-  }
-
-  toReference(): Reference {
-    return {
-      type: `ship`,
-      name: this.name,
-      id: this.id,
     }
   }
 
