@@ -123,4 +123,12 @@ export class Item extends Stubbable {
       ownerId: this.ship.id,
     }
   }
+
+  toReference(): ItemStub {
+    return {
+      type: this.type,
+      id: this.id,
+      ownerId: this.ship.id,
+    }
+  }
 }

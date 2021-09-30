@@ -80,7 +80,7 @@ const tactics: CombatTactic[] = [
 ]
 
 function getHitDamage(
-  weapon: WeaponStub,
+  weapon: { damage: number },
   totalMunitionsSkill: number = 0,
 ) {
   return (

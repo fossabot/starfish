@@ -8,6 +8,7 @@ import type { HumanShip } from '../Ship/HumanShip'
 export class Planet extends Stubbable {
   static readonly massAdjuster = 0.5
 
+  readonly id: string
   readonly type = `planet`
   readonly pacifist: boolean
   readonly rooms: CrewLocation[] = []
@@ -36,6 +37,7 @@ export class Planet extends Stubbable {
   constructor(
     {
       planetType,
+      id,
       name,
       color,
       location,
@@ -55,6 +57,7 @@ export class Planet extends Stubbable {
     super()
     this.game = game
     this.planetType = planetType || `basic`
+    this.id = id || `planet` + `${Math.random()}`.slice(2)
     this.name = name
     this.color = color
     this.location = location
@@ -225,6 +228,7 @@ export class Planet extends Stubbable {
     return {
       type: `planet`,
       name: this.name,
+      id: this.id,
     }
   }
 

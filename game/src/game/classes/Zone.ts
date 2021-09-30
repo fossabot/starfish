@@ -181,4 +181,11 @@ export class Zone extends Stubbable {
       id: this.id,
     }
   }
+
+  toReference() {
+    return {
+      type: `zone`,
+      id: this.id,
+    }
+  }
 }

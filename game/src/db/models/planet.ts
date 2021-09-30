@@ -16,6 +16,7 @@ const planetSchemaFields: Record<
   any
 > = {
   planetType: String,
+  id: String,
   location: [{ type: Number, required: true }],
   color: String,
   name: { type: String, required: true },

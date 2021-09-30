@@ -1134,6 +1134,7 @@ export class HumanShip extends CombatShip {
             damage,
             miss: false,
             targetType: `any`,
+            weapon: null,
           },
         )
       }
@@ -1420,7 +1421,7 @@ export class HumanShip extends CombatShip {
             {
               text: z.name,
               color: z.color,
-              tooltipData: z.stubify(),
+              tooltipData: z.toReference(),
             },
             `&nospace.`,
           ],
@@ -1433,7 +1434,7 @@ export class HumanShip extends CombatShip {
             {
               text: z.name,
               color: z.color,
-              tooltipData: z.stubify(),
+              tooltipData: z.toReference(),
             },
             `&nospace.`,
           ],
@@ -1487,7 +1488,9 @@ export class HumanShip extends CombatShip {
     if (removeExisting) this.items = []
     const res = super.equipLoadout(l)
     if (!res) return res
-    this.toUpdate.items = [...this.items]
+    this.toUpdate.items = [
+      ...this.items.map((i) => i.stubify()),
+    ] as ItemStub[]
     this.resolveRooms()
     this.updateThingsThatCouldChangeOnItemChange()
     return true

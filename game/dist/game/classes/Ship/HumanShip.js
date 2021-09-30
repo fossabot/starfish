@@ -742,6 +742,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     damage,
                     miss: false,
                     targetType: `any`,
+                    weapon: null,
                 });
             }
         }
@@ -936,7 +937,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: z.name,
                         color: z.color,
-                        tooltipData: z.stubify(),
+                        tooltipData: z.toReference(),
                     },
                     `&nospace.`,
                 ], `high`);
@@ -946,7 +947,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: z.name,
                         color: z.color,
-                        tooltipData: z.stubify(),
+                        tooltipData: z.toReference(),
                     },
                     `&nospace.`,
                 ], `high`);
@@ -984,7 +985,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         const res = super.equipLoadout(l);
         if (!res)
             return res;
-        this.toUpdate.items = [...this.items];
+        this.toUpdate.items = [
+            ...this.items.map((i) => i.stubify()),
+        ];
         this.resolveRooms();
         this.updateThingsThatCouldChangeOnItemChange();
         return true;

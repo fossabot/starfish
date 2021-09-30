@@ -95,6 +95,13 @@ class Item extends Stubbable_1.Stubbable {
             ownerId: this.ship.id,
         };
     }
+    toReference() {
+        return {
+            type: this.type,
+            id: this.id,
+            ownerId: this.ship.id,
+        };
+    }
 }
 exports.Item = Item;
 //# sourceMappingURL=Item.js.map

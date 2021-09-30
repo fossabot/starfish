@@ -86,6 +86,7 @@ function generateMiningPlanet(game) {
     return {
         planetType: `mining`,
         pacifist: false,
+        id: `planet` + `${Math.random()}`.slice(2),
         name,
         location,
         color,
@@ -208,6 +209,7 @@ function generateBasicPlanet(game, homeworldFactionKey) {
         : Math.random() > 0.2;
     return {
         planetType,
+        id: `planet` + `${Math.random()}`.slice(2),
         name,
         color,
         creatures,

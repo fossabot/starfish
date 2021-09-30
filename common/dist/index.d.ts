@@ -158,16 +158,18 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
-        species: ("passives" | "id" | "icon" | "factionId" | "singular" | "description")[];
-        chassis: ("mass" | "passives" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        faction: ("id" | "name" | "color" | "homeworld" | "ai" | "species")[];
+        species: ("id" | "passives" | "icon" | "factionId" | "singular" | "description")[];
+        chassis: ("id" | "mass" | "passives" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;
         _maxHp: boolean;
     };
-    getHitDamage: (weapon: WeaponStub, totalMunitionsSkill?: number) => number;
+    getHitDamage: (weapon: {
+        damage: number;
+    }, totalMunitionsSkill?: number) => number;
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;

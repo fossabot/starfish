@@ -8,6 +8,7 @@ const mongoose_1 = require("mongoose");
 const dist_1 = __importDefault(require("../../../../common/dist"));
 const planetSchemaFields = {
     planetType: String,
+    id: String,
     location: [{ type: Number, required: true }],
     color: String,
     name: { type: String, required: true },

@@ -234,6 +234,7 @@ export abstract class CombatShip extends Ship {
         (p) => p.id === `boostChassisAgility`,
       )?.intensity || 0)
     const hitRoll = Math.random()
+
     let miss =
       hitRoll * enemyAgility <
       Math.min(rangeAsPercent, minHitChance)
@@ -243,6 +244,7 @@ export abstract class CombatShip extends Ship {
       (weapon.critChance === undefined
         ? this.game.settings.baseCritChance
         : weapon.critChance)
+
     let damage = miss
       ? 0
       : c.getHitDamage(weapon, totalMunitionsSkill) *
@@ -391,14 +393,14 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: target.toLogStub() as any,
+            tooltipData: target.toReference() as any,
           },
           `with`,
           {
             text: weapon.displayName,
             color: `var(--item)`,
             tooltipData: {
-              ...(weapon.toLogStub() as any),
+              ...(weapon.toReference() as any),
               cooldownRemaining: undefined,
             },
           },
@@ -413,16 +415,14 @@ export abstract class CombatShip extends Ship {
           {
             text: target.name,
             color: target.faction.color,
-            tooltipData: target.toLogStub() as any,
+            tooltipData: target.toReference() as any,
           },
           `with`,
           {
             text: weapon.displayName,
             color: `var(--item)`,
             tooltipData: {
-              ...(weapon.toLogStub() as any),
-              cooldownRemaining: undefined,
-              _hp: undefined,
+              ...(weapon.toReference() as any),
             },
           },
           `&nospace, dealing`,
@@ -743,9 +743,7 @@ export abstract class CombatShip extends Ship {
         equipmentToAttack.announceWhenBroken = false
       }
     }
-    this.toUpdate.items = this.items.map((i) =>
-      c.stubify(i),
-    )
+    this.toUpdate.items = this.items.map((i) => i.stubify())
 
     const didDie = previousHp > 0 && this.hp <= 0
     if (didDie)
@@ -777,7 +775,7 @@ export abstract class CombatShip extends Ship {
       miss: attackDamageAfterPassives === 0,
       damageTaken: totalDamageDealt,
       didDie: didDie,
-      weapon: attack.weapon?.stubify(),
+      weapon: attack.weapon?.toLogStub(),
       damageTally,
     }
 
@@ -795,18 +793,13 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.faction.color,
-            tooltipData: attacker.toLogStub() as any,
+            tooltipData: attacker?.toReference() as any,
           },
           `&nospace's`,
           {
             text: attack.weapon.displayName,
             color: `var(--item)`,
-            tooltipData: {
-              type: `weapon`,
-              description: attack.weapon.description,
-              displayName: attack.weapon.displayName,
-              id: attack.weapon.id,
-            },
+            tooltipData: attack.weapon.toReference(),
           },
           `&nospace.`,
           ...(attack.miss
@@ -818,7 +811,10 @@ export abstract class CombatShip extends Ship {
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
-                    ...damageResult,
+                    ...{
+                      ...damageResult,
+                      weapon: undefined,
+                    },
                   },
                 },
                 `&nospace.`,
@@ -838,8 +834,8 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,
-            tooltipData: attacker.stubify
-              ? attacker.stubify()
+            tooltipData: attacker.toReference
+              ? attacker.toReference()
               : undefined,
           },
           `&nospace.`,
@@ -852,7 +848,10 @@ export abstract class CombatShip extends Ship {
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
-                    ...damageResult,
+                    ...{
+                      ...damageResult,
+                      weapon: undefined,
+                    },
                   },
                 },
                 `&nospace.`,

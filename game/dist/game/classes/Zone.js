@@ -126,6 +126,12 @@ class Zone extends Stubbable_1.Stubbable {
             id: this.id,
         };
     }
+    toReference() {
+        return {
+            type: `zone`,
+            id: this.id,
+        };
+    }
 }
 exports.Zone = Zone;
 //# sourceMappingURL=Zone.js.map

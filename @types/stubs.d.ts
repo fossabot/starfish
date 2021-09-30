@@ -101,6 +101,7 @@ interface PlanetStub extends BaseStub {
 interface PlanetLogStub extends BaseStub {
   type: `planet`
   name: string
+  id: string
 }
 interface CacheStub extends BaseStub {
   location: CoordinatePair
@@ -136,6 +137,7 @@ interface ItemStub extends BaseStub {
   id: string
   repair?: number
   ownerId?: string
+  displayName?: string
 }
 interface WeaponStub extends ItemStub {
   cooldownRemaining?: number

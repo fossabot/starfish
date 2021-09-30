@@ -123,6 +123,7 @@ export function generateMiningPlanet(
   return {
     planetType: `mining`,
     pacifist: false,
+    id: `planet` + `${Math.random()}`.slice(2),
     name,
     location,
     color,
@@ -266,6 +267,7 @@ export function generateBasicPlanet(
 
   return {
     planetType,
+    id: `planet` + `${Math.random()}`.slice(2),
     name,
     color,
     creatures,
