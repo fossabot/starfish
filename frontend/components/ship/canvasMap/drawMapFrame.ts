@@ -510,6 +510,7 @@ export default class Drawer {
       })
     })
 
+    c.log(Boolean(ship.planet), ship.name)
     // player ship
     this.drawPoint({
       location: [ship.location[0], ship.location[1] * -1],

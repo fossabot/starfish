@@ -715,7 +715,10 @@ export class Tutorial {
     this.step = data.step
     this.baseLocation = [
       ...(this.ship.game.getHomeworld(this.ship.guildId)
-        ?.location || [0, 0]),
+        ?.location ||
+        c.randomFromArray(
+          this.ship.game.planets.filter((p) => p.homeworld),
+        ).location),
     ]
     this.currentStep = this.steps[this.step]
     if (this.step === -1) {
