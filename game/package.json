@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@types/mongoose": "5.11.97",
-    "@types/node": "^16.9.1",
+    "@types/node": "^16.10.2",
     "dotenv": "^10.0.0",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
