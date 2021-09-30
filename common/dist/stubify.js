@@ -14,7 +14,7 @@ const alwaysReferencize = [
     `defender`,
     `crewMember`,
     `homeworld`,
-    `faction`,
+    `guild`,
     `species`,
 ];
 function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
@@ -22,9 +22,14 @@ function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
         return undefined;
     const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
     profiler.step(`apply getters`);
-    const objectWithGetters = applyGettersToObject(baseObject, keysToReferencize);
-    profiler.step(`stringify and parse`);
+    let objectWithGetters;
+    if (!Array.isArray(baseObject) &&
+        typeof baseObject === `object`)
+        objectWithGetters = applyGettersToObject(baseObject, keysToReferencize);
+    else
+        objectWithGetters = baseObject;
     // c.log(`with getters`, Object.keys(gettersIncluded))
+    profiler.step(`stringify and parse`);
     const objectWithCircularReferencesRemoved = removeCircularReferences(objectWithGetters, keysToReferencize, allowRecursionDepth);
     profiler.end();
     return objectWithCircularReferencesRemoved;

@@ -1311,20 +1311,20 @@ class HumanShip extends CombatShip_1.CombatShip {
             if (Array.isArray(value)) {
                 if (Array.isArray(ship[key])) {
                     partialShip[key] = ship[key].map((el) => {
-                        const returnVal = {};
+                        const returnVal = [];
                         Object.keys(el)
                             .filter((elKey) => value.includes(elKey))
                             .forEach((elKey) => {
-                            returnVal[elKey] = el[elKey];
+                            returnVal.push(el[elKey]);
                         });
                         return dist_1.default.stubify(returnVal);
                     });
                 }
                 else {
-                    partialShip[key] = {};
+                    partialShip[key] = [];
                     Object.keys(ship[key]).forEach((elKey) => {
                         if (value.includes(elKey))
-                            partialShip[key][elKey] = dist_1.default.stubify(ship[key][elKey]);
+                            partialShip[key].push(dist_1.default.stubify(ship[key][elKey]));
                     });
                 }
             }
