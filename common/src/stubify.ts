@@ -10,7 +10,7 @@ const alwaysReferencize = [
   `defender`,
   `crewMember`,
   `homeworld`,
-  `faction`,
+  `guild`,
   `species`,
 ]
 
@@ -25,13 +25,20 @@ export default function stubify<
   if (!baseObject) return undefined as any
   const profiler = new Profiler(10, `stubify`, false, 0)
   profiler.step(`apply getters`)
-  const objectWithGetters: StubType = applyGettersToObject(
-    baseObject,
-    keysToReferencize,
+
+  let objectWithGetters: StubType
+  if (
+    !Array.isArray(baseObject) &&
+    typeof baseObject === `object`
   )
-  profiler.step(`stringify and parse`)
+    objectWithGetters = applyGettersToObject(
+      baseObject,
+      keysToReferencize,
+    )
+  else objectWithGetters = baseObject as any
   // c.log(`with getters`, Object.keys(gettersIncluded))
 
+  profiler.step(`stringify and parse`)
   const objectWithCircularReferencesRemoved: StubType =
     removeCircularReferences(
       objectWithGetters,

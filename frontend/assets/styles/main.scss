@@ -74,7 +74,7 @@ a:hover {
     ),
     pointer;
 }
-.bluefaction a {
+.blueguild a {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -83,7 +83,7 @@ a:hover {
     ),
     pointer;
 }
-.greenfaction a {
+.greenguild a {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -92,7 +92,7 @@ a:hover {
     ),
     pointer;
 }
-.purplefaction a {
+.purpleguild a {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -300,10 +300,10 @@ summary:hover {
   text-decoration: underline;
 }
 
-.bluefaction button,
-.bluefaction .button,
-.bluefaction input,
-.bluefaction select {
+.blueguild button,
+.blueguild .button,
+.blueguild input,
+.blueguild select {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -312,10 +312,10 @@ summary:hover {
     ),
     pointer;
 }
-.greenfaction button,
-.greenfaction .button,
-.greenfaction input,
-.greenfaction select {
+.greenguild button,
+.greenguild .button,
+.greenguild input,
+.greenguild select {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -324,10 +324,10 @@ summary:hover {
     ),
     pointer;
 }
-.purplefaction button,
-.purplefaction .button,
-.purplefaction input,
-.purplefaction select {
+.purpleguild button,
+.purpleguild .button,
+.purpleguild input,
+.purpleguild select {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -415,7 +415,7 @@ select {
     ),
     pointer;
 }
-.bluefaction .link {
+.blueguild .link {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -424,7 +424,7 @@ select {
     ),
     pointer;
 }
-.greenfaction .link {
+.greenguild .link {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -433,7 +433,7 @@ select {
     ),
     pointer;
 }
-.purplefaction .link {
+.purpleguild .link {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -597,7 +597,7 @@ ul {
     ),
     pointer;
 }
-.bluefaction .pointer {
+.blueguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -606,7 +606,7 @@ ul {
     ),
     pointer;
 }
-.greenfaction .pointer {
+.greenguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -615,7 +615,7 @@ ul {
     ),
     pointer;
 }
-.purplefaction .pointer {
+.purpleguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(

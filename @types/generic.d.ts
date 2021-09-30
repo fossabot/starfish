@@ -4,7 +4,7 @@ interface Reference {
   type: string
   id?: string
   name?: string
-  factionId?: FactionId
+  guildId?: GuildId
   speciesId?: SpeciesId
   tagline?: string
   headerBackground?: string

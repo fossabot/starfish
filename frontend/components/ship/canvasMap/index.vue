@@ -284,8 +284,8 @@ export default Vue.extend({
               targetPoints.push({
                 location: tp.location,
                 radius,
-                color: tp.faction
-                  ? c.factions[tp.faction.id].color
+                color: tp.guild
+                  ? c.guilds[tp.guildId].color
                   : tp.color,
               })
             } else if (tp.type) {
@@ -299,8 +299,8 @@ export default Vue.extend({
                   location: this.ship.visible.ships.find(
                     (s) => s.id === tp.id,
                   )?.location,
-                  color: tp.faction
-                    ? c.factions[tp.faction.id].color
+                  color: tp.guild
+                    ? c.guilds[tp.guildId].color
                     : tp.color,
                 })
               }

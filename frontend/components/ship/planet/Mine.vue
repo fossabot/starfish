@@ -5,7 +5,7 @@
     "
     class="panesection"
     v-tooltip="
-      `When a job is completed, all ships actively mining that resource will share the payout evenly, regardless of size or faction.<br />
+      `When a job is completed, all ships actively mining that resource will share the payout evenly, regardless of size or guild.<br />
       The crew members mining that resource will get priority on the results, with remaining cargo shared evenly between all other crew members.`
     "
   >

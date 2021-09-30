@@ -361,7 +361,7 @@ export default function (
       crewMember.credits -= amount
       crewMember.toUpdate.credits = crewMember.credits
 
-      planet.donate(amount, ship.factionId)
+      planet.donate(amount, ship.guildId)
 
       c.log(
         `gray`,
@@ -455,23 +455,9 @@ export default function (
         cargoId,
         planet,
         amount,
-        ship.factionId,
+        ship.guildId,
       )
-      // c.log({
-      //   price,
-      //   credits: crewMember.credits,
-      //   unit: Math.ceil(
-      //     c.cargo[cargoForSale.id].basePrice *
-      //       cargoForSale.buyMultiplier *
-      //       planet?.priceFluctuator *
-      //       ((planet.allegiances.find(
-      //         (a) => a.faction.id === ship.factionId,
-      //       )?.level || 0) >=
-      //       c.factionAllegianceFriendCutoff
-      //         ? c.factionVendorMultiplier
-      //         : 1),
-      //   ),
-      // })
+
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -485,7 +471,7 @@ export default function (
       callback({ data: { cargoId, amount, price } })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -539,7 +525,7 @@ export default function (
         cargoId,
         planet,
         amount,
-        ship.factionId,
+        ship.guildId,
       )
 
       crewMember.credits = Math.round(
@@ -549,7 +535,7 @@ export default function (
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -661,7 +647,7 @@ export default function (
       const price = c.getRepairPrice(
         planet,
         hp,
-        ship.factionId,
+        ship.guildId,
       )
 
       if (price > crewMember.credits)
@@ -690,7 +676,7 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -736,7 +722,7 @@ export default function (
         passiveForSale,
         currentLevel,
         planet,
-        ship.factionId,
+        ship.guildId,
       )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
@@ -753,7 +739,7 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,

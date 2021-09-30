@@ -5,9 +5,10 @@
       bgImage="/images/paneBackgrounds/2.jpg"
     >
       <template #title>
-        <span class="sectionemoji">{{
-          c.species[ship.species.id].icon
-        }}</span
+        <span
+          class="sectionemoji"
+          v-if="c.species[crewMember.speciesId]"
+          >{{ c.species[crewMember.speciesId].icon }}</span
         >{{ crewMember.name }}
       </template>
 

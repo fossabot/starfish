@@ -109,7 +109,7 @@ interface IOClientEvents {
         {
           name: string
           id: string
-          factionId?: FactionId
+          guildId?: GuildId
           crewMemberCount: number
           isTutorial: string | false
         }[]

@@ -8,7 +8,7 @@
     }"
   >
     <div>
-      {{ c.species[ship.species.id].icon }}
+      {{ c.species[speciesId].icon }}
     </div>
     <div class="name">
       {{ name }}
@@ -24,6 +24,7 @@ import c from '../../../../common/dist'
 export default Vue.extend({
   props: {
     name: {},
+    speciesId: {},
     location: { type: String as PropType<CrewLocation> },
     roomEls: {
       type: Object as PropType<{

@@ -20,8 +20,8 @@ interface BasePlanetData {
 
 interface BaseBasicPlanetData extends BasePlanetData {
   leanings: PlanetLeaning[]
-  factionId?: FactionId
-  homeworld?: { id: FactionId }
+  guildId?: GuildId
+  homeworld?: { id: GuildId }
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
 }
@@ -70,7 +70,7 @@ interface PlanetVendor {
 }
 
 interface PlanetAllegianceData {
-  factionId: FactionId
+  guildId: GuildId
   level: number
 }
 

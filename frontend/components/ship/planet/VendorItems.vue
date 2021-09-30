@@ -143,12 +143,12 @@ export default Vue.extend({
     isCaptain() {
       return this.ship?.captain === this.userId
     },
-    isFriendlyToFaction() {
+    isFriendlyToGuild() {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.factionId === this.ship.factionId,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     buyableItems() {
@@ -161,7 +161,7 @@ export default Vue.extend({
           const price = c.getItemBuyPrice(
             item,
             this.ship.planet,
-            this.ship.factionId,
+            this.ship.guildId,
           )
           return {
             ...item,
@@ -180,7 +180,7 @@ export default Vue.extend({
             item.type,
             item.id as ItemId,
             this.ship.planet,
-            this.ship.factionId,
+            this.ship.guildId,
           )
           return {
             ...item,
@@ -202,7 +202,7 @@ export default Vue.extend({
             chassis,
             this.ship.planet,
             this.ship.chassis.id,
-            this.ship.factionId,
+            this.ship.guildId,
           )
           return {
             ...chassis,

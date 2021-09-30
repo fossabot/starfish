@@ -1,6 +1,6 @@
 <template>
   <Box
-    class="factionrank"
+    class="guildrank"
     v-if="show"
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/12.jpg"
@@ -11,8 +11,8 @@
 
     <Tabs>
       <Tab
-        v-for="ranking in ship.factionRankings"
-        :key="'factionRanking' + ranking.category"
+        v-for="ranking in ship.guildRankings"
+        :key="'guildRanking' + ranking.category"
         :title="c.camelCaseToWords(ranking.category)"
       >
         <div class="flex rounded">
@@ -21,15 +21,14 @@
             class="scorebit"
             :style="{
               'flex-grow': score.score,
-              background:
-                c.factions[score.faction.id].color,
+              background: c.guilds[score.guildId].color,
             }"
             :key="
-              'score' + ranking.category + score.faction.id
+              'score' + ranking.category + score.guildId
             "
             v-tooltip="
               `#${index + 1}) ${c.capitalize(
-                c.factions[score.faction.id].name,
+                c.guilds[score.guildId].name,
               )}: ${c.numberWithCommas(
                 c.r2(score.score, 0),
               )}`
@@ -80,13 +79,13 @@ export default Vue.extend({
       return (
         this.ship &&
         (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('factionRank'))
+          this.ship.shownPanels.includes('guildRank'))
       )
     },
     highlight() {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'factionRank'
+        'guildRank'
       )
     },
   },
@@ -97,7 +96,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.factionrank {
+.guildrank {
   width: 250px;
   position: relative;
 }

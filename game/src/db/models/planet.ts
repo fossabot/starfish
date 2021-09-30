@@ -57,9 +57,9 @@ const planetSchemaFields: Record<
       propensity: Number,
     },
   ],
-  factionId: String,
+  guildId: String,
   homeworld: { id: String },
-  allegiances: [{ faction: { id: String }, level: Number }],
+  allegiances: [{ guild: { id: String }, level: Number }],
   vendor: {
     cargo: [
       {

@@ -1,26 +1,10 @@
-import species from './species'
-type SpacecrabGuildKey =
-  | `fowl`
-  | `trader`
-  | `hunter`
-  | `miner`
-  | `explorer`
-  | `peacekeeper`
-interface SpacecrabBaseGuildData {
-  name: string
-  id: SpacecrabGuildKey
-  color: string
-  aiOnly?: undefined | true
-  passives: ShipPassiveEffect[]
-}
-
 const guilds: {
-  [key in SpacecrabGuildKey]: SpacecrabBaseGuildData
+  [key in GuildId]: BaseGuildData
 } = {
   trader: {
     name: `Traders`,
     id: `trader`,
-    color: `#ffd700`,
+    color: `hsl(250, 60%, 50%)`,
     passives: [
       {
         id: `boostCargoSpace`,
@@ -31,7 +15,7 @@ const guilds: {
         intensity: 0.3,
       },
       {
-        id: `boostDamageWithNumberOfFactionMembersWithinDistance`,
+        id: `boostDamageWithNumberOfGuildMembersWithinDistance`,
         intensity: 0.1,
         data: {
           distance: 0.2,
@@ -42,7 +26,7 @@ const guilds: {
   hunter: {
     name: `Hunters`,
     id: `hunter`,
-    color: `#ff0000`,
+    color: `hsl(200, 60%, 50%)`,
     passives: [
       {
         id: `alwaysSeeTrailColors`,
@@ -67,7 +51,7 @@ const guilds: {
   miner: {
     name: `Miners`,
     id: `miner`,
-    color: `#00ff00`,
+    color: `hsl(150, 60%, 50%)`,
     passives: [
       {
         id: `boostMinePayouts`,
@@ -90,7 +74,7 @@ const guilds: {
   explorer: {
     name: `Explorers`,
     id: `explorer`,
-    color: `#0000ff`,
+    color: `hsl(100, 60%, 50%)`,
     passives: [
       {
         id: `boostSightRange`,
@@ -113,7 +97,7 @@ const guilds: {
   peacekeeper: {
     name: `Peacekeepers`,
     id: `peacekeeper`,
-    color: `#ffff00`,
+    color: `hsl(50, 60%, 50%)`,
     passives: [
       {
         id: `scaledDamageReduction`,
@@ -139,7 +123,7 @@ const guilds: {
   fowl: {
     name: `Fowls`,
     id: `fowl`,
-    color: `hsl(0, 60%, 50%)`,
+    color: `hsl(0, 60%, 70%)`,
     aiOnly: true,
     passives: [],
   },

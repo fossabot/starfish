@@ -38,7 +38,7 @@ export class StatusCommand implements Command {
     //       {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
     //     </div>
 
-    const color = c.factions[ship.factionId].name
+    const color = c.guilds[ship.guildId].name
       .split(` `)[0]
       ?.toUpperCase()
 

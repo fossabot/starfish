@@ -19,8 +19,8 @@ export class Planet extends Stubbable {
   readonly creatures?: string[]
   readonly radius: number
   planetType: PlanetType
-  factionId?: FactionId
-  homeworld?: FactionId
+  guildId?: GuildId
+  homeworld?: GuildId
   landingRadiusMultiplier: number
   passives: ShipPassiveEffect[]
   xp = 0
@@ -28,7 +28,6 @@ export class Planet extends Stubbable {
   stats: PlanetStatEntry[] = []
 
   toUpdate: {
-    allegiances?: PlanetAllegianceData[]
     landingRadiusMultiplier?: number
     passives?: ShipPassiveEffect[]
   } = {}
@@ -103,12 +102,12 @@ export class Planet extends Stubbable {
     )
   }
 
-  async donate(amount: number, factionId?: FactionId) {
+  async donate(amount: number, guildId?: GuildId) {
     this.addXp(amount / c.planetContributeCostPerXp)
     this.addStat(`totalDonated`, amount)
-    if (factionId)
+    if (guildId)
       this.incrementAllegiance(
-        factionId,
+        guildId,
         1 + amount / (c.planetContributeCostPerXp * 2000),
       )
   }
@@ -156,7 +155,7 @@ export class Planet extends Stubbable {
             100 *
             c.planetLevelXpRequirementMultiplier,
         )
-      c.log(`bumping`, this.xp)
+      // c.log(`bumping`, this.xp)
     }
   }
 
@@ -265,10 +264,7 @@ export class Planet extends Stubbable {
   }
 
   // function placeholders
-  incrementAllegiance(
-    factionId: FactionId,
-    amount?: number,
-  ) {}
+  incrementAllegiance(guildId: GuildId, amount?: number) {}
 
   resetLevels() {}
 }

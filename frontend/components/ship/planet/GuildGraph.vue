@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex factiongraph rounded"
+    class="flex guildgraph rounded"
     v-if="planet && planet.allegiances"
   >
     <div
@@ -9,33 +9,37 @@
       v-for="a in [...planet.allegiances]
         .filter((a) => a.level >= 1)
         .sort((a, b) => b.level - a.level)"
-      :key="'fal' + c.factions[a.faction.id]"
+      :key="'fal' + c.guilds[a.guildId]"
       :style="{
         'flex-grow': a.level,
       }"
-      v-tooltip="c.factions[a.faction.id].name"
+      v-tooltip="c.guilds[a.guildId].name"
     >
       <div
         class="single"
         :style="{
-          background: c.factions[a.faction.id].color,
+          background: c.guilds[a.guildId].color,
           height: 0.05 + (a.level / 100) * 0.95 + 'em',
         }"
       ></div>
     </div>
     <div class="sub" v-if="!planet.allegiances.length">
-      No faction allegiances.
+      No guild allegiances.
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { planet: {} },
+  props: {
+    planet: {
+      type: Object as PropType<PlanetStub | undefined>,
+    },
+  },
   data() {
     return { c }
   },
@@ -47,7 +51,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.factiongraph {
+.guildgraph {
   .singleholder {
     position: relative;
     min-width: 1em;

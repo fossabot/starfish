@@ -43,7 +43,7 @@ export default function (
       const price = c.getItemBuyPrice(
         itemForSale,
         planet,
-        ship.factionId,
+        ship.guildId,
       )
       if (price > ship.commonCredits)
         return callback({ error: `Insufficient funds.` })
@@ -80,7 +80,7 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -129,7 +129,7 @@ export default function (
         itemType,
         itemId as any,
         planet,
-        ship.factionId,
+        ship.guildId,
       )
 
       ship.commonCredits += price
@@ -156,7 +156,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -205,7 +205,7 @@ export default function (
         itemForSale,
         planet,
         ship.chassis.id,
-        ship.factionId,
+        ship.guildId,
       )
 
       if (price > ship.commonCredits)
@@ -242,7 +242,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.factionId)
+      planet.incrementAllegiance(ship.guildId)
       planet.addXp(price / 100)
 
       c.log(

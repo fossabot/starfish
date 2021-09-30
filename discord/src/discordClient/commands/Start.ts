@@ -102,7 +102,7 @@ This bot will create several channels for game communication and a role for crew
     // for (let s of c.shuffleArray(
     //   Object.entries(c.species).filter(
     //     (e: [string, BaseSpeciesData]) => {
-    //       return e[1].factionId !== `red`
+    //       return e[1].guildId !== `red`
     //     },
     //   ),
     // ))

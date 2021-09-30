@@ -19,11 +19,11 @@
     ></div>
     <div class="bgfade"></div>
     <div class="content">
-      <div
+      <!-- <div
         v-if="
           data.species &&
-          data.species.id &&
-          c.species[data.species.id]
+          data.speciesId &&
+          c.species[data.speciesId]
         "
       >
         <div
@@ -31,12 +31,12 @@
           :class="{ pushup: data.tagline }"
           v-tooltip="{
             type: 'species',
-            ...c.species[data.species.id],
+            ...c.species[data.speciesId],
           }"
         >
-          {{ c.species[data.species.id].icon }}
+          {{ c.species[data.speciesId].icon }}
         </div>
-      </div>
+      </div> -->
       <div class="right">
         <div class="tooltipheader">{{ data.name }}</div>
         <div v-if="data.tagline" class="sub">
@@ -46,18 +46,14 @@
     </div>
     <div
       v-if="
-        data.faction &&
-        data.faction.id &&
-        c.factions[data.faction.id]
+        data.guild && data.guildId && c.guilds[data.guildId]
       "
-      class="factiontag"
+      class="guildtag"
       :style="{
-        background: c.factions[data.faction.id].color,
+        background: c.guilds[data.guildId].color,
       }"
       v-tooltip="
-        `<b>Faction:</b> ${
-          c.factions[data.faction.id].name
-        }`
+        `<b>Guild:</b> ${c.guilds[data.guildId].name}`
       "
     ></div>
   </div>
@@ -152,7 +148,7 @@ export default Vue.extend({
     padding-left: 0.5em;
   }
 
-  .factiontag {
+  .guildtag {
     position: absolute;
     z-index: 3;
     top: 0;

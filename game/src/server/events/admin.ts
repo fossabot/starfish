@@ -255,7 +255,7 @@ export default function (
           .map((s) => ({
             name: s.name,
             id: s.id,
-            factionId: s.factionId,
+            guildId: s.guildId,
             crewMemberCount: s.crewMembers.length,
             isTutorial: s.tutorial
               ? s.tutorial.ship?.crewMembers[0]?.name ||

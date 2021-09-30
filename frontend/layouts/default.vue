@@ -1,7 +1,7 @@
 <template>
   <div>
     <client-only>
-      <div :class="ship ? `${ship.factionId}faction` : ''">
+      <div :class="ship ? `${ship.guildId}guild` : ''">
         <DevBanner />
         <DynamicBackground />
         <Notifications />

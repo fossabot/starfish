@@ -28,7 +28,7 @@
             }"
           >
             <span
-              :style="{ color: visibleShip.faction.color }"
+              :style="{ color: visibleShip.guild.color }"
               >🚀{{ visibleShip.name }}</span
             >
             <div

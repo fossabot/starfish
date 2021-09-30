@@ -1,7 +1,7 @@
 interface BaseShipData {
   name: string
   id?: string
-  factionId?: FactionId
+  guildId?: GuildId
   location?: CoordinatePair
   velocity?: CoordinatePair
   seenPlanets?: { name: string }[]
@@ -75,7 +75,7 @@ type ShipPassiveEffectId =
   | `alwaysSeeTrailColors`
   | `boostDamage`
   | `boostDamageWhenNoAlliesWithinDistance`
-  | `boostDamageWithNumberOfFactionMembersWithinDistance`
+  | `boostDamageWithNumberOfGuildMembersWithinDistance`
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
   | `autoRepair`

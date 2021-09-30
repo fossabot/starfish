@@ -53,7 +53,7 @@
           value="Attack"
           v-if="
             ship.visible.ships.filter(
-              (s) => s.faction.id !== ship.factionId,
+              (s) => s.guildId !== ship.guildId,
             ).length
           "
         >
@@ -63,7 +63,7 @@
           value="Run away from"
           v-if="
             ship.visible.ships.filter(
-              (s) => s.faction.id !== ship.factionId,
+              (s) => s.guildId !== ship.guildId,
             ).length
           "
         >
@@ -110,9 +110,7 @@
         <option value="">Select an enemy...</option>
         <option
           v-for="s in ship.visible.ships
-            .filter(
-              (vs) => vs.faction.id !== ship.factionId,
-            )
+            .filter((vs) => vs.guildId !== ship.guildId)
             .sort(
               (a, b) =>
                 c.distance(ship.location, a.location) -
@@ -122,7 +120,7 @@
           :key="'cqo' + s.id"
           :value="{ type: 'ship', id: s.id, name: s.name }"
         >
-          {{ c.species[s.species.id].icon }}{{ s.name }}
+          {{ s.name }}
         </option>
       </select>
 
@@ -143,7 +141,7 @@
           :key="'cqo' + s.id"
           :value="{ type: 'ship', id: s.id, name: s.name }"
         >
-          {{ c.species[s.species.id].icon }}{{ s.name }}
+          {{ s.name }}
         </option>
       </select>
 
@@ -242,8 +240,8 @@
           }"
         >
           {{
-            s.species
-              ? c.species[s.species.id].icon
+            s.type === 'ship'
+              ? '🚀'
               : s.type === 'planet'
               ? '🪐'
               : s.type === 'cache'
@@ -296,19 +294,12 @@
           Pretty please 🥺
         </option>
         <option
-          :value="`, my fellow ${
-            c.species[ship.species.id].id
-          }!`"
-        >
-          Fellow {{ c.species[ship.species.id].id }}!
-        </option>
-        <option
           :value="`, in the name of the ${
-            c.factions[ship.factionId].name
+            c.guilds[ship.guildId].name
           }!`"
         >
           In the name of the
-          {{ c.factions[ship.factionId].name }}!
+          {{ c.guilds[ship.guildId].name }}!
         </option>
         <option value=", you've earned it.">
           You've earned it.
@@ -464,8 +455,7 @@ export default Vue.extend({
         )
         if (!found) return false
         o.target = found
-        o.target!.icon = c.species[found.species.id].icon
-        o.target!.color = c.factions[found.faction.id].color
+        o.target!.color = c.guilds[found.guildId].color
         o.target!.type = 'ship'
       } else if (o.target!.type === 'cache') {
         const found = this.ship.visible?.caches.find(

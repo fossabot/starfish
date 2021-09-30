@@ -37,7 +37,7 @@ export class Game {
 
   settings: AdminGameSettings
 
-  factionRankings: FactionRanking[] = []
+  guildRankings: GuildRanking[] = []
 
   paused: boolean = false
   activePlayers: number = 0
@@ -50,8 +50,8 @@ export class Game {
       `Loaded ${
         Object.keys(c.species).length
       } species and ${
-        Object.keys(c.factions).length
-      } factions.`,
+        Object.keys(c.guilds).length
+      } guilds.`,
     )
 
     // setTimeout(() => {
@@ -81,7 +81,7 @@ export class Game {
 
     this.tick()
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
   }
 
   async save() {
@@ -104,7 +104,7 @@ export class Game {
       await db.ship.addOrUpdateInDb(s)
     }
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
 
     c.log(
       `gray`,
@@ -145,7 +145,7 @@ export class Game {
     ))
       this.removeShip(inactiveShip)
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
   }
 
   // ----- game loop -----
@@ -374,8 +374,8 @@ export class Game {
           .map((s) => {
             return {
               color:
-                showColors && s.factionId
-                  ? c.factions[s.factionId].color
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
                   : undefined,
               points: [
                 ...s.previousLocations,
@@ -525,8 +525,8 @@ export class Game {
           .map((s) => {
             return {
               color:
-                showColors && s.factionId
-                  ? c.factions[s.factionId].color
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
                   : undefined,
               points: [
                 ...s.previousLocations,
@@ -635,8 +635,8 @@ export class Game {
           .map((s) => {
             return {
               color:
-                showColors && s.factionId
-                  ? c.factions[s.factionId].color
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
                   : undefined,
               points: [
                 ...s.previousLocations,
@@ -734,8 +734,7 @@ export class Game {
     while (
       this.planets.length <
         this.gameSoftArea * this.settings.planetDensity ||
-      this.planets.length <
-        Object.keys(c.factions).length - 1
+      this.planets.length < Object.keys(c.guilds).length - 1
     ) {
       const weights: {
         weight: number
@@ -747,11 +746,11 @@ export class Game {
       const selection = c.randomWithWeights(weights)
       // ----- basic planet -----
       if (selection === `basic`) {
-        const factionThatNeedsAHomeworld = Object.values(
-          c.factions,
+        const guildThatNeedsAHomeworld = Object.values(
+          c.guilds,
         ).find(
           (f) =>
-            f.id !== `red` &&
+            f.id !== `fowl` &&
             !this.planets.find(
               (p) =>
                 p.planetType === `basic` &&
@@ -760,7 +759,7 @@ export class Game {
         )
         const p = generateBasicPlanetData(
           this,
-          factionThatNeedsAHomeworld?.id,
+          guildThatNeedsAHomeworld?.id,
         )
         if (!p) continue
         const planet = await this.addBasicPlanet(p)
@@ -771,8 +770,8 @@ export class Game {
           } at ${planet.location
             .map((l) => c.r2(l))
             .join(`, `)}${
-            factionThatNeedsAHomeworld
-              ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
+            guildThatNeedsAHomeworld
+              ? ` (${guildThatNeedsAHomeworld.id} guild homeworld)`
               : ``
           }.`,
         )
@@ -899,7 +898,7 @@ export class Game {
         name: `${c.capitalize(
           species.substring(0, species.length - 1),
         )}${`${Math.random().toFixed(3)}`.substring(2)}`,
-        factionId: `red`,
+        guildId: `fowl`,
         level,
         headerBackground: `ai.jpg`,
       })
@@ -1043,9 +1042,9 @@ export class Game {
 
     if (`homeworld` in newPlanet && newPlanet.homeworld) {
       ;(newPlanet as BasicPlanet).homeworld =
-        newPlanet.factionId
-      ;(newPlanet as BasicPlanet).factionId =
-        newPlanet.factionId
+        newPlanet.guildId
+      ;(newPlanet as BasicPlanet).guildId =
+        newPlanet.guildId
     }
 
     if (save) await db.planet.addOrUpdateInDb(newPlanet)
@@ -1200,12 +1199,10 @@ export class Game {
     ) as BasicPlanet[]
   }
 
-  getHomeworld(
-    factionId?: FactionId,
-  ): BasicPlanet | undefined {
-    if (!factionId) return
+  getHomeworld(guildId?: GuildId): BasicPlanet | undefined {
+    if (!guildId) return
     return this.basicPlanets.find(
-      (p) => p.factionId === factionId && p.homeworld,
+      (p) => p.guildId === guildId && p.homeworld,
     )
   }
 
@@ -1215,15 +1212,15 @@ export class Game {
     ) as MiningPlanet[]
   }
 
-  recalculateFactionRankings() {
+  recalculateGuildRankings() {
     // netWorth
-    let topNetWorthShips: FactionRankingTopEntry[] = []
-    const netWorthScores: FactionRankingScoreEntry[] = []
-    for (let faction of Object.values(c.factions)) {
-      if (faction.id === `red`) continue
+    let topNetWorthShips: GuildRankingTopEntry[] = []
+    const netWorthScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       let total = 0
       this.ships
-        .filter((s) => s.factionId === faction.id)
+        .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
@@ -1238,14 +1235,14 @@ export class Game {
           }
           topNetWorthShips.push({
             name: s.name,
-            color: faction.color,
+            color: guild.color,
             score: shipTotal,
           })
 
           total += shipTotal
         })
       netWorthScores.push({
-        factionId: faction.id,
+        guildId: guild.id,
         score: total,
       })
     }
@@ -1254,19 +1251,19 @@ export class Game {
       .slice(0, 5)
 
     // control
-    const controlScores: FactionRankingScoreEntry[] = []
-    for (let faction of Object.values(c.factions)) {
-      if (faction.id === `red`) continue
+    const controlScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       controlScores.push({
-        factionId: faction.id,
+        guildId: guild.id,
         score: 0,
       })
     }
     for (let planet of this.basicPlanets) {
       planet.allegiances.forEach((a) => {
-        if (a.factionId === `red`) return
+        if (a.guildId === `fowl`) return
         const found = controlScores.find(
-          (s) => s.factionId === a.factionId,
+          (s) => s.guildId === a.guildId,
         )
         if (!found) return
         // c.log(`planet with allegiance:`, found) // todo remove
@@ -1275,26 +1272,26 @@ export class Game {
     }
 
     // members
-    let topMembersShips: FactionRankingTopEntry[] = []
-    const membersScores: FactionRankingScoreEntry[] = []
-    for (let faction of Object.values(c.factions)) {
-      if (faction.id === `red`) continue
+    let topMembersShips: GuildRankingTopEntry[] = []
+    const membersScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       let total = 0
       this.ships
-        .filter((s) => s.factionId === faction.id)
+        .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
             (s as HumanShip).crewMembers.length || 0
           topMembersShips.push({
             name: s.name,
-            color: faction.color,
+            color: guild.color,
             score: shipTotal,
           })
           total += shipTotal
         })
       membersScores.push({
-        factionId: faction.id,
+        guildId: guild.id,
         score: total,
       })
     }
@@ -1302,7 +1299,7 @@ export class Game {
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
 
-    this.factionRankings = [
+    this.guildRankings = [
       {
         category: `netWorth`,
         scores: netWorthScores.sort(
@@ -1325,12 +1322,11 @@ export class Game {
       },
     ]
 
-    // c.log(JSON.stringify(this.factionRankings, null, 2))
+    // c.log(JSON.stringify(this.guildRankings, null, 2))
 
     this.humanShips.forEach(
       (hs) =>
-        (hs.toUpdate.factionRankings =
-          this.factionRankings),
+        (hs.toUpdate.guildRankings = this.guildRankings),
     )
   }
 }

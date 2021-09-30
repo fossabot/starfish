@@ -149,12 +149,12 @@ export default Vue.extend({
     planet(): any {
       return this.ship.planet
     },
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.factionId === this.ship.factionId,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     xpInCurrentLevel(): number {
@@ -179,8 +179,7 @@ export default Vue.extend({
         vendor.cargo.length +
         vendor.items.length +
         vendor.chassis.length +
-        vendor.passives.length +
-        vendor.actives.length
+        vendor.passives.length
       )
     },
     planetTitle(): string {

@@ -25,7 +25,7 @@ export class Ship extends Stubbable {
   readonly type = `ship`
   name: string
   planet: Planet | false = false
-  factionId?: FactionId
+  guildId?: GuildId
   readonly game: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
@@ -86,7 +86,7 @@ export class Ship extends Stubbable {
   constructor(
     {
       name,
-      factionId,
+      guildId,
       chassis,
       items,
       loadout,
@@ -111,17 +111,15 @@ export class Ship extends Stubbable {
     this.ai = true
     this.human = false
 
-    this.factionId =
-      factionId && c.factions[factionId]
-        ? factionId
-        : undefined
+    this.guildId =
+      guildId && c.guilds[guildId] ? guildId : undefined
 
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
-    } else if (this.factionId) {
+    } else if (this.guildId) {
       this.location = [
-        ...(this.game.getHomeworld(this.factionId)
+        ...(this.game.getHomeworld(this.guildId)
           ?.location || [0, 0]),
       ].map(
         (pos) =>
@@ -131,14 +129,14 @@ export class Ship extends Stubbable {
             this.game.settings.arrivalThreshold * 0.4,
           ),
       ) as CoordinatePair
-      // c.log(`fact`, this.location, this.faction.homeworld)
+      // c.log(`fact`, this.location, this.guild.homeworld)
     } else
       this.location = [
         ...c.randomFromArray(this.game.planets).location,
       ]
 
     if (previousLocations)
-      this.previousLocations = previousLocations
+      this.previousLocations = [...previousLocations]
 
     if (tagline) this.tagline = tagline
     if (availableTaglines)
@@ -234,7 +232,7 @@ export class Ship extends Stubbable {
     )
   }
 
-  changeFaction(id: FactionId) {
+  changeGuild(id: GuildId) {
     // todo
   }
 
@@ -818,7 +816,7 @@ export class Ship extends Stubbable {
       type: `ship`,
       name: this.name,
       id: this.id,
-      factionId: this.factionId,
+      guildId: this.guildId,
       tagline: this.tagline || undefined,
       headerBackground: this.headerBackground || undefined,
       level: (this as any).level,

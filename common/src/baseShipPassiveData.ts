@@ -19,7 +19,7 @@ const baseShipPassiveData: {
         p.data?.distance
       }AU`,
   },
-  boostDamageWithNumberOfFactionMembersWithinDistance: {
+  boostDamageWithNumberOfGuildMembersWithinDistance: {
     description: (p) =>
       `+${Math.round(
         (p.intensity || 1) * 100,

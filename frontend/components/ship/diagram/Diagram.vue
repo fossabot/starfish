@@ -108,8 +108,10 @@
           <template v-for="roomWithCrew in crewByRoom">
             <ShipDiagramRoomMember
               v-for="member in roomWithCrew.crewMembers"
+              v-if="member.speciesId && member.name"
               :key="'roomMember' + member.id"
               :name="member.name"
+              :speciesId="member.speciesId"
               :location="member.location"
               :highlight="member.id === userId"
               :roomEls="$refs"

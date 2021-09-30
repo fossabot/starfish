@@ -71,7 +71,7 @@ export class Tutorial {
         name: crewMember.ship.name,
         tutorial: { step: -1 },
         id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
-        factionId: crewMember.ship.factionId,
+        guildId: crewMember.ship.guildId,
       })
     await tutorialShip.addCrewMember({
       name: crewMember.name,
@@ -123,7 +123,7 @@ export class Tutorial {
           {
             message: `Welcome to ${c.gameName}!<br />
             This is a game about exploring space in a ship crewed by your Discord server's members.<br /><br />
-            Get into huge-scale battles with rival factions of real people!<br />
+            Get into huge-scale battles with rival guilds of real people!<br />
             Communicate (poorly) with servers from all over the world!<br />
             Build a trade empire! Upgrade your ship, and level up your personal character!<br /><br />
             Your adventure will be slow-paced (until it's not), so it's best to participate incrementally over the course of days and weeks.`,
@@ -358,7 +358,7 @@ export class Tutorial {
           {
             loadout: `aiTutorial1`,
             id: `tutorialAI1` + this.ship.id,
-            factionId: `red`,
+            guildId: `fowl`,
             level: 1,
             name: `Enemy Ship`,
             location: [0.015, 0.01],
@@ -694,7 +694,7 @@ export class Tutorial {
         ],
         script: [
           {
-            message: `There's a lot more to learn about — broadcasting, factions, passives, and more — but I think you're ready to start exploring!`,
+            message: `There's a lot more to learn about — broadcasting, guilds, passives, and more — but I think you're ready to start exploring!`,
             next: `Heck yeah I am!`,
           },
           {
@@ -714,7 +714,7 @@ export class Tutorial {
     this.initializeSteps()
     this.step = data.step
     this.baseLocation = [
-      ...(this.ship.game.getHomeworld(this.ship.factionId)
+      ...(this.ship.game.getHomeworld(this.ship.guildId)
         ?.location || [0, 0]),
     ]
     this.currentStep = this.steps[this.step]
@@ -981,12 +981,12 @@ export class Tutorial {
     }, c.tickInterval)
 
     ship.addHeaderBackground(
-      c.capitalize(ship.factionId) + ` Faction 1`,
-      `joining the ${c.capitalize(ship.factionId)} faction`,
+      c.capitalize(ship.guildId) + ` Guild 1`,
+      `joining the ${c.capitalize(ship.guildId)} guild`,
     )
     ship.addHeaderBackground(
-      c.capitalize(ship.factionId) + ` Faction 2`,
-      `joining the ${c.capitalize(ship.factionId)} faction`,
+      c.capitalize(ship.guildId) + ` Guild 2`,
+      `joining the ${c.capitalize(ship.guildId)} guild`,
     )
     ship.addTagline(
       `Alpha Tester`,
@@ -997,10 +997,8 @@ export class Tutorial {
       ship.planet.shipsAt
         .filter(
           (s) =>
-            (s.factionId &&
-              c.factions[s.factionId].color) ===
-            (ship.factionId &&
-              c.factions[ship.factionId].color),
+            (s.guildId && c.guilds[s.guildId].color) ===
+            (ship.guildId && c.guilds[ship.guildId].color),
         )
         .forEach((s) => {
           if (s === ship || !s.planet) return
@@ -1008,8 +1006,8 @@ export class Tutorial {
             {
               text: ship.name,
               color:
-                ship.factionId &&
-                c.factions[ship.factionId].color,
+                ship.guildId &&
+                c.guilds[ship.guildId].color,
               tooltipData: ship.toReference() as any,
             },
             `has joined the game, starting out from`,

@@ -194,13 +194,13 @@ function getCargoSellPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   amount: number,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   const buyPrice = getCargoBuyPrice(
     cargoId,
     planet,
     amount,
-    factionId,
+    guildId,
   )
 
   const sellMultiplier =
@@ -217,12 +217,11 @@ function getCargoSellPrice(
         amount *
         planet.priceFluctuator *
         ((planet.allegiances.find(
-          (a) => a.factionId === factionId,
+          (a) => a.guildId === guildId,
         )?.level || 0) >=
-        gameConstants.factionAllegianceFriendCutoff
+        gameConstants.guildAllegianceFriendCutoff
           ? 1 +
-            (1 -
-              (gameConstants.factionVendorMultiplier || 1))
+            (1 - (gameConstants.guildVendorMultiplier || 1))
           : 1),
     ),
   )
@@ -232,7 +231,7 @@ function getCargoBuyPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   amount: number,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   const cargoForSale = planet?.vendor?.cargo?.find(
     (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
@@ -244,10 +243,10 @@ function getCargoBuyPrice(
       amount *
       planet?.priceFluctuator *
       ((planet.allegiances.find(
-        (a) => a.factionId === factionId,
+        (a) => a.guildId === guildId,
       )?.level || 0) >=
-      gameConstants.factionAllegianceFriendCutoff
-        ? gameConstants.factionVendorMultiplier
+      gameConstants.guildAllegianceFriendCutoff
+        ? gameConstants.guildVendorMultiplier
         : 1),
   )
 }
@@ -255,7 +254,7 @@ function getCargoBuyPrice(
 function getRepairPrice(
   planet: PlanetStub,
   hp: number,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   return math.r2(
     (planet.vendor?.repairCostMultiplier || 1) *
@@ -263,10 +262,10 @@ function getRepairPrice(
       hp *
       planet.priceFluctuator *
       ((planet.allegiances.find(
-        (a) => a.factionId === factionId,
+        (a) => a.guildId === guildId,
       )?.level || 0) >=
-      gameConstants.factionAllegianceFriendCutoff
-        ? gameConstants.factionVendorMultiplier
+      gameConstants.guildAllegianceFriendCutoff
+        ? gameConstants.guildVendorMultiplier
         : 1),
     0,
     true,
@@ -277,7 +276,7 @@ function getCrewPassivePrice(
   passiveForSale: PlanetVendorCrewPassivePrice,
   currentLevel: number,
   planet: PlanetStub,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   return Math.ceil(
     (crewPassives[passiveForSale.id].buyable?.basePrice ||
@@ -286,10 +285,10 @@ function getCrewPassivePrice(
       (1 + currentLevel ** 2) *
       planet.priceFluctuator *
       ((planet.allegiances.find(
-        (a) => a.factionId === factionId,
+        (a) => a.guildId === guildId,
       )?.level || 0) >=
-      gameConstants.factionAllegianceFriendCutoff
-        ? gameConstants.factionVendorMultiplier
+      gameConstants.guildAllegianceFriendCutoff
+        ? gameConstants.guildVendorMultiplier
         : 1),
   )
 }
@@ -297,7 +296,7 @@ function getCrewPassivePrice(
 function getItemBuyPrice(
   itemForSale: PlanetVendorItemPrice,
   planet: PlanetStub,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   return math.r2(
     (items[itemForSale.type][itemForSale.id].basePrice ||
@@ -305,10 +304,10 @@ function getItemBuyPrice(
       itemForSale.buyMultiplier *
       planet.priceFluctuator *
       ((planet.allegiances.find(
-        (a) => a.factionId === factionId,
+        (a) => a.guildId === guildId,
       )?.level || 0) >=
-      gameConstants.factionAllegianceFriendCutoff
-        ? gameConstants.factionVendorMultiplier
+      gameConstants.guildAllegianceFriendCutoff
+        ? gameConstants.guildVendorMultiplier
         : 1),
     0,
     true,
@@ -319,7 +318,7 @@ function getItemSellPrice(
   itemType: ItemType,
   itemId: ItemId,
   planet: PlanetStub,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   const itemData = items[itemType][itemId]
   if (!itemData) return 9999999
@@ -327,9 +326,8 @@ function getItemSellPrice(
     (itemData?.basePrice || 9999999) *
       gameConstants.baseItemSellMultiplier *
       planet.priceFluctuator *
-      (planet.faction === factionId
-        ? 1 +
-          (1 - gameConstants.factionVendorMultiplier || 1)
+      (planet.guild === guildId
+        ? 1 + (1 - gameConstants.guildVendorMultiplier || 1)
         : 1),
     0,
     true,
@@ -340,7 +338,7 @@ function getChassisSwapPrice(
   chassis: PlanetVendorChassisPrice,
   planet: PlanetStub,
   currentChassisId: ChassisId,
-  factionId?: FactionId,
+  guildId?: GuildId,
 ) {
   const currentChassisSellPrice = Math.floor(
     (items.chassis[currentChassisId]?.basePrice || 0) *
@@ -351,9 +349,9 @@ function getChassisSwapPrice(
       (items.chassis[chassis.id]?.basePrice || 1) *
         chassis.buyMultiplier *
         planet.priceFluctuator *
-        (planet.faction === factionId
+        (planet.guild === guildId
           ? 1 +
-            (1 - gameConstants.factionVendorMultiplier || 1)
+            (1 - gameConstants.guildVendorMultiplier || 1)
           : 1) -
         currentChassisSellPrice,
     ),

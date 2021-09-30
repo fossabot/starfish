@@ -59,7 +59,7 @@ export class SellCommand implements Command {
           i.id,
           planet,
           1,
-          context.ship!.factionId,
+          context.ship!.guildId,
         )
 
         return {

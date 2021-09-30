@@ -24,7 +24,7 @@ export default Vue.extend({
     ...mapState(['crewMember']),
     sortedPassives() {
       return [...this.crewMember.passives].sort(
-        (a: BaseCrewPassiveData, b: BaseCrewPassiveData) =>
+        (a: CrewPassiveData, b: CrewPassiveData) =>
           (b.level || 0) - (a.level || 0),
       )
     },

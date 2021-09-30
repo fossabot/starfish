@@ -44,12 +44,12 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
 
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.factionId === this.ship.factionId,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
 
@@ -72,7 +72,7 @@ export default Vue.extend({
             passive,
             this.crewMemberPassiveLevels[passive.id] || 0,
             this.ship.planet,
-            this.ship.factionId,
+            this.ship.guildId,
           )
           return {
             data: c.crewPassives[passive.id],

@@ -242,7 +242,7 @@ gathered resources are held by the individual who mined them, and shared once th
 must put crew members into "mining" room aka planetside, actually mining
   select what resource you want to mine
 add mining skill?
-more ships mining from the same faction boosts mining speed
+more ships mining from the same guild boosts mining speed
 - can have more desaturated colors
 - have no allegiances, but DO have levels
 

@@ -43,21 +43,20 @@ export class BasicPlanet extends Planet {
     super(data, game)
     this.planetType = `basic`
 
-    this.factionId = data.factionId
-      ? data.factionId
-      : undefined
+    this.guildId = data.guildId ? data.guildId : undefined
 
-    this.homeworld = this.factionId
+    this.homeworld = this.guildId
 
     this.leanings = data.leanings || []
 
     this.allegiances = []
     if (data.allegiances) {
       for (let a of data.allegiances) {
-        this.allegiances.push({
-          factionId: a.factionId,
-          level: a.level,
-        })
+        if (c.guilds[a.guildId])
+          this.allegiances.push({
+            guildId: a.guildId,
+            level: a.level,
+          })
       }
       this.toUpdate.allegiances = this.allegiances
     }
@@ -82,8 +81,8 @@ export class BasicPlanet extends Planet {
       (1000 * 60 * 60 * 24) / c.gameSpeedMultiplier,
     ) // every day
 
-    if (this.factionId)
-      this.incrementAllegiance(this.factionId, 100)
+    if (this.guildId)
+      this.incrementAllegiance(this.guildId, 100)
 
     if (this.homeworld)
       while (this.level < c.defaultHomeworldLevel)
@@ -214,8 +213,6 @@ export class BasicPlanet extends Planet {
               sellMultiplier,
               id: toAddToVendor.id,
             })
-          // if (toAddToVendor.class === `actives`)
-          //   this.vendor.actives.push({buyMultiplier, sellMultiplier, id: toAddToVendor.id})
         }
       }
     }
@@ -364,16 +361,13 @@ export class BasicPlanet extends Planet {
     return addable
   }
 
-  incrementAllegiance(
-    factionId?: FactionId,
-    amount?: number,
-  ) {
-    if (!factionId) return
+  incrementAllegiance(guildId?: GuildId, amount?: number) {
+    if (!guildId) return
     const allegianceAmountToIncrement = amount || 1
     // c.log(`allegiance`, allegianceAmountToIncrement)
     const maxAllegiance = 100
     const found = this.allegiances.find(
-      (a) => a.factionId === factionId,
+      (a) => a.guildId === guildId,
     )
     if (found)
       found.level = Math.min(
@@ -382,7 +376,7 @@ export class BasicPlanet extends Planet {
       )
     else
       this.allegiances.push({
-        factionId,
+        guildId,
         level: Math.min(
           maxAllegiance,
           allegianceAmountToIncrement,
@@ -394,7 +388,7 @@ export class BasicPlanet extends Planet {
 
   decrementAllegiances() {
     this.allegiances.forEach((a) => {
-      if (this.factionId !== a.factionId) a.level *= 0.99
+      if (this.guildId !== a.guildId) a.level *= 0.99
     })
     this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
@@ -444,19 +438,19 @@ export class BasicPlanet extends Planet {
         `Come see what we have in stock!`,
         `Come browse our wares! Nothing but the lowest prices!`,
       )
-    if (this.factionId === ship.factionId) {
+    if (this.guildId === ship.guildId) {
       messageOptions.push(
         `Greetings, fellow creature of the ${
-          ship.factionId && c.factions[ship.factionId].name
+          ship.guildId && c.guilds[ship.guildId].name
         }! Swim swiftly!`,
       )
     } else {
       messageOptions.push(
         `You there, from the ${
-          ship.factionId && c.factions[ship.factionId].name
+          ship.guildId && c.guilds[ship.guildId].name
         }! You may land, but don't cause any trouble.`,
         `${
-          ship.factionId && c.factions[ship.factionId].name
+          ship.guildId && c.guilds[ship.guildId].name
         } are welcome here.`,
       )
     }
@@ -493,10 +487,10 @@ export class BasicPlanet extends Planet {
       `I'm not authorized to respond to you, over.`,
       `Come down and let's take a swim, over.`,
       `${
-        ship.factionId && c.factions[ship.factionId].name
+        ship.guildId && c.guilds[ship.guildId].name
       } are always welcome here, over.`,
       `${
-        ship.factionId && c.factions[ship.factionId].name
+        ship.guildId && c.guilds[ship.guildId].name
       } are always welcome as long as they don't cause any trouble, over.`,
       `Meet me at the cantina later, over.`,
     ]
@@ -552,8 +546,8 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   const sellMultiplier =
     Math.min(
       buyMultiplier *
-        c.factionVendorMultiplier *
-        c.factionVendorMultiplier,
+        c.guildVendorMultiplier *
+        c.guildVendorMultiplier,
       c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }

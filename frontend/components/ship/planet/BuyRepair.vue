@@ -15,7 +15,7 @@
       v-for="count in repairOptions"
       :disabled="
         crewMember.credits <
-        c.getRepairPrice(ship.planet, count, ship.factionId)
+        c.getRepairPrice(ship.planet, count, ship.guildId)
       "
       @click="buyRepair(count)"
     >
@@ -24,7 +24,7 @@
           c.getRepairPrice(
             ship.planet,
             count,
-            ship.factionId,
+            ship.guildId,
           ),
         )
       }}
@@ -43,12 +43,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.factionId === this.ship.factionId,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     repairableHp(): number {

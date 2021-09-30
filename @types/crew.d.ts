@@ -70,12 +70,11 @@ interface BaseCrewMemberData {
   stamina?: number
   inventory?: Cargo[]
   credits?: number
-  permanentPassives?: BaseCrewPassiveData[]
+  permanentPassives?: CrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic
   targetItemType?: ItemType
   minePriority?: MinePriorityType
-  attackFactions?: FactionId[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
   stats?: CrewStatEntry[]
@@ -114,3 +113,27 @@ interface CrewPassiveData {
     distance?: number
   }
 }
+
+interface BaseSpeciesData {
+  icon: string
+  id: SpeciesId
+  aiOnly?: true
+  singular: string
+  description: string
+  passives: CrewPassiveData[]
+}
+type SpeciesId =
+  | `octopi`
+  | `lobsters`
+  | `crabs`
+  | `sea turtles`
+  | `sharks`
+  | `dolphins`
+  | `whales`
+  | `angelfish`
+  | `blowfish`
+  | `shrimp`
+  | `eagles`
+  | `seagulls`
+  | `chickens`
+  | `flamingos`

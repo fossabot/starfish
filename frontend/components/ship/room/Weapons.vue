@@ -50,10 +50,7 @@
           <div>
             <span v-if="targetShip">
               Targeting
-              <b
-                >{{ c.species[targetShip.species.id].icon
-                }}{{ targetShip.name }}</b
-              ></span
+              <b>{{ targetShip.name }}</b></span
             ><span v-else>No specific target ship</span>
           </div>
           <div>
@@ -127,8 +124,7 @@
             }"
             v-targetpoint="targetShip"
           >
-            {{ c.species[targetShip.species.id].icon
-            }}{{ targetShip.name }}
+            {{ targetShip.name }}
           </button>
         </div>
       </div>
@@ -208,7 +204,7 @@ export default Vue.extend({
     },
     visibleEnemies() {
       return this.ship.visible?.ships
-        .filter((s) => s.faction.id !== this.ship.factionId)
+        .filter((s) => s.guildId !== this.ship.guildId)
         .sort(
           (a, b) =>
             c.distance(a.location, this.ship.location) -

@@ -12,8 +12,8 @@ const defaultHomeworldLevel = 12
 const itemPriceMultiplier = 400
 const weaponDamageMultiplier = 1
 
-const factionVendorMultiplier = 0.98
-const factionAllegianceFriendCutoff = 50
+const guildVendorMultiplier = 0.98
+const guildAllegianceFriendCutoff = 50
 
 const baseItemSellMultiplier = 0.6
 
@@ -44,7 +44,7 @@ const baseShipScanProperties: {
   previousLocations: true
   location: true
   planet: (keyof BasePlanetData)[]
-  faction: (keyof BaseFactionData)[]
+  guild: (keyof BaseGuildData)[]
   species: (keyof BaseSpeciesData)[]
   chassis: (keyof BaseChassisData)[]
 } = {
@@ -60,11 +60,11 @@ const baseShipScanProperties: {
   previousLocations: true,
   location: true,
   planet: [`name`, `location`],
-  faction: [`ai`, `name`, `id`, `color`],
+  guild: [`aiOnly`, `name`, `id`, `color`],
   species: [`id`, `singular`, `icon`],
   chassis: [`displayName`],
 }
-const sameFactionShipScanProperties = {
+const sameGuildShipScanProperties = {
   _hp: true,
   _maxHp: true,
 }
@@ -144,12 +144,12 @@ const headerBackgroundOptions: {
   url: string
 }[] = [
   { id: `Default`, url: `default.jpg` }, // auto
-  { id: `Blue Faction 1`, url: `blue1.svg` }, // finish tutorial
-  { id: `Purple Faction 1`, url: `purple1.svg` }, // finish tutorial
-  { id: `Green Faction 1`, url: `green1.svg` }, // finish tutorial
-  { id: `Blue Faction 2`, url: `blue2.svg` }, // finish tutorial
-  { id: `Purple Faction 2`, url: `purple2.svg` }, // finish tutorial
-  { id: `Green Faction 2`, url: `green2.svg` }, // finish tutorial
+  { id: `Blue Guild 1`, url: `blue1.svg` }, // finish tutorial
+  { id: `Purple Guild 1`, url: `purple1.svg` }, // finish tutorial
+  { id: `Green Guild 1`, url: `green1.svg` }, // finish tutorial
+  { id: `Blue Guild 2`, url: `blue2.svg` }, // finish tutorial
+  { id: `Purple Guild 2`, url: `purple2.svg` }, // finish tutorial
+  { id: `Green Guild 2`, url: `green2.svg` }, // finish tutorial
   { id: `Flat 1`, url: `flat1.svg` }, // equipping items
   { id: `Flat 2`, url: `flat2.svg` }, // equipping items
   { id: `Stone Cold 1`, url: `gradient1.svg` }, // killing an enemy
@@ -167,8 +167,8 @@ export default {
   baseRepairCost,
   defaultHomeworldLevel,
   maxBroadcastLength,
-  factionVendorMultiplier,
-  factionAllegianceFriendCutoff,
+  guildVendorMultiplier,
+  guildAllegianceFriendCutoff,
   userIsOfflineTimeout,
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
@@ -179,7 +179,7 @@ export default {
   attackRemnantExpireTime,
   cacheExpireTime,
   baseShipScanProperties,
-  sameFactionShipScanProperties,
+  sameGuildShipScanProperties,
   tactics,
   baseCargoSellMultiplier,
   taglineOptions,

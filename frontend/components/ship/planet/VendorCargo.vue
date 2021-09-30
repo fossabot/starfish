@@ -148,12 +148,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.factionId === this.ship.factionId,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     buyableCargo(): any[] {
@@ -164,7 +164,7 @@ export default Vue.extend({
             cargo.id,
             this.ship.planet,
             1,
-            this.ship.factionId,
+            this.ship.guildId,
           )
           const maxCanBuy = c.r2(
             Math.min(
@@ -200,7 +200,7 @@ export default Vue.extend({
               cargo.id,
               this.ship.planet,
               1,
-              this.ship.factionId,
+              this.ship.guildId,
             )
             const heldAmount =
               this.crewMember?.inventory.find(

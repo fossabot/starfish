@@ -93,7 +93,6 @@ export default Vue.extend({
   },
   watch: {
     tooltip() {
-      c.log(this.tooltip)
       this.recalcTooltipStyle()
     },
     winWidth() {

@@ -17,7 +17,7 @@ interface ShipStub extends BaseStub {
   radii?: { [key in RadiusType]?: number }
   obeysGravity?: boolean
   planet?: PlanetStub | false
-  factionId: FactionId
+  guildId: GuildId
   rooms: { [key in CrewLocation]?: BaseRoomData }
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]
@@ -35,7 +35,7 @@ interface ShipStub extends BaseStub {
   targetItemType?: ItemType | `any`
   targetShip?: Reference | null
 
-  factionRankings?: FactionRanking[]
+  guildRankings?: GuildRanking[]
   passives?: ShipPassiveEffect[]
   slots?: number
   mass?: number
@@ -70,11 +70,11 @@ interface CrewMemberStub extends BaseStub {
   stats: CrewStatEntry[]
   inventory: Cargo[]
   credits: number
-  passives: BaseCrewPassiveData[]
+  passives: CrewPassiveData[]
   cockpitCharge: number
   tactic: CombatTactic
   itemTarget: ItemType
-  attackFactions?: FactionId[]
+  attackGuilds?: GuildId[]
   targetLocation: CoordinatePair | null
   repairPriority: RepairPriority
   [key: string]: any

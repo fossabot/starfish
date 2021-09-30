@@ -9,7 +9,7 @@ import physics from './physics'
 import discord from './discord'
 import { Profiler } from './Profiler'
 import species from './species'
-import factions from './factions'
+import guilds from './guilds'
 import baseShipPassiveData from './baseShipPassiveData'
 import * as cargo from './cargo'
 import crewPassives from './crewPassives'
@@ -32,7 +32,7 @@ export default {
   crewPassives,
   cargo,
   species,
-  factions,
+  guilds,
   baseShipPassiveData,
   Profiler,
   stubify,

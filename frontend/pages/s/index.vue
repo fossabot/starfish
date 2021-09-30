@@ -53,7 +53,7 @@
 
             <ShipCrewRank />
 
-            <ShipFactionRank />
+            <ShipGuildRank />
           </template>
 
           <template v-if="ship && ship.dead">

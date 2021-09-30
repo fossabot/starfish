@@ -72,21 +72,6 @@ export class HumanShip extends CombatShip {
     super(data, game)
     this.id = data.id
 
-    // this.availableTaglines = [] // `Tester`, `Very Shallow`
-    // this.availableHeaderBackgrounds = [
-    //   `Default`,
-    //   // `Flat 1`,
-    //   // `Flat 2`,
-    //   // `Gradient 1`,
-    //   // `Gradient 2`,
-    //   // `Gradient 3`,
-    //   // `Constellation 1`,
-    //   // `Vintage 1`,
-    // ]
-    // this.availableHeaderBackgrounds.push(
-    //   c.capitalize(this.faction.id) + ` Faction 1`,
-    // )
-
     if (data.guildName) this.guildName = data.guildName
     if (data.guildIcon) this.guildIcon = data.guildIcon
 
@@ -106,7 +91,7 @@ export class HumanShip extends CombatShip {
       this.tutorial = new Tutorial(data.tutorial, this)
 
     // human ships always know where their homeworld is
-    const homeworld = this.game.getHomeworld(this.factionId)
+    const homeworld = this.game.getHomeworld(this.guildId)
     if (
       homeworld &&
       !this.seenPlanets.find((p) => p === homeworld)
@@ -136,8 +121,8 @@ export class HumanShip extends CombatShip {
               `Your crew boards the ship`,
               {
                 text: this.name,
-                color: this.factionId
-                  ? c.factions[this.factionId].color
+                color: this.guildId
+                  ? c.guilds[this.guildId].color
                   : undefined,
               },
               `for the first time, and sets out towards the stars.`,
@@ -807,8 +792,8 @@ export class HumanShip extends CombatShip {
               `the ship`,
               {
                 text: fullShip.name,
-                color: fullShip.factionId
-                  ? c.factions[fullShip.factionId].color
+                color: fullShip.guildId
+                  ? c.guilds[fullShip.guildId].color
                   : undefined,
                 tooltipData: fullShip.toReference() as any,
               },
@@ -1315,8 +1300,8 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.factionId
-                ? c.factions[this.factionId].color
+              color: this.guildId
+                ? c.guilds[this.guildId].color
                 : undefined,
               tooltipData: this.toReference() as any,
             },
@@ -1345,8 +1330,8 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.factionId
-                ? c.factions[this.factionId].color
+              color: this.guildId
+                ? c.guilds[this.guildId].color
                 : undefined,
               tooltipData: this.toReference() as any,
             },
@@ -1976,11 +1961,11 @@ export class HumanShip extends CombatShip {
         ? this.maxScanProperties || c.baseShipScanProperties
         : c.baseShipScanProperties
 
-    // same faction can see a few more properties
-    if (ship.factionId && ship.factionId === this.factionId)
+    // same guild can see a few more properties
+    if (ship.guildId && ship.guildId === this.guildId)
       scanPropertiesToUse = {
         ...scanPropertiesToUse,
-        ...c.sameFactionShipScanProperties,
+        ...c.sameGuildShipScanProperties,
       }
 
     const partialShip: any = {} // sorry to the typescript gods for this one
@@ -2014,11 +1999,11 @@ export class HumanShip extends CombatShip {
           partialShip[key] = (
             ship[key as keyof Ship] as Array<any>
           ).map((el) => {
-            const returnVal: any = {}
+            const returnVal: any = []
             Object.keys(el)
               .filter((elKey: any) => value.includes(elKey))
               .forEach((elKey: any) => {
-                returnVal[elKey] = el[elKey]
+                returnVal.push(el[elKey])
               })
             return c.stubify(returnVal)
           })
@@ -2473,8 +2458,8 @@ export class HumanShip extends CombatShip {
       })
   }
 
-  get factionRankings() {
-    return this.game.factionRankings
+  get guildRankings() {
+    return this.game.guildRankings
   }
 
   get gameSettings() {

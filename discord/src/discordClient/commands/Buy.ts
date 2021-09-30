@@ -35,7 +35,7 @@ export class BuyCommand implements Command {
         cargoForSale.id,
         planet,
         1,
-        context.ship!.factionId,
+        context.ship!.guildId,
       )
     }
 
