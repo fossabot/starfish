@@ -1007,13 +1007,13 @@ export class Tutorial {
             {
               text: ship.name,
               color: ship.faction.color,
-              tooltipData: ship.toLogStub() as any,
+              tooltipData: ship.toReference() as any,
             },
             `has joined the game, starting out from`,
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
+              tooltipData: s.planet.toReference() as any,
             },
             `&nospace!`,
           ])

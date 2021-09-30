@@ -104,7 +104,7 @@ export class Item extends Stubbable {
             {
               text: this.displayName,
               color: `var(--item)`,
-              tooltipData: this.toLogStub() as any,
+              tooltipData: this.toReference() as any,
             },
             `is fully repaired.`,
           ],
@@ -117,7 +117,7 @@ export class Item extends Stubbable {
     return overRepair
   }
 
-  toLogStub(): ItemStub {
+  toReference(): ItemStub {
     return {
       type: this.type,
       id: this.id,

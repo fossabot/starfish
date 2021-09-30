@@ -2,6 +2,7 @@ type PlanetType = `basic` | `mining`
 
 interface BasePlanetData {
   planetType: PlanetType
+  id: string
   name: string
   color: string
   location: CoordinatePair

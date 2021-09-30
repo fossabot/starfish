@@ -52,6 +52,6 @@ export async function getAllConstructible(): Promise<
 > {
   const docs = (await DBCache.find({})).map((z) =>
     z.toObject(),
-  )
+  ) as any
   return docs
 }

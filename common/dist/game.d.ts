@@ -1,5 +1,7 @@
-declare function getHitDamage(weapon: WeaponStub, totalMunitionsSkill?: number): number;
-declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number, useLevel?: number): number;
+declare function getHitDamage(weapon: {
+    damage: number;
+}, totalMunitionsSkill?: number): number;
+declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
@@ -14,8 +16,8 @@ declare function statToString(data: {
     amount: number;
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
-declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionId): number;
-declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionId): number;
+declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
+declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey): number;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
     supportServerLink: string;
@@ -27,7 +29,6 @@ declare const _default: {
     maxBroadcastLength: number;
     factionVendorMultiplier: number;
     factionAllegianceFriendCutoff: number;
-    userIsOfflineTimeout: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
@@ -48,10 +49,10 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("name" | "color" | "id" | "homeworld" | "ai" | "species")[];
-        species: ("passives" | "id" | "icon" | "aiOnly" | "singular" | "description")[];
-        chassis: ("mass" | "passives" | "id" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        faction: ("id" | "name" | "color" | "homeworld" | "ai" | "species")[];
+        species: ("id" | "passives" | "icon" | "factionId" | "singular" | "description")[];
+        chassis: ("id" | "mass" | "passives" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameFactionShipScanProperties: {
         _hp: boolean;

@@ -16,6 +16,7 @@ const planetSchemaFields: Record<
   any
 > = {
   planetType: String,
+  id: String,
   location: [{ type: Number, required: true }],
   color: String,
   name: { type: String, required: true },
@@ -102,7 +103,7 @@ const DBPlanet = model<DBPlanetDoc>(
 export async function addOrUpdateInDb(
   data: Planet,
 ): Promise<BasePlanetData> {
-  const stub = data.stubify()
+  const stub = data.stubify() as PlanetStub
   const toSave = (new DBPlanet(stub) as any)._doc
   delete toSave._id
   const dbObject: DBPlanetDoc | null =
@@ -132,7 +133,7 @@ export async function wipe() {
 export async function getAllConstructible(): Promise<
   BasePlanetData[]
 > {
-  const docs = (await DBPlanet.find({})).map((d) =>
+  const docs: any = (await DBPlanet.find({})).map((d) =>
     d.toObject(),
   )
   // clearExtraneousMongooseIdEntry(docs)

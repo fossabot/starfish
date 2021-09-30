@@ -849,13 +849,13 @@ class Tutorial {
                     {
                         text: ship.name,
                         color: ship.faction.color,
-                        tooltipData: ship.toLogStub(),
+                        tooltipData: ship.toReference(),
                     },
                     `has joined the game, starting out from`,
                     {
                         text: s.planet.name,
                         color: s.planet.color,
-                        tooltipData: s.planet.toLogStub(),
+                        tooltipData: s.planet.toReference(),
                     },
                     `&nospace!`,
                 ]);

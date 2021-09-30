@@ -7,7 +7,7 @@ exports.Planet = void 0;
 const dist_1 = __importDefault(require("../../../../../common/dist"));
 const Stubbable_1 = require("../Stubbable");
 class Planet extends Stubbable_1.Stubbable {
-    constructor({ planetType, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, stats, }, game) {
+    constructor({ planetType, id, name, color, location, mass, landingRadiusMultiplier, passives, pacifist, creatures, radius, xp, level, baseLevel, stats, }, game) {
         super();
         this.type = `planet`;
         this.rooms = [];
@@ -17,6 +17,7 @@ class Planet extends Stubbable_1.Stubbable {
         this.toUpdate = {};
         this.game = game;
         this.planetType = planetType || `basic`;
+        this.id = id || `planet` + `${Math.random()}`.slice(2);
         this.name = name;
         this.color = color;
         this.location = location;
@@ -143,10 +144,11 @@ class Planet extends Stubbable_1.Stubbable {
     toVisibleStub() {
         return this.stubify();
     }
-    toLogStub() {
+    toReference() {
         return {
             type: `planet`,
             name: this.name,
+            id: this.id,
         };
     }
     addPassive(passive) {

@@ -54,6 +54,6 @@ export async function getAllConstructible(): Promise<
 > {
   const docs = (await DBZone.find({})).map((z) =>
     z.toObject(),
-  )
+  ) as any
   return docs
 }

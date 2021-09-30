@@ -246,14 +246,14 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: target.name,
                     color: target.faction.color,
-                    tooltipData: target.toLogStub(),
+                    tooltipData: target.toReference(),
                 },
                 `with`,
                 {
                     text: weapon.displayName,
                     color: `var(--item)`,
                     tooltipData: {
-                        ...weapon.toLogStub(),
+                        ...weapon.toReference(),
                         cooldownRemaining: undefined,
                     },
                 },
@@ -265,16 +265,14 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: target.name,
                     color: target.faction.color,
-                    tooltipData: target.toLogStub(),
+                    tooltipData: target.toReference(),
                 },
                 `with`,
                 {
                     text: weapon.displayName,
                     color: `var(--item)`,
                     tooltipData: {
-                        ...weapon.toLogStub(),
-                        cooldownRemaining: undefined,
-                        _hp: undefined,
+                        ...weapon.toReference(),
                     },
                 },
                 `&nospace, dealing`,
@@ -365,7 +363,7 @@ class CombatShip extends Ship_1.Ship {
                         {
                             text: armor.displayName,
                             color: `var(--item)`,
-                            tooltipData: armor.toLogStub(),
+                            tooltipData: armor.toReference(),
                         },
                         `has been broken!`,
                     ], `high`);
@@ -375,7 +373,7 @@ class CombatShip extends Ship_1.Ship {
                             {
                                 text: this.name,
                                 color: this.faction.color,
-                                tooltipData: this.toLogStub(),
+                                tooltipData: this.toReference(),
                             },
                             `&nospace's`,
                             {
@@ -459,7 +457,7 @@ class CombatShip extends Ship_1.Ship {
                         {
                             text: equipmentToAttack.displayName,
                             color: `var(--item)`,
-                            tooltipData: equipmentToAttack.toLogStub(),
+                            tooltipData: equipmentToAttack.toReference(),
                         },
                         `has been disabled!`,
                     ], `high`);
@@ -469,7 +467,7 @@ class CombatShip extends Ship_1.Ship {
                             {
                                 text: this.name,
                                 color: this.faction.color,
-                                tooltipData: this.toLogStub(),
+                                tooltipData: this.toReference(),
                             },
                             `&nospace's`,
                             {
@@ -487,7 +485,7 @@ class CombatShip extends Ship_1.Ship {
                 equipmentToAttack.announceWhenBroken = false;
             }
         }
-        this.toUpdate.items = this.items.map((i) => dist_1.default.stubify(i));
+        this.toUpdate.items = this.items.map((i) => i.stubify());
         const didDie = previousHp > 0 && this.hp <= 0;
         if (didDie)
             this.die(attacker instanceof CombatShip
@@ -503,7 +501,7 @@ class CombatShip extends Ship_1.Ship {
             miss: attackDamageAfterPassives === 0,
             damageTaken: totalDamageDealt,
             didDie: didDie,
-            weapon: attack.weapon?.stubify(),
+            weapon: attack.weapon?.toReference(),
             damageTally,
         };
         // ship damage
@@ -517,18 +515,13 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: attacker.name,
                     color: attacker.faction.color,
-                    tooltipData: attacker.toLogStub(),
+                    tooltipData: attacker?.toReference(),
                 },
                 `&nospace's`,
                 {
                     text: attack.weapon.displayName,
                     color: `var(--item)`,
-                    tooltipData: {
-                        type: `weapon`,
-                        description: attack.weapon.description,
-                        displayName: attack.weapon.displayName,
-                        id: attack.weapon.id,
-                    },
+                    tooltipData: attack.weapon.toReference(),
                 },
                 `&nospace.`,
                 ...(attack.miss
@@ -540,7 +533,10 @@ class CombatShip extends Ship_1.Ship {
                             color: `var(--warning)`,
                             tooltipData: {
                                 type: `damage`,
-                                ...damageResult,
+                                ...{
+                                    ...damageResult,
+                                    weapon: undefined,
+                                },
                             },
                         },
                         `&nospace.`,
@@ -555,8 +551,8 @@ class CombatShip extends Ship_1.Ship {
                 {
                     text: attacker.name,
                     color: attacker.color || `var(--warning)`,
-                    tooltipData: attacker.stubify
-                        ? attacker.stubify()
+                    tooltipData: attacker.toReference
+                        ? attacker.toReference()
                         : undefined,
                 },
                 `&nospace.`,
@@ -569,7 +565,10 @@ class CombatShip extends Ship_1.Ship {
                             color: `var(--warning)`,
                             tooltipData: {
                                 type: `damage`,
-                                ...damageResult,
+                                ...{
+                                    ...damageResult,
+                                    weapon: undefined,
+                                },
                             },
                         },
                         `&nospace.`,

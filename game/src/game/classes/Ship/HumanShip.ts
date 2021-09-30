@@ -364,7 +364,7 @@ export class HumanShip extends CombatShip {
           {
             text: p.name,
             color: p.color,
-            tooltipData: p.toLogStub() as any,
+            tooltipData: p.toReference() as any,
           },
           `&nospace!`,
         ],
@@ -409,7 +409,7 @@ export class HumanShip extends CombatShip {
           {
             text: l.name,
             color: l.color,
-            tooltipData: l.toLogStub() as any,
+            tooltipData: l.toReference() as any,
           },
           `&nospace!`,
         ],
@@ -755,7 +755,7 @@ export class HumanShip extends CombatShip {
           {
             text: foundPlanet.name,
             color: foundPlanet.color,
-            tooltipData: foundPlanet.toLogStub() as any,
+            tooltipData: foundPlanet.toReference() as any,
           },
         ]
       if (!targetData) {
@@ -789,7 +789,8 @@ export class HumanShip extends CombatShip {
             {
               text: foundLandmark.name,
               color: foundLandmark.color,
-              tooltipData: foundLandmark.toLogStub() as any,
+              tooltipData:
+                foundLandmark.toReference() as any,
             },
           ]
       }
@@ -809,7 +810,7 @@ export class HumanShip extends CombatShip {
               {
                 text: fullShip.name,
                 color: fullShip.faction?.color,
-                tooltipData: fullShip.toLogStub() as any,
+                tooltipData: fullShip.toReference() as any,
               },
             ]
         }
@@ -1183,6 +1184,7 @@ export class HumanShip extends CombatShip {
     zones: Zone[]
   }) {
     let planetDataToSend: Partial<PlanetStub>[] = []
+    // send newly visible planets (only once)
     if (previousVisible?.planets?.length)
       planetDataToSend = this.visible.planets
         .filter((p) => Object.keys(p.toUpdate).length)
@@ -1301,7 +1303,7 @@ export class HumanShip extends CombatShip {
           {
             text: this.planet.name,
             color: this.planet.color,
-            tooltipData: this.planet.toLogStub() as any,
+            tooltipData: this.planet.toReference() as any,
           },
           `&nospace.`,
         ],
@@ -1314,13 +1316,13 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub() as any,
+              tooltipData: this.toReference() as any,
             },
             `landed on`,
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
+              tooltipData: s.planet.toReference() as any,
             },
             `&nospace.`,
           ])
@@ -1331,7 +1333,7 @@ export class HumanShip extends CombatShip {
         {
           text: previousPlanet.name,
           color: previousPlanet.color,
-          tooltipData: previousPlanet.toLogStub() as any,
+          tooltipData: previousPlanet.toReference() as any,
         },
         `&nospace.`,
       ])
@@ -1342,13 +1344,13 @@ export class HumanShip extends CombatShip {
             {
               text: this.name,
               color: this.faction.color,
-              tooltipData: this.toLogStub() as any,
+              tooltipData: this.toReference() as any,
             },
             `landed on`,
             {
               text: s.planet.name,
               color: s.planet.color,
-              tooltipData: s.planet.toLogStub() as any,
+              tooltipData: s.planet.toReference() as any,
             },
             `&nospace.`,
           ])
@@ -1423,7 +1425,7 @@ export class HumanShip extends CombatShip {
             {
               text: z.name,
               color: z.color,
-              tooltipData: z.stubify(),
+              tooltipData: z.toReference(),
             },
             `&nospace.`,
           ],
@@ -1436,7 +1438,7 @@ export class HumanShip extends CombatShip {
             {
               text: z.name,
               color: z.color,
-              tooltipData: z.stubify(),
+              tooltipData: z.toReference(),
             },
             `&nospace.`,
           ],
@@ -1496,7 +1498,9 @@ export class HumanShip extends CombatShip {
     if (removeExisting) this.items = []
     const res = super.equipLoadout(l)
     if (!res) return res
-    this.toUpdate.items = [...this.items]
+    this.toUpdate.items = [
+      ...this.items.map((i) => i.stubify()),
+    ] as ItemStub[]
     this.resolveRooms()
     this.updateThingsThatCouldChangeOnItemChange()
     return true
@@ -2000,7 +2004,9 @@ export class HumanShip extends CombatShip {
       )
         return
       if (value === true)
-        partialShip[key] = ship[key as keyof Ship]
+        partialShip[key] = c.stubify(
+          ship[key as keyof Ship],
+        )
       if (Array.isArray(value)) {
         if (Array.isArray(ship[key as keyof Ship])) {
           partialShip[key] = (
@@ -2012,16 +2018,16 @@ export class HumanShip extends CombatShip {
               .forEach((elKey: any) => {
                 returnVal[elKey] = el[elKey]
               })
-            return returnVal
+            return c.stubify(returnVal)
           })
         } else {
           partialShip[key] = {}
           Object.keys(ship[key as keyof Ship]).forEach(
             (elKey) => {
               if (value.includes(elKey))
-                partialShip[key][elKey] = (
-                  ship[key as keyof Ship] as any
-                )[elKey]
+                partialShip[key][elKey] = c.stubify(
+                  (ship[key as keyof Ship] as any)[elKey],
+                )
             },
           )
         }

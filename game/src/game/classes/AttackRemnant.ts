@@ -1,13 +1,21 @@
 import c from '../../../../common/dist'
-
-import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 
 export class AttackRemnant extends Stubbable {
   readonly id: string
   readonly type = `attackRemnant`
-  readonly attacker: CombatShip
-  readonly defender: CombatShip
+  readonly attacker: {
+    id: string
+    name: string
+    toReference?: Function
+  }
+
+  readonly defender: {
+    id: string
+    name: string
+    toReference?: Function
+  }
+
   readonly damageTaken: TakenDamageResult
   readonly start: CoordinatePair
   readonly end: CoordinatePair
@@ -33,5 +41,24 @@ export class AttackRemnant extends Stubbable {
     this.end = end
     this.time = time
     this.onlyVisibleToShipId = onlyVisibleToShipId
+  }
+
+  stubify<AttackRemnantStub>(
+    d?: string[],
+    a?: number,
+  ): AttackRemnantStub {
+    return {
+      attacker: this.attacker.toReference
+        ? this.attacker.toReference()
+        : this.attacker,
+      defender: this.defender.toReference
+        ? this.defender.toReference()
+        : this.defender,
+      damageTaken: this.damageTaken,
+      start: this.start,
+      end: this.end,
+      time: this.time,
+      id: this.id,
+    } as any
   }
 }

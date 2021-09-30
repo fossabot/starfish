@@ -175,7 +175,7 @@ export class Zone extends Stubbable {
     return this.stubify()
   }
 
-  toLogStub() {
+  toReference() {
     return {
       type: `zone`,
       id: this.id,

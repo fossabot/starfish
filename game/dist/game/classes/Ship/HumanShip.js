@@ -256,7 +256,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: p.name,
                     color: p.color,
-                    tooltipData: p.toLogStub(),
+                    tooltipData: p.toReference(),
                 },
                 `&nospace!`,
             ], `high`);
@@ -281,7 +281,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: l.name,
                     color: l.color,
-                    tooltipData: l.toLogStub(),
+                    tooltipData: l.toReference(),
                 },
                 `&nospace!`,
             ], `high`);
@@ -513,7 +513,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: foundPlanet.name,
                         color: foundPlanet.color,
-                        tooltipData: foundPlanet.toLogStub(),
+                        tooltipData: foundPlanet.toReference(),
                     },
                 ];
             if (!targetData) {
@@ -536,7 +536,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: foundLandmark.name,
                             color: foundLandmark.color,
-                            tooltipData: foundLandmark.toLogStub(),
+                            tooltipData: foundLandmark.toReference(),
                         },
                     ];
             }
@@ -551,7 +551,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                             {
                                 text: fullShip.name,
                                 color: fullShip.faction?.color,
-                                tooltipData: fullShip.toLogStub(),
+                                tooltipData: fullShip.toReference(),
                             },
                         ];
                 }
@@ -766,6 +766,7 @@ class HumanShip extends CombatShip_1.CombatShip {
     }
     generateVisiblePayload(previousVisible) {
         let planetDataToSend = [];
+        // send newly visible planets (only once)
         if (previousVisible?.planets?.length)
             planetDataToSend = this.visible.planets
                 .filter((p) => Object.keys(p.toUpdate).length)
@@ -842,7 +843,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: this.planet.name,
                     color: this.planet.color,
-                    tooltipData: this.planet.toLogStub(),
+                    tooltipData: this.planet.toReference(),
                 },
                 `&nospace.`,
             ], `high`);
@@ -854,13 +855,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: this.toLogStub(),
+                            tooltipData: this.toReference(),
                         },
                         `landed on`,
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.toLogStub(),
+                            tooltipData: s.planet.toReference(),
                         },
                         `&nospace.`,
                     ]);
@@ -872,7 +873,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 {
                     text: previousPlanet.name,
                     color: previousPlanet.color,
-                    tooltipData: previousPlanet.toLogStub(),
+                    tooltipData: previousPlanet.toReference(),
                 },
                 `&nospace.`,
             ]);
@@ -884,13 +885,13 @@ class HumanShip extends CombatShip_1.CombatShip {
                         {
                             text: this.name,
                             color: this.faction.color,
-                            tooltipData: this.toLogStub(),
+                            tooltipData: this.toReference(),
                         },
                         `landed on`,
                         {
                             text: s.planet.name,
                             color: s.planet.color,
-                            tooltipData: s.planet.toLogStub(),
+                            tooltipData: s.planet.toReference(),
                         },
                         `&nospace.`,
                     ]);
@@ -938,7 +939,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: z.name,
                         color: z.color,
-                        tooltipData: z.stubify(),
+                        tooltipData: z.toReference(),
                     },
                     `&nospace.`,
                 ], `high`);
@@ -948,7 +949,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                     {
                         text: z.name,
                         color: z.color,
-                        tooltipData: z.stubify(),
+                        tooltipData: z.toReference(),
                     },
                     `&nospace.`,
                 ], `high`);
@@ -991,7 +992,9 @@ class HumanShip extends CombatShip_1.CombatShip {
         const res = super.equipLoadout(l);
         if (!res)
             return res;
-        this.toUpdate.items = [...this.items];
+        this.toUpdate.items = [
+            ...this.items.map((i) => i.stubify()),
+        ];
         this.resolveRooms();
         this.updateThingsThatCouldChangeOnItemChange();
         return true;
@@ -1311,7 +1314,7 @@ class HumanShip extends CombatShip_1.CombatShip {
                 ship.passives.find((p) => p.id === `disguiseChassisType`))
                 return;
             if (value === true)
-                partialShip[key] = ship[key];
+                partialShip[key] = dist_1.default.stubify(ship[key]);
             if (Array.isArray(value)) {
                 if (Array.isArray(ship[key])) {
                     partialShip[key] = ship[key].map((el) => {
@@ -1321,14 +1324,14 @@ class HumanShip extends CombatShip_1.CombatShip {
                             .forEach((elKey) => {
                             returnVal[elKey] = el[elKey];
                         });
-                        return returnVal;
+                        return dist_1.default.stubify(returnVal);
                     });
                 }
                 else {
                     partialShip[key] = {};
                     Object.keys(ship[key]).forEach((elKey) => {
                         if (value.includes(elKey))
-                            partialShip[key][elKey] = ship[key][elKey];
+                            partialShip[key][elKey] = dist_1.default.stubify(ship[key][elKey]);
                     });
                 }
             }

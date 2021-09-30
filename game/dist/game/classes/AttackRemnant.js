@@ -15,6 +15,21 @@ class AttackRemnant extends Stubbable_1.Stubbable {
         this.time = time;
         this.onlyVisibleToShipId = onlyVisibleToShipId;
     }
+    stubify(d, a) {
+        return {
+            attacker: this.attacker.toReference
+                ? this.attacker.toReference()
+                : this.attacker,
+            defender: this.defender.toReference
+                ? this.defender.toReference()
+                : this.defender,
+            damageTaken: this.damageTaken,
+            start: this.start,
+            end: this.end,
+            time: this.time,
+            id: this.id,
+        };
+    }
 }
 exports.AttackRemnant = AttackRemnant;
 //# sourceMappingURL=AttackRemnant.js.map

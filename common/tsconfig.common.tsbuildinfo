@@ -247,8 +247,8 @@
         "affectsGlobalScope": true
       },
       "../@types/crew.d.ts": {
-        "version": "a3eeee073784aefff2ae66a3f5ff32cc85546ff2582681ef2b91668913ceb411",
-        "signature": "a3eeee073784aefff2ae66a3f5ff32cc85546ff2582681ef2b91668913ceb411",
+        "version": "aff89f6c739e26b52e08b3faf8f9269f7e4a1434eee1765855e3f44b5c6d803f",
+        "signature": "aff89f6c739e26b52e08b3faf8f9269f7e4a1434eee1765855e3f44b5c6d803f",
         "affectsGlobalScope": true
       },
       "../@types/discord.d.ts": {
@@ -257,8 +257,8 @@
         "affectsGlobalScope": true
       },
       "../@types/faction.d.ts": {
-        "version": "dc7b99ba64eaf5e6f02ea340da6419f89327701e4e48580e685c02224b177f4b",
-        "signature": "dc7b99ba64eaf5e6f02ea340da6419f89327701e4e48580e685c02224b177f4b",
+        "version": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
+        "signature": "994d355bb574f9d9567e3523c6a1ca80e90a0ab6ce300637a64716e9c0086aea",
         "affectsGlobalScope": true
       },
       "../@types/frontend.d.ts": {
@@ -287,23 +287,23 @@
         "affectsGlobalScope": true
       },
       "../@types/planet.d.ts": {
-        "version": "e53bc9c28536b32e4b3df84a463363ac7f06d878cabcc84c00606c504bee1f81",
-        "signature": "e53bc9c28536b32e4b3df84a463363ac7f06d878cabcc84c00606c504bee1f81",
+        "version": "b8fad20b0d5eb6361e222a0e7728aa7bc447ca9f1bdde0cb81f158bb323d45c2",
+        "signature": "b8fad20b0d5eb6361e222a0e7728aa7bc447ca9f1bdde0cb81f158bb323d45c2",
         "affectsGlobalScope": true
       },
       "../@types/ship.d.ts": {
-        "version": "3e05991847ebd8bf4625c1b593e50f60efc26c631d5297430d744743624577b4",
-        "signature": "3e05991847ebd8bf4625c1b593e50f60efc26c631d5297430d744743624577b4",
+        "version": "a95cea0f05efe7e6c117753c4d2def6d9ccbd0bfe4f0ef807d5643c4087c851f",
+        "signature": "a95cea0f05efe7e6c117753c4d2def6d9ccbd0bfe4f0ef807d5643c4087c851f",
         "affectsGlobalScope": true
       },
       "../@types/stubs.d.ts": {
-        "version": "223c69c7ee322aec4ddaebd0ea06e4a762337a04e17d2b0f61eb5ff0f4111852",
-        "signature": "223c69c7ee322aec4ddaebd0ea06e4a762337a04e17d2b0f61eb5ff0f4111852",
+        "version": "757c6362381aef8e7923c9f9ea6cb444c374f6c031f60db153fd7525eb7d6d53",
+        "signature": "757c6362381aef8e7923c9f9ea6cb444c374f6c031f60db153fd7525eb7d6d53",
         "affectsGlobalScope": true
       },
       "../@types/zone.d.ts": {
-        "version": "384397067fadcb8fcb2864ca90557523c1a24d42839784f30a34cff28b35f36f",
-        "signature": "384397067fadcb8fcb2864ca90557523c1a24d42839784f30a34cff28b35f36f",
+        "version": "0c80f169c67ea02188880f61ee9d724182613fe173163f2d5b951642560a94f0",
+        "signature": "0c80f169c67ea02188880f61ee9d724182613fe173163f2d5b951642560a94f0",
         "affectsGlobalScope": true
       },
       "./src/log.ts": {
@@ -331,9 +331,9 @@
         "signature": "7a083ab9fc4a5e0532512cec7bdb2057a9a1c8ada3d99270cedf68e8e44a9ca5",
         "affectsGlobalScope": false
       },
-      "./src/baseshippassivedata.ts": {
-        "version": "f8ccacfef981750b38638f86bf692c8834193d5db6f3b425703c5dfaa980448c",
-        "signature": "e08d6dc7bbed33b8b2da226a98f12590de75617e2df48e9651f39ef1df9c13ba",
+      "./src/basepassivedata.ts": {
+        "version": "3dd1aadd423aa15c01cd460b414c6a0917f263e980cf4666fb452af693139333",
+        "signature": "a3d7d372ce4f05a9dd44ed4b1d5afde2bdd6bd37006361e8a424338422b234a4",
         "affectsGlobalScope": false
       },
       "./src/cargo.ts": {
@@ -341,9 +341,14 @@
         "signature": "347b41b24dfca01312a86d060a95b6807564e4d8dafe7252da5ccea5bbb6beed",
         "affectsGlobalScope": false
       },
+      "./src/crewactives.ts": {
+        "version": "c874993eaf7d17998d9b7266cd4869cceff1d1269da71852db80c64f0eb5e11b",
+        "signature": "e7b543257bf0e9902b40320cf2084bae827a04bca7cff19d5e0f2ea1ab26b00a",
+        "affectsGlobalScope": false
+      },
       "./src/crewpassives.ts": {
-        "version": "636b7593925a508c5806ce778195788f112a7fa7c94f07f7bab1b374572e59ad",
-        "signature": "743df1624ed66f1c085430b83a25ce3e0958aa68ba2ffc65c35503d308de47b8",
+        "version": "e6d2555a69b5a7fc07e9cfdd778e85a1fa876dbbbeb148be95477e63c2e1dc7d",
+        "signature": "577b818ece424c7f5020cd6fff9e05724c5c4ee54bc0cfd29bafc98854c75588",
         "affectsGlobalScope": false
       },
       "./src/cycle.ts": {
@@ -367,28 +372,23 @@
         "affectsGlobalScope": false
       },
       "./src/species.ts": {
-        "version": "4a1ced49b0b94b2496a28bbda2191719772c831578b43f36bb3ca39088fb19c0",
-        "signature": "8bb605e85144f0b7195a2b1edf4360a04d2e142783896a8d8292a4201a2a7ef4",
+        "version": "d70a46d1bc228f9ef6394968132c056d39529246726a2fe7626635a67f303116",
+        "signature": "4167d59f8159b8f8ffd54a5963c8eb75fc166e1e9753b86f7fd38f2b6e461491",
         "affectsGlobalScope": false
       },
       "./src/factions.ts": {
-        "version": "62482968baa6c83c871b0b73b65745eec7d84675a133caa75dba23c48fc11155",
-        "signature": "65db7a1516a3f0203ea8274bd2c5cba125af8b43d5c7879fb2ff12694acd4e53",
+        "version": "00e2f0135b09e1cad06dd2a3a9e2d67ce777a21d5d9d8a1bae1ba691088da1a0",
+        "signature": "e57cac9d9ce0e7b6e4262ee27e33678788ccfc0536d843faa41e5b1b6c708e9c",
         "affectsGlobalScope": false
       },
       "./src/text.ts": {
-        "version": "bafbec4fea10001e5e1b538e20d7cdc07b29087a7ec7f1e69a91979f81973024",
+        "version": "5c72ff7eff1e3c9a3b574b25b129f8e5fb9cc99a88a688ed9148946c41cb286f",
         "signature": "0d67c8e13663787cc7619fafabaa9cf3404cabc530c1d9e59ab278c9e3a1cc23",
         "affectsGlobalScope": false
       },
       "./src/game.ts": {
-        "version": "0dd62026222691ebe57a84dba8a9f9c6af3ce63281f483d913cc8bb5e5a9e0eb",
-        "signature": "37cbb1416b9c73698c6347fecf68d80d684d06112e12c79696e06bcf2f29f157",
-        "affectsGlobalScope": false
-      },
-      "./src/guilds.ts": {
-        "version": "1740ea842546615d98b47c40fef2e32b383e69e4cfb273693d036aa3103e88ee",
-        "signature": "620ba0f872086ac1e43729d7e6f7ef65a0b5ec284ed3ba6947378afd9e9707f9",
+        "version": "d417ed90acb8cc0730d7a3fa988af4b113a88e11e9cf65d52fe9dae554c0c2c9",
+        "signature": "69ea9f2e0335d38910dfcf6305a7c16d1e780a189b978d62a0d973d96e2a90d7",
         "affectsGlobalScope": false
       },
       "./src/misc.ts": {
@@ -397,7 +397,7 @@
         "affectsGlobalScope": false
       },
       "./src/physics.ts": {
-        "version": "f0139c963e5f6f67b13807fd314b20e6b028ec678507634626b4d032de16e279",
+        "version": "8581c7cbda70b392b8a0635244693e4a078281cdf27b67a0a27a4f73a7acbafa",
         "signature": "44fdb029fd49e873edfab3f6883614145eda88ee291e917aea3c75a1ce477c58",
         "affectsGlobalScope": false
       },
@@ -407,7 +407,7 @@
         "affectsGlobalScope": false
       },
       "./src/stubify.ts": {
-        "version": "229b2c4224ef90023f5ab50c220f401013876ee284e0d3e2a3bcc030ab0c9547",
+        "version": "7a55d1ad4bdc515405bac151aad6cb63654b8e248868f15440e58396454439e1",
         "signature": "5791b228c7ab210e7d42e47f452014ac42d5ec04eab07ee42c0e5c6ae3ded7b5",
         "affectsGlobalScope": false
       },
@@ -427,7 +427,7 @@
         "affectsGlobalScope": false
       },
       "./src/items/communicators.ts": {
-        "version": "4515bf9d5aa0b3a89e91686e76c3787bc8ed3b3e3cf396b95db9dee229cfabdb",
+        "version": "ad45dc11a59e6c079f33257bc00f135f0eb7044b3957a861645acd5c920fa50e",
         "signature": "261f06e680cd2b203afe84f45002fb01d589fbcb59ef630f2bb6520739d3e4b4",
         "affectsGlobalScope": false
       },
@@ -447,13 +447,13 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "021a42b4eca2d4ae7d932ca7b7bead2ba216f13519fe55ade2597a4db5ec009b",
-        "signature": "ec671dd31d7bc881bae44a387d3ca849c2564ed189f1fd6346ecddd1182f8a8c",
+        "version": "c881d880d9c1c2c73f6fe28bd9ce3d640df881785ecd64b74aa16ca6064a1fd0",
+        "signature": "17d8acb6b2bb0a6ef3a1dc47c3e916fadc99565ca433fb6285aea50a683374b6",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/json-schema/index.d.ts": {
-        "version": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
-        "signature": "3a1e165b22a1cb8df82c44c9a09502fd2b33f160cd277de2cd3a055d8e5c6b27",
+        "version": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
+        "signature": "0359682c54e487c4cab2b53b2b4d35cc8dea4d9914bc6abcdb5701f8b8e745a4",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/node/assert/strict.d.ts": {
@@ -716,31 +716,6 @@
         "signature": "4f92917486836e30ec8c18667035e7bf15d16fcd5ab2748296994f54a3ae359b",
         "affectsGlobalScope": false
       },
-      "../node_modules/buffer/index.d.ts": {
-        "version": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
-        "signature": "8e9c23ba78aabc2e0a27033f18737a6df754067731e69dc5f52823957d60a4b6",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/bson/bson.d.ts": {
-        "version": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
-        "signature": "1756e167f1ba399c6b982b9c95ac20ca63c6e37d0b369b51bb09146927a70ded",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/denque/index.d.ts": {
-        "version": "460f30d6ea494bbf076853e1588d30ec4651efcc26cbfcd2c91362f7efc87e89",
-        "signature": "460f30d6ea494bbf076853e1588d30ec4651efcc26cbfcd2c91362f7efc87e89",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/mongodb/mongodb.ts34.d.ts": {
-        "version": "e40c6c6da0638edb1fc56d49b822d300dbab1d1869dfc064c1cdb2ec68eafaee",
-        "signature": "e40c6c6da0638edb1fc56d49b822d300dbab1d1869dfc064c1cdb2ec68eafaee",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/mongoose/index.d.ts": {
-        "version": "d80c4e0d4038d812d74f6e711e4e15fb06c483cc5e0f0c9b392f698f577136c9",
-        "signature": "d80c4e0d4038d812d74f6e711e4e15fb06c483cc5e0f0c9b392f698f577136c9",
-        "affectsGlobalScope": false
-      },
       "../node_modules/@types/webidl-conversions/index.d.ts": {
         "version": "95d085761c8e8d469a9066a9cc7bd4b5bc671098d2f8442ae657fb35b3215cf1",
         "signature": "95d085761c8e8d469a9066a9cc7bd4b5bc671098d2f8442ae657fb35b3215cf1",
@@ -827,15 +802,17 @@
       "./src/badwords.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "./src/baseshippassivedata.ts": [
+      "./src/basepassivedata.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
       "./src/cargo.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
+      "./src/crewactives.ts": [
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "./src/crewpassives.ts": [
-        "../node_modules/@types/node/util.d.ts",
-        "./src/math.ts"
+        "../node_modules/@types/node/util.d.ts"
       ],
       "./src/cycle.ts": [
         "../node_modules/@types/node/util.d.ts"
@@ -864,14 +841,11 @@
       "./src/globals.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "./src/guilds.ts": [
-        "../node_modules/@types/node/util.d.ts",
-        "./src/species.ts"
-      ],
       "./src/index.ts": [
         "../node_modules/@types/node/util.d.ts",
-        "./src/baseshippassivedata.ts",
+        "./src/basepassivedata.ts",
         "./src/cargo.ts",
+        "./src/crewactives.ts",
         "./src/crewpassives.ts",
         "./src/discord.ts",
         "./src/factions.ts",
@@ -960,14 +934,6 @@
       ],
       "../node_modules/@types/json-schema/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/@types/mongoose/index.d.ts": [
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongodb/mongodb.ts34.d.ts"
       ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts",
@@ -1301,27 +1267,6 @@
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts": [
         "../node_modules/@types/node/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/bson/bson.d.ts": [
-        "../node_modules/@types/node/buffer.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/buffer/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/denque/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/mongodb/mongodb.ts34.d.ts": [
-        "../node_modules/@types/node/dns.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/net.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/tls.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/bson/bson.d.ts",
-        "../node_modules/denque/index.d.ts"
       ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../node_modules/@types/node/util.d.ts"
@@ -1517,14 +1462,6 @@
       "../node_modules/@types/json-schema/index.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/@types/mongoose/index.d.ts": [
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongodb/mongodb.ts34.d.ts"
-      ],
       "../node_modules/@types/node/assert.d.ts": [
         "../node_modules/@types/node/assert.d.ts",
         "../node_modules/@types/node/util.d.ts"
@@ -1858,27 +1795,6 @@
         "../node_modules/@types/node/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/bson/bson.d.ts": [
-        "../node_modules/@types/node/buffer.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/buffer/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/denque/index.d.ts": [
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/mongodb/mongodb.ts34.d.ts": [
-        "../node_modules/@types/node/dns.d.ts",
-        "../node_modules/@types/node/events.d.ts",
-        "../node_modules/@types/node/index.d.ts",
-        "../node_modules/@types/node/net.d.ts",
-        "../node_modules/@types/node/stream.d.ts",
-        "../node_modules/@types/node/tls.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/bson/bson.d.ts",
-        "../node_modules/denque/index.d.ts"
-      ],
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": [
         "../node_modules/@types/node/util.d.ts"
       ],
@@ -2031,45 +1947,17 @@
       "../@types/stubs.d.ts",
       "../@types/zone.d.ts",
       "./src/badwords.ts",
-      "./src/baseshippassivedata.ts",
+      "./src/basepassivedata.ts",
       "./src/cargo.ts",
+      "./src/crewactives.ts",
       "./src/crewpassives.ts",
       "./src/cycle.ts",
       "./src/discord.ts",
       "./src/discord_dev.ts",
       "./src/discord_prod.ts",
-      [
-        "./src/factions.ts",
-        [
-          {
-            "file": "./src/factions.ts",
-            "start": 258,
-            "length": 6,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'squids' does not exist on type '{ octopi: BaseSpeciesData; lobsters: BaseSpeciesData; crabs: BaseSpeciesData; \"sea turtles\": BaseSpeciesData; ... 9 more ...; flamingos: BaseSpeciesData; }'."
-          },
-          {
-            "file": "./src/factions.ts",
-            "start": 465,
-            "length": 5,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'seals' does not exist on type '{ octopi: BaseSpeciesData; lobsters: BaseSpeciesData; crabs: BaseSpeciesData; \"sea turtles\": BaseSpeciesData; ... 9 more ...; flamingos: BaseSpeciesData; }'."
-          },
-          {
-            "file": "./src/factions.ts",
-            "start": 753,
-            "length": 4,
-            "code": 2339,
-            "category": 1,
-            "messageText": "Property 'tuna' does not exist on type '{ octopi: BaseSpeciesData; lobsters: BaseSpeciesData; crabs: BaseSpeciesData; \"sea turtles\": BaseSpeciesData; ... 9 more ...; flamingos: BaseSpeciesData; }'."
-          }
-        ]
-      ],
+      "./src/factions.ts",
       "./src/game.ts",
       "./src/globals.ts",
-      "./src/guilds.ts",
       "./src/index.ts",
       "./src/items/armor.ts",
       "./src/items/chassis.ts",
@@ -2088,7 +1976,6 @@
       "./src/stubify.ts",
       "./src/text.ts",
       "../node_modules/@types/json-schema/index.d.ts",
-      "../node_modules/@types/mongoose/index.d.ts",
       "../node_modules/@types/node/assert.d.ts",
       "../node_modules/@types/node/assert/strict.d.ts",
       "../node_modules/@types/node/async_hooks.d.ts",
@@ -2143,10 +2030,6 @@
       "../node_modules/@types/node/zlib.d.ts",
       "../node_modules/@types/webidl-conversions/index.d.ts",
       "../node_modules/@types/whatwg-url/ts3.9/index.d.ts",
-      "../node_modules/bson/bson.d.ts",
-      "../node_modules/buffer/index.d.ts",
-      "../node_modules/denque/index.d.ts",
-      "../node_modules/mongodb/mongodb.ts34.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",

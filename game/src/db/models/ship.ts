@@ -119,14 +119,16 @@ export async function addOrUpdateInDb(
   data: Ship,
 ): Promise<BaseShipData | null> {
   // * make sure we don't overwrite an update in progress
-  if (alreadyUpdating.has(data.id))
-    return (
+  if (alreadyUpdating.has(data.id)) {
+    const existing = (
       await DBShip.findOne({ id: data.id })
-    )?.toObject()
+    )?.toObject() as any
+    return existing
+  }
   alreadyUpdating.add(data.id)
 
   // c.log(`will update`, data)
-  const stub = data.stubify()
+  const stub = data.stubify() as ShipStub
   // if (data.human)
   //   // stub.items = []
   //   c.log(
@@ -171,11 +173,11 @@ export async function wipeAI() {
 export async function getAllConstructible(): Promise<
   BaseShipData[]
 > {
-  const docs = (await DBShip.find({})).map((d) =>
+  const docs: any = (await DBShip.find({})).map((d) =>
     d.toObject(),
   )
   // clearExtraneousMongooseIdEntry(docs)
-  return docs
+  return docs as BaseShipData[]
 }
 
 function clearExtraneousMongooseIdEntry(obj: any) {
