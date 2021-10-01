@@ -58,7 +58,7 @@ const planetSchemaFields: Record<
     },
   ],
   guildId: String,
-  homeworld: { id: String },
+
   allegiances: [{ guild: { id: String }, level: Number }],
   vendor: {
     cargo: [
