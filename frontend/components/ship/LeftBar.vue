@@ -53,7 +53,7 @@
           class="icon subicon smaller pointer martopbig"
           v-tooltip="`How to Play`"
         >
-          <nuxt-link to="/how to play">
+          <nuxt-link to="/howtoplay">
             <img
               src="/images/icons/icon-howtoplay.svg"
               alt="link to how to play page"
