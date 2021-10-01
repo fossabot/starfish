@@ -80,46 +80,36 @@ This bot will create several channels for game communication and a role for crew
       return
     }
 
-    // // create role
-    // const crewRole = await resolveOrCreateRole({
-    //   type: `crew`,
-    //   guild: context.guild,
-    // })
-    // if (!crewRole) {
-    //   await context.reply(
-    //     `I don't seem to be able to create roles in this server. Please add that permission to the bot!`,
-    //   )
-    //   return
-    // }
-    // context.guildMember?.roles.add(crewRole).catch(async (e) => {
-    //   c.log(e)
-    //   await context.reply(
-    //     `I don't seem to be able to assign roles in this server. Please add that permission to the bot!`,
-    //   )
-    // })
+    const guildButtonData: MessageButtonOptions[] = []
+    for (let s of c.shuffleArray(
+      Object.entries(c.guilds).filter(
+        (e: [string, BaseGuildData]) => {
+          return e[1].id !== `fowl`
+        },
+      ),
+    ))
+      guildButtonData.push({
+        label: c.capitalize(s[1].name),
+        style: `SECONDARY`,
+        customId: s[1].id,
+      })
 
-    // const speciesButtonData: MessageButtonOptions[] = []
-    // for (let s of c.shuffleArray(
-    //   Object.entries(c.species).filter(
-    //     (e: [string, BaseSpeciesData]) => {
-    //       return e[1].guildId !== `red`
-    //     },
-    //   ),
-    // ))
-    //   speciesButtonData.push({
-    //     label: s[1].icon + c.capitalize(s[1].id),
-    //     style: `SECONDARY`,
-    //     customId: s[1].id,
-    //   })
+    guildButtonData.push({
+      label: `Don't Join a Guild`,
+      style: `SECONDARY`,
+      customId: `none`,
+    })
 
-    // const { result: speciesResult, sentMessage: sm } =
-    //   await waitForSingleButtonChoice<SpeciesId>({
-    //     context,
-    //     content: `Excellent! Choose your ship's species to get started.`,
-    //     allowedUserId: context.initialMessage.author.id,
-    //     buttons: speciesButtonData,
-    //   })
-    // if (sm) sentMessages.push(sm)
+    let { result: guildResult, sentMessage: sm } =
+      await waitForSingleButtonChoice<GuildId | `none`>({
+        context,
+        content: `Excellent! Choose your ship's guild to get started. Each guild has its own specialties.
+You can change your guild when you visit another guild's homeworld.`,
+        allowedUserId: context.initialMessage.author.id,
+        buttons: guildButtonData,
+      })
+
+    if (sm) sentMessages.push(sm)
 
     // clean up messages
     try {
@@ -127,17 +117,19 @@ This bot will create several channels for game communication and a role for crew
         if (m.deletable) m.delete().catch(c.log)
     } catch (e) {}
 
-    // if (!speciesResult) {
-    //   await context.reply(
-    //     `You didn't pick a species, try again!`,
-    //   )
-    //   return
-    // }
+    if (!guildResult) {
+      await context.reply(
+        `You didn't pick a guild, try again!`,
+      )
+      return
+    }
 
     // add ship
     const createdShip = await ioInterface.ship.create({
       id: context.guild.id,
       name: context.guild.name,
+      guildId:
+        guildResult === `none` ? undefined : guildResult,
       guildName:
         c
           .sanitize(context.guild.name)

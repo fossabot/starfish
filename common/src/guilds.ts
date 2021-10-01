@@ -4,7 +4,7 @@ const guilds: {
   trader: {
     name: `Traders`,
     id: `trader`,
-    color: `hsl(250, 60%, 50%)`,
+    color: `hsl(250, 60%, 70%)`,
     passives: [
       {
         id: `boostCargoSpace`,
@@ -123,7 +123,7 @@ const guilds: {
   fowl: {
     name: `Fowls`,
     id: `fowl`,
-    color: `hsl(0, 60%, 70%)`,
+    color: `hsl(0, 75%, 60%)`,
     aiOnly: true,
     passives: [],
   },

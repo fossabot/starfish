@@ -132,7 +132,18 @@ export class Ship extends Stubbable {
       // c.log(`fact`, this.location, this.guild.homeworld)
     } else
       this.location = [
-        ...c.randomFromArray(this.game.planets).location,
+        ...(c
+          .randomFromArray(
+            this.game.planets.filter((p) => !p.homeworld),
+          )
+          .location.map(
+            (pos) =>
+              pos +
+              c.randomBetween(
+                this.game.settings.arrivalThreshold * -0.4,
+                this.game.settings.arrivalThreshold * 0.4,
+              ),
+          ) as CoordinatePair),
       ]
 
     if (previousLocations)
@@ -149,8 +160,12 @@ export class Ship extends Stubbable {
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
-        .map(({ name }: { name: string }) =>
-          this.game.planets.find((p) => p.name === name),
+        .map(
+          ({ id, name }: { id: string; name?: string }) =>
+            this.game.planets.find(
+              (p) =>
+                p.id === id || (p.name && p.name === name),
+            ),
         )
         .filter((p) => p) as Planet[]
 
@@ -437,7 +452,7 @@ export class Ship extends Stubbable {
   }
 
   equipLoadout(this: Ship, id: LoadoutId): boolean {
-    c.log(`equipping loadout to`, this.name)
+    // c.log(`equipping loadout to`, this.name)
     const loadout = loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })

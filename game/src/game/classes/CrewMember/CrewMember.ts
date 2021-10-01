@@ -286,11 +286,16 @@ export class CrewMember extends Stubbable {
     const existingStock = this.inventory.find(
       (cargo) => cargo.id === id,
     )
-    if (existingStock)
+    if (existingStock) {
       existingStock.amount = c.r2(
         existingStock.amount -
           Math.min(existingStock.amount, amount),
       )
+      if (existingStock.amount <= 0)
+        this.inventory = this.inventory.filter(
+          (cargo) => cargo.id !== id
+        )
+    }
     this.toUpdate.inventory = this.inventory
     this.ship.recalculateMass()
   }

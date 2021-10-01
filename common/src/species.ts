@@ -111,6 +111,7 @@ const species: { [key in SpeciesId]: BaseSpeciesData } = {
     passives: [
       {
         id: `boostWeaponChargeSpeed`,
+        intensity: 0.1,
         data: { source: { speciesId: `blowfish` } },
       },
     ],

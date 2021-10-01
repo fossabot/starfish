@@ -186,8 +186,7 @@ interface ShipScanDataShape {
   planet:
     | (keyof BasePlanetData)[]
     | (keyof BaseBasicPlanetData)[]
-  guild: (keyof BaseGuildData)[]
-  species: (keyof BaseSpeciesData)[]
+  guildId: true
   items?: (
     | keyof BaseItemData
     | keyof BaseWeaponData

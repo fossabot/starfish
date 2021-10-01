@@ -36,6 +36,7 @@ const baseShipScanProperties: {
   name: true
   human: true
   ai: true
+  guildId: true
   headerBackground: true
   tagline: true
   level: true
@@ -44,8 +45,6 @@ const baseShipScanProperties: {
   previousLocations: true
   location: true
   planet: (keyof BasePlanetData)[]
-  guild: (keyof BaseGuildData)[]
-  species: (keyof BaseSpeciesData)[]
   chassis: (keyof BaseChassisData)[]
 } = {
   id: true,
@@ -60,8 +59,7 @@ const baseShipScanProperties: {
   previousLocations: true,
   location: true,
   planet: [`name`, `location`],
-  guild: [`aiOnly`, `name`, `id`, `color`],
-  species: [`id`, `singular`, `icon`],
+  guildId: true,
   chassis: [`displayName`],
 }
 const sameGuildShipScanProperties = {

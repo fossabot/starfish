@@ -136,7 +136,9 @@ export class HumanShip extends CombatShip {
     this.updateVisible()
     this.recalculateMass()
 
-    if (!this.tutorial) this.updatePlanet(true)
+    this.updatePlanet(true)
+    if (this.tutorial)
+      setTimeout(() => this.updatePlanet(true), 1500)
 
     if (!this.items.length) {
       c.log(

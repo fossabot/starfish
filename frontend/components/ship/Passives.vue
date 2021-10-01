@@ -13,7 +13,7 @@
           }"
           v-if="c.baseShipPassiveData[p.id]"
         >
-          <ShipPassiveText :passive="p" />
+          <ShipShipPassiveText :passive="p" />
         </div>
       </div>
     </Box>

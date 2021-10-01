@@ -13,7 +13,7 @@
     </div>
     <!-- {{ data }} -->
     <hr />
-    <div v-if="dataToUse.guild">
+    <div v-if="dataToUse.guildId">
       <span
         :style="{
           color: c.guilds[dataToUse.guildId].color,

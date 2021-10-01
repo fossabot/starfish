@@ -174,6 +174,7 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
+    if (this.game.tickCount < 10) return false
     // self
     if (this === otherShip) return false
     // not attackable

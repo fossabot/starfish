@@ -150,7 +150,7 @@ export class Game {
 
   // ----- game loop -----
 
-  private tickCount = 0
+  tickCount = 0
   private lastTickTime: number = Date.now()
   private lastTickExpectedTime: number = 0
   private averageTickLag: number = 0

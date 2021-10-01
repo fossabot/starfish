@@ -422,7 +422,7 @@ export const actions = {
           return
         }
         userId = idRes.data
-        c.log({ userId })
+        // c.log({ userId })
       }
       if (userId) storage.set(`userId`, userId)
 

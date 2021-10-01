@@ -44,6 +44,7 @@ const shipSchemaFields: Record<
   seenLandmarks: [{ type: { type: String }, id: String }],
   tutorial: {
     step: Number,
+    baseLocation: [Number, Number],
   },
   tagline: String,
   availableTaglines: [{ type: String }],

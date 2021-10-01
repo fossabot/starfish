@@ -7,6 +7,7 @@ import { db } from '../../../../db'
 
 interface BaseTutorialData {
   step: number
+  baseLocation?: CoordinatePair
 }
 interface TutorialStepData {
   shownRooms: CrewLocation[]
@@ -96,7 +97,7 @@ export class Tutorial {
         disableStamina: true,
         disableRepair: true,
         forceLoadout: `tutorial1`,
-        visibleTypes: [],
+        visibleTypes: [`planet`],
         script: [
           {
             message: `Welcome to ${
@@ -713,13 +714,22 @@ export class Tutorial {
     this.ship = ship
     this.initializeSteps()
     this.step = data.step
-    this.baseLocation = [
-      ...(this.ship.game.getHomeworld(this.ship.guildId)
-        ?.location ||
-        c.randomFromArray(
-          this.ship.game.planets.filter((p) => p.homeworld),
-        ).location),
-    ]
+    this.baseLocation =
+      data.baseLocation ||
+      ([
+        ...(this.ship.game.getHomeworld(this.ship.guildId)
+          ?.location ||
+          c.randomFromArray(
+            this.ship.game.planets.filter(
+              (p) => p.homeworld,
+            ),
+          ).location),
+      ].map(
+        (l) =>
+          l +
+          this.ship.game.settings.arrivalThreshold *
+            (Math.random() - 0.5),
+      ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
     if (this.step === -1) {
       // * timeout to give a chance to initialize the crew member in the ship and save it, THEN start

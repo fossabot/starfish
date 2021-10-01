@@ -19,25 +19,7 @@
     ></div>
     <div class="bgfade"></div>
     <div class="content">
-      <!-- <div
-        v-if="
-          data.species &&
-          data.speciesId &&
-          c.species[data.speciesId]
-        "
-      >
-        <div
-          class="icon"
-          :class="{ pushup: data.tagline }"
-          v-tooltip="{
-            type: 'species',
-            ...c.species[data.speciesId],
-          }"
-        >
-          {{ c.species[data.speciesId].icon }}
-        </div>
-      </div> -->
-      <div class="right">
+      <div class="">
         <div class="tooltipheader">{{ data.name }}</div>
         <div v-if="data.tagline" class="sub">
           {{ data.tagline }}
@@ -45,9 +27,7 @@
       </div>
     </div>
     <div
-      v-if="
-        data.guild && data.guildId && c.guilds[data.guildId]
-      "
+      v-if="data.guildId && c.guilds[data.guildId]"
       class="guildtag"
       :style="{
         background: c.guilds[data.guildId].color,
@@ -141,11 +121,6 @@ export default Vue.extend({
     &.pushup {
       top: -0.7em;
     }
-  }
-
-  .right {
-    flex-grow: 1;
-    padding-left: 0.5em;
   }
 
   .guildtag {

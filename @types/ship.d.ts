@@ -4,7 +4,7 @@ interface BaseShipData {
   guildId?: GuildId
   location?: CoordinatePair
   velocity?: CoordinatePair
-  seenPlanets?: { name: string }[]
+  seenPlanets?: { id: string; name?: string }[]
   seenLandmarks?: { id: string; type: `zone` }[]
   loadout?: LoadoutId
   chassis?: { id: ChassisId }

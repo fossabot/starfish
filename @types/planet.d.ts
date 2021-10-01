@@ -21,7 +21,6 @@ interface BasePlanetData {
 interface BaseBasicPlanetData extends BasePlanetData {
   leanings: PlanetLeaning[]
   guildId?: GuildId
-  homeworld?: { id: GuildId }
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
 }
