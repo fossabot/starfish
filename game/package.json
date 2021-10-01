@@ -12,7 +12,7 @@
     "dotenv": "^10.0.0",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
-    "mongoose": "5.10.19",
+    "mongoose": "6.0.8",
     "newrelic": "^8.4.0",
     "nodemon": "^2.0.12",
     "socket.io": "^4.2.0",
