@@ -15,7 +15,7 @@ COPY tsconfig.json /usr/app/tsconfig.json
 COPY common /usr/app/common
 COPY @types /usr/app/@types
 RUN npm run build-once
-COPY newrelic.js .
+COPY game/newrelic.js .
 # FROM node:16-alpine3.11 as release
 # WORKDIR /usr/app/game
 # COPY --from=dependencies /usr/app/common /usr/app/common
