@@ -10,7 +10,8 @@ import * as gameSettings from './models/gameSettings'
 dotEnvConfig()
 
 import c from '../../../common/dist'
-const mongoose = require(`mongoose`)
+import mongoose from 'mongoose'
+import path from 'path/posix'
 export const db = {
   cache,
   ship,
@@ -20,6 +21,9 @@ export const db = {
   gameSettings,
 }
 let ready = false
+
+const minBackupInterval = 1000 * 60 * 60 * 12
+const maxBackups = 20
 
 let mongoUsername: string
 let mongoPassword: string
@@ -66,6 +70,7 @@ export const init = ({
       ready = true
       const promises = toRun.map(async (f) => await f())
       await Promise.all(promises)
+      startDbBackupInterval()
       resolve()
     }
 
@@ -76,14 +81,13 @@ export const init = ({
         `gray`,
         `No existing db connection, creating...`,
       )
-
-      mongoose
-        .connect(uri, {
+      ;(
+        mongoose.connect(uri, {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           useFindAndModify: false,
-        })
-        .catch(() => {})
+        } as any) as any
+      ).catch(() => {})
 
       mongoose.connection.on(`error`, (error) =>
         c.log(`red`, error.message),
@@ -100,4 +104,134 @@ export const init = ({
 export const runOnReady = (f: Function) => {
   if (ready) f()
   else toRun.push(f)
+}
+
+function startDbBackupInterval() {
+  backUpDb()
+  setInterval(backUpDb, minBackupInterval)
+}
+function backUpDb() {
+  const dbFolderPath = path.resolve(
+    __dirname,
+    `../../../`,
+    `db/`,
+  )
+  const backupsFolderPath = path.resolve(
+    dbFolderPath,
+    `backups/`,
+  )
+
+  if (!fs.existsSync(backupsFolderPath))
+    fs.mkdirSync(backupsFolderPath)
+
+  fs.readdir(backupsFolderPath, (err, backups) => {
+    if (err) return
+    const sortedBackups = backups.sort((a, b) => {
+      const aDate = new Date(parseInt(a))
+      const bDate = new Date(parseInt(b))
+      return bDate.getTime() - aDate.getTime()
+    })
+    const mostRecentBackup = sortedBackups[0]
+    const oldestBackup =
+      sortedBackups[sortedBackups.length - 1]
+
+    if (sortedBackups.length > maxBackups) {
+      fs.rmdirSync(
+        path.resolve(backupsFolderPath, oldestBackup),
+        { recursive: true },
+      )
+    }
+
+    if (
+      !mostRecentBackup ||
+      new Date(parseInt(mostRecentBackup)).getTime() <
+        Date.now() - minBackupInterval
+    ) {
+      c.log(`gray`, `Backing up db...`)
+      const backupName = Date.now()
+      copyFolderRecursiveSync(
+        path.resolve(dbFolderPath, `data`),
+        path.resolve(backupsFolderPath, `${backupName}`),
+      )
+    }
+  })
+  // const existingBackups = fs.re
+}
+
+function copyFileSync(source, target) {
+  let targetFile = target
+
+  // If target is a directory, a new file with the same name will be created
+  if (fs.existsSync(target)) {
+    if (fs.lstatSync(target).isDirectory()) {
+      targetFile = path.join(target, path.basename(source))
+    }
+  }
+
+  fs.writeFileSync(targetFile, fs.readFileSync(source))
+}
+
+function copyFolderRecursiveSync(source, target) {
+  let files: string[] = []
+
+  // Check if folder needs to be created or integrated
+  let targetFolder = target
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder)
+  }
+
+  // Copy
+  if (fs.lstatSync(source).isDirectory()) {
+    files = fs.readdirSync(source)
+    files.forEach((file) => {
+      let curSource = path.join(source, file)
+      if (fs.lstatSync(curSource).isDirectory()) {
+        copyFolderRecursiveSync(curSource, targetFolder)
+      } else {
+        copyFileSync(curSource, targetFolder)
+      }
+    })
+  }
+}
+
+export function getBackups() {
+  const backupsFolderPath = path.resolve(
+    __dirname,
+    `../../../`,
+    `db/`,
+    `backups/`,
+  )
+
+  return fs.readdirSync(backupsFolderPath)
+}
+export function resetDbToBackup(backupId: string) {
+  const dbFolderPath = path.resolve(
+    __dirname,
+    `../../../`,
+    `db/`,
+  )
+  const backupsFolderPath = path.resolve(
+    dbFolderPath,
+    `backups/`,
+  )
+
+  if (
+    !fs.existsSync(backupsFolderPath) ||
+    !fs.existsSync(
+      path.resolve(backupsFolderPath, backupId),
+    )
+  )
+    return c.log(
+      `red`,
+      `Attempted to reset db to nonexistent backup`,
+    )
+
+  c.log(`yellow`, `Resetting db to backup`, backupId)
+
+  copyFolderRecursiveSync(
+    path.resolve(backupsFolderPath, backupId),
+    path.resolve(dbFolderPath, `data`),
+  )
+
+  process.exit()
 }

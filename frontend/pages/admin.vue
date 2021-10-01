@@ -55,6 +55,18 @@
             Reset All Attack Remnants
           </div>
         </div>
+        <div class="backups martopsmall">
+          <div class="sub">Reset DB to Backup:</div>
+          <div>
+            <div
+              class="backup button combo"
+              v-for="b in backups"
+              @click="resetToBackup(b)"
+            >
+              {{ new Date(parseInt(b)).toLocaleString() }}
+            </div>
+          </div>
+        </div>
       </details>
 
       <details class="martop">
@@ -120,6 +132,7 @@ export default Vue.extend({
       show: false,
       initialSettings: {},
       inputSettings: {},
+      backups: [],
     }
   },
   computed: {
@@ -158,6 +171,17 @@ export default Vue.extend({
               delete this.inputSettings.__v
               this.initialSettings = {
                 ...this.inputSettings,
+              }
+            },
+          )
+
+          this.$socket.emit(
+            'game:backups',
+            this.userId,
+            this.adminPassword,
+            (res) => {
+              if (res.data) {
+                this.backups = res.data
               }
             },
           )
@@ -314,6 +338,20 @@ export default Vue.extend({
         'game:resetAllAttackRemnants',
         this.userId,
         this.adminPassword,
+      )
+    },
+    resetToBackup(b) {
+      if (
+        !window.confirm(
+          `Are you sure you want to RESET THE ENTIRE DB to backup ${b}?`,
+        )
+      )
+        return
+      this.$socket.emit(
+        'game:resetToBackup',
+        this.userId,
+        this.adminPassword,
+        b,
       )
     },
   },
