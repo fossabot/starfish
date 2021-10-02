@@ -132,8 +132,10 @@ function backUpDb() {
     `backups/`,
   )
 
-  if (!fs.existsSync(backupsFolderPath))
-    fs.mkdirSync(backupsFolderPath)
+  try {
+    if (!fs.existsSync(backupsFolderPath))
+      fs.mkdirSync(backupsFolderPath)
+  } catch (e) {}
 
   fs.readdir(backupsFolderPath, (err, backups) => {
     if (err) return
