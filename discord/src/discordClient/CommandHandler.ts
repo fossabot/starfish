@@ -123,9 +123,14 @@ export class CommandHandler {
     if (!socketIoObject.connected) {
       await commandContext.reply({
         embeds: [
-          new MessageEmbed({
-            description: `It looks like the game server is down at the moment. Please check the [support server](${c.supportServerLink}) for more details.`,
-          }),
+          new MessageEmbed()
+            .setColor(`#FF9F49`)
+            .setThumbnail(
+              `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
+            )
+            .setDescription(
+              `It looks like the game server is down at the moment. Please check the [support server](${c.supportServerLink}) for more details.`,
+            ),
         ],
       })
       return

@@ -6,10 +6,10 @@ import { MessageEmbed } from 'discord.js'
 export class LinkCommand implements Command {
   requiresShip = true
 
-  commandNames = [`link`, `url`]
+  commandNames = [`link`, `links`, `url`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Get some useful Starfish links..`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Get some useful Starfish links.`
   }
 
   async run(context: CommandContext): Promise<void> {
