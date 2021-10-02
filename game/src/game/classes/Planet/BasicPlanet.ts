@@ -513,9 +513,16 @@ export class BasicPlanet extends Planet {
     ])
   }
 
-  resetLevels() {
+  resetLevels(toDefault = false) {
     // c.log(`resetLevels`, this.name)
-    const targetLevel = this.level
+    const targetLevel = toDefault
+      ? this.homeworld
+        ? c.defaultHomeworldLevel
+        : Math.ceil(
+            Math.random() * 5 +
+              c.distance(this.location, [0, 0]) / 3,
+          )
+      : this.level
     const targetXp = this.xp
     this.level = 0
     this.xp = 0

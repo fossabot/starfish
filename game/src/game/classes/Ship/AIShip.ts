@@ -29,6 +29,7 @@ export class AIShip extends CombatShip {
     zones: [],
   }
 
+  guildId: GuildId = `fowl`
   keyAngle = Math.random() * 365
   targetLocation: CoordinatePair
 

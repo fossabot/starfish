@@ -6,7 +6,6 @@ import * as cargo from './cargo'
 import crewPassives from './crewPassives'
 import * as items from './items'
 import gameConstants from './gameConstants'
-import { CrewMember } from '../../game/src/game/classes/CrewMember/CrewMember'
 
 function getHitDamage(
   weapon: { damage: number },
@@ -390,6 +389,25 @@ function getChassisSwapPrice(
   )
 }
 
+function getGuildChangePrice(ship: {
+  planet: PlanetStub | false
+  guildId: GuildId
+  crewMembers: CrewMemberStub[]
+}) {
+  if (!ship.guildId) return 0
+  if (!ship.planet) return 999999
+  return math.r2(
+    (ship.crewMembers?.length || 1) *
+      3000 *
+      ship.planet.priceFluctuator *
+      (ship.planet.guild === ship.guildId
+        ? 1 + (1 - gameConstants.guildVendorMultiplier || 1)
+        : 1),
+    0,
+    true,
+  )
+}
+
 function getPlanetPopulation(planet: PlanetStub): number {
   if (!planet) return 0
   return math.r2(
@@ -475,5 +493,6 @@ export default {
   getItemBuyPrice,
   getItemSellPrice,
   getChassisSwapPrice,
+  getGuildChangePrice,
   // getPlanetDescription,
 }

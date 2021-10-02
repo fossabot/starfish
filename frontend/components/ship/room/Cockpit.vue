@@ -323,27 +323,35 @@ export default Vue.extend({
       return baseMax
     },
     passiveChargeBoost(): number {
+      const generalBoostMultiplier =
+        c.getGeneralMultiplierBasedOnCrewMemberProximity(
+          this.crewMember,
+          this.ship.crewMembers,
+        )
       return (
-        ((
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
-          (total, p: CrewPassiveData) =>
-            p.id === 'boostCockpitChargeSpeed'
-              ? total + (p.intensity || 0)
-              : total,
-          1,
-        ) || 1) +
-        ((this.ship as ShipStub).passives?.reduce(
-          (total, p: ShipPassiveEffect) =>
-            p.id === 'boostCockpitChargeSpeed'
-              ? total + (p.intensity || 0)
-              : total,
-          1,
-        ) || 1)
+        generalBoostMultiplier *
+        (1 +
+          ((
+            this.crewMember as CrewMemberStub
+          ).passives?.reduce(
+            (total, p: CrewPassiveData) =>
+              p.id === 'boostCockpitChargeSpeed'
+                ? total + (p.intensity || 0)
+                : total,
+            0,
+          ) || 0) +
+          ((this.ship as ShipStub).passives?.reduce(
+            (total, p: ShipPassiveEffect) =>
+              p.id === 'boostCockpitChargeSpeed'
+                ? total + (p.intensity || 0)
+                : total,
+            0,
+          ) || 0))
       )
     },
     passiveBrakeMultiplier(): number {
       return (
+        1 +
         ((
           this.crewMember as CrewMemberStub
         ).passives?.reduce(
@@ -351,15 +359,15 @@ export default Vue.extend({
             p.id === 'boostBrake'
               ? total + (p.intensity || 0)
               : total,
-          1,
-        ) || 1) +
+          0,
+        ) || 0) +
         ((this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
             p.id === 'boostBrake'
               ? total + (p.intensity || 0)
               : total,
-          1,
-        ) || 1)
+          0,
+        ) || 0)
       )
     },
     planetsToShow(): PlanetStub[] {

@@ -93,10 +93,37 @@ export default Vue.extend({
       )
     },
     totalRepairPower() {
-      return c.getRepairAmountPerTickForSingleCrewMember(
-        this.crewMember?.skills.find(
-          (s: XPData) => s.skill === 'mechanics',
-        )?.level || 1,
+      const passiveBoostMultiplier =
+        1 +
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostRepairSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0) +
+        ((this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostRepairSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0)
+      const generalBoostMultiplier =
+        c.getGeneralMultiplierBasedOnCrewMemberProximity(
+          this.crewMember,
+          this.ship.crewMembers,
+        )
+      return (
+        generalBoostMultiplier *
+        passiveBoostMultiplier *
+        c.getRepairAmountPerTickForSingleCrewMember(
+          this.crewMember?.skills.find(
+            (s: XPData) => s.skill === 'mechanics',
+          )?.level || 1,
+        )
       )
     },
   },

@@ -1,6 +1,11 @@
 <template>
   <span>
-    <span class="success">
+    <span
+      :class="{
+        success: (passive.intensity || 0) > 0,
+        warning: (passive.intensity || 0) < 0,
+      }"
+    >
       {{
         c.baseShipPassiveData[passive.id].description(
           passive,
@@ -12,7 +17,11 @@
       v-if="passive.data && passive.data.source"
     >
       ({{
-        passive.data.source.speciesId
+        passive.data.source.guildId
+          ? `${c.capitalize(
+              c.guilds[passive.data.source.guildId].name,
+            )} Guild`
+          : passive.data.source.speciesId
           ? `${c.capitalize(
               c.species[passive.data.source.speciesId]
                 .singular,

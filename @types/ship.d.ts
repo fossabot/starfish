@@ -87,6 +87,7 @@ interface ShipPassiveEffect {
       planetName?: string
       speciesId?: SpeciesId
       chassisId?: ChassisId
+      guildId?: GuildId
       item?: {
         type: ItemType
         id: ItemId

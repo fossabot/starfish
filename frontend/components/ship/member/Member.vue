@@ -8,6 +8,10 @@
         <span
           class="sectionemoji"
           v-if="c.species[crewMember.speciesId]"
+          v-tooltip="{
+            type: 'species',
+            ...c.species[crewMember.speciesId],
+          }"
           >{{ c.species[crewMember.speciesId].icon }}</span
         >{{ crewMember.name }}
       </template>
@@ -50,7 +54,7 @@
 
       <ShipMemberSkills />
 
-      <ShipMemberPassives />
+      <!-- <ShipMemberPassives /> -->
     </Box>
   </div>
 </template>

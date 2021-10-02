@@ -18,6 +18,7 @@ import loadouts from '../../presets/loadouts'
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
 import type { BasicPlanet } from '../Planet/BasicPlanet'
+import { HumanShip } from './HumanShip'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 30
@@ -254,7 +255,52 @@ export class Ship extends Stubbable {
   }
 
   changeGuild(id: GuildId) {
-    // todo
+    // if somehow there already was one, remove its passives
+    if (this.guildId) {
+      for (let p of c.guilds[this.id].passives)
+        this.removePassive(p)
+    }
+
+    if (c.guilds[id]) {
+      this.guildId = id
+      this.toUpdate.guildId = id
+      for (let p of c.guilds[id].passives)
+        this.applyPassive(p)
+
+      this.logEntry(
+        [
+          `${this.name} has joined the`,
+          {
+            color: c.guilds[id].color,
+            text: c.guilds[id].name + ` Guild`,
+          },
+          `&nospace!`,
+        ],
+        `critical`,
+      )
+
+      if (this.planet)
+        this.planet.shipsAt
+          .filter((s) => s.guildId === this.guildId)
+          .forEach((s) => {
+            if (s === (this as any) || !s.planet) return
+            s.logEntry([
+              {
+                text: this.name,
+                color:
+                  this.guildId &&
+                  c.guilds[this.guildId].color,
+                tooltipData: this.toReference() as any,
+              },
+              `has joined the`,
+              {
+                color: c.guilds[id].color,
+                text: c.guilds[id].name + ` Guild`,
+              },
+              `&nospace!`,
+            ])
+          })
+    }
   }
 
   // ----- item mgmt -----

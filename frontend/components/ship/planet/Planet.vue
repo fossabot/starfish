@@ -120,6 +120,7 @@
       <ShipPlanetMine v-if="type === 'mining'" />
 
       <ShipPlanetVendorCargo v-if="type === 'basic'" />
+      <ShipPlanetGuildRecruit v-if="type === 'basic'" />
       <ShipPlanetVendorItems v-if="type === 'basic'" />
       <ShipPlanetBuyRepair v-if="type === 'basic'" />
       <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
@@ -228,7 +229,7 @@ export default Vue.extend({
   width: 420px;
 }
 .scroller {
-  max-height: 420px;
+  max-height: 440px;
   overflow-y: auto;
 }
 .guildgraph {

@@ -154,6 +154,48 @@ export default function (
   })
 
   socket.on(
+    `ship:joinGuild`,
+    (shipId, crewId, guildId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may change the ship's guild.`,
+        })
+      if (!c.guilds[guildId])
+        return callback({
+          error: `Invalid guild.`,
+        })
+
+      const price = c.getGuildChangePrice(ship as any)
+      if (ship.commonCredits < price)
+        return callback({
+          error: `Not enough common credits.`,
+        })
+
+      ship.commonCredits = Math.round(
+        ship.commonCredits - price,
+      )
+      ship.toUpdate.commonCredits = ship.commonCredits
+
+      ship.changeGuild(guildId)
+
+      const stub = ship.stubify() as ShipStub
+      callback({
+        data: stub,
+      })
+    },
+  )
+
+  socket.on(
     `ship:headerBackground`,
     (shipId, crewId, bgId, callback) => {
       const ship = game.ships.find(

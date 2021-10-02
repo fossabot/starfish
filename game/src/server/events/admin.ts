@@ -178,6 +178,18 @@ export default function (
     },
   )
 
+  socket.on(
+    `game:resetHomeworlds`,
+    async (id, password) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:resetHomeworlds`,
+        )
+      c.log(`Admin resetting homeworlds`)
+      game.resetHomeworlds()
+    },
+  )
+
   socket.on(`game:resetAllZones`, async (id, password) => {
     if (!isAdmin(id, password))
       return c.log(

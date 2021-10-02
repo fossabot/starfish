@@ -2,20 +2,52 @@
   <div class="passives" v-if="show" :highlight="highlight">
     <Box bgImage="/images/paneBackgrounds/12.jpg">
       <template #title>
-        <span class="sectionemoji">💤</span>Ship Passives
+        <span class="sectionemoji">🦾</span>Passives
       </template>
 
-      <div class="panesection">
-        <div
-          v-for="(p, index) in ship.passives"
-          :class="{
-            marbot: index < ship.passives.length - 1,
-          }"
-          v-if="c.baseShipPassiveData[p.id]"
+      <Tabs>
+        <Tab
+          :title="
+            (c.species[crewMember.speciesId] &&
+              c.species[crewMember.speciesId].icon + ' ') +
+            crewMember.name
+          "
         >
-          <ShipShipPassiveText :passive="p" />
-        </div>
-      </div>
+          <div
+            v-for="(p, index) in crewMember.passives"
+            :class="{
+              marbot:
+                index < crewMember.passives.length - 1,
+            }"
+            v-if="c.crewPassives[p.id]"
+          >
+            <ShipCrewPassiveText :passive="p" />
+          </div>
+          <div
+            v-if="crewMember.passives.length === 0"
+            class="sub textcenter"
+          >
+            No crew passives yet!
+          </div>
+        </Tab>
+        <Tab :title="'🚀 ' + ship.name">
+          <div
+            v-for="(p, index) in ship.passives"
+            :class="{
+              marbot: index < ship.passives.length - 1,
+            }"
+            v-if="c.baseShipPassiveData[p.id]"
+          >
+            <ShipPassiveText :passive="p" />
+          </div>
+          <div
+            v-if="ship.passives.length === 0"
+            class="sub textcenter"
+          >
+            No ship passives yet!
+          </div>
+        </Tab>
+      </Tabs>
     </Box>
   </div>
 </template>
@@ -34,8 +66,10 @@ export default Vue.extend({
     show() {
       return (
         this.ship &&
-        this.ship.passives &&
-        this.ship.passives.length &&
+        ((this.ship.passives &&
+          this.ship.passives.length) ||
+          (this.crewMember.passives &&
+            this.crewMember.passives.length)) &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('passives'))
       )

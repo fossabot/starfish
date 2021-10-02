@@ -15,7 +15,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost personal cargo capacity by ${math.r2(
         data.intensity || 0,
-      )} tons (if your ship's chassis can support it).`,
+      )} tons (if your ship's chassis can support it)`,
   },
 
   boostCockpitChargeSpeed: {
@@ -24,7 +24,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost engine charge speed by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostBrake: {
@@ -33,7 +33,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost brake power by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostBroadcastRange: {
@@ -42,7 +42,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost personal broadcast range by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostDropAmounts: {
@@ -51,7 +51,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost your share of drop amounts by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostMineSpeed: {
@@ -60,7 +60,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost mine speed by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostRepairSpeed: {
@@ -69,7 +69,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost repair speed by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   reduceStaminaDrain: {
@@ -78,7 +78,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Reduce stamina drain by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostStaminaRegeneration: {
@@ -87,7 +87,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost stamina regeneration by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostThrust: {
@@ -96,7 +96,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost thrust by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostWeaponChargeSpeed: {
@@ -105,7 +105,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost weapon charge speed by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   boostXpGain: {
@@ -114,7 +114,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost xp gain by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   lessDamageOnEquipmentUse: {
@@ -123,7 +123,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Reduce item damage on use by ${math.r2(
         (data.intensity || 0) * 100,
-      )}%.`,
+      )}%`,
   },
 
   generalImprovementPerCrewMemberInSameRoom: {
@@ -132,7 +132,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Improved performance in any room by ${math.r2(
         (data.intensity || 0) * 100,
-      )}% per other crew member with you.`,
+      )}% per other crew member with you`,
   },
 
   generalImprovementWhenAlone: {
@@ -141,7 +141,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${math.r2(
         (data.intensity || 0) * 100,
-      )}% improved performance when alone in a room.`,
+      )}% improved performance when alone in a room`,
   },
 }
 export default data

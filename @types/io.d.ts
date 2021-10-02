@@ -80,6 +80,10 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:resetHomeworlds`]: (
+    adminId: string,
+    password: string,
+  ) => void
   [`game:resetAllZones`]: (
     adminId: string,
     password: string,
@@ -296,6 +300,12 @@ interface IOClientEvents {
     crewId: string,
     itemType: ItemType,
     itemId: ItemId | ChassisId,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:joinGuild`]: (
+    shipId: string,
+    crewId: string,
+    guildId: GuildId,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:swapChassis`]: (

@@ -9,9 +9,7 @@
       v-for="passive in c.species[data.id].passives"
       class="success"
     >
-      {{
-        c.baseShipPassiveData[passive.id].toString(passive)
-      }}
+      {{ c.crewPassives[passive.id].description(passive) }}
     </div>
     <hr />
     <div class="sub">

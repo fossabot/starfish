@@ -72,10 +72,11 @@ interface CrewMemberStub extends BaseStub {
   credits: number
   passives: CrewPassiveData[]
   cockpitCharge: number
-  tactic: CombatTactic
-  itemTarget: ItemType
+  combatTactic: CombatTactic | `none`
+  targetItemType: ItemType | `any`
+  attackTargetId: string
   attackGuilds?: GuildId[]
-  targetLocation: CoordinatePair | null
+  targetLocation: CoordinatePair | false
   repairPriority: RepairPriority
   [key: string]: any
 }
@@ -83,6 +84,7 @@ interface CrewMemberStub extends BaseStub {
 interface PlanetStub extends BaseStub {
   location: CoordinatePair
   name: string
+  guildId?: GuildId
   vendor?: PlanetVendor
   allegiances: PlanetAllegianceData[]
   priceFluctuator: number

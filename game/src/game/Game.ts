@@ -1199,6 +1199,12 @@ export class Game {
     ) as BasicPlanet[]
   }
 
+  get miningPlanets(): MiningPlanet[] {
+    return this.planets.filter(
+      (p) => p instanceof MiningPlanet,
+    ) as MiningPlanet[]
+  }
+
   getHomeworld(guildId?: GuildId): BasicPlanet | undefined {
     if (!guildId) return
     return this.basicPlanets.find(
@@ -1206,10 +1212,37 @@ export class Game {
     )
   }
 
-  get miningPlanets(): MiningPlanet[] {
-    return this.planets.filter(
-      (p) => p instanceof MiningPlanet,
-    ) as MiningPlanet[]
+  resetHomeworlds() {
+    this.basicPlanets
+      .filter((p) => p.guildId)
+      .forEach((p) => {
+        c.log(
+          `${p.name} is no longer ${p.guildId}'s homeworld`,
+        )
+        p.guildId = undefined
+        p.homeworld = undefined
+        p.resetLevels(true)
+        p.color = `hsl(${Math.round(
+          Math.random() * 360,
+        )}, ${Math.round(Math.random() * 80 + 20)}%, ${
+          Math.round(Math.random() * 40) + 40
+        }%)`
+      })
+
+    for (let guildId of Object.keys(c.guilds).filter(
+      (g) => g !== `fowl`,
+    ) as GuildId[]) {
+      const newHomeworld = c.randomFromArray(
+        this.basicPlanets.filter((p) => !p.guildId),
+      )
+      newHomeworld.guildId = guildId
+      newHomeworld.homeworld = guildId
+      newHomeworld.resetLevels(true)
+      newHomeworld.color = c.guilds[guildId].color
+      c.log(
+        `${newHomeworld.name} is now ${newHomeworld.guildId}'s homeworld`,
+      )
+    }
   }
 
   recalculateGuildRankings() {

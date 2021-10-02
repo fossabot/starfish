@@ -9,7 +9,10 @@
         :key="tab.title"
         @click="selectTab(index)"
         class="button small nowrap combo"
-        :class="{ secondary: selectedIndex !== index }"
+        :class="{
+          secondary: selectedIndex !== index,
+          arrowdown: selectedIndex === index,
+        }"
       >
         {{ c.capitalize(tab.title) }}
       </div>

@@ -12,10 +12,19 @@ export function cockpit(this: CrewMember): void {
     ) +
     this.getPassiveIntensity(`boostCockpitChargeSpeed`) +
     1
+
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
+
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
       this.piloting?.level || 1,
-    ) * chargeBoost
+    ) *
+    chargeBoost *
+    generalBoostMultiplier
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
   this.toUpdate.cockpitCharge = this.cockpitCharge
 }
@@ -24,11 +33,19 @@ export function repair(this: CrewMember) {
   const chargeBoost =
     this.getPassiveIntensity(`boostRepairSpeed`) + 1 // * ship passive repair speed is handled in main ship repair function since it can come from other sources
 
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
+
   const previousShipHp = this.ship.hp
   const repairAmount =
     c.getRepairAmountPerTickForSingleCrewMember(
       this.mechanics?.level || 1,
-    ) * chargeBoost
+    ) *
+    chargeBoost *
+    generalBoostMultiplier
   const { overRepair, totalRepaired } = this.ship.repair(
     repairAmount,
     this.repairPriority,
@@ -52,13 +69,19 @@ export function weapons(this: CrewMember): void {
   const passiveMultiplier =
     this.getPassiveIntensity(`boostWeaponChargeSpeed`) + 1
 
-  // const generalBoostMultiplier = c.getGeneralMultiplierBasedOnCrewMemberProximity()
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
+  c.log({ passiveMultiplier, generalBoostMultiplier })
 
   const amountToReduceCooldowns =
     (c.getWeaponCooldownReductionPerTick(
       this.munitions?.level || 1,
     ) *
-      passiveMultiplier) /
+      passiveMultiplier *
+      generalBoostMultiplier) /
     chargeableWeapons.length
   chargeableWeapons.forEach((cw) => {
     cw._stub = null // invalidate stub
@@ -80,10 +103,18 @@ export function mine(this: CrewMember): void {
       this.getPassiveIntensity(`boostMineSpeed`) +
       1
 
+    const generalBoostMultiplier =
+      c.getGeneralMultiplierBasedOnCrewMemberProximity(
+        this,
+        this.ship.crewMembers,
+      )
+
     const amountToMine =
       c.getMineAmountPerTickForSingleCrewMember(
         this.mining.level || 1,
-      ) * passiveSpeedBonus
+      ) *
+      passiveSpeedBonus *
+      generalBoostMultiplier
 
     ;(this.ship.planet as MiningPlanet).mineResource(
       this.minePriority,
@@ -97,6 +128,12 @@ export function mine(this: CrewMember): void {
 
 export function bunk(this: CrewMember): void {
   this.addStat(`timeInBunk`, 1)
+
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
 
   // * drip feed of cockpit charge
   if (this.cockpitCharge < 1) {
@@ -113,7 +150,8 @@ export function bunk(this: CrewMember): void {
         this.piloting?.level || 1,
       ) *
       chargeBoost *
-      percentOfNormalChargeToGive
+      percentOfNormalChargeToGive *
+      generalBoostMultiplier
 
     if (this.cockpitCharge > 1) this.cockpitCharge = 1
     this.toUpdate.cockpitCharge = this.cockpitCharge
@@ -131,7 +169,9 @@ export function bunk(this: CrewMember): void {
   const staminaToAdd =
     c.getStaminaGainPerTickForSingleCrewMember(
       this.ship.game.settings.baseStaminaUse,
-    ) * boostStaminaRegenPassives
+    ) *
+    boostStaminaRegenPassives *
+    generalBoostMultiplier
 
   this.stamina += staminaToAdd
 

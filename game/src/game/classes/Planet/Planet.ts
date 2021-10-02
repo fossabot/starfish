@@ -12,12 +12,12 @@ export class Planet extends Stubbable {
   readonly pacifist: boolean
   readonly rooms: CrewLocation[] = []
   readonly name: string
-  readonly color: string
   readonly mass: number
   readonly location: CoordinatePair
   readonly game: Game
   readonly creatures?: string[]
   readonly radius: number
+  color: string
   planetType: PlanetType
   guildId?: GuildId
   homeworld?: GuildId

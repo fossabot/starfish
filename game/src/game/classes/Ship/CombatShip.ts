@@ -21,10 +21,9 @@ export abstract class CombatShip extends Ship {
   constructor(props: BaseShipData, game: Game) {
     super(props, game)
 
-    // todo replace when there are passives
-    // if (this.guildId) c.guilds[this.guildId]?.passives.forEach((p) =>
-    //   this.applyPassive(p),
-    // )
+    if (this.guildId)
+      for (let p of c.guilds[this.guildId].passives)
+        this.applyPassive(p)
 
     this.updateAttackRadius()
   }
