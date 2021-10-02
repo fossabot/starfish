@@ -239,9 +239,13 @@ export function getBackups() {
     `backups/`,
   )
 
-  return fs
-    .readdirSync(backupsFolderPath)
-    .filter((p) => p.indexOf(`.`) !== 0)
+  try {
+    return fs
+      .readdirSync(backupsFolderPath)
+      .filter((p) => p.indexOf(`.`) !== 0)
+  } catch (e) {
+    return []
+  }
 }
 export function resetDbToBackup(backupId: string) {
   const dbFolderPath = path.resolve(
