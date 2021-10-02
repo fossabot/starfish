@@ -18,6 +18,9 @@ export class LinkCommand implements Command {
         new MessageEmbed()
           .setColor(`#FF9F49`)
           .setTitle(`Starfish Links`)
+          .setThumbnail(
+            `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
+          )
           .setDescription(
             `:desktop: [Ship console](${c.frontendUrl})\n\n:incoming_envelope: [Bot invite](${c.discordBotInviteUrl})\n\n:information_source: [Support server](${c.supportServerLink})`,
           ),
