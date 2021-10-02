@@ -36,6 +36,7 @@ type CrewPassiveId =
   | `boostRepairSpeed`
   | `boostWeaponChargeSpeed`
   | `boostStaminaRegeneration`
+  | `reduceStaminaDrain`
   | `boostXpGain`
   | `generalImprovementWhenAlone`
   | `generalImprovementPerCrewMemberInSameRoom`
@@ -129,6 +130,7 @@ type SpeciesId =
   | `sea turtles`
   | `sharks`
   | `dolphins`
+  | `snails`
   | `whales`
   | `angelfish`
   | `blowfish`

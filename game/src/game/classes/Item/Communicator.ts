@@ -21,14 +21,19 @@ export class Communicator extends Item {
     this.antiGarble = data.antiGarble
   }
 
-  use(usePercent: number = 1, user?: CrewMember) {
+  use(usePercent: number = 1, users?: CrewMember[]) {
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep.disableRepair)
       return 0
 
-    const skillLevel =
-      user?.skills.find((s) => s.skill === `piloting`)
-        ?.level || 1
+    const skillLevel = users
+      ? users.reduce(
+          (total, u) =>
+            (u.skills.find((s) => s.skill === `linguistics`)
+              ?.level || 1) + total,
+          0,
+        ) / users.length
+      : 1
 
     let repairLoss = Math.min(
       1 / this.maxHp / 2,

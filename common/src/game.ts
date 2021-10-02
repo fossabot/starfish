@@ -6,6 +6,7 @@ import * as cargo from './cargo'
 import crewPassives from './crewPassives'
 import * as items from './items'
 import gameConstants from './gameConstants'
+import { CrewMember } from '../../game/src/game/classes/CrewMember/CrewMember'
 
 function getHitDamage(
   weapon: { damage: number },
@@ -104,6 +105,35 @@ function getWeaponCooldownReductionPerTick(level: number) {
     (2 + math.lerp(1, 20, level / 100)) *
     3 *
     gameConstants.gameSpeedMultiplier
+  )
+}
+
+function getGeneralMultiplierBasedOnCrewMemberProximity(
+  cm: CrewMemberStub,
+  crewMembers: CrewMemberStub[],
+) {
+  const boostPerMemberInSameRoom = cm.passives
+    .filter(
+      (p) =>
+        p.id ===
+        `generalImprovementPerCrewMemberInSameRoom`,
+    )
+    .reduce((total, p) => (p.intensity || 0) + total, 0)
+
+  const boostForSolo = cm.passives
+    .filter((p) => p.id === `generalImprovementWhenAlone`)
+    .reduce((total, p) => (p.intensity || 0) + total, 0)
+
+  if (!boostForSolo && !boostPerMemberInSameRoom) return 1
+  const crewMembersInSameRoom = crewMembers.filter(
+    (m) => cm.id !== m.id && cm.location === m.location,
+  )
+  if (crewMembersInSameRoom.length === 0)
+    return boostForSolo + 1
+  return (
+    boostPerMemberInSameRoom *
+      crewMembersInSameRoom.length +
+    1
   )
 }
 
@@ -434,6 +464,7 @@ export default {
   getThrustMagnitudeForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
+  getGeneralMultiplierBasedOnCrewMemberProximity,
   statToString,
   getPlanetTitle,
   getPlanetPopulation,

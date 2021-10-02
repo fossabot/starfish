@@ -148,6 +148,12 @@ interface IOClientEvents {
   // user
   [`user:listen`]: (userId: string) => void
 
+  [`crew:setSpecies`]: (
+    shipId: string,
+    crewId: string,
+    speciesId: SpeciesId,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
   [`crew:toTutorial`]: (
     shipId: string,
     crewId: string,

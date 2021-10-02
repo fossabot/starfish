@@ -1,3 +1,13 @@
+/*
+
+🐌 snail
+🐊 alligator
+🐸 frog
+🦛 hippo
+🐃 water buffalo
+
+*/
+
 const species: { [key in SpeciesId]: BaseSpeciesData } = {
   octopi: {
     icon: `🐙`,
@@ -45,7 +55,7 @@ const species: { [key in SpeciesId]: BaseSpeciesData } = {
     description: `Turtles may be slow, but they can keep going, and going, and going...`,
     passives: [
       {
-        id: `boostStaminaRegeneration`,
+        id: `reduceStaminaDrain`,
         data: { source: { speciesId: `sea turtles` } },
         intensity: 0.1,
       },
@@ -73,7 +83,20 @@ const species: { [key in SpeciesId]: BaseSpeciesData } = {
       {
         id: `boostBroadcastRange`,
         data: { source: { speciesId: `dolphins` } },
-        intensity: 0.1,
+        intensity: 0.35,
+      },
+    ],
+  },
+  snails: {
+    icon: `🐌`,
+    id: `snails`,
+    singular: `snail`,
+    description: `When you carry your home with you, you get good at odd jobs around the house.`,
+    passives: [
+      {
+        id: `boostRepairSpeed`,
+        data: { source: { speciesId: `dolphins` } },
+        intensity: 0.15,
       },
     ],
   },

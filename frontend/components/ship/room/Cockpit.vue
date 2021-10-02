@@ -324,24 +324,42 @@ export default Vue.extend({
     },
     passiveChargeBoost(): number {
       return (
-        (this.ship as ShipStub).passives?.reduce(
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostCockpitChargeSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1) +
+        ((this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
             p.id === 'boostCockpitChargeSpeed'
               ? total + (p.intensity || 0)
               : total,
           1,
-        ) || 1
+        ) || 1)
       )
     },
     passiveBrakeMultiplier(): number {
       return (
-        (this.ship as ShipStub).passives?.reduce(
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostBrake'
+              ? total + (p.intensity || 0)
+              : total,
+          1,
+        ) || 1) +
+        ((this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
             p.id === 'boostBrake'
               ? total + (p.intensity || 0)
               : total,
           1,
-        ) || 1
+        ) || 1)
       )
     },
     planetsToShow(): PlanetStub[] {

@@ -151,12 +151,18 @@ export class Ship extends Stubbable {
 
     if (tagline) this.tagline = tagline
     if (availableTaglines)
-      this.availableTaglines = availableTaglines
+      this.availableTaglines = availableTaglines.filter(
+        (t) => c.taglineOptions.includes(t),
+      )
     if (headerBackground)
       this.headerBackground = headerBackground
     if (availableHeaderBackgrounds?.length)
       this.availableHeaderBackgrounds =
-        availableHeaderBackgrounds
+        availableHeaderBackgrounds.filter((ab) =>
+          c.headerBackgroundOptions.find(
+            (b) => b.id === ab,
+          ),
+        )
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
@@ -669,9 +675,7 @@ export class Ship extends Stubbable {
           // comes back as kg * m / second == N
           .map(
             (g) =>
-              (g *
-                Math.min(c.deltaTime / c.tickInterval, 2) *
-                c.gameSpeedMultiplier) /
+              (g * c.gameSpeedMultiplier) /
               this.mass /
               c.kmPerAu /
               c.mPerKm,
@@ -754,7 +758,10 @@ export class Ship extends Stubbable {
 
   // ----- cosmetics -----
   addTagline(tagline: string, reason: string) {
-    if (this.availableTaglines.find((t) => t === tagline))
+    if (
+      !c.taglineOptions.find((o) => o === tagline) ||
+      this.availableTaglines.find((t) => t === tagline)
+    )
       return
     this.availableTaglines.push(tagline)
     this.toUpdate.availableTaglines = this.availableTaglines
@@ -769,6 +776,7 @@ export class Ship extends Stubbable {
 
   addHeaderBackground(bg: string, reason: string) {
     if (
+      !c.headerBackgroundOptions.find((o) => o.id === bg) ||
       this.availableHeaderBackgrounds.find((b) => b === bg)
     )
       return

@@ -178,10 +178,13 @@ export class CrewMember extends Stubbable {
     // ----- stamina check/use -----
     if (this.stamina <= 0) return
 
-    if (!this.ship.tutorial?.currentStep?.disableStamina)
+    if (!this.ship.tutorial?.currentStep?.disableStamina) {
+      const reducedStaminaDrain =
+        1 - this.getPassiveIntensity(`reduceStaminaDrain`)
       this.stamina -=
-        this.ship.game.settings.baseStaminaUse /
-        (c.deltaTime / c.tickInterval)
+        this.ship.game.settings.baseStaminaUse *
+        reducedStaminaDrain
+    }
     if (this.stamina <= 0) {
       this.stamina = 0
       this.goTo(`bunk`)
@@ -224,13 +227,13 @@ export class CrewMember extends Stubbable {
     this.active()
 
     const xpBoostMultiplier =
-      (this.ship.passives.find(
-        (p) => p.id === `boostXpGain`,
-      )?.intensity || 0) + 1
+      this.ship.getPassiveIntensity(`boostXpGain`) +
+      this.getPassiveIntensity(`boostXpGain`) +
+      1
+
     if (!xp)
       xp =
-        (this.ship.game.settings.baseXpGain /
-          (c.deltaTime / c.tickInterval)) *
+        this.ship.game.settings.baseXpGain *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(
@@ -293,7 +296,7 @@ export class CrewMember extends Stubbable {
       )
       if (existingStock.amount <= 0)
         this.inventory = this.inventory.filter(
-          (cargo) => cargo.id !== id
+          (cargo) => cargo.id !== id,
         )
     }
     this.toUpdate.inventory = this.inventory

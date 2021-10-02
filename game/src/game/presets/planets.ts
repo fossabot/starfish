@@ -273,9 +273,6 @@ export function generateBasicPlanet(
     allegiances: [],
     pacifist,
     guildId,
-    homeworld: homeworldGuildKey
-      ? { id: homeworldGuildKey }
-      : undefined,
     radius,
     location,
     vendor,

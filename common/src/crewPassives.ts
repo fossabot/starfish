@@ -15,7 +15,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `Boost personal cargo capacity by ${math.r2(
         data.intensity || 0,
-      )} tons, assuming that your ship's chassis can support the weight.`,
+      )} tons (if your ship's chassis can support it).`,
   },
 
   boostCockpitChargeSpeed: {
@@ -64,7 +64,7 @@ const data: {
   },
 
   boostRepairSpeed: {
-    displayName: `Nesting Instinct`,
+    displayName: `Tool Belt`,
     id: `boostRepairSpeed`,
     description: (data: CrewPassiveData) =>
       `Boost repair speed by ${math.r2(
@@ -72,8 +72,17 @@ const data: {
       )}%.`,
   },
 
+  reduceStaminaDrain: {
+    displayName: `Endurance`,
+    id: `reduceStaminaDrain`,
+    description: (data: CrewPassiveData) =>
+      `Reduce stamina drain by ${math.r2(
+        (data.intensity || 0) * 100,
+      )}%.`,
+  },
+
   boostStaminaRegeneration: {
-    displayName: `Sleep-Swimmer`,
+    displayName: `REM Booster`,
     id: `boostStaminaRegeneration`,
     description: (data: CrewPassiveData) =>
       `Boost stamina regeneration by ${math.r2(
@@ -82,7 +91,7 @@ const data: {
   },
 
   boostThrust: {
-    displayName: `Hydrodynamic`,
+    displayName: `Hydrodynamics`,
     id: `boostThrust`,
     description: (data: CrewPassiveData) =>
       `Boost thrust by ${math.r2(
@@ -91,7 +100,7 @@ const data: {
   },
 
   boostWeaponChargeSpeed: {
-    displayName: `Sharpened Claws`,
+    displayName: `Sharpened Points`,
     id: `boostWeaponChargeSpeed`,
     description: (data: CrewPassiveData) =>
       `Boost weapon charge speed by ${math.r2(
@@ -118,7 +127,7 @@ const data: {
   },
 
   generalImprovementPerCrewMemberInSameRoom: {
-    displayName: `School Mentality`,
+    displayName: `Squad Training`,
     id: `generalImprovementPerCrewMemberInSameRoom`,
     description: (data: CrewPassiveData) =>
       `Improved performance in any room by ${math.r2(
@@ -127,7 +136,7 @@ const data: {
   },
 
   generalImprovementWhenAlone: {
-    displayName: `Lone Hunter`,
+    displayName: `Solo Training`,
     id: `generalImprovementWhenAlone`,
     description: (data: CrewPassiveData) =>
       `${math.r2(

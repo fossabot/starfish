@@ -38,7 +38,11 @@ export default Vue.extend({
   computed: {
     ...mapState(['modal', 'crewMember']),
     forceState(): undefined | string {
-      if (this.crewMember && !this.crewMember.speciesId)
+      if (
+        this.crewMember &&
+        (!this.crewMember.speciesId ||
+          !c.species[this.crewMember.speciesId])
+      )
         return 'crewSpeciesPicker'
     },
   },

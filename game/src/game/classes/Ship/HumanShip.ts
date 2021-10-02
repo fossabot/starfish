@@ -426,7 +426,11 @@ export class HumanShip extends CombatShip {
         xpBoostMultiplier,
     )
 
+    const thrustBoostPassiveMultiplier =
+      thruster.getPassiveIntensity(`boostThrust`) + 1
+
     charge *= thruster.cockpitCharge
+    charge *= thrustBoostPassiveMultiplier
 
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
@@ -828,7 +832,7 @@ export class HumanShip extends CombatShip {
     }
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge, thruster))
+      this.engines.forEach((e) => e.use(charge, [thruster]))
 
     return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
@@ -855,7 +859,9 @@ export class HumanShip extends CombatShip {
 
     // apply passive
     let passiveBrakeMultiplier =
-      1 + this.getPassiveIntensity(`boostBrake`)
+      1 +
+      this.getPassiveIntensity(`boostBrake`) +
+      thruster.getPassiveIntensity(`boostBrake`)
     charge *= passiveBrakeMultiplier
 
     const memberPilotingSkill =
@@ -917,7 +923,7 @@ export class HumanShip extends CombatShip {
       )
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge, thruster))
+      this.engines.forEach((e) => e.use(charge, [thruster]))
 
     return (this.speed - previousSpeed) * 60 * 60
   }
@@ -1061,12 +1067,7 @@ export class HumanShip extends CombatShip {
       startingLocation,
     )
     // - space junk -
-    if (
-      c.lottery(
-        distanceTraveled * (c.deltaTime / c.tickInterval),
-        2,
-      )
-    ) {
+    if (c.lottery(distanceTraveled, 2)) {
       // apply "amount boost" passive
       const amountBoostPassive =
         this.getPassiveIntensity(`boostDropAmount`)
@@ -1108,10 +1109,7 @@ export class HumanShip extends CombatShip {
     if (
       !this.planet &&
       this.attackable &&
-      c.lottery(
-        distanceTraveled * (c.deltaTime / c.tickInterval),
-        5,
-      )
+      c.lottery(distanceTraveled, 5)
     ) {
       if (
         Math.random() > 0.1 &&
@@ -1529,7 +1527,12 @@ export class HumanShip extends CombatShip {
       message.replace(/\n/g, ` `),
     ).result
 
-    let range = this.radii.broadcast
+    let range =
+      this.radii.broadcast *
+      (crewMember.getPassiveIntensity(
+        `boostBroadcastRange`,
+      ) +
+        1)
 
     const avgRepair =
       this.communicators.reduce(
@@ -1610,7 +1613,7 @@ export class HumanShip extends CombatShip {
 
     this.communicators.forEach((comm) => {
       if (comm.hp > 0) {
-        comm.use(1, crewMember)
+        comm.use(1, [crewMember])
         this.updateBroadcastRadius()
       }
     })
@@ -1860,15 +1863,20 @@ export class HumanShip extends CombatShip {
           toDistribute / canHoldMore.length
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
+            const amountToGive =
+              amountForEach *
+              (cm.getPassiveIntensity(`boostDropAmounts`) +
+                1)
+
             if (contents.id === `credits`) {
               cm.credits = Math.floor(
-                cm.credits + amountForEach,
+                cm.credits + amountToGive,
               )
               cm.toUpdate.credits = cm.credits
             } else {
               const leftOver = cm.addCargo(
                 contents.id,
-                amountForEach,
+                amountToGive,
               )
               if (leftOver) {
                 canHoldMore.splice(index, 1)

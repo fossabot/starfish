@@ -73,6 +73,44 @@ export default function (
     )
   })
 
+  socket.on(
+    `crew:setSpecies`,
+    async (shipId, crewId, speciesId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `No ship found by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `No crew member found by that id.`,
+        })
+      if (
+        crewMember.speciesId &&
+        c.species[crewMember.speciesId]
+      )
+        return callback({
+          error: `That crew member already has a species.`,
+        })
+      if (!c.species[speciesId])
+        return callback({
+          error: `That species doesn't exist.`,
+        })
+
+      crewMember.setSpecies(speciesId)
+
+      c.log(
+        `gray`,
+        `Set ${crewMember.name}'s species to ${crewMember.speciesId}.`,
+      )
+    },
+  )
+
   socket.on(`crew:move`, (shipId, crewId, target) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,

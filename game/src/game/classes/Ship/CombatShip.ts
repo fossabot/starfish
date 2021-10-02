@@ -939,7 +939,6 @@ export abstract class CombatShip extends Ship {
 
     const amountToRepair =
       (baseRepairAmount * repairBoost) /
-      (c.deltaTime / c.tickInterval) /
       itemsToRepair.length
 
     // c.log(
