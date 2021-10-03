@@ -22,3 +22,4 @@ game/tsconfig.game.tsbuildinfo
 git
 **/dist
 *.tsbuildinfo
+newrelic_agent.log
