@@ -124,7 +124,7 @@ function startDbBackupInterval() {
     setInterval(backUpDb, minBackupInterval);
 }
 const backupsFolderPath = posix_1.default.resolve((0, is_docker_1.default)()
-    ? posix_1.default.resolve(`/mnt/db/`)
+    ? posix_1.default.resolve(`/usr/app/game/db_volume`)
     : posix_1.default.resolve(__dirname, `../../../`, `db/`), `backups/`);
 function backUpDb() {
     try {

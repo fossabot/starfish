@@ -123,7 +123,7 @@ function startDbBackupInterval() {
 
 const backupsFolderPath = path.resolve(
   isDocker()
-    ? path.resolve(`/mnt/db/`)
+    ? path.resolve(`/usr/app/game/db_volume`)
     : path.resolve(__dirname, `../../../`, `db/`),
   `backups/`,
 )
