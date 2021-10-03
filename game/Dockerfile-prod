@@ -18,6 +18,7 @@ RUN npm run build-once
 
 
 FROM node:16-alpine3.11 as release
+RUN apk add mongodb-tools
 WORKDIR /usr/app/game
 COPY game/newrelic.js .
 
