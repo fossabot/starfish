@@ -2,7 +2,7 @@ version: '3.7'
 services:
   mongodb:
     image: 'starfishgame/starfish-db:latest'
-    restart: unless-stopped
+    restart: always
     volumes:
       - /mnt/disks/mongodb/db_data:/data/db
     ports:
@@ -21,7 +21,7 @@ services:
 
   game:
     image: 'starfishgame/starfish-game:latest'
-    restart: unless-stopped
+    restart: always
     user: 'root'
     working_dir: /usr/app/game
     ports:
@@ -46,7 +46,6 @@ services:
   frontend:
     image: 'starfishgame/starfish-frontend:latest'
     user: 'node'
-    restart: unless-stopped
     working_dir: /usr/app/frontend
     ports:
       - '4300:4300'
@@ -60,7 +59,6 @@ services:
   discord:
     image: 'starfishgame/starfish-discord:latest'
     user: 'node'
-    restart: unless-stopped
     working_dir: /usr/app/discord
     command: 'npm run prod'
     secrets:
@@ -71,12 +69,13 @@ services:
 
   nginx:
     image: 'starfishgame/starfish-nginx:latest'
-    restart: unless-stopped
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
+    labels:
+      com.datadoghq.ad.logs: '[<LOGS_CONFIG>]'
     logging:
       driver: loki
 
