@@ -26,6 +26,7 @@ export class CrewMember extends Stubbable {
   repairPriority: RepairPriority = `most damaged`
   minePriority: MinePriorityType = `closest`
   inventory: Cargo[]
+  maxCargoSpace: number = CrewMember.baseMaxCargoSpace
   credits: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
@@ -309,11 +310,12 @@ export class CrewMember extends Stubbable {
       .reduce((total, i) => total + i.amount, 0)
   }
 
-  get maxCargoSpace() {
-    return Math.max(
-      CrewMember.baseMaxCargoSpace,
-      this.getPassiveIntensity(`cargoSpace`),
-    )
+  recalculateMaxCargoSpace() {
+    this.maxCargoSpace =
+      CrewMember.baseMaxCargoSpace +
+      this.getPassiveIntensity(`cargoSpace`) +
+      this.ship.getPassiveIntensity(`boostCargoSpace`)
+    this.toUpdate.maxCargoSpace = this.maxCargoSpace
   }
 
   // ----- passives -----
@@ -356,7 +358,9 @@ export class CrewMember extends Stubbable {
     this.recalculateAll()
   }
 
-  recalculateAll() {}
+  recalculateAll() {
+    this.recalculateMaxCargoSpace()
+  }
 
   addStat(statname: CrewStatKey, amount: number) {
     this.active()

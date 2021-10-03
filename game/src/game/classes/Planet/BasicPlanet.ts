@@ -44,8 +44,9 @@ export class BasicPlanet extends Planet {
     this.planetType = `basic`
 
     this.guildId = data.guildId ? data.guildId : undefined
-
     this.homeworld = this.guildId
+    if (this.guildId)
+      this.color = c.guilds[this.guildId].color
 
     this.leanings = data.leanings || []
 

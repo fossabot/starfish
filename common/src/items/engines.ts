@@ -12,7 +12,7 @@ export const engines: {
     mass: 4000,
     basePrice: 0 * game.itemPriceMultiplier,
     rarity: 999999,
-    thrustAmplification: 3,
+    thrustAmplification: 5,
     maxHp: 10,
     passives: [],
   },

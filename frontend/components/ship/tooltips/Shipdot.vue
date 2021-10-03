@@ -134,7 +134,7 @@
         class="flexbetween"
         v-tooltip="{
           type: 'chassis',
-          data: dataToUse.chassis,
+          ...dataToUse.chassis,
         }"
       >
         <div>Chassis</div>
@@ -198,7 +198,8 @@
             dataToUse.crewMembers.find(
               (cm) => cm.id === dataToUse.captain,
             )
-              ? dataToUse.crewMembers.find(
+              ? '👑' +
+                dataToUse.crewMembers.find(
                   (cm) => cm.id === dataToUse.captain,
                 ).name
               : 'No Captain'

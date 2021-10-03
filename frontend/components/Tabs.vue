@@ -14,7 +14,7 @@
           arrowdown: selectedIndex === index,
         }"
       >
-        {{ c.capitalize(tab.title) }}
+        {{ tab.title }}
       </div>
     </div>
     <div class="tabheader padbot small" v-else>

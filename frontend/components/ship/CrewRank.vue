@@ -14,7 +14,9 @@
         <Tab
           v-for="skill in crewMember.skills"
           :key="'skillrank' + skill.skill"
-          :title="c.camelCaseToWords(skill.skill)"
+          :title="
+            c.capitalize(c.camelCaseToWords(skill.skill))
+          "
         >
           <ol>
             <li

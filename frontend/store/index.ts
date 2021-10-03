@@ -445,10 +445,10 @@ export const actions = {
 
           if (guildsRes && `error` in guildsRes) {
             // todo double requesting this, resulting in "you are being rate limited"
-            dispatch(`notifications/notify`, {
-              text: `Guild fetch error: ${guildsRes.error}`,
-              type: `error`,
-            })
+            // dispatch(`notifications/notify`, {
+            //   text: `Guild fetch error: ${guildsRes.error}`,
+            //   type: `error`,
+            // })
 
             if (guildsRes.error === `Bad token`) {
               // dispatch(`logout`)
@@ -456,7 +456,7 @@ export const actions = {
               return
             }
 
-            c.log(`login error!`, guildsRes.error)
+            c.log(`guild fetch error!`, guildsRes.error)
             return
           } else if (guildsRes && !(`error` in guildsRes)) {
             shipIds = guildsRes ? guildsRes.data : undefined

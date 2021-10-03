@@ -1243,6 +1243,13 @@ export class HumanShip extends CombatShip {
       ? this.planet.stubify()
       : false
 
+    c.log(
+      this.id,
+      Boolean(this.planet),
+      this.seenPlanets.length,
+      this.visible.planets.length,
+    )
+
     if (this.planet) {
       // * landed!
       if (!silent)
@@ -1729,7 +1736,6 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
-    // c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
@@ -1769,10 +1775,12 @@ export class HumanShip extends CombatShip {
       )
         this.addTagline(`⚡Admin⚡`, `being an admin`)
     }
-    // c.log(
-    //   `gray`,
-    //   `Added crew member ${cm.name} to ${this.name}`,
-    // )
+
+    if (!setupAdd)
+      c.log(
+        `gray`,
+        `Added crew member ${cm.name} to ${this.name}`,
+      )
 
     if (this.crewMembers.length >= 5)
       this.addTagline(`Guppy`, `having 5 crew members`)

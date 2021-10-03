@@ -5,7 +5,7 @@
         <span class="sectionemoji">🦾</span>Passives
       </template>
 
-      <Tabs>
+      <Tabs class="tabs">
         <Tab
           v-if="crewMember"
           :title="
@@ -93,7 +93,7 @@ export default Vue.extend({
   width: 250px;
   position: relative;
 }
-.panesection {
+.tabs {
   // font-size: 0.9em;
   line-height: 1.25;
 }

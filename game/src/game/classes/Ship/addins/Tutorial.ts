@@ -78,6 +78,7 @@ export class Tutorial {
       name: crewMember.name,
       id: crewMember.id,
       mainShipId: crewMember.ship.id,
+      speciesId: `angelfish`,
     })
     crewMember.tutorialShipId = tutorialShip.id
     crewMember.toUpdate.tutorialShipId =
@@ -695,12 +696,12 @@ export class Tutorial {
         ],
         script: [
           {
-            message: `There's a lot more to learn about — broadcasting, guilds, passives, and more — but I think you're ready to start exploring!`,
+            message: `There's a lot more to learn about — broadcasting, guilds, passives, mining, and more — but I think you're ready to start exploring!`,
             next: `Heck yeah I am!`,
           },
           {
-            message: `The real journey starts here. Will your ship be traders? Pirates? Explorers? Peacekeepers? Time will tell.`,
-            advance: `Get started`,
+            message: `The real journey starts here. Good luck!`,
+            advance: `Start Game`,
           },
         ],
         nextStepTrigger: {

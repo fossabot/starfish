@@ -13,7 +13,9 @@
       <Tab
         v-for="ranking in ship.guildRankings"
         :key="'guildRanking' + ranking.category"
-        :title="c.camelCaseToWords(ranking.category)"
+        :title="
+          c.capitalize(c.camelCaseToWords(ranking.category))
+        "
       >
         <div class="flex rounded">
           <div

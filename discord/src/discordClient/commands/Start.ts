@@ -103,7 +103,7 @@ This bot will create several channels for game communication and a role for crew
     let { result: guildResult, sentMessage: sm } =
       await waitForSingleButtonChoice<GuildId | `none`>({
         context,
-        content: `Excellent! Choose your ship's guild to get started. Each guild has its own specialties.
+        content: `Excellent! If you'd like to, choose a guild for your ship. Each guild has its own specialties.
 You can change your guild when you visit another guild's homeworld.`,
         allowedUserId: context.initialMessage.author.id,
         buttons: guildButtonData,

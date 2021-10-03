@@ -121,9 +121,17 @@ const guilds: {
       },
       {
         id: `boostDamageToItemType`,
-        intensity: 0.3,
+        intensity: 0.5,
         data: {
           type: `weapon`,
+          source: { guildId: `peacekeeper` },
+        },
+      },
+      {
+        id: `boostDamageToItemType`,
+        intensity: -0.3,
+        data: {
+          type: `engine`,
           source: { guildId: `peacekeeper` },
         },
       },

@@ -111,6 +111,7 @@
               v-if="member.speciesId && member.name"
               :key="'roomMember' + member.id"
               :name="member.name"
+              :id="member.id"
               :speciesId="member.speciesId"
               :location="member.location"
               :highlight="member.id === userId"

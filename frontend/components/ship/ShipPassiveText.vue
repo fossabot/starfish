@@ -2,7 +2,7 @@
   <span>
     <span
       :class="{
-        success: (passive.intensity || 0) > 0,
+        success: (passive.intensity || 0) >= 0,
         warning: (passive.intensity || 0) < 0,
       }"
     >

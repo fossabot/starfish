@@ -123,7 +123,7 @@ const baseShipPassiveData: {
   },
   boostDamageToItemType: {
     description: (p) =>
-      `+${Math.round(
+      `${(p.intensity || 0) > 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
       )}% damage to ${p.data?.type}s`,
   },
@@ -135,9 +135,7 @@ const baseShipPassiveData: {
   },
   flatDamageReduction: {
     description: (p) =>
-      `+${Math.round(
-        p.intensity || 1,
-      )} flat damage reduction`,
+      `+${p.intensity || 1} HP flat damage reduction`,
   },
   flatSkillBoost: {
     description: (p) =>

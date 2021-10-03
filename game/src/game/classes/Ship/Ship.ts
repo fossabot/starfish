@@ -115,10 +115,11 @@ export class Ship extends Stubbable {
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
-    } else if (this.guildId) {
+    } else if (guildId) {
       this.location = [
-        ...(this.game.getHomeworld(this.guildId)
-          ?.location || [0, 0]),
+        ...(this.game.getHomeworld(guildId)?.location || [
+          0, 0,
+        ]),
       ].map(
         (pos) =>
           pos +
