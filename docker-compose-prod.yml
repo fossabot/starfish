@@ -33,7 +33,7 @@ services:
       ADMIN_KEYS_FILE: /run/secrets/admin_keys
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
-      - /mnt/disks/mongodb/:/mnt/disks/mongodb/
+      - /mnt/disks/mongodb/:/mnt/db
     depends_on:
       - mongodb
     secrets:

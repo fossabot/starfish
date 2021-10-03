@@ -123,7 +123,7 @@ function startDbBackupInterval() {
 
 const backupsFolderPath = path.resolve(
   isDocker()
-    ? path.resolve(`/mnt/disks/mongodb/`)
+    ? path.resolve(`/mnt/db/`)
     : path.resolve(__dirname, `../../../`, `db/`),
   `backups/`,
 )
@@ -137,6 +137,7 @@ function backUpDb() {
       `red`,
       `Could not create backups folder:`,
       backupsFolderPath,
+      e,
     )
   }
 

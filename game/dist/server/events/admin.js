@@ -89,6 +89,16 @@ function default_1(socket) {
         __1.game.paused = false;
         dist_1.default.log(`yellow`, `Game unpaused`);
     });
+    socket.on(`game:backups`, (id, password, callback) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:backups`);
+        callback({ data: (0, db_1.getBackups)() });
+    });
+    socket.on(`game:resetToBackup`, (id, password, backupId) => {
+        if (!isAdmin(id, password))
+            return dist_1.default.log(`Non-admin attempted to access game:resetToBackup`);
+        (0, db_1.resetDbToBackup)(backupId);
+    });
     socket.on(`game:messageAll`, (id, password, message) => {
         if (!isAdmin(id, password))
             return dist_1.default.log(`Non-admin attempted to access game:messageAll`);
