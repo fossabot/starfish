@@ -121,21 +121,24 @@ function startDbBackupInterval() {
   setInterval(backUpDb, minBackupInterval)
 }
 
-function backUpDb() {
-  const dbFolderPath = path.resolve(
-    __dirname,
-    `../../../`,
-    `db/`,
-  )
-  const backupsFolderPath = path.resolve(
-    dbFolderPath,
-    `backups/`,
-  )
+const backupsFolderPath = path.resolve(
+  isDocker()
+    ? path.resolve(`/mnt/disks/mongodb/`)
+    : path.resolve(__dirname, `../../../`, `db/`),
+  `backups/`,
+)
 
+function backUpDb() {
   try {
     if (!fs.existsSync(backupsFolderPath))
       fs.mkdirSync(backupsFolderPath)
-  } catch (e) {}
+  } catch (e) {
+    return c.log(
+      `red`,
+      `Could not create backups folder:`,
+      backupsFolderPath,
+    )
+  }
 
   fs.readdir(backupsFolderPath, (err, backups) => {
     if (err) return
@@ -186,88 +189,40 @@ function backUpDb() {
           c.log({ error })
         }
       })
-
-      // copyFolderRecursiveSync(
-      //   path.resolve(dbFolderPath, `data`),
-      //   path.resolve(backupsFolderPath, `${backupName}`),
-      // )
     }
   })
 }
 
-// function copyFileSync(source, target) {
-//   let targetFile = target
-
-//   // If target is a directory, a new file with the same name will be created
-//   if (fs.existsSync(target)) {
-//     if (fs.lstatSync(target).isDirectory()) {
-//       targetFile = path.join(target, path.basename(source))
-//     }
-//   }
-
-//   fs.writeFileSync(targetFile, fs.readFileSync(source))
-// }
-
-// function copyFolderRecursiveSync(source, target) {
-//   let files: string[] = []
-
-//   // Check if folder needs to be created or integrated
-//   let targetFolder = target
-//   if (!fs.existsSync(targetFolder)) {
-//     fs.mkdirSync(targetFolder)
-//   }
-
-//   // Copy
-//   if (fs.lstatSync(source).isDirectory()) {
-//     files = fs.readdirSync(source)
-//     files.forEach((file) => {
-//       let curSource = path.join(source, file)
-//       if (fs.lstatSync(curSource).isDirectory()) {
-//         copyFolderRecursiveSync(curSource, targetFolder)
-//       } else {
-//         copyFileSync(curSource, targetFolder)
-//       }
-//     })
-//   }
-// }
-
 export function getBackups() {
-  const backupsFolderPath = path.resolve(
-    __dirname,
-    `../../../`,
-    `db/`,
-    `backups/`,
-  )
-
   try {
     return fs
       .readdirSync(backupsFolderPath)
       .filter((p) => p.indexOf(`.`) !== 0)
   } catch (e) {
+    c.log(
+      `red`,
+      `Could not find backups folder:`,
+      backupsFolderPath,
+    )
     return []
   }
 }
-export function resetDbToBackup(backupId: string) {
-  const dbFolderPath = path.resolve(
-    __dirname,
-    `../../../`,
-    `db/`,
-  )
-  const backupsFolderPath = path.resolve(
-    dbFolderPath,
-    `backups/`,
-  )
 
-  if (
-    !fs.existsSync(backupsFolderPath) ||
-    !fs.existsSync(
-      path.resolve(backupsFolderPath, backupId),
+export function resetDbToBackup(backupId: string) {
+  try {
+    if (
+      !fs.existsSync(backupsFolderPath) ||
+      !fs.existsSync(
+        path.resolve(backupsFolderPath, backupId),
+      )
     )
-  )
-    return c.log(
-      `red`,
-      `Attempted to reset db to nonexistent backup`,
-    )
+      return c.log(
+        `red`,
+        `Attempted to reset db to nonexistent backup`,
+      )
+  } catch (e) {
+    return c.log(`red`, `Unable to find db backups folder`)
+  }
 
   c.log(`yellow`, `Resetting db to backup`, backupId)
 
@@ -284,9 +239,4 @@ export function resetDbToBackup(backupId: string) {
 
     process.exit()
   })
-
-  // copyFolderRecursiveSync(
-  //   path.resolve(backupsFolderPath, backupId),
-  //   path.resolve(dbFolderPath, `data`),
-  // )
 }
