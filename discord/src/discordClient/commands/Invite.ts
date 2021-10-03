@@ -13,9 +13,11 @@ export class InviteCommand implements Command {
   async run(context: CommandContext): Promise<void> {
     await context.reply({
       embeds: [
-        new MessageEmbed({
-          description: `[Bot invite link](${c.discordBotInviteUrl})`,
-        }),
+        new MessageEmbed()
+          .setColor(`#FF9F49`)
+          .setDescription(
+            `:incoming_envelope: [Bot invite link](${c.discordBotInviteUrl})`,
+          ),
       ],
     })
   }

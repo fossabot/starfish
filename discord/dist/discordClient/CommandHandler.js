@@ -113,9 +113,10 @@ class CommandHandler {
         if (!ioInterface_1.io.connected) {
             await commandContext.reply({
                 embeds: [
-                    new discord_js_1.MessageEmbed({
-                        description: `It looks like the game server is down at the moment. Please check the [support server](${dist_1.default.supportServerLink}) for more details.`,
-                    }),
+                    new discord_js_1.MessageEmbed()
+                        .setColor(`#FF9F49`)
+                        .setThumbnail(`https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`)
+                        .setDescription(`It looks like the game server is down at the moment. Please check the [support server](${dist_1.default.supportServerLink}) for more details.`),
                 ],
             });
             return;
