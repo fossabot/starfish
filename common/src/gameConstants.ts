@@ -89,6 +89,7 @@ const taglineOptions: string[] = [
   `Small Pond 4 Life`,
   `Nautical Nonsense`,
   `Very Shallow`,
+  `Bottom Feeder`,
 
   // flight (implemented)
   `River Runner`,
@@ -123,9 +124,6 @@ const taglineOptions: string[] = [
   `Venomous`,
   `Big Chompers`,
   `Bait and Switch`,
-
-  // sleep time
-  `Bottom Feeder`,
 
   // dying (implemented)
   `Delicious with Lemon`,
