@@ -112,9 +112,6 @@ export class Ship extends Stubbable {
     this.ai = true
     this.human = false
 
-    this.guildId =
-      guildId && c.guilds[guildId] ? guildId : undefined
-
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
@@ -211,6 +208,9 @@ export class Ship extends Stubbable {
 
     if (stats) this.stats = [...stats]
 
+    if (guildId && c.guilds[guildId])
+      this.changeGuild(guildId)
+
     // passively lose previous locations over time
     // so someone who, for example, sits forever at a planet loses their trail eventually
     setInterval(() => {
@@ -266,6 +266,15 @@ export class Ship extends Stubbable {
       this.toUpdate.guildId = id
       for (let p of c.guilds[id].passives)
         this.applyPassive(p)
+
+      this.addHeaderBackground(
+        c.guilds[id].name + ` Guild 1`,
+        `joining the ${c.guilds[id].name} guild`,
+      )
+      this.addHeaderBackground(
+        c.guilds[id].name + ` Guild 2`,
+        `joining the ${c.guilds[id].name} guild`,
+      )
 
       this.logEntry(
         [

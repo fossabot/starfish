@@ -142,12 +142,18 @@ const headerBackgroundOptions: {
   url: string
 }[] = [
   { id: `Default`, url: `default.jpg` }, // auto
-  { id: `Blue Guild 1`, url: `blue1.svg` }, // finish tutorial
-  { id: `Purple Guild 1`, url: `purple1.svg` }, // finish tutorial
-  { id: `Green Guild 1`, url: `green1.svg` }, // finish tutorial
-  { id: `Blue Guild 2`, url: `blue2.svg` }, // finish tutorial
-  { id: `Purple Guild 2`, url: `purple2.svg` }, // finish tutorial
-  { id: `Green Guild 2`, url: `green2.svg` }, // finish tutorial
+
+  { id: `Traders Guild 1`, url: `trader1.svg` }, // guild join
+  { id: `Peacekeepers Guild 1`, url: `peacekeeper1.svg` }, // guild join
+  { id: `Explorers Guild 1`, url: `explorer1.svg` }, // guild join
+  { id: `Hunters Guild 1`, url: `hunter1.svg` }, // guild join
+  { id: `Miners Guild 1`, url: `miner1.svg` }, // guild join
+  // { id: `Traders Guild 2`, url: `trader2.svg` }, // guild join
+  // { id: `Peacekeepers Guild 2`, url: `peacekeeper2.svg` }, // guild join
+  // { id: `Explorers Guild 2`, url: `explorer2.svg` }, // guild join
+  // { id: `Hunters Guild 2`, url: `hunter2.svg` }, // guild join
+  // { id: `Miners Guild 2`, url: `miner2.svg` }, // guild join
+
   { id: `Flat 1`, url: `flat1.svg` }, // equipping items
   { id: `Flat 2`, url: `flat2.svg` }, // equipping items
   { id: `Stone Cold 1`, url: `gradient1.svg` }, // killing an enemy

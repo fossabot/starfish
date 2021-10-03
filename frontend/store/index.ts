@@ -415,7 +415,7 @@ export const actions = {
         })
         if (`error` in idRes) {
           dispatch(`notifications/notify`, {
-            text: idRes.error,
+            text: `User id get error: ${idRes.error}`,
             type: `error`,
           })
           c.log(`login error:`, idRes.error)
@@ -444,8 +444,9 @@ export const actions = {
             })
 
           if (guildsRes && `error` in guildsRes) {
+            // todo double requesting this, resulting in "you are being rate limited"
             dispatch(`notifications/notify`, {
-              text: guildsRes.error,
+              text: `Guild fetch error: ${guildsRes.error}`,
               type: `error`,
             })
 

@@ -7,6 +7,7 @@
 
       <Tabs>
         <Tab
+          v-if="crewMember"
           :title="
             (c.species[crewMember.speciesId] &&
               c.species[crewMember.speciesId].icon + ' ') +

@@ -15,6 +15,7 @@ export function getUserId({
     storage.set(`tokenType`, tokenType)
     storage.set(`accessToken`, accessToken)
   }
+  // c.log({ tokenType, accessToken })
 
   return new Promise<IOResponse<string>>((resolve) => {
     fetch(`https://discord.com/api/users/@me`, {
@@ -26,7 +27,7 @@ export function getUserId({
       .then((response) => {
         if (!response.id) {
           resolve({
-            error: `No id found for that Discord user.`,
+            error: `No id found for that Discord user. Try logging out and back in.`,
           })
           return
         }

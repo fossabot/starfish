@@ -1245,10 +1245,11 @@ export class HumanShip extends CombatShip {
 
     if (this.planet) {
       // * landed!
-      c.log(
-        `gray`,
-        `${this.name} landed at ${this.planet.name}`,
-      )
+      if (!silent)
+        c.log(
+          `gray`,
+          `${this.name} landed at ${this.planet.name}`,
+        )
 
       this.hardStop()
       this.planet.rooms.forEach((r) => this.addRoom(r))
