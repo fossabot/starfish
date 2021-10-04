@@ -241,6 +241,10 @@ input[type='submit'] {
     text-align: center;
   }
 
+  &.whitebackground {
+    background-color: white;
+  }
+
   &.combo {
     margin-right: 0;
     margin-left: 0;
