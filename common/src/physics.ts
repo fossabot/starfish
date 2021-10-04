@@ -77,10 +77,21 @@ const scalingFunctions: {
     0.0000015 *
     Math.sqrt(globals.gravitationalConstant * massProduct) *
     (rangeAsPercentOfGravityRadius - 1) ** 6,
+
+  // even stronger lean towards exponential
+  tenthPower: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (rangeAsPercentOfGravityRadius - 1) ** 10,
 }
 
 function getGravityForceVectorOnThisBodyDueToThatBody(
-  thisBody: HasMassAndLocation,
+  thisBody: HasMassAndLocationAndVelocity,
   thatBody: HasMassAndLocation,
   gravityScalingFunction: string = `defaultRealGravity`,
   gravityMultiplier: number = 1,
@@ -112,19 +123,56 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   if (rangeInMeters === 0) return [0, 0]
 
+  // * gives a percentage 0 (thisBody is moving perfectly toawrds/straight away from thatBody), to 1 (thisBody is moving perfectly perpendicular to thatBody)
+  const angleToThatBody =
+    Math.abs(
+      Math.abs(
+        math.angleDifference(
+          math.vectorToDegrees(thisBody.velocity),
+          math.angleFromAToB(
+            thatBody.location,
+            thisBody.location,
+          ),
+        ) - 90,
+      ) - 90,
+    ) / 90
+
+  const maxGravityLesseningEffectPercentage = 0.8
+  const coneWidth = 0.2
+  let gravityLesseningEffectPercentage = 0
+  if (
+    angleToThatBody < coneWidth &&
+    maxGravityLesseningEffectPercentage > 0
+  ) {
+    gravityLesseningEffectPercentage = math.lerp(
+      0,
+      maxGravityLesseningEffectPercentage,
+      1 - angleToThatBody / coneWidth,
+    )
+  }
+
   // * ----- current scaling function in use -----
   const scalingFunction =
     scalingFunctions[gravityScalingFunction] ||
     scalingFunctions.defaultRealGravity
 
-  // * ----- flat gravity scaling -----
-
+  // * ----- final gravity force calc -----
   const gravityForce =
     scalingFunction({
       massProduct,
       rangeInMeters,
       rangeAsPercentOfGravityRadius,
-    }) * gravityMultiplier
+    }) *
+    gravityMultiplier *
+    (1 - gravityLesseningEffectPercentage)
+
+  // c.log({
+  //   name: thatBody.name,
+  //   rangeAsPercentOfGravityRadius,
+  //   angleToThatBody,
+  //   gravityLesseningEffectPercentage,
+  //   gravityForce: gravityForce / 10000,
+  // })
 
   // const differenceFromDefault =
   //   gravityForce -

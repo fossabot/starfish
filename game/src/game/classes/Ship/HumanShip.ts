@@ -31,6 +31,24 @@ interface HumanVisibleShape {
 export class HumanShip extends CombatShip {
   static maxLogLength = 40
   static movementIsFree = false // true
+  static secondWindHpCutoff = 2
+  static secondWindPassives: CrewPassiveData[] = [
+    {
+      id: `reduceStaminaDrain`,
+      intensity: 0.4,
+      data: { source: `secondWind` },
+    },
+    {
+      id: `boostBroadcastRange`,
+      intensity: 0.3,
+      data: { source: `secondWind` },
+    },
+    {
+      id: `generalImprovementPerCrewMemberInSameRoom`,
+      intensity: 0.05,
+      data: { source: `secondWind` },
+    },
+  ]
 
   readonly id: string
   guildName: string = `guild`
@@ -42,6 +60,7 @@ export class HumanShip extends CombatShip {
   captain: string | null = null
   rooms: { [key in CrewLocation]?: BaseRoomData } = {}
   maxScanProperties: ShipScanDataShape | null = null
+  secondWind: boolean = false
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -234,6 +253,44 @@ export class HumanShip extends CombatShip {
       (z) => !this.seenLandmarks.includes(z),
     )
     newLandmarks.forEach((p) => this.discoverLandmark(p))
+
+    // ----- second wind -----
+    if (
+      this.secondWind &&
+      this._hp > HumanShip.secondWindHpCutoff
+    ) {
+      this.secondWind = false
+      this.crewMembers.forEach((cm) =>
+        HumanShip.secondWindPassives.forEach((p) =>
+          cm.removePassive(p),
+        ),
+      )
+      this.logEntry(
+        `The danger has lessened, and the crew's second wind wears off.`,
+        `low`,
+      )
+    } else if (
+      !this.secondWind &&
+      this._hp <= HumanShip.secondWindHpCutoff
+    ) {
+      this.secondWind = true
+      this.crewMembers.forEach((cm) =>
+        HumanShip.secondWindPassives.forEach((p) =>
+          cm.applyPassive(p),
+        ),
+      )
+      this.logEntry(
+        [
+          `${this.name} has dropped below`,
+          {
+            text: `${HumanShip.secondWindHpCutoff} HP`,
+            color: `var(--warning)`,
+          },
+          `&nospace! The crew has gained a second wind!`,
+        ],
+        `high`,
+      )
+    }
 
     profiler.step(`get caches`)
     // ----- get nearby caches -----
@@ -822,10 +879,9 @@ export class HumanShip extends CombatShip {
           thruster.name,
           `thrusted towards`,
           ...targetData,
-          `at ${c.r2(
+          `at ${c.speedNumber(
             c.vectorToMagnitude(thrustVector) * 60 * 60,
-            3,
-          )} AU/hr.`,
+          )}.`,
         ],
         `low`,
       )
@@ -915,9 +971,9 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `braked, slowing the ship by ${c.r2(
+          `braked, slowing the ship by ${c.speedNumber(
             (this.speed - previousSpeed) * 60 * 60 * -1,
-          )}AU/hr.`,
+          )}.`,
         ],
         `low`,
       )

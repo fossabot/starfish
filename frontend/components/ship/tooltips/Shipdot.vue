@@ -63,9 +63,10 @@
       >
         <div>
           {{
-            c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
+            c.speedNumber(
+              (dataToUse && dataToUse.speed * 60 * 60) || 0,
+            )
           }}
-          AU/hr
           <br />
           at
           {{ c.r2(dataToUse && dataToUse.direction, 2) }}°

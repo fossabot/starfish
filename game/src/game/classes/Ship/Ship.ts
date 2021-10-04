@@ -7,21 +7,23 @@ import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
+import type { HumanShip } from './HumanShip'
 
-import { Engine } from '../Item/Engine'
 import type { Item } from '../Item/Item'
+import { Engine } from '../Item/Engine'
 import { Weapon } from '../Item/Weapon'
 import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
+
 import loadouts from '../../presets/loadouts'
+
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
-import type { BasicPlanet } from '../Planet/BasicPlanet'
-import { HumanShip } from './HumanShip'
 
 export class Ship extends Stubbable {
-  static maxPreviousLocations: number = 30
+  static maxPreviousLocations: number = 35
+  static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
   name: string
@@ -650,7 +652,7 @@ export class Ship extends Stubbable {
             previousLocation,
             currentLocation,
           ),
-      ) >= 2 &&
+      ) >= 5 &&
         c.distance(
           this.location,
           this.previousLocations[
@@ -789,6 +791,7 @@ export class Ship extends Stubbable {
   }
 
   get hp() {
+    const prevHp = this._hp
     const total = this.items.reduce(
       (total, i) => Math.max(0, i.maxHp * i.repair) + total,
       0,
@@ -802,6 +805,23 @@ export class Ship extends Stubbable {
     this.dead = total <= 0
     if (this.dead !== wasDead)
       this.toUpdate.dead = this.dead
+
+    if (
+      `logEntry` in this &&
+      this.human &&
+      !this.dead &&
+      prevHp >
+        this._maxHp * Ship.notifyWhenHealthDropsToPercent &&
+      this._hp <=
+        this._maxHp * Ship.notifyWhenHealthDropsToPercent
+    ) {
+      this.logEntry(
+        `${this.name}'s HP has dropped below ${
+          Ship.notifyWhenHealthDropsToPercent * 100
+        }%!`,
+        `critical`,
+      )
+    }
     return total
   }
 

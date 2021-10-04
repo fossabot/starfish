@@ -805,8 +805,8 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color:
-              attacker.guild &&
-              c.guilds[attacker.guild].color,
+              attacker.guildId &&
+              c.guilds[attacker.guildId].color,
             tooltipData: attacker?.toReference() as any,
           },
           `&nospace's`,

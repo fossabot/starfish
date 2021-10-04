@@ -27,10 +27,9 @@ export class ThrustInCurrentDirectionCommand
     if (`error` in res) context.reply(res.error)
     else
       context.reply(
-        `${context.nickname} thrusted at ${c.r2(
+        `${context.nickname} thrusted at ${c.speedNumber(
           res.data,
-          3,
-        )}AU/hr in the current direction.`,
+        )} in the current direction.`,
       )
   }
 }

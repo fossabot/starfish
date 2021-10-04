@@ -28,16 +28,6 @@ export class StatusCommand implements Command {
     if (!context.ship) return
     const ship = context.ship
 
-    // <div>
-    //       {{
-    //         c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
-    //       }}
-    //       AU/hr
-    //       <br />
-    //       at
-    //       {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
-    //     </div>
-
     const color = c.guilds[ship.guildId].name
       .split(` `)[0]
       ?.toUpperCase()
@@ -77,7 +67,7 @@ ${c.percentToTextBars(
         description:
           `**` +
           (ship.speed
-            ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
+            ? `${c.speedNumber(ship.speed * 60 * 60)} ${
                 ship.direction
                   ? `at ${c.degreesToArrowEmoji(
                       ship.direction,

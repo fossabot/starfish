@@ -1,4 +1,5 @@
 import math from './math'
+import globals from './globals'
 
 const maxNameLength = 16
 
@@ -16,6 +17,22 @@ function numberWithCommas(x: number) {
       .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
     (decimal ? `${math.r2(decimal, 6)}`.substring(1) : ``)
   return (negative ? `-` : ``) + total
+}
+
+function speedNumber(
+  numberInAu: number,
+  noTag = false,
+): string {
+  let output = ``
+  const numberInKm = numberInAu * globals.kmPerAu
+  if (numberInKm < 1000)
+    output = `${math.r2(numberInKm, 0)}`
+  else if (numberInKm < 1000000)
+    output = `${math.r2(numberInKm / 1000, 0)}k`
+  else if (numberInKm < 1000000000)
+    output = `${math.r2(numberInKm / 1000000, 2)}M`
+  else output = `${math.r2(numberInKm / 1000000000, 2)}B`
+  return output + (noTag ? `` : ` km/hr`)
 }
 
 function printList(list: string[]) {
@@ -279,6 +296,7 @@ function arrayMove(
 export default {
   maxNameLength,
   numberWithCommas,
+  speedNumber,
   printList,
   degreesToArrow,
   degreesToArrowEmoji,

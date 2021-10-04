@@ -101,15 +101,17 @@ interface CrewPassiveData {
     wholeNumbersOnly: boolean
   }
   data?: {
-    source?: {
-      planetName?: string
-      speciesId?: SpeciesId
-      chassisId?: ChassisId
-      item?: {
-        type: ItemType
-        id: ItemId
-      }
-    }
+    source?:
+      | {
+          planetName?: string
+          speciesId?: SpeciesId
+          chassisId?: ChassisId
+          item?: {
+            type: ItemType
+            id: ItemId
+          }
+        }
+      | `secondWind`
     type?: ItemType
     distance?: number
   }

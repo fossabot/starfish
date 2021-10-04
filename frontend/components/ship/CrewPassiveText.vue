@@ -31,6 +31,8 @@
               c.items.chassis[passive.data.source.chassisId]
                 .displayName
             }`
+          : passive.data.source === 'secondWind'
+          ? 'Second Wind'
           : passive.data.source
       }})
     </span>

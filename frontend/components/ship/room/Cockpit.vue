@@ -32,14 +32,12 @@
             class="chargecounter nowrap"
           >
             &nbsp;(+{{
-              c.r2(
+              c.speedNumber(
                 maxPossibleSpeedChange *
                   crewMember.cockpitCharge *
                   thrustChargeToUse,
-                3,
               )
-            }}
-            AU/hr)
+            }})
           </span>
         </LimitedChargeButton>
         <LimitedChargeButton
@@ -74,16 +72,14 @@
             class="chargecounter nowrap"
           >
             &nbsp;(-{{
-              c.r2(
+              c.speedNumber(
                 maxPossibleSpeedChange *
                   ship.gameSettings.brakeToThrustRatio *
                   crewMember.cockpitCharge *
                   brakeChargeToUse *
                   passiveBrakeMultiplier,
-                3,
               )
-            }}
-            AU/hr)
+            }})
           </span>
         </LimitedChargeButton>
       </div>
@@ -146,12 +142,11 @@
       >
         Applicable Speed:
         <NumberChangeHighlighter
-          :number="c.r2(possibleSpeedChange, 3)"
+          :number="c.speedNumber(possibleSpeedChange, true)"
         /><span class="sub marlefttiny"
           >/<NumberChangeHighlighter
-            :number="c.r2(maxPossibleSpeedChange, 3)"
+            :number="c.speedNumber(maxPossibleSpeedChange)"
         /></span>
-        AU/hr
       </div>
     </div>
 

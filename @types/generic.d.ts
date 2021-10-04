@@ -19,8 +19,16 @@ interface HasLocation {
   location: CoordinatePair
   [key: string]: any
 }
+
 interface HasMassAndLocation {
   mass: number
   location: CoordinatePair
+  [key: string]: any
+}
+
+interface HasMassAndLocationAndVelocity {
+  mass: number
+  location: CoordinatePair
+  velocity: CoordinatePair
   [key: string]: any
 }
