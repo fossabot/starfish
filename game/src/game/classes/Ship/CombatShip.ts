@@ -231,24 +231,29 @@ export abstract class CombatShip extends Ship {
       `munitions`,
     )
     const range = c.distance(this.location, target.location)
-    const rangeAsPercent = range / weapon.effectiveRange
-    const minHitChance = 0.95
+    const distanceAsPercent = range / weapon.effectiveRange // 1 = far away, 0 = close
+    const minHitChance = 0.08
+    // 1.0 agility is "normal", higher is better
     const enemyAgility =
       target.chassis.agility +
       (target.passives.find(
         (p) => p.id === `boostChassisAgility`,
       )?.intensity || 0)
+
     const hitRoll = Math.random()
+    const toHit =
+      c.lerp(minHitChance, 1, distanceAsPercent) *
+      enemyAgility *
+      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
 
-    let miss =
-      hitRoll * enemyAgility <
-      Math.min(rangeAsPercent, minHitChance)
+    let miss = hitRoll < toHit
 
-    const didCrit =
-      Math.random() <=
-      (weapon.critChance === undefined
-        ? this.game.settings.baseCritChance
-        : weapon.critChance)
+    const didCrit = miss
+      ? false
+      : Math.random() <=
+        (weapon.critChance === undefined
+          ? this.game.settings.baseCritChance
+          : weapon.critChance)
 
     let damage = miss
       ? 0
@@ -353,10 +358,7 @@ export abstract class CombatShip extends Ship {
 
     c.log(
       `gray`,
-      `need to beat ${Math.min(
-        rangeAsPercent,
-        minHitChance,
-      )}, rolled ${hitRoll} for a ${
+      `need to beat ${toHit}, rolled ${hitRoll} for a ${
         miss
           ? `miss`
           : `${
