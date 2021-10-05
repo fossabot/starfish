@@ -122,9 +122,6 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      if (ship.captain === crewMember.id)
-        ship.captain = null
-
       ship.removeCrewMember(crewMember.id)
       callback({ data: `ok` })
     },

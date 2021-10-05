@@ -981,7 +981,7 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge, [thruster]))
 
-    return (this.speed - previousSpeed) * 60 * 60
+    return (this.speed - previousSpeed) * 60 * 60 * -1
   }
 
   // ----- move -----
@@ -1894,6 +1894,8 @@ export class HumanShip extends CombatShip {
     }
 
     this.crewMembers.splice(index, 1)
+    io.to(`ship:${this.id}`).emit(`ship:reload`)
+    
     this.logEntry(
       `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
       `critical`,
