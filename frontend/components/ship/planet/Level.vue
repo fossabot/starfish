@@ -124,7 +124,7 @@
         <template>
           <div>How many credits will you contribute?</div>
           <div>
-            Exchange rate: 1xp =
+            Exchange rate: 1 xp =
             {{ c.planetContributeCostPerXp }} credit{{
               c.planetContributeCostPerXp === 1 ? '' : 's'
             }}

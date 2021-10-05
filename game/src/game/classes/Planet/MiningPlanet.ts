@@ -118,7 +118,10 @@ export class MiningPlanet extends Planet {
                   shipsToDistributeAmong.length - 1 === 1
                     ? ``
                     : `s`
-                }`,
+                } for a total of ${c.r2(
+                  finalPayoutAmount /
+                    shipsToDistributeAmong.length,
+                )} tons.`,
               ]
             : [
                 `Your ship mined ${c.r2(
@@ -162,7 +165,10 @@ export class MiningPlanet extends Planet {
           )
         })
 
-        ship.addStat(`totalTonsMined`, finalPayoutAmount)
+        ship.addStat(
+          `totalTonsMined`,
+          finalPayoutAmount / shipsToDistributeAmong.length,
+        )
 
         ship.distributeCargoAmongCrew([
           {

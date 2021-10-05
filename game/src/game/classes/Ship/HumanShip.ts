@@ -1920,9 +1920,11 @@ export class HumanShip extends CombatShip {
 
   distributeCargoAmongCrew(cargo: CacheContents[]) {
     const leftovers: CacheContents[] = []
+
     cargo.forEach((contents) => {
       let toDistribute = contents.amount
       const canHoldMore = [...this.crewMembers]
+
       while (canHoldMore.length && toDistribute) {
         const amountForEach =
           toDistribute / canHoldMore.length
@@ -1954,6 +1956,7 @@ export class HumanShip extends CombatShip {
           0,
         )
       }
+
       if (toDistribute > 1) {
         const existing = leftovers.find(
           (l) => l.id === contents.id,
@@ -1966,6 +1969,7 @@ export class HumanShip extends CombatShip {
           })
       }
     })
+
     if (leftovers.length) {
       setTimeout(
         () =>
@@ -1982,6 +1986,7 @@ export class HumanShip extends CombatShip {
           ]),
         500,
       )
+
       this.game.addCache({
         location: [...this.location],
         contents: leftovers,
