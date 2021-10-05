@@ -16,6 +16,6 @@ export const actions = {
   notify({ commit }, notification) {
     if (!notification.text) return
     commit(`add`, notification)
-    setTimeout(() => commit(`remove`), 4000)
+    setTimeout(() => commit(`remove`), 6000)
   },
 }

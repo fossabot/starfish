@@ -4,14 +4,14 @@ import text from './text'
 import misc from './misc'
 import log from './log'
 import game from './game'
+import gameConstants from './gameConstants'
 import physics from './physics'
 import discord from './discord'
 import { Profiler } from './Profiler'
 import species from './species'
-import factions from './factions'
-import basePassiveData from './basePassiveData'
+import guilds from './guilds'
+import baseShipPassiveData from './baseShipPassiveData'
 import * as cargo from './cargo'
-import crewActives from './crewActives'
 import crewPassives from './crewPassives'
 import rooms from './rooms'
 import stubify from './stubify'
@@ -24,16 +24,16 @@ export default {
   ...misc,
   ...log,
   ...game,
+  ...gameConstants,
   ...physics,
   ...discord,
   items,
   rooms,
-  crewActives,
   crewPassives,
   cargo,
   species,
-  factions,
-  basePassiveData,
+  guilds,
+  baseShipPassiveData,
   Profiler,
   stubify,
 }

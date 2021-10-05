@@ -1,14 +1,5 @@
 interface BaseStub {}
 
-interface GameStub extends BaseStub {
-  ships: ShipStub[]
-  planets: PlanetStub[]
-  factions: FactionStub[]
-  caches: CacheStub[]
-  attackRemnants: AttackRemnantStub[]
-  [key: string]: any
-}
-
 interface ShipStub extends BaseStub {
   id: string
   name: string
@@ -26,8 +17,7 @@ interface ShipStub extends BaseStub {
   radii?: { [key in RadiusType]?: number }
   obeysGravity?: boolean
   planet?: PlanetStub | false
-  faction: FactionStub
-  species: SpeciesStub
+  guildId: GuildId
   rooms: { [key in CrewLocation]?: BaseRoomData }
   crewMembers?: CrewMemberStub[]
   log?: LogEntry[]
@@ -45,7 +35,7 @@ interface ShipStub extends BaseStub {
   targetItemType?: ItemType | `any`
   targetShip?: Reference | null
 
-  factionRankings?: FactionRanking[]
+  guildRankings?: GuildRanking[]
   passives?: ShipPassiveEffect[]
   slots?: number
   mass?: number
@@ -58,7 +48,7 @@ interface ShipStub extends BaseStub {
   captain?: string
   guildName?: string
   guildIcon?: string
-  orders?: ShipOrders | null
+  orders?: ShipOrders | false
   gameSettings?: AdminGameSettings
 }
 interface VisibleStub extends BaseStub {
@@ -75,17 +65,18 @@ interface CrewMemberStub extends BaseStub {
   name: string
   skills: XPData[]
   location?: CrewLocation
+  speciesId?: SpeciesId
   stamina: number
   stats: CrewStatEntry[]
   inventory: Cargo[]
   credits: number
-  actives: BaseCrewActiveData[]
-  passives: BaseCrewPassiveData[]
+  passives: CrewPassiveData[]
   cockpitCharge: number
-  tactic: CombatTactic
-  itemTarget: ItemType
-  attackFactions?: FactionKey[]
-  targetLocation: CoordinatePair | null
+  combatTactic: CombatTactic | `none`
+  targetItemType: ItemType | `any`
+  attackTargetId: string
+  attackGuilds?: GuildId[]
+  targetLocation: CoordinatePair | false
   repairPriority: RepairPriority
   [key: string]: any
 }
@@ -93,6 +84,7 @@ interface CrewMemberStub extends BaseStub {
 interface PlanetStub extends BaseStub {
   location: CoordinatePair
   name: string
+  guildId?: GuildId
   vendor?: PlanetVendor
   allegiances: PlanetAllegianceData[]
   priceFluctuator: number
@@ -124,17 +116,10 @@ interface AttackRemnantStub extends BaseStub {
   id: string
   [key: string]: any
 }
-interface FactionStub extends BaseStub {
-  id: FactionKey
-  name?: string
-  color?: string
-  ai?: boolean
-  [key: string]: any
-}
 
 interface ItemStub extends BaseStub {
   type: ItemType
-  id: string
+  id: ItemId
   repair?: number
   ownerId?: string
   displayName?: string

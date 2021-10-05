@@ -33,6 +33,12 @@
           >
             Re-Level All Planets
           </div>
+          <div
+            class="button combo"
+            @click="resetHomeworlds"
+          >
+            Reset Homeworlds
+          </div>
           <div class="button combo" @click="resetAllCaches">
             Reset All Caches
           </div>
@@ -126,6 +132,11 @@ import { get, set, remove } from '../assets/scripts/storage'
 
 export default Vue.extend({
   layout: 'withnavbar',
+  head() {
+    return {
+      title: 'Admin',
+    }
+  },
   data() {
     return {
       c,
@@ -271,6 +282,19 @@ export default Vue.extend({
         return
       this.$socket.emit(
         'game:reLevelAllPlanets',
+        this.userId,
+        this.adminPassword,
+      )
+    },
+    resetHomeworlds() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset the guild homeworlds?',
+        )
+      )
+        return
+      this.$socket.emit(
+        'game:resetHomeworlds',
         this.userId,
         this.adminPassword,
       )

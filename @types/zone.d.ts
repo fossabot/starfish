@@ -21,4 +21,5 @@ interface BaseZoneData {
   color: string
   radius: number
   effects: ZoneEffect[]
+  passives?: ShipPassiveEffect[]
 }

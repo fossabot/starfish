@@ -8,7 +8,6 @@
             shipsBasics.map((s) => ({
               value: s.id,
               text:
-                c.species[s.species.id].icon +
                 s.name +
                 (s.isTutorial
                   ? ` (tutorial for ${s.isTutorial})`
@@ -87,7 +86,7 @@ export default Vue.extend({
     const shipsBasics: {
       name: string
       id: string
-      faction: { id: string }
+      guild: { id: string }
       species: { id: string }
       crewMemberCount: number
     }[] = []
@@ -167,7 +166,7 @@ export default Vue.extend({
             {
               name: string
               id: string
-              faction: { id: string }
+              guild: { id: string }
               species: { id: string }
               crewMemberCount: number
               isTutorial: string | false

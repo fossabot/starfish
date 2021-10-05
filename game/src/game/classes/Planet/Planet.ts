@@ -2,7 +2,6 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
-import type { Faction } from '../Faction'
 import type { HumanShip } from '../Ship/HumanShip'
 
 export class Planet extends Stubbable {
@@ -12,14 +11,16 @@ export class Planet extends Stubbable {
   readonly type = `planet`
   readonly pacifist: boolean
   readonly rooms: CrewLocation[] = []
-  readonly planetType: PlanetType
   readonly name: string
-  readonly color: string
   readonly mass: number
   readonly location: CoordinatePair
   readonly game: Game
   readonly creatures?: string[]
   readonly radius: number
+  color: string
+  planetType: PlanetType
+  guildId?: GuildId
+  homeworld?: GuildId
   landingRadiusMultiplier: number
   passives: ShipPassiveEffect[]
   xp = 0
@@ -27,9 +28,6 @@ export class Planet extends Stubbable {
   stats: PlanetStatEntry[] = []
 
   toUpdate: {
-    allegiances?: PlanetAllegianceData[]
-    priceFluctuator?: number
-    repairFactor?: number
     landingRadiusMultiplier?: number
     passives?: ShipPassiveEffect[]
   } = {}
@@ -104,12 +102,52 @@ export class Planet extends Stubbable {
     )
   }
 
-  async donate(amount: number, faction?: Faction) {
+  tickEffectsOnShip(ship: HumanShip) {
+    ship.addStat(`planetTime`, 1)
+
+    const distanceFromPlanet = c.distance(
+      this.location,
+      ship.location,
+    )
+
+    // * if it's inside the drawn planet, don't swirl
+    if (distanceFromPlanet < this.radius / c.kmPerAu) return
+
+    // apply swirl effect
+    const swirlClockwise = true
+
+    const swirlIntensity =
+      360 /
+      (ship.mass * 0.1) /
+      (distanceFromPlanet /
+        (this.landingRadiusMultiplier *
+          this.game.settings.arrivalThreshold))
+
+    const angleToShip = c.angleFromAToB(
+      this.location,
+      ship.location,
+    )
+    const targetAngle =
+      ((swirlClockwise
+        ? angleToShip - swirlIntensity
+        : angleToShip + swirlIntensity) +
+        360) %
+      360
+    const unitVector = c.degreesToUnitVector(targetAngle)
+    const newLocation = [
+      unitVector[0] * distanceFromPlanet + this.location[0],
+      unitVector[1] * distanceFromPlanet + this.location[1],
+    ] as CoordinatePair
+
+    ship.move(newLocation)
+  }
+
+  async donate(amount: number, guildId?: GuildId) {
     this.addXp(amount / c.planetContributeCostPerXp)
     this.addStat(`totalDonated`, amount)
-    if (faction)
+    if (guildId)
       this.incrementAllegiance(
-        faction,
+        guildId,
         1 + amount / (c.planetContributeCostPerXp * 2000),
       )
   }
@@ -157,7 +195,7 @@ export class Planet extends Stubbable {
             100 *
             c.planetLevelXpRequirementMultiplier,
         )
-      c.log(`bumping`, this.xp)
+      // c.log(`bumping`, this.xp)
     }
   }
 
@@ -266,10 +304,7 @@ export class Planet extends Stubbable {
   }
 
   // function placeholders
-  incrementAllegiance(
-    faction: Faction | FactionStub,
-    amount?: number,
-  ) {}
+  incrementAllegiance(guildId: GuildId, amount?: number) {}
 
   resetLevels() {}
 }

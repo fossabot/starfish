@@ -28,17 +28,7 @@ export class StatusCommand implements Command {
     if (!context.ship) return
     const ship = context.ship
 
-    // <div>
-    //       {{
-    //         c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
-    //       }}
-    //       AU/hr
-    //       <br />
-    //       at
-    //       {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
-    //     </div>
-
-    const color = c.factions[ship.faction.id].name
+    const color = c.guilds[ship.guildId].name
       .split(` `)[0]
       ?.toUpperCase()
 
@@ -72,14 +62,12 @@ ${c.percentToTextBars(
 
     const embeds: MessageEmbed[] = [
       new MessageEmbed({
-        title: `${c.species[ship.species.id].icon} ${
-          ship.name
-        }`,
+        title: `${ship.name}`,
         color: color as ColorResolvable,
         description:
           `**` +
           (ship.speed
-            ? `${c.r2(ship.speed * 60 * 60, 4)} AU/hr ${
+            ? `${c.speedNumber(ship.speed * 60 * 60)} ${
                 ship.direction
                   ? `at ${c.degreesToArrowEmoji(
                       ship.direction,
@@ -148,9 +136,12 @@ ${c.percentToTextBars(
               context.crewMember.maxCargoSpace,
               ship.chassis?.maxCargoSpace || 0,
             )} tons` +
-            (context.crewMember.inventory.length === 0
+            (context.crewMember.inventory.filter(
+              (i) => i.amount,
+            ).length === 0
               ? ``
               : `\n${context.crewMember.inventory
+                  .filter((i) => i.amount)
                   .map(
                     (i) =>
                       `${c.cargo[i.id].name} (${
@@ -163,9 +154,10 @@ ${c.percentToTextBars(
 
       embeds.push(
         new MessageEmbed({
-          title: `${c.species[ship.species.id].icon} ${
-            context.crewMember.name
-          }`,
+          title: `${
+            context.crewMember.speciesId &&
+            c.species[context.crewMember.speciesId].icon
+          } ${context.crewMember.name}`,
           color: color as ColorResolvable,
           fields: youFields,
         }),

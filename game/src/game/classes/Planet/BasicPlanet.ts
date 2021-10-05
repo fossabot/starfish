@@ -1,7 +1,6 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
-import type { Faction } from '../Faction'
 import type { HumanShip } from '../Ship/HumanShip'
 import { Planet } from './Planet'
 
@@ -17,21 +16,14 @@ type AddableElement =
       class: `crewPassives`
       id: CrewPassiveId
       propensity: number
+      intensity: number
     }
   | { class: `chassis`; id: ChassisId; propensity: number }
-  // | {
-  //     class: `actives`
-  //     id: CrewActiveId
-  //     propensity: number
-  //   }
   | { class: `repair`; propensity: number }
 
 export class BasicPlanet extends Planet {
   static readonly priceFluctuatorIntensity = 0.8
 
-  readonly planetType: PlanetType
-  readonly faction?: Faction
-  readonly homeworld?: Faction
   readonly allegiances: PlanetAllegianceData[]
   readonly leanings: PlanetLeaning[]
 
@@ -51,22 +43,19 @@ export class BasicPlanet extends Planet {
     super(data, game)
     this.planetType = `basic`
 
-    this.homeworld = game.factions.find(
-      (f) => f.id === data.homeworld?.id,
-    )
-    this.faction = this.homeworld
+    this.guildId = data.guildId ? data.guildId : undefined
+    this.homeworld = this.guildId
+    if (this.guildId)
+      this.color = c.guilds[this.guildId].color
 
     this.leanings = data.leanings || []
 
     this.allegiances = []
     if (data.allegiances) {
       for (let a of data.allegiances) {
-        const foundFaction = this.game.factions.find(
-          (f) => f.id === a.faction.id,
-        )
-        if (foundFaction)
+        if (c.guilds[a.guildId])
           this.allegiances.push({
-            faction: foundFaction,
+            guildId: a.guildId,
             level: a.level,
           })
       }
@@ -93,8 +82,8 @@ export class BasicPlanet extends Planet {
       (1000 * 60 * 60 * 24) / c.gameSpeedMultiplier,
     ) // every day
 
-    if (this.faction)
-      this.incrementAllegiance(this.faction, 100)
+    if (this.guildId)
+      this.incrementAllegiance(this.guildId, 100)
 
     if (this.homeworld)
       while (this.level < c.defaultHomeworldLevel)
@@ -217,6 +206,7 @@ export class BasicPlanet extends Planet {
             this.vendor.passives.push({
               buyMultiplier,
               id: toAddToVendor.id,
+              intensity: toAddToVendor.intensity,
             })
           if (toAddToVendor.class === `cargo`)
             this.vendor.cargo.push({
@@ -224,8 +214,6 @@ export class BasicPlanet extends Planet {
               sellMultiplier,
               id: toAddToVendor.id,
             })
-          // if (toAddToVendor.class === `actives`)
-          //   this.vendor.actives.push({buyMultiplier, sellMultiplier, id: toAddToVendor.id})
         }
       }
     }
@@ -335,6 +323,7 @@ export class BasicPlanet extends Planet {
         Object.keys(c.crewPassives).length
       for (let crewPassive of Object.values(c.crewPassives))
         if (
+          crewPassive.buyable &&
           !this.vendor?.passives.find(
             (p) => p.id === crewPassive.id,
           )
@@ -344,32 +333,20 @@ export class BasicPlanet extends Planet {
             id: crewPassive.id,
             propensity:
               propensity *
-              rarityMultiplier(crewPassive.rarity),
+              5 *
+              rarityMultiplier(crewPassive.buyable.rarity),
+            intensity: c.r2(
+              c.crewPassives[crewPassive.id].buyable!
+                .baseIntensity *
+                Math.random() +
+                0.5,
+              c.crewPassives[crewPassive.id].buyable!
+                .wholeNumbersOnly
+                ? 0
+                : 2,
+            ),
           })
     }
-
-    // if (
-    //   !this.leanings.find(
-    //     (p) => p.type === `actives` && p.never === true,
-    //   )
-    // ) {
-    //   const propensity =
-    //     (this.leanings.find((p) => p.type === `actives`)
-    //       ?.propensity || 0.2) / Object.keys(c.crewActives).length
-    //   for (let crewActive of Object.values(c.crewActives))
-    //     if (
-    //       !this.vendor?.actives.find(
-    //         (p) => p.id === crewActive.id,
-    //       )
-    //     )
-    //       addable.push({
-    //         class: `actives`,
-    //         id: crewActive.id,
-    //         propensity:
-    //           propensity *
-    //           rarityMultiplier(crewActive.rarity),
-    //       })
-    // }
 
     if (
       !this.leanings.find(
@@ -386,15 +363,13 @@ export class BasicPlanet extends Planet {
     return addable
   }
 
-  incrementAllegiance(
-    faction: Faction | FactionStub,
-    amount?: number,
-  ) {
+  incrementAllegiance(guildId?: GuildId, amount?: number) {
+    if (!guildId) return
     const allegianceAmountToIncrement = amount || 1
     // c.log(`allegiance`, allegianceAmountToIncrement)
     const maxAllegiance = 100
     const found = this.allegiances.find(
-      (a) => a.faction.id === faction.id,
+      (a) => a.guildId === guildId,
     )
     if (found)
       found.level = Math.min(
@@ -403,7 +378,7 @@ export class BasicPlanet extends Planet {
       )
     else
       this.allegiances.push({
-        faction,
+        guildId,
         level: Math.min(
           maxAllegiance,
           allegianceAmountToIncrement,
@@ -415,7 +390,7 @@ export class BasicPlanet extends Planet {
 
   decrementAllegiances() {
     this.allegiances.forEach((a) => {
-      if (this.faction?.id !== a.faction.id) a.level *= 0.99
+      if (this.guildId !== a.guildId) a.level *= 0.99
     })
     this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
@@ -465,20 +440,23 @@ export class BasicPlanet extends Planet {
         `Come see what we have in stock!`,
         `Come browse our wares! Nothing but the lowest prices!`,
       )
-    if (this.faction === ship.faction) {
+    if (this.guildId === ship.guildId) {
       messageOptions.push(
-        `Greetings, fellow creature of the ${ship.faction.name}! Swim swiftly!`,
+        `Greetings, fellow creature of the ${
+          ship.guildId && c.guilds[ship.guildId].name
+        }! Swim swiftly!`,
       )
     } else {
       messageOptions.push(
-        `You there, from the ${ship.faction.name}! You may land, but don't cause any trouble.`,
-        `${ship.faction.name} are welcome here.`,
+        `You there, from the ${
+          ship.guildId && c.guilds[ship.guildId].name
+        }! You may land, but don't cause any trouble.`,
+        `${
+          ship.guildId && c.guilds[ship.guildId].name
+        } are welcome here.`,
       )
     }
-    if (this.creatures?.includes(ship.species.id))
-      messageOptions.push(
-        `Hail, fellow ${ship.species.singular}! You're always welcome here.`,
-      )
+
     const message = c.garble(
       c.randomFromArray(messageOptions),
       garbleAmount,
@@ -510,9 +488,12 @@ export class BasicPlanet extends Planet {
       `This is ${this.name}, I read you, ${ship.name}. Commence landing approach when ready.`,
       `I'm not authorized to respond to you, over.`,
       `Come down and let's take a swim, over.`,
-      `We love ${ship.species.id} around here, over.`,
-      `${ship.faction.name} are always welcome here, over.`,
-      `${ship.faction.name} are always welcome as long as they don't cause any trouble, over.`,
+      `${
+        ship.guildId && c.guilds[ship.guildId].name
+      } are always welcome here, over.`,
+      `${
+        ship.guildId && c.guilds[ship.guildId].name
+      } are always welcome as long as they don't cause any trouble, over.`,
       `Meet me at the cantina later, over.`,
     ]
     if (this.creatures) {
@@ -534,9 +515,16 @@ export class BasicPlanet extends Planet {
     ])
   }
 
-  resetLevels() {
+  resetLevels(toDefault = false) {
     // c.log(`resetLevels`, this.name)
-    const targetLevel = this.level
+    const targetLevel = toDefault
+      ? this.homeworld
+        ? c.defaultHomeworldLevel
+        : Math.ceil(
+            Math.random() * 5 +
+              c.distance(this.location, [0, 0]) / 3,
+          )
+      : this.level
     const targetXp = this.xp
     this.level = 0
     this.xp = 0
@@ -545,7 +533,6 @@ export class BasicPlanet extends Planet {
       items: [],
       chassis: [],
       passives: [],
-      actives: [],
     }
     this.passives = []
     this.landingRadiusMultiplier = 1
@@ -568,8 +555,8 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   const sellMultiplier =
     Math.min(
       buyMultiplier *
-        c.factionVendorMultiplier *
-        c.factionVendorMultiplier,
+        c.guildVendorMultiplier *
+        c.guildVendorMultiplier,
       c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }

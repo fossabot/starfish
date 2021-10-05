@@ -1,44 +1,35 @@
-const species: { [key in SpeciesKey]: BaseSpeciesData } = {
+/*
+
+🐌 snail
+🐊 alligator
+🐸 frog
+🦛 hippo
+🐃 water buffalo
+
+*/
+
+const species: { [key in SpeciesId]: BaseSpeciesData } = {
   octopi: {
     icon: `🐙`,
-    factionId: `green`,
     id: `octopi`,
     singular: `octopus`,
-    description: `Known for their adaptibility, octopi have learned to make the most of any scap of resources they find in space.`,
+    description: `Known for their adaptibility, octopi have a natural advantage when it comes to cognition.`,
     passives: [
       {
-        id: `boostDropAmount`,
+        id: `boostXpGain`,
         data: { source: { speciesId: `octopi` } },
-        intensity: 0.3,
-      },
-    ],
-  },
-  squids: {
-    icon: `🦑`,
-    factionId: `green`,
-    id: `squids`,
-    singular: `squid`,
-    description: `Tentacles are useful for grappling enemies, stifling their mobility.`,
-    passives: [
-      {
-        id: `boostDamageToItemType`,
-        intensity: 0.3,
-        data: {
-          source: { speciesId: `squids` },
-          type: `engine`,
-        },
+        intensity: 0.1,
       },
     ],
   },
   lobsters: {
     icon: `🦞`,
-    factionId: `green`,
     id: `lobsters`,
     singular: `lobster`,
-    description: `The antennae on lobsters' ships are attuned to pick up the slightest variance in electromagnetic energy.`,
+    description: `Lobsters' speed is no issue when it comes to mining for materials.`,
     passives: [
       {
-        id: `boostScanRange`,
+        id: `boostMineSpeed`,
         data: { source: { speciesId: `lobsters` } },
         intensity: 0.3,
       },
@@ -46,7 +37,6 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
   },
   crabs: {
     icon: `🦀`,
-    factionId: `green`,
     id: `crabs`,
     singular: `crab`,
     description: `Unbuffeted by the pounding of tides, crabs can gain traction anywhere.`,
@@ -58,79 +48,73 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
       },
     ],
   },
-  seals: {
-    icon: `🦭`,
-    factionId: `blue`,
-    id: `seals`,
-    singular: `seal`,
-    description: `Nimble at manipulating anything from tools to toys.`,
-    passives: [
-      {
-        id: `boostRepairSpeed`,
-        data: { source: { speciesId: `seals` } },
-        intensity: 0.25,
-      },
-    ],
-  },
   'sea turtles': {
     icon: `🐢`,
-    factionId: `blue`,
     id: `sea turtles`,
     singular: `sea turtle`,
-    description: `Naturally armored, sea turtles' ships can take a bigger beating.`,
+    description: `Turtles may be slow, but they can keep going, and going, and going...`,
     passives: [
       {
-        id: `scaledDamageReduction`,
+        id: `reduceStaminaDrain`,
         data: { source: { speciesId: `sea turtles` } },
         intensity: 0.1,
       },
     ],
   },
-  dolphins: {
+  sharks: {
     icon: `🦈`,
-    factionId: `blue`,
-    id: `dolphins`,
-    singular: `dolphin`,
-    description: `By far the most intelligent creature in the cosmos.`,
+    id: `sharks`,
+    singular: `shark`,
+    description: `Sharks do some of their best work solo.`,
     passives: [
       {
-        id: `boostXpGain`,
+        id: `generalImprovementWhenAlone`,
+        data: { source: { speciesId: `sharks` } },
+        intensity: 0.2,
+      },
+    ],
+  },
+  dolphins: {
+    icon: `🐬`,
+    id: `dolphins`,
+    singular: `dolphin`,
+    description: `The chattiest of all undersea creatures.`,
+    passives: [
+      {
+        id: `boostBroadcastRange`,
         data: { source: { speciesId: `dolphins` } },
-        intensity: 0.1,
+        intensity: 0.35,
+      },
+    ],
+  },
+  snails: {
+    icon: `🐌`,
+    id: `snails`,
+    singular: `snail`,
+    description: `When you carry your home with you, you get good at odd jobs around the house.`,
+    passives: [
+      {
+        id: `boostRepairSpeed`,
+        data: { source: { speciesId: `dolphins` } },
+        intensity: 0.15,
       },
     ],
   },
   whales: {
     icon: `🐋`,
-    factionId: `blue`,
     id: `whales`,
     singular: `whale`,
-    description: `Whales support an ecosystem of smaller animals around them. Their ships, similarly, can support a broader ecosystem of items.`,
+    description: `Whales put their brawn to good use.`,
     passives: [
       {
-        id: `extraEquipmentSlots`,
+        id: `cargoSpace`,
         data: { source: { speciesId: `whales` } },
-        intensity: 1,
-      },
-    ],
-  },
-  tuna: {
-    icon: `🐟`,
-    factionId: `purple`,
-    id: `tuna`,
-    singular: `tuna`,
-    description: `Schooling characteristics make the tuna a naturally evasive species.`,
-    passives: [
-      {
-        id: `boostChassisAgility`,
-        data: { source: { speciesId: `tuna` } },
-        intensity: 0.1,
+        intensity: 30,
       },
     ],
   },
   angelfish: {
     icon: `🐠`,
-    factionId: `purple`,
     id: `angelfish`,
     singular: `angelfish`,
     description: `Just like their namesake, angelfish are natural-born fliers.`,
@@ -144,65 +128,59 @@ const species: { [key in SpeciesKey]: BaseSpeciesData } = {
   },
   blowfish: {
     icon: `🐡`,
-    factionId: `purple`,
     id: `blowfish`,
     singular: `blowfish`,
-    description: `The true size of a blowfish is forever unclear.`,
+    description: `Tired of pretending to be scary, the blowfish decided to learn their way around a weapons bay.`,
     passives: [
       {
-        id: `disguiseChassisType`,
-        data: { source: { speciesId: `blowfish` } },
-      },
-      {
-        id: `disguiseCrewMemberCount`,
+        id: `boostWeaponChargeSpeed`,
+        intensity: 0.1,
         data: { source: { speciesId: `blowfish` } },
       },
     ],
   },
   shrimp: {
     icon: `🦐`,
-    factionId: `purple`,
     id: `shrimp`,
     singular: `shrimp`,
     description: `For something so small, strength lies in numbers.`,
     passives: [
       {
-        id: `boostDamageWithNumberOfFactionMembersWithinDistance`,
-        intensity: 0.1,
+        id: `generalImprovementPerCrewMemberInSameRoom`,
+        intensity: 0.02,
         data: {
           source: { speciesId: `shrimp` },
-          distance: 0.3,
         },
       },
     ],
   },
   eagles: {
+    aiOnly: true,
     icon: `🦅`,
-    factionId: `red`,
     id: `eagles`,
     singular: `eagle`,
     description: ``,
     passives: [],
   },
   seagulls: {
+    aiOnly: true,
     icon: `🐦`,
-    factionId: `red`,
     id: `seagulls`,
     singular: `seagull`,
     description: ``,
     passives: [],
   },
   chickens: {
+    aiOnly: true,
     icon: `🐓`,
-    factionId: `red`,
     id: `chickens`,
     singular: `chicken`,
     description: ``,
     passives: [],
   },
   flamingos: {
+    aiOnly: true,
     icon: `🦩`,
-    factionId: `red`,
     id: `flamingos`,
     singular: `flamingo`,
     description: ``,

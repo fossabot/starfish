@@ -28,8 +28,22 @@ type RepairPriority =
 
 type MinePriorityType = CargoId | `closest`
 
-type CrewActiveId = `boost` | `quickFix` | `sightRange`
-type CrewPassiveId = `cargoSpace`
+type CrewPassiveId =
+  | `cargoSpace`
+  | `boostCockpitChargeSpeed`
+  | `boostThrust`
+  | `boostMineSpeed`
+  | `boostRepairSpeed`
+  | `boostWeaponChargeSpeed`
+  | `boostStaminaRegeneration`
+  | `reduceStaminaDrain`
+  | `boostXpGain`
+  | `generalImprovementWhenAlone`
+  | `generalImprovementPerCrewMemberInSameRoom`
+  | `boostDropAmounts`
+  | `boostBroadcastRange`
+  | `lessDamageOnEquipmentUse`
+  | `boostBrake`
 
 type CrewStatKey =
   | `totalContributedToCommonFund`
@@ -50,19 +64,18 @@ interface PassiveCrewUpgrade {
 interface BaseCrewMemberData {
   name: string
   id: string
+  speciesId?: SpeciesId
   lastActive?: number
   skills?: XPData[]
   location?: CrewLocation
   stamina?: number
   inventory?: Cargo[]
   credits?: number
-  actives?: BaseCrewActiveData[]
-  passives?: BaseCrewPassiveData[]
+  permanentPassives?: CrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic
   targetItemType?: ItemType
   minePriority?: MinePriorityType
-  attackFactions?: FactionKey[]
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
   stats?: CrewStatEntry[]
@@ -76,18 +89,56 @@ interface XPData {
   xp: number
 }
 
-interface BaseCrewActiveData {
-  displayName: string
-  id: CrewActiveId
-  basePrice: number
-  rarity: number
-}
-interface BaseCrewPassiveData {
-  displayName: string
-  description: string
+interface CrewPassiveData {
   id: CrewPassiveId
-  basePrice: number
-  level?: number
-  factor: number
-  rarity: number
+  intensity?: number
+  displayName?: string
+  description?: (data: CrewPassiveData) => string
+  buyable?: {
+    rarity: number
+    basePrice: number
+    baseIntensity: number
+    wholeNumbersOnly: boolean
+  }
+  data?: {
+    source?:
+      | {
+          planetName?: string
+          speciesId?: SpeciesId
+          chassisId?: ChassisId
+          item?: {
+            type: ItemType
+            id: ItemId
+          }
+        }
+      | `secondWind`
+      | `permanent`
+    type?: ItemType
+    distance?: number
+  }
 }
+
+interface BaseSpeciesData {
+  icon: string
+  id: SpeciesId
+  aiOnly?: true
+  singular: string
+  description: string
+  passives: CrewPassiveData[]
+}
+type SpeciesId =
+  | `octopi`
+  | `lobsters`
+  | `crabs`
+  | `sea turtles`
+  | `sharks`
+  | `dolphins`
+  | `snails`
+  | `whales`
+  | `angelfish`
+  | `blowfish`
+  | `shrimp`
+  | `eagles`
+  | `seagulls`
+  | `chickens`
+  | `flamingos`

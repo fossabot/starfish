@@ -175,13 +175,8 @@ export default function (
           `Non-admin attempted to access game:resetAllPlanets`,
         )
       c.log(`Admin resetting all planets`)
-      await db.planet.wipe()
-      while (game.planets.length) game.planets.pop()
-      game.humanShips.forEach((s) => {
-        while (s.seenPlanets.length) s.seenPlanets.pop()
-        s.toUpdate.seenPlanets = []
-      })
-      game.factions.forEach((f) => (f.homeworld = null))
+      while (game.planets.length)
+        await game.removePlanet(game.planets[0])
     },
   )
 
@@ -197,18 +192,26 @@ export default function (
     },
   )
 
+  socket.on(
+    `game:resetHomeworlds`,
+    async (id, password) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:resetHomeworlds`,
+        )
+      c.log(`Admin resetting homeworlds`)
+      game.resetHomeworlds()
+    },
+  )
+
   socket.on(`game:resetAllZones`, async (id, password) => {
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:resetAllZones`,
       )
     c.log(`Admin resetting all zones`)
-    await db.zone.wipe()
-    while (game.zones.length) game.zones.pop()
-    game.humanShips.forEach((s) => {
-      while (s.seenLandmarks.length) s.seenLandmarks.pop()
-      s.toUpdate.seenLandmarks = []
-    })
+    while (game.zones.length)
+      await game.removeZone(game.zones[0])
   })
 
   socket.on(`game:resetAllCaches`, async (id, password) => {
@@ -217,8 +220,8 @@ export default function (
         `Non-admin attempted to access game:resetAllCaches`,
       )
     c.log(`Admin resetting all caches`)
-    await db.cache.wipe()
-    while (game.caches.length) game.caches.pop()
+    while (game.caches.length)
+      await game.removeCache(game.caches[0])
   })
 
   socket.on(
@@ -229,9 +232,10 @@ export default function (
           `Non-admin attempted to access game:resetAllAttackRemnants`,
         )
       c.log(`Admin resetting all attack remnants`)
-      await db.attackRemnant.wipe()
       while (game.attackRemnants.length)
-        game.attackRemnants.pop()
+        await game.removeAttackRemnant(
+          game.attackRemnants[0],
+        )
     },
   )
 
@@ -258,7 +262,8 @@ export default function (
       )
     c.log(`Admin resetting all ships`)
     await db.ship.wipe()
-    while (game.ships.length) game.ships.pop()
+    while (game.ships.length)
+      await game.removeShip(game.ships[0])
   })
 
   socket.on(
@@ -274,8 +279,7 @@ export default function (
           .map((s) => ({
             name: s.name,
             id: s.id,
-            faction: { id: s.faction.id },
-            species: { id: s.species.id },
+            guildId: s.guildId,
             crewMemberCount: s.crewMembers.length,
             isTutorial: s.tutorial
               ? s.tutorial.ship?.crewMembers[0]?.name ||

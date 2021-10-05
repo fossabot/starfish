@@ -1,4 +1,5 @@
 declare function numberWithCommas(x: number): string | number;
+declare function speedNumber(numberInAu: number, noTag?: boolean): string;
 declare function printList(list: string[]): string;
 declare function degreesToArrow(angle: number): string;
 declare function degreesToArrowEmoji(angle: number): string;
@@ -15,6 +16,7 @@ declare function garble(string?: string, percent?: number): string;
 declare const _default: {
     maxNameLength: number;
     numberWithCommas: typeof numberWithCommas;
+    speedNumber: typeof speedNumber;
     printList: typeof printList;
     degreesToArrow: typeof degreesToArrow;
     degreesToArrowEmoji: typeof degreesToArrowEmoji;

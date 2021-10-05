@@ -12,6 +12,13 @@ const zoneSchemaFields: Record<keyof BaseZoneData, any> = {
   radius: { type: Number },
   color: { type: String },
   location: [{ type: Number, required: true }],
+  passives: [
+    {
+      id: String,
+      intensity: Number,
+      data: Schema.Types.Mixed,
+    },
+  ],
   effects: [
     {
       type: { type: String },

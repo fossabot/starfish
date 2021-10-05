@@ -309,7 +309,9 @@
       v-for="passive in dataToUse.passives"
       class="success marbotsmall"
     >
-      {{ c.basePassiveData[passive.id].toString(passive) }}
+      {{
+        c.baseShipPassiveData[passive.id].toString(passive)
+      }}
     </div>
 
     <hr v-if="dataToUse.description" />
@@ -364,7 +366,7 @@ export default Vue.extend({
     },
     scanPropertyString(): string | undefined {
       let s = ''
-      const p: ShipScanDataShape = (this.data as any)
+      const p: ShipScanDataShape = (this.dataToUse as any)
         .shipScanData
       if (!p) return
 

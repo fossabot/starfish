@@ -26,10 +26,9 @@ export class BrakeCommand implements Command {
       context.reply(
         `${
           context.nickname
-        } braked, slowing the ship by ${c.r2(
+        } braked, slowing the ship by ${c.speedNumber(
           res.data * -1,
-          3,
-        )}AU/hr.`,
+        )}.`,
       )
   }
 }

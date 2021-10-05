@@ -148,12 +148,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     buyableCargo(): any[] {
@@ -164,7 +164,7 @@ export default Vue.extend({
             cargo.id,
             this.ship.planet,
             1,
-            this.ship.faction.id,
+            this.ship.guildId,
           )
           const maxCanBuy = c.r2(
             Math.min(
@@ -200,7 +200,7 @@ export default Vue.extend({
               cargo.id,
               this.ship.planet,
               1,
-              this.ship.faction.id,
+              this.ship.guildId,
             )
             const heldAmount =
               this.crewMember?.inventory.find(
@@ -249,7 +249,7 @@ export default Vue.extend({
         this.crewMember.id,
         data.cargoData.id,
         amount,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
@@ -300,7 +300,7 @@ export default Vue.extend({
         this.crewMember.id,
         data.cargoData.id,
         amount,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (
           res: IOResponse<{
             amount: number

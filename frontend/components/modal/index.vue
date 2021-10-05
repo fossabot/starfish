@@ -1,5 +1,5 @@
 <template>
-  <div v-if="modal" class="modal flexcenter">
+  <div v-if="forceState || modal" class="modal flexcenter">
     <div
       class="bg pointer"
       @click="$store.commit('set', { modal: null })"
@@ -7,6 +7,10 @@
     <div class="modalbox">
       <ModalTaglineBannerPicker
         v-if="modal === 'headerBackgroundPicker'"
+      />
+
+      <ModalCrewSpeciesPicker
+        v-if="forceState === 'crewSpeciesPicker'"
       />
 
       <portal-target
@@ -32,7 +36,15 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState(['modal']),
+    ...mapState(['modal', 'crewMember']),
+    forceState(): undefined | string {
+      if (
+        this.crewMember &&
+        (!this.crewMember.speciesId ||
+          !c.species[this.crewMember.speciesId])
+      )
+        return 'crewSpeciesPicker'
+    },
   },
   watch: {},
   mounted() {

@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 export const armor: {
   [key in ArmorId]: BaseArmorData

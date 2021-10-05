@@ -54,7 +54,7 @@
       </div>
       <ul>
         <li>
-          Get into huge-scale battles with rival factions of
+          Get into huge-scale battles with rival guilds of
           real servers on Discord!
         </li>
         <li>

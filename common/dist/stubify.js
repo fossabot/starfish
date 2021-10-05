@@ -24,7 +24,8 @@ function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
     profiler.step(`apply getters`);
     let objectWithGetters;
     if (!Array.isArray(baseObject) &&
-        typeof baseObject === `object`)
+        typeof baseObject === `object` &&
+        !(baseObject instanceof String))
         objectWithGetters = applyGettersToObject(baseObject, keysToReferencize);
     else
         objectWithGetters = baseObject;

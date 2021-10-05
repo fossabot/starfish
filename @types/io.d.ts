@@ -16,6 +16,7 @@ interface IOServerEvents {
     id: string
     updates: Partial<ShipStub>
   }) => void
+  [`ship:reload`]: () => void
   [`ship:message`]: (
     id: string,
     message: string | RichLogContent,
@@ -90,6 +91,10 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:resetHomeworlds`]: (
+    adminId: string,
+    password: string,
+  ) => void
   [`game:resetAllZones`]: (
     adminId: string,
     password: string,
@@ -119,8 +124,7 @@ interface IOClientEvents {
         {
           name: string
           id: string
-          faction: { id: string }
-          species: { id: string }
+          guildId?: GuildId
           crewMemberCount: number
           isTutorial: string | false
         }[]
@@ -159,6 +163,12 @@ interface IOClientEvents {
   // user
   [`user:listen`]: (userId: string) => void
 
+  [`crew:setSpecies`]: (
+    shipId: string,
+    crewId: string,
+    speciesId: SpeciesId,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
   [`crew:toTutorial`]: (
     shipId: string,
     crewId: string,
@@ -301,6 +311,12 @@ interface IOClientEvents {
     crewId: string,
     itemType: ItemType,
     itemId: ItemId | ChassisId,
+    callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+  [`ship:joinGuild`]: (
+    shipId: string,
+    crewId: string,
+    guildId: GuildId,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`ship:swapChassis`]: (

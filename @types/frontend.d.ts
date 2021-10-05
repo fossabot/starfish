@@ -2,7 +2,7 @@ type FrontendPanelType =
   | `ship`
   | `scanShip`
   | `items`
-  | `factionRank`
+  | `guildRank`
   | `crewRank`
   | `visible`
   | `room`

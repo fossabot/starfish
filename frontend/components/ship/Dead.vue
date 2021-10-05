@@ -30,13 +30,13 @@
         </div>
       </div>
 
-      <button
+      <div
+        class="button big"
         v-if="isCaptain"
         @click="$store.dispatch('respawn')"
-        class="big"
       >
         Respawn
-      </button>
+      </div>
     </div>
   </Box>
 </template>

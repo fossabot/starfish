@@ -16,10 +16,10 @@ const shipSchemaFields: Record<
   id: { type: String, required: true },
   guildIcon: { type: String },
   guildName: { type: String },
+  guildId: { type: String },
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
-  species: { id: { type: String, required: true } },
   loadout: String,
   chassis: { id: { type: String, required: true } },
   items: [
@@ -40,10 +40,11 @@ const shipSchemaFields: Record<
       level: String,
     },
   ],
-  seenPlanets: [{ name: String }],
+  seenPlanets: [{ name: String, id: String }],
   seenLandmarks: [{ type: { type: String }, id: String }],
   tutorial: {
     step: Number,
+    baseLocation: [Number, Number],
   },
   tagline: String,
   availableTaglines: [{ type: String }],
@@ -75,16 +76,17 @@ const shipSchemaFields: Record<
           cooldownRemaining: Number,
         },
       ],
-      passives: [
+      speciesId: String,
+      permanentPassives: [
         {
           id: { required: true, type: String },
-          level: Number,
+          intensity: Number,
         },
       ],
       combatTactic: String,
       targetitemType: String,
       minePriority: String,
-      attackFactions: [String],
+      attackGuilds: [String],
       targetLocation: [Number, Number],
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
@@ -93,15 +95,16 @@ const shipSchemaFields: Record<
     },
   ],
   commonCredits: Number,
-  orders: {
-    verb: String,
-    target: {
-      name: String,
-      id: { type: String },
-      type: { type: String },
-    },
-    addendum: String,
-  },
+  orders:
+    {
+      verb: String,
+      target: {
+        name: String,
+        id: { type: String },
+        type: { type: String },
+      },
+      addendum: String,
+    } || false,
 
   // ---- ai
   ai: { type: Boolean, default: false, required: true },

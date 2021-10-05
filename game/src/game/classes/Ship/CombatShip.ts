@@ -3,12 +3,10 @@ import io from '../../../server/io'
 import { db } from '../../../db'
 
 import { Ship } from './Ship'
-import { Zone } from '../Zone'
 import type { Weapon } from '../Item/Weapon'
 import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
-import { AIShip } from './AIShip'
 import type { CrewMember } from '../CrewMember/CrewMember'
 
 export abstract class CombatShip extends Ship {
@@ -23,12 +21,16 @@ export abstract class CombatShip extends Ship {
   constructor(props: BaseShipData, game: Game) {
     super(props, game)
 
-    this.species.passives.forEach((p) =>
-      this.applyPassive(p),
-    )
-
     this.updateAttackRadius()
   }
+
+  // move(toLocation?: CoordinatePair) {
+  //   const previousLocation: CoordinatePair = [
+  //     ...this.location,
+  //   ]
+  //   super.move(toLocation)
+  //   // * this does nothing yet, just chilling
+  // }
 
   updateThingsThatCouldChangeOnItemChange() {
     super.updateThingsThatCouldChangeOnItemChange()
@@ -146,7 +148,10 @@ export abstract class CombatShip extends Ship {
     this.hp = this.maxHp
     this.dead = false
     this.move(
-      [...(this.faction.homeworld?.location || [0, 0])].map(
+      [
+        ...(this.game.getHomeworld(this.guildId)
+          ?.location || [0, 0]),
+      ].map(
         (pos) =>
           pos +
           c.randomBetween(
@@ -164,6 +169,7 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
+    if (this.game.tickCount < 10) return false
     // self
     if (this === otherShip) return false
     // not attackable
@@ -183,11 +189,10 @@ export abstract class CombatShip extends Ship {
       return false
     // dead
     if (otherShip.dead || this.dead) return false
-    // same faction
+    // same guild
     if (
-      otherShip.faction &&
-      this.faction &&
-      otherShip.faction.id === this.faction.id
+      otherShip.guildId &&
+      otherShip.guildId === this.guildId
     )
       return false
     // too far, or not in sight range
@@ -219,31 +224,36 @@ export abstract class CombatShip extends Ship {
         miss: true,
       }
 
-    weapon.use()
+    weapon.use(1, this.membersIn(`weapons`))
 
     const totalMunitionsSkill = this.cumulativeSkillIn(
       `weapons`,
       `munitions`,
     )
     const range = c.distance(this.location, target.location)
-    const rangeAsPercent = range / weapon.effectiveRange
-    const minHitChance = 0.95
+    const distanceAsPercent = range / weapon.effectiveRange // 1 = far away, 0 = close
+    const minHitChance = 0.08
+    // 1.0 agility is "normal", higher is better
     const enemyAgility =
       target.chassis.agility +
       (target.passives.find(
         (p) => p.id === `boostChassisAgility`,
       )?.intensity || 0)
+
     const hitRoll = Math.random()
+    const toHit =
+      c.lerp(minHitChance, 1, distanceAsPercent) *
+      enemyAgility *
+      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
 
-    let miss =
-      hitRoll * enemyAgility <
-      Math.min(rangeAsPercent, minHitChance)
+    let miss = hitRoll < toHit
 
-    const didCrit =
-      Math.random() <=
-      (weapon.critChance === undefined
-        ? this.game.settings.baseCritChance
-        : weapon.critChance)
+    const didCrit = miss
+      ? false
+      : Math.random() <=
+        (weapon.critChance === undefined
+          ? this.game.settings.baseCritChance
+          : weapon.critChance)
 
     let damage = miss
       ? 0
@@ -254,43 +264,41 @@ export abstract class CombatShip extends Ship {
 
     if (!miss) {
       // ----- apply passives -----
-      const factionMembersWithinDistancePassives =
+      const guildMembersWithinDistancePassives =
         this.passives.filter(
           (p) =>
             p.id ===
-            `boostDamageWithNumberOfFactionMembersWithinDistance`,
+            `boostDamageWithNumberOfGuildMembersWithinDistance`,
         ) || []
 
-      if (factionMembersWithinDistancePassives.length) {
+      if (guildMembersWithinDistancePassives.length) {
         let damageMultiplier = 1
 
-        factionMembersWithinDistancePassives.forEach(
-          (p) => {
-            let factionMembersInRange = 0
-            const range = p.data?.distance || 0
+        guildMembersWithinDistancePassives.forEach((p) => {
+          let guildMembersInRange = 0
+          const range = p.data?.distance || 0
 
-            this.visible.ships.forEach((s: any) => {
-              if (
-                s?.faction?.id === this.faction.id &&
-                c.distance(s.location, this.location) <=
-                  range
-              )
-                factionMembersInRange++
-            })
-
-            c.log(
-              `damage boosted by`,
-              (p.intensity || 0) * factionMembersInRange,
-              `because there are`,
-              factionMembersInRange,
-              `faction members within`,
-              range,
+          this.visible.ships.forEach((s: any) => {
+            if (
+              s?.guildId &&
+              s?.guildId === this.guildId &&
+              c.distance(s.location, this.location) <= range
             )
+              guildMembersInRange++
+          })
 
-            damageMultiplier +=
-              (p.intensity || 0) * factionMembersInRange
-          },
-        )
+          c.log(
+            `damage boosted by`,
+            (p.intensity || 0) * guildMembersInRange,
+            `because there are`,
+            guildMembersInRange,
+            `guild members within`,
+            range,
+          )
+
+          damageMultiplier +=
+            (p.intensity || 0) * guildMembersInRange
+        })
 
         damage *= damageMultiplier
       }
@@ -306,18 +314,19 @@ export abstract class CombatShip extends Ship {
         let damageMultiplier = 1
 
         soloPassives.forEach((p) => {
-          let factionMembersInRange = 0
+          let guildMembersInRange = 0
           const range = p.data?.distance || 0
 
           this.visible.ships.forEach((s: any) => {
             if (
-              s?.faction?.id === this.faction.id &&
+              s?.guildId &&
+              s?.guildId === this.guildId &&
               c.distance(s.location, this.location) <= range
             )
-              factionMembersInRange++
+              guildMembersInRange++
           })
 
-          if (!factionMembersInRange)
+          if (!guildMembersInRange)
             damageMultiplier += p.intensity || 0
         })
 
@@ -325,7 +334,7 @@ export abstract class CombatShip extends Ship {
           c.log(
             `damage multiplied by`,
             damageMultiplier,
-            `because there are no faction members within`,
+            `because there are no guild members within`,
             range,
           )
         damage *= damageMultiplier
@@ -349,10 +358,7 @@ export abstract class CombatShip extends Ship {
 
     c.log(
       `gray`,
-      `need to beat ${Math.min(
-        rangeAsPercent,
-        minHitChance,
-      )}, rolled ${hitRoll} for a ${
+      `need to beat ${toHit}, rolled ${hitRoll} for a ${
         miss
           ? `miss`
           : `${
@@ -392,7 +398,9 @@ export abstract class CombatShip extends Ship {
           `Missed`,
           {
             text: target.name,
-            color: target.faction.color,
+            color:
+              target.guildId &&
+              c.guilds[target.guildId].color,
             tooltipData: target.toReference() as any,
           },
           `with`,
@@ -414,7 +422,9 @@ export abstract class CombatShip extends Ship {
           `Attacked`,
           {
             text: target.name,
-            color: target.faction.color,
+            color:
+              target.guildId &&
+              c.guilds[target.guildId].color,
             tooltipData: target.toReference() as any,
           },
           `with`,
@@ -588,7 +598,9 @@ export abstract class CombatShip extends Ship {
                 `You have broken through`,
                 {
                   text: this.name,
-                  color: this.faction.color,
+                  color:
+                    this.guildId &&
+                    c.guilds[this.guildId].color,
                   tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,
@@ -714,13 +726,15 @@ export abstract class CombatShip extends Ship {
             ],
             `high`,
           )
-          if (`logEntry` in attacker)
+          if (`logEntry` in attacker && !didDie)
             attacker.logEntry(
               [
                 `You have disabled`,
                 {
                   text: this.name,
-                  color: this.faction.color,
+                  color:
+                    this.guildId &&
+                    c.guilds[this.guildId].color,
                   tooltipData: this.toReference() as any,
                 },
                 `&nospace's`,
@@ -792,7 +806,9 @@ export abstract class CombatShip extends Ship {
               } from`,
           {
             text: attacker.name,
-            color: attacker.faction.color,
+            color:
+              attacker.guildId &&
+              c.guilds[attacker.guildId].color,
             tooltipData: attacker?.toReference() as any,
           },
           `&nospace's`,
@@ -920,7 +936,6 @@ export abstract class CombatShip extends Ship {
 
     const amountToRepair =
       (baseRepairAmount * repairBoost) /
-      (c.deltaTime / c.tickInterval) /
       itemsToRepair.length
 
     // c.log(

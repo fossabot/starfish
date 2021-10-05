@@ -1,10 +1,10 @@
 interface BaseShipData {
   name: string
   id?: string
+  guildId?: GuildId
   location?: CoordinatePair
   velocity?: CoordinatePair
-  species: { id: SpeciesKey }
-  seenPlanets?: { name: string }[]
+  seenPlanets?: { id: string; name?: string }[]
   seenLandmarks?: { id: string; type: `zone` }[]
   loadout?: LoadoutId
   chassis?: { id: ChassisId }
@@ -59,6 +59,7 @@ type ShipPassiveEffectId =
   | `boostBroadcastRange`
   | `boostRepairSpeed`
   | `boostMineSpeed`
+  | `boostMinePayouts`
   | `boostBrake`
   // | `boostThrust`
   | `boostCockpitChargeSpeed`
@@ -74,7 +75,7 @@ type ShipPassiveEffectId =
   | `alwaysSeeTrailColors`
   | `boostDamage`
   | `boostDamageWhenNoAlliesWithinDistance`
-  | `boostDamageWithNumberOfFactionMembersWithinDistance`
+  | `boostDamageWithNumberOfGuildMembersWithinDistance`
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
   | `autoRepair`
@@ -84,8 +85,9 @@ interface ShipPassiveEffect {
   data?: {
     source?: {
       planetName?: string
-      speciesId?: SpeciesKey
+      speciesId?: SpeciesId
       chassisId?: ChassisId
+      guildId?: GuildId
       item?: {
         type: ItemType
         id: ItemId

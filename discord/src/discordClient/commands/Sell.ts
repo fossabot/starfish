@@ -59,7 +59,7 @@ export class SellCommand implements Command {
           i.id,
           planet,
           1,
-          context.ship!.faction.id,
+          context.ship!.guildId,
         )
 
         return {
@@ -104,7 +104,7 @@ export class SellCommand implements Command {
           context.crewMember!.id,
           inv.id,
           inv.amount,
-          planet.name,
+          planet.id,
         )
         if (`data` in res)
           await context.reply(

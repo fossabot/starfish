@@ -9,11 +9,9 @@ import type { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Planet } from '../Planet/Planet'
-import type { BasicPlanet } from '../Planet/BasicPlanet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
 import type { Zone } from '../Zone'
-import type { AIShip } from './AIShip'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './addins/Tutorial'
@@ -33,6 +31,24 @@ interface HumanVisibleShape {
 export class HumanShip extends CombatShip {
   static maxLogLength = 40
   static movementIsFree = false // true
+  static secondWindHpCutoff = 2
+  static secondWindPassives: CrewPassiveData[] = [
+    {
+      id: `reduceStaminaDrain`,
+      intensity: 0.4,
+      data: { source: `secondWind` },
+    },
+    {
+      id: `boostBroadcastRange`,
+      intensity: 0.3,
+      data: { source: `secondWind` },
+    },
+    {
+      id: `generalImprovementPerCrewMemberInSameRoom`,
+      intensity: 0.05,
+      data: { source: `secondWind` },
+    },
+  ]
 
   readonly id: string
   guildName: string = `guild`
@@ -44,6 +60,7 @@ export class HumanShip extends CombatShip {
   captain: string | null = null
   rooms: { [key in CrewLocation]?: BaseRoomData } = {}
   maxScanProperties: ShipScanDataShape | null = null
+  secondWind: boolean = false
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -66,28 +83,13 @@ export class HumanShip extends CombatShip {
   shownPanels?: any[]
 
   commonCredits: number = 0
-  orders: ShipOrders | null = null
+  orders: ShipOrders | false = false
 
   tutorial: Tutorial | undefined = undefined
 
   constructor(data: BaseHumanShipData, game: Game) {
     super(data, game)
     this.id = data.id
-
-    // this.availableTaglines = [] // `Tester`, `Very Shallow`
-    // this.availableHeaderBackgrounds = [
-    //   `Default`,
-    //   // `Flat 1`,
-    //   // `Flat 2`,
-    //   // `Gradient 1`,
-    //   // `Gradient 2`,
-    //   // `Gradient 3`,
-    //   // `Constellation 1`,
-    //   // `Vintage 1`,
-    // ]
-    // this.availableHeaderBackgrounds.push(
-    //   c.capitalize(this.faction.id) + ` Faction 1`,
-    // )
 
     if (data.guildName) this.guildName = data.guildName
     if (data.guildIcon) this.guildIcon = data.guildIcon
@@ -101,20 +103,19 @@ export class HumanShip extends CombatShip {
     this.toUpdate.direction = this.direction
 
     this.captain = data.captain || null
-    this.orders = data.orders || null
+    this.orders = data.orders || false
     this.log = data.log || []
 
     if (data.tutorial && data.tutorial.step !== undefined)
       this.tutorial = new Tutorial(data.tutorial, this)
 
     // human ships always know where their homeworld is
+    const homeworld = this.game.getHomeworld(this.guildId)
     if (
-      this.faction.homeworld &&
-      !this.seenPlanets.find(
-        (p) => p === this.faction.homeworld,
-      )
+      homeworld &&
+      !this.seenPlanets.find((p) => p === homeworld)
     )
-      this.discoverPlanet(this.faction.homeworld)
+      this.discoverPlanet(homeworld)
 
     this.recalculateShownPanels()
 
@@ -139,7 +140,9 @@ export class HumanShip extends CombatShip {
               `Your crew boards the ship`,
               {
                 text: this.name,
-                color: this.faction.color,
+                color: this.guildId
+                  ? c.guilds[this.guildId].color
+                  : undefined,
               },
               `for the first time, and sets out towards the stars.`,
             ],
@@ -152,7 +155,9 @@ export class HumanShip extends CombatShip {
     this.updateVisible()
     this.recalculateMass()
 
-    if (!this.tutorial) this.updatePlanet(true)
+    this.updatePlanet(true)
+    if (this.tutorial)
+      setTimeout(() => this.updatePlanet(true), 1500)
 
     if (!this.items.length) {
       c.log(
@@ -192,20 +197,18 @@ export class HumanShip extends CombatShip {
     this.move()
 
     // ----- planet effects -----
-    if (this.planet) {
-      this.addStat(`planetTime`, 1)
-    }
+    if (this.planet) this.planet.tickEffectsOnShip(this)
 
     profiler.step(`update visible`)
     // ----- scan -----
     const previousVisible = { ...this.visible }
     this.updateVisible()
-    this.generateVisiblePayload(previousVisible)
     this.takeActionOnVisibleChange(
       previousVisible,
       this.visible,
     )
     this.scanners.forEach((s) => s.use())
+    this.generateVisiblePayload(previousVisible)
 
     profiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
@@ -248,6 +251,44 @@ export class HumanShip extends CombatShip {
       (z) => !this.seenLandmarks.includes(z),
     )
     newLandmarks.forEach((p) => this.discoverLandmark(p))
+
+    // ----- second wind -----
+    if (
+      this.secondWind &&
+      this._hp > HumanShip.secondWindHpCutoff
+    ) {
+      this.secondWind = false
+      this.crewMembers.forEach((cm) =>
+        HumanShip.secondWindPassives.forEach((p) =>
+          cm.removePassive(p),
+        ),
+      )
+      this.logEntry(
+        `The danger has lessened, and the crew's second wind wears off.`,
+        `low`,
+      )
+    } else if (
+      !this.secondWind &&
+      this._hp <= HumanShip.secondWindHpCutoff
+    ) {
+      this.secondWind = true
+      this.crewMembers.forEach((cm) =>
+        HumanShip.secondWindPassives.forEach((p) =>
+          cm.applyPassive(p),
+        ),
+      )
+      this.logEntry(
+        [
+          `${this.name} has dropped below`,
+          {
+            text: `${HumanShip.secondWindHpCutoff} HP`,
+            color: `var(--warning)`,
+          },
+          `&nospace! The crew has gained a second wind!`,
+        ],
+        `high`,
+      )
+    }
 
     profiler.step(`get caches`)
     // ----- get nearby caches -----
@@ -315,6 +356,8 @@ export class HumanShip extends CombatShip {
       this.log.shift()
 
     this.toUpdate.log = this.log
+
+    if (this.tutorial) return
 
     if (this.logAlertLevel === `off`) return
     const levelsToAlert = [this.logAlertLevel]
@@ -438,7 +481,11 @@ export class HumanShip extends CombatShip {
         xpBoostMultiplier,
     )
 
+    const thrustBoostPassiveMultiplier =
+      thruster.getPassiveIntensity(`boostThrust`) + 1
+
     charge *= thruster.cockpitCharge
+    charge *= thrustBoostPassiveMultiplier
 
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
@@ -806,7 +853,9 @@ export class HumanShip extends CombatShip {
               `the ship`,
               {
                 text: fullShip.name,
-                color: fullShip.faction?.color,
+                color: fullShip.guildId
+                  ? c.guilds[fullShip.guildId].color
+                  : undefined,
                 tooltipData: fullShip.toReference() as any,
               },
             ]
@@ -828,17 +877,16 @@ export class HumanShip extends CombatShip {
           thruster.name,
           `thrusted towards`,
           ...targetData,
-          `at ${c.r2(
+          `at ${c.speedNumber(
             c.vectorToMagnitude(thrustVector) * 60 * 60,
-            3,
-          )} AU/hr.`,
+          )}.`,
         ],
         `low`,
       )
     }
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge))
+      this.engines.forEach((e) => e.use(charge, [thruster]))
 
     return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
@@ -865,7 +913,9 @@ export class HumanShip extends CombatShip {
 
     // apply passive
     let passiveBrakeMultiplier =
-      1 + this.getPassiveIntensity(`boostBrake`)
+      1 +
+      this.getPassiveIntensity(`boostBrake`) +
+      thruster.getPassiveIntensity(`boostBrake`)
     charge *= passiveBrakeMultiplier
 
     const memberPilotingSkill =
@@ -919,17 +969,17 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `braked, slowing the ship by ${c.r2(
+          `braked, slowing the ship by ${c.speedNumber(
             (this.speed - previousSpeed) * 60 * 60 * -1,
-          )}AU/hr.`,
+          )}.`,
         ],
         `low`,
       )
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge))
+      this.engines.forEach((e) => e.use(charge, [thruster]))
 
-    return (this.speed - previousSpeed) * 60 * 60
+    return (this.speed - previousSpeed) * 60 * 60 * -1
   }
 
   // ----- move -----
@@ -943,6 +993,10 @@ export class HumanShip extends CombatShip {
     if (toLocation) {
       this.updateVisible()
       this.updatePlanet()
+      this.addPreviousLocation(
+        startingLocation,
+        this.location,
+      )
       this.game.chunkManager.addOrUpdate(
         this,
         startingLocation,
@@ -1071,12 +1125,7 @@ export class HumanShip extends CombatShip {
       startingLocation,
     )
     // - space junk -
-    if (
-      c.lottery(
-        distanceTraveled * (c.deltaTime / c.tickInterval),
-        2,
-      )
-    ) {
+    if (c.lottery(distanceTraveled, 2)) {
       // apply "amount boost" passive
       const amountBoostPassive =
         this.getPassiveIntensity(`boostDropAmount`)
@@ -1118,10 +1167,7 @@ export class HumanShip extends CombatShip {
     if (
       !this.planet &&
       this.attackable &&
-      c.lottery(
-        distanceTraveled * (c.deltaTime / c.tickInterval),
-        5,
-      )
+      c.lottery(distanceTraveled, 5)
     ) {
       if (
         Math.random() > 0.1 &&
@@ -1244,10 +1290,17 @@ export class HumanShip extends CombatShip {
 
   async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
-    this.planet =
-      this.seenPlanets.find((p) =>
-        this.isAt(p.location, p.landingRadiusMultiplier),
-      ) || false
+    if (
+      !this.planet ||
+      !this.isAt(
+        this.planet.location,
+        this.planet.landingRadiusMultiplier,
+      )
+    )
+      this.planet =
+        this.seenPlanets.find((p) =>
+          this.isAt(p.location, p.landingRadiusMultiplier),
+        ) || false
 
     if (previousPlanet == this.planet) return
 
@@ -1255,12 +1308,20 @@ export class HumanShip extends CombatShip {
       ? this.planet.stubify()
       : false
 
+    // c.log(
+    //   this.id,
+    //   Boolean(this.planet),
+    //   this.seenPlanets.length,
+    //   this.visible.planets.length,
+    // )
+
     if (this.planet) {
       // * landed!
-      c.log(
-        `gray`,
-        `${this.name} landed at ${this.planet.name}`,
-      )
+      if (!silent)
+        c.log(
+          `gray`,
+          `${this.name} landed at ${this.planet.name}`,
+        )
 
       this.hardStop()
       this.planet.rooms.forEach((r) => this.addRoom(r))
@@ -1312,7 +1373,9 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.faction.color,
+              color: this.guildId
+                ? c.guilds[this.guildId].color
+                : undefined,
               tooltipData: this.toReference() as any,
             },
             `landed on`,
@@ -1340,7 +1403,9 @@ export class HumanShip extends CombatShip {
           s.logEntry([
             {
               text: this.name,
-              color: this.faction.color,
+              color: this.guildId
+                ? c.guilds[this.guildId].color
+                : undefined,
               tooltipData: this.toReference() as any,
             },
             `landed on`,
@@ -1445,6 +1510,12 @@ export class HumanShip extends CombatShip {
   }
 
   updateBroadcastRadius() {
+    if (this.tutorial) {
+      this.radii.broadcast = 0
+      this.toUpdate.radii = this.radii
+
+      return
+    }
     const passiveEffect =
       this.passives
         .filter((p) => p.id === `boostBroadcastRange`)
@@ -1529,7 +1600,12 @@ export class HumanShip extends CombatShip {
       message.replace(/\n/g, ` `),
     ).result
 
-    let range = this.radii.broadcast
+    let range =
+      this.radii.broadcast *
+      (crewMember.getPassiveIntensity(
+        `boostBroadcastRange`,
+      ) +
+        1)
 
     const avgRepair =
       this.communicators.reduce(
@@ -1545,6 +1621,17 @@ export class HumanShip extends CombatShip {
         this.game.settings.baseXpGain * 100,
       )
 
+      const antiGarble = this.communicators.reduce(
+        (total, curr) =>
+          curr.antiGarble * curr.repair + total,
+        0,
+      )
+      const crewSkillAntiGarble =
+        (crewMember.skills.find(
+          (s) => s.skill === `linguistics`,
+        )?.level || 0) / 100
+
+      // todo use chunks
       for (let otherShip of this.game.ships) {
         if (otherShip === this) continue
         if (otherShip.tutorial) continue
@@ -1560,15 +1647,7 @@ export class HumanShip extends CombatShip {
           this.location,
           otherShip.location,
         )
-        const antiGarble = this.communicators.reduce(
-          (total, curr) =>
-            curr.antiGarble * curr.repair + total,
-          0,
-        )
-        const crewSkillAntiGarble =
-          (crewMember.skills.find(
-            (s) => s.skill === `linguistics`,
-          )?.level || 0) / 100
+
         const garbleAmount =
           distance /
           (range + antiGarble + crewSkillAntiGarble)
@@ -1610,7 +1689,7 @@ export class HumanShip extends CombatShip {
 
     this.communicators.forEach((comm) => {
       if (comm.hp > 0) {
-        comm.use()
+        comm.use(1, [crewMember])
         this.updateBroadcastRadius()
       }
     })
@@ -1628,9 +1707,7 @@ export class HumanShip extends CombatShip {
       this.location,
       from.location,
     )
-    const prefix = `**${
-      `species` in from ? from.species.icon : `🪐`
-    }${from.name}** says: *(${c.r2(
+    const prefix = `**${from.name}** says: *(${c.r2(
       distance,
       2,
     )}AU away, ${c.r2(
@@ -1727,7 +1804,6 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
-    // c.log(data, this.id)
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
@@ -1767,10 +1843,12 @@ export class HumanShip extends CombatShip {
       )
         this.addTagline(`⚡Admin⚡`, `being an admin`)
     }
-    // c.log(
-    //   `gray`,
-    //   `Added crew member ${cm.name} to ${this.name}`,
-    // )
+
+    if (!setupAdd)
+      c.log(
+        `gray`,
+        `Added crew member ${cm.name} to ${this.name}`,
+      )
 
     if (this.crewMembers.length >= 5)
       this.addTagline(`Guppy`, `having 5 crew members`)
@@ -1828,6 +1906,8 @@ export class HumanShip extends CombatShip {
     }
 
     this.crewMembers.splice(index, 1)
+    io.to(`ship:${this.id}`).emit(`ship:reload`)
+
     this.logEntry(
       `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
       `critical`,
@@ -1854,23 +1934,30 @@ export class HumanShip extends CombatShip {
 
   distributeCargoAmongCrew(cargo: CacheContents[]) {
     const leftovers: CacheContents[] = []
+
     cargo.forEach((contents) => {
       let toDistribute = contents.amount
       const canHoldMore = [...this.crewMembers]
+
       while (canHoldMore.length && toDistribute) {
         const amountForEach =
           toDistribute / canHoldMore.length
         toDistribute = canHoldMore.reduce(
           (total, cm, index) => {
+            const amountToGive =
+              amountForEach *
+              (cm.getPassiveIntensity(`boostDropAmounts`) +
+                1)
+
             if (contents.id === `credits`) {
               cm.credits = Math.floor(
-                cm.credits + amountForEach,
+                cm.credits + amountToGive,
               )
               cm.toUpdate.credits = cm.credits
             } else {
               const leftOver = cm.addCargo(
                 contents.id,
-                amountForEach,
+                amountToGive,
               )
               if (leftOver) {
                 canHoldMore.splice(index, 1)
@@ -1883,6 +1970,7 @@ export class HumanShip extends CombatShip {
           0,
         )
       }
+
       if (toDistribute > 1) {
         const existing = leftovers.find(
           (l) => l.id === contents.id,
@@ -1895,6 +1983,7 @@ export class HumanShip extends CombatShip {
           })
       }
     })
+
     if (leftovers.length) {
       setTimeout(
         () =>
@@ -1911,6 +2000,7 @@ export class HumanShip extends CombatShip {
           ]),
         500,
       )
+
       this.game.addCache({
         location: [...this.location],
         contents: leftovers,
@@ -1965,11 +2055,11 @@ export class HumanShip extends CombatShip {
         ? this.maxScanProperties || c.baseShipScanProperties
         : c.baseShipScanProperties
 
-    // same faction can see a few more properties
-    if (ship.faction === this.faction)
+    // same guild can see a few more properties
+    if (ship.guildId && ship.guildId === this.guildId)
       scanPropertiesToUse = {
         ...scanPropertiesToUse,
-        ...c.sameFactionShipScanProperties,
+        ...c.sameGuildShipScanProperties,
       }
 
     const partialShip: any = {} // sorry to the typescript gods for this one
@@ -1979,7 +2069,7 @@ export class HumanShip extends CombatShip {
         true | Array<string>,
       ][]
     ).forEach(([key, value]) => {
-      if (!ship[key as keyof Ship]) return
+      if (ship[key as keyof Ship] === undefined) return
       if (
         key === `crewMembers` &&
         ship.passives.find(
@@ -1994,10 +2084,29 @@ export class HumanShip extends CombatShip {
         )
       )
         return
-      if (value === true)
-        partialShip[key] = c.stubify(
-          ship[key as keyof Ship],
+      if (key === `items` && Array.isArray(value)) {
+        partialShip.items = ship.items.map((i) => {
+          const partialItem = {}
+          for (let prop of value) {
+            partialItem[prop] = i[prop]
+          }
+          return partialItem
+        })
+        return
+      }
+      if (key === `rooms`) {
+        partialShip.rooms = Object.keys(
+          (ship as HumanShip).rooms || {},
         )
+        return
+      }
+      if (value === true) {
+        partialShip[key] =
+          typeof ship[key as keyof Ship] === `object`
+            ? c.stubify(ship[key as keyof Ship])
+            : ship[key as keyof Ship]
+        return
+      }
       if (Array.isArray(value)) {
         if (Array.isArray(ship[key as keyof Ship])) {
           partialShip[key] = (
@@ -2462,8 +2571,8 @@ export class HumanShip extends CombatShip {
       })
   }
 
-  get factionRankings() {
-    return this.game.factionRankings
+  get guildRankings() {
+    return this.game.guildRankings
   }
 
   get gameSettings() {

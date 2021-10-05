@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 // todo a scanner that can only see and not scan
 
@@ -24,7 +24,6 @@ export const scanners: {
         `id`,
         `displayName`,
         `description`,
-        `basePrice`,
         `slots`,
       ],
     },
@@ -48,7 +47,6 @@ export const scanners: {
         `id`,
         `displayName`,
         `description`,
-        `basePrice`,
         `slots`,
       ],
     },
@@ -72,7 +70,6 @@ export const scanners: {
         `id`,
         `displayName`,
         `description`,
-        `basePrice`,
         `slots`,
       ],
     },
@@ -85,7 +82,7 @@ export const scanners: {
     displayName: `HP Scan Module`,
     description: `Specifically calibrated to determine the exact remaining HP of enemy craft. Has little range on its own, but works well when it can take advantage of another equipped scanner's range.`,
     mass: 1200,
-    basePrice: 16 * game.itemPriceMultiplier,
+    basePrice: 12 * game.itemPriceMultiplier,
     rarity: 5,
     sightRange: 0.1,
     shipScanRange: 0.1,
@@ -155,7 +152,7 @@ export const scanners: {
         `displayName`,
         `description`,
       ],
-      chassis: [`id`, `displayName`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
   wide2: {
@@ -177,7 +174,7 @@ export const scanners: {
         `displayName`,
         `description`,
       ],
-      chassis: [`id`, `displayName`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
   wide3: {
@@ -199,7 +196,7 @@ export const scanners: {
         `displayName`,
         `description`,
       ],
-      chassis: [`id`, `displayName`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
 
@@ -221,6 +218,9 @@ export const scanners: {
       ...game.baseShipScanProperties,
       _hp: true,
       _maxHp: true,
+      mass: true,
+      speed: true,
+      direction: true,
       items: [
         `repair`,
         `maxHp`,
@@ -235,9 +235,9 @@ export const scanners: {
         `shipScanRange`,
       ],
       rooms: true,
-      attackable: true,
       targetShip: true,
       radii: [`sight`, `scan`, `attack`, `broadcast`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
   shipscanner2: {
@@ -257,6 +257,9 @@ export const scanners: {
       ...game.baseShipScanProperties,
       _hp: true,
       _maxHp: true,
+      mass: true,
+      speed: true,
+      direction: true,
       items: [
         `repair`,
         `maxHp`,
@@ -271,9 +274,9 @@ export const scanners: {
         `shipScanRange`,
       ],
       rooms: true,
-      attackable: true,
       targetShip: true,
       radii: [`sight`, `scan`, `attack`, `broadcast`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
   shipscanner3: {
@@ -293,6 +296,9 @@ export const scanners: {
       ...game.baseShipScanProperties,
       _hp: true,
       _maxHp: true,
+      mass: true,
+      speed: true,
+      direction: true,
       items: [
         `repair`,
         `maxHp`,
@@ -307,9 +313,9 @@ export const scanners: {
         `shipScanRange`,
       ],
       rooms: true,
-      attackable: true,
       targetShip: true,
       radii: [`sight`, `scan`, `attack`, `broadcast`],
+      chassis: [`id`, `displayName`, `slots`],
     },
   },
 
@@ -333,7 +339,7 @@ export const scanners: {
         `displayName`,
         `description`,
       ],
-      chassis: [`id`, `displayName`],
+      chassis: [`id`, `displayName`, `slots`],
     },
     passives: [
       { id: `boostDropAmount`, intensity: 0.15 },

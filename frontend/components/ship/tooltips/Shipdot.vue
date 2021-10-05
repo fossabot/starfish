@@ -63,12 +63,15 @@
       >
         <div>
           {{
-            c.r2(dataToUse && dataToUse.speed * 60 * 60, 4)
+            c.speedNumber(
+              (dataToUse && dataToUse.speed * 60 * 60) || 0,
+            )
           }}
-          AU/hr
-          <br />
-          at
-          {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
+          <template v-if="dataToUse.direction">
+            <br />
+            at
+            {{ c.r2(dataToUse && dataToUse.direction, 2) }}°
+          </template>
         </div>
         <svg
           :style="{
@@ -134,7 +137,7 @@
         class="flexbetween"
         v-tooltip="{
           type: 'chassis',
-          data: dataToUse.chassis,
+          ...dataToUse.chassis,
         }"
       >
         <div>Chassis</div>
@@ -143,7 +146,52 @@
 
       <div v-if="dataToUse.level" class="flexbetween">
         <div>Level</div>
-        <div>{{ Math.round(dataToUse.level) }}</div>
+        <div>
+          {{ Math.round(dataToUse.level) }}
+        </div>
+      </div>
+
+      <div
+        v-if="!isSelf && dataToUse.targetShip"
+        class="flexbetween"
+      >
+        <div>Targeting</div>
+        <div class="marleft textright">
+          {{ dataToUse.targetShip.name }}
+        </div>
+      </div>
+
+      <div
+        v-if="!isSelf && dataToUse.rooms"
+        class="flexbetween"
+      >
+        <div>Rooms</div>
+        <div class="marleft textright">
+          {{
+            c.printList(
+              dataToUse.rooms.map((r) => c.capitalize(r)),
+            )
+          }}
+        </div>
+      </div>
+
+      <div
+        v-if="!isSelf && dataToUse.radii"
+        class="flexbetween"
+      >
+        <div>Radii</div>
+        <div class="marleft textright">
+          <div
+            v-for="r in Object.keys(dataToUse.radii).map(
+              (r) =>
+                `${c.capitalize(r)}: ${c.r2(
+                  dataToUse.radii[r],
+                )}AU`,
+            )"
+          >
+            {{ r }}
+          </div>
+        </div>
       </div>
 
       <div
@@ -198,7 +246,8 @@
             dataToUse.crewMembers.find(
               (cm) => cm.id === dataToUse.captain,
             )
-              ? dataToUse.crewMembers.find(
+              ? '👑' +
+                dataToUse.crewMembers.find(
                   (cm) => cm.id === dataToUse.captain,
                 ).name
               : 'No Captain'
@@ -263,6 +312,9 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship']),
+    isSelf() {
+      return this.ship.id === this.data.id
+    },
     dataToUse() {
       return (
         this.ship?.visible?.ships.find(
@@ -287,6 +339,7 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .shipdataview {
+  max-width: 100%;
   margin: calc(-1 * var(--tooltip-pad-tb))
     calc(-1 * var(--tooltip-pad-lr));
 }

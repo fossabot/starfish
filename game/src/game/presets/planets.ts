@@ -139,52 +139,52 @@ export function generateMiningPlanet(
 
 export function generateBasicPlanet(
   game: Game,
-  homeworldFactionKey?: FactionKey,
+  homeworldGuildKey?: GuildId,
 ): BaseBasicPlanetData | false {
   const planetType: PlanetType = `basic`
   const name = getName(game)
   if (!name) return false
-  const location = getLocation(game, homeworldFactionKey)
+  const location = getLocation(game, homeworldGuildKey)
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
   const mass =
     ((5.974e30 * radius) / 36000) *
     (1 + 0.2 * (Math.random() - 0.5))
 
-  let factionId: FactionKey | undefined
-  if (homeworldFactionKey) factionId = homeworldFactionKey
-  else {
-    if (Math.random() > 0.6)
-      factionId = c.randomFromArray(
-        Object.keys(c.factions),
-      ) as FactionKey
-    if (factionId === `red`) factionId = undefined
-  }
+  let guildId: GuildId | undefined
+  if (homeworldGuildKey) guildId = homeworldGuildKey
+  // else {
+  //   if (Math.random() > 0.6)
+  //     guildId = c.randomFromArray(
+  //       Object.keys(c.guilds),
+  //     ) as GuildId
+  //   if (guildId === `fowl`) guildId = undefined
+  // }
 
   let color
-  if (factionId) color = c.factions[factionId].color
+  if (guildId) color = c.guilds[guildId].color
   else {
     let hue = Math.random() * 360
 
-    // don't let color be too close to a faction color
+    // don't let color be too close to a guild color
     while (
-      Object.values(c.factions).find((f) => {
-        let factionHue: any = /hsl\(([^,]*),.*/g.exec(
+      Object.values(c.guilds).find((f) => {
+        let guildHue: any = /hsl\(([^,]*),.*/g.exec(
             f.color,
           )?.[1],
           potentialHue = hue
         try {
-          factionHue = parseInt(`${factionHue}`)
+          guildHue = parseInt(`${guildHue}`)
         } catch (e) {
           return false
         }
-        if (isNaN(factionHue)) {
-          c.log(`Failed to get faction hue from`, f.color)
+        if (isNaN(guildHue)) {
+          c.log(`Failed to get guild hue from`, f.color)
           return false
         }
-        if (factionHue > 180) factionHue -= 360
+        if (guildHue > 180) guildHue -= 360
         if (potentialHue > 180) potentialHue -= 360
-        if (Math.abs(factionHue - potentialHue) < 25)
+        if (Math.abs(guildHue - potentialHue) < 20)
           return true
         return false
       })
@@ -198,7 +198,7 @@ export function generateBasicPlanet(
   }
 
   const level = 0
-  const baseLevel = homeworldFactionKey
+  const baseLevel = homeworldGuildKey
     ? c.defaultHomeworldLevel
     : Math.ceil(
         Math.random() * 5 +
@@ -208,7 +208,7 @@ export function generateBasicPlanet(
 
   const leanings: PlanetLeaning[] = []
   // homeworlds always CAN have cargo, and lean slightly that way
-  if (homeworldFactionKey)
+  if (homeworldGuildKey)
     leanings.push({
       type: `cargo`,
       never: false,
@@ -239,29 +239,26 @@ export function generateBasicPlanet(
       propensity: never ? 0 : Math.random() * 2,
     })
   }
-  // if (homeworldFactionKey) c.log(leanings)
+  // if (homeworldGuildKey) c.log(leanings)
 
   const vendor: PlanetVendor = {
     cargo: [],
     passives: [],
-    actives: [],
     items: [],
     chassis: [],
   }
 
   const creatures: string[] = []
   while (creatures.length === 0 || Math.random() > 0.5) {
-    const viableCreatures = factionId
-      ? seaCreatures.filter(
-          (s) => s.factionKey === factionId,
-        )
-      : seaCreatures
-    const chosen = c.randomFromArray(viableCreatures)
+    const chosen = c.randomFromArray([
+      ...seaCreatures,
+      ...landCreatures,
+    ])
     if (!creatures.find((cre) => cre === chosen.name))
       creatures.push(chosen.name)
   }
 
-  const pacifist = homeworldFactionKey
+  const pacifist = homeworldGuildKey
     ? true
     : Math.random() > 0.2
 
@@ -275,10 +272,7 @@ export function generateBasicPlanet(
     landingRadiusMultiplier: 1,
     allegiances: [],
     pacifist,
-    factionId,
-    homeworld: homeworldFactionKey
-      ? { id: homeworldFactionKey }
-      : undefined,
+    guildId,
     radius,
     location,
     vendor,
@@ -294,8 +288,8 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   const sellMultiplier =
     Math.min(
       buyMultiplier *
-        c.factionVendorMultiplier *
-        c.factionVendorMultiplier,
+        c.guildVendorMultiplier *
+        c.guildVendorMultiplier,
       c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }
@@ -434,46 +428,45 @@ const planetNameSuffixes = [
 
 const seaCreatures: {
   name: string
-  factionKey: FactionKey
 }[] = [
-  { name: `crabs`, factionKey: `green` },
-  { name: `oysters`, factionKey: `green` },
-  { name: `clams`, factionKey: `green` },
-  { name: `abalones`, factionKey: `green` },
-  { name: `barnacles`, factionKey: `green` },
-  { name: `octopi`, factionKey: `green` },
-  { name: `squids`, factionKey: `green` },
-  { name: `lobsters`, factionKey: `green` },
-  { name: `anemones`, factionKey: `green` },
-  { name: `jellyfish`, factionKey: `green` },
-  { name: `urchins`, factionKey: `green` },
+  { name: `crabs` },
+  { name: `oysters` },
+  { name: `clams` },
+  { name: `abalones` },
+  { name: `barnacles` },
+  { name: `octopi` },
+  { name: `squids` },
+  { name: `lobsters` },
+  { name: `anemones` },
+  { name: `jellyfish` },
+  { name: `urchins` },
 
-  { name: `sharks`, factionKey: `purple` },
-  { name: `seahorses`, factionKey: `purple` },
-  { name: `starfish`, factionKey: `purple` },
-  { name: `anglerfish`, factionKey: `purple` },
-  { name: `eels`, factionKey: `purple` },
-  { name: `shrimp`, factionKey: `purple` },
-  { name: `corals`, factionKey: `purple` },
-  { name: `narwhals`, factionKey: `purple` },
-  { name: `cod`, factionKey: `purple` },
-  { name: `mackerel`, factionKey: `purple` },
-  { name: `tuna`, factionKey: `purple` },
-  { name: `marlin`, factionKey: `purple` },
-  { name: `swordfish`, factionKey: `purple` },
-  { name: `angelfish`, factionKey: `purple` },
-  { name: `clownfish`, factionKey: `purple` },
+  { name: `sharks` },
+  { name: `seahorses` },
+  { name: `starfish` },
+  { name: `anglerfish` },
+  { name: `eels` },
+  { name: `shrimp` },
+  { name: `corals` },
+  { name: `narwhals` },
+  { name: `cod` },
+  { name: `mackerel` },
+  { name: `tuna` },
+  { name: `marlin` },
+  { name: `swordfish` },
+  { name: `angelfish` },
+  { name: `clownfish` },
 
-  { name: `walruses`, factionKey: `blue` },
-  { name: `whales`, factionKey: `blue` },
-  { name: `orcas`, factionKey: `blue` },
-  { name: `seals`, factionKey: `blue` },
-  { name: `blowfish`, factionKey: `blue` },
-  { name: `narwhals`, factionKey: `blue` },
-  { name: `dolphins`, factionKey: `blue` },
-  { name: `sea otters`, factionKey: `blue` },
-  { name: `sea turtles`, factionKey: `blue` },
-  { name: `sea lions`, factionKey: `blue` },
+  { name: `walruses` },
+  { name: `whales` },
+  { name: `orcas` },
+  { name: `seals` },
+  { name: `blowfish` },
+  { name: `narwhals` },
+  { name: `dolphins` },
+  { name: `sea otters` },
+  { name: `sea turtles` },
+  { name: `sea lions` },
 ]
 
 const landCreatures: {

@@ -71,9 +71,9 @@
       </li>
       <li
         v-for="p in planet.passives"
-        v-if="c.basePassiveData[p.id]"
+        v-if="c.baseShipPassiveData[p.id]"
       >
-        {{ c.basePassiveData[p.id].toString(p) }}
+        {{ c.baseShipPassiveData[p.id].description(p) }}
       </li>
     </ul>
 
@@ -124,7 +124,7 @@
         <template>
           <div>How many credits will you contribute?</div>
           <div>
-            Exchange rate: 1xp =
+            Exchange rate: 1 xp =
             {{ c.planetContributeCostPerXp }} credit{{
               c.planetContributeCostPerXp === 1 ? '' : 's'
             }}
@@ -149,12 +149,12 @@ export default Vue.extend({
     planet(): any {
       return this.ship.planet
     },
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     xpInCurrentLevel(): number {
@@ -179,8 +179,7 @@ export default Vue.extend({
         vendor.cargo.length +
         vendor.items.length +
         vendor.chassis.length +
-        vendor.passives.length +
-        vendor.actives.length
+        vendor.passives.length
       )
     },
     planetTitle(): string {

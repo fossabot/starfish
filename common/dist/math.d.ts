@@ -6,6 +6,9 @@ declare function degreesToRadians(degrees?: number): number;
 declare function vectorToRadians(coordPair?: CoordinatePair): number;
 declare function vectorToDegrees(coordPair?: CoordinatePair): number;
 declare function distance(a?: CoordinatePair, b?: CoordinatePair): number;
+/**
+ * distance in degrees [0, 360] between two angles
+ */
 declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
 /**
  * shortest distance (in degrees) between two angles.

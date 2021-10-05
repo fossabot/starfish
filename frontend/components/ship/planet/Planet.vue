@@ -67,33 +67,33 @@
           v-if="
             type === 'basic' &&
             planet.homeworld &&
-            planet.faction
+            planet.guildId
           "
         >
           <span
             :style="{
-              color: c.factions[planet.faction.id].color,
+              color: c.guilds[planet.guildId].color,
             }"
           >
-            {{ c.factions[planet.faction.id].name }}
+            {{ c.guilds[planet.guildId].name }}
           </span>
-          faction homeworld
+          guild homeworld
         </div>
         <!-- <div
           class="sub"
           v-else-if="
-            planet.faction &&
-            c.factions[planet.faction.id].color
+            planet.guild &&
+            c.guilds[planet.guildId].color
           "
         >
-          Faction allegiance:
+          Guild allegiance:
           <span
             :style="{
               color:
-                c.factions[planet.faction.id].color,
+                c.guilds[planet.guildId].color,
             }"
           >
-            {{ c.factions[planet.faction.id].name }}
+            {{ c.guilds[planet.guildId].name }}
           </span>
         </div> -->
         <div class="sub marbottiny" v-if="type === 'basic'">
@@ -120,9 +120,10 @@
       <ShipPlanetMine v-if="type === 'mining'" />
 
       <ShipPlanetVendorCargo v-if="type === 'basic'" />
+      <ShipPlanetGuildRecruit v-if="type === 'basic'" />
       <ShipPlanetVendorItems v-if="type === 'basic'" />
       <ShipPlanetBuyRepair v-if="type === 'basic'" />
-      <ShipPlanetBuyPassive v-if="type === 'basic'" />
+      <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
 
       <ShipPlanetLevel />
 
@@ -133,18 +134,18 @@
         <div
           class="panesubhead"
           v-tooltip="
-            `Spend money at this planet to increase your faction's allegiance. Allegiances decay slowly over time.`
+            `Spend money at this planet to increase your guild's allegiance. Allegiances decay slowly over time.`
           "
         >
           Allegiances
         </div>
-        <ShipPlanetFactionGraph :planet="planet" />
-        <div class="martopsmall" v-if="isFriendlyToFaction">
+        <ShipPlanetGuildGraph :planet="planet" />
+        <div class="martopsmall" v-if="isFriendlyToGuild">
           <span
             :style="{
-              color: c.factions[planet.faction.id].color,
+              color: c.guilds[ship.guildId].color,
             }"
-            >Friendly faction</span
+            >Friendly guild</span
           >
           bonus!
           <ul class="small success">
@@ -152,7 +153,7 @@
               Prices improved by
               {{
                 Math.round(
-                  (1 - c.factionVendorMultiplier) * 100,
+                  (1 - c.guildVendorMultiplier) * 100,
                 )
               }}%
             </li>
@@ -203,12 +204,13 @@ export default Vue.extend({
     type(): PlanetType {
       return this.planet?.planetType
     },
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
+        this.ship.guildId &&
         (this.planet?.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
   },
@@ -227,10 +229,10 @@ export default Vue.extend({
   width: 420px;
 }
 .scroller {
-  max-height: 420px;
+  max-height: 440px;
   overflow-y: auto;
 }
-.factiongraph {
+.guildgraph {
   & > * {
     height: 1em;
     border-right: 1px solid var(--bg);

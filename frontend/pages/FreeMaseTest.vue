@@ -44,7 +44,10 @@ export default Vue.extend({
     while (!this.$refs.container) await this.$nextTick()
     this.masonryElement = new FreeMase(
       this.$refs.container as HTMLElement,
-      { centerX: true, verbose: true },
+      {
+        centerX: true,
+        skipLessThanHeight: 10,
+      },
     )
 
     window.addEventListener('keydown', this.reset)

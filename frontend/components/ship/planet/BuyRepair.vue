@@ -15,30 +15,16 @@
       v-for="count in repairOptions"
       :disabled="
         crewMember.credits <
-          c.baseRepairCost *
-            ship.planet.vendor.repairCostMultiplier *
-            ship.planet.priceFluctuator *
-            (isFriendlyToFaction
-              ? c.factionVendorMultiplier
-              : 1) *
-            count || repairableHp < count
+        c.getRepairPrice(ship.planet, count, ship.guildId)
       "
       @click="buyRepair(count)"
     >
       🛠{{ c.r2(count, 2, true) }}HP: 💳{{
         c.numberWithCommas(
-          c.r2(
-            Math.max(
-              c.baseRepairCost *
-                ship.planet.vendor.repairCostMultiplier *
-                ship.planet.priceFluctuator *
-                (isFriendlyToFaction
-                  ? c.factionVendorMultiplier
-                  : 1) *
-                count,
-            ),
-            0,
-            true,
+          c.getRepairPrice(
+            ship.planet,
+            count,
+            ship.guildId,
           ),
         )
       }}
@@ -57,12 +43,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    isFriendlyToFaction(): boolean {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     repairableHp(): number {
@@ -89,7 +75,7 @@ export default Vue.extend({
         this.ship.id,
         this.crewMember?.id,
         hp,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

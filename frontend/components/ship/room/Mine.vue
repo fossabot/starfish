@@ -8,6 +8,21 @@
       ><span class="sectionemoji">⛏️</span>Mining Drop
       Pod</template
     >
+
+    <div class="panesection">
+      <div class="">
+        Your mine speed:
+        {{
+          c.numberWithCommas(
+            c.r2(
+              (minePower / c.tickInterval) * 1000 * 60 * 60,
+              0,
+            ),
+          )
+        }}/hr
+      </div>
+    </div>
+
     <div class="panesection">
       <div>
         <div class="panesubhead">Mining Priority</div>
@@ -26,20 +41,6 @@
           )
         }}
       </button>
-    </div>
-
-    <div class="panesection">
-      <div class="">
-        Your mine speed:
-        {{
-          c.numberWithCommas(
-            c.r2(
-              (minePower / c.tickInterval) * 1000 * 60 * 60,
-              0,
-            ),
-          )
-        }}/hr
-      </div>
     </div>
   </Box>
 </template>
@@ -79,10 +80,37 @@ export default Vue.extend({
         : 'closest'
     },
     minePower(): number {
-      return c.getMineAmountPerTickForSingleCrewMember(
-        this.crewMember?.skills.find(
-          (s: XPData) => s.skill === 'mining',
-        )?.level || 1,
+      const passiveBoostMultiplier =
+        1 +
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostMineSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0) +
+        ((this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostMineSpeed'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0)
+      const generalBoostMultiplier =
+        c.getGeneralMultiplierBasedOnCrewMemberProximity(
+          this.crewMember,
+          this.ship.crewMembers,
+        )
+      return (
+        generalBoostMultiplier *
+        passiveBoostMultiplier *
+        c.getMineAmountPerTickForSingleCrewMember(
+          this.crewMember?.skills.find(
+            (s: XPData) => s.skill === 'mining',
+          )?.level || 1,
+        )
       )
     },
   },

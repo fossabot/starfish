@@ -13,6 +13,35 @@ function getUnitVectorFromThatBodyToThisBody(thisBody, thatBody) {
     const angleBetween = math_1.default.angleFromAToB(thatBody.location, thisBody.location);
     return math_1.default.degreesToUnitVector(angleBetween);
 }
+const scalingFunctions = {
+    defaultRealGravity: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => (-globals_1.default.gravitationalConstant * massProduct) /
+        rangeInMeters ** 2,
+    // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
+    linear: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (1 - rangeAsPercentOfGravityRadius),
+    // middle ground between linear and exponential
+    quadratic: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (rangeAsPercentOfGravityRadius - 1) ** 2,
+    // stronger lean towards exponential
+    cubic: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
+    // even stronger lean towards exponential
+    sixthPower: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (rangeAsPercentOfGravityRadius - 1) ** 6,
+    // even stronger lean towards exponential
+    tenthPower: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (rangeAsPercentOfGravityRadius - 1) ** 10,
+};
 function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravityScalingFunction = `defaultRealGravity`, gravityMultiplier = 1, gravityRange = 0.5) {
     if (!thisBody ||
         !thatBody ||
@@ -29,35 +58,33 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravit
         (gravityRange * globals_1.default.kmPerAu * globals_1.default.mPerKm);
     if (rangeInMeters === 0)
         return [0, 0];
-    const scalingFunctions = {
-        defaultRealGravity: () => (-globals_1.default.gravitationalConstant * massProduct) /
-            rangeInMeters ** 2,
-        // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
-        linear: () => -1 *
-            0.0000015 *
-            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
-            (1 - rangeAsPercentOfGravityRadius),
-        // middle ground between linear and exponential
-        quadratic: () => -1 *
-            0.0000015 *
-            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
-            (rangeAsPercentOfGravityRadius - 1) ** 2,
-        // stronger lean towards exponential
-        cubic: () => -1 *
-            0.0000015 *
-            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
-            (-1 * (rangeAsPercentOfGravityRadius - 1) ** 3),
-        // even stronger lean towards exponential
-        sixthPower: () => -1 *
-            0.0000015 *
-            Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
-            (rangeAsPercentOfGravityRadius - 1) ** 6,
-    };
+    // * gives a percentage 0 (thisBody is moving perfectly toawrds/straight away from thatBody), to 1 (thisBody is moving perfectly perpendicular to thatBody)
+    const angleToThatBody = Math.abs(Math.abs(math_1.default.angleDifference(math_1.default.vectorToDegrees(thisBody.velocity), math_1.default.angleFromAToB(thatBody.location, thisBody.location)) - 90) - 90) / 90;
+    const maxGravityLesseningEffectPercentage = 0.85;
+    const coneWidth = 0.15;
+    let gravityLesseningEffectPercentage = 0;
+    if (angleToThatBody < coneWidth &&
+        maxGravityLesseningEffectPercentage > 0) {
+        gravityLesseningEffectPercentage = math_1.default.lerp(0, maxGravityLesseningEffectPercentage, 1 - angleToThatBody / coneWidth);
+    }
     // * ----- current scaling function in use -----
     const scalingFunction = scalingFunctions[gravityScalingFunction] ||
         scalingFunctions.defaultRealGravity;
-    // * ----- flat gravity scaling -----
-    const gravityForce = scalingFunction() * gravityMultiplier;
+    // * ----- final gravity force calc -----
+    const gravityForce = scalingFunction({
+        massProduct,
+        rangeInMeters,
+        rangeAsPercentOfGravityRadius,
+    }) *
+        gravityMultiplier *
+        (1 - gravityLesseningEffectPercentage);
+    // c.log({
+    //   name: thatBody.name,
+    //   rangeAsPercentOfGravityRadius,
+    //   angleToThatBody,
+    //   gravityLesseningEffectPercentage,
+    //   gravityForce: gravityForce / 10000,
+    // })
     // const differenceFromDefault =
     //   gravityForce -
     //   scalingFunctions.defaultRealGravity() *

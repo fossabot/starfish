@@ -1,4 +1,4 @@
-import game from '../game'
+import game from '../gameConstants'
 
 export const engines: {
   [key in EngineId]: BaseEngineData
@@ -12,7 +12,7 @@ export const engines: {
     mass: 4000,
     basePrice: 0 * game.itemPriceMultiplier,
     rarity: 999999,
-    thrustAmplification: 3,
+    thrustAmplification: 5,
     maxHp: 10,
     passives: [],
   },

@@ -11,13 +11,11 @@
           Interact with other Discord servers from around
           the world
         </li>
-        <li>
-          Carve out a safe environment for your faction
-        </li>
+        <li>Carve out a safe environment for your guild</li>
         <li>Build your character's skills</li>
         <li>
-          Lead your faction to dominance in the global
-          faction rankings!
+          Lead your guild to dominance in the global guild
+          rankings!
         </li>
       </ul>
 
@@ -110,9 +108,9 @@
         essentially "votes" on what tactic to take.
       </div>
       <div>
-        <b>Aggressive</b> tactics will fire at any
-        non-faction ship in sight. <b>Defensive</b> tactics
-        will only fire back when fired upon.
+        <b>Aggressive</b> tactics will fire at any non-guild
+        ship in sight. <b>Defensive</b> tactics will only
+        fire back when fired upon.
       </div>
       <div>
         Damage is dealt to armor first, and then to random
@@ -143,6 +141,24 @@
       <div>
         Received messages will also be sent to the
         <b>#📣comms-bay</b> channel in Discord.
+      </div>
+
+      <h3>Making Money</h3>
+      <div>
+        There are many ways to make money in
+        {{ c.gameName }}.
+      </div>
+      <div>
+        The easiest way to make money is to sell cargo to a
+        merchant planet. You can buy or mine cargo from
+        planets, find it in caches, or destroy other ships
+        to take their cargo. Planets' cargo prices change
+        often, so keep checking back if the current buy
+        price is too low.
+      </div>
+      <div>
+        There are other ways to make money, but you'll have
+        to explore to find them!
       </div>
 
       <h3>Planets</h3>
@@ -205,13 +221,13 @@
       </div>
       <div>
         Buying and selling at a planet will increase your
-        factions allegiance with that planet. With a good
-        faction allegiance, planets will give you all kinds
-        of bonuses!
+        guilds allegiance with that planet. With a good
+        guild allegiance, planets will give you all kinds of
+        bonuses!
       </div>
 
-      <h3>Factions</h3>
-      <div>There are four factions in the game.</div>
+      <h3>Guilds</h3>
+      <div>There are four guilds in the game.</div>
       <div>In no particular order, they are:</div>
       <ul>
         <li>Green Grapplers</li>
@@ -224,7 +240,7 @@
         aggressive to all aquatic ships.
       </div>
       <div>
-        You cannot attack a ship from your own faction.
+        You cannot attack a ship from your own guild.
       </div>
 
       <h3>Crew Skills</h3>
@@ -310,8 +326,8 @@
         gets there first can pick up the spoils!
       </div>
       <div>
-        The captain can respawn the ship at its faction
-        homeworld, with the basic faction loadout. Crew
+        The captain can respawn the ship at its guild
+        homeworld, with the basic guild loadout. Crew
         members will keep their skills and some of their
         credits, but all equipment and cargo will be lost.
       </div>

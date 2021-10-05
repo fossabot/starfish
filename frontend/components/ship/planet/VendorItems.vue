@@ -143,12 +143,12 @@ export default Vue.extend({
     isCaptain() {
       return this.ship?.captain === this.userId
     },
-    isFriendlyToFaction() {
+    isFriendlyToGuild() {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
-            a.faction.id === this.ship.faction.id,
-        )?.level || 0) >= c.factionAllegianceFriendCutoff
+            a.guildId === this.ship.guildId,
+        )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
     buyableItems() {
@@ -158,18 +158,10 @@ export default Vue.extend({
             item.buyMultiplier,
         )
         .map((item: PlanetVendorItemPrice) => {
-          const price = c.r2(
-            Math.max(
-              ((c.items[item.type] as any)[item.id]
-                ?.basePrice || 1) *
-                item.buyMultiplier! *
-                this.ship.planet.priceFluctuator *
-                (this.isFriendlyToFaction
-                  ? c.factionVendorMultiplier
-                  : 1),
-            ),
-            0,
-            true,
+          const price = c.getItemBuyPrice(
+            item,
+            this.ship.planet,
+            this.ship.guildId,
           )
           return {
             ...item,
@@ -184,19 +176,11 @@ export default Vue.extend({
     sellableItems() {
       return this.ship?.items
         .map((item: ItemStub) => {
-          const price = c.r2(
-            Math.min(
-              ((c.items[item.type] as any)[item.id]
-                ?.basePrice || 1) * // sorry to the typescript gods
-                c.baseItemSellMultiplier *
-                this.ship.planet.priceFluctuator *
-                (this.isFriendlyToFaction
-                  ? 1 +
-                    (1 - (c.factionVendorMultiplier || 1))
-                  : 1),
-            ),
-            0,
-            true,
+          const price = c.getItemSellPrice(
+            item.type,
+            item.id as ItemId,
+            this.ship.planet,
+            this.ship.guildId,
           )
           return {
             ...item,
@@ -214,23 +198,11 @@ export default Vue.extend({
             ch.id !== this.ship?.chassis?.id,
         )
         .map((chassis: PlanetVendorChassisPrice) => {
-          const currentChassisSellPrice = Math.floor(
-            (this.ship.chassis?.basePrice || 0) *
-              c.baseItemSellMultiplier,
-          )
-          const price = c.r2(
-            Math.min(
-              (c.items.chassis[chassis.id]?.basePrice ||
-                1) *
-                chassis.buyMultiplier *
-                this.ship.planet.priceFluctuator *
-                (this.isFriendlyToFaction
-                  ? c.factionVendorMultiplier
-                  : 1) -
-                currentChassisSellPrice,
-            ),
-            0,
-            true,
+          const price = c.getChassisSwapPrice(
+            chassis,
+            this.ship.planet,
+            this.ship.chassis.id,
+            this.ship.guildId,
           )
           return {
             ...chassis,

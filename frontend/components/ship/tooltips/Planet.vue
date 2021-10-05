@@ -13,12 +13,12 @@
     </div>
     <!-- {{ data }} -->
     <hr />
-    <div v-if="dataToUse.faction">
+    <div v-if="dataToUse.guildId">
       <span
         :style="{
-          color: c.factions[dataToUse.faction.id].color,
+          color: c.guilds[dataToUse.guildId].color,
         }"
-        >{{ c.factions[dataToUse.faction.id].name }}</span
+        >{{ c.guilds[dataToUse.guildId].name }}</span
       >
       Homeworld
       <hr />
@@ -101,7 +101,7 @@
 
       <hr />
 
-      <ShipPlanetFactionGraph :planet="dataToUse" />
+      <ShipPlanetGuildGraph :planet="dataToUse" />
     </template>
 
     <!-- <hr v-if="c.getPlanetDescription(data)" />
@@ -126,7 +126,7 @@ export default Vue.extend({
     dataToUse() {
       return (
         this.ship?.seenPlanets?.find(
-          (p) => p.name === this.data.name,
+          (p) => p.id === this.data.id,
         ) || this.data
       )
     },

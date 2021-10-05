@@ -74,7 +74,7 @@ a:hover {
     ),
     pointer;
 }
-.bluefaction a {
+.blueguild a {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -83,7 +83,7 @@ a:hover {
     ),
     pointer;
 }
-.greenfaction a {
+.greenguild a {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -92,7 +92,7 @@ a:hover {
     ),
     pointer;
 }
-.purplefaction a {
+.purpleguild a {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -280,6 +280,18 @@ input[type='submit'] {
       }
     }
   }
+
+  &.arrowdown {
+    &:before {
+      background: var(--text);
+      width: 0.65em;
+      height: 0.65em;
+      left: 50%;
+      top: 100%;
+      border-radius: 0 !important;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
 }
 
 input[type='submit'] {
@@ -304,10 +316,10 @@ summary:hover {
   text-decoration: underline;
 }
 
-.bluefaction button,
-.bluefaction .button,
-.bluefaction input,
-.bluefaction select {
+.blueguild button,
+.blueguild .button,
+.blueguild input,
+.blueguild select {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -316,10 +328,10 @@ summary:hover {
     ),
     pointer;
 }
-.greenfaction button,
-.greenfaction .button,
-.greenfaction input,
-.greenfaction select {
+.greenguild button,
+.greenguild .button,
+.greenguild input,
+.greenguild select {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -328,10 +340,10 @@ summary:hover {
     ),
     pointer;
 }
-.purplefaction button,
-.purplefaction .button,
-.purplefaction input,
-.purplefaction select {
+.purpleguild button,
+.purpleguild .button,
+.purpleguild input,
+.purpleguild select {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -351,7 +363,6 @@ select {
   box-sizing: border-box;
   margin: 0;
   box-shadow: inset 0 0 0 0.5px var(--text);
-  // box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
   border-radius: 5px;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -370,21 +381,8 @@ select {
   /* icon size, then gradient */
   background-size: 0.65em auto;
 
-  // /* Hide arrow icon in IE browsers */
-  // &::-ms-expand {
-  //   display: none;
-  // }
-  // /* Hover style */
-  // &:hover {
-  //   border-color: #888;
-  // }
-  /* Focus style */
   &:focus {
-    // border-color: #aaa;
-    /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-    // box-shadow: 0 0 1px 2px rgba(59, 153, 252, 0.7);
     box-shadow: 0 0 0 3px -moz-mac-focusring;
-    // color: #222;
     outline: none;
   }
 
@@ -392,7 +390,6 @@ select {
   *[dir='rtl'] &,
   :root:lang(ar) &,
   :root:lang(iw) & {
-    // background-position: left 0.7em top 50%, 0 0;
     padding: 0.3em 0.8em 0.3em 1.4em;
   }
 
@@ -407,6 +404,10 @@ select {
       ),
       auto;
   }
+
+  option {
+    color: var(--bg);
+  }
 }
 
 .link {
@@ -419,7 +420,7 @@ select {
     ),
     pointer;
 }
-.bluefaction .link {
+.blueguild .link {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -428,7 +429,7 @@ select {
     ),
     pointer;
 }
-.greenfaction .link {
+.greenguild .link {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -437,7 +438,7 @@ select {
     ),
     pointer;
 }
-.purplefaction .link {
+.purpleguild .link {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -601,7 +602,7 @@ ul {
     ),
     pointer;
 }
-.bluefaction .pointer {
+.blueguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
@@ -610,7 +611,7 @@ ul {
     ),
     pointer;
 }
-.greenfaction .pointer {
+.greenguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
@@ -619,7 +620,7 @@ ul {
     ),
     pointer;
 }
-.purplefaction .pointer {
+.purpleguild .pointer {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
@@ -828,6 +829,9 @@ ul {
 
 .textcenter {
   text-align: center;
+}
+.textright {
+  text-align: right;
 }
 
 .invisible {

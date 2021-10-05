@@ -109,7 +109,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .boxholder {
-  padding: 0.8em;
+  padding: 1em;
 
   @media (max-width: 768px) {
     width: 100% !important;
@@ -187,6 +187,7 @@ export default Vue.extend({
     // box-shadow: inset 0 0 0 1px var(--pane-border),
     //   0 0 0 1px var(--pane-border);
     z-index: 5;
+    margin-bottom: -0.4em;
 
     transition: background 0.2s, box-shadow 0.2s;
 

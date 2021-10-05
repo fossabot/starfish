@@ -11,6 +11,10 @@ export default function (
     c.log(`hello received`)
   })
 
+  socket.on(`disconnect`, () => {
+    game.activePlayers--
+  })
+
   socket.on(`frontend:unlistenAll`, () => {
     socket.rooms.forEach((room) => {
       socket.leave(room)

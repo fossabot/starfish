@@ -1,4 +1,5 @@
 import c from '../../../../../common/dist'
+import type { CrewMember } from '../CrewMember/CrewMember'
 
 import type { Ship } from '../Ship/Ship'
 import { Stubbable } from '../Stubbable'
@@ -68,15 +69,31 @@ export class Item extends Stubbable {
     return c.items[this.type][this.id]
   }
 
-  use(usePercent: number = 1) {
+  use(usePercent: number = 1, users?: CrewMember[]) {
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep?.disableRepair)
       return 0
+
+    const passiveMultiplier = users
+      ? 1 -
+        users.reduce(
+          (total, cm) =>
+            total +
+            cm.getPassiveIntensity(
+              `lessDamageOnEquipmentUse`,
+            ),
+          0,
+        ) /
+          users.length
+      : 1
+
     const durabilityLost =
       c.getBaseDurabilityLossPerTick(
         this.maxHp,
         this.reliability,
-      ) * usePercent
+      ) *
+      usePercent *
+      passiveMultiplier
     this.repair -= durabilityLost
     if (this.repair < 0) this.repair = 0
     this.ship.toUpdate._hp = this.ship.hp

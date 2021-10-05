@@ -32,14 +32,12 @@
             class="chargecounter nowrap"
           >
             &nbsp;(+{{
-              c.r2(
+              c.speedNumber(
                 maxPossibleSpeedChange *
                   crewMember.cockpitCharge *
                   thrustChargeToUse,
-                3,
               )
-            }}
-            AU/hr)
+            }})
           </span>
         </LimitedChargeButton>
         <LimitedChargeButton
@@ -74,16 +72,14 @@
             class="chargecounter nowrap"
           >
             &nbsp;(-{{
-              c.r2(
+              c.speedNumber(
                 maxPossibleSpeedChange *
                   ship.gameSettings.brakeToThrustRatio *
                   crewMember.cockpitCharge *
                   brakeChargeToUse *
                   passiveBrakeMultiplier,
-                3,
               )
-            }}
-            AU/hr)
+            }})
           </span>
         </LimitedChargeButton>
       </div>
@@ -146,12 +142,11 @@
       >
         Applicable Speed:
         <NumberChangeHighlighter
-          :number="c.r2(possibleSpeedChange, 3)"
+          :number="c.speedNumber(possibleSpeedChange, true)"
         /><span class="sub marlefttiny"
           >/<NumberChangeHighlighter
-            :number="c.r2(maxPossibleSpeedChange, 3)"
+            :number="c.speedNumber(maxPossibleSpeedChange)"
         /></span>
-        AU/hr
       </div>
     </div>
 
@@ -185,7 +180,7 @@
               planet.location[1] !==
                 crewMember.targetLocation[1],
           }"
-          v-tooltip="{ type: 'planet', name: planet.name }"
+          v-tooltip="{ type: 'planet', id: planet.id }"
         >
           <span :style="{ color: planet.color }"
             >🪐{{ planet.name }}</span
@@ -323,25 +318,51 @@ export default Vue.extend({
       return baseMax
     },
     passiveChargeBoost(): number {
+      const generalBoostMultiplier =
+        c.getGeneralMultiplierBasedOnCrewMemberProximity(
+          this.crewMember,
+          this.ship.crewMembers,
+        )
       return (
-        (this.ship as ShipStub).passives?.reduce(
-          (total, p: ShipPassiveEffect) =>
-            p.id === 'boostCockpitChargeSpeed'
-              ? total + (p.intensity || 0)
-              : total,
-          1,
-        ) || 1
+        generalBoostMultiplier *
+        (1 +
+          ((
+            this.crewMember as CrewMemberStub
+          ).passives?.reduce(
+            (total, p: CrewPassiveData) =>
+              p.id === 'boostCockpitChargeSpeed'
+                ? total + (p.intensity || 0)
+                : total,
+            0,
+          ) || 0) +
+          ((this.ship as ShipStub).passives?.reduce(
+            (total, p: ShipPassiveEffect) =>
+              p.id === 'boostCockpitChargeSpeed'
+                ? total + (p.intensity || 0)
+                : total,
+            0,
+          ) || 0))
       )
     },
     passiveBrakeMultiplier(): number {
       return (
-        (this.ship as ShipStub).passives?.reduce(
+        1 +
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostBrake'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0) +
+        ((this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
             p.id === 'boostBrake'
               ? total + (p.intensity || 0)
               : total,
-          1,
-        ) || 1
+          0,
+        ) || 0)
       )
     },
     planetsToShow(): PlanetStub[] {

@@ -5,31 +5,39 @@ import * as items from './items';
 declare const _default: {
     items: typeof items;
     rooms: {
+        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
-        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
-    crewActives: {
-        boost: BaseCrewActiveData;
-        quickFix: BaseCrewActiveData;
-        sightRange: BaseCrewActiveData;
-    };
     crewPassives: {
-        cargoSpace: BaseCrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostBrake: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
+        reduceStaminaDrain: CrewPassiveData;
+        generalImprovementWhenAlone: CrewPassiveData;
+        generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
+        boostDropAmounts: CrewPassiveData;
+        lessDamageOnEquipmentUse: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
         octopi: BaseSpeciesData;
-        squids: BaseSpeciesData;
         lobsters: BaseSpeciesData;
         crabs: BaseSpeciesData;
-        seals: BaseSpeciesData;
         "sea turtles": BaseSpeciesData;
+        sharks: BaseSpeciesData;
         dolphins: BaseSpeciesData;
+        snails: BaseSpeciesData;
         whales: BaseSpeciesData;
-        tuna: BaseSpeciesData;
         angelfish: BaseSpeciesData;
         blowfish: BaseSpeciesData;
         shrimp: BaseSpeciesData;
@@ -38,87 +46,92 @@ declare const _default: {
         chickens: BaseSpeciesData;
         flamingos: BaseSpeciesData;
     };
-    factions: {
-        green: BaseFactionData;
-        blue: BaseFactionData;
-        purple: BaseFactionData;
-        red: BaseFactionData;
+    guilds: {
+        fowl: BaseGuildData;
+        trader: BaseGuildData;
+        hunter: BaseGuildData;
+        miner: BaseGuildData;
+        explorer: BaseGuildData;
+        peacekeeper: BaseGuildData;
     };
-    basePassiveData: {
+    baseShipPassiveData: {
         boostDropAmount: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostDropRarity: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostScanRange: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostSightRange: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostBroadcastRange: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostRepairSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostMineSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMinePayouts: {
+            description: (p: ShipPassiveEffect) => string;
         };
         boostBrake: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostCockpitChargeSpeed: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostXpGain: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         scaledDamageReduction: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         flatDamageReduction: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         extraEquipmentSlots: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostCargoSpace: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostChassisAgility: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         disguiseCrewMemberCount: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         disguiseChassisType: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         alwaysSeeTrailColors: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostDamage: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostDamageWhenNoAlliesWithinDistance: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
-        boostDamageWithNumberOfFactionMembersWithinDistance: {
-            toString: (p: ShipPassiveEffect) => string;
+        boostDamageWithNumberOfGuildMembersWithinDistance: {
+            description: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         boostStaminaRegeneration: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
         autoRepair: {
-            toString: (p: ShipPassiveEffect) => string;
+            description: (p: ShipPassiveEffect) => string;
         };
     };
     Profiler: typeof Profiler;
@@ -128,7 +141,7 @@ declare const _default: {
     frontendUrl: string;
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
-    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocation, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
     supportServerLink: string;
     gameSpeedMultiplier: number;
     baseSightRange: number;
@@ -136,8 +149,9 @@ declare const _default: {
     baseRepairCost: number;
     defaultHomeworldLevel: number;
     maxBroadcastLength: number;
-    factionVendorMultiplier: number;
-    factionAllegianceFriendCutoff: number;
+    guildVendorMultiplier: number;
+    guildAllegianceFriendCutoff: number;
+    userIsOfflineTimeout: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
@@ -151,6 +165,7 @@ declare const _default: {
         name: true;
         human: true;
         ai: true;
+        guildId: true;
         headerBackground: true;
         tagline: true;
         level: true;
@@ -159,18 +174,23 @@ declare const _default: {
         previousLocations: true;
         location: true;
         planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        faction: ("id" | "name" | "color" | "homeworld" | "ai" | "species")[];
-        species: ("id" | "passives" | "icon" | "factionId" | "singular" | "description")[];
-        chassis: ("id" | "mass" | "passives" | "description" | "type" | "basePrice" | "displayName" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        chassis: ("id" | "mass" | "passives" | "type" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
-    sameFactionShipScanProperties: {
+    sameGuildShipScanProperties: {
         _hp: boolean;
         _maxHp: boolean;
     };
+    tactics: CombatTactic[];
+    baseCargoSellMultiplier: number;
+    taglineOptions: string[];
+    headerBackgroundOptions: {
+        id: string;
+        url: string;
+    }[];
     getHitDamage: (weapon: {
         damage: number;
     }, totalMunitionsSkill?: number) => number;
-    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number) => number;
+    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number, useLevel?: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
@@ -179,22 +199,25 @@ declare const _default: {
     getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
-    getCrewPassivePriceMultiplier: (level: number) => number;
-    tactics: CombatTactic[];
-    baseCargoSellMultiplier: number;
-    taglineOptions: string[];
+    getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
     statToString: (data: {
         stat: string;
         amount: number;
     }) => string;
-    headerBackgroundOptions: {
-        id: string;
-        url: string;
-    }[];
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, factionId: FactionKey) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getGuildChangePrice: (ship: {
+        planet: false | PlanetStub;
+        guildId: GuildId;
+        crewMembers: CrewMemberStub[];
+    }) => number;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;
@@ -208,6 +231,7 @@ declare const _default: {
     shuffleArray: (array: any[]) => any[];
     maxNameLength: number;
     numberWithCommas: (x: number) => string | number;
+    speedNumber: (numberInAu: number, noTag?: boolean) => string;
     printList: (list: string[]) => string;
     degreesToArrow: (angle: number) => string;
     degreesToArrowEmoji: (angle: number) => string;

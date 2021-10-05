@@ -24,10 +24,7 @@ export class MiningPlanet extends Planet {
     const rarity = c.cargo[cargoId].rarity + 1
     return Math.floor(
       ((Math.random() + 0.1) * 70000 * (rarity / 3)) /
-        ((this.passives.find(
-          (p) => p.id === `boostMineSpeed`,
-        )?.intensity || 1) +
-          1) /
+        2 /
         c.gameSpeedMultiplier,
     )
   }
@@ -59,6 +56,7 @@ export class MiningPlanet extends Planet {
     if (!resource) return
 
     resource.mineCurrent += amount
+    // * ----- done mining, pay out -----
     if (resource.mineCurrent >= resource.mineRequirement) {
       // distribute among all current mining ships
 
@@ -75,9 +73,21 @@ export class MiningPlanet extends Planet {
           ),
       )
 
+      const amountBoostPassive =
+        shipsToDistributeAmong.reduce(
+          (total, s) =>
+            s.getPassiveIntensity(`boostMinePayouts`) +
+            total,
+          0,
+        )
+
+      const finalPayoutAmount =
+        resource.payoutAmount * (amountBoostPassive + 1)
+      const didBoost = amountBoostPassive > 0
+
       c.log(
         `gray`,
-        `${shipsToDistributeAmong.length} ships mined ${resource.payoutAmount} tons of ${cargoId} from ${this.name}.`,
+        `${shipsToDistributeAmong.length} ships mined ${finalPayoutAmount} tons of ${cargoId} from ${this.name}.`,
       )
 
       shipsToDistributeAmong.forEach((ship) => {
@@ -85,7 +95,7 @@ export class MiningPlanet extends Planet {
           shipsToDistributeAmong.length > 1
             ? [
                 `Your ship helped mine ${c.r2(
-                  resource.payoutAmount,
+                  finalPayoutAmount,
                   0,
                 )} tons of`,
                 {
@@ -96,17 +106,26 @@ export class MiningPlanet extends Planet {
                   },
                   color: `var(--cargo)`,
                 },
-                `&nospace, which was split with ${
+                `&nospace, ${
+                  didBoost
+                    ? `(passive payout boost: +${
+                        c.r2(amountBoostPassive) * 100
+                      }%) `
+                    : ``
+                }which was split with ${
                   shipsToDistributeAmong.length - 1
                 } other ship ${
                   shipsToDistributeAmong.length - 1 === 1
                     ? ``
                     : `s`
-                }`,
+                } for a total of ${c.r2(
+                  finalPayoutAmount /
+                    shipsToDistributeAmong.length,
+                )} tons.`,
               ]
             : [
                 `Your ship mined ${c.r2(
-                  resource.payoutAmount,
+                  finalPayoutAmount,
                   0,
                 )} tons of`,
                 {
@@ -117,7 +136,13 @@ export class MiningPlanet extends Planet {
                   },
                   color: `var(--cargo)`,
                 },
-                `&nospace.`,
+                `&nospace${
+                  didBoost
+                    ? ` (passive payout boost: +${
+                        c.r2(amountBoostPassive) * 100
+                      }%)`
+                    : ``
+                }.`,
               ],
         )
 
@@ -134,21 +159,22 @@ export class MiningPlanet extends Planet {
         crewMembersWhoHelped.forEach((cm) => {
           cm.addStat(
             `totalTonsMined`,
-            resource.payoutAmount /
+            finalPayoutAmount /
+              shipsToDistributeAmong.length /
               crewMembersWhoHelped.length,
           )
         })
 
         ship.addStat(
           `totalTonsMined`,
-          resource.payoutAmount,
+          finalPayoutAmount / shipsToDistributeAmong.length,
         )
 
         ship.distributeCargoAmongCrew([
           {
             id: cargoId as CargoId,
             amount: c.r2(
-              resource.payoutAmount /
+              finalPayoutAmount /
                 shipsToDistributeAmong.length,
               0,
               true,
@@ -222,7 +248,7 @@ gathered resources are held by the individual who mined them, and shared once th
 must put crew members into "mining" room aka planetside, actually mining
   select what resource you want to mine
 add mining skill?
-more ships mining from the same faction boosts mining speed
+more ships mining from the same guild boosts mining speed
 - can have more desaturated colors
 - have no allegiances, but DO have levels
 

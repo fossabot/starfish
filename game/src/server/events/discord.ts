@@ -73,6 +73,9 @@ export default function (
       )
       if (!crewMember)
         return callback({ error: `No crew member found.` })
+      if (ship.dead)
+        return callback({ error: `Your ship is dead!` })
+
       const broadcastRes = ship.broadcast(
         message,
         crewMember,
@@ -118,9 +121,6 @@ export default function (
       )
       if (!crewMember)
         return callback({ error: `No crew member found.` })
-
-      if (ship.captain === crewMember.id)
-        ship.captain = null
 
       ship.removeCrewMember(crewMember.id)
       callback({ data: `ok` })

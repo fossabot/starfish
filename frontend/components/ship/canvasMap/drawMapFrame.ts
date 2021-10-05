@@ -506,7 +506,7 @@ export default class Drawer {
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
         radius: (3 / this.zoom) * devicePixelRatio,
-        color: c.factions[s.faction.id]?.color,
+        color: c.guilds[s.guildId]?.color,
       })
     })
 
@@ -574,7 +574,7 @@ export default class Drawer {
             pl[0] * this.flatScale,
             pl[1] * this.flatScale * -1,
           ],
-          color: c.factions[s.faction.id]?.color,
+          color: c.guilds[s.guildId]?.color,
           opacity:
             (index / (pointsToDraw.length - 1)) * 0.45,
         })

@@ -53,6 +53,9 @@ export async function move(
     return { error: `Failed to move crew member` }
 
   io.emit(`crew:move`, shipId, crewId, target)
+
+  if (target === `weapons`)
+    io.emit(`crew:tactic`, shipId, crewId, `aggressive`)
   return { data: true }
 }
 
@@ -118,7 +121,7 @@ export async function sell(
   crewId: string,
   type: CargoId,
   amount: number,
-  location: string,
+  planetId: string,
 ): Promise<
   IOResponse<{
     cargoId: CargoId
@@ -138,7 +141,7 @@ export async function sell(
       crewId,
       type,
       amount,
-      location,
+      planetId,
       (res) => {
         resolve(res)
       },
@@ -151,7 +154,7 @@ export async function buy(
   crewId: string,
   type: CargoId,
   amount: number,
-  location: string,
+  planetId: string,
 ): Promise<
   IOResponse<{
     cargoId: CargoId
@@ -171,7 +174,7 @@ export async function buy(
       crewId,
       type,
       amount,
-      location,
+      planetId,
       (res) => {
         resolve(res)
       },

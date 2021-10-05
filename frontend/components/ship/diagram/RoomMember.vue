@@ -7,11 +7,11 @@
       left: left + 'px',
     }"
   >
-    <div>
-      {{ c.species[ship.species.id].icon }}
+    <div class="icon">
+      {{ c.species[speciesId].icon }}
     </div>
     <div class="name">
-      {{ name }}
+      {{ ship.captain === id ? '👑' : '' }}{{ name }}
     </div>
   </div>
 </template>
@@ -24,6 +24,8 @@ import c from '../../../../common/dist'
 export default Vue.extend({
   props: {
     name: {},
+    speciesId: {},
+    id: {},
     location: { type: String as PropType<CrewLocation> },
     roomEls: {
       type: Object as PropType<{
@@ -99,7 +101,7 @@ export default Vue.extend({
 .roommember {
   pointer-events: none;
   transform-origin: 50% 50%;
-  line-height: 1;
+  line-height: 1.1;
   position: absolute;
   padding: 0;
   top: 0;
@@ -120,6 +122,10 @@ export default Vue.extend({
   &.animate {
     transition: top 1s, left 1s;
   }
+}
+
+.icon {
+  font-size: 1.1em;
 }
 
 .name {

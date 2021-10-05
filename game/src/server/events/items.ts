@@ -40,18 +40,10 @@ export default function (
           error: `That equipment is not for sale here.`,
         })
 
-      const price = c.r2(
-        ((c.items[itemForSale.type] as any)[itemForSale.id]
-          .basePrice || 1) *
-          itemForSale.buyMultiplier *
-          planet.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? c.factionVendorMultiplier
-            : 1),
-        0,
-        true,
+      const price = c.getItemBuyPrice(
+        itemForSale,
+        planet,
+        ship.guildId,
       )
       if (price > ship.commonCredits)
         return callback({ error: `Insufficient funds.` })
@@ -88,7 +80,7 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -133,15 +125,11 @@ export default function (
           error: `No item found by that id.`,
         })
 
-      const price = c.r2(
-        (itemData?.basePrice || 1) *
-          c.baseItemSellMultiplier *
-          planet.priceFluctuator *
-          (planet.faction === ship.faction
-            ? 1 + (1 - c.factionVendorMultiplier || 1)
-            : 1),
-        0,
-        true,
+      const price = c.getItemSellPrice(
+        itemType,
+        itemId as any,
+        planet,
+        ship.guildId,
       )
 
       ship.commonCredits += price
@@ -168,7 +156,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -213,18 +201,11 @@ export default function (
       const currentChassisSellPrice = Math.round(
         ship.chassis.basePrice * c.baseItemSellMultiplier,
       )
-      const price = c.r2(
-        (c.items.chassis[itemForSale.id]?.basePrice || 1) *
-          itemForSale.buyMultiplier *
-          planet.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? c.factionVendorMultiplier
-            : 1) -
-          currentChassisSellPrice,
-        0,
-        true,
+      const price = c.getChassisSwapPrice(
+        itemForSale,
+        planet,
+        ship.chassis.id,
+        ship.guildId,
       )
 
       if (price > ship.commonCredits)
@@ -261,7 +242,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
       planet.addXp(price / 100)
 
       c.log(

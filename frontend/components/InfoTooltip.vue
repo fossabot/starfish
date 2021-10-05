@@ -73,6 +73,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import c from '../../common/dist'
 
 export default Vue.extend({
   name: 'infoTooltip',

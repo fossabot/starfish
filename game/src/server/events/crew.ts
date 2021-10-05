@@ -73,6 +73,44 @@ export default function (
     )
   })
 
+  socket.on(
+    `crew:setSpecies`,
+    async (shipId, crewId, speciesId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `No ship found by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `No crew member found by that id.`,
+        })
+      if (
+        crewMember.speciesId &&
+        c.species[crewMember.speciesId]
+      )
+        return callback({
+          error: `That crew member already has a species.`,
+        })
+      if (!c.species[speciesId])
+        return callback({
+          error: `That species doesn't exist.`,
+        })
+
+      crewMember.setSpecies(speciesId)
+
+      c.log(
+        `gray`,
+        `Set ${crewMember.name}'s species to ${crewMember.speciesId}.`,
+      )
+    },
+  )
+
   socket.on(`crew:move`, (shipId, crewId, target) => {
     const ship = game.ships.find(
       (s) => s.id === shipId,
@@ -327,7 +365,7 @@ export default function (
 
   socket.on(
     `crew:donateToPlanet`,
-    (shipId, crewId, amount, planetName, callback) => {
+    (shipId, crewId, amount, planetId, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -351,7 +389,7 @@ export default function (
         })
 
       const planet = ship.game.planets.find(
-        (p) => p.name === planetName,
+        (p) => p.id === planetId,
       ) as Planet | undefined
       if (!planet)
         return callback({
@@ -361,11 +399,11 @@ export default function (
       crewMember.credits -= amount
       crewMember.toUpdate.credits = crewMember.credits
 
-      planet.donate(amount, ship.faction)
+      planet.donate(amount, ship.guildId)
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planetName}.`,
+        `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planet.name}.`,
       )
     },
   )
@@ -412,7 +450,7 @@ export default function (
       crewId,
       cargoId,
       amount,
-      vendorLocation,
+      planetId,
       callback,
     ) => {
       const ship = game.ships.find(
@@ -428,8 +466,7 @@ export default function (
 
       const planet = ship.game.planets.find(
         (p) =>
-          p.name === vendorLocation &&
-          p.planetType === `basic`,
+          p.id === planetId && p.planetType === `basic`,
       ) as BasicPlanet | undefined
       const cargoForSale = planet?.vendor?.cargo?.find(
         (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
@@ -456,23 +493,9 @@ export default function (
         cargoId,
         planet,
         amount,
-        ship.faction.id,
+        ship.guildId,
       )
-      // c.log({
-      //   price,
-      //   credits: crewMember.credits,
-      //   unit: Math.ceil(
-      //     c.cargo[cargoForSale.id].basePrice *
-      //       cargoForSale.buyMultiplier *
-      //       planet?.priceFluctuator *
-      //       ((planet.allegiances.find(
-      //         (a) => a.faction.id === ship.faction.id,
-      //       )?.level || 0) >=
-      //       c.factionAllegianceFriendCutoff
-      //         ? c.factionVendorMultiplier
-      //         : 1),
-      //   ),
-      // })
+
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -486,11 +509,11 @@ export default function (
       callback({ data: { cargoId, amount, price } })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought ${amount} ${cargoId} from ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} bought ${amount} ${cargoId} from ${planet.name}.`,
       )
     },
   )
@@ -502,7 +525,7 @@ export default function (
       crewId,
       cargoId,
       amount,
-      vendorLocation,
+      planetId,
       callback,
     ) => {
       const ship = game.ships.find(
@@ -528,8 +551,7 @@ export default function (
 
       const planet = ship.game.planets.find(
         (p) =>
-          p.name === vendorLocation &&
-          p.planetType === `basic`,
+          p.id === planetId && p.planetType === `basic`,
       ) as BasicPlanet | undefined
 
       if (!planet)
@@ -541,7 +563,7 @@ export default function (
         cargoId,
         planet,
         amount,
-        ship.faction.id,
+        ship.guildId,
       )
 
       crewMember.credits = Math.round(
@@ -551,11 +573,11 @@ export default function (
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${planetId}.`,
       )
 
       callback({ data: { cargoId, amount, price } })
@@ -637,7 +659,7 @@ export default function (
 
   socket.on(
     `crew:buyRepair`,
-    (shipId, crewId, hp, vendorLocation, callback) => {
+    (shipId, crewId, hp, planetId, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -651,8 +673,7 @@ export default function (
 
       const planet = ship.game.planets.find(
         (p) =>
-          p.name === vendorLocation &&
-          p.planetType === `basic`,
+          p.id === planetId && p.planetType === `basic`,
       ) as BasicPlanet | undefined
       const repairMultiplier =
         planet?.vendor?.repairCostMultiplier
@@ -661,19 +682,12 @@ export default function (
           error: `This planet does not offer repair services.`,
         })
 
-      const price = c.r2(
-        repairMultiplier *
-          c.baseRepairCost *
-          hp *
-          planet.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? c.factionVendorMultiplier
-            : 1),
-        2,
-        true,
+      const price = c.getRepairPrice(
+        planet,
+        hp,
+        ship.guildId,
       )
+
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
@@ -700,24 +714,18 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} bought ${hp} hp of repairs from ${planet.name}.`,
       )
     },
   )
 
   socket.on(
     `crew:buyPassive`,
-    (
-      shipId,
-      crewId,
-      passiveId,
-      vendorLocation,
-      callback,
-    ) => {
+    (shipId, crewId, passiveId, planetId, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -730,7 +738,7 @@ export default function (
         return callback({ error: `No crew member found.` })
 
       const planet = ship.game.planets.find(
-        (p) => p.name === vendorLocation,
+        (p) => p.id === planetId,
       ) as BasicPlanet | undefined
       const passiveForSale = planet?.vendor?.passives?.find(
         (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
@@ -745,27 +753,21 @@ export default function (
           error: `That passive is not for sale here.`,
         })
 
-      const currentLevel =
-        crewMember.passives.find((p) => p.id === passiveId)
-          ?.level || 0
-      const price = Math.ceil(
-        c.crewPassives[passiveForSale.id].basePrice *
-          passiveForSale.buyMultiplier *
-          c.getCrewPassivePriceMultiplier(currentLevel) *
-          planet.priceFluctuator *
-          ((planet.allegiances.find(
-            (a) => a.faction.id === ship.faction.id,
-          )?.level || 0) >= c.factionAllegianceFriendCutoff
-            ? c.factionVendorMultiplier
-            : 1),
+      const currentIntensity =
+        crewMember.getPassiveIntensity(passiveForSale.id)
+      const price = c.getCrewPassivePrice(
+        passiveForSale,
+        currentIntensity,
+        planet,
+        ship.guildId,
       )
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
-      crewMember.addPassive(
-        c.crewPassives[passiveForSale.id],
-      )
+      crewMember.addToPermanentPassive({
+        ...passiveForSale,
+      })
 
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
@@ -774,11 +776,11 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.faction)
+      planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought passive ${passiveId} from ${vendorLocation}.`,
+        `${crewMember.name} on ${ship.name} bought ${passiveForSale.intensity} ${passiveId} (passive) from ${planet.name}.`,
       )
     },
   )

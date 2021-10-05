@@ -186,8 +186,7 @@ interface ShipScanDataShape {
   planet:
     | (keyof BasePlanetData)[]
     | (keyof BaseBasicPlanetData)[]
-  faction: (keyof BaseFactionData)[]
-  species: (keyof BaseSpeciesData)[]
+  guildId: true
   items?: (
     | keyof BaseItemData
     | keyof BaseWeaponData
@@ -198,7 +197,10 @@ interface ShipScanDataShape {
   )[]
   crewMembers?: (keyof BaseCrewMemberData)[]
   rooms?: boolean
+  mass?: boolean
   chassis?: (keyof BaseChassisData)[]
+  speed?: boolean
+  direction?: boolean
   _hp?: boolean
   _maxHp?: boolean
   attackable?: boolean

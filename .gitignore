@@ -11,9 +11,7 @@ frontend/@types/
 frontend/common/
 private*.md
 push-docker-images-prod.sh
-game/dist
-discord/dist
-frontend/dist
+tsconfig.*.tsbuildinfo
 .gitignore
 game/ssl/localhost.key
 game/ssl/localhost.crt
@@ -21,3 +19,7 @@ ssl/localhost.key
 ssl/localhost.crt
 game/tsconfig.game.tsbuildinfo
 git
+game/dist
+discord/dist
+*.tsbuildinfo
+newrelic_agent.log

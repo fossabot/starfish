@@ -29,7 +29,8 @@ export default function stubify<
   let objectWithGetters: StubType
   if (
     !Array.isArray(baseObject) &&
-    typeof baseObject === `object`
+    typeof baseObject === `object` &&
+    !(baseObject instanceof String)
   )
     objectWithGetters = applyGettersToObject(
       baseObject,

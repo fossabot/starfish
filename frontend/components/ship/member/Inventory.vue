@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="panesection" v-if="inventory.length > 0">
+    <div class="panesection">
       <div class="panesubhead">Cargo</div>
 
       <div

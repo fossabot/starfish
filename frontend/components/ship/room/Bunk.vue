@@ -39,12 +39,38 @@ export default Vue.extend({
     },
     timeToRested() {
       if (this.crewMember.stamina === 1) return null
+      const passiveBoostMultiplier =
+        1 +
+        ((
+          this.crewMember as CrewMemberStub
+        ).passives?.reduce(
+          (total, p: CrewPassiveData) =>
+            p.id === 'boostStaminaRegeneration'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0) +
+        ((this.ship as ShipStub).passives?.reduce(
+          (total, p: ShipPassiveEffect) =>
+            p.id === 'boostStaminaRegeneration'
+              ? total + (p.intensity || 0)
+              : total,
+          0,
+        ) || 0)
+      const generalBoostMultiplier =
+        c.getGeneralMultiplierBasedOnCrewMemberProximity(
+          this.crewMember,
+          this.ship.crewMembers,
+        )
+
       return c.msToTimeString(
         ((this.crewMember.maxStamina -
           this.crewMember.stamina) /
-          c.getStaminaGainPerTickForSingleCrewMember(
+          (c.getStaminaGainPerTickForSingleCrewMember(
             this.ship.gameSettings.baseStaminaUse,
-          )) *
+          ) *
+            generalBoostMultiplier *
+            passiveBoostMultiplier)) *
           c.tickInterval,
       )
     },

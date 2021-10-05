@@ -41,6 +41,9 @@ function distance(a = [0, 0], b = [0, 0]) {
     const d = a[1] - b[1];
     return Math.sqrt(c * c + d * d);
 }
+/**
+ * distance in degrees [0, 360] between two angles
+ */
 function angleFromAToB(a = [0, 0], b = [0, 0]) {
     return (((Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) /
         Math.PI +

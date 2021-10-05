@@ -29,7 +29,7 @@
               ship
             </li>
             <li>
-              The satisfaction of supporting an indie
+              The satisguild of supporting an indie
               developer
             </li>
             <li>My sincere gratitude</li>

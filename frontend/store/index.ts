@@ -54,6 +54,16 @@ export const mutations = {
       for (let prop in updates)
         Vue.set(crewMember, prop, updates[prop])
   },
+  removeACrewMember(state, id) {
+    const crewMember = state.ship?.crewMembers?.find(
+      (c) => c.id === id,
+    )
+    if (crewMember)
+      state.ship?.crewMembers?.splice(
+        state.ship.crewMembers.indexOf(crewMember),
+        1,
+      )
+  },
 
   setBasicsProp(state, { shipId, prop, value }) {
     // c.log(`setBasicsProp`, shipId, prop, value)
@@ -267,7 +277,7 @@ export const actions = {
             previousShipId !== res.data.id ||
             wasDisconnected
           ) {
-            commit(`set`, { ship: null })
+            commit(`set`, { ship: null, crewMember: null })
             await Vue.nextTick() // testing this to make sure data fully resets
             commit(`set`, { ship: res.data })
           }
@@ -305,13 +315,19 @@ export const actions = {
       //   state.ship?.id,
       //   id,
       // )
-      dispatch(`socketSetup`, id, true)
+      dispatch(`socketSetup`, id)
     })
+
+    // this.$socket.on(`ship:reload`, () => {
+    //   c.log(`Reloading ship...`)
+    //   dispatch(`socketSetup`)
+    // })
   },
 
   updateShip({ commit, state }, updates) {
     // c.log(`updating ship props`, Object.keys(updates))
-    // c.log(`update`)
+    // if (Object.keys(updates).includes(`seenPlanets`))
+    //   c.log(`update`, updates.seenPlanets)
     if (!state.ship) return
     if (updates.id && state.ship.id !== updates.id)
       return c.log(`skipping late update for previous ship`)
@@ -345,6 +361,15 @@ export const actions = {
         updates.crewMembers.forEach((cmStub) =>
           commit(`updateACrewMember`, cmStub),
         )
+        const removedCrewMembers = existingMembers.filter(
+          (em) =>
+            updates.crewMembers.findIndex(
+              (cm) => cm.id === em.id,
+            ) === -1,
+        )
+        removedCrewMembers.forEach((cm) =>
+          commit(`removeACrewMember`, cm.id),
+        )
       } else if (prop === `visible` && updates.visible) {
         // * planets send only the things that updated, so we update that here
         if (!state.ship?.visible)
@@ -360,7 +385,7 @@ export const actions = {
           for (let updatedPlanet of updates.visible
             ?.planets || []) {
             const existingData = newVisible.planets.find(
-              (p) => updatedPlanet.name === p.name,
+              (p) => updatedPlanet.id === p.id,
             )
             if (!existingData)
               newVisible.planets.push(updatedPlanet)
@@ -415,14 +440,14 @@ export const actions = {
         })
         if (`error` in idRes) {
           dispatch(`notifications/notify`, {
-            text: idRes.error,
+            text: `User id get error: ${idRes.error}`,
             type: `error`,
           })
           c.log(`login error:`, idRes.error)
           return
         }
         userId = idRes.data
-        c.log({ userId })
+        // c.log({ userId })
       }
       if (userId) storage.set(`userId`, userId)
 
@@ -444,10 +469,11 @@ export const actions = {
             })
 
           if (guildsRes && `error` in guildsRes) {
-            dispatch(`notifications/notify`, {
-              text: guildsRes.error,
-              type: `error`,
-            })
+            // todo double requesting this, resulting in "you are being rate limited"
+            // dispatch(`notifications/notify`, {
+            //   text: `Guild fetch error: ${guildsRes.error}`,
+            //   type: `error`,
+            // })
 
             if (guildsRes.error === `Bad token`) {
               // dispatch(`logout`)
@@ -455,7 +481,7 @@ export const actions = {
               return
             }
 
-            c.log(`login error!`, guildsRes.error)
+            c.log(`guild fetch error!`, guildsRes.error)
             return
           } else if (guildsRes && !(`error` in guildsRes)) {
             shipIds = guildsRes ? guildsRes.data : undefined

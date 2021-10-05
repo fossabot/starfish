@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
+const globals_1 = __importDefault(require("./globals"));
 const maxNameLength = 16;
 function numberWithCommas(x) {
     if (x < 1000)
@@ -19,6 +20,19 @@ function numberWithCommas(x) {
         .replace(/\B(?=(\d{3})+(?!\d))/g, `,`) +
         (decimal ? `${math_1.default.r2(decimal, 6)}`.substring(1) : ``);
     return (negative ? `-` : ``) + total;
+}
+function speedNumber(numberInAu, noTag = false) {
+    let output = ``;
+    const numberInKm = numberInAu * globals_1.default.kmPerAu;
+    if (numberInKm < 1000)
+        output = `${math_1.default.r2(numberInKm, 0)}`;
+    else if (numberInKm < 1000000)
+        output = `${math_1.default.r2(numberInKm / 1000, 0)}k`;
+    else if (numberInKm < 1000000000)
+        output = `${math_1.default.r2(numberInKm / 1000000, 2)}M`;
+    else
+        output = `${math_1.default.r2(numberInKm / 1000000000, 2)}B`;
+    return output + (noTag ? `` : ` km/hr`);
 }
 function printList(list) {
     if (!list)
@@ -96,7 +110,7 @@ function percentToTextBars(percent = 0, barCount = 10) {
     const bars = [];
     const barGap = 1 / barCount;
     for (let i = 0; i < 1; i += 1 / barCount) {
-        bars.push(Math.max(i - barGap / 2, 0) < percent ? `▓` : `░`);
+        bars.push(Math.max(i - barGap / 2, 0) < percent ? `■` : ` `);
     }
     return `\`` + bars.join(``) + `\``;
 }
@@ -229,6 +243,7 @@ function arrayMove(arr, oldIndex, newIndex) {
 exports.default = {
     maxNameLength,
     numberWithCommas,
+    speedNumber,
     printList,
     degreesToArrow,
     degreesToArrowEmoji,

@@ -5,7 +5,25 @@ import { game } from '../..'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
-import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
+
+// ----- online count -----
+const connectedIds: { id: string; lastSeen: number }[] = []
+const idConnected = (id: string) => {
+  const found = connectedIds.find((e) => e.id === id)
+  if (!found) {
+    connectedIds.push({ id, lastSeen: Date.now() })
+    game.activePlayers++
+  } else found.lastSeen = Date.now()
+}
+const clearInactive = () => {
+  const now = Date.now()
+  connectedIds.forEach((e) => {
+    if (now - e.lastSeen > c.userIsOfflineTimeout)
+      connectedIds.splice(connectedIds.indexOf(e), 1)
+  })
+  game.activePlayers = connectedIds.length
+}
+setInterval(clearInactive, 20 * 1000)
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -24,8 +42,7 @@ export default function (
           (foundShip as HumanShip).guildName ||
           foundShip.name,
         guildIcon: (foundShip as HumanShip).guildIcon,
-        faction: foundShip.faction,
-        species: foundShip.species,
+        guildId: foundShip.guildId,
         tagline: foundShip.tagline,
         headerBackground: foundShip.headerBackground,
       })
@@ -64,6 +81,7 @@ export default function (
       // * clearing parts of visible here because they're not being properly obfuscated with a raw stubify call
       delete stub.visible
       callback({ data: stub })
+      if (crewMemberId) idConnected(crewMemberId)
       // c.log(
       //   `gray`,
       //   `Frontend client started watching ship ${id} io`,
@@ -76,6 +94,7 @@ export default function (
 
   socket.on(`user:listen`, (userId) => {
     socket.join([`user:${userId}`])
+    idConnected(userId)
   })
 
   socket.on(`ship:respawn`, (id, callback) => {
@@ -133,6 +152,48 @@ export default function (
     // c.log(`gray`, `Skipping tutorial for ship ${id}`)
     ship.tutorial.done(true)
   })
+
+  socket.on(
+    `ship:joinGuild`,
+    (shipId, crewId, guildId, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may change the ship's guild.`,
+        })
+      if (!c.guilds[guildId])
+        return callback({
+          error: `Invalid guild.`,
+        })
+
+      const price = c.getGuildChangePrice(ship as any)
+      if (ship.commonCredits < price)
+        return callback({
+          error: `Not enough common credits.`,
+        })
+
+      ship.commonCredits = Math.round(
+        ship.commonCredits - price,
+      )
+      ship.toUpdate.commonCredits = ship.commonCredits
+
+      ship.changeGuild(guildId)
+
+      const stub = ship.stubify() as ShipStub
+      callback({
+        data: stub,
+      })
+    },
+  )
 
   socket.on(
     `ship:headerBackground`,
@@ -251,12 +312,13 @@ export default function (
         })
 
       if (!orders) {
-        ship.orders = null
-        ship.toUpdate.orders = null
+        ship.orders = false
+        ship.toUpdate.orders = false
         callback({ data: false })
       } else {
         const prevOrders = ship.orders
         if (
+          prevOrders &&
           prevOrders?.verb === orders.verb &&
           prevOrders?.target?.id === orders.target?.id &&
           prevOrders?.target?.type ===
@@ -271,6 +333,7 @@ export default function (
 
         // don't log if it's mostly the same
         if (
+          prevOrders &&
           prevOrders?.verb === orders.verb &&
           prevOrders?.target?.type ===
             orders.target?.type &&
@@ -329,7 +392,13 @@ export default function (
                   : orders.target.type === `ship`
                   ? ship.visible.ships.find(
                       (s) => s.id === orders.target!.id,
-                    )?.faction.color
+                    )?.guildId
+                    ? c.guilds[
+                        ship.visible.ships.find(
+                          (s) => s.id === orders.target!.id,
+                        )?.guildId as any
+                      ].color
+                    : undefined
                   : orders.target.type === `cache`
                   ? `var(--cache)`
                   : `var(--item)`,

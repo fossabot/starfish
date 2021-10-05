@@ -1,34 +1,34 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
-import type { Faction } from '../Faction'
 import type { Planet } from '../Planet/Planet'
 import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
+import type { HumanShip } from './HumanShip'
 
-import { Engine } from '../Item/Engine'
 import type { Item } from '../Item/Item'
+import { Engine } from '../Item/Engine'
 import { Weapon } from '../Item/Weapon'
 import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
+
 import loadouts from '../../presets/loadouts'
-import type { Species } from '../Species'
+
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
-import { AIShip } from './AIShip'
 
 export class Ship extends Stubbable {
-  static maxPreviousLocations: number = 30
+  static maxPreviousLocations: number = 35
+  static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
   name: string
   planet: Planet | false = false
-  readonly faction: Faction
-  readonly species: Species
+  guildId?: GuildId
   readonly game: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
@@ -89,7 +89,7 @@ export class Ship extends Stubbable {
   constructor(
     {
       name,
-      species,
+      guildId,
       chassis,
       items,
       loadout,
@@ -114,21 +114,14 @@ export class Ship extends Stubbable {
     this.ai = true
     this.human = false
 
-    this.species = game.species.find(
-      (s) => s.id === species.id,
-    )!
-    if (!this.species) {
-      c.log(`red`, `no species found for`, species)
-      this.species = game.species[0]
-    }
-    this.faction = this.species.faction
-
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
-    } else if (this.faction) {
+    } else if (guildId) {
       this.location = [
-        ...(this.faction.homeworld?.location || [0, 0]),
+        ...(this.game.getHomeworld(guildId)?.location || [
+          0, 0,
+        ]),
       ].map(
         (pos) =>
           pos +
@@ -137,25 +130,49 @@ export class Ship extends Stubbable {
             this.game.settings.arrivalThreshold * 0.4,
           ),
       ) as CoordinatePair
-      // c.log(`fact`, this.location, this.faction.homeworld)
-    } else this.location = [0, 0]
+      // c.log(`fact`, this.location, this.guild.homeworld)
+    } else
+      this.location = [
+        ...(c
+          .randomFromArray(
+            this.game.planets.filter((p) => !p.homeworld),
+          )
+          .location.map(
+            (pos) =>
+              pos +
+              c.randomBetween(
+                this.game.settings.arrivalThreshold * -0.4,
+                this.game.settings.arrivalThreshold * 0.4,
+              ),
+          ) as CoordinatePair),
+      ]
 
     if (previousLocations)
-      this.previousLocations = previousLocations
+      this.previousLocations = [...previousLocations]
 
     if (tagline) this.tagline = tagline
     if (availableTaglines)
-      this.availableTaglines = availableTaglines
+      this.availableTaglines = availableTaglines.filter(
+        (t) => c.taglineOptions.includes(t),
+      )
     if (headerBackground)
       this.headerBackground = headerBackground
     if (availableHeaderBackgrounds?.length)
       this.availableHeaderBackgrounds =
-        availableHeaderBackgrounds
+        availableHeaderBackgrounds.filter((ab) =>
+          c.headerBackgroundOptions.find(
+            (b) => b.id === ab,
+          ),
+        )
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
-        .map(({ name }: { name: string }) =>
-          this.game.planets.find((p) => p.name === name),
+        .map(
+          ({ id, name }: { id: string; name?: string }) =>
+            this.game.planets.find(
+              (p) =>
+                p.id === id || (p.name && p.name === name),
+            ),
         )
         .filter((p) => p) as Planet[]
 
@@ -193,6 +210,9 @@ export class Ship extends Stubbable {
     this._hp = this.hp
 
     if (stats) this.stats = [...stats]
+
+    if (guildId && c.guilds[guildId])
+      this.changeGuild(guildId)
 
     // passively lose previous locations over time
     // so someone who, for example, sits forever at a planet loses their trail eventually
@@ -235,6 +255,64 @@ export class Ship extends Stubbable {
       ],
       `high`,
     )
+  }
+
+  changeGuild(id: GuildId) {
+    // if somehow there already was one, remove its passives
+    if (this.guildId) {
+      for (let p of c.guilds[this.id].passives)
+        this.removePassive(p)
+    }
+
+    if (c.guilds[id]) {
+      this.guildId = id
+      this.toUpdate.guildId = id
+      for (let p of c.guilds[id].passives)
+        this.applyPassive(p)
+
+      this.addHeaderBackground(
+        c.guilds[id].name + ` Guild 1`,
+        `joining the ${c.guilds[id].name} guild`,
+      )
+      this.addHeaderBackground(
+        c.guilds[id].name + ` Guild 2`,
+        `joining the ${c.guilds[id].name} guild`,
+      )
+
+      this.logEntry(
+        [
+          `${this.name} has joined the`,
+          {
+            color: c.guilds[id].color,
+            text: c.guilds[id].name + ` Guild`,
+          },
+          `&nospace!`,
+        ],
+        `critical`,
+      )
+
+      if (this.planet)
+        this.planet.shipsAt
+          .filter((s) => s.guildId === this.guildId)
+          .forEach((s) => {
+            if (s === (this as any) || !s.planet) return
+            s.logEntry([
+              {
+                text: this.name,
+                color:
+                  this.guildId &&
+                  c.guilds[this.guildId].color,
+                tooltipData: this.toReference() as any,
+              },
+              `has joined the`,
+              {
+                color: c.guilds[id].color,
+                text: c.guilds[id].name + ` Guild`,
+              },
+              `&nospace!`,
+            ])
+          })
+    }
   }
 
   // ----- item mgmt -----
@@ -438,7 +516,7 @@ export class Ship extends Stubbable {
   }
 
   equipLoadout(this: Ship, id: LoadoutId): boolean {
-    c.log(`equipping loadout to`, this.name)
+    // c.log(`equipping loadout to`, this.name)
     const loadout = loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })
@@ -561,50 +639,32 @@ export class Ship extends Stubbable {
     //       ),
     //   )
 
+    const distance = c.distance(
+      this.location,
+      this.previousLocations[
+        this.previousLocations.length - 1
+      ],
+    )
+    const angle = Math.abs(
+      c.angleFromAToB(
+        this.previousLocations[
+          this.previousLocations.length - 1
+        ],
+        previousLocation,
+      ) -
+        c.angleFromAToB(previousLocation, currentLocation),
+    )
     if (
       this.previousLocations.length < 1 ||
-      (Math.abs(
-        c.angleFromAToB(
-          this.previousLocations[
-            this.previousLocations.length - 1
-          ],
-          previousLocation,
-        ) -
-          c.angleFromAToB(
-            previousLocation,
-            currentLocation,
-          ),
-      ) >= 2 &&
-        c.distance(
-          this.location,
-          this.previousLocations[
-            this.previousLocations.length - 1
-          ],
-        ) > 0.00005)
+      (angle >= 5 && distance > 0.00005)
     ) {
       // if (this.human)
       //   c.log(
       //     `adding previous location to`,
       //     this.name,
       //     this.previousLocations.length,
-      //     Math.abs(
-      //       c.angleFromAToB(
-      //         this.previousLocations[
-      //           this.previousLocations.length - 1
-      //         ],
-      //         previousLocation,
-      //       ) -
-      //         c.angleFromAToB(
-      //           previousLocation,
-      //           currentLocation,
-      //         ),
-      //     ),
-      //     c.distance(
-      //       this.location,
-      //       this.previousLocations[
-      //         this.previousLocations.length - 1
-      //       ],
-      //     ),
+      //     angle,
+      //     distance,
       //   )
       this.previousLocations.push([...currentLocation])
       while (
@@ -655,9 +715,7 @@ export class Ship extends Stubbable {
           // comes back as kg * m / second == N
           .map(
             (g) =>
-              (g *
-                Math.min(c.deltaTime / c.tickInterval, 2) *
-                c.gameSpeedMultiplier) /
+              (g * c.gameSpeedMultiplier) /
               this.mass /
               c.kmPerAu /
               c.mPerKm,
@@ -715,6 +773,7 @@ export class Ship extends Stubbable {
   }
 
   get hp() {
+    const prevHp = this._hp
     const total = this.items.reduce(
       (total, i) => Math.max(0, i.maxHp * i.repair) + total,
       0,
@@ -728,6 +787,23 @@ export class Ship extends Stubbable {
     this.dead = total <= 0
     if (this.dead !== wasDead)
       this.toUpdate.dead = this.dead
+
+    if (
+      `logEntry` in this &&
+      this.human &&
+      !this.dead &&
+      prevHp >
+        this._maxHp * Ship.notifyWhenHealthDropsToPercent &&
+      this._hp <=
+        this._maxHp * Ship.notifyWhenHealthDropsToPercent
+    ) {
+      this.logEntry(
+        `${this.name}'s HP has dropped below ${
+          Ship.notifyWhenHealthDropsToPercent * 100
+        }%!`,
+        `critical`,
+      )
+    }
     return total
   }
 
@@ -740,7 +816,10 @@ export class Ship extends Stubbable {
 
   // ----- cosmetics -----
   addTagline(tagline: string, reason: string) {
-    if (this.availableTaglines.find((t) => t === tagline))
+    if (
+      !c.taglineOptions.find((o) => o === tagline) ||
+      this.availableTaglines.find((t) => t === tagline)
+    )
       return
     this.availableTaglines.push(tagline)
     this.toUpdate.availableTaglines = this.availableTaglines
@@ -755,6 +834,7 @@ export class Ship extends Stubbable {
 
   addHeaderBackground(bg: string, reason: string) {
     if (
+      !c.headerBackgroundOptions.find((o) => o.id === bg) ||
       this.availableHeaderBackgrounds.find((b) => b === bg)
     )
       return
@@ -812,21 +892,14 @@ export class Ship extends Stubbable {
     return existing.amount
   }
 
-  toReference() {
+  toReference(): Reference {
     return {
       type: `ship`,
-      id: this.id,
       name: this.name,
-      faction: {
-        type: `faction`,
-        id: this.faction.id,
-      },
-      species: {
-        type: `species`,
-        id: this.species.id,
-      },
-      tagline: this.tagline,
-      headerBackground: this.headerBackground,
+      id: this.id,
+      guildId: this.guildId,
+      tagline: this.tagline || undefined,
+      headerBackground: this.headerBackground || undefined,
       level: (this as any).level,
     }
   }

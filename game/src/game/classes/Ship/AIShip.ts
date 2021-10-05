@@ -29,6 +29,7 @@ export class AIShip extends CombatShip {
     zones: [],
   }
 
+  guildId: GuildId = `fowl`
   keyAngle = Math.random() * 365
   targetLocation: CoordinatePair
 
@@ -231,13 +232,9 @@ export class AIShip extends CombatShip {
         c.gameSpeedMultiplier
 
       this.location[0] +=
-        unitVectorToTarget[0] *
-        thrustMagnitude *
-        (c.deltaTime / c.tickInterval)
+        unitVectorToTarget[0] * thrustMagnitude
       this.location[1] +=
-        unitVectorToTarget[1] *
-        thrustMagnitude *
-        (c.deltaTime / c.tickInterval)
+        unitVectorToTarget[1] * thrustMagnitude
 
       this.game.chunkManager.addOrUpdate(
         this,

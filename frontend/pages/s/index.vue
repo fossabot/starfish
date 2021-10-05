@@ -41,7 +41,6 @@
 
             <ShipCaptainsQuarters />
 
-            <!-- <ShipVisible /> -->
             <ShipScanShip />
 
             <ShipItems />
@@ -49,11 +48,11 @@
             <ShipLog />
 
             <ShipPassives />
-            <!-- <ShipStats /> -->
+            <ShipStats />
 
             <ShipCrewRank />
 
-            <ShipFactionRank />
+            <ShipGuildRank />
           </template>
 
           <template v-if="ship && ship.dead">
@@ -185,6 +184,7 @@ export default Vue.extend({
         this.$refs.container as HTMLElement,
         {
           centerX: true,
+          skipLessThanHeight: 40,
         },
       )
     },

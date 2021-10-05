@@ -6,8 +6,6 @@ import { db } from '../db'
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet/Planet'
 import { Cache } from './classes/Cache'
-import { Faction } from './classes/Faction'
-import { Species } from './classes/Species'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
 
@@ -33,35 +31,27 @@ export class Game {
   readonly planets: Planet[] = []
   readonly caches: Cache[] = []
   readonly zones: Zone[] = []
-  readonly factions: Faction[] = []
-  readonly species: Species[] = []
   readonly attackRemnants: AttackRemnant[] = []
 
   readonly chunkManager = new ChunkManager()
 
   settings: AdminGameSettings
 
-  factionRankings: FactionRanking[] = []
+  guildRankings: GuildRanking[] = []
 
   paused: boolean = false
+  activePlayers: number = 0
 
   constructor() {
     this.startTime = Date.now()
     this.settings = defaultGameSettings()
 
-    Object.values(c.factions).forEach((fd) =>
-      this.addFaction(fd),
-    )
-    Object.values(c.species).map((sd) =>
-      this.addSpecies(sd),
-    )
-
     c.log(
       `Loaded ${
         Object.keys(c.species).length
       } species and ${
-        Object.keys(c.factions).length
-      } factions.`,
+        Object.keys(c.guilds).length
+      } guilds.`,
     )
 
     // setTimeout(() => {
@@ -91,7 +81,7 @@ export class Game {
 
     this.tick()
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
   }
 
   async save() {
@@ -114,19 +104,31 @@ export class Game {
       await db.ship.addOrUpdateInDb(s)
     }
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
 
     c.log(
       `gray`,
       `----- Saved Game in ${c.r2(
         (Date.now() - saveStartTime) / 1000,
-      )}s ----- (Tick avg: ${c.r2(
+      )}s -----`,
+    )
+    c.log(
+      `gray`,
+      `    - ${this.activePlayers} player${
+        this.activePlayers === 1 ? `` : `s`
+      } online in the last ${c.msToTimeString(
+        c.userIsOfflineTimeout,
+      )}`,
+    )
+    c.log(
+      `gray`,
+      `    - Tick avg: ${c.r2(
         this.averageTickTime,
         2,
       )}ms, Worst human ship avg: ${c.r2(
         this.averageWorstShipTickLag,
         2,
-      )}ms)`,
+      )}ms`,
     )
   }
 
@@ -143,12 +145,12 @@ export class Game {
     ))
       this.removeShip(inactiveShip)
 
-    this.recalculateFactionRankings()
+    this.recalculateGuildRankings()
   }
 
   // ----- game loop -----
 
-  private tickCount = 0
+  tickCount = 0
   private lastTickTime: number = Date.now()
   private lastTickExpectedTime: number = 0
   private averageTickLag: number = 0
@@ -371,9 +373,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -521,9 +524,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -630,9 +634,10 @@ export class Game {
           })
           .map((s) => {
             return {
-              color: showColors
-                ? s.faction.color
-                : undefined,
+              color:
+                showColors && s.guildId
+                  ? c.guilds[s.guildId].color
+                  : undefined,
               points: [
                 ...s.previousLocations,
                 s.location,
@@ -729,7 +734,7 @@ export class Game {
     while (
       this.planets.length <
         this.gameSoftArea * this.settings.planetDensity ||
-      this.planets.length < this.factions.length - 1
+      this.planets.length < Object.keys(c.guilds).length - 1
     ) {
       const weights: {
         weight: number
@@ -741,13 +746,20 @@ export class Game {
       const selection = c.randomWithWeights(weights)
       // ----- basic planet -----
       if (selection === `basic`) {
-        const factionThatNeedsAHomeworld =
-          this.factions.find(
-            (f) => f.id !== `red` && !f.homeworld,
-          )
+        const guildThatNeedsAHomeworld = Object.values(
+          c.guilds,
+        ).find(
+          (f) =>
+            f.id !== `fowl` &&
+            !this.planets.find(
+              (p) =>
+                p.planetType === `basic` &&
+                (p as BasicPlanet).homeworld === f.id,
+            ),
+        )
         const p = generateBasicPlanetData(
           this,
-          factionThatNeedsAHomeworld?.id,
+          guildThatNeedsAHomeworld?.id,
         )
         if (!p) continue
         const planet = await this.addBasicPlanet(p)
@@ -758,8 +770,8 @@ export class Game {
           } at ${planet.location
             .map((l) => c.r2(l))
             .join(`, `)}${
-            factionThatNeedsAHomeworld
-              ? ` (${factionThatNeedsAHomeworld.id} faction homeworld)`
+            guildThatNeedsAHomeworld
+              ? ` (${guildThatNeedsAHomeworld.id} guild homeworld)`
               : ``
           }.`,
         )
@@ -773,7 +785,11 @@ export class Game {
         const planet = await this.addMiningPlanet(p)
         c.log(
           `gray`,
-          `Spawned mining planet ${planet.name} at ${planet.location}.`,
+          `Spawned mining planet ${
+            planet.name
+          } at ${planet.location
+            .map((l) => c.r2(l))
+            .join(`, `)}.`,
         )
       }
     }
@@ -876,19 +892,17 @@ export class Game {
 
       const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
       const species = c.randomFromArray(
-        this.species
-          .filter((s) => s.faction.id === `red`)
+        Object.values(c.species)
+          .filter((s) => s.aiOnly)
           .map((s) => s.id),
-      ) as SpeciesKey
+      ) as SpeciesId
 
       this.addAIShip({
         location: spawnPoint,
         name: `${c.capitalize(
           species.substring(0, species.length - 1),
         )}${`${Math.random().toFixed(3)}`.substring(2)}`,
-        species: {
-          id: species,
-        },
+        guildId: `fowl`,
         level,
         headerBackground: `ai.jpg`,
       })
@@ -1013,7 +1027,7 @@ export class Game {
     save = true,
   ): Promise<Planet> {
     const existing = this.planets.find(
-      (p) => p.name === data.name,
+      (p) => p.id === data.id,
     )
     if (existing) {
       c.log(
@@ -1030,9 +1044,12 @@ export class Game {
 
     this.chunkManager.addOrUpdate(newPlanet)
 
-    if (`homeworld` in newPlanet && newPlanet.homeworld)
-      (newPlanet as BasicPlanet).homeworld!.homeworld =
-        newPlanet
+    if (`homeworld` in newPlanet && newPlanet.homeworld) {
+      ;(newPlanet as BasicPlanet).homeworld =
+        newPlanet.guildId
+      ;(newPlanet as BasicPlanet).guildId =
+        newPlanet.guildId
+    }
 
     if (save) await db.planet.addOrUpdateInDb(newPlanet)
     return newPlanet
@@ -1043,7 +1060,7 @@ export class Game {
     save = true,
   ) {
     const existing = this.planets.find(
-      (p) => p.name === data.name,
+      (p) => p.id === data.id,
     )
     if (existing) {
       c.log(
@@ -1064,16 +1081,26 @@ export class Game {
     return newPlanet
   }
 
-  addFaction(data: BaseFactionData): Faction {
-    const newFaction = new Faction(data, this)
-    this.factions.push(newFaction)
-    return newFaction
-  }
-
-  addSpecies(data: BaseSpeciesData): Species {
-    const newSpecies = new Species(data, this)
-    this.species.push(newSpecies)
-    return newSpecies
+  async removePlanet(planet: Planet) {
+    c.log(`Removing planet ${planet.name} from the game.`)
+    this.humanShips.forEach((hs) => {
+      const seenThisPlanet = hs.seenPlanets.findIndex(
+        (lm) => lm.type === `planet` && lm.id === planet.id,
+      )
+      if (seenThisPlanet !== -1) {
+        hs.seenPlanets.splice(seenThisPlanet, 1)
+        hs.toUpdate.seenPlanets = hs.seenPlanets.map((z) =>
+          z.toVisibleStub(),
+        )
+      }
+    })
+    this.chunkManager.remove(planet)
+    const index = this.planets.findIndex(
+      (z) => planet.id === z.id,
+    )
+    if (index === -1) return
+    this.planets.splice(index, 1)
+    await db.planet.removeFromDb(planet.id)
   }
 
   async addCache(
@@ -1099,9 +1126,8 @@ export class Game {
     return newCache
   }
 
-  removeCache(cache: Cache) {
+  async removeCache(cache: Cache) {
     c.log(`Removing cache ${cache.id} from the game.`)
-    db.cache.removeFromDb(cache.id)
     const index = this.caches.findIndex(
       (ec) => cache.id === ec.id,
     )
@@ -1109,6 +1135,7 @@ export class Game {
       return c.log(`Failed to find cache in list.`)
     this.caches.splice(index, 1)
     this.chunkManager.remove(cache)
+    await db.cache.removeFromDb(cache.id)
     // c.log(this.caches.length, `remaining`)
   }
 
@@ -1134,7 +1161,7 @@ export class Game {
     return newZone
   }
 
-  removeZone(zone: Zone) {
+  async removeZone(zone: Zone) {
     c.log(`Removing zone ${zone.name} from the game.`)
     this.humanShips.forEach((hs) => {
       const seenThisZone = hs.seenLandmarks.findIndex(
@@ -1147,13 +1174,13 @@ export class Game {
         )
       }
     })
-    db.zone.removeFromDb(zone.id)
     this.chunkManager.remove(zone)
     const index = this.zones.findIndex(
       (z) => zone.id === z.id,
     )
     if (index === -1) return
     this.zones.splice(index, 1)
+    await db.zone.removeFromDb(zone.id)
   }
 
   addAttackRemnant(
@@ -1169,15 +1196,15 @@ export class Game {
     return newAttackRemnant
   }
 
-  removeAttackRemnant(ar: AttackRemnant) {
+  async removeAttackRemnant(ar: AttackRemnant) {
     // c.log(`Removing attack remnant ${ar.id} from the game.`)
-    db.attackRemnant.removeFromDb(ar.id)
     const index = this.attackRemnants.findIndex(
       (eAr) => ar.id === eAr.id,
     )
     if (index === -1) return
     this.attackRemnants.splice(index, 1)
     this.chunkManager.remove(ar)
+    await db.attackRemnant.removeFromDb(ar.id)
   }
 
   get humanShips(): HumanShip[] {
@@ -1204,14 +1231,55 @@ export class Game {
     ) as MiningPlanet[]
   }
 
-  recalculateFactionRankings() {
+  getHomeworld(guildId?: GuildId): BasicPlanet | undefined {
+    if (!guildId) return
+    return this.basicPlanets.find(
+      (p) => p.guildId === guildId && p.homeworld,
+    )
+  }
+
+  resetHomeworlds() {
+    this.basicPlanets
+      .filter((p) => p.guildId)
+      .forEach((p) => {
+        c.log(
+          `${p.name} is no longer ${p.guildId}'s homeworld`,
+        )
+        p.guildId = undefined
+        p.homeworld = undefined
+        p.resetLevels(true)
+        p.color = `hsl(${Math.round(
+          Math.random() * 360,
+        )}, ${Math.round(Math.random() * 80 + 20)}%, ${
+          Math.round(Math.random() * 40) + 40
+        }%)`
+      })
+
+    for (let guildId of Object.keys(c.guilds).filter(
+      (g) => g !== `fowl`,
+    ) as GuildId[]) {
+      const newHomeworld = c.randomFromArray(
+        this.basicPlanets.filter((p) => !p.guildId),
+      )
+      newHomeworld.guildId = guildId
+      newHomeworld.homeworld = guildId
+      newHomeworld.resetLevels(true)
+      newHomeworld.color = c.guilds[guildId].color
+      c.log(
+        `${newHomeworld.name} is now ${newHomeworld.guildId}'s homeworld`,
+      )
+    }
+  }
+
+  recalculateGuildRankings() {
     // netWorth
-    let topNetWorthShips: FactionRankingTopEntry[] = []
-    const netWorthScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
-      if (faction.id === `red`) continue
+    let topNetWorthShips: GuildRankingTopEntry[] = []
+    const netWorthScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       let total = 0
-      faction.members
+      this.ships
+        .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
@@ -1226,16 +1294,14 @@ export class Game {
           }
           topNetWorthShips.push({
             name: s.name,
-            color: faction.color,
+            color: guild.color,
             score: shipTotal,
           })
 
           total += shipTotal
         })
       netWorthScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        guildId: guild.id,
         score: total,
       })
     }
@@ -1244,21 +1310,19 @@ export class Game {
       .slice(0, 5)
 
     // control
-    const controlScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
-      if (faction.id === `red`) continue
+    const controlScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       controlScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        guildId: guild.id,
         score: 0,
       })
     }
     for (let planet of this.basicPlanets) {
       planet.allegiances.forEach((a) => {
-        if (a.faction.id === `red`) return
+        if (a.guildId === `fowl`) return
         const found = controlScores.find(
-          (s) => s.faction.id === a.faction.id,
+          (s) => s.guildId === a.guildId,
         )
         if (!found) return
         // c.log(`planet with allegiance:`, found) // todo remove
@@ -1267,27 +1331,26 @@ export class Game {
     }
 
     // members
-    let topMembersShips: FactionRankingTopEntry[] = []
-    const membersScores: FactionRankingScoreEntry[] = []
-    for (let faction of this.factions) {
-      if (faction.id === `red`) continue
+    let topMembersShips: GuildRankingTopEntry[] = []
+    const membersScores: GuildRankingScoreEntry[] = []
+    for (let guild of Object.values(c.guilds)) {
+      if (guild.id === `fowl`) continue
       let total = 0
-      faction.members
+      this.ships
+        .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
           let shipTotal =
             (s as HumanShip).crewMembers.length || 0
           topMembersShips.push({
             name: s.name,
-            color: faction.color,
+            color: guild.color,
             score: shipTotal,
           })
           total += shipTotal
         })
       membersScores.push({
-        faction: c.stubify(faction, [
-          `members`,
-        ]) as FactionStub,
+        guildId: guild.id,
         score: total,
       })
     }
@@ -1295,7 +1358,7 @@ export class Game {
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
 
-    this.factionRankings = [
+    this.guildRankings = [
       {
         category: `netWorth`,
         scores: netWorthScores.sort(
@@ -1318,12 +1381,11 @@ export class Game {
       },
     ]
 
-    // c.log(JSON.stringify(this.factionRankings, null, 2))
+    // c.log(JSON.stringify(this.guildRankings, null, 2))
 
     this.humanShips.forEach(
       (hs) =>
-        (hs.toUpdate.factionRankings =
-          this.factionRankings),
+        (hs.toUpdate.guildRankings = this.guildRankings),
     )
   }
 }

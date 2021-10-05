@@ -3,11 +3,12 @@
     v-if="show"
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/16.jpg"
+    class="shipscan"
   >
     <template #title>
       <span class="sectionemoji">🛸</span>Scan Ships
     </template>
-    <div class="panesection shipscan">
+    <div class="panesection">
       <b>
         {{ scannable.length }} ship{{
           scannable.length === 1 ? '' : 's'
@@ -95,6 +96,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .shipscan {
-  width: 230px;
+  width: 250px;
 }
 </style>

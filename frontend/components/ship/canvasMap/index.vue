@@ -15,7 +15,10 @@
     <div ref="resizewatcher">
       <div
         class="panesection padnone mappane"
-        :class="{ killtouchevents: interactive }"
+        :class="{
+          killtouchevents:
+            interactive && (isPanning || isZooming),
+        }"
         :style="{
           width: widthAdjustedToWindowSize + 'px',
           height: widthAdjustedToWindowSize + 'px',
@@ -277,11 +280,18 @@ export default Vue.extend({
               : null
 
           if (tp) {
+            let radius
             if (tp.location) {
+              if (
+                tp.type &&
+                ['zone', 'weapon'].includes(tp.type)
+              )
+                radius = tp.radius
               targetPoints.push({
                 location: tp.location,
-                color: tp.faction
-                  ? c.factions[tp.faction.id].color
+                radius,
+                color: tp.guildId
+                  ? c.guilds[tp.guildId].color
                   : tp.color,
               })
             } else if (tp.type) {
@@ -295,8 +305,8 @@ export default Vue.extend({
                   location: this.ship.visible.ships.find(
                     (s) => s.id === tp.id,
                   )?.location,
-                  color: tp.faction
-                    ? c.factions[tp.faction.id].color
+                  color: tp.guildId
+                    ? c.guilds[tp.guildId].color
                     : tp.color,
                 })
               }
@@ -318,6 +328,22 @@ export default Vue.extend({
                       )
                     )?.color || tp.color,
                 })
+              }
+              if (
+                tp.type === 'zone' &&
+                (
+                  this.ship.visible as VisibleStub
+                )?.zones.find((s) => s.id === tp.id)
+              ) {
+                const found = this.ship.visible.zones.find(
+                  (s) => s.id === tp.id,
+                ) as ZoneStub
+                if (found)
+                  targetPoints.push({
+                    location: found.location,
+                    radius: found.radius,
+                    color: found.color,
+                  })
               }
             }
           }
@@ -486,7 +512,7 @@ export default Vue.extend({
       const fs = this.drawer?.flatScale || 1
 
       if (this.zoom <= 20 / fs && e.deltaY > 0) return
-      if (this.zoom > 500000 / fs && e.deltaY < 0) return
+      if (this.zoom > 1500000 / fs && e.deltaY < 0) return
 
       const zoomSpeed = 0.0015
       const zoomChange =
@@ -495,7 +521,7 @@ export default Vue.extend({
       else this.zoom -= zoomChange
 
       if (this.zoom < 20 / fs) this.zoom = 20 / fs
-      if (this.zoom > 500000 / fs) this.zoom = 500000 / fs
+      if (this.zoom > 1500000 / fs) this.zoom = 1500000 / fs
 
       sizeDifference /= this.zoom
       sizeDifference -= 1
@@ -643,10 +669,9 @@ export default Vue.extend({
       if (
         this.$store.state.tooltip === toShow ||
         (this.$store.state.tooltip?.type === toShow?.type &&
-          this.$store.state.tooltip?.data?.name ===
-            toShow?.data?.name &&
-          this.$store.state.tooltip?.data?.id ===
-            toShow?.data?.id)
+          this.$store.state.tooltip?.name ===
+            toShow?.name &&
+          this.$store.state.tooltip?.id === toShow?.id)
       )
         return
 
