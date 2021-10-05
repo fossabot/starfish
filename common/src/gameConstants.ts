@@ -23,7 +23,7 @@ const planetContributeCostPerXp = 1
 const planetLevelXpRequirementMultiplier = 10
 
 const attackRemnantExpireTime =
-  (1000 * 60 * 60 * 24 * 7) / gameSpeedMultiplier
+  (1000 * 60 * 60 * 24 * 3.5) / gameSpeedMultiplier
 const cacheExpireTime =
   (1000 * 60 * 60 * 24 * 7 * 15) / gameSpeedMultiplier
 
