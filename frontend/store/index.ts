@@ -54,6 +54,16 @@ export const mutations = {
       for (let prop in updates)
         Vue.set(crewMember, prop, updates[prop])
   },
+  removeACrewMember(state, id) {
+    const crewMember = state.ship?.crewMembers?.find(
+      (c) => c.id === id,
+    )
+    if (crewMember)
+      state.ship?.crewMembers?.splice(
+        state.ship.crewMembers.indexOf(crewMember),
+        1,
+      )
+  },
 
   setBasicsProp(state, { shipId, prop, value }) {
     // c.log(`setBasicsProp`, shipId, prop, value)
@@ -305,8 +315,13 @@ export const actions = {
       //   state.ship?.id,
       //   id,
       // )
-      dispatch(`socketSetup`, id, true)
+      dispatch(`socketSetup`, id)
     })
+
+    // this.$socket.on(`ship:reload`, () => {
+    //   c.log(`Reloading ship...`)
+    //   dispatch(`socketSetup`)
+    // })
   },
 
   updateShip({ commit, state }, updates) {
@@ -344,6 +359,15 @@ export const actions = {
           ])
         updates.crewMembers.forEach((cmStub) =>
           commit(`updateACrewMember`, cmStub),
+        )
+        const removedCrewMembers = existingMembers.filter(
+          (em) =>
+            updates.crewMembers.findIndex(
+              (cm) => cm.id === em.id,
+            ) === -1,
+        )
+        removedCrewMembers.forEach((cm) =>
+          commit(`removeACrewMember`, cm.id),
         )
       } else if (prop === `visible` && updates.visible) {
         // * planets send only the things that updated, so we update that here

@@ -436,7 +436,6 @@ export default class FreeMase {
             }
             // add the new available space we've found
             if (newBottom !== top) {
-              console.log(`adding new available space`)
               availableSpaces.push(
                 new Rect({
                   top,

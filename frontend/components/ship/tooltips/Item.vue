@@ -366,7 +366,7 @@ export default Vue.extend({
     },
     scanPropertyString(): string | undefined {
       let s = ''
-      const p: ShipScanDataShape = (this.data as any)
+      const p: ShipScanDataShape = (this.dataToUse as any)
         .shipScanData
       if (!p) return
 

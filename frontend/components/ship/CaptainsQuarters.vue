@@ -45,7 +45,7 @@
       class="panesection"
       v-if="isCaptain && ship.visible"
     >
-      <div class="panesubhead">Set new orders</div>
+      <!-- <div class="panesubhead">Set new orders</div> -->
       <select v-model="verb">
         <option value="">Select a verb...</option>
         <option value="Go to">Go to</option>

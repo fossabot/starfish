@@ -282,7 +282,10 @@ export default Vue.extend({
           if (tp) {
             let radius
             if (tp.location) {
-              if (tp.type && tp.type === 'zone')
+              if (
+                tp.type &&
+                ['zone', 'weapon'].includes(tp.type)
+              )
                 radius = tp.radius
               targetPoints.push({
                 location: tp.location,
