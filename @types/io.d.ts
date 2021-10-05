@@ -16,6 +16,7 @@ interface IOServerEvents {
     id: string
     updates: Partial<ShipStub>
   }) => void
+  [`ship:reload`]: () => void
   [`ship:message`]: (
     id: string,
     message: string | RichLogContent,
