@@ -123,7 +123,7 @@ export const chassis: {
     basePrice: 50 * game.itemPriceMultiplier,
     slots: 6,
     agility: 0.7,
-    maxCargoSpace: 50,
+    maxCargoSpace: 60,
     rarity: 4,
   },
   hauler2: {
@@ -135,7 +135,7 @@ export const chassis: {
     basePrice: 160 * game.itemPriceMultiplier,
     slots: 6,
     agility: 0.75,
-    maxCargoSpace: 60,
+    maxCargoSpace: 80,
     rarity: 8,
     passives: [
       {
@@ -153,7 +153,7 @@ export const chassis: {
     basePrice: 300 * game.itemPriceMultiplier,
     slots: 7,
     agility: 0.75,
-    maxCargoSpace: 80,
+    maxCargoSpace: 100,
     rarity: 10,
     passives: [
       {
@@ -173,7 +173,7 @@ export const chassis: {
     basePrice: 52 * game.itemPriceMultiplier,
     slots: 5,
     agility: 1.4,
-    maxCargoSpace: 20,
+    maxCargoSpace: 30,
     rarity: 4,
     passives: [
       { id: `boostCockpitChargeSpeed`, intensity: 0.4 },
@@ -188,7 +188,7 @@ export const chassis: {
     basePrice: 130 * game.itemPriceMultiplier,
     slots: 6,
     agility: 1.45,
-    maxCargoSpace: 30,
+    maxCargoSpace: 40,
     rarity: 7,
     passives: [
       { id: `boostCockpitChargeSpeed`, intensity: 0.8 },
@@ -203,7 +203,7 @@ export const chassis: {
     basePrice: 220 * game.itemPriceMultiplier,
     slots: 6,
     agility: 1.5,
-    maxCargoSpace: 40,
+    maxCargoSpace: 50,
     rarity: 10,
     passives: [
       { id: `boostCockpitChargeSpeed`, intensity: 0.12 },
