@@ -25,7 +25,7 @@
           :key="otherShip.id"
           :value="index"
         >
-          {{ otherShip.species.icon }}{{ otherShip.name }}
+          {{ otherShip.name }}
         </option>
       </select>
     </div>
