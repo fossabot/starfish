@@ -16,8 +16,6 @@ services:
       - mongodb_root_password
       - mongodb_username
       - mongodb_password
-    logging:
-      driver: loki
 
   game:
     image: 'starfishgame/starfish-game:latest'
@@ -40,8 +38,6 @@ services:
       - mongodb_username
       - mongodb_password
       - admin_keys
-    logging:
-      driver: loki
 
   frontend:
     image: 'starfishgame/starfish-frontend:latest'
@@ -53,8 +49,6 @@ services:
     secrets:
       - google_client_email
       - google_private_key
-    logging:
-      driver: loki
 
   discord:
     image: 'starfishgame/starfish-discord:latest'
@@ -64,8 +58,6 @@ services:
     secrets:
       - discord_token
       - bot_id
-    logging:
-      driver: loki
 
   nginx:
     image: 'starfishgame/starfish-nginx:latest'
@@ -76,8 +68,6 @@ services:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
     labels:
       com.datadoghq.ad.logs: '[<LOGS_CONFIG>]'
-    logging:
-      driver: loki
 
 secrets:
   discord_token:
