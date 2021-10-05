@@ -137,7 +137,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
       ) - 90,
     ) / 90
 
-  const maxGravityLesseningEffectPercentage = 0.75
+  const maxGravityLesseningEffectPercentage = 0.85
   const coneWidth = 0.15
   let gravityLesseningEffectPercentage = 0
   if (
