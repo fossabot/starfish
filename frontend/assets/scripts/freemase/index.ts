@@ -2,7 +2,8 @@ import { FreeMaseRect as Rect } from './Rect'
 
 interface FreeMaseOptions {
   centerX?: boolean
-  verbose?: boolean
+  skipLessThanHeight?: number
+  debug?: boolean
 }
 
 interface FramePlacementData {
@@ -15,7 +16,7 @@ export default class FreeMase {
   maxWidth: number = 99999
   maxHeight = 99999
   window: Window
-  options?: FreeMaseOptions
+  options: FreeMaseOptions = {}
 
   private resizeObserver: ResizeObserver | null = null
   private mutationObserver: MutationObserver | null = null
@@ -27,7 +28,7 @@ export default class FreeMase {
   ) {
     this.parentEl = parentEl
     this.window = window
-    if (options) this.options = options
+    this.options = options
 
     if (!this.parentEl) {
       console.error(
@@ -36,7 +37,7 @@ export default class FreeMase {
       return
     }
     if (!window) {
-      if (this.options?.verbose)
+      if (this.options.debug)
         console.error(
           `FreeMase can only run in a browser (window object not found).`,
         )
@@ -62,7 +63,7 @@ export default class FreeMase {
     while (!this.parentEl || !this.window) {
       await sleep(100)
       if (++giveUp > giveUpLimit) {
-        if (this.options?.verbose)
+        if (this.options.debug)
           console.error(`FreeMase:`, `Failed to initialize`)
         return
       }
@@ -80,7 +81,7 @@ export default class FreeMase {
           els.forEach((entry) => {
             const parentEl = entry.target as Element
             if (!parentEl) return
-            if (this.options?.verbose)
+            if (this.options.debug)
               console.log(
                 `FreeMase:`,
                 `base element mutated`,
@@ -95,7 +96,7 @@ export default class FreeMase {
               if (this.watchingForResize.has(el)) return
               if (this.resizeObserver)
                 this.resizeObserver.observe(el)
-              if (this.options?.verbose)
+              if (this.options.debug)
                 console.log(
                   `FreeMase:`,
                   `now watching for resize:`,
@@ -114,7 +115,7 @@ export default class FreeMase {
                 return
               if (this.resizeObserver)
                 this.resizeObserver.observe(addedElement)
-              if (this.options?.verbose)
+              if (this.options.debug)
                 console.log(
                   `FreeMase:`,
                   `now watching for resize:`,
@@ -137,7 +138,7 @@ export default class FreeMase {
                 this.resizeObserver.unobserve(
                   removedElement,
                 )
-              if (this.options?.verbose)
+              if (this.options.debug)
                 console.log(
                   `FreeMase:`,
                   `stopped watching for resize:`,
@@ -154,7 +155,7 @@ export default class FreeMase {
 
     const resizeCallback = debounce(
       (els?: ResizeObserverEntry[]) => {
-        if (this.options?.verbose)
+        if (this.options.debug)
           console.log(`FreeMase:`, `resized`, els)
         if (!ready) return
         this.position()
@@ -171,7 +172,7 @@ export default class FreeMase {
 
     this.resizeObserver = new ResizeObserver(resizeCallback)
     for (let child of Array.from(this.parentEl.children)) {
-      if (this.options?.verbose)
+      if (this.options.debug)
         console.log(
           `FreeMase:`,
           `now watching for resize:`,
@@ -218,18 +219,10 @@ export default class FreeMase {
       element.style.position = `absolute`
       element.style.top = `0px`
       element.style.left = `${
-        this.options?.centerX
+        this.options.centerX
           ? this.maxWidth / 2 - element.offsetWidth / 2
           : 0
       }px`
-      // element.setAttribute(
-      //   `style`,
-      //   `position: absolute; top: 0px; left: ${
-      //     this.options?.centerX
-      //       ? this.maxWidth / 2 - element.offsetWidth / 2
-      //       : 0
-      //   }px;`,
-      // )
     }
 
     const determinePlacementForOneFrame = (
@@ -237,15 +230,45 @@ export default class FreeMase {
     ): FramePlacementData | null => {
       const elBcr = element.getBoundingClientRect()
 
-      const firstFitIndex = availableSpaces.findIndex(
-        (space) => {
+      // const firstFitIndex = availableSpaces.findIndex(
+      //   (space) => {
+      //     if (elBcr.width > space.width) return false
+      //     if (elBcr.height > space.height) return false
+      //     return true
+      //   },
+      // )
+      const bestFitIndex = availableSpaces.findIndex(
+        (space, index) => {
           if (elBcr.width > space.width) return false
           if (elBcr.height > space.height) return false
+          for (
+            let i = index + 1;
+            i <
+            Math.min(index + 10, availableSpaces.length);
+            i++
+          ) {
+            const nextSpace = availableSpaces[i]
+            if (!nextSpace) continue
+
+            if (
+              nextSpace.left <= space.left &&
+              nextSpace.width >= elBcr.width &&
+              nextSpace.top - space.top <
+                this.options.skipLessThanHeight
+            ) {
+              if (
+                availableSpaces[index - 1] &&
+                availableSpaces[index - 1].top === space.top
+              )
+                return true
+              return false
+            }
+          }
           return true
         },
       )
-      if (firstFitIndex === -1) return null
-      const firstFit = availableSpaces[firstFitIndex]
+      if (bestFitIndex === -1) return null
+      const firstFit = availableSpaces[bestFitIndex]
 
       const placedRect: Rect = new Rect({
         top: firstFit.top,
@@ -306,9 +329,9 @@ export default class FreeMase {
                 if (
                   otherRect.right <= takenRect.left &&
                   (!next || otherRect.right > next.right)
-                ) {
+                )
                   return otherRect
-                }
+
                 return next
               },
               null,
@@ -412,7 +435,8 @@ export default class FreeMase {
               }
             }
             // add the new available space we've found
-            if (newBottom !== top)
+            if (newBottom !== top) {
+              console.log(`adding new available space`)
               availableSpaces.push(
                 new Rect({
                   top,
@@ -421,6 +445,7 @@ export default class FreeMase {
                   right,
                 }),
               )
+            }
           }
         }
 
@@ -489,7 +514,7 @@ export default class FreeMase {
       frameData: FramePlacementData[],
     ) => {
       let offsetLeft = 0
-      if (this.options?.centerX) {
+      if (this.options.centerX) {
         const farthestRight = frameData.reduce(
           (farthest, curr) => {
             if (curr.rect.right > farthest)
@@ -511,8 +536,41 @@ export default class FreeMase {
 
     placeFrames(frames)
 
+    if (this.options.debug) {
+      let debugContainer =
+        document.getElementById(`freemaseDebug`)
+      if (!debugContainer) {
+        debugContainer = document.createElement(`div`)
+        debugContainer.id = `freemaseDebug`
+        debugContainer.style.position = `absolute`
+        debugContainer.style.top = `0`
+        debugContainer.style.left = `0`
+        debugContainer.style.height = lastTakenSpace + `px`
+        debugContainer.style.zIndex = `999999`
+        this.parentEl.prepend(debugContainer)
+      } else {
+        // clear existing elements
+        while (debugContainer.firstChild)
+          debugContainer.removeChild(
+            debugContainer.firstChild,
+          )
+      }
+      for (let space of availableSpaces) {
+        const debugEl = document.createElement(`div`)
+        debugEl.style.cssText = `
+          position: absolute;
+          top: ${space.top}px;
+          left: ${space.left}px;
+          width: ${space.width}px;
+          height: ${space.height}px;
+          background: rgba(255, 0, 0, 0.2);
+        `
+        debugContainer.appendChild(debugEl)
+      }
+    }
+
     const elapsedTime = Date.now() - startTime
-    if (this.options?.verbose)
+    if (this.options.debug)
       console.log(
         `FreeMase:`,
         `elapsed time: ${elapsedTime}`,
