@@ -1,6 +1,7 @@
 node_modules
 .env
 db/data
+db/backups
 discord/secrets/
 frontend/secrets/
 db/secrets
@@ -10,9 +11,7 @@ frontend/@types/
 frontend/common/
 private*.md
 push-docker-images-prod.sh
-game/dist
-discord/dist
-frontend/dist
+tsconfig.*.tsbuildinfo
 .gitignore
 game/ssl/localhost.key
 game/ssl/localhost.crt

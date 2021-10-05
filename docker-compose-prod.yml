@@ -33,6 +33,7 @@ services:
       ADMIN_KEYS_FILE: /run/secrets/admin_keys
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
+      - /mnt/disks/mongodb/:/usr/app/game/db_volume
     depends_on:
       - mongodb
     secrets:
@@ -73,6 +74,8 @@ services:
       - '443:443'
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
+    labels:
+      com.datadoghq.ad.logs: '[<LOGS_CONFIG>]'
     logging:
       driver: loki
 

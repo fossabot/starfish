@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 import fs from 'fs'
 
-import { db } from '../../db'
+import { db, getBackups, resetDbToBackup } from '../../db'
 
 import { game } from '../..'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
@@ -124,6 +124,24 @@ export default function (
     game.paused = false
     c.log(`yellow`, `Game unpaused`)
   })
+
+  socket.on(`game:backups`, (id, password, callback) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:backups`,
+      )
+    callback({ data: getBackups() })
+  })
+  socket.on(
+    `game:resetToBackup`,
+    (id, password, backupId) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:resetToBackup`,
+        )
+      resetDbToBackup(backupId)
+    },
+  )
 
   socket.on(`game:messageAll`, (id, password, message) => {
     if (!isAdmin(id, password))

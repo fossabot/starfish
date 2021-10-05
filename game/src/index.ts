@@ -1,3 +1,4 @@
+require(`newrelic`)
 import c from '../../common/dist'
 
 const lastCommit = require(`git-last-commit`)

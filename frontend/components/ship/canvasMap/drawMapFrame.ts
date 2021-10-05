@@ -461,9 +461,8 @@ export default class Drawer {
         this.drawPoint({
           location: [p.location[0], p.location[1] * -1],
           labelTop: p.label || ``,
-          alwaysShowLabels: true,
           radius: p.radius
-            ? p.radius * this.flatScale
+            ? p.radius / this.zoom
             : (25 / this.zoom) * devicePixelRatio,
           color: p.color || `yellow`,
           outline: true,
@@ -556,7 +555,9 @@ export default class Drawer {
     // ----- trails
     visible.ships?.forEach((s) => {
       const pointsToDraw = [
-        ...(s.previousLocations || []),
+        ...(Array.isArray(s.previousLocations)
+          ? s.previousLocations
+          : []),
         s.location,
       ]
       pointsToDraw.forEach((pl, index) => {

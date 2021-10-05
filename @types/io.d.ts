@@ -68,6 +68,16 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:backups`]: (
+    adminId: string,
+    password: string,
+    callback: (res: IOResponse<string[]>) => void,
+  ) => void
+  [`game:resetToBackup`]: (
+    adminId: string,
+    password: string,
+    backupId: string,
+  ) => void
   [`game:messageAll`]: (
     adminId: string,
     password: string,
