@@ -277,7 +277,7 @@ export const actions = {
             previousShipId !== res.data.id ||
             wasDisconnected
           ) {
-            commit(`set`, { ship: null })
+            commit(`set`, { ship: null, crewMember: null })
             await Vue.nextTick() // testing this to make sure data fully resets
             commit(`set`, { ship: res.data })
           }

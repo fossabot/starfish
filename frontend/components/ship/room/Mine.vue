@@ -8,6 +8,21 @@
       ><span class="sectionemoji">⛏️</span>Mining Drop
       Pod</template
     >
+
+    <div class="panesection">
+      <div class="">
+        Your mine speed:
+        {{
+          c.numberWithCommas(
+            c.r2(
+              (minePower / c.tickInterval) * 1000 * 60 * 60,
+              0,
+            ),
+          )
+        }}/hr
+      </div>
+    </div>
+
     <div class="panesection">
       <div>
         <div class="panesubhead">Mining Priority</div>
@@ -26,20 +41,6 @@
           )
         }}
       </button>
-    </div>
-
-    <div class="panesection">
-      <div class="">
-        Your mine speed:
-        {{
-          c.numberWithCommas(
-            c.r2(
-              (minePower / c.tickInterval) * 1000 * 60 * 60,
-              0,
-            ),
-          )
-        }}/hr
-      </div>
     </div>
   </Box>
 </template>

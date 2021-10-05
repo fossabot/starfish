@@ -8,6 +8,17 @@
       ><span class="sectionemoji">🔧</span>Repair
       Bay</template
     >
+
+    <div class="panesection">
+      <div class="">
+        Your repair speed:
+        {{
+          Math.round(totalRepairPower * 60 * 60 * 100) / 100
+        }}
+        HP/hr
+      </div>
+    </div>
+
     <div class="panesection">
       <div>
         <div class="panesubhead">Repair Priority</div>
@@ -20,16 +31,6 @@
       >
         {{ c.capitalize(choice) }}
       </button>
-    </div>
-
-    <div class="panesection">
-      <div class="">
-        Your repair speed:
-        {{
-          Math.round(totalRepairPower * 60 * 60 * 100) / 100
-        }}
-        HP/hr
-      </div>
     </div>
   </Box>
 </template>

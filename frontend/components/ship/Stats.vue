@@ -5,22 +5,29 @@
         <span class="sectionemoji">📊</span>Stats
       </template>
 
-      <div class="panesection">
-        <div class="panesubhead">Ship Stats</div>
-        <ul>
-          <li v-for="s in ship.stats">
-            {{ c.statToString(s) }}
-          </li>
-        </ul>
-      </div>
-      <div class="panesection">
-        <div class="panesubhead">Personal Stats</div>
-        <ul>
-          <li v-for="s in crewMember.stats">
-            {{ c.statToString(s) }}
-          </li>
-        </ul>
-      </div>
+      <Tabs class="tabs">
+        <Tab
+          v-if="crewMember"
+          :title="
+            (c.species[crewMember.speciesId] &&
+              c.species[crewMember.speciesId].icon + ' ') +
+            crewMember.name
+          "
+        >
+          <ul>
+            <li v-for="s in crewMember.stats">
+              {{ c.statToString(s) }}
+            </li>
+          </ul>
+        </Tab>
+        <Tab :title="'🚀 ' + ship.name">
+          <ul>
+            <li v-for="s in ship.stats">
+              {{ c.statToString(s) }}
+            </li>
+          </ul>
+        </Tab>
+      </Tabs>
     </Box>
   </div>
 </template>

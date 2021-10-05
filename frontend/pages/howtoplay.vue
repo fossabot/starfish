@@ -143,6 +143,24 @@
         <b>#📣comms-bay</b> channel in Discord.
       </div>
 
+      <h3>Making Money</h3>
+      <div>
+        There are many ways to make money in
+        {{ c.gameName }}.
+      </div>
+      <div>
+        The easiest way to make money is to sell cargo to a
+        merchant planet. You can buy or mine cargo from
+        planets, find it in caches, or destroy other ships
+        to take their cargo. Planets' cargo prices change
+        often, so keep checking back if the current buy
+        price is too low.
+      </div>
+      <div>
+        There are other ways to make money, but you'll have
+        to explore to find them!
+      </div>
+
       <h3>Planets</h3>
       <div>
         Planets are the safe havens, the hubs, the social

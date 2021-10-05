@@ -41,7 +41,6 @@
 
             <ShipCaptainsQuarters />
 
-            <!-- <ShipVisible /> -->
             <ShipScanShip />
 
             <ShipItems />
@@ -49,7 +48,7 @@
             <ShipLog />
 
             <ShipPassives />
-            <!-- <ShipStats /> -->
+            <ShipStats />
 
             <ShipCrewRank />
 
