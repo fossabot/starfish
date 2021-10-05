@@ -33,6 +33,8 @@
             }`
           : passive.data.source === 'secondWind'
           ? 'Second Wind'
+          : passive.data.source === 'permanent'
+          ? 'Permanent'
           : passive.data.source
       }})
     </span>

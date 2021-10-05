@@ -142,19 +142,24 @@ function statToString(data: {
 }): string {
   const { stat, amount } = data
   let titleString = text.camelCaseToWords(stat)
-  let amountString = math.r2(amount)
+  let amountString: string = `${text.numberWithCommas(
+    math.r2(amount),
+  )}`
   let suffix = ``
 
-  if ([`planetTime`].includes(stat)) {
-    amountString = math.r2(amount / 1000 / 60, 0, true)
-    suffix = `h`
-  }
+  if ([`highestSpeed`].includes(stat))
+    amountString = text.speedNumber(amount)
+
+  if ([`planetTime`, `timeInBunk`].includes(stat))
+    amountString = text.msToTimeString(
+      amount * globals.tickInterval,
+    )
 
   if ([`distanceTraveled`].includes(stat)) suffix = `AU`
 
   return `${text.capitalize(
     titleString,
-  )}: ${text.numberWithCommas(amountString)}${suffix}`
+  )}: ${amountString}${suffix}`
 }
 
 function getPlanetTitle(planet: PlanetStub) {
@@ -303,7 +308,7 @@ function getRepairPrice(
 
 function getCrewPassivePrice(
   passiveForSale: PlanetVendorCrewPassivePrice,
-  currentLevel: number,
+  currentIntensity: number,
   planet: PlanetStub,
   guildId?: GuildId,
 ) {
@@ -311,7 +316,11 @@ function getCrewPassivePrice(
     (crewPassives[passiveForSale.id].buyable?.basePrice ||
       99999) *
       passiveForSale.buyMultiplier *
-      (1 + currentLevel ** 2) *
+      (1 +
+        (currentIntensity /
+          (crewPassives[passiveForSale.id].buyable
+            ?.baseIntensity || 1)) **
+          2) *
       planet.priceFluctuator *
       ((planet.allegiances.find(
         (a) => a.guildId === guildId,

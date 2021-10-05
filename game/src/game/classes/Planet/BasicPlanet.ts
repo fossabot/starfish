@@ -323,16 +323,17 @@ export class BasicPlanet extends Planet {
         Object.keys(c.crewPassives).length
       for (let crewPassive of Object.values(c.crewPassives))
         if (
+          crewPassive.buyable &&
           !this.vendor?.passives.find(
             (p) => p.id === crewPassive.id,
-          ) &&
-          crewPassive.buyable
+          )
         )
           addable.push({
             class: `crewPassives`,
             id: crewPassive.id,
             propensity:
               propensity *
+              5 *
               rarityMultiplier(crewPassive.buyable.rarity),
             intensity: c.r2(
               c.crewPassives[crewPassive.id].buyable!

@@ -325,7 +325,9 @@ export class CrewMember extends Stubbable {
       .reduce((total, p) => (p.intensity || 0) + total, 0)
   }
 
-  addToPermanentPassive(passive: CrewPassiveData) {
+  addToPermanentPassive(
+    passive: CrewPassiveData | PlanetVendorCrewPassivePrice,
+  ) {
     const found = this.permanentPassives.find(
       (p) => p.id === passive.id,
     )
@@ -334,11 +336,30 @@ export class CrewMember extends Stubbable {
         found.intensity += passive.intensity || 0
       else found.intensity = passive.intensity || 0
     } else this.permanentPassives.push(passive)
-    this.applyPassive(passive)
+    this.applyPassive({
+      ...passive,
+      data: {
+        ...((passive as CrewPassiveData).data || {}),
+        source: `permanent`,
+      },
+    })
   }
 
   applyPassive(p: CrewPassiveData) {
-    this.passives.push(p)
+    if (
+      p.data?.source === `permanent` &&
+      this.passives.find(
+        (ep) =>
+          ep.data?.source === `permanent` && ep.id === p.id,
+      )
+    ) {
+      const existing = this.passives.find(
+        (ep) =>
+          ep.data?.source === `permanent` && ep.id === p.id,
+      )
+      if (existing?.intensity)
+        existing.intensity += p.intensity || 0
+    } else this.passives.push(p)
     this.toUpdate.passives = this.passives
 
     // reset all variables that might have changed because of this

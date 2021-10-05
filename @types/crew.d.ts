@@ -112,6 +112,7 @@ interface CrewPassiveData {
           }
         }
       | `secondWind`
+      | `permanent`
     type?: ItemType
     distance?: number
   }

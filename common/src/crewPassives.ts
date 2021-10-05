@@ -12,10 +12,13 @@ const data: {
       baseIntensity: 10,
       wholeNumbersOnly: true,
     },
-    description: (data: CrewPassiveData) =>
+    description: (data: CrewPassiveData, verbose = false) =>
       `Boost personal cargo capacity by ${math.r2(
         data.intensity || 0,
-      )} tons (if your ship's chassis can support it)`,
+      )} tons` +
+      (verbose
+        ? ` (if your ship's chassis can support it)`
+        : ``),
   },
 
   boostCockpitChargeSpeed: {

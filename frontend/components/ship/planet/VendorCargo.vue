@@ -249,7 +249,7 @@ export default Vue.extend({
         this.crewMember.id,
         data.cargoData.id,
         amount,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
@@ -300,7 +300,7 @@ export default Vue.extend({
         this.crewMember.id,
         data.cargoData.id,
         amount,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (
           res: IOResponse<{
             amount: number

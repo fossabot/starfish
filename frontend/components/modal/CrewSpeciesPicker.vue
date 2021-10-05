@@ -40,7 +40,7 @@
             <b>{{ c.crewPassives[p.id].displayName }}</b
             >:
             <span class="sub">{{
-              c.crewPassives[p.id].description(p)
+              c.crewPassives[p.id].description(p, true)
             }}</span>
           </div>
 

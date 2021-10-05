@@ -15,7 +15,7 @@
       v-for="passive in passives"
       :key="'buypassive' + passive.id"
       v-if="passive.data"
-      v-tooltip="passive.data.description"
+      v-tooltip="passive.data.description(passive, true)"
     >
       <button
         :class="{ disabled: !passive.canBuy }"
@@ -23,10 +23,17 @@
           passive.canBuy && buyPassive(passive.data.id)
         "
       >
-        {{ passive.data.displayName }} Lv.{{
-          (crewMemberPassiveLevels[passive.data.id] || 0) +
-          1
-        }}: 💳{{ c.numberWithCommas(passive.price) }}
+        <div>
+          <b>
+            {{ passive.data.displayName
+            }}{{
+              passive.intensity
+                ? ` +${passive.intensity}`
+                : ''
+            }}
+          </b>
+        </div>
+        <div>💳{{ c.numberWithCommas(passive.price) }}</div>
       </button>
     </span>
   </div>
@@ -53,16 +60,17 @@ export default Vue.extend({
       )
     },
 
-    crewMemberPassiveLevels(): {
+    crewMemberPassiveIntensitites(): {
       [key in CrewPassiveId]?: number
     } {
-      const levels: {
+      const intensities: {
         [key in CrewPassiveId]?: number
       } = {}
       for (let p of this.crewMember?.passives || []) {
-        levels[p.type as CrewPassiveId] = p.level
+        intensities[p.id as CrewPassiveId] =
+          p.intensity || 0
       }
-      return levels
+      return intensities
     },
 
     passives(): any[] {
@@ -70,7 +78,9 @@ export default Vue.extend({
         (passive: PlanetVendorCrewPassivePrice) => {
           const price = c.getCrewPassivePrice(
             passive,
-            this.crewMemberPassiveLevels[passive.id] || 0,
+            this.crewMemberPassiveIntensitites[
+              passive.id
+            ] || 0,
             this.ship.planet,
             this.ship.guildId,
           )
@@ -78,6 +88,7 @@ export default Vue.extend({
             data: c.crewPassives[passive.id],
             canBuy: this.crewMember.credits >= price,
             price,
+            intensity: passive.intensity,
           }
         },
       )
@@ -92,7 +103,7 @@ export default Vue.extend({
         this.ship.id,
         this.crewMember?.id,
         passiveId,
-        this.ship?.planet?.name,
+        this.ship?.planet?.id,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

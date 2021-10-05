@@ -753,12 +753,11 @@ export default function (
           error: `That passive is not for sale here.`,
         })
 
-      const currentLevel = crewMember.getPassiveIntensity(
-        passiveForSale.id,
-      )
+      const currentIntensity =
+        crewMember.getPassiveIntensity(passiveForSale.id)
       const price = c.getCrewPassivePrice(
         passiveForSale,
-        currentLevel,
+        currentIntensity,
         planet,
         ship.guildId,
       )
@@ -766,9 +765,9 @@ export default function (
         return callback({ error: `Insufficient funds.` })
 
       crewMember.credits -= price
-      crewMember.addToPermanentPassive(
-        c.crewPassives[passiveForSale.id],
-      )
+      crewMember.addToPermanentPassive({
+        ...passiveForSale,
+      })
 
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
@@ -781,7 +780,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} bought passive ${passiveId} from ${planetId}.`,
+        `${crewMember.name} on ${ship.name} bought ${passiveForSale.intensity} ${passiveId} (passive) from ${planet.name}.`,
       )
     },
   )
