@@ -1,10 +1,14 @@
 import c from '../common/dist'
+
 export default {
   server: {
     port: 4300,
   },
+
   env: {
     IS_DOCKER: process.env.IS_DOCKER !== `false`,
+    NODE_ENV: process.env.NODE_ENV,
+    GAME_NAME: c.gameName,
   },
 
   vue: {
@@ -14,7 +18,13 @@ export default {
   },
 
   head: {
-    title: c.gameName,
+    titleTemplate(titleChunk) {
+      return (
+        (process.env.NODE_ENV ? `DEV - ` : ``) +
+        (titleChunk ? titleChunk + ` | ` : ``) +
+        process.env.GAME_NAME
+      )
+    },
     htmlAttrs: {
       lang: `en`,
     },

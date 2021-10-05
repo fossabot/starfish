@@ -132,6 +132,11 @@ import { get, set, remove } from '../assets/scripts/storage'
 
 export default Vue.extend({
   layout: 'withnavbar',
+  head() {
+    return {
+      title: 'Admin',
+    }
+  },
   data() {
     return {
       c,
