@@ -785,7 +785,11 @@ export class Game {
         const planet = await this.addMiningPlanet(p)
         c.log(
           `gray`,
-          `Spawned mining planet ${planet.name} at ${planet.location}.`,
+          `Spawned mining planet ${
+            planet.name
+          } at ${planet.location
+            .map((l) => c.r2(l))
+            .join(`, `)}.`,
         )
       }
     }
@@ -1077,6 +1081,28 @@ export class Game {
     return newPlanet
   }
 
+  async removePlanet(planet: Planet) {
+    c.log(`Removing planet ${planet.name} from the game.`)
+    this.humanShips.forEach((hs) => {
+      const seenThisPlanet = hs.seenPlanets.findIndex(
+        (lm) => lm.type === `planet` && lm.id === planet.id,
+      )
+      if (seenThisPlanet !== -1) {
+        hs.seenPlanets.splice(seenThisPlanet, 1)
+        hs.toUpdate.seenPlanets = hs.seenPlanets.map((z) =>
+          z.toVisibleStub(),
+        )
+      }
+    })
+    this.chunkManager.remove(planet)
+    const index = this.planets.findIndex(
+      (z) => planet.id === z.id,
+    )
+    if (index === -1) return
+    this.planets.splice(index, 1)
+    await db.planet.removeFromDb(planet.id)
+  }
+
   async addCache(
     data: BaseCacheData,
     save = true,
@@ -1100,9 +1126,8 @@ export class Game {
     return newCache
   }
 
-  removeCache(cache: Cache) {
+  async removeCache(cache: Cache) {
     c.log(`Removing cache ${cache.id} from the game.`)
-    db.cache.removeFromDb(cache.id)
     const index = this.caches.findIndex(
       (ec) => cache.id === ec.id,
     )
@@ -1110,6 +1135,7 @@ export class Game {
       return c.log(`Failed to find cache in list.`)
     this.caches.splice(index, 1)
     this.chunkManager.remove(cache)
+    await db.cache.removeFromDb(cache.id)
     // c.log(this.caches.length, `remaining`)
   }
 
@@ -1135,7 +1161,7 @@ export class Game {
     return newZone
   }
 
-  removeZone(zone: Zone) {
+  async removeZone(zone: Zone) {
     c.log(`Removing zone ${zone.name} from the game.`)
     this.humanShips.forEach((hs) => {
       const seenThisZone = hs.seenLandmarks.findIndex(
@@ -1148,13 +1174,13 @@ export class Game {
         )
       }
     })
-    db.zone.removeFromDb(zone.id)
     this.chunkManager.remove(zone)
     const index = this.zones.findIndex(
       (z) => zone.id === z.id,
     )
     if (index === -1) return
     this.zones.splice(index, 1)
+    await db.zone.removeFromDb(zone.id)
   }
 
   addAttackRemnant(
@@ -1170,15 +1196,15 @@ export class Game {
     return newAttackRemnant
   }
 
-  removeAttackRemnant(ar: AttackRemnant) {
+  async removeAttackRemnant(ar: AttackRemnant) {
     // c.log(`Removing attack remnant ${ar.id} from the game.`)
-    db.attackRemnant.removeFromDb(ar.id)
     const index = this.attackRemnants.findIndex(
       (eAr) => ar.id === eAr.id,
     )
     if (index === -1) return
     this.attackRemnants.splice(index, 1)
     this.chunkManager.remove(ar)
+    await db.attackRemnant.removeFromDb(ar.id)
   }
 
   get humanShips(): HumanShip[] {

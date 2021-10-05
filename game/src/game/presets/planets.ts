@@ -184,7 +184,7 @@ export function generateBasicPlanet(
         }
         if (guildHue > 180) guildHue -= 360
         if (potentialHue > 180) potentialHue -= 360
-        if (Math.abs(guildHue - potentialHue) < 25)
+        if (Math.abs(guildHue - potentialHue) < 20)
           return true
         return false
       })

@@ -109,7 +109,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .boxholder {
-  padding: 0.8em;
+  padding: 1em;
 
   @media (max-width: 768px) {
     width: 100% !important;
