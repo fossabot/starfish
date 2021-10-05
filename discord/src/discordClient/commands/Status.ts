@@ -3,7 +3,6 @@ import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import {
   ColorResolvable,
-  EmbedField,
   EmbedFieldData,
   MessageEmbed,
 } from 'discord.js'
@@ -28,9 +27,21 @@ export class StatusCommand implements Command {
     if (!context.ship) return
     const ship = context.ship
 
-    const color = c.guilds[ship.guildId].name
-      .split(` `)[0]
-      ?.toUpperCase()
+    let color = c.gameColor
+    const hslColor = c.guilds[ship.guildId]?.color
+    if (hslColor) {
+      try {
+        const [unused, h, s, l] =
+          /hsl\((\d+),\s*(\d+[.]?\d*%)\s*,\s*(\d+[.]?\d*%)\)/g.exec(
+            hslColor,
+          ) || []
+        color = hslToHex(
+          parseInt(h),
+          parseInt(s),
+          parseInt(l),
+        )
+      } catch (e) {}
+    }
 
     const fields: EmbedFieldData[] = []
 
@@ -168,4 +179,18 @@ ${c.percentToTextBars(
       embeds,
     })
   }
+}
+
+function hslToHex(h, s, l) {
+  l /= 100
+  const a = (s * Math.min(l, 1 - l)) / 100
+  const f = (n) => {
+    const k = (n + h / 30) % 12
+    const color =
+      l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, `0`) // convert to Hex and prefix "0" if needed
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
 }

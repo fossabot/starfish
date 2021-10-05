@@ -7,6 +7,7 @@ for (let i = 0; i < 100; i++) {
 export default {
   gameName: `Starfish`,
   gameDescription: `A game about exploring the universe in a ship crewed by your Discord server's members.`,
+  gameColor: `#FF9F49`,
   tickInterval: 1000,
   mPerKm: 1000,
   kmPerAu: 149597900,

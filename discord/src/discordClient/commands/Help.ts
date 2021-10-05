@@ -1,7 +1,11 @@
 import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
-import { MessageEmbed, MessageOptions } from 'discord.js'
+import {
+  MessageEmbed,
+  MessageOptions,
+  ColorResolvable,
+} from 'discord.js'
 
 export class HelpCommand implements Command {
   commandsToList: Command[] = []
@@ -21,7 +25,7 @@ export class HelpCommand implements Command {
       embeds: [
         new MessageEmbed()
           .setTitle(`Help`)
-          .setColor(`#FF9F49`)
+          .setColor(c.gameColor as ColorResolvable)
           .setThumbnail(
             `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
           )

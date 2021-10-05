@@ -5,28 +5,28 @@ import * as items from './items';
 declare const _default: {
     items: typeof items;
     rooms: {
-        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
+        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
     crewPassives: {
-        boostBroadcastRange: CrewPassiveData;
-        boostRepairSpeed: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
-        boostBrake: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
-        boostXpGain: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
         cargoSpace: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
         boostThrust: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
+        boostBrake: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
@@ -55,6 +55,27 @@ declare const _default: {
         peacekeeper: BaseGuildData;
     };
     baseShipPassiveData: {
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBrake: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostDropAmount: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -67,25 +88,7 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostMinePayouts: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostBrake: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -125,9 +128,6 @@ declare const _default: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostStaminaRegeneration: {
             description: (p: ShipPassiveEffect) => string;
         };
         autoRepair: {
@@ -173,7 +173,7 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        planet: ("pacifist" | "planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "stats")[];
         chassis: ("id" | "mass" | "passives" | "type" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
     };
     sameGuildShipScanProperties: {
@@ -266,6 +266,7 @@ declare const _default: {
     randomBetween: (start: number, end: number) => number;
     gameName: string;
     gameDescription: string;
+    gameColor: string;
     tickInterval: number;
     mPerKm: number;
     kmPerAu: number;

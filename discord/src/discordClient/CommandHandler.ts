@@ -3,6 +3,7 @@ import {
   Message,
   TextChannel,
   MessageEmbed,
+  ColorResolvable,
 } from 'discord.js'
 import { CommandContext } from './models/CommandContext'
 import type { Command } from './models/Command'
@@ -124,7 +125,7 @@ export class CommandHandler {
       await commandContext.reply({
         embeds: [
           new MessageEmbed()
-            .setColor(`#FF9F49`)
+            .setColor(c.gameColor as ColorResolvable)
             .setThumbnail(
               `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
             )

@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
-import { MessageEmbed } from 'discord.js'
+import { MessageEmbed, ColorResolvable } from 'discord.js'
 
 export class InviteCommand implements Command {
   commandNames = [`invite`, `inv`, `i`]
@@ -14,7 +14,7 @@ export class InviteCommand implements Command {
     await context.reply({
       embeds: [
         new MessageEmbed()
-          .setColor(`#FF9F49`)
+          .setColor(c.gameColor as ColorResolvable)
           .setDescription(
             `:incoming_envelope: [Bot invite link](${c.discordBotInviteUrl})`,
           ),

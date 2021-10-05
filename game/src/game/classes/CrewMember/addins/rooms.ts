@@ -74,7 +74,7 @@ export function weapons(this: CrewMember): void {
       this,
       this.ship.crewMembers,
     )
-  c.log({ passiveMultiplier, generalBoostMultiplier })
+  // c.log({ passiveMultiplier, generalBoostMultiplier })
 
   const amountToReduceCooldowns =
     (c.getWeaponCooldownReductionPerTick(

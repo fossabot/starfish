@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
-import { MessageEmbed } from 'discord.js'
+import { MessageEmbed, ColorResolvable } from 'discord.js'
 
 export class LinkCommand implements Command {
   requiresShip = true
@@ -16,7 +16,7 @@ export class LinkCommand implements Command {
     await context.reply({
       embeds: [
         new MessageEmbed()
-          .setColor(`#FF9F49`)
+          .setColor(c.gameColor as ColorResolvable)
           .setTitle(`Starfish Links`)
           .setThumbnail(
             `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
