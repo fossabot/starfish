@@ -102,6 +102,46 @@ export class Planet extends Stubbable {
     )
   }
 
+  tickEffectsOnShip(ship: HumanShip) {
+    ship.addStat(`planetTime`, 1)
+
+    const distanceFromPlanet = c.distance(
+      this.location,
+      ship.location,
+    )
+
+    // * if it's inside the drawn planet, don't swirl
+    if (distanceFromPlanet < this.radius / c.kmPerAu) return
+
+    // apply swirl effect
+    const swirlClockwise = true
+
+    const swirlIntensity =
+      360 /
+      (ship.mass * 0.1) /
+      (distanceFromPlanet /
+        (this.landingRadiusMultiplier *
+          this.game.settings.arrivalThreshold))
+
+    const angleToShip = c.angleFromAToB(
+      this.location,
+      ship.location,
+    )
+    const targetAngle =
+      ((swirlClockwise
+        ? angleToShip - swirlIntensity
+        : angleToShip + swirlIntensity) +
+        360) %
+      360
+    const unitVector = c.degreesToUnitVector(targetAngle)
+    const newLocation = [
+      unitVector[0] * distanceFromPlanet + this.location[0],
+      unitVector[1] * distanceFromPlanet + this.location[1],
+    ] as CoordinatePair
+
+    ship.move(newLocation)
+  }
+
   async donate(amount: number, guildId?: GuildId) {
     this.addXp(amount / c.planetContributeCostPerXp)
     this.addStat(`totalDonated`, amount)

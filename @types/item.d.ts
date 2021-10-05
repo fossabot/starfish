@@ -197,7 +197,10 @@ interface ShipScanDataShape {
   )[]
   crewMembers?: (keyof BaseCrewMemberData)[]
   rooms?: boolean
+  mass?: boolean
   chassis?: (keyof BaseChassisData)[]
+  speed?: boolean
+  direction?: boolean
   _hp?: boolean
   _maxHp?: boolean
   attackable?: boolean

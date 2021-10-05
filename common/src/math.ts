@@ -60,6 +60,9 @@ function distance(
   const d = a[1] - b[1]
   return Math.sqrt(c * c + d * d)
 }
+/**
+ * distance in degrees [0, 360] between two angles
+ */
 function angleFromAToB(
   a: CoordinatePair = [0, 0],
   b: CoordinatePair = [0, 0],
@@ -71,6 +74,7 @@ function angleFromAToB(
     360
   )
 }
+
 /**
  * shortest distance (in degrees) between two angles.
  * It will be in range [0, 180] if not signed.

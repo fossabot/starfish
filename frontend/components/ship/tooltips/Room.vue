@@ -16,6 +16,7 @@
           c.species[crewMember.speciesId] &&
           c.species[crewMember.speciesId].icon + ' '
         }}
+        {{ crewMember.id === ship.captain ? '👑' : '' }}
         {{ crewMember.name }}
       </div>
     </template>

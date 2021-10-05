@@ -83,7 +83,7 @@ export class HumanShip extends CombatShip {
   shownPanels?: any[]
 
   commonCredits: number = 0
-  orders: ShipOrders | null = null
+  orders: ShipOrders | false = false
 
   tutorial: Tutorial | undefined = undefined
 
@@ -103,7 +103,7 @@ export class HumanShip extends CombatShip {
     this.toUpdate.direction = this.direction
 
     this.captain = data.captain || null
-    this.orders = data.orders || null
+    this.orders = data.orders || false
     this.log = data.log || []
 
     if (data.tutorial && data.tutorial.step !== undefined)
@@ -197,20 +197,18 @@ export class HumanShip extends CombatShip {
     this.move()
 
     // ----- planet effects -----
-    if (this.planet) {
-      this.addStat(`planetTime`, 1)
-    }
+    if (this.planet) this.planet.tickEffectsOnShip(this)
 
     profiler.step(`update visible`)
     // ----- scan -----
     const previousVisible = { ...this.visible }
     this.updateVisible()
-    this.generateVisiblePayload(previousVisible)
     this.takeActionOnVisibleChange(
       previousVisible,
       this.visible,
     )
     this.scanners.forEach((s) => s.use())
+    this.generateVisiblePayload(previousVisible)
 
     profiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
@@ -995,6 +993,10 @@ export class HumanShip extends CombatShip {
     if (toLocation) {
       this.updateVisible()
       this.updatePlanet()
+      this.addPreviousLocation(
+        startingLocation,
+        this.location,
+      )
       this.game.chunkManager.addOrUpdate(
         this,
         startingLocation,
@@ -1288,10 +1290,17 @@ export class HumanShip extends CombatShip {
 
   async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
-    this.planet =
-      this.seenPlanets.find((p) =>
-        this.isAt(p.location, p.landingRadiusMultiplier),
-      ) || false
+    if (
+      !this.planet ||
+      !this.isAt(
+        this.planet.location,
+        this.planet.landingRadiusMultiplier,
+      )
+    )
+      this.planet =
+        this.seenPlanets.find((p) =>
+          this.isAt(p.location, p.landingRadiusMultiplier),
+        ) || false
 
     if (previousPlanet == this.planet) return
 
@@ -1299,12 +1308,12 @@ export class HumanShip extends CombatShip {
       ? this.planet.stubify()
       : false
 
-    c.log(
-      this.id,
-      Boolean(this.planet),
-      this.seenPlanets.length,
-      this.visible.planets.length,
-    )
+    // c.log(
+    //   this.id,
+    //   Boolean(this.planet),
+    //   this.seenPlanets.length,
+    //   this.visible.planets.length,
+    // )
 
     if (this.planet) {
       // * landed!
@@ -1612,6 +1621,17 @@ export class HumanShip extends CombatShip {
         this.game.settings.baseXpGain * 100,
       )
 
+      const antiGarble = this.communicators.reduce(
+        (total, curr) =>
+          curr.antiGarble * curr.repair + total,
+        0,
+      )
+      const crewSkillAntiGarble =
+        (crewMember.skills.find(
+          (s) => s.skill === `linguistics`,
+        )?.level || 0) / 100
+
+      // todo use chunks
       for (let otherShip of this.game.ships) {
         if (otherShip === this) continue
         if (otherShip.tutorial) continue
@@ -1627,15 +1647,7 @@ export class HumanShip extends CombatShip {
           this.location,
           otherShip.location,
         )
-        const antiGarble = this.communicators.reduce(
-          (total, curr) =>
-            curr.antiGarble * curr.repair + total,
-          0,
-        )
-        const crewSkillAntiGarble =
-          (crewMember.skills.find(
-            (s) => s.skill === `linguistics`,
-          )?.level || 0) / 100
+
         const garbleAmount =
           distance /
           (range + antiGarble + crewSkillAntiGarble)
@@ -1895,7 +1907,7 @@ export class HumanShip extends CombatShip {
 
     this.crewMembers.splice(index, 1)
     io.to(`ship:${this.id}`).emit(`ship:reload`)
-    
+
     this.logEntry(
       `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
       `critical`,
@@ -2057,7 +2069,7 @@ export class HumanShip extends CombatShip {
         true | Array<string>,
       ][]
     ).forEach(([key, value]) => {
-      if (!ship[key as keyof Ship]) return
+      if (ship[key as keyof Ship] === undefined) return
       if (
         key === `crewMembers` &&
         ship.passives.find(
@@ -2072,10 +2084,29 @@ export class HumanShip extends CombatShip {
         )
       )
         return
-      if (value === true)
-        partialShip[key] = c.stubify(
-          ship[key as keyof Ship],
+      if (key === `items` && Array.isArray(value)) {
+        partialShip.items = ship.items.map((i) => {
+          const partialItem = {}
+          for (let prop of value) {
+            partialItem[prop] = i[prop]
+          }
+          return partialItem
+        })
+        return
+      }
+      if (key === `rooms`) {
+        partialShip.rooms = Object.keys(
+          (ship as HumanShip).rooms || {},
         )
+        return
+      }
+      if (value === true) {
+        partialShip[key] =
+          typeof ship[key as keyof Ship] === `object`
+            ? c.stubify(ship[key as keyof Ship])
+            : ship[key as keyof Ship]
+        return
+      }
       if (Array.isArray(value)) {
         if (Array.isArray(ship[key as keyof Ship])) {
           partialShip[key] = (

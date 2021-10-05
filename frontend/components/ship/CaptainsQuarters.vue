@@ -497,6 +497,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .captainsquarters {
-  width: 250px;
+  width: 240px;
 }
 </style>

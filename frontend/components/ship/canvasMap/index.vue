@@ -512,7 +512,7 @@ export default Vue.extend({
       const fs = this.drawer?.flatScale || 1
 
       if (this.zoom <= 20 / fs && e.deltaY > 0) return
-      if (this.zoom > 500000 / fs && e.deltaY < 0) return
+      if (this.zoom > 1500000 / fs && e.deltaY < 0) return
 
       const zoomSpeed = 0.0015
       const zoomChange =
@@ -521,7 +521,7 @@ export default Vue.extend({
       else this.zoom -= zoomChange
 
       if (this.zoom < 20 / fs) this.zoom = 20 / fs
-      if (this.zoom > 500000 / fs) this.zoom = 500000 / fs
+      if (this.zoom > 1500000 / fs) this.zoom = 1500000 / fs
 
       sizeDifference /= this.zoom
       sizeDifference -= 1

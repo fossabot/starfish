@@ -639,50 +639,32 @@ export class Ship extends Stubbable {
     //       ),
     //   )
 
+    const distance = c.distance(
+      this.location,
+      this.previousLocations[
+        this.previousLocations.length - 1
+      ],
+    )
+    const angle = Math.abs(
+      c.angleFromAToB(
+        this.previousLocations[
+          this.previousLocations.length - 1
+        ],
+        previousLocation,
+      ) -
+        c.angleFromAToB(previousLocation, currentLocation),
+    )
     if (
       this.previousLocations.length < 1 ||
-      (Math.abs(
-        c.angleFromAToB(
-          this.previousLocations[
-            this.previousLocations.length - 1
-          ],
-          previousLocation,
-        ) -
-          c.angleFromAToB(
-            previousLocation,
-            currentLocation,
-          ),
-      ) >= 5 &&
-        c.distance(
-          this.location,
-          this.previousLocations[
-            this.previousLocations.length - 1
-          ],
-        ) > 0.00005)
+      (angle >= 5 && distance > 0.00005)
     ) {
       // if (this.human)
       //   c.log(
       //     `adding previous location to`,
       //     this.name,
       //     this.previousLocations.length,
-      //     Math.abs(
-      //       c.angleFromAToB(
-      //         this.previousLocations[
-      //           this.previousLocations.length - 1
-      //         ],
-      //         previousLocation,
-      //       ) -
-      //         c.angleFromAToB(
-      //           previousLocation,
-      //           currentLocation,
-      //         ),
-      //     ),
-      //     c.distance(
-      //       this.location,
-      //       this.previousLocations[
-      //         this.previousLocations.length - 1
-      //       ],
-      //     ),
+      //     angle,
+      //     distance,
       //   )
       this.previousLocations.push([...currentLocation])
       while (
