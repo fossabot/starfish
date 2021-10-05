@@ -8,9 +8,9 @@
           Each crew member has a species, which provides
           passive buffs and abilities.
         </div>
-        <div>
-          Choose a species to join the crew! Your species
-          cannot be changed once chosen.
+        <div>Choose a species to join the crew!</div>
+        <div class="martop warning">
+          Your species cannot be changed once chosen.
         </div>
       </div>
 
@@ -130,6 +130,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .speciespicker {
   text-align: center;
+  width: 100%;
 }
 .options {
   display: grid;
