@@ -20,7 +20,9 @@ export default {
   head: {
     titleTemplate(titleChunk) {
       return (
-        (process.env.NODE_ENV ? `DEV - ` : ``) +
+        (process.env.NODE_ENV === `development`
+          ? `DEV - `
+          : ``) +
         (titleChunk ? titleChunk + ` | ` : ``) +
         process.env.GAME_NAME
       )
