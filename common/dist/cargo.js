@@ -1,0 +1,52 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.uranium = exports.titanium = exports.carbon = exports.steel = exports.plastic = exports.oxygen = exports.water = exports.salt = void 0;
+exports.salt = {
+    name: `Salt`,
+    id: `salt`,
+    basePrice: 100,
+    rarity: 0,
+};
+exports.water = {
+    name: `Water`,
+    id: `water`,
+    basePrice: 140,
+    rarity: 0,
+};
+exports.oxygen = {
+    name: `Oxygen`,
+    id: `oxygen`,
+    basePrice: 260,
+    rarity: 0,
+};
+exports.plastic = {
+    name: `Plastic`,
+    id: `plastic`,
+    basePrice: 200,
+    rarity: 1.5,
+};
+exports.steel = {
+    name: `Steel`,
+    id: `steel`,
+    basePrice: 320,
+    rarity: 3,
+};
+exports.carbon = {
+    name: `Carbon`,
+    id: `carbon`,
+    basePrice: 250,
+    rarity: 5,
+};
+exports.titanium = {
+    name: `Titanium`,
+    id: `titanium`,
+    basePrice: 380,
+    rarity: 7,
+};
+exports.uranium = {
+    name: `Uranium`,
+    id: `uranium`,
+    basePrice: 520,
+    rarity: 8,
+};
+//# sourceMappingURL=cargo.js.map

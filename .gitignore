@@ -19,6 +19,7 @@ ssl/localhost.key
 ssl/localhost.crt
 game/tsconfig.game.tsbuildinfo
 git
-**/dist
+game/dist
+discord/dist
 *.tsbuildinfo
 newrelic_agent.log

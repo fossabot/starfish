@@ -1,0 +1,278 @@
+import { Profiler } from './Profiler';
+import * as cargo from './cargo';
+import stubify from './stubify';
+import * as items from './items';
+declare const _default: {
+    items: typeof items;
+    rooms: {
+        repair: BaseRoomData;
+        bunk: BaseRoomData;
+        cockpit: BaseRoomData;
+        weapons: BaseRoomData;
+        mine: BaseRoomData;
+    };
+    crewPassives: {
+        boostBroadcastRange: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostBrake: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
+        reduceStaminaDrain: CrewPassiveData;
+        generalImprovementWhenAlone: CrewPassiveData;
+        generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
+        boostDropAmounts: CrewPassiveData;
+        lessDamageOnEquipmentUse: CrewPassiveData;
+    };
+    cargo: typeof cargo;
+    species: {
+        octopi: BaseSpeciesData;
+        lobsters: BaseSpeciesData;
+        crabs: BaseSpeciesData;
+        "sea turtles": BaseSpeciesData;
+        sharks: BaseSpeciesData;
+        dolphins: BaseSpeciesData;
+        snails: BaseSpeciesData;
+        whales: BaseSpeciesData;
+        angelfish: BaseSpeciesData;
+        blowfish: BaseSpeciesData;
+        shrimp: BaseSpeciesData;
+        eagles: BaseSpeciesData;
+        seagulls: BaseSpeciesData;
+        chickens: BaseSpeciesData;
+        flamingos: BaseSpeciesData;
+    };
+    guilds: {
+        fowl: BaseGuildData;
+        trader: BaseGuildData;
+        hunter: BaseGuildData;
+        miner: BaseGuildData;
+        explorer: BaseGuildData;
+        peacekeeper: BaseGuildData;
+    };
+    baseShipPassiveData: {
+        boostDropAmount: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDropRarity: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostScanRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostSightRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMinePayouts: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBrake: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        flatSkillBoost: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        scaledDamageReduction: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        flatDamageReduction: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        extraEquipmentSlots: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCargoSpace: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostChassisAgility: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        disguiseCrewMemberCount: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        disguiseChassisType: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        alwaysSeeTrailColors: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamage: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWhenNoAlliesWithinDistance: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageWithNumberOfGuildMembersWithinDistance: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostDamageToItemType: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        autoRepair: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+    };
+    Profiler: typeof Profiler;
+    stubify: typeof stubify;
+    discordBotId: string;
+    discordBotPermissionsString: string;
+    frontendUrl: string;
+    discordBotInviteUrl: string;
+    getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
+    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    supportServerLink: string;
+    gameSpeedMultiplier: number;
+    baseSightRange: number;
+    baseBroadcastRange: number;
+    baseRepairCost: number;
+    defaultHomeworldLevel: number;
+    maxBroadcastLength: number;
+    guildVendorMultiplier: number;
+    guildAllegianceFriendCutoff: number;
+    userIsOfflineTimeout: number;
+    baseItemSellMultiplier: number;
+    noEngineThrustMagnitude: number;
+    planetContributeCostPerXp: number;
+    planetLevelXpRequirementMultiplier: number;
+    itemPriceMultiplier: number;
+    weaponDamageMultiplier: number;
+    attackRemnantExpireTime: number;
+    cacheExpireTime: number;
+    baseShipScanProperties: {
+        id: true;
+        name: true;
+        human: true;
+        ai: true;
+        guildId: true;
+        headerBackground: true;
+        tagline: true;
+        level: true;
+        dead: true;
+        attackable: true;
+        previousLocations: true;
+        location: true;
+        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
+        chassis: ("id" | "mass" | "passives" | "type" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+    };
+    sameGuildShipScanProperties: {
+        _hp: boolean;
+        _maxHp: boolean;
+    };
+    tactics: CombatTactic[];
+    baseCargoSellMultiplier: number;
+    taglineOptions: string[];
+    headerBackgroundOptions: {
+        id: string;
+        url: string;
+    }[];
+    getHitDamage: (weapon: {
+        damage: number;
+    }, totalMunitionsSkill?: number) => number;
+    getBaseDurabilityLossPerTick: (maxHp: number, reliability: number, useLevel?: number) => number;
+    getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
+    getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
+    getMineAmountPerTickForSingleCrewMember: (level: number) => number;
+    getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
+    getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
+    getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
+    getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number) => number;
+    getWeaponCooldownReductionPerTick: (level: number) => number;
+    getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
+    statToString: (data: {
+        stat: string;
+        amount: number;
+    }) => string;
+    getPlanetTitle: (planet: PlanetStub) => string;
+    getPlanetPopulation: (planet: PlanetStub) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getGuildChangePrice: (ship: {
+        planet: false | PlanetStub;
+        guildId: GuildId;
+        crewMembers: CrewMemberStub[];
+    }) => number;
+    log: (...args: any[]) => void;
+    trace: () => void;
+    sleep: (ms: number) => Promise<void>;
+    coinFlip: () => boolean;
+    randomFromArray: <T>(array: T[]) => T;
+    randomWithWeights: <E>(elements: {
+        weight: number;
+        value: E;
+    }[]) => E;
+    debounce: (fn: Function, time?: number) => (...params: any[]) => void;
+    shuffleArray: (array: any[]) => any[];
+    maxNameLength: number;
+    numberWithCommas: (x: number) => string | number;
+    speedNumber: (numberInAu: number, noTag?: boolean) => string;
+    printList: (list: string[]) => string;
+    degreesToArrow: (angle: number) => string;
+    degreesToArrowEmoji: (angle: number) => string;
+    coordPairToArrow: (coordPair: CoordinatePair) => string;
+    percentToTextBars: (percent?: number, barCount?: number) => string;
+    numberToEmoji: (number?: number) => string;
+    emojiToNumber: (emoji?: string) => number;
+    capitalize: (string?: string) => string;
+    camelCaseToWords: (string?: string, capitalizeFirst?: boolean | undefined) => string;
+    sanitize: (string?: string) => SanitizeResult;
+    msToTimeString: (ms?: number) => string;
+    garble: (string?: string, percent?: number) => string;
+    acronym: (string?: string) => string;
+    lerp: (v0?: number, v1?: number, t?: number) => number;
+    r2: (number: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
+    radiansToDegrees: (radians?: number) => number;
+    degreesToRadians: (degrees?: number) => number;
+    distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
+    angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
+    angleDifference: (a: number, b: number, signed?: boolean) => number;
+    randomInsideCircle: (radius: number) => CoordinatePair;
+    degreesToUnitVector: (degrees?: number) => CoordinatePair;
+    vectorToUnitVector: (vector?: CoordinatePair) => CoordinatePair;
+    unitVectorFromThisPointToThatPoint: (thisPoint?: CoordinatePair, thatPoint?: CoordinatePair) => CoordinatePair;
+    pointIsInsideCircle: (center?: CoordinatePair, point?: CoordinatePair, radius?: number) => boolean;
+    vectorToDegrees: (coordPair?: CoordinatePair) => number;
+    coordPairToRadians: (coordPair?: CoordinatePair) => number;
+    vectorToMagnitude: (vector?: CoordinatePair) => number;
+    randomSign: () => 1 | -1;
+    randomInRange: (a: number, b: number) => number;
+    lottery: (odds: number, outOf: number) => boolean;
+    randomBetween: (start: number, end: number) => number;
+    gameName: string;
+    gameDescription: string;
+    tickInterval: number;
+    mPerKm: number;
+    kmPerAu: number;
+    gravitationalConstant: number;
+    lightspeed: number;
+    deltaTime: number;
+    levels: number[];
+};
+export default _default;
+//# sourceMappingURL=index.d.ts.map
