@@ -88,10 +88,22 @@ export class CommandContext {
     ].includes(message.author.id)
   }
 
+  private sendToGuildQueue: {
+    message: string | MessageOptions
+    channelType: GameChannelType
+  }[] = []
+
+  private awaitingSendToGuild: boolean = false
+
   async sendToGuild(
     message: string | MessageOptions,
     channelType: GameChannelType = `alert`,
   ) {
+    if (this.awaitingSendToGuild)
+      this.sendToGuildQueue.push({ message, channelType })
+
+    this.awaitingSendToGuild = true
+
     let channel: GameChannel | null = null
 
     // try to resolve a channel
@@ -115,7 +127,8 @@ export class CommandContext {
           )
           return
         }
-        await resolveOrCreateChannel({
+
+        channel = await resolveOrCreateChannel({
           type: channelType,
           guild: this.guild,
         })
@@ -123,6 +136,7 @@ export class CommandContext {
     }
 
     // otherwise send back to the channel we got the message in in the first place
+    // ? unreachable?
     if (
       !channel &&
       !(
@@ -142,6 +156,13 @@ export class CommandContext {
       const didSend = await channel.send(message)
       if (`error` in didSend)
         this.contactGuildAdmin(didSend)
+    }
+
+    this.awaitingSendToGuild = false
+    if (this.sendToGuildQueue.length) {
+      const next = this.sendToGuildQueue.shift()
+      if (next)
+        this.sendToGuild(next.message, next.channelType)
     }
   }
 
