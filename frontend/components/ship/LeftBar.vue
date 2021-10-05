@@ -1,5 +1,5 @@
 <template>
-  <nav class="leftbar">
+  <nav class="leftbar" :class="{ mobile: isMobile }">
     <div class="placeholder"></div>
     <div class="actualbar flexcolumn flexbetween">
       <div class="flexcolumn flexcenter">
@@ -109,6 +109,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState([
+      'isMobile',
       'ship',
       'userId',
       'crewMember',
@@ -146,6 +147,12 @@ export default Vue.extend({
 .leftbar {
   --bar-width: 53px;
   --icon-width: 38px;
+  --tb-pad: 1.5em;
+
+  &.mobile {
+    --bar-width: 49px;
+    --tb-pad: 0.7em;
+  }
 }
 
 hr {
@@ -164,7 +171,7 @@ hr {
 .actualbar {
   background: rgba(0, 0, 0, 0.4);
   align-items: center;
-  padding: 1.5em 0;
+  padding: var(--tb-pad) 0;
   padding-left: 1px;
   width: var(--bar-width);
   height: 100%;

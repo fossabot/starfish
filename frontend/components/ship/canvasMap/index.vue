@@ -15,7 +15,10 @@
     <div ref="resizewatcher">
       <div
         class="panesection padnone mappane"
-        :class="{ killtouchevents: interactive }"
+        :class="{
+          killtouchevents:
+            interactive && (isPanning || isZooming),
+        }"
         :style="{
           width: widthAdjustedToWindowSize + 'px',
           height: widthAdjustedToWindowSize + 'px',
