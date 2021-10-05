@@ -326,7 +326,8 @@ export const actions = {
 
   updateShip({ commit, state }, updates) {
     // c.log(`updating ship props`, Object.keys(updates))
-    // c.log(`update`)
+    // if (Object.keys(updates).includes(`orders`))
+    //   c.log(`update`, updates.orders)
     if (!state.ship) return
     if (updates.id && state.ship.id !== updates.id)
       return c.log(`skipping late update for previous ship`)

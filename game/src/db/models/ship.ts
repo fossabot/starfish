@@ -95,15 +95,16 @@ const shipSchemaFields: Record<
     },
   ],
   commonCredits: Number,
-  orders: {
-    verb: String,
-    target: {
-      name: String,
-      id: { type: String },
-      type: { type: String },
-    },
-    addendum: String,
-  },
+  orders:
+    {
+      verb: String,
+      target: {
+        name: String,
+        id: { type: String },
+        type: { type: String },
+      },
+      addendum: String,
+    } || false,
 
   // ---- ai
   ai: { type: Boolean, default: false, required: true },

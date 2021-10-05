@@ -312,12 +312,13 @@ export default function (
         })
 
       if (!orders) {
-        ship.orders = null
-        ship.toUpdate.orders = null
+        ship.orders = false
+        ship.toUpdate.orders = false
         callback({ data: false })
       } else {
         const prevOrders = ship.orders
         if (
+          prevOrders &&
           prevOrders?.verb === orders.verb &&
           prevOrders?.target?.id === orders.target?.id &&
           prevOrders?.target?.type ===
@@ -332,6 +333,7 @@ export default function (
 
         // don't log if it's mostly the same
         if (
+          prevOrders &&
           prevOrders?.verb === orders.verb &&
           prevOrders?.target?.type ===
             orders.target?.type &&
