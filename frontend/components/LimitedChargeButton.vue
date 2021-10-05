@@ -219,8 +219,10 @@ export default Vue.extend({
   align-items: center;
 
   .label {
+    position: relative;
     margin-left: 0.5em;
     margin-top: 0.1em;
+    z-index: 4;
   }
 
   .bg {

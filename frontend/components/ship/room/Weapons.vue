@@ -204,7 +204,10 @@ export default Vue.extend({
     },
     visibleEnemies() {
       return this.ship.visible?.ships
-        .filter((s) => s.guildId !== this.ship.guildId)
+        .filter(
+          (s) =>
+            !s.guildId || s.guildId !== this.ship.guildId,
+        )
         .sort(
           (a, b) =>
             c.distance(a.location, this.ship.location) -

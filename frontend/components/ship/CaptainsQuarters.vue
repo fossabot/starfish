@@ -294,6 +294,7 @@
           Pretty please 🥺
         </option>
         <option
+          v-if="ship.guildId"
           :value="`, in the name of the ${
             c.guilds[ship.guildId].name
           }!`"
