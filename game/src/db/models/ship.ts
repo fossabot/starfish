@@ -53,6 +53,9 @@ const shipSchemaFields: Record<
   captain: String,
   logAlertLevel: String,
   stats: [{ stat: String, amount: Number }],
+  banked: [
+    { id: String, amount: Number, timestamp: Number },
+  ],
   crewMembers: [
     {
       name: { type: String, required: true },

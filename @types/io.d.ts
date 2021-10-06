@@ -336,6 +336,18 @@ interface IOClientEvents {
     tagline: string,
     callback: (res: IOResponse<string>) => void,
   ) => void
+  [`ship:withdraw`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<boolean>) => void,
+  ) => void
+  [`ship:deposit`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<boolean>) => void,
+  ) => void
   [`ship:orders`]: (
     shipId: string,
     crewId: string,

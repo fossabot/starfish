@@ -41,6 +41,8 @@ const sameGuildShipScanProperties = {
 const tactics = [
     `aggressive`,
     `defensive`,
+    `onlyNonPlayers`,
+    `onlyPlayers`,
     `pacifist`,
 ];
 const baseCargoSellMultiplier = 0.3;

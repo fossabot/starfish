@@ -92,6 +92,8 @@ const planetSchemaFields: Record<
     ],
     repairCostMultiplier: Number,
   },
+
+  bank: Boolean,
 }
 const planetSchema = new Schema(planetSchemaFields)
 const DBPlanet = model<DBPlanetDoc>(

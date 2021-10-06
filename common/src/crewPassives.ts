@@ -8,7 +8,7 @@ const data: {
     id: `cargoSpace`,
     buyable: {
       rarity: 1,
-      basePrice: 1000,
+      basePrice: 2000,
       baseIntensity: 10,
       wholeNumbersOnly: true,
     },

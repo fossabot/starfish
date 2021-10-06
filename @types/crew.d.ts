@@ -16,7 +16,12 @@ type SkillId =
   | `linguistics`
   | `mining`
 
-type CombatTactic = `defensive` | `aggressive` | `pacifist`
+type CombatTactic =
+  | `defensive`
+  | `aggressive`
+  | `onlyNonPlayers`
+  | `onlyPlayers`
+  | `pacifist`
 
 type RepairPriority =
   | `most damaged`

@@ -99,6 +99,17 @@
         for sale
       </div>
 
+      <div v-if="dataToUse.bank">
+        Bank: 💳{{
+          ship &&
+          ship.banked.find((b) => b.id === dataToUse.id)
+            ? ship.banked.find((b) => b.id === dataToUse.id)
+                .amount
+            : 0
+        }}
+        stored
+      </div>
+
       <hr />
 
       <ShipPlanetGuildGraph :planet="dataToUse" />

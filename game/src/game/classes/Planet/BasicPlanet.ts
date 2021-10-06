@@ -28,6 +28,7 @@ export class BasicPlanet extends Planet {
   readonly leanings: PlanetLeaning[]
 
   vendor: PlanetVendor
+  bank: boolean = false
 
   priceFluctuator = 1
 
@@ -63,6 +64,7 @@ export class BasicPlanet extends Planet {
     }
 
     this.vendor = data.vendor
+    this.bank = data.bank
 
     // c.log(this.getAddableToVendor())
     // c.log(
@@ -131,6 +133,13 @@ export class BasicPlanet extends Planet {
         value: `boostCockpitChargeSpeed`,
       },
     ]
+
+    if (!this.bank)
+      levelUpOptions.push({
+        weight: 0.5 * this.level,
+        value: `addBank`,
+      })
+
     let levelUpEffect = c.randomWithWeights(levelUpOptions)
 
     // homeworlds always have repair factor to some degree
@@ -173,6 +182,8 @@ export class BasicPlanet extends Planet {
         id: `boostCockpitChargeSpeed`,
         intensity: 0.1,
       })
+    } else if (levelUpEffect === `addBank`) {
+      this.bank = true
     } else if (levelUpEffect === `addItemToShop`) {
       if (this.vendor) {
         // add something to vendor
@@ -528,6 +539,7 @@ export class BasicPlanet extends Planet {
     const targetXp = this.xp
     this.level = 0
     this.xp = 0
+    this.bank = false
     this.vendor = {
       cargo: [],
       items: [],

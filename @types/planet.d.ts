@@ -23,6 +23,7 @@ interface BaseBasicPlanetData extends BasePlanetData {
   guildId?: GuildId
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
+  bank: boolean
 }
 
 interface BaseMiningPlanetData extends BasePlanetData {

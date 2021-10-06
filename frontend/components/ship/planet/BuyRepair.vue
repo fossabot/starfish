@@ -67,7 +67,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     buyRepair(hp: number) {
-      this.$store.commit('updateShip', {
+      this.$store.dispatch('updateShip', {
         _hp: this.ship._hp + hp,
       })
       ;(this as any).$socket?.emit(

@@ -51,6 +51,7 @@ interface ShipStub extends BaseStub {
   orders?: ShipOrders | false
   orderReactions?: ShipOrderReaction[]
   gameSettings?: AdminGameSettings
+  banked?: BankEntry[]
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

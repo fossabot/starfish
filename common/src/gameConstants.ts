@@ -70,6 +70,8 @@ const sameGuildShipScanProperties = {
 const tactics: CombatTactic[] = [
   `aggressive`,
   `defensive`,
+  `onlyNonPlayers`,
+  `onlyPlayers`,
   `pacifist`,
 ]
 
