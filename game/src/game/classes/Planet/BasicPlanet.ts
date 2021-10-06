@@ -554,9 +554,7 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   const buyMultiplier = c.r2(0.8 + Math.random() * 0.4, 3)
   const sellMultiplier =
     Math.min(
-      buyMultiplier *
-        c.guildVendorMultiplier *
-        c.guildVendorMultiplier,
+      buyMultiplier,
       c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }

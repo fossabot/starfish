@@ -2120,7 +2120,7 @@ export class HumanShip extends CombatShip {
               })
             return c.stubify(returnVal)
           })
-        } else {
+        } else if (ship[key as keyof Ship]) {
           partialShip[key] = {}
           Object.keys(ship[key as keyof Ship]).forEach(
             (elKey) => {
