@@ -166,13 +166,12 @@ function getPlanetTitle(planet) {
     return names[Math.floor(planet.level - 1)] || `Domain`;
     // todo finish
 }
-function getCargoSellPrice(cargoId, planet, amount, guildId) {
-    const buyPrice = getCargoBuyPrice(cargoId, planet, amount, guildId);
+function getCargoSellPrice(cargoId, planet, guildId) {
+    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId);
     const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
         gameConstants_1.default.baseCargoSellMultiplier;
     return Math.min(buyPrice, Math.floor(cargo[cargoId].basePrice *
         sellMultiplier *
-        amount *
         planet.priceFluctuator *
         ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
@@ -180,13 +179,12 @@ function getCargoSellPrice(cargoId, planet, amount, guildId) {
                 (1 - (gameConstants_1.default.guildVendorMultiplier || 1))
             : 1)));
 }
-function getCargoBuyPrice(cargoId, planet, amount, guildId) {
+function getCargoBuyPrice(cargoId, planet, guildId) {
     const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
     if (!cargoForSale)
         return 99999;
     return Math.ceil(cargo[cargoId].basePrice *
         cargoForSale.buyMultiplier *
-        amount *
         planet?.priceFluctuator *
         ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff

@@ -84,6 +84,7 @@ interface CrewMemberStub extends BaseStub {
 interface PlanetStub extends BaseStub {
   location: CoordinatePair
   name: string
+  id: string
   guildId?: GuildId
   vendor?: PlanetVendor
   allegiances: PlanetAllegianceData[]

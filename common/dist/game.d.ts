@@ -16,8 +16,8 @@ declare function statToString(data: {
     amount: number;
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
-declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: GuildId): number;
-declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, amount: number, guildId?: GuildId): number;
+declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId): number;
+declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId): number;
 declare function getRepairPrice(planet: PlanetStub, hp: number, guildId?: GuildId): number;
 declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId): number;
 declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId): number;

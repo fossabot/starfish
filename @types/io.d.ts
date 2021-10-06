@@ -178,15 +178,11 @@ interface IOClientEvents {
     crewId: string,
     target: CrewLocation,
   ) => void
-  [`crew:thrustInCurrentDirection`]: (
-    shipId: string,
-    crewId: string,
-    callback: (res: IOResponse<number>) => void,
-  ) => void
   [`crew:targetLocation`]: (
     shipId: string,
     crewId: string,
     targetLocation: CoordinatePair,
+    callback?: (res: IOResponse<CoordinatePair>) => void,
   ) => void
   [`crew:tactic`]: (
     shipId: string,
@@ -281,12 +277,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     charge: number,
-    callback: (
-      res: IOResponse<{
-        crewMember: CrewMemberStub
-        ship: ShipStub
-      }>,
-    ) => void,
+    callback: (res: IOResponse<number>) => void,
   ) => void
   [`crew:brake`]: (
     shipId: string,

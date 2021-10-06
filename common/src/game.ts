@@ -227,13 +227,11 @@ function getPlanetTitle(planet: PlanetStub) {
 function getCargoSellPrice(
   cargoId: CargoId,
   planet: PlanetStub,
-  amount: number,
   guildId?: GuildId,
 ) {
   const buyPrice = getCargoBuyPrice(
     cargoId,
     planet,
-    amount,
     guildId,
   )
 
@@ -248,7 +246,6 @@ function getCargoSellPrice(
     Math.floor(
       cargo[cargoId].basePrice *
         sellMultiplier *
-        amount *
         planet.priceFluctuator *
         ((planet.allegiances.find(
           (a) => a.guildId === guildId,
@@ -264,7 +261,6 @@ function getCargoSellPrice(
 function getCargoBuyPrice(
   cargoId: CargoId,
   planet: PlanetStub,
-  amount: number,
   guildId?: GuildId,
 ) {
   const cargoForSale = planet?.vendor?.cargo?.find(
@@ -274,7 +270,6 @@ function getCargoBuyPrice(
   return Math.ceil(
     cargo[cargoId].basePrice *
       cargoForSale.buyMultiplier *
-      amount *
       planet?.priceFluctuator *
       ((planet.allegiances.find(
         (a) => a.guildId === guildId,
