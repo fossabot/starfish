@@ -285,6 +285,12 @@ interface IOClientEvents {
     charge: number,
     callback: (res: IOResponse<number>) => void,
   ) => void
+  [`crew:reactToOrder`]: (
+    shipId: string,
+    crewId: string,
+    reaction: string,
+  ) => void
+
   [`ship:redistribute`]: (
     shipId: string,
     crewId: string,

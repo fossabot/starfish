@@ -49,6 +49,7 @@ interface ShipStub extends BaseStub {
   guildName?: string
   guildIcon?: string
   orders?: ShipOrders | false
+  orderReactions?: ShipOrderReaction[]
   gameSettings?: AdminGameSettings
 }
 interface VisibleStub extends BaseStub {

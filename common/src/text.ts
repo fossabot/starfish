@@ -22,6 +22,7 @@ function numberWithCommas(x: number) {
 function speedNumber(
   numberInAu: number,
   noTag = false,
+  maxDecimalPlaces = 2,
 ): string {
   let output = ``
   const numberInKm = numberInAu * globals.kmPerAu
@@ -30,8 +31,15 @@ function speedNumber(
   else if (numberInKm < 1000000)
     output = `${math.r2(numberInKm / 1000, 0)}k`
   else if (numberInKm < 1000000000)
-    output = `${math.r2(numberInKm / 1000000, 2)}M`
-  else output = `${math.r2(numberInKm / 1000000000, 2)}B`
+    output = `${math.r2(
+      numberInKm / 1000000,
+      Math.min(maxDecimalPlaces, 2),
+    )}M`
+  else
+    output = `${math.r2(
+      numberInKm / 1000000000,
+      Math.min(maxDecimalPlaces, 2),
+    )}B`
   return output + (noTag ? `` : ` km/hr`)
 }
 

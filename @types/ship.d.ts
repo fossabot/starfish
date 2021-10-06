@@ -149,3 +149,8 @@ interface ShipOrders {
   }
   addendum?: string
 }
+
+interface ShipOrderReaction {
+  id: string
+  reaction: string
+}

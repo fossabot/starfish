@@ -63,6 +63,10 @@
           v-else-if="tooltip.type === 'damage'"
           :data="tooltip"
         />
+        <ShipTooltipsReaction
+          v-else-if="tooltip.type === 'reaction'"
+          :data="tooltip"
+        />
         <div v-else>{{ tooltip }}</div>
       </template>
       <div v-else v-html="tooltip" />

@@ -812,4 +812,40 @@ export default function (
       )
     },
   )
+
+  socket.on(
+    `crew:reactToOrder`,
+    (shipId, crewId, reaction) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      const existing = ship.orderReactions.find(
+        (os) =>
+          os.id === crewId && os.reaction === reaction,
+      )
+      if (existing)
+        ship.orderReactions.splice(
+          ship.orderReactions.indexOf(existing),
+          1,
+        )
+      else
+        ship.orderReactions.push({
+          id: crewMember.id,
+          reaction,
+        })
+
+      ship.toUpdate.orderReactions = ship.orderReactions
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} reacted ${reaction} to an order.`,
+      )
+    },
+  )
 }

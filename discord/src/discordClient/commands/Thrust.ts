@@ -11,7 +11,7 @@ export class ThrustCommand implements Command {
   commandNames = [`thrust`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Use all of your current available thrust in the ship's current direction.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - See thrust options and apply thrust to the ship.`
   }
 
   async run(context: CommandContext) {

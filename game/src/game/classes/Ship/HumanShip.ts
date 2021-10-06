@@ -84,6 +84,7 @@ export class HumanShip extends CombatShip {
 
   commonCredits: number = 0
   orders: ShipOrders | false = false
+  orderReactions: ShipOrderReaction[] = []
 
   tutorial: Tutorial | undefined = undefined
 

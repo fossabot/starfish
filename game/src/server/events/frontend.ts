@@ -311,6 +311,10 @@ export default function (
           error: `Only the captain may change the ship orders.`,
         })
 
+      // reset salutes
+      ship.orderReactions = []
+      ship.toUpdate.orderReactions = ship.orderReactions
+
       if (!orders) {
         ship.orders = false
         ship.toUpdate.orders = false

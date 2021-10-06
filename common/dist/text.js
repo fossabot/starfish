@@ -21,7 +21,7 @@ function numberWithCommas(x) {
         (decimal ? `${math_1.default.r2(decimal, 6)}`.substring(1) : ``);
     return (negative ? `-` : ``) + total;
 }
-function speedNumber(numberInAu, noTag = false) {
+function speedNumber(numberInAu, noTag = false, maxDecimalPlaces = 2) {
     let output = ``;
     const numberInKm = numberInAu * globals_1.default.kmPerAu;
     if (numberInKm < 1000)
@@ -29,9 +29,9 @@ function speedNumber(numberInAu, noTag = false) {
     else if (numberInKm < 1000000)
         output = `${math_1.default.r2(numberInKm / 1000, 0)}k`;
     else if (numberInKm < 1000000000)
-        output = `${math_1.default.r2(numberInKm / 1000000, 2)}M`;
+        output = `${math_1.default.r2(numberInKm / 1000000, Math.min(maxDecimalPlaces, 2))}M`;
     else
-        output = `${math_1.default.r2(numberInKm / 1000000000, 2)}B`;
+        output = `${math_1.default.r2(numberInKm / 1000000000, Math.min(maxDecimalPlaces, 2))}B`;
     return output + (noTag ? `` : ` km/hr`);
 }
 function printList(list) {
