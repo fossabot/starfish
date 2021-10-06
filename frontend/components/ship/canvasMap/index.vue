@@ -6,7 +6,8 @@
     :overlayTitle="true"
     @minimize="minimize"
     @unminimize="unminimize"
-    @mouseleave.native="$store.commit('tooltip', null)"
+    @mouseenter.native="hover"
+    @mouseleave.native="unhover"
   >
     <template #title>
       <span class="sectionemoji">{{ emoji }}</span
@@ -99,6 +100,7 @@ export default Vue.extend({
       mapCenter,
       zoom,
       // previousData,
+      isHovering: false,
       isZooming: false,
       isPanning: false,
       mouseIsDown: false,
@@ -147,6 +149,7 @@ export default Vue.extend({
     lastUpdated() {
       if (!this.mouseIsDown && !this.isZooming) {
         this.drawNextFrame()
+        this.checkHoverPointForTooltip()
       }
     },
     forceMapRedraw() {
@@ -172,6 +175,13 @@ export default Vue.extend({
     this.resize()
   },
   methods: {
+    hover() {
+      this.isHovering = true
+    },
+    unhover() {
+      this.isHovering = false
+      this.$store.commit('tooltip', null)
+    },
     resize() {
       const parentWidth =
         this.$el.parentElement?.offsetWidth || 0
@@ -274,9 +284,7 @@ export default Vue.extend({
           const targetPoints: TargetLocation[] = []
           const tp =
             this.targetPoint || this.tooltip
-              ? {
-                  ...(this.targetPoint || this.tooltip),
-                }
+              ? this.targetPoint || this.tooltip
               : null
 
           if (tp) {
@@ -295,20 +303,20 @@ export default Vue.extend({
                   : tp.color,
               })
             } else if (tp.type) {
-              if (
-                tp.type === 'ship' &&
-                (
-                  this.ship.visible as VisibleStub
-                )?.ships.find((s) => s.id === tp.id)
-              ) {
-                targetPoints.push({
-                  location: this.ship.visible.ships.find(
-                    (s) => s.id === tp.id,
-                  )?.location,
-                  color: tp.guildId
-                    ? c.guilds[tp.guildId].color
-                    : tp.color,
-                })
+              if (tp.type === 'ship') {
+                const found =
+                  tp.id === this.ship.id
+                    ? this.ship
+                    : (
+                        this.ship.visible as VisibleStub
+                      )?.ships.find((s) => s.id === tp.id)
+                if (found)
+                  targetPoints.push({
+                    location: found.location,
+                    color: tp.guildId
+                      ? c.guilds[tp.guildId].color
+                      : tp.color,
+                  })
               }
               if (
                 tp.type === 'planet' &&
@@ -417,14 +425,13 @@ export default Vue.extend({
         this.resetCenterTime,
       )
 
-      if (!this.isPanning) {
-        this.$store.commit(
-          'setTarget',
-          this.$store.state.tooltip?.type !== 'zone'
+      if (!this.isPanning && this.isHovering) {
+        this.$store.commit('setTarget', [
+          ...(this.$store.state.tooltip?.type !== 'zone'
             ? this.$store.state.tooltip?.location ||
-                this.hoverPoint
-            : this.hoverPoint,
-        )
+              this.hoverPoint
+            : this.hoverPoint),
+        ])
       }
 
       this.isPanning = false
@@ -569,8 +576,13 @@ export default Vue.extend({
       ]
     },
 
-    checkHoverPointForTooltip(e: MouseEvent) {
-      if (!this.ship || !this.ship.visible) return
+    checkHoverPointForTooltip(e?: MouseEvent) {
+      if (
+        !this.ship ||
+        !this.ship.visible ||
+        !this.isHovering
+      )
+        return
 
       if (this.isPanning) {
         if (this.$store.state.tooltip)
@@ -578,7 +590,7 @@ export default Vue.extend({
         return
       }
 
-      this.setHoverPoint(e)
+      if (e) this.setHoverPoint(e)
 
       const hoverRadius =
         Math.max(this.drawer?.width || 1, 50) /
@@ -669,9 +681,9 @@ export default Vue.extend({
       if (
         this.$store.state.tooltip === toShow ||
         (this.$store.state.tooltip?.type === toShow?.type &&
-          this.$store.state.tooltip?.name ===
-            toShow?.name &&
-          this.$store.state.tooltip?.id === toShow?.id)
+          this.$store.state.tooltip?.id === toShow?.id &&
+          this.$store.state.tooltip?.location?.[0] ===
+            toShow?.location?.[0])
       )
         return
 

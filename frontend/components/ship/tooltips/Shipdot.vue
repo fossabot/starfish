@@ -339,13 +339,13 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .shipdataview {
-  max-width: 100%;
+  min-width: 200px;
   margin: calc(-1 * var(--tooltip-pad-tb))
     calc(-1 * var(--tooltip-pad-lr));
 }
 
 // .panesection {
-//   width: 230px;
+//   width: 100%;
 // }
 
 .arrow {

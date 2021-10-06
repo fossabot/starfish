@@ -220,6 +220,14 @@ export default Vue.extend({
   mounted() {},
   methods: {
     buyItem(data: PlanetVendorItemPrice) {
+      if (
+        !confirm(
+          `Really buy ${
+            c.items[data.type][data.id].displayName
+          }?`,
+        )
+      )
+        return
       this.$store.commit('setShipProp', [
         'items',
         [
@@ -248,6 +256,14 @@ export default Vue.extend({
     },
 
     sellItem(data: ItemStub) {
+      if (
+        !confirm(
+          `Really sell ${
+            c.items[data.type][data.id].displayName
+          }?`,
+        )
+      )
+        return
       // c.log(data)
       this.$store.commit('setShipProp', [
         'items',
