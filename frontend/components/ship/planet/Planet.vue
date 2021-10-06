@@ -124,6 +124,7 @@
       <ShipPlanetVendorItems v-if="type === 'basic'" />
       <ShipPlanetBuyRepair v-if="type === 'basic'" />
       <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
+      <ShipPlanetBank v-if="type === 'basic'" />
 
       <ShipPlanetLevel />
 

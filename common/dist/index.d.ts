@@ -231,7 +231,7 @@ declare const _default: {
     shuffleArray: (array: any[]) => any[];
     maxNameLength: number;
     numberWithCommas: (x: number) => string | number;
-    speedNumber: (numberInAu: number, noTag?: boolean) => string;
+    speedNumber: (numberInAu: number, noTag?: boolean, maxDecimalPlaces?: number) => string;
     printList: (list: string[]) => string;
     degreesToArrow: (angle: number) => string;
     degreesToArrowEmoji: (angle: number) => string;

@@ -147,7 +147,7 @@ function statToString(data: {
   )}`
   let suffix = ``
 
-  if ([`highestSpeed`].includes(stat))
+  if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
     amountString = text.speedNumber(amount)
 
   if ([`planetTime`, `timeInBunk`].includes(stat))

@@ -276,6 +276,7 @@ export function generateBasicPlanet(
     radius,
     location,
     vendor,
+    bank: false,
     level,
     baseLevel,
     xp,

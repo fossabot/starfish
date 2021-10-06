@@ -16,7 +16,12 @@ type SkillId =
   | `linguistics`
   | `mining`
 
-type CombatTactic = `defensive` | `aggressive` | `pacifist`
+type CombatTactic =
+  | `defensive`
+  | `aggressive`
+  | `onlyNonPlayers`
+  | `onlyPlayers`
+  | `pacifist`
 
 type RepairPriority =
   | `most damaged`
@@ -51,6 +56,7 @@ type CrewStatKey =
   | `totalHpRepaired`
   | `totalTonsMined`
   | `timeInBunk`
+  | `totalSpeedApplied`
 interface CrewStatEntry {
   stat: CrewStatKey
   amount: number

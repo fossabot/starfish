@@ -5,6 +5,7 @@ import { game } from '../..'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 // ----- online count -----
 const connectedIds: { id: string; lastSeen: number }[] = []
@@ -294,6 +295,96 @@ export default function (
   )
 
   socket.on(
+    `ship:deposit`,
+    (shipId, crewId, amount, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may deposit common credits in the bank.`,
+        })
+      const planet = ship.planet
+      if (!planet)
+        return callback({
+          error: `You aren't on a planet!`,
+        })
+      if (
+        !(planet as BasicPlanet).bank &&
+        !ship.banked.find((b) => b.id === planet.id)
+      )
+        return callback({
+          error: `This planet doesn't have a bank!`,
+        })
+      if (amount > ship.commonCredits)
+        return callback({
+          error: `You don't have that many credits!`,
+        })
+      if (amount < 0)
+        return callback({
+          error: `You can't deposit a negative amount!`,
+        })
+
+      ship.depositInBank(amount)
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} deposited ${amount} credits in the bank at ${planet.name}.`,
+      )
+
+      callback({ data: true })
+    },
+  )
+
+  socket.on(
+    `ship:withdraw`,
+    (shipId, crewId, amount, callback) => {
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may withdraw common credits from the bank.`,
+        })
+      const planet = ship.planet
+      if (!planet)
+        return callback({
+          error: `You aren't on a planet!`,
+        })
+      if (
+        !(planet as BasicPlanet).bank &&
+        !ship.banked.find((b) => b.id === planet.id)
+      )
+        return callback({
+          error: `This planet doesn't have a bank!`,
+        })
+
+      ship.withdrawFromBank(amount)
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} withdrew ${amount} credits from the bank at ${planet.name}.`,
+      )
+
+      callback({ data: true })
+    },
+  )
+
+  socket.on(
     `ship:orders`,
     (shipId, crewId, orders, callback) => {
       const ship = game.ships.find(
@@ -310,6 +401,10 @@ export default function (
         return callback({
           error: `Only the captain may change the ship orders.`,
         })
+
+      // reset salutes
+      ship.orderReactions = []
+      ship.toUpdate.orderReactions = ship.orderReactions
 
       if (!orders) {
         ship.orders = false

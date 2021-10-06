@@ -27,8 +27,54 @@
         }}</span
         ><span v-else>!</span>"
 
-        <div class="sub martopsmall">
-          - {{ captain.name }}
+        <div class="sub">- {{ captain.name }}</div>
+
+        <div class="martop" v-if="validOrders">
+          <div
+            v-for="reaction in [
+              '🙌',
+              '😱',
+              '👀',
+              '💪',
+              '🍆',
+            ]"
+            v-if="
+              !isCaptain ||
+              ship.orderReactions.filter(
+                (r) => r.reaction === reaction,
+              ).length
+            "
+            :key="reaction"
+            class="reactbutton"
+            @click="react(reaction)"
+            v-tooltip="
+              ship.orderReactions.filter(
+                (r) => r.reaction === reaction,
+              ).length
+                ? {
+                    type: 'reaction',
+                    reaction: reaction,
+                    orderReactions: ship.orderReactions,
+                  }
+                : null
+            "
+            :class="{
+              button: !isCaptain,
+              buttonlike: isCaptain,
+              secondary: !ship.orderReactions.find(
+                (r) =>
+                  r.id === userId &&
+                  r.reaction === reaction,
+              ),
+            }"
+          >
+            <span class="emoji">{{ reaction }}</span>
+            <span class="sub small">{{
+              ship.orderReactions.filter(
+                (r) => r.reaction === reaction,
+              ).length || ''
+            }}</span>
+          </div>
         </div>
 
         <button
@@ -410,6 +456,15 @@ export default Vue.extend({
       )
     },
 
+    react(reaction): void {
+      ;(this as any).$socket?.emit(
+        'crew:reactToOrder',
+        this.ship.id,
+        this.crewMember?.id,
+        reaction,
+      )
+    },
+
     toValidOrders(orders: ShipOrders): false | ShipOrders {
       if (!orders || !this.ship) return false
       const o = { ...orders }
@@ -499,5 +554,19 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .captainsquarters {
   width: 240px;
+}
+
+.buttonlike {
+  display: inline-block;
+  margin-right: 2px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+}
+.reactbutton {
+  padding: 0em 0.4em;
+  background: rgba(white, 0.1);
+  .emoji {
+    font-size: 1.15em;
+  }
 }
 </style>

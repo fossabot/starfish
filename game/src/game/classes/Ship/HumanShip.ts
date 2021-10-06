@@ -61,6 +61,7 @@ export class HumanShip extends CombatShip {
   rooms: { [key in CrewLocation]?: BaseRoomData } = {}
   maxScanProperties: ShipScanDataShape | null = null
   secondWind: boolean = false
+  banked: BankEntry[] = []
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -84,6 +85,7 @@ export class HumanShip extends CombatShip {
 
   commonCredits: number = 0
   orders: ShipOrders | false = false
+  orderReactions: ShipOrderReaction[] = []
 
   tutorial: Tutorial | undefined = undefined
 
@@ -96,6 +98,8 @@ export class HumanShip extends CombatShip {
 
     this.ai = false
     this.human = true
+
+    this.banked = data.banked || []
 
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed = this.speed
@@ -888,6 +892,11 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge, [thruster]))
 
+    thruster.addStat(
+      `totalSpeedApplied`,
+      c.vectorToMagnitude(thrustVector) * 60 * 60,
+    )
+
     return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
 
@@ -978,6 +987,11 @@ export class HumanShip extends CombatShip {
 
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge, [thruster]))
+
+    thruster.addStat(
+      `totalSpeedApplied`,
+      (this.speed - previousSpeed) * 60 * 60 * -1,
+    )
 
     return (this.speed - previousSpeed) * 60 * 60 * -1
   }
@@ -1418,6 +1432,75 @@ export class HumanShip extends CombatShip {
           ])
         })
     }
+  }
+
+  depositInBank(amount: number) {
+    const planet = this.planet
+    if (!planet) return
+
+    if (amount > this.commonCredits)
+      amount = this.commonCredits
+
+    this.commonCredits -= c.r2(amount, 0, true)
+    this.toUpdate.commonCredits = this.commonCredits
+
+    const existing = this.banked.find(
+      (e) => e.id === planet.id,
+    )
+    if (existing) existing.amount += amount
+    else
+      this.banked.push({
+        id: planet.id,
+        amount,
+        timestamp: Date.now(),
+      })
+    this.toUpdate.banked = this.banked
+
+    this.logEntry(
+      [
+        `${c.r2(amount)} credits deposited in the bank at`,
+        {
+          text: planet.name,
+          color: planet.color,
+          tooltipData: planet.toReference() as any,
+        },
+        `&nospace.`,
+      ],
+      `low`,
+    )
+  }
+
+  withdrawFromBank(amount: number) {
+    const planet = this.planet
+    if (!planet) return
+
+    const entry = this.banked.find(
+      (e) => e.id === planet.id,
+    )
+    if (!entry) return
+    if (entry.amount < amount) amount = entry.amount
+    entry.amount -= c.r2(amount, 0, true)
+
+    this.commonCredits += amount
+    this.toUpdate.commonCredits = this.commonCredits
+
+    this.banked = this.banked.filter((e) => e.amount >= 1)
+    this.toUpdate.banked = this.banked
+
+    this.logEntry(
+      [
+        `${c.r2(
+          amount,
+        )} credits withdrawn from the bank at`,
+        {
+          text: planet.name,
+          color: planet.color,
+          tooltipData: planet.toReference() as any,
+        },
+        `&nospace.`,
+      ],
+      `low`,
+    )
   }
 
   getCache(cache: Cache) {
@@ -2231,10 +2314,10 @@ export class HumanShip extends CombatShip {
         const currTotal = totals.find(
           (t) => t.target.id === targetId,
         )
-        const toAdd =
+        const skillWeight =
           cm.skills.find((s) => s.skill === `munitions`)
             ?.level || 1
-        if (currTotal) currTotal.total += toAdd
+        if (currTotal) currTotal.total += skillWeight
         else {
           const foundShip = this.game.ships.find(
             (s) => s.id === targetId,
@@ -2242,7 +2325,7 @@ export class HumanShip extends CombatShip {
           if (foundShip)
             totals.push({
               target: foundShip,
-              total: toAdd,
+              total: skillWeight,
             })
         }
         return totals
@@ -2324,11 +2407,24 @@ export class HumanShip extends CombatShip {
     }
 
     // ----- aggressive strategy -----
-    else if (this.combatTactic === `aggressive`) {
+    else if (
+      [
+        `aggressive`,
+        `onlyNonPlayers`,
+        `onlyPlayers`,
+      ].includes(this.combatTactic)
+    ) {
       let targetShip = mostViableManuallyTargetedShip
-      if (targetShip && this.canAttack(targetShip, true)) {
-        return setTarget(targetShip)
-      }
+      // if the most manually targeted ship is viable, go for it
+      if (
+        this.combatTactic === `aggressive` ||
+        (this.combatTactic === `onlyNonPlayers` &&
+          targetShip?.ai) ||
+        (this.combatTactic === `onlyPlayers` &&
+          targetShip?.human)
+      )
+        if (targetShip && this.canAttack(targetShip, true))
+          return setTarget(targetShip)
 
       // ----- if no attack target, pick the one we were most recently in combat with that's still in range -----
       const mostRecentCombat =
@@ -2347,7 +2443,14 @@ export class HumanShip extends CombatShip {
             const foundShip = this.game.ships.find(
               (s) => s.id === targetId.id,
             )
-            if (!foundShip) return mostRecent
+            if (
+              !foundShip ||
+              (this.combatTactic === `onlyNonPlayers` &&
+                !targetShip?.ai) ||
+              (this.combatTactic === `onlyPlayers` &&
+                !targetShip?.human)
+            )
+              return mostRecent
             return ar.time > (mostRecent?.time || 0) &&
               this.canAttack(foundShip, true)
               ? ar
@@ -2371,21 +2474,33 @@ export class HumanShip extends CombatShip {
 
       // ----- if there is no enemy from recent combat that we can hit, just pick the closest enemy -----
       if (!targetShip) {
-        targetShip = this.getEnemiesInAttackRange().reduce(
-          (
-            closest: CombatShip | undefined,
-            curr: CombatShip,
-          ) => {
-            if (
-              !closest ||
-              c.distance(this.location, curr.location) <
-                c.distance(this.location, closest.location)
-            )
-              return curr
-            return closest
-          },
-          undefined,
-        )
+        targetShip = this.getEnemiesInAttackRange()
+          .filter(
+            (s) =>
+              this.combatTactic === `aggressive` ||
+              (this.combatTactic === `onlyNonPlayers` &&
+                s?.ai) ||
+              (this.combatTactic === `onlyPlayers` &&
+                s?.human),
+          )
+          .reduce(
+            (
+              closest: CombatShip | undefined,
+              curr: CombatShip,
+            ) => {
+              if (
+                !closest ||
+                c.distance(this.location, curr.location) <
+                  c.distance(
+                    this.location,
+                    closest.location,
+                  )
+              )
+                return curr
+              return closest
+            },
+            undefined,
+          )
       }
 
       return setTarget(targetShip || null)

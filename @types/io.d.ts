@@ -285,6 +285,12 @@ interface IOClientEvents {
     charge: number,
     callback: (res: IOResponse<number>) => void,
   ) => void
+  [`crew:reactToOrder`]: (
+    shipId: string,
+    crewId: string,
+    reaction: string,
+  ) => void
+
   [`ship:redistribute`]: (
     shipId: string,
     crewId: string,
@@ -329,6 +335,18 @@ interface IOClientEvents {
     crewId: string,
     tagline: string,
     callback: (res: IOResponse<string>) => void,
+  ) => void
+  [`ship:withdraw`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<boolean>) => void,
+  ) => void
+  [`ship:deposit`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<boolean>) => void,
   ) => void
   [`ship:orders`]: (
     shipId: string,

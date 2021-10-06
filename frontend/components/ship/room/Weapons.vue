@@ -45,7 +45,11 @@
         </div>
         <div>
           <div>
-            <b>{{ c.capitalize(ship.combatTactic) }}</b>
+            <b>{{
+              c.capitalize(
+                c.camelCaseToWords(ship.combatTactic),
+              )
+            }}</b>
           </div>
           <div>
             <span v-if="targetShip">
@@ -81,8 +85,19 @@
             :class="{
               secondary: crewMember.combatTactic !== tactic,
             }"
+            v-tooltip="
+              tactic === 'aggressive'
+                ? 'Attack any enemy in range, as soon as possible.'
+                : tactic === 'defensive'
+                ? 'Attack the ship in range that most recently attacked you, or wait until you are attacked to fire back.'
+                : tactic === 'onlyPlayers'
+                ? 'Attack any enemy player-controlled ship in range, as soon as possible.'
+                : tactic === 'onlyNonPlayers'
+                ? 'Attack any enemy game-controlled ship in range, as soon as possible.'
+                : null
+            "
           >
-            {{ c.capitalize(tactic) }}
+            {{ c.capitalize(c.camelCaseToWords(tactic)) }}
           </button>
         </div>
       </div>
@@ -154,7 +169,8 @@
                 crewMember.targetItemType !== i,
             }"
           >
-            {{ c.capitalize(i) }}s
+            {{ c.capitalize(i)
+            }}{{ i === 'armor' ? '' : 's' }}
           </button>
         </div>
       </div>
