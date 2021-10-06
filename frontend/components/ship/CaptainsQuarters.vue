@@ -27,9 +27,7 @@
         }}</span
         ><span v-else>!</span>"
 
-        <div class="sub martoptiny">
-          - {{ captain.name }}
-        </div>
+        <div class="sub">- {{ captain.name }}</div>
 
         <div class="martop" v-if="validOrders">
           <div

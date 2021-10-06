@@ -889,6 +889,11 @@ export class HumanShip extends CombatShip {
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge, [thruster]))
 
+    thruster.addStat(
+      `totalSpeedApplied`,
+      c.vectorToMagnitude(thrustVector) * 60 * 60,
+    )
+
     return c.vectorToMagnitude(thrustVector) * 60 * 60
   }
 
@@ -979,6 +984,11 @@ export class HumanShip extends CombatShip {
 
     if (!HumanShip.movementIsFree)
       this.engines.forEach((e) => e.use(charge, [thruster]))
+
+    thruster.addStat(
+      `totalSpeedApplied`,
+      (this.speed - previousSpeed) * 60 * 60 * -1,
+    )
 
     return (this.speed - previousSpeed) * 60 * 60 * -1
   }

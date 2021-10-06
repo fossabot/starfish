@@ -100,7 +100,7 @@ function statToString(data) {
     let titleString = text_1.default.camelCaseToWords(stat);
     let amountString = `${text_1.default.numberWithCommas(math_1.default.r2(amount))}`;
     let suffix = ``;
-    if ([`highestSpeed`].includes(stat))
+    if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
         amountString = text_1.default.speedNumber(amount);
     if ([`planetTime`, `timeInBunk`].includes(stat))
         amountString = text_1.default.msToTimeString(amount * globals_1.default.tickInterval);
