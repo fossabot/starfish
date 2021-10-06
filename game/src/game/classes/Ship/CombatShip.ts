@@ -150,7 +150,10 @@ export abstract class CombatShip extends Ship {
     this.move(
       [
         ...(this.game.getHomeworld(this.guildId)
-          ?.location || [0, 0]),
+          ?.location ||
+          c.randomFromArray(
+            this.game.planets.filter((p) => !p.homeworld),
+          ).location),
       ].map(
         (pos) =>
           pos +
