@@ -42,6 +42,9 @@
         {{ c.r2(planet.repairFactor, 0, true) }} passive
         repair field
       </li>
+      <li v-if="planet.bank">
+        Intergalactic Savings &amp; Loan branch opened
+      </li>
       <li v-if="thingsForSale > 0">
         Vendor capacity increased by {{ thingsForSale }}
       </li>
