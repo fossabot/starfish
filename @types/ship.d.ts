@@ -31,7 +31,7 @@ interface BaseHumanShipData extends BaseShipData {
   guildIcon?: string
   guildName?: string
   orders?: ShipOrders
-  banked: BankEntry[]
+  banked?: BankEntry[]
 }
 
 interface BaseAIShipData extends BaseShipData {

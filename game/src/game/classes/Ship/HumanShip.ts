@@ -99,7 +99,7 @@ export class HumanShip extends CombatShip {
     this.ai = false
     this.human = true
 
-    if (data.banked) this.banked = data.banked
+    this.banked = data.banked || []
 
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed = this.speed
