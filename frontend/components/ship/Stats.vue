@@ -11,7 +11,7 @@
           :title="
             (c.species[crewMember.speciesId] &&
               c.species[crewMember.speciesId].icon + ' ') +
-            crewMember.name
+            'You'
           "
         >
           <ul>
@@ -20,7 +20,7 @@
             </li>
           </ul>
         </Tab>
-        <Tab :title="'🚀 ' + ship.name">
+        <Tab :title="'🚀 Ship'">
           <ul>
             <li v-for="s in ship.stats">
               {{ c.statToString(s) }}
@@ -65,7 +65,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .stats {
-  width: 270px;
+  width: 250px;
   position: relative;
 }
 </style>

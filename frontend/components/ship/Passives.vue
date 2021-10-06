@@ -11,7 +11,7 @@
           :title="
             (c.species[crewMember.speciesId] &&
               c.species[crewMember.speciesId].icon + ' ') +
-            crewMember.name
+            'You'
           "
         >
           <div
@@ -31,7 +31,7 @@
             No crew passives yet!
           </div>
         </Tab>
-        <Tab :title="'🚀 ' + ship.name">
+        <Tab :title="'🚀 Ship'">
           <div
             v-for="(p, index) in ship.passives"
             :class="{

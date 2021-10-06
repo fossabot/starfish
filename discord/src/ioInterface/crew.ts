@@ -59,9 +59,10 @@ export async function move(
   return { data: true }
 }
 
-export async function thrustInCurrentDirection(
+export async function thrustAt(
   shipId: string,
   crewId: string,
+  location: CoordinatePair,
 ) {
   if (!(await connected()))
     return { error: `Failed to thrust.` }
@@ -69,11 +70,20 @@ export async function thrustInCurrentDirection(
   const res: IOResponse<number> = await new Promise(
     (resolve) => {
       io.emit(
-        `crew:thrustInCurrentDirection`,
+        `crew:targetLocation`,
         shipId,
         crewId,
-        (response) => {
-          resolve(response)
+        location,
+        () => {
+          io.emit(
+            `crew:thrust`,
+            shipId,
+            crewId,
+            1,
+            (response) => {
+              resolve(response)
+            },
+          )
         },
       )
     },

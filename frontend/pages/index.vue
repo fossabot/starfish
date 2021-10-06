@@ -17,7 +17,7 @@
           web and Discord, and enables teamwork in a whole
           new way.
         </div>
-        <div class="marbotsmall" v-if="!userId">
+        <div class="marbot" v-if="!userId">
           To play, you will need:
           <ul>
             <li>
@@ -34,7 +34,12 @@
             </li>
           </ul>
         </div>
-        <div class="marbotsmall">
+        <div class="marbot">
+          This is a game made by two people in our free
+          time, so please be patient as we work out the
+          kinks.
+        </div>
+        <div class="marbot">
           During the alpha, I'm looking for
           <nuxt-link to="/feedback">feedback</nuxt-link>
           around the gameplay, plus
@@ -48,7 +53,7 @@
           epic? What left an impression, or made you feel a
           strong emotion?
         </div>
-        <div class="marbotsmall">
+        <div class="marbot">
           Thank you so much for playing! Feel free to play
           as much or as little as you like, with as many
           ships as you like, with as many crew members as

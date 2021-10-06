@@ -58,7 +58,6 @@ export class SellCommand implements Command {
         const price = c.getCargoSellPrice(
           i.id,
           planet,
-          1,
           context.ship!.guildId,
         )
 
@@ -108,11 +107,16 @@ export class SellCommand implements Command {
         )
         if (`data` in res)
           await context.reply(
-            `Sold ${inv.amount} ton${
+            `${context.crewMember!.name} sold ${
+              inv.amount
+            } ton${
               inv.amount === 1 ? `` : `s`
             } of ${c.capitalize(
               c.camelCaseToWords(inv.id),
-            )} to ${planet.name} for 💳${res.data.price}`,
+            )} to ${planet.name} for 💳${c.r2(
+              res.data.price,
+              0,
+            )}`,
           )
         else await context.reply(res.error)
       },

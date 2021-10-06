@@ -106,7 +106,7 @@ export default function (
 
       c.log(
         `gray`,
-        `Set ${crewMember.name}'s species to ${crewMember.speciesId}.`,
+        `Set ${crewMember.name} on ${ship.name}'s species to ${crewMember.speciesId}.`,
       )
     },
   )
@@ -130,8 +130,13 @@ export default function (
   })
 
   socket.on(
-    `crew:thrustInCurrentDirection`,
-    (shipId, crewId, callback) => {
+    `crew:targetLocation`,
+    (
+      shipId,
+      crewId,
+      targetLocation,
+      callback = () => {},
+    ) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -143,67 +148,32 @@ export default function (
         (cm) => cm.id === crewId,
       )
       if (!crewMember)
-        return callback({ error: `No crew member found.` })
-      if (!crewMember.cockpitCharge)
-        return callback({ error: `No charge.` })
-      if (
-        ship.velocity.reduce(
-          (total, v) => total + Math.abs(v),
-          0,
-        ) < 0.000001
-      )
         return callback({
-          error: `The ship is not moving, so it has no direction along which to thrust!`,
+          error: `No crew member found by that id.`,
         })
-
-      const targetLocation = ship.location.map(
-        (l, index) => l + ship.velocity[index] * 500,
-      ) as CoordinatePair
-      const speedDifference = ship.applyThrust(
-        targetLocation,
-        crewMember.cockpitCharge,
-        crewMember,
-      )
-
-      crewMember.cockpitCharge = 0
-      crewMember.toUpdate.cockpitCharge = 0
-      crewMember.targetLocation = targetLocation
-      crewMember.toUpdate.targetLocation = targetLocation
-
-      callback({ data: speedDifference })
-      c.log(
-        `gray`,
-        `Auto-thrusted ${crewMember.name} on ${ship.name}.`,
-      )
-    },
-  )
-
-  socket.on(
-    `crew:targetLocation`,
-    (shipId, crewId, targetLocation) => {
-      const ship = game.ships.find(
-        (s) => s.id === shipId,
-      ) as HumanShip
-      if (!ship) return
-      const crewMember = ship.crewMembers?.find(
-        (cm) => cm.id === crewId,
-      )
-      if (!crewMember) return
 
       if (
         !Array.isArray(targetLocation) ||
         targetLocation.length !== 2 ||
         targetLocation.find((l: any) => isNaN(parseInt(l)))
-      )
-        return c.log(
+      ) {
+        c.log(
           `Invalid call to set crew targetLocation:`,
           shipId,
           crewId,
           targetLocation,
         )
+        return callback({
+          error: `Invalid target location.`,
+        })
+      }
+
       crewMember.targetLocation = targetLocation
       crewMember.toUpdate.targetLocation =
         crewMember.targetLocation
+
+      callback({ data: crewMember.targetLocation })
+
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}.`,
@@ -489,12 +459,9 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price = c.getCargoBuyPrice(
-        cargoId,
-        planet,
-        amount,
-        ship.guildId,
-      )
+      const price =
+        c.getCargoBuyPrice(cargoId, planet, ship.guildId) *
+        amount
 
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
@@ -559,12 +526,9 @@ export default function (
           error: `No planet found.`,
         })
 
-      const price = c.getCargoSellPrice(
-        cargoId,
-        planet,
-        amount,
-        ship.guildId,
-      )
+      const price =
+        c.getCargoSellPrice(cargoId, planet, ship.guildId) *
+        amount
 
       crewMember.credits = Math.round(
         crewMember.credits + price,
@@ -806,11 +770,13 @@ export default function (
           error: `You're not targeting any location to thrust towards!`,
         })
 
-      ship.applyThrust(
+      const speedDifference = ship.applyThrust(
         targetLocation,
         chargePercent,
         crewMember,
       )
+
+      callback({ data: speedDifference })
 
       c.log(
         `gray`,

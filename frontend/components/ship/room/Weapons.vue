@@ -13,10 +13,10 @@
     </div>
     <div v-else>
       <div class="panesection">
-        <div class="panesubhead">Weapons</div>
         <div
           v-for="i in weapons"
           v-tooltip="{
+            type: i.type,
             id: i.id,
             ownerId: ship.id,
           }"

@@ -163,15 +163,13 @@ export default Vue.extend({
           const pricePerUnit = c.getCargoBuyPrice(
             cargo.id,
             this.ship.planet,
-            1,
             this.ship.guildId,
           )
+
           const maxCanBuy = c.r2(
             Math.min(
-              Math.floor(
-                (this.crewMember?.credits / pricePerUnit) *
-                  100,
-              ) / 100,
+              this.crewMember?.credits / pricePerUnit,
+
               Math.min(
                 this.ship.chassis.maxCargoSpace,
                 this.crewMember?.maxCargoSpace,
@@ -180,6 +178,7 @@ export default Vue.extend({
             2,
             true,
           )
+
           return {
             ...cargo,
             cargoData: (c.cargo as any)[cargo.id],
@@ -199,13 +198,14 @@ export default Vue.extend({
             const pricePerUnit = c.getCargoSellPrice(
               cargo.id,
               this.ship.planet,
-              1,
               this.ship.guildId,
             )
+
             const heldAmount =
               this.crewMember?.inventory.find(
                 (i: any) => i.id === cargo.id,
               )?.amount || 0
+
             return {
               ...cargo,
               cargoData: (c.cargo as any)[cargo.id],

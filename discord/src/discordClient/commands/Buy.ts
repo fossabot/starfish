@@ -34,15 +34,26 @@ export class BuyCommand implements Command {
       return c.getCargoBuyPrice(
         cargoForSale.id,
         planet,
-        1,
         context.ship!.guildId,
       )
     }
 
-    const forSale = vendor.cargo.map((cargoForSale) => ({
-      ...cargoForSale,
-      price: getPrice(cargoForSale),
-    }))
+    const forSale = vendor.cargo
+      .map((cargoForSale) => ({
+        ...cargoForSale,
+        price: getPrice(cargoForSale),
+      }))
+      .filter(
+        (cargoForSale) =>
+          cargoForSale.price * 0.1 <
+          context.crewMember!.credits,
+      )
+    if (!forSale.length) {
+      await context.reply(
+        `You don't have enough credits to buy anything here.`,
+      )
+      return
+    }
 
     const takenSpace = context.crewMember.inventory.reduce(
       (total, i) => total + i.amount,
@@ -98,11 +109,16 @@ export class BuyCommand implements Command {
         )
         if (`data` in res)
           await context.reply(
-            `Bought ${amountToBuy} ton${
+            `${
+              context.crewMember!.name
+            } bought ${amountToBuy} ton${
               amountToBuy === 1 ? `` : `s`
             } of ${c.capitalize(
               c.camelCaseToWords(forSaleEntry.id),
-            )} from ${planet.name} for 💳${res.data.price}`,
+            )} from ${planet.name} for 💳${c.r2(
+              res.data.price,
+              0,
+            )}`,
           )
         else await context.reply(res.error)
       },
