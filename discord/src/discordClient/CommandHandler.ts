@@ -26,7 +26,7 @@ import { KickMemberCommand } from './commands/KickMember'
 import { LeaveGameCommand } from './commands/LeaveGame'
 import { GoCommand } from './commands/Go'
 import { ChangeShipNameCommand } from './commands/ShipName'
-import { ThrustInCurrentDirectionCommand } from './commands/ThrustInCurrentDirection'
+import { ThrustCommand } from './commands/Thrust'
 import { BrakeCommand } from './commands/Brake'
 import { StatusCommand } from './commands/Status'
 import { RepairCommand } from './commands/Repair'
@@ -50,7 +50,7 @@ export class CommandHandler {
       StatusCommand,
       BroadcastCommand,
       GoCommand,
-      ThrustInCurrentDirectionCommand,
+      ThrustCommand,
       BrakeCommand,
       BuyCommand,
       SellCommand,
