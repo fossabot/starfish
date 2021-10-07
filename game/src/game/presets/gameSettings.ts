@@ -12,7 +12,7 @@ export default function (): AdminGameSettings {
     baseStaminaUse: 0.00001 * c.gameSpeedMultiplier,
     baseEngineThrustMultiplier: 0.1 * c.gameSpeedMultiplier,
     gravityMultiplier: 2.5,
-    gravityScalingFunction: `sixthPower`,
+    gravityCurveSteepness: 5, // integers
     gravityRadius: 0.5,
     arrivalThreshold: 0.001,
     baseCritChance: 0.01,

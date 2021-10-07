@@ -8,6 +8,7 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
+import type { HumanShip } from './HumanShip'
 
 export abstract class CombatShip extends Ship {
   static percentOfCreditsLostOnDeath = 0.5
@@ -492,14 +493,8 @@ export abstract class CombatShip extends Ship {
         })
 
       this.addStat(`kills`, 1)
-      if (
-        this.stats.find((s) => s.stat === `kills`)
-          ?.amount === 1
-      )
-        this.addHeaderBackground(
-          `Stone Cold 1`,
-          `destroying an enemy ship`,
-        )
+      if (this.human)
+        (this as HumanShip).checkAchievements(`combat`)
     }
 
     return attackResult

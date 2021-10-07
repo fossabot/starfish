@@ -1023,7 +1023,7 @@ export default class Drawer {
           ]
         : [0, 0],
       el.location,
-      (this.width / this.flatScale) * 1.2,
+      (this.width / this.flatScale) * 1.5,
     )
   }
 

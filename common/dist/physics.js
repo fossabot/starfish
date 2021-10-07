@@ -16,6 +16,11 @@ function getUnitVectorFromThatBodyToThisBody(thisBody, thatBody) {
 const scalingFunctions = {
     defaultRealGravity: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => (-globals_1.default.gravitationalConstant * massProduct) /
         rangeInMeters ** 2,
+    flexibleExponent: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, gravityScalingExponent, }) => -1 *
+        0.0000015 *
+        Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
+        (rangeAsPercentOfGravityRadius - 1) **
+            (gravityScalingExponent * 2),
     // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
     linear: ({ massProduct, rangeInMeters, rangeAsPercentOfGravityRadius, }) => -1 *
         0.0000015 *
@@ -42,7 +47,7 @@ const scalingFunctions = {
         Math.sqrt(globals_1.default.gravitationalConstant * massProduct) *
         (rangeAsPercentOfGravityRadius - 1) ** 10,
 };
-function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravityScalingFunction = `defaultRealGravity`, gravityMultiplier = 1, gravityRange = 0.5) {
+function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravityScalingExponent = 10, gravityMultiplier = 1, gravityRange = 0.5) {
     if (!thisBody ||
         !thatBody ||
         !thisBody.mass ||
@@ -68,18 +73,20 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravit
         gravityLesseningEffectPercentage = math_1.default.lerp(0, maxGravityLesseningEffectPercentage, 1 - angleToThatBody / coneWidth);
     }
     // * ----- current scaling function in use -----
-    const scalingFunction = scalingFunctions[gravityScalingFunction] ||
+    const scalingFunction = scalingFunctions.flexibleExponent ||
         scalingFunctions.defaultRealGravity;
     // * ----- final gravity force calc -----
     const gravityForce = scalingFunction({
         massProduct,
         rangeInMeters,
         rangeAsPercentOfGravityRadius,
+        gravityScalingExponent,
     }) *
         gravityMultiplier *
         (1 - gravityLesseningEffectPercentage);
     // c.log({
     //   name: thatBody.name,
+    //   gravityScalingExponent,
     //   rangeAsPercentOfGravityRadius,
     //   angleToThatBody,
     //   gravityLesseningEffectPercentage,

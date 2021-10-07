@@ -446,6 +446,9 @@ export default function (
           error: `That cargo is not for sale here.`,
         })
 
+      if (amount <= 0 || isNaN(parseFloat(`${amount}`)))
+        return callback({ error: `Invalid amount.` })
+
       amount = c.r2(amount, 2, true)
 
       if (
@@ -505,6 +508,9 @@ export default function (
       )
       if (!crewMember)
         return callback({ error: `No crew member found.` })
+
+      if (amount <= 0 || isNaN(parseFloat(`${amount}`)))
+        return callback({ error: `Invalid amount.` })
 
       amount = c.r2(amount, 2)
 

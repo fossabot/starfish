@@ -3,6 +3,10 @@ import { db } from '../../../db'
 import io from '../../../server/io'
 
 import { membersIn, cumulativeSkillIn } from './addins/crew'
+import {
+  checkAchievements,
+  addAchievement,
+} from './addins/achievements'
 
 import { CombatShip } from './CombatShip'
 import type { Game } from '../../Game'
@@ -163,6 +167,10 @@ export class HumanShip extends CombatShip {
     if (this.tutorial)
       setTimeout(() => this.updatePlanet(true), 1500)
 
+    if (data.achievements)
+      this.addAchievement(data.achievements)
+    this.checkAchievements()
+
     if (!this.items.length) {
       c.log(
         `red`,
@@ -183,6 +191,9 @@ export class HumanShip extends CombatShip {
       this.recalculateCombatTactic()
     }, 100)
   }
+
+  checkAchievements = checkAchievements
+  addAchievement = addAchievement
 
   tick() {
     const profiler = new c.Profiler(
@@ -417,28 +428,7 @@ export class HumanShip extends CombatShip {
 
     this.addStat(`seenPlanets`, 1)
 
-    if (this.seenPlanets.length >= 5)
-      this.addTagline(
-        `Small Pond Paddler`,
-        `discovering 5 planets`,
-      )
-    if (this.seenPlanets.length >= 10)
-      this.addHeaderBackground(
-        `Constellation 1`,
-        `discovering 10 planets`,
-      )
-    if (this.seenPlanets.length >= 15)
-      this.addTagline(
-        `Current Rider`,
-        `discovering 15 planets`,
-      )
-    if (this.seenPlanets.length >= 30)
-      this.addTagline(`Migratory`, `discovering 30 planets`)
-    if (this.seenPlanets.length >= 100)
-      this.addTagline(
-        `EAC-zy Rider`,
-        `discovering 100 planets`,
-      )
+    this.checkAchievements(`exploration`)
   }
 
   discoverLandmark(l: Zone) {
@@ -1052,27 +1042,9 @@ export class HumanShip extends CombatShip {
       (c.vectorToMagnitude(this.velocity) *
         (1000 * 60 * 60)) /
       c.tickInterval
-    if (speed > 1)
-      this.addTagline(`River Runner`, `going over 1AU/hr`)
-    if (speed > 3)
-      this.addHeaderBackground(
-        `Crimson Blur`,
-        `going over 3AU/hr`,
-      )
-    if (speed > 7.21436)
-      this.addHeaderBackground(
-        `Lightspeedy`,
-        `breaking the speed of light`,
-      )
-    if (speed > 15)
-      this.addTagline(`Flying Fish`, `going over 15AU/hr`)
-    if (speed > 30)
-      this.addTagline(
-        `Hell's Angelfish`,
-        `going over 30AU/hr`,
-      )
     if (speed > this.getStat(`highestSpeed`))
       this.setStat(`highestSpeed`, speed)
+    this.checkAchievements(`speed`)
 
     // ----- end if in tutorial -----
     if (this.tutorial && this.tutorial.currentStep) {
@@ -1665,17 +1637,6 @@ export class HumanShip extends CombatShip {
       )
 
     member.addStat(`totalContributedToCommonFund`, amount)
-
-    if (this.commonCredits > 50000)
-      this.addTagline(
-        `Easy Target`,
-        `having 50000 credits in the common fund`,
-      )
-    else if (this.commonCredits > 200000)
-      this.addTagline(
-        `Moneybags`,
-        `having 200000 credits in the common fund`,
-      )
   }
 
   broadcast(message: string, crewMember: CrewMember) {
@@ -1924,7 +1885,7 @@ export class HumanShip extends CombatShip {
           `481159946197794816`,
         ].includes(cm.id)
       )
-        this.addTagline(`⚡Admin⚡`, `being an admin`)
+        this.addAchievement(`admin`)
     }
 
     if (!setupAdd)
@@ -1933,14 +1894,7 @@ export class HumanShip extends CombatShip {
         `Added crew member ${cm.name} to ${this.name}`,
       )
 
-    if (this.crewMembers.length >= 5)
-      this.addTagline(`Guppy`, `having 5 crew members`)
-    else if (this.crewMembers.length >= 10)
-      this.addTagline(`Schoolin'`, `having 10 crew members`)
-    else if (this.crewMembers.length >= 30)
-      this.addTagline(`Pod`, `having 30 crew members`)
-    else if (this.crewMembers.length >= 100)
-      this.addTagline(`Big Fish`, `having 100 crew members`)
+    this.checkAchievements(`crewMembers`)
 
     if (!setupAdd) await db.ship.addOrUpdateInDb(this)
     return cm
@@ -2604,19 +2558,7 @@ export class HumanShip extends CombatShip {
         `critical`,
       )
 
-      this.addTagline(
-        `Delicious with Lemon`,
-        `having your ship destroyed`,
-      )
-
-      if (
-        this.stats.find((s) => s.stat === `deaths`)
-          ?.amount === 2
-      )
-        this.addHeaderBackground(
-          `Gravestone 1`,
-          `having your ship destroyed twice`,
-        )
+      this.checkAchievements(`death`)
     }, 100)
 
     const cacheContents: CacheContents[] = []

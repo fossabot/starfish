@@ -41,8 +41,9 @@ interface ShipStub extends BaseStub {
   mass?: number
   availableTaglines?: string[]
   tagline?: string | null
-  availableHeaderBackgrounds?: string[]
+  availableHeaderBackgrounds?: { id: string; url: string }[]
   headerBackground?: string | null
+  achievements: string[]
   stats?: ShipStatEntry[]
   tutorial?: any
   captain?: string

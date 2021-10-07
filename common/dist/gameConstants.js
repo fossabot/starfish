@@ -46,75 +46,6 @@ const tactics = [
     `pacifist`,
 ];
 const baseCargoSellMultiplier = 0.3;
-const taglineOptions = [
-    `Alpha Tester`,
-    `Tester`,
-    `✨Supporter✨`,
-    `⚡Admin⚡`,
-    // to be assigned
-    `Big Flipper`,
-    `Whale, I'll be!`,
-    `Splish Splash`,
-    `Holy Mackerel!`,
-    `Small Pond 4 Life`,
-    `Nautical Nonsense`,
-    `Very Shallow`,
-    `Bottom Feeder`,
-    // flight (implemented)
-    `River Runner`,
-    `Hell's Angelfish`,
-    `Flying Fish`,
-    // todo more flight taglines for distance traveled
-    // exploration (implemented)
-    `Small Pond Paddler`,
-    `Current Rider`,
-    `Migratory`,
-    `EAC-zy Rider`,
-    // credits (implemented)
-    `Easy Target`,
-    `Moneybags`,
-    // bunk (implemented)
-    `Nap Champions`,
-    // upgrade to x chassis
-    `Big Kahuna`,
-    // planet time
-    `Home Schooled`,
-    // combat achievements
-    `Nibbler`,
-    `On the Hunt`,
-    `Blood in the Water`,
-    `Feeding Frenzied`,
-    `Venomous`,
-    `Big Chompers`,
-    `Bait and Switch`,
-    // dying (implemented)
-    `Delicious with Lemon`,
-    // crew member numbers (implemented)
-    `Guppy`,
-    `Schoolin'`,
-    `Pod`,
-    `Big Fish`,
-];
-const headerBackgroundOptions = [
-    { id: `Default`, url: `default.jpg` },
-    { id: `Traders Guild 1`, url: `trader1.svg` },
-    { id: `Peacekeepers Guild 1`, url: `peacekeeper1.svg` },
-    { id: `Explorers Guild 1`, url: `explorer1.svg` },
-    { id: `Hunters Guild 1`, url: `hunter1.svg` },
-    { id: `Miners Guild 1`, url: `miner1.svg` },
-    // { id: `Traders Guild 2`, url: `trader2.svg` }, // guild join
-    // { id: `Peacekeepers Guild 2`, url: `peacekeeper2.svg` }, // guild join
-    // { id: `Explorers Guild 2`, url: `explorer2.svg` }, // guild join
-    // { id: `Hunters Guild 2`, url: `hunter2.svg` }, // guild join
-    // { id: `Miners Guild 2`, url: `miner2.svg` }, // guild join
-    { id: `Flat 1`, url: `flat1.svg` },
-    { id: `Flat 2`, url: `flat2.svg` },
-    { id: `Stone Cold 1`, url: `gradient1.svg` },
-    { id: `Crimson Blur`, url: `gradient2.svg` },
-    { id: `Lightspeedy`, url: `gradient3.svg` },
-    { id: `Constellation 1`, url: `stars1.jpg` },
-    { id: `Gravestone 1`, url: `vintage1.jpg` },
-];
 exports.default = {
     supportServerLink,
     gameSpeedMultiplier,
@@ -138,7 +69,5 @@ exports.default = {
     sameGuildShipScanProperties,
     tactics,
     baseCargoSellMultiplier,
-    taglineOptions,
-    headerBackgroundOptions,
 };
 //# sourceMappingURL=gameConstants.js.map

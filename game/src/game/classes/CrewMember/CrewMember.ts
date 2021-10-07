@@ -59,7 +59,8 @@ export class CrewMember extends Stubbable {
 
     this.stamina = data.stamina || this.maxStamina
     this.lastActive = data.lastActive || Date.now()
-    this.inventory = data.inventory?.filter((i) => i) || []
+    this.inventory =
+      data.inventory?.filter((i) => i && i.amount > 0) || []
     this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 200
     this.skills =
@@ -132,19 +133,7 @@ export class CrewMember extends Stubbable {
       }
     }
 
-    if (
-      this.ship.crewMembers.length > 10 &&
-      this.ship.crewMembers.reduce<boolean>(
-        (all: boolean, cm: CrewMember): boolean => {
-          return Boolean(all && cm.location === `bunk`)
-        },
-        true,
-      )
-    )
-      this.ship.addTagline(
-        `Nap Champions`,
-        `having all 10+ crew members asleep at once`,
-      )
+    this.ship.checkAchievements(`bunk`)
 
     return true
   }
@@ -258,13 +247,16 @@ export class CrewMember extends Stubbable {
   }
 
   addCargo(id: CargoId, amount: number): number {
-    amount = c.r2(amount, 2, true) // round down to 2 decimal places
-
     const canHold =
       Math.min(
         this.ship.chassis.maxCargoSpace,
         this.maxCargoSpace,
       ) - this.heldWeight
+
+    if (amount <= 0 || isNaN(amount)) return 0
+
+    amount = c.r2(amount, 2, true) // round down to 2 decimal places
+
     const existingStock = this.inventory.find(
       (cargo) => cargo.id === id,
     )
@@ -282,11 +274,14 @@ export class CrewMember extends Stubbable {
 
     this.ship.recalculateMass()
 
-    return Math.max(0, amount - canHold)
+    return Math.max(0, canHold - amount)
   }
 
   removeCargo(id: CargoId, amount: number) {
     this.active()
+
+    if (amount <= 0 || isNaN(amount)) return
+
     const existingStock = this.inventory.find(
       (cargo) => cargo.id === id,
     )

@@ -1278,7 +1278,7 @@ export class Game {
     for (let guild of Object.values(c.guilds)) {
       if (guild.id === `fowl`) continue
       let total = 0
-      this.ships
+      this.humanShips
         .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
@@ -1287,11 +1287,15 @@ export class Game {
           for (let cm of (s as HumanShip).crewMembers) {
             shipTotal += cm.credits
           }
+          for (let b of (s as HumanShip).banked)
+            shipTotal += b.amount
           for (let i of (s as HumanShip).items) {
             shipTotal += (
               c.items[i.type][i.id] as BaseItemData
             ).basePrice
           }
+          s.setStat(`netWorth`, shipTotal)
+          s.checkAchievements(`money`)
           topNetWorthShips.push({
             name: s.name,
             color: guild.color,
@@ -1306,7 +1310,7 @@ export class Game {
       })
     }
     let noGuildTotal = 0
-    this.ships
+    this.humanShips
       .filter((s) => !s.guildId)
       .filter((s) => !s.tutorial)
       .forEach((s) => {
@@ -1314,11 +1318,15 @@ export class Game {
         for (let cm of (s as HumanShip).crewMembers) {
           shipTotal += cm.credits
         }
+        for (let b of (s as HumanShip).banked)
+          shipTotal += b.amount
         for (let i of (s as HumanShip).items) {
           shipTotal += (
             c.items[i.type][i.id] as BaseItemData
           ).basePrice
         }
+        s.setStat(`netWorth`, shipTotal)
+        s.checkAchievements(`money`)
         topNetWorthShips.push({
           name: s.name,
           color: `var(--noguild)`,
@@ -1362,7 +1370,7 @@ export class Game {
     for (let guild of Object.values(c.guilds)) {
       if (guild.id === `fowl`) continue
       let total = 0
-      this.ships
+      this.humanShips
         .filter((s) => s.guildId === guild.id)
         .filter((s) => !s.tutorial)
         .forEach((s) => {
@@ -1381,7 +1389,7 @@ export class Game {
       })
     }
     let noGuildMembersTotal = 0
-    this.ships
+    this.humanShips
       .filter((s) => !s.guildId)
       .filter((s) => !s.tutorial)
       .forEach((s) => {

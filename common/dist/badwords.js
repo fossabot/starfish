@@ -2,13 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageFilter = void 0;
 class LanguageFilter {
-    constructor() {
-        this.list = localList;
-        this.splitRegex = /\b/;
-        this.placeHolder = ``;
-        this.regex = /[^a-zA-Z0-9|$|@]|\^/g;
-        this.replaceRegex = /\w/g;
-    }
+    list = localList;
+    splitRegex = /\b/;
+    placeHolder = ``;
+    regex = /[^a-zA-Z0-9|$|@]|\^/g;
+    replaceRegex = /\w/g;
     isProfane(string) {
         // some combo words got through, so adding manual check for those regardless of position/context
         for (let w of [

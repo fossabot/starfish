@@ -7,7 +7,7 @@ interface AdminGameSettings {
   brakeToThrustRatio: number
   baseEngineThrustMultiplier: number
   gravityMultiplier: number
-  gravityScalingFunction: string
+  gravityCurveSteepness: number
   gravityRadius: number
   arrivalThreshold: number
   baseCritChance: number

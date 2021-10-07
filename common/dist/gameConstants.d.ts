@@ -30,8 +30,8 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        chassis: ("id" | "mass" | "passives" | "type" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: (keyof BasePlanetData)[];
+        chassis: (keyof BaseChassisData)[];
     };
     sameGuildShipScanProperties: {
         _hp: boolean;
@@ -39,11 +39,6 @@ declare const _default: {
     };
     tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
-    taglineOptions: string[];
-    headerBackgroundOptions: {
-        id: string;
-        url: string;
-    }[];
 };
 export default _default;
 //# sourceMappingURL=gameConstants.d.ts.map

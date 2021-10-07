@@ -22,7 +22,7 @@ import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
 
 export class Ship extends Stubbable {
-  static maxPreviousLocations: number = 35
+  static maxPreviousLocations: number = 70
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
@@ -73,9 +73,14 @@ export class Ship extends Stubbable {
   direction: number = 0 // just for frontend reference
   // targetLocation: CoordinatePair = [0, 0]
   tagline: string | null = null
-  availableTaglines: string[] = []
   headerBackground: string | null = null
-  availableHeaderBackgrounds: string[] = [`Default`]
+  availableTaglines: string[] = []
+  availableHeaderBackgrounds: {
+    id: string
+    url: string
+  }[] = []
+
+  achievements: string[] = []
   passives: ShipPassiveEffect[] = []
   slots: number = 1
   attackable = false
@@ -99,9 +104,8 @@ export class Ship extends Stubbable {
       velocity,
       previousLocations,
       tagline,
-      availableTaglines,
+      achievements,
       headerBackground,
-      availableHeaderBackgrounds,
       stats,
     }: BaseShipData,
     game: Game,
@@ -151,19 +155,8 @@ export class Ship extends Stubbable {
       this.previousLocations = [...previousLocations]
 
     if (tagline) this.tagline = tagline
-    if (availableTaglines)
-      this.availableTaglines = availableTaglines.filter(
-        (t) => c.taglineOptions.includes(t),
-      )
     if (headerBackground)
       this.headerBackground = headerBackground
-    if (availableHeaderBackgrounds?.length)
-      this.availableHeaderBackgrounds =
-        availableHeaderBackgrounds.filter((ab) =>
-          c.headerBackgroundOptions.find(
-            (b) => b.id === ab,
-          ),
-        )
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
@@ -257,7 +250,7 @@ export class Ship extends Stubbable {
     )
   }
 
-  changeGuild(id: GuildId) {
+  changeGuild(this: Ship, id: GuildId) {
     // if somehow there already was one, remove its passives
     if (this.guildId) {
       for (let p of c.guilds[this.id].passives)
@@ -270,14 +263,8 @@ export class Ship extends Stubbable {
       for (let p of c.guilds[id].passives)
         this.applyPassive(p)
 
-      this.addHeaderBackground(
-        c.guilds[id].name + ` Guild 1`,
-        `joining the ${c.guilds[id].name} guild`,
-      )
-      this.addHeaderBackground(
-        c.guilds[id].name + ` Guild 2`,
-        `joining the ${c.guilds[id].name} guild`,
-      )
+      if (this.human)
+        (this as HumanShip).checkAchievements(`guild`)
 
       this.logEntry(
         [
@@ -384,6 +371,9 @@ export class Ship extends Stubbable {
         }),
       )
     this.recalculateMass()
+
+    if (this.human)
+      (this as HumanShip).checkAchievements(`chassis`)
   }
 
   updateSlots() {
@@ -486,16 +476,8 @@ export class Ship extends Stubbable {
     this.updateThingsThatCouldChangeOnItemChange()
     this.recalculateMass()
 
-    if (this.items.length === 5)
-      this.addHeaderBackground(
-        `Flat 1`,
-        `equipping 5 items`,
-      )
-    else if (this.items.length === 8)
-      this.addHeaderBackground(
-        `Flat 2`,
-        `equipping 8 items`,
-      )
+    if (this.human)
+      (this as HumanShip).checkAchievements(`items`)
 
     return item
   }
@@ -656,9 +638,9 @@ export class Ship extends Stubbable {
     )
     if (
       this.previousLocations.length < 1 ||
-      (angle >= 5 && distance > 0.00005)
+      (angle >= 5 && distance > 0.00006)
     ) {
-      // if (this.human)
+      // if (this.human) c.log(this.previousLocations)
       //   c.log(
       //     `adding previous location to`,
       //     this.name,
@@ -666,7 +648,11 @@ export class Ship extends Stubbable {
       //     angle,
       //     distance,
       //   )
-      this.previousLocations.push([...currentLocation])
+      this.previousLocations.push([
+        ...(currentLocation.map((l) =>
+          c.r2(l, 7),
+        ) as CoordinatePair),
+      ])
       while (
         this.previousLocations.length >
         Ship.maxPreviousLocations
@@ -704,11 +690,12 @@ export class Ship extends Stubbable {
         distance <= this.game.settings.gravityRadius &&
         distance > this.game.settings.arrivalThreshold
       ) {
+        c.log(this.game.settings.gravityCurveSteepness)
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
-            this.game.settings.gravityScalingFunction,
+            this.game.settings.gravityCurveSteepness,
             this.game.settings.gravityMultiplier,
             this.game.settings.gravityRadius,
           )
@@ -812,42 +799,6 @@ export class Ship extends Stubbable {
     if (this._hp < 0) this._hp = 0
     if (this._hp > this._maxHp) this._hp = this._maxHp
     this.toUpdate._hp = this._hp
-  }
-
-  // ----- cosmetics -----
-  addTagline(tagline: string, reason: string) {
-    if (
-      !c.taglineOptions.find((o) => o === tagline) ||
-      this.availableTaglines.find((t) => t === tagline)
-    )
-      return
-    this.availableTaglines.push(tagline)
-    this.toUpdate.availableTaglines = this.availableTaglines
-    this.logEntry(
-      [
-        `Unlocked a new ship tagline for ${reason}:`,
-        { text: `"${tagline}"`, color: `var(--success)` },
-      ],
-      `high`,
-    )
-  }
-
-  addHeaderBackground(bg: string, reason: string) {
-    if (
-      !c.headerBackgroundOptions.find((o) => o.id === bg) ||
-      this.availableHeaderBackgrounds.find((b) => b === bg)
-    )
-      return
-    this.availableHeaderBackgrounds.push(bg)
-    this.toUpdate.availableHeaderBackgrounds =
-      this.availableHeaderBackgrounds
-    this.logEntry(
-      [
-        `Unlocked a new ship header for ${reason}:`,
-        { text: `"${bg}"`, color: `var(--success)` },
-      ],
-      `high`,
-    )
   }
 
   // ----- passives -----

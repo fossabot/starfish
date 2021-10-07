@@ -7,11 +7,13 @@ exports.Profiler = void 0;
 const log_1 = __importDefault(require("./log"));
 const math_1 = __importDefault(require("./math"));
 class Profiler {
+    enabled = true;
+    showTop = 10;
+    cutoff = 1;
+    name;
+    snapshots = [];
+    metric;
     constructor(top = 10, name = false, enabled = true, cutoff = 2) {
-        this.enabled = true;
-        this.showTop = 10;
-        this.cutoff = 1;
-        this.snapshots = [];
         this.enabled = enabled;
         this.showTop = top;
         this.name = name;
