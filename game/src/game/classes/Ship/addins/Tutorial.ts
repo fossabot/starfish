@@ -994,18 +994,8 @@ export class Tutorial {
       )
     }, c.tickInterval)
 
-    ship.addHeaderBackground(
-      c.capitalize(ship.guildId) + ` Guild 1`,
-      `joining the ${c.capitalize(ship.guildId)} guild`,
-    )
-    ship.addHeaderBackground(
-      c.capitalize(ship.guildId) + ` Guild 2`,
-      `joining the ${c.capitalize(ship.guildId)} guild`,
-    )
-    ship.addTagline(
-      `Alpha Tester`,
-      `helping to test ${c.gameName}`,
-    )
+    ship.checkAchievements(`guild`)
+    ship.addAchievement(`alphaTester`)
 
     if (ship.planet)
       ship.planet.shipsAt

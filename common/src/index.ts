@@ -16,6 +16,7 @@ import crewPassives from './crewPassives'
 import rooms from './rooms'
 import stubify from './stubify'
 import * as items from './items'
+import achievements from './achievements'
 
 export default {
   ...globals,
@@ -28,6 +29,7 @@ export default {
   ...physics,
   ...discord,
   items,
+  achievements,
   rooms,
   crewPassives,
   cargo,

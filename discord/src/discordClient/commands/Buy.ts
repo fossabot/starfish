@@ -65,6 +65,13 @@ export class BuyCommand implements Command {
         context.crewMember.maxCargoSpace,
       ) - takenSpace
 
+    if (maxRemainingSpace < 0.01) {
+      await context.reply(
+        `You don't have enough inventory space to buy anything.`,
+      )
+      return
+    }
+
     waitForButtonChoiceWithCallback({
       allowedUserId: context.author.id,
       content: `At ${planet.name}, ${context.crewMember.name} can buy:`,
@@ -96,7 +103,15 @@ export class BuyCommand implements Command {
         )
         if (!forSaleEntry) return
         const amountToBuy = c.r2(
-          context.crewMember!.credits / forSaleEntry.price,
+          Math.min(
+            maxRemainingSpace,
+            c.r2(
+              context.crewMember!.credits /
+                forSaleEntry.price,
+              2,
+              true,
+            ),
+          ),
           2,
           true,
         )

@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -40,6 +40,7 @@ const crewPassives_1 = __importDefault(require("./crewPassives"));
 const rooms_1 = __importDefault(require("./rooms"));
 const stubify_1 = __importDefault(require("./stubify"));
 const items = __importStar(require("./items"));
+const achievements_1 = __importDefault(require("./achievements"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -51,6 +52,7 @@ exports.default = {
     ...physics_1.default,
     ...discord_1.default,
     items,
+    achievements: achievements_1.default,
     rooms: rooms_1.default,
     crewPassives: crewPassives_1.default,
     cargo,

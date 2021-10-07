@@ -166,9 +166,11 @@ ${c.percentToTextBars(
       embeds.push(
         new MessageEmbed({
           title: `${
-            context.crewMember.speciesId &&
-            c.species[context.crewMember.speciesId].icon
-          } ${context.crewMember.name}`,
+            (context.crewMember.speciesId &&
+              c.species[context.crewMember.speciesId].icon +
+                ` `) ||
+            ``
+          }${context.crewMember.name}`,
           color: color as ColorResolvable,
           fields: youFields,
         }),

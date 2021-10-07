@@ -214,12 +214,16 @@ export default function (
           error: `Only the captain may change the ship banner.`,
         })
 
-      if (!ship.availableHeaderBackgrounds.includes(bgId))
+      if (
+        !ship.availableHeaderBackgrounds.find(
+          (a) => a.id === bgId,
+        )
+      )
         return callback({
           error: `You don't own that banner yet!`,
         })
 
-      const found = c.headerBackgroundOptions.find(
+      const found = ship.availableHeaderBackgrounds.find(
         (b) => b.id === bgId,
       )
       if (!found)
@@ -274,16 +278,8 @@ export default function (
           error: `You don't own that tagline yet!`,
         })
 
-      const found = c.taglineOptions.find(
-        (t) => t === tagline,
-      )
-      if (!found)
-        return callback({
-          error: `Invalid tagline.`,
-        })
-
-      ship.tagline = found
-      ship.toUpdate.tagline = found
+      ship.tagline = tagline
+      ship.toUpdate.tagline = tagline
 
       c.log(
         `gray`,

@@ -1,5 +1,5 @@
 declare function getUnitVectorFromThatBodyToThisBody(thisBody: HasLocation, thatBody: HasLocation): CoordinatePair;
-declare function getGravityForceVectorOnThisBodyDueToThatBody(thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number): CoordinatePair;
+declare function getGravityForceVectorOnThisBodyDueToThatBody(thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number): CoordinatePair;
 declare const _default: {
     getUnitVectorFromThatBodyToThisBody: typeof getUnitVectorFromThatBodyToThisBody;
     getGravityForceVectorOnThisBodyDueToThatBody: typeof getGravityForceVectorOnThisBodyDueToThatBody;

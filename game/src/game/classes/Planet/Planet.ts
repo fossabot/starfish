@@ -117,11 +117,12 @@ export class Planet extends Stubbable {
     const swirlClockwise = true
 
     const swirlIntensity =
-      360 /
-      (ship.mass * 0.1) /
+      200 /
+      (ship.mass * 0.1) / // less effect for heavier ships
       (distanceFromPlanet /
         (this.landingRadiusMultiplier *
-          this.game.settings.arrivalThreshold))
+          this.game.settings.arrivalThreshold)) / // less effect farther out
+      Math.max(1, ship.speed * 1000000) // less effect if you're in motion
 
     const angleToShip = c.angleFromAToB(
       this.location,

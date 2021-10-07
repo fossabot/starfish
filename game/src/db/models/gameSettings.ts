@@ -22,7 +22,7 @@ const gameSettingsSchemaFields: Record<
     required: true,
   },
   gravityMultiplier: { type: Number, required: true },
-  gravityScalingFunction: { type: String, required: true },
+  gravityCurveSteepness: { type: Number, required: true },
   gravityRadius: { type: Number, required: true },
   arrivalThreshold: { type: Number, required: true },
   baseCritChance: { type: Number, required: true },

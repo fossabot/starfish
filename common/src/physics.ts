@@ -24,6 +24,7 @@ const scalingFunctions: {
     massProduct,
     rangeInMeters,
     rangeAsPercentOfGravityRadius,
+    gravityScalingExponent,
   }) => number
 } = {
   defaultRealGravity: ({
@@ -33,6 +34,18 @@ const scalingFunctions: {
   }) =>
     (-globals.gravitationalConstant * massProduct) /
     rangeInMeters ** 2,
+
+  flexibleExponent: ({
+    massProduct,
+    rangeInMeters,
+    rangeAsPercentOfGravityRadius,
+    gravityScalingExponent,
+  }) =>
+    -1 *
+    0.0000015 *
+    Math.sqrt(globals.gravitationalConstant * massProduct) *
+    (rangeAsPercentOfGravityRadius - 1) **
+      (gravityScalingExponent * 2), // *2 so it's always even
 
   // this one is okay, it just feels like faraway planets are very strong even when you're right next to another planet
   linear: ({
@@ -93,7 +106,7 @@ const scalingFunctions: {
 function getGravityForceVectorOnThisBodyDueToThatBody(
   thisBody: HasMassAndLocationAndVelocity,
   thatBody: HasMassAndLocation,
-  gravityScalingFunction: string = `defaultRealGravity`,
+  gravityScalingExponent: number = 10,
   gravityMultiplier: number = 1,
   gravityRange: number = 0.5,
 ): CoordinatePair {
@@ -153,7 +166,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
 
   // * ----- current scaling function in use -----
   const scalingFunction =
-    scalingFunctions[gravityScalingFunction] ||
+    scalingFunctions.flexibleExponent ||
     scalingFunctions.defaultRealGravity
 
   // * ----- final gravity force calc -----
@@ -162,12 +175,14 @@ function getGravityForceVectorOnThisBodyDueToThatBody(
       massProduct,
       rangeInMeters,
       rangeAsPercentOfGravityRadius,
+      gravityScalingExponent,
     }) *
     gravityMultiplier *
     (1 - gravityLesseningEffectPercentage)
 
   // c.log({
   //   name: thatBody.name,
+  //   gravityScalingExponent,
   //   rangeAsPercentOfGravityRadius,
   //   angleToThatBody,
   //   gravityLesseningEffectPercentage,

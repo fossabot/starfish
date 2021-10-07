@@ -14,9 +14,8 @@ interface BaseShipData {
   spawnPoint?: CoordinatePair
   level?: number
   tagline?: string
-  availableTaglines?: string[]
   headerBackground?: string
-  availableHeaderBackgrounds?: string[]
+  achievements?: string[]
   stats?: ShipStatEntry[]
 }
 
@@ -161,4 +160,55 @@ interface BankEntry {
   id: string
   amount: number
   timestamp: number
+}
+
+interface Achievement {
+  id: string
+  for: string
+  condition?: true | AchievementCondition
+  reward: AchievementReward | AchievementReward[]
+  silent?: true
+}
+
+interface AchievementReward {
+  tagline?: string
+  headerBackground?: {
+    id: string
+    url: `${string}.${`svg` | `png` | `jpg`}`
+  }
+}
+
+interface AchievementCondition {
+  stat?:
+    | AchievementStatCondition
+    | AchievementStatCondition[]
+  prop?:
+    | AchievementPropCondition
+    | AchievementPropCondition[]
+  membersIn?:
+    | AchievementMembersInCondition
+    | AchievementMembersInCondition[]
+}
+
+interface AchievementStatCondition {
+  id: ShipStatKey
+  lte?: false
+  amount: number
+}
+
+interface AchievementPropCondition {
+  id: keyof ShipStub
+
+  is?: number | string | boolean | null
+
+  secondaryId?: string
+
+  length?: true
+  lte?: false
+  amount?: number
+}
+
+interface AchievementMembersInCondition {
+  roomId: CrewLocation
+  amount: `all` | number
 }

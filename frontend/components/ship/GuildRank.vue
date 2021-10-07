@@ -67,6 +67,53 @@
               </div>
             </li>
           </ol>
+
+          <template
+            v-if="
+              ship &&
+              ranking.top &&
+              !ranking.top.find((r) => r.name === ship.name)
+            "
+          >
+            <hr class="half marginauto" />
+            <ul>
+              <li>
+                <div class="flexbetween">
+                  <div
+                    :style="{
+                      color: !ship.guildId
+                        ? 'var(--noguild)'
+                        : c.guilds[ship.guildId].color,
+                    }"
+                  >
+                    <b>{{ ship.name }}</b>
+                  </div>
+                  <div class="sub scorenumber">
+                    {{
+                      c.numberWithCommas(
+                        c.r2(
+                          ranking.category === 'netWorth'
+                            ? ship.stats.find(
+                                (s) =>
+                                  s.stat === 'netWorth',
+                              )
+                              ? ship.stats.find(
+                                  (s) =>
+                                    s.stat === 'netWorth',
+                                ).amount
+                              : 0
+                            : ranking.category === 'members'
+                            ? ship.crewMembers.length
+                            : 0,
+                          0,
+                        ),
+                      )
+                    }}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </template>
         </div>
       </Tab>
     </Tabs>

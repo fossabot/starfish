@@ -19,7 +19,7 @@
       <div
         class="preview flexcenter pointer"
         :class="{ current: option === currentTagline }"
-        v-for="option in ownedTaglines || []"
+        v-for="option in ship.availableTaglines || []"
         :key="'to' + option"
         @click="setTagline(option)"
       >
@@ -43,7 +43,8 @@
             (option.id === 'Default' &&
               currentBanner === 'default.svg'),
         }"
-        v-for="option in ownedHeaderBackgrounds || []"
+        v-for="option in ship.availableHeaderBackgrounds ||
+        []"
         :key="'hbgo' + option.id"
         @click="setHeaderBackground(option.id)"
       >
@@ -82,28 +83,24 @@ export default Vue.extend({
     currentBanner() {
       return this.ship?.headerBackground || 'default.svg'
     },
-    ownedHeaderBackgrounds() {
-      return c.headerBackgroundOptions.filter((o) =>
-        this.ship?.availableHeaderBackgrounds?.includes(
-          o.id,
-        ),
-      )
-    },
-    ownedTaglines() {
-      return c.taglineOptions.filter((o) =>
-        this.ship?.availableTaglines?.includes(o),
-      )
-    },
   },
   watch: {},
   mounted() {},
   methods: {
     setHeaderBackground(id: string) {
-      this.$store.commit('setShipProp', [
-        'headerBackground',
-        c.headerBackgroundOptions.find((o) => o.id === id)
-          ?.url,
-      ])
+      Object.values(c.achievements).forEach((a) => {
+        if (
+          (Array.isArray(a.reward) ? a.reward[0] : a.reward)
+            .headerBackground?.id === id
+        )
+          this.$store.commit('setShipProp', [
+            'headerBackground',
+            (Array.isArray(a.reward)
+              ? a.reward[0]
+              : a.reward
+            ).headerBackground?.url,
+          ])
+      })
       ;(this as any).$socket?.emit(
         'ship:headerBackground',
         this.ship.id,

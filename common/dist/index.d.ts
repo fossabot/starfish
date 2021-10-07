@@ -4,6 +4,9 @@ import stubify from './stubify';
 import * as items from './items';
 declare const _default: {
     items: typeof items;
+    achievements: {
+        [key: string]: Achievement;
+    };
     rooms: {
         repair: BaseRoomData;
         bunk: BaseRoomData;
@@ -12,10 +15,10 @@ declare const _default: {
         mine: BaseRoomData;
     };
     crewPassives: {
+        boostBrake: CrewPassiveData;
         boostBroadcastRange: CrewPassiveData;
         boostRepairSpeed: CrewPassiveData;
         boostMineSpeed: CrewPassiveData;
-        boostBrake: CrewPassiveData;
         boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
@@ -47,14 +50,17 @@ declare const _default: {
         flamingos: BaseSpeciesData;
     };
     guilds: {
-        fowl: BaseGuildData;
         trader: BaseGuildData;
+        peacekeeper: BaseGuildData;
+        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        explorer: BaseGuildData;
-        peacekeeper: BaseGuildData;
+        fowl: BaseGuildData;
     };
     baseShipPassiveData: {
+        boostBrake: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostDropAmount: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -77,9 +83,6 @@ declare const _default: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostMinePayouts: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostCockpitChargeSpeed: {
@@ -141,7 +144,7 @@ declare const _default: {
     frontendUrl: string;
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
-    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingFunction?: string, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
     supportServerLink: string;
     gameSpeedMultiplier: number;
     baseSightRange: number;
@@ -173,8 +176,8 @@ declare const _default: {
         attackable: true;
         previousLocations: true;
         location: true;
-        planet: ("planetType" | "id" | "name" | "color" | "location" | "radius" | "mass" | "landingRadiusMultiplier" | "level" | "xp" | "baseLevel" | "creatures" | "passives" | "pacifist" | "stats")[];
-        chassis: ("id" | "mass" | "passives" | "type" | "basePrice" | "displayName" | "description" | "slots" | "agility" | "maxCargoSpace" | "rarity")[];
+        planet: (keyof BasePlanetData)[];
+        chassis: (keyof BaseChassisData)[];
     };
     sameGuildShipScanProperties: {
         _hp: boolean;
@@ -182,11 +185,6 @@ declare const _default: {
     };
     tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
-    taglineOptions: string[];
-    headerBackgroundOptions: {
-        id: string;
-        url: string;
-    }[];
     getHitDamage: (weapon: {
         damage: number;
     }, totalMunitionsSkill?: number) => number;
@@ -206,13 +204,13 @@ declare const _default: {
     }) => string;
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
-    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: "fowl" | "trader" | "hunter" | "miner" | "explorer" | "peacekeeper" | undefined) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => number;
+    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId | undefined) => number;
     getGuildChangePrice: (ship: {
         planet: false | PlanetStub;
         guildId: GuildId;
