@@ -38,6 +38,7 @@
         </div>
       </div>
       <PromptButton
+        class="martoptiny"
         v-if="isCaptain"
         :max="ship.commonCredits"
         @done="redistributeCommonFund(...arguments)"

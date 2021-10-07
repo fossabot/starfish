@@ -20,7 +20,7 @@ type GuildRankingCategory =
   | `members`
 
 interface GuildRankingScoreEntry {
-  guildId: GuildId
+  guildId: GuildId | `noGuild`
   score: number
 }
 interface GuildRankingTopEntry {

@@ -23,15 +23,22 @@
             class="scorebit"
             :style="{
               'flex-grow': score.score,
-              background: c.guilds[score.guildId].color,
+              background:
+                score.guildId === 'noGuild'
+                  ? 'var(--noguild)'
+                  : c.guilds[score.guildId].color,
             }"
             :key="
               'score' + ranking.category + score.guildId
             "
             v-tooltip="
-              `#${index + 1}) ${c.capitalize(
-                c.guilds[score.guildId].name,
-              )}: ${c.numberWithCommas(
+              `#${index + 1}) ${
+                score.guildId === 'noGuild'
+                  ? 'No Guild'
+                  : c.capitalize(
+                      c.guilds[score.guildId].name,
+                    )
+              }: ${c.numberWithCommas(
                 c.r2(score.score, 0),
               )}`
             "

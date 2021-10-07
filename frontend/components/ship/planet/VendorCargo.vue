@@ -12,7 +12,10 @@
     </div>
 
     <div class="flexwrap">
-      <span class="panesection inline" v-if="buyableCargo">
+      <span
+        class="panesection inline"
+        v-if="buyableCargo && buyableCargo.length"
+      >
         <div>
           <div class="panesubhead">Buy Cargo</div>
         </div>

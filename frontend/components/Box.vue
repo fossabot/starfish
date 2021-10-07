@@ -1,5 +1,5 @@
 <template>
-  <div class="boxholder">
+  <div class="boxholder" :class="{ mobile: isMobile }">
     <div class="box flexcolumn" :class="{ highlight }">
       <div class="gradient" />
       <div
@@ -53,7 +53,7 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'isMobile']),
   },
   watch: {
     minimized() {
@@ -113,6 +113,7 @@ export default Vue.extend({
 
   @media (max-width: 768px) {
     width: 100% !important;
+    padding: 0.5em;
 
     .box {
       width: 100% !important;

@@ -1305,6 +1305,32 @@ export class Game {
         score: total,
       })
     }
+    let noGuildTotal = 0
+    this.ships
+      .filter((s) => !s.guildId)
+      .filter((s) => !s.tutorial)
+      .forEach((s) => {
+        let shipTotal = (s as HumanShip).commonCredits || 0
+        for (let cm of (s as HumanShip).crewMembers) {
+          shipTotal += cm.credits
+        }
+        for (let i of (s as HumanShip).items) {
+          shipTotal += (
+            c.items[i.type][i.id] as BaseItemData
+          ).basePrice
+        }
+        topNetWorthShips.push({
+          name: s.name,
+          color: `var(--noguild)`,
+          score: shipTotal,
+        })
+
+        noGuildTotal += shipTotal
+      })
+    netWorthScores.push({
+      guildId: `noGuild`,
+      score: noGuildTotal,
+    })
     topNetWorthShips = topNetWorthShips
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
@@ -1354,6 +1380,24 @@ export class Game {
         score: total,
       })
     }
+    let noGuildMembersTotal = 0
+    this.ships
+      .filter((s) => !s.guildId)
+      .filter((s) => !s.tutorial)
+      .forEach((s) => {
+        let shipTotal =
+          (s as HumanShip).crewMembers.length || 0
+        topMembersShips.push({
+          name: s.name,
+          color: `var(--noguild)`,
+          score: shipTotal,
+        })
+        noGuildMembersTotal += shipTotal
+      })
+    membersScores.push({
+      guildId: `noGuild`,
+      score: noGuildMembersTotal,
+    })
     topMembersShips = topMembersShips
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)

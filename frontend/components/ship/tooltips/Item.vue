@@ -310,7 +310,9 @@
       class="success marbotsmall"
     >
       {{
-        c.baseShipPassiveData[passive.id].toString(passive)
+        c.baseShipPassiveData[passive.id].description(
+          passive,
+        )
       }}
     </div>
 
@@ -342,7 +344,7 @@ export default Vue.extend({
           Object.keys(this.data).length < 5
         )
           return (
-            c.items[(this.data as ItemStub).type][
+            c.items[(this.data as ItemStub).type]?.[
               (this.data as ItemStub).id
             ] || this.data
           )

@@ -46,7 +46,7 @@
             "
             :key="reaction"
             class="reactbutton"
-            @click="react(reaction)"
+            @click="!isCaptain && react(reaction)"
             v-tooltip="
               ship.orderReactions.filter(
                 (r) => r.reaction === reaction,
@@ -511,7 +511,7 @@ export default Vue.extend({
         )
         if (!found) return false
         o.target = found
-        o.target!.color = c.guilds[found.guildId].color
+        o.target!.color = c.guilds[found.guildId]?.color
         o.target!.type = 'ship'
       } else if (o.target!.type === 'cache') {
         const found = this.ship.visible?.caches.find(
