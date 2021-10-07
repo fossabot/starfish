@@ -1287,11 +1287,14 @@ export class Game {
           for (let cm of (s as HumanShip).crewMembers) {
             shipTotal += cm.credits
           }
+          for (let b of (s as HumanShip).banked)
+            shipTotal += b.amount
           for (let i of (s as HumanShip).items) {
             shipTotal += (
               c.items[i.type][i.id] as BaseItemData
             ).basePrice
           }
+          s.setStat(`netWorth`, shipTotal)
           topNetWorthShips.push({
             name: s.name,
             color: guild.color,
@@ -1314,11 +1317,14 @@ export class Game {
         for (let cm of (s as HumanShip).crewMembers) {
           shipTotal += cm.credits
         }
+        for (let b of (s as HumanShip).banked)
+          shipTotal += b.amount
         for (let i of (s as HumanShip).items) {
           shipTotal += (
             c.items[i.type][i.id] as BaseItemData
           ).basePrice
         }
+        s.setStat(`netWorth`, shipTotal)
         topNetWorthShips.push({
           name: s.name,
           color: `var(--noguild)`,

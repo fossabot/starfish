@@ -134,6 +134,7 @@ type ShipStatKey =
   | `totalTonsMined`
   | `highestSpeed`
   | `tutorials`
+  | `netWorth`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number
