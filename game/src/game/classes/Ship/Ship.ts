@@ -236,7 +236,7 @@ export class Ship extends Stubbable {
     if (this.name === prevName) return
 
     if (this.name) {
-      c.log(prevName, newName, this.name)
+      c.log(`renaming ship:`, prevName, newName, this.name)
     }
 
     this.toUpdate.name = this.name
@@ -690,7 +690,6 @@ export class Ship extends Stubbable {
         distance <= this.game.settings.gravityRadius &&
         distance > this.game.settings.arrivalThreshold
       ) {
-        c.log(this.game.settings.gravityCurveSteepness)
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,

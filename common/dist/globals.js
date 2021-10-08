@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const levels = [];
-let previous = 0;
 for (let i = 0; i < 100; i++) {
-    levels.push(previous + 400 * i * (i / 2));
+    levels.push(400 * i * (i / 2));
 }
 exports.default = {
     gameName: `Starfish`,

@@ -1,6 +1,18 @@
 import * as items from './items'
 import globals from './globals'
 
+/*
+  to be assigned
+  `Big Flipper`,
+  `Whale, I'll be!`,
+  `Splish Splash`,
+  `Holy Mackerel!`,
+  `Small Pond 4 Life`,
+  `Nautical Nonsense`,
+  `Very Shallow`,
+  `Bottom Feeder`,
+*/
+
 const achievements: { [key: string]: Achievement } = {
   // default
   default: {
@@ -13,6 +25,7 @@ const achievements: { [key: string]: Achievement } = {
         id: `Default`,
         url: `default.jpg`,
       },
+      tagline: `Alpha Tester`, // todo remove next patch
     },
   },
 
@@ -380,7 +393,7 @@ const achievements: { [key: string]: Achievement } = {
     reward: {
       headerBackground: {
         id: `Gravestone 1`,
-        url: `vintage1.svg`,
+        url: `vintage1.jpg`,
       },
     },
     for: `having your ship destroyed twice`,

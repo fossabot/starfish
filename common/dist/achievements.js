@@ -24,6 +24,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const items = __importStar(require("./items"));
 const globals_1 = __importDefault(require("./globals"));
+/*
+  to be assigned
+  `Big Flipper`,
+  `Whale, I'll be!`,
+  `Splish Splash`,
+  `Holy Mackerel!`,
+  `Small Pond 4 Life`,
+  `Nautical Nonsense`,
+  `Very Shallow`,
+  `Bottom Feeder`,
+*/
 const achievements = {
     // default
     default: {
@@ -36,6 +47,7 @@ const achievements = {
                 id: `Default`,
                 url: `default.jpg`,
             },
+            tagline: `Alpha Tester`, // todo remove next patch
         },
     },
     // manually applied
@@ -391,7 +403,7 @@ const achievements = {
         reward: {
             headerBackground: {
                 id: `Gravestone 1`,
-                url: `vintage1.svg`,
+                url: `vintage1.jpg`,
             },
         },
         for: `having your ship destroyed twice`,

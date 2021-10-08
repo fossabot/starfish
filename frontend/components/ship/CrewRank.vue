@@ -12,7 +12,7 @@
     <div class="crewrankholder">
       <Tabs :dropdown="true">
         <Tab
-          v-for="skill in crewMember.skills"
+          v-for="skill in ship.crewMembers[0].skills"
           :key="'skillrank' + skill.skill"
           :title="
             c.capitalize(c.camelCaseToWords(skill.skill))
@@ -103,7 +103,8 @@ export default Vue.extend({
     },
     bestXAtEachSkill() {
       const best: any = {}
-      for (let { skill } of this.crewMember.skills) {
+      for (let { skill } of this.ship.crewMembers[0]
+        ?.skills) {
         best[skill] = [...this.ship.crewMembers]
           .map((cm) => ({
             id: cm.id,

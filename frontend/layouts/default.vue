@@ -41,7 +41,7 @@ const detectMobile = () => {
 
 export default Vue.extend({
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'shipsBasics']),
   },
 
   mounted() {
@@ -49,7 +49,7 @@ export default Vue.extend({
     const shipIds = JSON.parse(
       storage.get('shipIds') || '[]',
     )
-    if (userId && shipIds?.length) {
+    if (userId) {
       this.$store.dispatch('logIn', {
         userId,
         shipIds,

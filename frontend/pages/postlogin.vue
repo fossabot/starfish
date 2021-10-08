@@ -76,6 +76,7 @@ export default Vue.extend({
     } else {
       storage.set('tokenType', tokenType)
       storage.set('accessToken', accessToken)
+      // await this.$nextTick()
       this.$store.dispatch('logIn')
     }
   },

@@ -134,12 +134,12 @@ export default Vue.extend({
   },
 
   async mounted(): Promise<void> {
-    if (!this.userId || !this.shipIds) {
-      this.$store.dispatch('logIn', {
-        userId: this.userId,
-        shipIds: this.shipIds,
-      })
-    }
+    // if (!this.userId || !this.shipIds) {
+    //   this.$store.dispatch('logIn', {
+    //     userId: this.userId,
+    //     shipIds: this.shipIds,
+    //   })
+    // }
     const storedActiveId = storage.get('activeShipId')
     if (storedActiveId)
       this.changeShip(false, storedActiveId)

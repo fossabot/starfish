@@ -335,7 +335,7 @@ export default function (
 
   socket.on(
     `crew:donateToPlanet`,
-    (shipId, crewId, amount, planetId, callback) => {
+    (shipId, crewId, amount, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -358,9 +358,7 @@ export default function (
           error: `Insufficient credits.`,
         })
 
-      const planet = ship.game.planets.find(
-        (p) => p.id === planetId,
-      ) as Planet | undefined
+      const planet = ship.planet
       if (!planet)
         return callback({
           error: `It looks like you're not on a planet.`,
@@ -415,14 +413,7 @@ export default function (
 
   socket.on(
     `crew:buyCargo`,
-    (
-      shipId,
-      crewId,
-      cargoId,
-      amount,
-      planetId,
-      callback,
-    ) => {
+    (shipId, crewId, cargoId, amount, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -434,10 +425,10 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const planet = ship.game.planets.find(
-        (p) =>
-          p.id === planetId && p.planetType === `basic`,
-      ) as BasicPlanet | undefined
+      const planet =
+        ship.planet && ship.planet.planetType === `basic`
+          ? (ship.planet as BasicPlanet)
+          : null
       const cargoForSale = planet?.vendor?.cargo?.find(
         (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
       )
@@ -490,14 +481,7 @@ export default function (
 
   socket.on(
     `crew:sellCargo`,
-    (
-      shipId,
-      crewId,
-      cargoId,
-      amount,
-      planetId,
-      callback,
-    ) => {
+    (shipId, crewId, cargoId, amount, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -522,10 +506,10 @@ export default function (
           error: `Not holding enough stock of that cargo.`,
         })
 
-      const planet = ship.game.planets.find(
-        (p) =>
-          p.id === planetId && p.planetType === `basic`,
-      ) as BasicPlanet | undefined
+      const planet =
+        ship.planet && ship.planet.planetType === `basic`
+          ? (ship.planet as BasicPlanet)
+          : null
 
       if (!planet)
         return callback({
@@ -547,7 +531,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${planetId}.`,
+        `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${planet.name}.`,
       )
 
       callback({ data: { cargoId, amount, price } })
@@ -629,7 +613,7 @@ export default function (
 
   socket.on(
     `crew:buyRepair`,
-    (shipId, crewId, hp, planetId, callback) => {
+    (shipId, crewId, hp, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -641,10 +625,10 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const planet = ship.game.planets.find(
-        (p) =>
-          p.id === planetId && p.planetType === `basic`,
-      ) as BasicPlanet | undefined
+      const planet =
+        ship.planet && ship.planet.planetType === `basic`
+          ? (ship.planet as BasicPlanet)
+          : null
       const repairMultiplier =
         planet?.vendor?.repairCostMultiplier
       if (!planet || !repairMultiplier)
@@ -695,7 +679,7 @@ export default function (
 
   socket.on(
     `crew:buyPassive`,
-    (shipId, crewId, passiveId, planetId, callback) => {
+    (shipId, crewId, passiveId, callback) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -707,9 +691,10 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const planet = ship.game.planets.find(
-        (p) => p.id === planetId,
-      ) as BasicPlanet | undefined
+      const planet =
+        ship.planet && ship.planet.planetType === `basic`
+          ? (ship.planet as BasicPlanet)
+          : null
       const passiveForSale = planet?.vendor?.passives?.find(
         (pfs) => pfs.id === passiveId && pfs.buyMultiplier,
       )

@@ -224,7 +224,6 @@ interface IOClientEvents {
     crewId: string,
     cargoId: CargoId,
     amount: number,
-    vendorLocation: string,
     callback: (
       res: IOResponse<{
         cargoId: CargoId
@@ -238,7 +237,6 @@ interface IOClientEvents {
     crewId: string,
     cargoId: CargoId,
     amount: number,
-    vendorLocation: string,
     callback: (
       res: IOResponse<{
         cargoId: CargoId
@@ -251,14 +249,12 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     hp: number,
-    vendorLocation: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
   [`crew:buyPassive`]: (
     shipId: string,
     crewId: string,
     id: CrewPassiveId,
-    vendorLocation: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
   [`crew:contribute`]: (
@@ -270,7 +266,6 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     amount: number,
-    planetName: string,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
   [`crew:thrust`]: (

@@ -72,7 +72,7 @@
           </nuxt-link>
         </div>
         <div
-          v-if="ship && !ship.tutorial"
+          v-if="ship && !ship.tutorial && userId"
           class="icon smaller pointer martopbig"
           @click="toTutorial"
           v-tooltip="`Launch Tutorial`"
@@ -87,11 +87,24 @@
           class="icon subicon smaller pointer"
           @click="logout"
           v-tooltip="`Log Out`"
+          v-if="userId"
         >
           <img
             src="/images/icons/icon-logout.svg"
             alt="log out button"
           />
+        </div>
+        <div
+          class="icon smaller pointer"
+          v-tooltip="`Log In`"
+          v-else
+        >
+          <nuxt-link to="/login">
+            <img
+              src="/images/icons/icon-login.svg"
+              alt="log out button"
+            />
+          </nuxt-link>
         </div>
       </div>
     </div>

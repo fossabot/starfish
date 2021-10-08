@@ -11,7 +11,8 @@
                 s.name +
                 (s.isTutorial
                   ? ` (tutorial for ${s.isTutorial})`
-                  : ''),
+                  : '') +
+                ` [${s.id}]`,
             }))
           "
           v-model="selectedShipId"

@@ -94,11 +94,11 @@ export function addAchievement(
   )
   if (!newIds.length) return
 
-  if (!this.tutorial)
-    c.log(
-      `adding achievement/s to ${this.name} (${this.id}):`,
-      newIds,
-    )
+  // if (!this.tutorial)
+  //   c.log(
+  //     `adding achievement/s to ${this.name} (${this.id}):`,
+  //     newIds,
+  //   )
 
   const achievements = Object.values(c.achievements).filter(
     (achievement) => newIds.includes(achievement.id),

@@ -246,6 +246,9 @@ export class CrewMember extends Stubbable {
     this.toUpdate.skills = this.skills
   }
 
+  /**
+   * returns the amount left over after filling the crew member's max carryable capacity
+   */
   addCargo(id: CargoId, amount: number): number {
     const canHold =
       Math.min(
@@ -274,7 +277,7 @@ export class CrewMember extends Stubbable {
 
     this.ship.recalculateMass()
 
-    return Math.max(0, canHold - amount)
+    return Math.max(0, amount - canHold)
   }
 
   removeCargo(id: CargoId, amount: number) {

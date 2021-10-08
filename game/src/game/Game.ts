@@ -65,11 +65,14 @@ export class Game {
   }
 
   setSettings(newSettings: Partial<AdminGameSettings>) {
+    const defaultSettings = defaultGameSettings()
     this.settings = {
-      ...defaultGameSettings(),
+      ...defaultSettings,
       ...this.settings,
       ...newSettings,
     }
+    for (let key of Object.keys(this.settings))
+      if (!defaultSettings[key]) delete this.settings[key]
     db.gameSettings.addOrUpdateInDb(this.settings)
   }
 

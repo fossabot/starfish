@@ -5,6 +5,7 @@ import Vue from 'vue'
 
 let stillWorkingOnTick = false
 let slowModeUpdateInterval = null
+let alreadyLoggingIn = false
 
 export const state = () => ({
   lastUpdated: 0,
@@ -426,11 +427,16 @@ export const actions = {
       shipIds,
     }: { userId?: string; shipIds?: string[] } = {},
   ) {
+    if (alreadyLoggingIn) return
+    alreadyLoggingIn = true
+    c.log(`logIn start`, { userId, shipIds })
     if (!userId || !shipIds || !shipIds?.length) {
       const tokenType = storage.get(`tokenType`)
       const accessToken = storage.get(`accessToken`)
-      if (!tokenType || !accessToken)
+      if (!tokenType || !accessToken) {
+        alreadyLoggingIn = false
         return this.$router.push(`/login`)
+      }
 
       if (!userId) userId = state.userId
       if (!userId) {
@@ -444,6 +450,7 @@ export const actions = {
             type: `error`,
           })
           c.log(`login error:`, idRes.error)
+          alreadyLoggingIn = false
           return
         }
         userId = idRes.data
@@ -478,10 +485,12 @@ export const actions = {
             if (guildsRes.error === `Bad token`) {
               // dispatch(`logout`)
               // this.$router.push(`/login`)
+              alreadyLoggingIn = false
               return
             }
 
             c.log(`guild fetch error!`, guildsRes.error)
+            alreadyLoggingIn = false
             return
           } else if (guildsRes && !(`error` in guildsRes)) {
             shipIds = guildsRes ? guildsRes.data : undefined
@@ -491,6 +500,7 @@ export const actions = {
             `failed to get ship ids from discord api`,
             e,
           )
+          alreadyLoggingIn = false
           return
         }
       }
@@ -498,7 +508,7 @@ export const actions = {
         storage.set(`shipIds`, JSON.stringify(shipIds))
     }
 
-    // c.log(`logging in`, { userId, shipIds })
+    c.log(`logging in...`, { userId, shipIds })
 
     commit(`set`, { userId, shipIds })
 
@@ -514,7 +524,10 @@ export const actions = {
               // something's up with one of the guilds, so reset the whole deal
               storage.remove(`shipIds`)
               commit(`set`, { shipIds: [] })
-              dispatch(`logIn`, { userId })
+              setTimeout(
+                () => dispatch(`logIn`, { userId }),
+                1000,
+              ) // timeout to not get rate limited by discord api
               resolve()
               return
             }
@@ -524,6 +537,7 @@ export const actions = {
         )
       })
     }
+    alreadyLoggingIn = false
     commit(`set`, { shipsBasics })
   },
 

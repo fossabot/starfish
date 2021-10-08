@@ -614,7 +614,12 @@ export default class Drawer {
           ar.end[1] * this.flatScale * -1,
         )
         grd.addColorStop(0, `rgba(255, 130, 0, 1)`)
-        grd.addColorStop(1, `rgba(255, 200, 0, .3)`)
+        grd.addColorStop(
+          1,
+          ar.damageTaken.damageTaken
+            ? `rgba(255, 200, 0, .3)`
+            : `rgba(255, 200, 0, 0)`,
+        )
 
         // console.log(ar)
         this.drawLine({
@@ -630,8 +635,8 @@ export default class Drawer {
           opacity:
             (1 -
               (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.damageTaken > 0 ? 1 : 0.5),
-          width: ar.damageTaken.damageTaken > 0 ? 1 : 0.5,
+            (ar.damageTaken.damageTaken > 0 ? 1 : 0.4),
+          width: ar.damageTaken.damageTaken > 0 ? 1 : 0.4,
         })
       },
     )

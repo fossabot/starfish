@@ -95,7 +95,7 @@ const species: { [key in SpeciesId]: BaseSpeciesData } = {
     passives: [
       {
         id: `boostRepairSpeed`,
-        data: { source: { speciesId: `dolphins` } },
+        data: { source: { speciesId: `snails` } },
         intensity: 0.15,
       },
     ],

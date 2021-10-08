@@ -168,7 +168,7 @@ export class HumanShip extends CombatShip {
       setTimeout(() => this.updatePlanet(true), 1500)
 
     if (data.achievements)
-      this.addAchievement(data.achievements)
+      this.addAchievement(data.achievements, true)
     this.checkAchievements()
 
     if (!this.items.length) {
