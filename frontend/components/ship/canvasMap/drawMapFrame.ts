@@ -52,12 +52,14 @@ export default class Drawer {
     targetPoints = [],
   }: // previousData,
   {
-    ship: ShipStub
+    ship?: ShipStub
     center?: CoordinatePair
     zoom?: number
-    visible?: {
-      [key in keyof VisibleStub]?: VisibleStub[key]
-    }
+    visible?:
+      | {
+          [key in keyof VisibleStub]?: VisibleStub[key]
+        }
+      | AdminVisibleData
     immediate?: boolean
     crewMemberId?: string
     targetPoints?: TargetLocation[]
@@ -68,7 +70,7 @@ export default class Drawer {
     //   }
     // }
   }) {
-    if (!ship || !visible) return
+    if (!visible) return
     if (
       !this.element ||
       !document.body.contains(this.element)
@@ -88,13 +90,14 @@ export default class Drawer {
 
     profiler.step(`bounds`)
     // ----- determine map bounds etc -----
-    const shipLocation: CoordinatePair = [
-      (ship?.location[0] || 0) * this.flatScale,
-      (ship?.location[1] || 0) * this.flatScale * -1,
-    ]
-    if (!center) {
-      center = shipLocation
-    }
+    const shipLocation: CoordinatePair | undefined = ship
+      ? [
+          (ship?.location[0] || 0) * this.flatScale,
+          (ship?.location[1] || 0) * this.flatScale * -1,
+        ]
+      : undefined
+    if (!center) center = shipLocation || [0, 0]
+
     this.targetCenter = [...center]
     if (!this.previousCenter)
       this.previousCenter = [...center]
@@ -114,7 +117,9 @@ export default class Drawer {
         ]
 
     const sightRadius =
-      (ship?.radii?.sight || 1) * this.flatScale
+      (ship?.radii?.sight ||
+        (visible as any).gameRadius ||
+        1) * this.flatScale
 
     const buffer = 0.91
 
@@ -145,39 +150,66 @@ export default class Drawer {
     profiler.step(`is in sight range`)
     // ----- planets -----
     const planetsToDraw: PlanetStub[] = (
-      ship?.seenPlanets || []
+      ship?.seenPlanets ||
+      (visible.planets as PlanetStub[]) ||
+      []
     )
       .filter((p) => p)
-      .filter((p) => this.isPointInSightRange(p))
+      .filter(
+        (p) =>
+          (visible as AdminVisibleData).showAll ||
+          this.isPointInSightRange(p),
+      )
 
     // ----- ships -----
     const shipsToDraw: ShipStub[] = (
       visible?.ships || []
-    ).filter((p) => this.isPointInSightRange(p))
+    ).filter(
+      (p) =>
+        (visible as AdminVisibleData).showAll ||
+        this.isPointInSightRange(p),
+    )
 
     // ----- trails -----
     const trailsToDraw: {
       color?: string
       points: CoordinatePair[]
-    }[] = (visible?.trails || []).filter((p) =>
-      this.isTrailInSightRange(p.points),
+    }[] = ((visible as VisibleStub).trails || []).filter(
+      (p) =>
+        (visible as AdminVisibleData).showAll ||
+        this.isTrailInSightRange(p.points),
     )
 
     // ----- caches -----
     const cachesToDraw: Partial<CacheStub>[] = (
-      visible?.caches || []
+      [...(visible?.caches || [])] || []
     ).filter(
       (p) =>
-        `location` in p &&
+        (`location` in p &&
+          (visible as AdminVisibleData).showAll) ||
         this.isPointInSightRange(p as HasLocation),
     )
+
+    const zonesToDraw: Partial<ZoneStub>[] =
+      [
+        ...(visible?.zones || ship.seenLandmarks || []),
+      ].filter((l) => l.type === `zone`) || []
+
+    const attackRemnantsToDraw: Partial<AttackRemnantStub>[] =
+      [
+        ...(visible?.attackRemnants ||
+          ship?.visible?.attackRemnants ||
+          []),
+      ]
 
     // ----- target points -----
     const targetPointsToDraw: TargetLocation[] = [
       ...targetPoints,
     ]
-    if (ship.tutorial?.targetLocation)
-      targetPointsToDraw.push(ship.tutorial?.targetLocation)
+    if (ship?.tutorial?.targetLocation)
+      targetPointsToDraw.push(
+        ship?.tutorial?.targetLocation,
+      )
 
     // ----- actually draw -----
 
@@ -202,35 +234,43 @@ export default class Drawer {
     this.ctx.fillStyle = `#111111`
     this.ctx.fillRect(-999999, -999999, 9999999, 9999999)
 
-    this.drawPoint({
-      location: [...shipLocation].map(
-        (l) => l / this.flatScale,
-      ) as CoordinatePair,
-      radius: sightRadius,
-      color: `#0b0b0b`,
-      opacity: 1,
-    })
+    if (shipLocation) {
+      this.drawPoint({
+        location: [...shipLocation].map(
+          (l) => l / this.flatScale,
+        ) as CoordinatePair,
+        radius: sightRadius,
+        color: `#0b0b0b`,
+        opacity: 1,
+      })
 
-    this.drawPoint({
-      location: [...shipLocation].map(
-        (l) => l / this.flatScale,
-      ) as CoordinatePair,
-      labelTop: `vision`,
-      labelBottom: `${c.r2(
-        sightRadius / this.flatScale,
-        2,
-      )}AU`,
-      radius: sightRadius,
-      color: `#bbbbbb`,
-      outline: true,
-      opacity: 0.5,
-    })
+      this.drawPoint({
+        location: [...shipLocation].map(
+          (l) => l / this.flatScale,
+        ) as CoordinatePair,
+        labelTop: `vision`,
+        labelBottom: `${c.r2(
+          sightRadius / this.flatScale,
+          2,
+        )}AU`,
+        radius: sightRadius,
+        color: `#bbbbbb`,
+        outline: true,
+        opacity: 0.5,
+      })
+    }
 
-    if (ship.radii?.gameSize)
+    if (
+      ship?.radii?.gameSize ||
+      (visible as AdminVisibleData).gameRadius
+    )
       this.drawPoint({
         location: [0, 0],
         labelTop: `known universe`,
-        radius: ship.radii.gameSize * this.flatScale,
+        radius:
+          (ship?.radii?.gameSize ||
+            (visible as AdminVisibleData).gameRadius) *
+          this.flatScale,
         color: `#bbbbbb`,
         outline: true,
         opacity: 0.5,
@@ -240,6 +280,7 @@ export default class Drawer {
     // ----- non-clipped objects -----
 
     // ----- distance circles -----
+
     // todo make these fit the current view rather than radiate from the center point
     let auBetweenLines = 1 / 10 ** 6
     const diameter = Math.max(this.width, this.height)
@@ -251,12 +292,12 @@ export default class Drawer {
     for (let i = 1; i < 30; i++) {
       const radius = c.r2(auBetweenLines * i, 5)
       this.drawPoint({
-        location: [...shipLocation].map(
+        location: [...(shipLocation || center)].map(
           (l) => l / this.flatScale,
         ) as CoordinatePair,
         labelBottom:
           c.r2(radius / this.flatScale, 6) + `AU`,
-        labelTop: this.radiusToTime(ship, radius),
+        labelTop: ship && this.radiusToTime(ship, radius),
         radius: radius,
         color: `#555555`,
         outline: true,
@@ -265,43 +306,45 @@ export default class Drawer {
       })
     }
 
-    // ----- radii -----
-    if (ship?.radii?.scan)
-      this.drawPoint({
-        location: [...shipLocation].map(
-          (l) => l / this.flatScale,
-        ) as CoordinatePair,
-        labelTop: `scan`,
-        labelBottom: `${c.r2(ship?.radii?.scan, 2)}AU`,
-        radius: ship?.radii?.scan * this.flatScale,
-        color: `#66ffdd`,
-        outline: true,
-        opacity: 0.4,
-      })
-    if (ship?.radii?.attack)
-      this.drawPoint({
-        location: [...shipLocation].map(
-          (l) => l / this.flatScale,
-        ) as CoordinatePair,
-        labelTop: `attack`,
-        labelBottom: `${c.r2(ship?.radii?.attack, 2)}AU`,
-        radius: ship?.radii?.attack * this.flatScale,
-        color: `#ff7733`,
-        outline: true,
-        opacity: 0.5,
-      })
-    if (ship?.radii?.broadcast)
-      this.drawPoint({
-        location: [...shipLocation].map(
-          (l) => l / this.flatScale,
-        ) as CoordinatePair,
-        labelTop: `broadcast`,
-        labelBottom: `${c.r2(ship?.radii?.broadcast, 2)}AU`,
-        radius: ship?.radii?.broadcast * this.flatScale,
-        color: `#dd88ff`,
-        outline: true,
-        opacity: 0.45,
-      })
+    if (ship && ship.radii) {
+      // ----- radii -----
+      if (ship.radii.scan)
+        this.drawPoint({
+          location: [...shipLocation].map(
+            (l) => l / this.flatScale,
+          ) as CoordinatePair,
+          labelTop: `scan`,
+          labelBottom: `${c.r2(ship.radii.scan, 2)}AU`,
+          radius: ship.radii.scan * this.flatScale,
+          color: `#66ffdd`,
+          outline: true,
+          opacity: 0.4,
+        })
+      if (ship.radii.attack)
+        this.drawPoint({
+          location: [...shipLocation].map(
+            (l) => l / this.flatScale,
+          ) as CoordinatePair,
+          labelTop: `attack`,
+          labelBottom: `${c.r2(ship.radii.attack, 2)}AU`,
+          radius: ship.radii.attack * this.flatScale,
+          color: `#ff7733`,
+          outline: true,
+          opacity: 0.5,
+        })
+      if (ship.radii.broadcast)
+        this.drawPoint({
+          location: [...shipLocation].map(
+            (l) => l / this.flatScale,
+          ) as CoordinatePair,
+          labelTop: `broadcast`,
+          labelBottom: `${c.r2(ship.radii.broadcast, 2)}AU`,
+          radius: ship.radii.broadcast * this.flatScale,
+          color: `#dd88ff`,
+          outline: true,
+          opacity: 0.45,
+        })
+    }
 
     // ----- planets
     profiler.step(`draw planets`)
@@ -329,7 +372,7 @@ export default class Drawer {
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
         radius:
-          (ship.gameSettings?.arrivalThreshold || 0.001) *
+          (ship?.gameSettings?.arrivalThreshold || 0.001) *
           (p.landingRadiusMultiplier || 1) *
           this.flatScale,
         color: p.color,
@@ -338,118 +381,123 @@ export default class Drawer {
       })
     })
 
-    // ----- main ship trail
+    if (ship) {
+      // ----- main ship trail
 
-    let prev: CoordinatePair | undefined
-    const mainShipTrailPositions = [
-      ...(ship?.previousLocations || []),
-      ship.location,
-    ]
-    mainShipTrailPositions.forEach((pl, index) => {
-      prev = ship.previousLocations[index - 1]
-      if (!prev) return
-      this.drawLine({
-        start: [
-          prev[0] * this.flatScale,
-          prev[1] * this.flatScale * -1,
-        ],
-        end: [
-          pl[0] * this.flatScale,
-          pl[1] * this.flatScale * -1,
-        ],
-        color: `white`,
-        width: 2,
-        opacity:
-          (index / (mainShipTrailPositions.length - 1)) *
-          0.2,
-      })
-    })
-
-    // ----- target lines -----
-    if (crewMemberId) {
-      const crewMember = ship?.crewMembers.find(
-        (cm) => cm.id === crewMemberId,
-      )
-      if (
-        crewMember?.targetLocation &&
-        crewMember?.location === `cockpit`
-      ) {
+      let prev: CoordinatePair | undefined
+      const mainShipTrailPositions = [
+        ...(ship?.previousLocations || []),
+        ship.location,
+      ]
+      mainShipTrailPositions.forEach((pl, index) => {
+        prev = ship.previousLocations[index - 1]
+        if (!prev) return
         this.drawLine({
-          end: [...shipLocation],
           start: [
-            crewMember.targetLocation[0] * this.flatScale,
-            crewMember.targetLocation[1] *
-              this.flatScale *
-              -1,
+            prev[0] * this.flatScale,
+            prev[1] * this.flatScale * -1,
+          ],
+          end: [
+            pl[0] * this.flatScale,
+            pl[1] * this.flatScale * -1,
           ],
           color: `white`,
-          opacity: 0.8,
-          dash: 10,
+          width: 2,
+          opacity:
+            (index / (mainShipTrailPositions.length - 1)) *
+            0.2,
         })
-
-        this.drawPoint({
-          location: [
-            crewMember.targetLocation[0],
-            crewMember.targetLocation[1] * -1,
-          ],
-          radius: (1.5 / this.zoom) * devicePixelRatio,
-          color: `white`,
-        })
-      }
-    }
-
-    // ship trajectory line
-
-    if ((ship.speed || 0) > 0 && ship.velocity) {
-      this.drawLine({
-        start: [...shipLocation],
-        end: [
-          shipLocation[0] +
-            ship.velocity[0] * 10000 * this.flatScale,
-          shipLocation[1] +
-            ship.velocity[1] * 10000 * this.flatScale * -1,
-        ],
-        color: `rgba(0, 255, 70, 1)`,
-        opacity: Math.max(
-          0.4,
-          Math.min(ship.speed / 2, 0.7),
-        ),
-        dash: [
-          2,
-          Math.min(
-            Math.max(10, ship.speed * 50 * 1000),
-            100,
-          ),
-        ],
       })
-    }
 
-    // attack target line
-    if (ship?.targetShip) {
-      let crewMember: any
-      if (crewMemberId)
-        crewMember = ship?.crewMembers.find(
+      // ----- target lines -----
+      if (crewMemberId) {
+        const crewMember = ship?.crewMembers.find(
           (cm) => cm.id === crewMemberId,
         )
-      if (
-        !crewMember ||
-        (crewMember?.location === `weapons` &&
-          ship.targetShip)
-      ) {
-        const foundShip = ship.visible?.ships.find(
-          (s) => s.id === ship.targetShip.id,
-        )
-        if (foundShip)
+        if (
+          crewMember?.targetLocation &&
+          crewMember?.location === `cockpit`
+        ) {
           this.drawLine({
             end: [...shipLocation],
             start: [
-              foundShip.location[0] * this.flatScale,
-              foundShip.location[1] * this.flatScale * -1,
+              crewMember.targetLocation[0] * this.flatScale,
+              crewMember.targetLocation[1] *
+                this.flatScale *
+                -1,
             ],
-            color: `red`,
-            opacity: 1,
+            color: `white`,
+            opacity: 0.8,
             dash: 10,
           })
+
+          this.drawPoint({
+            location: [
+              crewMember.targetLocation[0],
+              crewMember.targetLocation[1] * -1,
+            ],
+            radius: (1.5 / this.zoom) * devicePixelRatio,
+            color: `white`,
+          })
+        }
+      }
+
+      // ship trajectory line
+
+      if ((ship.speed || 0) > 0 && ship.velocity) {
+        this.drawLine({
+          start: [...shipLocation],
+          end: [
+            shipLocation[0] +
+              ship.velocity[0] * 10000 * this.flatScale,
+            shipLocation[1] +
+              ship.velocity[1] *
+                10000 *
+                this.flatScale *
+                -1,
+          ],
+          color: `rgba(0, 255, 70, 1)`,
+          opacity: Math.max(
+            0.4,
+            Math.min(ship.speed / 2, 0.7),
+          ),
+          dash: [
+            2,
+            Math.min(
+              Math.max(10, ship.speed * 50 * 1000),
+              100,
+            ),
+          ],
+        })
+      }
+
+      // attack target line
+      if (ship?.targetShip) {
+        let crewMember: any
+        if (crewMemberId)
+          crewMember = ship?.crewMembers.find(
+            (cm) => cm.id === crewMemberId,
+          )
+        if (
+          !crewMember ||
+          (crewMember?.location === `weapons` &&
+            ship.targetShip)
+        ) {
+          const foundShip = ship.visible?.ships.find(
+            (s) => s.id === ship.targetShip.id,
+          )
+          if (foundShip)
+            this.drawLine({
+              end: [...shipLocation],
+              start: [
+                foundShip.location[0] * this.flatScale,
+                foundShip.location[1] * this.flatScale * -1,
+              ],
+              color: `red`,
+              opacity: 1,
+              dash: 10,
+            })
+        }
       }
     }
 
@@ -470,11 +518,7 @@ export default class Drawer {
       })
 
     // ----- zones
-    ;[
-      ...(ship.seenLandmarks.filter(
-        (l) => l.type === `zone`,
-      ) || []),
-    ]
+    zonesToDraw
       .sort((a, b) => a.radius - b.radius)
       .forEach((z) => {
         this.drawPoint({
@@ -510,13 +554,15 @@ export default class Drawer {
       })
     })
 
-    // player ship
-    this.drawPoint({
-      location: [ship.location[0], ship.location[1] * -1],
-      labelTop: !ship.planet && ship.name,
-      radius: (2.5 / this.zoom) * devicePixelRatio,
-      color: `white`,
-    })
+    if (ship) {
+      // player ship
+      this.drawPoint({
+        location: [ship.location[0], ship.location[1] * -1],
+        labelTop: !ship.planet && ship.name,
+        radius: (2.5 / this.zoom) * devicePixelRatio,
+        color: `white`,
+      })
+    }
 
     profiler.step(`draw caches`)
     // ----- caches
@@ -524,7 +570,7 @@ export default class Drawer {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
         radius:
-          (ship.gameSettings?.arrivalThreshold || 0.001) *
+          (ship?.gameSettings?.arrivalThreshold || 0.001) *
           this.flatScale,
         color: `rgb(216, 174, 3)`, // var(--cargo)
         outline: `dash`,
@@ -541,15 +587,17 @@ export default class Drawer {
 
     // ----- clipped objects -----
 
-    profiler.step(`clip`)
-    this.ctx.beginPath()
-    this.ctx.arc(
-      ...shipLocation,
-      sightRadius,
-      0,
-      Math.PI * 2,
-    )
-    this.ctx.clip()
+    if (ship) {
+      profiler.step(`clip`)
+      this.ctx.beginPath()
+      this.ctx.arc(
+        ...shipLocation,
+        sightRadius,
+        0,
+        Math.PI * 2,
+      )
+      this.ctx.clip()
+    }
 
     profiler.step(`draw trails`)
     // ----- trails
@@ -605,7 +653,7 @@ export default class Drawer {
 
     // ----- attack remnants
     const now = Date.now()
-    ship.visible?.attackRemnants.forEach(
+    attackRemnantsToDraw.forEach(
       (ar: AttackRemnantStub) => {
         let grd = this.ctx.createLinearGradient(
           ar.start[0] * this.flatScale,
@@ -621,7 +669,6 @@ export default class Drawer {
             : `rgba(255, 200, 0, 0)`,
         )
 
-        // console.log(ar)
         this.drawLine({
           start: [
             ar.start[0] * this.flatScale,

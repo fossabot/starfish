@@ -173,6 +173,17 @@ export class Zone extends Stubbable {
     return this.stubify()
   }
 
+  toAdminStub(): ZoneStub {
+    return {
+      type: `zone`,
+      location: this.location,
+      radius: this.radius,
+      color: this.color,
+      name: this.name,
+      effects: this.effects,
+    }
+  }
+
   toReference() {
     return {
       type: `zone`,

@@ -58,7 +58,20 @@ export class CrewMember extends Stubbable {
       `bunk` // failsafe
 
     this.stamina = data.stamina || this.maxStamina
+
+    c.log(
+      this.ship.id,
+      this.name,
+      c.r2(
+        (Date.now() - (data.lastActive || 0)) /
+          1000 /
+          60 /
+          60 /
+          24,
+      ),
+    )
     this.lastActive = data.lastActive || Date.now()
+
     this.inventory =
       data.inventory?.filter((i) => i && i.amount > 0) || []
     this.cockpitCharge = data.cockpitCharge || 0
@@ -101,7 +114,6 @@ export class CrewMember extends Stubbable {
   }
 
   rename(newName: string) {
-    this.active()
     this.name = c
       .sanitize(newName)
       .result.substring(0, c.maxNameLength)
@@ -214,8 +226,6 @@ export class CrewMember extends Stubbable {
   }
 
   addXp(skill: SkillId, xp?: number) {
-    this.active()
-
     const xpBoostMultiplier =
       this.ship.getPassiveIntensity(`boostXpGain`) +
       this.getPassiveIntensity(`boostXpGain`) +
@@ -365,8 +375,6 @@ export class CrewMember extends Stubbable {
   }
 
   removePassive(p: CrewPassiveData) {
-    this.active()
-
     const foundIndex = this.passives.findIndex(
       (p2) => p2.id === p.id,
     )
@@ -382,7 +390,6 @@ export class CrewMember extends Stubbable {
   }
 
   addStat(statname: CrewStatKey, amount: number) {
-    this.active()
     const existing = this.stats.find(
       (s) => s.stat === statname,
     )

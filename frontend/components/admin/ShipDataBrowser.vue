@@ -36,6 +36,13 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
+            @click="achievement(selectedShipId)"
+          >
+            Achievement
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
             @click="deleteShip(selectedShipId)"
           >
             Delete
@@ -215,6 +222,19 @@ export default Vue.extend({
           )
           this.updateFilteredShipData()
         },
+      )
+    },
+
+    async achievement(shipId: string) {
+      const achievement = window.prompt(
+        `Which achievement id?`,
+      )
+      ;(this as any).$socket?.emit(
+        `admin:achievementToShip`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+        achievement,
       )
     },
 

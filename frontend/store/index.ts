@@ -429,7 +429,7 @@ export const actions = {
   ) {
     if (alreadyLoggingIn) return
     alreadyLoggingIn = true
-    c.log(`logIn start`, { userId, shipIds })
+    // c.log(`logIn start`, { userId, shipIds })
     if (!userId || !shipIds || !shipIds?.length) {
       const tokenType = storage.get(`tokenType`)
       const accessToken = storage.get(`accessToken`)
@@ -508,7 +508,7 @@ export const actions = {
         storage.set(`shipIds`, JSON.stringify(shipIds))
     }
 
-    c.log(`logging in...`, { userId, shipIds })
+    // c.log(`logging in...`, { userId, shipIds })
 
     commit(`set`, { userId, shipIds })
 
@@ -524,10 +524,8 @@ export const actions = {
               // something's up with one of the guilds, so reset the whole deal
               storage.remove(`shipIds`)
               commit(`set`, { shipIds: [] })
-              setTimeout(
-                () => dispatch(`logIn`, { userId }),
-                1000,
-              ) // timeout to not get rate limited by discord api
+              alreadyLoggingIn = false
+              dispatch(`logIn`, { userId })
               resolve()
               return
             }
@@ -537,6 +535,16 @@ export const actions = {
         )
       })
     }
+
+    if (
+      state.ship &&
+      !shipIds.find((sid) => sid === state.ship.id)
+    )
+      commit(`set`, {
+        ship: null,
+        crewMember: null,
+        activeShipId: null,
+      })
     alreadyLoggingIn = false
     commit(`set`, { shipsBasics })
   },

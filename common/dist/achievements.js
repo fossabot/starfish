@@ -66,6 +66,11 @@ const achievements = {
         reward: { tagline: `✨Supporter✨` },
         for: `supporting ${globals_1.default.gameName}'s development`,
     },
+    bugHunter: {
+        id: `bugHunter`,
+        reward: { tagline: `🐛 Bug Hunter` },
+        for: `finding bugs in ${globals_1.default.gameName}`,
+    },
     // flight
     speed1: {
         id: `speed1`,

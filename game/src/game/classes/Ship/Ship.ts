@@ -842,6 +842,28 @@ export class Ship extends Stubbable {
     return existing.amount
   }
 
+  toAdminStub(): ShipStub {
+    return {
+      id: this.id,
+      name: this.name,
+      location: this.location,
+      guildId: (this as any).guildId,
+      human: this.human,
+      ai: this.ai,
+      previousLocations: this.previousLocations,
+      attackable: this.attackable,
+      dead: this.dead,
+      rooms: (this as any).rooms,
+      achievements: this.achievements,
+      items: this.items.map((i) => i.toReference()),
+      crewMembers: (this as any).crewMembers?.map((cm) => ({
+        id: cm.id,
+        name: cm.name,
+        speciesId: cm.speciesId,
+      })),
+    }
+  }
+
   toReference(): Reference {
     return {
       type: `ship`,

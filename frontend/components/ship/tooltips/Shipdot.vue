@@ -168,9 +168,13 @@
         <div>Rooms</div>
         <div class="marleft textright">
           {{
-            c.printList(
-              dataToUse.rooms.map((r) => c.capitalize(r)),
-            )
+            dataToUse.rooms.map
+              ? c.printList(
+                  dataToUse.rooms.map((r) =>
+                    c.capitalize(r),
+                  ),
+                )
+              : dataToUse.rooms
           }}
         </div>
       </div>
@@ -313,7 +317,7 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship']),
     isSelf() {
-      return this.ship.id === this.data.id
+      return this.ship?.id === this.data.id
     },
     dataToUse() {
       return (
@@ -325,11 +329,12 @@ export default Vue.extend({
   },
   methods: {
     setTargetAlongPath() {
-      if (this.dataToUse.id !== this.ship.id) return
+      if (this.dataToUse.id !== this.ship?.id) return
       this.$store.commit(
         'setTarget',
-        this.ship.location.map(
-          (l, index) => l + this.ship.velocity[index] * 500,
+        this.ship?.location.map(
+          (l, index) =>
+            l + this.ship?.velocity[index] * 500,
         ),
       )
     },

@@ -51,6 +51,14 @@ export default function (
     return callback(isAdmin(id, password))
   })
 
+  socket.on(`admin:map`, (id, password, callback) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:map`,
+      )
+    return callback({ data: game.toAdminMapData() })
+  })
+
   socket.on(
     `game:setSettings`,
     (id, password, newSettings) => {
@@ -80,6 +88,25 @@ export default function (
       )
     game.removeShip(shipId)
   })
+
+  socket.on(
+    `admin:achievementToShip`,
+    (id, password, shipId, achievement) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:achievementToShip`,
+        )
+      const ship = game.humanShips.find(
+        (s) => s.id === shipId,
+      )
+      if (!ship) return
+      ship.addAchievement(achievement)
+      c.log(
+        `Achievement added to ship ${ship.name}:`,
+        achievement,
+      )
+    },
+  )
 
   socket.on(
     `admin:deleteCrewMember`,

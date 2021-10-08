@@ -446,7 +446,9 @@ export default Vue.extend({
             return
           }
           this.$store.dispatch('notifications/notify', {
-            text: `New orders set!`,
+            text: clear
+              ? `Orders cleared!`
+              : `New orders set!`,
             type: 'success',
           })
           this.target = ''

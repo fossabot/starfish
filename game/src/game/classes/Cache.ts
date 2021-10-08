@@ -54,4 +54,8 @@ export class Cache extends Stubbable {
 
     return true
   }
+
+  toAdminStub(): CacheStub {
+    return this.stubify()
+  }
 }

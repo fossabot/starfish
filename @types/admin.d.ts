@@ -18,3 +18,13 @@ interface AdminGameSettings {
   aiShipDensity: number
   cacheDensity: number
 }
+
+interface AdminVisibleData {
+  ships: ShipStub[]
+  planets: PlanetStub[]
+  caches: CacheStub[]
+  attackRemnants: AttackRemnantStub[]
+  zones: ZoneStub[]
+  gameRadius: number
+  showAll: true
+}
