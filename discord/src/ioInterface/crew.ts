@@ -151,7 +151,6 @@ export async function sell(
       crewId,
       type,
       amount,
-      planetId,
       (res) => {
         resolve(res)
       },
@@ -184,7 +183,6 @@ export async function buy(
       crewId,
       type,
       amount,
-      planetId,
       (res) => {
         resolve(res)
       },
