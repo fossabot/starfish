@@ -59,17 +59,17 @@ export class CrewMember extends Stubbable {
 
     this.stamina = data.stamina || this.maxStamina
 
-    c.log(
-      this.ship.id,
-      this.name,
-      c.r2(
-        (Date.now() - (data.lastActive || 0)) /
-          1000 /
-          60 /
-          60 /
-          24,
-      ),
-    )
+    // c.log(
+    //   this.ship.id,
+    //   this.name,
+    //   c.r2(
+    //     (Date.now() - (data.lastActive || 0)) /
+    //       1000 /
+    //       60 /
+    //       60 /
+    //       24,
+    //   ),
+    // )
     this.lastActive = data.lastActive || Date.now()
 
     this.inventory =

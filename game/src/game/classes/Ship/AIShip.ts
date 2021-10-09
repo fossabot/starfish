@@ -227,9 +227,8 @@ export class AIShip extends CombatShip {
       )
 
       const thrustMagnitude =
-        c.lerp(0.00001, 0.0001, this.level / 100) *
-        engineThrustMultiplier *
-        c.gameSpeedMultiplier
+        c.lerp(0.0001, 0.001, this.level / 100) *
+        engineThrustMultiplier
 
       this.location[0] +=
         unitVectorToTarget[0] * thrustMagnitude

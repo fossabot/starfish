@@ -1,5 +1,3 @@
-const gameSpeedMultiplier = 10
-
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
@@ -22,10 +20,8 @@ const noEngineThrustMagnitude = 0.02
 const planetContributeCostPerXp = 1
 const planetLevelXpRequirementMultiplier = 10
 
-const attackRemnantExpireTime =
-  (1000 * 60 * 60 * 24 * 3.5) / gameSpeedMultiplier
-const cacheExpireTime =
-  (1000 * 60 * 60 * 24 * 7 * 15) / gameSpeedMultiplier
+const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
+const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
@@ -79,7 +75,6 @@ const baseCargoSellMultiplier = 0.3
 
 export default {
   supportServerLink,
-  gameSpeedMultiplier,
   baseSightRange,
   baseBroadcastRange,
   baseRepairCost,

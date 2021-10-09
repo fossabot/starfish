@@ -43,10 +43,7 @@ export class Zone extends Stubbable {
   affectShip(ship: CombatShip) {
     if (ship.planet) return
     for (let effect of this.effects) {
-      if (
-        Math.random() / c.gameSpeedMultiplier >
-        effect.procChancePerTick
-      )
+      if (Math.random() / 10 > effect.procChancePerTick)
         return
 
       const proximityMod = effect.basedOnProximity

@@ -214,7 +214,7 @@ export class Ship extends Stubbable {
       this.previousLocations.shift()
       if (this.human)
         c.log(`removing previous location from`, this.name)
-    }, (c.tickInterval * 1000000) / c.gameSpeedMultiplier)
+    }, c.tickInterval * 100000)
   }
 
   tick() {
@@ -701,10 +701,8 @@ export class Ship extends Stubbable {
           // comes back as kg * m / second == N
           .map(
             (g) =>
-              (g * c.gameSpeedMultiplier) /
-              this.mass /
-              c.kmPerAu /
-              c.mPerKm,
+              // todo work out this *10 from the math, put into gravityForceMultiplier
+              (g * 10) / this.mass / c.kmPerAu / c.mPerKm,
           )
         // c.log(
         //   this.name,

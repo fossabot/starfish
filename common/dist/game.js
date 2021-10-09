@@ -34,10 +34,7 @@ function getHitDamage(weapon, totalMunitionsSkill = 0) {
         math_1.default.lerp(1, 4, totalMunitionsSkill / 100));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability, useLevel = 1) {
-    return ((0.00001 *
-        gameConstants_1.default.gameSpeedMultiplier *
-        (10 / maxHp) *
-        math_1.default.lerp(1, 0.5, useLevel / 100)) /
+    return (((0.001 / maxHp) * math_1.default.lerp(1, 0.5, useLevel / 100)) /
         reliability);
 }
 function getRadiusDiminishingReturns(totalValue, equipmentCount) {
@@ -51,7 +48,7 @@ function getMaxCockpitChargeForSingleCrewMember(level = 1) {
 }
 function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
-    return (math_1.default.lerp(0.0002 * flatMod, 0.0005 * flatMod, level / 100) * gameConstants_1.default.gameSpeedMultiplier);
+    return math_1.default.lerp(0.002 * flatMod, 0.005 * flatMod, level / 100);
 }
 function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
     const min = 0.65;
@@ -61,22 +58,16 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return ((math_1.default.lerp(0.1, 0.3, level / 100) /
-        globals_1.default.tickInterval) *
-        gameConstants_1.default.gameSpeedMultiplier);
+    return math_1.default.lerp(1, 3, level / 100) / globals_1.default.tickInterval;
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
-    return ((math_1.default.lerp(30, 100, level / 100) /
-        globals_1.default.tickInterval) *
-        gameConstants_1.default.gameSpeedMultiplier);
+    return (math_1.default.lerp(300, 1000, level / 100) / globals_1.default.tickInterval);
 }
 function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
     return baseStaminaUse * 1.5;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return ((2 + math_1.default.lerp(1, 20, level / 100)) *
-        3 *
-        gameConstants_1.default.gameSpeedMultiplier);
+    return (2 + math_1.default.lerp(1, 20, level / 100)) * 30;
 }
 function getGeneralMultiplierBasedOnCrewMemberProximity(cm, crewMembers) {
     const boostPerMemberInSameRoom = cm.passives

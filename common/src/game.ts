@@ -23,10 +23,7 @@ function getBaseDurabilityLossPerTick(
   useLevel: number = 1,
 ) {
   return (
-    (0.00001 *
-      gameConstants.gameSpeedMultiplier *
-      (10 / maxHp) *
-      math.lerp(1, 0.5, useLevel / 100)) /
+    ((0.001 / maxHp) * math.lerp(1, 0.5, useLevel / 100)) /
     reliability
   )
 }
@@ -50,12 +47,10 @@ function getCockpitChargePerTickForSingleCrewMember(
   level: number = 1,
 ) {
   const flatMod = 0.1
-  return (
-    math.lerp(
-      0.0002 * flatMod,
-      0.0005 * flatMod,
-      level / 100,
-    ) * gameConstants.gameSpeedMultiplier
+  return math.lerp(
+    0.002 * flatMod,
+    0.005 * flatMod,
+    level / 100,
   )
 }
 
@@ -76,20 +71,14 @@ function getThrustMagnitudeForSingleCrewMember(
 function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
-  return (
-    (math.lerp(0.1, 0.3, level / 100) /
-      globals.tickInterval) *
-    gameConstants.gameSpeedMultiplier
-  )
+  return math.lerp(1, 3, level / 100) / globals.tickInterval
 }
 
 function getMineAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    (math.lerp(30, 100, level / 100) /
-      globals.tickInterval) *
-    gameConstants.gameSpeedMultiplier
+    math.lerp(300, 1000, level / 100) / globals.tickInterval
   )
 }
 
@@ -100,11 +89,7 @@ function getStaminaGainPerTickForSingleCrewMember(
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (
-    (2 + math.lerp(1, 20, level / 100)) *
-    3 *
-    gameConstants.gameSpeedMultiplier
-  )
+  return (2 + math.lerp(1, 20, level / 100)) * 30
 }
 
 function getGeneralMultiplierBasedOnCrewMemberProximity(
