@@ -280,13 +280,14 @@ export abstract class CombatShip extends Ship {
 
         guildMembersWithinDistancePassives.forEach((p) => {
           let guildMembersInRange = 0
-          const range = p.data?.distance || 0
+          const passiveRange = p.data?.distance || 0
 
           this.visible.ships.forEach((s: any) => {
             if (
               s?.guildId &&
               s?.guildId === this.guildId &&
-              c.distance(s.location, this.location) <= range
+              c.distance(s.location, this.location) <=
+                passiveRange
             )
               guildMembersInRange++
           })
@@ -297,7 +298,7 @@ export abstract class CombatShip extends Ship {
             `because there are`,
             guildMembersInRange,
             `guild members within`,
-            range,
+            passiveRange,
             this.name,
             guildMembersWithinDistancePassives,
           )
@@ -321,30 +322,31 @@ export abstract class CombatShip extends Ship {
 
         soloPassives.forEach((p) => {
           let guildMembersInRange = 0
-          const range = p.data?.distance || 0
+          const passiveRange = p.data?.distance || 0
 
           this.visible.ships.forEach((s: any) => {
             if (
               s?.guildId &&
               s?.guildId === this.guildId &&
-              c.distance(s.location, this.location) <= range
+              c.distance(s.location, this.location) <=
+                passiveRange
             )
               guildMembersInRange++
           })
 
-          if (!guildMembersInRange)
+          if (!guildMembersInRange) {
+            c.log(
+              `damage boosted by`,
+              p.intensity || 0,
+              `because there are no guild members within passive range`,
+              passiveRange,
+              this.name,
+              soloPassives,
+            )
             damageMultiplier += p.intensity || 0
+          }
         })
 
-        if (damageMultiplier > 1)
-          c.log(
-            `damage multiplied by`,
-            damageMultiplier,
-            `because there are no guild members within`,
-            range,
-            this.name,
-            soloPassives,
-          )
         damage *= damageMultiplier
       }
 
