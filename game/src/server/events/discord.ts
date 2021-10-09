@@ -14,6 +14,7 @@ export default function (
   })
 
   socket.on(`ship:create`, async (data, callback) => {
+    if (typeof callback !== `function`) callback = () => {}
     const ship = game.ships.find((s) => s.id === data.id)
     if (ship) {
       c.log(
@@ -52,6 +53,7 @@ export default function (
   })
 
   socket.on(`ship:destroy`, (shipId, callback) => {
+    if (typeof callback !== `function`) callback = () => {}
     const ship = game.ships.find(
       (s) => s.id === shipId,
     ) as HumanShip
@@ -64,6 +66,8 @@ export default function (
   socket.on(
     `ship:broadcast`,
     (shipId, crewId, message, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -88,6 +92,8 @@ export default function (
   socket.on(
     `ship:setCaptain`,
     (shipId, crewId, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -112,6 +118,8 @@ export default function (
   socket.on(
     `ship:kickMember`,
     (shipId, crewId, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -148,6 +156,7 @@ export default function (
   })
 
   socket.on(`ship:rename`, (shipId, newName, callback) => {
+    if (typeof callback !== `function`) callback = () => {}
     const ship = game.ships.find(
       (s) => s.id === shipId,
     ) as HumanShip
@@ -164,6 +173,8 @@ export default function (
   socket.on(
     `ship:guildData`,
     (shipId, guildData, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -182,6 +193,8 @@ export default function (
   socket.on(
     `ship:alertLevel`,
     (shipId, newLevel, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip

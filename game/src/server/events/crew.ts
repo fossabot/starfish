@@ -15,6 +15,8 @@ export default function (
   socket.on(
     `crew:add`,
     async (shipId, crewMemberBaseData, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -76,6 +78,8 @@ export default function (
   socket.on(
     `crew:setSpecies`,
     async (shipId, crewId, speciesId, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -137,6 +141,8 @@ export default function (
       targetLocation,
       callback = () => {},
     ) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -336,6 +342,8 @@ export default function (
   socket.on(
     `crew:donateToPlanet`,
     (shipId, crewId, amount, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -414,6 +422,8 @@ export default function (
   socket.on(
     `crew:buyCargo`,
     (shipId, crewId, cargoId, amount, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -482,6 +492,8 @@ export default function (
   socket.on(
     `crew:sellCargo`,
     (shipId, crewId, cargoId, amount, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -548,6 +560,8 @@ export default function (
       message,
       callback,
     ) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -614,6 +628,8 @@ export default function (
   socket.on(
     `crew:buyRepair`,
     (shipId, crewId, hp, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -680,6 +696,8 @@ export default function (
   socket.on(
     `crew:buyPassive`,
     (shipId, crewId, passiveId, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -743,6 +761,8 @@ export default function (
   socket.on(
     `crew:thrust`,
     (shipId, crewId, chargePercent, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -779,6 +799,8 @@ export default function (
   socket.on(
     `crew:brake`,
     (shipId, crewId, chargePercent, callback) => {
+      if (typeof callback !== `function`)
+        callback = () => {}
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
