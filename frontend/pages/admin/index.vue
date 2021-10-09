@@ -35,6 +35,12 @@
           </div>
           <div
             class="button combo"
+            @click="reLevelOnePlanet"
+          >
+            Re-Level One Planet
+          </div>
+          <div
+            class="button combo"
             @click="resetHomeworlds"
           >
             Reset Homeworlds
@@ -290,7 +296,7 @@ export default Vue.extend({
         this.adminPassword,
       )
     },
-    reLevelOnePlanets() {
+    reLevelOnePlanet() {
       const planetId = window.prompt('Enter planet id')
       if (!planetId) return
       this.$socket.emit(

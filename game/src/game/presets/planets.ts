@@ -58,7 +58,8 @@ function getLocation(game: Game, isHomeworld?: any) {
           ? count
           : count + 1,
       0,
-    ) > 2
+    ) >
+    Math.floor(Math.random() * 3) + 1
 
   while (
     game.planets.find(isTooClose) ||
@@ -188,6 +189,7 @@ export function generateBasicPlanet(
         try {
           guildHue = parseInt(`${guildHue}`)
         } catch (e) {
+          c.log(e)
           return false
         }
         if (isNaN(guildHue)) {
@@ -196,7 +198,7 @@ export function generateBasicPlanet(
         }
         if (guildHue > 180) guildHue -= 360
         if (potentialHue > 180) potentialHue -= 360
-        if (Math.abs(guildHue - potentialHue) < 10)
+        if (Math.abs(guildHue - potentialHue) < 15)
           return true
         return false
       })
@@ -205,7 +207,7 @@ export function generateBasicPlanet(
     }
 
     color = `hsl(${Math.round(hue)}, ${Math.round(
-      Math.random() * 60 + 40,
+      Math.random() * 30 + 70,
     )}%, ${Math.round(Math.random() * 40) + 40}%)`
   }
 
