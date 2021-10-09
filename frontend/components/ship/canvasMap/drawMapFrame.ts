@@ -190,10 +190,13 @@ export default class Drawer {
         this.isPointInSightRange(p as HasLocation),
     )
 
-    const zonesToDraw: Partial<ZoneStub>[] =
-      [
-        ...(visible?.zones || ship.seenLandmarks || []),
-      ].filter((l) => l.type === `zone`) || []
+    const zonesToDraw: Partial<ZoneStub>[] = [
+      ...(visible?.zones ||
+        ship.seenLandmarks.filter(
+          (l) => l.type === `zone`,
+        ) ||
+        []),
+    ]
 
     const attackRemnantsToDraw: Partial<AttackRemnantStub>[] =
       [
@@ -510,7 +513,7 @@ export default class Drawer {
           location: [p.location[0], p.location[1] * -1],
           labelTop: p.label || ``,
           radius: p.radius
-            ? p.radius / this.zoom
+            ? p.radius * this.flatScale
             : (25 / this.zoom) * devicePixelRatio,
           color: p.color || `yellow`,
           outline: true,
