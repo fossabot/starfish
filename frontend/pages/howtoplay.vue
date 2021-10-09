@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <div class="textcolumn">
-      <h1>How to Play {{ c.gameName }}</h1>
       <h3>Game Objectives</h3>
       <ul>
         <li>Explore the universe</li>
@@ -89,8 +88,8 @@
       </div>
       <div>
         Weapons will fire automatically when they are
-        charged to 100% and there is a target to attack in
-        range.
+        charged to 100% and there is a valid target to
+        attack in range.
       </div>
       <div>
         Attack hit chance is determined by the repair of the
@@ -108,9 +107,12 @@
         essentially "votes" on what tactic to take.
       </div>
       <div>
-        <b>Aggressive</b> tactics will fire at any non-guild
-        ship in sight. <b>Defensive</b> tactics will only
-        fire back when fired upon.
+        <b>Aggressive</b> tactics will fire at any
+        attackable ship (not in your guild, on a safe haven
+        planet, etc) in sight. <b>Defensive</b> tactics will
+        only fire back when fired upon. The strategies for
+        other tactics can be checked by hovering over them
+        in the Weapons Bay.
       </div>
       <div>
         Damage is dealt to armor first, and then to random
@@ -163,14 +165,25 @@
 
       <h3>Planets</h3>
       <div>
-        Planets are the safe havens, the hubs, the social
-        gathering points of {{ c.gameName }}.
+        Planets are the the hubs of {{ c.gameName }}.
       </div>
       <div>
         Planets have a small radius around them. Your ship
         will immediately stop upon entering a planet's
-        radius. You cannot attack or be attacked while
-        within a planet's radius.
+        radius. If the planet is a safe haven, you cannot
+        attack or be attacked while within that planet's
+        radius.
+      </div>
+      <div>
+        There are many things that can be done on planets,
+        and you'll have to explore to find all of them!
+      </div>
+      <div>
+        Crew members can contribute to planets to help their
+        economy grow. As planets grow, they will gain
+        various bonuses to what's available there and other
+        passive effects. Some planets also have inclinations
+        towards certain upgrade types.
       </div>
 
       <h3>Caches</h3>
@@ -227,20 +240,32 @@
       </div>
 
       <h3>Guilds</h3>
-      <div>There are four guilds in the game.</div>
-      <div>In no particular order, they are:</div>
-      <ul>
-        <li>Green Grapplers</li>
-        <li>Purple Pescos</li>
-        <li>Blue Breathers</li>
-        <li>Bloody Birds</li>
-      </ul>
       <div>
-        The Bloody Birds are AI-controlled, and are
-        aggressive to all aquatic ships.
+        There are several guilds in the game. Being a member
+        of a guild gives passive benefits to your ship, and
+        stops you from attacking other members of the same
+        guild.
+      </div>
+      <div>
+        Your ship can join a guild by visiting its
+        homeworld. Your first guild is free to join, but
+        changing guilds will cost you.
       </div>
       <div>
         You cannot attack a ship from your own guild.
+      </div>
+
+      <h3>Crew Species</h3>
+      <div>
+        Your individual character has a species. Each
+        species has a specialty, but every species can do
+        any task. Ships can be made up of any combination of
+        species.
+      </div>
+      <div>
+        Choose your species from your ship's console after
+        you <code>.join</code> the crew. Your species cannot
+        be changed once chosen (or can it?)
       </div>
 
       <h3>Crew Skills</h3>
@@ -257,6 +282,9 @@
         </li>
         <li>
           Mechanics: repair equipment in the Repair Bay
+        </li>
+        <li>
+          Mining: mine a planet's surface in the Mining Bay
         </li>
         <li>
           Lingistics: send broadcasts using your ship's
@@ -313,9 +341,9 @@
         range to see basic information about it, or find it
         in the Scan Ship panel to see more details. Hover
         over specific pieces of the ship in the Scan Ship
-        panel to see all that your scanning equipment can
-        scan. Upgrade to better scanners to see
-        more/different information about ships.
+        panel to see all of the data that your scanning
+        equipment has uncovered. Upgrade to better scanners
+        to see more/different information about ships.
       </div>
 
       <h3>Dying and Respawning</h3>
@@ -333,7 +361,7 @@
       </div>
 
       <!-- <h3>Passives</h3>
-      <div>There are several passives</div> -->
+      <div>There are several passives</div></details> -->
 
       <h3>Still have questions?</h3>
       <div>
@@ -365,4 +393,10 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.textcolumn h3 {
+  // margin-top: 0;
+  display: inline-block;
+  color: var(--game);
+}
+</style>
