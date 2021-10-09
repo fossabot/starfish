@@ -25,8 +25,9 @@ export default function (
       })
     } else {
       if (
-        game.humanShips.length >=
-        game.settings.humanShipLimit
+        game.humanShips.filter(
+          (s) => !s.tutorial?.currentStep,
+        ).length >= game.settings.humanShipLimit
       ) {
         callback({
           error: `There are already the maximum number of ships in the game! Please check back later or ask in the support server when more space will be opening up. Priority goes to supporters!`,

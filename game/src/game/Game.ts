@@ -839,13 +839,19 @@ export class Game {
         ...Object.keys(c.cargo),
         `credits`,
       ]) as `credits` | CargoId
-      const amount =
-        id === `credits`
-          ? Math.round(Math.random() * 3000 + 1000)
-          : Math.round(Math.random() * 20 + 4)
+
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
       )
+
+      const amount = c.r2(
+        (id === `credits`
+          ? Math.round(Math.random() * 1000 + 200)
+          : Math.round(Math.random() * 3 + 4)) *
+          (c.distance([0, 0], location) / 2 + 1),
+        0,
+      )
+
       const message =
         Math.random() > 0.9
           ? c.randomFromArray([

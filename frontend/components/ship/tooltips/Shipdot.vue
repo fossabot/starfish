@@ -168,13 +168,12 @@
         <div>Rooms</div>
         <div class="marleft textright">
           {{
-            dataToUse.rooms.map
-              ? c.printList(
-                  dataToUse.rooms.map((r) =>
-                    c.capitalize(r),
-                  ),
-                )
-              : dataToUse.rooms
+            c.printList(
+              (dataToUse.rooms.map
+                ? dataToUse.rooms
+                : Object.keys(dataToUse.rooms)
+              ).map((r) => c.capitalize(r)),
+            )
           }}
         </div>
       </div>
@@ -249,8 +248,16 @@
           {{
             dataToUse.crewMembers.find(
               (cm) => cm.id === dataToUse.captain,
-            )
-              ? '👑' +
+            ) //'👑' +
+              ? (dataToUse.crewMembers.find(
+                  (cm) => cm.id === dataToUse.captain,
+                ).speciesId
+                  ? c.species[
+                      dataToUse.crewMembers.find(
+                        (cm) => cm.id === dataToUse.captain,
+                      ).speciesId
+                    ].icon
+                  : '') +
                 dataToUse.crewMembers.find(
                   (cm) => cm.id === dataToUse.captain,
                 ).name

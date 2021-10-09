@@ -50,10 +50,21 @@ function getLocation(game: Game, isHomeworld?: any) {
     c.distance(closest?.location || [0, 0], location)
       ? p
       : closest
+
+  const tooManyPlanetsInVicinity = () =>
+    game.planets.reduce(
+      (count: number, p: Planet): number =>
+        c.distance(p.location, location) > 1
+          ? count
+          : count + 1,
+      0,
+    ) > 2
+
   while (
     game.planets.find(isTooClose) ||
     game.humanShips.find(isTooClose) ||
     game.zones.find(isTooClose) ||
+    tooManyPlanetsInVicinity() ||
     c.distance(location, [0, 0]) > game.gameSoftRadius
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
@@ -83,6 +94,7 @@ function getLocation(game: Game, isHomeworld?: any) {
           vectorTowardsClosestPlanet[1] * magnitude
       }
     }
+
     locationSearchRadius *= 1.01
   }
   return location
@@ -184,7 +196,7 @@ export function generateBasicPlanet(
         }
         if (guildHue > 180) guildHue -= 360
         if (potentialHue > 180) potentialHue -= 360
-        if (Math.abs(guildHue - potentialHue) < 20)
+        if (Math.abs(guildHue - potentialHue) < 10)
           return true
         return false
       })
@@ -193,7 +205,7 @@ export function generateBasicPlanet(
     }
 
     color = `hsl(${Math.round(hue)}, ${Math.round(
-      Math.random() * 80 + 20,
+      Math.random() * 60 + 40,
     )}%, ${Math.round(Math.random() * 40) + 40}%)`
   }
 

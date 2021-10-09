@@ -11,7 +11,7 @@
       ref="canvas"
       id="map"
       :width="widthScaledToDevice + 'px'"
-      :height="widthScaledToDevice + 'px'"
+      :height="heightScaledToDevice + 'px'"
       :style="{
         width: winSize[0] + 'px',
         height: winSize[1] + 'px',
