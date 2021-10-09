@@ -298,6 +298,8 @@ export abstract class CombatShip extends Ship {
             guildMembersInRange,
             `guild members within`,
             range,
+            this.name,
+            guildMembersWithinDistancePassives,
           )
 
           damageMultiplier +=
@@ -340,6 +342,8 @@ export abstract class CombatShip extends Ship {
             damageMultiplier,
             `because there are no guild members within`,
             range,
+            this.name,
+            soloPassives,
           )
         damage *= damageMultiplier
       }
@@ -351,6 +355,8 @@ export abstract class CombatShip extends Ship {
           `damage multiplied by`,
           boostDamagePassiveMultiplier,
           `because of damage boost passive(s)`,
+          this.name,
+          this.passives,
         )
       damage *= boostDamagePassiveMultiplier
 
