@@ -14,8 +14,9 @@
     <button
       v-for="count in repairOptions"
       :disabled="
+        ship._maxHp - ship._hp < count ||
         crewMember.credits <
-        c.getRepairPrice(ship.planet, count, ship.guildId)
+          c.getRepairPrice(ship.planet, count, ship.guildId)
       "
       @click="buyRepair(count)"
     >
@@ -75,7 +76,6 @@ export default Vue.extend({
         this.ship.id,
         this.crewMember?.id,
         hp,
-        this.ship?.planet?.id,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

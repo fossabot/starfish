@@ -76,12 +76,12 @@ export class BasicPlanet extends Planet {
     this.updateFluctuator()
     setInterval(
       () => this.updateFluctuator(),
-      (1000 * 60 * 60 * 24) / c.gameSpeedMultiplier,
+      1000 * 60 * 60 * 24 * 0.1,
     ) // every day
 
     setInterval(
       () => this.decrementAllegiances(),
-      (1000 * 60 * 60 * 24) / c.gameSpeedMultiplier,
+      1000 * 60 * 60 * 24 * 0.1,
     ) // every day
 
     if (this.guildId)

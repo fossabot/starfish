@@ -146,7 +146,6 @@ declare const _default: {
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
     supportServerLink: string;
-    gameSpeedMultiplier: number;
     baseSightRange: number;
     baseBroadcastRange: number;
     baseRepairCost: number;

@@ -3,14 +3,15 @@ import c from '../../common/dist'
 
 const lastCommit = require(`git-last-commit`)
 lastCommit.getLastCommit((err, commit) => {
-  c.log(
-    `blue`,
-    `Latest commit:`,
-    commit?.subject,
-    `(${new Date(
-      parseInt(commit?.committedOn) * 1000,
-    ).toLocaleString()})`,
-  )
+  if (!err)
+    c.log(
+      `blue`,
+      `Latest commit:`,
+      commit?.subject,
+      `(${new Date(
+        parseInt(commit?.committedOn) * 1000,
+      ).toLocaleString()})`,
+    )
 })
 
 import { Game } from './game/Game'

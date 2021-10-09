@@ -81,6 +81,7 @@ export class Game {
 
     setInterval(() => this.save(), Game.saveTimeInterval)
     setInterval(() => this.daily(), 24 * 60 * 60 * 1000)
+    this.daily()
 
     this.tick()
 
@@ -141,14 +142,24 @@ export class Game {
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
     // remove inactive ships
-    const inactiveCutoff = 14 * 24 * 60 * 60 * 1000 // 2 weeks
-    const ic = Date.now() - inactiveCutoff
+    const inactiveCutoff = 21 * 24 * 60 * 60 * 1000 // 3 weeks
+    const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
+    const ic = Date.now() - inactiveCutoff,
+      tic = Date.now() - tutorialInactiveCutoff
     for (let inactiveShip of this.humanShips.filter(
-      (s) => !s.crewMembers.find((c) => c.lastActive > ic),
-    ))
+      (s) =>
+        !s.crewMembers.find((cm) => {
+          return (
+            cm.lastActive >
+            (s.tutorial && s.tutorial.currentStep
+              ? tic
+              : ic)
+          )
+        }),
+    )) {
+      c.log(`Removing inactive ship`, inactiveShip.name)
       this.removeShip(inactiveShip)
-
-    this.recalculateGuildRankings()
+    }
   }
 
   // ----- game loop -----
@@ -828,13 +839,19 @@ export class Game {
         ...Object.keys(c.cargo),
         `credits`,
       ]) as `credits` | CargoId
-      const amount =
-        id === `credits`
-          ? Math.round(Math.random() * 5000 + 1)
-          : Math.round(Math.random() * 20 + 1)
+
       const location = c.randomInsideCircle(
         this.gameSoftRadius,
       )
+
+      const amount = c.r2(
+        (id === `credits`
+          ? Math.round(Math.random() * 1000 + 200)
+          : Math.round(Math.random() * 3 + 4)) *
+          (c.distance([0, 0], location) / 2 + 1),
+        0,
+      )
+
       const message =
         Math.random() > 0.9
           ? c.randomFromArray([
@@ -926,6 +943,7 @@ export class Game {
         `red`,
         `Attempted to add existing human ship ${existing.name} (${existing.id}).`,
       )
+      db.ship.removeByUnderscoreId((data as any)._id)
       return existing
     }
     // c.log(
@@ -1442,5 +1460,26 @@ export class Game {
       (hs) =>
         (hs.toUpdate.guildRankings = this.guildRankings),
     )
+  }
+
+  toAdminMapData(): AdminVisibleData {
+    const startTime = Date.now()
+    const mapData = {
+      planets: this.planets.map((p) => p.toAdminStub()),
+      ships: this.ships.map((s) => s.toAdminStub()),
+      caches: this.caches.map((c) => c.toAdminStub()),
+      zones: this.zones.map((z) => z.toAdminStub()),
+      attackRemnants: this.attackRemnants.map((a) =>
+        a.toAdminStub(),
+      ),
+      gameRadius: this.gameSoftRadius,
+      showAll: true as true,
+    }
+    // c.log(
+    //   `Generated full game map data in ${
+    //     Date.now() - startTime
+    //   }ms`,
+    // )
+    return mapData
   }
 }

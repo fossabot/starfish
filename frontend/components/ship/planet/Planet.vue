@@ -96,7 +96,10 @@
             {{ c.guilds[planet.guildId].name }}
           </span>
         </div> -->
-        <div class="sub marbottiny" v-if="type === 'basic'">
+        <div
+          class="sub textcenter marbottiny"
+          v-if="type === 'basic'"
+        >
           Population:
           {{
             c.numberWithCommas(

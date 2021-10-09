@@ -43,10 +43,7 @@ export class Zone extends Stubbable {
   affectShip(ship: CombatShip) {
     if (ship.planet) return
     for (let effect of this.effects) {
-      if (
-        Math.random() / c.gameSpeedMultiplier >
-        effect.procChancePerTick
-      )
+      if (Math.random() / 10 > effect.procChancePerTick)
         return
 
       const proximityMod = effect.basedOnProximity
@@ -171,6 +168,17 @@ export class Zone extends Stubbable {
 
   toVisibleStub() {
     return this.stubify()
+  }
+
+  toAdminStub(): ZoneStub {
+    return {
+      type: `zone`,
+      location: this.location,
+      radius: this.radius,
+      color: this.color,
+      name: this.name,
+      effects: this.effects,
+    }
   }
 
   toReference() {

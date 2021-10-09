@@ -61,4 +61,8 @@ export class AttackRemnant extends Stubbable {
       id: this.id,
     } as any
   }
+
+  toAdminStub(): AttackRemnantStub {
+    return this.stubify()
+  }
 }

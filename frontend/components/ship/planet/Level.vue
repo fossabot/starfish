@@ -215,7 +215,6 @@ export default Vue.extend({
         this.ship.id,
         this.crewMember?.id,
         amount,
-        this.ship?.planet?.name,
         (res: IOResponse<CrewMemberStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

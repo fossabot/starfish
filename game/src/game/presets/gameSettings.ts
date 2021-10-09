@@ -8,9 +8,9 @@ export default function (): AdminGameSettings {
     humanShipLimit: 100,
     aiDifficultyMultiplier: 0.5,
     brakeToThrustRatio: 5,
-    baseXpGain: 0.05 * c.gameSpeedMultiplier,
-    baseStaminaUse: 0.00001 * c.gameSpeedMultiplier,
-    baseEngineThrustMultiplier: 0.1 * c.gameSpeedMultiplier,
+    baseXpGain: 0.5,
+    baseStaminaUse: 0.0001,
+    baseEngineThrustMultiplier: 1,
     gravityMultiplier: 2.5,
     gravityCurveSteepness: 5, // integers
     gravityRadius: 0.5,

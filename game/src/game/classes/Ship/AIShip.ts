@@ -227,9 +227,8 @@ export class AIShip extends CombatShip {
       )
 
       const thrustMagnitude =
-        c.lerp(0.00001, 0.0001, this.level / 100) *
-        engineThrustMultiplier *
-        c.gameSpeedMultiplier
+        c.lerp(0.0001, 0.001, this.level / 100) *
+        engineThrustMultiplier
 
       this.location[0] +=
         unitVectorToTarget[0] * thrustMagnitude
@@ -320,8 +319,9 @@ export class AIShip extends CombatShip {
         // always a chance for credits
         if (Math.random() > 0.6) {
           let amount =
-            Math.ceil(Math.random() * itemRarity * 100) *
-            100
+            Math.ceil(
+              Math.random() + 0.3 * itemRarity * 70,
+            ) * 100
           cacheContents.push({ id: `credits`, amount })
         }
 
@@ -335,7 +335,7 @@ export class AIShip extends CombatShip {
             Math.random() > 0.7
           ) {
             const amount = c.r2(
-              Math.random() * this.level * 3 + this.level,
+              Math.random() * this.level * 5 + this.level,
             )
             cacheContents.push({ id: ca.id, amount })
           }

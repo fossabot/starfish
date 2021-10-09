@@ -23,9 +23,7 @@ export class MiningPlanet extends Planet {
   getMineRequirement(cargoId): number {
     const rarity = c.cargo[cargoId].rarity + 1
     return Math.floor(
-      ((Math.random() + 0.1) * 70000 * (rarity / 3)) /
-        2 /
-        c.gameSpeedMultiplier,
+      ((Math.random() + 0.1) * 85000 * (rarity / 3)) / 20,
     )
   }
 

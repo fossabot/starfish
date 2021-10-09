@@ -4,8 +4,6 @@ import type { Command } from '../models/Command'
 import { MessageEmbed, ColorResolvable } from 'discord.js'
 
 export class LinkCommand implements Command {
-  requiresShip = true
-
   commandNames = [`link`, `links`, `url`]
 
   getHelpMessage(commandPrefix: string): string {

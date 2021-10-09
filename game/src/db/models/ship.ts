@@ -49,6 +49,9 @@ const shipSchemaFields: Record<
   tagline: String,
   headerBackground: String,
   achievements: [String],
+  orderReactions: [
+    { id: { type: String }, reaction: String },
+  ],
   captain: String,
   logAlertLevel: String,
   stats: [{ stat: String, amount: Number }],
@@ -163,6 +166,10 @@ export async function addOrUpdateInDb(
 export async function removeFromDb(id: string) {
   const res = await DBShip.deleteOne({ id })
   // c.log(`Deleted ship`, id, res)
+}
+export async function removeByUnderscoreId(_id: string) {
+  const res = await DBShip.deleteOne({ _id })
+  c.log(`Deleted ship`, _id, res)
 }
 
 export async function wipe() {

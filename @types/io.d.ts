@@ -38,6 +38,11 @@ interface IOClientEvents {
     password: string,
     callback: (res: boolean) => void,
   ) => void
+  [`admin:map`]: (
+    adminId: string,
+    password: string,
+    callback: (res: IOResponse<AdminVisibleData>) => void,
+  ) => void
   [`game:setSettings`]: (
     adminId: string,
     password: string,
@@ -52,6 +57,12 @@ interface IOClientEvents {
     adminId: string,
     password: string,
     shipId: string,
+  ) => void
+  [`admin:achievementToShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+    achievement: string,
   ) => void
   [`admin:deleteCrewMember`]: (
     adminId: string,
@@ -90,6 +101,11 @@ interface IOClientEvents {
   [`game:reLevelAllPlanets`]: (
     adminId: string,
     password: string,
+  ) => void
+  [`game:reLevelOnePlanet`]: (
+    adminId: string,
+    password: string,
+    planetId: string,
   ) => void
   [`game:resetHomeworlds`]: (
     adminId: string,

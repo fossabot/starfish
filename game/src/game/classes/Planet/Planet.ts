@@ -78,7 +78,9 @@ export class Planet extends Stubbable {
       if (this.level === 0) this.levelUp()
 
       const levelsToApply = baseLevel - this.level
-      for (let i = 0; i < levelsToApply; i++) this.levelUp()
+      if (!isNaN(levelsToApply))
+        for (let i = 0; i < levelsToApply; i++)
+          this.levelUp()
 
       if (
         this.xp <
@@ -261,6 +263,26 @@ export class Planet extends Stubbable {
 
   toVisibleStub(): PlanetStub {
     return this.stubify()
+  }
+
+  toAdminStub(): PlanetStub {
+    return {
+      id: this.id,
+      name: this.name,
+      radius: this.radius,
+      color: this.color,
+      location: this.location,
+      level: this.level,
+      planetType: this.planetType,
+      guildId: this.guildId,
+      vendor: (this as any).vendor,
+      allegiances: (this as any).allegiances,
+      priceFluctuator: (this as any).priceFluctuator,
+      mine: (this as any).mine,
+      bank: (this as any).bank,
+      passives: this.passives,
+      landingRadiusMultiplier: this.landingRadiusMultiplier,
+    }
   }
 
   toReference(): PlanetLogStub {

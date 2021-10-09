@@ -113,6 +113,7 @@ export class HumanShip extends CombatShip {
     this.captain = data.captain || null
     this.orders = data.orders || false
     this.log = data.log || []
+    this.orderReactions = data.orderReactions || []
 
     if (data.tutorial && data.tutorial.step !== undefined)
       this.tutorial = new Tutorial(data.tutorial, this)
@@ -474,6 +475,7 @@ export class HumanShip extends CombatShip {
         thruster.cockpitCharge *
         xpBoostMultiplier,
     )
+    thruster.active()
 
     const thrustBoostPassiveMultiplier =
       thruster.getPassiveIntensity(`boostThrust`) + 1
@@ -903,6 +905,7 @@ export class HumanShip extends CombatShip {
         thruster.cockpitCharge *
         xpBoostMultiplier,
     )
+    thruster.active()
 
     charge *= thruster.cockpitCharge
     if (!HumanShip.movementIsFree)
