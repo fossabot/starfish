@@ -290,6 +290,16 @@ export default Vue.extend({
         this.adminPassword,
       )
     },
+    reLevelOnePlanets() {
+      const planetId = window.prompt('Enter planet id')
+      if (!planetId) return
+      this.$socket.emit(
+        'game:reLevelOnePlanet',
+        this.userId,
+        this.adminPassword,
+        planetId,
+      )
+    },
     resetHomeworlds() {
       if (
         !window.confirm(

@@ -218,6 +218,21 @@ export default function (
       game.planets.forEach((p) => p.resetLevels())
     },
   )
+  socket.on(
+    `game:reLevelOnePlanet`,
+    async (id, password, planetId) => {
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:reLevelOnePlanet`,
+        )
+      const planet = game.planets.find(
+        (p) => p.id === planetId,
+      )
+      if (!planet) return
+      c.log(`Admin releveling planet ${planet.name}`)
+      planet.resetLevels()
+    },
+  )
 
   socket.on(
     `game:resetHomeworlds`,
