@@ -184,6 +184,7 @@ export class Planet extends Stubbable {
 
   levelUp() {
     this.level++
+    if (this.level > 100) this.level = 100
     if (
       this.xp <
       c.levels[this.level - 1] *

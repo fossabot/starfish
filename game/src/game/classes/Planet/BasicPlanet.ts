@@ -536,7 +536,7 @@ export class BasicPlanet extends Planet {
               c.distance(this.location, [0, 0]) / 3,
           )
       : this.level
-    const targetXp = this.xp
+    const targetXp = toDefault ? 0 : this.xp
     this.level = 0
     this.xp = 0
     this.bank = false
