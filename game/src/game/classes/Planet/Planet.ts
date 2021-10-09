@@ -78,7 +78,9 @@ export class Planet extends Stubbable {
       if (this.level === 0) this.levelUp()
 
       const levelsToApply = baseLevel - this.level
-      for (let i = 0; i < levelsToApply; i++) this.levelUp()
+      if (!isNaN(levelsToApply))
+        for (let i = 0; i < levelsToApply; i++)
+          this.levelUp()
 
       if (
         this.xp <
