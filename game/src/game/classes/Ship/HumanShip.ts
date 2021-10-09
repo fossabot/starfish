@@ -118,6 +118,9 @@ export class HumanShip extends CombatShip {
     if (data.tutorial && data.tutorial.step !== undefined)
       this.tutorial = new Tutorial(data.tutorial, this)
 
+    if (data.achievements)
+      this.addAchievement(data.achievements, true)
+
     // human ships always know where their homeworld is
     const homeworld = this.game.getHomeworld(this.guildId)
     if (
@@ -164,13 +167,11 @@ export class HumanShip extends CombatShip {
     this.updateVisible()
     this.recalculateMass()
 
+    this.checkAchievements()
+
     this.updatePlanet(true)
     if (this.tutorial)
       setTimeout(() => this.updatePlanet(true), 1500)
-
-    if (data.achievements)
-      this.addAchievement(data.achievements, true)
-    this.checkAchievements()
 
     if (!this.items.length) {
       c.log(
