@@ -224,8 +224,8 @@ export class MiningPlanet extends Planet {
     })
   }
 
-  resetLevels() {
-    const targetLevel = this.level
+  resetLevels(toDefault?: boolean) {
+    const targetLevel = toDefault ? 1 : this.level
     const targetXp = this.xp
     this.level = 0
     this.xp = 0

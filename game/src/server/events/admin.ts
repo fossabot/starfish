@@ -230,7 +230,7 @@ export default function (
       )
       if (!planet) return
       c.log(`Admin releveling planet ${planet.name}`)
-      planet.resetLevels()
+      planet.resetLevels(true)
     },
   )
 

@@ -329,5 +329,5 @@ export class Planet extends Stubbable {
   // function placeholders
   incrementAllegiance(guildId: GuildId, amount?: number) {}
 
-  resetLevels() {}
+  resetLevels(toDefault?: boolean) {}
 }
