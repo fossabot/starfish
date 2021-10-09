@@ -192,6 +192,7 @@ export default Vue.extend({
               this.crewMember?.credits >= 1,
           }
         })
+        .filter((e) => e.pricePerUnit > 0)
     },
     sellableCargo(): any[] {
       return (
@@ -220,6 +221,7 @@ export default Vue.extend({
                 )?.amount >= 0.00999,
             }
           })
+          .filter((e) => e.pricePerUnit > 0)
       )
     },
     totalWeight(): number {

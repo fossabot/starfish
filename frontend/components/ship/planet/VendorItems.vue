@@ -172,6 +172,7 @@ export default Vue.extend({
               this.ship.commonCredits >= price,
           }
         })
+        .filter((e) => e.price > 0)
     },
     sellableItems() {
       return this.ship?.items
@@ -190,10 +191,11 @@ export default Vue.extend({
           }
         })
         .filter((i: ItemStub) => i)
+        .filter((e) => e.price > 0)
     },
     swappableChassis() {
-      return (this.ship.planet?.vendor?.chassis || []).map(
-        (chassis: PlanetVendorChassisPrice) => {
+      return (this.ship.planet?.vendor?.chassis || [])
+        .map((chassis: PlanetVendorChassisPrice) => {
           const price = c.getChassisSwapPrice(
             chassis,
             this.ship.planet,
@@ -209,8 +211,8 @@ export default Vue.extend({
               this.ship.commonCredits >= price &&
               chassis.id !== this.ship.chassis.id,
           }
-        },
-      )
+        })
+        .filter((e) => e.price > 0)
     },
   },
   watch: {},
