@@ -1,4 +1,8 @@
-require(`newrelic`)
+if (process.env.NODE_ENV === `production`) {
+  require(`newrelic`)
+  const newrelicFormatter = require(`@newrelic/winston-enricher`)
+}
+
 import c from '../../common/dist'
 
 const lastCommit = require(`git-last-commit`)
