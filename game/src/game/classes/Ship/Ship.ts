@@ -585,6 +585,7 @@ export class Ship extends Stubbable {
     if (toLocation) {
       this.location = [...toLocation]
       this.toUpdate.location = this.location
+      this.game.chunkManager.addOrUpdate(this)
     }
   }
 
@@ -593,6 +594,8 @@ export class Ship extends Stubbable {
     previousLocation: CoordinatePair,
     currentLocation: CoordinatePair,
   ) {
+    const spawnDistanceCutoff = 0.0001
+
     if (
       this.previousLocations.length > 1 &&
       previousLocation[0] ===
@@ -627,18 +630,27 @@ export class Ship extends Stubbable {
         this.previousLocations.length - 1
       ],
     )
-    const angle = Math.abs(
-      c.angleFromAToB(
-        this.previousLocations[
-          this.previousLocations.length - 1
-        ],
-        previousLocation,
-      ) -
-        c.angleFromAToB(previousLocation, currentLocation),
-    )
+
+    const angle =
+      distance > spawnDistanceCutoff
+        ? Math.abs(
+            c.angleFromAToB(
+              this.previousLocations[
+                this.previousLocations.length - 1
+              ],
+              previousLocation,
+            ) -
+              c.angleFromAToB(
+                previousLocation,
+                currentLocation,
+              ),
+          )
+        : 0
+
     if (
       this.previousLocations.length < 1 ||
-      (angle >= 5 && distance > 0.00006)
+      angle >= 5 ||
+      distance > 0.1
     ) {
       // if (this.human) c.log(this.previousLocations)
       //   c.log(
@@ -650,7 +662,7 @@ export class Ship extends Stubbable {
       //   )
       this.previousLocations.push([
         ...(currentLocation.map((l) =>
-          c.r2(l, 7),
+          c.r2(l, 9),
         ) as CoordinatePair),
       ])
       while (

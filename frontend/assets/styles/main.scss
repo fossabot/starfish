@@ -178,6 +178,7 @@ button,
 .button,
 input[type='submit'] {
   position: relative;
+  z-index: 3;
   display: inline-block;
   color: var(--bg) !important;
   text-decoration: none;
@@ -191,11 +192,16 @@ input[type='submit'] {
   margin-bottom: 0.1em;
   // overflow: hidden;
 
+  & > * {
+    position: relative;
+    z-index: 3;
+  }
+
   &:after,
   &:before {
     content: '';
     position: absolute;
-    z-index: -1;
+    z-index: 2;
     top: 0;
     right: 0;
     left: 0;

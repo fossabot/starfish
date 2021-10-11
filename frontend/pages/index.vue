@@ -67,14 +67,14 @@
         to="/login"
         v-if="!userId"
         class="button big whitebackground"
-        >Log In With Discord</nuxt-link
+        ><span>Log In With Discord</span></nuxt-link
       >
 
       <nuxt-link
         v-else
         to="/s"
         class="button big whitebackground"
-        >My Ship</nuxt-link
+        ><span>My Ship</span></nuxt-link
       >
     </div>
   </div>

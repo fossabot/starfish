@@ -38,7 +38,13 @@
       </div>
     </ProgressBar> -->
 
-    <div class="panesection" v-if="dataToUse.planet">
+    <div
+      class="panesection"
+      v-if="
+        dataToUse.planet &&
+        dataToUse.planet.planetType !== 'comet'
+      "
+    >
       <div
         v-tooltip="{
           type: 'planet',
@@ -48,6 +54,25 @@
         At planet
         <span :style="{ color: dataToUse.planet.color }"
           >🪐{{ dataToUse.planet.name }}</span
+        >
+      </div>
+    </div>
+    <div
+      class="panesection"
+      v-else-if="
+        dataToUse.planet &&
+        dataToUse.planet.planetType === 'comet'
+      "
+    >
+      <div
+        v-tooltip="{
+          ...dataToUse.planet,
+          type: 'comet',
+        }"
+      >
+        On
+        <span :style="{ color: dataToUse.planet.color }"
+          >💫{{ dataToUse.planet.name }}</span
         >
       </div>
     </div>

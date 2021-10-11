@@ -24,6 +24,16 @@ const guilds = {
                     source: { guildId: `trader` },
                 },
             },
+            {
+                id: `boostXpGain`,
+                intensity: 0.03,
+                data: { source: { guildId: `trader` } },
+            },
+            {
+                id: `boostRepairSpeed`,
+                intensity: -0.1,
+                data: { source: { guildId: `trader` } },
+            },
         ],
     },
     hunter: {
@@ -53,6 +63,11 @@ const guilds = {
                     source: { guildId: `hunter` },
                 },
             },
+            {
+                id: `boostMineSpeed`,
+                intensity: -0.1,
+                data: { source: { guildId: `hunter` } },
+            },
         ],
     },
     miner: {
@@ -78,6 +93,11 @@ const guilds = {
             {
                 id: `flatDamageReduction`,
                 intensity: 0.3,
+                data: { source: { guildId: `miner` } },
+            },
+            {
+                id: `boostChassisAgility`,
+                intensity: -0.1,
                 data: { source: { guildId: `miner` } },
             },
         ],

@@ -19,6 +19,7 @@ export default function (): AdminGameSettings {
     baseCritDamageMultiplier: 2,
 
     planetDensity: 0.9,
+    cometDensity: 0.1,
     zoneDensity: 1.15,
     aiShipDensity: 3,
     cacheDensity: 1.5,

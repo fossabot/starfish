@@ -8,13 +8,17 @@
         >Login Page</nuxt-link
       >
       <div class="flexwrap buttonlist martop">
-        <div class="button combo" @click="save">Save</div>
-        <div class="button combo" @click="pause">Pause</div>
+        <div class="button combo" @click="save">
+          <span>Save</span>
+        </div>
+        <div class="button combo" @click="pause">
+          <span>Pause</span>
+        </div>
         <div class="button combo" @click="unpause">
-          Unpause
+          <span>Unpause</span>
         </div>
         <div class="button combo" @click="messageAll">
-          Message All Ships
+          <span>Message All Ships</span>
         </div>
       </div>
 
@@ -25,46 +29,49 @@
             class="button combo"
             @click="resetAllPlanets"
           >
-            Reset All Planets
+            <span>Reset All Planets</span>
+          </div>
+          <div class="button combo" @click="resetAllComets">
+            <span>Reset All Comets</span>
           </div>
           <div
             class="button combo"
             @click="reLevelAllPlanets"
           >
-            Re-Level All Planets
+            <span>Re-Level All Planets</span>
           </div>
           <div
             class="button combo"
             @click="reLevelOnePlanet"
           >
-            Re-Level One Planet
+            <span>Re-Level One Planet</span>
           </div>
           <div
             class="button combo"
             @click="resetHomeworlds"
           >
-            Reset Homeworlds
+            <span>Reset Homeworlds</span>
           </div>
           <div class="button combo" @click="resetAllCaches">
-            Reset All Caches
+            <span>Reset All Caches</span>
           </div>
           <div class="button combo" @click="resetAllZones">
-            Reset All Zones
+            <span>Reset All Zones</span>
           </div>
           <div class="button combo" @click="resetAllShips">
-            Reset All Ships
+            <span>Reset All Ships</span>
           </div>
           <div
             class="button combo"
             @click="resetAllAIShips"
           >
-            Reset All AI Ships
+            <span>Reset All AI Ships</span>
           </div>
           <div
             class="button combo"
             @click="resetAllAttackRemnants"
           >
-            Reset All Attack Remnants
+            <span>Reset All Attack Remnants</span>
           </div>
         </div>
         <div class="backups martopsmall">
@@ -75,7 +82,9 @@
               v-for="b in backups"
               @click="resetToBackup(b)"
             >
-              {{ new Date(parseInt(b)).toLocaleString() }}
+              <span>{{
+                new Date(parseInt(b)).toLocaleString()
+              }}</span>
             </div>
           </div>
         </div>
@@ -119,7 +128,7 @@
           </div>
         </div>
         <button @click="updateSettings">
-          Update Settings
+          <span>Update Settings</span>
         </button>
       </details>
 
@@ -279,6 +288,19 @@ export default Vue.extend({
         return
       this.$socket.emit(
         'game:resetAllPlanets',
+        this.userId,
+        this.adminPassword,
+      )
+    },
+    resetAllComets() {
+      if (
+        !window.confirm(
+          'Are you sure you want to reset all Comets?',
+        )
+      )
+        return
+      this.$socket.emit(
+        'game:resetAllComets',
         this.userId,
         this.adminPassword,
       )

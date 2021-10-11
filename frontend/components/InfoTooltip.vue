@@ -34,6 +34,10 @@
           v-else-if="tooltip.type === 'planet'"
           :data="tooltip"
         />
+        <ShipTooltipsComet
+          v-else-if="tooltip.type === 'comet'"
+          :data="tooltip"
+        />
         <ShipTooltipsShipdot
           v-else-if="tooltip.type === 'ship'"
           :data="tooltip"

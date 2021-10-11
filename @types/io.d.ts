@@ -98,6 +98,10 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:resetAllComets`]: (
+    adminId: string,
+    password: string,
+  ) => void
   [`game:reLevelAllPlanets`]: (
     adminId: string,
     password: string,
@@ -146,6 +150,21 @@ interface IOClientEvents {
         }[]
       >,
     ) => void,
+  ) => void
+  [`admin:move`]: (
+    adminId: string,
+    password: string,
+    type: string,
+    id: string,
+    coordinates: CoordinatePair,
+    callback: (res: IOResponse<boolean>) => void,
+  ) => void
+  [`admin:delete`]: (
+    adminId: string,
+    password: string,
+    type: string,
+    id: string,
+    callback: (res: IOResponse<boolean>) => void,
   ) => void
 
   // general events

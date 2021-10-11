@@ -29,7 +29,7 @@
         :class="{ secondary: selected !== choice }"
         @click="$store.commit('setRepairPriority', choice)"
       >
-        {{ c.capitalize(choice) }}
+        <span>{{ c.capitalize(choice) }}</span>
       </button>
     </div>
   </Box>

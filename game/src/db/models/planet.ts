@@ -12,7 +12,8 @@ interface DBPlanetDoc
 const planetSchemaFields: Record<
   | keyof BasePlanetData
   | keyof BaseBasicPlanetData
-  | keyof BaseMiningPlanetData,
+  | keyof BaseMiningPlanetData
+  | keyof BaseCometData,
   any
 > = {
   planetType: String,
@@ -46,8 +47,13 @@ const planetSchemaFields: Record<
       payoutAmount: Number,
       mineRequirement: Number,
       mineCurrent: Number,
+      maxMineable: Number,
     },
   ],
+
+  // comet
+  velocity: [Number, Number],
+  trail: [[Number, Number]],
 
   // basic
   leanings: [
@@ -123,7 +129,7 @@ export async function addOrUpdateInDb(
 
 export async function removeFromDb(id: string) {
   const res = await DBPlanet.deleteMany({ id })
-  c.log(`Deleted planet`, id, res)
+  // c.log(`Deleted planet`, id, res)
 }
 
 export async function wipe() {

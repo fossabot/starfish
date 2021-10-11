@@ -2,8 +2,15 @@
   <div class="bg">
     <div class="stars fullsize"></div>
     <transition name="fadeslow">
-      <div v-if="state === 'planet'">
-        <div class="planet fullsize coverothers"></div>
+      <div v-if="['planet', 'comet'].includes(state)">
+        <div
+          v-if="state === 'comet'"
+          class="comet fullsize coverothers"
+        ></div>
+        <div
+          v-else
+          class="planet fullsize coverothers"
+        ></div>
         <div
           class="tint fullsize"
           :style="{ 'background-color': ship.planet.color }"
@@ -25,11 +32,17 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship']),
     state(): string {
-      if (this.ship?.planet) return 'planet'
+      if (this.ship?.planet) {
+        if (this.ship.planet.planetType === 'comet')
+          return 'comet'
+        return 'planet'
+      }
       return ''
     },
   },
-  watch: {},
+  watch: {
+    state() {},
+  },
   mounted() {},
   methods: {},
 })
@@ -71,5 +84,9 @@ export default Vue.extend({
 .planet {
   background-image: url('/images/pageBackgrounds/planet.jpg');
   filter: brightness(0.4);
+}
+.comet {
+  background-image: url('/images/pageBackgrounds/comet.jpg');
+  filter: brightness(0.15);
 }
 </style>

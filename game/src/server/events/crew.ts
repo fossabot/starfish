@@ -435,14 +435,23 @@ export default function (
       if (!crewMember)
         return callback({ error: `No crew member found.` })
 
-      const planet =
-        ship.planet && ship.planet.planetType === `basic`
-          ? (ship.planet as BasicPlanet)
-          : null
-      const cargoForSale = planet?.vendor?.cargo?.find(
+      const planet = ship.planet
+
+      if (!planet)
+        return callback({
+          error: `No planet found.`,
+        })
+      if (planet.planetType !== `basic`)
+        return callback({
+          error: `This planet can't buy anything!`,
+        })
+
+      const cargoForSale = (
+        planet as BasicPlanet
+      )?.vendor?.cargo?.find(
         (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
       )
-      if (!planet || !cargoForSale)
+      if (!cargoForSale)
         return callback({
           error: `That cargo is not for sale here.`,
         })
@@ -464,8 +473,11 @@ export default function (
         })
 
       const price =
-        c.getCargoBuyPrice(cargoId, planet, ship.guildId) *
-        amount
+        c.getCargoBuyPrice(
+          cargoId,
+          planet as BasicPlanet,
+          ship.guildId,
+        ) * amount
 
       if (price > crewMember.credits)
         return callback({ error: `Insufficient funds.` })
@@ -480,7 +492,8 @@ export default function (
       callback({ data: { cargoId, amount, price } })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -518,19 +531,26 @@ export default function (
           error: `Not holding enough stock of that cargo.`,
         })
 
-      const planet =
-        ship.planet && ship.planet.planetType === `basic`
-          ? (ship.planet as BasicPlanet)
-          : null
+      const planet = ship.planet
 
       if (!planet)
         return callback({
           error: `No planet found.`,
         })
+      if (
+        planet.planetType !== `basic` ||
+        !(planet as BasicPlanet).vendor?.cargo?.length
+      )
+        return callback({
+          error: `This planet doesn't sell anything!`,
+        })
 
       const price =
-        c.getCargoSellPrice(cargoId, planet, ship.guildId) *
-        amount
+        c.getCargoSellPrice(
+          cargoId,
+          planet as BasicPlanet,
+          ship.guildId,
+        ) * amount
 
       crewMember.credits = Math.round(
         crewMember.credits + price,
@@ -539,7 +559,8 @@ export default function (
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -684,7 +705,8 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -749,7 +771,8 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,

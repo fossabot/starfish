@@ -222,7 +222,7 @@
           }"
         >
           📦Cache (<AngleArrow :angle="cache.angle" />
-          {{ c.r2(cache.distance) }}AU)
+          {{ c.speedNumber(cache.distance, true, 0) }} km)
         </button>
       </span>
 
