@@ -186,7 +186,7 @@ export default Vue.extend({
 
           if (tp) {
             let radius
-            if (tp.location) {
+            if (tp.location && !tp.radii) {
               if (
                 tp.type &&
                 ['zone', 'weapon'].includes(tp.type)
@@ -200,6 +200,27 @@ export default Vue.extend({
                   : tp.color,
               })
             }
+
+            if (tp.radii)
+              targetPoints.push(
+                ...Object.keys(tp.radii)
+                  .filter((k) => k !== 'gameSize')
+                  .map((key) => ({
+                    location: tp.location,
+                    labelTop: key,
+                    radius: tp.radii[key],
+                    color:
+                      key === 'attack'
+                        ? `#ff7733`
+                        : key === 'vision'
+                        ? `#bbbbbb`
+                        : key === 'broadcast'
+                        ? `#dd88ff`
+                        : key === 'scan'
+                        ? `#66ffdd`
+                        : '#bbbbbb',
+                  })),
+              )
           }
 
           this.drawer.draw({

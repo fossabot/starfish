@@ -7,7 +7,7 @@
         @click="click"
       />
     </div>
-    <div class="padbig">
+    <div class="padbig right">
       <div v-if="selectedElement">
         <div>
           {{ selectedElement.name }}
@@ -218,5 +218,10 @@ export default Vue.extend({
   & > * {
     overflow: hidden;
   }
+}
+
+.right {
+  overflow-y: auto;
+  padding-bottom: 300px !important;
 }
 </style>

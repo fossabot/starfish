@@ -53,6 +53,8 @@ interface ShipStub extends BaseStub {
   orderReactions?: ShipOrderReaction[]
   gameSettings?: AdminGameSettings
   banked?: BankEntry[]
+
+  spawnPoint?: CoordinatePair
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

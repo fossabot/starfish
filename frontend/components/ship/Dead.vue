@@ -35,7 +35,7 @@
         v-if="isCaptain"
         @click="$store.dispatch('respawn')"
       >
-        Respawn
+        <span>Respawn</span>
       </div>
     </div>
   </Box>

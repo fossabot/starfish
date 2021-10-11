@@ -36,6 +36,7 @@ interface BaseHumanShipData extends BaseShipData {
 
 interface BaseAIShipData extends BaseShipData {
   onlyVisibleToShipId?: string
+  speciesId: SpeciesId
 }
 
 type GameChannelType = `alert` | `chat` | `broadcast`
@@ -117,6 +118,7 @@ interface AttackDamageResult {
 interface TargetLocation {
   location: CoordinatePair
   label?: string
+  labelTop?: string
   color?: string
   radius?: number
 }
