@@ -1011,10 +1011,6 @@ export class HumanShip extends CombatShip {
         startingLocation,
         this.location,
       )
-      this.game.chunkManager.addOrUpdate(
-        this,
-        startingLocation,
-      )
       return
     }
 
@@ -1274,7 +1270,7 @@ export class HumanShip extends CombatShip {
       this.targetShip &&
       !this.canAttack(this.targetShip, true)
     ) {
-      this.recalculateTargetShip()
+      this.determineTargetShip()
     }
     // if the most "voted" ship comes into range/attackability, switch to it
     else if (
@@ -1283,7 +1279,7 @@ export class HumanShip extends CombatShip {
       this.canAttack(this.idealTargetShip, true) &&
       this.combatTactic !== `defensive` // defensive tactic waits until being attacked to switch
     ) {
-      this.recalculateTargetShip()
+      this.determineTargetShip()
     }
   }
 
@@ -2237,11 +2233,11 @@ export class HumanShip extends CombatShip {
     attack: AttackDamageResult,
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
-    this.recalculateTargetShip()
+    this.determineTargetShip()
     return res
   }
 
-  recalculateTargetShip(): CombatShip | null {
+  determineTargetShip(): CombatShip | null {
     const setTarget = (t: CombatShip | null) => {
       // c.log(
       //   `updating ${this.name} target ship to ${
@@ -2528,7 +2524,7 @@ export class HumanShip extends CombatShip {
     this.combatTactic = mainTactic
     this.toUpdate.combatTactic = mainTactic
 
-    this.recalculateTargetShip()
+    this.determineTargetShip()
   }
 
   recalculateTargetItemType() {

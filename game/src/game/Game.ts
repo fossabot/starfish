@@ -24,6 +24,7 @@ import { generateZoneData } from './presets/zones'
 import { BasicPlanet } from './classes/Planet/BasicPlanet'
 import { MiningPlanet } from './classes/Planet/MiningPlanet'
 import defaultGameSettings from './presets/gameSettings'
+import { CombatShip } from './classes/Ship/CombatShip'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
@@ -710,6 +711,7 @@ export class Game {
           species.substring(0, species.length - 1),
         )}${`${Math.random().toFixed(3)}`.substring(2)}`,
         guildId: `fowl`,
+        speciesId: species,
         level,
         headerBackground: `ai.jpg`,
       })
@@ -799,6 +801,10 @@ export class Game {
         }
       }
     }
+
+    this.ships.filter((s) => s instanceof CombatShip).forEach((s) => {
+      if ((s as CombatShip).targetShip === ship) (s as CombatShip).targetShip = null
+    })
 
     c.log(
       `Removing ship ${ship.name} (${ship.id}) from the game.`,

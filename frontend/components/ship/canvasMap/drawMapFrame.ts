@@ -394,7 +394,7 @@ export default class Drawer {
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
         radius:
-          (ship?.gameSettings?.arrivalThreshold || 0.001) *
+          (ship?.gameSettings?.arrivalThreshold || 0.002) *
           (p.landingRadiusMultiplier || 1) *
           this.flatScale,
         color: p.color,
@@ -529,7 +529,7 @@ export default class Drawer {
       .forEach((p) => {
         this.drawPoint({
           location: [p.location[0], p.location[1] * -1],
-          labelTop: p.label || ``,
+          labelTop: p.label || p.labelTop || ``,
           radius: p.radius
             ? p.radius * this.flatScale
             : (25 / this.zoom) * devicePixelRatio,
@@ -593,7 +593,7 @@ export default class Drawer {
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         radius:
-          (ship?.gameSettings?.arrivalThreshold || 0.001) *
+          (ship?.gameSettings?.arrivalThreshold || 0.002) *
           (s.landingRadiusMultiplier || 1) *
           this.flatScale,
         color: s.color || `#bbb`,
@@ -618,7 +618,7 @@ export default class Drawer {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
         radius:
-          (ship?.gameSettings?.arrivalThreshold || 0.001) *
+          (ship?.gameSettings?.arrivalThreshold || 0.002) *
           this.flatScale,
         color: `rgb(216, 174, 3)`, // var(--cargo)
         outline: `dash`,

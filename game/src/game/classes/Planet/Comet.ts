@@ -32,23 +32,40 @@ export class Comet extends MiningPlanet {
     this.direction = c.vectorToDegrees(data.velocity)
     this.trail = data.trail || []
 
-    if (this.id === `comet6419801262641149`)
-      c.log(
-        c.distance([0, 0], this.location),
-        this.trail.length,
-      )
-
     this.previousLocation = [...this.location]
   }
 
   tick() {
     this.previousLocation = [...this.location]
+    const shipsAt = this.shipsAt
 
     this.location[0] += this.velocity[0] || 0
     this.location[1] += this.velocity[1] || 0
 
     this.toUpdate.location = this.location
     this._stub = null
+
+    // bring landed ships along with us as we move
+    shipsAt.forEach((ship) => {
+      if (!ship.canMove || ship.dead) return
+
+      const newShipLocation = [
+        ship.location[0] +
+          (this.location[0] - this.previousLocation[0]),
+        ship.location[1] +
+          (this.location[1] - this.previousLocation[1]),
+      ] as CoordinatePair
+
+      if (
+        c.distance(this.location, newShipLocation) <
+        this.landingRadiusMultiplier *
+          this.game.settings.arrivalThreshold
+      )
+        ship.move([
+          ship.location[0] + this.velocity[0] * 1.00001,
+          ship.location[1] + this.velocity[1] * 1.00001,
+        ])
+    })
 
     // remove from game once it flies far out of the universe
     if (
@@ -73,30 +90,6 @@ export class Comet extends MiningPlanet {
     )
 
     this.game.chunkManager.addOrUpdate(this, this.location)
-  }
-
-  tickEffectsOnShip(ship: HumanShip) {
-    super.tickEffectsOnShip(ship)
-
-    const newShipLocation = [
-      ship.location[0] +
-        (this.location[0] - this.previousLocation[0]),
-      ship.location[1] +
-        (this.location[1] - this.previousLocation[1]),
-    ] as CoordinatePair
-
-    if (
-      c.distance(this.location, newShipLocation) <
-      this.landingRadiusMultiplier *
-        this.game.settings.arrivalThreshold
-    )
-      // bring landed ships along with us as we move
-      ship.move([
-        ship.location[0] +
-          (this.location[0] - this.previousLocation[0]),
-        ship.location[1] +
-          (this.location[1] - this.previousLocation[1]),
-      ])
   }
 
   applyTickOfGravity(this: Comet): void {

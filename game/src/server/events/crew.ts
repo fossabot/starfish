@@ -233,7 +233,7 @@ export default function (
       crewMember.toUpdate.attackTargetId =
         crewMember.attackTargetId
 
-      ship.recalculateTargetShip()
+      ship.determineTargetShip()
 
       c.log(
         `gray`,

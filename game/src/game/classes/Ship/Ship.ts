@@ -662,7 +662,7 @@ export class Ship extends Stubbable {
       //   )
       this.previousLocations.push([
         ...(currentLocation.map((l) =>
-          c.r2(l, 9),
+          c.r2(l, 8),
         ) as CoordinatePair),
       ])
       while (
@@ -865,12 +865,23 @@ export class Ship extends Stubbable {
       dead: this.dead,
       rooms: (this as any).rooms,
       achievements: this.achievements,
-      items: this.items.map((i) => i.toReference()),
+      radii: this.radii,
+      speed: this.speed,
+      velocity: this.velocity,
+      direction: this.direction,
+      items: this.items.map((i) => ({
+        id: i.id,
+        type: i.type,
+        displayName: i.displayName,
+        repair: i.repair,
+        maxHp: i.maxHp,
+      })),
       crewMembers: (this as any).crewMembers?.map((cm) => ({
         id: cm.id,
         name: cm.name,
         speciesId: cm.speciesId,
       })),
+      spawnPoint: (this as any).spawnPoint,
     }
   }
 

@@ -886,6 +886,7 @@ export class Tutorial {
                 this.baseLocation[1] + s.location[1],
               ]
             : [...this.baseLocation],
+          speciesId: `chickens`,
           onlyVisibleToShipId: this.ship.id,
         })
       }
