@@ -242,12 +242,10 @@ export default Vue.extend({
       if (!this.mouseIsDown) return
 
       if (!this.isPanning && this.isHovering) {
-        this.$store.commit('setTarget', [
-          ...(this.$store.state.tooltip?.type !== 'zone'
-            ? this.$store.state.tooltip?.location ||
-              this.hoverPoint
-            : this.hoverPoint),
-        ])
+        this.$emit('click', {
+          coordinates: this.hoverPoint,
+          selected: this.tooltip,
+        })
       }
 
       this.isPanning = false
@@ -407,6 +405,18 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             type: 'planet',
+            ...p,
+          })
+      })
+      vd.comets.forEach((p: PlanetStub) => {
+        const hoverDistance = c.distance(
+          p.location,
+          this.hoverPoint,
+        )
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            type: 'comet',
             ...p,
           })
       })

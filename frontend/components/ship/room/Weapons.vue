@@ -77,7 +77,7 @@
               secondary: crewMember.combatTactic !== 'none',
             }"
           >
-            No Preference</button
+            <span>No Preference</span></button
           ><button
             v-for="tactic in c.tactics"
             :key="'tactic' + tactic"
@@ -97,7 +97,9 @@
                 : null
             "
           >
-            {{ c.capitalize(c.camelCaseToWords(tactic)) }}
+            <span>{{
+              c.capitalize(c.camelCaseToWords(tactic))
+            }}</span>
           </button>
         </div>
       </div>
@@ -112,7 +114,7 @@
             }"
             @click="$store.commit('setAttackTarget', 'any')"
           >
-            Any Target</button
+            <span>Any Target</span></button
           ><button
             :class="{
               secondary:
@@ -122,7 +124,7 @@
               $store.commit('setAttackTarget', 'closest')
             "
           >
-            Closest Target</button
+            <span>Closest Target</span></button
           ><button
             v-for="targetShip in visibleEnemies"
             :key="'inattackrange' + targetShip.id"
@@ -139,7 +141,7 @@
             }"
             v-targetpoint="targetShip"
           >
-            {{ targetShip.name }}
+            <span>{{ targetShip.name }}</span>
           </button>
         </div>
       </div>
@@ -158,7 +160,7 @@
               $store.commit('setTargetItemType', 'any')
             "
           >
-            Any Equipment</button
+            <span>Any Equipment</span></button
           ><button
             v-for="i in targetItemTypes"
             :key="'targetitemtype' + i"
@@ -169,8 +171,10 @@
                 crewMember.targetItemType !== i,
             }"
           >
-            {{ c.capitalize(i)
-            }}{{ i === 'armor' ? '' : 's' }}
+            <span
+              >{{ c.capitalize(i)
+              }}{{ i === 'armor' ? '' : 's' }}</span
+            >
           </button>
         </div>
       </div>

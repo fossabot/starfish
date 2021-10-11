@@ -80,7 +80,8 @@ export default function (
       })
 
       planet.addXp(price / 100)
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -156,7 +157,8 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
 
       c.log(
         `gray`,
@@ -242,7 +244,8 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.incrementAllegiance(ship.guildId)
+      if (ship.guildId)
+        planet.incrementAllegiance(ship.guildId)
       planet.addXp(price / 100)
 
       c.log(

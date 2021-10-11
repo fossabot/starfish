@@ -1,4 +1,4 @@
-type PlanetType = `basic` | `mining`
+type PlanetType = `basic` | `mining` | `comet`
 
 interface BasePlanetData {
   planetType: PlanetType
@@ -30,11 +30,17 @@ interface BaseMiningPlanetData extends BasePlanetData {
   mine?: PlanetMine
 }
 
+interface BaseCometData extends BaseMiningPlanetData {
+  velocity: CoordinatePair
+  trail?: CoordinatePair[]
+}
+
 interface PlanetMineEntry {
   id: CargoId
   payoutAmount: number
   mineRequirement: number
   mineCurrent: number
+  maxMineable?: number
 }
 type PlanetMine = PlanetMineEntry[]
 

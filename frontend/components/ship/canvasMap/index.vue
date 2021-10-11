@@ -613,6 +613,21 @@ export default Vue.extend({
           })
       })
 
+      s.visible?.comets.forEach(
+        (p: Partial<PlanetStub>) => {
+          const hoverDistance = c.distance(
+            p.location,
+            this.hoverPoint,
+          )
+          if (hoverDistance <= hoverRadius)
+            hoverableElements.push({
+              hoverDistance,
+              ...p,
+              type: 'comet',
+            })
+        },
+      )
+
       s.visible?.caches.forEach((p: Partial<CacheStub>) => {
         const hoverDistance = c.distance(
           p.location,

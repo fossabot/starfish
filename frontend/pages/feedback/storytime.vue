@@ -10,7 +10,7 @@
           :class="{
             secondary: $route.path !== '/feedback',
           }"
-          >Feedback</nuxt-link
+          ><span>Feedback</span></nuxt-link
         >
         <nuxt-link
           to="/feedback/bugreport"
@@ -19,7 +19,7 @@
             secondary:
               $route.path !== '/feedback/bugreport',
           }"
-          >Bug Report</nuxt-link
+          ><span>Bug Report</span></nuxt-link
         >
         <nuxt-link
           to="/feedback/storytime"
@@ -28,7 +28,7 @@
             secondary:
               $route.path !== '/feedback/storytime',
           }"
-          >Share a Story</nuxt-link
+          ><span>Share a Story</span></nuxt-link
         >
       </div>
 

@@ -207,6 +207,16 @@ export default function (
     },
   )
 
+  socket.on(`game:resetAllComets`, async (id, password) => {
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access game:resetAllComets`,
+      )
+    c.log(`Admin resetting all comets`)
+    while (game.comets.length)
+      await game.removePlanet(game.comets[0])
+  })
+
   socket.on(
     `game:reLevelAllPlanets`,
     async (id, password) => {
@@ -329,6 +339,161 @@ export default function (
               : false,
           })),
       })
+    },
+  )
+
+  socket.on(
+    `admin:move`,
+    async (
+      userId,
+      password,
+      type,
+      id,
+      location,
+      callback,
+    ) => {
+      if (!isAdmin(userId, password))
+        return c.log(
+          `Non-admin attempted to access admin:move`,
+        )
+      if (type === `ship`) {
+        const found = game.ships.find((s) => s.id === id)
+        if (found) {
+          found.move(location)
+          c.log(`Moved ship`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `planet`) {
+        const found = game.planets.find((s) => s.id === id)
+        if (found) {
+          found.location = location
+          found.toUpdate.location = found.location
+          game.chunkManager.addOrUpdate(found)
+          c.log(`Moved planet`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `comet`) {
+        const found = game.comets.find((s) => s.id === id)
+        if (found) {
+          found.location = location
+          found.toUpdate.location = found.location
+          game.chunkManager.addOrUpdate(found)
+          c.log(`Moved comet`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `zone`) {
+        const found = game.zones.find((s) => s.id === id)
+        if (found) {
+          found.location = location
+          found._stub = null
+          game.chunkManager.addOrUpdate(found)
+          c.log(`Moved zone`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `cache`) {
+        const found = game.caches.find((s) => s.id === id)
+        if (found) {
+          c.log(found.location)
+          found.location = location
+          found._stub = null
+          c.log(found.location)
+          game.chunkManager.addOrUpdate(found)
+          c.log(`Moved cache`, found.id)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      return (
+        typeof callback === `function` &&
+        callback({ error: `Nothing found to move.` })
+      )
+    },
+  )
+
+  socket.on(
+    `admin:delete`,
+    async (userId, password, type, id, callback) => {
+      if (!isAdmin(userId, password))
+        return c.log(
+          `Non-admin attempted to access admin:delete`,
+        )
+      if (type === `ship`) {
+        const found = game.ships.find((s) => s.id === id)
+        if (found) {
+          game.removeShip(found)
+          c.log(`Deleted ship`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `planet`) {
+        const found = game.planets.find((s) => s.id === id)
+        if (found) {
+          game.removePlanet(found)
+          c.log(`Deleted planet`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `comet`) {
+        const found = game.comets.find((s) => s.id === id)
+        if (found) {
+          game.removePlanet(found)
+          c.log(`Deleted comet`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `zone`) {
+        const found = game.zones.find((s) => s.id === id)
+        if (found) {
+          game.removeZone(found)
+          c.log(`Deleted zone`, found.name)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      if (type === `cache`) {
+        const found = game.caches.find((s) => s.id === id)
+        if (found) {
+          game.removeCache(found)
+          c.log(`Deleted cache`, found.id)
+          return (
+            typeof callback === `function` &&
+            callback({ data: true })
+          )
+        }
+      }
+      return (
+        typeof callback === `function` &&
+        callback({ error: `Nothing found to delete.` })
+      )
     },
   )
 }

@@ -14,7 +14,7 @@
           arrowdown: selectedIndex === index,
         }"
       >
-        {{ tab.title }}
+        <span>{{ tab.title }}</span>
       </div>
     </div>
     <div class="tabheader padbot small" v-else>

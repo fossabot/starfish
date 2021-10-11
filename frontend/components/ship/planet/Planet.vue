@@ -4,12 +4,17 @@
     v-if="show"
     :highlight="highlight"
     :bgImage="`/images/paneBackgrounds/${
-      planet.planetType === 'basic' ? 5 : 19
+      planet.planetType === 'basic'
+        ? 5
+        : planet.planetType === 'comet'
+        ? 21
+        : 19
     }.jpg`"
     :bgTint="planet.color"
   >
     <template #title v-if="planet">
-      <span class="sectionemoji">🪐</span>Planet
+      <span class="sectionemoji">🪐</span>Landed
+      {{ planet.planetType === 'comet' ? 'on' : 'at' }}
     </template>
     <div class="scroller">
       <div
@@ -30,6 +35,7 @@
           >
         </h2>
         <div
+          v-if="type !== 'comet'"
           class="sub"
           :style="{
             'line-height': 1.1,
@@ -120,7 +126,9 @@
         </div>
       </div>
 
-      <ShipPlanetMine v-if="type === 'mining'" />
+      <ShipPlanetMine
+        v-if="['mining', 'comet'].includes(type)"
+      />
 
       <ShipPlanetVendorCargo v-if="type === 'basic'" />
       <ShipPlanetGuildRecruit v-if="type === 'basic'" />
@@ -129,7 +137,7 @@
       <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
       <ShipPlanetBank v-if="type === 'basic'" />
 
-      <ShipPlanetLevel />
+      <ShipPlanetLevel v-if="type !== 'comet'" />
 
       <div
         class="panesection"

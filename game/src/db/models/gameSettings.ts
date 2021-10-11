@@ -32,6 +32,7 @@ const gameSettingsSchemaFields: Record<
   },
 
   planetDensity: { type: Number, required: true },
+  cometDensity: { type: Number, required: true },
   zoneDensity: { type: Number, required: true },
   aiShipDensity: { type: Number, required: true },
   cacheDensity: { type: Number, required: true },

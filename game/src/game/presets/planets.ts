@@ -27,7 +27,7 @@ function getName(game: Game) {
       !useSuffix
         ? `${c.randomFromArray(planetNamePrefixes)} `
         : ``
-    }${c.randomFromArray(planetNames)}${
+    }${c.randomFromArray(Array.from(planetNames))}${
       useSuffix
         ? `${c.randomFromArray(planetNameSuffixes)}`
         : ``
@@ -310,7 +310,7 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   return { buyMultiplier, sellMultiplier }
 }
 
-const planetNames = [
+const planetNames = new Set([
   `Osiris`,
   `Neptune`,
   `Cancer`,
@@ -427,8 +427,43 @@ const planetNames = [
   `Olympus`,
   `Irra`,
   `Ungol`,
+  `Gura`,
+  `Drir`,
+  `Maw`,
+  `Ji`,
+  `Ashii`,
+  `Ki`,
+  `Phir`,
+  `Zol`,
+  `Tide`,
+  `Gulf`,
+  `Shore`,
+  `Oceana`,
+  `Knot`,
+  `Mast`,
+  `Stern`,
+  `Bow`,
+  `Keel`,
+  `Ronan`,
+  `Lilt`,
+  `Teizli`,
+  `Lalgra`,
+  `Illeas`,
+  `Vircea`,
+  `Ghendra`,
+  `Daammud`,
+  `Dhumeal`,
+  `Sendar`,
+  `Morill`,
+  `Galvae`,
+  `Stela`,
+  `Minato`,
+  `Umi`,
+  `Kawa`,
+  `Geos`,
+
   // todo MORE
-]
+])
 const planetNamePrefixes = [`New`, `Old`]
 const planetNameSuffixes = [
   ` Prime`,

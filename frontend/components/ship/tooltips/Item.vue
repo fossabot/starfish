@@ -100,19 +100,22 @@
 
     <!-- scanner -->
     <div v-if="dataToUse.sightRange">
-      Max Sight Range: {{ dataToUse.sightRange }}AU
+      Max Sight Range:
+      {{ c.speedNumber(dataToUse.sightRange, true, 0) }} km
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.sightRange"
-        :b="dataToUse.sightRange"
+        :a="compareTo.sightRange * c.kmPerAu"
+        :b="dataToUse.sightRange * c.kmPerAu"
       />
     </div>
     <div v-if="dataToUse.shipScanRange">
-      Max Ship Scan Range: {{ dataToUse.shipScanRange }}AU
+      Max Ship Scan Range:
+      {{ c.speedNumber(dataToUse.shipScanRange, true, 0) }}
+      km
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.shipScanRange"
-        :b="dataToUse.shipScanRange"
+        :a="compareTo.shipScanRange * c.kmPerAu"
+        :b="dataToUse.shipScanRange * c.kmPerAu"
       />
     </div>
     <div v-if="dataToUse.shipScanData">
@@ -144,11 +147,12 @@
     <div
       v-if="dataToUse.type === 'weapon' && dataToUse.range"
     >
-      Max Range: {{ dataToUse.range }}AU
+      Max Range:
+      {{ c.speedNumber(dataToUse.range, true, 0) }} km
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.range"
-        :b="dataToUse.range"
+        :a="compareTo.range * globals.kmPerAu"
+        :b="dataToUse.range * globals.kmPerAu"
       />
     </div>
     <div v-if="dataToUse.damage">
@@ -226,11 +230,12 @@
         dataToUse.type === 'communicator' && dataToUse.range
       "
     >
-      Max Broadast Range: {{ dataToUse.range }}AU
+      Max Broadast Range:
+      {{ c.speedNumber(dataToUse.range, true, 0) }} km
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.range"
-        :b="dataToUse.range"
+        :a="compareTo.range * c.kmPerAu"
+        :b="dataToUse.range * c.kmPerAu"
       />
     </div>
     <div v-if="dataToUse.antiGarble">

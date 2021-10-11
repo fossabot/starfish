@@ -1,8 +1,6 @@
 <template>
   <div
-    v-if="
-      planet.planetType === 'mining' && planet.mine.length
-    "
+    v-if="planet.mine"
     class="panesection"
     v-tooltip="
       `When a job is completed, all ships actively mining that resource will share the payout evenly, regardless of size or guild.<br />
@@ -10,7 +8,10 @@
     "
   >
     <div class="panesubhead">Active Mines</div>
-    <div v-for="m in planet.mine" class="marbottiny">
+    <div v-if="planet.mine.length === 0">
+      <div class="centertext sub">All mines exhausted.</div>
+    </div>
+    <div v-else v-for="m in planet.mine" class="marbottiny">
       <ProgressBar
         :mini="true"
         :percent="m.mineCurrent / m.mineRequirement"

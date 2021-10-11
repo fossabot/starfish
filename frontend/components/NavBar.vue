@@ -15,7 +15,7 @@
     <nuxt-link to="/supportus">Support Us</nuxt-link>
 
     <nuxt-link to="/s" v-if="ship" class="button"
-      >My Ship</nuxt-link
+      ><span>My Ship</span></nuxt-link
     >
     <a
       to="#"

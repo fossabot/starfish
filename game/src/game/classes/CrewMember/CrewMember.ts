@@ -75,7 +75,7 @@ export class CrewMember extends Stubbable {
     this.inventory =
       data.inventory?.filter((i) => i && i.amount > 0) || []
     this.cockpitCharge = data.cockpitCharge || 0
-    this.credits = data.credits ?? 200
+    this.credits = data.credits ?? 0
     this.skills =
       data.skills && data.skills.length
         ? [...(data.skills.filter((s) => s) || [])]
@@ -131,14 +131,27 @@ export class CrewMember extends Stubbable {
     this.active()
 
     if (this.location !== previousLocation) {
+      // if it's in a position to possibly immediately auto-attack something, don't
+      if (
+        this.location === `weapons` &&
+        (
+          [`aggressive`, `onlyPlayers`] as (
+            | CombatTactic
+            | `none`
+          )[]
+        ).includes(this.combatTactic) &&
+        this.ship.membersIn(`weapons`).length <= 1 &&
+        this.ship.availableWeapons().length >= 1 &&
+        this.ship.getEnemiesInAttackRange().length > 0
+      ) {
+        this.combatTactic = `none`
+        this.toUpdate.combatTactic = this.combatTactic
+      }
+
       if (
         this.location === `weapons` ||
         previousLocation === `weapons`
       ) {
-        // don't attack immediately on returning to weapons bay
-        this.combatTactic = `none`
-        this.toUpdate.combatTactic = this.combatTactic
-
         // recalculate ship combat strategy on joining/leaving weapons bay
         this.ship.recalculateTargetItemType()
         this.ship.recalculateCombatTactic()

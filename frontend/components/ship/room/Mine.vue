@@ -33,13 +33,13 @@
         :class="{ secondary: selected !== choice }"
         @click="$store.commit('setMinePriority', choice)"
       >
-        {{
+        <span>{{
           c.capitalize(
             choice === 'closest'
               ? 'closest to complete'
               : choice,
           )
-        }}
+        }}</span>
       </button>
     </div>
   </Box>

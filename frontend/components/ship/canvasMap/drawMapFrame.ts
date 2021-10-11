@@ -161,6 +161,17 @@ export default class Drawer {
           this.isPointInSightRange(p),
       )
 
+    // ----- planets -----
+    const cometsToDraw: PlanetStub[] = (
+      (visible.comets as PlanetStub[]) || []
+    )
+      .filter((p) => p)
+      .filter(
+        (p) =>
+          (visible as AdminVisibleData).showAll ||
+          this.isPointInSightRange(p),
+      )
+
     // ----- ships -----
     const shipsToDraw: ShipStub[] = (
       visible?.ships || []
@@ -252,10 +263,12 @@ export default class Drawer {
           (l) => l / this.flatScale,
         ) as CoordinatePair,
         labelTop: `vision`,
-        labelBottom: `${c.r2(
-          sightRadius / this.flatScale,
-          2,
-        )}AU`,
+        labelBottom:
+          c.speedNumber(
+            sightRadius / this.flatScale,
+            true,
+            0,
+          ) + ` km`,
         radius: sightRadius,
         color: `#bbbbbb`,
         outline: true,
@@ -299,7 +312,8 @@ export default class Drawer {
           (l) => l / this.flatScale,
         ) as CoordinatePair,
         labelBottom:
-          c.r2(radius / this.flatScale, 6) + `AU`,
+          c.speedNumber(radius / this.flatScale, true, 0) +
+          ` km`,
         labelTop: ship && this.radiusToTime(ship, radius),
         radius: radius,
         color: `#555555`,
@@ -317,7 +331,8 @@ export default class Drawer {
             (l) => l / this.flatScale,
           ) as CoordinatePair,
           labelTop: `scan`,
-          labelBottom: `${c.r2(ship.radii.scan, 2)}AU`,
+          labelBottom:
+            c.speedNumber(ship.radii.scan, true, 0) + ` km`,
           radius: ship.radii.scan * this.flatScale,
           color: `#66ffdd`,
           outline: true,
@@ -329,7 +344,9 @@ export default class Drawer {
             (l) => l / this.flatScale,
           ) as CoordinatePair,
           labelTop: `attack`,
-          labelBottom: `${c.r2(ship.radii.attack, 2)}AU`,
+          labelBottom:
+            c.speedNumber(ship.radii.attack, true, 0) +
+            ` km`,
           radius: ship.radii.attack * this.flatScale,
           color: `#ff7733`,
           outline: true,
@@ -341,7 +358,9 @@ export default class Drawer {
             (l) => l / this.flatScale,
           ) as CoordinatePair,
           labelTop: `broadcast`,
-          labelBottom: `${c.r2(ship.radii.broadcast, 2)}AU`,
+          labelBottom:
+            c.speedNumber(ship.radii.broadcast, true, 0) +
+            ` km`,
           radius: ship.radii.broadcast * this.flatScale,
           color: `#dd88ff`,
           outline: true,
@@ -446,7 +465,6 @@ export default class Drawer {
       }
 
       // ship trajectory line
-
       if ((ship.speed || 0) > 0 && ship.velocity) {
         this.drawLine({
           start: [...shipLocation],
@@ -546,14 +564,41 @@ export default class Drawer {
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
-        radius: (4 / this.zoom) * devicePixelRatio,
+        radius: (3 / this.zoom) * devicePixelRatio,
         color: `rgba(30,30,30,.3)`,
       })
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
-        radius: (3 / this.zoom) * devicePixelRatio,
+        radius: (2 / this.zoom) * devicePixelRatio,
         color: c.guilds[s.guildId]?.color || `#bbb`,
+      })
+    })
+
+    // ----- comets
+    ;[...cometsToDraw].forEach((s) => {
+      this.drawPoint({
+        location: [s.location[0], s.location[1] * -1],
+        labelTop: !s.planet && s.name,
+        radius: (2 / this.zoom) * devicePixelRatio,
+        color: s.color || `#bbb`,
+      })
+
+      this.drawPoint({
+        location: [s.location[0], s.location[1] * -1],
+        radius: 8 * (2 / this.zoom) * devicePixelRatio,
+        color: s.color || `#bbb`,
+        glow: true,
+      })
+      this.drawPoint({
+        location: [s.location[0], s.location[1] * -1],
+        radius:
+          (ship?.gameSettings?.arrivalThreshold || 0.001) *
+          (s.landingRadiusMultiplier || 1) *
+          this.flatScale,
+        color: s.color || `#bbb`,
+        outline: `dash`,
+        opacity: 0.4,
       })
     })
 
@@ -626,6 +671,30 @@ export default class Drawer {
             pl[1] * this.flatScale * -1,
           ],
           color: c.guilds[s.guildId]?.color || `#bbb`,
+          opacity:
+            (index / (pointsToDraw.length - 1)) * 0.45,
+        })
+      })
+    })
+    visible.comets?.forEach((s: PlanetStub) => {
+      const pointsToDraw = [
+        ...(Array.isArray(s.trail) ? s.trail : []),
+        s.location,
+      ]
+      pointsToDraw.forEach((pl, index) => {
+        let prevLocationPoint
+        prevLocationPoint = s.trail[index - 1]
+        if (!prevLocationPoint) return
+        this.drawLine({
+          start: [
+            prevLocationPoint[0] * this.flatScale,
+            prevLocationPoint[1] * this.flatScale * -1,
+          ],
+          end: [
+            pl[0] * this.flatScale,
+            pl[1] * this.flatScale * -1,
+          ],
+          color: s.color || `#bbb`,
           opacity:
             (index / (pointsToDraw.length - 1)) * 0.45,
         })
