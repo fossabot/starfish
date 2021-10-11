@@ -186,7 +186,7 @@ export default Vue.extend({
 
           if (tp) {
             let radius
-            if (tp.location) {
+            if (tp.location && !tp.radii) {
               if (
                 tp.type &&
                 ['zone', 'weapon'].includes(tp.type)
@@ -200,6 +200,27 @@ export default Vue.extend({
                   : tp.color,
               })
             }
+
+            if (tp.radii)
+              targetPoints.push(
+                ...Object.keys(tp.radii)
+                  .filter((k) => k !== 'gameSize')
+                  .map((key) => ({
+                    location: tp.location,
+                    labelTop: key,
+                    radius: tp.radii[key],
+                    color:
+                      key === 'attack'
+                        ? `#ff7733`
+                        : key === 'vision'
+                        ? `#bbbbbb`
+                        : key === 'broadcast'
+                        ? `#dd88ff`
+                        : key === 'scan'
+                        ? `#66ffdd`
+                        : '#bbbbbb',
+                  })),
+              )
           }
 
           this.drawer.draw({
@@ -242,12 +263,10 @@ export default Vue.extend({
       if (!this.mouseIsDown) return
 
       if (!this.isPanning && this.isHovering) {
-        this.$store.commit('setTarget', [
-          ...(this.$store.state.tooltip?.type !== 'zone'
-            ? this.$store.state.tooltip?.location ||
-              this.hoverPoint
-            : this.hoverPoint),
-        ])
+        this.$emit('click', {
+          coordinates: this.hoverPoint,
+          selected: this.tooltip,
+        })
       }
 
       this.isPanning = false
@@ -407,6 +426,18 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             type: 'planet',
+            ...p,
+          })
+      })
+      vd.comets.forEach((p: PlanetStub) => {
+        const hoverDistance = c.distance(
+          p.location,
+          this.hoverPoint,
+        )
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            type: 'comet',
             ...p,
           })
       })

@@ -13,6 +13,7 @@ import type { Game } from '../../Game'
 import { CrewMember } from '../CrewMember/CrewMember'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Planet } from '../Planet/Planet'
+import type { Comet } from '../Planet/Comet'
 import type { Cache } from '../Cache'
 import type { Ship } from './Ship'
 import type { Zone } from '../Zone'
@@ -73,6 +74,7 @@ export class HumanShip extends CombatShip {
   visible: {
     ships: ShipStub[]
     planets: Planet[]
+    comets: Comet[]
     caches: Cache[]
     attackRemnants: (AttackRemnant | AttackRemnantStub)[]
     trails?: { color?: string; points: CoordinatePair[] }[]
@@ -80,6 +82,7 @@ export class HumanShip extends CombatShip {
   } = {
     ships: [],
     planets: [],
+    comets: [],
     caches: [],
     attackRemnants: [],
     zones: [],
@@ -115,8 +118,10 @@ export class HumanShip extends CombatShip {
     this.log = data.log || []
     this.orderReactions = data.orderReactions || []
 
-    if (data.tutorial && data.tutorial.step !== undefined)
+    if (data.tutorial && data.tutorial.step !== undefined) {
       this.tutorial = new Tutorial(data.tutorial, this)
+      this.tagline = `📚 Tutorial Ship`
+    }
 
     if (data.achievements)
       this.addAchievement(data.achievements, true)
@@ -212,6 +217,7 @@ export class HumanShip extends CombatShip {
     profiler.step(`move`)
     // ----- move -----
     this.move()
+    this.updatePlanet()
 
     // ----- planet effects -----
     if (this.planet) this.planet.tickEffectsOnShip(this)
@@ -1005,10 +1011,6 @@ export class HumanShip extends CombatShip {
         startingLocation,
         this.location,
       )
-      this.game.chunkManager.addOrUpdate(
-        this,
-        startingLocation,
-      )
       return
     }
 
@@ -1034,7 +1036,6 @@ export class HumanShip extends CombatShip {
       this.location,
     )
 
-    this.updatePlanet()
     this.notifyZones(startingLocation)
 
     this.addStat(
@@ -1211,6 +1212,7 @@ export class HumanShip extends CombatShip {
   generateVisiblePayload(previousVisible?: {
     ships: ShipStub[]
     planets: Planet[]
+    comets: Comet[]
     caches: Cache[]
     attackRemnants: (AttackRemnant | AttackRemnantStub)[]
     trails?: { color?: string; points: CoordinatePair[] }[]
@@ -1232,6 +1234,9 @@ export class HumanShip extends CombatShip {
     this.toUpdate.visible = {
       ships: this.visible.ships,
       trails: this.visible.trails || [],
+      comets: (this.visible.comets || []).map((p) =>
+        p.toVisibleStub(),
+      ),
       attackRemnants: this.visible.attackRemnants.map(
         (ar) => ar.stubify(),
       ),
@@ -1265,7 +1270,7 @@ export class HumanShip extends CombatShip {
       this.targetShip &&
       !this.canAttack(this.targetShip, true)
     ) {
-      this.recalculateTargetShip()
+      this.determineTargetShip()
     }
     // if the most "voted" ship comes into range/attackability, switch to it
     else if (
@@ -1274,7 +1279,7 @@ export class HumanShip extends CombatShip {
       this.canAttack(this.idealTargetShip, true) &&
       this.combatTactic !== `defensive` // defensive tactic waits until being attacked to switch
     ) {
-      this.recalculateTargetShip()
+      this.determineTargetShip()
     }
   }
 
@@ -1288,9 +1293,13 @@ export class HumanShip extends CombatShip {
       )
     )
       this.planet =
+        this.visible.comets.find((p) =>
+          this.isAt(p.location, p.landingRadiusMultiplier),
+        ) ||
         this.seenPlanets.find((p) =>
           this.isAt(p.location, p.landingRadiusMultiplier),
-        ) || false
+        ) ||
+        false
 
     if (previousPlanet == this.planet) return
 
@@ -2224,11 +2233,11 @@ export class HumanShip extends CombatShip {
     attack: AttackDamageResult,
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
-    this.recalculateTargetShip()
+    this.determineTargetShip()
     return res
   }
 
-  recalculateTargetShip(): CombatShip | null {
+  determineTargetShip(): CombatShip | null {
     const setTarget = (t: CombatShip | null) => {
       // c.log(
       //   `updating ${this.name} target ship to ${
@@ -2238,7 +2247,26 @@ export class HumanShip extends CombatShip {
       //   this.combatTactic,
       // )
       // c.trace()
+      const previousTarget = this.targetShip
       this.targetShip = t
+
+      if (
+        // new target ship, make sure someone doesn't accidentally fire at it when they enter the weapons bay
+        this.targetShip &&
+        this.targetShip !== previousTarget
+      ) {
+        c.log(
+          `gray`,
+          `switched targets, resetting out-of-weapons members' tactics`,
+        )
+        this.crewMembers.forEach((cm) => {
+          if (cm.location !== `weapons`) {
+            // don't attack immediately on returning to weapons bay
+            cm.combatTactic = `none`
+            cm.toUpdate.combatTactic = cm.combatTactic
+          }
+        })
+      }
       this.toUpdate.targetShip = t?.toReference() || null
       return t
     }
@@ -2496,7 +2524,7 @@ export class HumanShip extends CombatShip {
     this.combatTactic = mainTactic
     this.toUpdate.combatTactic = mainTactic
 
-    this.recalculateTargetShip()
+    this.determineTargetShip()
   }
 
   recalculateTargetItemType() {

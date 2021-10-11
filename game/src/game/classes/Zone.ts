@@ -123,6 +123,8 @@ export class Zone extends Stubbable {
 
       // decelerate
       else if (effect.type === `decelerate`) {
+        if (ship.speed <= 0.01 * (effect.intensity + 0.5))
+          return // don't slow SO far down if already slow
         const decelerateMultiplier =
           1 - effect.intensity * proximityMod * 0.001
         ship.velocity[0] *= decelerateMultiplier
@@ -173,6 +175,7 @@ export class Zone extends Stubbable {
   toAdminStub(): ZoneStub {
     return {
       type: `zone`,
+      id: this.id,
       location: this.location,
       radius: this.radius,
       color: this.color,

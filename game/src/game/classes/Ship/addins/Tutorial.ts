@@ -166,7 +166,7 @@ export class Tutorial {
         script: [
           {
             message: `That's better!<br />
-        This is what's near us. See that big dot? That's the planet we're on!`,
+        This is what's near us. See that big dot? That's the planet we're at!`,
             next: `I see!`,
           },
           {
@@ -886,6 +886,7 @@ export class Tutorial {
                 this.baseLocation[1] + s.location[1],
               ]
             : [...this.baseLocation],
+          speciesId: `chickens`,
           onlyVisibleToShipId: this.ship.id,
         })
       }

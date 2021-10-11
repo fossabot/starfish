@@ -354,6 +354,27 @@ export default Vue.extend({
                   })
               }
             }
+
+            if (tp.radii)
+              targetPoints.push(
+                ...Object.keys(tp.radii)
+                  .filter((k) => k !== 'gameSize')
+                  .map((key) => ({
+                    location: tp.location,
+                    labelTop: key,
+                    radius: tp.radii[key],
+                    color:
+                      key === 'attack'
+                        ? `#ff7733`
+                        : key === 'vision'
+                        ? `#bbbbbb`
+                        : key === 'broadcast'
+                        ? `#dd88ff`
+                        : key === 'scan'
+                        ? `#66ffdd`
+                        : '#bbbbbb',
+                  })),
+              )
           }
 
           profiler.step('startdraw')
@@ -612,6 +633,21 @@ export default Vue.extend({
             ...p,
           })
       })
+
+      s.visible?.comets.forEach(
+        (p: Partial<PlanetStub>) => {
+          const hoverDistance = c.distance(
+            p.location,
+            this.hoverPoint,
+          )
+          if (hoverDistance <= hoverRadius)
+            hoverableElements.push({
+              hoverDistance,
+              ...p,
+              type: 'comet',
+            })
+        },
+      )
 
       s.visible?.caches.forEach((p: Partial<CacheStub>) => {
         const hoverDistance = c.distance(

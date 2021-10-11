@@ -29,9 +29,13 @@ function speedNumber(numberInAu, noTag = false, maxDecimalPlaces = 2) {
     else if (numberInKm < 1000000)
         output = `${math_1.default.r2(numberInKm / 1000, 0)}k`;
     else if (numberInKm < 1000000000)
-        output = `${math_1.default.r2(numberInKm / 1000000, Math.min(maxDecimalPlaces, 2))}M`;
+        output = `${math_1.default.r2(numberInKm / 1000000, Math.min(Math.max(maxDecimalPlaces, numberInKm / 1000000 / 10 < 1
+            ? maxDecimalPlaces + 1
+            : maxDecimalPlaces), 2))}M`;
     else
-        output = `${math_1.default.r2(numberInKm / 1000000000, Math.min(maxDecimalPlaces, 2))}B`;
+        output = `${math_1.default.r2(numberInKm / 1000000000, Math.min(Math.max(maxDecimalPlaces, numberInKm / 1000000000 / 10 < 1
+            ? maxDecimalPlaces + 1
+            : maxDecimalPlaces), 2))}B`;
     return output + (noTag ? `` : ` km/hr`);
 }
 function printList(list) {

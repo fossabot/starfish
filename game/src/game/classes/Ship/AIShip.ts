@@ -9,6 +9,8 @@ import type { AttackRemnant } from '../AttackRemnant'
 import type { Weapon } from '../Item/Weapon'
 import type { HumanShip } from './HumanShip'
 
+import ais from './ais/ais'
+
 export class AIShip extends CombatShip {
   readonly human: boolean = false
   readonly id: string
@@ -29,11 +31,10 @@ export class AIShip extends CombatShip {
     zones: [],
   }
 
-  guildId: GuildId = `fowl`
-  keyAngle = Math.random() * 365
+  readonly guildId: GuildId = `fowl`
+  speciesId: SpeciesId
   targetLocation: CoordinatePair
 
-  combatTactic: CombatTactic = `aggressive`
   lastAttackedById: string | null = null
 
   obeysGravity = false
@@ -42,6 +43,15 @@ export class AIShip extends CombatShip {
     super(data, game)
     if (data.id) this.id = data.id
     else this.id = `ai${Math.random()}`.substring(2)
+
+    this.speciesId = data.speciesId || `chickens`
+    this.determineNewTargetLocation =
+      ais[this.speciesId]?.determineNewTargetLocation ||
+      ais.default.determineNewTargetLocation!
+
+    this.determineTargetShip =
+      ais[this.speciesId]?.determineTargetShip ||
+      ais.default.determineTargetShip!
 
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
@@ -66,15 +76,12 @@ export class AIShip extends CombatShip {
     super.tick()
     if (this.dead) return
 
-    // ----- move -----
-    this.move()
-
     const previousVisible = this.visible
     this.visible = this.game.scanCircle(
       this.location,
       this.radii.sight,
       this.id,
-      [`humanShip`], // * add 'zone' to allow zones to affect ais
+      [`humanShip`, `aiShip`], // * add 'zone' to allow zones to affect ais
     )
     if (this.onlyVisibleToShipId) {
       const onlyVisibleShip = this.game.humanShips.find(
@@ -87,6 +94,9 @@ export class AIShip extends CombatShip {
       previousVisible,
       this.visible,
     )
+
+    // ----- move -----
+    this.move()
 
     // recharge weapons
     this.weapons
@@ -101,30 +111,19 @@ export class AIShip extends CombatShip {
     this.applyZoneTickEffects()
 
     // attack enemy in range
-    const weapons = this.availableWeapons()
-    if (!weapons.length) return
-    const enemies = this.getEnemiesInAttackRange().filter(
-      (e) =>
-        !this.onlyVisibleToShipId ||
-        e.id === this.onlyVisibleToShipId,
-    )
-    if (enemies.length) {
-      // c.log(
-      //   `ai noticed an enemy in range, available weapons:`,
-      //   weapons.length,
-      // )
-      const randomEnemy = c.randomFromArray(
-        enemies,
-      ) as CombatShip
+    if (this.targetShip) {
+      const weapons = this.availableWeapons()
+      if (!weapons.length) return
+
       const distance = c.distance(
-        randomEnemy.location,
+        this.targetShip.location,
         this.location,
       )
       const randomWeapon = c.randomFromArray(
         weapons.filter((w) => w.range >= distance),
       ) as Weapon
       if (randomWeapon)
-        this.attack(randomEnemy, randomWeapon)
+        this.attack(this.targetShip, randomWeapon)
     }
   }
 
@@ -199,10 +198,7 @@ export class AIShip extends CombatShip {
 
     super.move(toLocation)
     if (toLocation) {
-      this.game.chunkManager.addOrUpdate(
-        this,
-        startingLocation,
-      )
+      this.targetLocation = this.location
       return
     }
     if (!this.canMove) return
@@ -221,9 +217,14 @@ export class AIShip extends CombatShip {
         this.game.settings.arrivalThreshold / 2 &&
       Math.abs(this.location[1] - this.targetLocation[1]) <
         this.game.settings.arrivalThreshold / 2
+
     if (!hasArrived) {
+      this.direction = c.angleFromAToB(
+        this.location,
+        this.targetLocation,
+      )
       const unitVectorToTarget = c.degreesToUnitVector(
-        c.angleFromAToB(this.location, this.targetLocation),
+        this.direction,
       )
 
       const thrustMagnitude =
@@ -235,58 +236,28 @@ export class AIShip extends CombatShip {
       this.location[1] +=
         unitVectorToTarget[1] * thrustMagnitude
 
+      this.speed = thrustMagnitude
+
       this.game.chunkManager.addOrUpdate(
         this,
         startingLocation,
       )
+
+      this.addPreviousLocation(
+        startingLocation,
+        this.location,
+      )
     }
 
-    // ----- set new target location -----
-    if (Math.random() < 0.000005 * c.tickInterval) {
-      const distance = (Math.random() * this.level) / 2
-      const currentAngle = c.angleFromAToB(
-        this.location,
-        this.targetLocation,
-      )
-      const possibleAngles = [
-        this.keyAngle,
-        (this.keyAngle + 90) % 360,
-        (this.keyAngle + 180) % 360,
-        (this.keyAngle + 270) % 360,
-      ].filter((a) => {
-        const diff = c.angleDifference(a, currentAngle)
-        return diff > 1 && diff < 179
-      })
-      const angleToHome = c.angleFromAToB(
-        this.location,
-        this.spawnPoint,
-      )
-      const chosenAngle =
-        Math.random() > 1
-          ? c.randomFromArray(possibleAngles)
-          : possibleAngles.reduce(
-              (lowest, a) =>
-                c.angleDifference(angleToHome, a) <
-                c.angleDifference(angleToHome, lowest)
-                  ? a
-                  : lowest,
-              possibleAngles[0],
-            )
-      const unitVector = c.degreesToUnitVector(chosenAngle)
-
-      this.targetLocation = [
-        this.location[0] + unitVector[0] * distance,
-        this.location[1] + unitVector[1] * distance,
-      ]
-
-      // ----- add previousLocation because it will be turning -----
-      this.previousLocations.push([...this.location])
-      while (
-        this.previousLocations.length >
-        AIShip.maxPreviousLocations / 2
-      )
-        this.previousLocations.shift()
+    // arrived, look for new target
+    else {
+      const newTarget = this.determineNewTargetLocation()
+      if (newTarget) this.targetLocation = newTarget
     }
+  }
+
+  determineNewTargetLocation(): CoordinatePair | false {
+    return false
   }
 
   die(attacker?: CombatShip, silently?: boolean) {
@@ -423,24 +394,10 @@ export class AIShip extends CombatShip {
       !this.targetShip ||
       !this.canAttack(this.targetShip)
     )
-      this.recalculateTargetShip()
+      this.targetShip = this.determineTargetShip()
   }
 
-  recalculateTargetShip(): CombatShip | null {
-    // aggressive
-    if (this.combatTactic === `aggressive`)
-      return super.recalculateTargetShip()
-    // defensive
-    else if (this.combatTactic === `defensive`) {
-      const foundLastAttacker =
-        this.lastAttackedById &&
-        this.visible.ships.find(
-          (s) => s.id === this.lastAttackedById,
-        )
-      if (foundLastAttacker)
-        return foundLastAttacker as CombatShip
-    }
-    // pacifist
+  determineTargetShip(): CombatShip | null {
     return null
   }
 
@@ -450,7 +407,7 @@ export class AIShip extends CombatShip {
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
     this.lastAttackedById = attacker.id
-    this.recalculateTargetShip()
+    this.targetShip = this.determineTargetShip()
     return res
   }
 

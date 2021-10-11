@@ -13,10 +13,10 @@ export class Planet extends Stubbable {
   readonly rooms: CrewLocation[] = []
   readonly name: string
   readonly mass: number
-  readonly location: CoordinatePair
   readonly game: Game
   readonly creatures?: string[]
   readonly radius: number
+  location: CoordinatePair
   color: string
   planetType: PlanetType
   guildId?: GuildId
@@ -30,6 +30,7 @@ export class Planet extends Stubbable {
   toUpdate: {
     landingRadiusMultiplier?: number
     passives?: ShipPassiveEffect[]
+    location?: CoordinatePair
   } = {}
 
   constructor(
@@ -273,6 +274,7 @@ export class Planet extends Stubbable {
       radius: this.radius,
       color: this.color,
       location: this.location,
+      mass: this.mass,
       level: this.level,
       planetType: this.planetType,
       guildId: this.guildId,

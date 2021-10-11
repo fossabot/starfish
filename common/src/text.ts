@@ -33,12 +33,28 @@ function speedNumber(
   else if (numberInKm < 1000000000)
     output = `${math.r2(
       numberInKm / 1000000,
-      Math.min(maxDecimalPlaces, 2),
+      Math.min(
+        Math.max(
+          maxDecimalPlaces,
+          numberInKm / 1000000 / 10 < 1
+            ? maxDecimalPlaces + 1
+            : maxDecimalPlaces,
+        ),
+        2,
+      ),
     )}M`
   else
     output = `${math.r2(
       numberInKm / 1000000000,
-      Math.min(maxDecimalPlaces, 2),
+      Math.min(
+        Math.max(
+          maxDecimalPlaces,
+          numberInKm / 1000000000 / 10 < 1
+            ? maxDecimalPlaces + 1
+            : maxDecimalPlaces,
+        ),
+        2,
+      ),
     )}B`
   return output + (noTag ? `` : ` km/hr`)
 }

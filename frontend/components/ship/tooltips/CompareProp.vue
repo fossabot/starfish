@@ -9,7 +9,10 @@
     }"
   >
     {{ difference > 0 ? '+' : ''
-    }}{{ c.numberWithCommas(c.r2(difference, 4))
+    }}{{
+      difference > 10000
+        ? c.speedNumber(difference / c.kmPerAu, true, 0)
+        : c.numberWithCommas(c.r2(difference, 4))
     }}{{ addendum }}
   </span>
 </template>

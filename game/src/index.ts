@@ -47,7 +47,16 @@ runOnDbReady(async () => {
 
   const savedPlanets = await db.planet.getAllConstructible()
   c.log(
-    `Loaded ${savedPlanets.length} saved planets from DB.`,
+    `Loaded ${savedPlanets.length} saved planets (${
+      savedPlanets.filter((s) => s.planetType === `basic`)
+        .length
+    } basic, ${
+      savedPlanets.filter((s) => s.planetType === `mining`)
+        .length
+    } mining, ${
+      savedPlanets.filter((s) => s.planetType === `comet`)
+        .length
+    } comet) from DB.`,
   )
   for (let planet of savedPlanets)
     if (planet.planetType === `basic`)
@@ -60,6 +69,8 @@ runOnDbReady(async () => {
         planet as BaseMiningPlanetData,
         false,
       )
+    else if (planet.planetType === `comet`)
+      game.addComet(planet as BaseCometData, false)
 
   const savedCaches = await db.cache.getAllConstructible()
   c.log(
@@ -83,7 +94,8 @@ runOnDbReady(async () => {
   //   .filter((s) => !s.ai)
   //   .forEach((s) => c.log(s.id, s.name, s.items, s.chassis))
   for (let ship of savedShips) {
-    if (ship.ai) game.addAIShip(ship, false)
+    if (ship.ai)
+      game.addAIShip(ship as BaseAIShipData, false)
     else game.addHumanShip(ship as BaseHumanShipData, false)
   }
 

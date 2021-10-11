@@ -115,6 +115,7 @@ const shipSchemaFields: Record<
   ai: { type: Boolean, default: false, required: true },
   spawnPoint: [Number, Number],
   level: Number,
+  speciesId: String,
   onlyVisibleToShipId: String,
 }
 const shipSchema = new Schema(shipSchemaFields)

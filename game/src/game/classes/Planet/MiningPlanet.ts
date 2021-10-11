@@ -28,15 +28,20 @@ export class MiningPlanet extends Planet {
   }
 
   getPayoutAmount(cargoId: CargoId): number {
-    return Math.floor(
-      1 +
-        Math.random() *
-          20 *
-          c.lerp(1, 10, this.level / 100),
+    return Math.min(
+      this.mine.find((m) => m.id === cargoId)
+        ?.maxMineable || Infinity,
+      Math.floor(
+        1 +
+          Math.random() *
+            20 *
+            c.lerp(1, 10, this.level / 100),
+      ),
     )
   }
 
   mineResource(cargoId: MinePriorityType, amount: number) {
+    if (!this.mine.length) return
     if (
       cargoId === `closest` ||
       !this.mine.find((m) => m.id === cargoId)
@@ -54,10 +59,17 @@ export class MiningPlanet extends Planet {
     if (!resource) return
 
     resource.mineCurrent += amount
+
     // * ----- done mining, pay out -----
     if (resource.mineCurrent >= resource.mineRequirement) {
-      // distribute among all current mining ships
+      // update max mineable
+      if (resource.maxMineable) {
+        resource.maxMineable -= resource.payoutAmount
+        if (resource.maxMineable < 1)
+          resource.maxMineable = 0
+      }
 
+      // distribute among all current mining ships
       const shipsToDistributeAmong = this.shipsAt.filter(
         (s) =>
           s.crewMembers.find(
@@ -181,14 +193,34 @@ export class MiningPlanet extends Planet {
         ])
       })
 
-      // reset for next time
-      resource.mineRequirement =
-        this.getMineRequirement(cargoId)
-      resource.payoutAmount = this.getPayoutAmount(cargoId)
-      resource.mineCurrent = 0
+      this.resetForNextMine(cargoId)
     }
 
     this.updateFrontendForShipsAt()
+  }
+
+  resetForNextMine(cargoId: CargoId) {
+    const resource = this.mine.find((m) => m.id === cargoId)
+    if (!resource) return
+
+    // fully exhausted, remove from mine
+    if (resource.maxMineable === 0) {
+      this.shipsAt.forEach((ship) => {
+        ship.logEntry([
+          `${this.name}'s vein of ${
+            c.cargo[resource.id].name
+          } has been exhausted.`,
+        ])
+      }, `low`)
+      this.mine = this.mine.filter((m) => m.id !== cargoId)
+      return
+    }
+
+    // reset for next time
+    resource.mineRequirement =
+      this.getMineRequirement(cargoId)
+    resource.payoutAmount = this.getPayoutAmount(cargoId)
+    resource.mineCurrent = 0
   }
 
   async levelUp() {

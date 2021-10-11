@@ -105,7 +105,7 @@ export function generateZoneData(
       intensity: 1,
       procChancePerTick: 1,
     })
-    radius *= 0.1
+    radius *= 0.2
   }
 
   if (!name) return false
@@ -134,6 +134,8 @@ const dotZoneNames = [
   `Toxic Waste`,
   `Polluted Zone`,
   `Razor Cloud`,
+  `Charring Field`,
+  `Scorching Zone`,
 ]
 const healZoneNames = [
   `Astral Oasis`,
@@ -144,6 +146,7 @@ const healZoneNames = [
   `Healing Haven`,
   `Tidal Pool`,
   `Warm Current`,
+  `Ethereal Refuge`,
 ]
 const staminaRegenZoneNames = [
   `Energy Spring`,
@@ -151,6 +154,7 @@ const staminaRegenZoneNames = [
   `Relaxation Zone`,
   `Calming Flux`,
   `Rejuvenating Tide`,
+  `Limpid Shallows`,
 ]
 const accelerateZoneNames = [
   `Gravity Slingshot`,
@@ -177,4 +181,6 @@ const wormholeZoneNames = [
   `Universe Flux Point`,
   `Gravitational Rift`,
   `Bermuda Triangle`,
+  `Warped Point`,
+  `Abyssal Void`,
 ]

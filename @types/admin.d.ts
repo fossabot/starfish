@@ -14,6 +14,7 @@ interface AdminGameSettings {
   baseCritDamageMultiplier: number
 
   planetDensity: number
+  cometDensity: number
   zoneDensity: number
   aiShipDensity: number
   cacheDensity: number
@@ -22,6 +23,7 @@ interface AdminGameSettings {
 interface AdminVisibleData {
   ships: ShipStub[]
   planets: PlanetStub[]
+  comets: PlanetStub[]
   caches: CacheStub[]
   attackRemnants: AttackRemnantStub[]
   zones: ZoneStub[]
