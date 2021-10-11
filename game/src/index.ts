@@ -1,4 +1,6 @@
-require(`newrelic`)
+if (process.env.NODE_ENV === `production`) {
+  require(`newrelic`)
+}
 import c from '../../common/dist'
 
 const lastCommit = require(`git-last-commit`)
