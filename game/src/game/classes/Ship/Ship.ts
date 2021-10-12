@@ -17,6 +17,7 @@ import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
 
 import loadouts from '../../presets/loadouts'
+import defaultGameSettings from '../../presets/gameSettings'
 
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './addins/Tutorial'
@@ -29,7 +30,7 @@ export class Ship extends Stubbable {
   name: string
   planet: Planet | false = false
   guildId?: GuildId
-  readonly game: Game
+  readonly game?: Game
   readonly radii: { [key in RadiusType]: number } = {
     sight: 0,
     broadcast: 0,
@@ -107,11 +108,11 @@ export class Ship extends Stubbable {
       achievements,
       headerBackground,
       stats,
-    }: BaseShipData,
-    game: Game,
+    }: BaseShipData = {} as any,
+    game?: Game,
   ) {
     super()
-    this.game = game
+    if (game) this.game = game
     this.name = name
     this.rename(name)
 
@@ -123,32 +124,41 @@ export class Ship extends Stubbable {
       this.location = location
     } else if (guildId) {
       this.location = [
-        ...(this.game.getHomeworld(guildId)?.location || [
+        ...(this.game?.getHomeworld(guildId)?.location || [
           0, 0,
         ]),
       ].map(
         (pos) =>
           pos +
           c.randomBetween(
-            this.game.settings.arrivalThreshold * -0.4,
-            this.game.settings.arrivalThreshold * 0.4,
+            (this.game?.settings.arrivalThreshold ||
+              defaultGameSettings().arrivalThreshold) *
+              -0.4,
+            (this.game?.settings.arrivalThreshold ||
+              defaultGameSettings().arrivalThreshold) * 0.4,
           ),
       ) as CoordinatePair
       // c.log(`fact`, this.location, this.guild.homeworld)
     } else
       this.location = [
-        ...(c
+        ...((c
           .randomFromArray(
-            this.game.planets.filter((p) => !p.homeworld),
+            this.game?.planets.filter(
+              (p) => !p.homeworld,
+            ) || [],
           )
-          .location.map(
+          ?.location.map(
             (pos) =>
               pos +
               c.randomBetween(
-                this.game.settings.arrivalThreshold * -0.4,
-                this.game.settings.arrivalThreshold * 0.4,
+                (this.game?.settings.arrivalThreshold ||
+                  defaultGameSettings().arrivalThreshold) *
+                  -0.4,
+                (this.game?.settings.arrivalThreshold ||
+                  defaultGameSettings().arrivalThreshold) *
+                  0.4,
               ),
-          ) as CoordinatePair),
+          ) as CoordinatePair) || [0, 0]),
       ]
 
     if (previousLocations)
@@ -162,7 +172,7 @@ export class Ship extends Stubbable {
       this.seenPlanets = seenPlanets
         .map(
           ({ id, name }: { id: string; name?: string }) =>
-            this.game.planets.find(
+            this.game?.planets.find(
               (p) =>
                 p.id === id || (p.name && p.name === name),
             ),
@@ -173,7 +183,7 @@ export class Ship extends Stubbable {
       this.seenLandmarks = seenLandmarks
         .filter((l: any) => l?.type === `zone`)
         .map(({ id }: { id: string }) =>
-          this.game.zones.find((z) => z.id === id),
+          this.game?.zones.find((z) => z.id === id),
         )
         .filter((z: Zone | undefined) => z) as Zone[]
 
@@ -235,9 +245,8 @@ export class Ship extends Stubbable {
 
     if (this.name === prevName) return
 
-    if (this.name) {
-      c.log(`renaming ship:`, prevName, newName, this.name)
-    }
+    // if (this.name)
+    //   c.log(`renaming ship:`, prevName, newName, this.name)
 
     this.toUpdate.name = this.name
     this.logEntry(
@@ -570,7 +579,7 @@ export class Ship extends Stubbable {
         ?.intensity || 0) + 1
     this.radii.scan *= boostScan
 
-    this.radii.gameSize = this.game.gameSoftRadius
+    this.radii.gameSize = this.game?.gameSoftRadius || 1
     this.toUpdate.radii = this.radii
   }
 
@@ -588,7 +597,7 @@ export class Ship extends Stubbable {
     if (toLocation) {
       this.location = [...toLocation]
       this.toUpdate.location = this.location
-      this.game.chunkManager.addOrUpdate(
+      this.game?.chunkManager.addOrUpdate(
         this,
         previousLocation,
       )
@@ -689,7 +698,8 @@ export class Ship extends Stubbable {
     return c.pointIsInsideCircle(
       coords,
       this.location,
-      this.game.settings.arrivalThreshold *
+      (this.game?.settings.arrivalThreshold ||
+        defaultGameSettings().arrivalThreshold) *
         arrivalThresholdMultiplier,
     )
   }
@@ -705,16 +715,23 @@ export class Ship extends Stubbable {
         this.location,
       )
       if (
-        distance <= this.game.settings.gravityRadius &&
-        distance > this.game.settings.arrivalThreshold
+        distance <=
+          (this.game?.settings.gravityRadius ||
+            defaultGameSettings().gravityRadius) &&
+        distance >
+          (this.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold)
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
-            this.game.settings.gravityCurveSteepness,
-            this.game.settings.gravityMultiplier,
-            this.game.settings.gravityRadius,
+            this.game?.settings.gravityCurveSteepness ||
+              defaultGameSettings().gravityCurveSteepness,
+            this.game?.settings.gravityMultiplier ||
+              defaultGameSettings().gravityMultiplier,
+            this.game?.settings.gravityRadius ||
+              defaultGameSettings().gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(

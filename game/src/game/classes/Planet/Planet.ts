@@ -4,6 +4,8 @@ import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
 import type { HumanShip } from '../Ship/HumanShip'
 
+import defaultGameSettings from '../../presets/gameSettings'
+
 export class Planet extends Stubbable {
   static readonly massAdjuster = 0.5
 
@@ -13,7 +15,7 @@ export class Planet extends Stubbable {
   readonly rooms: CrewLocation[] = []
   readonly name: string
   readonly mass: number
-  readonly game: Game
+  game: Game | undefined
   readonly creatures?: string[]
   readonly radius: number
   location: CoordinatePair
@@ -51,10 +53,10 @@ export class Planet extends Stubbable {
       baseLevel,
       stats,
     }: BasePlanetData,
-    game: Game,
+    game?: Game,
   ) {
     super()
-    this.game = game
+    if (game) this.game = game
     this.planetType = planetType || `basic`
     this.id = id || `planet` + `${Math.random()}`.slice(2)
     this.name = name
@@ -100,8 +102,10 @@ export class Planet extends Stubbable {
   }
 
   get shipsAt() {
-    return this.game.humanShips.filter(
-      (s) => !s.tutorial && s.planet === this,
+    return (
+      this.game?.humanShips.filter(
+        (s) => !s.tutorial && s.planet === this,
+      ) || []
     )
   }
 
@@ -124,7 +128,8 @@ export class Planet extends Stubbable {
       (ship.mass * 0.1) / // less effect for heavier ships
       (distanceFromPlanet /
         (this.landingRadiusMultiplier *
-          this.game.settings.arrivalThreshold)) / // less effect farther out
+          (this.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold))) / // less effect farther out
       Math.max(1, ship.speed * 1000000) // less effect if you're in motion
 
     const angleToShip = c.angleFromAToB(
@@ -218,7 +223,11 @@ export class Planet extends Stubbable {
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
     // don't message ships that are here already
-    if (distance < this.game.settings.arrivalThreshold)
+    if (
+      distance <
+      (this.game?.settings.arrivalThreshold ||
+        defaultGameSettings().arrivalThreshold)
+    )
       return
     // don't message ships that are currently at a planet
     if (ship.planet) return
@@ -242,7 +251,11 @@ export class Planet extends Stubbable {
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
     // don't message ships that are here already
-    if (distance < this.game.settings.arrivalThreshold)
+    if (
+      distance <
+      (this.game?.settings.arrivalThreshold ||
+        defaultGameSettings().arrivalThreshold)
+    )
       return
     // don't message ships that are currently at a planet
     if (ship.planet) return

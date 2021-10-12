@@ -5,7 +5,36 @@ on:
     branches:
       - '*'
 jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - folder: 'game'
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+
+      - name: NPM install on ${{matrix.folder}}
+        run: npm install
+        working-directory: ${{matrix.folder}}
+
+      - name: NPM build on ${{matrix.folder}}
+        run: npm run build-once
+        working-directory: ${{matrix.folder}}
+
+      - name: Run tests on ${{matrix.folder}}
+        run: npm run test
+        working-directory: ${{matrix.folder}}
+
   docker:
+    needs: npm-test
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -4,7 +4,7 @@ import type { Game } from '../Game'
 import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'
 
-function getName(game: Game) {
+function getName(game?: Game) {
   let name: string | undefined
   const possibleNames = [...planetNames]
   while (!name && possibleNames.length) {
@@ -16,7 +16,7 @@ function getName(game: Game) {
     possibleNames.splice(chosenIndex, 1)
     if (
       thisName &&
-      game.planets.find((p) => p.name == thisName)
+      game?.planets.find((p) => p.name == thisName)
     )
       thisName = undefined
     name = thisName
@@ -32,14 +32,15 @@ function getName(game: Game) {
         ? `${c.randomFromArray(planetNameSuffixes)}`
         : ``
     }`
-    if (game.planets.find((p) => p.name === name))
+    if (game?.planets.find((p) => p.name === name))
       name = undefined
   }
   return name
 }
 
-function getLocation(game: Game, isHomeworld?: any) {
-  let locationSearchRadius = game.gameSoftRadius * 0.75
+function getLocation(game?: Game, isHomeworld?: any) {
+  let locationSearchRadius =
+    (game?.gameSoftRadius || 1) * 0.75
   const tooClose = 0.2
   let location: CoordinatePair = [0, 0]
   const isTooClose = (p: Planet | Ship | Zone) =>
@@ -52,26 +53,27 @@ function getLocation(game: Game, isHomeworld?: any) {
       : closest
 
   const tooManyPlanetsInVicinity = () =>
-    game.planets.reduce(
+    (game?.planets.reduce(
       (count: number, p: Planet): number =>
         c.distance(p.location, location) > 1
           ? count
           : count + 1,
       0,
-    ) >
+    ) || 0) >
     Math.floor(Math.random() * 3) + 1
 
   while (
-    game.planets.find(isTooClose) ||
-    game.humanShips.find(isTooClose) ||
-    game.zones.find(isTooClose) ||
+    game?.planets.find(isTooClose) ||
+    game?.humanShips.find(isTooClose) ||
+    game?.zones.find(isTooClose) ||
     tooManyPlanetsInVicinity() ||
-    c.distance(location, [0, 0]) > game.gameSoftRadius
+    c.distance(location, [0, 0]) >
+      (game?.gameSoftRadius || 1)
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
 
     // move planets closer to each other to generate clusters
-    const closestPlanet = game.planets.reduce(
+    const closestPlanet = game?.planets.reduce(
       getClosestPlanet,
       game.planets[0],
     )

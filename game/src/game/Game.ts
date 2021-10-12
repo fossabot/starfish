@@ -1,30 +1,35 @@
 import c from '../../../common/dist'
 
-import io from '../server/io'
-import { db } from '../db'
+// io/db links
+import io, { linkGame as linkGameToIo } from '../server/io'
+import {
+  db,
+  init as dbInit,
+  runOnReady as runOnDbReady,
+} from '../db'
 
+// classes
 import { Ship } from './classes/Ship/Ship'
 import { Planet } from './classes/Planet/Planet'
+import { BasicPlanet } from './classes/Planet/BasicPlanet'
+import { MiningPlanet } from './classes/Planet/MiningPlanet'
+import { Comet } from './classes/Planet/Comet'
 import { Cache } from './classes/Cache'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
-import { Comet } from './classes/Planet/Comet'
-
-import { ChunkManager } from './classes/Chunks/ChunkManager'
-
 import { HumanShip } from './classes/Ship/HumanShip'
 import { AIShip } from './classes/Ship/AIShip'
+import { CombatShip } from './classes/Ship/CombatShip'
+import { ChunkManager } from './classes/Chunks/ChunkManager'
 
+// presets
 import {
   generateBasicPlanet as generateBasicPlanetData,
   generateMiningPlanet as generateMiningPlanetData,
 } from './presets/planets'
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
-import { BasicPlanet } from './classes/Planet/BasicPlanet'
-import { MiningPlanet } from './classes/Planet/MiningPlanet'
 import defaultGameSettings from './presets/gameSettings'
-import { CombatShip } from './classes/Ship/CombatShip'
 
 export class Game {
   static saveTimeInterval = 1 * 60 * 1000
@@ -50,7 +55,10 @@ export class Game {
     this.startTime = Date.now()
     this.settings = defaultGameSettings()
 
+    linkGameToIo(this)
+
     c.log(
+      `gray`,
       `Loaded ${
         Object.keys(c.species).length
       } species and ${
@@ -59,16 +67,116 @@ export class Game {
     )
   }
 
-  setSettings(newSettings: Partial<AdminGameSettings>) {
-    const defaultSettings = defaultGameSettings()
-    this.settings = {
-      ...defaultSettings,
-      ...this.settings,
-      ...newSettings,
-    }
-    for (let key of Object.keys(this.settings))
-      if (!defaultSettings[key]) delete this.settings[key]
-    db.gameSettings.addOrUpdateInDb(this.settings)
+  loadGameDataFromDb() {
+    dbInit({})
+
+    return new Promise((resolve) => {
+      runOnDbReady(async () => {
+        // await db.attackRemnant.wipe()
+        // await db.planet.wipe()
+        // await db.ship.wipe()
+        // await db.cache.wipe()
+        // await db.zone.wipe()
+        // await db.ship.wipeAI()
+
+        const savedGameData =
+          await db.gameSettings.getAllConstructible()
+        if (savedGameData && savedGameData[0]) {
+          c.log(`gray`, `Loaded game settings.`)
+          this.setSettings(savedGameData[0])
+        } else {
+          c.log(
+            `gray`,
+            `Starting game with default settings.`,
+          )
+        }
+
+        const savedPlanets =
+          await db.planet.getAllConstructible()
+        c.log(
+          `gray`,
+          `Loaded ${savedPlanets.length} saved planets (${
+            savedPlanets.filter(
+              (s) => s.planetType === `basic`,
+            ).length
+          } basic, ${
+            savedPlanets.filter(
+              (s) => s.planetType === `mining`,
+            ).length
+          } mining, ${
+            savedPlanets.filter(
+              (s) => s.planetType === `comet`,
+            ).length
+          } comet) from DB.`,
+        )
+        for (let planet of savedPlanets)
+          if (planet.planetType === `basic`)
+            this.addBasicPlanet(
+              planet as BaseBasicPlanetData,
+              false,
+            )
+          else if (planet.planetType === `mining`)
+            this.addMiningPlanet(
+              planet as BaseMiningPlanetData,
+              false,
+            )
+          else if (planet.planetType === `comet`)
+            this.addComet(planet as BaseCometData, false)
+
+        const savedCaches =
+          await db.cache.getAllConstructible()
+        c.log(
+          `gray`,
+          `Loaded ${savedCaches.length} saved caches from DB.`,
+        )
+        savedCaches.forEach((cache) =>
+          this.addCache(cache, false),
+        )
+
+        const savedZones =
+          await db.zone.getAllConstructible()
+        c.log(
+          `gray`,
+          `Loaded ${savedZones.length} saved zones from DB.`,
+        )
+        savedZones.forEach((zone) =>
+          this.addZone(zone, false),
+        )
+
+        const savedShips =
+          await db.ship.getAllConstructible()
+        c.log(
+          `gray`,
+          `Loaded ${savedShips.length} saved ships (${
+            savedShips.filter((s) => !s.ai).length
+          } human) from DB.`,
+        )
+        // savedShips
+        //   .filter((s) => !s.ai)
+        //   .forEach((s) => c.log('gray', s.id, s.name, s.items, s.chassis))
+        for (let ship of savedShips) {
+          if (ship.ai)
+            this.addAIShip(ship as BaseAIShipData, false)
+          else
+            this.addHumanShip(
+              ship as BaseHumanShipData,
+              false,
+            )
+        }
+
+        const savedAttackRemnants =
+          await db.attackRemnant.getAllConstructible()
+        c.log(
+          `gray`,
+          `Loaded ${this.attackRemnants.length} saved attack remnants from DB.`,
+        )
+        savedAttackRemnants.forEach((ar) =>
+          this.addAttackRemnant(ar, false),
+        )
+
+        resolve(true)
+      })
+    })
   }
 
   startGame() {
@@ -481,6 +589,18 @@ export class Game {
     }
   }
 
+  setSettings(newSettings: Partial<AdminGameSettings>) {
+    const defaultSettings = defaultGameSettings()
+    this.settings = {
+      ...defaultSettings,
+      ...this.settings,
+      ...newSettings,
+    }
+    for (let key of Object.keys(this.settings))
+      if (!defaultSettings[key]) delete this.settings[key]
+    db.gameSettings.addOrUpdateInDb(this.settings)
+  }
+
   // ----- radii -----
 
   get gameSoftRadius() {
@@ -802,9 +922,12 @@ export class Game {
       }
     }
 
-    this.ships.filter((s) => s instanceof CombatShip).forEach((s) => {
-      if ((s as CombatShip).targetShip === ship) (s as CombatShip).targetShip = null
-    })
+    this.ships
+      .filter((s) => s instanceof CombatShip)
+      .forEach((s) => {
+        if ((s as CombatShip).targetShip === ship)
+          (s as CombatShip).targetShip = null
+      })
 
     c.log(
       `Removing ship ${ship.name} (${ship.id}) from the game.`,

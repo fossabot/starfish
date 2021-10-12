@@ -4,6 +4,8 @@ import * as roomActions from './addins/rooms'
 import type { HumanShip } from '../Ship/HumanShip'
 import { Stubbable } from '../Stubbable'
 
+import defaultGameSettings from '../../presets/gameSettings'
+
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoSpace = 10
@@ -38,7 +40,10 @@ export class CrewMember extends Stubbable {
 
   toUpdate: { [key in keyof CrewMember]?: any } = {}
 
-  constructor(data: BaseCrewMemberData, ship: HumanShip) {
+  constructor(
+    data: BaseCrewMemberData = {} as BaseCrewMemberData,
+    ship: HumanShip,
+  ) {
     super()
     this.id = data.id
     this.ship = ship
@@ -197,7 +202,8 @@ export class CrewMember extends Stubbable {
       const reducedStaminaDrain =
         1 - this.getPassiveIntensity(`reduceStaminaDrain`)
       this.stamina -=
-        this.ship.game.settings.baseStaminaUse *
+        (this.ship.game?.settings.baseStaminaUse ||
+          defaultGameSettings().baseStaminaUse) *
         reducedStaminaDrain
     }
     if (this.stamina <= 0) {
@@ -246,7 +252,8 @@ export class CrewMember extends Stubbable {
 
     if (!xp)
       xp =
-        this.ship.game.settings.baseXpGain *
+        (this.ship.game?.settings.baseXpGain ||
+          defaultGameSettings().baseXpGain) *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(

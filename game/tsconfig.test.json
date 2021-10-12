@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig",
+  "include": ["../@types", "./src"],
+  "exclude": [
+    "../frontend/**/*",
+    "../discord/**/*",
+    "../common/**/*"
+  ],
+  "compilerOptions": {},
+  "references": [
+    {
+      "path": "../common/tsconfig.common.json"
+    }
+  ],
+  "ts-node": {
+    "files": true
+  }
+}

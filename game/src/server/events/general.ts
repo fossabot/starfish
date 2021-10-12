@@ -1,22 +1,26 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../..'
+import { game } from '../io'
 import type { Ship } from '../../game/classes/Ship/Ship'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
   socket.on(`hello`, () => {
+    if (!game) return
     c.log(`hello received`)
   })
 
   socket.on(`disconnect`, () => {
+    if (!game) return
     game.activePlayers--
   })
 
   socket.on(`frontend:unlistenAll`, () => {
+    if (!game) return
     socket.rooms.forEach((room) => {
+      if (!game) return
       socket.leave(room)
     })
   })
@@ -24,6 +28,7 @@ export default function (
   socket.on(
     `ships:forUser:fromIdArray`,
     (shipIds, userId, callback) => {
+      if (!game) return
       // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
       const foundShips = game.ships.filter(
         (s) =>
@@ -44,6 +49,7 @@ export default function (
   )
 
   socket.on(`ship:get`, (id, crewMemberId, callback) => {
+    if (!game) return
     let foundShip = game.ships.find((s) => s.id === id)
 
     if (foundShip && crewMemberId) {
@@ -74,6 +80,7 @@ export default function (
   })
 
   socket.on(`game:settings`, (callback) => {
+    if (!game) return
     callback({ data: game.settings })
   })
 }

@@ -7,13 +7,15 @@ import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 import { getValidZoneLocation } from '../presets/zones'
 
+import defaultGameSettings from '../presets/gameSettings'
+
 export class Zone extends Stubbable {
   readonly type = `zone`
   readonly id: string
   readonly name: string
   location: CoordinatePair // wormholes can change location
   readonly radius: number
-  readonly game: Game
+  game: Game | undefined
   readonly effects: ZoneEffect[]
   readonly color: string
 
@@ -28,7 +30,7 @@ export class Zone extends Stubbable {
       name,
       effects,
     }: BaseZoneData,
-    game: Game,
+    game?: Game,
   ) {
     super()
     this.game = game
@@ -99,7 +101,8 @@ export class Zone extends Stubbable {
 
           cm.stamina +=
             c.getStaminaGainPerTickForSingleCrewMember(
-              this.game.settings.baseStaminaUse,
+              this.game?.settings.baseStaminaUse ||
+                defaultGameSettings().baseStaminaUse,
             ) * intensity
 
           if (cm.stamina > cm.maxStamina)
@@ -138,7 +141,7 @@ export class Zone extends Stubbable {
       // wormhole
       else if (effect.type === `wormhole`) {
         ship.location = c.randomInsideCircle(
-          this.game.gameSoftRadius,
+          this.game?.gameSoftRadius || 1,
         )
         ship.logEntry(
           [
@@ -159,10 +162,10 @@ export class Zone extends Stubbable {
       ...this.location,
     ]
     this.location = getValidZoneLocation(
-      this.game,
       this.radius,
+      this.game,
     )
-    this.game.chunkManager.addOrUpdate(
+    this.game?.chunkManager.addOrUpdate(
       this,
       startingLocation,
     )

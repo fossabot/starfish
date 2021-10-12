@@ -5,18 +5,21 @@ import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'
 
 export function getValidZoneLocation(
-  game: Game,
   radius: number,
+  game?: Game,
 ) {
-  let locationSearchRadius = game.gameSoftRadius * 0.75
+  let locationSearchRadius =
+    (game?.gameSoftRadius || 1) * 0.75
   const tooClose = radius * 3
-  let location: CoordinatePair = [0, 0]
+  let location: CoordinatePair = c.randomInsideCircle(
+    locationSearchRadius,
+  )
   const isTooClose = (p: Planet | Ship | Zone) =>
     c.distance(location, p.location) < tooClose
   while (
-    game.planets.find(isTooClose) ||
-    game.zones.find(isTooClose) ||
-    game.humanShips.find(isTooClose)
+    game?.planets.find(isTooClose) ||
+    game?.zones.find(isTooClose) ||
+    game?.humanShips.find(isTooClose)
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
     locationSearchRadius *= 1.01
@@ -26,11 +29,11 @@ export function getValidZoneLocation(
 }
 
 export function generateZoneData(
-  game: Game,
+  game?: Game,
 ): BaseZoneData | false {
   let radius = (Math.random() + 0.15) * 0.2
 
-  const location = getValidZoneLocation(game, radius)
+  const location = getValidZoneLocation(radius, game)
 
   const color = `hsl(${Math.random() * 360}, ${Math.round(
     Math.random() * 80 + 20,

@@ -9,6 +9,8 @@ import type { AttackRemnant } from '../AttackRemnant'
 import type { Weapon } from '../Item/Weapon'
 import type { HumanShip } from './HumanShip'
 
+import defaultGameSettings from '../../presets/gameSettings'
+
 import ais from './ais/ais'
 
 export class AIShip extends CombatShip {
@@ -39,7 +41,10 @@ export class AIShip extends CombatShip {
 
   obeysGravity = false
 
-  constructor(data: BaseAIShipData, game: Game) {
+  constructor(
+    data: BaseAIShipData = {} as BaseAIShipData,
+    game?: Game,
+  ) {
     super(data, game)
     if (data.id) this.id = data.id
     else this.id = `ai${Math.random()}`.substring(2)
@@ -77,14 +82,20 @@ export class AIShip extends CombatShip {
     if (this.dead) return
 
     const previousVisible = this.visible
-    this.visible = this.game.scanCircle(
+    this.visible = this.game?.scanCircle(
       this.location,
       this.radii.sight,
       this.id,
       [`humanShip`, `aiShip`], // * add 'zone' to allow zones to affect ais
-    )
+    ) || {
+      ships: [],
+      planets: [],
+      zones: [],
+      caches: [],
+      attackRemnants: [],
+    }
     if (this.onlyVisibleToShipId) {
-      const onlyVisibleShip = this.game.humanShips.find(
+      const onlyVisibleShip = this.game?.humanShips.find(
         (s) => s.id === this.onlyVisibleToShipId,
       )
       if (onlyVisibleShip)
@@ -139,7 +150,9 @@ export class AIShip extends CombatShip {
   addLevelAppropriateItems() {
     // c.log(`Adding items to level ${this.level} ai...`)
     let itemBudget =
-      this.level * this.game.settings.aiDifficultyMultiplier
+      this.level *
+      (this.game?.settings.aiDifficultyMultiplier ||
+        defaultGameSettings().aiDifficultyMultiplier)
 
     const validChassis = Object.values(c.items.chassis)
       .filter(
@@ -210,13 +223,19 @@ export class AIShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ) * this.game.settings.baseEngineThrustMultiplier
+        ) *
+      (this.game?.settings.baseEngineThrustMultiplier ||
+        defaultGameSettings().baseEngineThrustMultiplier)
 
     const hasArrived =
       Math.abs(this.location[0] - this.targetLocation[0]) <
-        this.game.settings.arrivalThreshold / 2 &&
+        (this.game?.settings.arrivalThreshold ||
+          defaultGameSettings().arrivalThreshold) /
+          2 &&
       Math.abs(this.location[1] - this.targetLocation[1]) <
-        this.game.settings.arrivalThreshold / 2
+        (this.game?.settings.arrivalThreshold ||
+          defaultGameSettings().arrivalThreshold) /
+          2
 
     if (!hasArrived) {
       this.direction = c.angleFromAToB(
@@ -238,7 +257,7 @@ export class AIShip extends CombatShip {
 
       this.speed = thrustMagnitude
 
-      this.game.chunkManager.addOrUpdate(
+      this.game?.chunkManager.addOrUpdate(
         this,
         startingLocation,
       )
@@ -316,7 +335,7 @@ export class AIShip extends CombatShip {
       }
       // c.log(cacheContents)
 
-      this.game.addCache({
+      this.game?.addCache({
         contents: cacheContents,
         location: this.location,
         message: `Remains of ${this.name}`,
@@ -324,7 +343,7 @@ export class AIShip extends CombatShip {
       })
     }
 
-    this.game.removeShip(this)
+    this.game?.removeShip(this)
   }
 
   async receiveBroadcast(

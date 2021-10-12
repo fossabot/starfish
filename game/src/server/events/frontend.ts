@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../..'
+import { game } from '../io'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
@@ -10,6 +10,7 @@ import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 // ----- online count -----
 const connectedIds: { id: string; lastSeen: number }[] = []
 const idConnected = (id: string) => {
+  if (!game) return
   const found = connectedIds.find((e) => e.id === id)
   if (!found) {
     connectedIds.push({ id, lastSeen: Date.now() })
@@ -17,6 +18,7 @@ const idConnected = (id: string) => {
   } else found.lastSeen = Date.now()
 }
 const clearInactive = () => {
+  if (!game) return
   const now = Date.now()
   connectedIds.forEach((e) => {
     if (now - e.lastSeen > c.userIsOfflineTimeout)
@@ -34,6 +36,7 @@ export default function (
   // })
 
   socket.on(`ship:basics`, (id, callback) => {
+    if (!game) return
     if (typeof callback !== `function`) callback = () => {}
     const foundShip = game.ships.find((s) => s.id === id)
     if (foundShip) {
@@ -56,6 +59,7 @@ export default function (
   })
 
   socket.on(`ship:listen`, (id, crewMemberId, callback) => {
+    if (!game) return
     if (typeof callback !== `function`) callback = () => {}
     let foundShip = game.ships.find((s) => s.id === id)
 
@@ -96,11 +100,13 @@ export default function (
   })
 
   socket.on(`user:listen`, (userId) => {
+    if (!game) return
     socket.join([`user:${userId}`])
     idConnected(userId)
   })
 
   socket.on(`ship:respawn`, (id, callback) => {
+    if (!game) return
     if (typeof callback !== `function`) callback = () => {}
     const foundShip = game.ships.find(
       (s) => s.id === id,
@@ -122,6 +128,7 @@ export default function (
   })
 
   socket.on(`ship:advanceTutorial`, (id) => {
+    if (!game) return
     const ship = game.ships.find(
       (s) => s.id === id,
     ) as HumanShip
@@ -140,6 +147,7 @@ export default function (
   })
 
   socket.on(`ship:skipTutorial`, (id) => {
+    if (!game) return
     const ship = game.ships.find(
       (s) => s.id === id,
     ) as HumanShip
@@ -160,6 +168,7 @@ export default function (
   socket.on(
     `ship:joinGuild`,
     (shipId, crewId, guildId, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
@@ -204,6 +213,7 @@ export default function (
   socket.on(
     `ship:headerBackground`,
     (shipId, crewId, bgId, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
@@ -253,6 +263,7 @@ export default function (
   socket.on(
     `ship:tagline`,
     (shipId, crewId, tagline, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
@@ -302,6 +313,7 @@ export default function (
   socket.on(
     `ship:deposit`,
     (shipId, crewId, amount, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
@@ -353,6 +365,7 @@ export default function (
   socket.on(
     `ship:withdraw`,
     (shipId, crewId, amount, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
@@ -396,6 +409,7 @@ export default function (
   socket.on(
     `ship:orders`,
     (shipId, crewId, orders, callback) => {
+      if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
       const ship = game.ships.find(
