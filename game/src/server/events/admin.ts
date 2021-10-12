@@ -4,7 +4,7 @@ import fs from 'fs'
 
 import { db, getBackups, resetDbToBackup } from '../../db'
 
-import { game } from '../..'
+import { game } from '../io'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 
 let adminKeys: any
@@ -25,11 +25,13 @@ try {
   }
 }
 
-try {
-  adminKeys = JSON.parse(adminKeys)
-} catch (e) {
-  adminKeys = false
-  c.log(`red`, `Error loading admin keys!`, e)
+if (process.env.NODE_ENV === `production`) {
+  try {
+    adminKeys = JSON.parse(adminKeys)
+  } catch (e) {
+    adminKeys = false
+    c.log(`red`, `Error loading admin keys!`, e)
+  }
 }
 
 function isAdmin(id, password) {
@@ -48,10 +50,13 @@ export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
 ) {
   socket.on(`game:adminCheck`, (id, password, callback) => {
+    if (!game) return
     return callback(isAdmin(id, password))
   })
 
   socket.on(`admin:map`, (id, password, callback) => {
+    if (!game) return
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access admin:map`,
@@ -62,6 +67,8 @@ export default function (
   socket.on(
     `game:setSettings`,
     (id, password, newSettings) => {
+      if (!game) return
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:setSettings`,
@@ -72,6 +79,7 @@ export default function (
   )
 
   socket.on(`admin:respawnShip`, (id, password, shipId) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access admin:respawnShip`,
@@ -82,6 +90,7 @@ export default function (
   })
 
   socket.on(`admin:deleteShip`, (id, password, shipId) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access admin:deleteShip`,
@@ -92,6 +101,7 @@ export default function (
   socket.on(
     `admin:achievementToShip`,
     (id, password, shipId, achievement) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access admin:achievementToShip`,
@@ -111,6 +121,7 @@ export default function (
   socket.on(
     `admin:deleteCrewMember`,
     (id, password, shipId, crewMemberId) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access admin:deleteCrewMember`,
@@ -127,6 +138,7 @@ export default function (
   )
 
   socket.on(`game:save`, (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:save`,
@@ -135,6 +147,7 @@ export default function (
   })
 
   socket.on(`game:pause`, (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:pause`,
@@ -144,6 +157,7 @@ export default function (
   })
 
   socket.on(`game:unpause`, (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:unpause`,
@@ -153,6 +167,7 @@ export default function (
   })
 
   socket.on(`game:backups`, (id, password, callback) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:backups`,
@@ -162,6 +177,7 @@ export default function (
   socket.on(
     `game:resetToBackup`,
     (id, password, backupId) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetToBackup`,
@@ -171,6 +187,7 @@ export default function (
   )
 
   socket.on(`game:messageAll`, (id, password, message) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:messageAll`,
@@ -190,6 +207,7 @@ export default function (
         message,
       ]
     game.humanShips.forEach((s) => {
+      if (!game) return
       s.logEntry(message, `critical`)
     })
   })
@@ -197,6 +215,7 @@ export default function (
   socket.on(
     `game:resetAllPlanets`,
     async (id, password) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetAllPlanets`,
@@ -208,6 +227,7 @@ export default function (
   )
 
   socket.on(`game:resetAllComets`, async (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:resetAllComets`,
@@ -220,6 +240,7 @@ export default function (
   socket.on(
     `game:reLevelAllPlanets`,
     async (id, password) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:reLevelAllPlanets`,
@@ -231,6 +252,7 @@ export default function (
   socket.on(
     `game:reLevelOnePlanet`,
     async (id, password, planetId) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:reLevelOnePlanet`,
@@ -247,6 +269,7 @@ export default function (
   socket.on(
     `game:resetHomeworlds`,
     async (id, password) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetHomeworlds`,
@@ -257,6 +280,7 @@ export default function (
   )
 
   socket.on(`game:resetAllZones`, async (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:resetAllZones`,
@@ -267,6 +291,7 @@ export default function (
   })
 
   socket.on(`game:resetAllCaches`, async (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:resetAllCaches`,
@@ -279,6 +304,7 @@ export default function (
   socket.on(
     `game:resetAllAttackRemnants`,
     async (id, password) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetAllAttackRemnants`,
@@ -294,6 +320,7 @@ export default function (
   socket.on(
     `game:resetAllAIShips`,
     async (id, password) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetAllAIShips`,
@@ -308,6 +335,7 @@ export default function (
   )
 
   socket.on(`game:resetAllShips`, async (id, password) => {
+    if (!game) return
     if (!isAdmin(id, password))
       return c.log(
         `Non-admin attempted to access game:resetAllShips`,
@@ -321,6 +349,7 @@ export default function (
   socket.on(
     `game:shipList`,
     async (id, password, humanOnly, callback) => {
+      if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:shipList`,
@@ -352,6 +381,7 @@ export default function (
       location,
       callback,
     ) => {
+      if (!game) return
       if (!isAdmin(userId, password))
         return c.log(
           `Non-admin attempted to access admin:move`,
@@ -455,6 +485,7 @@ export default function (
   socket.on(
     `admin:delete`,
     async (userId, password, type, id, callback) => {
+      if (!game) return
       if (!isAdmin(userId, password))
         return c.log(
           `Non-admin attempted to access admin:delete`,

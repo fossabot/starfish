@@ -3,6 +3,8 @@ import type { Item } from '../../Item/Item'
 import type { MiningPlanet } from '../../Planet/MiningPlanet'
 import type { CrewMember } from '../CrewMember'
 
+import defaultGameSettings from '../../../presets/gameSettings'
+
 export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
@@ -168,7 +170,8 @@ export function bunk(this: CrewMember): void {
 
   const staminaToAdd =
     c.getStaminaGainPerTickForSingleCrewMember(
-      this.ship.game.settings.baseStaminaUse,
+      this.ship.game?.settings.baseStaminaUse ||
+        defaultGameSettings().baseStaminaUse,
     ) *
     boostStaminaRegenPassives *
     generalBoostMultiplier

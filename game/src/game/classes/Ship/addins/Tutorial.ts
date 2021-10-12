@@ -5,6 +5,8 @@ import type { Game } from '../../../../game/Game'
 import type { CrewMember } from '../../CrewMember/CrewMember'
 import { db } from '../../../../db'
 
+import defaultGameSettings from '../../../presets/gameSettings'
+
 interface BaseTutorialData {
   step: number
   baseLocation?: CoordinatePair
@@ -68,12 +70,13 @@ export class Tutorial {
       `Spawning tutorial ship for crew member ${crewMember.id}`,
     )
     const tutorialShip =
-      await crewMember.ship.game.addHumanShip({
+      await crewMember.ship.game?.addHumanShip({
         name: crewMember.ship.name,
         tutorial: { step: -1 },
         id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
         guildId: crewMember.ship.guildId,
       })
+    if (!tutorialShip) return
     await tutorialShip.addCrewMember({
       name: crewMember.name,
       id: crewMember.id,
@@ -718,17 +721,18 @@ export class Tutorial {
     this.baseLocation =
       data.baseLocation ||
       ([
-        ...(this.ship.game.getHomeworld(this.ship.guildId)
+        ...(this.ship.game?.getHomeworld(this.ship.guildId)
           ?.location ||
           c.randomFromArray(
-            this.ship.game.planets.filter(
+            (this.ship.game?.planets || []).filter(
               (p) => p.homeworld,
             ),
-          ).location),
+          )?.location || [0, 0]),
       ].map(
         (l) =>
           l +
-          this.ship.game.settings.arrivalThreshold *
+          (this.ship.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold) *
             (Math.random() - 0.5),
       ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
@@ -764,7 +768,9 @@ export class Tutorial {
         c.distance(
           this.ship.location,
           this.targetLocation.location,
-        ) <= this.ship.game.settings.arrivalThreshold
+        ) <=
+          (this.ship.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold)
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
       shouldAdvance =
@@ -781,7 +787,7 @@ export class Tutorial {
     if (this.currentStep.nextStepTrigger.destroyShipId)
       shouldAdvance =
         shouldAdvance &&
-        !this.ship.game.aiShips.find(
+        !this.ship.game?.aiShips.find(
           (s) =>
             s.id ===
             this.currentStep.nextStepTrigger.destroyShipId,
@@ -864,7 +870,7 @@ export class Tutorial {
     // spawn caches
     if (this.currentStep.caches) {
       for (let k of this.currentStep.caches) {
-        this.ship.game.addCache({
+        this.ship.game?.addCache({
           ...k,
           location: [
             this.baseLocation[0] + k.location[0],
@@ -878,7 +884,7 @@ export class Tutorial {
     // spawn ais
     if (this.currentStep.ais) {
       for (let s of this.currentStep.ais) {
-        this.ship.game.addAIShip({
+        this.ship.game?.addAIShip({
           ...s,
           location: s.location
             ? [
@@ -953,7 +959,7 @@ export class Tutorial {
     // // if (!m.channel) this.ship.logEntry(m.message)
     for (let m of this.currentStep.script)
       if (m.channel) {
-        const mainShip = this.ship.game.humanShips.find(
+        const mainShip = this.ship.game?.humanShips.find(
           (s) =>
             s.id === this.ship.crewMembers[0]?.mainShipId,
         )
@@ -1033,7 +1039,7 @@ export class Tutorial {
       }`,
     )
 
-    const mainShip = this.ship.game.humanShips.find(
+    const mainShip = this.ship.game?.humanShips.find(
       (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
     )
     if (!mainShip) {
@@ -1065,24 +1071,24 @@ export class Tutorial {
     //     (k) => k.onlyVisibleToShipId === this.ship.id,
     //   ),
     // )
-    this.ship.game.caches
+    this.ship.game?.caches
       .filter((k) => k.onlyVisibleToShipId === this.ship.id)
       .forEach((k) => {
         // c.log(`attempting to remove cache`, k)
-        this.ship.game.removeCache(k)
+        this.ship.game?.removeCache(k)
       })
-    this.ship.game.attackRemnants
+    this.ship.game?.attackRemnants
       .filter((a) => a.onlyVisibleToShipId === this.ship.id)
       .forEach((a) => {
-        this.ship.game.removeAttackRemnant(a)
+        this.ship.game?.removeAttackRemnant(a)
       })
-    this.ship.game.aiShips
+    this.ship.game?.aiShips
       .filter((s) => s.onlyVisibleToShipId === this.ship.id)
       .forEach((s) => {
-        this.ship.game.removeShip(s)
+        this.ship.game?.removeShip(s)
       })
 
-    const mainShip = this.ship.game.humanShips.find(
+    const mainShip = this.ship.game?.humanShips.find(
       (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
     )
     if (!mainShip) {
@@ -1107,7 +1113,7 @@ export class Tutorial {
 
     this.ship.tutorial = undefined
 
-    if (this.ship.game.ships.includes(this.ship))
-      await this.ship.game.removeShip(this.ship)
+    if (this.ship.game?.ships.includes(this.ship))
+      await this.ship.game?.removeShip(this.ship)
   }
 }

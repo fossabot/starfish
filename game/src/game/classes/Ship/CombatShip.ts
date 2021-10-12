@@ -10,6 +10,8 @@ import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip'
 
+import defaultGameSettings from '../../presets/gameSettings'
+
 export abstract class CombatShip extends Ship {
   static percentOfCreditsLostOnDeath = 0.5
   static percentOfCreditsDroppedOnDeath = 0.25
@@ -19,7 +21,10 @@ export abstract class CombatShip extends Ship {
   combatTactic: CombatTactic = `defensive`
   attackable = true
 
-  constructor(props: BaseShipData, game: Game) {
+  constructor(
+    props: BaseShipData = {} as BaseShipData,
+    game?: Game,
+  ) {
     super(props, game)
 
     this.updateAttackRadius()
@@ -119,7 +124,7 @@ export abstract class CombatShip extends Ship {
       this.visible.ships as ShipStub[]
     )
       .map((s) =>
-        this.game.ships.find((ship) => ship.id === s.id),
+        this.game?.ships.find((ship) => ship.id === s.id),
       )
       .filter(
         (s) =>
@@ -157,17 +162,22 @@ export abstract class CombatShip extends Ship {
     this.dead = false
     this.move(
       [
-        ...(this.game.getHomeworld(this.guildId)
+        ...(this.game?.getHomeworld(this.guildId)
           ?.location ||
           c.randomFromArray(
-            this.game.planets.filter((p) => !p.homeworld),
-          ).location),
+            this.game?.planets.filter(
+              (p) => !p.homeworld,
+            ) || [],
+          )?.location || [0, 0]),
       ].map(
         (pos) =>
           pos +
           c.randomBetween(
-            this.game.settings.arrivalThreshold * -0.4,
-            this.game.settings.arrivalThreshold * 0.4,
+            (this.game?.settings.arrivalThreshold ||
+              defaultGameSettings().arrivalThreshold) *
+              -0.4,
+            (this.game?.settings.arrivalThreshold ||
+              defaultGameSettings().arrivalThreshold) * 0.4,
           ),
       ) as CoordinatePair,
     )
@@ -180,7 +190,7 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
-    if (this.game.tickCount < 10) return false
+    if ((this.game?.tickCount || 0) < 10) return false
     // self
     if (this === otherShip) return false
     // not attackable
@@ -263,14 +273,16 @@ export abstract class CombatShip extends Ship {
       ? false
       : Math.random() <=
         (weapon.critChance === undefined
-          ? this.game.settings.baseCritChance
+          ? this.game?.settings.baseCritChance ||
+            defaultGameSettings().baseCritChance
           : weapon.critChance)
 
     let damage = miss
       ? 0
       : c.getHitDamage(weapon, totalMunitionsSkill) *
         (didCrit
-          ? this.game.settings.baseCritDamageMultiplier
+          ? this.game?.settings.baseCritDamageMultiplier ||
+            defaultGameSettings().baseCritDamageMultiplier
           : 1)
 
     if (!miss) {
@@ -397,7 +409,7 @@ export abstract class CombatShip extends Ship {
       damageResult,
     )
 
-    this.game.addAttackRemnant({
+    this.game?.addAttackRemnant({
       attacker: this,
       defender: target,
       damageTaken: attackResult,
@@ -488,7 +500,8 @@ export abstract class CombatShip extends Ship {
       .forEach((cm: CrewMember) => {
         cm.addXp(
           `munitions`,
-          this.game.settings.baseXpGain *
+          (this.game?.settings.baseXpGain ||
+            defaultGameSettings().baseXpGain) *
             Math.round(weapon.damage * 40) *
             xpBoostMultiplier,
         )
@@ -501,7 +514,8 @@ export abstract class CombatShip extends Ship {
         .forEach((cm: CrewMember) => {
           cm.addXp(
             `munitions`,
-            this.game.settings.baseXpGain *
+            (this.game?.settings.baseXpGain ||
+              defaultGameSettings().baseXpGain) *
               3000 *
               xpBoostMultiplier,
           )

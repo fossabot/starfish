@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../..'
+import { game } from '../io'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
@@ -11,6 +11,7 @@ export default function (
   socket.on(
     `ship:buyItem`,
     (shipId, crewId, itemType, itemId, callback) => {
+      if (!game) return
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -93,6 +94,7 @@ export default function (
   socket.on(
     `ship:sellItem`,
     (shipId, crewId, itemType, itemId, callback) => {
+      if (!game) return
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
@@ -170,6 +172,7 @@ export default function (
   socket.on(
     `ship:swapChassis`,
     (shipId, crewId, chassisId, callback) => {
+      if (!game) return
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip

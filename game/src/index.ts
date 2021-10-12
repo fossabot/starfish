@@ -17,7 +17,6 @@ lastCommit.getLastCommit((err, commit) => {
 })
 
 import { Game } from './game/Game'
-import './server/io'
 import {
   db,
   init as dbInit,
@@ -25,8 +24,7 @@ import {
 } from './db'
 
 dbInit({})
-
-export const game = new Game()
+const game = new Game()
 
 runOnDbReady(async () => {
   // await db.attackRemnant.wipe()
