@@ -23,7 +23,7 @@ export let game: Game | undefined
 
 export function linkGame(g: Game) {
   game = g
-  c.log(`gray`, `Linked game to io server.`)
+  c.log(`green`, `Linked game to io server.`)
 }
 
 let serverConfig: ServerOptions = {}
