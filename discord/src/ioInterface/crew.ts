@@ -120,10 +120,33 @@ export async function repairType(
   target: RepairPriority,
 ): Promise<IOResponse<true>> {
   if (!(await connected()))
-    return { error: `Failed to move crew member.` }
+    return { error: `Failed to set repair type.` }
 
   io.emit(`crew:repairPriority`, shipId, crewId, target)
   return { data: true }
+}
+
+export async function mineType(
+  shipId: string,
+  crewId: string,
+  target: MinePriorityType,
+): Promise<IOResponse<MinePriorityType>> {
+  if (!(await connected()))
+    return { error: `Failed to set mine type.` }
+
+  const res: IOResponse<MinePriorityType> =
+    await new Promise((resolve) => {
+      io.emit(
+        `crew:minePriority`,
+        shipId,
+        crewId,
+        target,
+        (response) => {
+          resolve(response)
+        },
+      )
+    })
+  return res
 }
 
 export async function sell(
