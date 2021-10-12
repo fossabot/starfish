@@ -134,6 +134,18 @@ export class HumanShip extends CombatShip {
     )
       this.discoverPlanet(homeworld)
 
+    // non-guild ships always know where all guild homeworlds are
+    for (let guildId of Object.keys(c.guilds)) {
+      const homeworld = this.game.getHomeworld(
+        guildId as GuildId,
+      )
+      if (
+        homeworld &&
+        !this.seenPlanets.find((p) => p === homeworld)
+      )
+        this.discoverPlanet(homeworld)
+    }
+
     this.recalculateShownPanels()
 
     if (data.commonCredits)

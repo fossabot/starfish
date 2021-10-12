@@ -30,7 +30,13 @@ export default {
       }
 
       // no fowl target, default to moving normally towards spawn point
-      return getDefaultAngle.call(this)
+      const angle = getDefaultAngle.call(this)
+      const unitVector = c.degreesToUnitVector(angle)
+
+      return [
+        this.location[0] + unitVector[0] * distance,
+        this.location[1] + unitVector[1] * distance,
+      ]
     }
     return false
   },

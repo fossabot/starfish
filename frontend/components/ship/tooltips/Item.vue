@@ -151,8 +151,8 @@
       {{ c.speedNumber(dataToUse.range, true, 0) }} km
       <ShipTooltipsCompareProp
         v-if="compareTo"
-        :a="compareTo.range * globals.kmPerAu"
-        :b="dataToUse.range * globals.kmPerAu"
+        :a="compareTo.range * c.kmPerAu"
+        :b="dataToUse.range * c.kmPerAu"
       />
     </div>
     <div v-if="dataToUse.damage">
