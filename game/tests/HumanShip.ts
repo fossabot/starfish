@@ -86,17 +86,50 @@ describe(`HumanShip cargo/credit distribution`, () => {
       ship.addCrewMember(crewMemberData(), true)
     }
 
-    ship.crewMembers[0].addCargo(`carbon`, 10)
+    for (let i = 1; i < 10; i++) {
+      expect(ship.crewMembers[i].maxCargoSpace).to.equal(10)
+    }
+
+    // one person has more but can still receive full amount
+    ship.crewMembers[0].addCargo(`carbon`, 1)
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 10 },
+    ])
+    expect(ship.crewMembers[0].heldWeight).to.equal(2)
+    for (let i = 1; i < 10; i++) {
+      expect(ship.crewMembers[i].heldWeight).to.equal(1)
+    }
+
+    // one person cannot receive all
+    ship.crewMembers[0].addCargo(`carbon`, 7) // will have 9/10 now
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 19 },
+    ])
+    expect(ship.crewMembers[0].heldWeight).to.equal(10)
+    for (let i = 1; i < 10; i++) {
+      expect(ship.crewMembers[i].heldWeight).to.equal(3)
+    }
+
+    // one person is full
     ship.distributeCargoAmongCrew([
       { id: `carbon`, amount: 9 },
     ])
     expect(ship.crewMembers[0].heldWeight).to.equal(10)
     for (let i = 1; i < 10; i++) {
-      expect(ship.crewMembers[i].heldWeight).to.equal(1)
+      expect(ship.crewMembers[i].heldWeight).to.equal(4)
     }
 
-    ship.crewMembers[1].addCargo(`carbon`, 5)
-    expect(ship.crewMembers[1].heldWeight).to.equal(6)
+    // some full, some max out, some receive full amount
+    ship.crewMembers[1].addCargo(`carbon`, 5) // will have 9/10 now
+    expect(ship.crewMembers[1].heldWeight).to.equal(9)
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 17 },
+    ])
+    expect(ship.crewMembers[0].heldWeight).to.equal(10)
+    expect(ship.crewMembers[1].heldWeight).to.equal(10)
+    for (let i = 2; i < 10; i++) {
+      expect(ship.crewMembers[i].heldWeight).to.equal(6)
+    }
 
     ship.distributeCargoAmongCrew([
       { id: `carbon`, amount: 1000 },

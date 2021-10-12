@@ -1,6 +1,6 @@
 import c from '../../../common/dist'
 
-import io from '../server/io'
+import io, { linkGame as linkGameToIo } from '../server/io'
 import { db } from '../db'
 
 import { Ship } from './classes/Ship/Ship'
@@ -49,6 +49,8 @@ export class Game {
   constructor() {
     this.startTime = Date.now()
     this.settings = defaultGameSettings()
+
+    linkGameToIo(this)
 
     c.log(
       `Loaded ${
