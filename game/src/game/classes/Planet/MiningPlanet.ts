@@ -9,7 +9,7 @@ export class MiningPlanet extends Planet {
 
   mine: PlanetMine = []
 
-  constructor(data: BaseMiningPlanetData, game: Game) {
+  constructor(data: BaseMiningPlanetData, game?: Game) {
     super(data, game)
 
     if (data.pacifist) this.pacifist = data.pacifist

@@ -5,6 +5,8 @@ import type { HumanShip } from '../Ship/HumanShip'
 import { MiningPlanet } from './MiningPlanet'
 import type { Planet } from './Planet'
 
+import defaultGameSettings from '../../presets/gameSettings'
+
 export class Comet extends MiningPlanet {
   velocity: CoordinatePair
   speed: number
@@ -23,7 +25,7 @@ export class Comet extends MiningPlanet {
 
   private previousLocation: CoordinatePair
 
-  constructor(data: BaseCometData, game: Game) {
+  constructor(data: BaseCometData, game?: Game) {
     super(data, game)
     this.planetType = `comet`
 
@@ -59,7 +61,8 @@ export class Comet extends MiningPlanet {
       if (
         c.distance(this.location, newShipLocation) <
         this.landingRadiusMultiplier *
-          this.game.settings.arrivalThreshold
+          (this.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold)
       )
         ship.move([
           ship.location[0] + this.velocity[0] * 1.00001,
@@ -70,9 +73,9 @@ export class Comet extends MiningPlanet {
     // remove from game once it flies far out of the universe
     if (
       c.distance(this.location, [0, 0]) >
-      this.game.gameSoftRadius * 1.3
+      (this.game?.gameSoftRadius || 1) * 1.3
     ) {
-      this.game.removePlanet(this)
+      this.game?.removePlanet(this)
       return
     }
 
@@ -89,37 +92,45 @@ export class Comet extends MiningPlanet {
       this.location,
     )
 
-    this.game.chunkManager.addOrUpdate(
+    this.game?.chunkManager.addOrUpdate(
       this,
       this.previousLocation,
     )
   }
 
   applyTickOfGravity(this: Comet): void {
-    const nearbyPlanets = this.game.chunkManager
-      .getElementsWithinRadius(
+    const nearbyPlanets = (
+      this.game?.chunkManager.getElementsWithinRadius(
         this.location,
-        this.game.settings.gravityRadius,
-      )
-      .filter(
-        (el) => el !== this && el.type === `planet`,
-      ) as Planet[]
+        this.game?.settings.gravityRadius ||
+          defaultGameSettings().gravityRadius,
+      ) || []
+    ).filter(
+      (el) => el !== this && el.type === `planet`,
+    ) as Planet[]
     for (let planet of nearbyPlanets || []) {
       const distance = c.distance(
         planet.location,
         this.location,
       )
       if (
-        distance <= this.game.settings.gravityRadius &&
-        distance > this.game.settings.arrivalThreshold
+        distance <=
+          (this.game?.settings.gravityRadius ||
+            defaultGameSettings().gravityRadius) &&
+        distance >
+          (this.game?.settings.arrivalThreshold ||
+            defaultGameSettings().arrivalThreshold)
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
-            this.game.settings.gravityCurveSteepness,
-            this.game.settings.gravityMultiplier,
-            this.game.settings.gravityRadius,
+            this.game?.settings.gravityCurveSteepness ||
+              defaultGameSettings().gravityCurveSteepness,
+            this.game?.settings.gravityMultiplier ||
+              defaultGameSettings().gravityMultiplier,
+            this.game?.settings.gravityRadius ||
+              defaultGameSettings().gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(
@@ -214,17 +225,22 @@ export class Comet extends MiningPlanet {
     })
   }
 
+  resetForNextMine(cargoId: CargoId) {
+    super.resetForNextMine(cargoId)
+
+    // delete from existence once mined out
+    if (this.mine.length) {
+      this.shipsAt.forEach((ship) => {
+        ship.logEntry(
+          `All of the resources on ${this.name} have been exhausted. You watch as it disappates into nothingness.`,
+        )
+      })
+      this.game?.removePlanet(this)
+    }
+  }
+
   async levelUp() {
     super.levelUp()
-
-    if (this.level > 1) {
-      this.addPassive({
-        id: `boostMineSpeed`,
-        intensity: 0.05,
-      })
-    }
-
-    // todo add more passives
 
     if (this.mine.length === 0 || Math.random() > 0.6) {
       // * randomly selected for now

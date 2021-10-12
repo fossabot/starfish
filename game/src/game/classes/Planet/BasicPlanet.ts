@@ -40,7 +40,7 @@ export class BasicPlanet extends Planet {
     passives?: ShipPassiveEffect[]
   } = {}
 
-  constructor(data: BaseBasicPlanetData, game: Game) {
+  constructor(data: BaseBasicPlanetData, game?: Game) {
     super(data, game)
     this.planetType = `basic`
 

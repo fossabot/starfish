@@ -4,7 +4,7 @@ import type { Game } from '../Game'
 import type { Ship } from '../classes/Ship/Ship'
 import type { Zone } from '../classes/Zone'
 
-function getName(game: Game) {
+function getName(game?: Game) {
   let name: string | undefined
   while (!name) {
     name = ``
@@ -16,14 +16,14 @@ function getName(game: Game) {
     if (Math.random() < 0.1)
       name += `${c.randomFromArray(cometNameSuffixes)}`
 
-    if (game.comets.find((p) => p.name === name))
+    if (game?.comets.find((p) => p.name === name))
       name = undefined
   }
   return name
 }
 
 export function generateComet(
-  game: Game,
+  game?: Game,
 ): BaseCometData | false {
   const name = getName(game)
   if (!name) return false
@@ -31,11 +31,11 @@ export function generateComet(
   const location = c
     .degreesToUnitVector(Math.random() * 360)
     .map(
-      (v) => v * game.gameSoftRadius * 1.1,
+      (v) => v * (game?.gameSoftRadius || 1) * 1.1,
     ) as CoordinatePair
   const initialSpeed = c.randomBetween(0.1, 0.5) / 60 / 60 // au/hr
   const randomPointWithinUniverse = c.randomInsideCircle(
-    game.gameSoftRadius,
+    game?.gameSoftRadius || 1,
   )
   const initialAngle = c.angleFromAToB(
     location,

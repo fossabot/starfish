@@ -289,7 +289,7 @@ export default Vue.extend({
 
           if (tp) {
             let radius
-            if (tp.location) {
+            if (tp.location && !tp.radii) {
               if (
                 tp.type &&
                 ['zone', 'weapon'].includes(tp.type)
@@ -355,7 +355,7 @@ export default Vue.extend({
               }
             }
 
-            if (tp.radii)
+            if (tp.radii && this.ship?.id !== tp.id)
               targetPoints.push(
                 ...Object.keys(tp.radii)
                   .filter((k) => k !== 'gameSize')
