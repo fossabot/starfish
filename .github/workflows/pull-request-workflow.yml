@@ -17,7 +17,8 @@ jobs:
         uses: actions/setup-node@v1
 
       - name: Run tests on ${{matrix.folder}}
-        run: cd ${{matrix.folder}} && npm run test
+        run: npm run test
+        working-directory: ${{matrix.folder}}
 
   docker:
     needs: npm-test
