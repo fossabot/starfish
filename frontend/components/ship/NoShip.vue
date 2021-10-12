@@ -21,7 +21,9 @@
           :href="c.discordBotInviteUrl"
           target="_blank"
           class="button big"
-          >Add the Discord bot to your server!</a
+          ><span
+            >Add the Discord bot to your server!</span
+          ></a
         >
       </div>
 

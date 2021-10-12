@@ -20,15 +20,17 @@
       "
       @click="buyRepair(count)"
     >
-      🛠{{ c.r2(count, 2, true) }}HP: 💳{{
-        c.numberWithCommas(
-          c.getRepairPrice(
-            ship.planet,
-            count,
-            ship.guildId,
-          ),
-        )
-      }}
+      <span
+        >🛠{{ c.r2(count, 2, true) }}HP: 💳{{
+          c.numberWithCommas(
+            c.getRepairPrice(
+              ship.planet,
+              count,
+              ship.guildId,
+            ),
+          )
+        }}</span
+      >
     </button>
   </div>
 </template>
