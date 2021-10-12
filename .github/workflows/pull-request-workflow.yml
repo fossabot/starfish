@@ -13,10 +13,8 @@ jobs:
           - folder: 'game'
 
     steps:
-      - name: Use Node.js 16.0.1
+      - name: Use Node.js
         uses: actions/setup-node@v1
-        with:
-          node-version: 16.0.1
 
       - name: Run tests on ${matrix.folder}
         run: cd ${matrix.folder} && npm run test
