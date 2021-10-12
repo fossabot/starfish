@@ -295,22 +295,50 @@ export default function (
 
   socket.on(
     `crew:minePriority`,
-    (shipId, crewId, minePriority) => {
+    (shipId, crewId, minePriority, callback?) => {
       const ship = game.ships.find(
         (s) => s.id === shipId,
       ) as HumanShip
-      if (!ship) return
+      if (!ship)
+        return (
+          callback &&
+          typeof callback === `function` &&
+          callback({ error: `No ship found by that id.` })
+        )
       const crewMember = ship.crewMembers?.find(
         (cm) => cm.id === crewId,
       )
-      if (!crewMember) return
+      if (!crewMember)
+        return (
+          callback &&
+          typeof callback === `function` &&
+          callback({
+            error: `No crew member found by that id.`,
+          })
+        )
+      if (
+        minePriority !== `closest` &&
+        !Object.keys(c.cargo).includes(minePriority)
+      )
+        return (
+          callback &&
+          typeof callback === `function` &&
+          callback({ error: `Invalid mine priority.` })
+        )
 
       crewMember.minePriority = minePriority
       crewMember.toUpdate.minePriority =
         crewMember.minePriority
+
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} mine priority to ${minePriority}.`,
+      )
+
+      return (
+        callback &&
+        typeof callback === `function` &&
+        callback({ data: minePriority })
       )
     },
   )
