@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="tooltipheader">
-      Damage Breakdown
-    </div>
+    <div class="tooltipheader">Damage Breakdown</div>
     <!-- <hr />
     <div>
       <span>
@@ -15,18 +13,23 @@
       ><span v-if="data.didDie"
         >, destroying the target</span
       > -->
-      <hr />
-      <div>
-        <ul
-          v-if="data.damageTally && data.damageTally.length"
-        >
-          <li v-for="d in data.damageTally">
-            {{ d.targetDisplayName }} ({{ d.targetType }}) took
-            {{ c.r2(d.damage)
-            }} damage{{ d.destroyed ? ' (destroyed)' : '' }}
-          </li>
-        </ul>
-      </div>
+    <hr />
+
+    <div>
+      <ul
+        v-if="data.damageTally && data.damageTally.length"
+      >
+        <li v-if="data.damageMitigated" class="success">
+          {{ c.r2(data.damageMitigated) }} damage mitigated
+          by passives
+        </li>
+        <li v-for="d in data.damageTally">
+          {{ d.targetDisplayName }} ({{ d.targetType }})
+          took {{ c.r2(d.damage) }} damage{{
+            d.destroyed ? ' (destroyed)' : ''
+          }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>

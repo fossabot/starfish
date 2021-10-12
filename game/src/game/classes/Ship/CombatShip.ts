@@ -815,6 +815,8 @@ export abstract class CombatShip extends Ship {
     const damageResult = {
       miss: attackDamageAfterPassives === 0,
       damageTaken: totalDamageDealt,
+      damageMitigated:
+        attack.damage - attackDamageAfterPassives,
       didDie: didDie,
       weapon: attack.weapon?.toReference(),
       damageTally,
