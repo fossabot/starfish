@@ -26,7 +26,7 @@ jobs:
         working-directory: ${{matrix.folder}}
 
       - name: NPM build on ${{matrix.folder}}
-        run: npm run build
+        run: npm run build-once
         working-directory: ${{matrix.folder}}
 
       - name: Run tests on ${{matrix.folder}}
