@@ -269,6 +269,7 @@ export class HumanShip extends CombatShip {
       (p) => !this.seenPlanets.includes(p),
     )
     newPlanets.forEach((p) => this.discoverPlanet(p))
+
     // ----- discover new landmarks -----
     const newLandmarks = this.visible.zones.filter(
       (z) => !this.seenLandmarks.includes(z),

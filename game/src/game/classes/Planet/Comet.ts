@@ -89,7 +89,10 @@ export class Comet extends MiningPlanet {
       this.location,
     )
 
-    this.game.chunkManager.addOrUpdate(this, this.location)
+    this.game.chunkManager.addOrUpdate(
+      this,
+      this.previousLocation,
+    )
   }
 
   applyTickOfGravity(this: Comet): void {
