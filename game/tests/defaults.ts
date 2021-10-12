@@ -10,5 +10,6 @@ export function humanShipData(): BaseHumanShipData {
   return {
     id: `testShip` + randomId,
     name: `Test Ship ` + randomId,
+    loadout: `humanDefault`,
   }
 }

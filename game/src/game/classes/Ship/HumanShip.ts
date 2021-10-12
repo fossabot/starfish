@@ -2027,38 +2027,43 @@ export class HumanShip extends CombatShip {
 
     cargo.forEach((contents) => {
       let toDistribute = contents.amount
-      const canHoldMore = [...this.crewMembers]
+      let canHoldMore = [...this.crewMembers]
 
       while (canHoldMore.length && toDistribute) {
+        const newCanHoldMore = [...canHoldMore]
         const amountForEach =
           toDistribute / canHoldMore.length
-        toDistribute = canHoldMore.reduce(
-          (total, cm, index) => {
-            const amountToGive =
-              amountForEach *
-              (cm.getPassiveIntensity(`boostDropAmounts`) +
-                1)
 
-            if (contents.id === `credits`) {
-              cm.credits = Math.floor(
-                cm.credits + amountToGive,
+        toDistribute = 0
+
+        canHoldMore.forEach((cm, index) => {
+          const amountToGive =
+            amountForEach *
+            (cm.getPassiveIntensity(`boostDropAmounts`) + 1)
+          // unweighted cargo
+          if (contents.id === `credits`) {
+            cm.credits = Math.floor(
+              cm.credits + amountToGive,
+            )
+            cm.toUpdate.credits = cm.credits
+          }
+          // normal weighted cargo
+          else {
+            const leftOver = cm.addCargo(
+              contents.id,
+              amountToGive,
+            )
+            if (leftOver) {
+              newCanHoldMore.splice(
+                newCanHoldMore.indexOf(cm),
+                1,
               )
-              cm.toUpdate.credits = cm.credits
-            } else {
-              const leftOver = cm.addCargo(
-                contents.id,
-                amountToGive,
-              )
-              if (leftOver) {
-                canHoldMore.splice(index, 1)
-                return total + leftOver
-              }
-              cm.toUpdate.inventory = cm.inventory
+              toDistribute += leftOver
             }
-            return total
-          },
-          0,
-        )
+            cm.toUpdate.inventory = cm.inventory
+          }
+        })
+        canHoldMore = newCanHoldMore
       }
 
       if (toDistribute > 1) {
