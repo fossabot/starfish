@@ -370,9 +370,15 @@ export default function (
       if (type === `planet`) {
         const found = game.planets.find((s) => s.id === id)
         if (found) {
+          const previousLocation = [
+            ...found.location,
+          ] as CoordinatePair
           found.location = location
           found.toUpdate.location = found.location
-          game.chunkManager.addOrUpdate(found)
+          game.chunkManager.addOrUpdate(
+            found,
+            previousLocation,
+          )
           c.log(`Moved planet`, found.name)
           return (
             typeof callback === `function` &&
@@ -383,9 +389,15 @@ export default function (
       if (type === `comet`) {
         const found = game.comets.find((s) => s.id === id)
         if (found) {
+          const previousLocation = [
+            ...found.location,
+          ] as CoordinatePair
           found.location = location
           found.toUpdate.location = found.location
-          game.chunkManager.addOrUpdate(found)
+          game.chunkManager.addOrUpdate(
+            found,
+            previousLocation,
+          )
           c.log(`Moved comet`, found.name)
           return (
             typeof callback === `function` &&
@@ -396,9 +408,15 @@ export default function (
       if (type === `zone`) {
         const found = game.zones.find((s) => s.id === id)
         if (found) {
+          const previousLocation = [
+            ...found.location,
+          ] as CoordinatePair
           found.location = location
           found._stub = null
-          game.chunkManager.addOrUpdate(found)
+          game.chunkManager.addOrUpdate(
+            found,
+            previousLocation,
+          )
           c.log(`Moved zone`, found.name)
           return (
             typeof callback === `function` &&
@@ -409,11 +427,17 @@ export default function (
       if (type === `cache`) {
         const found = game.caches.find((s) => s.id === id)
         if (found) {
+          const previousLocation = [
+            ...found.location,
+          ] as CoordinatePair
           c.log(found.location)
           found.location = location
           found._stub = null
           c.log(found.location)
-          game.chunkManager.addOrUpdate(found)
+          game.chunkManager.addOrUpdate(
+            found,
+            previousLocation,
+          )
           c.log(`Moved cache`, found.id)
           return (
             typeof callback === `function` &&

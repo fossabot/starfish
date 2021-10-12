@@ -35,9 +35,11 @@
           "
           class="button big martopsmall"
         >
-          Join Guild: 💳{{
-            c.numberWithCommas(changePrice)
-          }}
+          <span
+            >Join Guild: 💳{{
+              c.numberWithCommas(changePrice)
+            }}</span
+          >
         </button>
       </div>
     </div>

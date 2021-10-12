@@ -154,12 +154,12 @@ const achievements: { [key: string]: Achievement } = {
   exploration1: {
     id: `exploration1`,
     reward: { tagline: `Small Pond Paddler` },
-    for: `discovering 5 planets`,
+    for: `discovering 10 planets`,
     condition: {
       prop: {
         id: `seenPlanets`,
         length: true,
-        amount: 5,
+        amount: 10,
       },
     },
   },
@@ -171,12 +171,12 @@ const achievements: { [key: string]: Achievement } = {
         url: `stars1.jpg`,
       },
     },
-    for: `discovering 10 planets`,
+    for: `discovering 15 planets`,
     condition: {
       prop: {
         id: `seenPlanets`,
         length: true,
-        amount: 10,
+        amount: 15,
       },
     },
   },
@@ -461,8 +461,8 @@ const achievements: { [key: string]: Achievement } = {
   },
 
   // guild join
-  guildtraders1: {
-    id: `traders1`,
+  guildTraders1: {
+    id: `guildTraders1`,
     reward: {
       headerBackground: {
         id: `Traders Guild 1`,
@@ -477,8 +477,8 @@ const achievements: { [key: string]: Achievement } = {
       },
     },
   },
-  guildpeacekeepers1: {
-    id: `peacekeepers1`,
+  guildPeacekeepers1: {
+    id: `guildPeacekeepers1`,
     reward: {
       headerBackground: {
         id: `Peacekeepers Guild 1`,
@@ -493,8 +493,8 @@ const achievements: { [key: string]: Achievement } = {
       },
     },
   },
-  guildexplorers1: {
-    id: `explorers1`,
+  guildExplorers1: {
+    id: `guildExplorers1`,
     reward: {
       headerBackground: {
         id: `Explorers Guild 1`,
@@ -509,8 +509,8 @@ const achievements: { [key: string]: Achievement } = {
       },
     },
   },
-  guildhunters1: {
-    id: `hunters1`,
+  guildHunters1: {
+    id: `guildHunters1`,
     reward: {
       headerBackground: {
         id: `Hunters Guild 1`,
@@ -525,8 +525,8 @@ const achievements: { [key: string]: Achievement } = {
       },
     },
   },
-  guildminers1: {
-    id: `miners1`,
+  guildMiners1: {
+    id: `guildMiners1`,
     reward: {
       headerBackground: {
         id: `Miners Guild 1`,

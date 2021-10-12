@@ -91,7 +91,13 @@ export abstract class CombatShip extends Ship {
   }
 
   applyZoneTickEffects() {
-    this.visible.zones
+    ;(
+      (this.seenLandmarks?.length
+        ? this.seenLandmarks?.filter(
+            (z) => z.type === `zone`,
+          )
+        : this.visible.zones) || this.visible.zones
+    )
       .filter((z) =>
         c.pointIsInsideCircle(
           z.location,

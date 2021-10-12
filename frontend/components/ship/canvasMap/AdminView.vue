@@ -185,8 +185,8 @@ export default Vue.extend({
               : null
 
           if (tp) {
-            let radius
             if (tp.location && !tp.radii) {
+              let radius
               if (
                 tp.type &&
                 ['zone', 'weapon'].includes(tp.type)

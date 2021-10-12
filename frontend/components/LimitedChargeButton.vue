@@ -73,7 +73,7 @@
             :step="0.01"
             v-model="mobileSliderPercent"
           />
-          <button @click="end">Use</button>
+          <button @click="end"><span>Use</span></button>
         </div>
       </div>
     </div>

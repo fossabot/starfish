@@ -31,7 +31,9 @@
             "
             @click="scriptIndex++"
           >
-            {{ currentScript.next || 'Go on...' }}
+            <span>{{
+              currentScript.next || 'Go on...'
+            }}</span>
           </button>
           <div v-else></div>
           <button class="secondary" @click="skipTutorial">

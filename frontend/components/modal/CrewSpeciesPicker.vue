@@ -67,13 +67,13 @@
         class="big martop"
         @click="pickSpecies(chosenId)"
       >
-        Yep!
+        <span>Yep!</span>
       </button>
       <button
         class="big secondary martop"
         @click="chosenId = null"
       >
-        Wait, no...
+        <span>Wait, no...</span>
       </button>
     </div>
   </div>

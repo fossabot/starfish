@@ -53,9 +53,10 @@ export class ThrustCommand implements Command {
       allowedUserId: context.author.id,
       content: `${
         context.crewMember.name
-      } can thrust with ${
-        c.r2(context.crewMember.cockpitCharge) * 100
-      }% of their capacity toward:`,
+      } can thrust with ${c.r2(
+        context.crewMember.cockpitCharge * 100,
+        0,
+      )}% of their capacity toward:`,
       buttons: validTargets.map((p) => ({
         label: `${p.name}`,
         style: `SECONDARY`,

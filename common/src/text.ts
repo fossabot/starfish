@@ -24,6 +24,8 @@ function speedNumber(
   noTag = false,
   maxDecimalPlaces = 2,
 ): string {
+  const isNegative = numberInAu < 0
+  if (isNegative) numberInAu = -numberInAu
   let output = ``
   const numberInKm = numberInAu * globals.kmPerAu
   if (numberInKm < 1000)
@@ -56,7 +58,11 @@ function speedNumber(
         2,
       ),
     )}B`
-  return output + (noTag ? `` : ` km/hr`)
+  return (
+    (isNegative ? `-` : ``) +
+    output +
+    (noTag ? `` : ` km/hr`)
+  )
 }
 
 function printList(list: string[]) {

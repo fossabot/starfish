@@ -32,6 +32,7 @@ import { StatusCommand } from './commands/Status'
 import { RepairCommand } from './commands/Repair'
 import { BunkCommand } from './commands/Bunk'
 import { WeaponsCommand } from './commands/Weapons'
+import { MineCommand } from './commands/Mine'
 import { CockpitCommand } from './commands/Cockpit'
 import { BuyCommand } from './commands/Buy'
 import { SellCommand } from './commands/Sell'
@@ -57,6 +58,7 @@ export class CommandHandler {
       RepairCommand,
       BunkCommand,
       WeaponsCommand,
+      MineCommand,
       CockpitCommand,
       RespawnCommand,
       ChangeShipNameCommand,

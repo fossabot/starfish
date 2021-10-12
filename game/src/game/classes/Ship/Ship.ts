@@ -582,10 +582,16 @@ export class Ship extends Stubbable {
   }
 
   move(toLocation?: CoordinatePair) {
+    const previousLocation = [
+      ...this.location,
+    ] as CoordinatePair
     if (toLocation) {
       this.location = [...toLocation]
       this.toUpdate.location = this.location
-      this.game.chunkManager.addOrUpdate(this)
+      this.game.chunkManager.addOrUpdate(
+        this,
+        previousLocation,
+      )
     }
   }
 

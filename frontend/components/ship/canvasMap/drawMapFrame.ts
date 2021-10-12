@@ -202,11 +202,10 @@ export default class Drawer {
     )
 
     const zonesToDraw: Partial<ZoneStub>[] = [
-      ...(visible?.zones ||
-        ship.seenLandmarks.filter(
-          (l) => l.type === `zone`,
-        ) ||
-        []),
+      ...(visible?.zones || []),
+      ...(ship?.seenLandmarks?.filter(
+        (l) => l.type === `zone`,
+      ) || []),
     ]
 
     const attackRemnantsToDraw: Partial<AttackRemnantStub>[] =
