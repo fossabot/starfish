@@ -1,22 +1,14 @@
-const { Game } = require(`../dist/game/Game`)
-const {
-  HumanShip,
-} = require(`../dist/game/classes/Ship/HumanShip`)
+// import { Game } from '../src/game/Game'
+import { HumanShip } from '../src/game/classes/Ship/HumanShip'
 
-const { expect } = require(`chai`)
-const { describe, it } = require(`mocha`)
+import chai, { expect } from 'chai'
+import { describe, it } from 'mocha'
+// import sinonChai from 'sinon-chai'
+// chai.use(sinonChai)
 
-const sinon = require(`sinon`)
-const chai = require(`chai`)
+import { crewMemberData, humanShipData } from './defaults'
 
 // ... imports for the classes under test
-
-const sinonChai = require(`sinon-chai`)
-const {
-  CrewMember,
-} = require(`../dist/game/classes/CrewMember/CrewMember`)
-
-chai.use(sinonChai)
 
 describe(`HumanShip Basic Tests`, () => {
   // let testGame = sinon.createStubInstance(Game)
@@ -25,16 +17,26 @@ describe(`HumanShip Basic Tests`, () => {
   //   gameMock = sinon.mock(testGame)
 
   it(`should create a HumanShip`, () => {
-    let testShip = new HumanShip()
+    let testShip = new HumanShip(humanShipData())
     expect(testShip).to.be.an.instanceof(HumanShip)
   })
 
   it(`should be able to add CrewMembers to a HumanShip`, () => {
-    let testShip = new HumanShip()
+    let testShip = new HumanShip(humanShipData())
     for (let i = 0; i < 10; i++) {
-      testShip.addCrewMember({}, true)
+      testShip.addCrewMember(crewMemberData(), true)
     }
     expect(testShip.crewMembers.length).to.equal(10)
+  })
+})
+
+describe(`HumanShip Cargo/Credit Distribution`, () => {
+  it(`should be able to distribute cargo among crew members`, () => {
+    let testShip = new HumanShip(humanShipData())
+    for (let i = 0; i < 10; i++) {
+      testShip.addCrewMember(crewMemberData(), true)
+    }
+    // testShip.distributeCargoAmongCrew([{'id': }])
   })
 })
 

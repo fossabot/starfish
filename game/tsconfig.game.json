@@ -4,8 +4,7 @@
   "exclude": [
     "../frontend/**/*",
     "../discord/**/*",
-    "../common/**/*",
-    "./tests"
+    "../common/**/*"
   ],
   "compilerOptions": {
     "esModuleInterop": true,
@@ -22,5 +21,8 @@
     {
       "path": "../common/tsconfig.common.json"
     }
-  ]
+  ],
+  "ts-node": {
+    "files": true
+  }
 }

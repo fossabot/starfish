@@ -245,9 +245,8 @@ export class Ship extends Stubbable {
 
     if (this.name === prevName) return
 
-    if (this.name) {
-      c.log(`renaming ship:`, prevName, newName, this.name)
-    }
+    // if (this.name)
+    //   c.log(`renaming ship:`, prevName, newName, this.name)
 
     this.toUpdate.name = this.name
     this.logEntry(
