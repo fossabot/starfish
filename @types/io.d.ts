@@ -233,6 +233,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     priority: MinePriorityType,
+    callback?: (res: IOResponse<MinePriorityType>) => void,
   ) => void
   [`crew:attackTarget`]: (
     shipId: string,
