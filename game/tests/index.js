@@ -31,15 +31,6 @@ describe(`HumanShip Basic Tests`, () => {
 
   it(`should be able to add CrewMembers to a HumanShip`, () => {
     let testShip = new HumanShip()
-    testShip.addCrewMember({ name: `TestMember1` }, true)
-    expect(testShip.crewMembers.length).to.equal(1)
-    expect(testShip.crewMembers[0]).to.be.an.instanceof(
-      CrewMember,
-    )
-  })
-
-  it(`should be able to add CrewMembers to a HumanShip`, () => {
-    let testShip = new HumanShip()
     for (let i = 0; i < 10; i++) {
       testShip.addCrewMember({}, true)
     }
