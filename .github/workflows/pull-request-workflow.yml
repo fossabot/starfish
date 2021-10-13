@@ -35,6 +35,9 @@ jobs:
           name: test-results
           path: ${{matrix.folder}}/test-results.json
 
+  test-report:
+    runs-on: ubuntu-latest
+    steps:
       - name: Show test results!
         uses: dorny/test-reporter@v1
         with:
