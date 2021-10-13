@@ -33,7 +33,7 @@ jobs:
         if: success() || failure() # run this step even if previous step failed
         with:
           name: test-results.json
-          path: ${{matrix.folder}}/
+          path: ${{matrix.folder}}/test-results.json
 
       - name: Show test results!
         uses: dorny/test-reporter@v1
