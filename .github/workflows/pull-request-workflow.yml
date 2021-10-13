@@ -29,17 +29,11 @@ jobs:
         run: npm run test
         working-directory: ${{matrix.folder}}
 
-      - uses: actions/upload-artifact@v2 # upload test results
-        if: success() || failure() # run this step even if previous step failed
-        with:
-          name: test-results.json
-          path: ${{matrix.folder}}/test-results.json
-
       - name: Show test results!
         uses: dorny/test-reporter@v1
         with:
           name: Mocha Tests # Name of the check run which will be created
-          path: reports/json/test-results*.json # Path to test results
+          path: test-results.json # Path to test results
           list-suites: 'all'
           list-tests: 'all'
           max-annotations: '10'
