@@ -32,8 +32,8 @@ jobs:
       - uses: actions/upload-artifact@v2 # upload test results
         if: success() || failure() # run this step even if previous step failed
         with:
-          name: test-results
-          path: ${{matrix.folder}}/test-results.json
+          name: test-results.json
+          path: ${{matrix.folder}}/
 
       - name: Show test results!
         uses: dorny/test-reporter@v1
