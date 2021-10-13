@@ -33,14 +33,14 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Mocha Tests # Name of the check run which will be created
-          path: reports/json/test-results*.json # Path to test results
+          path: test-results*.json # Path to test results
           list-suites: 'all'
           list-tests: 'all'
           max-annotations: '10'
           fail-on-error: 'true'
           reporter: mocha-json
           artifact: test-results
-          working-directory: ${{matrix.folder}}/report/json
+          working-directory: ${{matrix.folder}}
 
   docker:
     needs: npm-test
