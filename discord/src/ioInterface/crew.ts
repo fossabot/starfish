@@ -59,6 +59,30 @@ export async function move(
   return { data: true }
 }
 
+export async function leave(
+  shipId: string,
+  crewId: string,
+): Promise<string | null> {
+  const error: string | null = await new Promise(
+    (resolve) => {
+      io.emit(
+        `crew:leave`,
+        shipId,
+        crewId,
+        ({ data, error }: IOResponseReceived<true>) => {
+          if (error) {
+            c.log(error)
+            resolve(error)
+            return
+          }
+          resolve(null)
+        },
+      )
+    },
+  )
+  return error // null = ok
+}
+
 export async function thrustAt(
   shipId: string,
   crewId: string,

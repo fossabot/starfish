@@ -82,7 +82,7 @@
           v-if="validOrders && isCaptain"
           @click="setOrders(true)"
         >
-          Clear Orders
+          <span>Clear Orders</span>
         </button>
       </div>
     </div>
@@ -364,7 +364,7 @@
         v-if="toValidOrders(inputOrders)"
       >
         <div class="button" @click="setOrders">
-          Set Orders
+          <span>Set Orders</span>
         </div>
       </div>
 

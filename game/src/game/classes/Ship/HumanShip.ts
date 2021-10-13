@@ -1000,7 +1000,6 @@ export class HumanShip extends CombatShip {
     }
 
     this.toUpdate.velocity = this.velocity
-    const previousSpeed = this.speed
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
@@ -1011,7 +1010,7 @@ export class HumanShip extends CombatShip {
         [
           thruster.name,
           `braked, slowing the ship by ${c.speedNumber(
-            (this.speed - previousSpeed) * 60 * 60 * -1,
+            (this.speed - currentMagnitude) * 60 * 60 * -1,
           )}.`,
         ],
         `low`,
@@ -1022,10 +1021,10 @@ export class HumanShip extends CombatShip {
 
     thruster.addStat(
       `totalSpeedApplied`,
-      (this.speed - previousSpeed) * 60 * 60 * -1,
+      (this.speed - currentMagnitude) * 60 * 60 * -1,
     )
 
-    return (this.speed - previousSpeed) * 60 * 60 * -1
+    return (this.speed - currentMagnitude) * 60 * 60 * -1
   }
 
   // ----- move -----
