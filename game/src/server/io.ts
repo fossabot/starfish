@@ -19,6 +19,7 @@ import isDocker from 'is-docker'
 require(`events`).captureRejections = true
 
 import type { Game } from '../game/Game'
+import { debug } from 'console'
 export let game: Game | undefined
 
 export function linkGame(g: Game) {
@@ -95,5 +96,7 @@ io.on(
 )
 
 webServer.listen(4200)
-c.log(`green`, `io server listening on port 4200`)
+if (process.env.NODE_ENV === `production`) {
+  c.log(`green`, `io server listening on port 4200`)
+}
 export default io
