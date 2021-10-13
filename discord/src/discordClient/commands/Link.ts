@@ -4,7 +4,7 @@ import type { Command } from '../models/Command'
 import { MessageEmbed, ColorResolvable } from 'discord.js'
 
 export class LinkCommand implements Command {
-  commandNames = [`link`, `links`, `url`]
+  commandNames = [`link`, `links`, `url`, `invite`]
 
   getHelpMessage(commandPrefix: string): string {
     return `\`${commandPrefix}${this.commandNames[0]}\` - Get some useful Starfish links.`

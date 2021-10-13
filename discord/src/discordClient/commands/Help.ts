@@ -9,7 +9,7 @@ import {
 
 export class HelpCommand implements Command {
   commandsToList: Command[] = []
-  commandNames = [`help`, `h`, `info`]
+  commandNames = [`help`, `h`, `i`, `info`]
 
   constructor(commands: Command[]) {
     this.commandsToList = [...commands]
@@ -24,20 +24,59 @@ export class HelpCommand implements Command {
     await context.reply({
       embeds: [
         new MessageEmbed()
-          .setTitle(`Help`)
+          .setTitle(`Public commands`)
           .setColor(c.gameColor as ColorResolvable)
           .setThumbnail(
             `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
           )
           .setDescription(
             this.commandsToList
+              .filter(
+                (cm) =>
+                  !cm.requiresCaptain &&
+                  !cm.requiresCrewMember &&
+                  !cm.requiresShip,
+              )
               .map((cm) =>
                 cm.getHelpMessage(context.commandPrefix),
               )
               .filter((m) => m)
-              .join(`\n`) +
-              `\n\n` +
-              `:desktop: [Ship console](${c.frontendUrl})` +
+              .join(`\n`),
+          ),
+        new MessageEmbed()
+          .setTitle(`Crew commands`)
+          .setColor(c.gameColor as ColorResolvable)
+          .setDescription(
+            this.commandsToList
+              .filter(
+                (cm) =>
+                  (cm.requiresShip ||
+                    cm.requiresCrewMember) &&
+                  !cm.requiresCaptain,
+              )
+              .map((cm) =>
+                cm.getHelpMessage(context.commandPrefix),
+              )
+              .filter((m) => m)
+              .join(`\n`),
+          ),
+        new MessageEmbed()
+          .setTitle(`Captain commands`)
+          .setColor(c.gameColor as ColorResolvable)
+          .setDescription(
+            this.commandsToList
+              .filter((cm) => cm.requiresCaptain)
+              .map((cm) =>
+                cm.getHelpMessage(context.commandPrefix),
+              )
+              .filter((m) => m)
+              .join(`\n`),
+          ),
+        new MessageEmbed()
+          .setTitle(`Captain commands`)
+          .setColor(c.gameColor as ColorResolvable)
+          .setDescription(
+            `:desktop: [Ship console](${c.frontendUrl})` +
               `\n\n` +
               `:incoming_envelope: [Bot invite](${c.discordBotInviteUrl})` +
               `\n\n` +

@@ -8,7 +8,7 @@ import { ColorResolvable, MessageEmbed } from 'discord.js'
 import { channelData } from '../actions/resolveOrCreateChannel'
 import removeChannel from '../actions/removeChannel'
 
-export class LeaveGameCommand implements Command {
+export class ShipLeaveGameCommand implements Command {
   requiresShip = true
   requiresCaptain = true
 

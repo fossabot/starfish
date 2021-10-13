@@ -137,6 +137,40 @@ export default function (
     )
   })
 
+  socket.on(`crew:leave`, (shipId, crewId, callback) => {
+    if (!game) return
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship)
+      return (
+        typeof callback === `function` &&
+        callback({ error: `Failed to find ship.` })
+      )
+    const crewMember = ship.crewMembers?.find(
+      (cm) => cm.id === crewId,
+    )
+    if (!crewMember)
+      return (
+        typeof callback === `function` &&
+        callback({
+          error: `Failed to find that crew member to remove.`,
+        })
+      )
+
+    ship.removeCrewMember(crewId, true)
+
+    c.log(
+      `gray`,
+      `${crewMember.name} on ${ship.name} left the game.`,
+    )
+
+    return (
+      typeof callback === `function` &&
+      callback({ data: true })
+    )
+  })
+
   socket.on(
     `crew:targetLocation`,
     (
@@ -580,12 +614,9 @@ export default function (
         return callback({
           error: `No planet found.`,
         })
-      if (
-        planet.planetType !== `basic` ||
-        !(planet as BasicPlanet).vendor?.cargo?.length
-      )
+      if (planet.planetType !== `basic`)
         return callback({
-          error: `This planet doesn't sell anything!`,
+          error: `This planet doesn't buy anything!`,
         })
 
       const price =

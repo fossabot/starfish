@@ -13,7 +13,6 @@ import {
 } from '../ioInterface'
 
 import { StartCommand } from './commands/Start'
-import { InviteCommand } from './commands/Invite'
 import { LinkCommand } from './commands/Link'
 import { JoinCommand } from './commands/Join'
 import { RespawnCommand } from './commands/Respawn'
@@ -23,7 +22,7 @@ import { AlertLevelCommand } from './commands/AlertLevel'
 import { ChangeCaptainCommand } from './commands/ChangeCaptain'
 import { HelpCommand } from './commands/Help'
 import { KickMemberCommand } from './commands/KickMember'
-import { LeaveGameCommand } from './commands/LeaveGame'
+import { ShipLeaveGameCommand } from './commands/ShipLeaveGame'
 import { GoCommand } from './commands/Go'
 import { ChangeShipNameCommand } from './commands/ShipName'
 import { ThrustCommand } from './commands/Thrust'
@@ -36,6 +35,7 @@ import { MineCommand } from './commands/Mine'
 import { CockpitCommand } from './commands/Cockpit'
 import { BuyCommand } from './commands/Buy'
 import { SellCommand } from './commands/Sell'
+import { CrewLeaveGameCommand } from './commands/CrewLeaveGame'
 
 export class CommandHandler {
   private commands: Command[]
@@ -46,7 +46,6 @@ export class CommandHandler {
     const commandClasses = [
       StartCommand,
       JoinCommand,
-      InviteCommand,
       LinkCommand,
       StatusCommand,
       BroadcastCommand,
@@ -66,7 +65,8 @@ export class CommandHandler {
       ChangeCaptainCommand,
       KickMemberCommand,
       RepairChannelsCommand,
-      LeaveGameCommand,
+      ShipLeaveGameCommand,
+      CrewLeaveGameCommand,
     ]
     this.commands = commandClasses.map(
       (CommandClass) => new CommandClass(),

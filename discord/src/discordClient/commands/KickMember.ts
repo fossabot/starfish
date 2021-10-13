@@ -10,7 +10,7 @@ export class KickMemberCommand implements Command {
   commandNames = [`kickmember`, `kick`, `km`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` - kick a crew member. This action is permanent.`
+    return `\`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` - Kick a crew member. This action is permanent.`
   }
 
   async run(context: CommandContext): Promise<void> {
