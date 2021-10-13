@@ -26,13 +26,13 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% AI drop rarity`,
     },
     boostRepairSpeed: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% faster repairs`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} repairs`,
     },
     boostMineSpeed: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% faster mining`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} mining`,
     },
     boostMinePayouts: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% higher mining payouts`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `higher` : `lower`} mining payouts`,
     },
     boostScanRange: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% scan range`,
@@ -54,7 +54,7 @@ const baseShipPassiveData = {
     //     `${(p.intensity || 1) >=0 ? '+' : ''}${Math.round((p.intensity || 1) * 100)}% more thrust`,
     // },
     boostXpGain: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% faster XP gain`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} XP gain`,
     },
     disguiseChassisType: {
         description: (p) => `Chassis type hidden`,
@@ -69,16 +69,20 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 0) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% damage to ${p.data?.type}s`,
     },
     scaledDamageReduction: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% damage reduction`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% damage ${(p.intensity || 1) >= 0
+            ? `reduction`
+            : `taken increase`}`,
     },
     flatDamageReduction: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${p.intensity || 1} HP flat damage reduction`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.abs(p.intensity || 1)} HP flat damage ${(p.intensity || 1) >= 0
+            ? `reduction`
+            : `taken increase`}`,
     },
     flatSkillBoost: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(p.intensity || 1)} crew skill levels`,
     },
     boostStaminaRegeneration: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% faster stamina regeneration`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} stamina regeneration`,
     },
     autoRepair: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 10) / 10}HP/hr ${(p.intensity || 1) >= 0

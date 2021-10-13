@@ -24,6 +24,7 @@ import type { Tutorial } from './addins/Tutorial'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 70
+  static maxAIPreviousLocations: number = 25
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
@@ -122,7 +123,9 @@ export class Ship extends Stubbable {
     this.velocity = velocity || [0, 0]
     if (location) {
       this.location = location
-    } else if (guildId) {
+    }
+    // if new guild member, spawn at homeworld
+    else if (guildId) {
       this.location = [
         ...(this.game?.getHomeworld(guildId)?.location || [
           0, 0,
@@ -139,12 +142,14 @@ export class Ship extends Stubbable {
           ),
       ) as CoordinatePair
       // c.log(`fact`, this.location, this.guild.homeworld)
-    } else
+    }
+    // if new and no guild, spawn at random non-homeworld safe planet
+    else
       this.location = [
         ...((c
           .randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld,
+              (p) => !p.homeworld && p.pacifist,
             ) || [],
           )
           ?.location.map(
@@ -609,7 +614,7 @@ export class Ship extends Stubbable {
     previousLocation: CoordinatePair,
     currentLocation: CoordinatePair,
   ) {
-    const spawnDistanceCutoff = 0.0001
+    const newPLDistanceCutoff = 0.0003
 
     if (
       this.previousLocations.length > 1 &&
@@ -647,7 +652,7 @@ export class Ship extends Stubbable {
     )
 
     const angle =
-      distance > spawnDistanceCutoff
+      distance > newPLDistanceCutoff
         ? Math.abs(
             c.angleFromAToB(
               this.previousLocations[
@@ -667,7 +672,8 @@ export class Ship extends Stubbable {
       angle >= 5 ||
       distance > 0.1
     ) {
-      // if (this.human) c.log(this.previousLocations)
+      // if (this.human)
+      //   // c.log(this.previousLocations)
       //   c.log(
       //     `adding previous location to`,
       //     this.name,
@@ -677,12 +683,14 @@ export class Ship extends Stubbable {
       //   )
       this.previousLocations.push([
         ...(currentLocation.map((l) =>
-          c.r2(l, 8),
+          c.r2(l, 7),
         ) as CoordinatePair),
       ])
       while (
         this.previousLocations.length >
-        Ship.maxPreviousLocations
+        (this.ai
+          ? Ship.maxAIPreviousLocations
+          : Ship.maxPreviousLocations)
       )
         this.previousLocations.shift()
       this.toUpdate.previousLocations =

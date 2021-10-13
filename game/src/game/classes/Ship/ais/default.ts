@@ -12,7 +12,7 @@ export function getDefaultAngle(this: AIShip): number {
     this.spawnPoint,
   )
   const angleDeviation = 40
-  return Math.random() > 0.8
+  return Math.random() > 0.85
     ? Math.floor(Math.random() * 360)
     : (angleToHome +
         (Math.random() * angleDeviation * 2 -
@@ -22,6 +22,8 @@ export function getDefaultAngle(this: AIShip): number {
 }
 
 export default {
+  scanTypes: [`humanShip`] as ScanType[],
+
   determineNewTargetLocation(
     this: AIShip,
   ): CoordinatePair | false {

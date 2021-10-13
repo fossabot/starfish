@@ -45,6 +45,12 @@ export class StatusCommand implements Command {
 
     const fields: EmbedFieldData[] = []
 
+    if (ship.planet)
+      fields.push({
+        name: `Planet`,
+        value: `🪐` + ship.planet.name,
+      })
+
     fields.push({
       name: `Ship HP`,
       value: `${c.percentToTextBars(

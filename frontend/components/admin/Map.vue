@@ -40,9 +40,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import c from '../../../../common/dist'
+import c from '../../../common/dist'
 import { mapState } from 'vuex'
-import Drawer from './drawMapFrame'
+import Drawer from '../ship/canvasMap/drawMapFrame'
 
 export default Vue.extend({
   props: {

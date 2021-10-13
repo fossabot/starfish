@@ -1,7 +1,7 @@
 <template>
   <div class="adminmap">
     <div style="position: relative">
-      <ShipCanvasMapAdminView
+      <AdminMap
         :visibleData="visibleData"
         @update="updateMap"
         @click="click"

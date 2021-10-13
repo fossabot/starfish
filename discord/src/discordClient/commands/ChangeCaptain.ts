@@ -7,7 +7,12 @@ export class ChangeCaptainCommand implements Command {
   requiresShip = true
   requiresCaptain = true
 
-  commandNames = [`changecaptain`, `captain`, `cc`]
+  commandNames = [
+    `changecaptain`,
+    `setcaptain`,
+    `captain`,
+    `cc`,
+  ]
 
   getHelpMessage(commandPrefix: string): string {
     return `\`${commandPrefix}${this.commandNames[0]} <@newcaptain>\` - Change the ship's captain.`

@@ -39,10 +39,22 @@ export function checkAchievements(
           : [condition.prop]
 
         for (let con of toCheck) {
-          if (con.is && this[con.id] !== con.is) ok = false
+          if (
+            con.is &&
+            !con.secondaryId &&
+            this[con.id] !== con.is
+          )
+            ok = false
           else if (
             con.secondaryId &&
+            !con.is &&
             this[con.id]?.id !== con.secondaryId
+          )
+            ok = false
+          else if (
+            con.secondaryId &&
+            con.is &&
+            this[con.id]?.[con.secondaryId] !== con.is
           )
             ok = false
           else if (con.length && con.amount) {
@@ -77,6 +89,8 @@ export function checkAchievements(
         }
       }
     }
+
+    // c.log(achievement.condition, ok)
 
     if (ok) this.addAchievement(achievement.id)
   }

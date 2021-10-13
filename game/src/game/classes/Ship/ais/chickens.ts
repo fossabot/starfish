@@ -30,6 +30,9 @@ export default {
       }
     }
 
+    // stay still if attacking something
+    if (this.targetShip) return false
+
     // otherwise, randomly move in normal pattern
     return defaultBehavior.determineNewTargetLocation.call(
       this,

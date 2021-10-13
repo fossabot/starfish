@@ -38,7 +38,8 @@ interface HumanVisibleShape {
 export class HumanShip extends CombatShip {
   static maxLogLength = 40
   static movementIsFree = false // true
-  static secondWindHpCutoff = 2
+  static secondWindStartHp = 2
+  static secondWindEndHp = 3.5
   static secondWindPassives: CrewPassiveData[] = [
     {
       id: `reduceStaminaDrain`,
@@ -296,7 +297,7 @@ export class HumanShip extends CombatShip {
     // ----- second wind -----
     if (
       this.secondWind &&
-      this._hp > HumanShip.secondWindHpCutoff
+      this._hp > HumanShip.secondWindEndHp
     ) {
       this.secondWind = false
       this.crewMembers.forEach((cm) =>
@@ -305,12 +306,12 @@ export class HumanShip extends CombatShip {
         ),
       )
       this.logEntry(
-        `The danger has lessened, and the crew's second wind wears off.`,
+        `The crew's second wind wears off.`,
         `low`,
       )
     } else if (
       !this.secondWind &&
-      this._hp <= HumanShip.secondWindHpCutoff
+      this._hp <= HumanShip.secondWindStartHp
     ) {
       this.secondWind = true
       this.crewMembers.forEach((cm) =>
@@ -322,7 +323,7 @@ export class HumanShip extends CombatShip {
         [
           `${this.name} has dropped below`,
           {
-            text: `${HumanShip.secondWindHpCutoff} HP`,
+            text: `${HumanShip.secondWindStartHp} HP`,
             color: `var(--warning)`,
           },
           `&nospace! The crew has gained a second wind!`,
@@ -1366,6 +1367,7 @@ export class HumanShip extends CombatShip {
         this.applyPassive(p),
       )
       this.planet.addStat(`shipsLanded`, 1)
+      this.checkAchievements(`land`)
     } else if (previousPlanet) {
       c.log(
         `gray`,

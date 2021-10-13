@@ -10,6 +10,7 @@ import chickens from './chickens'
 
 const ais: {
   [key: string]: {
+    scanTypes?: ScanType[]
     determineNewTargetLocation?: () =>
       | CoordinatePair
       | false

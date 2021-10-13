@@ -15,6 +15,17 @@ import { GameChannel } from './GameChannel'
 import type { Command } from './Command'
 import checkPermissions from '../actions/checkPermissions'
 import { error } from 'console'
+import { enQueue } from '../sendQueue'
+
+const sendQueue: {
+  [key: string]: {
+    busy: boolean
+    messages: {
+      message: string | MessageOptions
+      channelType?: GameChannelType
+    }[]
+  }
+} = {}
 
 /** a user-given command extracted from a message. */
 export class CommandContext {
@@ -52,7 +63,7 @@ export class CommandContext {
 
   readonly channels: {
     [key in GameChannelType]?: GameChannel
-  } = {}
+  } = {} // todo this is useless!!
 
   constructor(message: Message, prefix: string) {
     this.commandPrefix = prefix
@@ -88,82 +99,18 @@ export class CommandContext {
     ].includes(message.author.id)
   }
 
-  private sendToGuildQueue: {
-    message: string | MessageOptions
-    channelType: GameChannelType
-  }[] = []
-
-  private awaitingSendToGuild: boolean = false
-
   async sendToGuild(
     message: string | MessageOptions,
     channelType: GameChannelType = `alert`,
   ) {
-    if (this.awaitingSendToGuild)
-      this.sendToGuildQueue.push({ message, channelType })
+    if (!this.guild) return
 
-    this.awaitingSendToGuild = true
-
-    let channel: GameChannel | null = null
-
-    // try to resolve a channel
-    if (this.guild) {
-      if (this.channels[channelType])
-        channel = this.channels[channelType] || null
-      else {
-        // check to see if we have the necessary permissions to create channels
-        const channelCreatePermissionsCheck =
-          await checkPermissions({
-            requiredPermissions: [`MANAGE_CHANNELS`],
-            guild: this.guild || undefined,
-          })
-        if (`error` in channelCreatePermissionsCheck) {
-          c.log(
-            `Failed to create channel!`,
-            channelCreatePermissionsCheck.error,
-          )
-          this.contactGuildAdmin(
-            channelCreatePermissionsCheck,
-          )
-          return
-        }
-
-        channel = await resolveOrCreateChannel({
-          type: channelType,
-          guild: this.guild,
-        })
-      }
-    }
-
-    // otherwise send back to the channel we got the message in in the first place
-    // ? unreachable?
-    if (
-      !channel &&
-      !(
-        this.initialMessage.channel instanceof NewsChannel
-      ) &&
-      !this.initialMessage.channel.partial &&
-      this.initialMessage.channel.type === `GUILD_TEXT`
-    )
-      channel = new GameChannel(
-        null,
-        this.initialMessage.channel,
-      )
-
-    // send (permissions checks handled on channel object)
-    if (channel) {
-      this.channels[channelType] = channel
-      const didSend = await channel.send(message)
-      if (`error` in didSend)
-        this.contactGuildAdmin(didSend)
-    }
-
-    this.awaitingSendToGuild = false
-    if (this.sendToGuildQueue.length) {
-      const next = this.sendToGuildQueue.shift()
-      if (next)
-        this.sendToGuild(next.message, next.channelType)
-    }
+    return enQueue({
+      guild: this.guild,
+      channelType,
+      context: this,
+      message,
+    })
   }
 
   async reply(message: string | MessageOptions) {
@@ -179,13 +126,14 @@ export class CommandContext {
       this.initialMessage.channel,
     )
 
-    // send (permissions checks handled on channel object)
-    if (channel) {
-      const didSend = await channel.send(message)
-      if (`error` in didSend)
-        this.contactGuildAdmin(didSend)
-      else return didSend
-    }
+    if (!this.guild) return channel.send(message)
+
+    return enQueue({
+      guild: this.guild,
+      channel,
+      context: this,
+      message,
+    })
   }
 
   async contactGuildAdmin(error: GamePermissionsFailure) {
@@ -231,7 +179,11 @@ If you're not sure what to do, please reach out in the [support server](${c.supp
       this.contactGuildAdmin(canReact)
       return
     }
-    await this.initialMessage.react(emoji).catch(c.log)
+    try {
+      await this.initialMessage.react(emoji).catch(c.log)
+    } catch (e) {
+      c.log(`Failed to react to message.`, emoji, e)
+    }
   }
 
   async getGuildMembers(ids?: string[]) {
