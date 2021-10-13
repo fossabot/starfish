@@ -33,7 +33,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: ${{matrix.folder}} test run
-          path: '*.json'
+          path: 'report/json/*.json'
           list-suites: 'all'
           list-tests: 'all'
           max-annotations: '10'
