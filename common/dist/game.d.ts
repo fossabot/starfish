@@ -10,6 +10,9 @@ declare function getRepairAmountPerTickForSingleCrewMember(level: number): numbe
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
+/**
+ * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
+ */
 declare function getGeneralMultiplierBasedOnCrewMemberProximity(cm: CrewMemberStub, crewMembers: CrewMemberStub[]): number;
 declare function statToString(data: {
     stat: string;

@@ -12,7 +12,7 @@ export default {
   ): CoordinatePair | false {
     if (c.lottery(1, 0.05 * c.tickInterval)) {
       const angle = getDefaultAngle.call(this)
-      const distance = getDefaultDistance.call(this) * 10 // they move much farther than other birds
+      const distance = getDefaultDistance.call(this) * 5 // they move much farther than other birds
       const unitVector = c.degreesToUnitVector(angle)
 
       return [

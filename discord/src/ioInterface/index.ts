@@ -7,6 +7,7 @@ import isDocker from 'is-docker'
 
 import * as ship from './ship'
 import * as crew from './crew'
+import { enQueue } from '../discordClient/sendQueue'
 
 export default {
   connected,
@@ -50,36 +51,16 @@ io.on(
         message,
       )
 
-    // check to see if we have the necessary permissions to create channels
-    const sendPermissionsCheck = await checkPermissions({
-      requiredPermissions: [`MANAGE_CHANNELS`],
-      guild: guild,
-    })
-    if (`error` in sendPermissionsCheck) {
-      c.log(
-        `Failed to create channel!`,
-        sendPermissionsCheck,
-      )
-      return
-    }
-
-    const channel = await resolveOrCreateChannel({
-      type: channelType,
+    enQueue({
       guild,
-    })
-    if (channel)
-      channel.send(
+      channelType,
+      message:
         typeof message === `string`
           ? message
           : message
               .map((m: RichLogContentElement) => m.text)
               .join(` `),
-      )
-    else
-      c.log(
-        `red`,
-        `Unable to resolve Discord channel to send message for guild ${guild.name}.`,
-      )
+    })
   },
 )
 

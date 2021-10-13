@@ -241,16 +241,6 @@ export class Comet extends MiningPlanet {
 
   async levelUp() {
     super.levelUp()
-
-    if (this.mine.length === 0 || Math.random() > 0.6) {
-      // * randomly selected for now
-      const mineableResourceToAdd = c.randomFromArray(
-        Object.keys(c.cargo),
-      ) as CargoId
-      this.addMineResource(mineableResourceToAdd)
-    }
-
-    this.updateFrontendForShipsAt()
   }
 
   toAdminStub(): PlanetStub {

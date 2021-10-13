@@ -50,13 +50,12 @@
             <li
               v-for="(score, index) in ranking.top"
               :key="'scoretop' + ranking.category + index"
+              :style="{
+                color: score.color,
+              }"
             >
               <div class="flexbetween">
-                <div
-                  :style="{
-                    color: score.color,
-                  }"
-                >
+                <div>
                   <b>{{ score.name }}</b>
                 </div>
                 <div class="sub scorenumber">

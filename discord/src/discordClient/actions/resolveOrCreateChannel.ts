@@ -3,7 +3,7 @@ import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
 import { GameChannel } from '../models/GameChannel'
 
-const channelData: {
+export const channelData: {
   [key in GameChannelType]: {
     name: string
     topic: string
@@ -11,17 +11,17 @@ const channelData: {
   }
 } = {
   alert: {
-    name: `🚀Alerts`,
+    name: `🚀alerts`,
     topic: `Automated ship alerts. Go to ${c.frontendUrl} to take action!`,
     permissions: [],
   },
   chat: {
-    name: `🛠Main Deck`,
+    name: `🛠main-deck`,
     topic: `For full-crew discussions.`,
   },
   broadcast: {
-    name: `📣Comms Bay`,
-    topic: `Area chatter and received broadcasts come here. Send messages here to broadcast them within your interaction range.`,
+    name: `📣comms-bay`,
+    topic: `Area chatter and received broadcasts come here. Send messages here to message ships within your broadcast range.`,
   },
 }
 

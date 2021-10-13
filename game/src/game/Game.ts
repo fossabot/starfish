@@ -358,16 +358,7 @@ export class Game {
     center: CoordinatePair,
     radius: number,
     ignoreSelf: string | null,
-    types?: (
-      | `humanShip`
-      | `aiShip`
-      | `planet`
-      | `comet`
-      | `cache`
-      | `attackRemnant`
-      | `trail`
-      | `zone`
-    )[],
+    types?: ScanType[],
     includeTrails: boolean | `withColors` = false,
     tutorial: boolean = false,
   ): {

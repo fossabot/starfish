@@ -19,6 +19,8 @@ export class AIShip extends CombatShip {
   readonly spawnPoint: CoordinatePair
   level = 1
 
+  scanTypes: ScanType[] = [`humanShip`]
+
   visible: {
     ships: Ship[]
     planets: Planet[]
@@ -50,13 +52,14 @@ export class AIShip extends CombatShip {
     else this.id = `ai${Math.random()}`.substring(2)
 
     this.speciesId = data.speciesId || `chickens`
-    this.determineNewTargetLocation =
-      ais[this.speciesId]?.determineNewTargetLocation ||
-      ais.default.determineNewTargetLocation!
 
-    this.determineTargetShip =
-      ais[this.speciesId]?.determineTargetShip ||
-      ais.default.determineTargetShip!
+    for (let prop of [
+      `determineNewTargetLocation`,
+      `determineTargetShip`,
+      `scanTypes`,
+    ])
+      this[prop] =
+        ais[this.speciesId]?.[prop] || ais.default[prop]!
 
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
@@ -86,7 +89,7 @@ export class AIShip extends CombatShip {
       this.location,
       this.radii.sight,
       this.id,
-      [`humanShip`, `aiShip`], // * add 'zone' to allow zones to affect ais
+      this.scanTypes, // * add 'zone' to allow zones to affect ais
     ) || {
       ships: [],
       planets: [],
@@ -247,7 +250,7 @@ export class AIShip extends CombatShip {
       )
 
       const thrustMagnitude =
-        c.lerp(0.0001, 0.001, this.level / 100) *
+        c.lerp(0.00001, 0.001, this.level / 100) *
         engineThrustMultiplier
 
       this.location[0] +=

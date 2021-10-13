@@ -815,6 +815,8 @@ export abstract class CombatShip extends Ship {
     const damageResult = {
       miss: attackDamageAfterPassives === 0,
       damageTaken: totalDamageDealt,
+      damageMitigated:
+        attack.damage - attackDamageAfterPassives,
       didDie: didDie,
       weapon: attack.weapon?.toReference(),
       damageTally,
@@ -863,7 +865,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `low` : `high`,
+        attack.miss || !totalDamageDealt ? `low` : `high`,
       )
     // zone or passive damage
     else
@@ -900,7 +902,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `low` : `high`,
+        attack.miss || !totalDamageDealt ? `low` : `high`,
       )
 
     return damageResult

@@ -229,18 +229,23 @@ export class MiningPlanet extends Planet {
     if (this.level > 1) {
       this.addPassive({
         id: `boostMineSpeed`,
-        intensity: 0.05,
+        intensity: 0.02,
       })
     }
 
     // todo add more passives
 
-    if (this.mine.length === 0 || Math.random() > 0.6) {
+    if (this.mine.length === 0 || Math.random() > 0.8) {
       // * randomly selected for now
       const mineableResourceToAdd = c.randomFromArray(
         Object.keys(c.cargo),
       ) as CargoId
       this.addMineResource(mineableResourceToAdd)
+    } else {
+      this.addPassive({
+        id: `boostMineSpeed`,
+        intensity: 0.02,
+      })
     }
 
     this.updateFrontendForShipsAt()

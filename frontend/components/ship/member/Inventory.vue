@@ -24,7 +24,7 @@
             @done="addToCommonFund(...arguments)"
             @apply="addToCommonFund(...arguments)"
           >
-            <template #label> Add to common fund </template>
+            <template #label>+ Common Fund </template>
             <template>
               How many credits do you want to contribute to
               the ship's common credits? (Max
