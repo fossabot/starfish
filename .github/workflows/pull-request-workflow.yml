@@ -33,7 +33,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Mocha Tests # Name of the check run which will be created
-          path: test-results.json # Path to test results
+          path: '*.json' # Path to test results
           list-suites: 'all'
           list-tests: 'all'
           max-annotations: '10'
