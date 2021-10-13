@@ -36,6 +36,7 @@ jobs:
           path: ${{matrix.folder}}/test-results.json
 
   test-report:
+    needs: npm-test
     runs-on: ubuntu-latest
     steps:
       - name: Download test result artifact
