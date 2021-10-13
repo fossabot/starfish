@@ -37,7 +37,7 @@ export default async function <
     content: content,
     components: rows,
   })
-  if (!sentMessage) return null
+  if (!sentMessage || `error` in sentMessage) return null
 
   const filter = (
     interaction: MessageComponentInteraction,

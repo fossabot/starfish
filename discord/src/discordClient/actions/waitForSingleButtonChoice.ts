@@ -38,7 +38,7 @@ export default async function <
     content: content,
     components: rows,
   })
-  if (!sentMessage)
+  if (!sentMessage || `error` in sentMessage)
     return { result: null, sentMessage: null }
 
   return new Promise((resolve) => {
