@@ -46,7 +46,7 @@ export async function enQueue({
 
   const sendFunction = async (resolve) => {
     // * wait for all previous pending messages to complete
-    c.log(`waiting for`, pendingMessages.length)
+    // c.log(`waiting for`, pendingMessages.length)
     await Promise.all(pendingMessages)
 
     // --

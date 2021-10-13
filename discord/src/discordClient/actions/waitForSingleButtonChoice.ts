@@ -7,6 +7,7 @@ import {
   MessageButtonOptions,
   MessageComponent,
   MessageComponentInteraction,
+  MessageEmbed,
 } from 'discord.js'
 import { CommandContext } from '../models/CommandContext'
 
@@ -19,7 +20,7 @@ export default async function <
   allowedUserId,
 }: {
   context: CommandContext
-  content: string
+  content: string | MessageEmbed[]
   buttons: MessageButtonOptions[]
   allowedUserId: string
 }): Promise<{
@@ -35,7 +36,10 @@ export default async function <
     ])
 
   const sentMessage = await context.reply({
-    content: content,
+    content:
+      typeof content === `string` ? content : undefined,
+    embeds:
+      typeof content === `string` ? undefined : content,
     components: rows,
   })
   if (!sentMessage || `error` in sentMessage)

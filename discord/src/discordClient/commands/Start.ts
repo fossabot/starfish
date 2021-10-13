@@ -4,12 +4,14 @@ import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
 // import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 import {
+  ColorResolvable,
   Message,
   MessageActionRow,
   MessageButton,
   MessageButtonOptions,
   MessageComponent,
   MessageComponentInteraction,
+  MessageEmbed,
 } from 'discord.js'
 import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import checkPermissions from '../actions/checkPermissions'
@@ -49,10 +51,17 @@ export class StartCommand implements Command {
       sentMessage: pm,
     } = await waitForSingleButtonChoice({
       context,
-      content: `Welcome to **${c.gameName}**!
-This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
-    
-This bot will create several channels for game communication and a role for crew members. Is that okay with you?`,
+      content: [
+        new MessageEmbed({
+          color: c.gameColor as ColorResolvable,
+          title: `Welcome to **${c.gameName}**!`,
+          description: `This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
+              
+          This bot will create several channels for game communication. Is that okay with you?`,
+        }).setThumbnail(
+          `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
+        ),
+      ],
       allowedUserId: context.initialMessage.author.id,
       buttons: [
         {
@@ -103,12 +112,42 @@ This bot will create several channels for game communication and a role for crew
     let { result: guildResult, sentMessage: sm } =
       await waitForSingleButtonChoice<GuildId | `none`>({
         context,
-        content: `Excellent! If you'd like to, choose a guild for your ship. Each guild has its own specialties.
-You can change your guild when you visit another guild's homeworld.`,
+        content: [
+          new MessageEmbed({
+            color: c.gameColor as ColorResolvable,
+            title: `Choose a Guild!`,
+            description: `If you'd like to, choose a guild for your ship. Each guild has its own specialties.
+You can change your guild when you visit another guild's homeworld.
+
+
+The available guilds are:`,
+            fields: [
+              ...Object.values(c.guilds)
+                .filter((g) => !g.aiOnly)
+                .map((g) => ({
+                  inline: true,
+                  name: g.name,
+                  value:
+                    g.passives
+                      .map((p) =>
+                        c.baseShipPassiveData[
+                          p.id
+                        ]?.description(p),
+                      )
+                      .filter((p) => p)
+                      .join(`\n`) || `(No passive effects)`,
+                })),
+              {
+                inline: true,
+                name: `(No Guild)`,
+                value: `Spawn knowing the locations of all guild homeworlds. Visit them to join the guild anytime!`,
+              },
+            ],
+          }),
+        ],
         allowedUserId: context.initialMessage.author.id,
         buttons: guildButtonData,
       })
-
     if (sm) sentMessages.push(sm)
 
     // clean up messages
@@ -156,7 +195,18 @@ You can change your guild when you visit another guild's homeworld.`,
       await context.reply(
         `Failed to add you as a member of the crew.`,
       )
+      return
     }
+
+    context.reply({
+      embeds: [
+        new MessageEmbed({
+          color: c.gameColor as ColorResolvable,
+          title: `All right!`,
+          description: `You're ready to take off! Check out #🚀alerts to get started.`,
+        }),
+      ],
+    })
   }
 
   hasPermissionToRun(
