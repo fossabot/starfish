@@ -44,11 +44,6 @@ jobs:
         with:
           name: test-results
 
-      - name: Unzip artifact
-        shell: bash
-        run: |
-          unzip test-results.zip
-
       - name: Show test results!
         uses: dorny/test-reporter@v1
         with:
