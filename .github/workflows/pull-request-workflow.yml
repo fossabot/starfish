@@ -38,6 +38,16 @@ jobs:
   test-report:
     runs-on: ubuntu-latest
     steps:
+      - name: Download test result artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: test-results
+
+      - name: Unzip artifact
+        shell: bash
+        run: |
+          unzip test-results.zip
+
       - name: Show test results!
         uses: dorny/test-reporter@v1
         with:
@@ -49,7 +59,6 @@ jobs:
           fail-on-error: 'true'
           reporter: mocha-json
           artifact: test-results.json
-          working-directory: ${{matrix.folder}}
 
   docker:
     needs: npm-test
