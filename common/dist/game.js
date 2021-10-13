@@ -117,6 +117,7 @@ function getPlanetTitle(planet) {
             `Open Pits`,
             `Sheltered Pits`,
             `Hollows`,
+            `Depths`,
             `Quarries`,
             `Tiered Quarries`,
             `Raw Shafts`,
@@ -124,9 +125,10 @@ function getPlanetTitle(planet) {
             `Bare Caverns`,
             `Caverns`,
             `Cave Systems`,
-            `Rich Veins`,
             `Extractors`,
+            `Automated Extractors`,
             `Labyrinths`,
+            `Deep Labyrinths`,
             `Gilded Halls`,
         ];
     if (planet.planetType === `basic`)

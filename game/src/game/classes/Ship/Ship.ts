@@ -24,6 +24,7 @@ import type { Tutorial } from './addins/Tutorial'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 70
+  static maxAIPreviousLocations: number = 25
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
@@ -687,7 +688,9 @@ export class Ship extends Stubbable {
       ])
       while (
         this.previousLocations.length >
-        Ship.maxPreviousLocations
+        (this.ai
+          ? Ship.maxAIPreviousLocations
+          : Ship.maxPreviousLocations)
       )
         this.previousLocations.shift()
       this.toUpdate.previousLocations =
