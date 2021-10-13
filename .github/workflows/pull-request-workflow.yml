@@ -29,6 +29,13 @@ jobs:
         run: npm run test
         working-directory: ${{matrix.folder}}
 
+      - uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: test-results.json
+        working-directory: ${{matrix.folder}}/results/json
+
       - name: Show test results!
         uses: dorny/test-reporter@v1
         with:
