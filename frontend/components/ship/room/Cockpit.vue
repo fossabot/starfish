@@ -203,7 +203,7 @@
                 crewMember.targetLocation[1],
           }"
         >
-          🚀{{ otherShip.name }}
+          <span>🚀{{ otherShip.name }}</span>
         </button></span
       ><span
         v-for="cache in cachesToShow"
@@ -221,8 +221,13 @@
                 crewMember.targetLocation[1],
           }"
         >
-          📦Cache (<AngleArrow :angle="cache.angle" />
-          {{ c.speedNumber(cache.distance, true, 0) }} km)
+          <span
+            >📦Cache (<AngleArrow :angle="cache.angle" />
+            {{
+              c.speedNumber(cache.distance, true, 0)
+            }}
+            km)</span
+          >
         </button>
       </span>
 

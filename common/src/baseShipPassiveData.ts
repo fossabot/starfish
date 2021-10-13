@@ -54,20 +54,26 @@ const baseShipPassiveData: {
   boostRepairSpeed: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
-        (p.intensity || 1) * 100,
-      )}% faster repairs`,
+        Math.abs(p.intensity || 1) * 100,
+      )}% ${
+        (p.intensity || 1) >= 0 ? `faster` : `slower`
+      } repairs`,
   },
   boostMineSpeed: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
-        (p.intensity || 1) * 100,
-      )}% faster mining`,
+        Math.abs(p.intensity || 1) * 100,
+      )}% ${
+        (p.intensity || 1) >= 0 ? `faster` : `slower`
+      } mining`,
   },
   boostMinePayouts: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
-        (p.intensity || 1) * 100,
-      )}% higher mining payouts`,
+        Math.abs(p.intensity || 1) * 100,
+      )}% ${
+        (p.intensity || 1) >= 0 ? `higher` : `lower`
+      } mining payouts`,
   },
   boostScanRange: {
     description: (p) =>
@@ -106,8 +112,10 @@ const baseShipPassiveData: {
   boostXpGain: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
-        (p.intensity || 1) * 100,
-      )}% faster XP gain`,
+        Math.abs(p.intensity || 1) * 100,
+      )}% ${
+        (p.intensity || 1) >= 0 ? `faster` : `slower`
+      } XP gain`,
   },
   disguiseChassisType: {
     description: (p) => `Chassis type hidden`,
@@ -132,14 +140,22 @@ const baseShipPassiveData: {
   scaledDamageReduction: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
-        (p.intensity || 1) * 100,
-      )}% damage reduction`,
+        Math.abs(p.intensity || 1) * 100,
+      )}% damage ${
+        (p.intensity || 1) >= 0
+          ? `reduction`
+          : `taken increase`
+      }`,
   },
   flatDamageReduction: {
     description: (p) =>
-      `${(p.intensity || 1) >= 0 ? `+` : ``}${
-        p.intensity || 1
-      } HP flat damage reduction`,
+      `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.abs(
+        p.intensity || 1,
+      )} HP flat damage ${
+        (p.intensity || 1) >= 0
+          ? `reduction`
+          : `taken increase`
+      }`,
   },
   flatSkillBoost: {
     description: (p) =>
@@ -151,7 +167,9 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
-      )}% faster stamina regeneration`,
+      )}% ${
+        (p.intensity || 1) >= 0 ? `faster` : `slower`
+      } stamina regeneration`,
   },
   autoRepair: {
     description: (p) =>

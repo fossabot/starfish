@@ -92,6 +92,9 @@ function getWeaponCooldownReductionPerTick(level: number) {
   return (2 + math.lerp(1, 20, level / 100)) * 30
 }
 
+/**
+ * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
+ */
 function getGeneralMultiplierBasedOnCrewMemberProximity(
   cm: CrewMemberStub,
   crewMembers: CrewMemberStub[],
@@ -389,10 +392,7 @@ function getGuildChangePrice(ship: {
   return math.r2(
     (ship.crewMembers?.length || 1) *
       3000 *
-      ship.planet.priceFluctuator *
-      (ship.planet.guild === ship.guildId
-        ? 1 + (1 - gameConstants.guildVendorMultiplier || 1)
-        : 1),
+      ship.planet.priceFluctuator,
     0,
     true,
   )

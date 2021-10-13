@@ -110,10 +110,12 @@ export default function (
         return callback({ error: `No crew member found.` })
       ship.captain = crewMember.id
 
-      ship.logEntry([
-        `${crewMember.name} has been promoted to captain!`,
+      ship.logEntry(
+        [
+          `${crewMember.name} has been promoted to captain!`,
+        ],
         `critical`,
-      ])
+      )
 
       callback({ data: `ok` })
     },

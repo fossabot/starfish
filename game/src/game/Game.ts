@@ -252,16 +252,7 @@ export class Game {
     center: CoordinatePair,
     radius: number,
     ignoreSelf: string | null,
-    types?: (
-      | `humanShip`
-      | `aiShip`
-      | `planet`
-      | `comet`
-      | `cache`
-      | `attackRemnant`
-      | `trail`
-      | `zone`
-    )[],
+    types?: ScanType[],
     includeTrails: boolean | `withColors` = false,
     tutorial: boolean = false,
   ): {
@@ -804,9 +795,12 @@ export class Game {
       }
     }
 
-    this.ships.filter((s) => s instanceof CombatShip).forEach((s) => {
-      if ((s as CombatShip).targetShip === ship) (s as CombatShip).targetShip = null
-    })
+    this.ships
+      .filter((s) => s instanceof CombatShip)
+      .forEach((s) => {
+        if ((s as CombatShip).targetShip === ship)
+          (s as CombatShip).targetShip = null
+      })
 
     c.log(
       `Removing ship ${ship.name} (${ship.id}) from the game.`,

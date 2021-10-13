@@ -92,7 +92,7 @@ const guilds: {
       },
       {
         id: `flatDamageReduction`,
-        intensity: 0.3,
+        intensity: 0.2,
         data: { source: { guildId: `miner` } },
       },
       {

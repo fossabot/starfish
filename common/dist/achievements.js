@@ -297,6 +297,19 @@ const achievements = {
             },
         },
     },
+    // landing places
+    landComet1: {
+        id: `landComet1`,
+        reward: { tagline: `Going Streaking` },
+        for: `landing on a comet`,
+        condition: {
+            prop: {
+                id: `planet`,
+                secondaryId: `planetType`,
+                is: `comet`,
+            },
+        },
+    },
     // combat
     combat8: {
         id: `combat8`,

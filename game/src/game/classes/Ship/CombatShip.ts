@@ -865,7 +865,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `low` : `high`,
+        attack.miss || !totalDamageDealt ? `low` : `high`,
       )
     // zone or passive damage
     else
@@ -902,7 +902,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
-        attack.miss ? `low` : `high`,
+        attack.miss || !totalDamageDealt ? `low` : `high`,
       )
 
     return damageResult

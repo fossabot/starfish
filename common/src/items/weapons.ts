@@ -73,7 +73,7 @@ export const weapons: {
     displayName: `Crustacean Cannon XD`,
     description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw.`,
     mass: 1700,
-    basePrice: 110 * game.itemPriceMultiplier,
+    basePrice: 210 * game.itemPriceMultiplier,
     range: 0.22,
     rarity: 8,
     damage: 1.7 * game.weaponDamageMultiplier,

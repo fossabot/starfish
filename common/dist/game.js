@@ -69,6 +69,9 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
 function getWeaponCooldownReductionPerTick(level) {
     return (2 + math_1.default.lerp(1, 20, level / 100)) * 30;
 }
+/**
+ * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
+ */
 function getGeneralMultiplierBasedOnCrewMemberProximity(cm, crewMembers) {
     const boostPerMemberInSameRoom = cm.passives
         .filter((p) => p.id ===
@@ -248,10 +251,7 @@ function getGuildChangePrice(ship) {
         return 999999;
     return math_1.default.r2((ship.crewMembers?.length || 1) *
         3000 *
-        ship.planet.priceFluctuator *
-        (ship.planet.guild === ship.guildId
-            ? 1 + (1 - gameConstants_1.default.guildVendorMultiplier || 1)
-            : 1), 0, true);
+        ship.planet.priceFluctuator, 0, true);
 }
 function getPlanetPopulation(planet) {
     if (!planet)

@@ -47,7 +47,8 @@
     <div v-else class="sub">
       The captain can join your ship into the
       {{ guild.name }} Guild<span v-if="changePrice">
-        for {{ changePrice }} credits</span
+        for
+        {{ c.numberWithCommas(changePrice) }} credits</span
       >.
     </div>
 
@@ -56,8 +57,15 @@
         {{ guild.name }} Guild members get:
       </div>
 
-      <ul v-for="p in guild.passives" class="small success">
-        <li><ShipPassiveText :passive="p" /></li>
+      <ul v-for="p in guild.passives" class="small">
+        <li>
+          <ShipPassiveText
+            :passive="{
+              ...p,
+              data: { ...p.data, source: undefined },
+            }"
+          />
+        </li>
       </ul>
     </div>
   </div>

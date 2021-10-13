@@ -1366,6 +1366,7 @@ export class HumanShip extends CombatShip {
         this.applyPassive(p),
       )
       this.planet.addStat(`shipsLanded`, 1)
+      this.checkAchievements(`land`)
     } else if (previousPlanet) {
       c.log(
         `gray`,
