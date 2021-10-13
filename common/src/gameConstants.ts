@@ -18,7 +18,7 @@ const baseItemSellMultiplier = 0.6
 const noEngineThrustMagnitude = 0.02
 
 const planetContributeCostPerXp = 1
-const planetLevelXpRequirementMultiplier = 10
+const planetLevelXpRequirementMultiplier = 15
 
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
 const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5
