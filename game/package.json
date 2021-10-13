@@ -5,7 +5,7 @@
     "dev": "NODE_ENV=development nodemon dist/index.js",
     "prod": "NODE_ENV=production node dist/index.js",
     "analyze": "NODE_ENV=production node --prof dist/index.js",
-    "test": "TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --require ts-node/register --reporter mocha-spec-json-output-reporter --reporter-options fileName=test-results.json,filePath=report/json/,hierarchy=true --exit 'tests/index.ts'"
+    "test": "TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --require ts-node/register --reporter json --reporter-option output=results/json/test-results.json --exit 'tests/index.ts'"
   },
   "dependencies": {
     "@newrelic/winston-enricher": "^2.0.0",
