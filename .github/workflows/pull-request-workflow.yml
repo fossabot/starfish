@@ -39,7 +39,7 @@ jobs:
           max-annotations: '10'
           fail-on-error: 'true'
           reporter: mocha-json
-          artifact: /test-results-(.*)/
+          artifact: /test-results(.*)/
           working-directory: ${{matrix.folder}}
 
   docker:
