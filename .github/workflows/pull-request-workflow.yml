@@ -54,7 +54,7 @@ jobs:
           max-annotations: '10'
           fail-on-error: 'true'
           reporter: mocha-json
-          artifact: test-results.json
+          artifact: test-results
 
   docker:
     needs: npm-test
