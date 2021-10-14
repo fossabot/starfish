@@ -69,6 +69,12 @@ export class Item extends Stubbable {
     return c.items[this.type][this.id]
   }
 
+  toRefundAmount(): number {
+    return (
+      Math.max(0, this.baseData.basePrice - 20000) * 0.2
+    )
+  }
+
   use(usePercent: number = 1, users?: CrewMember[]) {
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep?.disableRepair)
