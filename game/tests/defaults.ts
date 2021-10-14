@@ -5,11 +5,13 @@ export function crewMemberData(): BaseCrewMemberData {
     id: `testUser` + randomId,
   }
 }
-export function humanShipData(): BaseHumanShipData {
+export function humanShipData(
+  loadout: LoadoutId = `humanDefault`,
+): BaseHumanShipData {
   const randomId = Math.random().toString(36).substring(7)
   return {
     id: `testShip` + randomId,
     name: `Test Ship ` + randomId,
-    loadout: `humanDefault`,
+    loadout,
   }
 }

@@ -1,4 +1,4 @@
-name: Starfish Build check
+name: Pull Request
 
 on:
   pull_request:
@@ -21,17 +21,21 @@ jobs:
         with:
           node-version: '16'
 
+      - uses: c-hive/gha-npm-cache@v1
+
       - name: NPM install on ${{matrix.folder}}
         run: npm install
-        working-directory: ${{matrix.folder}}
-
-      - name: NPM build on ${{matrix.folder}}
-        run: npm run build-once
         working-directory: ${{matrix.folder}}
 
       - name: Run tests on ${{matrix.folder}}
         run: npm run test
         working-directory: ${{matrix.folder}}
+
+      - uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/test-results.json
 
   docker:
     needs: npm-test

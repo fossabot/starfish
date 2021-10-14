@@ -76,6 +76,7 @@ jobs:
 
       - name: Pull latest images to host VM and restart containers
         uses: garygrossgarten/github-action-ssh@v0.6.4
+        id: produp
         with:
           command: |
             cd starfish;
@@ -86,3 +87,10 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
+
+      - name: Notify if something went wrong
+        if: steps.produp.outcome == 'failure'
+        uses: sebastianpopp/discord-action@releases/v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "Something went wrong when we tried to bring up production. Here's the error message: ${{steps.produp.outputs}}"

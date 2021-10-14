@@ -13,8 +13,8 @@ import type { HumanShip } from './HumanShip'
 import defaultGameSettings from '../../presets/gameSettings'
 
 export abstract class CombatShip extends Ship {
-  static percentOfCreditsLostOnDeath = 0.5
-  static percentOfCreditsDroppedOnDeath = 0.25
+  static percentOfCreditsKeptOnDeath = 0.5
+  static percentOfCreditsDroppedOnDeath = 0.5
 
   targetShip: CombatShip | null = null
   targetItemType: ItemType | `any` = `any`
@@ -910,6 +910,11 @@ export abstract class CombatShip extends Ship {
 
   die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
+    this.game?.ships
+      .filter((s) => (s as CombatShip).targetShip === this)
+      .forEach((s) => {
+        ;(s as CombatShip).recalculateTargetShip()
+      })
     this.dead = true
   }
 
