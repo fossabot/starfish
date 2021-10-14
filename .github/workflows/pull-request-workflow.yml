@@ -35,18 +35,7 @@ jobs:
           name: test-results
           path: ${{matrix.folder}}/reports/test-results.json
 
-      - name: Download test result artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: test-results
-
-      - uses: dorny/test-reporter@v1
-        with:
-          name: Mocha Test Results # Name of the check run which will be created
-          path: 'test-results.json' # Path to test results (inside artifact .zip)
-          reporter: mocha-json
-
-  docker:
+  docker-build-publish:
     needs: npm-test
     runs-on: ubuntu-latest
     strategy:
