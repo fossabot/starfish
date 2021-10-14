@@ -23,11 +23,16 @@ export class CockpitCommand implements Command {
   async run(context: CommandContext) {
     if (!context.ship || !context.crewMember) return
 
-    ioInterface.crew.move(
+    const res = await ioInterface.crew.move(
       context.ship.id,
       context.crewMember.id,
       `cockpit`,
     )
+    if (`error` in res) {
+      context.reply(res.error)
+      return
+    }
+
     context.reply(
       `${context.nickname} moves to the cockpit.`,
     )

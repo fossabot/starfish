@@ -52,11 +52,14 @@ export async function move(
   if (!(await connected()))
     return { error: `Failed to move crew member` }
 
-  io.emit(`crew:move`, shipId, crewId, target)
+  return new Promise((resolve) => {
+    io.emit(`crew:move`, shipId, crewId, target, (res) => {
+      resolve(res)
 
-  if (target === `weapons`)
-    io.emit(`crew:tactic`, shipId, crewId, `aggressive`)
-  return { data: true }
+      if (!(`error` in res) && target === `weapons`)
+        io.emit(`crew:tactic`, shipId, crewId, `aggressive`)
+    })
+  })
 }
 
 export async function leave(

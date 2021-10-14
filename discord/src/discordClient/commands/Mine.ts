@@ -60,11 +60,15 @@ export class MineCommand implements Command {
       changedType = res.data
     }
 
-    ioInterface.crew.move(
+    const res = await ioInterface.crew.move(
       context.ship.id,
       context.crewMember.id,
       `mine`,
     )
+    if (`error` in res) {
+      context.reply(res.error)
+      return
+    }
 
     await context.reply(
       `${context.nickname} moves to the mining bay` +

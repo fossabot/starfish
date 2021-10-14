@@ -84,7 +84,7 @@ interface CrewMemberStub extends BaseStub {
   attackGuilds?: GuildId[]
   targetLocation: CoordinatePair | false
   repairPriority: RepairPriority
-  [key: string]: any
+  bottomedOutOnStamina: boolean
 }
 
 interface PlanetStub extends BaseStub {

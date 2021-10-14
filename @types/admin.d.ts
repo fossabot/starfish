@@ -12,6 +12,7 @@ interface AdminGameSettings {
   arrivalThreshold: number
   baseCritChance: number
   baseCritDamageMultiplier: number
+  staminaBottomedOutResetPoint: number
 
   planetDensity: number
   cometDensity: number

@@ -30,6 +30,10 @@ const gameSettingsSchemaFields: Record<
     type: Number,
     required: true,
   },
+  staminaBottomedOutResetPoint: {
+    type: Number,
+    required: true,
+  },
 
   planetDensity: { type: Number, required: true },
   cometDensity: { type: Number, required: true },

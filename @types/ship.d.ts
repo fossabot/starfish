@@ -1,6 +1,7 @@
 interface BaseShipData {
   name: string
   id?: string
+  spawnedAt?: number
   guildId?: GuildId
   location?: CoordinatePair
   velocity?: CoordinatePair

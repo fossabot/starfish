@@ -40,6 +40,8 @@ export class Ship extends Stubbable {
     gameSize: 0,
   }
 
+  spawnedAt: number
+
   onlyVisibleToShipId?: string
 
   ai: boolean
@@ -97,6 +99,7 @@ export class Ship extends Stubbable {
     {
       name,
       guildId,
+      spawnedAt,
       chassis,
       items,
       loadout,
@@ -119,6 +122,8 @@ export class Ship extends Stubbable {
 
     this.ai = true
     this.human = false
+
+    this.spawnedAt = spawnedAt || Date.now()
 
     this.velocity = velocity || [0, 0]
     if (location) {

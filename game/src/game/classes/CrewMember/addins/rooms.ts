@@ -181,5 +181,16 @@ export function bunk(this: CrewMember): void {
   if (this.stamina > this.maxStamina)
     this.stamina = this.maxStamina
 
+  if (
+    this.bottomedOutOnStamina &&
+    this.stamina >
+      (this.ship.game?.settings
+        .staminaBottomedOutResetPoint ||
+        defaultGameSettings().staminaBottomedOutResetPoint)
+  ) {
+    this.bottomedOutOnStamina = false
+    this.toUpdate.bottomedOutOnStamina = false
+  }
+
   this.toUpdate.stamina = this.stamina
 }

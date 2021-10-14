@@ -17,6 +17,13 @@ export class ThrustCommand implements Command {
   async run(context: CommandContext) {
     if (!context.ship || !context.crewMember) return
 
+    if (context.crewMember.bottomedOutOnStamina) {
+      await context.reply(
+        `${context.crewMember.name} is too tired to do anything.`,
+      )
+      return
+    }
+
     const validTargets: {
       id: string
       location: CoordinatePair

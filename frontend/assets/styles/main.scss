@@ -133,6 +133,10 @@ h5 {
   }
 }
 
+.bold {
+  font-weight: bold;
+}
+
 label {
   margin-top: 0.5em;
   display: block;
@@ -172,6 +176,15 @@ textarea {
     ),
     auto !important;
   pointer-events: auto;
+}
+.notallowed {
+  cursor: url('/images/cursors/cursor_not_allowed.svg'),
+    auto !important;
+  cursor: image-set(
+      url('/images/cursors/cursor_not_allowed.png') 1x,
+      url('/images/cursors/cursor_not_allowed_2x.png') 2x
+    ),
+    auto !important;
 }
 
 button,
@@ -578,17 +591,6 @@ ul {
 }
 .normal {
   font-weight: normal;
-}
-
-.disabled {
-  opacity: 0.3;
-  cursor: url('/images/cursors/cursor_not_allowed.svg'),
-    auto;
-  cursor: image-set(
-      url('/images/cursors/cursor_not_allowed.png') 1x,
-      url('/images/cursors/cursor_not_allowed_2x.png') 2x
-    ),
-    auto;
 }
 
 .rounded {

@@ -17,6 +17,7 @@ const shipSchemaFields: Record<
   guildIcon: { type: String },
   guildName: { type: String },
   guildId: { type: String },
+  spawnedAt: { type: Number },
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },

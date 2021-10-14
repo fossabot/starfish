@@ -75,16 +75,30 @@
           "
         >
           <div
-            class="room pointer"
+            class="room"
             :class="{
               current:
-                crewMember && crewMember.location === room,
+                crewMember &&
+                crewMember.location === room.id,
+              pointer:
+                crewMember &&
+                (!crewMember.bottomedOutOnStamina ||
+                  (crewMember.bottomedOutOnStamina &&
+                    room.id === 'bunk')),
+              'unselectable notallowed':
+                crewMember &&
+                crewMember.bottomedOutOnStamina &&
+                room.id !== 'bunk',
             }"
             v-for="room in ship.rooms"
             :key="'ar' + room.id"
             :ref="room.id"
             @click="
               crewMember &&
+                (!crewMember.bottomedOutOnStamina ||
+                  (crewMember.bottomedOutOnStamina &&
+                    room.id === 'bunk')) &&
+                crewMember.location !== room.id &&
                 $store.commit('setRoom', room.id)
             "
             v-tooltip="{
@@ -241,7 +255,13 @@ export default Vue.extend({
     }
 
     &.current {
-      background: rgba(50, 50, 50, 0.7);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    &.unselectable {
+      background: rgba(70, 70, 70, 0.6);
+      box-shadow: 0 0 0 1px var(--pane-border);
+      border-bottom: none;
     }
 
     .roomlabel {

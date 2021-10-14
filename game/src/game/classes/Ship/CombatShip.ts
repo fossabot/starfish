@@ -154,6 +154,7 @@ export abstract class CombatShip extends Ship {
 
   async respawn() {
     c.log(`Respawning`, this.name)
+    this.spawnedAt = Date.now()
     this.items.forEach((i) => this.removeItem(i))
     this.items = []
     this.previousLocations = []

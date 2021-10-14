@@ -34,6 +34,7 @@ export class CrewMember extends Stubbable {
   permanentPassives: CrewPassiveData[] = []
   upgrades: PassiveCrewUpgrade[] = []
   stats: CrewStatEntry[] = []
+  bottomedOutOnStamina: boolean = false
 
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
@@ -128,12 +129,18 @@ export class CrewMember extends Stubbable {
     this.toUpdate.name = this.name
   }
 
-  goTo(location: CrewLocation) {
+  goTo(location: CrewLocation): undefined | string {
     const previousLocation = this.location
-    if (!(location in this.ship.rooms)) return false
-    this.location = location
-    this.toUpdate.location = this.location
     this.active()
+
+    if (!(location in this.ship.rooms))
+      return `Invalid room.`
+
+    // * if you hit 0, you must recharge to 5% to do anything
+    this.location = this.bottomedOutOnStamina
+      ? `bunk`
+      : location
+    this.toUpdate.location = this.location
 
     if (this.location !== previousLocation) {
       // if it's in a position to possibly immediately auto-attack something, don't
@@ -165,7 +172,13 @@ export class CrewMember extends Stubbable {
 
     this.ship.checkAchievements(`bunk`)
 
-    return true
+    if (this.bottomedOutOnStamina && location !== `bunk`)
+      return `You've hit your limit! You must rest until you're at least ${c.r2(
+        (this.ship.game?.settings
+          .staminaBottomedOutResetPoint ||
+          defaultGameSettings()
+            .staminaBottomedOutResetPoint) * 100,
+      )}% recovered.`
   }
 
   cockpitAction = roomActions.cockpit
@@ -208,6 +221,8 @@ export class CrewMember extends Stubbable {
     }
     if (this.stamina <= 0) {
       this.stamina = 0
+      this.bottomedOutOnStamina = true
+      this.toUpdate.bottomedOutOnStamina = true
       this.goTo(`bunk`)
       this.toUpdate.stamina = this.stamina
       return

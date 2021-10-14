@@ -61,11 +61,16 @@ export class RepairCommand implements Command {
       )
     }
 
-    ioInterface.crew.move(
+    const res = await ioInterface.crew.move(
       context.ship.id,
       context.crewMember.id,
       `repair`,
     )
+    if (`error` in res) {
+      context.reply(res.error)
+      return
+    }
+
     context.reply(
       `${context.nickname} moves to the repair bay` +
         (targetType
