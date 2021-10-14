@@ -92,5 +92,4 @@ jobs:
         uses: sebastianpopp/discord-action@releases/v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          color: '#48f442'
           message: 'Something went wrong when we tried to bring up production. Here's the error message:${{steps.1.outputs}}'
