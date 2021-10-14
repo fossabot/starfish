@@ -42,13 +42,12 @@ jobs:
       #   with:
       #     name: test-results
 
-      - name: Show test results!
-        uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v1
         with:
-          name: Mocha Test Results # Name of the check run which will be created
-          path: '**/*.json' # Path to test results (inside artifact .zip)
-          reporter: mocha-json
           artifact: test-results
+          name: Mocha Test Results # Name of the check run which will be created
+          path: '*.json' # Path to test results (inside artifact .zip)
+          reporter: mocha-json
 
   docker:
     needs: npm-test
