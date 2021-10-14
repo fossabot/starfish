@@ -1,4 +1,4 @@
-name: Pull Request - Test application, Build containers, and Push to Docker Hub
+name: Pull Request - Test, Build, Push!
 
 on:
   pull_request:

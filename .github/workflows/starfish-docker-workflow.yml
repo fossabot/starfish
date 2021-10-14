@@ -93,5 +93,4 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: '#48f442'
-          username: 'GitHub Monitor'
           message: 'Something went wrong when we tried to bring up production. Here's the error message:${{steps.1.outputs}}'
