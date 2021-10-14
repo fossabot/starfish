@@ -130,6 +130,7 @@ type LoadoutId =
   | `tutorial2`
   | `humanDefault`
   | `aiTutorial1`
+  | `test1`
 type Loadout = {
   chassis: ChassisId
   items: { type: ItemType; id: ItemId }[]
