@@ -1,5 +1,5 @@
 import c from '../../../common/dist'
-import socketIo, { Socket } from 'socket.io-client'
+import { Socket, io as socketIo } from 'socket.io-client'
 import { client as discordClient } from '../discordClient'
 import resolveOrCreateChannel from '../discordClient/actions/resolveOrCreateChannel'
 import checkPermissions from '../discordClient/actions/checkPermissions'
@@ -20,7 +20,7 @@ let serverUrl = `http${isDocker() ? `s` : ``}://${
   isDocker() ? `www.starfish.cool` : `localhost`
 }:4200`
 
-let client = socketIo.io(serverUrl, { secure: true })
+let client = socketIo(serverUrl, { secure: true })
 c.log(
   `Attempting to connect to game server at ${serverUrl}`,
 )
