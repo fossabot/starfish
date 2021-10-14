@@ -5,12 +5,11 @@
     "dev": "NODE_ENV=development nodemon dist/index.js",
     "prod": "NODE_ENV=production node dist/index.js",
     "analyze": "NODE_ENV=production node --prof dist/index.js",
-    "test": "TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --require ts-node/register --reporter json --reporter-option output=test-results.json --exit 'tests/index.ts'",
+    "test": "TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --require ts-node/register --reporter json --reporter-option output=reports/test-results.json --exit 'tests/index.ts'",
     "testlocal": "TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --require ts-node/register --exit 'tests/index.ts'"
   },
   "dependencies": {
     "@newrelic/winston-enricher": "^2.0.0",
-    "@types/mongoose": "5.11.97",
     "@types/node": "^16.10.3",
     "dotenv": "^10.0.0",
     "git-last-commit": "^1.0.1",

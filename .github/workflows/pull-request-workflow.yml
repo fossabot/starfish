@@ -24,20 +24,18 @@ jobs:
       - uses: c-hive/gha-npm-cache@v1
 
       - name: NPM install on ${{matrix.folder}}
-        run: npm install
-        working-directory: ${{matrix.folder}}
-
-      - name: Run tests on ${{matrix.folder}}
-        run: npm run test
+        run: |
+          npm install
+          npm run test
         working-directory: ${{matrix.folder}}
 
       - uses: actions/upload-artifact@v2 # upload test results
         if: success() || failure() # run this step even if previous step failed
         with:
           name: test-results
-          path: ${{matrix.folder}}/test-results.json
+          path: ${{matrix.folder}}/reports/test-results.json
 
-  docker:
+  docker-build-publish:
     needs: npm-test
     runs-on: ubuntu-latest
     strategy:
