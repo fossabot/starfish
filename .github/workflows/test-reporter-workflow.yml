@@ -1,7 +1,7 @@
 name: 'Test Report'
 on:
   workflow_run:
-    workflows: ['pull-request-workflow.yml']
+    workflows: ['Pull Request']
     types:
       - completed
 jobs:
