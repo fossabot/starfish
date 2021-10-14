@@ -1,5 +1,5 @@
 import c from '../../common/dist'
-import socketIo from 'socket.io-client'
+import io from 'socket.io-client'
 
 const socketAddress =
   process.env.NODE_ENV === `development`
@@ -11,7 +11,7 @@ const socketAddress =
 //   `initializing frontend socket connection at`,
 //   socketAddress,
 // )
-const socket = socketIo.io(socketAddress, {
+const socket = io.io(socketAddress, {
   secure: true,
   rejectUnauthorized: false,
 })
