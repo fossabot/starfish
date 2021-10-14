@@ -13,12 +13,6 @@ jobs:
           - folder: 'game'
 
     steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
       - name: Check Out Repo
         uses: actions/checkout@v2
 
@@ -42,28 +36,6 @@ jobs:
         with:
           name: test-results
           path: ${{matrix.folder}}/test-results.json
-
-  test-report:
-    needs: npm-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download test result artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: test-results
-
-      - name: Show test results!
-        uses: dorny/test-reporter@v1
-        with:
-          name: Mocha Tests # Name of the check run which will be created
-          path: './' # Path to test results
-
-          list-suites: 'all'
-          list-tests: 'all'
-          max-annotations: '10'
-          fail-on-error: 'true'
-          reporter: mocha-json
-          artifact: test-results
 
   docker:
     needs: npm-test
