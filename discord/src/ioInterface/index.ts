@@ -20,7 +20,7 @@ let serverUrl = `http${isDocker() ? `s` : ``}://${
   isDocker() ? `www.starfish.cool` : `localhost`
 }:4200`
 
-let client = socketIo(serverUrl, { secure: true })
+let client = socketIo.io(serverUrl, { secure: true })
 c.log(
   `Attempting to connect to game server at ${serverUrl}`,
 )
