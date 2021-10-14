@@ -34,6 +34,16 @@ jobs:
           name: test-results
           path: ${{matrix.folder}}/reports/test-results.json
 
+      - name: Download test result artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: test-results
+
+      - uses: dorny/test-reporter@v1
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+
   docker-build-publish:
     needs: npm-test
     runs-on: ubuntu-latest
