@@ -32,11 +32,17 @@ export class Ship extends Stubbable {
   planet: Planet | false = false
   guildId?: GuildId
   readonly game?: Game
-  readonly radii: { [key in RadiusType]: number } = {
+  readonly radii: {
+    sight: number
+    scan: number
+    broadcast: number
+    gameSize: number
+    attack: number[]
+  } = {
     sight: 0,
     broadcast: 0,
     scan: 0,
-    attack: 0,
+    attack: [],
     gameSize: 0,
   }
 

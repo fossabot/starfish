@@ -40,7 +40,6 @@ export default function (
           c.maxNameLength,
         )
 
-      crewMemberBaseData.credits = 1000
       crewMemberBaseData.cockpitCharge = 1
       const addedCrewMember = await ship.addCrewMember(
         crewMemberBaseData,

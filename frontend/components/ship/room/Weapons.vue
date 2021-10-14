@@ -20,6 +20,12 @@
             id: i.id,
             ownerId: ship.id,
           }"
+          v-targetpoint="{
+            color: '#ff7733',
+            type: 'weapon',
+            location: ship.location,
+            radius: i.range * i.repair,
+          }"
         >
           {{ i.displayName }}
           <div class="">

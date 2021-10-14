@@ -43,6 +43,7 @@ const shipSchemaFields: Record<
   ],
   seenPlanets: [{ name: String, id: String }],
   seenLandmarks: [{ type: { type: String }, id: String }],
+  seenCrewMembers: [String],
   tutorial: {
     step: Number,
     baseLocation: [Number, Number],

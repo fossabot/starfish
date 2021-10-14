@@ -337,20 +337,19 @@ export default class Drawer {
           outline: true,
           opacity: 0.4,
         })
-      if (ship.radii.attack)
+      ship.radii.attack?.forEach((ar, index) =>
         this.drawPoint({
           location: [...shipLocation].map(
             (l) => l / this.flatScale,
           ) as CoordinatePair,
-          labelTop: `attack`,
-          labelBottom:
-            c.speedNumber(ship.radii.attack, true, 0) +
-            ` km`,
-          radius: ship.radii.attack * this.flatScale,
+          labelTop: index === 0 ? `attack` : undefined,
+          labelBottom: c.speedNumber(ar, true, 0) + ` km`,
+          radius: ar * this.flatScale,
           color: `#ff7733`,
           outline: true,
           opacity: 0.5,
-        })
+        }),
+      )
       if (ship.radii.broadcast)
         this.drawPoint({
           location: [...shipLocation].map(

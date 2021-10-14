@@ -24,7 +24,9 @@
       @click="logout"
       >Log out</a
     >
-    <a v-show="!userId" :href="loginUrl">Log in</a>
+    <nuxt-link v-show="!userId" to="/login"
+      >Log in</nuxt-link
+    >
   </nav>
 </template>
 
@@ -45,20 +47,6 @@ export default Vue.extend({
       'shipIds',
       'shipsBasics',
     ]),
-    loginUrl() {
-      const botId =
-        process?.env?.NODE_ENV === 'development'
-          ? '723017262369472603'
-          : '804439178636558396'
-      const hostname = window.location.href.replace(
-        /\/.*/g,
-        '',
-      ) //`www.starfish.cool`
-      const postLoginPage = `${hostname}/postlogin`
-      return `https://discord.com/api/oauth2/authorize?client_id=${botId}&redirect_uri=${encodeURIComponent(
-        postLoginPage,
-      )}&response_type=token&scope=identify%20guilds`
-    },
   },
   watch: {
     ship() {

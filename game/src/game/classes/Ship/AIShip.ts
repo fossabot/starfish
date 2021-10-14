@@ -143,7 +143,8 @@ export class AIShip extends CombatShip {
 
   updateSightAndScanRadius() {
     this.updateAttackRadius()
-    this.radii.sight = this.radii.attack * 1.3
+    this.radii.sight =
+      Math.max(...this.radii.attack, 0.1) * 1.3
   }
 
   cumulativeSkillIn(l: CrewLocation, s: SkillId) {

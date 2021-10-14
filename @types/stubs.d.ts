@@ -14,7 +14,13 @@ interface ShipStub extends BaseStub {
   attackable: boolean
   dead: boolean
   hp?: number
-  radii?: { [key in RadiusType]?: number }
+  radii?: {
+    sight: number
+    scan: number
+    broadcast: number
+    gameSize: number
+    attack: number[]
+  }
   obeysGravity?: boolean
   planet?: PlanetStub | false
   guildId: GuildId
