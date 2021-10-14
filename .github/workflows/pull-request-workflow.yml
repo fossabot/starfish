@@ -49,6 +49,7 @@ jobs:
         with:
           name: Mocha Tests # Name of the check run which will be created
           path: './' # Path to test results
+
           list-suites: 'all'
           list-tests: 'all'
           max-annotations: '10'
