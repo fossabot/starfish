@@ -21,6 +21,8 @@ jobs:
         with:
           node-version: '16'
 
+      - uses: c-hive/gha-npm-cache@v1
+
       - name: NPM install on ${{matrix.folder}}
         run: npm install
         working-directory: ${{matrix.folder}}
