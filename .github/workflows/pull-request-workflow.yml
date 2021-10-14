@@ -1,4 +1,4 @@
-name: Starfish Build check
+name: Pull Request - Test application, Build containers, and Push to Docker Hub
 
 on:
   pull_request:
