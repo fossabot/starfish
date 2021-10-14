@@ -1,7 +1,7 @@
 name: 'Test Report'
 on:
   workflow_run:
-    workflows: ['pull-request-workflow']
+    workflows: ['Pull Request - Test, Build, Push!']
     types:
       - completed
 jobs:
