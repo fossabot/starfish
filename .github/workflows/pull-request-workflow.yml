@@ -1,5 +1,4 @@
 name: Pull Request
-
 on:
   pull_request:
     branches:
@@ -78,6 +77,6 @@ jobs:
         with:
           file: ${{ matrix.dockerfile }}
           context: .
-          push: false
-          tags: starfishgame/${{ matrix.image }}:latest, starfishgame/${{ matrix.image }}:${{ github.run_number }}
+          push: true
+          tags: starfishgame/${{ matrix.image }}:${{ github.run_number }}
           cache-from: type=gha
