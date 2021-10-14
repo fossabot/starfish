@@ -46,7 +46,7 @@ jobs:
       - uses: dorny/test-reporter@v1
         with:
           name: Mocha Test Results # Name of the check run which will be created
-          path: '*.json' # Path to test results (inside artifact .zip)
+          path: 'test-results.json' # Path to test results (inside artifact .zip)
           reporter: mocha-json
 
   docker:
