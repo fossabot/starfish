@@ -61,13 +61,13 @@ function getRepairAmountPerTickForSingleCrewMember(level) {
     return math_1.default.lerp(1, 3, level / 100) / globals_1.default.tickInterval;
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
-    return (math_1.default.lerp(300, 1000, level / 100) / globals_1.default.tickInterval);
+    return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);
 }
 function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
     return baseStaminaUse * 1.5;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + math_1.default.lerp(1, 20, level / 100)) * 30;
+    return (2 + math_1.default.lerp(1, 10, level / 100)) * 30;
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends

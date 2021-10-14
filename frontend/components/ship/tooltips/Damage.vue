@@ -12,23 +12,30 @@
             data.damageMitigated !== 0)
         "
       >
-        <li
-          v-if="data.damageMitigated"
-          :class="
-            data.damageMitigated > 0 ? 'success' : 'warning'
-          "
-        >
-          {{ c.r2(data.damageMitigated) }} damage
+        <li v-if="data.damageMitigated">
+          <span
+            :class="
+              data.damageMitigated > 0
+                ? 'success'
+                : 'warning'
+            "
+            >{{ c.r2(data.damageMitigated) }} damage</span
+          >
           {{
             data.damageMitigated > 0 ? 'mitigated' : 'added'
           }}
           by passives
         </li>
-        <li v-for="d in data.damageTally" class="warning">
-          {{ d.targetDisplayName }} ({{ d.targetType }})
-          took {{ c.r2(d.damage) }} damage{{
-            d.destroyed ? ' (destroyed)' : ''
-          }}
+        <li v-for="d in data.damageTally">
+          <span style="color: var(--item)"
+            >{{ d.targetDisplayName }} ({{
+              d.targetType
+            }})</span
+          >
+          took
+          <span class="warning"
+            >{{ c.r2(d.damage) }} damage</span
+          >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
       </ul>
     </div>

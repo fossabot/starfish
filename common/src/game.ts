@@ -78,7 +78,7 @@ function getMineAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    math.lerp(300, 1000, level / 100) / globals.tickInterval
+    math.lerp(180, 500, level / 100) / globals.tickInterval
   )
 }
 
@@ -89,7 +89,7 @@ function getStaminaGainPerTickForSingleCrewMember(
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + math.lerp(1, 20, level / 100)) * 30
+  return (2 + math.lerp(1, 10, level / 100)) * 30
 }
 
 /**
