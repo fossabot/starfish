@@ -128,7 +128,7 @@ export default Vue.extend({
               s.stat === 'totalContributedToCommonFund',
           )?.amount,
         }))
-        .filter((c: CrewMemberStub) => c.totalContributed)
+        .filter((c: any) => c.totalContributed)
         .sort(
           (a: any, b: any) =>
             b.totalContributed - a.totalContributed,
@@ -142,7 +142,7 @@ export default Vue.extend({
             (s: CrewStatEntry) => s.stat === 'timeInBunk',
           )?.amount,
         }))
-        .filter((c: CrewMemberStub) => c.amount)
+        .filter((c: any) => c.amount)
         .sort((a: any, b: any) => b.amount - a.amount)
     },
   },

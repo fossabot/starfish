@@ -91,11 +91,15 @@ export class GoCommand implements Command {
       return
     }
 
-    ioInterface.crew.move(
+    const res = await ioInterface.crew.move(
       context.ship.id,
       context.crewMember.id,
       roomToGoTo,
     )
+    if (`error` in res) {
+      context.reply(res.error)
+      return
+    }
     context.reply(
       `${context.nickname} moves to ${c.capitalize(
         roomToGoTo,

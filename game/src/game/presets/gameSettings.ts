@@ -17,6 +17,8 @@ export default function (): AdminGameSettings {
     arrivalThreshold: 0.001,
     baseCritChance: 0.01,
     baseCritDamageMultiplier: 2,
+    staminaBottomedOutResetPoint: 0.05,
+    newCrewMemberCredits: 1000,
 
     planetDensity: 0.9,
     cometDensity: 0.1,

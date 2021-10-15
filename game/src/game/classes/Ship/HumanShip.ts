@@ -99,6 +99,8 @@ export class HumanShip extends CombatShip {
 
   tutorial: Tutorial | undefined = undefined
 
+  seenCrewMembers: string[] = []
+
   constructor(
     data: BaseHumanShipData = {} as BaseHumanShipData,
     game?: Game,
@@ -111,6 +113,8 @@ export class HumanShip extends CombatShip {
 
     this.ai = false
     this.human = true
+
+    this.seenCrewMembers = data.seenCrewMembers || []
 
     this.banked = data.banked || []
 
@@ -1901,6 +1905,13 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
+    if (!this.seenCrewMembers.includes(data.id)) {
+      data.credits =
+        this.game?.settings.newCrewMemberCredits ||
+        defaultGameSettings().newCrewMemberCredits
+      this.seenCrewMembers.push(data.id)
+    }
+
     const cm = new CrewMember(data, this)
 
     // if it is a fully new crew member (and not a temporary ship in the tutorial)

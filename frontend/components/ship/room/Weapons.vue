@@ -20,6 +20,12 @@
             id: i.id,
             ownerId: ship.id,
           }"
+          v-targetpoint="{
+            color: '#ff7733',
+            type: 'weapon',
+            location: ship.location,
+            radius: i.range * i.repair,
+          }"
         >
           {{ i.displayName }}
           <div class="">
@@ -37,6 +43,12 @@
               :dangerZone="-1"
             />
           </div>
+        </div>
+        <div class="martop sub">
+          Your charge speed:
+          {{
+            c.numberWithCommas(c.r2(chargePerSecond * 60))
+          }}/min
         </div>
       </div>
       <div class="panesection">
@@ -76,6 +88,9 @@
             :class="{
               secondary: crewMember.combatTactic !== 'none',
             }"
+            v-tooltip="
+              `Defer to others' tactic choices. If no one else is in the weapons bay, defaults to Pacifist.`
+            "
           >
             <span>No Preference</span></button
           ><button
@@ -202,6 +217,17 @@ export default Vue.extend({
     weapons() {
       return this.ship.items.filter(
         (i: ItemStub) => i.type === 'weapon',
+      )
+    },
+    chargePerSecond() {
+      return (
+        (c.getWeaponCooldownReductionPerTick(
+          (this.crewMember as CrewMemberStub).skills.find(
+            (s) => s.skill === 'munitions',
+          )?.level || 1,
+        ) *
+          c.tickInterval) /
+        1000
       )
     },
     targetItemTypes() {

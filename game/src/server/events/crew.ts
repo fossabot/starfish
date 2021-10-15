@@ -40,7 +40,6 @@ export default function (
           c.maxNameLength,
         )
 
-      crewMemberBaseData.credits = 1000
       crewMemberBaseData.cockpitCharge = 1
       const addedCrewMember = await ship.addCrewMember(
         crewMemberBaseData,
@@ -118,24 +117,31 @@ export default function (
     },
   )
 
-  socket.on(`crew:move`, (shipId, crewId, target) => {
-    if (!game) return
-    const ship = game.ships.find(
-      (s) => s.id === shipId,
-    ) as HumanShip
-    if (!ship) return
-    const crewMember = ship.crewMembers?.find(
-      (cm) => cm.id === crewId,
-    )
-    if (!crewMember) return
+  socket.on(
+    `crew:move`,
+    (shipId, crewId, target, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
 
-    crewMember.goTo(target)
+      const res = crewMember.goTo(target)
+      if (res) callback({ error: res })
+      else callback({ data: true })
 
-    c.log(
-      `gray`,
-      `Set ${crewMember.name} on ${ship.name} location to ${target}.`,
-    )
-  })
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} location to ${target}.`,
+      )
+    },
+  )
 
   socket.on(`crew:leave`, (shipId, crewId, callback) => {
     if (!game) return

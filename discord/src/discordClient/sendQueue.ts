@@ -94,8 +94,8 @@ export async function enQueue({
         context.initialMessage.channel instanceof
         NewsChannel
       ) &&
-      !context.initialMessage.channel.partial &&
-      context.initialMessage.channel.type === `GUILD_TEXT`
+      !context.initialMessage.channel?.partial &&
+      context.initialMessage.channel?.type === `GUILD_TEXT`
     ) {
       channel = new GameChannel(
         null,

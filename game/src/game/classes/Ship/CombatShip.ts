@@ -44,11 +44,13 @@ export abstract class CombatShip extends Ship {
   }
 
   updateAttackRadius() {
-    this.radii.attack = this.weapons.reduce(
-      (highest: number, curr: Weapon): number =>
-        Math.max(curr.effectiveRange, highest),
-      0,
-    )
+    this.radii.attack = Array.from(
+      new Set(
+        this.weapons.map(
+          (curr): number => curr.effectiveRange,
+        ),
+      ),
+    ).sort((a, b) => b - a) // biggest first
     this.toUpdate.radii = this.radii
   }
 
@@ -154,6 +156,7 @@ export abstract class CombatShip extends Ship {
 
   async respawn() {
     c.log(`Respawning`, this.name)
+    this.spawnedAt = Date.now()
     this.items.forEach((i) => this.removeItem(i))
     this.items = []
     this.previousLocations = []
@@ -219,7 +222,10 @@ export abstract class CombatShip extends Ship {
     // too far, or not in sight range
     if (
       c.distance(otherShip.location, this.location) >
-      Math.min(this.radii.attack, this.radii.sight)
+      Math.min(
+        Math.max(...this.radii.attack) ?? Infinity,
+        this.radii.sight,
+      )
     )
       return false
     // no weapons available

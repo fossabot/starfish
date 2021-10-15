@@ -32,13 +32,21 @@ export class Ship extends Stubbable {
   planet: Planet | false = false
   guildId?: GuildId
   readonly game?: Game
-  readonly radii: { [key in RadiusType]: number } = {
+  readonly radii: {
+    sight: number
+    scan: number
+    broadcast: number
+    gameSize: number
+    attack: number[]
+  } = {
     sight: 0,
     broadcast: 0,
     scan: 0,
-    attack: 0,
+    attack: [],
     gameSize: 0,
   }
+
+  spawnedAt: number
 
   onlyVisibleToShipId?: string
 
@@ -97,6 +105,7 @@ export class Ship extends Stubbable {
     {
       name,
       guildId,
+      spawnedAt,
       chassis,
       items,
       loadout,
@@ -119,6 +128,8 @@ export class Ship extends Stubbable {
 
     this.ai = true
     this.human = false
+
+    this.spawnedAt = spawnedAt || Date.now()
 
     this.velocity = velocity || [0, 0]
     if (location) {

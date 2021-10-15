@@ -11,7 +11,7 @@ dotEnvConfig()
 
 import c from '../../../common/dist'
 import mongoose from 'mongoose'
-import path from 'path/posix'
+import path from 'path'
 import { exec } from 'child_process'
 export const db = {
   cache,

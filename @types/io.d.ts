@@ -212,6 +212,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     target: CrewLocation,
+    callback?: (res: IOResponse<true>) => void,
   ) => void
   [`crew:targetLocation`]: (
     shipId: string,

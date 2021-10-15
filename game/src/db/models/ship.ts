@@ -17,6 +17,7 @@ const shipSchemaFields: Record<
   guildIcon: { type: String },
   guildName: { type: String },
   guildId: { type: String },
+  spawnedAt: { type: Number },
   location: [{ type: Number, required: true }],
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
@@ -42,6 +43,7 @@ const shipSchemaFields: Record<
   ],
   seenPlanets: [{ name: String, id: String }],
   seenLandmarks: [{ type: { type: String }, id: String }],
+  seenCrewMembers: [String],
   tutorial: {
     step: Number,
     baseLocation: [Number, Number],

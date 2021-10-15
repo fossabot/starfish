@@ -1,6 +1,7 @@
 interface BaseShipData {
   name: string
   id?: string
+  spawnedAt?: number
   guildId?: GuildId
   location?: CoordinatePair
   velocity?: CoordinatePair
@@ -32,6 +33,7 @@ interface BaseHumanShipData extends BaseShipData {
   orders?: ShipOrders
   banked?: BankEntry[]
   orderReactions?: ShipOrderReaction[]
+  seenCrewMembers?: string[]
 }
 
 interface BaseAIShipData extends BaseShipData {

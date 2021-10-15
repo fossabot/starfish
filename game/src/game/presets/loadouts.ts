@@ -24,6 +24,7 @@ const loadouts: { [key in LoadoutId]: Loadout } = {
     chassis: `starter1`,
     items: [
       { type: `weapon`, id: `cannon1` },
+      // { type: `weapon`, id: `tiny1` },
       { type: `engine`, id: `starter1` },
       { type: `scanner`, id: `starter1` },
       // { type: `scanner`, id: `starter2` },
