@@ -95,5 +95,5 @@ jobs:
           file: ${{ matrix.dockerfile }}
           context: .
           push: true
-          tags: starfishgame/${{ matrix.image }}:latest, starfishgame/${{ matrix.image }}:${{ github.run_number }}
+          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}
           cache-from: type=gha
