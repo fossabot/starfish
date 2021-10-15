@@ -1,5 +1,5 @@
 import c from '../../../common/dist'
-import { Socket, io as socketIo } from 'socket.io-client'
+import socketIo, { Socket } from 'socket.io-client'
 import { client as discordClient } from '../discordClient'
 import resolveOrCreateChannel from '../discordClient/actions/resolveOrCreateChannel'
 import checkPermissions from '../discordClient/actions/checkPermissions'
