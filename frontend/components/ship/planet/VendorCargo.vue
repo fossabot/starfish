@@ -254,7 +254,12 @@ export default Vue.extend({
         this.crewMember.id,
         data.cargoData.id,
         amount,
-        (res: IOResponse<CrewMemberStub>) => {
+        (
+          res: IOResponse<{
+            amount: number
+            price: number
+          }>,
+        ) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {
               text: res.error,
