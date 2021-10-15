@@ -32,6 +32,21 @@ const loadouts: { [key in LoadoutId]: Loadout } = {
       // { type: `armor`, id: `starter` },
     ],
   },
+
+  // ----- loadouts for testing -----
+
+  test1: {
+    chassis: `mega2`,
+    items: [
+      { type: `weapon`, id: `saber3` },
+      { type: `weapon`, id: `sniper3` },
+      { type: `communicator`, id: `distance3` },
+      { type: `scanner`, id: `shipscanner3` },
+      { type: `engine`, id: `basic3` },
+      { type: `engine`, id: `tough3` },
+      { type: `armor`, id: `block4` },
+    ],
+  },
 }
 
 export default loadouts

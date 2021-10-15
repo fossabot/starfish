@@ -9,6 +9,7 @@ import { describe, it } from 'mocha'
 // chai.use(sinonChai)
 
 import { crewMemberData, humanShipData } from './defaults'
+import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 
 describe(`HumanShip basic tests`, () => {
   it(`should create a HumanShip`, () => {
@@ -137,5 +138,129 @@ describe(`HumanShip cargo/credit distribution`, () => {
     ship.crewMembers.forEach((cm) => {
       expect(cm.heldWeight).to.equal(cm.maxCargoSpace)
     })
+  })
+})
+
+describe(`HumanShip death`, () => {
+  it(`should spawn a cache on death with the correct amount of credits inside`, () => {
+    // test with base ship
+    let ship = new HumanShip(humanShipData())
+    for (let i = 0; i < 10; i++) {
+      ship.addCrewMember(crewMemberData(), true)
+    }
+
+    ship.distributeCargoAmongCrew([
+      { id: `credits`, amount: 100 },
+    ])
+    ship.crewMembers.forEach((cm) => {
+      expect(cm.credits).to.equal(10)
+    })
+    const itemRefundValue1 = ship.items.reduce(
+      (acc, item) => item.toRefundAmount() + acc,
+      0,
+    )
+    let droppedCargo = ship.die()
+    expect(droppedCargo).to.have.lengthOf(1)
+    expect(droppedCargo[0].id).to.equal(`credits`)
+    expect(droppedCargo[0].amount).to.equal(
+      100 * CombatShip.percentOfCreditsDroppedOnDeath +
+        itemRefundValue1 *
+          CombatShip.percentOfCreditsKeptOnDeath,
+    )
+
+    // same test, this time with a big ship
+    ship = new HumanShip(humanShipData(`test1`))
+    for (let i = 0; i < 10; i++) {
+      ship.addCrewMember(crewMemberData(), true)
+    }
+    ship.distributeCargoAmongCrew([
+      { id: `credits`, amount: 100 },
+    ])
+    ship.crewMembers.forEach((cm) => {
+      expect(cm.credits).to.equal(10)
+    })
+    const itemRefundValue2 = ship.items.reduce(
+      (acc, item) => item.toRefundAmount() + acc,
+      0,
+    )
+    droppedCargo = ship.die()
+    expect(droppedCargo).to.have.lengthOf(1)
+    expect(droppedCargo[0].id).to.equal(`credits`)
+    expect(droppedCargo[0].amount).to.equal(
+      100 * CombatShip.percentOfCreditsDroppedOnDeath +
+        itemRefundValue2 *
+          CombatShip.percentOfCreditsKeptOnDeath,
+    )
+  })
+
+  it(`should give the correct amount of credits back to the common fund on death`, () => {
+    // test with base ship
+    let ship = new HumanShip(humanShipData())
+    ship.commonCredits = 100
+    const itemRefundValue2 = ship.items.reduce(
+      (acc, item) => item.toRefundAmount() + acc,
+      0,
+    )
+    ship.die()
+    expect(ship.commonCredits).to.equal(
+      100 * CombatShip.percentOfCreditsKeptOnDeath +
+        itemRefundValue2 *
+          CombatShip.percentOfCreditsKeptOnDeath,
+    )
+
+    // same test, this time with a big ship
+    ship = new HumanShip(humanShipData(`test1`))
+    ship.commonCredits = 100
+    const itemRefundValue1 = ship.items.reduce(
+      (acc, item) => item.toRefundAmount() + acc,
+      0,
+    )
+    ship.die()
+    expect(ship.commonCredits).to.equal(
+      100 * CombatShip.percentOfCreditsKeptOnDeath +
+        itemRefundValue1 *
+          CombatShip.percentOfCreditsKeptOnDeath,
+    )
+  })
+
+  it(`should drop the correct amount of cargo on death`, () => {
+    let ship = new HumanShip(humanShipData())
+    for (let i = 0; i < 10; i++) {
+      ship.addCrewMember(crewMemberData(), true)
+    }
+
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 10 },
+      { id: `oxygen`, amount: 12 },
+    ])
+
+    let droppedCargo = ship.die()
+    expect(droppedCargo.length).to.equal(2)
+    expect(
+      droppedCargo.find((ca) => ca.id === `carbon`)?.amount,
+    ).to.equal(10)
+    expect(
+      droppedCargo.find((ca) => ca.id === `oxygen`)?.amount,
+    ).to.equal(12)
+
+    // same test, this time with a big ship
+    ship = new HumanShip(humanShipData(`test1`))
+    for (let i = 0; i < 10; i++) {
+      ship.addCrewMember(crewMemberData(), true)
+    }
+
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 10 },
+      { id: `oxygen`, amount: 12 },
+    ])
+
+    droppedCargo = ship.die()
+    expect(droppedCargo.length).to.equal(3)
+    expect(
+      droppedCargo.find((ca) => ca.id === `carbon`)?.amount,
+    ).to.equal(10)
+    expect(
+      droppedCargo.find((ca) => ca.id === `oxygen`)?.amount,
+    ).to.equal(12)
   })
 })

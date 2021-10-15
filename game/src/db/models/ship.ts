@@ -163,7 +163,7 @@ export async function addOrUpdateInDb(
   //   const found = await DBShip.findOne({ id: data.id })
   //   if (found) c.log(`updated`, found)
   // }
-  return dbObject
+  return dbObject as any
 }
 
 export async function removeFromDb(id: string) {

@@ -2657,16 +2657,22 @@ export class HumanShip extends CombatShip {
         const existing = cacheContents.find(
           (cc) => cc.id === toAdd?.id,
         )
-        if (existing) existing.amount += toAdd?.amount || 0
-        else if (toAdd) cacheContents.push(toAdd)
+        if (existing)
+          existing.amount = c.r2(
+            existing.amount + (toAdd?.amount || 0),
+          )
+        else if (toAdd)
+          cacheContents.push({
+            ...toAdd,
+            amount: c.r2(toAdd.amount),
+          })
       }
 
       // ----- crew member credits -----
       const toCache =
         cm.credits *
         CombatShip.percentOfCreditsDroppedOnDeath
-      cm.credits -=
-        cm.credits * CombatShip.percentOfCreditsLostOnDeath
+      cm.credits *= CombatShip.percentOfCreditsKeptOnDeath
       const existing = cacheContents.find(
         (cc) => cc.id === `credits`,
       )
@@ -2681,30 +2687,50 @@ export class HumanShip extends CombatShip {
       cm.stamina = 0
     })
 
-    // ----- ship common credits -----
-    const lostItemValue =
-      this.items?.reduce(
-        (total, item) => total + item.baseData.basePrice,
-        0,
-      ) || 0
-    const refundAmount =
-      Math.max(0, lostItemValue - 20000) * 0.2
-    this.commonCredits = refundAmount
-
-    const toCache =
+    // ship common credits -> cache
+    const commonCreditsToCache =
       this.commonCredits *
       CombatShip.percentOfCreditsDroppedOnDeath
-    this.commonCredits -=
-      this.commonCredits *
-      CombatShip.percentOfCreditsLostOnDeath
+    if (commonCreditsToCache) {
+      const existing = cacheContents.find(
+        (cc) => cc.id === `credits`,
+      )
+      if (existing)
+        existing.amount += commonCreditsToCache || 0
+      else if (this.commonCredits)
+        cacheContents.push({
+          id: `credits`,
+          amount: commonCreditsToCache,
+        })
+    }
+
+    // ship common credits -> nothing
+    this.commonCredits *=
+      CombatShip.percentOfCreditsKeptOnDeath
+
+    // ----- ship item refund -----
+    const itemRefundAmount =
+      this.items?.reduce(
+        (total, item) => total + item.toRefundAmount(),
+        0,
+      ) || 0
+    this.commonCredits +=
+      itemRefundAmount *
+      CombatShip.percentOfCreditsKeptOnDeath
+
     const existing = cacheContents.find(
       (cc) => cc.id === `credits`,
     )
-    if (existing) existing.amount += toCache || 0
+    if (existing)
+      existing.amount +=
+        itemRefundAmount *
+          CombatShip.percentOfCreditsDroppedOnDeath || 0
     else if (this.commonCredits)
       cacheContents.push({
         id: `credits`,
-        amount: toCache,
+        amount:
+          itemRefundAmount *
+          CombatShip.percentOfCreditsDroppedOnDeath,
       })
 
     if (cacheContents.length)
@@ -2713,6 +2739,8 @@ export class HumanShip extends CombatShip {
         location: this.location,
         message: `Remains of ${this.name}`,
       })
+
+    return cacheContents
   }
 
   get guildRankings() {

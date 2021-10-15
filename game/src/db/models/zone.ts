@@ -44,7 +44,7 @@ export async function addOrUpdateInDb(
       lean: true,
       setDefaultsOnInsert: true,
     })
-  return dbObject
+  return dbObject as any
 }
 
 export async function wipe() {

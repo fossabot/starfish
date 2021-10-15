@@ -11,7 +11,7 @@ const socketAddress =
 //   `initializing frontend socket connection at`,
 //   socketAddress,
 // )
-const socket = io(socketAddress, {
+const socket = io.io(socketAddress, {
   secure: true,
   rejectUnauthorized: false,
 })
