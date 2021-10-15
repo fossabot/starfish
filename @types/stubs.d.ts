@@ -91,6 +91,7 @@ interface CrewMemberStub extends BaseStub {
   targetLocation: CoordinatePair | false
   repairPriority: RepairPriority
   bottomedOutOnStamina: boolean
+  maxCargoSpace: number
 }
 
 interface PlanetStub extends BaseStub {
