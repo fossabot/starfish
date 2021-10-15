@@ -7,6 +7,24 @@ jobs:
   build-and-push:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - dockerfile: db/Dockerfile-prod
+            image: 'starfish-db'
+            folder: 'db'
+          - dockerfile: game/Dockerfile-prod
+            image: 'starfish-game'
+            folder: 'game'
+          - dockerfile: discord/Dockerfile-prod
+            image: 'starfish-discord'
+            folder: 'discord'
+          - dockerfile: frontend/Dockerfile-prod
+            image: 'starfish-frontend'
+            folder: 'frontend'
+          - dockerfile: nginx/Dockerfile-prod
+            image: 'starfish-nginx'
+            folder: 'nginx'
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
