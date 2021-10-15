@@ -19,7 +19,6 @@ import isDocker from 'is-docker'
 require(`events`).captureRejections = true
 
 import type { Game } from '../game/Game'
-import { debug } from 'console'
 export let game: Game | undefined
 
 export function linkGame(g: Game) {
@@ -65,10 +64,10 @@ if (isDocker()) {
   webServer = createHTTPSServer(serverConfig)
 } else webServer = createHTTPServer(serverConfig)
 
-// * test endpoint to check if the server is running and accessible
-webServer.on(`request`, (req, res) => {
-  res.end(`ok`)
-})
+// // * test endpoint to check if the server is running and accessible
+// webServer.on(`request`, (req, res) => {
+//   res.end(`ok`)
+// })
 
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   webServer,
