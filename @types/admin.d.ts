@@ -13,6 +13,7 @@ interface AdminGameSettings {
   baseCritChance: number
   baseCritDamageMultiplier: number
   staminaBottomedOutResetPoint: number
+  newCrewMemberCredits: number
 
   planetDensity: number
   cometDensity: number
