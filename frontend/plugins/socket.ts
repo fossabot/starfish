@@ -1,5 +1,5 @@
 import c from '../../common/dist'
-import io from 'socket.io-client'
+import { io } from 'socket.io-client'
 
 const socketAddress =
   process.env.NODE_ENV === `development`
