@@ -18,6 +18,14 @@ import isDocker from 'is-docker'
 
 require(`events`).captureRejections = true
 
+import type { Game } from '../game/Game'
+export let game: Game | undefined
+
+export function linkGame(g: Game) {
+  game = g
+  c.log(`gray`, `Linked game to io server.`)
+}
+
 let serverConfig: ServerOptions = {}
 let webServer
 if (isDocker()) {
