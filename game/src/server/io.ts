@@ -23,7 +23,7 @@ export let game: Game | undefined
 
 export function linkGame(g: Game) {
   game = g
-  c.log(`green`, `Linked game to io server.`)
+  c.log(`gray`, `Linked game to io server.`)
 }
 
 let serverConfig: ServerOptions = {}
@@ -64,10 +64,10 @@ if (isDocker()) {
   webServer = createHTTPSServer(serverConfig)
 } else webServer = createHTTPServer(serverConfig)
 
-// // * test endpoint to check if the server is running and accessible
-// webServer.on(`request`, (req, res) => {
-//   res.end(`ok`)
-// })
+// * test endpoint to check if the server is running and accessible
+webServer.on(`request`, (req, res) => {
+  res.end(`ok`)
+})
 
 const io = new socketServer<IOClientEvents, IOServerEvents>(
   webServer,
@@ -95,7 +95,5 @@ io.on(
 )
 
 webServer.listen(4200)
-if (process.env.NODE_ENV === `production`) {
-  c.log(`green`, `io server listening on port 4200`)
-}
+c.log(`green`, `io server listening on port 4200`)
 export default io
