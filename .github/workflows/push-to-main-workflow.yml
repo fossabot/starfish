@@ -49,6 +49,7 @@ jobs:
           cache-from: type=gha
 
   update-prod:
+    needs: [build-and-push]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
