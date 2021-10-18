@@ -73,3 +73,31 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           message: 'Something went wrong when we tried to bring up production.'
+
+  artillery:
+    runs-on: ubuntu-latest
+    needs: update-prod
+
+    container: artilleryio/artillery:latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: starfishgame/stonefish
+
+      - name: Make reports directory
+        run: mkdir reports
+
+      - name: Execute load tests
+        run: /home/node/artillery/bin/artillery run --output reports/report.json websocket_test.yml
+
+      - name: Generate HTML report
+        run: /home/node/artillery/bin/artillery report --output reports/report.html reports/report.json
+
+      - name: Archive test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: artillery-test-report
+          path: reports/*
