@@ -5,6 +5,7 @@ services:
     restart: always
     volumes:
       - /mnt/disks/mongodb/db_data:/data/db
+      - /mnt/disks/mongodb/backups:/data/backups
     ports:
       - 27017:27017
     environment:
