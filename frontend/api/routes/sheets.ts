@@ -31,8 +31,6 @@ credentials.private_key = credentials.private_key
   .replace(/\\n/g, '\n')
 // c.log(credentials)
 
-c.log(Date.now())
-
 /* eslint-enable */
 
 let feedbackSheet, bugsSheet, storiesSheet
