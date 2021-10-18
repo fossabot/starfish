@@ -95,5 +95,7 @@ io.on(
 )
 
 webServer.listen(4200)
-c.log(`green`, `io server listening on port 4200`)
+if (process.env.NODE_ENV === `production`) {
+  c.log(`green`, `io server listening on port 4200`)
+}
 export default io
