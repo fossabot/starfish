@@ -1905,8 +1905,12 @@ export class HumanShip extends CombatShip {
     data: BaseCrewMemberData,
     setupAdd = false,
   ): Promise<CrewMember> {
-    if (!this.seenCrewMembers.includes(data.id)) {
+    if (
+      !setupAdd &&
+      !this.seenCrewMembers.includes(data.id)
+    ) {
       data.credits =
+        data.credits ||
         this.game?.settings.newCrewMemberCredits ||
         defaultGameSettings().newCrewMemberCredits
       this.seenCrewMembers.push(data.id)
