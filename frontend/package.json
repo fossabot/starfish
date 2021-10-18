@@ -16,6 +16,7 @@
     "core-js": "^3.18.2",
     "cors": "^2.8.5",
     "dayjs": "^1.10.7",
+    "engine.io-client": "^6.0.2",
     "express": "^4.17.1",
     "google-spreadsheet": "^3.1.15",
     "nuxt": "^2.15.8",
