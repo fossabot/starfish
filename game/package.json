@@ -33,6 +33,6 @@
     "ts-sinon": "^2.0.2"
   },
   "pre-commit": [
-    "test"
+    "testlocal"
   ]
 }
