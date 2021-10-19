@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: 5.0
+
       - uses: c-hive/gha-npm-cache@v1
 
       - name: NPM install on ${{matrix.folder}}
