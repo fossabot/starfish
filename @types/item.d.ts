@@ -42,6 +42,9 @@ type WeaponId =
   | `sniper2`
   | `sniper3`
   | `tiny1`
+  | `blaster1`
+  | `blaster2`
+  | `blaster3`
 type ScannerId =
   | `tutorial1`
   | `starter1`

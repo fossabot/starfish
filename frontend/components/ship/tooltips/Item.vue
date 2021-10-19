@@ -346,7 +346,8 @@ export default Vue.extend({
         if (
           this.data &&
           typeof this.data === 'object' &&
-          Object.keys(this.data).length < 5
+          ((this.data as any).type === 'chassis' ||
+            Object.keys(this.data).length < 5)
         )
           return (
             c.items[(this.data as ItemStub).type]?.[

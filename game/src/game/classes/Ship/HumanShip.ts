@@ -1685,9 +1685,8 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} added ${c.r2(
-          amount,
-          0,
+        `${member.name} added ${c.numberWithCommas(
+          c.r2(amount, 0),
         )} credits to the ship's common fund.`,
         `low`,
       )

@@ -4,12 +4,12 @@ import globals from './globals'
 const maxNameLength = 16
 
 function numberWithCommas(x: number) {
-  if (x < 1000) return x
   let negative = false
   if (x < 0) {
     negative = true
     x = -x
   }
+  if (x < 1000) return x
   const decimal = x % 1
   const total =
     Math.floor(x)
