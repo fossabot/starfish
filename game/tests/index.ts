@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import isDocker from 'is-docker'
 
 import './Game'
 import './dbSetup'
@@ -7,10 +8,12 @@ import './HumanShip'
 import './Tutorial'
 import './ioCommands'
 
+const host = isDocker() ? `mongodb` : `localhost`
+
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongo --eval "
+      `mongo --host ${host} --eval "
         db = db.getSiblingDB('starfish-test')
         db.createUser({
           user: 'testuser',
@@ -36,7 +39,7 @@ before(async () => {
 after(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongo --eval "
+      `mongo --host ${host} --eval "
         db = db.getSiblingDB('starfish-test')
         db.dropUser('testuser')
         db.dropDatabase()"`,
