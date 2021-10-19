@@ -21,7 +21,7 @@
           v-if="selectedCrewMemberId"
           @click="deleteCrewMember(selectedCrewMemberId)"
         >
-          Delete
+          <div>Delete</div>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
         v-if="propertySearchTerm"
         @click="propertySearchTerm = null"
       >
-        Clear
+        <div>Clear</div>
       </div>
     </div>
 

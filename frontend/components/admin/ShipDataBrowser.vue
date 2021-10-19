@@ -24,28 +24,28 @@
             v-if="selectedShipId"
             @click="getShipData(selectedShipId)"
           >
-            Reload
+            <div>Reload</div>
           </div>
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
             @click="respawnShip(selectedShipId)"
           >
-            Respawn
+            <div>Respawn</div>
           </div>
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
             @click="achievement(selectedShipId)"
           >
-            Achievement
+            <div>Achievement</div>
           </div>
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
             @click="deleteShip(selectedShipId)"
           >
-            Delete
+            <div>Delete</div>
           </div>
         </div>
       </div>

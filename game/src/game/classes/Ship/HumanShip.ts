@@ -1,6 +1,4 @@
 import c from '../../../../../common/dist'
-import { db } from '../../../db'
-import io from '../../../server/io'
 
 import { membersIn, cumulativeSkillIn } from './addins/crew'
 import {
@@ -384,10 +382,12 @@ export class HumanShip extends CombatShip {
       // })
       // c.log(JSON.stringify(this.toUpdate.log))
       // c.log(JSON.stringify(this.toUpdate, null, 2))
-      io.to(`ship:${this.id}`).emit(`ship:update`, {
-        id: this.id,
-        updates: this.toUpdate,
-      })
+      this.game?.io
+        ?.to(`ship:${this.id}`)
+        .emit(`ship:update`, {
+          id: this.id,
+          updates: this.toUpdate,
+        })
       this.toUpdate = {}
     }
     profiler.end()
@@ -414,7 +414,7 @@ export class HumanShip extends CombatShip {
     if (this.logAlertLevel === `high`)
       levelsToAlert.push(`critical`)
     if (levelsToAlert.includes(level))
-      io.emit(
+      this.game?.io?.emit(
         `ship:message`,
         this.id,
         Array.isArray(content)
@@ -1815,7 +1815,7 @@ export class HumanShip extends CombatShip {
       Math.min(100, (1 - garbleAmount) * 100),
       0,
     )}% fidelity)*\n`
-    io.emit(
+    this.game?.io?.emit(
       `ship:message`,
       this.id,
       `${prefix}\`${message}\``,
@@ -1910,38 +1910,13 @@ export class HumanShip extends CombatShip {
       !this.seenCrewMembers.includes(data.id)
     ) {
       data.credits =
-        data.credits ||
-        this.game?.settings.newCrewMemberCredits ||
-        defaultGameSettings().newCrewMemberCredits
+        data.credits ??
+        (this.game?.settings.newCrewMemberCredits ||
+          defaultGameSettings().newCrewMemberCredits)
       this.seenCrewMembers.push(data.id)
     }
 
     const cm = new CrewMember(data, this)
-
-    // if it is a fully new crew member (and not a temporary ship in the tutorial)
-    if (!setupAdd && !this.tutorial) {
-      if (this.crewMembers.length > 0)
-        this.logEntry(
-          `${cm.name} has joined the ship's crew!`,
-          `high`,
-        )
-
-      // if this crew member has already done the tutorial in another ship, skip it
-      const foundInOtherShip = (
-        this.game?.humanShips || []
-      ).find((s) =>
-        s.crewMembers.find(
-          (otherCm) => otherCm.id === cm.id,
-        ),
-      )
-      if (!foundInOtherShip)
-        await Tutorial.putCrewMemberInTutorial(cm)
-      // BUT, if they are the first crew member, still send the tutorial-end messages
-      else if (this.crewMembers.length === 0)
-        Tutorial.endMessages(this)
-
-      io.to(`user:${cm.id}`).emit(`user:reloadShips`)
-    }
 
     this.crewMembers.push(cm)
     if (!this.captain) {
@@ -1957,15 +1932,49 @@ export class HumanShip extends CombatShip {
         this.addAchievement(`admin`)
     }
 
-    if (!setupAdd)
-      c.log(
-        `gray`,
-        `Added crew member ${cm.name} to ${this.name}`,
-      )
+    // if (!setupAdd)
+    //   c.log(
+    //     `gray`,
+    //     `Added crew member ${cm.name} to ${this.name} (${this.id})`,
+    //   )
 
     this.checkAchievements(`crewMembers`)
 
-    if (!setupAdd) await db.ship.addOrUpdateInDb(this)
+    // ----- check for tutorial -----
+    // if it is a fully new crew member (and not a temporary ship in the tutorial)
+    if (!setupAdd && !this.tutorial) {
+      if (this.crewMembers.length > 0)
+        this.logEntry(
+          `${cm.name} has joined the ship's crew!`,
+          `high`,
+        )
+
+      // if this crew member has already done the tutorial in another ship, skip it
+      const foundInOtherShip = (
+        this.game?.humanShips || []
+      ).find(
+        (s) =>
+          s !== this &&
+          s.crewMembers.find(
+            (otherCm) => otherCm.id === cm.id,
+          ),
+      )
+      if (!foundInOtherShip) {
+        await Tutorial.putCrewMemberInTutorial(cm)
+      }
+      // BUT, if they are the first crew member, still send the tutorial-end messages
+      else if (this.crewMembers.length === 0)
+        Tutorial.endMessages(this)
+
+      this.game?.io
+        ?.to(`user:${cm.id}`)
+        .emit(`user:reloadShips`)
+    }
+
+    // save
+    if (!setupAdd)
+      await this.game?.db?.ship.addOrUpdateInDb(this)
+
     return cm
   }
 
@@ -2012,7 +2021,7 @@ export class HumanShip extends CombatShip {
     }
 
     this.crewMembers.splice(index, 1)
-    io.to(`ship:${this.id}`).emit(`ship:reload`)
+    this.game?.io?.to(`ship:${this.id}`).emit(`ship:reload`)
 
     this.logEntry(
       `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
@@ -2026,7 +2035,7 @@ export class HumanShip extends CombatShip {
     //   { type: `credits`, amount: cm.credits },
     // ])
 
-    await db.ship.addOrUpdateInDb(this)
+    await this.game?.db?.ship.addOrUpdateInDb(this)
     if (this.crewMembers.length === 0) {
       c.log(
         `Removed last crew member from ${this.name}, deleting ship...`,
@@ -2286,7 +2295,7 @@ export class HumanShip extends CombatShip {
       )
     }
 
-    await db.ship.addOrUpdateInDb(this)
+    await this.game?.db?.ship.addOrUpdateInDb(this)
   }
 
   takeDamage(
