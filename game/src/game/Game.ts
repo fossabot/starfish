@@ -32,9 +32,13 @@ import { generateZoneData } from './presets/zones'
 import defaultGameSettings from './presets/gameSettings'
 
 export class Game {
-  static saveTimeInterval = 1 * 60 * 1000
+  static saveTimeInterval =
+    (process.env.NODE_ENV !== `development` ? 10 : 1) *
+    60 *
+    1000
 
-  readonly startTime: number
+  readonly createTime = Date.now()
+  startTime: number = 0
   readonly ships: Ship[] = []
   readonly planets: Planet[] = []
   readonly comets: Comet[] = []
@@ -51,11 +55,14 @@ export class Game {
   paused: boolean = false
   activePlayers: number = 0
 
+  db: typeof db | null = null
+  io: typeof io | null = null
+
   constructor() {
-    this.startTime = Date.now()
     this.settings = defaultGameSettings()
 
     linkGameToIo(this)
+    this.io = io
 
     c.log(
       `gray`,
@@ -72,15 +79,17 @@ export class Game {
 
     return new Promise((resolve) => {
       runOnDbReady(async () => {
-        // await db.attackRemnant.wipe()
-        // await db.planet.wipe()
-        // await db.ship.wipe()
-        // await db.cache.wipe()
-        // await db.zone.wipe()
-        // await db.ship.wipeAI()
+        this.db = db
+
+        // await this.db.attackRemnant.wipe()
+        // await this.db.planet.wipe()
+        // await this.db.ship.wipe()
+        // await this.db.cache.wipe()
+        // await this.db.zone.wipe()
+        // await this.db.ship.wipeAI()
 
         const savedGameData =
-          await db.gameSettings.getAllConstructible()
+          await this.db.gameSettings.getAllConstructible()
         if (savedGameData && savedGameData[0]) {
           c.log(`gray`, `Loaded game settings.`)
           this.setSettings(savedGameData[0])
@@ -92,7 +101,7 @@ export class Game {
         }
 
         const savedPlanets =
-          await db.planet.getAllConstructible()
+          await this.db.planet.getAllConstructible()
         c.log(
           `gray`,
           `Loaded ${savedPlanets.length} saved planets (${
@@ -124,7 +133,7 @@ export class Game {
             this.addComet(planet as BaseCometData, false)
 
         const savedCaches =
-          await db.cache.getAllConstructible()
+          await this.db.cache.getAllConstructible()
         c.log(
           `gray`,
           `Loaded ${savedCaches.length} saved caches from DB.`,
@@ -134,7 +143,7 @@ export class Game {
         )
 
         const savedZones =
-          await db.zone.getAllConstructible()
+          await this.db.zone.getAllConstructible()
         c.log(
           `gray`,
           `Loaded ${savedZones.length} saved zones from DB.`,
@@ -144,7 +153,7 @@ export class Game {
         )
 
         const savedShips =
-          await db.ship.getAllConstructible()
+          await this.db.ship.getAllConstructible()
         c.log(
           `gray`,
           `Loaded ${savedShips.length} saved ships (${
@@ -165,7 +174,7 @@ export class Game {
         }
 
         const savedAttackRemnants =
-          await db.attackRemnant.getAllConstructible()
+          await this.db.attackRemnant.getAllConstructible()
         c.log(
           `gray`,
           `Loaded ${this.attackRemnants.length} saved attack remnants from DB.`,
@@ -181,6 +190,8 @@ export class Game {
 
   startGame() {
     c.log(`----- Starting Game -----`)
+
+    this.startTime = Date.now()
 
     setInterval(() => this.save(), Game.saveTimeInterval)
     setInterval(() => this.daily(), 24 * 60 * 60 * 1000)
@@ -211,7 +222,7 @@ export class Game {
     // })
 
     for (let s of this.ships) {
-      await db.ship.addOrUpdateInDb(s)
+      await this.db?.ship.addOrUpdateInDb(s)
     }
 
     this.recalculateGuildRankings()
@@ -589,7 +600,7 @@ export class Game {
     }
     for (let key of Object.keys(this.settings))
       if (!defaultSettings[key]) delete this.settings[key]
-    db.gameSettings.addOrUpdateInDb(this.settings)
+    this.db?.gameSettings.addOrUpdateInDb(this.settings)
   }
 
   // ----- radii -----
@@ -843,7 +854,7 @@ export class Game {
         `red`,
         `Attempted to add existing human ship ${existing.name} (${existing.id}).`,
       )
-      db.ship.removeByUnderscoreId((data as any)._id)
+      this.db?.ship.removeByUnderscoreId((data as any)._id)
       return existing
     }
     // c.log(
@@ -855,7 +866,7 @@ export class Game {
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
-    if (save) await db.ship.addOrUpdateInDb(newShip)
+    if (save) await this.db?.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
@@ -881,7 +892,7 @@ export class Game {
     const newShip = new AIShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
-    if (save) await db.ship.addOrUpdateInDb(newShip)
+    if (save) await this.db?.ship.addOrUpdateInDb(newShip)
     return newShip
   }
 
@@ -923,7 +934,7 @@ export class Game {
     c.log(
       `Removing ship ${ship.name} (${ship.id}) from the game.`,
     )
-    await db.ship.removeFromDb(ship.id)
+    await this.db?.ship.removeFromDb(ship.id)
 
     const index = this.ships.findIndex(
       (ec) => (ship as Ship).id === ec.id,
@@ -944,7 +955,7 @@ export class Game {
     //   this.humanShips.length,
     //   (
     //     await (
-    //       await db.ship.getAllConstructible()
+    //       await this.db?.ship.getAllConstructible()
     //     ).filter((s) => s.ai === false)
     //   ).map((s) => s.id),
     // )
@@ -979,7 +990,8 @@ export class Game {
         newPlanet.guildId
     }
 
-    if (save) await db.planet.addOrUpdateInDb(newPlanet)
+    if (save)
+      await this.db?.planet.addOrUpdateInDb(newPlanet)
     return newPlanet
   }
 
@@ -1005,7 +1017,8 @@ export class Game {
 
     this.chunkManager.addOrUpdate(newPlanet)
 
-    if (save) await db.planet.addOrUpdateInDb(newPlanet)
+    if (save)
+      await this.db?.planet.addOrUpdateInDb(newPlanet)
     return newPlanet
   }
 
@@ -1028,7 +1041,8 @@ export class Game {
 
     this.chunkManager.addOrUpdate(newComet)
 
-    if (save) await db.planet.addOrUpdateInDb(newComet)
+    if (save)
+      await this.db?.planet.addOrUpdateInDb(newComet)
     return newComet
   }
 
@@ -1060,7 +1074,7 @@ export class Game {
       s.toUpdate.planet = false
     })
 
-    await db.planet.removeFromDb(planet.id)
+    await this.db?.planet.removeFromDb(planet.id)
   }
 
   async addCache(
@@ -1082,7 +1096,7 @@ export class Game {
     this.chunkManager.addOrUpdate(newCache)
     // c.log(`adding`, newCache)
 
-    if (save) await db.cache.addOrUpdateInDb(newCache)
+    if (save) await this.db?.cache.addOrUpdateInDb(newCache)
     return newCache
   }
 
@@ -1095,7 +1109,7 @@ export class Game {
       return c.log(`Failed to find cache in list.`)
     this.caches.splice(index, 1)
     this.chunkManager.remove(cache)
-    await db.cache.removeFromDb(cache.id)
+    await this.db?.cache.removeFromDb(cache.id)
     // c.log(this.caches.length, `remaining`)
   }
 
@@ -1117,7 +1131,7 @@ export class Game {
     this.zones.push(newZone)
     this.chunkManager.addOrUpdate(newZone)
 
-    if (save) await db.zone.addOrUpdateInDb(newZone)
+    if (save) await this.db?.zone.addOrUpdateInDb(newZone)
     return newZone
   }
 
@@ -1140,7 +1154,7 @@ export class Game {
     )
     if (index === -1) return
     this.zones.splice(index, 1)
-    await db.zone.removeFromDb(zone.id)
+    await this.db?.zone.removeFromDb(zone.id)
   }
 
   addAttackRemnant(
@@ -1152,7 +1166,9 @@ export class Game {
     this.chunkManager.addOrUpdate(newAttackRemnant)
 
     if (save)
-      db.attackRemnant.addOrUpdateInDb(newAttackRemnant)
+      this.db?.attackRemnant.addOrUpdateInDb(
+        newAttackRemnant,
+      )
     return newAttackRemnant
   }
 
@@ -1164,7 +1180,7 @@ export class Game {
     if (index === -1) return
     this.attackRemnants.splice(index, 1)
     this.chunkManager.remove(ar)
-    await db.attackRemnant.removeFromDb(ar.id)
+    await this.db?.attackRemnant.removeFromDb(ar.id)
   }
 
   get humanShips(): HumanShip[] {

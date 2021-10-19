@@ -1,9 +1,7 @@
 import c from '../../../../../../common/dist'
 import io from '../../../../server/io'
 import type { HumanShip } from '../HumanShip'
-import type { Game } from '../../../../game/Game'
 import type { CrewMember } from '../../CrewMember/CrewMember'
-import { db } from '../../../../db'
 
 import defaultGameSettings from '../../../presets/gameSettings'
 
@@ -66,9 +64,10 @@ export class Tutorial {
   static async putCrewMemberInTutorial(
     crewMember: CrewMember,
   ) {
-    c.log(
-      `Spawning tutorial ship for crew member ${crewMember.id}`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `Spawning tutorial ship for crew member ${crewMember.id} on ${crewMember.ship.name}`,
+    // )
     const tutorialShip =
       await crewMember.ship.game?.addHumanShip({
         name: crewMember.ship.name,
@@ -87,7 +86,9 @@ export class Tutorial {
     crewMember.toUpdate.tutorialShipId =
       crewMember.tutorialShipId
 
-    await db.ship.addOrUpdateInDb(crewMember.ship)
+    await crewMember.ship.game?.db?.ship.addOrUpdateInDb(
+      crewMember.ship,
+    )
     return tutorialShip
   }
 
@@ -839,9 +840,9 @@ export class Tutorial {
     this.currentStep = this.steps[this.step]
     if (!this.currentStep) return this.done()
 
-    c.log(
-      `Tutorial advancing to step ${this.step} for ${this.ship.name}`,
-    )
+    // c.log(
+    //   `Tutorial advancing to step ${this.step} for ${this.ship.name}`,
+    // )
 
     // apply loadout
     if (this.currentStep.forceLoadout) {
@@ -1033,11 +1034,11 @@ export class Tutorial {
   }
 
   done(skip = false) {
-    c.log(
-      `Tutorial ${skip ? `skipped` : `complete`} for ${
-        this.ship.name
-      }`,
-    )
+    // c.log(
+    //   `Tutorial ${skip ? `skipped` : `complete`} for ${
+    //     this.ship.name
+    //   }`,
+    // )
 
     const mainShip = this.ship.game?.humanShips.find(
       (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
@@ -1061,7 +1062,7 @@ export class Tutorial {
   }
 
   async cleanUp() {
-    c.log(`Cleaning up after tutorial...`)
+    // c.log(`Cleaning up after tutorial...`)
     // c.log(
     //   this.ship.game.caches.length,
     //   this.ship.game.caches.filter(

@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 import fs from 'fs'
 
-import { db, getBackups, resetDbToBackup } from '../../db'
+import { getBackups, resetDbToBackup } from '../../db'
 
 import { game } from '../io'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
@@ -341,7 +341,9 @@ export default function (
         `Non-admin attempted to access game:resetAllShips`,
       )
     c.log(`Admin resetting all ships`)
-    await db.ship.wipe()
+    for (let ship of game.ships) {
+      await game.removeShip(ship)
+    }
     while (game.ships.length)
       await game.removeShip(game.ships[0])
   })

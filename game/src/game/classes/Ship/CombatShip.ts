@@ -1,6 +1,4 @@
 import c from '../../../../../common/dist'
-import io from '../../../server/io'
-import { db } from '../../../db'
 
 import { Ship } from './Ship'
 import type { Weapon } from '../Item/Weapon'
@@ -185,7 +183,7 @@ export abstract class CombatShip extends Ship {
       ) as CoordinatePair,
     )
 
-    await db.ship.addOrUpdateInDb(this)
+    await this.game?.db?.ship.addOrUpdateInDb(this)
   }
 
   canAttack(
