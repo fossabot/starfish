@@ -36,10 +36,12 @@ jobs:
 
       - name: Download test result artifact
         uses: actions/download-artifact@v2
+        if: success() || failure()
         with:
           name: test-results
 
       - uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
           name: test-results
           path: ${{matrix.folder}}/reports/test-results.json
