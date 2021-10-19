@@ -135,7 +135,7 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 0) >= 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
-      )}% damage to ${p.data?.type}s`,
+      )}% damage dealt to ${p.data?.type}s`,
   },
   scaledDamageReduction: {
     description: (p) =>

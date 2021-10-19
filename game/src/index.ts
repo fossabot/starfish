@@ -19,7 +19,7 @@ lastCommit.getLastCommit((err, commit) => {
 import { Game } from './game/Game'
 
 async function startGame() {
-  let game = new Game()
+  let game = new Game({ ioPort: 4200 })
   await game.loadGameDataFromDb()
   game.startGame()
 }

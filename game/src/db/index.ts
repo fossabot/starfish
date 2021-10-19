@@ -47,16 +47,15 @@ try {
 }
 // c.log({ mongoUsername, mongoPassword })
 
-const defaultMongoOptions = {
+const defaultMongoOptions: GameDbOptions = {
   hostname: isDocker() ? `mongodb` : `localhost`,
   port: 27017,
   dbName: `starfish`,
   username: mongoUsername,
   password: mongoPassword,
 }
-const defaultUri = `mongodb://${defaultMongoOptions.username}:${defaultMongoOptions.password}@${defaultMongoOptions.hostname}:${defaultMongoOptions.port}/${defaultMongoOptions.dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
 
-const toRun: Function[] = []
+let toRun: Function[] = []
 
 export const isReady = () => ready
 export const init = ({
@@ -65,20 +64,17 @@ export const init = ({
   dbName = `starfish`,
   username = mongoUsername,
   password = mongoPassword,
-}: {
-  hostname?: string
-  port?: number
-  dbName?: string
-  username?: string
-  password?: string
-}) => {
+}: GameDbOptions) => {
   return new Promise<void>(async (resolve) => {
     if (ready) resolve()
 
     const onReady = async () => {
       c.log(`green`, `Connection to db established.`)
       ready = true
-      const promises = toRun.map(async (f) => await f())
+      const promises = toRun.map(async (f) => {
+        await f()
+      })
+      toRun = []
       await Promise.all(promises)
       startDbBackupInterval()
       resolve()

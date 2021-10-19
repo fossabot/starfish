@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../io'
+import type { Game } from '../../game/Game'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
@@ -11,6 +11,7 @@ import { Tutorial } from '../../game/classes/Ship/addins/Tutorial'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
+  game: Game,
 ) {
   socket.on(
     `crew:add`,

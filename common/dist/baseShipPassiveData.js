@@ -66,7 +66,7 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(p.intensity || 1)} item slot${Math.round(p.intensity || 1) === 1 ? `` : `s`}`,
     },
     boostDamageToItemType: {
-        description: (p) => `${(p.intensity || 0) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% damage to ${p.data?.type}s`,
+        description: (p) => `${(p.intensity || 0) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% damage dealt to ${p.data?.type}s`,
     },
     scaledDamageReduction: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% damage ${(p.intensity || 1) >= 0

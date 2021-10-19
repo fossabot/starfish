@@ -1,36 +1,38 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../io'
+import type { Game } from '../../game/Game'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
-// ----- online count -----
-const connectedIds: { id: string; lastSeen: number }[] = []
-const idConnected = (id: string) => {
-  if (!game) return
-  const found = connectedIds.find((e) => e.id === id)
-  if (!found) {
-    connectedIds.push({ id, lastSeen: Date.now() })
-    game.activePlayers++
-  } else found.lastSeen = Date.now()
-}
-const clearInactive = () => {
-  if (!game) return
-  const now = Date.now()
-  connectedIds.forEach((e) => {
-    if (now - e.lastSeen > c.userIsOfflineTimeout)
-      connectedIds.splice(connectedIds.indexOf(e), 1)
-  })
-  game.activePlayers = connectedIds.length
-}
-setInterval(clearInactive, 20 * 1000)
-
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
+  game: Game,
 ) {
+  // ----- online count -----
+  const connectedIds: { id: string; lastSeen: number }[] =
+    []
+  const idConnected = (id: string) => {
+    if (!game) return
+    const found = connectedIds.find((e) => e.id === id)
+    if (!found) {
+      connectedIds.push({ id, lastSeen: Date.now() })
+      game.activePlayers++
+    } else found.lastSeen = Date.now()
+  }
+  const clearInactive = () => {
+    if (!game) return
+    const now = Date.now()
+    connectedIds.forEach((e) => {
+      if (now - e.lastSeen > c.userIsOfflineTimeout)
+        connectedIds.splice(connectedIds.indexOf(e), 1)
+    })
+    game.activePlayers = connectedIds.length
+  }
+  setInterval(clearInactive, 20 * 1000)
+
   // socket.on(`god`, () => {
   //   socket.join([`game`])
   // })
