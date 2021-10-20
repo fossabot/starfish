@@ -6,6 +6,7 @@ import { getBackups, resetDbToBackup } from '../../db'
 
 import type { Game } from '../../game/Game'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 let adminKeys: any
 try {
@@ -318,6 +319,18 @@ export default function (
       ship.distributeCargoAmongCrew(cargo)
     },
   )
+
+  socket.on(`admin:kill`, async (id, password, shipId) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:kill`,
+      )
+    const ship = game.ships.find((p) => p.id === shipId)
+    if (!ship) return
+    c.log(`Admin killing ship ${ship.name}`)
+    if ((ship as CombatShip).die) (ship as CombatShip).die()
+  })
 
   socket.on(
     `game:resetHomeworlds`,

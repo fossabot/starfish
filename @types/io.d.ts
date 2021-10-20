@@ -131,6 +131,11 @@ interface IOClientEvents {
     shipId: string,
     cargo: Cargo[],
   ) => void
+  [`admin:kill`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`game:resetHomeworlds`]: (
     adminId: string,
     password: string,

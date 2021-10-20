@@ -287,7 +287,7 @@ export class AIShip extends CombatShip {
     super.die(attacker)
 
     if (!silently) {
-      let itemRarity = this.level / 3
+      let creditValue = Math.round(5000 * this.level)
 
       if (attacker) {
         // apply "rarity boost" passive
@@ -300,7 +300,7 @@ export class AIShip extends CombatShip {
             total + (p.intensity || 0),
           0,
         )
-        itemRarity *= 1 + rarityBoostPassive
+        creditValue *= 1 + rarityBoostPassive
         c.log(
           `ai drop rarity boosted by passive:`,
           rarityBoostPassive,
@@ -309,35 +309,49 @@ export class AIShip extends CombatShip {
 
       const cacheContents: CacheContents[] = []
 
-      while (cacheContents.length === 0) {
+      while (creditValue > 1) {
         // always a chance for credits
         if (Math.random() > 0.6) {
-          let amount =
-            Math.ceil(
-              Math.random() + 0.3 * itemRarity * 70,
-            ) * 100
-          cacheContents.push({ id: `credits`, amount })
+          let amount = Math.round(
+            Math.min(
+              Math.ceil(
+                Math.random() + 0.3 * creditValue * 70,
+              ) * 100,
+              creditValue,
+            ),
+          )
+          const existing = cacheContents.find(
+            (cc) => cc.id === `credits`,
+          )
+          if (existing) existing.amount += amount
+          else cacheContents.push({ id: `credits`, amount })
+          creditValue -= amount
+          continue
         }
 
-        const upperLimit = itemRarity
-        const lowerLimit = itemRarity * 0.5 - 0.5
-        for (let ca of Object.values(c.cargo)) {
-          // c.log(ca.id, ca.rarity, upperLimit, lowerLimit)
-          if (
-            ca.rarity <= upperLimit &&
-            ca.rarity >= lowerLimit &&
-            Math.random() > 0.7
-          ) {
-            const amount = c.r2(
-              Math.random() * this.level * 5 + this.level,
-            )
-            cacheContents.push({ id: ca.id, amount })
-          }
-        }
+        const cargoData = c.randomFromArray(
+          Object.values(c.cargo),
+        )
 
-        itemRarity -= 0.1
+        const amount = c.r2(
+          Math.min(
+            creditValue / cargoData.basePrice,
+            c.r2(
+              Math.random() * this.level * 4 + this.level,
+            ),
+          ),
+          2,
+          true,
+        )
+        const existing = cacheContents.find(
+          (cc) => cc.id === cargoData.id,
+        )
+        if (existing) existing.amount += amount
+        else
+          cacheContents.push({ id: cargoData.id, amount })
+        creditValue -= amount * cargoData.basePrice
       }
-      // c.log(cacheContents)
+      c.log(5000 * this.level, cacheContents)
 
       this.game?.addCache({
         contents: cacheContents,

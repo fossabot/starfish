@@ -924,6 +924,7 @@ export class Ship extends Stubbable {
         speciesId: cm.speciesId,
       })),
       spawnPoint: (this as any).spawnPoint,
+      level: (this as any).level,
     }
   }
 

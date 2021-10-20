@@ -134,6 +134,7 @@ export class HumanShip extends CombatShip {
     if (data.achievements)
       this.addAchievement(data.achievements, true)
 
+    c.log(this.guildId)
     // human ships always know where their homeworld is
     const homeworld = this.game?.getHomeworld(this.guildId)
     if (
@@ -141,18 +142,18 @@ export class HumanShip extends CombatShip {
       !this.seenPlanets.find((p) => p === homeworld)
     )
       this.discoverPlanet(homeworld)
-
     // non-guild ships always know where all guild homeworlds are
-    for (let guildId of Object.keys(c.guilds)) {
-      const homeworld = this.game?.getHomeworld(
-        guildId as GuildId,
-      )
-      if (
-        homeworld &&
-        !this.seenPlanets.find((p) => p === homeworld)
-      )
-        this.discoverPlanet(homeworld)
-    }
+    else
+      for (let guildId of Object.keys(c.guilds)) {
+        const homeworld = this.game?.getHomeworld(
+          guildId as GuildId,
+        )
+        if (
+          homeworld &&
+          !this.seenPlanets.find((p) => p === homeworld)
+        )
+          this.discoverPlanet(homeworld)
+      }
 
     this.recalculateShownPanels()
 
