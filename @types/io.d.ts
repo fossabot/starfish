@@ -1,7 +1,9 @@
 interface IOServerEvents {
   [`connect`]: () => void
   [`disconnectFromServer`]: () => void
-  [`hello`]: () => void
+  [`hello`]: (
+    callback?: (res: IOResponse<`hello`>) => void,
+  ) => void
   [`game:tick`]: ({
     deltaTime,
     game,
@@ -30,7 +32,9 @@ interface IOServerEvents {
 }
 
 interface IOClientEvents {
-  [`hello`]: () => void
+  [`hello`]: (
+    callback?: (res: IOResponse<`hello`>) => void,
+  ) => void
 
   // admin events
   [`game:adminCheck`]: (

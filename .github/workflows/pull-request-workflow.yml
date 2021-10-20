@@ -101,3 +101,20 @@ jobs:
           push: true
           tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}
           cache-from: type=gha
+
+  artillery:
+    needs: docker-build-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Stonefish repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'starfishgame/stonefish'
+
+      - name: NPM install + test
+        run: |
+          npm install
+
+      - name: NPM install + test
+        run: |
+          npm run test

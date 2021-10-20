@@ -2053,7 +2053,7 @@ export class HumanShip extends CombatShip {
       let toDistribute = contents.amount
       let canHoldMore = [...this.crewMembers]
 
-      while (canHoldMore.length && toDistribute) {
+      while (canHoldMore.length && toDistribute > 0.01) {
         const newCanHoldMore = [...canHoldMore]
         const amountForEach =
           toDistribute / canHoldMore.length

@@ -4,7 +4,7 @@ import fs from 'fs'
 
 import { getBackups, resetDbToBackup } from '../../db'
 
-import { game } from '../io'
+import type { Game } from '../../game/Game'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip'
 
 let adminKeys: any
@@ -48,6 +48,7 @@ function isAdmin(id, password) {
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
+  game: Game,
 ) {
   socket.on(`game:adminCheck`, (id, password, callback) => {
     if (!game) return

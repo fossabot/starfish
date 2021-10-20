@@ -1,5 +1,4 @@
 import c from '../../../../../../common/dist'
-import io from '../../../../server/io'
 import type { HumanShip } from '../HumanShip'
 import type { CrewMember } from '../../CrewMember/CrewMember'
 
@@ -855,7 +854,9 @@ export class Tutorial {
     this.ship.updateSightAndScanRadius()
 
     if (this.currentStep.resetView)
-      io.to(`ship:${this.ship.id}`).emit(`ship:resetView`)
+      this.ship.game?.io
+        .to(`ship:${this.ship.id}`)
+        .emit(`ship:resetView`)
 
     // move to step location
     if (this.currentStep.forceLocation) {
@@ -969,7 +970,7 @@ export class Tutorial {
           this.ship.crewMembers[0]?.mainShipId &&
           (!mainShip || mainShip.getStat(`tutorials`) === 0)
         )
-          io.emit(
+          this.ship.game?.io.emit(
             `ship:message`,
             this.ship.crewMembers[0].mainShipId,
             m.message,
@@ -994,7 +995,7 @@ export class Tutorial {
         ],
         `high`,
       )
-      io.emit(
+      ship.game?.io.emit(
         `ship:message`,
         ship.id,
         `Use this channel to broadcast to and receive messages from nearby ships!`,
@@ -1048,10 +1049,9 @@ export class Tutorial {
       return
     }
 
-    io.to(`ship:${this.ship.id}`).emit(
-      `ship:forwardTo`,
-      mainShip.id,
-    )
+    this.ship.game?.io
+      .to(`ship:${this.ship.id}`)
+      .emit(`ship:forwardTo`, mainShip.id)
 
     mainShip.addStat(`tutorials`, 1)
 

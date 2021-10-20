@@ -1,15 +1,17 @@
 import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
-import { game } from '../io'
 import type { Ship } from '../../game/classes/Ship/Ship'
+import type { Game } from '../../game/Game'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
+  game: Game,
 ) {
-  socket.on(`hello`, () => {
+  socket.on(`hello`, (callback) => {
     if (!game) return
-    c.log(`hello received`)
+    // c.log(`hello received`)
+    if (callback) callback({ data: `hello` })
   })
 
   socket.on(`disconnect`, () => {
