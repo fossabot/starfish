@@ -69,6 +69,7 @@ export default function (
             tooltipData: (c.items[itemForSale.type] as any)[
               itemForSale.id
             ],
+            color: `var(--item)`,
           },
           `bought by the captain for ${c.numberWithCommas(
             c.r2(price, 0),
@@ -236,6 +237,7 @@ export default function (
             text: c.items.chassis[itemForSale.id]!
               .displayName,
             tooltipData: c.items.chassis[itemForSale.id],
+            color: `var(--item)`,
           },
           `bought by the captain for ${c.numberWithCommas(
             c.r2(price, 0),

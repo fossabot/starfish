@@ -16,7 +16,7 @@
           }}</span>
         </div>
         <div class="sub">{{ selectedElement.id }}</div>
-        <div class="flex" v-if="selectedElement">
+        <div class="flex flexwrap" v-if="selectedElement">
           <div class="button" @click="deleteElement">
             <span>Delete</span>
           </div>
@@ -29,6 +29,37 @@
               <span>Move</span>
             </div>
           </div>
+
+          <template
+            v-if="
+              ['ship'].includes(selectedElement.type) &&
+              selectedElement.ai === false
+            "
+          >
+            <div
+              class="button"
+              @click="
+                give([{ id: 'credits', amount: 100000 }])
+              "
+            >
+              <span>Give 100,000 Credits</span>
+            </div>
+          </template>
+
+          <template
+            v-if="
+              ['planet', 'comet'].includes(
+                selectedElement.type,
+              )
+            "
+          >
+            <div class="button" @click="levelUpOnePlanet">
+              <span>+1 Level</span>
+            </div>
+            <div class="button" @click="reLevelOnePlanet">
+              <span>Reset Level</span>
+            </div>
+          </template>
         </div>
         <div v-if="!selectedElement">
           Awaiting coordinates to {{ awaitingCoordinates }}
@@ -186,6 +217,35 @@ export default Vue.extend({
             this.updateMap()
           }, 200)
         },
+      )
+    },
+
+    give(cargo) {
+      this.$socket.emit(
+        'admin:give',
+        this.userId,
+        this.adminPassword,
+        this.selectedElement.id,
+        cargo,
+      )
+    },
+
+    reLevelOnePlanet() {
+      this.$socket.emit(
+        'game:reLevelOnePlanet',
+        this.userId,
+        this.adminPassword,
+        this.selectedElement.id,
+      )
+    },
+
+    levelUpOnePlanet() {
+      c.log(this.selectedElement.id)
+      this.$socket.emit(
+        'game:levelUpOnePlanet',
+        this.userId,
+        this.adminPassword,
+        this.selectedElement.id,
       )
     },
 

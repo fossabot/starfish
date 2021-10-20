@@ -42,6 +42,12 @@
           </div>
           <div
             class="button combo"
+            @click="reLevelAllPlanetsOfType"
+          >
+            <span>Re-Level All Planets Of Type</span>
+          </div>
+          <div
+            class="button combo"
             @click="reLevelOnePlanet"
           >
             <span>Re-Level One Planet</span>
@@ -316,6 +322,18 @@ export default Vue.extend({
         'game:reLevelAllPlanets',
         this.userId,
         this.adminPassword,
+      )
+    },
+    reLevelAllPlanetsOfType() {
+      const planetType = window.prompt(
+        'Enter planet type to relevel',
+      )
+      if (!planetType) return
+      this.$socket.emit(
+        'game:reLevelAllPlanetsOfType',
+        this.userId,
+        this.adminPassword,
+        planetType,
       )
     },
     reLevelOnePlanet() {

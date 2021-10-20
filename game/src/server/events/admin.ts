@@ -251,6 +251,20 @@ export default function (
     },
   )
   socket.on(
+    `game:reLevelAllPlanetsOfType`,
+    async (id, password, type) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:reLevelAllPlanetsOfType`,
+        )
+      c.log(`Admin releveling ${type} planets`)
+      game.planets
+        .filter((p) => p.planetType === type)
+        .forEach((p) => p.resetLevels())
+    },
+  )
+  socket.on(
     `game:reLevelOnePlanet`,
     async (id, password, planetId) => {
       if (!game) return
@@ -264,6 +278,44 @@ export default function (
       if (!planet) return
       c.log(`Admin releveling planet ${planet.name}`)
       planet.resetLevels(true)
+    },
+  )
+
+  socket.on(
+    `game:levelUpOnePlanet`,
+    async (id, password, planetId) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:levelUpOnePlanet`,
+        )
+      const planet = game.planets.find(
+        (p) => p.id === planetId,
+      )
+      if (!planet) return
+      c.log(`Admin leveling planet ${planet.name}`)
+      planet.levelUp()
+    },
+  )
+
+  socket.on(
+    `admin:give`,
+    async (id, password, shipId, cargo) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:give`,
+        )
+      const ship = game.humanShips.find(
+        (p) => p.id === shipId,
+      )
+      if (!ship) return
+      c.log(
+        `Admin giving cargo ${JSON.stringify(
+          cargo,
+        )} to ship ${ship.name}`,
+      )
+      ship.distributeCargoAmongCrew(cargo)
     },
   )
 

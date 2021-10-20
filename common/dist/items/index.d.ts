@@ -10,6 +10,9 @@ export declare const weapon: {
     sniper2: BaseWeaponData;
     sniper3: BaseWeaponData;
     tiny1: BaseWeaponData;
+    blaster1: BaseWeaponData;
+    blaster2: BaseWeaponData;
+    blaster3: BaseWeaponData;
 };
 export declare const engine: {
     tutorial1: BaseEngineData;

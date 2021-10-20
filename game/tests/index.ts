@@ -6,6 +6,7 @@ import './dbSetup'
 import './CrewMember'
 import './HumanShip'
 import './Tutorial'
+import './Planet'
 import './ioCommands'
 
 const host = isDocker() ? `mongodb` : `localhost`
@@ -29,7 +30,8 @@ before(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        console.log(stdout) // `Database initialized for testing.\n`)
+        else
+          console.log(`Database initialized for testing.\n`)
         resolve()
       },
     )
@@ -47,7 +49,7 @@ after(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        console.log(stdout) // `Database cleaned up after tests.`)
+        else console.log(`Database cleaned up after tests.`)
         resolve()
       },
     )

@@ -110,10 +110,26 @@ interface IOClientEvents {
     adminId: string,
     password: string,
   ) => void
+  [`game:reLevelAllPlanetsOfType`]: (
+    adminId: string,
+    password: string,
+    planetType: PlanetType,
+  ) => void
   [`game:reLevelOnePlanet`]: (
     adminId: string,
     password: string,
     planetId: string,
+  ) => void
+  [`game:levelUpOnePlanet`]: (
+    adminId: string,
+    password: string,
+    planetId: string,
+  ) => void
+  [`admin:give`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+    cargo: Cargo[],
   ) => void
   [`game:resetHomeworlds`]: (
     adminId: string,

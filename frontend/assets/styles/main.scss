@@ -203,6 +203,7 @@ input[type='submit'] {
   padding: 0.3em 0.5em;
   margin-right: 0.1em;
   margin-bottom: 0.1em;
+  user-select: none;
   // overflow: hidden;
 
   & > * {

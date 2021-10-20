@@ -98,7 +98,7 @@ export class Planet extends Stubbable {
               100 *
               c.planetLevelXpRequirementMultiplier,
           )
-    }, 100)
+    }, 10)
   }
 
   get shipsAt() {
@@ -165,21 +165,23 @@ export class Planet extends Stubbable {
     if (!amount) return
     this.xp = Math.round(this.xp + amount)
     const previousLevel = this.level
-    this.level = c.levels.findIndex(
+    const newLevel = c.levels.findIndex(
       (l) =>
-        (this.xp || 0) /
-          c.planetLevelXpRequirementMultiplier <=
-        l,
+        (this.xp || 0) <
+        l * c.planetLevelXpRequirementMultiplier,
     )
-    const levelDifference =
-      this.level * c.planetLevelXpRequirementMultiplier -
-      previousLevel * c.planetLevelXpRequirementMultiplier
-    c.log({
-      amount,
-      previousLevel,
-      levelDifference,
-      xp: this.xp,
-    })
+    const levelDifference = newLevel - previousLevel
+    // c.log({
+    //   amount,
+    //   previousLevel,
+    //   levelDifference,
+    //   xp: this.xp,
+    //   xpInCurrentLevel:
+    //     c.levels[newLevel] *
+    //       c.planetLevelXpRequirementMultiplier -
+    //     c.levels[newLevel - 1] *
+    //       c.planetLevelXpRequirementMultiplier,
+    // })
     for (let i = 0; i < levelDifference; i++) {
       await this.levelUp()
     }
@@ -190,7 +192,7 @@ export class Planet extends Stubbable {
 
   levelUp() {
     this.level++
-    if (this.level > 100) this.level = 100
+    if (this.level > 100) this.level = 100 // todo it still adds bonuses past 100
     if (
       this.xp <
       c.levels[this.level - 1] *
@@ -327,6 +329,10 @@ export class Planet extends Stubbable {
           source: { planetName: this.name },
         },
       })
+
+    this.shipsAt.forEach((s) => {
+      s.updateThingsThatCouldChangeOnItemChange()
+    })
   }
 
   // ----- stats -----
@@ -345,5 +351,8 @@ export class Planet extends Stubbable {
   // function placeholders
   incrementAllegiance(guildId: GuildId, amount?: number) {}
 
-  resetLevels(toDefault?: boolean) {}
+  resetLevels(toDefault?: boolean) {
+    this.level = 0
+    this.xp = 0
+  }
 }

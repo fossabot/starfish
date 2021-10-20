@@ -20,19 +20,32 @@ export class MiningPlanet extends Planet {
     if (!this.mine.length) this.levelUp()
   }
 
-  getMineRequirement(cargoId): number {
+  getMineRequirement(cargoId: CargoId): number {
     const rarity = c.cargo[cargoId].rarity + 1
     return Math.floor(
-      ((Math.random() + 0.1) * 85000 * (rarity / 3)) / 20,
+      (Math.random() + 0.3) * 5000 * (rarity + 1) ** 1.6,
     )
   }
 
-  getPayoutAmount(cargoId: CargoId): number {
+  getMaxMineableBoost(cargoId: CargoId): number {
+    const rarity = c.cargo[cargoId].rarity + 1
+    const scaledByLevel = this.level / rarity
+    return Math.floor(
+      (Math.random() + 0.3) * 100 * scaledByLevel,
+    )
+  }
+
+  getPayoutAmount(
+    cargoId: CargoId,
+    maxMineable?: number,
+  ): number {
     return Math.min(
-      this.mine.find((m) => m.id === cargoId)
-        ?.maxMineable || Infinity,
+      maxMineable ??
+        this.mine.find((m) => m.id === cargoId)
+          ?.maxMineable ??
+        Infinity,
       Math.floor(
-        1 +
+        3 +
           Math.random() *
             20 *
             c.lerp(1, 10, this.level / 100),
@@ -46,17 +59,19 @@ export class MiningPlanet extends Planet {
       cargoId === `closest` ||
       !this.mine.find((m) => m.id === cargoId)
     )
-      cargoId = this.mine.reduce(
-        (closest, m) =>
-          closest.mineCurrent / closest.mineRequirement >
-          m.mineCurrent / m.mineRequirement
-            ? closest
-            : m,
-        this.mine[0],
-      ).id
+      cargoId = this.mine
+        .filter((m) => m.maxMineable)
+        .reduce(
+          (closest, m) =>
+            closest.mineCurrent / closest.mineRequirement >
+            m.mineCurrent / m.mineRequirement
+              ? closest
+              : m,
+          this.mine[0],
+        ).id
 
     const resource = this.mine.find((m) => m.id === cargoId)
-    if (!resource) return
+    if (!resource || !resource.mineRequirement) return
 
     resource.mineCurrent += amount
 
@@ -203,7 +218,7 @@ export class MiningPlanet extends Planet {
     const resource = this.mine.find((m) => m.id === cargoId)
     if (!resource) return
 
-    // fully exhausted, remove from mine
+    // fully exhausted
     if (resource.maxMineable === 0) {
       this.shipsAt.forEach((ship) => {
         ship.logEntry([
@@ -212,7 +227,9 @@ export class MiningPlanet extends Planet {
           } has been exhausted.`,
         ])
       }, `low`)
-      this.mine = this.mine.filter((m) => m.id !== cargoId)
+      resource.mineCurrent = 0
+      resource.mineRequirement = 0
+      resource.payoutAmount = 0
       return
     }
 
@@ -226,47 +243,68 @@ export class MiningPlanet extends Planet {
   async levelUp() {
     super.levelUp()
 
-    if (this.level > 1) {
+    if (this.level > 1 && Math.random() > 0.2) {
       this.addPassive({
         id: `boostMineSpeed`,
-        intensity: 0.02,
+        intensity: 0.01,
       })
     }
 
     // todo add more passives
 
-    if (this.mine.length === 0 || Math.random() > 0.8) {
-      // * randomly selected for now
-      const mineableResourceToAdd = c.randomFromArray(
-        Object.keys(c.cargo),
-      ) as CargoId
-      this.addMineResource(mineableResourceToAdd)
-    } else {
-      this.addPassive({
-        id: `boostMineSpeed`,
-        intensity: 0.02,
-      })
-    }
+    // * randomly selected for now, with a bias towards things that are already here
+    const mineableResourceToAdd = c.randomFromArray([
+      ...Object.keys(c.cargo),
+      ...this.mine.map((m) => m.id),
+      ...this.mine.map((m) => m.id),
+      ...this.mine.map((m) => m.id),
+      ...this.mine.map((m) => m.id),
+    ]) as CargoId
+    this.addMineResource(mineableResourceToAdd)
 
     this.updateFrontendForShipsAt()
   }
 
   addMineResource(toAdd: CargoId) {
-    if (this.mine.find((m) => m.id === toAdd)) return
+    const amountToAdd = this.getMaxMineableBoost(toAdd)
+
+    const existing = this.mine.find((m) => m.id === toAdd)
+    // existing resource
+    if (existing) {
+      if (existing.maxMineable)
+        // if it's in progress, just add to the max in the background
+        existing.maxMineable += amountToAdd
+      else {
+        // reset payouts etc if it has been exhausted
+        existing.maxMineable = amountToAdd
+        existing.mineRequirement =
+          this.getMineRequirement(toAdd)
+        existing.payoutAmount = this.getPayoutAmount(toAdd)
+      }
+      return
+    }
+
+    // new resource
+    const payoutAmount = this.getPayoutAmount(
+      toAdd,
+      amountToAdd,
+    )
     this.mine.push({
       id: toAdd,
       mineCurrent: 0,
+      maxMineable: amountToAdd,
       mineRequirement: this.getMineRequirement(toAdd),
-      payoutAmount: this.getPayoutAmount(toAdd),
+      payoutAmount: payoutAmount,
     })
   }
 
   resetLevels(toDefault?: boolean) {
     const targetLevel = toDefault ? 1 : this.level
-    const targetXp = this.xp
+    const targetXp = toDefault ? 0 : this.xp
     this.level = 0
     this.xp = 0
     this.mine = []
+    this.passives = []
     while (this.level < targetLevel) {
       this.levelUp()
     }
