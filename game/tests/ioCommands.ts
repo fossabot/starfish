@@ -13,7 +13,7 @@ import socketIoClient, {
   Socket as ClientSocket,
 } from 'socket.io-client' // yes, we're making a CLIENT here.
 
-describe(`General commands`, () => {
+describe(`IO setup`, () => {
   it(`should have an io object on the game that is properly linked`, async () => {
     const game = new Game()
     expect(game.io).to.exist
