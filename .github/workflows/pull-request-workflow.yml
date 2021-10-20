@@ -114,4 +114,7 @@ jobs:
       - name: NPM install + test
         run: |
           npm install
+
+      - name: NPM install + test
+        run: |
           npm run test
