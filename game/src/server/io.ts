@@ -3,6 +3,8 @@ import { Server as socketServer, Socket } from 'socket.io'
 import fs from 'fs'
 import path from 'path'
 
+import type { Game } from '../game/Game'
+
 import frontendEvents from './events/frontend'
 import discordEvents from './events/discord'
 import generalEvents from './events/general'
@@ -18,82 +20,85 @@ import isDocker from 'is-docker'
 
 require(`events`).captureRejections = true
 
-import type { Game } from '../game/Game'
-export let game: Game | undefined
-
-export function linkGame(g: Game) {
-  game = g
-  c.log(`gray`, `Linked game to io server.`)
-}
-
-let serverConfig: ServerOptions = {}
-let webServer
-if (isDocker()) {
-  if (process.env.NODE_ENV !== `production`) {
-    serverConfig = {
-      key: fs.readFileSync(
-        path.resolve(`./ssl/localhost.key`),
-      ),
-      cert: fs.readFileSync(
-        path.resolve(`./ssl/localhost.crt`),
-      ),
-    }
-  } else {
-    c.log(`green`, `Launching production server...`)
-    serverConfig = {
-      key: fs.readFileSync(
-        path.resolve(
-          `/etc/letsencrypt/live/www.starfish.cool/privkey.pem`,
+function spawnIo(
+  game: Game,
+  options: { port?: number } = { port: 4200 },
+) {
+  let serverConfig: ServerOptions = {}
+  let webServer
+  if (isDocker()) {
+    if (process.env.NODE_ENV !== `production`) {
+      serverConfig = {
+        key: fs.readFileSync(
+          path.resolve(`./ssl/localhost.key`),
         ),
-      ),
-      cert: fs.readFileSync(
-        path.resolve(
-          `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
+        cert: fs.readFileSync(
+          path.resolve(`./ssl/localhost.crt`),
         ),
-      ),
-      ca: [
-        fs.readFileSync(
+      }
+    } else {
+      c.log(`green`, `Launching production server...`)
+      serverConfig = {
+        key: fs.readFileSync(
           path.resolve(
-            `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+            `/etc/letsencrypt/live/www.starfish.cool/privkey.pem`,
           ),
         ),
-      ],
-      // requestCert: true
+        cert: fs.readFileSync(
+          path.resolve(
+            `/etc/letsencrypt/live/www.starfish.cool/fullchain.pem`,
+          ),
+        ),
+        ca: [
+          fs.readFileSync(
+            path.resolve(
+              `/etc/letsencrypt/live/www.starfish.cool/chain.pem`,
+            ),
+          ),
+        ],
+        // requestCert: true
+      }
     }
-  }
-  webServer = createHTTPSServer(serverConfig)
-} else webServer = createHTTPServer(serverConfig)
+    webServer = createHTTPSServer(serverConfig)
+  } else webServer = createHTTPServer(serverConfig)
 
-// * test endpoint to check if the server is running and accessible
-webServer.on(`request`, (req, res) => {
-  res.end(`ok`)
-})
+  // * test endpoint to check if the server is running and accessible
+  webServer.on(`request`, (req, res) => {
+    res.end(`ok`)
+  })
 
-const io = new socketServer<IOClientEvents, IOServerEvents>(
-  webServer,
-  {
+  const io = new socketServer<
+    IOClientEvents,
+    IOServerEvents
+  >(webServer, {
     cors: {
       origin: `*`,
       methods: [`GET`, `POST`],
     },
-  },
-)
+  })
 
-io.on(
-  `connection`,
-  (socket: Socket<IOClientEvents, IOServerEvents>) => {
-    socket[Symbol.for(`nodejs.rejection`)] = (err) => {
-      socket.emit(`disconnectFromServer`)
-    }
-    frontendEvents(socket)
-    discordEvents(socket)
-    generalEvents(socket)
-    crewEvents(socket)
-    itemEvents(socket)
-    adminEvents(socket)
-  },
-)
+  io.on(
+    `connection`,
+    (socket: Socket<IOClientEvents, IOServerEvents>) => {
+      socket[Symbol.for(`nodejs.rejection`)] = (err) => {
+        socket.emit(`disconnectFromServer`)
+      }
+      frontendEvents(socket, game)
+      discordEvents(socket, game)
+      generalEvents(socket, game)
+      crewEvents(socket, game)
+      itemEvents(socket, game)
+      adminEvents(socket, game)
+    },
+  )
 
-webServer.listen(4200)
-c.log(`green`, `io server listening on port 4200`)
-export default io
+  webServer.listen(options.port)
+  // c.log(
+  //   `green`,
+  //   `io server listening on port ${options.port}`,
+  // )
+
+  return io
+}
+
+export default spawnIo

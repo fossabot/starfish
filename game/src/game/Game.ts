@@ -1,7 +1,7 @@
 import c from '../../../common/dist'
 
 // io/db links
-import io, { linkGame as linkGameToIo } from '../server/io'
+import spawnIo from '../server/io'
 import {
   db,
   init as dbInit,
@@ -30,6 +30,7 @@ import {
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
 import defaultGameSettings from './presets/gameSettings'
+import type { Server } from 'socket.io'
 
 export class Game {
   static saveTimeInterval =
@@ -56,26 +57,36 @@ export class Game {
   activePlayers: number = 0
 
   db: typeof db | null = null
-  io: typeof io | null = null
+  io: Server<IOClientEvents, IOServerEvents>
+  ioPort: number
 
-  constructor() {
+  constructor(options?: { ioPort?: number }) {
     this.settings = defaultGameSettings()
 
-    linkGameToIo(this)
-    this.io = io
+    this.ioPort =
+      !options?.ioPort
+        ? Math.round(Math.random() * (65536 - 5000)) + 5000
+        : options?.ioPort
+    this.io = spawnIo(this, { port: this.ioPort })
 
-    c.log(
-      `gray`,
-      `Loaded ${
-        Object.keys(c.species).length
-      } species and ${
-        Object.keys(c.guilds).length
-      } guilds.`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `Loaded ${
+    //     Object.keys(c.species).length
+    //   } species and ${
+    //     Object.keys(c.guilds).length
+    //   } guilds.`,
+    // )
   }
 
-  loadGameDataFromDb() {
-    dbInit({})
+  loadGameDataFromDb(dbSettings: GameDbOptions = {}) {
+    if (this.db)
+      return c.log(
+        `red`,
+        `Attempted to double connect game to database`,
+      )
+
+    dbInit(dbSettings)
 
     return new Promise((resolve) => {
       runOnDbReady(async () => {
@@ -120,17 +131,20 @@ export class Game {
         )
         for (let planet of savedPlanets)
           if (planet.planetType === `basic`)
-            this.addBasicPlanet(
+            await this.addBasicPlanet(
               planet as BaseBasicPlanetData,
               false,
             )
           else if (planet.planetType === `mining`)
-            this.addMiningPlanet(
+            await this.addMiningPlanet(
               planet as BaseMiningPlanetData,
               false,
             )
           else if (planet.planetType === `comet`)
-            this.addComet(planet as BaseCometData, false)
+            await this.addComet(
+              planet as BaseCometData,
+              false,
+            )
 
         const savedCaches =
           await this.db.cache.getAllConstructible()
@@ -138,8 +152,9 @@ export class Game {
           `gray`,
           `Loaded ${savedCaches.length} saved caches from DB.`,
         )
-        savedCaches.forEach((cache) =>
-          this.addCache(cache, false),
+        savedCaches.forEach(
+          async (cache) =>
+            await this.addCache(cache, false),
         )
 
         const savedZones =
@@ -148,8 +163,8 @@ export class Game {
           `gray`,
           `Loaded ${savedZones.length} saved zones from DB.`,
         )
-        savedZones.forEach((zone) =>
-          this.addZone(zone, false),
+        savedZones.forEach(
+          async (zone) => await this.addZone(zone, false),
         )
 
         const savedShips =
@@ -165,9 +180,12 @@ export class Game {
         //   .forEach((s) => c.log('gray', s.id, s.name, s.items, s.chassis))
         for (let ship of savedShips) {
           if (ship.ai)
-            this.addAIShip(ship as BaseAIShipData, false)
+            await this.addAIShip(
+              ship as BaseAIShipData,
+              false,
+            )
           else
-            this.addHumanShip(
+            await this.addHumanShip(
               ship as BaseHumanShipData,
               false,
             )
@@ -931,9 +949,9 @@ export class Game {
           (s as CombatShip).targetShip = null
       })
 
-    c.log(
-      `Removing ship ${ship.name} (${ship.id}) from the game.`,
-    )
+    // c.log(
+    //   `Removing ship ${ship.name} (${ship.id}) from the game.`,
+    // )
     await this.db?.ship.removeFromDb(ship.id)
 
     const index = this.ships.findIndex(
@@ -946,7 +964,7 @@ export class Game {
 
     if (!ship.tutorial)
       ship.crewMembers.forEach((cm) => {
-        io.to(`user:${cm.id}`).emit(`user:reloadShips`)
+        this.io.to(`user:${cm.id}`).emit(`user:reloadShips`)
       })
 
     ship.tutorial?.cleanUp()
