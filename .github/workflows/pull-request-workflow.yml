@@ -103,7 +103,7 @@ jobs:
           cache-from: type=gha
 
   artillery:
-    needs: docker-build-publish
+    #    needs: docker-build-publish
     runs-on: ubuntu-latest
     steps:
       - name: Clone Stonefish repo
