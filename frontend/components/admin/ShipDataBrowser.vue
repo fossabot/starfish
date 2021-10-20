@@ -63,7 +63,7 @@
           v-if="propertySearchTerm"
           @click="propertySearchTerm = null"
         >
-          Clear
+          <div>Clear</div>
         </div>
       </div>
 
