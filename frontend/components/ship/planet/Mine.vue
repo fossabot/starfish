@@ -17,7 +17,12 @@
       class="marbottiny"
       v-tooltip="
         m.mineRequirement
-          ? `Remaining in vein: ${m.maxMineable} tons`
+          ? ` Base price per ton: 💳${
+              c.cargo[m.id].basePrice
+            }
+              <br />Remaining in vein: ${
+                m.maxMineable
+              } tons`
           : `Upgrade the mine to uncover more resources.`
       "
     >

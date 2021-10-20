@@ -162,9 +162,9 @@ export default Vue.extend({
     },
     xpInCurrentLevel(): number {
       return (
-        c.levels[this.planet.level + 1] *
-          c.planetLevelXpRequirementMultiplier -
         c.levels[this.planet.level] *
+          c.planetLevelXpRequirementMultiplier -
+        c.levels[this.planet.level - 1] *
           c.planetLevelXpRequirementMultiplier
       )
     },

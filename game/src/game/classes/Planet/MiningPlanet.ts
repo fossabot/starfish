@@ -23,7 +23,7 @@ export class MiningPlanet extends Planet {
   getMineRequirement(cargoId: CargoId): number {
     const rarity = c.cargo[cargoId].rarity + 1
     return Math.floor(
-      ((Math.random() + 0.2) * 85000 * (rarity / 3)) / 20,
+      (Math.random() + 0.3) * 5000 * (rarity + 1) ** 1.6,
     )
   }
 
@@ -31,7 +31,7 @@ export class MiningPlanet extends Planet {
     const rarity = c.cargo[cargoId].rarity + 1
     const scaledByLevel = this.level / rarity
     return Math.floor(
-      (Math.random() + 0.1) * 100 * scaledByLevel,
+      (Math.random() + 0.3) * 100 * scaledByLevel,
     )
   }
 
@@ -45,7 +45,7 @@ export class MiningPlanet extends Planet {
           ?.maxMineable ??
         Infinity,
       Math.floor(
-        1 +
+        3 +
           Math.random() *
             20 *
             c.lerp(1, 10, this.level / 100),
@@ -59,14 +59,16 @@ export class MiningPlanet extends Planet {
       cargoId === `closest` ||
       !this.mine.find((m) => m.id === cargoId)
     )
-      cargoId = this.mine.reduce(
-        (closest, m) =>
-          closest.mineCurrent / closest.mineRequirement >
-          m.mineCurrent / m.mineRequirement
-            ? closest
-            : m,
-        this.mine[0],
-      ).id
+      cargoId = this.mine
+        .filter((m) => m.maxMineable)
+        .reduce(
+          (closest, m) =>
+            closest.mineCurrent / closest.mineRequirement >
+            m.mineCurrent / m.mineRequirement
+              ? closest
+              : m,
+          this.mine[0],
+        ).id
 
     const resource = this.mine.find((m) => m.id === cargoId)
     if (!resource || !resource.mineRequirement) return
@@ -241,7 +243,7 @@ export class MiningPlanet extends Planet {
   async levelUp() {
     super.levelUp()
 
-    if (this.level > 1) {
+    if (this.level > 1 && Math.random() > 0.2) {
       this.addPassive({
         id: `boostMineSpeed`,
         intensity: 0.01,
@@ -298,10 +300,11 @@ export class MiningPlanet extends Planet {
 
   resetLevels(toDefault?: boolean) {
     const targetLevel = toDefault ? 1 : this.level
-    const targetXp = this.xp
+    const targetXp = toDefault ? 0 : this.xp
     this.level = 0
     this.xp = 0
     this.mine = []
+    this.passives = []
     while (this.level < targetLevel) {
       this.levelUp()
     }

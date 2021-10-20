@@ -251,6 +251,20 @@ export default function (
     },
   )
   socket.on(
+    `game:reLevelAllPlanetsOfType`,
+    async (id, password, type) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:reLevelAllPlanetsOfType`,
+        )
+      c.log(`Admin releveling ${type} planets`)
+      game.planets
+        .filter((p) => p.planetType === type)
+        .forEach((p) => p.resetLevels())
+    },
+  )
+  socket.on(
     `game:reLevelOnePlanet`,
     async (id, password, planetId) => {
       if (!game) return
