@@ -136,7 +136,7 @@ export class BasicPlanet extends Planet {
 
     if (!this.bank)
       levelUpOptions.push({
-        weight: 0.5 * this.level,
+        weight: 0.1 * this.level,
         value: `addBank`,
       })
 

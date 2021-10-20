@@ -11,18 +11,40 @@
     <div v-if="planet.mine.length === 0">
       <div class="centertext sub">All mines exhausted.</div>
     </div>
-    <div v-else v-for="m in planet.mine" class="marbottiny">
+    <div
+      v-else
+      v-for="m in planet.mine"
+      class="marbottiny"
+      v-tooltip="
+        m.mineRequirement
+          ? `Remaining in vein: ${m.maxMineable} tons`
+          : `Upgrade the mine to uncover more resources.`
+      "
+    >
       <ProgressBar
         :mini="true"
-        :percent="m.mineCurrent / m.mineRequirement"
+        :percent="m.mineCurrent / (m.mineRequirement || 1)"
         dangerZone="-1"
+        :class="{ fade: !m.mineRequirement }"
       >
-        <div class="fullwidth flexbetween">
+        <div class="fullwidth" v-if="!m.mineRequirement">
+          <div class="fade">
+            {{ c.capitalize(m.id) }} (exhausted)
+          </div>
+        </div>
+
+        <div
+          class="fullwidth flexbetween"
+          v-if="m.mineRequirement"
+        >
           <div>
             {{
               c.numberWithCommas(c.r2(m.payoutAmount, 0))
             }}
-            tons of
+            ton{{
+              c.r2(m.payoutAmount, 0) === 1 ? '' : 's'
+            }}
+            of
             {{ c.capitalize(m.id) }}
           </div>
 
