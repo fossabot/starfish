@@ -31,18 +31,21 @@
           </div>
 
           <template
-            v-if="
-              ['ship'].includes(selectedElement.type) &&
-              selectedElement.ai === false
-            "
+            v-if="['ship'].includes(selectedElement.type)"
           >
-            <div
-              class="button"
-              @click="
-                give([{ id: 'credits', amount: 100000 }])
-              "
-            >
-              <span>Give 100,000 Credits</span>
+            <template v-if="selectedElement.ai === false">
+              <div
+                class="button"
+                @click="
+                  give([{ id: 'credits', amount: 100000 }])
+                "
+              >
+                <span>Give 100,000 Credits</span>
+              </div>
+            </template>
+
+            <div class="button" @click="kill">
+              <span>Kill</span>
             </div>
           </template>
 
@@ -227,6 +230,15 @@ export default Vue.extend({
         this.adminPassword,
         this.selectedElement.id,
         cargo,
+      )
+    },
+
+    kill() {
+      this.$socket.emit(
+        'admin:kill',
+        this.userId,
+        this.adminPassword,
+        this.selectedElement.id,
       )
     },
 

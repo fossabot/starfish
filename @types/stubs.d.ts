@@ -61,6 +61,7 @@ interface ShipStub extends BaseStub {
   banked?: BankEntry[]
 
   spawnPoint?: CoordinatePair
+  level?: number
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
