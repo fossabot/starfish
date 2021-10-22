@@ -42,6 +42,79 @@ export class Zone extends Stubbable {
     this.effects = effects
   }
 
+  shipEnter(ship: CombatShip) {
+    c.log(`ship enter`, ship.name, this.name)
+    for (let effect of this.effects) {
+      // wormhole
+      if (effect.type === `wormhole`) {
+        ship.location = c.randomInsideCircle(
+          this.game?.gameSoftRadius || 1,
+        )
+        ship.logEntry(
+          [
+            `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+          ],
+          `high`,
+        )
+
+        this.moveToRandomLocation()
+        c.log(`Moved wormhole to ${this.location}`)
+        // this.game.removeZone(this)
+      }
+
+      // broadcast boost
+      else if (effect.type === `broadcast boost`) {
+        ship.applyPassive({
+          id: `boostBroadcastRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+      }
+
+      // sight boost
+      else if (effect.type === `sight boost`) {
+        ship.applyPassive({
+          id: `boostSightRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+        ship.applyPassive({
+          id: `boostScanRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+      }
+    }
+  }
+
+  shipLeave(ship: CombatShip) {
+    c.log(`ship leave`, ship.name, this.name)
+    for (let effect of this.effects) {
+      // broadcast boost
+      if (effect.type === `broadcast boost`) {
+        ship.removePassive({
+          id: `boostBroadcastRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+      }
+
+      // sight boost
+      else if (effect.type === `sight boost`) {
+        ship.removePassive({
+          id: `boostSightRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+        ship.removePassive({
+          id: `boostScanRange`,
+          intensity: effect.intensity,
+          data: { source: { zoneName: this.name } },
+        })
+      }
+    }
+  }
+
   affectShip(ship: CombatShip) {
     if (ship.planet) return
     for (let effect of this.effects) {
@@ -136,23 +209,6 @@ export class Zone extends Stubbable {
         ship.toUpdate.speed = c.vectorToMagnitude(
           ship.velocity,
         )
-      }
-
-      // wormhole
-      else if (effect.type === `wormhole`) {
-        ship.location = c.randomInsideCircle(
-          this.game?.gameSoftRadius || 1,
-        )
-        ship.logEntry(
-          [
-            `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
-          ],
-          `high`,
-        )
-
-        this.moveToRandomLocation()
-        c.log(`Moved wormhole to ${this.location}`)
-        // this.game.removeZone(this)
       }
     }
   }

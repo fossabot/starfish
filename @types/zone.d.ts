@@ -5,6 +5,8 @@ type ZoneEffectType =
   | `accelerate`
   | `decelerate`
   | `wormhole`
+  | `broadcast boost`
+  | `sight boost`
 
 interface ZoneEffect {
   type: ZoneEffectType

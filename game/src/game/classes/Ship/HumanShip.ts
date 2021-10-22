@@ -134,7 +134,6 @@ export class HumanShip extends CombatShip {
     if (data.achievements)
       this.addAchievement(data.achievements, true)
 
-    c.log(this.guildId)
     // human ships always know where their homeworld is
     const homeworld = this.game?.getHomeworld(this.guildId)
     if (
@@ -198,6 +197,17 @@ export class HumanShip extends CombatShip {
     this.updatePlanet(true)
     if (this.tutorial)
       setTimeout(() => this.updatePlanet(true), 1500)
+
+    for (let z of this.visible.zones) {
+      if (
+        c.pointIsInsideCircle(
+          z.location,
+          this.location,
+          z.radius,
+        )
+      )
+        z.shipEnter(this) // applies passives if relevant
+    }
 
     if (!this.items.length) {
       c.log(
@@ -283,19 +293,6 @@ export class HumanShip extends CombatShip {
       c.tickInterval
     if (autoRepairIntensity)
       this.repair(autoRepairIntensity)
-
-    profiler.step(`discover planets`)
-    // ----- discover new planets -----
-    const newPlanets = this.visible.planets.filter(
-      (p) => !this.seenPlanets.includes(p),
-    )
-    newPlanets.forEach((p) => this.discoverPlanet(p))
-
-    // ----- discover new landmarks -----
-    const newLandmarks = this.visible.zones.filter(
-      (z) => !this.seenLandmarks.includes(z),
-    )
-    newLandmarks.forEach((p) => this.discoverLandmark(p))
 
     // ----- second wind -----
     if (
@@ -1047,6 +1044,7 @@ export class HumanShip extends CombatShip {
         startingLocation,
         this.location,
       )
+      this.updateZones(startingLocation)
       return
     }
 
@@ -1072,7 +1070,7 @@ export class HumanShip extends CombatShip {
       this.location,
     )
 
-    this.notifyZones(startingLocation)
+    this.updateZones(startingLocation)
 
     this.addStat(
       `distanceTraveled`,
@@ -1250,6 +1248,18 @@ export class HumanShip extends CombatShip {
       ...visible,
       ships: shipsWithValidScannedProps,
     }
+
+    // ----- discover new planets -----
+    const newPlanets = this.visible.planets.filter(
+      (p) => !this.seenPlanets.includes(p),
+    )
+    newPlanets.forEach((p) => this.discoverPlanet(p))
+
+    // ----- discover new landmarks -----
+    const newLandmarks = this.visible.zones.filter(
+      (z) => !this.seenLandmarks.includes(z),
+    )
+    newLandmarks.forEach((p) => this.discoverLandmark(p))
   }
 
   generateVisiblePayload(previousVisible?: {
@@ -1580,7 +1590,7 @@ export class HumanShip extends CombatShip {
     this.addStat(`cachesRecovered`, 1)
   }
 
-  notifyZones(startingLocation: CoordinatePair) {
+  updateZones(startingLocation: CoordinatePair) {
     for (let z of this.visible.zones) {
       const startedInside = c.pointIsInsideCircle(
         z.location,
@@ -1592,7 +1602,7 @@ export class HumanShip extends CombatShip {
         this.location,
         z.radius,
       )
-      if (startedInside && !endedInside)
+      if (startedInside && !endedInside) {
         this.logEntry(
           [
             `Exited`,
@@ -1605,7 +1615,9 @@ export class HumanShip extends CombatShip {
           ],
           `high`,
         )
-      if (!startedInside && endedInside)
+        z.shipLeave(this)
+      }
+      if (!startedInside && endedInside) {
         this.logEntry(
           [
             `Entered`,
@@ -1618,6 +1630,8 @@ export class HumanShip extends CombatShip {
           ],
           `high`,
         )
+        z.shipEnter(this)
+      }
     }
   }
 

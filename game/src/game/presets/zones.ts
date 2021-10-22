@@ -44,11 +44,13 @@ export function generateZoneData(
     weight: number
   }[] = [
     { value: `accelerate`, weight: 2 },
-    { value: `decelerate`, weight: 2 },
-    { value: `damage over time`, weight: 5 },
-    { value: `repair over time`, weight: 1 },
+    { value: `decelerate`, weight: 1.5 },
+    { value: `damage over time`, weight: 6 },
+    { value: `repair over time`, weight: 2 },
     { value: `stamina regeneration`, weight: 1 },
     { value: `wormhole`, weight: 0.5 },
+    { value: `broadcast boost`, weight: 1 },
+    { value: `sight boost`, weight: 1 },
   ]
   const type =
     c.randomWithWeights(weightedTypes) || `damage over time`
@@ -109,6 +111,22 @@ export function generateZoneData(
       procChancePerTick: 1,
     })
     radius *= 0.2
+  } else if (type === `broadcast boost`) {
+    name = c.randomFromArray(broadcastZoneNames)
+    effects.push({
+      type: `broadcast boost`,
+      intensity,
+      procChancePerTick: 1,
+    })
+    radius *= 1.2
+  } else if (type === `sight boost`) {
+    name = c.randomFromArray(sightZoneNames)
+    effects.push({
+      type: `sight boost`,
+      intensity,
+      procChancePerTick: 1,
+    })
+    radius *= 1.2
   }
 
   if (!name) return false
@@ -186,4 +204,21 @@ const wormholeZoneNames = [
   `Bermuda Triangle`,
   `Warped Point`,
   `Abyssal Void`,
+]
+const broadcastZoneNames = [
+  `Echo Field`,
+  `Reverberating Zone`,
+  `Reverberating Field`,
+  `Amplifying Zone`,
+  `EMP Cone`,
+  `Amplifying Cone`,
+  `Natural Amplifier`,
+]
+const sightZoneNames = [
+  `Sensory Booster`,
+  `Hypersensate Field`,
+  `Clarifying Void`,
+  `Prismic Field`,
+  `Refractory Dust Cloud`,
+  `Longsight Shallows`,
 ]
