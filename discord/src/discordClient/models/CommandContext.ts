@@ -16,6 +16,7 @@ import type { Command } from './Command'
 import checkPermissions from '../actions/checkPermissions'
 import { error } from 'console'
 import { enQueue } from '../sendQueue'
+import ioInterface from '../../ioInterface'
 
 const sendQueue: {
   [key: string]: {
@@ -97,6 +98,18 @@ export class CommandContext {
       `244651135984467968`,
       `395634705120100367`,
     ].includes(message.author.id)
+  }
+
+  async refreshShip() {
+    const ship = await ioInterface.ship.get(
+      this.guild?.id || ``,
+      this.author.id,
+    )
+    this.ship = ship
+    this.crewMember =
+      ship?.crewMembers?.find(
+        (cm) => cm.id === this.author.id,
+      ) || null
   }
 
   async sendToGuild(

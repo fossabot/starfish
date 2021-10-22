@@ -901,6 +901,7 @@ export default function (
         return callback({
           error: `You're not targeting any location to thrust towards!`,
         })
+      const previousCharge = crewMember.cockpitCharge
 
       const speedDifference = ship.applyThrust(
         targetLocation,
@@ -912,7 +913,11 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} thrusted.`,
+        `${crewMember.name} on ${
+          ship.name
+        } thrusted at ${speedDifference} AU/hr (${c.r2(
+          chargePercent * previousCharge * 100,
+        )}% charge).`,
       )
     },
   )

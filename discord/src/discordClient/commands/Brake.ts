@@ -23,19 +23,67 @@ export class BrakeCommand implements Command {
       return
     }
 
+    const engineThrustAmplification = Math.max(
+      c.noEngineThrustMagnitude,
+      (
+        context.ship?.items?.filter(
+          (e: ItemStub) =>
+            e.type === `engine` && (e.repair || 0) > 0,
+        ) || []
+      ).reduce(
+        (total: number, e: EngineStub) =>
+          total +
+          (e.thrustAmplification || 0) * (e.repair || 0),
+        0,
+      ) *
+        (context.ship.gameSettings
+          ?.baseEngineThrustMultiplier || 1),
+    )
+    const pilotingSkill =
+      context.crewMember.skills.find(
+        (s: XPData) => s && s.skill === `piloting`,
+      )?.level || 1
+
+    const currentCockpitCharge =
+      context.crewMember?.cockpitCharge || 0
+
+    const maxPossibleSpeedChangeWithBrake =
+      currentCockpitCharge *
+      (c.getThrustMagnitudeForSingleCrewMember(
+        pilotingSkill,
+        engineThrustAmplification,
+        context.ship.gameSettings
+          ?.baseEngineThrustMultiplier || 1,
+      ) /
+        (context.ship.mass || 10000)) *
+      (context.ship.gameSettings?.brakeToThrustRatio || 1)
+
+    const currentSpeed = context.ship.speed || 0
+    const brakePercentNeeded = Math.min(
+      1,
+      currentSpeed / maxPossibleSpeedChangeWithBrake,
+    )
+
+    const intentionallyOverBrakeMultiplier = 1.2
+
     const res = await ioInterface.crew.brake(
       context.ship.id,
       context.crewMember.id,
+      brakePercentNeeded,
     )
 
     if (`error` in res) context.reply(res.error)
-    else
+    else {
+      await context.refreshShip()
       context.reply(
         `${
           context.nickname
         } braked, slowing the ship by ${c.speedNumber(
-          res.data * -1,
+          res.data,
+        )} to a speed of ${c.speedNumber(
+          (context.ship.speed || 0) * 60 * 60,
         )}.`,
       )
+    }
   }
 }

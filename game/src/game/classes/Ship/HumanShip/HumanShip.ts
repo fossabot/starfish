@@ -816,7 +816,7 @@ export class HumanShip extends CombatShip {
     //   // unitVectorToTarget,
     //   // vectorToTarget,
     //   thrustVector,
-    //   thrustAngle,
+    //   // thrustAngle,
     //   initialVelocity,
     //   initialMagnitude,
     //   initialAngle,

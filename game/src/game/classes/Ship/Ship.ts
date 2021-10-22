@@ -132,7 +132,12 @@ export class Ship extends Stubbable {
     this.spawnedAt = spawnedAt || Date.now()
 
     this.velocity = velocity || [0, 0]
-    if (location) {
+    if (
+      location &&
+      location[0] !== undefined &&
+      !isNaN(location[0]) &&
+      location[0] !== null
+    ) {
       this.location = location
     }
     // if new guild member, spawn at homeworld
