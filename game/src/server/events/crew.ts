@@ -698,7 +698,7 @@ export default function (
       }
 
       if (amount > 1) {
-        const cache = await game.addCache({
+        const droppedCache = await game.addCache({
           location: [...ship.location],
           contents: [{ id: cargoId, amount }],
           droppedBy: ship.id,
@@ -714,8 +714,21 @@ export default function (
         )
 
         callback({
-          data: cache.stubify(),
+          data: droppedCache.stubify(),
         })
+
+        // * auto-pick-up oldest single cache nearby, regardless of drop timer (cargo swapping)
+        // this happens on manual drop only, so we can't end up in an infinite loop
+        const oldestNearbyCache =
+          ship.visible.caches.filter(
+            (ca) =>
+              ca !== droppedCache && ship.isAt(ca.location),
+          )[0]
+        if (
+          oldestNearbyCache &&
+          oldestNearbyCache.canBePickedUpBy(ship, true)
+        )
+          ship.getCache(oldestNearbyCache)
       } else
         callback({
           data: undefined,
