@@ -5,7 +5,7 @@ import type { HumanShip } from './Ship/HumanShip'
 import { Stubbable } from './Stubbable'
 
 export class Cache extends Stubbable {
-  static readonly rePickUpTime = 1000 * 60 * 15 // 15 minutes
+  static readonly rePickUpTime = 1000 * 60 * 30 // 30 minutes
 
   readonly type = `cache`
   readonly id: string
@@ -42,12 +42,16 @@ export class Cache extends Stubbable {
       this.onlyVisibleToShipId = onlyVisibleToShipId
   }
 
-  canBePickedUpBy(ship: HumanShip): boolean {
+  canBePickedUpBy(
+    ship: HumanShip,
+    ignoreTime: boolean = false,
+  ): boolean {
     if (this.onlyVisibleToShipId)
       return this.onlyVisibleToShipId === ship.id
 
     const timeFromDrop = Date.now() - this.time
     if (
+      !ignoreTime &&
       this.droppedBy === ship.id &&
       timeFromDrop < Cache.rePickUpTime
     )
