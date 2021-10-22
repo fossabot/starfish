@@ -62,11 +62,6 @@ interface CrewStatEntry {
   amount: number
 }
 
-interface PassiveCrewUpgrade {
-  id: CrewPassiveId
-  level: number
-}
-
 interface BaseCrewMemberData {
   name: string
   id: string

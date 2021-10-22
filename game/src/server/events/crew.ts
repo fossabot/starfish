@@ -2,12 +2,12 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import type { Game } from '../../game/Game'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { Planet } from '../../game/classes/Planet/Planet'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
-import { Tutorial } from '../../game/classes/Ship/addins/Tutorial'
+import { Tutorial } from '../../game/classes/Ship/HumanShip/Tutorial'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,

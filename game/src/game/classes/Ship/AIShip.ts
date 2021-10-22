@@ -7,7 +7,7 @@ import type { Cache } from '../Cache'
 import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { Weapon } from '../Item/Weapon'
-import type { HumanShip } from './HumanShip'
+import type { HumanShip } from './HumanShip/HumanShip'
 
 import defaultGameSettings from '../../presets/gameSettings'
 
@@ -455,7 +455,7 @@ export class AIShip extends CombatShip {
 
   broadcastTo(ship: Ship) {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.15, 0.3, this.level / 100))
+    if (Math.random() > c.lerp(0.05, 0.3, this.level / 100))
       return
 
     const distance = c.distance(

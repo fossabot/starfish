@@ -1,7 +1,7 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
 import defaultGameSettings from '../../presets/gameSettings'
@@ -32,7 +32,6 @@ export class CrewMember extends Stubbable {
   credits: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
-  upgrades: PassiveCrewUpgrade[] = []
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
 

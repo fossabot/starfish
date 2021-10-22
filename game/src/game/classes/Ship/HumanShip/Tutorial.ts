@@ -1,5 +1,5 @@
 import c from '../../../../../../common/dist'
-import type { HumanShip } from '../HumanShip'
+import type { HumanShip } from './HumanShip'
 import type { CrewMember } from '../../CrewMember/CrewMember'
 
 import defaultGameSettings from '../../../presets/gameSettings'

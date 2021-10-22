@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import type { Game } from '../../game/Game'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 export default function (

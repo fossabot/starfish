@@ -1,5 +1,5 @@
 import c from '../../../../../../common/dist'
-import { HumanShip } from '../HumanShip'
+import { HumanShip } from '../HumanShip/HumanShip'
 
 export function checkAchievements(
   this: HumanShip,

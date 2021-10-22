@@ -5,7 +5,7 @@ import fs from 'fs'
 import { getBackups, resetDbToBackup } from '../../db'
 
 import type { Game } from '../../game/Game'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 
 let adminKeys: any

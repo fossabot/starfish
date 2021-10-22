@@ -6,7 +6,7 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
-import type { HumanShip } from './HumanShip'
+import type { HumanShip } from './HumanShip/HumanShip'
 
 import defaultGameSettings from '../../presets/gameSettings'
 
