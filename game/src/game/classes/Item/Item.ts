@@ -71,7 +71,11 @@ export class Item extends Stubbable {
 
   toRefundAmount(): number {
     return (
-      Math.max(0, this.baseData.basePrice - 20000) * 0.2
+      Math.max(
+        0,
+        this.baseData.basePrice -
+          c.itemPriceMultiplier * 50,
+      ) * 0.2
     )
   }
 
