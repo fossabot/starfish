@@ -6,14 +6,28 @@ export function crewMemberData(): BaseCrewMemberData {
   }
 }
 
+let shipIdCount = 0
 export function humanShipData(
   loadout: LoadoutId = `humanDefault`,
 ): BaseHumanShipData {
-  const randomId = Math.random().toString(36).substring(7)
+  const id = shipIdCount++
   return {
-    id: `testShip` + randomId,
-    name: `Test Ship ` + randomId,
+    id: `testShip` + id,
+    name: `Test Ship ` + id,
+    location: [0, 0],
     loadout,
+  }
+}
+export function aiShipData(
+  level: number = 1,
+): BaseAIShipData {
+  const id = shipIdCount++
+  return {
+    id: `aiShip` + id,
+    name: `AI Ship ` + id,
+    location: [0, 0],
+    level,
+    speciesId: `eagles`,
   }
 }
 

@@ -2,10 +2,10 @@
   <div class="prompt flexcolumn flexcenter textcenter">
     <slot />
     <div class="martop">
-      <button class="" @click="yes">
+      <button class="big" @click="yes">
         <span>Yes</span>
       </button>
-      <button class="secondary" @click="no">
+      <button class="big secondary" @click="no">
         <span>No</span>
       </button>
     </div>

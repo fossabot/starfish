@@ -12,7 +12,7 @@
       class="sub nowrap"
       v-if="passive.data && passive.data.source"
     >
-      ({{
+      {{
         passive.data.source.speciesId
           ? `${c.capitalize(
               c.species[passive.data.source.speciesId]
@@ -36,7 +36,7 @@
           : passive.data.source === 'permanent'
           ? 'Permanent'
           : passive.data.source
-      }})
+      }}
     </span>
   </span>
 </template>

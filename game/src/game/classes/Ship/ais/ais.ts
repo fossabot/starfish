@@ -7,6 +7,7 @@ import flamingos from './flamingos'
 import eagles from './eagles'
 import seagulls from './seagulls'
 import chickens from './chickens'
+import vultures from './vultures'
 
 const ais: {
   [key: string]: {
@@ -15,6 +16,7 @@ const ais: {
       | CoordinatePair
       | false
     determineTargetShip?: () => CombatShip | null
+    updateSightAndScanRadius?: () => void
   }
 } = {
   default: defaultBehavior,
@@ -22,6 +24,7 @@ const ais: {
   seagulls,
   eagles,
   chickens,
+  vultures,
 }
 
 export default ais

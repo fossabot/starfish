@@ -63,10 +63,9 @@ export class Game {
   constructor(options?: { ioPort?: number }) {
     this.settings = defaultGameSettings()
 
-    this.ioPort =
-      !options?.ioPort
-        ? Math.round(Math.random() * (65536 - 5000)) + 5000
-        : options?.ioPort
+    this.ioPort = !options?.ioPort
+      ? Math.round(Math.random() * (65536 - 5000)) + 5000
+      : options?.ioPort
     this.io = spawnIo(this, { port: this.ioPort })
 
     // c.log(
@@ -420,7 +419,10 @@ export class Game {
       ships.push(
         ...(
           visible.filter(
-            (s) => s.type === `ship` && s.ai === false,
+            (s) =>
+              s.type === `ship` &&
+              !s.dead &&
+              s.ai === false,
           ) as HumanShip[]
         ).filter((s) => {
           if (
@@ -454,7 +456,8 @@ export class Game {
       ships.push(
         ...(
           visible.filter(
-            (s) => s.type === `ship` && s.ai === true,
+            (s) =>
+              s.type === `ship` && !s.dead && s.ai === true,
           ) as AIShip[]
         ).filter((s) => {
           if (
@@ -491,7 +494,9 @@ export class Game {
     ) {
       const showColors = includeTrails === `withColors`
       trails = (
-        visible.filter((s) => s.type === `ship`) as Ship[]
+        visible.filter(
+          (s) => s.type === `ship` && !s.dead,
+        ) as Ship[]
       )
         .filter((s) => {
           if (tutorial) return false

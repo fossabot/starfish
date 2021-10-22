@@ -36,6 +36,7 @@ export declare const scanner: {
     peek1: BaseScannerData;
     peek2: BaseScannerData;
     peek3: BaseScannerData;
+    peek4: BaseScannerData;
     wide1: BaseScannerData;
     wide2: BaseScannerData;
     wide3: BaseScannerData;

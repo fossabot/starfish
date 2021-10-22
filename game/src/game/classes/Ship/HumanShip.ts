@@ -134,7 +134,6 @@ export class HumanShip extends CombatShip {
     if (data.achievements)
       this.addAchievement(data.achievements, true)
 
-    c.log(this.guildId)
     // human ships always know where their homeworld is
     const homeworld = this.game?.getHomeworld(this.guildId)
     if (
@@ -198,6 +197,17 @@ export class HumanShip extends CombatShip {
     this.updatePlanet(true)
     if (this.tutorial)
       setTimeout(() => this.updatePlanet(true), 1500)
+
+    for (let z of this.visible.zones) {
+      if (
+        c.pointIsInsideCircle(
+          z.location,
+          this.location,
+          z.radius,
+        )
+      )
+        z.shipEnter(this) // applies passives if relevant
+    }
 
     if (!this.items.length) {
       c.log(
@@ -283,19 +293,6 @@ export class HumanShip extends CombatShip {
       c.tickInterval
     if (autoRepairIntensity)
       this.repair(autoRepairIntensity)
-
-    profiler.step(`discover planets`)
-    // ----- discover new planets -----
-    const newPlanets = this.visible.planets.filter(
-      (p) => !this.seenPlanets.includes(p),
-    )
-    newPlanets.forEach((p) => this.discoverPlanet(p))
-
-    // ----- discover new landmarks -----
-    const newLandmarks = this.visible.zones.filter(
-      (z) => !this.seenLandmarks.includes(z),
-    )
-    newLandmarks.forEach((p) => this.discoverLandmark(p))
 
     // ----- second wind -----
     if (
@@ -1047,6 +1044,7 @@ export class HumanShip extends CombatShip {
         startingLocation,
         this.location,
       )
+      this.updateZones(startingLocation)
       return
     }
 
@@ -1072,7 +1070,7 @@ export class HumanShip extends CombatShip {
       this.location,
     )
 
-    this.notifyZones(startingLocation)
+    this.updateZones(startingLocation)
 
     this.addStat(
       `distanceTraveled`,
@@ -1250,6 +1248,18 @@ export class HumanShip extends CombatShip {
       ...visible,
       ships: shipsWithValidScannedProps,
     }
+
+    // ----- discover new planets -----
+    const newPlanets = this.visible.planets.filter(
+      (p) => !this.seenPlanets.includes(p),
+    )
+    newPlanets.forEach((p) => this.discoverPlanet(p))
+
+    // ----- discover new landmarks -----
+    const newLandmarks = this.visible.zones.filter(
+      (z) => !this.seenLandmarks.includes(z),
+    )
+    newLandmarks.forEach((p) => this.discoverLandmark(p))
   }
 
   generateVisiblePayload(previousVisible?: {
@@ -1580,7 +1590,7 @@ export class HumanShip extends CombatShip {
     this.addStat(`cachesRecovered`, 1)
   }
 
-  notifyZones(startingLocation: CoordinatePair) {
+  updateZones(startingLocation: CoordinatePair) {
     for (let z of this.visible.zones) {
       const startedInside = c.pointIsInsideCircle(
         z.location,
@@ -1592,7 +1602,7 @@ export class HumanShip extends CombatShip {
         this.location,
         z.radius,
       )
-      if (startedInside && !endedInside)
+      if (startedInside && !endedInside) {
         this.logEntry(
           [
             `Exited`,
@@ -1605,7 +1615,9 @@ export class HumanShip extends CombatShip {
           ],
           `high`,
         )
-      if (!startedInside && endedInside)
+        z.shipLeave(this)
+      }
+      if (!startedInside && endedInside) {
         this.logEntry(
           [
             `Entered`,
@@ -1618,6 +1630,8 @@ export class HumanShip extends CombatShip {
           ],
           `high`,
         )
+        z.shipEnter(this)
+      }
     }
   }
 
@@ -1963,8 +1977,9 @@ export class HumanShip extends CombatShip {
         await Tutorial.putCrewMemberInTutorial(cm)
       }
       // BUT, if they are the first crew member, still send the tutorial-end messages
-      else if (this.crewMembers.length === 0)
+      else if (this.crewMembers.length === 0) {
         Tutorial.endMessages(this)
+      }
 
       this.game?.io
         ?.to(`user:${cm.id}`)
@@ -2325,10 +2340,10 @@ export class HumanShip extends CombatShip {
         this.targetShip &&
         this.targetShip !== previousTarget
       ) {
-        c.log(
-          `gray`,
-          `switched targets, resetting out-of-weapons members' tactics`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `switched targets, resetting out-of-weapons members' tactics`,
+        // )
         this.crewMembers.forEach((cm) => {
           if (cm.location !== `weapons`) {
             // don't attack immediately on returning to weapons bay
@@ -2367,13 +2382,14 @@ export class HumanShip extends CombatShip {
           if (closestShip) targetId = closestShip.id
           else return totals
         }
-        const currTotal = totals.find(
+        const existingTotal = totals.find(
           (t) => t.target.id === targetId,
         )
         const skillWeight =
           cm.skills.find((s) => s.skill === `munitions`)
             ?.level || 1
-        if (currTotal) currTotal.total += skillWeight
+        if (existingTotal)
+          existingTotal.total += skillWeight
         else {
           const foundShip = this.game?.ships.find(
             (s) => s.id === targetId,
@@ -2391,7 +2407,7 @@ export class HumanShip extends CombatShip {
 
     this.idealTargetShip =
       (shipTargetCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target as CombatShip | undefined) || null
 
     const shipTargetCountsWeightedByAttackable =
@@ -2403,7 +2419,7 @@ export class HumanShip extends CombatShip {
 
     const mostViableManuallyTargetedShip =
       shipTargetCountsWeightedByAttackable.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target as CombatShip | undefined
 
     // ----- defensive strategy -----
@@ -2570,13 +2586,13 @@ export class HumanShip extends CombatShip {
       (totals: any, cm) => {
         if (!cm.combatTactic || cm.combatTactic === `none`)
           return totals
-        const currTotal = totals.find(
+        const existingTotal = totals.find(
           (t: any) => t.tactic === cm.combatTactic,
         )
         const toAdd =
           cm.skills.find((s) => s.skill === `munitions`)
             ?.level || 1
-        if (currTotal) currTotal.total += toAdd
+        if (existingTotal) existingTotal.total += toAdd
         else
           totals.push({
             tactic: cm.combatTactic,
@@ -2588,7 +2604,7 @@ export class HumanShip extends CombatShip {
     )
     const mainTactic =
       (tacticCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.tactic as CombatTactic) || `pacifist`
 
     this.combatTactic = mainTactic
@@ -2602,13 +2618,13 @@ export class HumanShip extends CombatShip {
       `weapons`,
     ).reduce((totals: any, cm) => {
       if (cm.targetItemType === `any`) return totals
-      const currTotal = totals.find(
-        (t: any) => t.targetItemType === cm.targetItemType,
+      const existingTotal = totals.find(
+        (t: any) => t.target === cm.targetItemType,
       )
       const toAdd =
         cm.skills.find((s) => s.skill === `munitions`)
           ?.level || 1
-      if (currTotal) currTotal.total += toAdd
+      if (existingTotal) existingTotal.total += toAdd
       else
         totals.push({
           target: cm.targetItemType,
@@ -2618,7 +2634,7 @@ export class HumanShip extends CombatShip {
     }, [])
     let mainTargetItemType: ItemType | `any` =
       memberTargetItemTypeCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target || `any`
 
     this.targetItemType = mainTargetItemType
@@ -2626,7 +2642,7 @@ export class HumanShip extends CombatShip {
   }
 
   // ----- auto attack -----
-  autoAttack() {
+  autoAttack(predeterminedHitChance?: number) {
     const weaponsRoomMembers = this.membersIn(`weapons`)
     if (!weaponsRoomMembers.length) return
 
@@ -2647,6 +2663,7 @@ export class HumanShip extends CombatShip {
             this.targetShip!,
             w,
             this.targetItemType,
+            predeterminedHitChance,
           )
         })
   }

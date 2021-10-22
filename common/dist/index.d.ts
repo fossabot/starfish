@@ -48,6 +48,7 @@ declare const _default: {
         seagulls: BaseSpeciesData;
         chickens: BaseSpeciesData;
         flamingos: BaseSpeciesData;
+        vultures: BaseSpeciesData;
     };
     guilds: {
         trader: BaseGuildData;

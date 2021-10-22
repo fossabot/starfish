@@ -52,6 +52,7 @@ type ScannerId =
   | `peek1`
   | `peek2`
   | `peek3`
+  | `peek4`
   | `wide1`
   | `wide2`
   | `wide3`
@@ -174,6 +175,7 @@ interface BaseScannerData extends BaseItemData {
   sightRange: number
   shipScanRange: number
   shipScanData: ShipScanDataShape
+  scanPlanets?: boolean
 }
 
 interface ShipScanDataShape {

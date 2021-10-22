@@ -578,8 +578,7 @@ export class Ship extends Stubbable {
       ),
     )
     const boostSight =
-      (this.passives.find((p) => p.id === `boostSightRange`)
-        ?.intensity || 0) + 1
+      this.getPassiveIntensity(`boostSightRange`) + 1
     this.radii.sight *= boostSight
 
     // ----- scan -----
@@ -591,8 +590,7 @@ export class Ship extends Stubbable {
       this.scanners.length,
     )
     const boostScan =
-      (this.passives.find((p) => p.id === `boostScanRange`)
-        ?.intensity || 0) + 1
+      this.getPassiveIntensity(`boostScanRange`) + 1
     this.radii.scan *= boostScan
 
     this.radii.gameSize = this.game?.gameSoftRadius || 1

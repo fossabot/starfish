@@ -186,5 +186,13 @@ const species: { [key in SpeciesId]: BaseSpeciesData } = {
     description: ``,
     passives: [],
   },
+  vultures: {
+    aiOnly: true,
+    icon: `🪶`,
+    id: `vultures`,
+    singular: `vulture`,
+    description: ``,
+    passives: [],
+  },
 }
 export default species
