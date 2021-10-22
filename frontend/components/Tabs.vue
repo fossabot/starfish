@@ -24,7 +24,7 @@
           :key="tab.title"
           :value="index"
         >
-          {{ c.capitalize(tab.title) }}
+          {{ tab.title }}
         </option>
       </select>
     </div>

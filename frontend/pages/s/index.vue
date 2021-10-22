@@ -50,6 +50,7 @@
             <ShipPassives />
             <ShipStats />
 
+            <ShipCrewOverview />
             <ShipCrewRank />
 
             <ShipGuildRank />
