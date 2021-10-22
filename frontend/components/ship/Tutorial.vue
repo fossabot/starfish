@@ -36,9 +36,27 @@
             }}</span>
           </button>
           <div v-else></div>
-          <button class="secondary" @click="skipTutorial">
+          <button
+            class="secondary"
+            @click="
+              $store.commit('set', { modal: 'prompt' })
+              confirmSkip = true
+            "
+          >
             Skip Tutorial
           </button>
+
+          <portal to="prompt">
+            <PromptYesNo
+              @yes="skipTutorial"
+              @no="
+                $store.commit('set', { modal: null })
+                confirmSkip = false
+              "
+            >
+              End the tutorial and go to your ship?
+            </PromptYesNo>
+          </portal>
         </div>
       </div>
     </div>
@@ -52,7 +70,12 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
   data() {
-    return { c, scriptIndex: 0, waitingForNextStep: false }
+    return {
+      c,
+      confirmSkip: false,
+      scriptIndex: 0,
+      waitingForNextStep: false,
+    }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
