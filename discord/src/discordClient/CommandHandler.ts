@@ -171,6 +171,13 @@ export class CommandHandler {
         matchedCommand.requiresShip
       )
         runnable = `Your server doesn't have a ship yet! Use \`${commandContext.commandPrefix}start\` to start your server off in the game.`
+      // ship required and tutorial
+      if (
+        commandContext.ship &&
+        matchedCommand.requiresShip &&
+        commandContext.ship.tutorial
+      )
+        runnable = `Discord commands are disabled while you're in the tutorial. Go to ${c.frontendUrl} to play!`
       // crewMember required and no crewMember
       else if (
         !commandContext.crewMember &&

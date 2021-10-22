@@ -73,7 +73,6 @@ export class HelpCommand implements Command {
               .join(`\n`),
           ),
         new MessageEmbed()
-          .setTitle(`Captain commands`)
           .setColor(c.gameColor as ColorResolvable)
           .setDescription(
             `:desktop: [Ship console](${c.frontendUrl})` +

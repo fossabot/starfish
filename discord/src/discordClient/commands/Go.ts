@@ -51,27 +51,42 @@ export class GoCommand implements Command {
         `fly`,
         `flight`,
         `flight deck`,
+        `flight bay`,
         `f`,
         `c`,
       ].includes(enteredString)
     )
       roomToGoTo = `cockpit`
     if (
-      [`mine`, `mining`, `miner`, `dig`, `m`].includes(
-        enteredString,
-      )
+      [
+        `mine`,
+        `mining bay`,
+        `mine bay`,
+        `mining`,
+        `miner`,
+        `dig`,
+        `m`,
+      ].includes(enteredString)
     )
       roomToGoTo = `mine`
     if (
-      [`repair`, `fix`, `repairs`, `r`, `rep`].includes(
-        enteredString,
-      )
+      [
+        `repair`,
+        `repairs bay`,
+        `repair bay`,
+        `fix`,
+        `repairs`,
+        `r`,
+        `rep`,
+      ].includes(enteredString)
     )
       roomToGoTo = `repair`
     if (
       [
         `weapon`,
         `weapons`,
+        `weapons bay`,
+        `weapon bay`,
         `fight`,
         `combat`,
         `kill`,
