@@ -205,7 +205,12 @@
             )
             .slice(0, 10)"
           :key="'cqo' + s.id"
-          :value="{ type: 'cache', id: s.id, name: s.name }"
+          :value="{
+            type: 'cache',
+            id: s.id,
+            name: s.name,
+            location: s.location,
+          }"
         >
           📦Cache (<AngleArrow
             :angle="

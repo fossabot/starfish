@@ -288,19 +288,22 @@ export default Vue.extend({
               : null
 
           if (tp) {
-            let radius
+            let radius,
+              color = tp.color
             if (tp.location && !tp.radii) {
               if (
                 tp.type &&
                 ['zone', 'weapon'].includes(tp.type)
               )
                 radius = tp.radius
+              if (tp.type && ['cache'].includes(tp.type))
+                tp.color = `rgb(216, 174, 3)`
               targetPoints.push({
                 location: tp.location,
                 radius,
                 color: tp.guildId
                   ? c.guilds[tp.guildId].color
-                  : tp.color,
+                  : color,
               })
             } else if (tp.type) {
               if (tp.type === 'ship') {
@@ -318,6 +321,8 @@ export default Vue.extend({
                       : tp.color,
                   })
               }
+
+              // todo cannot be true (zone too)
               if (
                 tp.type === 'planet' &&
                 this.ship.seenPlanets.find(
