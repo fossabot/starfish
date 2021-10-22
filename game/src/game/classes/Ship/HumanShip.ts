@@ -1977,8 +1977,9 @@ export class HumanShip extends CombatShip {
         await Tutorial.putCrewMemberInTutorial(cm)
       }
       // BUT, if they are the first crew member, still send the tutorial-end messages
-      else if (this.crewMembers.length === 0)
+      else if (this.crewMembers.length === 0) {
         Tutorial.endMessages(this)
+      }
 
       this.game?.io
         ?.to(`user:${cm.id}`)
@@ -2339,10 +2340,10 @@ export class HumanShip extends CombatShip {
         this.targetShip &&
         this.targetShip !== previousTarget
       ) {
-        c.log(
-          `gray`,
-          `switched targets, resetting out-of-weapons members' tactics`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `switched targets, resetting out-of-weapons members' tactics`,
+        // )
         this.crewMembers.forEach((cm) => {
           if (cm.location !== `weapons`) {
             // don't attack immediately on returning to weapons bay
@@ -2381,13 +2382,14 @@ export class HumanShip extends CombatShip {
           if (closestShip) targetId = closestShip.id
           else return totals
         }
-        const currTotal = totals.find(
+        const existingTotal = totals.find(
           (t) => t.target.id === targetId,
         )
         const skillWeight =
           cm.skills.find((s) => s.skill === `munitions`)
             ?.level || 1
-        if (currTotal) currTotal.total += skillWeight
+        if (existingTotal)
+          existingTotal.total += skillWeight
         else {
           const foundShip = this.game?.ships.find(
             (s) => s.id === targetId,
@@ -2405,7 +2407,7 @@ export class HumanShip extends CombatShip {
 
     this.idealTargetShip =
       (shipTargetCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target as CombatShip | undefined) || null
 
     const shipTargetCountsWeightedByAttackable =
@@ -2417,7 +2419,7 @@ export class HumanShip extends CombatShip {
 
     const mostViableManuallyTargetedShip =
       shipTargetCountsWeightedByAttackable.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target as CombatShip | undefined
 
     // ----- defensive strategy -----
@@ -2584,13 +2586,13 @@ export class HumanShip extends CombatShip {
       (totals: any, cm) => {
         if (!cm.combatTactic || cm.combatTactic === `none`)
           return totals
-        const currTotal = totals.find(
+        const existingTotal = totals.find(
           (t: any) => t.tactic === cm.combatTactic,
         )
         const toAdd =
           cm.skills.find((s) => s.skill === `munitions`)
             ?.level || 1
-        if (currTotal) currTotal.total += toAdd
+        if (existingTotal) existingTotal.total += toAdd
         else
           totals.push({
             tactic: cm.combatTactic,
@@ -2602,7 +2604,7 @@ export class HumanShip extends CombatShip {
     )
     const mainTactic =
       (tacticCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.tactic as CombatTactic) || `pacifist`
 
     this.combatTactic = mainTactic
@@ -2616,13 +2618,13 @@ export class HumanShip extends CombatShip {
       `weapons`,
     ).reduce((totals: any, cm) => {
       if (cm.targetItemType === `any`) return totals
-      const currTotal = totals.find(
-        (t: any) => t.targetItemType === cm.targetItemType,
+      const existingTotal = totals.find(
+        (t: any) => t.target === cm.targetItemType,
       )
       const toAdd =
         cm.skills.find((s) => s.skill === `munitions`)
           ?.level || 1
-      if (currTotal) currTotal.total += toAdd
+      if (existingTotal) existingTotal.total += toAdd
       else
         totals.push({
           target: cm.targetItemType,
@@ -2632,7 +2634,7 @@ export class HumanShip extends CombatShip {
     }, [])
     let mainTargetItemType: ItemType | `any` =
       memberTargetItemTypeCounts.sort(
-        (b: any, a: any) => b.total - a.total,
+        (b: any, a: any) => a.total - b.total,
       )?.[0]?.target || `any`
 
     this.targetItemType = mainTargetItemType
@@ -2640,7 +2642,7 @@ export class HumanShip extends CombatShip {
   }
 
   // ----- auto attack -----
-  autoAttack() {
+  autoAttack(predeterminedHitChance?: number) {
     const weaponsRoomMembers = this.membersIn(`weapons`)
     if (!weaponsRoomMembers.length) return
 
@@ -2661,6 +2663,7 @@ export class HumanShip extends CombatShip {
             this.targetShip!,
             w,
             this.targetItemType,
+            predeterminedHitChance,
           )
         })
   }

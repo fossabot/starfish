@@ -77,7 +77,19 @@ export abstract class CombatShip extends Ship {
           return true
         },
       )
-    else
+    else if (p.data?.source?.zoneName) {
+      index = this.passives.findIndex(
+        (ep: ShipPassiveEffect) => {
+          if (ep.id !== p.id) return false
+          if (
+            ep.data?.source?.zoneName !==
+            p.data?.source?.zoneName
+          )
+            return false
+          return true
+        },
+      )
+    } else
       index = this.passives.findIndex(
         (ep: ShipPassiveEffect) => {
           for (let key in ep)
@@ -86,7 +98,6 @@ export abstract class CombatShip extends Ship {
         },
       )
     if (index === -1) return
-    // c.log(`removing passive`, p)
     this.passives.splice(index, 1)
     this.updateThingsThatCouldChangeOnItemChange()
     this.updateAttackRadius()
@@ -132,13 +143,16 @@ export abstract class CombatShip extends Ship {
           (!this.onlyVisibleToShipId ||
             s.id === this.onlyVisibleToShipId),
       )
-      .filter(
-        (s) => s && this.canAttack(s, true),
+      .filter((s) => s && this.canAttack(s, true))
+      .sort(
+        (a, b) =>
+          c.distance(a!.location, this.location) -
+          c.distance(b!.location, this.location),
       ) as CombatShip[]
     return combatShipsInRange
   }
 
-  recalculateTargetShip(): CombatShip | null {
+  determineTargetShip(): CombatShip | null {
     const enemies = this.getEnemiesInAttackRange()
     if (!enemies.length) {
       this.targetShip = null
@@ -191,7 +205,6 @@ export abstract class CombatShip extends Ship {
     otherShip: Ship,
     ignoreWeaponState = false,
   ): boolean {
-    if ((this.game?.tickCount || 0) < 10) return false
     // self
     if (this === otherShip) return false
     // not attackable
@@ -240,6 +253,7 @@ export abstract class CombatShip extends Ship {
     target: CombatShip,
     weapon: Weapon,
     targetType: ItemType | `any` = `any`,
+    predeterminedHitChance?: number,
   ): TakenDamageResult {
     if (!this.canAttack(target))
       return {
@@ -255,23 +269,34 @@ export abstract class CombatShip extends Ship {
       `weapons`,
       `munitions`,
     )
-    const range = c.distance(this.location, target.location)
-    const distanceAsPercent = range / weapon.effectiveRange // 1 = far away, 0 = close
-    const minHitChance = 0.08
-    // 1.0 agility is "normal", higher is better
-    const enemyAgility =
-      target.chassis.agility +
-      (target.passives.find(
-        (p) => p.id === `boostChassisAgility`,
-      )?.intensity || 0)
+    let miss: boolean,
+      toHit: number,
+      hitRoll: number = Math.random()
+    if (predeterminedHitChance === undefined) {
+      const range = c.distance(
+        this.location,
+        target.location,
+      )
+      const distanceAsPercent =
+        range / weapon.effectiveRange // 1 = far away, 0 = close
+      const minHitChance = 0.08
+      // 1.0 agility is "normal", higher is better
+      const enemyAgility =
+        target.chassis.agility +
+        (target.passives.find(
+          (p) => p.id === `boostChassisAgility`,
+        )?.intensity || 0)
 
-    const hitRoll = Math.random()
-    const toHit =
-      c.lerp(minHitChance, 1, distanceAsPercent) *
-      enemyAgility *
-      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
+      toHit =
+        c.lerp(minHitChance, 1, distanceAsPercent) *
+        enemyAgility *
+        c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
 
-    let miss = hitRoll < toHit
+      miss = hitRoll < toHit
+    } else {
+      toHit = 1 - predeterminedHitChance
+      miss = hitRoll < toHit
+    }
 
     const didCrit = miss
       ? false
@@ -866,7 +891,7 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `&nospace.`,
+                `(${c.r2(this._hp)} HP left).`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
@@ -903,7 +928,7 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `&nospace.`,
+                `(${c.r2(this._hp)} HP left).`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
@@ -917,7 +942,7 @@ export abstract class CombatShip extends Ship {
     this.game?.ships
       .filter((s) => (s as CombatShip).targetShip === this)
       .forEach((s) => {
-        ;(s as CombatShip).recalculateTargetShip()
+        ;(s as CombatShip).determineTargetShip()
       })
     this.dead = true
   }
