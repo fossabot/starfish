@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-promise-executor-return  */
+
 import c from '../../common/src'
 import { HumanShip } from '../src/game/classes/Ship/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
@@ -43,6 +46,22 @@ describe(`HumanShip basics`, () => {
       ship.addCrewMember(crewMemberData(), true)
     }
     expect(ship.crewMembers.length).to.equal(10)
+  })
+})
+
+describe(`HumanShip items`, () => {
+  it(`should properly update slots when upgrading chassis`, async () => {
+    const data = humanShipData()
+    let ship = new HumanShip(data)
+    expect(ship.slots).to.equal(
+      c.items.chassis[ship.chassis.id]?.slots,
+    )
+    expect(ship.slots).to.exist
+    const prevSlots = ship.slots
+
+    ship.swapChassis({ id: `mega3` })
+    expect(ship.slots).to.be.greaterThan(prevSlots)
+    expect(ship.slots).to.equal(c.items.chassis.mega3.slots)
   })
 })
 
