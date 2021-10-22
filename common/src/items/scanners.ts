@@ -16,7 +16,7 @@ export const scanners: {
     rarity: 0.6,
     sightRange: 0.3,
     shipScanRange: 0.1,
-    maxHp: 3,
+    maxHp: 2,
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [`type`, `displayName`, `description`],
@@ -130,6 +130,23 @@ export const scanners: {
         `description`,
       ],
     },
+  },
+  peek4: {
+    type: `scanner`,
+    id: `peek4`,
+    buyable: false, // todo
+    displayName: `Planet Scan Module`,
+    description: `Contains language packs and encryptions for nearly any system of mercantile communication in use across the universe, allowing for direct interface with planet vendors' price databases within a certain range.`,
+    mass: 1000,
+    basePrice: 77 * game.itemPriceMultiplier,
+    rarity: 10,
+    sightRange: 0.1,
+    shipScanRange: 0.1,
+    maxHp: 1,
+    shipScanData: {
+      ...game.baseShipScanProperties,
+    },
+    scanPlanets: true,
   },
 
   // wide

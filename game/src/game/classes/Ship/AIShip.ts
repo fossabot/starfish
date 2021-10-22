@@ -14,6 +14,8 @@ import defaultGameSettings from '../../presets/gameSettings'
 import ais from './ais/ais'
 
 export class AIShip extends CombatShip {
+  static dropCacheValueMultiplier = 3000
+
   readonly human: boolean = false
   readonly id: string
   readonly spawnPoint: CoordinatePair
@@ -57,9 +59,11 @@ export class AIShip extends CombatShip {
       `determineNewTargetLocation`,
       `determineTargetShip`,
       `scanTypes`,
-    ])
+      `updateSightAndScanRadius`,
+    ]) {
       this[prop] =
         ais[this.speciesId]?.[prop] || ais.default[prop]!
+    }
 
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
@@ -78,6 +82,7 @@ export class AIShip extends CombatShip {
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
     this.targetLocation = [...this.location]
+    this.updateSightAndScanRadius()
   }
 
   tick() {
@@ -141,11 +146,7 @@ export class AIShip extends CombatShip {
     }
   }
 
-  updateSightAndScanRadius() {
-    this.updateAttackRadius()
-    this.radii.sight =
-      Math.max(...this.radii.attack, 0.1) * 1.3
-  }
+  updateSightAndScanRadius() {} // * determined by ai
 
   cumulativeSkillIn(l: CrewLocation, s: SkillId) {
     return this.level
@@ -169,7 +170,7 @@ export class AIShip extends CombatShip {
     const chassisToBuy: BaseChassisData =
       validChassis[0] || c.items.chassis.starter1
     this.swapChassis(chassisToBuy)
-    itemBudget -= chassisToBuy.rarity
+    itemBudget = c.r2(itemBudget - chassisToBuy.rarity, 2)
     // c.log(
     //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
     // )
@@ -195,12 +196,12 @@ export class AIShip extends CombatShip {
 
       if (!validItems.length) break
 
-      const itemToAdd: BaseItemData =
+      const itemToBuy: BaseItemData =
         c.randomFromArray(validItems)
-      this.addItem(itemToAdd)
-      itemBudget -= itemToAdd.rarity
+      this.addItem(itemToBuy)
+      itemBudget = c.r2(itemBudget - itemToBuy.rarity, 2)
       // c.log(
-      //   `adding item ${itemToAdd.displayName} with remaining budget of ${itemBudget}`,
+      //   `adding item ${itemToBuy.displayName} with remaining budget of ${itemBudget}`,
       // )
 
       if (this.slots <= this.items.length) break
@@ -280,6 +281,7 @@ export class AIShip extends CombatShip {
   }
 
   determineNewTargetLocation(): CoordinatePair | false {
+    // * determined by ai
     return false
   }
 
@@ -287,7 +289,9 @@ export class AIShip extends CombatShip {
     super.die(attacker)
 
     if (!silently) {
-      let creditValue = Math.round(5000 * this.level)
+      let creditValue = Math.round(
+        AIShip.dropCacheValueMultiplier * this.level,
+      )
 
       if (attacker) {
         // apply "rarity boost" passive
@@ -309,7 +313,7 @@ export class AIShip extends CombatShip {
 
       const cacheContents: CacheContents[] = []
 
-      while (creditValue > 1) {
+      while (creditValue > 10) {
         // always a chance for credits
         if (Math.random() > 0.6) {
           let amount = Math.round(
@@ -435,6 +439,7 @@ export class AIShip extends CombatShip {
   }
 
   determineTargetShip(): CombatShip | null {
+    // * determined by ai
     return null
   }
 

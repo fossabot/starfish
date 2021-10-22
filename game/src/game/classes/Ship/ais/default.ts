@@ -46,4 +46,10 @@ export default {
     if (!enemies.length) return null
     return c.randomFromArray(enemies) as CombatShip
   },
+
+  updateSightAndScanRadius(this: AIShip) {
+    this.updateAttackRadius()
+    this.radii.sight =
+      Math.max(...this.radii.attack, 0.1) * 1.3
+  },
 }

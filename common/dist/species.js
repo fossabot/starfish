@@ -187,6 +187,14 @@ const species = {
         description: ``,
         passives: [],
     },
+    vultures: {
+        aiOnly: true,
+        icon: `🪶`,
+        id: `vultures`,
+        singular: `vulture`,
+        description: ``,
+        passives: [],
+    },
 };
 exports.default = species;
 //# sourceMappingURL=species.js.map

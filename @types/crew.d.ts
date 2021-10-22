@@ -148,3 +148,4 @@ type SpeciesId =
   | `seagulls`
   | `chickens`
   | `flamingos`
+  | `vultures`
