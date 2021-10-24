@@ -23,10 +23,10 @@ export default {
         )
         const unitVector =
           c.degreesToUnitVector(angleToEnemy)
-        return [
+        return (this.targetLocation = [
           this.location[0] - unitVector[0] * 0.0001,
           this.location[1] - unitVector[1] * 0.0001,
-        ]
+        ])
       }
     }
 

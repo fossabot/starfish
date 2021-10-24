@@ -943,12 +943,12 @@ export abstract class CombatShip extends Ship {
 
   die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
+    this.dead = true
     this.game?.ships
       .filter((s) => (s as CombatShip).targetShip === this)
       .forEach((s) => {
         ;(s as CombatShip).determineTargetShip()
       })
-    this.dead = true
   }
 
   repair(

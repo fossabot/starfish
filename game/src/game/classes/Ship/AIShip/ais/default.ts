@@ -34,10 +34,10 @@ export default {
       const distance = getDefaultDistance.call(this)
       const unitVector = c.degreesToUnitVector(angle)
 
-      return [
+      return (this.targetLocation = [
         this.location[0] + unitVector[0] * distance,
         this.location[1] + unitVector[1] * distance,
-      ]
+      ])
     }
     return false
   },
@@ -45,8 +45,10 @@ export default {
   determineTargetShip(this: AIShip): CombatShip | null {
     // * default: aggressive
     const enemies = this.getEnemiesInAttackRange()
-    if (!enemies.length) return null
-    return c.randomFromArray(enemies) as CombatShip
+    if (!enemies.length) return (this.targetShip = null)
+    return (this.targetShip = c.randomFromArray(
+      enemies,
+    ) as CombatShip)
   },
 
   updateSightAndScanRadius(this: AIShip) {

@@ -29,13 +29,13 @@ export default {
     const clumsiness = 100 - this.level
     const unitVector = c.degreesToUnitVector(angleToEnemy)
 
-    return [
+    return (this.targetLocation = [
       this.location[0] +
         unitVector[0] * 0.001 * clumsiness +
         (Math.random() - 0.5) * 0.001 * clumsiness,
       this.location[1] +
         unitVector[1] * 0.001 * clumsiness +
         (Math.random() - 0.5) * 0.001 * clumsiness,
-    ]
+    ])
   },
 }

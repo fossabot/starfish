@@ -19,26 +19,26 @@ export default {
       const clumsiness = 100 - this.level
       const unitVector = c.degreesToUnitVector(angleToEnemy)
 
-      return [
+      return (this.targetLocation = [
         this.location[0] +
           unitVector[0] * 0.001 * clumsiness +
           (Math.random() - 0.5) * 0.001 * clumsiness,
         this.location[1] +
           unitVector[1] * 0.001 * clumsiness +
           (Math.random() - 0.5) * 0.001 * clumsiness,
-      ]
+      ])
     }
 
     // * otherwise, move normally
-    else if (c.lottery(1, 0.05 * c.tickInterval)) {
+    if (c.lottery(1, 0.05 * c.tickInterval)) {
       const angle = getDefaultAngle.call(this, 70) // * they can move much farther afield than other birds
       const distance = getDefaultDistance.call(this) * 5
       const unitVector = c.degreesToUnitVector(angle)
 
-      return [
+      return (this.targetLocation = [
         this.location[0] + unitVector[0] * distance,
         this.location[1] + unitVector[1] * distance,
-      ]
+      ])
     }
     return false
   },
@@ -50,11 +50,14 @@ export default {
       this.visible.ships.find(
         (s) => s.id === this.lastAttackedById,
       )
-    if (foundLastAttacker) {
-      c.log(`flam`, foundLastAttacker.name)
-      return foundLastAttacker as CombatShip
+
+    if (foundLastAttacker && foundLastAttacker?.dead)
+      this.lastAttackedById = null
+    else if (foundLastAttacker) {
+      return (this.targetShip =
+        foundLastAttacker as CombatShip)
     }
 
-    return null
+    return (this.targetShip = null)
   },
 }

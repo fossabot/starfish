@@ -91,30 +91,7 @@ export class AIShip extends CombatShip {
     super.tick()
     if (this.dead) return
 
-    const previousVisible = this.visible
-    this.visible = this.game?.scanCircle(
-      this.location,
-      this.radii.sight,
-      this.id,
-      this.scanTypes, // * add 'zone' to allow zones to affect ais
-    ) || {
-      ships: [],
-      planets: [],
-      zones: [],
-      caches: [],
-      attackRemnants: [],
-    }
-    if (this.onlyVisibleToShipId) {
-      const onlyVisibleShip = this.game?.humanShips.find(
-        (s) => s.id === this.onlyVisibleToShipId,
-      )
-      if (onlyVisibleShip)
-        this.visible.ships.push(onlyVisibleShip)
-    }
-    this.takeActionOnVisibleChange(
-      previousVisible,
-      this.visible,
-    )
+    this.updateVisible()
 
     // ----- move -----
     this.move()
@@ -146,6 +123,33 @@ export class AIShip extends CombatShip {
       if (randomWeapon)
         this.attack(this.targetShip, randomWeapon)
     }
+  }
+
+  updateVisible() {
+    const previousVisible = this.visible
+    this.visible = this.game?.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+      this.scanTypes, // * add 'zone' to allow zones to affect ais
+    ) || {
+      ships: [],
+      planets: [],
+      zones: [],
+      caches: [],
+      attackRemnants: [],
+    }
+    if (this.onlyVisibleToShipId) {
+      const onlyVisibleShip = this.game?.humanShips.find(
+        (s) => s.id === this.onlyVisibleToShipId,
+      )
+      if (onlyVisibleShip)
+        this.visible.ships.push(onlyVisibleShip)
+    }
+    this.takeActionOnVisibleChange(
+      previousVisible,
+      this.visible,
+    )
   }
 
   updateSightAndScanRadius() {} // * determined by ai
@@ -357,7 +361,7 @@ export class AIShip extends CombatShip {
           cacheContents.push({ id: cargoData.id, amount })
         creditValue -= amount * cargoData.basePrice
       }
-      c.log(5000 * this.level, cacheContents)
+      // c.log(5000 * this.level, cacheContents)
 
       this.game?.addCache({
         contents: cacheContents,
@@ -442,7 +446,7 @@ export class AIShip extends CombatShip {
 
   determineTargetShip(): CombatShip | null {
     // * determined by ai
-    return null
+    return (this.targetShip = null)
   }
 
   takeDamage(

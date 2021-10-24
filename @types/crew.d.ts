@@ -127,7 +127,15 @@ interface BaseSpeciesData {
   description: string
   passives: CrewPassiveData[]
 }
-type SpeciesId =
+
+type AISpeciesId =
+  | `eagles`
+  | `seagulls`
+  | `chickens`
+  | `flamingos`
+  | `vultures`
+
+type HumanSpeciesId =
   | `octopi`
   | `lobsters`
   | `crabs`
@@ -139,8 +147,4 @@ type SpeciesId =
   | `angelfish`
   | `blowfish`
   | `shrimp`
-  | `eagles`
-  | `seagulls`
-  | `chickens`
-  | `flamingos`
-  | `vultures`
+type SpeciesId = AISpeciesId | HumanSpeciesId

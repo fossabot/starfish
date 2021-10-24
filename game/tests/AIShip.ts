@@ -41,6 +41,60 @@ describe(`AIShip spawn`, () => {
   })
 })
 
+describe(`AIShip target selection`, () => {
+  it(`should properly auto-target`, async () => {
+    const g = new Game()
+    const flamingo = await g.addAIShip(
+      aiShipData(3, `flamingos`),
+    )
+    const human = await g.addHumanShip(humanShipData())
+
+    flamingo.updateVisible() // also runs determineTargetShip
+    expect(flamingo.targetShip).to.be.null
+
+    const cm = await human.addCrewMember(crewMemberData())
+    cm.goTo(`weapons`)
+    cm.combatTactic = `aggressive`
+    human.updateVisible()
+    human.recalculateCombatTactic()
+    human.autoAttack(1)
+    expect(flamingo.targetShip).to.equal(human)
+
+    const eagle = await g.addAIShip(aiShipData(3, `eagles`))
+    eagle.updateVisible() // also runs determineTargetShip
+    expect(eagle.targetShip).to.equal(human)
+
+    human.die()
+    expect(eagle.targetShip).to.be.null
+    expect(flamingo.targetShip).to.be.null
+  })
+
+  it(`should properly move flamingos`, async () => {
+    const g = new Game()
+    const flamingo = await g.addAIShip(
+      aiShipData(3, `flamingos`),
+    )
+    const human = await g.addHumanShip(humanShipData())
+    flamingo.updateVisible()
+
+    human.move([-0.02, 0])
+    const cm = await human.addCrewMember(crewMemberData())
+    cm.goTo(`weapons`)
+    cm.combatTactic = `aggressive`
+    human.updateVisible()
+    human.recalculateCombatTactic()
+    human.autoAttack(1)
+
+    flamingo.determineNewTargetLocation()
+    expect(
+      c.angleFromAToB(
+        flamingo.location,
+        flamingo.targetLocation,
+      ),
+    ).to.be.closeTo(180, 20)
+  })
+})
+
 describe(`AIShip death`, () => {
   it(`should create a cache on death with level-appropriate contents`, async () => {
     const g = new Game()
