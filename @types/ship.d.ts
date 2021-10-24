@@ -27,6 +27,7 @@ interface BaseHumanShipData extends BaseShipData {
   log?: LogEntry[]
   logAlertLevel?: LogLevel
   commonCredits?: number
+  shipCosmeticCurrency?: number
   tutorial?: { step: number }
   guildIcon?: string
   guildName?: string

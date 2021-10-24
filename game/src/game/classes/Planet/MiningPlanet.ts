@@ -206,6 +206,50 @@ export class MiningPlanet extends Planet {
             ),
           },
         ])
+
+        // * chance to add cosmetic currencies
+        if (Math.random() > 0.995) {
+          const amount = Math.random() > 0.8 ? 2 : 1
+          ship.logEntry([
+            `You discovered 💎${amount} `,
+            {
+              text:
+                amount === 1
+                  ? c.shipCosmeticCurrencySingular
+                  : c.shipCosmeticCurrencyPlural,
+              color: `var(--shipCosmeticCurrency)`,
+            },
+            `as you mined!`,
+          ])
+          ship.distributeCargoAmongCrew([
+            {
+              id: `shipCosmeticCurrency`,
+              amount,
+            },
+          ])
+        }
+        if (Math.random() > 0.995) {
+          const amount = Math.round(
+            (Math.random() + 0.1) * 1000,
+          )
+          ship.logEntry([
+            `You discovered 🟡${amount} `,
+            {
+              text:
+                amount === 1
+                  ? c.shipCosmeticCurrencySingular
+                  : c.crewCosmeticCurrencyPlural,
+              color: `var(--crewCosmeticCurrency)`,
+            },
+            `as you mined!`,
+          ])
+          ship.distributeCargoAmongCrew([
+            {
+              id: `crewCosmeticCurrency`,
+              amount,
+            },
+          ])
+        }
       })
 
       this.resetForNextMine(cargoId)

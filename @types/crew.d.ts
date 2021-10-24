@@ -72,6 +72,7 @@ interface BaseCrewMemberData {
   stamina?: number
   inventory?: Cargo[]
   credits?: number
+  crewCosmeticCurrency?: number
   permanentPassives?: CrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic

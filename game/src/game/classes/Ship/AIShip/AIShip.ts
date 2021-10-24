@@ -363,6 +363,24 @@ export class AIShip extends CombatShip {
       }
       // c.log(5000 * this.level, cacheContents)
 
+      // * chance to add cosmetic currencies
+      if (Math.random() > 0.97) {
+        const amount = Math.random() > 0.8 ? 2 : 1
+        cacheContents.push({
+          id: `shipCosmeticCurrency`,
+          amount,
+        })
+      }
+      if (Math.random() > 0.97) {
+        const amount = Math.round(
+          (Math.random() + 0.1) * 1000,
+        )
+        cacheContents.push({
+          id: `crewCosmeticCurrency`,
+          amount,
+        })
+      }
+
       this.game?.addCache({
         contents: cacheContents,
         location: this.location,

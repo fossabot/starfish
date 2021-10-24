@@ -271,7 +271,7 @@ export default Vue.extend({
           this.$store.dispatch('notifications/notify', {
             text: `Bought ${c.r2(res.data.amount)} ton${
               res.data.amount === 1 ? '' : 's'
-            } of ${data.cargoData.id} for ${c.r2(
+            } of ${data.cargoData.id} for 💳${c.r2(
               res.data.price,
               0,
             )} ${c.baseCurrencyPlural}.`,
@@ -326,7 +326,7 @@ export default Vue.extend({
           this.$store.dispatch('notifications/notify', {
             text: `Sold ${c.r2(res.data.amount)} ton${
               res.data.amount === 1 ? '' : 's'
-            } of ${data.cargoData.id} for ${c.r2(
+            } of ${data.cargoData.id} for 💳${c.r2(
               res.data.price,
               0,
             )} ${c.baseCurrencyPlural}.`,

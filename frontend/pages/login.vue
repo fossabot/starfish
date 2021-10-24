@@ -3,6 +3,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import c from '../../common/dist'
 
 export default Vue.extend({
   data() {
@@ -26,7 +27,7 @@ export default Vue.extend({
       const hostname = window.location.href.replace(
         '/login',
         '',
-      ) //`www.starfish.cool`
+      )
       const postLoginPage = `${hostname}/postlogin`
       window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${botId}&redirect_uri=${encodeURIComponent(
         postLoginPage,

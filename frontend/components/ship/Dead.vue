@@ -15,11 +15,12 @@
       </div>
 
       <div class="marbot">
-        All of your cargo and most of your
-        {{ c.baseCurrencyPlural }} have been jettisoned, and
-        only shreds of your equipment are salvageable for
-        scrap, but the crew managed to escape back to their
-        homeworld.
+        All of your cargo and most of your 💳{{
+          c.baseCurrencyPlural
+        }}
+        have been jettisoned, and only shreds of your
+        equipment are salvageable for scrap, but the crew
+        managed to escape back to their homeworld.
       </div>
 
       <div class="marbot">

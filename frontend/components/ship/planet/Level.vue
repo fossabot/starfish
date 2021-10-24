@@ -126,12 +126,13 @@
         <template #label> Contribute </template>
         <template>
           <div>
-            How many {{ c.baseCurrencyPlural }} will you
+            How many 💳{{ c.baseCurrencyPlural }} will you
             contribute?
           </div>
           <div>
-            Exchange rate: 1 xp =
-            {{ c.planetContributeCostPerXp }}
+            Exchange rate: 1 xp = 💳{{
+              c.planetContributeCostPerXp
+            }}
             {{
               c.planetContributeCostPerXp === 1
                 ? c.baseCurrencySingular

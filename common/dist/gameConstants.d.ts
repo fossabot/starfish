@@ -1,10 +1,10 @@
 declare const _default: {
     baseCurrencySingular: string;
     baseCurrencyPlural: string;
-    shipSpecialCurrencySingular: string;
-    shipSpecialCurrencyPlural: string;
-    crewSpecialCurrencySingular: string;
-    crewSpecialCurrencyPlural: string;
+    shipCosmeticCurrencySingular: string;
+    shipCosmeticCurrencyPlural: string;
+    crewCosmeticCurrencySingular: string;
+    crewCosmeticCurrencyPlural: string;
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;

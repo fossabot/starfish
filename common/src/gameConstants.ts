@@ -1,11 +1,11 @@
 const baseCurrencySingular = `speso`
 const baseCurrencyPlural = `spesos`
 
-const shipSpecialCurrencySingular = `shipSpecialCurrencySingular`
-const shipSpecialCurrencyPlural = `shipSpecialCurrencyPlural`
+const shipCosmeticCurrencySingular = `sccp`
+const shipCosmeticCurrencyPlural = `sccs`
 
-const crewSpecialCurrencySingular = `crewSpecialCurrencySingular`
-const crewSpecialCurrencyPlural = `crewSpecialCurrencyPlural`
+const crewCosmeticCurrencySingular = `squidcoin`
+const crewCosmeticCurrencyPlural = `squidcoin`
 
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
@@ -85,10 +85,10 @@ const baseCargoSellMultiplier = 0.3
 export default {
   baseCurrencySingular,
   baseCurrencyPlural,
-  shipSpecialCurrencySingular,
-  shipSpecialCurrencyPlural,
-  crewSpecialCurrencySingular,
-  crewSpecialCurrencyPlural,
+  shipCosmeticCurrencySingular,
+  shipCosmeticCurrencyPlural,
+  crewCosmeticCurrencySingular,
+  crewCosmeticCurrencyPlural,
 
   supportServerLink,
   baseSightRange,

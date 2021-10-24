@@ -20,11 +20,15 @@
       class="ship"
     />
 
-    <div class="panesection" v-if="ship.commonCredits">
+    <div
+      class="panesection"
+      v-if="ship.commonCredits || ship.shipCosmeticCurrency"
+    >
       <div
+        v-if="ship.commonCredits"
         class="flexbetween"
         v-tooltip="
-          `The ship's shared pool of ${c.baseCurrencyPlural}. The captain can spend the common fund on new items for the ship.`
+          `The ship's shared pool of 💳${c.baseCurrencyPlural}. The captain can spend the common fund on new items for the ship.`
         "
       >
         <div>Common Fund</div>
@@ -39,18 +43,15 @@
       </div>
       <PromptButton
         class="martoptiny"
-        v-if="isCaptain"
+        v-if="isCaptain && ship.commonCredits"
         :max="ship.commonCredits"
         @done="redistributeCommonFund(...arguments)"
         @apply="redistributeCommonFund(...arguments)"
       >
-        <template #label>
-          Redistribute
-          {{ c.capitalize(c.baseCurrencyPlural) }}
-        </template>
+        <template #label> Redistribute </template>
         <template>
-          How many {{ c.baseCurrencyPlural }} do you want to
-          redistribute evenly among the crew? (Max
+          How many 💳{{ c.baseCurrencyPlural }} do you want
+          to redistribute evenly among the crew? (Max
           {{
             c.numberWithCommas(
               Math.floor(ship.commonCredits),
@@ -58,6 +59,28 @@
           }})
         </template>
       </PromptButton>
+
+      <div
+        :class="{
+          martopsmall: isCaptain && ship.commonCredits,
+        }"
+        class="flexbetween"
+        v-if="ship.shipCosmeticCurrency"
+        v-tooltip="
+          `Rare currency used to buy cosmetics and other upgrades!`
+        "
+      >
+        <div>
+          {{ c.capitalize(c.shipCosmeticCurrencyPlural) }}
+        </div>
+        <div>
+          💎{{
+            c.numberWithCommas(
+              c.r2(ship.shipCosmeticCurrency, 0, true),
+            )
+          }}
+        </div>
+      </div>
     </div>
   </Box>
 </template>
@@ -115,7 +138,7 @@ export default Vue.extend({
         amount,
       )
       this.$store.dispatch('notifications/notify', {
-        text: `Redistributed ${c.r2(amount, 0)} ${
+        text: `Redistributed 💳${c.r2(amount, 0)} ${
           c.baseCurrencyPlural
         }.`,
         type: 'success',

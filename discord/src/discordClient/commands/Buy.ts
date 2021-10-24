@@ -50,7 +50,7 @@ export class BuyCommand implements Command {
       )
     if (!forSale.length) {
       await context.reply(
-        `You don't have enough ${c.baseCurrencyPlural} to buy anything here.`,
+        `You don't have enough 💳${c.baseCurrencyPlural} to buy anything here.`,
       )
       return
     }

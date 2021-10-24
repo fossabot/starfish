@@ -30,6 +30,7 @@ export class CrewMember extends Stubbable {
   inventory: Cargo[]
   maxCargoSpace: number = CrewMember.baseMaxCargoSpace
   credits: number
+  crewCosmeticCurrency: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
   stats: CrewStatEntry[] = []
@@ -60,27 +61,18 @@ export class CrewMember extends Stubbable {
         : c.randomFromArray(
             Object.keys(ship.rooms),
           )) as CrewLocation) ||
-      `bunk` // failsafe
+      `bunk`
 
-    this.stamina = data.stamina || this.maxStamina
-
-    // c.log(
-    //   this.ship.id,
-    //   this.name,
-    //   c.r2(
-    //     (Date.now() - (data.lastActive || 0)) /
-    //       1000 /
-    //       60 /
-    //       60 /
-    //       24,
-    //   ),
-    // )
     this.lastActive = data.lastActive || Date.now()
+    this.stamina = data.stamina || this.maxStamina
+    this.cockpitCharge = data.cockpitCharge || 0
 
     this.inventory =
       data.inventory?.filter((i) => i && i.amount > 0) || []
-    this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 0
+    this.crewCosmeticCurrency =
+      data.crewCosmeticCurrency ?? 0
+
     this.skills =
       data.skills && data.skills.length
         ? [...(data.skills.filter((s) => s) || [])]

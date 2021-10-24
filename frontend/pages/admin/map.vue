@@ -41,7 +41,7 @@
                 "
               >
                 <span
-                  >Give 100,000
+                  >Give 💳100,000
                   {{ c.baseCurrencyPlural }}</span
                 >
               </div>

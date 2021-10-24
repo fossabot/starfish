@@ -71,7 +71,7 @@ export default function (
             ],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.numberWithCommas(
+          `bought by the captain for 💳${c.numberWithCommas(
             c.r2(price, 0),
           )} ${c.baseCurrencyPlural}.`,
         ],
@@ -150,7 +150,7 @@ export default function (
             color: `var(--item)`,
             tooltipData: heldItem.toReference() as any,
           },
-          `sold by the captain for ${c.numberWithCommas(
+          `sold by the captain for 💳${c.numberWithCommas(
             c.r2(price, 0),
           )} ${c.baseCurrencyPlural}.`,
         ],
@@ -239,7 +239,7 @@ export default function (
             tooltipData: c.items.chassis[itemForSale.id],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.numberWithCommas(
+          `bought by the captain for 💳${c.numberWithCommas(
             c.r2(price, 0),
           )} ${c.baseCurrencyPlural}.`,
         ],

@@ -102,6 +102,7 @@ export class HumanShip extends CombatShip {
   shownPanels?: any[]
 
   commonCredits: number = 0
+  shipCosmeticCurrency: number
   orders: ShipOrders | false = false
   orderReactions: ShipOrderReaction[] = []
 
@@ -166,8 +167,9 @@ export class HumanShip extends CombatShip {
 
     this.recalculateShownPanels()
 
-    if (data.commonCredits)
-      this.commonCredits = data.commonCredits
+    this.commonCredits = data.commonCredits ?? 0
+    this.shipCosmeticCurrency =
+      data.shipCosmeticCurrency ?? 0
 
     if (data.logAlertLevel)
       this.logAlertLevel = data.logAlertLevel
@@ -1507,7 +1509,7 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `${c.r2(amount)} ${
+        `💳${c.r2(amount)} ${
           c.baseCurrencyPlural
         } deposited in the bank at`,
         {
@@ -1569,22 +1571,40 @@ export class HumanShip extends CombatShip {
     cache.contents.forEach((cc, index) => {
       contentsToLog.push(
         `${c.r2(cc.amount)}${
-          cc.id === `credits` ? `` : ` tons of`
+          [
+            `credits`,
+            `shipCosmeticCurrency`,
+            `crewCosmeticCurrency`,
+          ].includes(cc.id)
+            ? ``
+            : ` tons of`
         }`,
       )
       contentsToLog.push({
         text:
           cc.id === `credits`
-            ? c.baseCurrencyPlural
+            ? `💳` + c.baseCurrencyPlural
+            : cc.id === `shipCosmeticCurrency`
+            ? `💎` + c.shipCosmeticCurrencyPlural
+            : cc.id === `crewCosmeticCurrency`
+            ? `🟡` + c.crewCosmeticCurrencyPlural
             : cc.id,
-        color: `var(--cargo)`,
-        tooltipData:
-          cc.id === `credits`
-            ? undefined
-            : {
-                type: `cargo`,
-                id: cc.id,
-              },
+        color: [
+          `shipCosmeticCurrency`,
+          `crewCosmeticCurrency`,
+        ].includes(cc.id)
+          ? `var(--${cc.id})`
+          : `var(--cargo)`,
+        tooltipData: [
+          `credits`,
+          `shipCosmeticCurrency`,
+          `crewCosmeticCurrency`,
+        ].includes(cc.id)
+          ? undefined
+          : {
+              type: `cargo`,
+              id: cc.id,
+            },
       })
       if (index < cache.contents.length - 1)
         contentsToLog.push(` and `)
@@ -1715,7 +1735,7 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} added ${c.numberWithCommas(
+        `${member.name} added 💳${c.numberWithCommas(
           c.r2(amount, 0),
         )} ${
           c.baseCurrencyPlural
@@ -2083,6 +2103,13 @@ export class HumanShip extends CombatShip {
     const leftovers: CacheContents[] = []
 
     cargo.forEach((contents) => {
+      if (contents.id === `shipCosmeticCurrency`) {
+        this.shipCosmeticCurrency += Math.round(
+          contents.amount,
+        )
+        return
+      }
+
       let toDistribute = contents.amount
       let canHoldMore = [...this.crewMembers]
 
@@ -2103,9 +2130,17 @@ export class HumanShip extends CombatShip {
               cm.credits + amountToGive,
             )
             cm.toUpdate.credits = cm.credits
+          } else if (
+            contents.id === `crewCosmeticCurrency`
+          ) {
+            cm.crewCosmeticCurrency = Math.floor(
+              cm.crewCosmeticCurrency + amountToGive,
+            )
+            cm.toUpdate.crewCosmeticCurrency =
+              cm.crewCosmeticCurrency
           }
           // normal weighted cargo
-          else {
+          else if (contents.id !== `shipCosmeticCurrency`) {
             const leftOver = cm.addCargo(
               contents.id,
               amountToGive,
@@ -2352,7 +2387,7 @@ export class HumanShip extends CombatShip {
 
     setTimeout(() => {
       this.logEntry(
-        `Your ship has been destroyed! All of your cargo and most of your ${c.baseCurrencyPlural} have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
+        `Your ship has been destroyed! All of your cargo and most of your 💳${c.baseCurrencyPlural} have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
         `critical`,
       )
 

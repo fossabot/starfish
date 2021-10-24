@@ -5,8 +5,8 @@
       <ul>
         <li>Explore the universe</li>
         <li>
-          Earn {{ c.baseCurrencyPlural }} through trade and
-          conquest
+          Earn 💳{{ c.baseCurrencyPlural }} through trade
+          and conquest
         </li>
         <li>Upgrade your ship and its equipment</li>
         <li>
@@ -352,8 +352,9 @@
       <h3>Dying and Respawning</h3>
       <div>
         When a ship's HP reaches zero, it dies. On dying,
-        ships will drop a portion of the cargo and
-        {{ c.baseCurrencyPlural }}
+        ships will drop a portion of the cargo and 💳{{
+          c.baseCurrencyPlural
+        }}
         its crew members were carrying as a cache. Whoever
         gets there first can pick up the spoils!
       </div>
@@ -361,7 +362,7 @@
         The captain can respawn the ship at its guild
         homeworld, with the basic guild loadout. Crew
         members will keep their skills and some of their
-        {{ c.baseCurrencyPlural }}, but all equipment and
+        💳{{ c.baseCurrencyPlural }}, but all equipment and
         cargo will be lost.
       </div>
 

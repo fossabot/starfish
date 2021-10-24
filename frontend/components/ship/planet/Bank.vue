@@ -19,11 +19,12 @@
         stored here.
       </div>
       <div v-else class="sub">
-        The captain can store the ship's common
-        {{ c.baseCurrencyPlural }} here. Deposited
-        {{ c.baseCurrencyPlural }} will persist even through
-        death, but you will have to come back to this planet
-        to retrieve them.
+        The captain can store the ship's common 💳{{
+          c.baseCurrencyPlural
+        }}
+        here. Deposited 💳{{ c.baseCurrencyPlural }} will
+        persist even through death, but you will have to
+        come back to this planet to retrieve them.
       </div>
     </div>
 
@@ -37,12 +38,14 @@
       >
         <template #label>
           <div class="padsmall">
-            Deposit {{ c.capitalize(c.baseCurrencyPlural) }}
+            Deposit 💳{{
+              c.capitalize(c.baseCurrencyPlural)
+            }}
           </div>
         </template>
         <template>
           <div>
-            How many {{ c.baseCurrencyPlural }} will you
+            How many 💳{{ c.baseCurrencyPlural }} will you
             deposit?
           </div>
         </template>
@@ -57,13 +60,14 @@
       >
         <template #label>
           <div class="padsmall">
-            Withdraw
-            {{ c.capitalize(c.baseCurrencyPlural) }}
+            Withdraw 💳{{
+              c.capitalize(c.baseCurrencyPlural)
+            }}
           </div>
         </template>
         <template>
           <div>
-            How many {{ c.baseCurrencyPlural }} will you
+            How many 💳{{ c.baseCurrencyPlural }} will you
             withdraw?
           </div>
         </template>

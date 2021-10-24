@@ -8,31 +8,36 @@ declare const _default: {
         [key: string]: Achievement;
     };
     rooms: {
+        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
-        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
     crewPassives: {
-        cargoSpace: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
-        boostThrust: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
+        boostBrake: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
         boostRepairSpeed: CrewPassiveData;
-        boostWeaponChargeSpeed: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
-        reduceStaminaDrain: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
+        reduceStaminaDrain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
-        boostBroadcastRange: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
-        boostBrake: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
+        eagles: BaseSpeciesData;
+        seagulls: BaseSpeciesData;
+        chickens: BaseSpeciesData;
+        flamingos: BaseSpeciesData;
+        vultures: BaseSpeciesData;
         octopi: BaseSpeciesData;
         lobsters: BaseSpeciesData;
         crabs: BaseSpeciesData;
@@ -44,39 +49,16 @@ declare const _default: {
         angelfish: BaseSpeciesData;
         blowfish: BaseSpeciesData;
         shrimp: BaseSpeciesData;
-        eagles: BaseSpeciesData;
-        seagulls: BaseSpeciesData;
-        chickens: BaseSpeciesData;
-        flamingos: BaseSpeciesData;
-        vultures: BaseSpeciesData;
     };
     guilds: {
-        fowl: BaseGuildData;
         trader: BaseGuildData;
+        peacekeeper: BaseGuildData;
+        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        explorer: BaseGuildData;
-        peacekeeper: BaseGuildData;
+        fowl: BaseGuildData;
     };
     baseShipPassiveData: {
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostStaminaRegeneration: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -92,7 +74,22 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostMinePayouts: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -137,6 +134,9 @@ declare const _default: {
         boostDamageToItemType: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         autoRepair: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -151,10 +151,10 @@ declare const _default: {
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
     baseCurrencySingular: string;
     baseCurrencyPlural: string;
-    shipSpecialCurrencySingular: string;
-    shipSpecialCurrencyPlural: string;
-    crewSpecialCurrencySingular: string;
-    crewSpecialCurrencyPlural: string;
+    shipCosmeticCurrencySingular: string;
+    shipCosmeticCurrencyPlural: string;
+    crewCosmeticCurrencySingular: string;
+    crewCosmeticCurrencyPlural: string;
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;

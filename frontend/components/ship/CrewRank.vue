@@ -25,7 +25,11 @@
               ]"
               :key="'skillrankmember' + skill.skill + cm.id"
             >
-              {{ cm.name }}
+              {{
+                c.species[cm.speciesId]
+                  ? c.species[cm.speciesId].icon
+                  : ''
+              }}{{ cm.name }}
               <span class="sub">
                 Lv.{{ cm.skill.level }} ({{
                   c.numberWithCommas(
@@ -38,7 +42,7 @@
         </Tab>
 
         <Tab
-          :title="`Contributed ${c.capitalize(
+          :title="`Contributed 💳${c.capitalize(
             c.baseCurrencyPlural,
           )}`"
           v-if="mostShared.length"
@@ -48,7 +52,11 @@
               v-for="(cm, index) in mostShared"
               :key="'mostShared' + cm.id"
             >
-              {{ cm.name }}
+              {{
+                c.species[cm.speciesId]
+                  ? c.species[cm.speciesId].icon
+                  : ''
+              }}{{ cm.name }}
               <span class="sub">
                 ({{
                   c.numberWithCommas(
@@ -66,7 +74,11 @@
               v-for="(cm, index) in timeInBunk"
               :key="'timeInBunk' + cm.id"
             >
-              {{ cm.name }}
+              {{
+                c.species[cm.speciesId]
+                  ? c.species[cm.speciesId].icon
+                  : ''
+              }}{{ cm.name }}
               <span class="sub">
                 ({{ c.msToTimeString(cm.amount * 1000) }})
               </span>
@@ -92,7 +104,7 @@ export default Vue.extend({
     show() {
       return (
         this.ship &&
-        this.ship.crewMembers.length > 1 &&
+        // this.ship.crewMembers.length > 1 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewRank'))
       )
@@ -108,9 +120,10 @@ export default Vue.extend({
       for (let { skill } of this.ship.crewMembers[0]
         ?.skills) {
         best[skill] = [...this.ship.crewMembers]
-          .map((cm) => ({
+          .map((cm: CrewMemberStub) => ({
             id: cm.id,
             name: cm.name,
+            speciesId: cm.speciesId,
             skill: cm.skills.find(
               (s: XPData) => s.skill === skill,
             ) || { xp: 0, level: 1 },

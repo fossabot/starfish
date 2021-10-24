@@ -66,7 +66,7 @@ export default {
 
   buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
 
-  modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
+  modules: [`portal-vue/nuxt`],
 
   serverMiddleware: {
     '/api': `~/api`,
