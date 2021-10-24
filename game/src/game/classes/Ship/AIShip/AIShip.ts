@@ -1,20 +1,21 @@
-import c from '../../../../../common/dist'
-import { Game } from '../../Game'
-import { CombatShip } from './CombatShip'
-import type { Ship } from './Ship'
-import type { Planet } from '../Planet/Planet'
-import type { Cache } from '../Cache'
-import type { Zone } from '../Zone'
-import type { AttackRemnant } from '../AttackRemnant'
-import type { Weapon } from '../Item/Weapon'
-import type { HumanShip } from './HumanShip/HumanShip'
+import c from '../../../../../../common/dist'
+import { Game } from '../../../Game'
+import { CombatShip } from '../CombatShip'
+import type { Ship } from '../Ship'
+import type { Planet } from '../../Planet/Planet'
+import type { Cache } from '../../Cache'
+import type { Zone } from '../../Zone'
+import type { AttackRemnant } from '../../AttackRemnant'
+import type { Weapon } from '../../Item/Weapon'
+import type { HumanShip } from '../HumanShip/HumanShip'
 
-import defaultGameSettings from '../../presets/gameSettings'
+import defaultGameSettings from '../../../presets/gameSettings'
 
-import ais from './ais/ais'
+import ais from './ais'
 
 export class AIShip extends CombatShip {
   static dropCacheValueMultiplier = 3000
+  static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
   readonly human: boolean = false
   readonly id: string
@@ -42,6 +43,7 @@ export class AIShip extends CombatShip {
   targetLocation: CoordinatePair
 
   lastAttackedById: string | null = null
+  resetLastAttackedByIdTimeout: any
 
   obeysGravity = false
 
@@ -448,7 +450,13 @@ export class AIShip extends CombatShip {
     attack: AttackDamageResult,
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
+
     this.lastAttackedById = attacker.id
+    clearTimeout(this.resetLastAttackedByIdTimeout)
+    this.resetLastAttackedByIdTimeout = setTimeout(() => {
+      this.lastAttackedById = null
+    }, AIShip.resetLastAttackedByIdTime)
+
     this.targetShip = this.determineTargetShip()
     return res
   }

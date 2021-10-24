@@ -1,3 +1,12 @@
+const baseCurrencySingular = `speso`
+const baseCurrencyPlural = `spesos`
+
+const shipSpecialCurrencySingular = `shipSpecialCurrencySingular`
+const shipSpecialCurrencyPlural = `shipSpecialCurrencyPlural`
+
+const crewSpecialCurrencySingular = `crewSpecialCurrencySingular`
+const crewSpecialCurrencyPlural = `crewSpecialCurrencyPlural`
+
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
@@ -74,6 +83,13 @@ const tactics: CombatTactic[] = [
 const baseCargoSellMultiplier = 0.3
 
 export default {
+  baseCurrencySingular,
+  baseCurrencyPlural,
+  shipSpecialCurrencySingular,
+  shipSpecialCurrencyPlural,
+  crewSpecialCurrencySingular,
+  crewSpecialCurrencyPlural,
+
   supportServerLink,
   baseSightRange,
   baseBroadcastRange,

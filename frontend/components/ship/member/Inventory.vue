@@ -10,7 +10,7 @@
     </template>
     <div class="panesection">
       <div>
-        💳Credits:
+        💳{{ c.capitalize(c.baseCurrencyPlural) }}:
         {{
           c.numberWithCommas(
             c.r2(crewMember.credits, 0, true),
@@ -26,8 +26,9 @@
           >
             <template #label>+ Common Fund </template>
             <template>
-              How many credits do you want to contribute to
-              the ship's common credits? (Max
+              How many {{ c.baseCurrencyPlural }} do you
+              want to contribute to the ship's common fund?
+              (Max
               {{
                 c.numberWithCommas(
                   Math.floor(crewMember.credits),
@@ -43,8 +44,8 @@
           >
             <template #label>Drop</template>
             <template>
-              How many credits do you want to jettison as a
-              cache? (Max
+              How many {{ c.baseCurrencyPlural }} do you
+              want to jettison as a cache? (Max
               {{
                 c.numberWithCommas(
                   Math.floor(crewMember.credits),
@@ -214,7 +215,9 @@ export default Vue.extend({
         amount,
       )
       this.$store.dispatch('notifications/notify', {
-        text: `Contributed ${c.r2(amount, 0)} credits.`,
+        text: `Contributed ${c.r2(amount, 0)} ${
+          c.baseCurrencyPlural
+        }.`,
         type: 'success',
       })
     },

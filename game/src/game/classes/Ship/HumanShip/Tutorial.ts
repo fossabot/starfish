@@ -275,8 +275,14 @@ export class Tutorial {
         script: [
           {
             message: `Awesome, we got it! <br /><br/>
-            There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br /><br/>
-            This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.`,
+            There were some 💳${
+              c.baseCurrencyPlural
+            } inside! ${c.capitalize(
+              c.baseCurrencyPlural,
+            )} are how you pay for cargo and equipment. Every crew member has their own stock of cargo and ${
+              c.baseCurrencyPlural
+            }.<br /><br/>
+            This cache was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.`,
             advance: `Got it.`,
           },
         ],

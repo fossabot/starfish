@@ -23,7 +23,10 @@
                 new Date(cm.lastActive).toLocaleDateString()
               }}
             </li>
-            <li>Credits: {{ cm.credits }}</li>
+            <li>
+              {{ c.capitalize(c.baseCurrencyPlural) }}:
+              {{ cm.credits }}
+            </li>
             <li v-if="cm.inventory.length">
               Cargo:
               <ul>

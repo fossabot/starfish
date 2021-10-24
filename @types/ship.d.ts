@@ -77,6 +77,7 @@ type ShipPassiveEffectId =
   | `disguiseCrewMemberCount`
   | `disguiseChassisType`
   | `alwaysSeeTrailColors`
+  | `boostAccuracy`
   | `boostDamage`
   | `boostDamageWhenNoAlliesWithinDistance`
   | `boostDamageWithNumberOfGuildMembersWithinDistance`

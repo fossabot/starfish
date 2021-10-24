@@ -24,7 +24,7 @@
       <div
         class="flexbetween"
         v-tooltip="
-          `The ship's shared pool of credits. The captain can spend the common fund on new items for the ship.`
+          `The ship's shared pool of ${c.baseCurrencyPlural}. The captain can spend the common fund on new items for the ship.`
         "
       >
         <div>Common Fund</div>
@@ -44,10 +44,13 @@
         @done="redistributeCommonFund(...arguments)"
         @apply="redistributeCommonFund(...arguments)"
       >
-        <template #label> Redistribute Credits </template>
+        <template #label>
+          Redistribute
+          {{ c.capitalize(c.baseCurrencyPlural) }}
+        </template>
         <template>
-          How many credits do you want to redistribute
-          evenly among the crew? (Max
+          How many {{ c.baseCurrencyPlural }} do you want to
+          redistribute evenly among the crew? (Max
           {{
             c.numberWithCommas(
               Math.floor(ship.commonCredits),
@@ -112,7 +115,9 @@ export default Vue.extend({
         amount,
       )
       this.$store.dispatch('notifications/notify', {
-        text: `Redistributed ${c.r2(amount, 0)} credits.`,
+        text: `Redistributed ${c.r2(amount, 0)} ${
+          c.baseCurrencyPlural
+        }.`,
         type: 'success',
       })
     },

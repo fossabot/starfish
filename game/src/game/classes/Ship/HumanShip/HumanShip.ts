@@ -1507,7 +1507,9 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `${c.r2(amount)} credits deposited in the bank at`,
+        `${c.r2(amount)} ${
+          c.baseCurrencyPlural
+        } deposited in the bank at`,
         {
           text: planet.name,
           color: planet.color,
@@ -1571,7 +1573,10 @@ export class HumanShip extends CombatShip {
         }`,
       )
       contentsToLog.push({
-        text: cc.id,
+        text:
+          cc.id === `credits`
+            ? c.baseCurrencyPlural
+            : cc.id,
         color: `var(--cargo)`,
         tooltipData:
           cc.id === `credits`
@@ -1712,7 +1717,9 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         `${member.name} added ${c.numberWithCommas(
           c.r2(amount, 0),
-        )} credits to the ship's common fund.`,
+        )} ${
+          c.baseCurrencyPlural
+        } to the ship's common fund.`,
         `low`,
       )
 
@@ -2345,7 +2352,7 @@ export class HumanShip extends CombatShip {
 
     setTimeout(() => {
       this.logEntry(
-        `Your ship has been destroyed! All of your cargo and most of your credits have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
+        `Your ship has been destroyed! All of your cargo and most of your ${c.baseCurrencyPlural} have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
         `critical`,
       )
 

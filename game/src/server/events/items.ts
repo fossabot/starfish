@@ -73,7 +73,7 @@ export default function (
           },
           `bought by the captain for ${c.numberWithCommas(
             c.r2(price, 0),
-          )} credits.`,
+          )} ${c.baseCurrencyPlural}.`,
         ],
         `high`,
       )
@@ -152,7 +152,7 @@ export default function (
           },
           `sold by the captain for ${c.numberWithCommas(
             c.r2(price, 0),
-          )} credits.`,
+          )} ${c.baseCurrencyPlural}.`,
         ],
         `high`,
       )
@@ -241,7 +241,7 @@ export default function (
           },
           `bought by the captain for ${c.numberWithCommas(
             c.r2(price, 0),
-          )} credits.`,
+          )} ${c.baseCurrencyPlural}.`,
         ],
         `high`,
       )

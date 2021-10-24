@@ -1,5 +1,6 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
+import { CombatShip } from '../../CombatShip'
 import defaultBehavior, {
   getDefaultAngle,
   getDefaultDistance,

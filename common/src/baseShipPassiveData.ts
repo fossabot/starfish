@@ -3,9 +3,17 @@ const baseShipPassiveData: {
     description: (p: ShipPassiveEffect) => string
   }
 } = {
+  boostAccuracy: {
+    description: (p: ShipPassiveEffect) =>
+      `${(p.intensity || 1) * 100}% ${
+        (p.intensity || 1) >= 0 ? `increased` : `decreased`
+      } attack accuracy`,
+  },
   boostDamage: {
     description: (p: ShipPassiveEffect) =>
-      `${(p.intensity || 1) * 100}% increased damage`,
+      `${(p.intensity || 1) * 100}% ${
+        (p.intensity || 1) >= 0 ? `increased` : `decreased`
+      } damage dealt`,
   },
   alwaysSeeTrailColors: {
     description: (p: ShipPassiveEffect) =>

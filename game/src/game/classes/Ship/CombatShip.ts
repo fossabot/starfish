@@ -273,6 +273,10 @@ export abstract class CombatShip extends Ship {
       toHit: number,
       hitRoll: number = Math.random()
     if (predeterminedHitChance === undefined) {
+      const passiveMultiplier =
+        this.getPassiveIntensity(`boostAccuracy`) + 1
+      hitRoll *= passiveMultiplier
+
       const range = c.distance(
         this.location,
         target.location,

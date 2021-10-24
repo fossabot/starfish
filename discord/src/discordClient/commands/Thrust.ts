@@ -93,7 +93,7 @@ export class ThrustCommand implements Command {
               target.id === `current`
                 ? `along the ship's current trajectory`
                 : `towards ` + target.name
-            }. The current speed is ${c.speedNumber(
+            }. The ship's current speed is ${c.speedNumber(
               (context.ship?.speed || 0) * 60 * 60,
             )}.`,
           )

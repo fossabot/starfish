@@ -1,6 +1,6 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
-import type { CombatShip } from '../CombatShip'
+import type { CombatShip } from '../../CombatShip'
 
 import defaultBehavior from './default'
 import flamingos from './flamingos'

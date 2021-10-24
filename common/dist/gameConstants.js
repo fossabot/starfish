@@ -1,5 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const baseCurrencySingular = `speso`;
+const baseCurrencyPlural = `spesos`;
+const shipSpecialCurrencySingular = `shipSpecialCurrencySingular`;
+const shipSpecialCurrencyPlural = `shipSpecialCurrencyPlural`;
+const crewSpecialCurrencySingular = `crewSpecialCurrencySingular`;
+const crewSpecialCurrencyPlural = `crewSpecialCurrencyPlural`;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
 const baseRepairCost = 600;
@@ -46,6 +52,12 @@ const tactics = [
 ];
 const baseCargoSellMultiplier = 0.3;
 exports.default = {
+    baseCurrencySingular,
+    baseCurrencyPlural,
+    shipSpecialCurrencySingular,
+    shipSpecialCurrencyPlural,
+    crewSpecialCurrencySingular,
+    crewSpecialCurrencyPlural,
     supportServerLink,
     baseSightRange,
     baseBroadcastRange,

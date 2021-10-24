@@ -9,8 +9,11 @@
         :key="'cachecontentstooltip' + index"
       >
         Contains {{ c.r2(ca.amount)
-        }}{{ ca.id === 'credits' ? '' : ' tons of' }}
-        {{ ca.id }}
+        }}{{
+          ca.id === 'credits'
+            ? c.baseCurrencyPlural
+            : ` tons of ${ca.id}`
+        }}
       </div>
     </div>
   </div>

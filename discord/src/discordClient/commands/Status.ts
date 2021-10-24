@@ -125,7 +125,7 @@ ${c.percentToTextBars(
         })
         youFields.push({
           inline: true,
-          name: `Credits`,
+          name: c.capitalize(c.baseCurrencyPlural),
           value: `💳 ${c.numberWithCommas(
             c.r2(context.crewMember.credits, 0),
           )}`,

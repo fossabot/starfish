@@ -1,4 +1,4 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
 import defaultBehavior, { getDefaultAngle } from './default'
 

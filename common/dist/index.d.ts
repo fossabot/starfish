@@ -8,28 +8,28 @@ declare const _default: {
         [key: string]: Achievement;
     };
     rooms: {
-        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
+        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
     crewPassives: {
-        boostBrake: CrewPassiveData;
-        boostBroadcastRange: CrewPassiveData;
-        boostRepairSpeed: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
-        boostXpGain: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
         cargoSpace: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
         boostThrust: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
+        boostBrake: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
@@ -51,14 +51,32 @@ declare const _default: {
         vultures: BaseSpeciesData;
     };
     guilds: {
+        fowl: BaseGuildData;
         trader: BaseGuildData;
-        peacekeeper: BaseGuildData;
-        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        fowl: BaseGuildData;
+        explorer: BaseGuildData;
+        peacekeeper: BaseGuildData;
     };
     baseShipPassiveData: {
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -74,22 +92,7 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostMinePayouts: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -119,6 +122,9 @@ declare const _default: {
         alwaysSeeTrailColors: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostAccuracy: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostDamage: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -129,9 +135,6 @@ declare const _default: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostStaminaRegeneration: {
             description: (p: ShipPassiveEffect) => string;
         };
         autoRepair: {
@@ -146,6 +149,12 @@ declare const _default: {
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    baseCurrencySingular: string;
+    baseCurrencyPlural: string;
+    shipSpecialCurrencySingular: string;
+    shipSpecialCurrencyPlural: string;
+    crewSpecialCurrencySingular: string;
+    crewSpecialCurrencyPlural: string;
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;

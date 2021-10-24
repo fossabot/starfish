@@ -34,7 +34,7 @@ export const communicators: {
   distance1: {
     type: `communicator`,
     id: `distance1`,
-    displayName: `Biolelectric Listener Mk.1`,
+    displayName: `Bioelectric Listener Mk.1`,
     description: `Using a passive organic sensor, this communications array can send out messages from an impressive radius. Messages are filtered through a biological subsrate, however, so there is a clarity loss.`,
     mass: 200,
     basePrice: 31 * game.itemPriceMultiplier,
@@ -48,7 +48,7 @@ export const communicators: {
   distance2: {
     type: `communicator`,
     id: `distance2`,
-    displayName: `Biolelectric Listener Mk.2`,
+    displayName: `Bioelectric Listener Mk.2`,
     description: `Using a passive organic sensor, this communications array can send out messages to an impressive radius. Messages are filtered through a biological subsrate, however, so there is a clarity loss.`,
     mass: 250,
     basePrice: 77 * game.itemPriceMultiplier,
@@ -62,7 +62,7 @@ export const communicators: {
   distance3: {
     type: `communicator`,
     id: `distance3`,
-    displayName: `Biolelectric Listener Mk.3`,
+    displayName: `Bioelectric Listener Mk.3`,
     description: `Using a passive organic sensor, this communications array can send out messages to an impressive radius. Messages are filtered through a biological subsrate, however, so there is a clarity loss.`,
     mass: 250,
     basePrice: 115 * game.itemPriceMultiplier,
@@ -76,7 +76,7 @@ export const communicators: {
   distance4: {
     type: `communicator`,
     id: `distance4`,
-    displayName: `Biolelectric Listener Mk.4`,
+    displayName: `Bioelectric Listener Mk.4`,
     description: `Using a passive organic sensor, this communications array can send out messages to an impressive radius. Messages are filtered through a biological subsrate, however, so there is a clarity loss.`,
     mass: 250,
     basePrice: 210 * game.itemPriceMultiplier,

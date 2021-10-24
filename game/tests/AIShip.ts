@@ -17,7 +17,7 @@ import {
   humanShipData,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
-import { AIShip } from '../src/game/classes/Ship/AIShip'
+import { AIShip } from '../src/game/classes/Ship/AIShip/AIShip'
 
 describe(`AIShip spawn`, () => {
   it(`should add level-appropriate items/chassis on spawn`, async () => {

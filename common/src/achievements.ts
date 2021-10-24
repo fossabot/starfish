@@ -1,5 +1,6 @@
 import * as items from './items'
 import globals from './globals'
+import constants from './gameConstants'
 
 /*
   to be assigned
@@ -221,7 +222,7 @@ const achievements: { [key: string]: Achievement } = {
   money1: {
     id: `money1`,
     reward: { tagline: `Easy Target` },
-    for: `having a net worth of 100,000 credits`,
+    for: `having a net worth of 100,000 ${constants.baseCurrencyPlural}`,
     condition: {
       stat: {
         id: `netWorth`,
@@ -232,7 +233,7 @@ const achievements: { [key: string]: Achievement } = {
   money2: {
     id: `money2`,
     reward: { tagline: `Moneybags` },
-    for: `having a net worth of 500,000 credits`,
+    for: `having a net worth of 500,000 ${constants.baseCurrencyPlural}`,
     condition: {
       stat: {
         id: `netWorth`,

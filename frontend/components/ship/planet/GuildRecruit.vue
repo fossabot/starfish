@@ -20,9 +20,10 @@
       <div class="sub">
         Captain, you can join your ship into the
         {{ guild.name }} Guild<span v-if="changePrice">
-          for {{ changePrice }} credits</span
+          for {{ changePrice }}
+          {{ c.baseCurrencyPlural }}</span
         >. You can change guilds at guild homeworlds, but it
-        will cost credits to switch.
+        will cost {{ c.baseCurrencyPlural }} to switch.
       </div>
       <div>
         <button
@@ -48,7 +49,8 @@
       The captain can join your ship into the
       {{ guild.name }} Guild<span v-if="changePrice">
         for
-        {{ c.numberWithCommas(changePrice) }} credits</span
+        {{ c.numberWithCommas(changePrice) }}
+        {{ c.baseCurrencyPlural }}</span
       >.
     </div>
 

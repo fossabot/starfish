@@ -15,11 +15,13 @@
     <div class="marbotsmall">
       <div v-if="storedHere">
         Your ship has
-        <b>💳{{ storedHere }} credits</b> stored here.
+        <b>💳{{ storedHere }} {{ c.baseCurrencyPlural }}</b>
+        stored here.
       </div>
       <div v-else class="sub">
-        The captain can store the ship's common credits
-        here. Deposited credits will persist even through
+        The captain can store the ship's common
+        {{ c.baseCurrencyPlural }} here. Deposited
+        {{ c.baseCurrencyPlural }} will persist even through
         death, but you will have to come back to this planet
         to retrieve them.
       </div>
@@ -34,10 +36,15 @@
         @apply="deposit"
       >
         <template #label>
-          <div class="padsmall">Deposit Credits</div>
+          <div class="padsmall">
+            Deposit {{ c.capitalize(c.baseCurrencyPlural) }}
+          </div>
         </template>
         <template>
-          <div>How many credits will you deposit?</div>
+          <div>
+            How many {{ c.baseCurrencyPlural }} will you
+            deposit?
+          </div>
         </template>
       </PromptButton>
 
@@ -49,10 +56,16 @@
         @apply="withdraw"
       >
         <template #label>
-          <div class="padsmall">Withdraw Credits</div>
+          <div class="padsmall">
+            Withdraw
+            {{ c.capitalize(c.baseCurrencyPlural) }}
+          </div>
         </template>
         <template>
-          <div>How many credits will you withdraw?</div>
+          <div>
+            How many {{ c.baseCurrencyPlural }} will you
+            withdraw?
+          </div>
         </template>
       </PromptButton>
     </div>

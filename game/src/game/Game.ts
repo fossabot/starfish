@@ -18,7 +18,7 @@ import { Cache } from './classes/Cache'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
 import { HumanShip } from './classes/Ship/HumanShip/HumanShip'
-import { AIShip } from './classes/Ship/AIShip'
+import { AIShip } from './classes/Ship/AIShip/AIShip'
 import { CombatShip } from './classes/Ship/CombatShip'
 import { ChunkManager } from './classes/Chunks/ChunkManager'
 

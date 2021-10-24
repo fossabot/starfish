@@ -58,13 +58,15 @@ export class BrakeCommand implements Command {
         (context.ship.mass || 10000)) *
       (context.ship.gameSettings?.brakeToThrustRatio || 1)
 
+    const intentionallyOverBrakeMultiplier =
+      1 + Math.random() * 0.2
+
     const currentSpeed = context.ship.speed || 0
     const brakePercentNeeded = Math.min(
       1,
-      currentSpeed / maxPossibleSpeedChangeWithBrake,
+      (currentSpeed / maxPossibleSpeedChangeWithBrake) *
+        intentionallyOverBrakeMultiplier,
     )
-
-    const intentionallyOverBrakeMultiplier = 1.2
 
     const res = await ioInterface.crew.brake(
       context.ship.id,

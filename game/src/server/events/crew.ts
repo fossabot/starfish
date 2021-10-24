@@ -444,7 +444,7 @@ export default function (
 
       if (!amount || amount > crewMember.credits)
         return callback({
-          error: `Insufficient credits.`,
+          error: `Insufficient ${c.baseCurrencyPlural}.`,
         })
 
       const planet = ship.planet
@@ -460,7 +460,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} donated ${amount} ${c.baseCurrencyPlural} to the planet ${planet.name}.`,
       )
     },
   )
@@ -486,9 +486,9 @@ export default function (
       ship.commonCredits -= amount
       ship.toUpdate.commonCredits = ship.commonCredits
       ship.logEntry(
-        `The captain dispersed ${c.r2(
-          amount,
-        )} credits from the common fund amongst the crew.`,
+        `The captain dispersed ${c.r2(amount)} ${
+          c.baseCurrencyPlural
+        } from the common fund amongst the crew.`,
       )
       ship.distributeCargoAmongCrew([
         { amount: amount, id: `credits` },
@@ -681,7 +681,7 @@ export default function (
       if (cargoId === `credits`) {
         if (crewMember.credits < amount)
           return callback({
-            error: `Not enough credits found.`,
+            error: `Not enough ${c.baseCurrencyPlural} found.`,
           })
         crewMember.credits -= amount
         crewMember.toUpdate.credits = crewMember.credits

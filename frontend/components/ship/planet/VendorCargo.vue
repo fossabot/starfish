@@ -274,7 +274,7 @@ export default Vue.extend({
             } of ${data.cargoData.id} for ${c.r2(
               res.data.price,
               0,
-            )} credits.`,
+            )} ${c.baseCurrencyPlural}.`,
             type: 'success',
           })
         },
@@ -329,7 +329,7 @@ export default Vue.extend({
             } of ${data.cargoData.id} for ${c.r2(
               res.data.price,
               0,
-            )} credits.`,
+            )} ${c.baseCurrencyPlural}.`,
             type: 'success',
           })
         },

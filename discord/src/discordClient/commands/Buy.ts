@@ -50,7 +50,7 @@ export class BuyCommand implements Command {
       )
     if (!forSale.length) {
       await context.reply(
-        `You don't have enough credits to buy anything here.`,
+        `You don't have enough ${c.baseCurrencyPlural} to buy anything here.`,
       )
       return
     }
@@ -138,48 +138,5 @@ export class BuyCommand implements Command {
         else await context.reply(res.error)
       },
     })
-
-    //   if (!cargoToBuy) {
-    //     await context.reply(
-    //       `${context.ship.planet.name} doesn't sell that.`,
-    //     )
-    //     return
-    //   }
-
-    //   const amountToBuy = c.r2(
-    //     context.crewMember.credits / getPrice(cargoToBuy),
-    //     2,
-    //     true,
-    //   )
-
-    //   if (amountToBuy === 0) {
-    //     await context.reply(
-    //       `You don't have enough credits (💳${context.crewMember.credits}) for that.`,
-    //     )
-    //     return
-    //   }
-
-    //   const res = await ioInterface.crew.buy(
-    //     context.ship.id,
-    //     context.crewMember.id,
-    //     cargoToBuy.id,
-    //     amountToBuy,
-    //     planet.name,
-    //   )
-
-    //   if (`error` in res) {
-    //     await context.reply(res.error)
-    //     return
-    //   }
-
-    //   context.reply(
-    //     `${context.nickname} buys ${`${c.r2(
-    //       res.data.amount,
-    //     )} ton${
-    //       res.data.amount === 1 ? `` : `s`
-    //     } of ${c.camelCaseToWords(
-    //       res.data.cargoId,
-    //     )} for ${c.r2(res.data.price, 0)} credits`}.`,
-    //   )
   }
 }

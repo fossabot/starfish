@@ -38,7 +38,9 @@
         </Tab>
 
         <Tab
-          title="Contributed Credits"
+          :title="`Contributed ${c.capitalize(
+            c.baseCurrencyPlural,
+          )}`"
           v-if="mostShared.length"
         >
           <ol>

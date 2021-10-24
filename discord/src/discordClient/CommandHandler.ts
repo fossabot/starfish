@@ -116,9 +116,13 @@ export class CommandHandler {
 
     // handle prefix but no valid command case
     if (!matchedCommands.length) {
-      await message.reply(
-        `I don't recognize that command. Try ${this.prefix}help.`,
+      if (
+        commandContext.commandName !==
+        commandContext.commandPrefix
       )
+        await message.reply(
+          `I don't recognize that command. Try ${this.prefix}help.`,
+        )
       return
     }
 

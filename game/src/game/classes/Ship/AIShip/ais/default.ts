@@ -1,17 +1,19 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
-import type { CombatShip } from '../CombatShip'
+import { CombatShip } from '../../CombatShip'
 
 export function getDefaultDistance(this: AIShip): number {
   return ((Math.random() * this.level) / 100) * 10
 }
 
-export function getDefaultAngle(this: AIShip): number {
+export function getDefaultAngle(
+  this: AIShip,
+  angleDeviation: number = 40,
+): number {
   const angleToHome = c.angleFromAToB(
     this.location,
     this.spawnPoint,
   )
-  const angleDeviation = 40
   return Math.random() > 0.85
     ? Math.floor(Math.random() * 360)
     : (angleToHome +

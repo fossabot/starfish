@@ -195,7 +195,7 @@ export default function (
       const price = c.getGuildChangePrice(ship as any)
       if (ship.commonCredits < price)
         return callback({
-          error: `Not enough common credits.`,
+          error: `Not enough common ${c.baseCurrencyPlural}.`,
         })
 
       ship.commonCredits = Math.round(
@@ -330,7 +330,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may deposit common credits in the bank.`,
+          error: `Only the captain may deposit common ${c.baseCurrencyPlural} in the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -346,7 +346,7 @@ export default function (
         })
       if (amount > ship.commonCredits)
         return callback({
-          error: `You don't have that many credits!`,
+          error: `You don't have that many ${c.baseCurrencyPlural}!`,
         })
       if (amount < 0)
         return callback({
@@ -357,7 +357,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} deposited ${amount} credits in the bank at ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} deposited ${amount} ${c.baseCurrencyPlural} in the bank at ${planet.name}.`,
       )
 
       callback({ data: true })
@@ -382,7 +382,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may withdraw common credits from the bank.`,
+          error: `Only the captain may withdraw common ${c.baseCurrencyPlural} from the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -401,7 +401,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} withdrew ${amount} credits from the bank at ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} withdrew ${amount} ${c.baseCurrencyPlural} from the bank at ${planet.name}.`,
       )
 
       callback({ data: true })
