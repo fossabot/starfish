@@ -549,8 +549,8 @@ export const actions = {
     commit(`set`, { shipsBasics })
   },
 
-  logout({ commit, dispatch }) {
-    this.$router.push(`/`)
+  async logout({ commit, dispatch }) {
+    await this.$router.push(`/`)
     this.$socket.removeAllListeners()
     commit(`set`, {
       shipIds: [],

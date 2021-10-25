@@ -1,0 +1,18 @@
+windows:
+  - name: Starfish Dev - Build
+    root: .
+    layout: even-vertical
+    panes:
+      - cd game && npm run build
+      - cd discord && npm run build
+      - cd common && npm run build
+
+  - name: Run Starfish
+    root: .
+    layout: tiled
+    panes:
+      - cd db && npm run mongo
+      - cd frontend && npm run dev
+      - cd game && npm run dev
+      - cd discord && npm run dev
+      - cd game && npm run testlocal

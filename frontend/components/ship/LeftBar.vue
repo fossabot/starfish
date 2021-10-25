@@ -94,18 +94,6 @@
             alt="log out button"
           />
         </div>
-        <div
-          class="icon smaller pointer"
-          v-tooltip="`Log In`"
-          v-else
-        >
-          <nuxt-link to="/login">
-            <img
-              src="/images/icons/icon-login.svg"
-              alt="log out button"
-            />
-          </nuxt-link>
-        </div>
       </div>
     </div>
   </nav>
@@ -143,7 +131,6 @@ export default Vue.extend({
     },
     logout() {
       this.$store.dispatch('logout')
-      ;(this as any).$router.push('/')
     },
     toTutorial() {
       ;(this as any).$socket?.emit(
