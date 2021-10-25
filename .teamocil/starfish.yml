@@ -12,7 +12,7 @@ windows:
     layout: tiled
     panes:
       - cd db && npm run mongo
-      - cd frontend && npm run dev
+      - cd frontend && DISCORD_CLIENT_ID=723017262369472603 npm run dev
       - cd game && npm run dev
-      - cd discord && npm run dev
+      - cd discord && DISCORD_CLIENT_ID=723017262369472603 npm run dev
       - cd game && npm run testlocal
