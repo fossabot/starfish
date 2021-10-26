@@ -22,15 +22,17 @@ declare function getPlanetTitle(planet: PlanetStub): string;
 declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId): number;
 declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId): number;
 declare function getRepairPrice(planet: PlanetStub, hp: number, guildId?: GuildId): number;
-declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId): number;
-declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId): number;
+declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId): Price;
+declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId): Price;
 declare function getItemSellPrice(itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId): number;
-declare function getChassisSwapPrice(chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId): number;
+declare function getChassisSwapPrice(chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId): Price;
 declare function getGuildChangePrice(ship: {
     planet: PlanetStub | false;
     guildId: GuildId;
     crewMembers: CrewMemberStub[];
-}): number;
+}): Price;
+declare function getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
+declare function getShipHeaderBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare const _default: {
     getHitDamage: typeof getHitDamage;
@@ -55,6 +57,8 @@ declare const _default: {
     getItemSellPrice: typeof getItemSellPrice;
     getChassisSwapPrice: typeof getChassisSwapPrice;
     getGuildChangePrice: typeof getGuildChangePrice;
+    getShipTaglinePrice: typeof getShipTaglinePrice;
+    getShipHeaderBackgroundPrice: typeof getShipHeaderBackgroundPrice;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

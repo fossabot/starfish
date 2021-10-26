@@ -1,8 +1,10 @@
 <template>
   <div
     v-if="
-      buyableTaglines.length ||
-      buyableHeaderBackgrounds.length
+      ship.planet &&
+      ship.planet.vendor &&
+      ship.planet.vendor.shipCosmetics &&
+      ship.planet.vendor.shipCosmetics.length
     "
     class="panesection"
     v-tooltip="
@@ -45,7 +47,7 @@
           >
             <b>{{ t.tagline }}</b>
             <div>
-              💎{{ c.numberWithCommas(c.r2(t.price, 0)) }}
+              {{ c.priceToString(t.price) }}
             </div>
           </button>
         </span>
@@ -56,7 +58,7 @@
       class="panesection inline"
       v-if="buyableHeaderBackgrounds.length"
     >
-      <div class="panesubhead">Headers</div>
+      <div class="panesubhead">Banners</div>
 
       <div class="flexwrap">
         <span
@@ -78,7 +80,7 @@
             />
             <b>{{ hb.headerBackground.id }}</b>
             <div>
-              💎{{ c.numberWithCommas(c.r2(hb.price, 0)) }}
+              {{ c.priceToString(hb.price) }}
             </div>
           </button>
         </span>
@@ -116,25 +118,23 @@ export default Vue.extend({
       )
         .filter((sc) => sc.tagline)
         .map((item) => {
-          const price = Math.ceil(
-            (item.tagline
-              ? c.baseTaglinePrice
-              : c.baseHeaderBackgroundPrice) *
-              item.priceMultiplier,
-          )
+          const price = c.getShipTaglinePrice(item)
           return {
             ...item,
             price,
             canBuy:
               this.isCaptain &&
-              ((this.ship as ShipStub)
-                .shipCosmeticCurrency || 0) >= price &&
+              this.ship.commonCredits >=
+                (price.credits || 0) &&
+              this.crewMember.crewCosmeticCurrency >=
+                (price.crewCosmeticCurrency || 0) &&
+              this.ship.shipCosmeticCurrency >=
+                (price.shipCosmeticCurrency || 0) &&
               !this.ship.availableTaglines.includes(
                 item.tagline,
               ),
           }
         })
-        .filter((e) => e.price > 0)
     },
     buyableHeaderBackgrounds() {
       return (
@@ -143,26 +143,24 @@ export default Vue.extend({
       )
         .filter((sc) => sc.headerBackground)
         .map((item) => {
-          const price = Math.ceil(
-            (item.tagline
-              ? c.baseTaglinePrice
-              : c.baseHeaderBackgroundPrice) *
-              item.priceMultiplier,
-          )
+          const price = c.getShipHeaderBackgroundPrice(item)
           return {
             ...item,
             price,
             canBuy:
               this.isCaptain &&
-              ((this.ship as ShipStub)
-                .shipCosmeticCurrency || 0) >= price &&
+              this.ship.commonCredits >=
+                (price.credits || 0) &&
+              this.crewMember.crewCosmeticCurrency >=
+                (price.crewCosmeticCurrency || 0) &&
+              this.ship.shipCosmeticCurrency >=
+                (price.shipCosmeticCurrency || 0) &&
               !this.ship.availableHeaderBackgrounds.find(
                 (ahb) =>
                   ahb.id === item.headerBackground?.id,
               ),
           }
         })
-        .filter((e) => e.price > 0)
     },
   },
   watch: {},

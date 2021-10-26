@@ -193,15 +193,10 @@ export default function (
         })
 
       const price = c.getGuildChangePrice(ship as any)
-      if (ship.commonCredits < price)
-        return callback({
-          error: `Not enough common 💳${c.baseCurrencyPlural}.`,
-        })
 
-      ship.commonCredits = Math.round(
-        ship.commonCredits - price,
-      )
-      ship.toUpdate.commonCredits = ship.commonCredits
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.changeGuild(guildId)
 

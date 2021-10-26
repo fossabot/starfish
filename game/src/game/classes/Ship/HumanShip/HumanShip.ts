@@ -1503,6 +1503,36 @@ export class HumanShip extends CombatShip {
     }
   }
 
+  buy(
+    price: Price,
+    crewMember?: CrewMember,
+  ): true | string {
+    if (
+      (price.credits || 0) > this.commonCredits ||
+      (price.shipCosmeticCurrency || 0) >
+        this.shipCosmeticCurrency ||
+      (crewMember &&
+        (price.crewCosmeticCurrency || 0) >
+          crewMember.crewCosmeticCurrency)
+    )
+      return `Insufficient funds.`
+
+    this.commonCredits -= price.credits || 0
+    this.shipCosmeticCurrency -=
+      price.shipCosmeticCurrency || 0
+    if (crewMember) {
+      crewMember.crewCosmeticCurrency -=
+        price.crewCosmeticCurrency || 0
+      crewMember.toUpdate.crewCosmeticCurrency =
+        crewMember.crewCosmeticCurrency
+    }
+    this._stub = null
+    this.toUpdate.commonCredits = this.commonCredits
+    this.toUpdate.shipCosmeticCurrency =
+      this.shipCosmeticCurrency
+    return true
+  }
+
   depositInBank(amount: number) {
     const planet = this.planet
     if (!planet) return

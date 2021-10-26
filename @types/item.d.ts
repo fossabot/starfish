@@ -98,7 +98,7 @@ interface BaseChassisData {
   id: ChassisId
   type: `chassis`
   mass: number
-  basePrice: number
+  basePrice: Price
   displayName: string
   description: string
   slots: number
@@ -114,7 +114,7 @@ interface BaseItemData {
   displayName: string
   description: string
   mass: number
-  basePrice: number
+  basePrice: Price
   rarity: number
   reliability?: number
   repairDifficulty?: number

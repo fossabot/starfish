@@ -37,25 +37,23 @@ export default function (
         )
       if (!itemForSale)
         return callback({
-          error: `That equipment is not for sale here.`,
+          error: `That is not for sale here.`,
         })
 
-      const price = Math.ceil(
-        c.baseTaglinePrice *
-          (itemForSale.priceMultiplier ?? 1),
-      )
-      if (price > ship.shipCosmeticCurrency)
-        return callback({ error: `Insufficient funds.` })
+      const price: Price =
+        c.getShipTaglinePrice(itemForSale)
 
-      ship.shipCosmeticCurrency -= price
-      ship.toUpdate.shipCosmeticCurrency =
-        ship.shipCosmeticCurrency
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.addTagline(tagline, null, true)
       ship.boughtTaglines.push(tagline)
       ship.logEntry(
         [
-          `Bought a new ship tagline for 💎${price}:`,
+          `Bought a new ship tagline for ${c.priceToString(
+            price,
+          )}:`,
           { text: `"${tagline}"`, color: `var(--success)` },
         ],
         `high`,
@@ -65,7 +63,7 @@ export default function (
         data: true,
       })
 
-      planet.addXp(price)
+      planet.addXp(price.shipCosmeticCurrency || 0)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -107,25 +105,23 @@ export default function (
         )
       if (!itemForSale)
         return callback({
-          error: `That equipment is not for sale here.`,
+          error: `That is not for sale here.`,
         })
 
-      const price = Math.ceil(
-        c.baseHeaderBackgroundPrice *
-          (itemForSale.priceMultiplier ?? 1),
-      )
-      if (price > ship.shipCosmeticCurrency)
-        return callback({ error: `Insufficient funds.` })
+      const price: Price =
+        c.getShipHeaderBackgroundPrice(itemForSale)
 
-      ship.shipCosmeticCurrency -= price
-      ship.toUpdate.shipCosmeticCurrency =
-        ship.shipCosmeticCurrency
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.addHeaderBackground(headerBackground, null, true)
       ship.boughtHeaderBackgrounds.push(headerBackground)
       ship.logEntry(
         [
-          `Bought a new ship header for 💎${price}:`,
+          `Bought a new ship banner for ${c.priceToString(
+            price,
+          )}:`,
           {
             text: `"${headerBackground.id}"`,
             color: `var(--success)`,
@@ -138,7 +134,7 @@ export default function (
         data: true,
       })
 
-      planet.addXp(price)
+      planet.addXp(price.shipCosmeticCurrency || 0)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 

@@ -370,7 +370,10 @@ export default function (
       if (
         minePriority !== `closest` &&
         !Object.keys(c.cargo).includes(minePriority) &&
-        ![`shipCosmeticCurrency`, `crewCosmeticCurrency`].includes(minePriority)
+        ![
+          `shipCosmeticCurrency`,
+          `crewCosmeticCurrency`,
+        ].includes(minePriority)
       )
         return (
           callback &&
@@ -907,10 +910,11 @@ export default function (
         planet,
         ship.guildId,
       )
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
 
-      crewMember.credits -= price
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
+
       crewMember.addToPermanentPassive({
         ...passiveForSale,
       })
@@ -921,7 +925,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 

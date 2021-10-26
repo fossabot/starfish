@@ -66,7 +66,7 @@
               ca.itemData && ca.itemData.displayName
             }}</b>
             <div>
-              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+              {{ c.priceToString(ca.price) }}
             </div>
           </button>
         </span></span
@@ -174,10 +174,14 @@ export default Vue.extend({
             price,
             canBuy:
               this.isCaptain &&
-              this.ship.commonCredits >= price,
+              this.ship.commonCredits >=
+                (price.credits || 0) &&
+              this.crewMember.crewCosmeticCurrency >=
+                (price.crewCosmeticCurrency || 0) &&
+              this.ship.shipCosmeticCurrency >=
+                (price.shipCosmeticCurrency || 0),
           }
         })
-        .filter((e) => e.price > 0)
     },
     sellableItems() {
       return this.ship?.items
@@ -213,7 +217,12 @@ export default Vue.extend({
             price,
             canBuy:
               this.isCaptain &&
-              this.ship.commonCredits >= price &&
+              this.ship.commonCredits >=
+                (price.credits || 0) &&
+              this.crewMember.crewCosmeticCurrency >=
+                (price.crewCosmeticCurrency || 0) &&
+              this.ship.shipCosmeticCurrency >=
+                (price.shipCosmeticCurrency || 0) &&
               chassis.id !== this.ship.chassis.id,
           }
         },

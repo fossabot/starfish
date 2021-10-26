@@ -73,7 +73,7 @@ export class Item extends Stubbable {
     return (
       Math.max(
         0,
-        this.baseData.basePrice -
+        (this.baseData.basePrice.credits || 0) -
           c.itemPriceMultiplier * 50,
       ) * 0.2
     )

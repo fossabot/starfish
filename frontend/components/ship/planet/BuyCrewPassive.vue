@@ -33,7 +33,7 @@
             }}
           </b>
         </div>
-        <div>💳{{ c.numberWithCommas(passive.price) }}</div>
+        <div>{{ c.priceToString(passive.price) }}</div>
       </button>
     </span>
   </div>
@@ -86,7 +86,11 @@ export default Vue.extend({
           )
           return {
             data: c.crewPassives[passive.id],
-            canBuy: this.crewMember.credits >= price,
+            canBuy:
+              this.crewMember.credits >=
+                (price.credits || 0) &&
+              this.crewMember.crewCosmeticCurrency >=
+                (price.crewCosmeticCurrency || 0),
             price,
             intensity: passive.intensity,
           }

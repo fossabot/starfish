@@ -102,7 +102,7 @@ interface CrewPassiveData {
   description?: (data: CrewPassiveData) => string
   buyable?: {
     rarity: number
-    basePrice: number
+    basePrice: Price
     baseIntensity: number
     wholeNumbersOnly: boolean
   }

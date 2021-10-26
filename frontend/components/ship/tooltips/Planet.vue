@@ -105,7 +105,7 @@
           dataToUse.vendor.shipCosmetics.length
         "
       >
-        Cosmetics:
+        Ship cosmetics:
         {{ dataToUse.vendor.shipCosmetics.length }}
         for sale
       </div>
