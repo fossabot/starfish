@@ -5,12 +5,8 @@
     /></nuxt-link>
     <nuxt-link to="/about">About</nuxt-link>
     <nuxt-link to="/howtoplay">How To Play</nuxt-link>
-    <nuxt-link to="/feedback">Feedback</nuxt-link>
-    <nuxt-link to="/feedback/bugreport"
-      >Bug Report</nuxt-link
-    >
-    <nuxt-link to="/feedback/storytime"
-      >Share a Story</nuxt-link
+    <a :href="c.supportServerLink" target="_blank"
+      >Discord Server</a
     >
     <nuxt-link to="/supportus">Support Us</nuxt-link>
 
@@ -61,7 +57,6 @@ export default Vue.extend({
   methods: {
     logout() {
       this.$store.dispatch('logout')
-      ;(this as any).$router.push('/')
     },
     shipSelected(e: Event) {
       this.$store.dispatch('socketSetup', this.selectedShip)

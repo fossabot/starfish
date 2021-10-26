@@ -15,3 +15,9 @@ interface GameDbOptions {
   username?: string
   password?: string
 }
+
+interface Price {
+  credits?: number
+  shipCosmeticCurrency?: number
+  crewCosmeticCurrency?: number
+}

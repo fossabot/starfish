@@ -7,6 +7,8 @@ import {
 import {
   checkAchievements,
   addAchievement,
+  addHeaderBackground,
+  addTagline,
 } from '../addins/achievements'
 
 import defaultGameSettings from '../../../presets/gameSettings'
@@ -105,6 +107,8 @@ export class HumanShip extends CombatShip {
   shipCosmeticCurrency: number
   orders: ShipOrders | false = false
   orderReactions: ShipOrderReaction[] = []
+  boughtHeaderBackgrounds: HeaderBackground[] = []
+  boughtTaglines: string[] = []
 
   tutorial: Tutorial | undefined = undefined
 
@@ -126,6 +130,17 @@ export class HumanShip extends CombatShip {
     this.seenCrewMembers = data.seenCrewMembers || []
 
     this.banked = data.banked || []
+
+    data.boughtHeaderBackgrounds?.forEach((bhb) =>
+      this.addHeaderBackground(bhb, null, true),
+    )
+    this.boughtHeaderBackgrounds.push(
+      ...(data.boughtHeaderBackgrounds || []),
+    )
+    data.boughtTaglines?.forEach((btl) =>
+      this.addTagline(btl, null, true),
+    )
+    this.boughtTaglines.push(...(data.boughtTaglines || []))
 
     this.speed = c.vectorToMagnitude(this.velocity)
     this.toUpdate.speed = this.speed
@@ -244,6 +259,8 @@ export class HumanShip extends CombatShip {
 
   checkAchievements = checkAchievements
   addAchievement = addAchievement
+  addHeaderBackground = addHeaderBackground
+  addTagline = addTagline
 
   tick() {
     const profiler = new c.Profiler(
@@ -2107,6 +2124,8 @@ export class HumanShip extends CombatShip {
         this.shipCosmeticCurrency += Math.round(
           contents.amount,
         )
+        this.toUpdate.shipCosmeticCurrency =
+          this.shipCosmeticCurrency
         return
       }
 

@@ -16,6 +16,7 @@ interface BaseShipData {
   level?: number
   tagline?: string
   headerBackground?: string
+  boughtHeaderBackgrounds?: HeaderBackground[]
   achievements?: string[]
   stats?: ShipStatEntry[]
 }
@@ -35,6 +36,8 @@ interface BaseHumanShipData extends BaseShipData {
   banked?: BankEntry[]
   orderReactions?: ShipOrderReaction[]
   seenCrewMembers?: string[]
+  boughtHeaderBackgrounds?: HeaderBackground[]
+  boughtTaglines?: string[]
 }
 
 interface BaseAIShipData extends BaseShipData {
@@ -174,16 +177,18 @@ interface Achievement {
   id: string
   for: string
   condition?: true | AchievementCondition
-  reward: AchievementReward | AchievementReward[]
+  reward: ShipCosmetic | ShipCosmetic[]
   silent?: true
 }
 
-interface AchievementReward {
+interface HeaderBackground {
+  id: string
+  url: `${string}.${`svg` | `png` | `jpg`}`
+}
+
+interface ShipCosmetic {
   tagline?: string
-  headerBackground?: {
-    id: string
-    url: `${string}.${`svg` | `png` | `jpg`}`
-  }
+  headerBackground?: HeaderBackground
 }
 
 interface AchievementCondition {

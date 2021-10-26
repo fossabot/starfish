@@ -161,9 +161,9 @@ ${c.percentToTextBars(
                   .filter((i) => i.amount)
                   .map(
                     (i) =>
-                      `${c.cargo[i.id].name} (${
-                        i.amount
-                      } ton${i.amount === 1 ? `` : `s`})`,
+                      `${c.cargo[i.id].name} (${c.r2(
+                        i.amount,
+                      )} ton${i.amount === 1 ? `` : `s`})`,
                   )
                   .join(`\n`)}`),
         })

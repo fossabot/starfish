@@ -51,6 +51,15 @@
       <li
         v-if="
           planet.vendor &&
+          planet.vendor.shipCosmetics.length > 0
+        "
+      >
+        {{ planet.vendor.shipCosmetics.length }} cosmetics
+        for sale
+      </li>
+      <li
+        v-if="
+          planet.vendor &&
           planet.vendor.repairCostMultiplier
         "
       >
@@ -118,12 +127,12 @@
       <PromptButton
         v-if="crewMember"
         :disabled="crewMember.credits < 1"
-        class="noflex marleftsmall"
+        class="noflex marlefttiny"
         :max="crewMember.credits"
         @done="contributeToPlanet(...arguments)"
         @apply="contributeToPlanet(...arguments)"
       >
-        <template #label> Contribute </template>
+        <template #label>+ 💳</template>
         <template>
           <div>
             How many 💳{{ c.baseCurrencyPlural }} will you
@@ -138,6 +147,81 @@
                 ? c.baseCurrencySingular
                 : c.baseCurrencyPlural
             }}
+          </div>
+        </template> </PromptButton
+      ><PromptButton
+        v-if="crewMember && crewMember.crewCosmeticCurrency"
+        class="noflex marlefttiny"
+        :max="crewMember.crewCosmeticCurrency"
+        @done="
+          contributeCrewCosmeticCurrencyToPlanet(
+            ...arguments,
+          )
+        "
+        @apply="
+          contributeCrewCosmeticCurrencyToPlanet(
+            ...arguments,
+          )
+        "
+      >
+        <template #label>+ 🟡</template>
+        <template>
+          <div>
+            How many 🟡{{ c.crewCosmeticCurrencyPlural }}
+            will you contribute?
+          </div>
+          <div>
+            Exchange rate: 🟡1
+            {{ c.crewCosmeticCurrencySingular }} =
+            {{
+              c.numberWithCommas(
+                Math.round(
+                  1 /
+                    c.planetContributeCrewCosmeticCostPerXp,
+                ),
+              )
+            }}
+            xp
+          </div>
+        </template> </PromptButton
+      ><PromptButton
+        v-if="
+          crewMember &&
+          ship.captain === crewMember.id &&
+          ship.shipCosmeticCurrency
+        "
+        :disabled="ship.shipCosmeticCurrency < 1"
+        class="noflex marlefttiny"
+        :max="ship.shipCosmeticCurrency"
+        @done="
+          contributeShipCosmeticCurrencyToPlanet(
+            ...arguments,
+          )
+        "
+        @apply="
+          contributeShipCosmeticCurrencyToPlanet(
+            ...arguments,
+          )
+        "
+      >
+        <template #label>+ 💎</template>
+        <template>
+          <div>
+            How many 💎{{ c.shipCosmeticCurrencyPlural }}
+            will you contribute?
+          </div>
+          <div>
+            Exchange rate: 💎1
+            {{ c.shipCosmeticCurrencySingular }} =
+            {{
+              c.numberWithCommas(
+                Math.round(
+                  1 /
+                    c.planetContributeShipCosmeticCostPerXp,
+                ),
+              )
+            }}
+            xp
           </div>
         </template>
       </PromptButton>
@@ -219,6 +303,84 @@ export default Vue.extend({
       }
       ;(this as any).$socket?.emit(
         'crew:donateToPlanet',
+        this.ship.id,
+        this.crewMember?.id,
+        amount,
+        (res: IOResponse<CrewMemberStub>) => {
+          if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+            console.log(res.error)
+            return
+          }
+        },
+      )
+    },
+
+    contributeCrewCosmeticCurrencyToPlanet(
+      amount: number | string,
+    ) {
+      if (amount === 'all')
+        amount = this.crewMember.crewCosmeticCurrency
+      amount = c.r2(
+        parseFloat(`${amount}` || '0') || 0,
+        2,
+        true,
+      )
+      if (
+        !amount ||
+        amount <= 0 ||
+        amount > this.crewMember.crewCosmeticCurrency
+      ) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'Invalid amount.',
+          type: 'error',
+        })
+        return
+      }
+      ;(this as any).$socket?.emit(
+        'crew:donateCosmeticCurrencyToPlanet',
+        this.ship.id,
+        this.crewMember?.id,
+        amount,
+        (res: IOResponse<CrewMemberStub>) => {
+          if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+            console.log(res.error)
+            return
+          }
+        },
+      )
+    },
+
+    contributeShipCosmeticCurrencyToPlanet(
+      amount: number | string,
+    ) {
+      if (amount === 'all')
+        amount = this.ship.shipCosmeticCurrency
+      amount = c.r2(
+        parseFloat(`${amount}` || '0') || 0,
+        2,
+        true,
+      )
+      if (
+        !amount ||
+        amount <= 0 ||
+        amount > this.ship.shipCosmeticCurrency
+      ) {
+        this.$store.dispatch('notifications/notify', {
+          text: 'Invalid amount.',
+          type: 'error',
+        })
+        return
+      }
+      ;(this as any).$socket?.emit(
+        'ship:donateCosmeticCurrencyToPlanet',
         this.ship.id,
         this.crewMember?.id,
         amount,

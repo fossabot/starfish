@@ -126,15 +126,13 @@ export function addAchievement(
       ? achievement.reward
       : [achievement.reward]) {
       if (reward.tagline)
-        addTagline(
-          this,
+        this.addTagline(
           reward.tagline,
           achievement.for,
           Boolean(silent || achievement.silent),
         )
       if (reward.headerBackground)
-        addHeaderBackground(
-          this,
+        this.addHeaderBackground(
           reward.headerBackground,
           achievement.for,
           Boolean(silent || achievement.silent),
@@ -144,19 +142,19 @@ export function addAchievement(
 }
 
 // ----- cosmetics -----
-function addTagline(
-  ship: HumanShip,
+export function addTagline(
+  this: HumanShip,
   tagline: string,
-  reason: string,
+  reason: string | null,
   silent: boolean,
 ) {
-  if (ship.availableTaglines.find((t) => t === tagline))
+  if (this.availableTaglines.find((t) => t === tagline))
     return
-  ship.availableTaglines.push(tagline)
-  ship.toUpdate.availableTaglines = ship.availableTaglines
+  this.availableTaglines.push(tagline)
+  this.toUpdate.availableTaglines = this.availableTaglines
 
   if (!silent)
-    ship.logEntry(
+    this.logEntry(
       [
         `Unlocked a new ship tagline for ${reason}:`,
         { text: `"${tagline}"`, color: `var(--success)` },
@@ -165,24 +163,25 @@ function addTagline(
     )
 }
 
-function addHeaderBackground(
-  ship: HumanShip,
-  bg: { id: string; url: string },
-  reason: string,
+export function addHeaderBackground(
+  this: HumanShip,
+  bg: HeaderBackground,
+  reason: string | null,
   silent: boolean,
 ) {
-  if (ship.availableHeaderBackgrounds.find((b) => b === bg))
+  if (this.availableHeaderBackgrounds.find((b) => b === bg))
     return
-  ship.availableHeaderBackgrounds.push(bg)
-  ship.toUpdate.availableHeaderBackgrounds =
-    ship.availableHeaderBackgrounds
+  this.availableHeaderBackgrounds.push(bg)
+  this.toUpdate.availableHeaderBackgrounds =
+    this.availableHeaderBackgrounds
 
-  if (!silent)
-    ship.logEntry(
+  if (!silent) {
+    this.logEntry(
       [
         `Unlocked a new ship header for ${reason}:`,
         { text: `"${bg.id}"`, color: `var(--success)` },
       ],
       `high`,
     )
+  }
 }

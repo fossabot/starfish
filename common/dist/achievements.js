@@ -27,14 +27,8 @@ const globals_1 = __importDefault(require("./globals"));
 const gameConstants_1 = __importDefault(require("./gameConstants"));
 /*
   to be assigned
-  `Big Flipper`,
-  `Whale, I'll be!`,
-  `Splish Splash`,
-  `Holy Mackerel!`,
-  `Small Pond 4 Life`,
-  `Nautical Nonsense`,
-  `Very Shallow`,
-  `Bottom Feeder`,
+  `Big Flipper`
+  `Bottom Feeder`
 */
 const achievements = {
     // default

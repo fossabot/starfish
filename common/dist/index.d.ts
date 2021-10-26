@@ -155,6 +155,16 @@ declare const _default: {
     shipCosmeticCurrencyPlural: string;
     crewCosmeticCurrencySingular: string;
     crewCosmeticCurrencyPlural: string;
+    baseTaglinePrice: number;
+    baseHeaderBackgroundPrice: number;
+    buyableHeaderBackgrounds: {
+        rarity: number;
+        value: HeaderBackground;
+    }[];
+    buyableTaglines: {
+        rarity: number;
+        value: string;
+    }[];
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;
@@ -167,6 +177,8 @@ declare const _default: {
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
+    planetContributeShipCosmeticCostPerXp: number;
+    planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
     weaponDamageMultiplier: number;

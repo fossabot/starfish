@@ -128,6 +128,7 @@ export class CommandContext {
 
   async reply(message: string | MessageOptions) {
     if (
+      !this.initialMessage.channel ||
       this.initialMessage.channel instanceof NewsChannel ||
       this.initialMessage.channel.partial ||
       this.initialMessage.channel.type !== `GUILD_TEXT`

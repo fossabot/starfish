@@ -8,7 +8,7 @@
     "
   >
     <div>
-      <div class="panesubhead">Personal Outfitter</div>
+      <div class="panesubhead">Personal Upgrades</div>
     </div>
 
     <span

@@ -19,7 +19,7 @@ export class WeaponsCommand implements Command {
     const res = await ioInterface.crew.move(
       context.ship.id,
       context.crewMember.id,
-      `cockpit`,
+      `weapons`,
     )
     if (`error` in res) {
       context.reply(res.error)

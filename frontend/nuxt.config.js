@@ -1,6 +1,8 @@
 import c from '../common/dist'
 
 export default {
+  target: `static`,
+
   server: {
     port: 4300,
   },
@@ -67,8 +69,4 @@ export default {
   buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
 
   modules: [`portal-vue/nuxt`],
-
-  serverMiddleware: {
-    '/api': `~/api`,
-  },
 }

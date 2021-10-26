@@ -58,6 +58,9 @@ export default Vue.extend({
 
     ;(this as any).$router.afterEach(async (to, from) => {
       this.$store.commit('tooltip')
+      setTimeout(() => {
+        this.$store.commit('tooltip')
+      }, 1000)
     })
 
     window.addEventListener(

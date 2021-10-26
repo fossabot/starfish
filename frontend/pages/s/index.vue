@@ -126,9 +126,9 @@ export default Vue.extend({
     connected(): void {
       this.masonryElement?.position()
     },
-    userId(): void {
-      if (!this.userId) (this as any).$router.push('/login')
-    },
+    // userId(): void {
+    //   if (!this.userId) (this as any).$router.push('/login')
+    // },
     lastUpdated(): void {
       setTimeout(() => (this.ready = true), 600)
     },

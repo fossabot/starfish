@@ -12,9 +12,9 @@
       <div class="flexbetween">
         <span
           v-tooltip="
-            `${c.capitalize(
+            `<b>💳${c.capitalize(
               c.baseCurrencyPlural,
-            )}: Use these to buy cargo, upgrades, ship parts, and more`
+            )}</b>: Use these to buy cargo, upgrades, ship parts, and more`
           "
           >💳{{
             c.numberWithCommas(
@@ -76,9 +76,9 @@
       <div
         v-if="crewMember.crewCosmeticCurrency"
         v-tooltip="
-          `${c.capitalize(
+          `<b>🟡${c.capitalize(
             c.crewCosmeticCurrencyPlural,
-          )}: Rare currency used to buy cosmetics and other upgrades!`
+          )}</b>: Rare currency used to buy cosmetics and other upgrades!`
         "
       >
         🟡{{

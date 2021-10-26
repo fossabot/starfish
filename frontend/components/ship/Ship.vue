@@ -21,34 +21,31 @@
     />
 
     <div
-      class="panesection"
+      class="panesection grid2"
       v-if="ship.commonCredits || ship.shipCosmeticCurrency"
     >
       <div
-        v-if="ship.commonCredits"
-        class="flexbetween"
         v-tooltip="
-          `The ship's shared pool of 💳${c.baseCurrencyPlural}. The captain can spend the common fund on new items for the ship.`
+          `<b>💳${c.capitalize(
+            c.baseCurrencyPlural,
+          )}</b>: The ship's common fund of currency. The captain can spend the common fund on new items for the ship.`
         "
       >
-        <div>Common Fund</div>
-        <div>
-          💳{{
-            ship &&
-            c.numberWithCommas(
-              c.r2(ship.commonCredits, 0, true),
-            )
-          }}
-        </div>
+        💳{{
+          ship &&
+          c.numberWithCommas(
+            c.r2(ship.commonCredits, 0, true),
+          )
+        }}
       </div>
+
       <PromptButton
-        class="martoptiny"
         v-if="isCaptain && ship.commonCredits"
         :max="ship.commonCredits"
         @done="redistributeCommonFund(...arguments)"
         @apply="redistributeCommonFund(...arguments)"
       >
-        <template #label> Redistribute </template>
+        <template #label>Redistribute</template>
         <template>
           How many 💳{{ c.baseCurrencyPlural }} do you want
           to redistribute evenly among the crew? (Max
@@ -61,25 +58,18 @@
       </PromptButton>
 
       <div
-        :class="{
-          martopsmall: isCaptain && ship.commonCredits,
-        }"
-        class="flexbetween"
         v-if="ship.shipCosmeticCurrency"
         v-tooltip="
-          `Rare currency used to buy cosmetics and other upgrades!`
+          `<b>💎${c.capitalize(
+            c.shipCosmeticCurrencyPlural,
+          )}</b>: Rare currency used to buy cosmetics and other upgrades!`
         "
       >
-        <div>
-          {{ c.capitalize(c.shipCosmeticCurrencyPlural) }}
-        </div>
-        <div>
-          💎{{
-            c.numberWithCommas(
-              c.r2(ship.shipCosmeticCurrency, 0, true),
-            )
-          }}
-        </div>
+        💎{{
+          c.numberWithCommas(
+            c.r2(ship.shipCosmeticCurrency, 0, true),
+          )
+        }}
       </div>
     </div>
   </Box>

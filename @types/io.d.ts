@@ -335,6 +335,18 @@ interface IOClientEvents {
     amount: number,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
+  [`ship:donateCosmeticCurrencyToPlanet`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
+  [`crew:donateCosmeticCurrencyToPlanet`]: (
+    shipId: string,
+    crewId: string,
+    amount: number,
+    callback: (res: IOResponse<CrewMemberStub>) => void,
+  ) => void
   [`crew:thrust`]: (
     shipId: string,
     crewId: string,
@@ -372,6 +384,20 @@ interface IOClientEvents {
     itemId: ItemId | ChassisId,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
+
+  [`ship:buyTagline`]: (
+    shipId: string,
+    crewId: string,
+    tagline: string,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
+  [`ship:buyHeaderBackground`]: (
+    shipId: string,
+    crewId: string,
+    headerBackground: HeaderBackground,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
+
   [`ship:joinGuild`]: (
     shipId: string,
     crewId: string,

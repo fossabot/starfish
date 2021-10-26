@@ -13,9 +13,12 @@
     </div>
 
     <div class="marbotsmall">
-      <div v-if="storedHere">
+      <div v-if="creditsStoredHere">
         Your ship has
-        <b>💳{{ storedHere }} {{ c.baseCurrencyPlural }}</b>
+        <b
+          >💳{{ creditsStoredHere }}
+          {{ c.baseCurrencyPlural }}</b
+        >
         stored here.
       </div>
       <div v-else class="sub">
@@ -52,9 +55,9 @@
       </PromptButton>
 
       <PromptButton
-        :disabled="!storedHere"
+        :disabled="!creditsStoredHere"
         class="inlineblock"
-        :max="storedHere"
+        :max="creditsStoredHere"
         @done="withdraw"
         @apply="withdraw"
       >
@@ -95,9 +98,17 @@ export default Vue.extend({
         )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
-    storedHere() {
+    creditsStoredHere() {
       return (
         this.ship.banked.find(
+          (b) => b.id === this.ship.planet.id,
+        )?.amount || 0
+      )
+    },
+
+    shipCosmeticCurrencyStoredHere() {
+      return (
+        this.ship.bankedCosmeticCurrency?.find(
           (b) => b.id === this.ship.planet.id,
         )?.amount || 0
       )
@@ -131,7 +142,7 @@ export default Vue.extend({
       )
     },
     withdraw(amount: any) {
-      if (amount === 'all') amount = this.storedHere
+      if (amount === 'all') amount = this.creditsStoredHere
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
 
       this.$store.dispatch('updateShip', {

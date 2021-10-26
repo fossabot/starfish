@@ -1,17 +1,13 @@
 <template>
-  <div
-    class="panesection"
-    v-if="
-      crewMember &&
-      ship.planet.vendor &&
-      (buyableCargo.length || sellableCargo.length)
-    "
-  >
-    <div>
+  <div class="panesection nopadtop">
+    <!-- <div>
       <div class="panesubhead">Merchant District</div>
-    </div>
+    </div> -->
 
-    <div class="flexwrap">
+    <div
+      class="flexwrap"
+      v-if="buyableCargo.length || sellableCargo.length"
+    >
       <span
         class="panesection inline"
         v-if="buyableCargo && buyableCargo.length"
@@ -136,6 +132,10 @@
           </PromptButton>
         </span>
       </span>
+    </div>
+
+    <div v-else class="padbig flexcenter">
+      <div class="sub">Nothing for sale yet!</div>
     </div>
   </div>
 </template>

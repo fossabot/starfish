@@ -270,7 +270,7 @@ function getPlanetPopulation(planet) {
             .split(``)
             .reduce((t, c) => t + c.charCodeAt(0), 0) % 200) +
         20) **
-        (planet.level / 30) *
+        (planet.level / 20) *
         planet.radius, 0);
 }
 // function getPlanetDescription(planet: PlanetStub): string {

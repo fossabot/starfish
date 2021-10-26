@@ -75,6 +75,70 @@ export class MiningPlanet extends Planet {
 
     resource.mineCurrent += amount
 
+    const currentlyMiningShips = this.shipsAt.filter((s) =>
+      s.crewMembers.find(
+        (cm) =>
+          cm.location === `mine` &&
+          (cm.minePriority === cargoId ||
+            cm.minePriority === `closest` ||
+            !this.mine.find(
+              (m) => m.id === cm.minePriority,
+            )),
+      ),
+    )
+
+    // * chance to randomly discover cosmetic currencies
+    currentlyMiningShips.forEach((ship) => {
+      if (
+        true ||
+        c.lottery(1, 100000000 / c.tickInterval)
+      ) {
+        const amount = Math.random() > 0.8 ? 2 : 1
+        ship.logEntry([
+          `You discovered 💎${amount} `,
+          {
+            text:
+              amount === 1
+                ? c.shipCosmeticCurrencySingular
+                : c.shipCosmeticCurrencyPlural,
+            color: `var(--shipCosmeticCurrency)`,
+          },
+          `as you mined!`,
+        ])
+        ship.distributeCargoAmongCrew([
+          {
+            id: `shipCosmeticCurrency`,
+            amount,
+          },
+        ])
+      }
+      if (
+        true ||
+        c.lottery(1, 100000000 / c.tickInterval)
+      ) {
+        const amount = Math.round(
+          (Math.random() + 0.1) * 1000,
+        )
+        ship.logEntry([
+          `You discovered 🟡${amount} `,
+          {
+            text:
+              amount === 1
+                ? c.shipCosmeticCurrencySingular
+                : c.crewCosmeticCurrencyPlural,
+            color: `var(--crewCosmeticCurrency)`,
+          },
+          `as you mined!`,
+        ])
+        ship.distributeCargoAmongCrew([
+          {
+            id: `crewCosmeticCurrency`,
+            amount,
+          },
+        ])
+      }
+    })
+
     // * ----- done mining, pay out -----
     if (resource.mineCurrent >= resource.mineRequirement) {
       // update max mineable
@@ -85,21 +149,9 @@ export class MiningPlanet extends Planet {
       }
 
       // distribute among all current mining ships
-      const shipsToDistributeAmong = this.shipsAt.filter(
-        (s) =>
-          s.crewMembers.find(
-            (cm) =>
-              cm.location === `mine` &&
-              (cm.minePriority === cargoId ||
-                cm.minePriority === `closest` ||
-                !this.mine.find(
-                  (m) => m.id === cm.minePriority,
-                )),
-          ),
-      )
 
       const amountBoostPassive =
-        shipsToDistributeAmong.reduce(
+        currentlyMiningShips.reduce(
           (total, s) =>
             s.getPassiveIntensity(`boostMinePayouts`) +
             total,
@@ -112,12 +164,12 @@ export class MiningPlanet extends Planet {
 
       c.log(
         `gray`,
-        `${shipsToDistributeAmong.length} ships mined ${finalPayoutAmount} tons of ${cargoId} from ${this.name}.`,
+        `${currentlyMiningShips.length} ships mined ${finalPayoutAmount} tons of ${cargoId} from ${this.name}.`,
       )
 
-      shipsToDistributeAmong.forEach((ship) => {
+      currentlyMiningShips.forEach((ship) => {
         ship.logEntry(
-          shipsToDistributeAmong.length > 1
+          currentlyMiningShips.length > 1
             ? [
                 `Your ship helped mine ${c.r2(
                   finalPayoutAmount,
@@ -138,14 +190,14 @@ export class MiningPlanet extends Planet {
                       }%) `
                     : ``
                 }which was split with ${
-                  shipsToDistributeAmong.length - 1
+                  currentlyMiningShips.length - 1
                 } other ship ${
-                  shipsToDistributeAmong.length - 1 === 1
+                  currentlyMiningShips.length - 1 === 1
                     ? ``
                     : `s`
                 } for a total of ${c.r2(
                   finalPayoutAmount /
-                    shipsToDistributeAmong.length,
+                    currentlyMiningShips.length,
                 )} tons.`,
               ]
             : [
@@ -185,14 +237,14 @@ export class MiningPlanet extends Planet {
           cm.addStat(
             `totalTonsMined`,
             finalPayoutAmount /
-              shipsToDistributeAmong.length /
+              currentlyMiningShips.length /
               crewMembersWhoHelped.length,
           )
         })
 
         ship.addStat(
           `totalTonsMined`,
-          finalPayoutAmount / shipsToDistributeAmong.length,
+          finalPayoutAmount / currentlyMiningShips.length,
         )
 
         ship.distributeCargoAmongCrew([
@@ -200,56 +252,12 @@ export class MiningPlanet extends Planet {
             id: cargoId as CargoId,
             amount: c.r2(
               finalPayoutAmount /
-                shipsToDistributeAmong.length,
+                currentlyMiningShips.length,
               0,
               true,
             ),
           },
         ])
-
-        // * chance to add cosmetic currencies
-        if (Math.random() > 0.995) {
-          const amount = Math.random() > 0.8 ? 2 : 1
-          ship.logEntry([
-            `You discovered 💎${amount} `,
-            {
-              text:
-                amount === 1
-                  ? c.shipCosmeticCurrencySingular
-                  : c.shipCosmeticCurrencyPlural,
-              color: `var(--shipCosmeticCurrency)`,
-            },
-            `as you mined!`,
-          ])
-          ship.distributeCargoAmongCrew([
-            {
-              id: `shipCosmeticCurrency`,
-              amount,
-            },
-          ])
-        }
-        if (Math.random() > 0.995) {
-          const amount = Math.round(
-            (Math.random() + 0.1) * 1000,
-          )
-          ship.logEntry([
-            `You discovered 🟡${amount} `,
-            {
-              text:
-                amount === 1
-                  ? c.shipCosmeticCurrencySingular
-                  : c.crewCosmeticCurrencyPlural,
-              color: `var(--crewCosmeticCurrency)`,
-            },
-            `as you mined!`,
-          ])
-          ship.distributeCargoAmongCrew([
-            {
-              id: `crewCosmeticCurrency`,
-              amount,
-            },
-          ])
-        }
       })
 
       this.resetForNextMine(cargoId)

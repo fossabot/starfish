@@ -466,6 +466,59 @@ export default function (
   )
 
   socket.on(
+    `crew:donateCosmeticCurrencyToPlanet`,
+    (shipId, crewId, amount, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `Couldn't find a ship by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `Couldn't find a member by that id.`,
+        })
+
+      amount = c.r2(amount, 0, true)
+
+      if (
+        !amount ||
+        amount > crewMember.crewCosmeticCurrency
+      )
+        return callback({
+          error: `Insufficient ${c.crewCosmeticCurrencyPlural}.`,
+        })
+
+      const planet = ship.planet
+      if (!planet)
+        return callback({
+          error: `It looks like you're not on a planet.`,
+        })
+
+      crewMember.crewCosmeticCurrency -= amount
+      crewMember.toUpdate.crewCosmeticCurrency =
+        crewMember.crewCosmeticCurrency
+
+      planet.donate(
+        amount / c.planetContributeCrewCosmeticCostPerXp,
+        ship.guildId,
+      )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} donated ${amount} ${c.crewCosmeticCurrencyPlural} to the planet ${planet.name}.`,
+      )
+    },
+  )
+
+  socket.on(
     `ship:redistribute`,
     (shipId, crewId, amount) => {
       if (!game) return

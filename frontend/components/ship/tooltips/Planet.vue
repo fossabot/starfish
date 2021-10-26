@@ -98,6 +98,17 @@
         {{ dataToUse.vendor.passives.length }}
         for sale
       </div>
+      <div
+        v-if="
+          dataToUse.vendor &&
+          dataToUse.vendor.shipCosmetics &&
+          dataToUse.vendor.shipCosmetics.length
+        "
+      >
+        Cosmetics:
+        {{ dataToUse.vendor.shipCosmetics.length }}
+        for sale
+      </div>
 
       <div v-if="dataToUse.bank">
         Bank: 💳{{

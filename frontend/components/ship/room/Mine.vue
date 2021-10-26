@@ -98,24 +98,6 @@ export default Vue.extend({
               : total,
           0,
         ) || 0)
-      c.log(
-        (
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
-          (total, p: CrewPassiveData) =>
-            p.id === 'boostMineSpeed'
-              ? total + (p.intensity || 0)
-              : total,
-          0,
-        ),
-        (this.ship as ShipStub).passives?.reduce(
-          (total, p: ShipPassiveEffect) =>
-            p.id === 'boostMineSpeed'
-              ? total + (p.intensity || 0)
-              : total,
-          0,
-        ),
-      )
       const generalBoostMultiplier =
         c.getGeneralMultiplierBasedOnCrewMemberProximity(
           this.crewMember,
