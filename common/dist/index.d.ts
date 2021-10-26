@@ -239,6 +239,15 @@ declare const _default: {
     }) => Price;
     getShipTaglinePrice: (cosmetic: PlanetShipCosmetic) => Price;
     getShipHeaderBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
+    canAfford: (price: Price, ship: {
+        captain: string | null;
+        commonCredits: number;
+        shipCosmeticCurrency: number;
+    }, crewMember?: {
+        id: string;
+        credits: number;
+        crewCosmeticCurrency: number;
+    } | undefined, useShipCommonCredits?: boolean) => boolean;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

@@ -250,6 +250,19 @@ export class CrewMember extends Stubbable {
     }
   }
 
+  buy(price: Price): true | string {
+    if (!c.canAfford(price, this.ship, this))
+      return `Insufficient funds.`
+
+    this.credits -= price.credits || 0
+    this.crewCosmeticCurrency -=
+      price.crewCosmeticCurrency || 0
+    this.toUpdate.crewCosmeticCurrency =
+      this.crewCosmeticCurrency
+    this.toUpdate.credits = this.credits
+    return true
+  }
+
   addXp(skill: SkillId, xp?: number) {
     const xpBoostMultiplier =
       this.ship.getPassiveIntensity(`boostXpGain`) +

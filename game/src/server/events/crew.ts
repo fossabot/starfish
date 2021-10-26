@@ -612,26 +612,29 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price =
-        c.getCargoBuyPrice(
-          cargoId,
-          planet as BasicPlanet,
-          ship.guildId,
-        ) * amount
+      const price: Price = {
+        credits:
+          c.getCargoBuyPrice(
+            cargoId,
+            planet as BasicPlanet,
+            ship.guildId,
+          ) * amount,
+      }
 
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
+      const buyRes = crewMember.buy(price)
 
-      crewMember.credits = Math.round(
-        crewMember.credits - price,
-      )
-      crewMember.toUpdate.credits = crewMember.credits
       crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      callback({ data: { cargoId, amount, price } })
+      callback({
+        data: {
+          cargoId,
+          amount,
+          price: price.credits || 0,
+        },
+      })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -911,7 +914,7 @@ export default function (
         ship.guildId,
       )
 
-      const buyRes = ship.buy(price, crewMember)
+      const buyRes = crewMember.buy(price)
       if (buyRes !== true)
         return callback({ error: buyRes })
 

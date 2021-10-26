@@ -34,6 +34,15 @@ declare function getGuildChangePrice(ship: {
 declare function getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
 declare function getShipHeaderBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
 declare function getPlanetPopulation(planet: PlanetStub): number;
+declare function canAfford(price: Price, ship: {
+    captain: string | null;
+    commonCredits: number;
+    shipCosmeticCurrency: number;
+}, crewMember?: {
+    id: string;
+    credits: number;
+    crewCosmeticCurrency: number;
+}, useShipCommonCredits?: boolean): boolean;
 declare const _default: {
     getHitDamage: typeof getHitDamage;
     getBaseDurabilityLossPerTick: typeof getBaseDurabilityLossPerTick;
@@ -59,6 +68,7 @@ declare const _default: {
     getGuildChangePrice: typeof getGuildChangePrice;
     getShipTaglinePrice: typeof getShipTaglinePrice;
     getShipHeaderBackgroundPrice: typeof getShipHeaderBackgroundPrice;
+    canAfford: typeof canAfford;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

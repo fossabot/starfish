@@ -320,6 +320,31 @@ function getPlanetPopulation(planet) {
         (planet.level / 20) *
         planet.radius, 0);
 }
+function canAfford(price, ship, crewMember, useShipCommonCredits = false) {
+    if (price.credits) {
+        if (!useShipCommonCredits &&
+            (crewMember?.credits || 0) < price.credits)
+            return false;
+        if (useShipCommonCredits &&
+            crewMember &&
+            ship.captain !== crewMember?.id)
+            return false;
+        if (useShipCommonCredits &&
+            ship.commonCredits < price.credits)
+            return false;
+    }
+    if (ship.shipCosmeticCurrency <
+        (price.shipCosmeticCurrency || 0))
+        return false;
+    if (price.shipCosmeticCurrency &&
+        crewMember &&
+        ship.captain !== crewMember?.id)
+        return false;
+    if ((crewMember?.crewCosmeticCurrency || 0) <
+        (price?.crewCosmeticCurrency || 0))
+        return false;
+    return true;
+}
 // function getPlanetDescription(planet: PlanetStub): string {
 //   if (!planet) return ``
 //   const cargoCount = planet.vendor?.cargo?.length
@@ -388,6 +413,7 @@ exports.default = {
     getGuildChangePrice,
     getShipTaglinePrice,
     getShipHeaderBackgroundPrice,
+    canAfford,
     // getPlanetDescription,
 };
 //# sourceMappingURL=game.js.map

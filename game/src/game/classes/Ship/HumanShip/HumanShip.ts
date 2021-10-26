@@ -1508,12 +1508,7 @@ export class HumanShip extends CombatShip {
     crewMember?: CrewMember,
   ): true | string {
     if (
-      (price.credits || 0) > this.commonCredits ||
-      (price.shipCosmeticCurrency || 0) >
-        this.shipCosmeticCurrency ||
-      (crewMember &&
-        (price.crewCosmeticCurrency || 0) >
-          crewMember.crewCosmeticCurrency)
+      !c.canAfford(price, this, crewMember, true)
     )
       return `Insufficient funds.`
 

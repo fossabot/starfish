@@ -86,11 +86,11 @@ export default Vue.extend({
           )
           return {
             data: c.crewPassives[passive.id],
-            canBuy:
-              this.crewMember.credits >=
-                (price.credits || 0) &&
-              this.crewMember.crewCosmeticCurrency >=
-                (price.crewCosmeticCurrency || 0),
+            canBuy: c.canAfford(
+              price,
+              this.ship,
+              this.crewMember,
+            ),
             price,
             intensity: passive.intensity,
           }

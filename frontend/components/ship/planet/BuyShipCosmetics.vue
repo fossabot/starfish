@@ -123,13 +123,12 @@ export default Vue.extend({
             ...item,
             price,
             canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >=
-                (price.credits || 0) &&
-              this.crewMember.crewCosmeticCurrency >=
-                (price.crewCosmeticCurrency || 0) &&
-              this.ship.shipCosmeticCurrency >=
-                (price.shipCosmeticCurrency || 0) &&
+              c.canAfford(
+                price,
+                this.ship,
+                this.crewMember,
+                true,
+              ) &&
               !this.ship.availableTaglines.includes(
                 item.tagline,
               ),
@@ -148,13 +147,12 @@ export default Vue.extend({
             ...item,
             price,
             canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >=
-                (price.credits || 0) &&
-              this.crewMember.crewCosmeticCurrency >=
-                (price.crewCosmeticCurrency || 0) &&
-              this.ship.shipCosmeticCurrency >=
-                (price.shipCosmeticCurrency || 0) &&
+              c.canAfford(
+                price,
+                this.ship,
+                this.crewMember,
+                true,
+              ) &&
               !this.ship.availableHeaderBackgrounds.find(
                 (ahb) =>
                   ahb.id === item.headerBackground?.id,

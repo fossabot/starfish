@@ -172,14 +172,12 @@ export default Vue.extend({
             ...item,
             itemData: (c.items[item.type] as any)[item.id],
             price,
-            canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >=
-                (price.credits || 0) &&
-              this.crewMember.crewCosmeticCurrency >=
-                (price.crewCosmeticCurrency || 0) &&
-              this.ship.shipCosmeticCurrency >=
-                (price.shipCosmeticCurrency || 0),
+            canBuy: c.canAfford(
+              price,
+              this.ship,
+              this.crewMember,
+              true,
+            ),
           }
         })
     },
@@ -216,18 +214,15 @@ export default Vue.extend({
             chassisData: c.items.chassis[chassis.id],
             price,
             canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >=
-                (price.credits || 0) &&
-              this.crewMember.crewCosmeticCurrency >=
-                (price.crewCosmeticCurrency || 0) &&
-              this.ship.shipCosmeticCurrency >=
-                (price.shipCosmeticCurrency || 0) &&
-              chassis.id !== this.ship.chassis.id,
+              c.canAfford(
+                price,
+                this.ship,
+                this.crewMember,
+                true,
+              ) && chassis.id !== this.ship.chassis.id,
           }
         },
       )
-      // .filter((e) => e.price > 0)
     },
   },
   watch: {},
