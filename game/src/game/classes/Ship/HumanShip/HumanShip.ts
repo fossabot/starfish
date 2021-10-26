@@ -1372,7 +1372,8 @@ export class HumanShip extends CombatShip {
       !this.isAt(
         this.planet.location,
         this.planet.landingRadiusMultiplier,
-      )
+      ) ||
+      !this.game?.planets.includes(this.planet)
     )
       this.planet =
         this.visible.comets.find((p) =>

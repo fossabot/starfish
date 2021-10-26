@@ -1093,8 +1093,8 @@ export class Game {
     if (index !== -1) this.comets.splice(index, 1)
 
     planet.shipsAt.forEach((s) => {
-      s.planet = false
-      s.toUpdate.planet = false
+      s.updateVisible()
+      s.updatePlanet(true)
     })
 
     await this.db?.planet.removeFromDb(planet.id)

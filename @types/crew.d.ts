@@ -31,7 +31,11 @@ type RepairPriority =
   | `scanners`
   | `armor`
 
-type MinePriorityType = CargoId | `closest`
+type MineableResource =
+  | CargoId
+  | `shipCosmeticCurrency`
+  | `crewCosmeticCurrency`
+type MinePriorityType = MineableResource | `closest`
 
 type CrewPassiveId =
   | `cargoSpace`

@@ -369,7 +369,8 @@ export default function (
         )
       if (
         minePriority !== `closest` &&
-        !Object.keys(c.cargo).includes(minePriority)
+        !Object.keys(c.cargo).includes(minePriority) &&
+        ![`shipCosmeticCurrency`, `crewCosmeticCurrency`].includes(minePriority)
       )
         return (
           callback &&

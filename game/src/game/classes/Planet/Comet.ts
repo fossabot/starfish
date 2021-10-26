@@ -209,30 +209,25 @@ export class Comet extends MiningPlanet {
     }
   }
 
-  getPayoutAmount(cargoId: CargoId): number {
-    const basePayout = super.getPayoutAmount(cargoId)
-    return basePayout * 5
-  }
-
-  addMineResource(toAdd: CargoId) {
-    if (this.mine.find((m) => m.id === toAdd)) return
-    this.mine.push({
-      id: toAdd,
-      mineCurrent: 0,
-      mineRequirement: this.getMineRequirement(toAdd),
-      payoutAmount: this.getPayoutAmount(toAdd),
-      maxMineable: Math.ceil(c.randomBetween(40, 500)),
-    })
-  }
-
-  resetForNextMine(cargoId: CargoId) {
-    super.resetForNextMine(cargoId)
+  resetForNextMine(resourceId: MineableResource) {
+    super.resetForNextMine(resourceId)
 
     // delete from existence once mined out
-    if (this.mine.length) {
+    if (
+      !this.mine.length ||
+      !this.mine.find((m) => (m.maxMineable ?? 1) >= 1)
+    ) {
       this.shipsAt.forEach((ship) => {
         ship.logEntry(
-          `All of the resources on ${this.name} have been exhausted. You watch as it disappates into nothingness.`,
+          [
+            `All of the resources on`,
+            {
+              text: this.name,
+              color: this.color,
+            },
+            `have been exhausted. You watch as it disappates into nothingness.`,
+          ],
+          `high`,
         )
       })
       this.game?.removePlanet(this)
@@ -240,7 +235,16 @@ export class Comet extends MiningPlanet {
   }
 
   async levelUp() {
-    super.levelUp()
+    this.level++
+    if (this.level > 100) this.level = 100
+
+    const mineableResourceToAdd = c.randomFromArray([
+      `shipCosmeticCurrency`,
+      `crewCosmeticCurrency`,
+    ]) as `shipCosmeticCurrency` | `crewCosmeticCurrency`
+    this.addMineResource(mineableResourceToAdd)
+
+    this.updateFrontendForShipsAt()
   }
 
   toAdminStub(): PlanetStub {

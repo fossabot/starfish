@@ -36,7 +36,7 @@ interface BaseCometData extends BaseMiningPlanetData {
 }
 
 interface PlanetMineEntry {
-  id: CargoId
+  id: MineableResource
   payoutAmount: number
   mineRequirement: number
   mineCurrent: number

@@ -20,15 +20,21 @@ export class MiningPlanet extends Planet {
     if (!this.mine.length) this.levelUp()
   }
 
-  getMineRequirement(cargoId: CargoId): number {
-    const rarity = c.cargo[cargoId].rarity + 1
+  getMineRequirement(resourceId: MineableResource): number {
+    const rarity = (c.cargo[resourceId]?.rarity || 7) + 1
     return Math.floor(
       (Math.random() + 0.25) * 1500 * (rarity + 1) ** 1.4,
     )
   }
 
-  getMaxMineableBoost(cargoId: CargoId): number {
-    const rarity = c.cargo[cargoId].rarity + 1
+  getMaxMineableBoost(
+    resourceId: MineableResource,
+  ): number {
+    if (resourceId === `crewCosmeticCurrency`)
+      return Math.ceil((Math.random() + 0.5) * 3000)
+    if (resourceId === `shipCosmeticCurrency`)
+      return Math.ceil((Math.random() + 0.5) * 3)
+    const rarity = (c.cargo[resourceId]?.rarity || 100) + 1
     const scaledByLevel = this.level / rarity
     return Math.floor(
       (Math.random() + 0.3) * 100 * scaledByLevel,
@@ -36,12 +42,28 @@ export class MiningPlanet extends Planet {
   }
 
   getPayoutAmount(
-    cargoId: CargoId,
+    resourceId: MineableResource,
     maxMineable?: number,
   ): number {
+    if (resourceId === `crewCosmeticCurrency`)
+      return Math.min(
+        maxMineable ??
+          this.mine.find((m) => m.id === resourceId)
+            ?.maxMineable ??
+          Infinity,
+        Math.ceil((Math.random() + 0.5) * 1000),
+      )
+    if (resourceId === `shipCosmeticCurrency`)
+      return Math.min(
+        maxMineable ??
+          this.mine.find((m) => m.id === resourceId)
+            ?.maxMineable ??
+          Infinity,
+        Math.ceil((Math.random() + 0.5) * 2),
+      )
     return Math.min(
       maxMineable ??
-        this.mine.find((m) => m.id === cargoId)
+        this.mine.find((m) => m.id === resourceId)
           ?.maxMineable ??
         Infinity,
       Math.floor(
@@ -53,13 +75,16 @@ export class MiningPlanet extends Planet {
     )
   }
 
-  mineResource(cargoId: MinePriorityType, amount: number) {
+  mineResource(
+    resourceId: MinePriorityType,
+    amount: number,
+  ) {
     if (!this.mine.length) return
     if (
-      cargoId === `closest` ||
-      !this.mine.find((m) => m.id === cargoId)
+      resourceId === `closest` ||
+      !this.mine.find((m) => m.id === resourceId)
     )
-      cargoId = this.mine
+      resourceId = this.mine
         .filter((m) => m.maxMineable)
         .reduce(
           (closest, m) =>
@@ -70,7 +95,9 @@ export class MiningPlanet extends Planet {
           this.mine[0],
         ).id
 
-    const resource = this.mine.find((m) => m.id === cargoId)
+    const resource = this.mine.find(
+      (m) => m.id === resourceId,
+    )
     if (!resource || !resource.mineRequirement) return
 
     resource.mineCurrent += amount
@@ -79,7 +106,7 @@ export class MiningPlanet extends Planet {
       s.crewMembers.find(
         (cm) =>
           cm.location === `mine` &&
-          (cm.minePriority === cargoId ||
+          (cm.minePriority === resourceId ||
             cm.minePriority === `closest` ||
             !this.mine.find(
               (m) => m.id === cm.minePriority,
@@ -89,10 +116,7 @@ export class MiningPlanet extends Planet {
 
     // * chance to randomly discover cosmetic currencies
     currentlyMiningShips.forEach((ship) => {
-      if (
-        true ||
-        c.lottery(1, 100000000 / c.tickInterval)
-      ) {
+      if (c.lottery(1, 100000000 / c.tickInterval)) {
         const amount = Math.random() > 0.8 ? 2 : 1
         ship.logEntry([
           `You discovered 💎${amount} `,
@@ -112,10 +136,7 @@ export class MiningPlanet extends Planet {
           },
         ])
       }
-      if (
-        true ||
-        c.lottery(1, 100000000 / c.tickInterval)
-      ) {
+      if (c.lottery(1, 100000000 / c.tickInterval)) {
         const amount = Math.round(
           (Math.random() + 0.1) * 1000,
         )
@@ -158,13 +179,19 @@ export class MiningPlanet extends Planet {
           0,
         )
 
-      const finalPayoutAmount =
-        resource.payoutAmount * (amountBoostPassive + 1)
+      const finalPayoutAmount = c.r2(
+        resource.payoutAmount * (amountBoostPassive + 1),
+        0,
+      )
       const didBoost = amountBoostPassive > 0
 
       c.log(
         `gray`,
-        `${currentlyMiningShips.length} ships mined ${finalPayoutAmount} tons of ${cargoId} from ${this.name}.`,
+        `${
+          currentlyMiningShips.length
+        } ships mined ${finalPayoutAmount}${
+          c.cargo[resourceId] ? ` tons of` : ``
+        } ${resourceId} from ${this.name}.`,
       )
 
       currentlyMiningShips.forEach((ship) => {
@@ -174,13 +201,21 @@ export class MiningPlanet extends Planet {
                 `Your ship helped mine ${c.r2(
                   finalPayoutAmount,
                   0,
-                )} tons of`,
+                )}${c.cargo[resourceId] ? ` tons of` : ``}`,
                 {
-                  text: cargoId,
-                  tooltipData: {
-                    type: `cargo`,
-                    id: cargoId,
-                  },
+                  text:
+                    resourceId === `crewCosmeticCurrency`
+                      ? `🟡` + c.crewCosmeticCurrencyPlural
+                      : resourceId ===
+                        `shipCosmeticCurrency`
+                      ? `💎` + c.shipCosmeticCurrencyPlural
+                      : resourceId,
+                  tooltipData: c.cargo[resourceId]
+                    ? {
+                        type: `cargo`,
+                        id: resourceId,
+                      }
+                    : undefined,
                   color: `var(--cargo)`,
                 },
                 `&nospace, ${
@@ -198,19 +233,29 @@ export class MiningPlanet extends Planet {
                 } for a total of ${c.r2(
                   finalPayoutAmount /
                     currentlyMiningShips.length,
-                )} tons.`,
+                  0,
+                  true,
+                )}${c.cargo[resourceId] ? ` tons` : ``}.`,
               ]
             : [
                 `Your ship mined ${c.r2(
                   finalPayoutAmount,
                   0,
-                )} tons of`,
+                )}${c.cargo[resourceId] ? ` tons of` : ``}`,
                 {
-                  text: cargoId,
-                  tooltipData: {
-                    type: `cargo`,
-                    id: cargoId,
-                  },
+                  text:
+                    resourceId === `crewCosmeticCurrency`
+                      ? `🟡` + c.crewCosmeticCurrencyPlural
+                      : resourceId ===
+                        `shipCosmeticCurrency`
+                      ? `💎` + c.shipCosmeticCurrencyPlural
+                      : resourceId,
+                  tooltipData: c.cargo[resourceId]
+                    ? {
+                        type: `cargo`,
+                        id: resourceId,
+                      }
+                    : undefined,
                   color: `var(--cargo)`,
                 },
                 `&nospace${
@@ -227,7 +272,7 @@ export class MiningPlanet extends Planet {
           ship.crewMembers.filter(
             (cm) =>
               cm.location === `mine` &&
-              (cm.minePriority === cargoId ||
+              (cm.minePriority === resourceId ||
                 cm.minePriority === `closest` ||
                 !this.mine.find(
                   (m) => m.id === cm.minePriority,
@@ -249,7 +294,7 @@ export class MiningPlanet extends Planet {
 
         ship.distributeCargoAmongCrew([
           {
-            id: cargoId as CargoId,
+            id: resourceId as MineableResource,
             amount: c.r2(
               finalPayoutAmount /
                 currentlyMiningShips.length,
@@ -260,22 +305,33 @@ export class MiningPlanet extends Planet {
         ])
       })
 
-      this.resetForNextMine(cargoId)
+      this.resetForNextMine(resourceId)
     }
 
     this.updateFrontendForShipsAt()
   }
 
-  resetForNextMine(cargoId: CargoId) {
-    const resource = this.mine.find((m) => m.id === cargoId)
+  resetForNextMine(resourceId: MineableResource) {
+    const resource = this.mine.find(
+      (m) => m.id === resourceId,
+    )
     if (!resource) return
 
     // fully exhausted
     if (resource.maxMineable === 0) {
       this.shipsAt.forEach((ship) => {
         ship.logEntry([
-          `${this.name}'s vein of ${
-            c.cargo[resource.id].name
+          {
+            text: this.name,
+            color: this.color,
+          },
+          `&nospace's vein of ${
+            c.cargo[resource.id]?.name ||
+            (resourceId === `shipCosmeticCurrency`
+              ? c.shipCosmeticCurrencyPlural
+              : resourceId === `crewCosmeticCurrency`
+              ? c.crewCosmeticCurrencyPlural
+              : `resources`)
           } has been exhausted.`,
         ])
       }, `low`)
@@ -287,8 +343,8 @@ export class MiningPlanet extends Planet {
 
     // reset for next time
     resource.mineRequirement =
-      this.getMineRequirement(cargoId)
-    resource.payoutAmount = this.getPayoutAmount(cargoId)
+      this.getMineRequirement(resourceId)
+    resource.payoutAmount = this.getPayoutAmount(resourceId)
     resource.mineCurrent = 0
   }
 
@@ -317,7 +373,7 @@ export class MiningPlanet extends Planet {
     this.updateFrontendForShipsAt()
   }
 
-  addMineResource(toAdd: CargoId) {
+  addMineResource(toAdd: MineableResource) {
     const amountToAdd = this.getMaxMineableBoost(toAdd)
 
     const existing = this.mine.find((m) => m.id === toAdd)

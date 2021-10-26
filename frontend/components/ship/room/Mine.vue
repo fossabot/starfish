@@ -37,6 +37,10 @@
           c.capitalize(
             choice === 'closest'
               ? 'closest to complete'
+              : choice === 'shipCosmeticCurrency'
+              ? c.shipCosmeticCurrencyPlural
+              : choice === 'crewCosmeticCurrency'
+              ? c.crewCosmeticCurrencyPlural
               : choice,
           )
         }}</span>

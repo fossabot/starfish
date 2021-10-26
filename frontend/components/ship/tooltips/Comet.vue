@@ -72,7 +72,14 @@
       <b>{{
         c.printList(
           dataToUse.mine.map(
-            (cargo) => c.cargo[cargo.id].name,
+            (cargo) =>
+              (c.cargo[cargo.id] &&
+                c.cargo[cargo.id].name) ||
+              (cargo.id === `shipCosmeticCurrency`
+                ? '💎' + c.shipCosmeticCurrencySingular
+                : cargo.id === `crewCosmeticCurrency`
+                ? '🟡' + c.crewCosmeticCurrencySingular
+                : `resources`),
           ),
         )
       }}</b>
