@@ -1320,7 +1320,8 @@ export class HumanShip extends CombatShip {
         p.toVisibleStub(),
       ),
       attackRemnants: this.visible.attackRemnants.map(
-        (ar) => ar.stubify(),
+        (ar) =>
+          ar.toVisibleStub?.() || ar.stubify?.() || ar,
       ),
       planets: planetDataToSend,
       caches: this.visible.caches.map((c) =>

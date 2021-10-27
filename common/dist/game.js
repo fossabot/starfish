@@ -233,12 +233,26 @@ function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId) 
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
             : 1);
-    const basePrice = crewPassives_1.default[passiveForSale.id].buyable?.basePrice;
+    const basePrice = {
+        ...crewPassives_1.default[passiveForSale.id].buyable?.basePrice,
+    };
+    const scaledCrewCosmeticCurrency = crewPassives_1.default[passiveForSale.id].buyable
+        ?.scaledCrewCosmeticCurrency;
+    const addScaledCrewCosmeticCurrency = scaledCrewCosmeticCurrency?.fromLevel !== undefined &&
+        currentIntensity /
+            (crewPassives_1.default[passiveForSale.id].buyable
+                ?.baseIntensity || 1) -
+            (scaledCrewCosmeticCurrency?.fromLevel || 0) +
+            1 >
+            0;
     const price = {};
     if (basePrice?.credits)
         price.credits = Math.ceil(basePrice.credits * multiplier);
-    if (basePrice?.crewCosmeticCurrency)
-        price.crewCosmeticCurrency = Math.ceil(basePrice.crewCosmeticCurrency * multiplier);
+    if (basePrice?.crewCosmeticCurrency ||
+        addScaledCrewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(((basePrice?.crewCosmeticCurrency || 0) +
+            (scaledCrewCosmeticCurrency?.amount || 0)) *
+            multiplier);
     if (basePrice?.shipCosmeticCurrency)
         price.shipCosmeticCurrency = Math.ceil(basePrice.shipCosmeticCurrency * multiplier);
     return price;

@@ -339,16 +339,34 @@ function getCrewPassivePrice(
       ? gameConstants.guildVendorMultiplier
       : 1)
 
-  const basePrice =
-    crewPassives[passiveForSale.id].buyable?.basePrice
+  const basePrice = {
+    ...crewPassives[passiveForSale.id].buyable?.basePrice,
+  }
+  const scaledCrewCosmeticCurrency =
+    crewPassives[passiveForSale.id].buyable
+      ?.scaledCrewCosmeticCurrency
+  const addScaledCrewCosmeticCurrency =
+    scaledCrewCosmeticCurrency?.fromLevel !== undefined &&
+    currentIntensity /
+      (crewPassives[passiveForSale.id].buyable
+        ?.baseIntensity || 1) -
+      (scaledCrewCosmeticCurrency?.fromLevel || 0) +
+      1 >
+      0
+
   const price: Price = {}
   if (basePrice?.credits)
     price.credits = Math.ceil(
       basePrice.credits * multiplier,
     )
-  if (basePrice?.crewCosmeticCurrency)
+  if (
+    basePrice?.crewCosmeticCurrency ||
+    addScaledCrewCosmeticCurrency
+  )
     price.crewCosmeticCurrency = Math.ceil(
-      basePrice.crewCosmeticCurrency * multiplier,
+      ((basePrice?.crewCosmeticCurrency || 0) +
+        (scaledCrewCosmeticCurrency?.amount || 0)) *
+        multiplier,
     )
   if (basePrice?.shipCosmeticCurrency)
     price.shipCosmeticCurrency = Math.ceil(

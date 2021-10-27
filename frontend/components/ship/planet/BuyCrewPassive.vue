@@ -74,8 +74,8 @@ export default Vue.extend({
     },
 
     passives(): any[] {
-      return this.ship.planet.vendor.passives
-        .map((passive: PlanetVendorCrewPassivePrice) => {
+      return this.ship.planet.vendor.passives.map(
+        (passive: PlanetVendorCrewPassivePrice) => {
           const price = c.getCrewPassivePrice(
             passive,
             this.crewMemberPassiveIntensitites[
@@ -94,8 +94,8 @@ export default Vue.extend({
             price,
             intensity: passive.intensity,
           }
-        })
-        .filter((e) => e.price > 0)
+        },
+      )
     },
   },
   watch: {},

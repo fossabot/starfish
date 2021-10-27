@@ -103,6 +103,10 @@ interface CrewPassiveData {
   buyable?: {
     rarity: number
     basePrice: Price
+    scaledCrewCosmeticCurrency: {
+      fromLevel: number
+      amount: number
+    }
     baseIntensity: number
     wholeNumbersOnly: boolean
   }
