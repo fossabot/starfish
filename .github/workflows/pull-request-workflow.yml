@@ -52,6 +52,19 @@ jobs:
           path: ${{matrix.folder}}/reports/test-results.json
           reporter: mocha-json
 
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
+
   docker-build-publish:
     needs: npm-test
     runs-on: ubuntu-latest
