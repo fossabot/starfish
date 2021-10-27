@@ -1,7 +1,7 @@
 import c from '../common/dist'
 
 export default {
-  target: `static`,
+  // target: `static`,
 
   server: {
     port: 4300,

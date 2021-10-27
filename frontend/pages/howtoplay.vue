@@ -349,9 +349,7 @@
       <h3>Dying and Respawning</h3>
       <div>
         When a ship's HP reaches zero, it dies. On dying,
-        ships will drop a portion of the cargo and 💳{{
-          c.baseCurrencyPlural
-        }}
+        ships will drop a portion of the cargo and currency
         its crew members were carrying as a cache. Whoever
         gets there first can pick up the spoils!
       </div>

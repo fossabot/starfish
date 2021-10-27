@@ -1,3 +1,4 @@
+import text from './text'
 const baseShipPassiveData: {
   [key in ShipPassiveEffectId]: {
     description: (p: ShipPassiveEffect) => string
@@ -23,17 +24,19 @@ const baseShipPassiveData: {
     description: (p: ShipPassiveEffect) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
-      )}% attack damage when no allies are within ${
-        p.data?.distance
-      }AU`,
+      )}% attack damage when no allies are within ${text.speedNumber(
+        p.data?.distance || 0,
+        true,
+      )}km`,
   },
   boostDamageWithNumberOfGuildMembersWithinDistance: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
-      )}% attack damage per ally within ${
-        p.data?.distance
-      }AU`,
+      )}% attack damage per ally within ${text.speedNumber(
+        p.data?.distance || 0,
+        true,
+      )}km`,
   },
   boostCargoSpace: {
     description: (p) =>
