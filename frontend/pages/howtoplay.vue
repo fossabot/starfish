@@ -4,10 +4,7 @@
       <h3>Game Objectives</h3>
       <ul>
         <li>Explore the universe</li>
-        <li>
-          Earn 💳{{ c.baseCurrencyPlural }} through trade
-          and conquest
-        </li>
+        <li>Make money through trade and conquest</li>
         <li>Upgrade your ship and its equipment</li>
         <li>
           Interact with other Discord servers from around

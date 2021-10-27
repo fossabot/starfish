@@ -35,9 +35,9 @@ describe(`AIShip spawn`, () => {
     )
 
     expect(level3Value).to.be.below(level10Value)
-    expect(ship.chassis.basePrice).to.be.lessThan(
-      ship2.chassis.basePrice.credits || 0,
-    )
+    expect(
+      ship.chassis.basePrice.credits || 0,
+    ).to.be.lessThan(ship2.chassis.basePrice.credits || 0)
   })
 })
 
@@ -74,24 +74,31 @@ describe(`AIShip target selection`, () => {
     const flamingo = await g.addAIShip(
       aiShipData(3, `flamingos`),
     )
-    const human = await g.addHumanShip(humanShipData())
-    flamingo.updateVisible()
+    const human = await g.addHumanShip(
+      humanShipData(`test1`),
+    )
 
-    human.move([-0.02, 0])
+    human.move([-0.3, 0])
     const cm = await human.addCrewMember(crewMemberData())
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
     human.updateVisible()
+    expect(human.visible.ships.length).to.equal(1)
+    expect(human.getEnemiesInAttackRange().length).to.equal(
+      1,
+    )
     human.recalculateCombatTactic()
     human.autoAttack(1)
 
+    flamingo.radii.sight = 1
+    flamingo.updateVisible()
     flamingo.determineNewTargetLocation()
     expect(
       c.angleFromAToB(
         flamingo.location,
         flamingo.targetLocation,
       ),
-    ).to.be.closeTo(180, 20)
+    ).to.be.closeTo(180, 30)
   })
 })
 
@@ -117,8 +124,8 @@ describe(`AIShip death`, () => {
             value = contents.amount
           else
             value =
-              c.cargo[contents.id].basePrice *
-              contents.amount
+              (c.cargo[contents.id]?.basePrice?.credits ||
+                0) * contents.amount
           return t + value
         },
         0,

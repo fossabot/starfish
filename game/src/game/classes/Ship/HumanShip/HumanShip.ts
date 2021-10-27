@@ -1507,9 +1507,7 @@ export class HumanShip extends CombatShip {
     price: Price,
     crewMember?: CrewMember,
   ): true | string {
-    if (
-      !c.canAfford(price, this, crewMember, true)
-    )
+    if (!c.canAfford(price, this, crewMember, true))
       return `Insufficient funds.`
 
     this.commonCredits -= price.credits || 0
@@ -2459,29 +2457,56 @@ export class HumanShip extends CombatShip {
           })
       }
 
-      // ----- crew member credits -----
-      const toCache =
+      // ----- crew member credits/cosmetic currency -----
+      const creditsToCache = Math.round(
         cm.credits *
-        CombatShip.percentOfCreditsDroppedOnDeath
-      cm.credits *= CombatShip.percentOfCreditsKeptOnDeath
-      const existing = cacheContents.find(
+          CombatShip.percentOfCurrencyDroppedOnDeath,
+      )
+      cm.credits = Math.round(
+        cm.credits *
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      )
+      const existingCredits = cacheContents.find(
         (cc) => cc.id === `credits`,
       )
-      if (existing) existing.amount += toCache || 0
+      if (existingCredits)
+        existingCredits.amount += creditsToCache || 0
       else if (cm.credits)
         cacheContents.push({
           id: `credits`,
-          amount: toCache,
+          amount: creditsToCache,
+        })
+
+      const crewCosmeticCurrencyToCache = Math.round(
+        cm.crewCosmeticCurrency *
+          CombatShip.percentOfCurrencyDroppedOnDeath,
+      )
+      cm.crewCosmeticCurrency = Math.round(
+        cm.crewCosmeticCurrency *
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      )
+      const existingCrewCosmeticCurrency =
+        cacheContents.find(
+          (cc) => cc.id === `crewCosmeticCurrency`,
+        )
+      if (existingCrewCosmeticCurrency)
+        existingCrewCosmeticCurrency.amount +=
+          crewCosmeticCurrencyToCache || 0
+      else if (cm.crewCosmeticCurrency)
+        cacheContents.push({
+          id: `crewCosmeticCurrency`,
+          amount: crewCosmeticCurrencyToCache,
         })
 
       cm.location = `bunk`
       cm.stamina = 0
     })
 
-    // ship common credits -> cache
-    const commonCreditsToCache =
+    // ship common currencies -> cache
+    const commonCreditsToCache = Math.round(
       this.commonCredits *
-      CombatShip.percentOfCreditsDroppedOnDeath
+        CombatShip.percentOfCurrencyDroppedOnDeath,
+    )
     if (commonCreditsToCache) {
       const existing = cacheContents.find(
         (cc) => cc.id === `credits`,
@@ -2495,9 +2520,32 @@ export class HumanShip extends CombatShip {
         })
     }
 
-    // ship common credits -> nothing
-    this.commonCredits *=
-      CombatShip.percentOfCreditsKeptOnDeath
+    const shipCosmeticCurrencyToCache = Math.round(
+      this.shipCosmeticCurrency *
+        CombatShip.percentOfCurrencyDroppedOnDeath,
+    )
+    if (shipCosmeticCurrencyToCache) {
+      const existing = cacheContents.find(
+        (cc) => cc.id === `shipCosmeticCurrency`,
+      )
+      if (existing)
+        existing.amount += shipCosmeticCurrencyToCache || 0
+      else
+        cacheContents.push({
+          id: `shipCosmeticCurrency`,
+          amount: shipCosmeticCurrencyToCache,
+        })
+    }
+
+    // ship common currencies -> nothing
+    this.commonCredits = Math.round(
+      this.commonCredits *
+        CombatShip.percentOfCurrencyKeptOnDeath,
+    )
+    this.shipCosmeticCurrency = Math.round(
+      this.shipCosmeticCurrency *
+        CombatShip.percentOfCurrencyKeptOnDeath,
+    )
 
     // ----- ship item refund -----
     const itemRefundAmount =
@@ -2507,7 +2555,7 @@ export class HumanShip extends CombatShip {
       ) || 0
     this.commonCredits +=
       itemRefundAmount *
-      CombatShip.percentOfCreditsKeptOnDeath
+      CombatShip.percentOfCurrencyKeptOnDeath
 
     const existing = cacheContents.find(
       (cc) => cc.id === `credits`,
@@ -2515,13 +2563,13 @@ export class HumanShip extends CombatShip {
     if (existing)
       existing.amount +=
         itemRefundAmount *
-          CombatShip.percentOfCreditsDroppedOnDeath || 0
+          CombatShip.percentOfCurrencyDroppedOnDeath || 0
     else if (this.commonCredits)
       cacheContents.push({
         id: `credits`,
         amount:
           itemRefundAmount *
-          CombatShip.percentOfCreditsDroppedOnDeath,
+          CombatShip.percentOfCurrencyDroppedOnDeath,
       })
 
     if (cacheContents.length)

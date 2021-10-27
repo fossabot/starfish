@@ -11,8 +11,8 @@ import type { HumanShip } from './HumanShip/HumanShip'
 import defaultGameSettings from '../../presets/gameSettings'
 
 export abstract class CombatShip extends Ship {
-  static percentOfCreditsKeptOnDeath = 0.5
-  static percentOfCreditsDroppedOnDeath = 0.5
+  static percentOfCurrencyKeptOnDeath = 0.5
+  static percentOfCurrencyDroppedOnDeath = 0.5
 
   targetShip: CombatShip | null = null
   targetItemType: ItemType | `any` = `any`
@@ -207,6 +207,8 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     // self
     if (this === otherShip) return false
+    // nonexistane
+    if (!otherShip) return false
     // not attackable
     if (!otherShip.attackable) return false
     // can't see it

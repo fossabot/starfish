@@ -44,7 +44,10 @@ exports.weapons = {
         displayName: `Crustacean Cannon 1`,
         description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats.`,
         mass: 1300,
-        basePrice: { credits: 11 * gameConstants_1.default.itemPriceMultiplier },
+        basePrice: {
+            crewCosmeticCurrency: 100,
+            credits: 0 * 11 * gameConstants_1.default.itemPriceMultiplier,
+        },
         range: 0.15,
         rarity: 0.5,
         damage: 0.85 * gameConstants_1.default.weaponDamageMultiplier,

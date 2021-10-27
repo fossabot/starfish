@@ -18,9 +18,9 @@
       v-tooltip="
         m.mineRequirement
           ? (c.cargo[m.id]
-              ? `Base price per ton: 💳${
-                  c.cargo[m.id].basePrice
-                }
+              ? `Base price per ton: ${c.priceToString(
+                  c.cargo[m.id.basePrice],
+                )}
               <br />`
               : '') +
             `Remaining in vein: ${c.numberWithCommas(

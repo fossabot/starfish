@@ -68,7 +68,7 @@ export default function (
             ],
             color: `var(--item)`,
           },
-          `bought by the captain for 💳${c.priceToString(
+          `bought by the captain for ${c.priceToString(
             price,
           )} ${c.baseCurrencyPlural}.`,
         ],

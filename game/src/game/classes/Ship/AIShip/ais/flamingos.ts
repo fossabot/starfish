@@ -21,11 +21,11 @@ export default {
 
       return (this.targetLocation = [
         this.location[0] +
-          unitVector[0] * 0.001 * clumsiness +
-          (Math.random() - 0.5) * 0.001 * clumsiness,
+          unitVector[0] * 0.0001 * clumsiness +
+          (Math.random() - 0.5) * 0.0001 * clumsiness,
         this.location[1] +
-          unitVector[1] * 0.001 * clumsiness +
-          (Math.random() - 0.5) * 0.001 * clumsiness,
+          unitVector[1] * 0.0001 * clumsiness +
+          (Math.random() - 0.5) * 0.0001 * clumsiness,
       ])
     }
 

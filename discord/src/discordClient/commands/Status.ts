@@ -130,6 +130,14 @@ ${c.percentToTextBars(
             c.r2(context.crewMember.credits, 0),
           )}`,
         })
+        // if (context.crewMember.crewCosmeticCurrency)
+        // youFields.push({
+        //   inline: true,
+        //   name: c.capitalize(c.crewCosmeticCurrencyPlural),
+        //   value: `🟡 ${c.numberWithCommas(
+        //     c.r2(context.crewMember.credits, 0),
+        //   )}`,
+        // })
         youFields.push({
           inline: true,
           name: `Inventory`,

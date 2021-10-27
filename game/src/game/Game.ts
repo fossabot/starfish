@@ -885,7 +885,7 @@ export class Game {
     //   `Adding human ship ${data.name} to game at ${data.location}`,
     // )
 
-    data.loadout = `humanDefault`
+    data.loadout = data.loadout || `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
