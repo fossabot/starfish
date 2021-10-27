@@ -612,16 +612,16 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price: Price = {
-        credits:
-          c.getCargoBuyPrice(
-            cargoId,
-            planet as BasicPlanet,
-            ship.guildId,
-          ) * amount,
-      }
+      const price: Price = c.getCargoBuyPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
+      )
 
       const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
@@ -630,7 +630,7 @@ export default function (
         data: {
           cargoId,
           amount,
-          price: price.credits || 0,
+          price,
         },
       })
 
@@ -686,17 +686,32 @@ export default function (
           error: `This planet doesn't buy anything!`,
         })
 
-      const price =
-        c.getCargoSellPrice(
-          cargoId,
-          planet as BasicPlanet,
-          ship.guildId,
-        ) * amount
+      const price: Price = c.getCargoSellPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
+      )
 
       crewMember.credits = Math.round(
-        crewMember.credits + price,
+        crewMember.credits + (price.credits || 0),
       )
       crewMember.toUpdate.credits = crewMember.credits
+
+      crewMember.crewCosmeticCurrency = Math.round(
+        crewMember.crewCosmeticCurrency +
+          (price.crewCosmeticCurrency || 0),
+      )
+      crewMember.toUpdate.crewCosmeticCurrency =
+        crewMember.crewCosmeticCurrency
+
+      ship.shipCosmeticCurrency = Math.round(
+        ship.shipCosmeticCurrency +
+          (price.shipCosmeticCurrency || 0),
+      )
+      ship.toUpdate.shipCosmeticCurrency =
+        ship.shipCosmeticCurrency
+
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
@@ -708,7 +723,13 @@ export default function (
         `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${planet.name}.`,
       )
 
-      callback({ data: { cargoId, amount, price } })
+      callback({
+        data: {
+          cargoId,
+          amount,
+          price,
+        },
+      })
     },
   )
 
@@ -829,17 +850,15 @@ export default function (
           error: `This planet does not offer repair services.`,
         })
 
-      const price = c.getRepairPrice(
+      const price: Price = c.getRepairPrice(
         planet,
         hp,
         ship.guildId,
       )
 
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
-
-      crewMember.credits -= price
-      crewMember.toUpdate.credits = crewMember.credits
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.repair(hp)
 
@@ -849,10 +868,7 @@ export default function (
         } hp worth of repairs.`,
         `medium`,
       )
-      crewMember.addStat(
-        `totalContributedToCommonFund`,
-        price,
-      )
+      crewMember.addStat(`totalHpRepaired`, hp)
 
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
@@ -860,7 +876,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 

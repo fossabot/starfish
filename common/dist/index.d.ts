@@ -8,28 +8,28 @@ declare const _default: {
         [key: string]: Achievement;
     };
     rooms: {
+        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
-        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
     crewPassives: {
-        cargoSpace: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
-        boostThrust: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
+        boostBrake: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
         boostRepairSpeed: CrewPassiveData;
-        boostWeaponChargeSpeed: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
-        reduceStaminaDrain: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
+        reduceStaminaDrain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
-        boostBroadcastRange: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
-        boostBrake: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
@@ -51,32 +51,14 @@ declare const _default: {
         shrimp: BaseSpeciesData;
     };
     guilds: {
-        fowl: BaseGuildData;
         trader: BaseGuildData;
+        peacekeeper: BaseGuildData;
+        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        explorer: BaseGuildData;
-        peacekeeper: BaseGuildData;
+        fowl: BaseGuildData;
     };
     baseShipPassiveData: {
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostStaminaRegeneration: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -92,7 +74,22 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostMinePayouts: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -135,6 +132,9 @@ declare const _default: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostDamageToItemType: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
             description: (p: ShipPassiveEffect) => string;
         };
         autoRepair: {
@@ -225,9 +225,11 @@ declare const _default: {
     }) => string;
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => {
+        credits: number;
+    };
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => Price;
+    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => Price;
     getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
     getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
     getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
@@ -240,14 +242,14 @@ declare const _default: {
     getShipTaglinePrice: (cosmetic: PlanetShipCosmetic) => Price;
     getShipHeaderBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
     canAfford: (price: Price, ship: {
-        captain: string | null;
-        commonCredits: number;
-        shipCosmeticCurrency: number;
+        captain?: string | null | undefined;
+        commonCredits?: number | undefined;
+        shipCosmeticCurrency?: number | undefined;
     }, crewMember?: {
         id: string;
-        credits: number;
-        crewCosmeticCurrency: number;
-    } | undefined, useShipCommonCredits?: boolean) => boolean;
+        credits?: number | undefined;
+        crewCosmeticCurrency?: number | undefined;
+    } | null | undefined, useShipCommonCredits?: boolean) => number | false;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;

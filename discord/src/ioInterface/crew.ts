@@ -187,7 +187,7 @@ export async function sell(
   IOResponse<{
     cargoId: CargoId
     amount: number
-    price: number
+    price: Price
   }>
 > {
   if (!(await connected()))
@@ -219,7 +219,7 @@ export async function buy(
   IOResponse<{
     cargoId: CargoId
     amount: number
-    price: number
+    price: Price
   }>
 > {
   if (!(await connected()))

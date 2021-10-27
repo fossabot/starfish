@@ -226,12 +226,10 @@ function getCargoSellPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   guildId?: GuildId,
+  amount: number = 1,
 ) {
-  const buyPrice = getCargoBuyPrice(
-    cargoId,
-    planet,
-    guildId,
-  )
+  const buyPrice =
+    getCargoBuyPrice(cargoId, planet, guildId).credits || 0
 
   const sellMultiplier =
     planet?.vendor?.cargo?.find(
@@ -239,64 +237,86 @@ function getCargoSellPrice(
     )?.sellMultiplier ||
     gameConstants.baseCargoSellMultiplier
 
-  return Math.min(
-    buyPrice,
-    Math.floor(
-      cargo[cargoId].basePrice *
-        sellMultiplier *
-        planet.priceFluctuator *
-        ((planet.allegiances.find(
-          (a) => a.guildId === guildId,
-        )?.level || 0) >=
-        gameConstants.guildAllegianceFriendCutoff
-          ? 1 +
-            (1 - (gameConstants.guildVendorMultiplier || 1))
-          : 1),
+  return {
+    credits: Math.min(
+      Math.floor(buyPrice * amount),
+      Math.floor(
+        (cargo[cargoId].basePrice.credits || 0) *
+          amount *
+          sellMultiplier *
+          planet.priceFluctuator *
+          ((planet.allegiances.find(
+            (a) => a.guildId === guildId,
+          )?.level || 0) >=
+          gameConstants.guildAllegianceFriendCutoff
+            ? 1 +
+              (1 -
+                (gameConstants.guildVendorMultiplier || 1))
+            : 1),
+      ),
     ),
-  )
+  }
 }
 
 function getCargoBuyPrice(
   cargoId: CargoId,
   planet: PlanetStub,
   guildId?: GuildId,
-) {
+  amount: number = 1,
+): Price {
   const cargoForSale = planet?.vendor?.cargo?.find(
     (cfs) => cfs.id === cargoId && cfs.buyMultiplier,
   )
-  if (!cargoForSale) return 99999
-  return Math.ceil(
-    cargo[cargoId].basePrice *
-      cargoForSale.buyMultiplier *
-      planet?.priceFluctuator *
-      ((planet.allegiances.find(
-        (a) => a.guildId === guildId,
-      )?.level || 0) >=
-      gameConstants.guildAllegianceFriendCutoff
-        ? gameConstants.guildVendorMultiplier
-        : 1),
-  )
+  if (!cargoForSale) return { credits: 99999 }
+
+  const multiplier =
+    cargoForSale.buyMultiplier *
+    planet?.priceFluctuator *
+    ((planet.allegiances.find((a) => a.guildId === guildId)
+      ?.level || 0) >=
+    gameConstants.guildAllegianceFriendCutoff
+      ? gameConstants.guildVendorMultiplier
+      : 1)
+
+  const basePrice = cargo[cargoId].basePrice
+
+  const price: Price = {}
+  if (basePrice?.credits)
+    price.credits = Math.ceil(
+      basePrice.credits * multiplier * amount,
+    )
+  if (basePrice?.crewCosmeticCurrency)
+    price.crewCosmeticCurrency = Math.ceil(
+      basePrice.crewCosmeticCurrency * multiplier * amount,
+    )
+  if (basePrice?.shipCosmeticCurrency)
+    price.shipCosmeticCurrency = Math.ceil(
+      basePrice.shipCosmeticCurrency * multiplier * amount,
+    )
+  return price
 }
 
 function getRepairPrice(
   planet: PlanetStub,
   hp: number,
   guildId?: GuildId,
-) {
-  return math.r2(
-    (planet.vendor?.repairCostMultiplier || 1) *
-      gameConstants.baseRepairCost *
-      hp *
-      planet.priceFluctuator *
-      ((planet.allegiances.find(
-        (a) => a.guildId === guildId,
-      )?.level || 0) >=
-      gameConstants.guildAllegianceFriendCutoff
-        ? gameConstants.guildVendorMultiplier
-        : 1),
-    0,
-    true,
-  )
+): Price {
+  return {
+    credits: math.r2(
+      (planet.vendor?.repairCostMultiplier || 1) *
+        gameConstants.baseRepairCost *
+        hp *
+        planet.priceFluctuator *
+        ((planet.allegiances.find(
+          (a) => a.guildId === guildId,
+        )?.level || 0) >=
+        gameConstants.guildAllegianceFriendCutoff
+          ? gameConstants.guildVendorMultiplier
+          : 1),
+      0,
+      true,
+    ),
+  }
 }
 
 function getCrewPassivePrice(
@@ -388,7 +408,7 @@ function getItemSellPrice(
   const itemData = items[itemType][itemId]
   if (!itemData) return 9999999
   return math.r2(
-    (itemData?.basePrice || 9999999) *
+    (itemData?.basePrice?.credits || 0) *
       gameConstants.baseItemSellMultiplier *
       planet.priceFluctuator *
       (planet.guild === guildId
@@ -417,7 +437,7 @@ function getChassisSwapPrice(
   )
   const price: Price = {}
   price.credits = math.r2(
-    Math.min(
+    Math.max(
       (items.chassis[chassis.id]?.basePrice.credits || 0) -
         currentChassisSellPrice,
       0,
@@ -510,17 +530,17 @@ function getPlanetPopulation(planet: PlanetStub): number {
 function canAfford(
   price: Price,
   ship: {
-    captain: string | null
-    commonCredits: number
-    shipCosmeticCurrency: number
+    captain?: string | null
+    commonCredits?: number
+    shipCosmeticCurrency?: number
   },
   crewMember?: {
     id: string
-    credits: number
-    crewCosmeticCurrency: number
-  },
+    credits?: number
+    crewCosmeticCurrency?: number
+  } | null,
   useShipCommonCredits = false,
-): boolean {
+): false | number {
   if (price.credits) {
     if (
       !useShipCommonCredits &&
@@ -536,12 +556,12 @@ function canAfford(
       return false
     if (
       useShipCommonCredits &&
-      ship.commonCredits < price.credits
+      (ship.commonCredits || 0) < price.credits
     )
       return false
   }
   if (
-    ship.shipCosmeticCurrency <
+    (ship.shipCosmeticCurrency || 0) <
     (price.shipCosmeticCurrency || 0)
   )
     return false
@@ -556,7 +576,22 @@ function canAfford(
     (price?.crewCosmeticCurrency || 0)
   )
     return false
-  return true
+
+  return Math.min(
+    price.credits
+      ? useShipCommonCredits
+        ? ship.commonCredits || 0
+        : (crewMember?.credits || 0) / price.credits
+      : Infinity,
+    price.shipCosmeticCurrency
+      ? (ship.shipCosmeticCurrency || 0) /
+          price.shipCosmeticCurrency
+      : Infinity,
+    price.crewCosmeticCurrency
+      ? (crewMember?.crewCosmeticCurrency || 0) /
+          price.crewCosmeticCurrency
+      : Infinity,
+  )
 }
 
 // function getPlanetDescription(planet: PlanetStub): string {

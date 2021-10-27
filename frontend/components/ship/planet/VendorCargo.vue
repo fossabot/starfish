@@ -42,19 +42,17 @@
                   :class="{
                     good:
                       ca.cargoData &&
-                      ca.pricePerUnit <
-                        ca.cargoData.basePrice,
+                      (ca.pricePerUnit.credits || 0) <
+                        (ca.cargoData.basePrice.credits ||
+                          0),
                     bad:
                       ca.cargoData &&
-                      ca.pricePerUnit >
-                        ca.cargoData.basePrice,
+                      (ca.pricePerUnit.credits || 0) >
+                        (ca.cargoData.basePrice.credits ||
+                          0),
                   }"
                 >
-                  💳{{
-                    c.numberWithCommas(
-                      c.r2(ca.pricePerUnit, 2, true),
-                    )
-                  }}/ton
+                  {{ c.priceToString(ca.pricePerUnit) }}/ton
                 </div>
               </div>
             </template>
@@ -98,19 +96,17 @@
                   :class="{
                     good:
                       ca.cargoData &&
-                      ca.pricePerUnit >
-                        ca.cargoData.basePrice,
+                      (ca.pricePerUnit.credits || 0) >
+                        (ca.cargoData.basePrice.credits ||
+                          0),
                     bad:
                       ca.cargoData &&
-                      ca.pricePerUnit <
-                        ca.cargoData.basePrice,
+                      (ca.pricePerUnit.credits || 0) <
+                        (ca.cargoData.basePrice.credits ||
+                          0),
                   }"
                 >
-                  💳{{
-                    c.numberWithCommas(
-                      c.r2(ca.pricePerUnit, 2, true),
-                    )
-                  }}/ton
+                  {{ c.priceToString(ca.pricePerUnit) }}/ton
                 </div>
                 <div
                   class="sub"
@@ -171,8 +167,11 @@ export default Vue.extend({
 
           const maxCanBuy = c.r2(
             Math.min(
-              this.crewMember?.credits / pricePerUnit,
-
+              c.canAfford(
+                pricePerUnit,
+                this.ship,
+                this.crewMember,
+              ) || 0,
               Math.min(
                 this.ship.chassis.maxCargoSpace,
                 this.crewMember?.maxCargoSpace,
@@ -192,7 +191,6 @@ export default Vue.extend({
               this.crewMember?.credits >= 1,
           }
         })
-        .filter((e) => e.pricePerUnit > 0)
     },
     sellableCargo(): any[] {
       return (
@@ -221,7 +219,6 @@ export default Vue.extend({
                 )?.amount >= 0.00999,
             }
           })
-          .filter((e) => e.pricePerUnit > 0)
       )
     },
     totalWeight(): number {
@@ -257,7 +254,7 @@ export default Vue.extend({
         (
           res: IOResponse<{
             amount: number
-            price: number
+            price: Price
           }>,
         ) => {
           if ('error' in res) {
@@ -271,10 +268,9 @@ export default Vue.extend({
           this.$store.dispatch('notifications/notify', {
             text: `Bought ${c.r2(res.data.amount)} ton${
               res.data.amount === 1 ? '' : 's'
-            } of ${data.cargoData.id} for 💳${c.r2(
+            } of ${data.cargoData.id} for ${c.priceToString(
               res.data.price,
-              0,
-            )} ${c.baseCurrencyPlural}.`,
+            )}.`,
             type: 'success',
           })
         },
@@ -312,7 +308,7 @@ export default Vue.extend({
         (
           res: IOResponse<{
             amount: number
-            price: number
+            price: Price
           }>,
         ) => {
           if ('error' in res) {
@@ -326,10 +322,9 @@ export default Vue.extend({
           this.$store.dispatch('notifications/notify', {
             text: `Sold ${c.r2(res.data.amount)} ton${
               res.data.amount === 1 ? '' : 's'
-            } of ${data.cargoData.id} for 💳${c.r2(
+            } of ${data.cargoData.id} for ${c.priceToString(
               res.data.price,
-              0,
-            )} ${c.baseCurrencyPlural}.`,
+            )}.`,
             type: 'success',
           })
         },

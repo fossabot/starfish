@@ -82,11 +82,13 @@ export class SellCommand implements Command {
         label: `${p.amount} ton${
           p.amount === 1 ? `` : `s`
         } of ${c.capitalize(c.camelCaseToWords(p.id))}:
-💳${c.r2(p.price * p.amount, 0)}`,
+${c.priceToString(p.price)}`,
         style:
-          p.price < c.cargo[p.id].basePrice
+          (p.price.credits || 0) <
+          (c.cargo[p.id].basePrice.credits || 0)
             ? `DANGER`
-            : p.price > c.cargo[p.id].basePrice
+            : (p.price.credits || 0) >
+              (c.cargo[p.id].basePrice.credits || 0)
             ? `SUCCESS`
             : `SECONDARY`,
         customId: `sell` + p.id,
@@ -113,9 +115,8 @@ export class SellCommand implements Command {
               inv.amount === 1 ? `` : `s`
             } of ${c.capitalize(
               c.camelCaseToWords(inv.id),
-            )} to ${planet.name} for 💳${c.r2(
+            )} to ${planet.name} for ${c.priceToString(
               res.data.price,
-              0,
             )}`,
           )
         else await context.reply(res.error)

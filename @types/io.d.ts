@@ -295,7 +295,7 @@ interface IOClientEvents {
       res: IOResponse<{
         cargoId: CargoId
         amount: number
-        price: number
+        price: Price
       }>,
     ) => void,
   ) => void
@@ -308,7 +308,7 @@ interface IOClientEvents {
       res: IOResponse<{
         cargoId: CargoId
         amount: number
-        price: number
+        price: Price
       }>,
     ) => void,
   ) => void

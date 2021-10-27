@@ -336,7 +336,7 @@ function priceToString(p: Price): string {
     s += `💎${numberWithCommas(
       math.r2(p.shipCosmeticCurrency),
     )} `
-  if (!s) s = `free`
+  if (!s) s = `Free`
   return s.trim()
 }
 

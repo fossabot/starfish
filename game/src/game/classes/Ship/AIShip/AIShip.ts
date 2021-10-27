@@ -345,7 +345,8 @@ export class AIShip extends CombatShip {
 
         const amount = c.r2(
           Math.min(
-            creditValue / cargoData.basePrice,
+            creditValue /
+              (cargoData.basePrice.credits || 100),
             c.r2(
               Math.random() * this.level * 4 + this.level,
             ),
@@ -359,7 +360,8 @@ export class AIShip extends CombatShip {
         if (existing) existing.amount += amount
         else
           cacheContents.push({ id: cargoData.id, amount })
-        creditValue -= amount * cargoData.basePrice
+        creditValue -=
+          amount * (cargoData.basePrice.credits || 100)
       }
       // c.log(5000 * this.level, cacheContents)
 

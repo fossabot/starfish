@@ -258,7 +258,7 @@ function priceToString(p) {
     if (p.shipCosmeticCurrency)
         s += `💎${numberWithCommas(math_1.default.r2(p.shipCosmeticCurrency))} `;
     if (!s)
-        s = `free`;
+        s = `Free`;
     return s.trim();
 }
 exports.default = {

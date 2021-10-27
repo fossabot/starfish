@@ -121,7 +121,7 @@
               ca.chassisData && ca.chassisData.displayName
             }}</b>
             <div>
-              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+              {{ c.priceToString(ca.price) }}
             </div>
           </button>
         </span>

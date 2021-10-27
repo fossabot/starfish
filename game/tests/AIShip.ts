@@ -30,13 +30,13 @@ describe(`AIShip spawn`, () => {
 
     const ship2 = await g.addAIShip(aiShipData(100))
     const level10Value = ship2.items.reduce(
-      (t, i) => t + i.baseData.basePrice,
+      (t, i) => t + (i.baseData.basePrice.credits || 0),
       0,
     )
 
     expect(level3Value).to.be.below(level10Value)
     expect(ship.chassis.basePrice).to.be.lessThan(
-      ship2.chassis.basePrice,
+      ship2.chassis.basePrice.credits || 0,
     )
   })
 })

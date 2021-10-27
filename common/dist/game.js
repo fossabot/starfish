@@ -170,40 +170,55 @@ function getPlanetTitle(planet) {
     return names[Math.floor(planet.level - 1)] || `Domain`;
     // todo finish
 }
-function getCargoSellPrice(cargoId, planet, guildId) {
-    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId);
+function getCargoSellPrice(cargoId, planet, guildId, amount = 1) {
+    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId).credits || 0;
     const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
         gameConstants_1.default.baseCargoSellMultiplier;
-    return Math.min(buyPrice, Math.floor(cargo[cargoId].basePrice *
-        sellMultiplier *
-        planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
-            gameConstants_1.default.guildAllegianceFriendCutoff
-            ? 1 +
-                (1 - (gameConstants_1.default.guildVendorMultiplier || 1))
-            : 1)));
+    return {
+        credits: Math.min(Math.floor(buyPrice * amount), Math.floor((cargo[cargoId].basePrice.credits || 0) *
+            amount *
+            sellMultiplier *
+            planet.priceFluctuator *
+            ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+                gameConstants_1.default.guildAllegianceFriendCutoff
+                ? 1 +
+                    (1 -
+                        (gameConstants_1.default.guildVendorMultiplier || 1))
+                : 1))),
+    };
 }
-function getCargoBuyPrice(cargoId, planet, guildId) {
+function getCargoBuyPrice(cargoId, planet, guildId, amount = 1) {
     const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
     if (!cargoForSale)
-        return 99999;
-    return Math.ceil(cargo[cargoId].basePrice *
-        cargoForSale.buyMultiplier *
+        return { credits: 99999 };
+    const multiplier = cargoForSale.buyMultiplier *
         planet?.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+        ((planet.allegiances.find((a) => a.guildId === guildId)
+            ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1));
+            : 1);
+    const basePrice = cargo[cargoId].basePrice;
+    const price = {};
+    if (basePrice?.credits)
+        price.credits = Math.ceil(basePrice.credits * multiplier * amount);
+    if (basePrice?.crewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(basePrice.crewCosmeticCurrency * multiplier * amount);
+    if (basePrice?.shipCosmeticCurrency)
+        price.shipCosmeticCurrency = Math.ceil(basePrice.shipCosmeticCurrency * multiplier * amount);
+    return price;
 }
 function getRepairPrice(planet, hp, guildId) {
-    return math_1.default.r2((planet.vendor?.repairCostMultiplier || 1) *
-        gameConstants_1.default.baseRepairCost *
-        hp *
-        planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
-            gameConstants_1.default.guildAllegianceFriendCutoff
-            ? gameConstants_1.default.guildVendorMultiplier
-            : 1), 0, true);
+    return {
+        credits: math_1.default.r2((planet.vendor?.repairCostMultiplier || 1) *
+            gameConstants_1.default.baseRepairCost *
+            hp *
+            planet.priceFluctuator *
+            ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+                gameConstants_1.default.guildAllegianceFriendCutoff
+                ? gameConstants_1.default.guildVendorMultiplier
+                : 1), 0, true),
+    };
 }
 function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId) {
     const multiplier = passiveForSale.buyMultiplier *
@@ -255,7 +270,7 @@ function getItemSellPrice(itemType, itemId, planet, guildId) {
     const itemData = items[itemType][itemId];
     if (!itemData)
         return 9999999;
-    return math_1.default.r2((itemData?.basePrice || 9999999) *
+    return math_1.default.r2((itemData?.basePrice?.credits || 0) *
         gameConstants_1.default.baseItemSellMultiplier *
         planet.priceFluctuator *
         (planet.guild === guildId
@@ -271,7 +286,7 @@ function getChassisSwapPrice(chassis, planet, currentChassisId, guildId) {
     const currentChassisSellPrice = Math.floor(((items.chassis[currentChassisId]?.basePrice || 0)
         .credits || 0) * gameConstants_1.default.baseItemSellMultiplier);
     const price = {};
-    price.credits = math_1.default.r2(Math.min((items.chassis[chassis.id]?.basePrice.credits || 0) -
+    price.credits = math_1.default.r2(Math.max((items.chassis[chassis.id]?.basePrice.credits || 0) -
         currentChassisSellPrice, 0), 0, true);
     if (items.chassis[chassis.id]?.basePrice
         ?.crewCosmeticCurrency)
@@ -330,10 +345,10 @@ function canAfford(price, ship, crewMember, useShipCommonCredits = false) {
             ship.captain !== crewMember?.id)
             return false;
         if (useShipCommonCredits &&
-            ship.commonCredits < price.credits)
+            (ship.commonCredits || 0) < price.credits)
             return false;
     }
-    if (ship.shipCosmeticCurrency <
+    if ((ship.shipCosmeticCurrency || 0) <
         (price.shipCosmeticCurrency || 0))
         return false;
     if (price.shipCosmeticCurrency &&
@@ -343,7 +358,17 @@ function canAfford(price, ship, crewMember, useShipCommonCredits = false) {
     if ((crewMember?.crewCosmeticCurrency || 0) <
         (price?.crewCosmeticCurrency || 0))
         return false;
-    return true;
+    return Math.min(price.credits
+        ? useShipCommonCredits
+            ? ship.commonCredits || 0
+            : (crewMember?.credits || 0) / price.credits
+        : Infinity, price.shipCosmeticCurrency
+        ? (ship.shipCosmeticCurrency || 0) /
+            price.shipCosmeticCurrency
+        : Infinity, price.crewCosmeticCurrency
+        ? (crewMember?.crewCosmeticCurrency || 0) /
+            price.crewCosmeticCurrency
+        : Infinity);
 }
 // function getPlanetDescription(planet: PlanetStub): string {
 //   if (!planet) return ``
