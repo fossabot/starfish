@@ -170,71 +170,107 @@ function getPlanetTitle(planet) {
     return names[Math.floor(planet.level - 1)] || `Domain`;
     // todo finish
 }
-function getCargoSellPrice(cargoId, planet, guildId) {
-    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId);
+function getCargoSellPrice(cargoId, planet, guildId, amount = 1) {
+    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId).credits || 0;
     const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
         gameConstants_1.default.baseCargoSellMultiplier;
-    return Math.min(buyPrice, Math.floor(cargo[cargoId].basePrice *
-        sellMultiplier *
-        planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
-            gameConstants_1.default.guildAllegianceFriendCutoff
-            ? 1 +
-                (1 - (gameConstants_1.default.guildVendorMultiplier || 1))
-            : 1)));
+    return {
+        credits: Math.min(Math.floor(buyPrice * amount), Math.floor((cargo[cargoId].basePrice.credits || 0) *
+            amount *
+            sellMultiplier *
+            planet.priceFluctuator *
+            ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+                gameConstants_1.default.guildAllegianceFriendCutoff
+                ? 1 +
+                    (1 -
+                        (gameConstants_1.default.guildVendorMultiplier || 1))
+                : 1))),
+    };
 }
-function getCargoBuyPrice(cargoId, planet, guildId) {
+function getCargoBuyPrice(cargoId, planet, guildId, amount = 1) {
     const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
     if (!cargoForSale)
-        return 99999;
-    return Math.ceil(cargo[cargoId].basePrice *
-        cargoForSale.buyMultiplier *
+        return { credits: 99999 };
+    const multiplier = cargoForSale.buyMultiplier *
         planet?.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+        ((planet.allegiances.find((a) => a.guildId === guildId)
+            ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1));
+            : 1);
+    const basePrice = cargo[cargoId].basePrice;
+    const price = {};
+    if (basePrice?.credits)
+        price.credits = Math.ceil(basePrice.credits * multiplier * amount);
+    if (basePrice?.crewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(basePrice.crewCosmeticCurrency * multiplier * amount);
+    if (basePrice?.shipCosmeticCurrency)
+        price.shipCosmeticCurrency = Math.ceil(basePrice.shipCosmeticCurrency * multiplier * amount);
+    return price;
 }
 function getRepairPrice(planet, hp, guildId) {
-    return math_1.default.r2((planet.vendor?.repairCostMultiplier || 1) *
-        gameConstants_1.default.baseRepairCost *
-        hp *
-        planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
-            gameConstants_1.default.guildAllegianceFriendCutoff
-            ? gameConstants_1.default.guildVendorMultiplier
-            : 1), 0, true);
+    return {
+        credits: math_1.default.r2((planet.vendor?.repairCostMultiplier || 1) *
+            gameConstants_1.default.baseRepairCost *
+            hp *
+            planet.priceFluctuator *
+            ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+                gameConstants_1.default.guildAllegianceFriendCutoff
+                ? gameConstants_1.default.guildVendorMultiplier
+                : 1), 0, true),
+    };
 }
 function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId) {
-    return Math.ceil((crewPassives_1.default[passiveForSale.id].buyable?.basePrice ||
-        99999) *
-        passiveForSale.buyMultiplier *
+    const multiplier = passiveForSale.buyMultiplier *
         (1 +
             (currentIntensity /
                 (crewPassives_1.default[passiveForSale.id].buyable
                     ?.baseIntensity || 1)) **
                 2) *
         planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+        ((planet.allegiances.find((a) => a.guildId === guildId)
+            ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1));
+            : 1);
+    const basePrice = crewPassives_1.default[passiveForSale.id].buyable?.basePrice;
+    const price = {};
+    if (basePrice?.credits)
+        price.credits = Math.ceil(basePrice.credits * multiplier);
+    if (basePrice?.crewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(basePrice.crewCosmeticCurrency * multiplier);
+    if (basePrice?.shipCosmeticCurrency)
+        price.shipCosmeticCurrency = Math.ceil(basePrice.shipCosmeticCurrency * multiplier);
+    return price;
 }
 function getItemBuyPrice(itemForSale, planet, guildId) {
-    return math_1.default.r2((items[itemForSale.type][itemForSale.id].basePrice ||
-        1) *
-        itemForSale.buyMultiplier *
+    const multiplier = itemForSale.buyMultiplier *
         planet.priceFluctuator *
-        ((planet.allegiances.find((a) => a.guildId === guildId)?.level || 0) >=
+        ((planet.allegiances.find((a) => a.guildId === guildId)
+            ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1), 0, true);
+            : 1);
+    const price = {};
+    if (items[itemForSale.type][itemForSale.id]?.basePrice
+        ?.credits)
+        price.credits = Math.ceil(items[itemForSale.type][itemForSale.id].basePrice
+            .credits * multiplier);
+    if (items[itemForSale.type][itemForSale.id]?.basePrice
+        ?.crewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(items[itemForSale.type][itemForSale.id].basePrice
+            .crewCosmeticCurrency * multiplier);
+    if (items[itemForSale.type][itemForSale.id]?.basePrice
+        ?.shipCosmeticCurrency)
+        price.shipCosmeticCurrency = Math.ceil(items[itemForSale.type][itemForSale.id].basePrice
+            .shipCosmeticCurrency * multiplier);
+    return price;
 }
 function getItemSellPrice(itemType, itemId, planet, guildId) {
     const itemData = items[itemType][itemId];
     if (!itemData)
         return 9999999;
-    return math_1.default.r2((itemData?.basePrice || 9999999) *
+    return math_1.default.r2((itemData?.basePrice?.credits || 0) *
         gameConstants_1.default.baseItemSellMultiplier *
         planet.priceFluctuator *
         (planet.guild === guildId
@@ -242,25 +278,51 @@ function getItemSellPrice(itemType, itemId, planet, guildId) {
             : 1), 0, true);
 }
 function getChassisSwapPrice(chassis, planet, currentChassisId, guildId) {
-    const currentChassisSellPrice = Math.floor((items.chassis[currentChassisId]?.basePrice || 0) *
-        gameConstants_1.default.baseItemSellMultiplier);
-    return math_1.default.r2(Math.min((items.chassis[chassis.id]?.basePrice || 1) *
-        chassis.buyMultiplier *
+    const multiplier = chassis.buyMultiplier *
         planet.priceFluctuator *
         (planet.guild === guildId
-            ? 1 +
-                (1 - gameConstants_1.default.guildVendorMultiplier || 1)
-            : 1) -
-        currentChassisSellPrice), 0, true);
+            ? 1 + (1 - gameConstants_1.default.guildVendorMultiplier || 1)
+            : 1);
+    const currentChassisSellPrice = Math.floor(((items.chassis[currentChassisId]?.basePrice || 0)
+        .credits || 0) * gameConstants_1.default.baseItemSellMultiplier);
+    const price = {};
+    price.credits = math_1.default.r2(Math.max((items.chassis[chassis.id]?.basePrice.credits || 0) -
+        currentChassisSellPrice, 0), 0, true);
+    if (items.chassis[chassis.id]?.basePrice
+        ?.crewCosmeticCurrency)
+        price.crewCosmeticCurrency = Math.ceil(items.chassis[chassis.id].basePrice
+            .crewCosmeticCurrency * multiplier);
+    if (items.chassis[chassis.id]?.basePrice
+        ?.shipCosmeticCurrency)
+        price.shipCosmeticCurrency = Math.ceil(items.chassis[chassis.id].basePrice
+            .shipCosmeticCurrency * multiplier);
+    return price;
 }
 function getGuildChangePrice(ship) {
     if (!ship.guildId)
-        return 0;
+        return {};
     if (!ship.planet)
-        return 999999;
-    return math_1.default.r2((ship.crewMembers?.length || 1) *
-        3000 *
-        ship.planet.priceFluctuator, 0, true);
+        return { credits: 999999 };
+    const multiplier = 3000 * ship.planet.priceFluctuator;
+    return {
+        credits: math_1.default.r2((ship.crewMembers?.length || 1) * multiplier, 0, true),
+        shipCosmeticCurrency: 1 +
+            math_1.default.r2((ship.crewMembers?.length || 1) / 10, 0, true),
+    };
+}
+function getShipTaglinePrice(cosmetic) {
+    const price = {};
+    price.shipCosmeticCurrency = Math.ceil((cosmetic.tagline
+        ? gameConstants_1.default.baseTaglinePrice
+        : 0) * cosmetic.priceMultiplier);
+    return price;
+}
+function getShipHeaderBackgroundPrice(cosmetic) {
+    const price = {};
+    price.shipCosmeticCurrency = Math.ceil((cosmetic.headerBackground
+        ? gameConstants_1.default.baseHeaderBackgroundPrice
+        : 0) * cosmetic.priceMultiplier);
+    return price;
 }
 function getPlanetPopulation(planet) {
     if (!planet)
@@ -270,8 +332,43 @@ function getPlanetPopulation(planet) {
             .split(``)
             .reduce((t, c) => t + c.charCodeAt(0), 0) % 200) +
         20) **
-        (planet.level / 30) *
+        (planet.level / 20) *
         planet.radius, 0);
+}
+function canAfford(price, ship, crewMember, useShipCommonCredits = false) {
+    if (price.credits) {
+        if (!useShipCommonCredits &&
+            (crewMember?.credits || 0) < price.credits)
+            return false;
+        if (useShipCommonCredits &&
+            crewMember &&
+            ship.captain !== crewMember?.id)
+            return false;
+        if (useShipCommonCredits &&
+            (ship.commonCredits || 0) < price.credits)
+            return false;
+    }
+    if ((ship.shipCosmeticCurrency || 0) <
+        (price.shipCosmeticCurrency || 0))
+        return false;
+    if (price.shipCosmeticCurrency &&
+        crewMember &&
+        ship.captain !== crewMember?.id)
+        return false;
+    if ((crewMember?.crewCosmeticCurrency || 0) <
+        (price?.crewCosmeticCurrency || 0))
+        return false;
+    return Math.min(price.credits
+        ? useShipCommonCredits
+            ? ship.commonCredits || 0
+            : (crewMember?.credits || 0) / price.credits
+        : Infinity, price.shipCosmeticCurrency
+        ? (ship.shipCosmeticCurrency || 0) /
+            price.shipCosmeticCurrency
+        : Infinity, price.crewCosmeticCurrency
+        ? (crewMember?.crewCosmeticCurrency || 0) /
+            price.crewCosmeticCurrency
+        : Infinity);
 }
 // function getPlanetDescription(planet: PlanetStub): string {
 //   if (!planet) return ``
@@ -339,6 +436,9 @@ exports.default = {
     getItemSellPrice,
     getChassisSwapPrice,
     getGuildChangePrice,
+    getShipTaglinePrice,
+    getShipHeaderBackgroundPrice,
+    canAfford,
     // getPlanetDescription,
 };
 //# sourceMappingURL=game.js.map

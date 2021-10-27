@@ -2,7 +2,7 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 
 import defaultGameSettings from '../../presets/gameSettings'
 

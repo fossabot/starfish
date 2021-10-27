@@ -17,8 +17,8 @@ import { Comet } from './classes/Planet/Comet'
 import { Cache } from './classes/Cache'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
-import { HumanShip } from './classes/Ship/HumanShip'
-import { AIShip } from './classes/Ship/AIShip'
+import { HumanShip } from './classes/Ship/HumanShip/HumanShip'
+import { AIShip } from './classes/Ship/AIShip/AIShip'
 import { CombatShip } from './classes/Ship/CombatShip'
 import { ChunkManager } from './classes/Chunks/ChunkManager'
 
@@ -885,7 +885,7 @@ export class Game {
     //   `Adding human ship ${data.name} to game at ${data.location}`,
     // )
 
-    data.loadout = `humanDefault`
+    data.loadout = data.loadout || `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
@@ -1093,8 +1093,8 @@ export class Game {
     if (index !== -1) this.comets.splice(index, 1)
 
     planet.shipsAt.forEach((s) => {
-      s.planet = false
-      s.toUpdate.planet = false
+      s.updateVisible()
+      s.updatePlanet(true)
     })
 
     await this.db?.planet.removeFromDb(planet.id)
@@ -1289,9 +1289,9 @@ export class Game {
           for (let b of (s as HumanShip).banked)
             shipTotal += b.amount
           for (let i of (s as HumanShip).items) {
-            shipTotal += (
-              c.items[i.type][i.id] as BaseItemData
-            ).basePrice
+            shipTotal +=
+              (c.items[i.type][i.id] as BaseItemData)
+                .basePrice.credits || 0
           }
           s.setStat(`netWorth`, shipTotal)
           s.checkAchievements(`money`)
@@ -1320,9 +1320,9 @@ export class Game {
         for (let b of (s as HumanShip).banked)
           shipTotal += b.amount
         for (let i of (s as HumanShip).items) {
-          shipTotal += (
-            c.items[i.type][i.id] as BaseItemData
-          ).basePrice
+          shipTotal +=
+            (c.items[i.type][i.id] as BaseItemData)
+              .basePrice.credits || 0
         }
         s.setStat(`netWorth`, shipTotal)
         s.checkAchievements(`money`)

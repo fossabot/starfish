@@ -2,14 +2,19 @@
   <div class="tabs">
     <div
       class="tabheader hidescrollbar padbot"
+      :class="{
+        flexcenter: centerTabs,
+        flexstretch: bigTabs,
+      }"
       v-if="!dropdown"
     >
       <div
         v-for="(tab, index) in tabs"
         :key="tab.title"
         @click="selectTab(index)"
-        class="button small nowrap combo"
+        class="button nowrap combo"
         :class="{
+          small: !bigTabs,
           secondary: selectedIndex !== index,
           arrowdown: selectedIndex === index,
         }"
@@ -17,18 +22,24 @@
         <span>{{ tab.title }}</span>
       </div>
     </div>
-    <div class="tabheader padbot small" v-else>
+    <div
+      class="tabheader padbot"
+      :class="{
+        small: !bigTabs,
+      }"
+      v-else
+    >
       <select v-model="dropdownSelection">
         <option
           v-for="(tab, index) in tabs"
           :key="tab.title"
           :value="index"
         >
-          {{ c.capitalize(tab.title) }}
+          {{ tab.title }}
         </option>
       </select>
     </div>
-    <div class="contents">
+    <div class="contents" :class="{ padnone: noPad }">
       <slot></slot>
     </div>
   </div>
@@ -40,7 +51,12 @@ import { mapState } from 'vuex'
 import c from '../../common/dist'
 
 export default Vue.extend({
-  props: { dropdown: { type: Boolean, default: false } },
+  props: {
+    dropdown: { type: Boolean, default: false },
+    noPad: { type: Boolean, default: false },
+    centerTabs: { type: Boolean, default: false },
+    bigTabs: { type: Boolean, default: false },
+  },
   data() {
     let tabs: Vue[] = []
     return {
@@ -84,8 +100,8 @@ export default Vue.extend({
 }
 .tabheader {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  // overflow-x: auto;
   padding-left: var(--panesectionpad-left);
   padding-right: var(--panesectionpad-left);
 
@@ -93,7 +109,7 @@ export default Vue.extend({
     flex-shrink: 0;
   }
 }
-.contents {
+.contents:not(.padnone) {
   padding: 0 var(--panesectionpad-left);
 }
 </style>

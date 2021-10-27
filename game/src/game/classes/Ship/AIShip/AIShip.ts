@@ -1,20 +1,21 @@
-import c from '../../../../../common/dist'
-import { Game } from '../../Game'
-import { CombatShip } from './CombatShip'
-import type { Ship } from './Ship'
-import type { Planet } from '../Planet/Planet'
-import type { Cache } from '../Cache'
-import type { Zone } from '../Zone'
-import type { AttackRemnant } from '../AttackRemnant'
-import type { Weapon } from '../Item/Weapon'
-import type { HumanShip } from './HumanShip'
+import c from '../../../../../../common/dist'
+import { Game } from '../../../Game'
+import { CombatShip } from '../CombatShip'
+import type { Ship } from '../Ship'
+import type { Planet } from '../../Planet/Planet'
+import type { Cache } from '../../Cache'
+import type { Zone } from '../../Zone'
+import type { AttackRemnant } from '../../AttackRemnant'
+import type { Weapon } from '../../Item/Weapon'
+import type { HumanShip } from '../HumanShip/HumanShip'
 
-import defaultGameSettings from '../../presets/gameSettings'
+import defaultGameSettings from '../../../presets/gameSettings'
 
-import ais from './ais/ais'
+import ais from './ais'
 
 export class AIShip extends CombatShip {
   static dropCacheValueMultiplier = 3000
+  static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
   readonly human: boolean = false
   readonly id: string
@@ -42,6 +43,7 @@ export class AIShip extends CombatShip {
   targetLocation: CoordinatePair
 
   lastAttackedById: string | null = null
+  resetLastAttackedByIdTimeout: any
 
   obeysGravity = false
 
@@ -89,30 +91,7 @@ export class AIShip extends CombatShip {
     super.tick()
     if (this.dead) return
 
-    const previousVisible = this.visible
-    this.visible = this.game?.scanCircle(
-      this.location,
-      this.radii.sight,
-      this.id,
-      this.scanTypes, // * add 'zone' to allow zones to affect ais
-    ) || {
-      ships: [],
-      planets: [],
-      zones: [],
-      caches: [],
-      attackRemnants: [],
-    }
-    if (this.onlyVisibleToShipId) {
-      const onlyVisibleShip = this.game?.humanShips.find(
-        (s) => s.id === this.onlyVisibleToShipId,
-      )
-      if (onlyVisibleShip)
-        this.visible.ships.push(onlyVisibleShip)
-    }
-    this.takeActionOnVisibleChange(
-      previousVisible,
-      this.visible,
-    )
+    this.updateVisible()
 
     // ----- move -----
     this.move()
@@ -144,6 +123,33 @@ export class AIShip extends CombatShip {
       if (randomWeapon)
         this.attack(this.targetShip, randomWeapon)
     }
+  }
+
+  updateVisible() {
+    const previousVisible = this.visible
+    this.visible = this.game?.scanCircle(
+      this.location,
+      this.radii.sight,
+      this.id,
+      this.scanTypes, // * add 'zone' to allow zones to affect ais
+    ) || {
+      ships: [],
+      planets: [],
+      zones: [],
+      caches: [],
+      attackRemnants: [],
+    }
+    if (this.onlyVisibleToShipId) {
+      const onlyVisibleShip = this.game?.humanShips.find(
+        (s) => s.id === this.onlyVisibleToShipId,
+      )
+      if (onlyVisibleShip)
+        this.visible.ships.push(onlyVisibleShip)
+    }
+    this.takeActionOnVisibleChange(
+      previousVisible,
+      this.visible,
+    )
   }
 
   updateSightAndScanRadius() {} // * determined by ai
@@ -339,7 +345,8 @@ export class AIShip extends CombatShip {
 
         const amount = c.r2(
           Math.min(
-            creditValue / cargoData.basePrice,
+            creditValue /
+              (cargoData.basePrice.credits || 100),
             c.r2(
               Math.random() * this.level * 4 + this.level,
             ),
@@ -353,9 +360,28 @@ export class AIShip extends CombatShip {
         if (existing) existing.amount += amount
         else
           cacheContents.push({ id: cargoData.id, amount })
-        creditValue -= amount * cargoData.basePrice
+        creditValue -=
+          amount * (cargoData.basePrice.credits || 100)
       }
-      c.log(5000 * this.level, cacheContents)
+      // c.log(5000 * this.level, cacheContents)
+
+      // * chance to add cosmetic currencies
+      if (Math.random() > 0.97) {
+        const amount = Math.random() > 0.8 ? 2 : 1
+        cacheContents.push({
+          id: `shipCosmeticCurrency`,
+          amount,
+        })
+      }
+      if (Math.random() > 0.97) {
+        const amount = Math.round(
+          (Math.random() + 0.1) * 1000,
+        )
+        cacheContents.push({
+          id: `crewCosmeticCurrency`,
+          amount,
+        })
+      }
 
       this.game?.addCache({
         contents: cacheContents,
@@ -440,7 +466,7 @@ export class AIShip extends CombatShip {
 
   determineTargetShip(): CombatShip | null {
     // * determined by ai
-    return null
+    return (this.targetShip = null)
   }
 
   takeDamage(
@@ -448,14 +474,20 @@ export class AIShip extends CombatShip {
     attack: AttackDamageResult,
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
+
     this.lastAttackedById = attacker.id
+    clearTimeout(this.resetLastAttackedByIdTimeout)
+    this.resetLastAttackedByIdTimeout = setTimeout(() => {
+      this.lastAttackedById = null
+    }, AIShip.resetLastAttackedByIdTime)
+
     this.targetShip = this.determineTargetShip()
     return res
   }
 
   broadcastTo(ship: Ship) {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.15, 0.3, this.level / 100))
+    if (Math.random() > c.lerp(0.05, 0.3, this.level / 100))
       return
 
     const distance = c.distance(

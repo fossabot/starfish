@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseShipPassiveData = {
+    boostAccuracy: {
+        description: (p) => `${(p.intensity || 1) * 100}% ${(p.intensity || 1) >= 0 ? `increased` : `decreased`} attack accuracy`,
+    },
     boostDamage: {
-        description: (p) => `${(p.intensity || 1) * 100}% increased damage`,
+        description: (p) => `${(p.intensity || 1) * 100}% ${(p.intensity || 1) >= 0 ? `increased` : `decreased`} damage dealt`,
     },
     alwaysSeeTrailColors: {
         description: (p) => `Trail colors always visible`,

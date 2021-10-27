@@ -33,6 +33,11 @@ declare const _default: {
     };
     cargo: typeof cargo;
     species: {
+        eagles: BaseSpeciesData;
+        seagulls: BaseSpeciesData;
+        chickens: BaseSpeciesData;
+        flamingos: BaseSpeciesData;
+        vultures: BaseSpeciesData;
         octopi: BaseSpeciesData;
         lobsters: BaseSpeciesData;
         crabs: BaseSpeciesData;
@@ -44,11 +49,6 @@ declare const _default: {
         angelfish: BaseSpeciesData;
         blowfish: BaseSpeciesData;
         shrimp: BaseSpeciesData;
-        eagles: BaseSpeciesData;
-        seagulls: BaseSpeciesData;
-        chickens: BaseSpeciesData;
-        flamingos: BaseSpeciesData;
-        vultures: BaseSpeciesData;
     };
     guilds: {
         trader: BaseGuildData;
@@ -119,6 +119,9 @@ declare const _default: {
         alwaysSeeTrailColors: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostAccuracy: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostDamage: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -146,6 +149,22 @@ declare const _default: {
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    baseCurrencySingular: string;
+    baseCurrencyPlural: string;
+    shipCosmeticCurrencySingular: string;
+    shipCosmeticCurrencyPlural: string;
+    crewCosmeticCurrencySingular: string;
+    crewCosmeticCurrencyPlural: string;
+    baseTaglinePrice: number;
+    baseHeaderBackgroundPrice: number;
+    buyableHeaderBackgrounds: {
+        rarity: number;
+        value: HeaderBackground;
+    }[];
+    buyableTaglines: {
+        rarity: number;
+        value: string;
+    }[];
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;
@@ -158,6 +177,8 @@ declare const _default: {
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
+    planetContributeShipCosmeticCostPerXp: number;
+    planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
     weaponDamageMultiplier: number;
@@ -204,18 +225,31 @@ declare const _default: {
     }) => string;
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => number;
-    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined) => number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => {
+        credits: number;
+    };
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => Price;
+    getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => Price;
+    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
+    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
     getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId | undefined) => number;
+    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId | undefined) => Price;
     getGuildChangePrice: (ship: {
         planet: false | PlanetStub;
         guildId: GuildId;
         crewMembers: CrewMemberStub[];
-    }) => number;
+    }) => Price;
+    getShipTaglinePrice: (cosmetic: PlanetShipCosmetic) => Price;
+    getShipHeaderBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
+    canAfford: (price: Price, ship: {
+        captain?: string | null | undefined;
+        commonCredits?: number | undefined;
+        shipCosmeticCurrency?: number | undefined;
+    }, crewMember?: {
+        id: string;
+        credits?: number | undefined;
+        crewCosmeticCurrency?: number | undefined;
+    } | null | undefined, useShipCommonCredits?: boolean) => number | false;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;
@@ -243,6 +277,7 @@ declare const _default: {
     msToTimeString: (ms?: number) => string;
     garble: (string?: string, percent?: number) => string;
     acronym: (string?: string) => string;
+    priceToString: (p: Price) => string;
     lerp: (v0?: number, v1?: number, t?: number) => number;
     r2: (number: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
     radiansToDegrees: (radians?: number) => number;

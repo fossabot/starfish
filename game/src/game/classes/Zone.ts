@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 
 import type { Game } from '../Game'
 import type { Ship } from './Ship/Ship'
-import type { HumanShip } from './Ship/HumanShip'
+import type { HumanShip } from './Ship/HumanShip/HumanShip'
 import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 import { getValidZoneLocation } from '../presets/zones'

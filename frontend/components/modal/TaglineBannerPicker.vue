@@ -3,8 +3,7 @@
     <h2>Customize Ship</h2>
 
     <div class="sub martop marbot">
-      Certain in-game achievements will unlock taglines and
-      banners!
+      Certain actions will unlock taglines and banners!
     </div>
 
     <h3 class="padtop padbot">Choose Ship Tagline</h3>

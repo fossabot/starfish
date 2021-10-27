@@ -9,6 +9,10 @@ interface BaseCacheData {
 }
 
 interface CacheContents {
-  id: CargoId | `credits`
+  id:
+    | CargoId
+    | `credits`
+    | `shipCosmeticCurrency`
+    | `crewCosmeticCurrency`
   amount: number
 }

@@ -1,3 +1,15 @@
+const baseCurrencySingular = `speso`
+const baseCurrencyPlural = `spesos`
+
+const shipCosmeticCurrencySingular = `bubbloon`
+const shipCosmeticCurrencyPlural = `bubbloons`
+
+const crewCosmeticCurrencySingular = `squidcoin`
+const crewCosmeticCurrencyPlural = `squidcoin`
+
+const baseTaglinePrice = 1
+const baseHeaderBackgroundPrice = 2
+
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
@@ -18,6 +30,8 @@ const baseItemSellMultiplier = 0.6
 const noEngineThrustMagnitude = 0.02
 
 const planetContributeCostPerXp = 1
+const planetContributeShipCosmeticCostPerXp = 0.00005
+const planetContributeCrewCosmeticCostPerXp = 0.05
 const planetLevelXpRequirementMultiplier = 15
 
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
@@ -73,7 +87,47 @@ const tactics: CombatTactic[] = [
 
 const baseCargoSellMultiplier = 0.3
 
+const buyableTaglines: { rarity: number; value: string }[] =
+  [
+    { value: `Very Shallow`, rarity: 8 },
+    { value: `Splish Splash`, rarity: 10 },
+    { value: `Holy Mackerel!`, rarity: 12 },
+    { value: `Small Pond 4 Life`, rarity: 14 },
+    { value: `Nautical Nonsense`, rarity: 16 },
+    { value: `Whale, I'll Be!`, rarity: 18 },
+  ]
+
+const buyableHeaderBackgrounds: {
+  rarity: number
+  value: HeaderBackground
+}[] = [
+  {
+    value: { id: `Big Bertha`, url: `blue2.svg` },
+    rarity: 5,
+  },
+  {
+    value: { id: `Pescatarian`, url: `purple2.svg` },
+    rarity: 9,
+  },
+  {
+    value: { id: `Grappler`, url: `green2.svg` },
+    rarity: 13,
+  },
+]
+
 export default {
+  baseCurrencySingular,
+  baseCurrencyPlural,
+  shipCosmeticCurrencySingular,
+  shipCosmeticCurrencyPlural,
+  crewCosmeticCurrencySingular,
+  crewCosmeticCurrencyPlural,
+
+  baseTaglinePrice,
+  baseHeaderBackgroundPrice,
+  buyableHeaderBackgrounds,
+  buyableTaglines,
+
   supportServerLink,
   baseSightRange,
   baseBroadcastRange,
@@ -86,6 +140,8 @@ export default {
   baseItemSellMultiplier,
   noEngineThrustMagnitude,
   planetContributeCostPerXp,
+  planetContributeShipCosmeticCostPerXp,
+  planetContributeCrewCosmeticCostPerXp,
   planetLevelXpRequirementMultiplier,
   itemPriceMultiplier,
   weaponDamageMultiplier,

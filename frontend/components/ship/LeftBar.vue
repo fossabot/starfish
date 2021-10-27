@@ -62,14 +62,16 @@
         </div>
         <div
           class="icon subicon smaller pointer martopbig"
-          v-tooltip="`Give Feedback`"
+          v-tooltip="
+            `Discord Support Server: Give feedback, ask questions, submit bug reports.`
+          "
         >
-          <nuxt-link to="/feedback">
+          <a :href="c.supportServerLink" target="_blank">
             <img
-              src="/images/icons/icon-feedback.svg"
-              alt="link to feedback page"
+              src="/images/icons/icon-discord.svg"
+              alt="link to discord support server"
             />
-          </nuxt-link>
+          </a>
         </div>
         <div
           v-if="ship && !ship.tutorial && userId"
@@ -143,7 +145,6 @@ export default Vue.extend({
     },
     logout() {
       this.$store.dispatch('logout')
-      ;(this as any).$router.push('/')
     },
     toTutorial() {
       ;(this as any).$socket?.emit(

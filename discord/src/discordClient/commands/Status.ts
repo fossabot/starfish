@@ -125,11 +125,19 @@ ${c.percentToTextBars(
         })
         youFields.push({
           inline: true,
-          name: `Credits`,
+          name: c.capitalize(c.baseCurrencyPlural),
           value: `💳 ${c.numberWithCommas(
             c.r2(context.crewMember.credits, 0),
           )}`,
         })
+        // if (context.crewMember.crewCosmeticCurrency)
+        // youFields.push({
+        //   inline: true,
+        //   name: c.capitalize(c.crewCosmeticCurrencyPlural),
+        //   value: `🟡 ${c.numberWithCommas(
+        //     c.r2(context.crewMember.credits, 0),
+        //   )}`,
+        // })
         youFields.push({
           inline: true,
           name: `Inventory`,
@@ -161,9 +169,9 @@ ${c.percentToTextBars(
                   .filter((i) => i.amount)
                   .map(
                     (i) =>
-                      `${c.cargo[i.id].name} (${
-                        i.amount
-                      } ton${i.amount === 1 ? `` : `s`})`,
+                      `${c.cargo[i.id].name} (${c.r2(
+                        i.amount,
+                      )} ton${i.amount === 1 ? `` : `s`})`,
                   )
                   .join(`\n`)}`),
         })

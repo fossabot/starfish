@@ -1,7 +1,7 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
 import defaultGameSettings from '../../presets/gameSettings'
@@ -30,9 +30,9 @@ export class CrewMember extends Stubbable {
   inventory: Cargo[]
   maxCargoSpace: number = CrewMember.baseMaxCargoSpace
   credits: number
+  crewCosmeticCurrency: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
-  upgrades: PassiveCrewUpgrade[] = []
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
 
@@ -61,27 +61,18 @@ export class CrewMember extends Stubbable {
         : c.randomFromArray(
             Object.keys(ship.rooms),
           )) as CrewLocation) ||
-      `bunk` // failsafe
+      `bunk`
 
-    this.stamina = data.stamina || this.maxStamina
-
-    // c.log(
-    //   this.ship.id,
-    //   this.name,
-    //   c.r2(
-    //     (Date.now() - (data.lastActive || 0)) /
-    //       1000 /
-    //       60 /
-    //       60 /
-    //       24,
-    //   ),
-    // )
     this.lastActive = data.lastActive || Date.now()
+    this.stamina = data.stamina || this.maxStamina
+    this.cockpitCharge = data.cockpitCharge || 0
 
     this.inventory =
       data.inventory?.filter((i) => i && i.amount > 0) || []
-    this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 0
+    this.crewCosmeticCurrency =
+      data.crewCosmeticCurrency ?? 0
+
     this.skills =
       data.skills && data.skills.length
         ? [...(data.skills.filter((s) => s) || [])]
@@ -257,6 +248,19 @@ export class CrewMember extends Stubbable {
       for (let p of c.species[speciesId].passives)
         this.applyPassive(p)
     }
+  }
+
+  buy(price: Price): true | string {
+    if (!c.canAfford(price, this.ship, this))
+      return `Insufficient funds.`
+
+    this.credits -= price.credits || 0
+    this.crewCosmeticCurrency -=
+      price.crewCosmeticCurrency || 0
+    this.toUpdate.crewCosmeticCurrency =
+      this.crewCosmeticCurrency
+    this.toUpdate.credits = this.credits
+    return true
   }
 
   addXp(skill: SkillId, xp?: number) {

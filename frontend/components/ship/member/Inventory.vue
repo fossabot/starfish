@@ -9,42 +9,56 @@
       <span class="sectionemoji">⚖️</span>your Inventory
     </template>
     <div class="panesection">
-      <div>
-        💳Credits:
-        {{
-          c.numberWithCommas(
-            c.r2(crewMember.credits, 0, true),
-          )
-        }}
+      <div class="flexbetween">
+        <span
+          v-tooltip="
+            `<b>💳${c.capitalize(
+              c.baseCurrencyPlural,
+            )}</b>: Use these to buy cargo, upgrades, ship parts, and more`
+          "
+          >💳{{
+            c.numberWithCommas(
+              c.r2(crewMember.credits, 0, true),
+            )
+          }}
+        </span>
 
-        <div class="flexwrap">
+        <span>
           <PromptButton
+            class="inlineblock"
             v-if="crewMember.credits >= 1"
             :max="crewMember.credits"
             @done="addToCommonFund(...arguments)"
             @apply="addToCommonFund(...arguments)"
           >
-            <template #label>+ Common Fund </template>
+            <template #label
+              ><span
+                v-tooltip="
+                  `Contribute to the ship's common fund`
+                "
+                >+ Common</span
+              ></template
+            >
             <template>
-              How many credits do you want to contribute to
-              the ship's common credits? (Max
+              How many 💳{{ c.baseCurrencyPlural }} do you
+              want to contribute to the ship's common fund?
+              (Max
               {{
                 c.numberWithCommas(
                   Math.floor(crewMember.credits),
                 )
               }})
-            </template>
-          </PromptButton>
-
-          <PromptButton
+            </template> </PromptButton
+          ><PromptButton
+            class="inlineblock"
             v-if="crewMember.credits >= 1"
             @done="drop('credits', ...arguments)"
             @apply="drop('credits', ...arguments)"
           >
             <template #label>Drop</template>
             <template>
-              How many credits do you want to jettison as a
-              cache? (Max
+              How many 💳{{ c.baseCurrencyPlural }} do you
+              want to jettison as a cache? (Max
               {{
                 c.numberWithCommas(
                   Math.floor(crewMember.credits),
@@ -56,7 +70,22 @@
               cache? (Blank for no message)
             </template>
           </PromptButton>
-        </div>
+        </span>
+      </div>
+
+      <div
+        v-if="crewMember.crewCosmeticCurrency"
+        v-tooltip="
+          `<b>🟡${c.capitalize(
+            c.crewCosmeticCurrencyPlural,
+          )}</b>: Rare currency used to buy cosmetics and other upgrades!`
+        "
+      >
+        🟡{{
+          c.numberWithCommas(
+            c.r2(crewMember.crewCosmeticCurrency, 0, true),
+          )
+        }}
       </div>
     </div>
     <div class="panesection">
@@ -107,12 +136,13 @@ ${
       </div>
 
       <div v-for="item in inventory" :key="'inv' + item.id">
-        <div class="flashtextgoodonspawn">
-          {{ c.capitalize(item.id) }}:
-          <NumberChangeHighlighter
-            :number="c.r2(item.amount, 2)"
-            :display="c.r2(item.amount, 2) + ' tons'"
-          />
+        <div class="flashtextgoodonspawn flexbetween">
+          <span
+            >{{ c.capitalize(item.id) }}:
+            <NumberChangeHighlighter
+              :number="c.r2(item.amount, 2)"
+              :display="c.r2(item.amount, 2) + ' tons'"
+          /></span>
 
           <PromptButton
             class="inlineblock"
@@ -214,7 +244,9 @@ export default Vue.extend({
         amount,
       )
       this.$store.dispatch('notifications/notify', {
-        text: `Contributed ${c.r2(amount, 0)} credits.`,
+        text: `Contributed 💳${c.r2(amount, 0)} ${
+          c.baseCurrencyPlural
+        }.`,
         type: 'success',
       })
     },

@@ -36,7 +36,7 @@ interface BaseCometData extends BaseMiningPlanetData {
 }
 
 interface PlanetMineEntry {
-  id: CargoId
+  id: MineableResource
   payoutAmount: number
   mineRequirement: number
   mineCurrent: number
@@ -67,11 +67,16 @@ interface PlanetVendorCrewPassivePrice {
   intensity: number
 }
 
+interface PlanetShipCosmetic extends ShipCosmetic {
+  priceMultiplier: number
+}
+
 interface PlanetVendor {
   cargo: PlanetVendorCargoPrice[]
   items: PlanetVendorItemPrice[]
   chassis: PlanetVendorChassisPrice[]
   passives: PlanetVendorCrewPassivePrice[]
+  shipCosmetics: PlanetShipCosmetic[]
   repairCostMultiplier?: number
 }
 
@@ -93,6 +98,7 @@ type PlanetLeaningType =
   | `actives`
   | `cargo`
   | `repair`
+  | `cosmetics`
 interface PlanetLeaning {
   type: PlanetLeaningType
   never?: boolean

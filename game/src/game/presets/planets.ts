@@ -241,7 +241,7 @@ export function generateBasicPlanet(
       `chassis`,
       `shipPassives`,
       `crewPassives`,
-      // , `actives`
+      `cosmetics`,
       `cargo`,
       `repair`,
     ]
@@ -262,6 +262,7 @@ export function generateBasicPlanet(
     passives: [],
     items: [],
     chassis: [],
+    shipCosmetics: [],
   }
 
   const creatures: string[] = []

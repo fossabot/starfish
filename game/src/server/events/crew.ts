@@ -2,12 +2,12 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import type { Game } from '../../game/Game'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { CrewMember } from '../../game/classes/CrewMember/CrewMember'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
 import type { Planet } from '../../game/classes/Planet/Planet'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
-import { Tutorial } from '../../game/classes/Ship/addins/Tutorial'
+import { Tutorial } from '../../game/classes/Ship/HumanShip/Tutorial'
 
 export default function (
   socket: Socket<IOClientEvents, IOServerEvents>,
@@ -369,7 +369,11 @@ export default function (
         )
       if (
         minePriority !== `closest` &&
-        !Object.keys(c.cargo).includes(minePriority)
+        !Object.keys(c.cargo).includes(minePriority) &&
+        ![
+          `shipCosmeticCurrency`,
+          `crewCosmeticCurrency`,
+        ].includes(minePriority)
       )
         return (
           callback &&
@@ -444,7 +448,7 @@ export default function (
 
       if (!amount || amount > crewMember.credits)
         return callback({
-          error: `Insufficient credits.`,
+          error: `Insufficient 💳${c.baseCurrencyPlural}.`,
         })
 
       const planet = ship.planet
@@ -460,7 +464,60 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} donated ${amount} credits to the planet ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} donated 💳${amount} ${c.baseCurrencyPlural} to the planet ${planet.name}.`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:donateCosmeticCurrencyToPlanet`,
+    (shipId, crewId, amount, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `Couldn't find a ship by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `Couldn't find a member by that id.`,
+        })
+
+      amount = c.r2(amount, 0, true)
+
+      if (
+        !amount ||
+        amount > crewMember.crewCosmeticCurrency
+      )
+        return callback({
+          error: `Insufficient ${c.crewCosmeticCurrencyPlural}.`,
+        })
+
+      const planet = ship.planet
+      if (!planet)
+        return callback({
+          error: `It looks like you're not on a planet.`,
+        })
+
+      crewMember.crewCosmeticCurrency -= amount
+      crewMember.toUpdate.crewCosmeticCurrency =
+        crewMember.crewCosmeticCurrency
+
+      planet.donate(
+        amount / c.planetContributeCrewCosmeticCostPerXp,
+        ship.guildId,
+      )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} donated ${amount} ${c.crewCosmeticCurrencyPlural} to the planet ${planet.name}.`,
       )
     },
   )
@@ -486,9 +543,9 @@ export default function (
       ship.commonCredits -= amount
       ship.toUpdate.commonCredits = ship.commonCredits
       ship.logEntry(
-        `The captain dispersed ${c.r2(
-          amount,
-        )} credits from the common fund amongst the crew.`,
+        `The captain dispersed 💳${c.r2(amount)} ${
+          c.baseCurrencyPlural
+        } from the common fund amongst the crew.`,
       )
       ship.distributeCargoAmongCrew([
         { amount: amount, id: `credits` },
@@ -555,26 +612,29 @@ export default function (
           error: `That's too heavy to fit into your cargo space.`,
         })
 
-      const price =
-        c.getCargoBuyPrice(
-          cargoId,
-          planet as BasicPlanet,
-          ship.guildId,
-        ) * amount
-
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
-
-      crewMember.credits = Math.round(
-        crewMember.credits - price,
+      const price: Price = c.getCargoBuyPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
       )
-      crewMember.toUpdate.credits = crewMember.credits
+
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
+
       crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
-      callback({ data: { cargoId, amount, price } })
+      callback({
+        data: {
+          cargoId,
+          amount,
+          price,
+        },
+      })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -626,17 +686,32 @@ export default function (
           error: `This planet doesn't buy anything!`,
         })
 
-      const price =
-        c.getCargoSellPrice(
-          cargoId,
-          planet as BasicPlanet,
-          ship.guildId,
-        ) * amount
+      const price: Price = c.getCargoSellPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
+      )
 
       crewMember.credits = Math.round(
-        crewMember.credits + price,
+        crewMember.credits + (price.credits || 0),
       )
       crewMember.toUpdate.credits = crewMember.credits
+
+      crewMember.crewCosmeticCurrency = Math.round(
+        crewMember.crewCosmeticCurrency +
+          (price.crewCosmeticCurrency || 0),
+      )
+      crewMember.toUpdate.crewCosmeticCurrency =
+        crewMember.crewCosmeticCurrency
+
+      ship.shipCosmeticCurrency = Math.round(
+        ship.shipCosmeticCurrency +
+          (price.shipCosmeticCurrency || 0),
+      )
+      ship.toUpdate.shipCosmeticCurrency =
+        ship.shipCosmeticCurrency
+
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
 
@@ -648,7 +723,13 @@ export default function (
         `${crewMember.name} on ${ship.name} sold ${amount} ${cargoId} to ${planet.name}.`,
       )
 
-      callback({ data: { cargoId, amount, price } })
+      callback({
+        data: {
+          cargoId,
+          amount,
+          price,
+        },
+      })
     },
   )
 
@@ -681,7 +762,7 @@ export default function (
       if (cargoId === `credits`) {
         if (crewMember.credits < amount)
           return callback({
-            error: `Not enough credits found.`,
+            error: `Not enough 💳${c.baseCurrencyPlural} found.`,
           })
         crewMember.credits -= amount
         crewMember.toUpdate.credits = crewMember.credits
@@ -769,17 +850,15 @@ export default function (
           error: `This planet does not offer repair services.`,
         })
 
-      const price = c.getRepairPrice(
+      const price: Price = c.getRepairPrice(
         planet,
         hp,
         ship.guildId,
       )
 
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
-
-      crewMember.credits -= price
-      crewMember.toUpdate.credits = crewMember.credits
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.repair(hp)
 
@@ -789,10 +868,7 @@ export default function (
         } hp worth of repairs.`,
         `medium`,
       )
-      crewMember.addStat(
-        `totalContributedToCommonFund`,
-        price,
-      )
+      crewMember.addStat(`totalHpRepaired`, hp)
 
       callback({
         data: c.stubify<CrewMember, CrewMemberStub>(
@@ -800,7 +876,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -853,10 +929,11 @@ export default function (
         planet,
         ship.guildId,
       )
-      if (price > crewMember.credits)
-        return callback({ error: `Insufficient funds.` })
 
-      crewMember.credits -= price
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
+
       crewMember.addToPermanentPassive({
         ...passiveForSale,
       })
@@ -867,7 +944,7 @@ export default function (
         ),
       })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -901,6 +978,7 @@ export default function (
         return callback({
           error: `You're not targeting any location to thrust towards!`,
         })
+      const previousCharge = crewMember.cockpitCharge
 
       const speedDifference = ship.applyThrust(
         targetLocation,
@@ -912,7 +990,11 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} thrusted.`,
+        `${crewMember.name} on ${
+          ship.name
+        } thrusted at ${speedDifference} AU/hr (${c.r2(
+          chargePercent * previousCharge * 100,
+        )}% charge).`,
       )
     },
   )

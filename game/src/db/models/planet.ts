@@ -96,6 +96,13 @@ const planetSchemaFields: Record<
         intensity: Number,
       },
     ],
+    shipCosmetics: [
+      {
+        tagline: String,
+        headerBackground: { id: String, url: String },
+        priceMultiplier: Number,
+      },
+    ],
     repairCostMultiplier: Number,
   },
 

@@ -6,13 +6,13 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
-import type { HumanShip } from './HumanShip'
+import type { HumanShip } from './HumanShip/HumanShip'
 
 import defaultGameSettings from '../../presets/gameSettings'
 
 export abstract class CombatShip extends Ship {
-  static percentOfCreditsKeptOnDeath = 0.5
-  static percentOfCreditsDroppedOnDeath = 0.5
+  static percentOfCurrencyKeptOnDeath = 0.5
+  static percentOfCurrencyDroppedOnDeath = 0.5
 
   targetShip: CombatShip | null = null
   targetItemType: ItemType | `any` = `any`
@@ -207,6 +207,8 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     // self
     if (this === otherShip) return false
+    // nonexistane
+    if (!otherShip) return false
     // not attackable
     if (!otherShip.attackable) return false
     // can't see it
@@ -273,6 +275,10 @@ export abstract class CombatShip extends Ship {
       toHit: number,
       hitRoll: number = Math.random()
     if (predeterminedHitChance === undefined) {
+      const passiveMultiplier =
+        this.getPassiveIntensity(`boostAccuracy`) + 1
+      hitRoll *= passiveMultiplier
+
       const range = c.distance(
         this.location,
         target.location,
@@ -939,12 +945,12 @@ export abstract class CombatShip extends Ship {
 
   die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
+    this.dead = true
     this.game?.ships
       .filter((s) => (s as CombatShip).targetShip === this)
       .forEach((s) => {
         ;(s as CombatShip).determineTargetShip()
       })
-    this.dead = true
   }
 
   repair(
