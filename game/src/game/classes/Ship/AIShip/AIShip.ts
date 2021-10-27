@@ -14,7 +14,7 @@ import defaultGameSettings from '../../../presets/gameSettings'
 import ais from './ais'
 
 export class AIShip extends CombatShip {
-  static dropCacheValueMultiplier = 3000
+  static dropCacheValueMultiplier = 1500
   static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
   readonly human: boolean = false
@@ -321,7 +321,7 @@ export class AIShip extends CombatShip {
 
       while (creditValue > 10) {
         // always a chance for credits
-        if (Math.random() > 0.6) {
+        if (Math.random() > 0.75) {
           let amount = Math.round(
             Math.min(
               Math.ceil(
@@ -357,7 +357,8 @@ export class AIShip extends CombatShip {
         const existing = cacheContents.find(
           (cc) => cc.id === cargoData.id,
         )
-        if (existing) existing.amount += amount
+        if (existing)
+          existing.amount = c.r2(existing.amount + amount)
         else
           cacheContents.push({ id: cargoData.id, amount })
         creditValue -=
@@ -366,14 +367,14 @@ export class AIShip extends CombatShip {
       // c.log(5000 * this.level, cacheContents)
 
       // * chance to add cosmetic currencies
-      if (Math.random() > 0.97) {
+      if (c.lottery(1, 500 / this.level)) {
         const amount = Math.random() > 0.8 ? 2 : 1
         cacheContents.push({
           id: `shipCosmeticCurrency`,
           amount,
         })
       }
-      if (Math.random() > 0.97) {
+      if (c.lottery(1, 500 / this.level)) {
         const amount = Math.round(
           (Math.random() + 0.1) * 1000,
         )
