@@ -29,7 +29,7 @@
     <img
       v-if="data.guildId && c.guilds[data.guildId]"
       class="guildtag"
-      :src="`/images/guildBadges/badge-${data.guildId}.png`"
+      :src="`/images/guildBadges/badge-${data.guildId}.webp`"
       v-tooltip="
         `<b>Guild:</b> ${c.guilds[data.guildId].name}`
       "

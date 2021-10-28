@@ -16,7 +16,7 @@ const weightedTaglines = [
 
 export default {
   tagline: () => c.randomWithWeights(weightedTaglines),
-  headerBackground: `flamingo.jpg`,
+  headerBackground: `flamingo.webp`,
 
   determineNewTargetLocation(
     this: AIShip,

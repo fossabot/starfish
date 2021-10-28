@@ -2,7 +2,7 @@
   <div class="guildbadges">
     <img
       v-for="id in guilds"
-      :src="`/images/guildBadges/badge-${id}.png`"
+      :src="`/images/guildBadges/badge-${id}.webp`"
     />
   </div>
 </template>
