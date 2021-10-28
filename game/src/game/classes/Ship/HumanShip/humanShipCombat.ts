@@ -1,7 +1,5 @@
 import c from '../../../../../../common/dist'
 
-import defaultGameSettings from '../../../presets/gameSettings'
-
 import type { CombatShip } from '../CombatShip'
 import type { Game } from '../../../Game'
 import type { CrewMember } from '../../CrewMember/CrewMember'

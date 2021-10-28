@@ -344,6 +344,29 @@ export default function (
   )
 
   socket.on(
+    `crew:fullyRestedTarget`,
+    (shipId, crewId, fullyRestedTarget) => {
+      if (!game) return
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) return
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) return
+
+      crewMember.fullyRestedTarget = fullyRestedTarget
+      crewMember.toUpdate.fullyRestedTarget =
+        crewMember.fullyRestedTarget
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} full rested target to ${fullyRestedTarget}.`,
+      )
+    },
+  )
+
+  socket.on(
     `crew:minePriority`,
     (shipId, crewId, minePriority, callback?) => {
       if (!game) return
@@ -460,7 +483,10 @@ export default function (
       crewMember.credits -= amount
       crewMember.toUpdate.credits = crewMember.credits
 
-      planet.donate(amount, ship.guildId)
+      planet.donate(
+        amount * c.planetContributeCostPerXp,
+        ship.guildId,
+      )
 
       c.log(
         `gray`,

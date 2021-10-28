@@ -1,8 +1,22 @@
 import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
-import defaultBehavior, { getDefaultAngle } from './default'
+import defaultBehavior, {
+  getDefaultAngle,
+  commonTaglines,
+} from './default'
+
+const weightedTaglines = [
+  ...commonTaglines,
+  { weight: 1, value: `Cluck.` },
+  { weight: 0.6, value: `Cluck Around & Find Out` },
+  { weight: 1, value: `Hard-Boiled` },
+  { weight: 1, value: `Bad Egg` },
+  { weight: 0.3, value: `Hen-tai Lover` },
+]
 
 export default {
+  tagline: () => c.randomWithWeights(weightedTaglines),
+
   determineNewTargetLocation(
     this: AIShip,
   ): CoordinatePair | false {

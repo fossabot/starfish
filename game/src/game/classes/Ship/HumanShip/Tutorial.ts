@@ -2,8 +2,6 @@ import c from '../../../../../../common/dist'
 import type { HumanShip } from './HumanShip'
 import type { CrewMember } from '../../CrewMember/CrewMember'
 
-import defaultGameSettings from '../../../presets/gameSettings'
-
 interface BaseTutorialData {
   step: number
   baseLocation?: CoordinatePair
@@ -738,7 +736,7 @@ export class Tutorial {
         (l) =>
           l +
           (this.ship.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold) *
+            c.defaultGameSettings.arrivalThreshold) *
             (Math.random() - 0.5),
       ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
@@ -776,7 +774,7 @@ export class Tutorial {
           this.targetLocation.location,
         ) <=
           (this.ship.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
       shouldAdvance =

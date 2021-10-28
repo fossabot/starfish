@@ -4,6 +4,7 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/4.jpg"
     :overlayTitle="true"
+    :minimizable="false"
     @minimize="minimized = true"
     @unminimize="minimized = false"
     class="shipbox"

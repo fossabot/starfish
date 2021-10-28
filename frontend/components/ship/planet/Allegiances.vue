@@ -18,6 +18,7 @@
       >
       bonus!
       <ul class="small success">
+        <li v-if="planet.defense">Orbital Defense</li>
         <li>
           Prices improved by
           {{

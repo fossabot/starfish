@@ -3,8 +3,6 @@ import type { Item } from '../../Item/Item'
 import type { MiningPlanet } from '../../Planet/MiningPlanet'
 import type { CrewMember } from '../CrewMember'
 
-import defaultGameSettings from '../../../presets/gameSettings'
-
 export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
@@ -159,7 +157,14 @@ export function bunk(this: CrewMember): void {
     this.toUpdate.cockpitCharge = this.cockpitCharge
   }
 
-  if (this.stamina >= this.maxStamina) return
+  if (this.stamina >= this.maxStamina) {
+    if (this.fullyRestedTarget) {
+      this.goTo(this.fullyRestedTarget, true)
+      this.fullyRestedTarget = false
+      this.toUpdate.fullyRestedTarget = false
+    }
+    return
+  }
 
   const boostStaminaRegenPassives =
     this.ship.getPassiveIntensity(
@@ -171,7 +176,7 @@ export function bunk(this: CrewMember): void {
   const staminaToAdd =
     c.getStaminaGainPerTickForSingleCrewMember(
       this.ship.game?.settings.baseStaminaUse ||
-        defaultGameSettings().baseStaminaUse,
+        c.defaultGameSettings.baseStaminaUse,
     ) *
     boostStaminaRegenPassives *
     generalBoostMultiplier
@@ -186,7 +191,7 @@ export function bunk(this: CrewMember): void {
     this.stamina >
       (this.ship.game?.settings
         .staminaBottomedOutResetPoint ||
-        defaultGameSettings().staminaBottomedOutResetPoint)
+        c.defaultGameSettings.staminaBottomedOutResetPoint)
   ) {
     this.bottomedOutOnStamina = false
     this.toUpdate.bottomedOutOnStamina = false

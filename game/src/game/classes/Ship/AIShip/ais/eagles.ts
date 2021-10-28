@@ -1,9 +1,24 @@
 import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
 import { CombatShip } from '../../CombatShip'
-import defaultBehavior, { getDefaultAngle } from './default'
+import defaultBehavior, {
+  getDefaultAngle,
+  commonTaglines,
+} from './default'
+
+const weightedTaglines = [
+  ...commonTaglines,
+  { weight: 1, value: `Balding` },
+  { weight: 1, value: `Sharpened Talons` },
+  { weight: 1, value: `SCREEEEEEEEEEEEEECH` },
+  { weight: 0.5, value: `Hungry for Octopi` },
+  { weight: 0.5, value: `Hungry for Turtles` },
+  { value: `Orbital Striker`, weight: 1 },
+]
 
 export default {
+  tagline: () => c.randomWithWeights(weightedTaglines),
+
   determineNewTargetLocation(
     this: AIShip,
   ): CoordinatePair | false {

@@ -4,8 +4,6 @@ import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 
-import defaultGameSettings from '../../presets/gameSettings'
-
 export class Planet extends Stubbable {
   static readonly massAdjuster = 0.5
 
@@ -129,7 +127,7 @@ export class Planet extends Stubbable {
       (distanceFromPlanet /
         (this.landingRadiusMultiplier *
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold))) / // less effect farther out
+            c.defaultGameSettings.arrivalThreshold))) / // less effect farther out
       Math.max(1, ship.speed * 1000000) // less effect if you're in motion
 
     const angleToShip = c.angleFromAToB(
@@ -152,18 +150,14 @@ export class Planet extends Stubbable {
   }
 
   async donate(amount: number, guildId?: GuildId) {
-    this.addXp(amount / c.planetContributeCostPerXp)
+    this.addXp(amount / 10)
     this.addStat(`totalDonated`, amount)
-    if (guildId)
-      this.incrementAllegiance(
-        guildId,
-        1 + amount / (c.planetContributeCostPerXp * 2000),
-      )
+    if (guildId) this.incrementAllegiance(guildId, amount)
   }
 
   async addXp(amount: number) {
     if (!amount) return
-    this.xp = Math.round(this.xp + amount)
+    this.xp = Math.floor(this.xp + amount)
     const previousLevel = this.level
     const newLevel = c.levels.findIndex(
       (l) =>
@@ -228,7 +222,7 @@ export class Planet extends Stubbable {
     if (
       distance <
       (this.game?.settings.arrivalThreshold ||
-        defaultGameSettings().arrivalThreshold)
+        c.defaultGameSettings.arrivalThreshold)
     )
       return
     // don't message ships that are currently at a planet
@@ -256,7 +250,7 @@ export class Planet extends Stubbable {
     if (
       distance <
       (this.game?.settings.arrivalThreshold ||
-        defaultGameSettings().arrivalThreshold)
+        c.defaultGameSettings.arrivalThreshold)
     )
       return
     // don't message ships that are currently at a planet

@@ -271,6 +271,11 @@ interface IOClientEvents {
     crewId: string,
     targetId: string,
   ) => void
+  [`crew:fullyRestedTarget`]: (
+    shipId: string,
+    crewId: string,
+    target: CrewLocation,
+  ) => void
   [`crew:itemTarget`]: (
     shipId: string,
     crewId: string,

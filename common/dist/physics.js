@@ -80,7 +80,7 @@ function getGravityForceVectorOnThisBodyDueToThatBody(thisBody, thatBody, gravit
         massProduct,
         rangeInMeters,
         rangeAsPercentOfGravityRadius,
-        gravityScalingExponent,
+        gravityScalingExponent: Math.round(gravityScalingExponent),
     }) *
         gravityMultiplier *
         (1 - gravityLesseningEffectPercentage);

@@ -1,6 +1,5 @@
 import c from '../../common/src'
 import loadouts from '../src/game/presets/loadouts'
-import defaultGameSettings from '../src/game/presets/gameSettings'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'

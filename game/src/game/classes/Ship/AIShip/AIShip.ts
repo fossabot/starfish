@@ -9,8 +9,6 @@ import type { AttackRemnant } from '../../AttackRemnant'
 import type { Weapon } from '../../Item/Weapon'
 import type { HumanShip } from '../HumanShip/HumanShip'
 
-import defaultGameSettings from '../../../presets/gameSettings'
-
 import ais from './ais'
 
 export class AIShip extends CombatShip {
@@ -62,9 +60,19 @@ export class AIShip extends CombatShip {
       `determineTargetShip`,
       `scanTypes`,
       `updateSightAndScanRadius`,
+      `headerBackground`,
     ]) {
       this[prop] =
         ais[this.speciesId]?.[prop] || ais.default[prop]!
+    }
+
+    // tagline
+    if (data.tagline === undefined) {
+      const taglineOrGenerator =
+        ais[this.speciesId]?.tagline || ais.default.tagline!
+      if (typeof taglineOrGenerator === `function`)
+        this.tagline = taglineOrGenerator()
+      else this.tagline = taglineOrGenerator
     }
 
     if (data.onlyVisibleToShipId)
@@ -163,7 +171,7 @@ export class AIShip extends CombatShip {
     let itemBudget =
       this.level *
       (this.game?.settings.aiDifficultyMultiplier ||
-        defaultGameSettings().aiDifficultyMultiplier)
+        c.defaultGameSettings.aiDifficultyMultiplier)
 
     const validChassis = Object.values(c.items.chassis)
       .filter(
@@ -236,16 +244,16 @@ export class AIShip extends CombatShip {
           0,
         ) *
       (this.game?.settings.baseEngineThrustMultiplier ||
-        defaultGameSettings().baseEngineThrustMultiplier)
+        c.defaultGameSettings.baseEngineThrustMultiplier)
 
     const hasArrived =
       Math.abs(this.location[0] - this.targetLocation[0]) <
         (this.game?.settings.arrivalThreshold ||
-          defaultGameSettings().arrivalThreshold) /
+          c.defaultGameSettings.arrivalThreshold) /
           2 &&
       Math.abs(this.location[1] - this.targetLocation[1]) <
         (this.game?.settings.arrivalThreshold ||
-          defaultGameSettings().arrivalThreshold) /
+          c.defaultGameSettings.arrivalThreshold) /
           2
 
     if (!hasArrived) {

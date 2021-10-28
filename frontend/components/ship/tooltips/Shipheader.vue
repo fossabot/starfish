@@ -26,16 +26,14 @@
         </div>
       </div>
     </div>
-    <div
+    <img
       v-if="data.guildId && c.guilds[data.guildId]"
       class="guildtag"
-      :style="{
-        background: c.guilds[data.guildId].color,
-      }"
+      :src="`/images/guildBadges/badge-${data.guildId}.png`"
       v-tooltip="
         `<b>Guild:</b> ${c.guilds[data.guildId].name}`
       "
-    ></div>
+    />
   </div>
 </template>
 
@@ -124,15 +122,12 @@ export default Vue.extend({
   }
 
   .guildtag {
+    display: block;
     position: absolute;
     z-index: 3;
     top: 0;
-    right: 0;
-    width: 60px;
-    height: 60px;
-    transform: translateX(50%) translateY(-50%)
-      rotate(45deg);
-    box-shadow: 0 0 10px -3px var(--bg);
+    right: 0.2em;
+    width: 35px;
   }
 }
 </style>

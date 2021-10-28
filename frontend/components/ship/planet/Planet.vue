@@ -16,6 +16,12 @@
       <span class="sectionemoji">🪐</span>Landed
       {{ planet.planetType === 'comet' ? 'on' : 'at' }}
     </template>
+
+    <ShipTooltipsGuildBadges
+      :guilds="alliedGuildIds"
+      class="badges"
+    />
+
     <div class="scroller">
       <div
         class="
@@ -202,6 +208,20 @@ export default Vue.extend({
     type(): PlanetType {
       return this.planet?.planetType
     },
+    alliedGuildIds(): string[] {
+      const ids: Set<string> = new Set()
+      if (this.planet.guildId) {
+        ids.add(this.planet.guildId)
+      }
+      if (this.planet.allegiances) {
+        this.planet.allegiances.forEach((a) => {
+          if (a.level >= c.guildAllegianceFriendCutoff)
+            ids.add(a.guildId)
+        })
+      }
+
+      return Array.from(ids)
+    },
   },
   watch: {},
   mounted() {
@@ -219,6 +239,9 @@ export default Vue.extend({
 .scroller {
   max-height: 480px;
   overflow-y: auto;
+}
+.badges {
+  margin-right: 2em;
 }
 
 // .bordertop {

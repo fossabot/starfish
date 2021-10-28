@@ -110,14 +110,19 @@
               c.camelCaseToWords(numberSettingKey)
             }}</label>
             <input
+              class="marnone"
               type="number"
               v-model="inputSettings[numberSettingKey]"
             />
+            <div class="sub">
+              Default:
+              {{ c.defaultGameSettings[numberSettingKey] }}
+            </div>
           </div>
 
           <div
             class="setting marright"
-            v-for="numberSettingKey in Object.keys(
+            v-for="settingKey in Object.keys(
               inputSettings,
             ).filter(
               (s) =>
@@ -126,11 +131,16 @@
             )"
           >
             <label>{{
-              c.camelCaseToWords(numberSettingKey)
+              c.camelCaseToWords(settingKey)
             }}</label>
             <input
-              v-model="inputSettings[numberSettingKey]"
+              class="marnone"
+              v-model="inputSettings[settingKey]"
             />
+            <div class="sub">
+              Default:
+              {{ c.defaultGameSettings[settingKey] }}
+            </div>
           </div>
         </div>
         <button @click="updateSettings">

@@ -2,6 +2,19 @@ import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
 import { CombatShip } from '../../CombatShip'
 
+export const commonTaglines = [
+  { value: ``, weight: 8 },
+  { value: `Thermal Rider`, weight: 0.8 },
+  { value: `Glidin'`, weight: 0.8 },
+  { value: `Vegetarian, I Promise`, weight: 0.8 },
+  { value: `Wing and a Prayer`, weight: 0.8 },
+  { value: `Feeling Peckish`, weight: 0.8 },
+  { value: `Wingin' It`, weight: 0.8 },
+  { value: `Talonious Monk`, weight: 0.5 },
+  { value: `Of A Feather`, weight: 0.2 },
+  { weight: 0.1, value: `I'm a Seagull!` },
+]
+
 export function getDefaultDistance(this: AIShip): number {
   return ((Math.random() * this.level) / 100) * 10
 }
@@ -24,6 +37,9 @@ export function getDefaultAngle(
 }
 
 export default {
+  headerBackground: `ai.jpg`,
+  tagline: () => c.randomWithWeights(commonTaglines),
+
   scanTypes: [`humanShip`] as ScanType[],
 
   determineNewTargetLocation(

@@ -19,7 +19,7 @@
         m.mineRequirement
           ? (c.cargo[m.id]
               ? `Base price per ton: ${c.priceToString(
-                  c.cargo[m.id.basePrice],
+                  c.cargo[m.id].basePrice,
                 )}
               <br />`
               : '') +

@@ -4,9 +4,20 @@ import { CombatShip } from '../../CombatShip'
 import defaultBehavior, {
   getDefaultAngle,
   getDefaultDistance,
+  commonTaglines,
 } from './default'
 
+const weightedTaglines = [
+  ...commonTaglines,
+  { weight: 1, value: `Shrimp Lover` },
+  { weight: 1, value: `Wait, Where Am I?` },
+  { weight: 1, value: `Pink Patrol` },
+]
+
 export default {
+  tagline: () => c.randomWithWeights(weightedTaglines),
+  headerBackground: `flamingo.jpg`,
+
   determineNewTargetLocation(
     this: AIShip,
   ): CoordinatePair | false {

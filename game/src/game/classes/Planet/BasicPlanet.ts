@@ -439,8 +439,14 @@ export class BasicPlanet extends Planet {
 
   incrementAllegiance(guildId?: GuildId, amount?: number) {
     if (!guildId) return
-    const allegianceAmountToIncrement = amount || 1
-    // c.log(`allegiance`, allegianceAmountToIncrement)
+    let allegianceAmountToIncrement = (amount || 0) / 100
+
+    const existingAllegiances = this.allegiances.filter(
+      (a) => a.level > 1,
+    )
+    allegianceAmountToIncrement /=
+      existingAllegiances.length
+
     const maxAllegiance = 100
     const found = this.allegiances.find(
       (a) => a.guildId === guildId,

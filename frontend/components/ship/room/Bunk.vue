@@ -32,6 +32,26 @@
     >
       Fully rested!
     </div>
+
+    <div class="panesection" v-if="timeToRested">
+      <div>
+        <div class="panesubhead">
+          When Fully Rested, Go To...
+        </div>
+      </div>
+      <button
+        v-for="room in Object.keys(ship.rooms)"
+        :key="'roomchoice' + room"
+        :class="{
+          secondary: crewMember.fullyRestedTarget !== room,
+        }"
+        @click="setFullyRestedTarget(room)"
+      >
+        <span>{{
+          c.capitalize(c.camelCaseToWords(room))
+        }}</span>
+      </button>
+    </div>
   </Box>
 </template>
 
@@ -132,7 +152,20 @@ export default Vue.extend({
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    setFullyRestedTarget(room) {
+      this.$store.commit('updateACrewMember', {
+        id: this.crewMember.id,
+        fullyRestedTarget: room,
+      })
+      ;(this as any).$socket?.emit(
+        'crew:fullyRestedTarget',
+        this.ship.id,
+        this.crewMember.id,
+        room,
+      )
+    },
+  },
 })
 </script>
 

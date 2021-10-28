@@ -4,9 +4,22 @@ import { CombatShip } from '../../CombatShip'
 import defaultBehavior, {
   getDefaultAngle,
   getDefaultDistance,
+  commonTaglines,
 } from './default'
 
+const weightedTaglines = [
+  ...commonTaglines,
+  { value: `Carrion Inspector`, weight: 1 },
+  { value: `Scrappy`, weight: 1 },
+  {
+    value: `Cache Rules Everything Around Me`,
+    weight: 1,
+  },
+  { value: `Booty Lover`, weight: 1 },
+]
+
 export default {
+  tagline: () => c.randomWithWeights(weightedTaglines),
   scanTypes: [`humanShip`, `cache`] as ScanType[],
 
   updateSightAndScanRadius(this: AIShip) {
