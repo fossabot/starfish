@@ -16,7 +16,8 @@
     "restart": "docker-compose down --remove-orphans && docker-compose up -d",
     "mongo": "mongod --dbpath ./db/data",
     "circularcheck": "npx madge --circular ./game",
-    "cypress:open": "cypress open"
+    "cypress:run": "cypress run --headed --browser chrome",
+    "cypress:runheadless": "cypress run --record --key 99ff6c7c-528e-4b9f-8c3f-0fdb6bd179ec"
   },
   "devDependencies": {
     "@types/mongoose": "5.11.97",
@@ -30,6 +31,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "browserslist": "^4.17.5",
     "nodemon": "^2.0.7",
     "stdio": "^2.1.1"
   }

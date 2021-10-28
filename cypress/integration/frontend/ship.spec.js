@@ -3,79 +3,15 @@ const hostname = Cypress.env(`HOSTNAME`)
 const discordUser = Cypress.env(`DISCORD_USER`)
 const discordPass = Cypress.env(`DISCORD_PASS`)
 
-describe(`Homepage`, () => {
-  const links = [
-    {
-      text: `About`,
-      href: `about`,
-    },
-    {
-      text: `How To Play`,
-      href: `howtoplay`,
-    },
-    {
-      text: `Feedback`,
-      href: `feedback`,
-    },
-    {
-      text: `Bug Report`,
-      href: `feedback/bugreport`,
-    },
-    {
-      text: `Share a Story`,
-      href: `feedback/storytime`,
-    },
-  ]
-
-  links.forEach((link) => {
-    it(`"${link.text}" link correctly navigates to ${hostname}/${link.href}`, () => {
-      cy.visit(hostname)
-
-      cy.get(`a`).filter(`:contains(${link.text})`).click()
-      cy.url().should(`eq`, `${hostname}/${link.href}`)
-    })
-  })
-})
 describe(`Discord Login`, () => {
   it(`Log In takes user to Discord login page`, () => {
     cy.visit(hostname)
 
     cy.get(`a`).filter(`:contains(Log In)`).click()
-
-    cy.url().should(
-      `contain`,
-      `https://discord.com/oauth2/authorize`,
-    )
-  })
-
-  const urlParams = [
-    {
-      name: `client_id`,
-      value: `${Cypress.env(`DISCORD_CLIENT_ID`)}`,
-    },
-  ]
-
-  urlParams.forEach((param) => {
-    it(`URL contains ${param.name}`, () => {
-      cy.url().should(
-        `contain`,
-        `${param.name}=${param.value}`,
-      )
-    })
-  })
-
-  it(`should authorize with Discord and redirect to /s`, () => {
     cy.get(`body`).then((body) => {
       if (
         body.find(`a[class^="logoutLink"]`).length === 0
       ) {
-        expect(discordUser, `discordUser was set`).to.be.a(
-          `string`,
-        ).and.not.be.empty
-        expect(discordPass, `discordPass was set`).to.be.a(
-          `string`,
-        ).and.not.be.empty
-
         cy.get(`[name=email]`).type(discordUser)
         cy.get(`[name=password]`).type(discordPass)
 
@@ -94,8 +30,8 @@ describe(`Discord Login`, () => {
   })
 })
 
-describe.only(`Game Page`, () => {
-  describe.only(`Nav Bar`, () => {
+describe(`Ship Page`, () => {
+  describe(`Nav Bar`, () => {
     it(`should be visible`, () => {
       cy.visit(`${hostname}/s`)
       cy.get(`nav[class="leftbar"]`).should(`be.visible`)
@@ -153,7 +89,7 @@ describe.only(`Game Page`, () => {
       },
     ]
 
-    describe.only(`should have useful buttons at the bottom of the Nav Bar`, () => {
+    describe(`should have useful buttons at the bottom of the Nav Bar`, () => {
       buttons.forEach((button) => {
         it(`${button.text}`, () => {
           cy.visit(`${hostname}/s`)
@@ -196,6 +132,24 @@ describe.only(`Game Page`, () => {
       cy.url().should(`eq`, `${hostname}/`, {
         timeout: 10000,
       })
+    })
+  })
+  describe(`Images`, () => {
+    it(`should include a background image`, () => {
+      cy.visit(`${hostname}/s`)
+      cy.get(`body`).should(`have.css`, `background-image`)
+    })
+
+    it(`should have a logo`, () => {
+      cy.visit(`${hostname}/s`)
+      cy.get(`img[alt="logo"]`).should(`be.visible`)
+    })
+
+    it(`should all be in WebP format`, () => {
+      cy.visit(`${hostname}/s`)
+      cy.get(`img`)
+        .should(`have.attr`, `src`)
+        .and(`match`, /\.webp$/, `or`, /\.svg$/)
     })
   })
 })

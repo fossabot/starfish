@@ -62,8 +62,15 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          record: true
           browser: chrome
           headless: true
+          spec: cypress/integration/**/*.spec.js
+        env:
+          CYPRESS_BASEURL: http://localhost:3000
+          CYPRESS_DISCORD_USER: ${{ secrets.DISCORD_USER }}
+          CYPRESS_DISCORD_PASSWORD: ${{ secrets.DISCORD_PASSWORD }}
+          CYPRESS_RECORD_KEY: ffpfj1
 
   docker-build-publish:
     needs: npm-test

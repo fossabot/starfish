@@ -23,3 +23,4 @@ game/dist
 discord/dist
 *.tsbuildinfo
 newrelic_agent.log
+cypress.json
