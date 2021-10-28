@@ -180,7 +180,7 @@ interface AchievementReward {
   tagline?: string
   headerBackground?: {
     id: string
-    url: `${string}.${`svg` | `png` | `jpg`}`
+    url: `${string}.${`svg` | `webp` | `png` | `jpg`}`
   }
 }
 
