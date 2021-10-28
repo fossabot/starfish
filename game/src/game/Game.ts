@@ -29,7 +29,6 @@ import {
 } from './presets/planets'
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
-import defaultGameSettings from './presets/gameSettings'
 import type { Server } from 'socket.io'
 
 export class Game {
@@ -61,7 +60,7 @@ export class Game {
   ioPort: number
 
   constructor(options?: { ioPort?: number }) {
-    this.settings = defaultGameSettings()
+    this.settings = c.defaultGameSettings
 
     this.ioPort = !options?.ioPort
       ? Math.round(Math.random() * (65536 - 5000)) + 5000
@@ -615,7 +614,7 @@ export class Game {
   }
 
   setSettings(newSettings: Partial<AdminGameSettings>) {
-    const defaultSettings = defaultGameSettings()
+    const defaultSettings = c.defaultGameSettings
     this.settings = {
       ...defaultSettings,
       ...this.settings,
@@ -858,7 +857,6 @@ export class Game {
         guildId: `fowl`,
         speciesId: species,
         level,
-        headerBackground: `ai.jpg`,
       })
     }
   }

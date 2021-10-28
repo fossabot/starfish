@@ -164,6 +164,8 @@ function sanitize(string = ``) {
     };
 }
 function camelCaseToWords(string = ``, capitalizeFirst) {
+    if (typeof string !== `string`)
+        string = `${string}`;
     let s = string.replace(/([A-Z])/g, ` $1`);
     if (capitalizeFirst)
         s = s.replace(/^./, (str) => str.toUpperCase());

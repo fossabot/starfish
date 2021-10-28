@@ -11,8 +11,6 @@ import {
   addTagline,
 } from '../addins/achievements'
 
-import defaultGameSettings from '../../../presets/gameSettings'
-
 import { CombatShip } from '../CombatShip'
 import type { Game } from '../../../Game'
 import { CrewMember } from '../../CrewMember/CrewMember'
@@ -527,7 +525,7 @@ export class HumanShip extends CombatShip {
     thruster.addXp(
       `piloting`,
       (this.game?.settings.baseXpGain ||
-        defaultGameSettings().baseXpGain) *
+        c.defaultGameSettings.baseXpGain) *
         2000 *
         charge *
         thruster.cockpitCharge *
@@ -563,14 +561,14 @@ export class HumanShip extends CombatShip {
           0,
         ) *
         (this.game?.settings.baseEngineThrustMultiplier ||
-          defaultGameSettings().baseEngineThrustMultiplier),
+          c.defaultGameSettings.baseEngineThrustMultiplier),
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
         memberPilotingSkill,
         engineThrustMultiplier,
         this.game?.settings.baseEngineThrustMultiplier ||
-          defaultGameSettings().baseEngineThrustMultiplier,
+          c.defaultGameSettings.baseEngineThrustMultiplier,
       )
     const shipMass = this.mass
     const thrustMagnitudeToApply =
@@ -850,7 +848,7 @@ export class HumanShip extends CombatShip {
         (planet) =>
           c.distance(planet.location, targetLocation) <
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold),
+            c.defaultGameSettings.arrivalThreshold),
       )
       if (foundPlanet)
         targetData = [
@@ -901,7 +899,7 @@ export class HumanShip extends CombatShip {
           (s) =>
             c.distance(s.location, targetLocation) <
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) *
+              c.defaultGameSettings.arrivalThreshold) *
               5,
         )
         if (foundShip) {
@@ -964,7 +962,7 @@ export class HumanShip extends CombatShip {
     thruster.addXp(
       `piloting`,
       (this.game?.settings.baseXpGain ||
-        defaultGameSettings().baseXpGain) *
+        c.defaultGameSettings.baseXpGain) *
         2000 *
         charge *
         thruster.cockpitCharge *
@@ -978,7 +976,7 @@ export class HumanShip extends CombatShip {
 
     charge *=
       this.game?.settings.brakeToThrustRatio ||
-      defaultGameSettings().brakeToThrustRatio // braking is easier than thrusting
+      c.defaultGameSettings.brakeToThrustRatio // braking is easier than thrusting
 
     // apply passive
     let passiveBrakeMultiplier =
@@ -999,14 +997,14 @@ export class HumanShip extends CombatShip {
           0,
         ) *
         (this.game?.settings.baseEngineThrustMultiplier ||
-          defaultGameSettings().baseEngineThrustMultiplier),
+          c.defaultGameSettings.baseEngineThrustMultiplier),
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
         memberPilotingSkill,
         engineThrustMultiplier,
         this.game?.settings.baseEngineThrustMultiplier ||
-          defaultGameSettings().baseEngineThrustMultiplier,
+          c.defaultGameSettings.baseEngineThrustMultiplier,
       )
     const shipMass = this.mass
 
@@ -1812,7 +1810,7 @@ export class HumanShip extends CombatShip {
       crewMember.addXp(
         `linguistics`,
         (this.game?.settings.baseXpGain ||
-          defaultGameSettings().baseXpGain) * 100,
+          c.defaultGameSettings.baseXpGain) * 100,
       )
 
       const antiGarble = this.communicators.reduce(
@@ -2005,7 +2003,7 @@ export class HumanShip extends CombatShip {
       data.credits =
         data.credits ??
         (this.game?.settings.newCrewMemberCredits ||
-          defaultGameSettings().newCrewMemberCredits)
+          c.defaultGameSettings.newCrewMemberCredits)
       this.seenCrewMembers.push(data.id)
     }
 
@@ -2588,6 +2586,6 @@ export class HumanShip extends CombatShip {
   }
 
   get gameSettings() {
-    return this.game?.settings || defaultGameSettings()
+    return this.game?.settings || c.defaultGameSettings
   }
 }

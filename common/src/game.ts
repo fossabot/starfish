@@ -59,8 +59,8 @@ function getThrustMagnitudeForSingleCrewMember(
   engineThrustMultiplier: number = 1,
   baseEngineThrustMultiplier: number,
 ): number {
-  const min: number = 0.65
-  const max: number = 1.5
+  const min: number = 0.45
+  const max: number = 1.4
   return (
     math.lerp(min, max, level / 100) *
     engineThrustMultiplier *

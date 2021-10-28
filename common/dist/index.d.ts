@@ -149,6 +149,28 @@ declare const _default: {
     discordBotInviteUrl: string;
     getUnitVectorFromThatBodyToThisBody: (thisBody: HasLocation, thatBody: HasLocation) => CoordinatePair;
     getGravityForceVectorOnThisBodyDueToThatBody: (thisBody: HasMassAndLocationAndVelocity, thatBody: HasMassAndLocation, gravityScalingExponent?: number, gravityMultiplier?: number, gravityRange?: number) => CoordinatePair;
+    defaultGameSettings: {
+        id: any;
+        humanShipLimit: any;
+        aiDifficultyMultiplier: any;
+        baseXpGain: any;
+        baseStaminaUse: any;
+        brakeToThrustRatio: any;
+        baseEngineThrustMultiplier: any;
+        gravityMultiplier: any;
+        gravityCurveSteepness: any;
+        gravityRadius: any;
+        arrivalThreshold: any;
+        baseCritChance: any;
+        baseCritDamageMultiplier: any;
+        staminaBottomedOutResetPoint: any;
+        newCrewMemberCredits: any;
+        planetDensity: any;
+        cometDensity: any;
+        zoneDensity: any;
+        aiShipDensity: any;
+        cacheDensity: any;
+    };
     baseCurrencySingular: string;
     baseCurrencyPlural: string;
     shipCosmeticCurrencySingular: string;

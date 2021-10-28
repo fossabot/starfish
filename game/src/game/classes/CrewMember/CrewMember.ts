@@ -4,8 +4,6 @@ import * as roomActions from './addins/rooms'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
-import defaultGameSettings from '../../presets/gameSettings'
-
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoSpace = 10
@@ -35,6 +33,7 @@ export class CrewMember extends Stubbable {
   permanentPassives: CrewPassiveData[] = []
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
+  fullyRestedTarget: CrewLocation | false = false
 
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
@@ -120,9 +119,12 @@ export class CrewMember extends Stubbable {
     this.toUpdate.name = this.name
   }
 
-  goTo(location: CrewLocation): undefined | string {
+  goTo(
+    location: CrewLocation,
+    automated = false,
+  ): undefined | string {
     const previousLocation = this.location
-    this.active()
+    if (!automated) this.active()
 
     if (!(location in this.ship.rooms))
       return `Invalid room.`
@@ -167,7 +169,7 @@ export class CrewMember extends Stubbable {
       return `You've hit your limit! You must rest until you're at least ${c.r2(
         (this.ship.game?.settings
           .staminaBottomedOutResetPoint ||
-          defaultGameSettings()
+          c.defaultGameSettings
             .staminaBottomedOutResetPoint) * 100,
       )}% recovered.`
   }
@@ -207,7 +209,7 @@ export class CrewMember extends Stubbable {
         1 - this.getPassiveIntensity(`reduceStaminaDrain`)
       this.stamina -=
         (this.ship.game?.settings.baseStaminaUse ||
-          defaultGameSettings().baseStaminaUse) *
+          c.defaultGameSettings.baseStaminaUse) *
         reducedStaminaDrain
     }
     if (this.stamina <= 0) {
@@ -272,7 +274,7 @@ export class CrewMember extends Stubbable {
     if (!xp)
       xp =
         (this.ship.game?.settings.baseXpGain ||
-          defaultGameSettings().baseXpGain) *
+          c.defaultGameSettings.baseXpGain) *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(

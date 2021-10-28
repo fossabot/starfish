@@ -8,8 +8,6 @@ import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip/HumanShip'
 
-import defaultGameSettings from '../../presets/gameSettings'
-
 export abstract class CombatShip extends Ship {
   static percentOfCurrencyKeptOnDeath = 0.5
   static percentOfCurrencyDroppedOnDeath = 0.5
@@ -189,10 +187,10 @@ export abstract class CombatShip extends Ship {
           pos +
           c.randomBetween(
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) *
+              c.defaultGameSettings.arrivalThreshold) *
               -0.4,
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) * 0.4,
+              c.defaultGameSettings.arrivalThreshold) * 0.4,
           ),
       ) as CoordinatePair,
     )
@@ -309,7 +307,7 @@ export abstract class CombatShip extends Ship {
       : Math.random() <=
         (weapon.critChance === undefined
           ? this.game?.settings.baseCritChance ||
-            defaultGameSettings().baseCritChance
+            c.defaultGameSettings.baseCritChance
           : weapon.critChance)
 
     let damage = miss
@@ -317,7 +315,7 @@ export abstract class CombatShip extends Ship {
       : c.getHitDamage(weapon, totalMunitionsSkill) *
         (didCrit
           ? this.game?.settings.baseCritDamageMultiplier ||
-            defaultGameSettings().baseCritDamageMultiplier
+            c.defaultGameSettings.baseCritDamageMultiplier
           : 1)
 
     if (!miss) {
@@ -536,7 +534,7 @@ export abstract class CombatShip extends Ship {
         cm.addXp(
           `munitions`,
           (this.game?.settings.baseXpGain ||
-            defaultGameSettings().baseXpGain) *
+            c.defaultGameSettings.baseXpGain) *
             Math.round(weapon.damage * 40) *
             xpBoostMultiplier,
         )
@@ -550,7 +548,7 @@ export abstract class CombatShip extends Ship {
           cm.addXp(
             `munitions`,
             (this.game?.settings.baseXpGain ||
-              defaultGameSettings().baseXpGain) *
+              c.defaultGameSettings.baseXpGain) *
               3000 *
               xpBoostMultiplier,
           )

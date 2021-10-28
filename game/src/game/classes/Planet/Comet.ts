@@ -5,8 +5,6 @@ import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { MiningPlanet } from './MiningPlanet'
 import type { Planet } from './Planet'
 
-import defaultGameSettings from '../../presets/gameSettings'
-
 export class Comet extends MiningPlanet {
   velocity: CoordinatePair
   speed: number
@@ -62,7 +60,7 @@ export class Comet extends MiningPlanet {
         c.distance(this.location, newShipLocation) <
         this.landingRadiusMultiplier *
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
       )
         ship.move([
           ship.location[0] + this.velocity[0] * 1.00001,
@@ -103,7 +101,7 @@ export class Comet extends MiningPlanet {
       this.game?.chunkManager.getElementsWithinRadius(
         this.location,
         this.game?.settings.gravityRadius ||
-          defaultGameSettings().gravityRadius,
+          c.defaultGameSettings.gravityRadius,
       ) || []
     ).filter(
       (el) => el !== this && el.type === `planet`,
@@ -116,21 +114,21 @@ export class Comet extends MiningPlanet {
       if (
         distance <=
           (this.game?.settings.gravityRadius ||
-            defaultGameSettings().gravityRadius) &&
+            c.defaultGameSettings.gravityRadius) &&
         distance >
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
             this.game?.settings.gravityCurveSteepness ||
-              defaultGameSettings().gravityCurveSteepness,
+              c.defaultGameSettings.gravityCurveSteepness,
             this.game?.settings.gravityMultiplier ||
-              defaultGameSettings().gravityMultiplier,
+              c.defaultGameSettings.gravityMultiplier,
             this.game?.settings.gravityRadius ||
-              defaultGameSettings().gravityRadius,
+              c.defaultGameSettings.gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(

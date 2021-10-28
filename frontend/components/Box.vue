@@ -89,6 +89,7 @@ export default Vue.extend({
     },
   },
   mounted() {
+    if (!this.minimizable) return
     const preMinimized: string[] = JSON.parse(
       storage.get('minimizedPanes') || '[]',
     )

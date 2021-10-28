@@ -1,3 +1,33 @@
+const defaultGameSettings: {
+  [key in keyof AdminGameSettings]: any
+} = {
+  id: `game` + `${Math.random()}`.substring(2),
+  humanShipLimit: 100,
+  baseXpGain: 0.4,
+  baseStaminaUse: 0.0001,
+  staminaBottomedOutResetPoint: 0.05,
+  newCrewMemberCredits: 1000,
+
+  gravityMultiplier: 1.8,
+  gravityCurveSteepness: 10, // integers
+  gravityRadius: 0.5,
+
+  brakeToThrustRatio: 5,
+  baseEngineThrustMultiplier: 1,
+  arrivalThreshold: 0.002,
+
+  baseCritChance: 0.01,
+  baseCritDamageMultiplier: 2,
+
+  planetDensity: 0.9,
+  cometDensity: 0.08,
+  zoneDensity: 1.15,
+  aiShipDensity: 3,
+  cacheDensity: 1.5,
+
+  aiDifficultyMultiplier: 0.5,
+}
+
 const baseCurrencySingular = `speso`
 const baseCurrencyPlural = `spesos`
 
@@ -92,9 +122,17 @@ const buyableTaglines: { rarity: number; value: string }[] =
     { value: `Very Shallow`, rarity: 8 },
     { value: `Splish Splash`, rarity: 10 },
     { value: `Holy Mackerel!`, rarity: 12 },
+    { value: `Flamingo Hunter`, rarity: 12 },
+    { value: `Eagle Hunter`, rarity: 12 },
+    { value: `Chicken Hunter`, rarity: 12 },
+    { value: `Gull Hunter`, rarity: 12 },
     { value: `Small Pond 4 Life`, rarity: 14 },
     { value: `Nautical Nonsense`, rarity: 16 },
     { value: `Whale, I'll Be!`, rarity: 18 },
+    { value: `Yarr`, rarity: 20 },
+    { value: `Fish 'n' Chips`, rarity: 22 },
+    { value: `Gone Fishing`, rarity: 24 },
+    { value: `Omega 3 Fatty Acid`, rarity: 26 },
   ]
 
 const buyableHeaderBackgrounds: {
@@ -116,6 +154,8 @@ const buyableHeaderBackgrounds: {
 ]
 
 export default {
+  defaultGameSettings,
+
   baseCurrencySingular,
   baseCurrencyPlural,
   shipCosmeticCurrencySingular,
