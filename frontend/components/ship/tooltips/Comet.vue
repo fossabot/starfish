@@ -2,7 +2,7 @@
   <div class="comet">
     <ShipTooltipsHeader
       :name="dataToUse.name"
-      :bg="`/images/paneBackgrounds/21.jpg`"
+      :bg="`/images/paneBackgrounds/21.webp`"
       :color="dataToUse.color"
       icon="💫"
     />

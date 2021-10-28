@@ -4,7 +4,7 @@
       :name="dataToUse.name"
       :bg="`/images/paneBackgrounds/${
         dataToUse.planetType === 'basic' ? 5 : 19
-      }.jpg`"
+      }.webp`"
       :tagline="c.getPlanetTitle(dataToUse)"
       :color="dataToUse.color"
       :guilds="alliedGuildIds"

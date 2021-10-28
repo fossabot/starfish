@@ -37,7 +37,7 @@ export function getDefaultAngle(
 }
 
 export default {
-  headerBackground: `ai.jpg`,
+  headerBackground: `ai.webp`,
   tagline: () => c.randomWithWeights(commonTaglines),
 
   scanTypes: [`humanShip`] as ScanType[],
