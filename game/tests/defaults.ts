@@ -20,14 +20,15 @@ export function humanShipData(
 }
 export function aiShipData(
   level: number = 1,
+  speciesId: AISpeciesId = `eagles`,
 ): BaseAIShipData {
   const id = shipIdCount++
   return {
-    id: `aiShip` + id,
-    name: `AI Ship ` + id,
+    id: `aiShip` + speciesId + id,
+    name: `${speciesId} ` + id,
     location: [0, 0],
     level,
-    speciesId: `eagles`,
+    speciesId,
   }
 }
 
@@ -60,6 +61,7 @@ export function basicPlanetData(): BaseBasicPlanetData {
       items: [],
       chassis: [],
       passives: [],
+      shipCosmetics: [],
     },
     bank: true,
   }

@@ -116,9 +116,13 @@ export class CommandHandler {
 
     // handle prefix but no valid command case
     if (!matchedCommands.length) {
-      await message.reply(
-        `I don't recognize that command. Try ${this.prefix}help.`,
+      if (
+        commandContext.commandName !==
+        commandContext.commandPrefix
       )
+        await message.reply(
+          `I don't recognize that command. Try ${this.prefix}help.`,
+        )
       return
     }
 
@@ -183,13 +187,29 @@ export class CommandHandler {
         !commandContext.crewMember &&
         matchedCommand.requiresCrewMember
       )
-        runnable = `Only crew members can run the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command. Use \`${commandContext.commandPrefix}join\` to join the ship first.`
+        if (matchedCommand.commandNames.length === 0)
+          // broadcast command
+          runnable = `Only crew members can send broadcasts. Use \`${commandContext.commandPrefix}join\` to join the ship first.`
+        else
+          runnable = `Only crew members can run the \`${
+            commandContext.commandPrefix
+          }${
+            matchedCommand?.commandNames?.[0] ||
+            commandContext.commandName
+          }\` command. Use \`${
+            commandContext.commandPrefix
+          }join\` to join the ship first.`
       // planet-only command and no planet
       else if (
         !commandContext.ship?.planet &&
         matchedCommand.requiresPlanet
       )
-        runnable = `Your ship must be on a planet to use the \`${commandContext.commandPrefix}${matchedCommand.commandNames[0]}\` command.`
+        runnable = `Your ship must be on a planet to use the \`${
+          commandContext.commandPrefix
+        }${
+          matchedCommand?.commandNames?.[0] ||
+          commandContext.commandName
+        }\` command.`
       // captain-only command and not captain or admin
       else if (
         matchedCommand.requiresCaptain &&
@@ -203,7 +223,10 @@ export class CommandHandler {
           )?.name
         } or a server admin can run the \`${
           commandContext.commandPrefix
-        }${matchedCommand.commandNames[0]}\` command.`
+        }${
+          matchedCommand?.commandNames?.[0] ||
+          commandContext.commandName
+        }\` command.`
       // anything else command-specific
       else if (!matchedCommand.hasPermissionToRun)
         runnable = true

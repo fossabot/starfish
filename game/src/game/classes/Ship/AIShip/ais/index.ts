@@ -1,6 +1,6 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/src'
 import type { AIShip } from '../AIShip'
-import type { CombatShip } from '../CombatShip'
+import type { CombatShip } from '../../CombatShip'
 
 import defaultBehavior from './default'
 import flamingos from './flamingos'
@@ -11,6 +11,8 @@ import vultures from './vultures'
 
 const ais: {
   [key: string]: {
+    headerBackground?: string
+    tagline?: () => string | null
     scanTypes?: ScanType[]
     determineNewTargetLocation?: () =>
       | CoordinatePair

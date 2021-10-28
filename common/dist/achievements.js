@@ -24,16 +24,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const items = __importStar(require("./items"));
 const globals_1 = __importDefault(require("./globals"));
+const gameConstants_1 = __importDefault(require("./gameConstants"));
 /*
   to be assigned
-  `Big Flipper`,
-  `Whale, I'll be!`,
-  `Splish Splash`,
-  `Holy Mackerel!`,
-  `Small Pond 4 Life`,
-  `Nautical Nonsense`,
-  `Very Shallow`,
-  `Bottom Feeder`,
+  `Big Flipper`
+  `Bottom Feeder`
 */
 const achievements = {
     // default
@@ -237,7 +232,7 @@ const achievements = {
     money1: {
         id: `money1`,
         reward: { tagline: `Easy Target` },
-        for: `having a net worth of 100,000 credits`,
+        for: `having a net worth of 100,000 💳${gameConstants_1.default.baseCurrencyPlural}`,
         condition: {
             stat: {
                 id: `netWorth`,
@@ -248,7 +243,7 @@ const achievements = {
     money2: {
         id: `money2`,
         reward: { tagline: `Moneybags` },
-        for: `having a net worth of 500,000 credits`,
+        for: `having a net worth of 500,000 💳${gameConstants_1.default.baseCurrencyPlural}`,
         condition: {
             stat: {
                 id: `netWorth`,

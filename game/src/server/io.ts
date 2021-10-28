@@ -10,6 +10,7 @@ import discordEvents from './events/discord'
 import generalEvents from './events/general'
 import crewEvents from './events/crew'
 import itemEvents from './events/items'
+import cosmeticsEvents from './events/cosmetics'
 import adminEvents from './events/admin'
 import {
   createServer as createHTTPSServer,
@@ -88,6 +89,7 @@ function spawnIo(
       generalEvents(socket, game)
       crewEvents(socket, game)
       itemEvents(socket, game)
+      cosmeticsEvents(socket, game)
       adminEvents(socket, game)
     },
   )

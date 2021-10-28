@@ -4,7 +4,7 @@ import { Socket } from 'socket.io'
 import type { Game } from '../../game/Game'
 import type { Ship } from '../../game/classes/Ship/Ship'
 import type { CombatShip } from '../../game/classes/Ship/CombatShip'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 export default function (
@@ -193,15 +193,10 @@ export default function (
         })
 
       const price = c.getGuildChangePrice(ship as any)
-      if (ship.commonCredits < price)
-        return callback({
-          error: `Not enough common credits.`,
-        })
 
-      ship.commonCredits = Math.round(
-        ship.commonCredits - price,
-      )
-      ship.toUpdate.commonCredits = ship.commonCredits
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.changeGuild(guildId)
 
@@ -313,6 +308,60 @@ export default function (
   )
 
   socket.on(
+    `ship:donateCosmeticCurrencyToPlanet`,
+    (shipId, crewId, amount, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `Couldn't find a ship by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `Couldn't find a member by that id.`,
+        })
+      if (crewMember.id !== ship.captain)
+        return callback({
+          error: `Only the captain can donate that currency.`,
+        })
+
+      amount = c.r2(amount, 0, true)
+
+      if (!amount || amount > ship.shipCosmeticCurrency)
+        return callback({
+          error: `Insufficient ${c.shipCosmeticCurrencyPlural}.`,
+        })
+
+      const planet = ship.planet
+      if (!planet)
+        return callback({
+          error: `It looks like you're not on a planet.`,
+        })
+
+      ship.shipCosmeticCurrency -= amount
+      ship.toUpdate.shipCosmeticCurrency =
+        ship.shipCosmeticCurrency
+
+      planet.donate(
+        amount / c.planetContributeShipCosmeticCostPerXp,
+        ship.guildId,
+      )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} donated ${amount} ${c.shipCosmeticCurrencyPlural} to the planet ${planet.name}.`,
+      )
+    },
+  )
+
+  socket.on(
     `ship:deposit`,
     (shipId, crewId, amount, callback) => {
       if (!game) return
@@ -330,7 +379,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may deposit common credits in the bank.`,
+          error: `Only the captain may deposit common 💳${c.baseCurrencyPlural} in the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -346,7 +395,7 @@ export default function (
         })
       if (amount > ship.commonCredits)
         return callback({
-          error: `You don't have that many credits!`,
+          error: `You don't have that many 💳${c.baseCurrencyPlural}!`,
         })
       if (amount < 0)
         return callback({
@@ -357,7 +406,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} deposited ${amount} credits in the bank at ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} deposited 💳${amount} ${c.baseCurrencyPlural} in the bank at ${planet.name}.`,
       )
 
       callback({ data: true })
@@ -382,7 +431,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may withdraw common credits from the bank.`,
+          error: `Only the captain may withdraw common 💳${c.baseCurrencyPlural} from the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -401,7 +450,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} withdrew ${amount} credits from the bank at ${planet.name}.`,
+        `${crewMember.name} on ${ship.name} withdrew 💳${amount} ${c.baseCurrencyPlural} from the bank at ${planet.name}.`,
       )
 
       callback({ data: true })

@@ -12,24 +12,13 @@
       <div class="panesubhead">Mechanics' Quarter</div>
     </div>
     <button
-      v-for="count in repairOptions"
-      :disabled="
-        ship._maxHp - ship._hp < count ||
-        crewMember.credits <
-          c.getRepairPrice(ship.planet, count, ship.guildId)
-      "
-      @click="buyRepair(count)"
+      v-for="o in repairOptions"
+      :disabled="!o.canBuy"
+      @click="buyRepair(o.amount)"
     >
       <span
-        >🛠{{ c.r2(count, 2, true) }}HP: 💳{{
-          c.numberWithCommas(
-            c.getRepairPrice(
-              ship.planet,
-              count,
-              ship.guildId,
-            ),
-          )
-        }}</span
+        >🛠{{ c.r2(o.amount, 2, true) }}HP:
+        {{ c.priceToString(o.price) }}</span
       >
     </button>
   </div>
@@ -57,13 +46,36 @@ export default Vue.extend({
     repairableHp(): number {
       return this.ship._maxHp - this.ship._hp
     },
-    repairOptions(): number[] {
+    repairOptions(): {
+      amount: number
+      canBuy: boolean
+      price: Price
+    }[] {
       const options = [
         1, 5, 10, 15, 20, 30, 50, 75, 100,
       ].filter((o) => o <= this.ship._maxHp)
       if (this.repairableHp >= 1)
         options.push(this.repairableHp)
-      return options
+      return options.map((o) => ({
+        amount: o,
+        price:
+          c.getRepairPrice(
+            this.ship.planet,
+            o,
+            this.ship.guildId,
+          ) || {},
+        canBuy:
+          this.repairableHp >= o &&
+          c.canAfford(
+            c.getRepairPrice(
+              this.ship.planet,
+              o,
+              this.ship.guildId,
+            ),
+            this.ship,
+            this.crewMember,
+          ) !== false,
+      }))
     },
   },
   watch: {},

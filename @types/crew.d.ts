@@ -31,7 +31,11 @@ type RepairPriority =
   | `scanners`
   | `armor`
 
-type MinePriorityType = CargoId | `closest`
+type MineableResource =
+  | CargoId
+  | `shipCosmeticCurrency`
+  | `crewCosmeticCurrency`
+type MinePriorityType = MineableResource | `closest`
 
 type CrewPassiveId =
   | `cargoSpace`
@@ -62,11 +66,6 @@ interface CrewStatEntry {
   amount: number
 }
 
-interface PassiveCrewUpgrade {
-  id: CrewPassiveId
-  level: number
-}
-
 interface BaseCrewMemberData {
   name: string
   id: string
@@ -77,6 +76,7 @@ interface BaseCrewMemberData {
   stamina?: number
   inventory?: Cargo[]
   credits?: number
+  crewCosmeticCurrency?: number
   permanentPassives?: CrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic
@@ -102,7 +102,11 @@ interface CrewPassiveData {
   description?: (data: CrewPassiveData) => string
   buyable?: {
     rarity: number
-    basePrice: number
+    basePrice: Price
+    scaledCrewCosmeticCurrency: {
+      fromLevel: number
+      amount: number
+    }
     baseIntensity: number
     wholeNumbersOnly: boolean
   }
@@ -132,7 +136,15 @@ interface BaseSpeciesData {
   description: string
   passives: CrewPassiveData[]
 }
-type SpeciesId =
+
+type AISpeciesId =
+  | `eagles`
+  | `seagulls`
+  | `chickens`
+  | `flamingos`
+  | `vultures`
+
+type HumanSpeciesId =
   | `octopi`
   | `lobsters`
   | `crabs`
@@ -144,8 +156,4 @@ type SpeciesId =
   | `angelfish`
   | `blowfish`
   | `shrimp`
-  | `eagles`
-  | `seagulls`
-  | `chickens`
-  | `flamingos`
-  | `vultures`
+type SpeciesId = AISpeciesId | HumanSpeciesId

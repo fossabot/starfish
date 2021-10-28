@@ -5,8 +5,11 @@
     </div>
     <hr />
     <div v-if="cargoData">
-      Base price: 💳{{
-        cargoData ? cargoData.basePrice : data.basePrice
+      Base price:
+      {{
+        c.priceToString(
+          cargoData ? cargoData.basePrice : data.basePrice,
+        )
       }}
     </div>
     <hr v-if="heldAmount" />

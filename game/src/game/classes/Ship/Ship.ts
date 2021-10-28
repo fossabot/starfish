@@ -7,7 +7,7 @@ import type { Zone } from '../Zone'
 import type { AttackRemnant } from '../AttackRemnant'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
-import type { HumanShip } from './HumanShip'
+import type { HumanShip } from './HumanShip/HumanShip'
 
 import type { Item } from '../Item/Item'
 import { Engine } from '../Item/Engine'
@@ -17,10 +17,9 @@ import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
 
 import loadouts from '../../presets/loadouts'
-import defaultGameSettings from '../../presets/gameSettings'
 
 import { Stubbable } from '../Stubbable'
-import type { Tutorial } from './addins/Tutorial'
+import type { Tutorial } from './HumanShip/Tutorial'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 70
@@ -132,7 +131,12 @@ export class Ship extends Stubbable {
     this.spawnedAt = spawnedAt || Date.now()
 
     this.velocity = velocity || [0, 0]
-    if (location) {
+    if (
+      location &&
+      location[0] !== undefined &&
+      !isNaN(location[0]) &&
+      location[0] !== null
+    ) {
       this.location = location
     }
     // if new guild member, spawn at homeworld
@@ -146,10 +150,10 @@ export class Ship extends Stubbable {
           pos +
           c.randomBetween(
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) *
+              c.defaultGameSettings.arrivalThreshold) *
               -0.4,
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) * 0.4,
+              c.defaultGameSettings.arrivalThreshold) * 0.4,
           ),
       ) as CoordinatePair
       // c.log(`fact`, this.location, this.guild.homeworld)
@@ -168,10 +172,10 @@ export class Ship extends Stubbable {
               pos +
               c.randomBetween(
                 (this.game?.settings.arrivalThreshold ||
-                  defaultGameSettings().arrivalThreshold) *
+                  c.defaultGameSettings.arrivalThreshold) *
                   -0.4,
                 (this.game?.settings.arrivalThreshold ||
-                  defaultGameSettings().arrivalThreshold) *
+                  c.defaultGameSettings.arrivalThreshold) *
                   0.4,
               ),
           ) as CoordinatePair) || [0, 0]),
@@ -716,7 +720,7 @@ export class Ship extends Stubbable {
       coords,
       this.location,
       (this.game?.settings.arrivalThreshold ||
-        defaultGameSettings().arrivalThreshold) *
+        c.defaultGameSettings.arrivalThreshold) *
         arrivalThresholdMultiplier,
     )
   }
@@ -734,21 +738,21 @@ export class Ship extends Stubbable {
       if (
         distance <=
           (this.game?.settings.gravityRadius ||
-            defaultGameSettings().gravityRadius) &&
+            c.defaultGameSettings.gravityRadius) &&
         distance >
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
             this.game?.settings.gravityCurveSteepness ||
-              defaultGameSettings().gravityCurveSteepness,
+              c.defaultGameSettings.gravityCurveSteepness,
             this.game?.settings.gravityMultiplier ||
-              defaultGameSettings().gravityMultiplier,
+              c.defaultGameSettings.gravityMultiplier,
             this.game?.settings.gravityRadius ||
-              defaultGameSettings().gravityRadius,
+              c.defaultGameSettings.gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(
@@ -923,6 +927,8 @@ export class Ship extends Stubbable {
       })),
       spawnPoint: (this as any).spawnPoint,
       level: (this as any).level,
+      tagline: this.tagline || undefined,
+      headerBackground: this.headerBackground || undefined,
     }
   }
 

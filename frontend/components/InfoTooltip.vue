@@ -6,8 +6,12 @@
   >
     <div class="hovertooltip">
       <template v-if="tooltip.type">
+        <ShipTooltipsImage
+          v-if="tooltip.type === 'image'"
+          :data="tooltip"
+        />
         <ShipTooltipsEngine
-          v-if="tooltip.type === 'engine'"
+          v-else-if="tooltip.type === 'engine'"
           :data="tooltip"
         />
         <ShipTooltipsCommunicator
@@ -40,6 +44,10 @@
         />
         <ShipTooltipsShipdot
           v-else-if="tooltip.type === 'ship'"
+          :data="tooltip"
+        />
+        <ShipTooltipsShipheader
+          v-else-if="tooltip.type === 'shipHeader'"
           :data="tooltip"
         />
         <ShipTooltipsCache

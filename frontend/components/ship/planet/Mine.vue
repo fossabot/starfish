@@ -17,12 +17,15 @@
       class="marbottiny"
       v-tooltip="
         m.mineRequirement
-          ? ` Base price per ton: 💳${
-              c.cargo[m.id].basePrice
-            }
-              <br />Remaining in vein: ${
-                m.maxMineable
-              } tons`
+          ? (c.cargo[m.id]
+              ? `Base price per ton: ${c.priceToString(
+                  c.cargo[m.id].basePrice,
+                )}
+              <br />`
+              : '') +
+            `Remaining in vein: ${c.numberWithCommas(
+              m.maxMineable,
+            )}${c.cargo[m.id] ? 'tons' : ''}`
           : `Upgrade the mine to uncover more resources.`
       "
     >
@@ -34,7 +37,15 @@
       >
         <div class="fullwidth" v-if="!m.mineRequirement">
           <div class="fade">
-            {{ c.capitalize(m.id) }} (exhausted)
+            {{
+              
+                m.id === `crewCosmeticCurrency`
+                  ? `🟡${c.capitalize(c.crewCosmeticCurrencyPlural)}`
+                  : m.id === `shipCosmeticCurrency`
+                  ? `💎${c.capitalize(c.shipCosmeticCurrencyPlural)}`
+                  : c.capitalize(m.id),
+            }}
+            (exhausted)
           </div>
         </div>
 
@@ -44,13 +55,27 @@
         >
           <div>
             {{
-              c.numberWithCommas(c.r2(m.payoutAmount, 0))
+              c.cargo[m.id]
+                ? `${c.numberWithCommas(
+                    c.r2(m.payoutAmount, 0),
+                  )} ton${
+                    c.r2(m.payoutAmount, 0) === 1 ? '' : 's'
+                  } of`
+                : ''
             }}
-            ton{{
-              c.r2(m.payoutAmount, 0) === 1 ? '' : 's'
+            {{
+              c.capitalize(
+                m.id === `crewCosmeticCurrency`
+                  ? `🟡${c.numberWithCommas(
+                      c.r2(m.payoutAmount, 0),
+                    )} ${c.crewCosmeticCurrencyPlural}`
+                  : m.id === `shipCosmeticCurrency`
+                  ? `💎${c.numberWithCommas(
+                      c.r2(m.payoutAmount, 0),
+                    )} ${c.shipCosmeticCurrencyPlural}`
+                  : m.id,
+              )
             }}
-            of
-            {{ c.capitalize(m.id) }}
           </div>
 
           <div class="fade">

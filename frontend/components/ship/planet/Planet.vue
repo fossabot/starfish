@@ -16,6 +16,12 @@
       <span class="sectionemoji">🪐</span>Landed
       {{ planet.planetType === 'comet' ? 'on' : 'at' }}
     </template>
+
+    <ShipTooltipsGuildBadges
+      :guilds="alliedGuildIds"
+      class="badges"
+    />
+
     <div class="scroller">
       <div
         class="
@@ -85,23 +91,7 @@
           </span>
           guild homeworld
         </div>
-        <!-- <div
-          class="sub"
-          v-else-if="
-            planet.guild &&
-            c.guilds[planet.guildId].color
-          "
-        >
-          Guild allegiance:
-          <span
-            :style="{
-              color:
-                c.guilds[planet.guildId].color,
-            }"
-          >
-            {{ c.guilds[planet.guildId].name }}
-          </span>
-        </div> -->
+
         <div
           class="sub textcenter marbottiny"
           v-if="type === 'basic'"
@@ -126,61 +116,63 @@
         </div>
       </div>
 
-      <ShipPlanetMine
-        v-if="['mining', 'comet'].includes(type)"
-      />
+      <template v-if="['mining', 'comet'].includes(type)">
+        <ShipPlanetMine />
+        <ShipPlanetLevel v-if="type !== 'comet'" />
+      </template>
 
-      <ShipPlanetVendorCargo v-if="type === 'basic'" />
-      <ShipPlanetGuildRecruit v-if="type === 'basic'" />
-      <ShipPlanetVendorItems v-if="type === 'basic'" />
-      <ShipPlanetBuyRepair v-if="type === 'basic'" />
-      <ShipPlanetBuyCrewPassive v-if="type === 'basic'" />
-      <ShipPlanetBank v-if="type === 'basic'" />
-
-      <ShipPlanetLevel v-if="type !== 'comet'" />
-
-      <div
-        class="panesection"
-        v-if="type === 'basic' && planet.allegiances"
-      >
-        <div
-          class="panesubhead"
-          v-tooltip="
-            `Spend money at this planet to increase your guild's allegiance. Allegiances decay slowly over time.`
-          "
+      <template v-else-if="type === 'basic'">
+        <!-- <hr style="opacity: 0.1; margin: 0" /> -->
+        <Tabs
+          :noPad="true"
+          :centerTabs="true"
+          :bigTabs="true"
+          class="nopadtop nopadbot"
         >
-          Allegiances
-        </div>
-        <ShipPlanetGuildGraph :planet="planet" />
-        <div class="martopsmall" v-if="isFriendlyToGuild">
-          <span
-            :style="{
-              color: c.guilds[ship.guildId].color,
-            }"
-            >Friendly guild</span
+          <div class="marbotsmall" />
+          <Tab
+            :title="`Market`"
+            v-if="crewMember && ship.planet.vendor"
           >
-          bonus!
-          <ul class="small success">
-            <li>
-              Prices improved by
-              {{
-                Math.round(
-                  (1 - c.guildVendorMultiplier) * 100,
-                )
-              }}%
-            </li>
-            <li v-if="planet.repairFactor > 0">
-              Repair field boost
-            </li>
-          </ul>
-        </div>
-      </div>
-      <!-- <div
+            <ShipPlanetVendorCargo />
+          </Tab>
+
+          <Tab :title="`Shipyard`" v-if="crewMember">
+            <ShipPlanetVendorItems />
+            <ShipPlanetBuyRepair />
+          </Tab>
+
+          <Tab
+            :title="`Outfitter`"
+            v-if="
+              crewMember &&
+              ship.planet &&
+              ship.planet.vendor &&
+              ((ship.planet.vendor.passives &&
+                ship.planet.vendor.passives.length) ||
+                (ship.planet.vendor.shipCosmetics &&
+                  ship.planet.vendor.shipCosmetics.length))
+            "
+          >
+            <ShipPlanetBuyCrewPassive />
+            <ShipPlanetBuyShipCosmetics />
+          </Tab>
+
+          <Tab :title="`City Center`">
+            <ShipPlanetGuildRecruit />
+            <ShipPlanetBank />
+            <ShipPlanetLevel />
+            <ShipPlanetAllegiances />
+          </Tab>
+
+          <!-- <div
         v-if="c.getPlanetDescription(planet)"
         class="panesection sub"
       >
         {{ c.getPlanetDescription(planet) }}
       </div> -->
+        </Tabs>
+      </template>
     </div>
   </Box>
 </template>
@@ -195,7 +187,7 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'crewMember']),
     show(): boolean {
       return (
         this.ship &&
@@ -216,14 +208,19 @@ export default Vue.extend({
     type(): PlanetType {
       return this.planet?.planetType
     },
-    isFriendlyToGuild(): boolean {
-      return (
-        this.ship.guildId &&
-        (this.planet?.allegiances.find(
-          (a: PlanetAllegianceData) =>
-            a.guildId === this.ship.guildId,
-        )?.level || 0) >= c.guildAllegianceFriendCutoff
-      )
+    alliedGuildIds(): string[] {
+      const ids: Set<string> = new Set()
+      if (this.planet.guildId) {
+        ids.add(this.planet.guildId)
+      }
+      if (this.planet.allegiances) {
+        this.planet.allegiances.forEach((a) => {
+          if (a.level >= c.guildAllegianceFriendCutoff)
+            ids.add(a.guildId)
+        })
+      }
+
+      return Array.from(ids)
     },
   },
   watch: {},
@@ -237,17 +234,17 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .planet {
   position: relative;
-  grid-column: span 2;
   width: 420px;
 }
 .scroller {
-  max-height: 440px;
+  max-height: 480px;
   overflow-y: auto;
 }
-.guildgraph {
-  & > * {
-    height: 1em;
-    border-right: 1px solid var(--bg);
-  }
+.badges {
+  margin-right: 2em;
 }
+
+// .bordertop {
+//   border-top: 1px solid var(--pane-border);
+// }
 </style>

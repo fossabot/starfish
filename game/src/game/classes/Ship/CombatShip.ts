@@ -6,13 +6,11 @@ import type { Item } from '../Item/Item'
 import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
-import type { HumanShip } from './HumanShip'
-
-import defaultGameSettings from '../../presets/gameSettings'
+import type { HumanShip } from './HumanShip/HumanShip'
 
 export abstract class CombatShip extends Ship {
-  static percentOfCreditsKeptOnDeath = 0.5
-  static percentOfCreditsDroppedOnDeath = 0.5
+  static percentOfCurrencyKeptOnDeath = 0.5
+  static percentOfCurrencyDroppedOnDeath = 0.5
 
   targetShip: CombatShip | null = null
   targetItemType: ItemType | `any` = `any`
@@ -189,10 +187,10 @@ export abstract class CombatShip extends Ship {
           pos +
           c.randomBetween(
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) *
+              c.defaultGameSettings.arrivalThreshold) *
               -0.4,
             (this.game?.settings.arrivalThreshold ||
-              defaultGameSettings().arrivalThreshold) * 0.4,
+              c.defaultGameSettings.arrivalThreshold) * 0.4,
           ),
       ) as CoordinatePair,
     )
@@ -207,6 +205,8 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     // self
     if (this === otherShip) return false
+    // nonexistane
+    if (!otherShip) return false
     // not attackable
     if (!otherShip.attackable) return false
     // can't see it
@@ -273,6 +273,10 @@ export abstract class CombatShip extends Ship {
       toHit: number,
       hitRoll: number = Math.random()
     if (predeterminedHitChance === undefined) {
+      const passiveMultiplier =
+        this.getPassiveIntensity(`boostAccuracy`) + 1
+      hitRoll *= passiveMultiplier
+
       const range = c.distance(
         this.location,
         target.location,
@@ -303,7 +307,7 @@ export abstract class CombatShip extends Ship {
       : Math.random() <=
         (weapon.critChance === undefined
           ? this.game?.settings.baseCritChance ||
-            defaultGameSettings().baseCritChance
+            c.defaultGameSettings.baseCritChance
           : weapon.critChance)
 
     let damage = miss
@@ -311,7 +315,7 @@ export abstract class CombatShip extends Ship {
       : c.getHitDamage(weapon, totalMunitionsSkill) *
         (didCrit
           ? this.game?.settings.baseCritDamageMultiplier ||
-            defaultGameSettings().baseCritDamageMultiplier
+            c.defaultGameSettings.baseCritDamageMultiplier
           : 1)
 
     if (!miss) {
@@ -530,7 +534,7 @@ export abstract class CombatShip extends Ship {
         cm.addXp(
           `munitions`,
           (this.game?.settings.baseXpGain ||
-            defaultGameSettings().baseXpGain) *
+            c.defaultGameSettings.baseXpGain) *
             Math.round(weapon.damage * 40) *
             xpBoostMultiplier,
         )
@@ -544,7 +548,7 @@ export abstract class CombatShip extends Ship {
           cm.addXp(
             `munitions`,
             (this.game?.settings.baseXpGain ||
-              defaultGameSettings().baseXpGain) *
+              c.defaultGameSettings.baseXpGain) *
               3000 *
               xpBoostMultiplier,
           )
@@ -939,12 +943,12 @@ export abstract class CombatShip extends Ship {
 
   die(attacker?: CombatShip) {
     this.addStat(`deaths`, 1)
+    this.dead = true
     this.game?.ships
       .filter((s) => (s as CombatShip).targetShip === this)
       .forEach((s) => {
         ;(s as CombatShip).determineTargetShip()
       })
-    this.dead = true
   }
 
   repair(

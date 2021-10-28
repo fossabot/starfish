@@ -33,7 +33,7 @@ export function generateComet(
     .map(
       (v) => v * (game?.gameSoftRadius || 1) * 1.1,
     ) as CoordinatePair
-  const initialSpeed = c.randomBetween(0.1, 0.5) / 60 / 60 // au/hr
+  const initialSpeed = c.randomBetween(0.02, 0.4) / 60 / 60 // au/hr
   const randomPointWithinUniverse = c.randomInsideCircle(
     game?.gameSoftRadius || 1,
   )

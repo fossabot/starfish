@@ -2,10 +2,9 @@
 /* eslint-disable no-promise-executor-return  */
 
 import c from '../../common/src'
-import { HumanShip } from '../src/game/classes/Ship/HumanShip'
+import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
 import loadouts from '../src/game/presets/loadouts'
-import defaultGameSettings from '../src/game/presets/gameSettings'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -181,7 +180,7 @@ describe(`HumanShip cargo/credit distribution`, () => {
 })
 
 describe(`HumanShip death`, () => {
-  it(`should spawn a cache on death with the correct amount of credits inside`, () => {
+  it(`should spawn a cache on death with the correct amount of currency inside`, () => {
     // test with base ship
     let ship = new HumanShip(humanShipData())
     for (let i = 0; i < 10; i++) {
@@ -194,28 +193,70 @@ describe(`HumanShip death`, () => {
 
     ship.distributeCargoAmongCrew([
       { id: `credits`, amount: distributeAmount },
+      {
+        id: `crewCosmeticCurrency`,
+        amount: distributeAmount,
+      },
+      { id: `shipCosmeticCurrency`, amount: 2 },
     ])
     ship.crewMembers.forEach((cm) => {
       expect(cm.credits).to.be.approximately(
         distributeAmount / 10,
         1,
       )
+      expect(cm.crewCosmeticCurrency).to.be.approximately(
+        distributeAmount / 10,
+        1,
+      )
     })
+    expect(ship.shipCosmeticCurrency).to.equal(2)
     let crewMemberCredits = ship.crewMembers[0].credits
+    let crewMemberCosmetic =
+      ship.crewMembers[0].crewCosmeticCurrency
     const itemRefundValue1 = ship.items.reduce(
       (acc, item) => item.toRefundAmount() + acc,
       0,
     )
+
     let droppedCargo = ship.die()
-    expect(droppedCargo).to.have.lengthOf(1)
-    expect(droppedCargo[0].id).to.equal(`credits`)
-    expect(droppedCargo[0].amount).to.be.approximately(
+
+    expect(droppedCargo).to.have.lengthOf(3)
+    expect(droppedCargo.map((d) => d.id)).to.contain(
+      `credits`,
+    )
+    expect(
+      droppedCargo.find((d) => d.id === `credits`)?.amount,
+    ).to.be.approximately(
       crewMemberCredits *
         10 *
-        CombatShip.percentOfCreditsKeptOnDeath +
+        CombatShip.percentOfCurrencyKeptOnDeath +
         itemRefundValue1 *
-          CombatShip.percentOfCreditsKeptOnDeath,
-      1,
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      ship.crewMembers.length,
+    )
+    expect(
+      droppedCargo.find(
+        (d) => d.id === `crewCosmeticCurrency`,
+      )?.amount,
+    ).to.be.approximately(
+      crewMemberCosmetic *
+        10 *
+        CombatShip.percentOfCurrencyKeptOnDeath,
+      ship.crewMembers.length,
+    )
+    expect(
+      droppedCargo.find(
+        (d) => d.id === `shipCosmeticCurrency`,
+      )?.amount,
+    ).to.equal(
+      Math.round(
+        2 * CombatShip.percentOfCurrencyDroppedOnDeath,
+      ),
+    )
+    expect(ship.shipCosmeticCurrency).to.equal(
+      Math.round(
+        2 * CombatShip.percentOfCurrencyKeptOnDeath,
+      ),
     )
 
     // same test, this time with a big ship
@@ -243,10 +284,10 @@ describe(`HumanShip death`, () => {
     expect(droppedCargo[0].amount).to.be.approximately(
       crewMemberCredits *
         10 *
-        CombatShip.percentOfCreditsKeptOnDeath +
+        CombatShip.percentOfCurrencyKeptOnDeath +
         itemRefundValue2 *
-          CombatShip.percentOfCreditsKeptOnDeath,
-      1,
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      ship.crewMembers.length,
     )
   })
 
@@ -266,10 +307,10 @@ describe(`HumanShip death`, () => {
     ship.die()
     expect(ship.commonCredits).to.be.approximately(
       distributeAmount *
-        CombatShip.percentOfCreditsKeptOnDeath +
+        CombatShip.percentOfCurrencyKeptOnDeath +
         itemRefundValue2 *
-          CombatShip.percentOfCreditsKeptOnDeath,
-      0.1,
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      1,
     )
 
     // same test, this time with a big ship
@@ -282,10 +323,10 @@ describe(`HumanShip death`, () => {
     ship.die()
     expect(ship.commonCredits).to.be.approximately(
       distributeAmount *
-        CombatShip.percentOfCreditsKeptOnDeath +
+        CombatShip.percentOfCurrencyKeptOnDeath +
         itemRefundValue1 *
-          CombatShip.percentOfCreditsKeptOnDeath,
-      0.1,
+          CombatShip.percentOfCurrencyKeptOnDeath,
+      1,
     )
   })
 

@@ -1,10 +1,8 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
-
-import defaultGameSettings from '../../presets/gameSettings'
 
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
@@ -30,11 +28,12 @@ export class CrewMember extends Stubbable {
   inventory: Cargo[]
   maxCargoSpace: number = CrewMember.baseMaxCargoSpace
   credits: number
+  crewCosmeticCurrency: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
-  upgrades: PassiveCrewUpgrade[] = []
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
+  fullyRestedTarget: CrewLocation | false = false
 
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
@@ -61,27 +60,18 @@ export class CrewMember extends Stubbable {
         : c.randomFromArray(
             Object.keys(ship.rooms),
           )) as CrewLocation) ||
-      `bunk` // failsafe
+      `bunk`
 
-    this.stamina = data.stamina || this.maxStamina
-
-    // c.log(
-    //   this.ship.id,
-    //   this.name,
-    //   c.r2(
-    //     (Date.now() - (data.lastActive || 0)) /
-    //       1000 /
-    //       60 /
-    //       60 /
-    //       24,
-    //   ),
-    // )
     this.lastActive = data.lastActive || Date.now()
+    this.stamina = data.stamina || this.maxStamina
+    this.cockpitCharge = data.cockpitCharge || 0
 
     this.inventory =
       data.inventory?.filter((i) => i && i.amount > 0) || []
-    this.cockpitCharge = data.cockpitCharge || 0
     this.credits = data.credits ?? 0
+    this.crewCosmeticCurrency =
+      data.crewCosmeticCurrency ?? 0
+
     this.skills =
       data.skills && data.skills.length
         ? [...(data.skills.filter((s) => s) || [])]
@@ -129,9 +119,12 @@ export class CrewMember extends Stubbable {
     this.toUpdate.name = this.name
   }
 
-  goTo(location: CrewLocation): undefined | string {
+  goTo(
+    location: CrewLocation,
+    automated = false,
+  ): undefined | string {
     const previousLocation = this.location
-    this.active()
+    if (!automated) this.active()
 
     if (!(location in this.ship.rooms))
       return `Invalid room.`
@@ -176,7 +169,7 @@ export class CrewMember extends Stubbable {
       return `You've hit your limit! You must rest until you're at least ${c.r2(
         (this.ship.game?.settings
           .staminaBottomedOutResetPoint ||
-          defaultGameSettings()
+          c.defaultGameSettings
             .staminaBottomedOutResetPoint) * 100,
       )}% recovered.`
   }
@@ -216,7 +209,7 @@ export class CrewMember extends Stubbable {
         1 - this.getPassiveIntensity(`reduceStaminaDrain`)
       this.stamina -=
         (this.ship.game?.settings.baseStaminaUse ||
-          defaultGameSettings().baseStaminaUse) *
+          c.defaultGameSettings.baseStaminaUse) *
         reducedStaminaDrain
     }
     if (this.stamina <= 0) {
@@ -259,6 +252,19 @@ export class CrewMember extends Stubbable {
     }
   }
 
+  buy(price: Price): true | string {
+    if (!c.canAfford(price, this.ship, this))
+      return `Insufficient funds.`
+
+    this.credits -= price.credits || 0
+    this.crewCosmeticCurrency -=
+      price.crewCosmeticCurrency || 0
+    this.toUpdate.crewCosmeticCurrency =
+      this.crewCosmeticCurrency
+    this.toUpdate.credits = this.credits
+    return true
+  }
+
   addXp(skill: SkillId, xp?: number) {
     const xpBoostMultiplier =
       this.ship.getPassiveIntensity(`boostXpGain`) +
@@ -268,7 +274,7 @@ export class CrewMember extends Stubbable {
     if (!xp)
       xp =
         (this.ship.game?.settings.baseXpGain ||
-          defaultGameSettings().baseXpGain) *
+          c.defaultGameSettings.baseXpGain) *
         xpBoostMultiplier
 
     let skillElement = this.skills.find(

@@ -121,6 +121,7 @@ export async function thrustAt(
 export async function brake(
   shipId: string,
   crewId: string,
+  amount: number = 1,
 ) {
   if (!(await connected()))
     return { error: `Failed to brake.` }
@@ -131,7 +132,7 @@ export async function brake(
         `crew:brake`,
         shipId,
         crewId,
-        1,
+        amount,
         (response) => {
           resolve(response)
         },
@@ -186,7 +187,7 @@ export async function sell(
   IOResponse<{
     cargoId: CargoId
     amount: number
-    price: number
+    price: Price
   }>
 > {
   if (!(await connected()))
@@ -218,7 +219,7 @@ export async function buy(
   IOResponse<{
     cargoId: CargoId
     amount: number
-    price: number
+    price: Price
   }>
 > {
   if (!(await connected()))

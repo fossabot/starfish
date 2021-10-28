@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <div class="tooltipheader">
-      <span>💫</span
-      ><span :style="{ color: dataToUse.color }">{{
-        dataToUse.name
-      }}</span>
-    </div>
-    <!-- {{ data }} -->
-    <hr />
+  <div class="comet">
+    <ShipTooltipsHeader
+      :name="dataToUse.name"
+      :bg="`/images/paneBackgrounds/21.jpg`"
+      :color="dataToUse.color"
+      icon="💫"
+    />
 
     <div
       class="panesection"
@@ -67,12 +65,22 @@
       <div v-else>Stopped</div>
     </div>
 
-    <div v-if="dataToUse.mine && dataToUse.mine.length">
+    <div
+      v-if="dataToUse.mine && dataToUse.mine.length"
+      class="panesection"
+    >
       Rich
       <b>{{
         c.printList(
           dataToUse.mine.map(
-            (cargo) => c.cargo[cargo.id].name,
+            (cargo) =>
+              (c.cargo[cargo.id] &&
+                c.cargo[cargo.id].name) ||
+              (cargo.id === `shipCosmeticCurrency`
+                ? '💎' + c.shipCosmeticCurrencySingular
+                : cargo.id === `crewCosmeticCurrency`
+                ? '🟡' + c.crewCosmeticCurrencySingular
+                : `resources`),
           ),
         )
       }}</b>
@@ -110,15 +118,15 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-hr {
-  margin-bottom: 0;
+.comet {
+  margin: calc(-1 * var(--tooltip-pad-tb))
+    calc(-1 * var(--tooltip-pad-lr));
+
+  & > *:not(.header) {
+    padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
+  }
 }
-.panesection {
-  margin-top: 0;
-  margin-left: calc(-1 * var(--tooltip-pad-lr));
-  margin-right: calc(-1 * var(--tooltip-pad-lr));
-  margin-bottom: calc(1 * var(--tooltip-pad-lr));
-}
+
 .arrow {
   display: flex;
   align-items: center;

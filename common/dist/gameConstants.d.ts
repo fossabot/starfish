@@ -1,4 +1,42 @@
 declare const _default: {
+    defaultGameSettings: {
+        id: any;
+        humanShipLimit: any;
+        aiDifficultyMultiplier: any;
+        baseXpGain: any;
+        baseStaminaUse: any;
+        brakeToThrustRatio: any;
+        baseEngineThrustMultiplier: any;
+        gravityMultiplier: any;
+        gravityCurveSteepness: any;
+        gravityRadius: any;
+        arrivalThreshold: any;
+        baseCritChance: any;
+        baseCritDamageMultiplier: any;
+        staminaBottomedOutResetPoint: any;
+        newCrewMemberCredits: any;
+        planetDensity: any;
+        cometDensity: any;
+        zoneDensity: any;
+        aiShipDensity: any;
+        cacheDensity: any;
+    };
+    baseCurrencySingular: string;
+    baseCurrencyPlural: string;
+    shipCosmeticCurrencySingular: string;
+    shipCosmeticCurrencyPlural: string;
+    crewCosmeticCurrencySingular: string;
+    crewCosmeticCurrencyPlural: string;
+    baseTaglinePrice: number;
+    baseHeaderBackgroundPrice: number;
+    buyableHeaderBackgrounds: {
+        rarity: number;
+        value: HeaderBackground;
+    }[];
+    buyableTaglines: {
+        rarity: number;
+        value: string;
+    }[];
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;
@@ -11,6 +49,8 @@ declare const _default: {
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
     planetContributeCostPerXp: number;
+    planetContributeShipCosmeticCostPerXp: number;
+    planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
     weaponDamageMultiplier: number;

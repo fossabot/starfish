@@ -211,6 +211,7 @@ function camelCaseToWords(
   string: string = ``,
   capitalizeFirst?: boolean,
 ): string {
+  if (typeof string !== `string`) string = `${string}`
   let s = string.replace(/([A-Z])/g, ` $1`)
   if (capitalizeFirst)
     s = s.replace(/^./, (str) => str.toUpperCase())
@@ -323,6 +324,23 @@ function arrayMove(
   arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0])
 }
 
+function priceToString(p: Price): string {
+  let s = ``
+
+  if (p.credits)
+    s += `💳${numberWithCommas(math.r2(p.credits))} `
+  if (p.crewCosmeticCurrency)
+    s += `🟡${numberWithCommas(
+      math.r2(p.crewCosmeticCurrency),
+    )} `
+  if (p.shipCosmeticCurrency)
+    s += `💎${numberWithCommas(
+      math.r2(p.shipCosmeticCurrency),
+    )} `
+  if (!s) s = `Free`
+  return s.trim()
+}
+
 export default {
   maxNameLength,
   numberWithCommas,
@@ -340,4 +358,5 @@ export default {
   msToTimeString,
   garble,
   acronym,
+  priceToString,
 }

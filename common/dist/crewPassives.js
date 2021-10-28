@@ -10,7 +10,11 @@ const data = {
         id: `cargoSpace`,
         buyable: {
             rarity: 1,
-            basePrice: 2000,
+            basePrice: { credits: 2000 },
+            scaledCrewCosmeticCurrency: {
+                fromLevel: 2,
+                amount: 50,
+            },
             baseIntensity: 10,
             wholeNumbersOnly: true,
         },

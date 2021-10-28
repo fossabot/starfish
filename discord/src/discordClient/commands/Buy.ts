@@ -43,14 +43,16 @@ export class BuyCommand implements Command {
         ...cargoForSale,
         price: getPrice(cargoForSale),
       }))
-      .filter(
-        (cargoForSale) =>
-          cargoForSale.price * 0.1 <
-          context.crewMember!.credits,
+      .filter((cargoForSale) =>
+        c.canAfford(
+          cargoForSale.price,
+          context.ship!,
+          context.crewMember,
+        ),
       )
     if (!forSale.length) {
       await context.reply(
-        `You don't have enough credits to buy anything here.`,
+        `You don't have enough to buy anything here.`,
       )
       return
     }
@@ -78,7 +80,11 @@ export class BuyCommand implements Command {
       buttons: forSale.map((p) => ({
         label: `${c.r2(
           Math.min(
-            context.crewMember!.credits / p.price,
+            c.canAfford(
+              p.price,
+              context.ship!,
+              context.crewMember,
+            ) || 0,
             maxRemainingSpace,
           ),
           2,
@@ -86,11 +92,13 @@ export class BuyCommand implements Command {
         )} tons of ${c.capitalize(
           c.camelCaseToWords(p.id),
         )}:
-💳${p.price}/ton`,
+${c.priceToString(p.price)}/ton`,
         style:
-          p.price > c.cargo[p.id].basePrice
+          (p.price.credits || 0) >
+          (c.cargo[p.id].basePrice.credits || 0)
             ? `DANGER`
-            : p.price < c.cargo[p.id].basePrice
+            : (p.price.credits || 0) <
+              (c.cargo[p.id].basePrice.credits || 0)
             ? `SUCCESS`
             : `SECONDARY`,
         customId: `buy` + p.id,
@@ -106,8 +114,11 @@ export class BuyCommand implements Command {
           Math.min(
             maxRemainingSpace,
             c.r2(
-              context.crewMember!.credits /
+              c.canAfford(
                 forSaleEntry.price,
+                context.ship!,
+                context.crewMember,
+              ) || 0,
               2,
               true,
             ),
@@ -130,56 +141,12 @@ export class BuyCommand implements Command {
               amountToBuy === 1 ? `` : `s`
             } of ${c.capitalize(
               c.camelCaseToWords(forSaleEntry.id),
-            )} from ${planet.name} for 💳${c.r2(
+            )} from ${planet.name} for ${c.priceToString(
               res.data.price,
-              0,
             )}`,
           )
         else await context.reply(res.error)
       },
     })
-
-    //   if (!cargoToBuy) {
-    //     await context.reply(
-    //       `${context.ship.planet.name} doesn't sell that.`,
-    //     )
-    //     return
-    //   }
-
-    //   const amountToBuy = c.r2(
-    //     context.crewMember.credits / getPrice(cargoToBuy),
-    //     2,
-    //     true,
-    //   )
-
-    //   if (amountToBuy === 0) {
-    //     await context.reply(
-    //       `You don't have enough credits (💳${context.crewMember.credits}) for that.`,
-    //     )
-    //     return
-    //   }
-
-    //   const res = await ioInterface.crew.buy(
-    //     context.ship.id,
-    //     context.crewMember.id,
-    //     cargoToBuy.id,
-    //     amountToBuy,
-    //     planet.name,
-    //   )
-
-    //   if (`error` in res) {
-    //     await context.reply(res.error)
-    //     return
-    //   }
-
-    //   context.reply(
-    //     `${context.nickname} buys ${`${c.r2(
-    //       res.data.amount,
-    //     )} ton${
-    //       res.data.amount === 1 ? `` : `s`
-    //     } of ${c.camelCaseToWords(
-    //       res.data.cargoId,
-    //     )} for ${c.r2(res.data.price, 0)} credits`}.`,
-    //   )
   }
 }

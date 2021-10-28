@@ -13,15 +13,21 @@
     </div>
 
     <div class="marbotsmall">
-      <div v-if="storedHere">
+      <div v-if="creditsStoredHere">
         Your ship has
-        <b>💳{{ storedHere }} credits</b> stored here.
+        <b
+          >💳{{ creditsStoredHere }}
+          {{ c.baseCurrencyPlural }}</b
+        >
+        stored here.
       </div>
       <div v-else class="sub">
-        The captain can store the ship's common credits
-        here. Deposited credits will persist even through
-        death, but you will have to come back to this planet
-        to retrieve them.
+        The captain can store the ship's common 💳{{
+          c.baseCurrencyPlural
+        }}
+        here. Deposited 💳{{ c.baseCurrencyPlural }} will
+        persist even through death, but you will have to
+        come back to this planet to retrieve them.
       </div>
     </div>
 
@@ -34,25 +40,39 @@
         @apply="deposit"
       >
         <template #label>
-          <div class="padsmall">Deposit Credits</div>
+          <div class="padsmall">
+            Deposit 💳{{
+              c.capitalize(c.baseCurrencyPlural)
+            }}
+          </div>
         </template>
         <template>
-          <div>How many credits will you deposit?</div>
+          <div>
+            How many 💳{{ c.baseCurrencyPlural }} will you
+            deposit?
+          </div>
         </template>
       </PromptButton>
 
       <PromptButton
-        :disabled="!storedHere"
+        :disabled="!creditsStoredHere"
         class="inlineblock"
-        :max="storedHere"
+        :max="creditsStoredHere"
         @done="withdraw"
         @apply="withdraw"
       >
         <template #label>
-          <div class="padsmall">Withdraw Credits</div>
+          <div class="padsmall">
+            Withdraw 💳{{
+              c.capitalize(c.baseCurrencyPlural)
+            }}
+          </div>
         </template>
         <template>
-          <div>How many credits will you withdraw?</div>
+          <div>
+            How many 💳{{ c.baseCurrencyPlural }} will you
+            withdraw?
+          </div>
         </template>
       </PromptButton>
     </div>
@@ -78,9 +98,17 @@ export default Vue.extend({
         )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
-    storedHere() {
+    creditsStoredHere() {
       return (
         this.ship.banked.find(
+          (b) => b.id === this.ship.planet.id,
+        )?.amount || 0
+      )
+    },
+
+    shipCosmeticCurrencyStoredHere() {
+      return (
+        this.ship.bankedCosmeticCurrency?.find(
           (b) => b.id === this.ship.planet.id,
         )?.amount || 0
       )
@@ -114,7 +142,7 @@ export default Vue.extend({
       )
     },
     withdraw(amount: any) {
-      if (amount === 'all') amount = this.storedHere
+      if (amount === 'all') amount = this.creditsStoredHere
       amount = c.r2(parseFloat(amount || '0') || 0, 2, true)
 
       this.$store.dispatch('updateShip', {

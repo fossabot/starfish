@@ -36,6 +36,7 @@ interface ShipStub extends BaseStub {
   _maxHp?: number
   shownPanels?: FrontendPanelType[] | false
   commonCredits?: number
+  shipCosmeticCurrency?: number
 
   combatTactic?: CombatTactic
   targetItemType?: ItemType | `any`
@@ -83,6 +84,7 @@ interface CrewMemberStub extends BaseStub {
   stats: CrewStatEntry[]
   inventory: Cargo[]
   credits: number
+  crewCosmeticCurrency?: number
   passives: CrewPassiveData[]
   cockpitCharge: number
   combatTactic: CombatTactic | `none`

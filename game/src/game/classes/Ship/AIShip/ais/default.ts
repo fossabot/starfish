@@ -1,17 +1,32 @@
-import c from '../../../../../../common/dist'
+import c from '../../../../../../../common/dist'
 import type { AIShip } from '../AIShip'
-import type { CombatShip } from '../CombatShip'
+import { CombatShip } from '../../CombatShip'
+
+export const commonTaglines = [
+  { value: ``, weight: 8 },
+  { value: `Thermal Rider`, weight: 0.8 },
+  { value: `Glidin'`, weight: 0.8 },
+  { value: `Vegetarian, I Promise`, weight: 0.8 },
+  { value: `Wing and a Prayer`, weight: 0.8 },
+  { value: `Feeling Peckish`, weight: 0.8 },
+  { value: `Wingin' It`, weight: 0.8 },
+  { value: `Talonious Monk`, weight: 0.5 },
+  { value: `Of A Feather`, weight: 0.2 },
+  { weight: 0.1, value: `I'm a Seagull!` },
+]
 
 export function getDefaultDistance(this: AIShip): number {
   return ((Math.random() * this.level) / 100) * 10
 }
 
-export function getDefaultAngle(this: AIShip): number {
+export function getDefaultAngle(
+  this: AIShip,
+  angleDeviation: number = 40,
+): number {
   const angleToHome = c.angleFromAToB(
     this.location,
     this.spawnPoint,
   )
-  const angleDeviation = 40
   return Math.random() > 0.85
     ? Math.floor(Math.random() * 360)
     : (angleToHome +
@@ -22,6 +37,9 @@ export function getDefaultAngle(this: AIShip): number {
 }
 
 export default {
+  headerBackground: `ai.jpg`,
+  tagline: () => c.randomWithWeights(commonTaglines),
+
   scanTypes: [`humanShip`] as ScanType[],
 
   determineNewTargetLocation(
@@ -32,10 +50,10 @@ export default {
       const distance = getDefaultDistance.call(this)
       const unitVector = c.degreesToUnitVector(angle)
 
-      return [
+      return (this.targetLocation = [
         this.location[0] + unitVector[0] * distance,
         this.location[1] + unitVector[1] * distance,
-      ]
+      ])
     }
     return false
   },
@@ -43,8 +61,10 @@ export default {
   determineTargetShip(this: AIShip): CombatShip | null {
     // * default: aggressive
     const enemies = this.getEnemiesInAttackRange()
-    if (!enemies.length) return null
-    return c.randomFromArray(enemies) as CombatShip
+    if (!enemies.length) return (this.targetShip = null)
+    return (this.targetShip = c.randomFromArray(
+      enemies,
+    ) as CombatShip)
   },
 
   updateSightAndScanRadius(this: AIShip) {

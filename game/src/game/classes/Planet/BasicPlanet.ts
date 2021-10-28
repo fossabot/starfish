@@ -1,7 +1,7 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Planet } from './Planet'
 
 type AddableElement =
@@ -20,6 +20,12 @@ type AddableElement =
     }
   | { class: `chassis`; id: ChassisId; propensity: number }
   | { class: `repair`; propensity: number }
+  | { class: `tagline`; value: string; propensity: number }
+  | {
+      class: `headerBackground`
+      value: HeaderBackground
+      propensity: number
+    }
 
 export class BasicPlanet extends Planet {
   static readonly priceFluctuatorIntensity = 0.8
@@ -64,6 +70,8 @@ export class BasicPlanet extends Planet {
     }
 
     this.vendor = data.vendor
+    if (!this.vendor.shipCosmetics)
+      this.vendor.shipCosmetics = [] // todo this is temporary until everything is updated to have this prop
     this.bank = data.bank
 
     // c.log(this.getAddableToVendor())
@@ -208,6 +216,18 @@ export class BasicPlanet extends Planet {
               id: toAddToVendor.id,
               type: toAddToVendor.type,
             })
+
+          if (toAddToVendor.class === `tagline`)
+            this.vendor.shipCosmetics.push({
+              tagline: toAddToVendor.value,
+              priceMultiplier: buyMultiplier ** 2,
+            })
+          if (toAddToVendor.class === `headerBackground`)
+            this.vendor.shipCosmetics.push({
+              headerBackground: toAddToVendor.value,
+              priceMultiplier: buyMultiplier ** 2,
+            })
+
           if (toAddToVendor.class === `chassis`)
             this.vendor.chassis.push({
               buyMultiplier,
@@ -361,6 +381,49 @@ export class BasicPlanet extends Planet {
 
     if (
       !this.leanings.find(
+        (p) => p.type === `cosmetics` && p.never === true,
+      )
+    ) {
+      const taglinePropensity =
+        (this.leanings.find((p) => p.type === `cosmetics`)
+          ?.propensity || 1) / c.buyableTaglines.length
+      for (let tagline of c.buyableTaglines)
+        if (
+          !this.vendor?.shipCosmetics.find(
+            (p) => p.tagline === tagline.value,
+          )
+        )
+          addable.push({
+            class: `tagline`,
+            value: tagline.value,
+            propensity:
+              taglinePropensity *
+              rarityMultiplier(tagline.rarity),
+          })
+
+      const headerBackgroundPropensity =
+        (this.leanings.find((p) => p.type === `cosmetics`)
+          ?.propensity || 1) / c.buyableTaglines.length
+      for (let headerBackground of c.buyableHeaderBackgrounds)
+        if (
+          !this.vendor?.shipCosmetics.find(
+            (p) =>
+              p.headerBackground &&
+              p.headerBackground?.url ===
+                headerBackground.value.url,
+          )
+        )
+          addable.push({
+            class: `headerBackground`,
+            value: headerBackground.value,
+            propensity:
+              headerBackgroundPropensity *
+              rarityMultiplier(headerBackground.rarity),
+          })
+    }
+
+    if (
+      !this.leanings.find(
         (p) => p.type === `repair` && p.never === true,
       )
     ) {
@@ -376,8 +439,14 @@ export class BasicPlanet extends Planet {
 
   incrementAllegiance(guildId?: GuildId, amount?: number) {
     if (!guildId) return
-    const allegianceAmountToIncrement = amount || 1
-    // c.log(`allegiance`, allegianceAmountToIncrement)
+    let allegianceAmountToIncrement = (amount || 0) / 100
+
+    const existingAllegiances = this.allegiances.filter(
+      (a) => a.level > 1,
+    )
+    allegianceAmountToIncrement /=
+      existingAllegiances.length
+
     const maxAllegiance = 100
     const found = this.allegiances.find(
       (a) => a.guildId === guildId,
@@ -545,6 +614,7 @@ export class BasicPlanet extends Planet {
       items: [],
       chassis: [],
       passives: [],
+      shipCosmetics: [],
     }
     this.passives = []
     this.landingRadiusMultiplier = 1

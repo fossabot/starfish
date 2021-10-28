@@ -1,9 +1,5 @@
 <template>
   <div
-    v-if="
-      crewMember &&
-      (buyableItems.length || sellableItems.length)
-    "
     class="panesection"
     v-tooltip="
       isCaptain
@@ -12,120 +8,129 @@
     "
   >
     <div>
-      <div class="panesubhead">Ship Outfitter</div>
+      <div class="panesubhead">Ironworks</div>
     </div>
 
-    <div class="sub marbot">
-      <div v-if="isCaptain">
-        Captain, you can use your ship's common fund to buy
-        and sell equipment for the ship.
+    <div v-if="buyableItems.length || sellableItems.length">
+      <div class="sub marbot">
+        <div v-if="isCaptain">
+          Captain, you can use your ship's common fund to
+          buy and sell equipment for the ship.
+        </div>
       </div>
-    </div>
 
-    <div class="sub padbotsmall">
-      <div class="flexbetween">
+      <div class="sub padbotsmall">
+        <div class="flexbetween">
+          <div>
+            Common Fund:
+            <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
+          </div>
+          <div
+            class="flexcenter"
+            v-tooltip="
+              `${ship.items.length} of ${ship.slots} used`
+            "
+          >
+            <div class="nowrap">Equipment Slots Used:</div>
+            <PillBar
+              :micro="true"
+              :value="ship.items.length"
+              :max="ship.slots"
+              :dangerZone="-1"
+              class="slots"
+            />
+          </div>
+        </div>
+      </div>
+
+      <span
+        class="panesection inline"
+        v-if="buyableItems.length"
+      >
         <div>
-          Common Fund:
-          <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
+          <div class="panesubhead">Buy Equipment</div>
         </div>
-        <div
-          class="flexcenter"
-          v-tooltip="
-            `${ship.items.length} of ${ship.slots} used`
-          "
+        <span
+          v-for="ca in buyableItems"
+          :key="'buyitem' + ca.type + ca.id"
+          v-tooltip="{
+            type: ca.itemData && ca.itemData.type,
+            ...{ ...ca.itemData, compare: true },
+          }"
         >
-          <div class="nowrap">Equipment Slots Used:</div>
-          <PillBar
-            :micro="true"
-            :value="ship.items.length"
-            :max="ship.slots"
-            :dangerZone="-1"
-            class="slots"
-          />
+          <button
+            :disabled="!ca.canBuy"
+            @click="buyItem(ca)"
+          >
+            <b>{{
+              ca.itemData && ca.itemData.displayName
+            }}</b>
+            <div>
+              {{ c.priceToString(ca.price) }}
+            </div>
+          </button>
+        </span></span
+      ><span
+        class="panesection inline"
+        v-if="sellableItems.length && isCaptain"
+      >
+        <div>
+          <div class="panesubhead">Sell Equipment</div>
         </div>
-      </div>
+        <span
+          v-for="(ca, index) in sellableItems"
+          :key="'sellitem' + ca.type + ca.id + index"
+          v-tooltip="ca"
+        >
+          <button
+            :disabled="!ca.canSell"
+            @click="sellItem(ca)"
+          >
+            <b>{{ ca && ca.displayName }}</b>
+            <div>
+              💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
+            </div>
+          </button>
+        </span> </span
+      ><span
+        class="panesection inline"
+        v-if="swappableChassis.length"
+      >
+        <div>
+          <div class="panesubhead">Swap Chassis</div>
+        </div>
+        <span
+          v-for="ca in swappableChassis"
+          :key="
+            ca.chassisData
+              ? 'swapchassis' +
+                ca.chassisData.type +
+                ca.chassisData.id
+              : Math.random()
+          "
+          v-tooltip="{
+            type: 'chassis',
+            ...{ ...ca.chassisData, compare: true },
+          }"
+        >
+          <button
+            :disabled="!ca.canBuy"
+            @click="swapChassis(ca)"
+          >
+            <b>{{
+              ca.chassisData && ca.chassisData.displayName
+            }}</b>
+            <div>
+              {{ c.priceToString(ca.price) }}
+            </div>
+          </button>
+        </span>
+      </span>
     </div>
 
-    <span
-      class="panesection inline"
-      v-if="buyableItems.length"
-    >
-      <div>
-        <div class="panesubhead">Buy Equipment</div>
-      </div>
-      <span
-        v-for="ca in buyableItems"
-        :key="'buyitem' + ca.type + ca.id"
-        v-tooltip="{
-          type: ca.itemData && ca.itemData.type,
-          ...{ ...ca.itemData, compare: true },
-        }"
-      >
-        <button :disabled="!ca.canBuy" @click="buyItem(ca)">
-          <b>{{
-            ca.itemData && ca.itemData.displayName
-          }}</b>
-          <div>
-            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-          </div>
-        </button>
-      </span></span
-    ><span
-      class="panesection inline"
-      v-if="sellableItems.length && isCaptain"
-    >
-      <div>
-        <div class="panesubhead">Sell Equipment</div>
-      </div>
-      <span
-        v-for="(ca, index) in sellableItems"
-        :key="'sellitem' + ca.type + ca.id + index"
-        v-tooltip="ca"
-      >
-        <button
-          :disabled="!ca.canSell"
-          @click="sellItem(ca)"
-        >
-          <b>{{ ca && ca.displayName }}</b>
-          <div>
-            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-          </div>
-        </button>
-      </span> </span
-    ><span
-      class="panesection inline"
-      v-if="swappableChassis.length"
-    >
-      <div>
-        <div class="panesubhead">Swap Chassis</div>
-      </div>
-      <span
-        v-for="ca in swappableChassis"
-        :key="
-          ca.chassisData
-            ? 'swapchassis' +
-              ca.chassisData.type +
-              ca.chassisData.id
-            : Math.random()
-        "
-        v-tooltip="{
-          type: 'chassis',
-          ...{ ...ca.chassisData, compare: true },
-        }"
-      >
-        <button
-          :disabled="!ca.canBuy"
-          @click="swapChassis(ca)"
-        >
-          <b>{{
-            ca.chassisData && ca.chassisData.displayName
-          }}</b>
-          <div>
-            💳{{ c.numberWithCommas(c.r2(ca.price, 2)) }}
-          </div>
-        </button>
-      </span>
-    </span>
+    <div v-else class="padbig flexcenter">
+      <div class="sub">No equipment for sale yet!</div>
+    </div>
   </div>
 </template>
 
@@ -167,12 +172,14 @@ export default Vue.extend({
             ...item,
             itemData: (c.items[item.type] as any)[item.id],
             price,
-            canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >= price,
+            canBuy: c.canAfford(
+              price,
+              this.ship,
+              this.crewMember,
+              true,
+            ),
           }
         })
-        .filter((e) => e.price > 0)
     },
     sellableItems() {
       return this.ship?.items
@@ -207,13 +214,15 @@ export default Vue.extend({
             chassisData: c.items.chassis[chassis.id],
             price,
             canBuy:
-              this.isCaptain &&
-              this.ship.commonCredits >= price &&
-              chassis.id !== this.ship.chassis.id,
+              c.canAfford(
+                price,
+                this.ship,
+                this.crewMember,
+                true,
+              ) && chassis.id !== this.ship.chassis.id,
           }
         },
       )
-      // .filter((e) => e.price > 0)
     },
   },
   watch: {},
