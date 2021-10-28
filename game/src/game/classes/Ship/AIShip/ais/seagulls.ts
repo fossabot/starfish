@@ -11,6 +11,7 @@ const weightedTaglines = [
   ...commonTaglines,
   { weight: 0.5, value: `I'm a Seagull!` },
   { weight: 1, value: `Mine` },
+  { weight: 0.7, value: `Swan Diver` },
   { weight: 0.5, value: `Hungry for Crabs` },
   { weight: 0.5, value: `Hungry for Snails` },
 ]

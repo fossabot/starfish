@@ -483,7 +483,10 @@ export default function (
       crewMember.credits -= amount
       crewMember.toUpdate.credits = crewMember.credits
 
-      planet.donate(amount, ship.guildId)
+      planet.donate(
+        amount * c.planetContributeCostPerXp,
+        ship.guildId,
+      )
 
       c.log(
         `gray`,

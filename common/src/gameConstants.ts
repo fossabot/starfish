@@ -133,6 +133,7 @@ const buyableTaglines: { rarity: number; value: string }[] =
     { value: `Fish 'n' Chips`, rarity: 22 },
     { value: `Gone Fishing`, rarity: 24 },
     { value: `Omega 3 Fatty Acid`, rarity: 26 },
+    { value: `Washed Up`, rarity: 28 },
   ]
 
 const buyableHeaderBackgrounds: {

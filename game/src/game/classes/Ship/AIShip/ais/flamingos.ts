@@ -10,6 +10,8 @@ import defaultBehavior, {
 const weightedTaglines = [
   ...commonTaglines,
   { weight: 1, value: `Shrimp Lover` },
+  { weight: 1, value: `Wait, Where Am I?` },
+  { weight: 1, value: `Pink Patrol` },
 ]
 
 export default {

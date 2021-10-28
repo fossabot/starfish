@@ -10,6 +10,7 @@ const weightedTaglines = [
   { weight: 1, value: `Cluck.` },
   { weight: 0.6, value: `Cluck Around & Find Out` },
   { weight: 1, value: `Hard-Boiled` },
+  { weight: 1, value: `Bad Egg` },
   { weight: 0.3, value: `Hen-tai Lover` },
 ]
 

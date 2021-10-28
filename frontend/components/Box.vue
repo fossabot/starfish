@@ -199,17 +199,13 @@ export default Vue.extend({
   }
 
   .pane {
-    position: relative;
-    z-index: 3;
+    position: static;
+    // position: relative;
+    // z-index: 3;
     width: 100%;
     display: inline-flex;
     flex-direction: column;
     overflow: hidden;
-
-    // box-shadow: inset 0 1px 0 1px var(--pane-border);
-    // border: 1px solid var(--pane-border);
-    // border-top: none;
-    // border-bottom: 0.5px solid var(--pane-border);
 
     transition: box-shadow 0.2s;
   }

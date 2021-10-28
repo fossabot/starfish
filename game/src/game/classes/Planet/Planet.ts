@@ -150,18 +150,14 @@ export class Planet extends Stubbable {
   }
 
   async donate(amount: number, guildId?: GuildId) {
-    this.addXp(amount / c.planetContributeCostPerXp)
+    this.addXp(amount / 10)
     this.addStat(`totalDonated`, amount)
-    if (guildId)
-      this.incrementAllegiance(
-        guildId,
-        1 + amount / (c.planetContributeCostPerXp * 2000),
-      )
+    if (guildId) this.incrementAllegiance(guildId, amount)
   }
 
   async addXp(amount: number) {
     if (!amount) return
-    this.xp = Math.round(this.xp + amount)
+    this.xp = Math.floor(this.xp + amount)
     const previousLevel = this.level
     const newLevel = c.levels.findIndex(
       (l) =>
