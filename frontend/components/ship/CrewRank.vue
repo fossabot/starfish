@@ -3,7 +3,7 @@
     class="crewrank"
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/15.jpg"
+    bgImage="/images/paneBackgrounds/15.webp"
   >
     <template #title>
       <span class="sectionemoji">👨‍👩‍👧‍👦</span>Crew Rankings

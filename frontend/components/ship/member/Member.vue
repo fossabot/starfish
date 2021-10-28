@@ -2,7 +2,7 @@
   <div class="member" v-if="show">
     <Box
       :highlight="highlight"
-      bgImage="/images/paneBackgrounds/2.jpg"
+      bgImage="/images/paneBackgrounds/2.webp"
     >
       <template #title>
         <span

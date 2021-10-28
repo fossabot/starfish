@@ -2,7 +2,7 @@
   <Box
     class="captainsquarters"
     v-if="show"
-    bgImage="/images/paneBackgrounds/20.jpg"
+    bgImage="/images/paneBackgrounds/20.webp"
   >
     <template #title>
       <span class="sectionemoji">👑</span>Captain's Decree

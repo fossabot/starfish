@@ -3,7 +3,7 @@
     class="log"
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/1.jpg"
+    bgImage="/images/paneBackgrounds/1.webp"
   >
     <template #title>
       <span class="sectionemoji">📄</span>Ship Log

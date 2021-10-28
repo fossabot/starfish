@@ -2,7 +2,7 @@
   <div class="holder" v-if="show">
     <Box
       :highlight="highlight"
-      bgImage="/images/paneBackgrounds/14.jpg"
+      bgImage="/images/paneBackgrounds/14.webp"
     >
       <template #title>
         <span class="sectionemoji">🚪</span>Ship Schematic

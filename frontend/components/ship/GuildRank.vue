@@ -3,7 +3,7 @@
     class="guildrank"
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/12.jpg"
+    bgImage="/images/paneBackgrounds/12.webp"
   >
     <template #title>
       <span class="sectionemoji">🏆</span>Global Rankings

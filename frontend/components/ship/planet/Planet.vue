@@ -9,7 +9,7 @@
         : planet.planetType === 'comet'
         ? 21
         : 19
-    }.jpg`"
+    }.webp`"
     :bgTint="planet.color"
   >
     <template #title v-if="planet">

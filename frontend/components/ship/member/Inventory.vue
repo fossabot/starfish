@@ -3,7 +3,7 @@
     class="inventory"
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/6.jpg"
+    bgImage="/images/paneBackgrounds/6.webp"
   >
     <template #title>
       <span class="sectionemoji">⚖️</span>your Inventory

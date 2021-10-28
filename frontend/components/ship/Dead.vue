@@ -2,7 +2,7 @@
   <Box
     class="dead"
     :minimizable="false"
-    bgImage="/images/paneBackgrounds/17.jpg"
+    bgImage="/images/paneBackgrounds/17.webp"
   >
     <template #title>You've died!</template>
 

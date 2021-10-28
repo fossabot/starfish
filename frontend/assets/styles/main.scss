@@ -19,8 +19,8 @@ html {
 
   cursor: url('/images/cursors/cursor_default.svg'), auto;
   cursor: image-set(
-      url('/images/cursors/cursor_default.png') 1x,
-      url('/images/cursors/cursor_default_2x.png') 2x
+      url('/images/cursors/cursor_default.webp') 1x,
+      url('/images/cursors/cursor_default_2x.webp') 2x
     ),
     auto;
 
@@ -37,8 +37,8 @@ body {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_blue.png') 1x,
-      url('/images/cursors/cursor_pointer_blue_2x.png') 2x
+      url('/images/cursors/cursor_pointer_blue.webp') 1x,
+      url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
     ),
     pointer;
 }
@@ -46,8 +46,8 @@ body {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_green.png') 1x,
-      url('/images/cursors/cursor_pointer_green_2x.png') 2x
+      url('/images/cursors/cursor_pointer_green.webp') 1x,
+      url('/images/cursors/cursor_pointer_green_2x.webp') 2x
     ),
     pointer;
 }
@@ -55,8 +55,9 @@ body {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_purple.png') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.png') 2x
+      url('/images/cursors/cursor_pointer_purple.webp') 1x,
+      url('/images/cursors/cursor_pointer_purple_2x.webp')
+        2x
     ),
     pointer;
 }
@@ -69,8 +70,8 @@ a:hover {
 
   cursor: url('/images/cursors/cursor_pointer.svg'), pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer.png') 1x,
-      url('/images/cursors/cursor_pointer_2x.png') 2x
+      url('/images/cursors/cursor_pointer.webp') 1x,
+      url('/images/cursors/cursor_pointer_2x.webp') 2x
     ),
     pointer;
 }
@@ -78,8 +79,8 @@ a:hover {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_blue.png') 1x,
-      url('/images/cursors/cursor_pointer_blue_2x.png') 2x
+      url('/images/cursors/cursor_pointer_blue.webp') 1x,
+      url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
     ),
     pointer;
 }
@@ -87,8 +88,8 @@ a:hover {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_green.png') 1x,
-      url('/images/cursors/cursor_pointer_green_2x.png') 2x
+      url('/images/cursors/cursor_pointer_green.webp') 1x,
+      url('/images/cursors/cursor_pointer_green_2x.webp') 2x
     ),
     pointer;
 }
@@ -96,8 +97,9 @@ a:hover {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_purple.png') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.png') 2x
+      url('/images/cursors/cursor_pointer_purple.webp') 1x,
+      url('/images/cursors/cursor_pointer_purple_2x.webp')
+        2x
     ),
     pointer;
 }
@@ -171,8 +173,8 @@ textarea {
   cursor: url('/images/cursors/cursor_not_allowed.svg'),
     auto !important;
   cursor: image-set(
-      url('/images/cursors/cursor_not_allowed.png') 1x,
-      url('/images/cursors/cursor_not_allowed_2x.png') 2x
+      url('/images/cursors/cursor_not_allowed.webp') 1x,
+      url('/images/cursors/cursor_not_allowed_2x.webp') 2x
     ),
     auto !important;
   pointer-events: auto;
@@ -181,8 +183,8 @@ textarea {
   cursor: url('/images/cursors/cursor_not_allowed.svg'),
     auto !important;
   cursor: image-set(
-      url('/images/cursors/cursor_not_allowed.png') 1x,
-      url('/images/cursors/cursor_not_allowed_2x.png') 2x
+      url('/images/cursors/cursor_not_allowed.webp') 1x,
+      url('/images/cursors/cursor_not_allowed_2x.webp') 2x
     ),
     auto !important;
 }
@@ -326,8 +328,8 @@ select,
 details {
   cursor: url('/images/cursors/cursor_pointer.svg'), pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer.png') 1x,
-      url('/images/cursors/cursor_pointer_2x.png') 2x
+      url('/images/cursors/cursor_pointer.webp') 1x,
+      url('/images/cursors/cursor_pointer_2x.webp') 2x
     ),
     pointer;
 }
@@ -337,6 +339,44 @@ summary:hover {
   text-decoration: underline;
 }
 
+
+.blueguild button,
+.blueguild .button,
+.blueguild input,
+.blueguild select {
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
+    pointer;
+  cursor: image-set(
+      url('/images/cursors/cursor_pointer_blue.webp') 1x,
+      url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
+    ),
+    pointer;
+}
+.greenguild button,
+.greenguild .button,
+.greenguild input,
+.greenguild select {
+  cursor: url('/images/cursors/cursor_pointer_green.svg'),
+    pointer;
+  cursor: image-set(
+      url('/images/cursors/cursor_pointer_green.webp') 1x,
+      url('/images/cursors/cursor_pointer_green_2x.webp') 2x
+    ),
+    pointer;
+}
+.purpleguild button,
+.purpleguild .button,
+.purpleguild input,
+.purpleguild select {
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
+    pointer;
+  cursor: image-set(
+      url('/images/cursors/cursor_pointer_purple.webp') 1x,
+      url('/images/cursors/cursor_pointer_purple_2x.webp')
+        2x
+    ),
+    pointer;
+}
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -388,8 +428,8 @@ select {
     cursor: url('/images/cursors/cursor_not_allowed.svg'),
       auto;
     cursor: image-set(
-        url('/images/cursors/cursor_not_allowed.png') 1x,
-        url('/images/cursors/cursor_not_allowed_2x.png') 2x
+        url('/images/cursors/cursor_not_allowed.webp') 1x,
+        url('/images/cursors/cursor_not_allowed_2x.webp') 2x
       ),
       auto;
   }
@@ -404,8 +444,8 @@ select {
 
   cursor: url('/images/cursors/cursor_pointer.svg'), pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer.png') 1x,
-      url('/images/cursors/cursor_pointer_2x.png') 2x
+      url('/images/cursors/cursor_pointer.webp') 1x,
+      url('/images/cursors/cursor_pointer_2x.webp') 2x
     ),
     pointer;
 }
@@ -413,8 +453,8 @@ select {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_blue.png') 1x,
-      url('/images/cursors/cursor_pointer_blue_2x.png') 2x
+      url('/images/cursors/cursor_pointer_blue.webp') 1x,
+      url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
     ),
     pointer;
 }
@@ -422,8 +462,8 @@ select {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_green.png') 1x,
-      url('/images/cursors/cursor_pointer_green_2x.png') 2x
+      url('/images/cursors/cursor_pointer_green.webp') 1x,
+      url('/images/cursors/cursor_pointer_green_2x.webp') 2x
     ),
     pointer;
 }
@@ -431,8 +471,9 @@ select {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_purple.png') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.png') 2x
+      url('/images/cursors/cursor_pointer_purple.webp') 1x,
+      url('/images/cursors/cursor_pointer_purple_2x.webp')
+        2x
     ),
     pointer;
 }
@@ -572,8 +613,8 @@ ul {
 .pointer {
   cursor: url('/images/cursors/cursor_pointer.svg'), pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer.png') 1x,
-      url('/images/cursors/cursor_pointer_2x.png') 2x
+      url('/images/cursors/cursor_pointer.webp') 1x,
+      url('/images/cursors/cursor_pointer_2x.webp') 2x
     ),
     pointer;
 }
@@ -581,8 +622,8 @@ ul {
   cursor: url('/images/cursors/cursor_pointer_blue.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_blue.png') 1x,
-      url('/images/cursors/cursor_pointer_blue_2x.png') 2x
+      url('/images/cursors/cursor_pointer_blue.webp') 1x,
+      url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
     ),
     pointer;
 }
@@ -590,8 +631,8 @@ ul {
   cursor: url('/images/cursors/cursor_pointer_green.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_green.png') 1x,
-      url('/images/cursors/cursor_pointer_green_2x.png') 2x
+      url('/images/cursors/cursor_pointer_green.webp') 1x,
+      url('/images/cursors/cursor_pointer_green_2x.webp') 2x
     ),
     pointer;
 }
@@ -599,8 +640,9 @@ ul {
   cursor: url('/images/cursors/cursor_pointer_purple.svg'),
     pointer;
   cursor: image-set(
-      url('/images/cursors/cursor_pointer_purple.png') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.png') 2x
+      url('/images/cursors/cursor_pointer_purple.webp') 1x,
+      url('/images/cursors/cursor_pointer_purple_2x.webp')
+        2x
     ),
     pointer;
 }

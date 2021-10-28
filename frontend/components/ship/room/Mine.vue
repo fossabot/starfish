@@ -2,7 +2,7 @@
   <Box
     class="repair"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/18.jpg"
+    bgImage="/images/paneBackgrounds/18.webp"
   >
     <template #title
       ><span class="sectionemoji">⛏️</span>Mining Drop

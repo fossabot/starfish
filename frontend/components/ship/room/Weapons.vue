@@ -2,7 +2,7 @@
   <Box
     class="weapons"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/8.jpg"
+    bgImage="/images/paneBackgrounds/8.webp"
   >
     <template #title
       ><span class="sectionemoji">🎯</span>Weapons

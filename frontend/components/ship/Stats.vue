@@ -1,6 +1,6 @@
 <template>
   <div class="stats" v-if="show" :highlight="highlight">
-    <Box bgImage="/images/paneBackgrounds/22.jpg">
+    <Box bgImage="/images/paneBackgrounds/22.webp">
       <template #title>
         <span class="sectionemoji">📊</span>Stats
       </template>

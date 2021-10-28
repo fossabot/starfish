@@ -78,15 +78,15 @@ export default Vue.extend({
   opacity: 0.6;
 }
 .stars {
-  background-image: url('/images/pageBackgrounds/bg2.jpg');
+  background-image: url('/images/pageBackgrounds/bg2.webp');
   opacity: 0.2;
 }
 .planet {
-  background-image: url('/images/pageBackgrounds/planet.jpg');
+  background-image: url('/images/pageBackgrounds/planet.webp');
   filter: brightness(0.4);
 }
 .comet {
-  background-image: url('/images/pageBackgrounds/comet.jpg');
+  background-image: url('/images/pageBackgrounds/comet.webp');
   filter: brightness(0.15);
 }
 </style>

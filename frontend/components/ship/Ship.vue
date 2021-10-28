@@ -2,7 +2,7 @@
   <Box
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/4.jpg"
+    bgImage="/images/paneBackgrounds/4.webp"
     :overlayTitle="true"
     :minimizable="false"
     @minimize="minimized = true"
