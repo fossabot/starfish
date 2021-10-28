@@ -183,7 +183,7 @@ interface Achievement {
 
 interface HeaderBackground {
   id: string
-  url: `${string}.${`svg` | `png` | `jpg`}`
+  url: `${string}.${`svg` | `webp` | `png` | `jpg`}`
 }
 
 interface ShipCosmetic {
