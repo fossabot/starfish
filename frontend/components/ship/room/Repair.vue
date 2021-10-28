@@ -2,7 +2,7 @@
   <Box
     class="repair"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/9.jpg"
+    bgImage="/images/paneBackgrounds/9.webp"
   >
     <template #title
       ><span class="sectionemoji">🔧</span>Repair

@@ -2,7 +2,7 @@
   <Box
     v-if="show"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/16.jpg"
+    bgImage="/images/paneBackgrounds/16.webp"
     class="shipscan"
   >
     <template #title>

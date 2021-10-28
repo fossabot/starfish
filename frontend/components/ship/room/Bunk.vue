@@ -2,7 +2,7 @@
   <Box
     class="bunk"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/13.jpg"
+    bgImage="/images/paneBackgrounds/13.webp"
   >
     <template #title
       ><span class="sectionemoji">🛌</span>Bunk</template

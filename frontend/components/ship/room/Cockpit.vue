@@ -2,7 +2,7 @@
   <Box
     class="cockpit"
     :highlight="highlight"
-    bgImage="/images/paneBackgrounds/10.jpg"
+    bgImage="/images/paneBackgrounds/10.webp"
   >
     <template #title
       ><span class="sectionemoji">🛫</span>Cockpit</template
@@ -223,9 +223,7 @@
         >
           <span
             >📦Cache (<AngleArrow :angle="cache.angle" />
-            {{
-              c.speedNumber(cache.distance, true, 0)
-            }}
+            {{ c.speedNumber(cache.distance, true, 0) }}
             km)</span
           >
         </button>

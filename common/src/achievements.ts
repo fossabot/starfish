@@ -23,7 +23,7 @@ const achievements: { [key: string]: Achievement } = {
     reward: {
       headerBackground: {
         id: `Default`,
-        url: `default.jpg`,
+        url: `default.webp`,
       },
       tagline: `Alpha Tester`, // todo remove next patch
     },
@@ -168,7 +168,7 @@ const achievements: { [key: string]: Achievement } = {
     reward: {
       headerBackground: {
         id: `Constellation 1`,
-        url: `stars1.jpg`,
+        url: `stars1.webp`,
       },
     },
     for: `discovering 15 planets`,
@@ -411,7 +411,7 @@ const achievements: { [key: string]: Achievement } = {
     reward: {
       headerBackground: {
         id: `Gravestone 1`,
-        url: `vintage1.jpg`,
+        url: `vintage1.webp`,
       },
     },
     for: `having your ship destroyed twice`,

@@ -858,7 +858,7 @@ export class Game {
         guildId: `fowl`,
         speciesId: species,
         level,
-        headerBackground: `ai.jpg`,
+        headerBackground: `ai.webp`,
       })
     }
   }
