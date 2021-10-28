@@ -17,8 +17,8 @@ import { Comet } from './classes/Planet/Comet'
 import { Cache } from './classes/Cache'
 import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
-import { HumanShip } from './classes/Ship/HumanShip'
-import { AIShip } from './classes/Ship/AIShip'
+import { HumanShip } from './classes/Ship/HumanShip/HumanShip'
+import { AIShip } from './classes/Ship/AIShip/AIShip'
 import { CombatShip } from './classes/Ship/CombatShip'
 import { ChunkManager } from './classes/Chunks/ChunkManager'
 
@@ -29,7 +29,6 @@ import {
 } from './presets/planets'
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
-import defaultGameSettings from './presets/gameSettings'
 import type { Server } from 'socket.io'
 
 export class Game {
@@ -61,7 +60,7 @@ export class Game {
   ioPort: number
 
   constructor(options?: { ioPort?: number }) {
-    this.settings = defaultGameSettings()
+    this.settings = c.defaultGameSettings
 
     this.ioPort = !options?.ioPort
       ? Math.round(Math.random() * (65536 - 5000)) + 5000
@@ -615,7 +614,7 @@ export class Game {
   }
 
   setSettings(newSettings: Partial<AdminGameSettings>) {
-    const defaultSettings = defaultGameSettings()
+    const defaultSettings = c.defaultGameSettings
     this.settings = {
       ...defaultSettings,
       ...this.settings,
@@ -859,6 +858,7 @@ export class Game {
         speciesId: species,
         level,
         headerBackground: `ai.webp`,
+
       })
     }
   }
@@ -885,7 +885,7 @@ export class Game {
     //   `Adding human ship ${data.name} to game at ${data.location}`,
     // )
 
-    data.loadout = `humanDefault`
+    data.loadout = data.loadout || `humanDefault`
     const newShip = new HumanShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
@@ -1093,8 +1093,8 @@ export class Game {
     if (index !== -1) this.comets.splice(index, 1)
 
     planet.shipsAt.forEach((s) => {
-      s.planet = false
-      s.toUpdate.planet = false
+      s.updateVisible()
+      s.updatePlanet(true)
     })
 
     await this.db?.planet.removeFromDb(planet.id)
@@ -1289,9 +1289,9 @@ export class Game {
           for (let b of (s as HumanShip).banked)
             shipTotal += b.amount
           for (let i of (s as HumanShip).items) {
-            shipTotal += (
-              c.items[i.type][i.id] as BaseItemData
-            ).basePrice
+            shipTotal +=
+              (c.items[i.type][i.id] as BaseItemData)
+                .basePrice.credits || 0
           }
           s.setStat(`netWorth`, shipTotal)
           s.checkAchievements(`money`)
@@ -1320,9 +1320,9 @@ export class Game {
         for (let b of (s as HumanShip).banked)
           shipTotal += b.amount
         for (let i of (s as HumanShip).items) {
-          shipTotal += (
-            c.items[i.type][i.id] as BaseItemData
-          ).basePrice
+          shipTotal +=
+            (c.items[i.type][i.id] as BaseItemData)
+              .basePrice.credits || 0
         }
         s.setStat(`netWorth`, shipTotal)
         s.checkAchievements(`money`)

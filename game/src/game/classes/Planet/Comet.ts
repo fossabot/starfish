@@ -1,11 +1,9 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
-import type { HumanShip } from '../Ship/HumanShip'
+import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { MiningPlanet } from './MiningPlanet'
 import type { Planet } from './Planet'
-
-import defaultGameSettings from '../../presets/gameSettings'
 
 export class Comet extends MiningPlanet {
   velocity: CoordinatePair
@@ -62,7 +60,7 @@ export class Comet extends MiningPlanet {
         c.distance(this.location, newShipLocation) <
         this.landingRadiusMultiplier *
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
       )
         ship.move([
           ship.location[0] + this.velocity[0] * 1.00001,
@@ -103,7 +101,7 @@ export class Comet extends MiningPlanet {
       this.game?.chunkManager.getElementsWithinRadius(
         this.location,
         this.game?.settings.gravityRadius ||
-          defaultGameSettings().gravityRadius,
+          c.defaultGameSettings.gravityRadius,
       ) || []
     ).filter(
       (el) => el !== this && el.type === `planet`,
@@ -116,21 +114,21 @@ export class Comet extends MiningPlanet {
       if (
         distance <=
           (this.game?.settings.gravityRadius ||
-            defaultGameSettings().gravityRadius) &&
+            c.defaultGameSettings.gravityRadius) &&
         distance >
           (this.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
       ) {
         const vectorToAdd = c
           .getGravityForceVectorOnThisBodyDueToThatBody(
             this,
             planet,
             this.game?.settings.gravityCurveSteepness ||
-              defaultGameSettings().gravityCurveSteepness,
+              c.defaultGameSettings.gravityCurveSteepness,
             this.game?.settings.gravityMultiplier ||
-              defaultGameSettings().gravityMultiplier,
+              c.defaultGameSettings.gravityMultiplier,
             this.game?.settings.gravityRadius ||
-              defaultGameSettings().gravityRadius,
+              c.defaultGameSettings.gravityRadius,
           )
           // comes back as kg * m / second == N
           .map(
@@ -209,30 +207,25 @@ export class Comet extends MiningPlanet {
     }
   }
 
-  getPayoutAmount(cargoId: CargoId): number {
-    const basePayout = super.getPayoutAmount(cargoId)
-    return basePayout * 5
-  }
-
-  addMineResource(toAdd: CargoId) {
-    if (this.mine.find((m) => m.id === toAdd)) return
-    this.mine.push({
-      id: toAdd,
-      mineCurrent: 0,
-      mineRequirement: this.getMineRequirement(toAdd),
-      payoutAmount: this.getPayoutAmount(toAdd),
-      maxMineable: Math.ceil(c.randomBetween(40, 500)),
-    })
-  }
-
-  resetForNextMine(cargoId: CargoId) {
-    super.resetForNextMine(cargoId)
+  resetForNextMine(resourceId: MineableResource) {
+    super.resetForNextMine(resourceId)
 
     // delete from existence once mined out
-    if (this.mine.length) {
+    if (
+      !this.mine.length ||
+      !this.mine.find((m) => (m.maxMineable ?? 1) >= 1)
+    ) {
       this.shipsAt.forEach((ship) => {
         ship.logEntry(
-          `All of the resources on ${this.name} have been exhausted. You watch as it disappates into nothingness.`,
+          [
+            `All of the resources on`,
+            {
+              text: this.name,
+              color: this.color,
+            },
+            `have been exhausted. You watch as it disappates into nothingness.`,
+          ],
+          `high`,
         )
       })
       this.game?.removePlanet(this)
@@ -240,7 +233,16 @@ export class Comet extends MiningPlanet {
   }
 
   async levelUp() {
-    super.levelUp()
+    this.level++
+    if (this.level > 100) this.level = 100
+
+    const mineableResourceToAdd = c.randomFromArray([
+      `shipCosmeticCurrency`,
+      `crewCosmeticCurrency`,
+    ]) as `shipCosmeticCurrency` | `crewCosmeticCurrency`
+    this.addMineResource(mineableResourceToAdd)
+
+    this.updateFrontendForShipsAt()
   }
 
   toAdminStub(): PlanetStub {

@@ -40,7 +40,10 @@
                   give([{ id: 'credits', amount: 100000 }])
                 "
               >
-                <span>Give 100,000 Credits</span>
+                <span
+                  >Give 💳100,000
+                  {{ c.baseCurrencyPlural }}</span
+                >
               </div>
             </template>
 

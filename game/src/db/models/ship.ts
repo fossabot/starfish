@@ -50,6 +50,8 @@ const shipSchemaFields: Record<
   },
   tagline: String,
   headerBackground: String,
+  boughtHeaderBackgrounds: [{ id: String, url: String }],
+  boughtTaglines: [String],
   achievements: [String],
   orderReactions: [
     { id: { type: String }, reaction: String },
@@ -77,6 +79,7 @@ const shipSchemaFields: Record<
       stamina: Number,
       inventory: [{ id: { type: String }, amount: Number }],
       credits: Number,
+      crewCosmeticCurrency: Number,
       actives: [
         {
           id: { required: true, type: String },
@@ -102,6 +105,7 @@ const shipSchemaFields: Record<
     },
   ],
   commonCredits: Number,
+  shipCosmeticCurrency: Number,
   orders:
     {
       verb: String,

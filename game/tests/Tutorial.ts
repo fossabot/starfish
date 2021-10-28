@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import c from '../../common/src'
-import { HumanShip } from '../src/game/classes/Ship/HumanShip'
+import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
 import { Game } from '../src/game/Game'
 

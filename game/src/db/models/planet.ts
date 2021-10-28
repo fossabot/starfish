@@ -65,7 +65,7 @@ const planetSchemaFields: Record<
   ],
   guildId: String,
 
-  allegiances: [{ guild: { id: String }, level: Number }],
+  allegiances: [{ guildId: String, level: Number }],
   vendor: {
     cargo: [
       {
@@ -94,6 +94,13 @@ const planetSchemaFields: Record<
         id: String,
         buyMultiplier: Number,
         intensity: Number,
+      },
+    ],
+    shipCosmetics: [
+      {
+        tagline: String,
+        headerBackground: { id: String, url: String },
+        priceMultiplier: Number,
       },
     ],
     repairCostMultiplier: Number,

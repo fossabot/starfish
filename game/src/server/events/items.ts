@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 
 import type { Game } from '../../game/Game'
-import type { HumanShip } from '../../game/classes/Ship/HumanShip'
+import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
 import type { BasicPlanet } from '../../game/classes/Planet/BasicPlanet'
 
 export default function (
@@ -47,17 +47,14 @@ export default function (
         planet,
         ship.guildId,
       )
-      if (price > ship.commonCredits)
-        return callback({ error: `Insufficient funds.` })
-
       if (ship.slots <= ship.items.length)
         return callback({
           error: `No slot available to attach any more equipment.`,
         })
 
-      ship.commonCredits -= price
-      ship._stub = null
-      ship.toUpdate.commonCredits = ship.commonCredits
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.addItem({ type: itemType, id: itemId })
       ship.logEntry(
@@ -71,9 +68,9 @@ export default function (
             ],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.numberWithCommas(
-            c.r2(price, 0),
-          )} credits.`,
+          `bought by the captain for ${c.priceToString(
+            price,
+          )} ${c.baseCurrencyPlural}.`,
         ],
         `high`,
       )
@@ -82,7 +79,7 @@ export default function (
         data: c.stubify<HumanShip, ShipStub>(ship),
       })
 
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
 
@@ -150,9 +147,9 @@ export default function (
             color: `var(--item)`,
             tooltipData: heldItem.toReference() as any,
           },
-          `sold by the captain for ${c.numberWithCommas(
+          `sold by the captain for 💳${c.numberWithCommas(
             c.r2(price, 0),
-          )} credits.`,
+          )} ${c.baseCurrencyPlural}.`,
         ],
         `high`,
       )
@@ -205,18 +202,12 @@ export default function (
           error: `That equipment is not for sale here.`,
         })
 
-      const currentChassisSellPrice = Math.round(
-        ship.chassis.basePrice * c.baseItemSellMultiplier,
-      )
       const price = c.getChassisSwapPrice(
         itemForSale,
         planet,
         ship.chassis.id,
         ship.guildId,
       )
-
-      if (price > ship.commonCredits)
-        return callback({ error: `Insufficient funds.` })
 
       if (
         ship.items.length >
@@ -226,9 +217,9 @@ export default function (
           error: `Your equipment wouldn't all fit! Sell some equipment first, then swap chassis.`,
         })
 
-      ship.commonCredits -= price
-      ship._stub = null
-      ship.toUpdate.commonCredits = ship.commonCredits
+      const buyRes = ship.buy(price, crewMember)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
 
       ship.swapChassis(c.items.chassis[itemForSale.id])
       ship.logEntry(
@@ -239,9 +230,9 @@ export default function (
             tooltipData: c.items.chassis[itemForSale.id],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.numberWithCommas(
-            c.r2(price, 0),
-          )} credits.`,
+          `bought by the captain for ${c.priceToString(
+            price,
+          )}.`,
         ],
         `high`,
       )
@@ -252,7 +243,7 @@ export default function (
 
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
-      planet.addXp(price / 100)
+      planet.addXp((price.credits || 0) / 100)
 
       c.log(
         `gray`,

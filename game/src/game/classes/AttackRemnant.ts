@@ -43,6 +43,16 @@ export class AttackRemnant extends Stubbable {
     this.onlyVisibleToShipId = onlyVisibleToShipId
   }
 
+  toVisibleStub<AttackRemnantStub>() {
+    return {
+      start: this.start,
+      end: this.end,
+      time: this.time,
+      id: this.id,
+      damageTaken: this.damageTaken,
+    }
+  }
+
   stubify<AttackRemnantStub>(
     d?: string[],
     a?: number,

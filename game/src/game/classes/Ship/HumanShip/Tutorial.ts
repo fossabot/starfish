@@ -1,8 +1,6 @@
 import c from '../../../../../../common/dist'
-import type { HumanShip } from '../HumanShip'
+import type { HumanShip } from './HumanShip'
 import type { CrewMember } from '../../CrewMember/CrewMember'
-
-import defaultGameSettings from '../../../presets/gameSettings'
 
 interface BaseTutorialData {
   step: number
@@ -275,8 +273,14 @@ export class Tutorial {
         script: [
           {
             message: `Awesome, we got it! <br /><br/>
-            There were some 💳credits inside! Credits are how you pay for cargo and equipment. Every crew member has their own stock of cargo and credits.<br /><br/>
-            This one was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.`,
+            There were some 💳${
+              c.baseCurrencyPlural
+            } inside! 💳${c.capitalize(
+              c.baseCurrencyPlural,
+            )} are how you pay for cargo and equipment. Every crew member has their own stock of cargo and 💳${
+              c.baseCurrencyPlural
+            }.<br /><br/>
+            This cache was close by, but most things in space are <i>astronomically</i> far apart. Don't be surprised if it sometimes takes a day or more to reach your next destination.`,
             advance: `Got it.`,
           },
         ],
@@ -732,7 +736,7 @@ export class Tutorial {
         (l) =>
           l +
           (this.ship.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold) *
+            c.defaultGameSettings.arrivalThreshold) *
             (Math.random() - 0.5),
       ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
@@ -770,7 +774,7 @@ export class Tutorial {
           this.targetLocation.location,
         ) <=
           (this.ship.game?.settings.arrivalThreshold ||
-            defaultGameSettings().arrivalThreshold)
+            c.defaultGameSettings.arrivalThreshold)
 
     if (this.currentStep.nextStepTrigger.gainStaminaTo)
       shouldAdvance =

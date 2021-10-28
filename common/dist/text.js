@@ -164,6 +164,8 @@ function sanitize(string = ``) {
     };
 }
 function camelCaseToWords(string = ``, capitalizeFirst) {
+    if (typeof string !== `string`)
+        string = `${string}`;
     let s = string.replace(/([A-Z])/g, ` $1`);
     if (capitalizeFirst)
         s = s.replace(/^./, (str) => str.toUpperCase());
@@ -249,6 +251,18 @@ function arrayMove(arr, oldIndex, newIndex) {
     }
     arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
 }
+function priceToString(p) {
+    let s = ``;
+    if (p.credits)
+        s += `💳${numberWithCommas(math_1.default.r2(p.credits))} `;
+    if (p.crewCosmeticCurrency)
+        s += `🟡${numberWithCommas(math_1.default.r2(p.crewCosmeticCurrency))} `;
+    if (p.shipCosmeticCurrency)
+        s += `💎${numberWithCommas(math_1.default.r2(p.shipCosmeticCurrency))} `;
+    if (!s)
+        s = `Free`;
+    return s.trim();
+}
 exports.default = {
     maxNameLength,
     numberWithCommas,
@@ -266,5 +280,6 @@ exports.default = {
     msToTimeString,
     garble,
     acronym,
+    priceToString,
 };
 //# sourceMappingURL=text.js.map

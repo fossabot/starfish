@@ -2,12 +2,10 @@ import c from '../../../../common/dist'
 
 import type { Game } from '../Game'
 import type { Ship } from './Ship/Ship'
-import type { HumanShip } from './Ship/HumanShip'
+import type { HumanShip } from './Ship/HumanShip/HumanShip'
 import type { CombatShip } from './Ship/CombatShip'
 import { Stubbable } from './Stubbable'
 import { getValidZoneLocation } from '../presets/zones'
-
-import defaultGameSettings from '../presets/gameSettings'
 
 export class Zone extends Stubbable {
   readonly type = `zone`
@@ -175,7 +173,7 @@ export class Zone extends Stubbable {
           cm.stamina +=
             c.getStaminaGainPerTickForSingleCrewMember(
               this.game?.settings.baseStaminaUse ||
-                defaultGameSettings().baseStaminaUse,
+                c.defaultGameSettings.baseStaminaUse,
             ) * intensity
 
           if (cm.stamina > cm.maxStamina)
@@ -214,6 +212,15 @@ export class Zone extends Stubbable {
   }
 
   moveToRandomLocation() {
+    for (let s of (this.game?.humanShips || []).filter(
+      (s) => s.seenLandmarks.includes(this),
+    )) {
+      s.seenLandmarks.splice(
+        s.seenLandmarks.indexOf(this),
+        1,
+      )
+      s.toUpdate.seenLandmarks = s.seenLandmarks
+    }
     const startingLocation: CoordinatePair = [
       ...this.location,
     ]

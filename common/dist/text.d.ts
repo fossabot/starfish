@@ -13,6 +13,7 @@ declare function camelCaseToWords(string?: string, capitalizeFirst?: boolean): s
 declare function acronym(string?: string): string;
 declare function msToTimeString(ms?: number): string;
 declare function garble(string?: string, percent?: number): string;
+declare function priceToString(p: Price): string;
 declare const _default: {
     maxNameLength: number;
     numberWithCommas: typeof numberWithCommas;
@@ -30,6 +31,7 @@ declare const _default: {
     msToTimeString: typeof msToTimeString;
     garble: typeof garble;
     acronym: typeof acronym;
+    priceToString: typeof priceToString;
 };
 export default _default;
 //# sourceMappingURL=text.d.ts.map

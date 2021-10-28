@@ -72,7 +72,6 @@ export class ThrustCommand implements Command {
       context: context,
       callback: async (choice) => {
         choice = choice.replace(`thrustAt`, ``)
-        c.log(choice)
         const target = validTargets.find(
           (t) => t.id === choice,
         )
@@ -85,7 +84,8 @@ export class ThrustCommand implements Command {
         )
 
         if (`error` in res) await context.reply(res.error)
-        else
+        else {
+          await context.refreshShip()
           await context.reply(
             `${
               context.nickname
@@ -93,8 +93,11 @@ export class ThrustCommand implements Command {
               target.id === `current`
                 ? `along the ship's current trajectory`
                 : `towards ` + target.name
-            }.`,
+            }. The ship's current speed is ${c.speedNumber(
+              (context.ship?.speed || 0) * 60 * 60,
+            )}.`,
           )
+        }
       },
     })
   }

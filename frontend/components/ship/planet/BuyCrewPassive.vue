@@ -8,7 +8,7 @@
     "
   >
     <div>
-      <div class="panesubhead">Personal Outfitter</div>
+      <div class="panesubhead">Personal Upgrades</div>
     </div>
 
     <span
@@ -33,7 +33,7 @@
             }}
           </b>
         </div>
-        <div>💳{{ c.numberWithCommas(passive.price) }}</div>
+        <div>{{ c.priceToString(passive.price) }}</div>
       </button>
     </span>
   </div>
@@ -74,8 +74,8 @@ export default Vue.extend({
     },
 
     passives(): any[] {
-      return this.ship.planet.vendor.passives
-        .map((passive: PlanetVendorCrewPassivePrice) => {
+      return this.ship.planet.vendor.passives.map(
+        (passive: PlanetVendorCrewPassivePrice) => {
           const price = c.getCrewPassivePrice(
             passive,
             this.crewMemberPassiveIntensitites[
@@ -86,12 +86,16 @@ export default Vue.extend({
           )
           return {
             data: c.crewPassives[passive.id],
-            canBuy: this.crewMember.credits >= price,
+            canBuy: c.canAfford(
+              price,
+              this.ship,
+              this.crewMember,
+            ),
             price,
             intensity: passive.intensity,
           }
-        })
-        .filter((e) => e.price > 0)
+        },
+      )
     },
   },
   watch: {},

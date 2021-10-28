@@ -381,10 +381,6 @@ export default Vue.extend({
     calc(-1 * var(--tooltip-pad-lr));
 }
 
-// .panesection {
-//   width: 100%;
-// }
-
 .arrow {
   display: flex;
   align-items: center;

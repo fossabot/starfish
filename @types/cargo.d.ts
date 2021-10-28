@@ -11,7 +11,7 @@ type CargoId =
 type CargoData = {
   id: CargoId
   name: string
-  basePrice: number
+  basePrice: Price
   rarity: number
 }
 

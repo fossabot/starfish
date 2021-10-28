@@ -4,7 +4,7 @@
       <h3>Game Objectives</h3>
       <ul>
         <li>Explore the universe</li>
-        <li>Earn credits through trade and conquest</li>
+        <li>Make money through trade and conquest</li>
         <li>Upgrade your ship and its equipment</li>
         <li>
           Interact with other Discord servers from around
@@ -349,7 +349,7 @@
       <h3>Dying and Respawning</h3>
       <div>
         When a ship's HP reaches zero, it dies. On dying,
-        ships will drop a portion of the cargo and credits
+        ships will drop a portion of the cargo and currency
         its crew members were carrying as a cache. Whoever
         gets there first can pick up the spoils!
       </div>
@@ -357,7 +357,8 @@
         The captain can respawn the ship at its guild
         homeworld, with the basic guild loadout. Crew
         members will keep their skills and some of their
-        credits, but all equipment and cargo will be lost.
+        💳{{ c.baseCurrencyPlural }}, but all equipment and
+        cargo will be lost.
       </div>
 
       <!-- <h3>Passives</h3>
