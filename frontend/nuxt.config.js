@@ -75,8 +75,9 @@ export default {
 
   fontLoader: {
     url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
-
     prefetch: true,
-    preconnect: true,
+    preconnect: {
+      crossorigin: `anonymous`,
+    },
   },
 }
