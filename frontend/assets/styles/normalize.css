@@ -64,6 +64,7 @@ hr {
 pre {
   font-family: monospace, monospace; /* 1 */
   font-size: 1em; /* 2 */
+  font-display: swap;
 }
 
 /* Text-level semantics
@@ -166,6 +167,7 @@ textarea {
   font-size: 100%; /* 1 */
   line-height: 1.15; /* 1 */
   margin: 0; /* 2 */
+  font-display: swap;
 }
 
 /**
