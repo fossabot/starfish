@@ -69,7 +69,7 @@ export default {
   buildModules: [
     `@nuxt/typescript-build`,
     `nuxt-font-loader`,
-  ], // , `nuxt-vite`],
+  ],
 
 <<<<<<< HEAD
   modules: [`portal-vue/nuxt`],
