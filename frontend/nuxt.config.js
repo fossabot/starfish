@@ -71,9 +71,6 @@ export default {
     `nuxt-font-loader`,
   ],
 
-<<<<<<< HEAD
-  modules: [`portal-vue/nuxt`],
-=======
   modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 
   serverMiddleware: {
@@ -85,5 +82,4 @@ export default {
     prefetch: true,
     preconnect: true,
   },
->>>>>>> c2715030 (add nuxt-font-loader)
 }
