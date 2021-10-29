@@ -66,7 +66,24 @@ export default {
 
   components: true,
 
-  buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
+  buildModules: [
+    `@nuxt/typescript-build`,
+    `nuxt-font-loader`,
+  ], // , `nuxt-vite`],
 
+<<<<<<< HEAD
   modules: [`portal-vue/nuxt`],
+=======
+  modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
+
+  serverMiddleware: {
+    '/api': `~/api`,
+  },
+  fontLoader: {
+    url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
+
+    prefetch: true,
+    preconnect: true,
+  },
+>>>>>>> c2715030 (add nuxt-font-loader)
 }
