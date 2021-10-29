@@ -71,11 +71,8 @@ export default {
     `nuxt-font-loader`,
   ],
 
-  modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
+  modules: [`portal-vue/nuxt`],
 
-  serverMiddleware: {
-    '/api': `~/api`,
-  },
   fontLoader: {
     url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
 
