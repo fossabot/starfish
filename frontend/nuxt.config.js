@@ -64,11 +64,20 @@ export default {
 
   components: true,
 
-  buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
+  buildModules: [
+    `@nuxt/typescript-build`,
+    `nuxt-font-loader`,
+  ], // , `nuxt-vite`],
 
   modules: [`@nuxtjs/axios`, `portal-vue/nuxt`],
 
   serverMiddleware: {
     '/api': `~/api`,
+  },
+  fontLoader: {
+    url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
+
+    prefetch: true,
+    preconnect: true,
   },
 }
