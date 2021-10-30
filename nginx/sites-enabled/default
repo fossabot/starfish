@@ -7,9 +7,4 @@ server {
         location / {
                 proxy_pass frontend:4300;
         }
-
-        location ~* \.(webp|svg|jpg|jpeg|png|gif|ico|css|js)$ {
-                expires 365d;
-        }
-
 }
