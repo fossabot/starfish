@@ -4,7 +4,11 @@
     <div class="actualbar flexcolumn flexbetween">
       <div class="flexcolumn flexcenter">
         <nuxt-link class="logoholder" to="/"
-          ><img src="/images/logo.svg" class="logo"
+          ><img
+            src="/images/logo.svg"
+            class="logo"
+            height="38"
+            width="38"
         /></nuxt-link>
 
         <hr />
@@ -46,6 +50,8 @@
             <img
               src="/images/icons/icon-about.svg"
               alt="link to about page"
+              height="25"
+              width="25"
             />
           </nuxt-link>
         </div>
@@ -57,6 +63,8 @@
             <img
               src="/images/icons/icon-howtoplay.svg"
               alt="link to how to play page"
+              height="25"
+              width="25"
             />
           </nuxt-link>
         </div>
@@ -70,6 +78,8 @@
             <img
               src="/images/icons/icon-discord.svg"
               alt="link to discord support server"
+              height="25"
+              width="25"
             />
           </a>
         </div>
@@ -82,6 +92,8 @@
           <img
             src="/images/icons/icon-tutorial.svg"
             alt="tutorial button"
+            height="25"
+            width="25"
           />
         </div>
         <hr />
@@ -94,6 +106,8 @@
           <img
             src="/images/icons/icon-logout.svg"
             alt="log out button"
+            height="25"
+            width="25"
           />
         </div>
         <div
@@ -104,7 +118,9 @@
           <nuxt-link to="/login">
             <img
               src="/images/icons/icon-login.svg"
-              alt="log out button"
+              alt="log in button"
+              height="25"
+              width="25"
             />
           </nuxt-link>
         </div>
