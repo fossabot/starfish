@@ -1,7 +1,11 @@
 <template>
   <nav class="padpane">
     <nuxt-link to="/"
-      ><img src="/images/logo.svg" class="logo"
+      ><img
+        src="/images/logo.svg"
+        class="logo"
+        height="38"
+        width="38"
     /></nuxt-link>
     <nuxt-link to="/about">About</nuxt-link>
     <nuxt-link to="/howtoplay">How To Play</nuxt-link>

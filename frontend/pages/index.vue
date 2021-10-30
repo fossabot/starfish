@@ -2,7 +2,12 @@
   <div class="container">
     <div class="textcolumn">
       <h1 class="title marbot">
-        <img src="/images/logo.svg" class="logo" />
+        <img
+          src="/images/logo.svg"
+          class="logo"
+          height="38"
+          width="38"
+        />
         <span>{{ c.gameName }}</span>
       </h1>
 

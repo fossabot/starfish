@@ -9,6 +9,8 @@
             <img
               src="/images/logo.svg"
               class="fadeinlogo marbotsmall"
+              height="45"
+              width="45"
             />
           </div>
         </FadeIn>
