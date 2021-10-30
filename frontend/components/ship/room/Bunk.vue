@@ -10,7 +10,10 @@
     <div class="panesection">zzzzZZZZzzzz.....</div>
     <div
       class="panesection"
-      v-if="crewMember.bottomedOutOnStamina"
+      v-if="
+        crewMember.bottomedOutOnStamina &&
+        msToBottomedOutResetPoint > 0
+      "
     >
       <div class="bold warning marbotsmall">
         You've hit your limit!

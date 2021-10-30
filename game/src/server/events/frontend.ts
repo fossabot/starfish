@@ -379,7 +379,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may deposit common 💳${c.baseCurrencyPlural} in the bank.`,
+          error: `Only the captain may deposit currency in the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -400,6 +400,10 @@ export default function (
       if (amount < 0)
         return callback({
           error: `You can't deposit a negative amount!`,
+        })
+      if (amount === 0)
+        return callback({
+          error: `Ha ha, zero, nice one.`,
         })
 
       ship.depositInBank(amount)

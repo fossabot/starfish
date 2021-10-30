@@ -628,7 +628,10 @@ export class Game {
   // ----- radii -----
 
   get gameSoftRadius() {
-    const count = this.humanShips.length || 1
+    const count =
+      this.humanShips.filter(
+        (s) => !s.tutorial?.currentStep,
+      ).length || 1
     return Math.max(5, Math.sqrt(count) * 2)
   }
 
@@ -858,7 +861,6 @@ export class Game {
         speciesId: species,
         level,
         headerBackground: `ai.webp`,
-
       })
     }
   }
@@ -1358,10 +1360,11 @@ export class Game {
           (s) => s.guildId === a.guildId,
         )
         if (!found) return
-        // c.log(`planet with allegiance:`, found) // todo remove
         found.score += a.level
+        c.log(`planet with allegiance:`, planet.name, a) // todo remove
       })
     }
+    c.log(controlScores)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []

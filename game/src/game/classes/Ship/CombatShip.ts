@@ -786,7 +786,14 @@ export abstract class CombatShip extends Ship {
             ],
             `high`,
           )
-          if (`logEntry` in attacker && !didDie)
+          if (
+            `logEntry` in attacker &&
+            !didDie &&
+            // check to see if the attacker can actually see equipment repair
+            (attacker as HumanShip).visible?.ships?.find(
+              (s) => s.id === this.id,
+            )?.items?.[0]?.repair
+          )
             attacker.logEntry(
               [
                 `You have disabled`,
