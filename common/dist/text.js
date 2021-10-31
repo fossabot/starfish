@@ -185,6 +185,9 @@ function acronym(string = ``) {
         .toUpperCase();
 }
 function msToTimeString(ms = 0) {
+    const negativePrefix = ms < 0 ? `-` : ``;
+    if (negativePrefix)
+        ms *= -1;
     let remainingSeconds = Math.floor(ms / 1000);
     let years = Math.floor(remainingSeconds / (60 * 60 * 24 * 365));
     remainingSeconds -= years * 60 * 60 * 24 * 365;
@@ -200,14 +203,14 @@ function msToTimeString(ms = 0) {
     if (seconds < 10)
         seconds = `0${seconds}`;
     if (!years && !days && !hours && !minutes)
-        return `${seconds}s`;
+        return `${negativePrefix}${seconds}s`;
     if (!years && !days && !hours)
-        return `${minutes}m ${seconds}s`;
+        return `${negativePrefix}${minutes}m ${seconds}s`;
     if (!years && !days)
-        return `${hours}h ${minutes}m`;
+        return `${negativePrefix}${hours}h ${minutes}m`;
     if (!years)
-        return `${days}d ${hours}h`;
-    return `${years}y ${days}d`;
+        return `${negativePrefix}${days}d ${hours}h`;
+    return `${negativePrefix}${years}y ${days}d`;
 }
 const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土월화수목금토일`;
 function garble(string = ``, percent = 0) {

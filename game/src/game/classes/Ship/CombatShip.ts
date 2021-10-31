@@ -230,6 +230,16 @@ export abstract class CombatShip extends Ship {
       otherShip.guildId === this.guildId
     )
       return false
+    // human ships within protected zone
+    if (
+      this.human &&
+      otherShip.human &&
+      (c.distance([0, 0], otherShip.location) <
+        (this.game?.settings.safeZoneRadius || Infinity) ||
+        c.distance([0, 0], this.location) <
+          (this.game?.settings.safeZoneRadius || Infinity))
+    )
+      return false
     // too far, or not in sight range
     if (
       c.distance(otherShip.location, this.location) >
@@ -786,7 +796,14 @@ export abstract class CombatShip extends Ship {
             ],
             `high`,
           )
-          if (`logEntry` in attacker && !didDie)
+          if (
+            `logEntry` in attacker &&
+            !didDie &&
+            // check to see if the attacker can actually see equipment repair
+            (attacker as HumanShip).visible?.ships?.find(
+              (s) => s.id === this.id,
+            )?.items?.[0]?.repair
+          )
             attacker.logEntry(
               [
                 `You have disabled`,

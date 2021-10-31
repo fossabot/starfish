@@ -12,11 +12,9 @@
     </div>
 
     <div v-if="buyableItems.length || sellableItems.length">
-      <div class="sub marbot">
-        <div v-if="isCaptain">
-          Captain, you can use your ship's common fund to
-          buy and sell equipment for the ship.
-        </div>
+      <div class="sub marbot" v-if="isCaptain">
+        Captain, you can use your ship's common fund to buy
+        and sell equipment for the ship.
       </div>
 
       <div class="sub padbotsmall">
@@ -198,7 +196,6 @@ export default Vue.extend({
           }
         })
         .filter((i: ItemStub) => i)
-        .filter((e) => e.price > 0)
     },
     swappableChassis() {
       return (this.ship.planet?.vendor?.chassis || []).map(

@@ -44,8 +44,7 @@ export const weapons: {
     description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats.`,
     mass: 1300,
     basePrice: {
-      crewCosmeticCurrency: 100,
-      credits: 0 * 11 * game.itemPriceMultiplier,
+      credits: 21 * game.itemPriceMultiplier,
     },
     range: 0.15,
     rarity: 0.5,

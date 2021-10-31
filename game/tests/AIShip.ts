@@ -77,7 +77,7 @@ describe(`AIShip target selection`, () => {
       humanShipData(`test1`),
     )
 
-    human.move([-0.3, 0])
+    human.move([10 - 0.3, 0])
     const cm = await human.addCrewMember(crewMemberData())
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
@@ -97,7 +97,7 @@ describe(`AIShip target selection`, () => {
         flamingo.location,
         flamingo.targetLocation,
       ),
-    ).to.be.closeTo(180, 30)
+    ).to.be.closeTo(180, 50)
   })
 })
 

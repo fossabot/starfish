@@ -36,6 +36,7 @@ export class Ship extends Stubbable {
     scan: number
     broadcast: number
     gameSize: number
+    safeZone: number
     attack: number[]
   } = {
     sight: 0,
@@ -43,6 +44,7 @@ export class Ship extends Stubbable {
     scan: 0,
     attack: [],
     gameSize: 0,
+    safeZone: 0,
   }
 
   spawnedAt: number
