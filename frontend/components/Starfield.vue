@@ -24,9 +24,8 @@ export default Vue.extend({
     async redraw() {
       const canvas: HTMLCanvasElement = this
           .$el as HTMLCanvasElement,
-        ctx: CanvasRenderingContext2D = canvas.getContext(
-          '2d',
-        )!
+        ctx: CanvasRenderingContext2D =
+          canvas.getContext('2d')!
       // ,
       // color = getComputedStyle(document.documentElement)
       //   .getPropertyValue('--ui')
@@ -38,9 +37,11 @@ export default Vue.extend({
       )
       await this.$nextTick()
 
+      const offsetWidth = canvas.offsetWidth
+      const offsetHeight = canvas.offsetHeight
       for (let i = 0; i < stars; i++) {
-        let x = Math.random() * canvas.offsetWidth
-        let y = Math.random() * canvas.offsetHeight
+        let x = Math.random() * offsetWidth
+        let y = Math.random() * offsetHeight
         ctx.fillStyle = 'rgba(255,255,255,.4)' //color
         const size = Math.random() > 0.3 ? 1.5 : 3
         ctx.fillRect(x, y, size, size)
