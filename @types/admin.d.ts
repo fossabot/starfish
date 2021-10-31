@@ -1,6 +1,7 @@
 interface AdminGameSettings {
   id: string
   humanShipLimit: number
+  safeZoneRadius: number
   aiDifficultyMultiplier: number
   baseXpGain: number
   baseStaminaUse: number
@@ -29,5 +30,6 @@ interface AdminVisibleData {
   attackRemnants: AttackRemnantStub[]
   zones: ZoneStub[]
   gameRadius: number
+  safeZoneRadius: number
   showAll: true
 }

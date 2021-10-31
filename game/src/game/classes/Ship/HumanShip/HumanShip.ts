@@ -246,6 +246,8 @@ export class HumanShip extends CombatShip {
 
     setTimeout(() => {
       this.radii.gameSize = this.game?.gameSoftRadius || 1
+      this.radii.safeZone =
+        this.game?.settings.safeZoneRadius || 1
       this.toUpdate.radii = this.radii
 
       // give all the AI a chance to spawn and become visible
@@ -1151,6 +1153,8 @@ export class HumanShip extends CombatShip {
 
     // ----- game radius -----
     this.radii.gameSize = this.game?.gameSoftRadius || 1
+    this.radii.safeZone =
+      this.game?.settings.safeZoneRadius || 1
     this.toUpdate.radii = this.radii
     const isOutsideRadius =
       c.distance([0, 0], this.location) >

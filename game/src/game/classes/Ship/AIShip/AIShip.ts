@@ -12,7 +12,7 @@ import type { HumanShip } from '../HumanShip/HumanShip'
 import ais from './ais'
 
 export class AIShip extends CombatShip {
-  static dropCacheValueMultiplier = 1500
+  static dropCacheValueMultiplier = 1000
   static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
   readonly human: boolean = false
@@ -86,8 +86,10 @@ export class AIShip extends CombatShip {
     if (data.level) this.level = data.level
     if (this.items.length === 0)
       this.addLevelAppropriateItems()
-    if (this.items.length === 0)
-      setTimeout(() => this.die(undefined, false), 1000)
+    if (this.weapons.length === 0)
+      this.addItem({ type: `weapon`, id: `tiny1` })
+    if (this.engines.length === 0)
+      this.addItem({ type: `engine`, id: `tiny1` })
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
@@ -196,7 +198,7 @@ export class AIShip extends CombatShip {
 
     while (true) {
       const typeToAdd: `engine` | `weapon` =
-        this.weapons.length === 0
+        this.weapons.length <= this.items.length / 2
           ? `weapon`
           : this.engines.length === 0
           ? `engine`

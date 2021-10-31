@@ -5,6 +5,19 @@ import game from '../gameConstants'
 export const chassis: {
   [key in ChassisId]: BaseChassisData
 } = {
+  tiny1: {
+    type: `chassis`,
+    id: `tiny1`,
+    buyable: false,
+    displayName: `Dinghy 0.01`,
+    description: `It, uh, flies. I guess that much is undeniable.`,
+    mass: 18000,
+    basePrice: { credits: 0 },
+    slots: 2,
+    agility: 0.2,
+    maxCargoSpace: 1,
+    rarity: 0.2,
+  },
   starter1: {
     type: `chassis`,
     id: `starter1`,

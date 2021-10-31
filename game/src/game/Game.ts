@@ -845,7 +845,14 @@ export class Game {
         radius += 0.1
       }
 
-      const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
+      const isInSafeZone =
+        c.distance([0, 0], spawnPoint) <
+        this.settings.safeZoneRadius
+      const level =
+        c.distance([0, 0], spawnPoint) *
+          2 *
+          Number(isInSafeZone ? 0.5 : 1) +
+        1
       const species = c.randomFromArray(
         Object.values(c.species)
           .filter((s) => s.aiOnly)
@@ -860,7 +867,6 @@ export class Game {
         guildId: `fowl`,
         speciesId: species,
         level,
-        headerBackground: `ai.webp`,
       })
     }
   }
@@ -1260,7 +1266,12 @@ export class Game {
       (g) => g !== `fowl`,
     ) as GuildId[]) {
       const newHomeworld = c.randomFromArray(
-        this.basicPlanets.filter((p) => !p.guildId),
+        this.basicPlanets.filter(
+          (p) =>
+            !p.guildId &&
+            c.distance([0, 0], p.location) <
+              this.settings.safeZoneRadius,
+        ),
       )
       newHomeworld.guildId = guildId
       newHomeworld.homeworld = guildId
@@ -1455,6 +1466,7 @@ export class Game {
         a.toAdminStub(),
       ),
       gameRadius: this.gameSoftRadius,
+      safeZoneRadius: this.settings.safeZoneRadius,
       showAll: true as true,
     }
     // c.log(

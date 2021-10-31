@@ -230,6 +230,16 @@ export abstract class CombatShip extends Ship {
       otherShip.guildId === this.guildId
     )
       return false
+    // human ships within protected zone
+    if (
+      this.human &&
+      otherShip.human &&
+      (c.distance([0, 0], otherShip.location) <
+        (this.game?.settings.safeZoneRadius || Infinity) ||
+        c.distance([0, 0], this.location) <
+          (this.game?.settings.safeZoneRadius || Infinity))
+    )
+      return false
     // too far, or not in sight range
     if (
       c.distance(otherShip.location, this.location) >
