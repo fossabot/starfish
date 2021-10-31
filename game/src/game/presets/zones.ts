@@ -69,7 +69,7 @@ export function generateZoneData(
       procChancePerTick: Math.random() * 0.001,
       dodgeable: true,
     })
-    radius *= 2.5
+    radius *= 3.5
   } else if (type === `repair over time`) {
     name = c.randomFromArray(healZoneNames)
     effects.push({
@@ -77,6 +77,7 @@ export function generateZoneData(
       intensity,
       procChancePerTick: 1,
     })
+    radius *= 1.5
   } else if (type === `stamina regeneration`) {
     name = c.randomFromArray(staminaRegenZoneNames)
     effects.push({
@@ -85,6 +86,7 @@ export function generateZoneData(
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })
+    radius *= 1.5
   } else if (type === `accelerate`) {
     name = c.randomFromArray(accelerateZoneNames)
     effects.push({
@@ -93,7 +95,7 @@ export function generateZoneData(
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })
-    radius *= 1.1
+    radius *= 1.6
   } else if (type === `decelerate`) {
     name = c.randomFromArray(decelerateZoneNames)
     effects.push({
@@ -102,7 +104,7 @@ export function generateZoneData(
       procChancePerTick: 1,
       basedOnProximity: c.coinFlip(),
     })
-    radius *= 1.2
+    radius *= 1.5
   } else if (type === `wormhole`) {
     name = c.randomFromArray(wormholeZoneNames)
     effects.push({
@@ -118,7 +120,7 @@ export function generateZoneData(
       intensity,
       procChancePerTick: 1,
     })
-    radius *= 1.2
+    radius *= 1.7
   } else if (type === `sight boost`) {
     name = c.randomFromArray(sightZoneNames)
     effects.push({
@@ -126,7 +128,7 @@ export function generateZoneData(
       intensity,
       procChancePerTick: 1,
     })
-    radius *= 1.2
+    radius *= 1.6
   }
 
   if (!name) return false

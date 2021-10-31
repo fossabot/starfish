@@ -66,7 +66,21 @@ export default {
 
   components: true,
 
-  buildModules: [`@nuxt/typescript-build`], // , `nuxt-vite`],
+  buildModules: [
+    `@nuxt/typescript-build`,
+    `@nuxtjs/google-fonts`,
+  ],
 
   modules: [`portal-vue/nuxt`],
+
+  googleFonts: {
+    display: `swap`,
+    preconnect: true,
+    preload: true,
+    families: {
+      Prompt: {
+        wght: [400, 600],
+      },
+    },
+  },
 }

@@ -743,10 +743,10 @@ export abstract class CombatShip extends Ship {
       const remainingHp = equipmentToAttack.hp
       // ----- item not destroyed -----
       if (remainingHp >= adjustedRemainingDamage) {
-        c.log(
-          `gray`,
-          `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
+        // )
         equipmentToAttack.hp -= adjustedRemainingDamage
         equipmentToAttack._stub = null
         remainingDamage = 0
@@ -760,10 +760,10 @@ export abstract class CombatShip extends Ship {
       }
       // ----- item destroyed -----
       else {
-        c.log(
-          `gray`,
-          `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+        // )
         equipmentToAttack.hp = 0
         equipmentToAttack._stub = null
         remainingDamage -= remainingHp
@@ -912,7 +912,10 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `(${c.r2(this._hp)} HP left).`,
+                {
+                  text: `(${c.r2(this._hp)} HP left).`,
+                  color: `rgba(255,255,255,.5)`,
+                },
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
@@ -949,7 +952,10 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `(${c.r2(this._hp)} HP left).`,
+                {
+                  text: `(${c.r2(this._hp)} HP left).`,
+                  color: `rgba(255,255,255,.5)`,
+                },
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,

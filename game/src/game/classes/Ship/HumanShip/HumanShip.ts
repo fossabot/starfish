@@ -423,6 +423,7 @@ export class HumanShip extends CombatShip {
   // ----- log -----
 
   logEntry(content: LogContent, level: LogLevel = `low`) {
+    // c.log(content)
     if (!this.log) this.log = []
     this.log.push({ level, content, time: Date.now() })
     while (this.log.length > HumanShip.maxLogLength)
@@ -1670,7 +1671,9 @@ export class HumanShip extends CombatShip {
   }
 
   updateZones(startingLocation: CoordinatePair) {
-    for (let z of this.visible.zones) {
+    for (let z of this.seenLandmarks.filter(
+      (z) => z.type === `zone`,
+    )) {
       const startedInside = c.pointIsInsideCircle(
         z.location,
         startingLocation,
