@@ -49,10 +49,8 @@ export class Zone extends Stubbable {
           this.game?.gameSoftRadius || 1,
         )
         ship.logEntry(
-          [
-            `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
-          ],
-          `high`,
+          `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+          `critical`,
         )
 
         this.moveToRandomLocation()
@@ -219,7 +217,9 @@ export class Zone extends Stubbable {
         s.seenLandmarks.indexOf(this),
         1,
       )
-      s.toUpdate.seenLandmarks = s.seenLandmarks
+      s.toUpdate.seenLandmarks = s.seenLandmarks.map((z) =>
+        z.stubify(),
+      )
     }
     const startingLocation: CoordinatePair = [
       ...this.location,
