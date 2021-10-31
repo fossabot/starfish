@@ -132,7 +132,7 @@ export default Vue.extend({
     //   if (!this.userId) (this as any).$router.push('/login')
     // },
     lastUpdated(): void {
-      setTimeout(() => (this.ready = true), 600)
+      setTimeout(() => (this.ready = true), 1000)
     },
   },
 

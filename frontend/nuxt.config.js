@@ -68,16 +68,19 @@ export default {
 
   buildModules: [
     `@nuxt/typescript-build`,
-    `nuxt-font-loader`,
+    `@nuxtjs/google-fonts`,
   ],
 
   modules: [`portal-vue/nuxt`],
 
-  fontLoader: {
-    url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
-    prefetch: true,
-    preconnect: {
-      crossorigin: `anonymous`,
+  googleFonts: {
+    display: `swap`,
+    preconnect: true,
+    preload: true,
+    families: {
+      Prompt: {
+        wght: [400, 600],
+      },
     },
   },
 }
