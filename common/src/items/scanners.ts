@@ -7,6 +7,7 @@ export const scanners: {
 } = {
   tutorial1: {
     buyable: false,
+    special: true,
     type: `scanner`,
     id: `tutorial1`,
     displayName: `Echo-locator Mk.1`,

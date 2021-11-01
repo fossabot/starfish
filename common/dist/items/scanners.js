@@ -9,6 +9,7 @@ const gameConstants_1 = __importDefault(require("../gameConstants"));
 exports.scanners = {
     tutorial1: {
         buyable: false,
+        special: true,
         type: `scanner`,
         id: `tutorial1`,
         displayName: `Echo-locator Mk.1`,

@@ -80,7 +80,7 @@ describe(`Planet orbital defense`, () => {
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
-    p.location = [0.5, 0]
+    p.location = [10.5, 0]
 
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addHumanShip(humanShipData())
@@ -106,7 +106,7 @@ describe(`Planet orbital defense`, () => {
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
-    p.location = [0.5, 0]
+    p.location = [10.5, 0]
 
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addAIShip(aiShipData())
@@ -129,7 +129,7 @@ describe(`Planet orbital defense`, () => {
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
-    p.location = [0.5, 0]
+    p.location = [10.5, 0]
 
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addAIShip(aiShipData())
@@ -139,5 +139,67 @@ describe(`Planet orbital defense`, () => {
 
     const res = p.defend(true)
     expect(res?.target.id).to.equal(s2.id)
+  })
+
+  it(`should attack alongside an allied ship`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [10.5, 0]
+    p.incrementAllegiance(`explorer`, 100000)
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addHumanShip(humanShipData())
+    s2.guildId = `explorer`
+
+    s2.updateVisible()
+    s2.attack(s, s2.weapons[0])
+
+    const res = p.defend(true)
+    expect(res?.target.id).to.equal(s.id)
+  })
+
+  it(`should defend an attacked allied ship`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [10.5, 0]
+    p.incrementAllegiance(`explorer`, 100000)
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addHumanShip(humanShipData())
+    s.guildId = `explorer`
+
+    s2.updateVisible()
+    s2.attack(s, s2.weapons[0])
+
+    const res = p.defend(true)
+    expect(res?.target.id).to.equal(s2.id)
+  })
+
+  it(`should not engage in a fight between allied ships`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [10.5, 0]
+    p.incrementAllegiance(`explorer`, 100000)
+    p.incrementAllegiance(`hunter`, 100000)
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addHumanShip(humanShipData())
+    s.guildId = `explorer`
+    s2.guildId = `hunter`
+
+    s2.updateVisible()
+    s2.attack(s, s2.weapons[0])
+
+    const res = p.defend(true)
+    expect(res).to.be.undefined
   })
 })

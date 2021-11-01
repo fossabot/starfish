@@ -177,7 +177,8 @@ export class AIShip extends CombatShip {
 
     const validChassis = Object.values(c.items.chassis)
       .filter(
-        (i: BaseChassisData) => i.rarity <= itemBudget / 3,
+        (i: BaseChassisData) =>
+          !i.special && i.rarity <= itemBudget / 3,
       )
       .sort(
         (a: BaseChassisData, b: BaseChassisData) =>
@@ -193,8 +194,7 @@ export class AIShip extends CombatShip {
 
     const isInBudget = (i: BaseItemData) =>
       i.rarity <= itemBudget
-    const isBuyable = (i: BaseItemData) =>
-      i.buyable !== false
+    const isSelectable = (i: BaseItemData) => !i.special
 
     while (true) {
       const typeToAdd: `engine` | `weapon` =
@@ -208,7 +208,7 @@ export class AIShip extends CombatShip {
         itemPool,
       )
         .filter(isInBudget)
-        .filter(isBuyable)
+        .filter(isSelectable)
 
       if (!validItems.length) break
 

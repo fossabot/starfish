@@ -7,6 +7,7 @@ export const weapons: {
     type: `weapon`,
     id: `tutorial1`,
     buyable: false,
+    special: true,
     displayName: `Crustacean Cannon 1`,
     description: `Fires a two-pronged bolt of red energy at the target, somewhat resembling a crab's claw. Not suitable for large-scale combat, but enough to scare away some smaller threats.`,
     mass: 1000,

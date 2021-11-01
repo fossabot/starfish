@@ -109,6 +109,7 @@ interface BaseChassisData {
   rarity: number
   passives?: ShipPassiveEffect[]
   buyable?: false
+  special?: true
 }
 
 interface BaseItemData {
@@ -125,6 +126,7 @@ interface BaseItemData {
   hp?: number
   maxHp: number
   buyable?: false
+  special?: true
   aiOnly?: boolean
   lastUse?: number
   passives?: ShipPassiveEffect[]

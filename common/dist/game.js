@@ -93,7 +93,8 @@ function getPlanetDefenseRadius(level) {
     return math_1.default.lerp(0.03, 2, level / 100);
 }
 function getPlanetDefenseDamage(level) {
-    return math_1.default.lerp(0.3, 5, level / 100);
+    return (math_1.default.lerp(0.3, 5, level / 100) *
+        math_1.default.randomBetween(0.9, 1.1));
 }
 function statToString(data) {
     const { stat, amount } = data;

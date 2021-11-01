@@ -127,7 +127,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 200,
+        weight: 2,
         value: `boostDefense`,
       },
       {
@@ -332,6 +332,7 @@ export class BasicPlanet extends Planet {
         for (let item of Object.values(itemGroup))
           if (
             item.buyable !== false &&
+            !item.special &&
             !this.vendor?.items.find(
               (i) =>
                 i.type === item.type && i.id === item.id,
@@ -461,7 +462,6 @@ export class BasicPlanet extends Planet {
         null,
         [`attackRemnant`],
       )?.attackRemnants || []
-    c.log(attackRemnantsInSight)
     if (!attackRemnantsInSight.length) return
 
     const validTargetIds: string[] = Array.from(
@@ -481,7 +481,6 @@ export class BasicPlanet extends Planet {
         return ids
       }, new Set()) as Set<string>,
     )
-    c.log(validTargetIds)
     if (!validTargetIds.length) return
 
     const shipsInSight =
@@ -514,7 +513,6 @@ export class BasicPlanet extends Planet {
       return
 
     // ----- attack enemy -----
-    c.log(this.name, `is attacking`, target.name)
 
     const hitRoll = Math.random()
     const range = c.distance(this.location, target.location)
@@ -565,6 +563,17 @@ export class BasicPlanet extends Planet {
       damage,
       targetType: `any`,
       didCrit,
+      weapon: {
+        toReference() {
+          return {
+            type: `weapon`,
+            displayName: `Orbital Mortar`,
+            description: `This satellite-mounted weapons system is highly advanced and able to track multiple targets at once. It does, however, lose line of sight periodically as it moves behind its planet.`,
+          }
+        },
+        type: `weapon`,
+        displayName: `Orbital Mortar`,
+      },
     }
     const attackResult = target.takeDamage(
       this,
