@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const defaultGameSettings = {
     id: `game` + `${Math.random()}`.substring(2),
     humanShipLimit: 100,
+    safeZoneRadius: 2.5,
     baseXpGain: 0.4,
     baseStaminaUse: 0.0001,
     staminaBottomedOutResetPoint: 0.05,

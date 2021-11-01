@@ -1,4 +1,5 @@
 type ChassisId =
+  | `tiny1`
   | `starter1`
   | `starter2`
   | `starter3`
@@ -16,6 +17,7 @@ type ChassisId =
   | `mega3`
 
 type EngineId =
+  | `tiny1`
   | `tutorial1`
   | `starter1`
   | `starter2`
@@ -106,6 +108,7 @@ interface BaseChassisData {
   maxCargoSpace: number
   rarity: number
   passives?: ShipPassiveEffect[]
+  buyable?: false
 }
 
 interface BaseItemData {

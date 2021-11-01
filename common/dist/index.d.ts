@@ -152,6 +152,7 @@ declare const _default: {
     defaultGameSettings: {
         id: any;
         humanShipLimit: any;
+        safeZoneRadius: any;
         aiDifficultyMultiplier: any;
         baseXpGain: any;
         baseStaminaUse: any;

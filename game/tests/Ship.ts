@@ -58,13 +58,13 @@ describe(`Ship vision`, () => {
       ship2.id,
     )
 
-    ship2.move([ship.radii.sight - 0.00001, 0])
+    ship2.move([10 + ship.radii.sight - 0.00001, 0])
     ship.updateVisible()
     expect(ship.visible.ships.map((s) => s.id)).to.include(
       ship2.id,
     )
 
-    ship2.move([ship.radii.sight + 0.00001, 0])
+    ship2.move([10 + ship.radii.sight + 0.00001, 0])
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(0)
   })

@@ -14,7 +14,7 @@ export function humanShipData(
   return {
     id: `testShip` + id,
     name: `Test Ship ` + id,
-    location: [0, 0],
+    location: [10, 0],
     loadout,
   }
 }
@@ -26,7 +26,7 @@ export function aiShipData(
   return {
     id: `aiShip` + speciesId + id,
     name: `${speciesId} ` + id,
-    location: [0, 0],
+    location: [10, 0],
     level,
     speciesId,
   }
@@ -39,7 +39,7 @@ function planetData(): BasePlanetData {
     id: `planet` + randomId,
     name: `Planet ` + randomId,
     color: `red`,
-    location: [0, 0],
+    location: [10, 0],
     radius: 1000000,
     mass: 6e31,
     landingRadiusMultiplier: 1,

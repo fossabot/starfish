@@ -89,7 +89,7 @@ function getStaminaGainPerTickForSingleCrewMember(
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + math.lerp(1, 10, level / 100)) * 30
+  return (2 + math.lerp(1, 10, level / 100)) * 20
 }
 
 /**

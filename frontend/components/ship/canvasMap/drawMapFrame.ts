@@ -292,6 +292,23 @@ export default class Drawer {
         alwaysShowLabels: true,
       })
 
+    if (
+      ship?.radii?.safeZone ||
+      (visible as AdminVisibleData).safeZoneRadius
+    )
+      this.drawPoint({
+        location: [0, 0],
+        labelTop: `protected zone`,
+        radius:
+          (ship?.radii?.safeZone ||
+            (visible as AdminVisibleData).safeZoneRadius) *
+          this.flatScale,
+        color: `#00bb00`,
+        outline: true,
+        opacity: 0.5,
+        alwaysShowLabels: true,
+      })
+
     // ----- non-clipped objects -----
 
     // ----- distance circles -----

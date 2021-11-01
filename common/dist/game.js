@@ -67,7 +67,7 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
     return baseStaminaUse * 1.5;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + math_1.default.lerp(1, 10, level / 100)) * 30;
+    return (2 + math_1.default.lerp(1, 10, level / 100)) * 20;
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends

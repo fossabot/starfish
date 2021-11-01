@@ -1,4 +1,5 @@
 export declare const weapon: {
+    tiny1: BaseWeaponData;
     tutorial1: BaseWeaponData;
     cannon1: BaseWeaponData;
     cannon2: BaseWeaponData;
@@ -9,12 +10,12 @@ export declare const weapon: {
     sniper1: BaseWeaponData;
     sniper2: BaseWeaponData;
     sniper3: BaseWeaponData;
-    tiny1: BaseWeaponData;
     blaster1: BaseWeaponData;
     blaster2: BaseWeaponData;
     blaster3: BaseWeaponData;
 };
 export declare const engine: {
+    tiny1: BaseEngineData;
     tutorial1: BaseEngineData;
     starter1: BaseEngineData;
     starter2: BaseEngineData;
@@ -68,6 +69,7 @@ export declare const armor: {
     tough3: BaseArmorData;
 };
 export declare const chassis: {
+    tiny1: BaseChassisData;
     starter1: BaseChassisData;
     starter2: BaseChassisData;
     starter3: BaseChassisData;

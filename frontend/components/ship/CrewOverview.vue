@@ -6,7 +6,7 @@
     bgImage="/images/paneBackgrounds/15.webp"
   >
     <template #title>
-      <span class="sectionemoji">asdf</span>Crew Overview
+      <span class="sectionemoji">🫂</span>Crew Overview
     </template>
 
     <div class="crewoverviewholder">

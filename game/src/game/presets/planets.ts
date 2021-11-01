@@ -68,7 +68,12 @@ function getLocation(game?: Game, isHomeworld?: any) {
     game?.zones.find(isTooClose) ||
     tooManyPlanetsInVicinity() ||
     c.distance(location, [0, 0]) >
-      (game?.gameSoftRadius || 1)
+      Math.min(
+        isHomeworld
+          ? game?.settings.safeZoneRadius || Infinity
+          : Infinity,
+        game?.gameSoftRadius || 1,
+      )
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
 
@@ -99,6 +104,7 @@ function getLocation(game?: Game, isHomeworld?: any) {
     }
 
     locationSearchRadius *= 1.01
+    if (isHomeworld) c.log(isHomeworld, location)
   }
   return location
 }

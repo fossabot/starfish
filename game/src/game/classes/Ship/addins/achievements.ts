@@ -120,7 +120,6 @@ export function addAchievement(
 
   for (let achievement of achievements) {
     this.achievements.push(achievement.id)
-    this.toUpdate.achievements = this.achievements
 
     for (let reward of Array.isArray(achievement.reward)
       ? achievement.reward
@@ -139,6 +138,7 @@ export function addAchievement(
         )
     }
   }
+  this.toUpdate.achievements = this.achievements
 }
 
 // ----- cosmetics -----

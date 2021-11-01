@@ -19,6 +19,7 @@ interface ShipStub extends BaseStub {
     scan: number
     broadcast: number
     gameSize: number
+    safeZone: number
     attack: number[]
   }
   obeysGravity?: boolean

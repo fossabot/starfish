@@ -201,16 +201,16 @@ export class ChunkManager {
       x <= destinationChunkX + radiusInChunks;
       x++
     ) {
+      // add to chunk/s
+      // new row
+      if (!this.chunks[x]) {
+        this.chunks[x] = []
+      }
       for (
         let y = destinationChunkY - radiusInChunks;
         y <= destinationChunkY + radiusInChunks;
         y++
       ) {
-        // add to chunk/s
-        // new row
-        if (!this.chunks[x]) {
-          this.chunks[x] = []
-        }
         // new chunk
         if (!this.chunks[x][y]) {
           this.chunks[x][y] = new Chunk({
