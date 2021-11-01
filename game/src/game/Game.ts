@@ -1189,7 +1189,14 @@ export class Game {
   addAttackRemnant(
     data: BaseAttackRemnantData,
     save = true,
-  ): AttackRemnant {
+  ): AttackRemnant | undefined {
+    if (!data.attacker.id || !data.defender.id) {
+      c.log(
+        `Missing attacker or defender id while trying to spawn attack remnant.`,
+        data,
+      )
+      return
+    }
     const newAttackRemnant = new AttackRemnant(data)
     this.attackRemnants.push(newAttackRemnant)
     this.chunkManager.addOrUpdate(newAttackRemnant)

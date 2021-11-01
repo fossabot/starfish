@@ -65,7 +65,7 @@ export class BasicPlanet extends Planet {
         if (c.guilds[a.guildId])
           this.allegiances.push({
             guildId: a.guildId,
-            level: a.level,
+            level: a.level || 0,
           })
       }
       this.toUpdate.allegiances = this.allegiances
