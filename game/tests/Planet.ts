@@ -20,6 +20,10 @@ import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'
 import { BasicPlanet } from '../src/game/classes/Planet/BasicPlanet'
 
+import socketIoClient, {
+  Socket as ClientSocket,
+} from 'socket.io-client'
+
 describe(`Planet basics`, () => {
   it(`should be able to create a Planet`, async () => {
     const p = new BasicPlanet(basicPlanetData())
@@ -68,6 +72,115 @@ describe(`Planet levels`, () => {
     expect(p.level).to.equal(3)
     await p.addXp(1)
     expect(p.level).to.equal(4)
+  })
+
+  it(`should add xp correctly on credit donation`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+
+    const s = await g.addHumanShip(humanShipData())
+    await s.addCrewMember(crewMemberData())
+    const cm = s.crewMembers[0]
+    cm.credits = 1000
+
+    const client = socketIoClient(
+      `http://0.0.0.0:${g.ioPort}`,
+      {
+        secure: true,
+      },
+    )
+    await awaitConnection(client)
+
+    await new Promise<void>((r) =>
+      client.emit(
+        `crew:donateToPlanet`,
+        s.id,
+        cm.id,
+        1,
+        (res) => {
+          expect(res.error).to.be.undefined
+          r()
+        },
+      ),
+    )
+    expect(cm.credits).to.equal(999)
+    expect(p.xp).to.equal(1 / c.planetContributeCostPerXp)
+  })
+
+  it(`should add xp correctly on crew cosmetic donation`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+
+    const s = await g.addHumanShip(humanShipData())
+    await s.addCrewMember(crewMemberData())
+    const cm = s.crewMembers[0]
+    cm.crewCosmeticCurrency = 1000
+
+    const client = socketIoClient(
+      `http://0.0.0.0:${g.ioPort}`,
+      {
+        secure: true,
+      },
+    )
+    await awaitConnection(client)
+
+    await new Promise<void>((r) =>
+      client.emit(
+        `crew:donateCosmeticCurrencyToPlanet`,
+        s.id,
+        cm.id,
+        1,
+        (res) => {
+          expect(res.error).to.be.undefined
+          r()
+        },
+      ),
+    )
+    expect(cm.crewCosmeticCurrency).to.equal(999)
+    expect(p.xp).to.equal(
+      1 / c.planetContributeCrewCosmeticCostPerXp,
+    )
+  })
+
+  it(`should add xp correctly on ship cosmetic donation`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+
+    const s = await g.addHumanShip(humanShipData())
+    await s.addCrewMember(crewMemberData())
+    const cm = s.crewMembers[0]
+    s.shipCosmeticCurrency = 1000
+
+    const client = socketIoClient(
+      `http://0.0.0.0:${g.ioPort}`,
+      {
+        secure: true,
+      },
+    )
+    await awaitConnection(client)
+
+    await new Promise<void>((r) =>
+      client.emit(
+        `ship:donateCosmeticCurrencyToPlanet`,
+        s.id,
+        cm.id,
+        1,
+        (res) => {
+          expect(res.error).to.be.undefined
+          r()
+        },
+      ),
+    )
+    expect(s.shipCosmeticCurrency).to.equal(999)
+    expect(p.xp).to.equal(
+      1 / c.planetContributeShipCosmeticCostPerXp,
+    )
   })
 
   // it(`should add something when it levels up`, async () => {})
@@ -203,3 +316,23 @@ describe(`Planet orbital defense`, () => {
     expect(res).to.be.undefined
   })
 })
+
+function awaitConnection(client: ClientSocket) {
+  return new Promise<boolean>(async (r) => {
+    if (client.connected) {
+      r(true)
+      return
+    }
+    let timeout = 0
+    while (timeout < 500) {
+      // 5 seconds
+      await c.sleep(10)
+      if (client.connected) {
+        r(true)
+        return
+      }
+      timeout++
+    }
+    r(false)
+  })
+}

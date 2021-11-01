@@ -358,6 +358,8 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated ${amount} ${c.shipCosmeticCurrencyPlural} to the planet ${planet.name}.`,
       )
+
+      return callback({ data: ship._stub })
     },
   )
 

@@ -65,7 +65,10 @@ export default function (
 
       planet.addXp(price.shipCosmeticCurrency || 0)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.shipCosmeticCurrency || 0) * 10,
+        )
 
       c.log(
         `gray`,
@@ -136,7 +139,10 @@ export default function (
 
       planet.addXp(price.shipCosmeticCurrency || 0)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.shipCosmeticCurrency || 0) * 10,
+        )
 
       c.log(
         `gray`,

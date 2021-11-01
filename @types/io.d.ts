@@ -344,7 +344,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     amount: number,
-    callback: (res: IOResponse<CrewMemberStub>) => void,
+    callback: (res: IOResponse<ShipStub>) => void,
   ) => void
   [`crew:donateCosmeticCurrencyToPlanet`]: (
     shipId: string,

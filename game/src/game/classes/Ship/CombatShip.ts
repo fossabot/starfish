@@ -354,16 +354,16 @@ export abstract class CombatShip extends Ship {
               guildMembersInRange++
           })
 
-          c.log(
-            `damage boosted by`,
-            (p.intensity || 0) * guildMembersInRange,
-            `because there are`,
-            guildMembersInRange,
-            `guild members within`,
-            passiveRange,
-            this.name,
-            guildMembersWithinDistancePassives,
-          )
+          // c.log(
+          //   `damage boosted by`,
+          //   (p.intensity || 0) * guildMembersInRange,
+          //   `because there are`,
+          //   guildMembersInRange,
+          //   `guild members within`,
+          //   passiveRange,
+          //   this.name,
+          //   guildMembersWithinDistancePassives,
+          // )
 
           damageMultiplier +=
             (p.intensity || 0) * guildMembersInRange
@@ -397,14 +397,14 @@ export abstract class CombatShip extends Ship {
           })
 
           if (!guildMembersInRange) {
-            c.log(
-              `damage boosted by`,
-              p.intensity || 0,
-              `because there are no guild members within passive range`,
-              passiveRange,
-              this.name,
-              soloPassives,
-            )
+            // c.log(
+            //   `damage boosted by`,
+            //   p.intensity || 0,
+            //   `because there are no guild members within passive range`,
+            //   passiveRange,
+            //   this.name,
+            //   soloPassives,
+            // )
             damageMultiplier += p.intensity || 0
           }
         })
@@ -414,14 +414,14 @@ export abstract class CombatShip extends Ship {
 
       const boostDamagePassiveMultiplier =
         this.getPassiveIntensity(`boostDamage`) + 1
-      if (boostDamagePassiveMultiplier > 1)
-        c.log(
-          `damage multiplied by`,
-          boostDamagePassiveMultiplier,
-          `because of damage boost passive(s)`,
-          this.name,
-          this.passives,
-        )
+      // if (boostDamagePassiveMultiplier > 1)
+      //   c.log(
+      //     `damage multiplied by`,
+      //     boostDamagePassiveMultiplier,
+      //     `because of damage boost passive(s)`,
+      //     this.name,
+      //     this.passives,
+      //   )
       damage *= boostDamagePassiveMultiplier
 
       // ----- done with passives -----
@@ -932,7 +932,7 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,
-            tooltipData: attacker.toReference
+            tooltipData: attacker?.toReference
               ? attacker.toReference()
               : undefined,
           },

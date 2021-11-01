@@ -599,15 +599,16 @@ export class BasicPlanet extends Planet {
     return { target, damageResult }
   }
 
-  incrementAllegiance(guildId?: GuildId, amount?: number) {
+  incrementAllegiance(guildId: GuildId, amount: number) {
     if (!guildId) return
+
     let allegianceAmountToIncrement = (amount || 0) / 100
 
     const existingAllegiances = this.allegiances.filter(
       (a) => a.level > 1,
     )
     allegianceAmountToIncrement /=
-      existingAllegiances.length
+      existingAllegiances.length + 1
 
     const maxAllegiance = 100
     const found = this.allegiances.find(
@@ -616,7 +617,7 @@ export class BasicPlanet extends Planet {
     if (found)
       found.level = Math.min(
         maxAllegiance,
-        found.level + allegianceAmountToIncrement,
+        (found.level || 0) + allegianceAmountToIncrement,
       )
     else
       this.allegiances.push({
@@ -627,12 +628,19 @@ export class BasicPlanet extends Planet {
         ),
       })
     this.toUpdate.allegiances = this.allegiances
+
+    c.log({
+      amount,
+      allegianceAmountToIncrement,
+      all: this.allegiances,
+    })
     this.updateFrontendForShipsAt()
   }
 
   decrementAllegiances() {
     this.allegiances.forEach((a) => {
-      if (this.guildId !== a.guildId) a.level *= 0.99
+      if (this.guildId !== a.guildId)
+        a.level = (a.level || 0) * 0.995
     })
     this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()

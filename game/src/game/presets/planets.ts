@@ -229,13 +229,19 @@ export function generateBasicPlanet(
   const xp = 0
 
   const leanings: PlanetLeaning[] = []
-  // homeworlds always CAN have cargo, and lean slightly that way
-  if (homeworldGuildKey)
+  // homeworlds always CAN have cargo and defense, and lean slightly that way
+  if (homeworldGuildKey) {
     leanings.push({
       type: `cargo`,
       never: false,
       propensity: Math.random() * 2 + 1,
     })
+    leanings.push({
+      type: `defense`,
+      never: false,
+      propensity: Math.random() * 2 + 1,
+    })
+  }
   while (leanings.length < 5 || Math.random() > 0.4) {
     const leaningTypes: PlanetLeaningType[] = [
       `items`,

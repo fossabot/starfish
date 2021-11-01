@@ -492,6 +492,7 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated 💳${amount} ${c.baseCurrencyPlural} to the planet ${planet.name}.`,
       )
+      return callback({ data: crewMember._stub })
     },
   )
 
@@ -545,6 +546,8 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated ${amount} ${c.crewCosmeticCurrencyPlural} to the planet ${planet.name}.`,
       )
+
+      return callback({ data: crewMember._stub })
     },
   )
 
@@ -662,7 +665,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -904,7 +910,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -972,7 +981,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
