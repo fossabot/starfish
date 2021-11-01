@@ -134,7 +134,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 3 * defenseMultiplier,
+        weight: 10 * defenseMultiplier,
         value: `boostDefense`,
       },
       {
@@ -473,17 +473,17 @@ export class BasicPlanet extends Planet {
 
     const validTargetIds: string[] = Array.from(
       attackRemnantsInSight.reduce((ids, ar) => {
-        if (ar.attacker.id === this.id) return ids
+        if (ar.attacker?.id === this.id) return ids
         const bothHuman =
-          !(ar.attacker as any).ai &&
-          !(ar.defender as any).ai
+          !(ar.attacker as any)?.ai &&
+          !(ar.defender as any)?.ai
         if (bothHuman) {
-          ids.add(ar.attacker.id)
-          ids.add(ar.defender.id)
+          ids.add(ar.attacker?.id)
+          ids.add(ar.defender?.id)
         } else {
           if ((ar.attacker as any).ai)
-            ids.add(ar.attacker.id)
-          else ids.add(ar.defender.id)
+            ids.add(ar.attacker?.id)
+          else ids.add(ar.defender?.id)
         }
         return ids
       }, new Set()) as Set<string>,
