@@ -392,13 +392,24 @@ export default class Drawer {
       this.drawPoint({
         location: [p.location[0], p.location[1] * -1],
         radius:
-          (ship?.gameSettings?.arrivalThreshold || 0.002) *
+          (ship?.gameSettings?.arrivalThreshold ||
+            c.defaultGameSettings.arrivalThreshold) *
           (p.landingRadiusMultiplier || 1) *
           this.flatScale,
         color: p.color,
         outline: `dash`,
         opacity: 0.4,
       })
+      if (p.defense)
+        this.drawPoint({
+          location: [p.location[0], p.location[1] * -1],
+          radius:
+            c.getPlanetDefenseRadius(p.defense) *
+            this.flatScale,
+          color: `#ff7733`,
+          outline: `dash`,
+          opacity: 0.4,
+        })
     })
 
     if (ship) {

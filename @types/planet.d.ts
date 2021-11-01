@@ -24,6 +24,7 @@ interface BaseBasicPlanetData extends BasePlanetData {
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
   bank: boolean
+  defense: number
 }
 
 interface BaseMiningPlanetData extends BasePlanetData {
@@ -99,6 +100,7 @@ type PlanetLeaningType =
   | `cargo`
   | `repair`
   | `cosmetics`
+  | `defense`
 interface PlanetLeaning {
   type: PlanetLeaningType
   never?: boolean

@@ -2,6 +2,7 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
+import type { CombatShip } from '../Ship/CombatShip'
 import { Planet } from './Planet'
 
 type AddableElement =
@@ -35,6 +36,7 @@ export class BasicPlanet extends Planet {
 
   vendor: PlanetVendor
   bank: boolean = false
+  defense: number = 0
 
   priceFluctuator = 1
 
@@ -70,9 +72,8 @@ export class BasicPlanet extends Planet {
     }
 
     this.vendor = data.vendor
-    if (!this.vendor.shipCosmetics)
-      this.vendor.shipCosmetics = [] // todo this is temporary until everything is updated to have this prop
     this.bank = data.bank
+    this.defense = data.defense
 
     // c.log(this.getAddableToVendor())
     // c.log(
@@ -100,6 +101,11 @@ export class BasicPlanet extends Planet {
         this.levelUp()
   }
 
+  tick() {
+    super.tick()
+    this.defend()
+  }
+
   levelUp() {
     super.levelUp()
 
@@ -117,15 +123,19 @@ export class BasicPlanet extends Planet {
         value: `expandLandingZone`,
       },
       {
-        weight: 6,
+        weight: 5,
         value: `increaseAutoRepair`,
+      },
+      {
+        weight: 200,
+        value: `boostDefense`,
       },
       {
         weight: 3 * shipPassiveMultiplier,
         value: `boostSightRange`,
       },
       {
-        weight: 3 * shipPassiveMultiplier,
+        weight: 2 * shipPassiveMultiplier,
         value: `boostStaminaRegeneration`,
       },
       {
@@ -156,6 +166,9 @@ export class BasicPlanet extends Planet {
 
     if (levelUpEffect === `expandLandingZone`) {
       this.landingRadiusMultiplier *= 2
+    }
+    if (levelUpEffect === `boostDefense`) {
+      this.defense += 1
     } else if (levelUpEffect === `increaseAutoRepair`) {
       this.addPassive({
         id: `autoRepair`,
@@ -435,6 +448,139 @@ export class BasicPlanet extends Planet {
     }
 
     return addable
+  }
+
+  defend(force = false) {
+    if (!this.defense) return
+    if (!force && !c.lottery(this.defense, 100)) return
+
+    const attackRemnantsInSight =
+      this.game?.scanCircle(
+        this.location,
+        c.getPlanetDefenseRadius(this.defense) * 1.5,
+        null,
+        [`attackRemnant`],
+      )?.attackRemnants || []
+    c.log(attackRemnantsInSight)
+    if (!attackRemnantsInSight.length) return
+
+    const validTargetIds: string[] = Array.from(
+      attackRemnantsInSight.reduce((ids, ar) => {
+        if (ar.attacker.id === this.id) return ids
+        const bothHuman =
+          !(ar.attacker as any).ai &&
+          !(ar.defender as any).ai
+        if (bothHuman) {
+          ids.add(ar.attacker.id)
+          ids.add(ar.defender.id)
+        } else {
+          if ((ar.attacker as any).ai)
+            ids.add(ar.attacker.id)
+          else ids.add(ar.defender.id)
+        }
+        return ids
+      }, new Set()) as Set<string>,
+    )
+    c.log(validTargetIds)
+    if (!validTargetIds.length) return
+
+    const shipsInSight =
+      this.game?.scanCircle(
+        this.location,
+        c.getPlanetDefenseRadius(this.defense),
+        null,
+        [`aiShip`, `humanShip`],
+      )?.ships || []
+
+    const enemiesInRange: CombatShip[] =
+      shipsInSight.filter(
+        (s) =>
+          validTargetIds.includes(s.id) &&
+          s.attackable &&
+          !this.allegiances.find(
+            (a) =>
+              a.level >= c.guildAllegianceFriendCutoff &&
+              a.guildId === s.guildId,
+          ),
+      ) as CombatShip[]
+    if (enemiesInRange.length === 0) return
+    const target = c.randomFromArray(enemiesInRange)
+    if (
+      !target ||
+      !target.attackable ||
+      target.planet ||
+      target.dead
+    )
+      return
+
+    // ----- attack enemy -----
+    c.log(this.name, `is attacking`, target.name)
+
+    const hitRoll = Math.random()
+    const range = c.distance(this.location, target.location)
+    const distanceAsPercent =
+      range / c.getPlanetDefenseRadius(this.defense) // 1 = far away, 0 = close
+    const minHitChance = 0.08
+    // 1.0 agility is "normal", higher is better
+    const enemyAgility =
+      target.chassis.agility +
+      (target.passives.find(
+        (p) => p.id === `boostChassisAgility`,
+      )?.intensity || 0)
+
+    const toHit =
+      c.lerp(minHitChance, 1, distanceAsPercent) *
+      enemyAgility *
+      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
+    let miss = hitRoll < toHit
+
+    const didCrit = miss
+      ? false
+      : Math.random() <=
+        (this.game?.settings.baseCritChance ||
+          c.defaultGameSettings.baseCritChance)
+
+    let damage = miss
+      ? 0
+      : c.getPlanetDefenseDamage(this.defense) *
+        (didCrit
+          ? this.game?.settings.baseCritDamageMultiplier ||
+            c.defaultGameSettings.baseCritDamageMultiplier
+          : 1)
+
+    if (damage === 0) miss = true
+
+    c.log(
+      `gray`,
+      `planet needs to beat ${toHit}, rolled ${hitRoll} for a ${
+        miss
+          ? `miss`
+          : `${
+              didCrit ? `crit` : `hit`
+            } of damage ${damage}`
+      }`,
+    )
+    const damageResult: AttackDamageResult = {
+      miss,
+      damage,
+      targetType: `any`,
+      didCrit,
+    }
+    const attackResult = target.takeDamage(
+      this,
+      damageResult,
+    )
+
+    this.game?.addAttackRemnant({
+      attacker: this,
+      defender: target,
+      damageTaken: attackResult,
+      start: [...this.location],
+      end: [...target.location],
+      time: Date.now(),
+    })
+
+    return { target, damageResult }
   }
 
   incrementAllegiance(guildId?: GuildId, amount?: number) {

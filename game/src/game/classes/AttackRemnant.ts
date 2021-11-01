@@ -7,12 +7,16 @@ export class AttackRemnant extends Stubbable {
   readonly attacker: {
     id: string
     name: string
+    type: string
+    ai?: boolean
     toReference?: Function
   }
 
   readonly defender: {
     id: string
     name: string
+    type: string
+    ai?: boolean
     toReference?: Function
   }
 

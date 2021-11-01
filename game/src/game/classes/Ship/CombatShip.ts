@@ -205,7 +205,7 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     // self
     if (this === otherShip) return false
-    // nonexistane
+    // nonexistant
     if (!otherShip) return false
     // not attackable
     if (!otherShip.attackable) return false

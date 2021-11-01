@@ -327,9 +327,7 @@ export class Game {
       )
     // c.log(times.map((s) => s.ship.name + ` ` + s.time))
 
-    this.planets.forEach((p) => {
-      p.toUpdate = {}
-    })
+    this.planets.forEach((p) => p.tick())
     this.comets.forEach((p) => p.tick())
 
     this.expireOldAttackRemnantsAndCaches()
@@ -858,7 +856,6 @@ export class Game {
         speciesId: species,
         level,
         headerBackground: `ai.webp`,
-
       })
     }
   }

@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-promise-executor-return  */
+
 import c from '../../common/src'
 import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
@@ -11,6 +14,7 @@ import {
   crewMemberData,
   humanShipData,
   basicPlanetData,
+  aiShipData,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'
@@ -67,4 +71,73 @@ describe(`Planet levels`, () => {
   })
 
   // it(`should add something when it levels up`, async () => {})
+})
+
+describe(`Planet orbital defense`, () => {
+  it(`should attack a ship in range when it sees an attack remnant`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [0.5, 0]
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addHumanShip(humanShipData())
+
+    const res = p.defend(true)
+    expect(res).to.not.exist
+
+    s.updateVisible()
+    await s.addCrewMember(crewMemberData())
+    const cm = s.crewMembers[0]
+    cm.goTo(`weapons`)
+    cm.combatTactic = `aggressive`
+    s.recalculateCombatTactic()
+    s.autoAttack(999)
+
+    const res2 = p.defend(true)
+    expect(res2).to.exist
+  })
+
+  it(`should not attack a human ship that has attacked an ai ship`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [0.5, 0]
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addAIShip(aiShipData())
+
+    s.updateVisible()
+    await s.addCrewMember(crewMemberData())
+    const cm = s.crewMembers[0]
+    cm.goTo(`weapons`)
+    cm.combatTactic = `aggressive`
+    s.recalculateCombatTactic()
+    s.autoAttack(999)
+
+    const res = p.defend(true)
+    expect(res?.target.id).to.equal(s2.id)
+  })
+
+  it(`should attack an ai ship that has attacked a human ship`, async () => {
+    const g = new Game()
+    const p = (await g.addBasicPlanet(
+      basicPlanetData(),
+    )) as BasicPlanet
+    p.defense = 100
+    p.location = [0.5, 0]
+
+    const s = await g.addHumanShip(humanShipData())
+    const s2 = await g.addAIShip(aiShipData())
+
+    s2.updateVisible()
+    s2.attack(s, s2.weapons[0])
+
+    const res = p.defend(true)
+    expect(res?.target.id).to.equal(s2.id)
+  })
 })

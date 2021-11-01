@@ -230,7 +230,7 @@ export function generateBasicPlanet(
       never: false,
       propensity: Math.random() * 2 + 1,
     })
-  while (leanings.length < 4 || Math.random() > 0.4) {
+  while (leanings.length < 5 || Math.random() > 0.4) {
     const leaningTypes: PlanetLeaningType[] = [
       `items`,
       `weapon`,
@@ -244,6 +244,7 @@ export function generateBasicPlanet(
       `cosmetics`,
       `cargo`,
       `repair`,
+      `defense`,
     ]
     const leaningType = c.randomFromArray(leaningTypes)
     if (leanings.find((l) => l.type === leaningType))
@@ -294,6 +295,7 @@ export function generateBasicPlanet(
     location,
     vendor,
     bank: false,
+    defense: 0,
     level,
     baseLevel,
     xp,

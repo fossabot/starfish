@@ -105,6 +105,8 @@ interface PlanetStub extends BaseStub {
   vendor?: PlanetVendor
   allegiances: PlanetAllegianceData[]
   priceFluctuator: number
+  bank?: boolean
+  defense?: number
   [key: string]: any
 }
 interface PlanetLogStub extends BaseStub {

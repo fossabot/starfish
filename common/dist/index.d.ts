@@ -272,6 +272,8 @@ declare const _default: {
         credits?: number | undefined;
         crewCosmeticCurrency?: number | undefined;
     } | null | undefined, useShipCommonCredits?: boolean) => number | false;
+    getPlanetDefenseRadius: (level: number) => number;
+    getPlanetDefenseDamage: (level: number) => number;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;
