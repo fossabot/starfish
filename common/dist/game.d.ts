@@ -14,6 +14,8 @@ declare function getWeaponCooldownReductionPerTick(level: number): number;
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
  */
 declare function getGeneralMultiplierBasedOnCrewMemberProximity(cm: CrewMemberStub, crewMembers: CrewMemberStub[]): number;
+declare function getPlanetDefenseRadius(level: number): number;
+declare function getPlanetDefenseDamage(level: number): number;
 declare function statToString(data: {
     stat: string;
     amount: number;
@@ -71,6 +73,8 @@ declare const _default: {
     getShipTaglinePrice: typeof getShipTaglinePrice;
     getShipHeaderBackgroundPrice: typeof getShipHeaderBackgroundPrice;
     canAfford: typeof canAfford;
+    getPlanetDefenseRadius: typeof getPlanetDefenseRadius;
+    getPlanetDefenseDamage: typeof getPlanetDefenseDamage;
 };
 export default _default;
 //# sourceMappingURL=game.d.ts.map

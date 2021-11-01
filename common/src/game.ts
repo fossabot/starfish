@@ -124,6 +124,16 @@ function getGeneralMultiplierBasedOnCrewMemberProximity(
   )
 }
 
+function getPlanetDefenseRadius(level: number) {
+  return math.lerp(0.03, 2, level / 100)
+}
+function getPlanetDefenseDamage(level: number) {
+  return (
+    math.lerp(0.3, 5, level / 100) *
+    math.randomBetween(0.9, 1.1)
+  )
+}
+
 function statToString(data: {
   stat: string
   amount: number
@@ -688,4 +698,6 @@ export default {
   getShipHeaderBackgroundPrice,
   canAfford,
   // getPlanetDescription,
+  getPlanetDefenseRadius,
+  getPlanetDefenseDamage,
 }

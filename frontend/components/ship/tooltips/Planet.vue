@@ -59,6 +59,18 @@
         </div>
 
         <div
+          v-if="dataToUse.defense"
+          class="flexbetween marbottiny"
+        >
+          <div class="marrightsmall fade">
+            Orbital Defense
+          </div>
+          <div class="textright">
+            Lv.{{ c.r2(dataToUse.defense) }}
+          </div>
+        </div>
+
+        <div
           v-if="
             dataToUse.vendor &&
             dataToUse.vendor.cargo &&
@@ -75,7 +87,6 @@
                 ),
               )
             }}
-            for sale
           </div>
         </div>
 

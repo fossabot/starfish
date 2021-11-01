@@ -107,6 +107,7 @@ const planetSchemaFields: Record<
   },
 
   bank: Boolean,
+  defense: Number,
 }
 const planetSchema = new Schema(planetSchemaFields)
 const DBPlanet = model<DBPlanetDoc>(

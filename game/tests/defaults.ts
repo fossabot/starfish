@@ -64,6 +64,7 @@ export function basicPlanetData(): BaseBasicPlanetData {
       shipCosmetics: [],
     },
     bank: true,
+    defense: 0,
   }
 }
 

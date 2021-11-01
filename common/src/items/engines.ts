@@ -5,6 +5,7 @@ export const engines: {
 } = {
   tutorial1: {
     buyable: false,
+    special: true,
     type: `engine`,
     id: `tutorial1`,
     displayName: `Bubble Booster v1`,

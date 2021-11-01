@@ -107,6 +107,10 @@ export class Planet extends Stubbable {
     )
   }
 
+  tick() {
+    this.toUpdate = {}
+  }
+
   tickEffectsOnShip(ship: HumanShip) {
     ship.addStat(`planetTime`, 1)
 
@@ -292,6 +296,7 @@ export class Planet extends Stubbable {
       priceFluctuator: (this as any).priceFluctuator,
       mine: (this as any).mine,
       bank: (this as any).bank,
+      defense: (this as any).defense,
       passives: this.passives,
       landingRadiusMultiplier: this.landingRadiusMultiplier,
     }
