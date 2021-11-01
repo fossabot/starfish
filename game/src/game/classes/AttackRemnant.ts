@@ -4,7 +4,7 @@ import { Stubbable } from './Stubbable'
 export class AttackRemnant extends Stubbable {
   readonly id: string
   readonly type = `attackRemnant`
-  readonly attacker: {
+  readonly attacker?: {
     id: string
     name: string
     type: string
@@ -12,7 +12,7 @@ export class AttackRemnant extends Stubbable {
     toReference?: Function
   }
 
-  readonly defender: {
+  readonly defender?: {
     id: string
     name: string
     type: string

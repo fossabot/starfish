@@ -555,16 +555,16 @@ export class BasicPlanet extends Planet {
 
     if (damage === 0) miss = true
 
-    c.log(
-      `gray`,
-      `planet needs to beat ${toHit}, rolled ${hitRoll} for a ${
-        miss
-          ? `miss`
-          : `${
-              didCrit ? `crit` : `hit`
-            } of damage ${damage}`
-      }`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `planet needs to beat ${toHit}, rolled ${hitRoll} for a ${
+    //     miss
+    //       ? `miss`
+    //       : `${
+    //           didCrit ? `crit` : `hit`
+    //         } of damage ${damage}`
+    //   }`,
+    // )
     const damageResult: AttackDamageResult = {
       miss,
       damage,
@@ -629,11 +629,11 @@ export class BasicPlanet extends Planet {
       })
     this.toUpdate.allegiances = this.allegiances
 
-    c.log({
-      amount,
-      allegianceAmountToIncrement,
-      all: this.allegiances,
-    })
+    // c.log({
+    //   amount,
+    //   allegianceAmountToIncrement,
+    //   all: this.allegiances,
+    // })
     this.updateFrontendForShipsAt()
   }
 

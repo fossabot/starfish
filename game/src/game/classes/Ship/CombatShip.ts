@@ -430,16 +430,16 @@ export abstract class CombatShip extends Ship {
     // * using weapon repair level only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
-    c.log(
-      `gray`,
-      `need to beat ${toHit}, rolled ${hitRoll} for a ${
-        miss
-          ? `miss`
-          : `${
-              didCrit ? `crit` : `hit`
-            } of damage ${damage}`
-      }`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `need to beat ${toHit}, rolled ${hitRoll} for a ${
+    //     miss
+    //       ? `miss`
+    //       : `${
+    //           didCrit ? `crit` : `hit`
+    //         } of damage ${damage}`
+    //   }`,
+    // )
     const damageResult: AttackDamageResult = {
       miss,
       damage,

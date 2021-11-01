@@ -15,13 +15,13 @@ const attackRemnantSchemaFields: Record<
   id: { type: String, required: true },
   attacker: {
     id: String,
-    type: String,
+    type: { type: String },
     ai: Boolean,
     name: String,
   },
   defender: {
     id: String,
-    type: String,
+    type: { type: String },
     ai: Boolean,
     name: String,
   },

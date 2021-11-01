@@ -3,6 +3,7 @@ import isDocker from 'is-docker'
 
 import './Game'
 import './dbSetup'
+import './AttackRemnant'
 import './CrewMember'
 import './Ship'
 import './HumanShip'

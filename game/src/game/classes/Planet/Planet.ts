@@ -169,17 +169,17 @@ export class Planet extends Stubbable {
         l * c.planetLevelXpRequirementMultiplier,
     )
     const levelDifference = newLevel - previousLevel
-    c.log({
-      amount,
-      previousLevel,
-      levelDifference,
-      xp: this.xp,
-      xpInCurrentLevel:
-        c.levels[newLevel] *
-          c.planetLevelXpRequirementMultiplier -
-        c.levels[newLevel - 1] *
-          c.planetLevelXpRequirementMultiplier,
-    })
+    // c.log({
+    //   amount,
+    //   previousLevel,
+    //   levelDifference,
+    //   xp: this.xp,
+    //   xpInCurrentLevel:
+    //     c.levels[newLevel] *
+    //       c.planetLevelXpRequirementMultiplier -
+    //     c.levels[newLevel - 1] *
+    //       c.planetLevelXpRequirementMultiplier,
+    // })
     for (let i = 0; i < levelDifference; i++) {
       await this.levelUp()
     }

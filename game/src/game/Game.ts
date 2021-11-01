@@ -1186,11 +1186,11 @@ export class Game {
     await this.db?.zone.removeFromDb(zone.id)
   }
 
-  addAttackRemnant(
+  async addAttackRemnant(
     data: BaseAttackRemnantData,
     save = true,
-  ): AttackRemnant | undefined {
-    if (!data.attacker.id || !data.defender.id) {
+  ): Promise<AttackRemnant | undefined> {
+    if (!data.attacker?.id || !data.defender?.id) {
       c.log(
         `Missing attacker or defender id while trying to spawn attack remnant.`,
         data,
@@ -1202,7 +1202,7 @@ export class Game {
     this.chunkManager.addOrUpdate(newAttackRemnant)
 
     if (save)
-      this.db?.attackRemnant.addOrUpdateInDb(
+      await this.db?.attackRemnant.addOrUpdateInDb(
         newAttackRemnant,
       )
     return newAttackRemnant

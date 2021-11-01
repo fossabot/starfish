@@ -1403,11 +1403,11 @@ export class HumanShip extends CombatShip {
 
     if (this.planet) {
       // * landed!
-      if (!silent)
-        c.log(
-          `gray`,
-          `${this.name} landed at ${this.planet.name}`,
-        )
+      // if (!silent)
+      //   c.log(
+      //     `gray`,
+      //     `${this.name} landed at ${this.planet.name}`,
+      //   )
 
       this.hardStop()
       this.planet.rooms.forEach((r) => this.addRoom(r))
@@ -1417,12 +1417,12 @@ export class HumanShip extends CombatShip {
       this.planet.addStat(`shipsLanded`, 1)
       this.checkAchievements(`land`)
     } else if (previousPlanet) {
-      c.log(
-        `gray`,
-        `${this.name} departed from ${
-          previousPlanet ? previousPlanet.name : ``
-        }`,
-      )
+      // c.log(
+      //   `gray`,
+      //   `${this.name} departed from ${
+      //     previousPlanet ? previousPlanet.name : ``
+      //   }`,
+      // )
 
       previousPlanet.rooms.forEach((r) =>
         this.removeRoom(r),
