@@ -1,5 +1,5 @@
 <template>
-  <div class="fader" :class="{ off }">
+  <div class="fader" :class="{ off, outIsInstant }">
     <slot />
   </div>
 </template>
@@ -11,6 +11,10 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   props: {
     off: {},
+    outIsInstant: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {}
@@ -41,6 +45,10 @@ export default Vue.extend({
   &.off {
     opacity: 0;
     pointer-events: none;
+  }
+
+  &:not(.off).outIsInstant {
+    transition: opacity 0s;
   }
 
   & > * {

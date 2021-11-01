@@ -453,10 +453,10 @@ export default Vue.extend({
 
       if (!this.isPanning && this.isHovering) {
         this.$store.commit('setTarget', [
-          ...(this.$store.state.tooltip?.type !== 'zone'
+          ...((this.$store.state.tooltip?.type !== 'zone'
             ? this.$store.state.tooltip?.location ||
               this.hoverPoint
-            : this.hoverPoint),
+            : this.hoverPoint) || [0, 0]),
         ])
       }
 
