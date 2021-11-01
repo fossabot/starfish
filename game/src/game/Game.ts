@@ -1377,10 +1377,9 @@ export class Game {
         )
         if (!found) return
         found.score += a.level
-        c.log(`planet with allegiance:`, planet.name, a) // todo remove
       })
     }
-    c.log(controlScores)
+    // c.log(controlScores)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []

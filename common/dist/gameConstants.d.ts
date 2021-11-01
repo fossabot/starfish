@@ -54,6 +54,7 @@ declare const _default: {
     planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
+    itemMassMultiplier: number;
     weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;

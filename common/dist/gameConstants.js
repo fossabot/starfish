@@ -37,6 +37,7 @@ const baseRepairCost = 600;
 const maxBroadcastLength = 200;
 const defaultHomeworldLevel = 12;
 const itemPriceMultiplier = 400;
+const itemMassMultiplier = 10;
 const weaponDamageMultiplier = 1;
 const guildVendorMultiplier = 0.98;
 const guildAllegianceFriendCutoff = 50;
@@ -137,6 +138,7 @@ exports.default = {
     planetContributeCrewCosmeticCostPerXp,
     planetLevelXpRequirementMultiplier,
     itemPriceMultiplier,
+    itemMassMultiplier,
     weaponDamageMultiplier,
     attackRemnantExpireTime,
     cacheExpireTime,

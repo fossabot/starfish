@@ -51,6 +51,7 @@ const maxBroadcastLength = 200
 const defaultHomeworldLevel = 12
 
 const itemPriceMultiplier = 400
+const itemMassMultiplier = 10
 const weaponDamageMultiplier = 1
 
 const guildVendorMultiplier = 0.98
@@ -186,6 +187,7 @@ export default {
   planetContributeCrewCosmeticCostPerXp,
   planetLevelXpRequirementMultiplier,
   itemPriceMultiplier,
+  itemMassMultiplier,
   weaponDamageMultiplier,
   attackRemnantExpireTime,
   cacheExpireTime,
