@@ -116,6 +116,13 @@ export class BasicPlanet extends Planet {
       ? 0
       : shipPassiveLeaning?.propensity || 1
 
+    const defensePassiveLeaning = this.leanings.find(
+      (l) => l.type === `defense`,
+    )
+    const defenseMultiplier = defensePassiveLeaning?.never
+      ? 0
+      : defensePassiveLeaning?.propensity || 1
+
     const levelUpOptions = [
       { weight: 200 / this.level, value: `addItemToShop` },
       {
@@ -127,7 +134,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 2,
+        weight: 3 * defenseMultiplier,
         value: `boostDefense`,
       },
       {
@@ -453,7 +460,7 @@ export class BasicPlanet extends Planet {
 
   defend(force = false) {
     if (!this.defense) return
-    if (!force && !c.lottery(this.defense, 100)) return
+    if (!force && !c.lottery(this.defense, 1000)) return
 
     const attackRemnantsInSight =
       this.game?.scanCircle(
