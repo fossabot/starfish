@@ -1,6 +1,8 @@
 import c from '../common/dist'
 import isDocker from 'is-docker'
 
+c.log(process.env.BOT_ID)
+
 export default {
   // target: `static`,
 

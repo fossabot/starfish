@@ -100,7 +100,7 @@ export default Vue.extend({
   },
   watch: {},
   mounted() {
-    c.log(process.env.BOT_ID)
+    c.log(process.env.BOT_ID, process.env.IS_DOCKER)
   },
   methods: {},
 })
