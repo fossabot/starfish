@@ -44,9 +44,11 @@ export default Vue.extend({
       const hostname = window.location.href.replace(
         /\/login.*/g,
         '',
-      ) //`www.starfish.cool`
+      )
       const postLoginPage = `${hostname}/postlogin`
-      return `https://discord.com/api/oauth2/authorize?client_id=723017262369472603&redirect_uri=${encodeURIComponent(
+      return `https://discord.com/api/oauth2/authorize?client_id=${
+        process.env.BOT_ID
+      }&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`
     },
