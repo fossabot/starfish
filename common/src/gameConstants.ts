@@ -51,7 +51,7 @@ const maxBroadcastLength = 200
 const defaultHomeworldLevel = 12
 
 const itemPriceMultiplier = 400
-const itemMassMultiplier = 10
+const itemMassMultiplier = 6
 const weaponDamageMultiplier = 1
 
 const guildVendorMultiplier = 0.98
