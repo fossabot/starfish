@@ -46,27 +46,39 @@ export class RepairChannelsCommand implements Command {
     // set roles appropriately
     try {
       if (memberRole && !(`error` in memberRole)) {
-        context.guild.members.cache.forEach((gm) => {
-          if (
-            (context.ship?.crewMembers || []).find(
-              (cm) => cm.id === gm.id,
-            )
-          ) {
+        ;(await context.guild.members.fetch()).forEach(
+          (gm) => {
             if (
-              !gm.roles.cache.find((r) => r === memberRole)
-            )
-              gm.roles
-                .add(memberRole)
-                .catch((e) => c.log(e))
-          } else {
-            if (
-              gm.roles.cache.find((r) => r === memberRole)
-            )
-              gm.roles
-                .remove(memberRole)
-                .catch((e) => c.log(e))
-          }
-        })
+              (context.ship?.crewMembers || []).find(
+                (cm) => cm.id === gm.id,
+              )
+            ) {
+              c.log(
+                gm.nickname || gm.user.username,
+                `is a crew member!`,
+              )
+              if (
+                !gm.roles.cache.find(
+                  (r) => r === memberRole,
+                )
+              )
+                gm.roles
+                  .add(memberRole)
+                  .catch((e) => c.log(e))
+            } else {
+              c.log(
+                gm.nickname || gm.user.username,
+                `ain't no crew member.`,
+              )
+              if (
+                gm.roles.cache.find((r) => r === memberRole)
+              )
+                gm.roles
+                  .remove(memberRole)
+                  .catch((e) => c.log(e))
+            }
+          },
+        )
       }
     } catch (e) {
       c.log(e)
