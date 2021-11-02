@@ -9,7 +9,7 @@ export class RepairChannelsCommand implements Command {
   requiresShip = true
   requiresCaptain = true
 
-  commandNames = [`repair`, `rcr`]
+  commandNames = [`repairchannels`, `rcr`]
 
   getHelpMessage(commandPrefix: string): string {
     return `\`${commandPrefix}${this.commandNames[0]}\` - Attempt to repair the game's Discord channels/roles (should they become unlinked).`
@@ -39,10 +39,38 @@ export class RepairChannelsCommand implements Command {
     }
 
     // roles
-    await resolveOrCreateRole({
+    const memberRole = await resolveOrCreateRole({
       type: `crew`,
       context,
     })
+    // set roles appropriately
+    try {
+      if (memberRole && !(`error` in memberRole)) {
+        context.guild.members.cache.forEach((gm) => {
+          if (
+            (context.ship?.crewMembers || []).find(
+              (cm) => cm.id === gm.id,
+            )
+          ) {
+            if (
+              !gm.roles.cache.find((r) => r === memberRole)
+            )
+              gm.roles
+                .add(memberRole)
+                .catch((e) => c.log(e))
+          } else {
+            if (
+              gm.roles.cache.find((r) => r === memberRole)
+            )
+              gm.roles
+                .remove(memberRole)
+                .catch((e) => c.log(e))
+          }
+        })
+      }
+    } catch (e) {
+      c.log(e)
+    }
 
     // channels
     await resolveOrCreateChannel({
