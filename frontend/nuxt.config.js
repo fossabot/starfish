@@ -1,5 +1,7 @@
 import c from '../common/dist'
 
+c.log(process.env.BOT_ID, process.env.IS_DOCKER)
+
 export default {
   // target: `static`,
 
@@ -8,9 +10,14 @@ export default {
   },
 
   env: {
-    IS_DOCKER: process.env.IS_DOCKER !== `false`,
+    IS_DOCKER: process.env.IS_DOCKER,
     NODE_ENV: process.env.NODE_ENV,
     GAME_NAME: c.gameName,
+    BOT_ID:
+      process.env.BOT_ID ||
+      (process.env.IS_DOCKER
+        ? `804439178636558396` // real starfish
+        : `723017262369472603`), // j's test
   },
 
   vue: {

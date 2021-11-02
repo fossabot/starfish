@@ -133,6 +133,9 @@ export default Vue.extend({
         this.masonryElement?.position()
         setTimeout(() => (this.ready = true), 300)
       }
+      if (curr && !prev) {
+        setTimeout(() => (this.ready = true), 1000)
+      }
     },
     connected(): void {
       this.masonryElement?.position()
