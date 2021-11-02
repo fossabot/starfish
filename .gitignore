@@ -6,7 +6,6 @@ discord/secrets/
 frontend/secrets/
 db/secrets
 game/secrets
-game/ssl
 discord/secrets
 frontend/@types/
 frontend/common/
