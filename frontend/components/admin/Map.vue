@@ -204,7 +204,10 @@ export default Vue.extend({
             if (tp.radii)
               targetPoints.push(
                 ...Object.keys(tp.radii)
-                  .filter((k) => k !== 'gameSize')
+                  .filter(
+                    (k) =>
+                      !['gameSize', 'safeZone'].includes(k),
+                  )
                   .map((key) => ({
                     location: tp.location,
                     labelTop: key,

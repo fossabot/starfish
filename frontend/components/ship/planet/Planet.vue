@@ -158,7 +158,16 @@
             <ShipPlanetBuyShipCosmetics />
           </Tab>
 
-          <Tab :title="`City Center`">
+          <Tab
+            :title="`Jobs`"
+            v-if="
+              crewMember && ship.planet && ship.planet.jobs
+            "
+          >
+            <ShipPlanetJobs />
+          </Tab>
+
+          <Tab :title="`Downtown`">
             <ShipPlanetGuildRecruit />
             <ShipPlanetBank />
             <ShipPlanetLevel />
