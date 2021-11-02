@@ -1,6 +1,7 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
+import type { CommandContext } from '../models/CommandContext'
 
 const roleData: {
   [key in GameRoleType]: {
@@ -8,31 +9,34 @@ const roleData: {
   }
 } = {
   crew: {
-    name: `Crew`,
+    name: `Starfish Crew`,
   },
 }
 
 export default async function resolveOrCreateRole({
   type,
-  guild,
+  context,
 }: {
   type: GameRoleType
-  guild: Discord.Guild
-}): Promise<Discord.Role | null> {
+  context: CommandContext
+}): Promise<Discord.Role | null | GamePermissionsFailure> {
+  if (!context.guild) return null
+
   const { name } = roleData[type]
 
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_ROLES`],
-    guild,
+    guild: context.guild,
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
-    return null
+    context.contactGuildAdmin(permissionsRes)
+    return permissionsRes
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
   const existingRoles = [
-    ...(await guild.roles.cache).values(),
+    ...(await context.guild.roles.cache).values(),
   ]
 
   // ----- get/make role -----
@@ -47,7 +51,7 @@ export default async function resolveOrCreateRole({
   try {
     // c.log(`attempting to create role...`)
     const role =
-      (await guild.roles
+      (await context.guild.roles
         .create({
           name,
           hoist: false,
@@ -57,7 +61,7 @@ export default async function resolveOrCreateRole({
         })
         .catch(c.log)) || null
 
-    c.log(`Created role ${name} for ${guild.name}.`)
+    c.log(`Created role ${name} for ${context.guild.name}.`)
 
     return role
   } catch (e) {

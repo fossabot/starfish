@@ -25,7 +25,11 @@ export default async function removeRole(
   )
   if (existing) {
     c.log(`removing role...`)
-    existing.delete().catch(c.log)
+    try {
+      existing.delete().catch(c.log)
+    } catch (e) {
+      c.log(e)
+    }
     return true
   }
 

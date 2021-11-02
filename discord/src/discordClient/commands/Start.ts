@@ -15,6 +15,7 @@ import {
 } from 'discord.js'
 import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import checkPermissions from '../actions/checkPermissions'
+import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class StartCommand implements Command {
   requiresCaptain = true
@@ -87,6 +88,26 @@ export class StartCommand implements Command {
         `Ah, okay. This game might not be for you, then.`,
       )
       return
+    }
+
+    // role
+    const crewRole = await resolveOrCreateRole({
+      type: `crew`,
+      context,
+    })
+    if (!crewRole || `error` in crewRole) {
+      context.reply(
+        `Error creating role, ending start flow.`,
+      )
+      return
+    }
+    // add role to user
+    try {
+      context.guildMember?.roles
+        .add(crewRole)
+        .catch(() => {})
+    } catch (e) {
+      c.log(e)
     }
 
     const guildButtonData: MessageButtonOptions[] = []

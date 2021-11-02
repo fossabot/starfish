@@ -59,30 +59,14 @@ export async function enQueue({
         channel = context?.channels[channelType]
 
       // try to make or resolve a channel
-      if (!channel) {
-        // check permissions
-        const createChannelsPermissionsCheck =
-          await checkPermissions({
-            requiredPermissions: [`MANAGE_CHANNELS`],
-            guild: guild,
-          })
-        if (`error` in createChannelsPermissionsCheck) {
-          // permissions check failed
-          c.log(
-            `Failed to create channel!`,
-            createChannelsPermissionsCheck,
-          )
-          context?.contactGuildAdmin(
-            createChannelsPermissionsCheck,
-          )
-        } else {
-          // permissions check passed, create
-          const didCreate = await resolveOrCreateChannel({
-            type: channelType,
-            guild,
-          })
-          if (didCreate) channel = didCreate
-        }
+      if (!channel && context) {
+        // permissions check + create
+        const didCreate = await resolveOrCreateChannel({
+          type: channelType,
+          context,
+        })
+        if (didCreate && !(`error` in didCreate))
+          channel = didCreate
       }
     }
 
