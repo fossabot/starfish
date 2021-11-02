@@ -179,6 +179,9 @@ export class CommandHandler {
       if (
         commandContext.ship &&
         matchedCommand.requiresShip &&
+        ![`leave`, `leavegame`].includes(
+          matchedCommand.commandNames[0],
+        ) &&
         commandContext.ship.tutorial
       )
         runnable = `Discord commands are disabled while you're in the tutorial. Go to ${c.frontendUrl} to play!`

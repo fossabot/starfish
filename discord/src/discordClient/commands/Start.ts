@@ -56,9 +56,9 @@ export class StartCommand implements Command {
         new MessageEmbed({
           color: c.gameColor as ColorResolvable,
           title: `Welcome to **${c.gameName}**!`,
-          description: `This is a game about exploring the universe in a ship crewed by your server's members, going on adventures and overcoming challenges.
+          description: `This is a game about exploring the universe in a ship crewed by your server members, going on adventures and overcoming challenges.
               
-          This bot will create several channels for game communication. Is that okay with you?`,
+          This bot will create several channels and a role for game communication. Is that okay with you?`,
         }).setThumbnail(
           `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
         ),
@@ -234,7 +234,7 @@ The available guilds are:`,
     commandContext: CommandContext,
   ): string | true {
     if (commandContext.ship)
-      return `Your server already has a ship! It's called ${commandContext.ship.name}.`
+      return `Your server already has a ship.`
     return true
   }
 }

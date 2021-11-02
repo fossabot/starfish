@@ -194,23 +194,18 @@ export class HumanShip extends CombatShip {
     })
 
     if (!this.log.length && !this.tutorial)
-      // timeout so that the first messages don't spawn multiple alerts channels
-      setTimeout(
-        () =>
-          this.logEntry(
-            [
-              `Your crew boards the ship`,
-              {
-                text: this.name,
-                color: this.guildId
-                  ? c.guilds[this.guildId].color
-                  : undefined,
-              },
-              `for the first time, and sets out towards the stars.`,
-            ],
-            `medium`,
-          ),
-        2000,
+      this.logEntry(
+        [
+          `You board the ship`,
+          {
+            text: this.name,
+            color: this.guildId
+              ? c.guilds[this.guildId].color
+              : undefined,
+          },
+          `for the first time, and set out towards the stars.`,
+        ],
+        `medium`,
       )
 
     this.updateMaxScanProperties()
@@ -2045,7 +2040,7 @@ export class HumanShip extends CombatShip {
         // not the first member
         if (this.planet) {
           const options = [
-            `${cm.name}, running from unknown pursuers, has surreptitiously joined ${this.name}'s crew.`,
+            `${cm.name}, running from unknown pursuers, has found refuge among the ranks of ${this.name}'s crew.`,
             `${cm.name} bribes their way onto the crew of ${this.name}.`,
             `${cm.name} leaves a life as a dockhand to join the crew of ${this.name}.`,
             `${cm.name} kisses their partner goodbye as they board the gangplank as a new crew member of ${this.name}.`,

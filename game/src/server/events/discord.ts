@@ -22,9 +22,8 @@ export default function (
       c.log(
         `Call to create existing ship, returning existing.`,
       )
-      const stub = c.stubify<Ship, ShipStub>(ship)
       callback({
-        data: stub,
+        data: ship.stubify(),
       })
     } else {
       if (

@@ -1,30 +1,53 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
+import type { CommandContext } from '../models/CommandContext'
 
-export default async function removeRole(
-  guild: Discord.Guild,
-  roleName: string = `Crew`,
-): Promise<boolean> {
+export default async function removeRole({
+  name,
+  context,
+  guild,
+}:
+  | {
+      name: GameRoleType
+      context: CommandContext
+      guild?: Discord.Guild
+    }
+  | {
+      name: GameRoleType
+      context?: CommandContext
+      guild: Discord.Guild
+    }): Promise<
+  true | GamePermissionsFailure | { error: string }
+> {
+  if (!context && !guild)
+    return {
+      error: `No context or guild provided to removeRole`,
+    }
+  if (context && !guild) guild = context.guild || undefined
+  if (!guild)
+    return {
+      error: `No context or guild provided to removeRole`,
+    }
+
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_ROLES`],
     guild,
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
-    return false
+    context?.contactGuildAdmin(permissionsRes)
+    return permissionsRes
   }
-  if (permissionsRes.message) c.log(permissionsRes.message)
 
   const existingRoles = [
     ...(await guild.roles.cache).values(),
   ]
 
   const existing = existingRoles.find(
-    (c) => c.name === roleName,
+    (c) => c.name === name,
   )
   if (existing) {
-    c.log(`removing role...`)
     try {
       existing.delete().catch(c.log)
     } catch (e) {
@@ -33,5 +56,5 @@ export default async function removeRole(
     return true
   }
 
-  return false
+  return { error: `No role found to remove.` }
 }

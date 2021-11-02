@@ -3,40 +3,54 @@ import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
 import type { CommandContext } from '../models/CommandContext'
 
-const roleData: {
+export const roleData: {
   [key in GameRoleType]: {
     name: string
+    color: `#${string}`
   }
 } = {
   crew: {
     name: `Starfish Crew`,
+    color: c.gameColor as any,
   },
 }
 
 export default async function resolveOrCreateRole({
   type,
   context,
-}: {
-  type: GameRoleType
-  context: CommandContext
-}): Promise<Discord.Role | null | GamePermissionsFailure> {
-  if (!context.guild) return null
+  guild,
+}:
+  | {
+      type: GameRoleType
+      context: CommandContext
+      guild?: Discord.Guild
+    }
+  | {
+      type: GameRoleType
+      context?: CommandContext
+      guild: Discord.Guild
+    }): Promise<
+  Discord.Role | null | GamePermissionsFailure
+> {
+  if (!context && !guild) return null
+  if (context && !guild) guild = context.guild || undefined
+  if (!guild) return null
 
-  const { name } = roleData[type]
+  const { name, color } = roleData[type]
 
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_ROLES`],
-    guild: context.guild,
+    guild,
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
-    context.contactGuildAdmin(permissionsRes)
+    context?.contactGuildAdmin(permissionsRes)
     return permissionsRes
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
   const existingRoles = [
-    ...(await context.guild.roles.cache).values(),
+    ...(await guild.roles.cache).values(),
   ]
 
   // ----- get/make role -----
@@ -51,9 +65,10 @@ export default async function resolveOrCreateRole({
   try {
     // c.log(`attempting to create role...`)
     const role =
-      (await context.guild.roles
+      (await guild.roles
         .create({
           name,
+          color,
           hoist: false,
           mentionable: true,
           position: 99999,
@@ -61,7 +76,7 @@ export default async function resolveOrCreateRole({
         })
         .catch(c.log)) || null
 
-    c.log(`Created role ${name} for ${context.guild.name}.`)
+    c.log(`Created role ${name} for ${guild.name}.`)
 
     return role
   } catch (e) {

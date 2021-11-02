@@ -38,9 +38,7 @@ export default async function checkPermissions({
 
   // -------------- get permissions
   let permissionsToCheck
-  const allRoles = await guild.roles.fetch().catch((e) => {
-    c.log(`red`, `Error getting bot permissions:`, e)
-  })
+  const allRoles = guild.roles.cache
   const botRole = allRoles
     ? [...allRoles.values()].find(
         (role: Discord.Role) =>

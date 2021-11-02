@@ -2,11 +2,14 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
-import resolveOrCreateRole from '../actions/resolveOrCreateRole'
+
+import { channelData } from '../actions/resolveOrCreateChannel'
+import { roleData } from '../actions/resolveOrCreateRole'
+import removeChannel from '../actions/removeChannel'
+import removeRole from '../actions/removeRole'
+
 import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import { ColorResolvable, MessageEmbed } from 'discord.js'
-import { channelData } from '../actions/resolveOrCreateChannel'
-import removeChannel from '../actions/removeChannel'
 
 export class ShipLeaveGameCommand implements Command {
   requiresShip = true
@@ -60,6 +63,7 @@ Is that okay with you?`,
       return
     }
 
+    // remove channels
     for (let channelName of Object.values(channelData).map(
       (ch) => ch.name,
     )) {
@@ -74,6 +78,17 @@ Is that okay with you?`,
       guild: context.guild,
     })
     if (categoryRes !== true) c.log(categoryRes.error)
+
+    // remove roles
+    for (let channelName of Object.values(roleData).map(
+      (r) => r.name,
+    )) {
+      const res = await removeRole({
+        name: channelName,
+        guild: context.guild,
+      })
+      if (res !== true) c.log(res.error)
+    }
 
     // remove ship
     const res = await ioInterface.ship.destroy(
