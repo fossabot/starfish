@@ -68,23 +68,23 @@ Is that okay with you?`,
       (ch) => ch.name,
     )) {
       const res = await removeChannel({
-        name: channelName,
+        name: channelName as GameChannelType,
         guild: context.guild,
       })
       if (res !== true) c.log(res.error)
     }
     const categoryRes = await removeChannel({
-      name: c.gameName,
+      name: c.gameName as GameChannelType,
       guild: context.guild,
     })
     if (categoryRes !== true) c.log(categoryRes.error)
 
     // remove roles
-    for (let channelName of Object.values(roleData).map(
+    for (let roleName of Object.values(roleData).map(
       (r) => r.name,
     )) {
       const res = await removeRole({
-        name: channelName,
+        name: roleName as GameRoleType,
         guild: context.guild,
       })
       if (res !== true) c.log(res.error)
