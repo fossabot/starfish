@@ -68,6 +68,7 @@ const planetLevelXpRequirementMultiplier = 15
 
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
 const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5
+const zoneExpireTime = 1000 * 60 * 60 * 24 * 7 * 4
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
@@ -189,8 +190,11 @@ export default {
   itemPriceMultiplier,
   itemMassMultiplier,
   weaponDamageMultiplier,
+
   attackRemnantExpireTime,
   cacheExpireTime,
+  zoneExpireTime,
+
   baseShipScanProperties,
   sameGuildShipScanProperties,
   tactics,
