@@ -1,7 +1,7 @@
 import c from '../common/dist'
 import isDocker from 'is-docker'
 
-c.log(process.env.BOT_ID)
+c.log(process.env.BOT_ID, isDocker())
 
 export default {
   // target: `static`,
