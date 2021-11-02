@@ -49,6 +49,7 @@ const planetContributeCrewCosmeticCostPerXp = 0.05;
 const planetLevelXpRequirementMultiplier = 15;
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35;
 const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5;
+const zoneExpireTime = 1000 * 60 * 60 * 24 * 7 * 4;
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`;
 const userIsOfflineTimeout = 1000 * 60 * 60;
 const baseShipScanProperties = {
@@ -142,6 +143,7 @@ exports.default = {
     weaponDamageMultiplier,
     attackRemnantExpireTime,
     cacheExpireTime,
+    zoneExpireTime,
     baseShipScanProperties,
     sameGuildShipScanProperties,
     tactics,

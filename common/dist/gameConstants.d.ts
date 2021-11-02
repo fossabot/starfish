@@ -58,6 +58,7 @@ declare const _default: {
     weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
+    zoneExpireTime: number;
     baseShipScanProperties: {
         id: true;
         name: true;

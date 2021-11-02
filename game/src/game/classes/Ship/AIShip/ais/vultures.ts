@@ -46,9 +46,9 @@ export default {
       )
       return (this.targetLocation = [
         chosenCache.location[0] +
-          (Math.random() - 0.5) * 0.001 * distance,
+          (Math.random() - 0.5) * 0.01 * distance,
         chosenCache.location[1] +
-          (Math.random() - 0.5) * 0.001 * distance,
+          (Math.random() - 0.5) * 0.01 * distance,
       ])
     }
 
