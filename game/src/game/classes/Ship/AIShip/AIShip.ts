@@ -321,10 +321,10 @@ export class AIShip extends CombatShip {
           0,
         )
         creditValue *= 1 + rarityBoostPassive
-        c.log(
-          `ai drop rarity boosted by passive:`,
-          rarityBoostPassive,
-        )
+        // c.log(
+        //  `ai drop rarity boosted by passive:`,
+        //  rarityBoostPassive,
+        // )
       }
 
       const cacheContents: CacheContents[] = []

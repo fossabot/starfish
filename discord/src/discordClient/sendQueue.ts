@@ -46,10 +46,7 @@ export async function enQueue({
 
   const sendFunction = async (resolve) => {
     // * wait for all previous pending messages to complete
-    // c.log(`waiting for`, pendingMessages.length)
     await Promise.all(pendingMessages)
-
-    // --
 
     // if we need to get a channel by type
     if (!channel && channelType) {
@@ -59,30 +56,16 @@ export async function enQueue({
         channel = context?.channels[channelType]
 
       // try to make or resolve a channel
-      if (!channel) {
-        // check permissions
-        const createChannelsPermissionsCheck =
-          await checkPermissions({
-            requiredPermissions: [`MANAGE_CHANNELS`],
-            guild: guild,
-          })
-        if (`error` in createChannelsPermissionsCheck) {
-          // permissions check failed
-          c.log(
-            `Failed to create channel!`,
-            createChannelsPermissionsCheck,
-          )
-          context?.contactGuildAdmin(
-            createChannelsPermissionsCheck,
-          )
-        } else {
-          // permissions check passed, create
-          const didCreate = await resolveOrCreateChannel({
-            type: channelType,
-            guild,
-          })
-          if (didCreate) channel = didCreate
-        }
+      if (!channel && (context || guild)) {
+        // permissions check + create
+        const didCreate = await resolveOrCreateChannel({
+          type: channelType,
+          context,
+          guild,
+        })
+        if (didCreate && !(`error` in didCreate))
+          channel = didCreate
+        else c.log(didCreate)
       }
     }
 
@@ -97,6 +80,7 @@ export async function enQueue({
       !context.initialMessage.channel?.partial &&
       context.initialMessage.channel?.type === `GUILD_TEXT`
     ) {
+      c.log(3)
       channel = new GameChannel(
         null,
         context.initialMessage.channel,

@@ -2,6 +2,9 @@ import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
 import { GameChannel } from '../models/GameChannel'
+import type { CommandContext } from '../models/CommandContext'
+import resolveOrCreateRole from './resolveOrCreateRole'
+import { client } from '..'
 
 export const channelData: {
   [key in GameChannelType]: {
@@ -27,20 +30,35 @@ export const channelData: {
 
 export default async function resolveOrCreateChannel({
   type,
+  context,
   guild,
-}: {
-  type: GameChannelType
-  guild: Discord.Guild
-}): Promise<GameChannel | null> {
+}:
+  | {
+      type: GameChannelType
+      context: CommandContext
+      guild?: Discord.Guild
+    }
+  | {
+      type: GameChannelType
+      context?: CommandContext
+      guild: Discord.Guild
+    }): Promise<
+  GameChannel | null | GamePermissionsFailure
+> {
+  if (!context && !guild) return null
+  if (context && !guild) guild = context.guild || undefined
+  if (!guild) return null
+
   const { name, topic, permissions } = channelData[type]
 
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_CHANNELS`],
-    guild,
+    guild: guild,
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
-    return null
+    context?.contactGuildAdmin(permissionsRes)
+    return permissionsRes
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
@@ -64,18 +82,51 @@ export default async function resolveOrCreateChannel({
         c.parentId === existingCategory.id,
     ) as Discord.TextChannel[]
   } else {
+    const botRole = guild.roles.cache.find(
+      (r) => r.name === client.user?.username,
+    )
+    const crewRole = guild.roles.cache.find(
+      (r) => r.name === `Starfish Crew`,
+    )
+    const everyone = guild.roles.cache.find(
+      (r) => r.name === `@everyone`,
+    )
     const createdCategory = await guild.channels
       .create(c.gameName, {
         type: `GUILD_CATEGORY`,
         position: 99999,
         reason: `Game initialization`,
+        permissionOverwrites:
+          crewRole && everyone && botRole
+            ? [
+                {
+                  id: everyone,
+                  deny: [
+                    Discord.Permissions.FLAGS.VIEW_CHANNEL,
+                  ],
+                },
+                {
+                  id: crewRole,
+                  allow: [
+                    Discord.Permissions.FLAGS.VIEW_CHANNEL,
+                  ],
+                },
+                {
+                  id: botRole,
+                  allow: [
+                    Discord.Permissions.FLAGS.VIEW_CHANNEL,
+                  ],
+                },
+              ]
+            : undefined,
       })
       .catch(c.log)
     if (createdCategory) parentCategory = createdCategory
     c.log(`Created category channel for ${guild.name}.`)
   }
 
-  if (!parentCategory) return null
+  if (!parentCategory)
+    return { error: `No parent category` }
 
   // ----- get/make channel -----
   const existing = existingSubChannels.find(
@@ -96,6 +147,7 @@ export default async function resolveOrCreateChannel({
 
   c.log(`Created channel ${name} for ${guild.name}.`)
 
-  if (channel === null) return null
+  if (channel === null)
+    return { error: `No channel created` }
   return new GameChannel(guild, channel)
 }

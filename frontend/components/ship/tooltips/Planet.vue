@@ -155,7 +155,13 @@
         </div>
 
         <div
-          v-if="dataToUse.bank"
+          v-if="
+            dataToUse.bank ||
+            (ship &&
+              ship.banked.find(
+                (b) => b.id === dataToUse.id,
+              ))
+          "
           class="flexbetween marbottiny"
         >
           <div class="fade">Bank</div>

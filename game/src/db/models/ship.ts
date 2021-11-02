@@ -96,7 +96,7 @@ const shipSchemaFields: Record<
       combatTactic: String,
       targetitemType: String,
       minePriority: String,
-      attackGuilds: [String],
+      // attackGuilds: [String],
       targetLocation: [Number, Number],
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],

@@ -30,7 +30,7 @@ export default {
           ),
         )
       if (enemyInRange) {
-        c.log(`chicken is chickening out`)
+        // c.log(`chicken is chickening out`)
         const angleToEnemy = c.angleFromAToB(
           this.location,
           enemyInRange.location,

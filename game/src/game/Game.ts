@@ -330,7 +330,7 @@ export class Game {
     this.planets.forEach((p) => p.tick())
     this.comets.forEach((p) => p.tick())
 
-    this.expireOldAttackRemnantsAndCaches()
+    this.expireOldElements()
     this.spawnNewCaches()
     this.spawnNewAIs()
     this.spawnNewPlanets()
@@ -639,7 +639,7 @@ export class Game {
 
   // ----- tick helpers -----
 
-  expireOldAttackRemnantsAndCaches() {
+  expireOldElements() {
     const attackRemnantExpirationTime =
       Date.now() - c.attackRemnantExpireTime
     this.attackRemnants.forEach((ar, index) => {
@@ -653,6 +653,22 @@ export class Game {
     this.caches.forEach((c, index) => {
       if (cacheExpirationTime > c.time) {
         this.removeCache(c)
+      }
+    })
+
+    const zoneExpirationTime = Date.now() - c.zoneExpireTime
+    this.zones.forEach((z, index) => {
+      const consistentSemiRandomModifier =
+        (z.id
+          .split(``)
+          .reduce((t, c) => t + c.charCodeAt(0), 0) %
+          200) *
+        10000000
+      if (
+        zoneExpirationTime >
+        z.spawnTime + consistentSemiRandomModifier
+      ) {
+        this.removeZone(z)
       }
     })
   }
@@ -1166,6 +1182,9 @@ export class Game {
 
   async removeZone(zone: Zone) {
     c.log(`Removing zone ${zone.name} from the game.`)
+    zone.shipsAt.forEach((s) => {
+      zone.shipLeave(s)
+    })
     this.humanShips.forEach((hs) => {
       const seenThisZone = hs.seenLandmarks.findIndex(
         (lm) => lm.type === `zone` && lm.id === zone.id,
@@ -1190,13 +1209,6 @@ export class Game {
     data: BaseAttackRemnantData,
     save = true,
   ): Promise<AttackRemnant | undefined> {
-    if (!data.attacker?.id || !data.defender?.id) {
-      c.log(
-        `Missing attacker or defender id while trying to spawn attack remnant.`,
-        data,
-      )
-      return
-    }
     const newAttackRemnant = new AttackRemnant(data)
     this.attackRemnants.push(newAttackRemnant)
     this.chunkManager.addOrUpdate(newAttackRemnant)
@@ -1377,10 +1389,9 @@ export class Game {
         )
         if (!found) return
         found.score += a.level
-        c.log(`planet with allegiance:`, planet.name, a) // todo remove
       })
     }
-    c.log(controlScores)
+    // c.log(controlScores)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []

@@ -51,6 +51,7 @@ const maxBroadcastLength = 200
 const defaultHomeworldLevel = 12
 
 const itemPriceMultiplier = 400
+const itemMassMultiplier = 10
 const weaponDamageMultiplier = 1
 
 const guildVendorMultiplier = 0.98
@@ -67,6 +68,7 @@ const planetLevelXpRequirementMultiplier = 15
 
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
 const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5
+const zoneExpireTime = 1000 * 60 * 60 * 24 * 7 * 4
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
@@ -186,9 +188,13 @@ export default {
   planetContributeCrewCosmeticCostPerXp,
   planetLevelXpRequirementMultiplier,
   itemPriceMultiplier,
+  itemMassMultiplier,
   weaponDamageMultiplier,
+
   attackRemnantExpireTime,
   cacheExpireTime,
+  zoneExpireTime,
+
   baseShipScanProperties,
   sameGuildShipScanProperties,
   tactics,

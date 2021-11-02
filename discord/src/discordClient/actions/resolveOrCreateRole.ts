@@ -1,25 +1,42 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
+import type { CommandContext } from '../models/CommandContext'
 
-const roleData: {
+export const roleData: {
   [key in GameRoleType]: {
     name: string
+    color: `#${string}`
   }
 } = {
   crew: {
-    name: `Crew`,
+    name: `Starfish Crew`,
+    color: c.gameColor as any,
   },
 }
 
 export default async function resolveOrCreateRole({
   type,
+  context,
   guild,
-}: {
-  type: GameRoleType
-  guild: Discord.Guild
-}): Promise<Discord.Role | null> {
-  const { name } = roleData[type]
+}:
+  | {
+      type: GameRoleType
+      context: CommandContext
+      guild?: Discord.Guild
+    }
+  | {
+      type: GameRoleType
+      context?: CommandContext
+      guild: Discord.Guild
+    }): Promise<
+  Discord.Role | null | GamePermissionsFailure
+> {
+  if (!context && !guild) return null
+  if (context && !guild) guild = context.guild || undefined
+  if (!guild) return null
+
+  const { name, color } = roleData[type]
 
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_ROLES`],
@@ -27,7 +44,8 @@ export default async function resolveOrCreateRole({
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
-    return null
+    context?.contactGuildAdmin(permissionsRes)
+    return permissionsRes
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
@@ -50,6 +68,7 @@ export default async function resolveOrCreateRole({
       (await guild.roles
         .create({
           name,
+          color,
           hoist: false,
           mentionable: true,
           position: 99999,

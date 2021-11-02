@@ -3,23 +3,28 @@ import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
 import checkPermissions from '../actions/checkPermissions'
+import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class RepairChannelsCommand implements Command {
   requiresShip = true
   requiresCaptain = true
 
-  commandNames = [`repairchannels`, `rc`, `rch`]
+  commandNames = [`repairchannels`, `rcr`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Repair the game's Discord channels (should they become unlinked).`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - Attempt to repair the game's Discord channels/roles (should they become unlinked).`
   }
 
   async run(context: CommandContext): Promise<void> {
     if (!context.guild) return
+    if (!context.ship) return
 
     // first, check to see if we have the necessary permissions to make channels
     const permissionsCheck = await checkPermissions({
-      requiredPermissions: [`MANAGE_CHANNELS`],
+      requiredPermissions: [
+        `MANAGE_CHANNELS`,
+        `MANAGE_ROLES`,
+      ],
       channel:
         context.initialMessage.channel.type === `GUILD_TEXT`
           ? context.initialMessage.channel
@@ -28,23 +33,59 @@ export class RepairChannelsCommand implements Command {
     })
     if (`error` in permissionsCheck) {
       await context.reply(
-        `I don't have permission to create channels! Please add that permission and rerun the command.`,
+        `I don't have permission to create channels/roles! Please add those permissions and rerun the command.`,
       )
       return
     }
 
+    // roles
+    const memberRole = await resolveOrCreateRole({
+      type: `crew`,
+      context,
+    })
+    // set roles appropriately
+    try {
+      if (memberRole && !(`error` in memberRole)) {
+        context.guild.members.cache.forEach((gm) => {
+          if (
+            (context.ship?.crewMembers || []).find(
+              (cm) => cm.id === gm.id,
+            )
+          ) {
+            if (
+              !gm.roles.cache.find((r) => r === memberRole)
+            )
+              gm.roles
+                .add(memberRole)
+                .catch((e) => c.log(e))
+          } else {
+            if (
+              gm.roles.cache.find((r) => r === memberRole)
+            )
+              gm.roles
+                .remove(memberRole)
+                .catch((e) => c.log(e))
+          }
+        })
+      }
+    } catch (e) {
+      c.log(e)
+    }
+
+    // channels
     await resolveOrCreateChannel({
       type: `alert`,
-      guild: context.guild,
+      context,
     })
     await resolveOrCreateChannel({
       type: `chat`,
-      guild: context.guild,
+      context,
     })
     await resolveOrCreateChannel({
       type: `broadcast`,
-      guild: context.guild,
+      context,
     })
+
     context.sendToGuild(`Channels repaired.`)
   }
 }

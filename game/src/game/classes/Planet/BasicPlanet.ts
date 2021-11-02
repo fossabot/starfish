@@ -29,7 +29,7 @@ type AddableElement =
     }
 
 export class BasicPlanet extends Planet {
-  static readonly priceFluctuatorIntensity = 0.8
+  static readonly priceFluctuatorIntensity = 0.4 // in either direction
 
   readonly allegiances: PlanetAllegianceData[]
   readonly leanings: PlanetLeaning[]
@@ -646,26 +646,6 @@ export class BasicPlanet extends Planet {
     this.updateFrontendForShipsAt()
   }
 
-  updateFluctuator() {
-    const intensity = BasicPlanet.priceFluctuatorIntensity
-    const mod = (this.name || ``)
-      .split(``)
-      .reduce((t, c) => t + c.charCodeAt(0), 0)
-
-    this.priceFluctuator =
-      (((new Date().getDate() * 13 +
-        mod +
-        (new Date().getMonth() * 7 + mod)) %
-        100) /
-        100) *
-        intensity +
-      (1 - intensity / 2)
-
-    this._stub = null // invalidate stub
-    this.toUpdate.priceFluctuator = this.priceFluctuator
-    this.updateFrontendForShipsAt()
-  }
-
   broadcastTo(ship: HumanShip): number | undefined {
     const distanceAsPercentOfMaxBroadcastRadius =
       super.broadcastTo(ship)
@@ -800,14 +780,48 @@ export class BasicPlanet extends Planet {
       this.xp = targetXp
     this.updateFrontendForShipsAt()
   }
+
+  updateFluctuator() {
+    const intensity = BasicPlanet.priceFluctuatorIntensity
+    const mod = (this.name || ``)
+      .split(``)
+      .reduce((t, c) => t + c.charCodeAt(0), 0)
+
+    const dateDependentRandomNumberBetweenZeroAndOne =
+      ((new Date().getDate() * 13 +
+        mod +
+        (new Date().getMonth() * 7 + mod)) %
+        100) /
+      100
+
+    this.priceFluctuator =
+      1 +
+      (dateDependentRandomNumberBetweenZeroAndOne *
+        intensity *
+        2 -
+        intensity)
+
+    this._stub = null // invalidate stub
+    this.toUpdate.priceFluctuator = this.priceFluctuator
+    this.updateFrontendForShipsAt()
+  }
 }
 
 function getBuyAndSellMultipliers(item: boolean = false) {
-  const buyMultiplier = c.r2(0.8 + Math.random() * 0.4, 3)
+  const overallBoost = 0.1
+  const buyMultiplier = c.r2(
+    0.8 + Math.random() * 0.4 + overallBoost,
+    2,
+  )
   const sellMultiplier =
     Math.min(
       buyMultiplier,
-      c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
+      c.r2(
+        buyMultiplier * (Math.random() * 0.2) +
+          0.8 +
+          overallBoost,
+        2,
+      ),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }
 }

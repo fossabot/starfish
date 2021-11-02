@@ -15,10 +15,10 @@ const baseShipPassiveData = {
         description: (p) => `Trail colors always visible`,
     },
     boostDamageWhenNoAlliesWithinDistance: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% attack damage when no allies are within ${text_1.default.speedNumber(p.data?.distance || 0, true)}km`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% attack damage when no allies are within ${text_1.default.speedNumber(p.data?.distance || 0, true)} km`,
     },
     boostDamageWithNumberOfGuildMembersWithinDistance: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% attack damage per ally within ${text_1.default.speedNumber(p.data?.distance || 0, true)}km`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% attack damage per ally within ${text_1.default.speedNumber(p.data?.distance || 0, true)} km`,
     },
     boostCargoSpace: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(p.intensity || 1)} cargo space for crew members`,

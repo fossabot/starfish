@@ -194,23 +194,18 @@ export class HumanShip extends CombatShip {
     })
 
     if (!this.log.length && !this.tutorial)
-      // timeout so that the first messages don't spawn multiple alerts channels
-      setTimeout(
-        () =>
-          this.logEntry(
-            [
-              `Your crew boards the ship`,
-              {
-                text: this.name,
-                color: this.guildId
-                  ? c.guilds[this.guildId].color
-                  : undefined,
-              },
-              `for the first time, and sets out towards the stars.`,
-            ],
-            `medium`,
-          ),
-        2000,
+      this.logEntry(
+        [
+          `You board the ship`,
+          {
+            text: this.name,
+            color: this.guildId
+              ? c.guilds[this.guildId].color
+              : undefined,
+          },
+          `for the first time, and set out towards the stars.`,
+        ],
+        `medium`,
       )
 
     this.updateMaxScanProperties()
@@ -2041,11 +2036,27 @@ export class HumanShip extends CombatShip {
     // ----- check for tutorial -----
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
     if (!setupAdd && !this.tutorial) {
-      if (this.crewMembers.length > 0)
-        this.logEntry(
-          `${cm.name} has joined the ship's crew!`,
-          `high`,
-        )
+      if (this.crewMembers.length > 1) {
+        // not the first member
+        if (this.planet) {
+          const options = [
+            `${cm.name}, running from unknown pursuers, has found refuge among the ranks of ${this.name}'s crew.`,
+            `${cm.name} bribes their way onto the crew of ${this.name}.`,
+            `${cm.name} leaves a life as a dockhand to join the crew of ${this.name}.`,
+            `${cm.name} kisses their partner goodbye as they board the gangplank as a new crew member of ${this.name}.`,
+            `${cm.name}, after a rowdy night of partying with your deckhands, has decided to join the crew!`,
+            `${cm.name}, known about town as a hearty fellow, has joined the crew!`,
+          ]
+          this.logEntry(c.randomFromArray(options), `high`)
+        } else {
+          const options = [
+            `You pick up a distress signal only to find ${cm.name} floating helplessly in a cryo-pod. You defrost them and welcome them to the ship's crew!`,
+            `${cm.name} radios you from an escape craft, and you allow them onboard. They seem useful, so you welcome them as a member of the ship's crew.`,
+            `You find ${cm.name} hiding behind some cargo in the hold. Who knows how long they've been there, but you're in no position to say no to an extra pair of hands. You welcome them to the crew.`,
+          ]
+          this.logEntry(c.randomFromArray(options), `high`)
+        }
+      }
 
       // if this crew member has already done the tutorial in another ship, skip it
       const foundInOtherShip = (

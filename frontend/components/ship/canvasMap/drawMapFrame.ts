@@ -78,6 +78,8 @@ export default class Drawer {
       return
     this.ctx = this.element.getContext(`2d`)
 
+    this.ctx.globalCompositeOperation = `source-over`
+
     this.drawCalls = 0
 
     const profiler = new c.Profiler(
@@ -308,6 +310,8 @@ export default class Drawer {
         opacity: 0.5,
         alwaysShowLabels: true,
       })
+
+    this.ctx.globalCompositeOperation = `screen`
 
     // ----- non-clipped objects -----
 

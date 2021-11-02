@@ -132,6 +132,9 @@ export default Vue.extend({
   font-size: 0.85em;
   font-weight: bold;
   text-transform: uppercase;
+  max-width: 10em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .hide {

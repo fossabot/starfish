@@ -27,7 +27,7 @@ const baseShipPassiveData: {
       )}% attack damage when no allies are within ${text.speedNumber(
         p.data?.distance || 0,
         true,
-      )}km`,
+      )} km`,
   },
   boostDamageWithNumberOfGuildMembersWithinDistance: {
     description: (p) =>
@@ -36,7 +36,7 @@ const baseShipPassiveData: {
       )}% attack damage per ally within ${text.speedNumber(
         p.data?.distance || 0,
         true,
-      )}km`,
+      )} km`,
   },
   boostCargoSpace: {
     description: (p) =>
