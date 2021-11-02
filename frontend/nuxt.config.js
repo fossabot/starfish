@@ -1,7 +1,6 @@
 import c from '../common/dist'
-import isDocker from 'is-docker'
 
-c.log(process.env.BOT_ID, isDocker())
+c.log(process.env.BOT_ID, process.env.IS_DOCKER)
 
 export default {
   // target: `static`,
@@ -11,12 +10,12 @@ export default {
   },
 
   env: {
-    IS_DOCKER: isDocker(),
+    IS_DOCKER: process.env.IS_DOCKER,
     NODE_ENV: process.env.NODE_ENV,
     GAME_NAME: c.gameName,
     BOT_ID:
       process.env.BOT_ID ||
-      (isDocker()
+      (process.env.IS_DOCKER
         ? `804439178636558396` // real starfish
         : `723017262369472603`), // j's test
   },
