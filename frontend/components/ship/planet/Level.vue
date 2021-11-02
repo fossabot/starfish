@@ -24,6 +24,10 @@
     </div>
 
     <ul class="small success martopsmall marbotsmall">
+      <li v-if="planet.defense">
+        Lv.{{ c.r2(planet.defense) }} orbital defense
+      </li>
+
       <li
         v-if="
           planet.landingRadiusMultiplier &&
