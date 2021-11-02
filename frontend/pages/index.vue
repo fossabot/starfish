@@ -99,7 +99,9 @@ export default Vue.extend({
     ...mapState(['userId']),
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    c.log(process.env.BOT_ID)
+  },
   methods: {},
 })
 </script>
