@@ -22,17 +22,15 @@ try {
       .readFileSync(`/run/secrets/admin_keys`, `utf-8`)
       .trim()
   } catch (e) {
-    adminKeys = ``
+    adminKeys = `{}`
   }
 }
 
-if (process.env.NODE_ENV === `production`) {
-  try {
-    adminKeys = JSON.parse(adminKeys)
-  } catch (e) {
-    adminKeys = false
-    c.log(`red`, `Error loading admin keys!`, e)
-  }
+try {
+  adminKeys = JSON.parse(adminKeys)
+} catch (e) {
+  adminKeys = false
+  c.log(`red`, `Error loading admin keys!`, e)
 }
 
 function isAdmin(id, password) {
@@ -216,7 +214,7 @@ export default function (
 
   socket.on(
     `game:resetAllPlanets`,
-    async (id, password) => {
+    async (id, password, callback) => {
       if (!game) return
       if (!isAdmin(id, password))
         return c.log(
@@ -225,6 +223,8 @@ export default function (
       c.log(`Admin resetting all planets`)
       while (game.planets.length)
         await game.removePlanet(game.planets[0])
+
+      if (callback) callback()
     },
   )
 
@@ -400,19 +400,24 @@ export default function (
     },
   )
 
-  socket.on(`game:resetAllShips`, async (id, password) => {
-    if (!game) return
-    if (!isAdmin(id, password))
-      return c.log(
-        `Non-admin attempted to access game:resetAllShips`,
-      )
-    c.log(`Admin resetting all ships`)
-    for (let ship of game.ships) {
-      await game.removeShip(ship)
-    }
-    while (game.ships.length)
-      await game.removeShip(game.ships[0])
-  })
+  socket.on(
+    `game:resetAllShips`,
+    async (id, password, callback) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:resetAllShips`,
+        )
+      c.log(`Admin resetting all ships`)
+      for (let ship of game.ships) {
+        await game.removeShip(ship)
+      }
+      while (game.ships.length)
+        await game.removeShip(game.ships[0])
+
+      if (callback) callback()
+    },
+  )
 
   socket.on(
     `game:shipList`,
