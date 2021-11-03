@@ -81,11 +81,7 @@
       class="panesection"
       v-if="dataToUse.speed !== undefined"
     >
-      <div
-        class="arrow"
-        v-if="dataToUse.speed"
-        @click="setTargetAlongPath"
-      >
+      <div class="arrow" v-if="dataToUse.speed">
         <div>
           {{
             c.speedNumber(
@@ -356,18 +352,6 @@ export default Vue.extend({
         this.ship?.visible?.ships.find(
           (p) => p.id === this.data.id,
         ) || this.data
-      )
-    },
-  },
-  methods: {
-    setTargetAlongPath() {
-      if (this.dataToUse.id !== this.ship?.id) return
-      this.$store.commit(
-        'setTarget',
-        this.ship?.location.map(
-          (l, index) =>
-            l + this.ship?.velocity[index] * 500,
-        ),
       )
     },
   },
