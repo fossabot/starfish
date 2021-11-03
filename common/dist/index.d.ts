@@ -306,6 +306,7 @@ declare const _default: {
     acronym: (string?: string) => string;
     priceToString: (p: Price) => string;
     lerp: (v0?: number, v1?: number, t?: number) => number;
+    clamp: (lowerBound: number, n: number, upperBound: number) => number;
     r2: (number: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
     radiansToDegrees: (radians?: number) => number;
     degreesToRadians: (degrees?: number) => number;

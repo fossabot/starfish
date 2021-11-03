@@ -179,10 +179,11 @@ function getPlanetTitle(planet) {
 }
 function getCargoSellPrice(cargoId, planet, guildId, amount = 1) {
     const buyPrice = getCargoBuyPrice(cargoId, planet, guildId).credits || 0;
+    const buyPriceProximityLimit = 0.95;
     const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
         gameConstants_1.default.baseCargoSellMultiplier;
     return {
-        credits: Math.min(Math.floor(buyPrice * amount), Math.floor((cargo[cargoId].basePrice.credits || 0) *
+        credits: Math.min(Math.floor(buyPrice * amount * buyPriceProximityLimit), Math.floor((cargo[cargoId].basePrice.credits || 0) *
             amount *
             sellMultiplier *
             planet.priceFluctuator *

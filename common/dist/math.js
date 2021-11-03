@@ -7,6 +7,9 @@ const globals_1 = __importDefault(require("./globals"));
 function lerp(v0 = 0, v1 = 0, t = globals_1.default.tickInterval || 0) {
     return v0 * (1 - t) + v1 * t;
 }
+function clamp(lowerBound, n, upperBound) {
+    return Math.min(Math.max(lowerBound, n), upperBound);
+}
 // roundTo:
 // @param number (number) Initial number
 // @param decimalPlaces (number) Number of decimal places to round to
@@ -126,6 +129,7 @@ function randomBetween(start, end) {
 }
 exports.default = {
     lerp,
+    clamp,
     r2,
     radiansToDegrees,
     degreesToRadians,

@@ -1,4 +1,5 @@
 declare function lerp(v0?: number, v1?: number, t?: number): number;
+declare function clamp(lowerBound: number, n: number, upperBound: number): number;
 declare function r2(// "round to"
 number: number, decimalPlaces?: number, floor?: boolean): number;
 declare function radiansToDegrees(radians?: number): number;
@@ -27,6 +28,7 @@ declare function lottery(odds: number, outOf: number): boolean;
 declare function randomBetween(start: number, end: number): number;
 declare const _default: {
     lerp: typeof lerp;
+    clamp: typeof clamp;
     r2: typeof r2;
     radiansToDegrees: typeof radiansToDegrees;
     degreesToRadians: typeof degreesToRadians;
