@@ -80,7 +80,6 @@ export async function enQueue({
       !context.initialMessage.channel?.partial &&
       context.initialMessage.channel?.type === `GUILD_TEXT`
     ) {
-      c.log(3)
       channel = new GameChannel(
         null,
         context.initialMessage.channel,

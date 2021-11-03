@@ -240,3 +240,26 @@ export async function buy(
     )
   })
 }
+
+export async function contributeToCommonFund(
+  shipId: string,
+  crewId: string,
+  amount: number,
+): Promise<IOResponse<number>> {
+  if (!(await connected()))
+    return {
+      error: `Failed to donate: not connected to game server`,
+    }
+
+  return new Promise((resolve) => {
+    io.emit(
+      `crew:contribute`,
+      shipId,
+      crewId,
+      amount,
+      (res) => {
+        resolve(res)
+      },
+    )
+  })
+}

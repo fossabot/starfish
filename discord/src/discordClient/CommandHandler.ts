@@ -36,6 +36,7 @@ import { CockpitCommand } from './commands/Cockpit'
 import { BuyCommand } from './commands/Buy'
 import { SellCommand } from './commands/Sell'
 import { CrewLeaveGameCommand } from './commands/CrewLeaveGame'
+import { ContributeToCommonFundCommand } from './commands/DonateToCommonFund'
 
 export class CommandHandler {
   private commands: Command[]
@@ -59,6 +60,7 @@ export class CommandHandler {
       WeaponsCommand,
       MineCommand,
       CockpitCommand,
+      ContributeToCommonFundCommand,
       RespawnCommand,
       ChangeShipNameCommand,
       AlertLevelCommand,
