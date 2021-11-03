@@ -3,6 +3,7 @@ import isDocker from 'is-docker'
 
 import './Game'
 import './dbSetup'
+import './ioCommands'
 import './AttackRemnant'
 import './CrewMember'
 import './Ship'
@@ -11,7 +12,7 @@ import './Tutorial'
 import './Combat'
 import './AIShip'
 import './Planet'
-import './ioCommands'
+import './Admin'
 
 const host = isDocker() ? `mongodb` : `localhost`
 
