@@ -2,7 +2,6 @@ import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
-import type { CombatShip } from '../Ship/CombatShip'
 import { Planet } from './Planet'
 
 type AddableElement =
@@ -31,12 +30,10 @@ type AddableElement =
 export class BasicPlanet extends Planet {
   static readonly priceFluctuatorIntensity = 0.4 // in either direction
 
-  readonly allegiances: PlanetAllegianceData[]
   readonly leanings: PlanetLeaning[]
 
   vendor: PlanetVendor
   bank: boolean = false
-  defense: number = 0
 
   priceFluctuator = 1
 
@@ -73,7 +70,6 @@ export class BasicPlanet extends Planet {
 
     this.vendor = data.vendor
     this.bank = data.bank
-    this.defense = data.defense
 
     // c.log(this.getAddableToVendor())
     // c.log(
@@ -458,147 +454,6 @@ export class BasicPlanet extends Planet {
     return addable
   }
 
-  defend(force = false) {
-    if (!this.defense) return
-    if (!force && !c.lottery(this.defense, 1000)) return
-
-    const attackRemnantsInSight =
-      this.game?.scanCircle(
-        this.location,
-        c.getPlanetDefenseRadius(this.defense) * 1.5,
-        null,
-        [`attackRemnant`],
-      )?.attackRemnants || []
-    if (!attackRemnantsInSight.length) return
-
-    const validTargetIds: string[] = Array.from(
-      attackRemnantsInSight.reduce((ids, ar) => {
-        if (ar.attacker?.id === this.id) return ids
-        const bothHuman =
-          !(ar.attacker as any)?.ai &&
-          !(ar.defender as any)?.ai
-        if (bothHuman) {
-          ids.add(ar.attacker?.id)
-          ids.add(ar.defender?.id)
-        } else {
-          if ((ar.attacker as any).ai)
-            ids.add(ar.attacker?.id)
-          else ids.add(ar.defender?.id)
-        }
-        return ids
-      }, new Set()) as Set<string>,
-    )
-    if (!validTargetIds.length) return
-
-    const shipsInSight =
-      this.game?.scanCircle(
-        this.location,
-        c.getPlanetDefenseRadius(this.defense),
-        null,
-        [`aiShip`, `humanShip`],
-      )?.ships || []
-
-    const enemiesInRange: CombatShip[] =
-      shipsInSight.filter(
-        (s) =>
-          validTargetIds.includes(s.id) &&
-          s.attackable &&
-          !this.allegiances.find(
-            (a) =>
-              a.level >= c.guildAllegianceFriendCutoff &&
-              a.guildId === s.guildId,
-          ),
-      ) as CombatShip[]
-    if (enemiesInRange.length === 0) return
-    const target = c.randomFromArray(enemiesInRange)
-    if (
-      !target ||
-      !target.attackable ||
-      target.planet ||
-      target.dead
-    )
-      return
-
-    // ----- attack enemy -----
-
-    const hitRoll = Math.random()
-    const range = c.distance(this.location, target.location)
-    const distanceAsPercent =
-      range / c.getPlanetDefenseRadius(this.defense) // 1 = far away, 0 = close
-    const minHitChance = 0.08
-    // 1.0 agility is "normal", higher is better
-    const enemyAgility =
-      target.chassis.agility +
-      (target.passives.find(
-        (p) => p.id === `boostChassisAgility`,
-      )?.intensity || 0)
-
-    const toHit =
-      c.lerp(minHitChance, 1, distanceAsPercent) *
-      enemyAgility *
-      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
-    let miss = hitRoll < toHit
-
-    const didCrit = miss
-      ? false
-      : Math.random() <=
-        (this.game?.settings.baseCritChance ||
-          c.defaultGameSettings.baseCritChance)
-
-    let damage = miss
-      ? 0
-      : c.getPlanetDefenseDamage(this.defense) *
-        (didCrit
-          ? this.game?.settings.baseCritDamageMultiplier ||
-            c.defaultGameSettings.baseCritDamageMultiplier
-          : 1)
-
-    if (damage === 0) miss = true
-
-    // c.log(
-    //   `gray`,
-    //   `planet needs to beat ${toHit}, rolled ${hitRoll} for a ${
-    //     miss
-    //       ? `miss`
-    //       : `${
-    //           didCrit ? `crit` : `hit`
-    //         } of damage ${damage}`
-    //   }`,
-    // )
-    const damageResult: AttackDamageResult = {
-      miss,
-      damage,
-      targetType: `any`,
-      didCrit,
-      weapon: {
-        toReference() {
-          return {
-            type: `weapon`,
-            displayName: `Orbital Mortar`,
-            description: `This satellite-mounted weapons system is highly advanced and able to track multiple targets at once. It does, however, lose line of sight periodically as it moves behind its planet.`,
-          }
-        },
-        type: `weapon`,
-        displayName: `Orbital Mortar`,
-      },
-    }
-    const attackResult = target.takeDamage(
-      this,
-      damageResult,
-    )
-
-    this.game?.addAttackRemnant({
-      attacker: this,
-      defender: target,
-      damageTaken: attackResult,
-      start: [...this.location],
-      end: [...target.location],
-      time: Date.now(),
-    })
-
-    return { target, damageResult }
-  }
-
   incrementAllegiance(guildId: GuildId, amount: number) {
     if (!guildId) return
 
@@ -638,9 +493,14 @@ export class BasicPlanet extends Planet {
   }
 
   decrementAllegiances() {
-    this.allegiances.forEach((a) => {
+    ;[...this.allegiances].forEach((a) => {
       if (this.guildId !== a.guildId)
         a.level = (a.level || 0) * 0.995
+      if (a.level < 0.01)
+        this.allegiances.splice(
+          this.allegiances.indexOf(a),
+          1,
+        )
     })
     this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
@@ -836,3 +696,44 @@ function getRepairCostMultiplier() {
   )
   return repairCostMultiplier
 }
+
+/*
+contracts!
+
+only certain planets have contracts
+  (level-up chance)
+
+planet holds contracts to kill specific nearby enemies
+  1+, depending on level
+  could be an ai, or even a non-allied player
+    keeps a list of aggro ships from orbital defense
+  contracts refresh every week
+  contract faction is visible
+  approx. distance is visible
+  contracts have visible rewards based on how hard the enemy was
+    over level 5, gives crew cosmetic currency
+    over level 10, gives ship cosmetic currency
+
+accepting contracts
+  1 at a time
+  highlights a zone of the map that the enemy is in
+  contracts expire after a certain amount of time
+  contracts can be cancelled
+
+if a human ship is hunted, notifies them of the hunt, the hunter, and the timeframe
+
+once the enemy is killed
+  sets done flag in ship jobs
+  returning to that planet claims the reward
+
+if the contract expires
+  contract sticks around in the UI as "failed" until cleared or another contract is taken
+  human ship is notified
+
+if the enemy is killed by someone else
+  notify contractor ship
+    return to planet to get half reward
+
+tone down ai drop amounts to make the contracts worth it
+
+*/

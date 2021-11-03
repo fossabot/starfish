@@ -3,6 +3,7 @@ import c from '../../../../../common/dist'
 import type { Game } from '../../Game'
 import { Stubbable } from '../Stubbable'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
+import type { CombatShip } from '../Ship/CombatShip'
 
 export class Planet extends Stubbable {
   static readonly massAdjuster = 0.5
@@ -16,6 +17,7 @@ export class Planet extends Stubbable {
   game: Game | undefined
   readonly creatures?: string[]
   readonly radius: number
+  allegiances: PlanetAllegianceData[] = []
   location: CoordinatePair
   color: string
   planetType: PlanetType
@@ -26,6 +28,7 @@ export class Planet extends Stubbable {
   xp = 0
   level = 0
   stats: PlanetStatEntry[] = []
+  defense: number = 0
 
   toUpdate: {
     landingRadiusMultiplier?: number
@@ -50,6 +53,7 @@ export class Planet extends Stubbable {
       level,
       baseLevel,
       stats,
+      defense,
     }: BasePlanetData,
     game?: Game,
   ) {
@@ -73,6 +77,7 @@ export class Planet extends Stubbable {
     this.level = level
     this.xp = xp
     this.stats = [...(stats || [])]
+    this.defense = defense || 0
 
     // * timeout so it has time to run subclass constructor
     setTimeout(() => {
@@ -269,6 +274,147 @@ export class Planet extends Stubbable {
     return distanceAsPercentOfMaxBroadcastRadius
   }
 
+  defend(force = false) {
+    if (!this.defense) return
+    if (!force && !c.lottery(this.defense, 1000)) return
+
+    const attackRemnantsInSight =
+      this.game?.scanCircle(
+        this.location,
+        c.getPlanetDefenseRadius(this.defense) * 1.5,
+        null,
+        [`attackRemnant`],
+      )?.attackRemnants || []
+    if (!attackRemnantsInSight.length) return
+
+    const validTargetIds: string[] = Array.from(
+      attackRemnantsInSight.reduce((ids, ar) => {
+        if (ar.attacker?.id === this.id) return ids
+        const bothHuman =
+          !(ar.attacker as any)?.ai &&
+          !(ar.defender as any)?.ai
+        if (bothHuman) {
+          ids.add(ar.attacker?.id)
+          ids.add(ar.defender?.id)
+        } else {
+          if ((ar.attacker as any).ai)
+            ids.add(ar.attacker?.id)
+          else ids.add(ar.defender?.id)
+        }
+        return ids
+      }, new Set()) as Set<string>,
+    )
+    if (!validTargetIds.length) return
+
+    const shipsInSight =
+      this.game?.scanCircle(
+        this.location,
+        c.getPlanetDefenseRadius(this.defense),
+        null,
+        [`aiShip`, `humanShip`],
+      )?.ships || []
+
+    const enemiesInRange: CombatShip[] =
+      shipsInSight.filter(
+        (s) =>
+          validTargetIds.includes(s.id) &&
+          s.attackable &&
+          !this.allegiances.find(
+            (a) =>
+              a.level >= c.guildAllegianceFriendCutoff &&
+              a.guildId === s.guildId,
+          ),
+      ) as CombatShip[]
+    if (enemiesInRange.length === 0) return
+    const target = c.randomFromArray(enemiesInRange)
+    if (
+      !target ||
+      !target.attackable ||
+      target.planet ||
+      target.dead
+    )
+      return
+
+    // ----- attack enemy -----
+
+    const hitRoll = Math.random()
+    const range = c.distance(this.location, target.location)
+    const distanceAsPercent =
+      range / c.getPlanetDefenseRadius(this.defense) // 1 = far away, 0 = close
+    const minHitChance = 0.08
+    // 1.0 agility is "normal", higher is better
+    const enemyAgility =
+      target.chassis.agility +
+      (target.passives.find(
+        (p) => p.id === `boostChassisAgility`,
+      )?.intensity || 0)
+
+    const toHit =
+      c.lerp(minHitChance, 1, distanceAsPercent) *
+      enemyAgility *
+      c.lerp(0.6, 1.4, Math.random()) // add in randomness so chassis+distance can't make it completely impossible to ever hit
+    let miss = hitRoll < toHit
+
+    const didCrit = miss
+      ? false
+      : Math.random() <=
+        (this.game?.settings.baseCritChance ||
+          c.defaultGameSettings.baseCritChance)
+
+    let damage = miss
+      ? 0
+      : c.getPlanetDefenseDamage(this.defense) *
+        (didCrit
+          ? this.game?.settings.baseCritDamageMultiplier ||
+            c.defaultGameSettings.baseCritDamageMultiplier
+          : 1)
+
+    if (damage === 0) miss = true
+
+    // c.log(
+    //   `gray`,
+    //   `planet needs to beat ${toHit}, rolled ${hitRoll} for a ${
+    //     miss
+    //       ? `miss`
+    //       : `${
+    //           didCrit ? `crit` : `hit`
+    //         } of damage ${damage}`
+    //   }`,
+    // )
+    const damageResult: AttackDamageResult = {
+      miss,
+      damage,
+      targetType: `any`,
+      didCrit,
+      weapon: {
+        toReference() {
+          return {
+            type: `weapon`,
+            displayName: `Orbital Mortar`,
+            description: `This satellite-mounted weapons system is highly advanced and able to track multiple targets at once. It does, however, lose line of sight periodically as it moves behind its planet.`,
+          }
+        },
+        type: `weapon`,
+        displayName: `Orbital Mortar`,
+      },
+    }
+    const attackResult = target.takeDamage(
+      this,
+      damageResult,
+    )
+
+    this.game?.addAttackRemnant({
+      attacker: this,
+      defender: target,
+      damageTaken: attackResult,
+      start: [...this.location],
+      end: [...target.location],
+      time: Date.now(),
+    })
+
+    return { target, damageResult }
+  }
+
   updateFrontendForShipsAt() {
     this._stub = null
     this.shipsAt.forEach((s) => {
@@ -353,5 +499,6 @@ export class Planet extends Stubbable {
   resetLevels(toDefault?: boolean) {
     this.level = 0
     this.xp = 0
+    this.defense = 0
   }
 }

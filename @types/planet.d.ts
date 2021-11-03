@@ -13,6 +13,7 @@ interface BasePlanetData {
   xp: number
   baseLevel: number
   creatures: string[]
+  defense?: number
   passives?: ShipPassiveEffect[]
   pacifist?: boolean
   stats?: PlanetStats
@@ -24,7 +25,6 @@ interface BaseBasicPlanetData extends BasePlanetData {
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
   bank: boolean
-  defense: number
 }
 
 interface BaseMiningPlanetData extends BasePlanetData {
