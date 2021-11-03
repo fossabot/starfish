@@ -104,7 +104,7 @@ export default Vue.extend({
     show() {
       return (
         this.ship &&
-        // this.ship.crewMembers.length > 1 &&
+        this.ship.crewMembers.length > 1 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewRank'))
       )
