@@ -274,8 +274,9 @@ export class Game {
 
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
+    // todo notify a day before
     // remove inactive ships
-    const inactiveCutoff = 21 * 24 * 60 * 60 * 1000 // 3 weeks
+    const inactiveCutoff = 4 * 7 * 24 * 60 * 60 * 1000 // 4 weeks
     const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
     const ic = Date.now() - inactiveCutoff,
       tic = Date.now() - tutorialInactiveCutoff
@@ -291,8 +292,11 @@ export class Game {
         }),
     )) {
       c.log(`Removing inactive ship`, inactiveShip.name)
-      this.removeShip(inactiveShip)
+      // this.removeShip(inactiveShip)
+      // todo put this back once we have tests in place
     }
+
+    this.announceCargoPrices()
   }
 
   // ----- game loop -----
@@ -1092,7 +1096,7 @@ export class Game {
   }
 
   async removePlanet(planet: Planet) {
-    c.log(`Removing planet ${planet.name} from the game.`)
+    // c.log(`Removing planet ${planet.name} from the game.`)
     this.humanShips.forEach((hs) => {
       const seenThisPlanet = hs.seenPlanets.findIndex(
         (lm) => lm.type === `planet` && lm.id === planet.id,
@@ -1467,6 +1471,72 @@ export class Game {
     this.humanShips.forEach(
       (hs) =>
         (hs.toUpdate.guildRankings = this.guildRankings),
+    )
+  }
+
+  announceCargoPrices() {
+    // ----- announce cargo prices -----
+    const avgCargoPrices = Object.values(c.cargo).reduce(
+      (acc, cargo) => ({
+        ...acc,
+        [cargo.id]: {
+          id: cargo.id,
+          buy: 0,
+          sell: 0,
+          count: 0,
+        },
+      }),
+      {},
+    )
+    for (let cargoId of Object.keys(c.cargo)) {
+      for (let p of this.basicPlanets) {
+        const buyMult = p.vendor?.cargo?.find(
+          (ca) => ca.id === cargoId,
+        )?.buyMultiplier
+        if (buyMult) {
+          avgCargoPrices[cargoId].count++
+          avgCargoPrices[cargoId].buy +=
+            c.getCargoBuyPrice(cargoId as CargoId, p)
+              .credits || 0
+          avgCargoPrices[cargoId].sell +=
+            c.getCargoSellPrice(cargoId as CargoId, p)
+              .credits || 0
+        }
+      }
+    }
+    c.log(
+      `Cargo Prices:\n` +
+        Object.values(avgCargoPrices)
+          .map(
+            (a) =>
+              (a as any).id +
+              ` (base: ${
+                c.cargo[(a as any).id].basePrice.credits
+              })` +
+              `\n   buy avg  ` +
+              c.r2((a as any).buy / (a as any).count) +
+              ` (${
+                (a as any).buy / (a as any).count >
+                c.cargo[(a as any).id].basePrice.credits
+                  ? `+`
+                  : ``
+              }${c.r2(
+                (a as any).buy / (a as any).count -
+                  c.cargo[(a as any).id].basePrice.credits,
+              )}), ` +
+              `\n   sell avg ` +
+              c.r2((a as any).sell / (a as any).count) +
+              ` (${
+                (a as any).sell / (a as any).count >
+                c.cargo[(a as any).id].basePrice.credits
+                  ? `+`
+                  : ``
+              }${c.r2(
+                (a as any).sell / (a as any).count -
+                  c.cargo[(a as any).id].basePrice.credits,
+              )}),`,
+          )
+          .join(`\n`),
     )
   }
 
