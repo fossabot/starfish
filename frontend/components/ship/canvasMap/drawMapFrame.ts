@@ -311,7 +311,7 @@ export default class Drawer {
         alwaysShowLabels: true,
       })
 
-    this.ctx.globalCompositeOperation = `screen`
+    this.ctx.globalCompositeOperation = `lighten` // `hard-light` // `screen`
 
     // ----- non-clipped objects -----
 
