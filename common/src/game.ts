@@ -240,6 +240,7 @@ function getCargoSellPrice(
 ) {
   const buyPrice =
     getCargoBuyPrice(cargoId, planet, guildId).credits || 0
+  const buyPriceProximityLimit = 0.95
 
   const sellMultiplier =
     planet?.vendor?.cargo?.find(
@@ -249,7 +250,9 @@ function getCargoSellPrice(
 
   return {
     credits: Math.min(
-      Math.floor(buyPrice * amount),
+      Math.floor(
+        buyPrice * amount * buyPriceProximityLimit,
+      ),
       Math.floor(
         (cargo[cargoId].basePrice.credits || 0) *
           amount *

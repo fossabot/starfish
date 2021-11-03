@@ -8,6 +8,14 @@ function lerp(
   return v0 * (1 - t) + v1 * t
 }
 
+function clamp(
+  lowerBound: number,
+  n: number,
+  upperBound: number,
+) {
+  return Math.min(Math.max(lowerBound, n), upperBound)
+}
+
 // roundTo:
 // @param number (number) Initial number
 // @param decimalPlaces (number) Number of decimal places to round to
@@ -181,6 +189,7 @@ function randomBetween(start: number, end: number) {
 
 export default {
   lerp,
+  clamp,
   r2,
   radiansToDegrees,
   degreesToRadians,
