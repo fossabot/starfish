@@ -2158,6 +2158,19 @@ export class HumanShip extends CombatShip {
   cumulativeSkillIn = cumulativeSkillIn
 
   distributeCargoAmongCrew(cargo: CacheContents[]) {
+    const getLeastTime = 1000 * 60 * 60 * 24 * 3 // 3 days
+    const getAmountMultiplier = (lastActive: number) => {
+      return c.lerp(
+        1,
+        0,
+        c.clamp(
+          0,
+          (Date.now() - lastActive) / getLeastTime,
+          1,
+        ),
+      )
+    }
+
     const leftovers: CacheContents[] = []
 
     cargo.forEach((contents) => {
@@ -2173,27 +2186,30 @@ export class HumanShip extends CombatShip {
       let toDistribute = contents.amount
       let canHoldMore = [...this.crewMembers]
 
+      let passes = 0
       while (canHoldMore.length && toDistribute > 0.01) {
         const newCanHoldMore = [...canHoldMore]
         const amountForEach =
           toDistribute / canHoldMore.length
 
-        toDistribute = 0
-
         canHoldMore.forEach((cm, index) => {
           const amountToGive =
             amountForEach *
+            getAmountMultiplier(
+              cm.lastActive + passes * 1000 * 60 * 60 * 24, // gets more forgiving to non-participants as loops continue
+            ) *
             (cm.getPassiveIntensity(`boostDropAmounts`) + 1)
+          toDistribute -= amountToGive
           // unweighted cargo
           if (contents.id === `credits`) {
-            cm.credits = Math.floor(
+            cm.credits = Math.round(
               cm.credits + amountToGive,
             )
             cm.toUpdate.credits = cm.credits
           } else if (
             contents.id === `crewCosmeticCurrency`
           ) {
-            cm.crewCosmeticCurrency = Math.floor(
+            cm.crewCosmeticCurrency = Math.round(
               cm.crewCosmeticCurrency + amountToGive,
             )
             cm.toUpdate.crewCosmeticCurrency =
@@ -2216,6 +2232,7 @@ export class HumanShip extends CombatShip {
           }
         })
         canHoldMore = newCanHoldMore
+        passes++
       }
 
       if (toDistribute > 1) {
