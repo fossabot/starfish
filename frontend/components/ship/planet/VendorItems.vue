@@ -21,7 +21,12 @@
         <div class="flexbetween">
           <div>
             Common Fund:
-            <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
+            <b
+              >💳{{
+                ship &&
+                c.numberWithCommas(c.r2(ship.commonCredits))
+              }}</b
+            >
           </div>
           <div
             class="flexcenter"
