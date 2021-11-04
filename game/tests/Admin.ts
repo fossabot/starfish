@@ -163,4 +163,43 @@ describe(`Admin resetters`, () => {
       ),
     )
   })
+
+  it(`should properly remove all ai ships on wipe`, async () => {
+    const g = new Game()
+    await g.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+
+    for (let i = 0; i < 100; i++) {
+      await g.addAIShip(aiShipData())
+    }
+
+    const client = socketIoClient(
+      `http://0.0.0.0:${g.ioPort}`,
+      {
+        secure: true,
+      },
+    )
+    await awaitIOConnection(client)
+
+    await new Promise<void>((r) =>
+      client.emit(
+        `game:resetAllAIShips`,
+        `${adminKeys.allowedIds[0]}`,
+        adminKeys.password,
+        async () => {
+          expect(g.ships.length).to.equal(0)
+          expect(g.aiShips.length).to.equal(0)
+          await c.sleep(200)
+          expect(g.ships.length).to.equal(0)
+          expect(
+            await g.db?.ship.getAllConstructible,
+          ).to.have.lengthOf(0)
+          r()
+        },
+      ),
+    )
+  })
 })

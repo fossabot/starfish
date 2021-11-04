@@ -49,6 +49,7 @@ export class Game {
   readonly chunkManager = new ChunkManager()
 
   settings: AdminGameSettings
+  minimumGameRadius: number = 0
 
   guildRankings: GuildRanking[] = []
 
@@ -97,11 +98,18 @@ export class Game {
         // await this.db.zone.wipe()
         // await this.db.ship.wipeAI()
 
-        const savedGameData =
+        const savedGameData = await this.db.game.get()
+        if (savedGameData) {
+          c.log(`gray`, `Loaded game data.`)
+          for (let key of Object.keys(savedGameData))
+            this[key] = savedGameData[key]
+        }
+
+        const savedGameSettings =
           await this.db.gameSettings.getAllConstructible()
-        if (savedGameData && savedGameData[0]) {
+        if (savedGameSettings && savedGameSettings[0]) {
           c.log(`gray`, `Loaded game settings.`)
-          this.setSettings(savedGameData[0])
+          this.setSettings(savedGameSettings[0])
         } else {
           c.log(
             `gray`,
@@ -223,14 +231,19 @@ export class Game {
 
     const saveStartTime = Date.now()
 
-    const promises: Promise<any>[] = []
+    const promises: (Promise<any> | undefined)[] = []
+    promises.push(
+      this.db?.game.addOrUpdateInDb({
+        minimumGameRadius: this.minimumGameRadius,
+      }),
+    )
     this.planets.forEach((p) => {
-      promises.push(db.planet.addOrUpdateInDb(p))
+      promises.push(this.db?.planet.addOrUpdateInDb(p))
     })
     this.comets.forEach((p) => {
-      promises.push(db.planet.addOrUpdateInDb(p))
+      promises.push(this.db?.planet.addOrUpdateInDb(p))
     })
-    await Promise.all(promises)
+    await Promise.all(promises.filter((p) => p))
 
     // * we were doing it this way but at a certain point we got a stack overflow (I think this was the cause)
     // this.ships.forEach((s) => {
@@ -634,7 +647,14 @@ export class Game {
       this.humanShips.filter(
         (s) => !s.tutorial?.currentStep,
       ).length || 1
-    return Math.max(5, Math.sqrt(count) * 2)
+    const radius = Math.max(
+      5,
+      this.minimumGameRadius,
+      Math.sqrt(count) * 2,
+    )
+    if (radius > this.minimumGameRadius)
+      this.minimumGameRadius = radius
+    return radius
   }
 
   get gameSoftArea() {
@@ -855,12 +875,12 @@ export class Game {
       while (!spawnPoint) {
         let point = c.randomInsideCircle(radius)
         // c.log(point)
-        const tooClose = this.humanShips.find((hs) =>
-          c.pointIsInsideCircle(point, hs.location, 0.1),
+        const tooClose = this.ships.find((hs) =>
+          c.pointIsInsideCircle(point, hs.location, 0.2),
         )
         if (tooClose) spawnPoint = undefined
         else spawnPoint = point
-        radius += 0.1
+        radius += 0.001
       }
 
       const isInSafeZone =

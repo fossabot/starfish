@@ -152,6 +152,7 @@ interface IOClientEvents {
   [`game:resetAllAIShips`]: (
     adminId: string,
     password: string,
+    callback?: () => void,
   ) => void
   [`game:resetAllShips`]: (
     adminId: string,
