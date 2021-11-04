@@ -37,7 +37,7 @@ export default {
   determineNewTargetLocation(
     this: AIShip,
   ): CoordinatePair | false {
-    const distance = getDefaultDistance.call(this)
+    const distance = getDefaultDistance.call(this) * 2
 
     // it will look for nearby caches
     if (this.visible.caches.length) {
@@ -46,9 +46,9 @@ export default {
       )
       return (this.targetLocation = [
         chosenCache.location[0] +
-          (Math.random() - 0.5) * 0.01 * distance,
+          ((Math.random() - 0.5) * 0.001 + 1) * distance,
         chosenCache.location[1] +
-          (Math.random() - 0.5) * 0.01 * distance,
+          ((Math.random() - 0.5) * 0.001 + 1) * distance,
       ])
     }
 

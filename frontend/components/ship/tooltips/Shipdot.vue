@@ -208,9 +208,18 @@
           <div
             v-for="r in Object.keys(dataToUse.radii).map(
               (r) =>
-                `${c.capitalize(r)}: ${c.r2(
-                  dataToUse.radii[r],
-                )}AU`,
+                Array.isArray(dataToUse.radii[r])
+                  ? `${c.capitalize(r)}: ${dataToUse.radii[
+                      r
+                    ]
+                      .map(
+                        (rad) =>
+                          c.r2(dataToUse.radii[r]) + 'AU',
+                      )
+                      .join(', ')}`
+                  : `${c.capitalize(r)}: ${c.r2(
+                      dataToUse.radii[r],
+                    )}AU`,
             )"
           >
             {{ r }}

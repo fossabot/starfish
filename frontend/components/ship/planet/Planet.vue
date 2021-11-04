@@ -246,7 +246,7 @@ export default Vue.extend({
   width: 420px;
 }
 .scroller {
-  max-height: 480px;
+  height: 470px;
   overflow-y: auto;
 }
 .badges {

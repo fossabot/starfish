@@ -588,23 +588,6 @@ export default class Drawer {
         })
       })
 
-    profiler.step(`draw ships`)
-    // ----- ships
-    ;[...shipsToDraw].forEach((s) => {
-      this.drawPoint({
-        location: [s.location[0], s.location[1] * -1],
-        labelTop: !s.planet && s.name,
-        radius: (3 / this.zoom) * devicePixelRatio,
-        color: `rgba(30,30,30,.3)`,
-      })
-      this.drawPoint({
-        location: [s.location[0], s.location[1] * -1],
-        labelTop: !s.planet && s.name,
-        radius: (2 / this.zoom) * devicePixelRatio,
-        color: c.guilds[s.guildId]?.color || `#bbb`,
-      })
-    })
-
     // ----- comets
     ;[...cometsToDraw].forEach((s) => {
       this.drawPoint({
@@ -632,13 +615,52 @@ export default class Drawer {
       })
     })
 
+    profiler.step(`draw ships`)
+    // ----- ships
+    ;[...shipsToDraw].forEach((s) => {
+      const angle = s.direction
+        ? s.direction
+        : s.velocity && s.velocity.find((v) => v)
+        ? c.vectorToDegrees(s.velocity)
+        : c.angleFromAToB(
+            s.previousLocations[
+              s.previousLocations.length - 1
+            ],
+            s.location,
+          )
+      this.drawPoint({
+        location: [s.location[0], s.location[1] * -1],
+        labelTop: !s.planet && s.name,
+        radius: (4.5 / this.zoom) * devicePixelRatio,
+        color: `rgba(30,30,30,.3)`,
+        triangle: angle,
+      })
+      this.drawPoint({
+        location: [s.location[0], s.location[1] * -1],
+        labelTop: !s.planet && s.name,
+        radius: (3.5 / this.zoom) * devicePixelRatio,
+        color: c.guilds[s.guildId]?.color || `#bbb`,
+        triangle: angle,
+      })
+    })
+
     if (ship) {
       // player ship
       this.drawPoint({
         location: [ship.location[0], ship.location[1] * -1],
         labelTop: !ship.planet && ship.name,
-        radius: (2.5 / this.zoom) * devicePixelRatio,
+        radius: (4.5 / this.zoom) * devicePixelRatio,
         color: `white`,
+        triangle: ship.direction
+          ? ship.direction
+          : ship.velocity && ship.velocity.find((v) => v)
+          ? c.vectorToDegrees(ship.velocity)
+          : c.angleFromAToB(
+              ship.previousLocations[
+                ship.previousLocations.length - 1
+              ],
+              ship.location,
+            ),
       })
     }
 
@@ -812,6 +834,7 @@ export default class Drawer {
     outline = false,
     glow = false,
     alwaysShowLabels = false,
+    triangle,
   }: // previousData = undefined,
   {
     location: CoordinatePair
@@ -824,6 +847,7 @@ export default class Drawer {
     outline?: boolean | `dash`
     glow?: boolean
     alwaysShowLabels?: boolean
+    triangle?: number // angle
     // previousData?: {
     //   radius?: number
     //   location?: CoordinatePair
@@ -1070,13 +1094,64 @@ export default class Drawer {
     this.ctx.fillStyle = color
 
     this.ctx.beginPath()
-    this.ctx.arc(
-      location[0] * this.flatScale,
-      location[1] * this.flatScale,
-      radius,
-      0,
-      Math.PI * 2,
-    )
+    if (triangle === undefined) {
+      this.ctx.arc(
+        location[0] * this.flatScale,
+        location[1] * this.flatScale,
+        radius,
+        0,
+        Math.PI * 2,
+      )
+    } else {
+      const trianglePoints: CoordinatePair[] = []
+      const angleVector1 = c.degreesToUnitVector(triangle)
+      trianglePoints.push(
+        location.map(
+          (l, index) =>
+            l * this.flatScale +
+            angleVector1[index] *
+              radius *
+              (index === 0 ? 1 : -1),
+        ) as CoordinatePair,
+      )
+      const angleVector2 = c.degreesToUnitVector(
+        (triangle + 135) % 360,
+      )
+      trianglePoints.push(
+        location.map(
+          (l, index) =>
+            l * this.flatScale +
+            angleVector2[index] *
+              radius *
+              (index === 0 ? 1 : -1),
+        ) as CoordinatePair,
+      )
+      const angleVector3 = c.degreesToUnitVector(
+        (triangle - 135 + 360) % 360,
+      )
+      trianglePoints.push(
+        location.map(
+          (l, index) =>
+            l * this.flatScale +
+            angleVector3[index] *
+              radius *
+              (index === 0 ? 1 : -1),
+        ) as CoordinatePair,
+      )
+
+      this.ctx.moveTo(
+        trianglePoints[0][0],
+        trianglePoints[0][1],
+      )
+      this.ctx.lineTo(
+        trianglePoints[1][0],
+        trianglePoints[1][1],
+      )
+      this.ctx.lineTo(
+        trianglePoints[2][0],
+        trianglePoints[2][1],
+      )
+    }
     if (outline) {
       if (outline === `dash`)
         this.ctx.setLineDash([8 / this.zoom, 6 / this.zoom])
