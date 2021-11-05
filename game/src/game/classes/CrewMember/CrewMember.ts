@@ -63,7 +63,7 @@ export class CrewMember extends Stubbable {
       `bunk`
 
     this.lastActive = data.lastActive || Date.now()
-    this.stamina = 0.001 // data.stamina || this.maxStamina
+    this.stamina = data.stamina || this.maxStamina
     this.cockpitCharge = data.cockpitCharge || 0
 
     this.inventory =

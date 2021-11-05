@@ -93,7 +93,7 @@ export class BasicPlanet extends Planet {
     }, 1000 * 60 * 60 * 24 * 0.1) // every 1/10th of a day
 
     if (this.guildId)
-      this.incrementAllegiance(this.guildId, 100)
+      this.incrementAllegiance(this.guildId, 1000000)
 
     if (this.homeworld)
       while (this.level < c.defaultHomeworldLevel)
