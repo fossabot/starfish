@@ -7,6 +7,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@aceforth/nuxt-optimized-images": "^1.4.0",
     "@mapbox/node-pre-gyp": "^1.0.5",
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
@@ -27,5 +28,13 @@
     "socket.io-client": "^4.2.0",
     "utf-8-validate": "^5.0.6",
     "vue-search-select": "^2.9.5"
+  },
+  "devDependencies": {
+    "imagemin-mozjpeg": "^9.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-svgo": "^10.0.0",
+    "responsive-loader": "^2.3.0",
+    "sharp": "^0.29.2",
+    "webp-loader": "^0.6.0"
   }
 }
