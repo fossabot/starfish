@@ -69,6 +69,7 @@ export default {
   buildModules: [
     `@nuxt/typescript-build`,
     `nuxt-font-loader`,
+    `@aceforth/nuxt-optimized-images`,
   ],
 
   modules: [`portal-vue/nuxt`],
@@ -79,5 +80,9 @@ export default {
     preconnect: {
       crossorigin: `anonymous`,
     },
+  },
+
+  optimizedImages: {
+    optimizeImages: true,
   },
 }
