@@ -158,7 +158,7 @@
             <ShipPlanetBuyShipCosmetics />
           </Tab>
 
-          <!-- <Tab
+          <Tab
             :title="`Jobs`"
             v-if="
               crewMember &&
@@ -167,7 +167,7 @@
             "
           >
             <ShipPlanetContracts />
-          </Tab> -->
+          </Tab>
 
           <Tab :title="`Downtown`">
             <ShipPlanetGuildRecruit />

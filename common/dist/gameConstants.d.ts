@@ -3,6 +3,7 @@ declare const _default: {
         id: any;
         humanShipLimit: any;
         safeZoneRadius: any;
+        contractLocationRadius: any;
         aiDifficultyMultiplier: any;
         baseXpGain: any;
         baseStaminaUse: any;

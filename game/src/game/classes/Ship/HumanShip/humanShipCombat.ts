@@ -336,6 +336,7 @@ export function autoAttack(
 
   // ----- if there is a target, attack with EVERY AVAILABLE WEAPON -----
   // canAttack is handled in attack function
+  const res: TakenDamageResult[] = []
   if (this.targetShip)
     this.availableWeapons()
       .filter(
@@ -347,11 +348,14 @@ export function autoAttack(
           ),
       )
       .forEach((w) => {
-        this.attack(
-          this.targetShip!,
-          w,
-          this.targetItemType,
-          predeterminedHitChance,
+        res.push(
+          this.attack(
+            this.targetShip!,
+            w,
+            this.targetItemType,
+            predeterminedHitChance,
+          ),
         )
       })
+  return res
 }

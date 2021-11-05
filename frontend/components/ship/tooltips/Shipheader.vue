@@ -13,8 +13,9 @@
       class="bg"
       :style="{
         background: `url('/images/headerBackgrounds/${
-          data.headerBackground.replace('.jpg', '.webp') ||
-          'default.webp'
+          data.headerBackground
+            ? data.headerBackground.replace('.jpg', '.webp')
+            : 'default.webp'
         }')`,
       }"
     ></div>

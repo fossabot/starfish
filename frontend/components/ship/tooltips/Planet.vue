@@ -156,6 +156,17 @@
 
         <div
           v-if="
+            dataToUse.contracts &&
+            dataToUse.contracts.length
+          "
+          class="flexbetween marbottiny"
+        >
+          <div class="fade">Contracts</div>
+          <div>{{ dataToUse.contracts.length }}</div>
+        </div>
+
+        <div
+          v-if="
             dataToUse.bank ||
             (ship &&
               ship.banked.find(

@@ -11,6 +11,7 @@ declare function distance(a?: CoordinatePair, b?: CoordinatePair): number;
  * distance in degrees [0, 360] between two angles
  */
 declare function angleFromAToB(a?: CoordinatePair, b?: CoordinatePair): number;
+declare function mirrorAngleVertically(angle?: number): number;
 /**
  * shortest distance (in degrees) between two angles.
  * It will be in range [0, 180] if not signed.
@@ -34,6 +35,7 @@ declare const _default: {
     degreesToRadians: typeof degreesToRadians;
     distance: typeof distance;
     angleFromAToB: typeof angleFromAToB;
+    mirrorAngleVertically: typeof mirrorAngleVertically;
     angleDifference: typeof angleDifference;
     randomInsideCircle: typeof randomInsideCircle;
     degreesToUnitVector: typeof degreesToUnitVector;

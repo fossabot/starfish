@@ -2,6 +2,7 @@ interface AdminGameSettings {
   id: string
   humanShipLimit: number
   safeZoneRadius: number
+  contractLocationRadius: number
   aiDifficultyMultiplier: number
   baseXpGain: number
   baseStaminaUse: number

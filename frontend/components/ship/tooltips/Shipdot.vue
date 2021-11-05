@@ -212,10 +212,7 @@
                   ? `${c.capitalize(r)}: ${dataToUse.radii[
                       r
                     ]
-                      .map(
-                        (rad) =>
-                          c.r2(dataToUse.radii[r]) + 'AU',
-                      )
+                      .map((rad) => c.r2(rad) + 'AU')
                       .join(', ')}`
                   : `${c.capitalize(r)}: ${c.r2(
                       dataToUse.radii[r],

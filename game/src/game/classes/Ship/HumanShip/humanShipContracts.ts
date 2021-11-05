@@ -3,6 +3,16 @@ import c from '../../../../../../common/dist'
 import type { HumanShip } from './HumanShip'
 import type { BasicPlanet } from '../../Planet/BasicPlanet'
 
+function reliablyFudgeLocation(
+  location: CoordinatePair,
+  within: number = 0.001,
+): CoordinatePair {
+  return [
+    Math.round(location[0] / within) * within,
+    Math.round(location[1] / within) * within,
+  ]
+}
+
 export function startContract(
   this: HumanShip,
   contractId: string,
@@ -59,11 +69,35 @@ export function startContract(
     fromPlanetId: planet.id,
     status: `active`,
     claimableExpiresAt: undefined,
-    lastSeenLocation: [...target.location],
+    lastSeenLocation: reliablyFudgeLocation(
+      target.location,
+      this.game?.settings.contractLocationRadius ||
+        c.defaultGameSettings.contractLocationRadius,
+    ),
   }
   this.contracts.push(contractData)
   this.toUpdate.contracts = this.contracts
   return { data: contractData }
+}
+
+export function updateActiveContractsLocations(
+  this: HumanShip,
+) {
+  for (let contract of this.contracts.filter(
+    (co) => co.status === `active`,
+  )) {
+    const target = this.game?.ships.find(
+      (s) => s.id === contract.targetId,
+    )
+    if (!target) continue
+
+    contract.lastSeenLocation = reliablyFudgeLocation(
+      target.location,
+      this.game?.settings.contractLocationRadius ||
+        c.defaultGameSettings.contractLocationRadius,
+    )
+    this.toUpdate.contracts = this.contracts
+  }
 }
 
 export function stolenContract(
@@ -108,7 +142,10 @@ export function stolenContract(
         tooltipData: c.priceToString(contract.reward),
       },
       `.`,
+      `high`,
     ])
+
+  this.checkTurnInContract(co)
 }
 
 export function completeContract(
@@ -153,44 +190,44 @@ export function completeContract(
         tooltipData: c.priceToString(contract.reward),
       },
       `.`,
+      `high`,
     ])
+
+  this.checkTurnInContract(co)
 }
 
-export function checkContractTimeOut(
-  this: HumanShip,
-  contract: Contract,
-) {
-  if (
-    contract.status === `done` ||
-    contract.status === `stolen`
-  )
-    return
-  if (
-    Date.now() - contract.timeAccepted <
-    contract.timeAllowed
-  )
-    return
-  const index = this.contracts.findIndex(
-    (co) => co.id === contract.id,
-  )
-  if (index === -1) return
-  this.contracts.splice(index, 1)
-  this.toUpdate.contracts = this.contracts
-  const target = this.game?.ships.find(
-    (s) => s.id === contract.targetId,
-  )
-  if (target)
-    this.logEntry([
-      `Contract to eliminate`,
-      {
-        text: target.name,
-        color: target.guildId
-          ? c.guilds[target.guildId].color
-          : undefined,
-        tooltipData: target.toReference(),
-      },
-      `has expired.`,
-    ])
+export function checkContractTimeOuts(this: HumanShip) {
+  for (let contract of this.contracts.filter(
+    (co) => co.status === `active`,
+  )) {
+    if (
+      Date.now() - contract.timeAccepted <
+      contract.timeAllowed
+    )
+      continue
+    const index = this.contracts.findIndex(
+      (co) => co.id === contract.id,
+    )
+    if (index === -1) return
+    this.contracts.splice(index, 1)
+    this.toUpdate.contracts = this.contracts
+    const target = this.game?.ships.find(
+      (s) => s.id === contract.targetId,
+    )
+    if (target)
+      this.logEntry([
+        `Contract to eliminate`,
+        {
+          text: target.name,
+          color: target.guildId
+            ? c.guilds[target.guildId].color
+            : undefined,
+          tooltipData: target.toReference(),
+        },
+        `has expired.`,
+        `medium`,
+      ])
+  }
 }
 
 export function abandonContract(
@@ -218,6 +255,7 @@ export function abandonContract(
         tooltipData: target.toReference(),
       },
       `has been abandoned.`,
+      `medium`,
     ])
 }
 
@@ -255,15 +293,17 @@ export function checkTurnInContract(
       ),
     }
     this.logEntry(
-      `Turning in a stolen contract for ${c.priceToString(
+      `Turned in a stolen contract for ${c.priceToString(
         reward,
-      )}`,
+      )}!`,
+      `high`,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
-      `Turning in a contract for ${c.priceToString(
+      `Turned in a contract for ${c.priceToString(
         reward,
-      )}`,
+      )}!`,
+      `high`,
     )
   }
 

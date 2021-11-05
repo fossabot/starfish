@@ -50,6 +50,9 @@ function angleFromAToB(a = [0, 0], b = [0, 0]) {
         360) %
         360);
 }
+function mirrorAngleVertically(angle = 0) {
+    return (180 - angle + 360) % 360;
+}
 /**
  * shortest distance (in degrees) between two angles.
  * It will be in range [0, 180] if not signed.
@@ -138,6 +141,7 @@ exports.default = {
     degreesToRadians,
     distance,
     angleFromAToB,
+    mirrorAngleVertically,
     angleDifference,
     randomInsideCircle,
     degreesToUnitVector,

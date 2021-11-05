@@ -14,6 +14,7 @@ import './Combat'
 import './AIShip'
 import './Planet'
 import './Admin'
+import './Contracts'
 
 const host = isDocker() ? `mongodb` : `localhost`
 

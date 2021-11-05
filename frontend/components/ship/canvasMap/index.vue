@@ -305,7 +305,7 @@ export default Vue.extend({
                   ? c.guilds[tp.guildId].color
                   : color,
               })
-            } else if (tp.type) {
+            } else if (tp.type && !tp.radii) {
               if (tp.type === 'ship') {
                 const found =
                   tp.id === this.ship.id
@@ -360,18 +360,23 @@ export default Vue.extend({
               }
             }
 
-            if (tp.radii && this.ship?.id !== tp.id)
+            if (tp.radii && this.ship?.id !== tp.id) {
               targetPoints.push(
                 ...Object.keys(tp.radii)
-                  .filter((k) => k !== 'gameSize')
+                  .filter(
+                    (k) =>
+                      ![
+                        'gameSize',
+                        'safeZone',
+                        'attack',
+                      ].includes(k),
+                  )
                   .map((key) => ({
                     location: tp.location,
                     labelTop: key,
                     radius: tp.radii[key],
                     color:
-                      key === 'attack'
-                        ? `#ff7733`
-                        : key === 'vision'
+                      key === 'vision'
                         ? `#bbbbbb`
                         : key === 'broadcast'
                         ? `#dd88ff`
@@ -380,6 +385,15 @@ export default Vue.extend({
                         : '#bbbbbb',
                   })),
               )
+              if (tp.radii.attack)
+                for (let a of tp.radii.attack)
+                  targetPoints.push({
+                    location: tp.location,
+                    labelTop: 'attack',
+                    radius: a,
+                    color: `#ff7733`,
+                  })
+            }
           }
 
           profiler.step('startdraw')
