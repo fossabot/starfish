@@ -1,6 +1,7 @@
 import c from '../../../../../common/dist'
 
 import type { Game } from '../../Game'
+import type { AIShip } from '../Ship/AIShip/AIShip'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Planet } from './Planet'
 
@@ -34,6 +35,8 @@ export class BasicPlanet extends Planet {
 
   vendor: PlanetVendor
   bank: boolean = false
+  contracts: PlanetContractAvailable[] = []
+  maxContracts: number = 0
 
   priceFluctuator = 1
 
@@ -70,6 +73,9 @@ export class BasicPlanet extends Planet {
 
     this.vendor = data.vendor
     this.bank = data.bank
+    this.maxContracts = data.maxContracts || 0
+    this.contracts = data.contracts || []
+    // c.log(this.name, this.contracts)
 
     // c.log(this.getAddableToVendor())
     // c.log(
@@ -79,15 +85,12 @@ export class BasicPlanet extends Planet {
     // )
 
     this.updateFluctuator()
-    setInterval(
-      () => this.updateFluctuator(),
-      1000 * 60 * 60 * 24 * 0.1,
-    ) // every day
-
-    setInterval(
-      () => this.decrementAllegiances(),
-      1000 * 60 * 60 * 24 * 0.1,
-    ) // every day
+    this.refreshContracts()
+    setInterval(() => {
+      this.updateFluctuator()
+      this.decrementAllegiances()
+      this.refreshContracts()
+    }, 1000 * 60 * 60 * 24 * 0.1) // every 1/10th of a day
 
     if (this.guildId)
       this.incrementAllegiance(this.guildId, 100)
@@ -128,6 +131,10 @@ export class BasicPlanet extends Planet {
       {
         weight: 5,
         value: `increaseAutoRepair`,
+      },
+      {
+        weight: 300,
+        value: `increaseMaxContracts`,
       },
       {
         weight: 10 * defenseMultiplier,
@@ -177,6 +184,9 @@ export class BasicPlanet extends Planet {
         id: `autoRepair`,
         intensity: 0.4,
       })
+    } else if (levelUpEffect === `increaseMaxContracts`) {
+      this.maxContracts++
+      this.refreshContracts()
     } else if (levelUpEffect === `boostSightRange`) {
       this.addPassive({
         id: `boostSightRange`,
@@ -454,6 +464,101 @@ export class BasicPlanet extends Planet {
     return addable
   }
 
+  refreshContracts() {
+    if (!this.maxContracts) return
+    this.contracts = this.contracts.filter(
+      (co) => Date.now() < co.claimableExpiresAt,
+    )
+    if (this.contracts.length === this.maxContracts) return
+
+    // add new contracts
+    let scanRange = 1,
+      attempts = 0
+    while (this.contracts.length < this.maxContracts) {
+      if (attempts >= 100) return
+      attempts++
+      const validTargets = (
+        this.game?.scanCircle(
+          this.location,
+          scanRange,
+          null,
+          [`aiShip`, `humanShip`],
+          false,
+        )?.ships || []
+      ).filter(
+        (s) =>
+          s.ai &&
+          !s.planet &&
+          !this.contracts.find(
+            (co) => co.targetId === s.id,
+          ),
+      )
+      const target = c.randomFromArray(validTargets)
+      if (!target) {
+        scanRange += 0.2
+        continue
+      }
+
+      const difficulty = (target as AIShip).level || 10
+      const distance =
+        c.distance(this.location, target.location) /
+        scanRange // 0-1
+      this.contracts.push({
+        id: `contract` + `${Math.random()}`.slice(2),
+        reward: {
+          credits: c.lottery(1, 12)
+            ? 0
+            : Math.max(
+                0,
+                c.r2(
+                  1000 *
+                    difficulty *
+                    distance *
+                    (Math.random() + 0.1),
+                  0,
+                ),
+              ),
+          shipCosmeticCurrency: c.lottery(1, 4)
+            ? 0
+            : Math.max(
+                0,
+                c.r2(
+                  0.35 *
+                    (difficulty - 3) *
+                    distance *
+                    (Math.random() + 0.1),
+                  0,
+                  true,
+                ),
+              ),
+          crewCosmeticCurrency: c.lottery(1, 5)
+            ? 0
+            : Math.max(
+                0,
+                c.r2(
+                  100 *
+                    (difficulty - 3) *
+                    distance *
+                    (Math.random() + 0.1),
+                  0,
+                  true,
+                ),
+              ),
+        },
+        timeAllowed: c.tickInterval * 60 * 60 * 24 * 7,
+        targetId: target.id,
+        targetName: target.name,
+        targetGuildId: target.guildId,
+        difficulty,
+        claimCost: { credits: 100 },
+        claimableExpiresAt:
+          Date.now() + 1000 * 60 * 60 * 24,
+      })
+    }
+    this.updateFrontendForShipsAt()
+    c.log(`added contract:`, this.name, this.contracts)
+  }
+
   incrementAllegiance(guildId: GuildId, amount: number) {
     if (!guildId) return
 
@@ -519,6 +624,41 @@ export class BasicPlanet extends Planet {
       `Do you read me, ${ship.name}? This is ${this.name}. Come in, over.`,
       `Hail, ${ship.name}!`,
     ]
+    if (this.vendor) {
+      const goodCargoPrices = this.vendor.cargo.filter(
+        (ca) =>
+          c.getCargoBuyPrice(ca.id, this, ship.guildId) <
+          c.cargo[ca.id].basePrice,
+      )
+      goodCargoPrices.forEach((p) => {
+        messageOptions.push(
+          `We've got good prices on ${p.id}! Get it while it lasts!`,
+        )
+      })
+      this.vendor.items.forEach((p) => {
+        messageOptions.push(
+          `${
+            c.items[p.type][p.id].displayName
+          }, for sale here for only ${c.priceToString(
+            c.getItemBuyPrice(p, this, ship.guildId),
+          )}!`,
+        )
+      })
+      this.vendor.chassis.forEach((p) => {
+        messageOptions.push(
+          `${
+            c.items.chassis[p.id].displayName
+          } for sale! Trade yours in for only ${c.priceToString(
+            c.getChassisSwapPrice(
+              p,
+              this,
+              ship.chassis.id,
+              ship.guildId,
+            ),
+          )}!`,
+        )
+      })
+    }
     if (this.pacifist)
       messageOptions.push(
         `Come rest awhile at ${this.name}!`,
@@ -530,9 +670,15 @@ export class BasicPlanet extends Planet {
         `Come see what we have in stock!`,
         `Come browse our wares! Nothing but the lowest prices!`,
       )
-    if (this.guildId === ship.guildId) {
+    if (
+      this.allegiances.find(
+        (a) =>
+          a.guildId === ship.guildId &&
+          a.level >= c.guildAllegianceFriendCutoff,
+      )
+    ) {
       messageOptions.push(
-        `Greetings, fellow creature of the ${
+        `Greetings, creature of the ${
           ship.guildId && c.guilds[ship.guildId].name
         }! Swim swiftly!`,
       )
@@ -619,6 +765,8 @@ export class BasicPlanet extends Planet {
     this.level = 0
     this.xp = 0
     this.bank = false
+    this.maxContracts = 0
+    this.contracts = []
     this.vendor = {
       cargo: [],
       items: [],

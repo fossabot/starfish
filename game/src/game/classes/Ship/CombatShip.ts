@@ -972,6 +972,21 @@ export abstract class CombatShip extends Ship {
       .forEach((s) => {
         ;(s as CombatShip).determineTargetShip()
       })
+    this.game?.humanShips
+      .filter((s) =>
+        (s as HumanShip).contracts.find(
+          (co) => co.targetId === this.id,
+        ),
+      )
+      .forEach((s) => {
+        const contract = (s as HumanShip).contracts.find(
+          (co) => co.targetId === this.id,
+        )
+        if (!contract) return
+        if (attacker?.id === s.id)
+          s.completeContract(contract)
+        else s.stolenContract(contract)
+      })
   }
 
   repair(

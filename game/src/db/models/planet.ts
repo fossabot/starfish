@@ -108,6 +108,30 @@ const planetSchemaFields: Record<
 
   bank: Boolean,
   defense: Number,
+
+  maxContracts: Number,
+  contracts: [
+    {
+      id: String,
+      reward: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+      status: String,
+      timeAllowed: Number,
+      targetId: String,
+      targetName: String,
+      targetGuildId: String,
+      difficulty: Number,
+      claimCost: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+      claimableExpiresAt: Number,
+    },
+  ],
 }
 const planetSchema = new Schema(planetSchemaFields)
 const DBPlanet = model<DBPlanetDoc>(

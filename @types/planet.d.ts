@@ -25,6 +25,8 @@ interface BaseBasicPlanetData extends BasePlanetData {
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
   bank: boolean
+  maxContracts?: number
+  contracts?: PlanetContractAvailable[]
 }
 
 interface BaseMiningPlanetData extends BasePlanetData {
@@ -111,4 +113,16 @@ type PlanetStatKey = `totalDonated` | `shipsLanded`
 interface PlanetStatEntry {
   stat: PlanetStatKey
   amount: number
+}
+
+interface PlanetContractAvailable {
+  id: string
+  targetId: string
+  targetName: string
+  targetGuildId?: GuildId
+  claimableExpiresAt: number
+  timeAllowed: number
+  reward: Price
+  difficulty: number
+  claimCost: Price
 }

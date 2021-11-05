@@ -135,7 +135,7 @@ export class Game {
             ).length
           } comet) from DB.`,
         )
-        for (let planet of savedPlanets)
+        for (let planet of savedPlanets) {
           if (planet.planetType === `basic`)
             await this.addBasicPlanet(
               planet as BaseBasicPlanetData,
@@ -151,6 +151,7 @@ export class Game {
               planet as BaseCometData,
               false,
             )
+        }
 
         const savedCaches =
           await this.db.cache.getAllConstructible()
@@ -224,6 +225,8 @@ export class Game {
     this.tick()
 
     this.recalculateGuildRankings()
+
+    setTimeout(() => c.log(`Game started.`), 100)
   }
 
   async save() {
@@ -1044,7 +1047,7 @@ export class Game {
       )
       return existing
     }
-    const newPlanet = await new BasicPlanet(
+    const newPlanet = new BasicPlanet(
       data as BaseBasicPlanetData,
       this,
     )
@@ -1078,7 +1081,7 @@ export class Game {
       )
       return existing
     }
-    const newPlanet = await new MiningPlanet(
+    const newPlanet = new MiningPlanet(
       data as BaseMiningPlanetData,
       this,
     )
@@ -1105,7 +1108,7 @@ export class Game {
       )
       return existing
     }
-    const newComet = await new Comet(data, this)
+    const newComet = new Comet(data, this)
     this.comets.push(newComet)
 
     this.chunkManager.addOrUpdate(newComet)

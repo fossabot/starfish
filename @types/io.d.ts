@@ -394,6 +394,13 @@ interface IOClientEvents {
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 
+  [`ship:acceptContract`]: (
+    shipId: string,
+    crewId: string,
+    contractId: string,
+    callback: (res: IOResponse<Contract>) => void,
+  ) => void
+
   [`ship:buyTagline`]: (
     shipId: string,
     crewId: string,

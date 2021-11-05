@@ -83,24 +83,24 @@ export class Planet extends Stubbable {
     setTimeout(() => {
       if (this.level === 0) this.levelUp()
 
-      const levelsToApply = baseLevel - this.level
-      if (!isNaN(levelsToApply))
-        for (let i = 0; i < levelsToApply; i++)
-          this.levelUp()
+      // const levelsToApply = baseLevel - this.level
+      // if (!isNaN(levelsToApply))
+      //   for (let i = 0; i < levelsToApply; i++)
+      //     this.levelUp()
 
-      if (
-        this.xp <
-        c.levels[this.level - 1] *
-          c.planetLevelXpRequirementMultiplier
-      )
-        this.xp =
-          c.levels[this.level - 1] *
-            c.planetLevelXpRequirementMultiplier +
-          Math.floor(
-            Math.random() *
-              100 *
-              c.planetLevelXpRequirementMultiplier,
-          )
+      // if (
+      //   this.xp <
+      //   c.levels[this.level - 1] *
+      //     c.planetLevelXpRequirementMultiplier
+      // )
+      //   this.xp =
+      //     c.levels[this.level - 1] *
+      //       c.planetLevelXpRequirementMultiplier +
+      //     Math.floor(
+      //       Math.random() *
+      //         100 *
+      //         c.planetLevelXpRequirementMultiplier,
+      //     )
     }, 10)
   }
 
@@ -194,7 +194,7 @@ export class Planet extends Stubbable {
   }
 
   levelUp() {
-    this.level++
+    this.level = (this.level || 0) + 1
     if (this.level > 100) this.level = 100 // todo it still adds bonuses past 100
     if (
       this.xp <
@@ -442,6 +442,7 @@ export class Planet extends Stubbable {
       priceFluctuator: (this as any).priceFluctuator,
       mine: (this as any).mine,
       bank: (this as any).bank,
+      contracts: (this as any).contracts,
       defense: (this as any).defense,
       passives: this.passives,
       landingRadiusMultiplier: this.landingRadiusMultiplier,

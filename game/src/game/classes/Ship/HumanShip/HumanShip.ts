@@ -30,6 +30,14 @@ import {
   recalculateTargetItemType,
   autoAttack,
 } from './humanShipCombat'
+import {
+  startContract,
+  abandonContract,
+  checkContractTimeOut,
+  checkTurnInContract,
+  completeContract,
+  stolenContract,
+} from './humanShipContracts'
 
 interface HumanVisibleShape {
   ships: ShipStub[]
@@ -78,6 +86,7 @@ export class HumanShip extends CombatShip {
   maxScanProperties: ShipScanDataShape | null = null
   secondWind: boolean = false
   banked: BankEntry[] = []
+  contracts: Contract[] = []
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -128,6 +137,7 @@ export class HumanShip extends CombatShip {
     this.seenCrewMembers = data.seenCrewMembers || []
 
     this.banked = data.banked || []
+    this.contracts = data.contracts || []
 
     data.boughtHeaderBackgrounds?.forEach((bhb) =>
       this.addHeaderBackground(bhb, null, true),
@@ -412,6 +422,9 @@ export class HumanShip extends CombatShip {
         })
       this.toUpdate = {}
     }
+    for (let co of this.contracts)
+      this.checkContractTimeOut(co)
+
     profiler.end()
   }
 
@@ -809,8 +822,8 @@ export class HumanShip extends CombatShip {
     ]
 
     this.velocity = [
-      this.velocity[0] + thrustVector[0],
-      this.velocity[1] + thrustVector[1],
+      this.velocity[0] + (thrustVector[0] || 0),
+      this.velocity[1] + (thrustVector[1] || 0),
     ]
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
@@ -1014,12 +1027,20 @@ export class HumanShip extends CombatShip {
     ]
     const currentMagnitude =
       c.vectorToMagnitude(currentVelocity)
+    if (!currentMagnitude) return 0
 
     if (finalMagnitude > currentMagnitude) this.hardStop()
     else {
       const relativeScaleOfMagnitudeShrink =
         (currentMagnitude - finalMagnitude) /
         currentMagnitude
+      if (
+        ![undefined, null, NaN].includes(
+          relativeScaleOfMagnitudeShrink,
+        ) ||
+        relativeScaleOfMagnitudeShrink < 0
+      )
+        return 0
       this.velocity = [
         this.velocity[0] * relativeScaleOfMagnitudeShrink,
         this.velocity[1] * relativeScaleOfMagnitudeShrink,
@@ -1078,11 +1099,23 @@ export class HumanShip extends CombatShip {
       return
     }
 
+    if (
+      [undefined, null, NaN].includes(this.velocity[0]) ||
+      [undefined, null, NaN].includes(this.velocity[1])
+    ) {
+      c.log(
+        `red`,
+        `Hard resetting velocity for ${this.name}, was`,
+        this.velocity,
+      )
+      this.velocity = [0, 0]
+    }
+
     if (this.velocity[0] === 0 && this.velocity[1] === 0)
       return
 
-    this.location[0] += this.velocity[0]
-    this.location[1] += this.velocity[1]
+    this.location[0] += this.velocity[0] || 0
+    this.location[1] += this.velocity[1] || 0
     this.toUpdate.location = this.location
 
     this.game?.chunkManager.addOrUpdate(
@@ -1411,6 +1444,8 @@ export class HumanShip extends CombatShip {
       )
       this.planet.addStat(`shipsLanded`, 1)
       this.checkAchievements(`land`)
+      for (let co of this.contracts)
+        this.checkTurnInContract(co)
     } else if (previousPlanet) {
       // c.log(
       //   `gray`,
@@ -1518,7 +1553,6 @@ export class HumanShip extends CombatShip {
       crewMember.toUpdate.crewCosmeticCurrency =
         crewMember.crewCosmeticCurrency
     }
-    this._stub = null
     this.toUpdate.commonCredits = this.commonCredits
     this.toUpdate.shipCosmeticCurrency =
       this.shipCosmeticCurrency
@@ -2452,12 +2486,16 @@ export class HumanShip extends CombatShip {
   }
 
   determineTargetShip = determineTargetShip
-
   recalculateCombatTactic = recalculateCombatTactic
-
   recalculateTargetItemType = recalculateTargetItemType
-
   autoAttack = autoAttack
+
+  startContract = startContract
+  abandonContract = abandonContract
+  checkContractTimeOut = checkContractTimeOut
+  checkTurnInContract = checkTurnInContract
+  completeContract = completeContract
+  stolenContract = stolenContract
 
   die(attacker?: CombatShip) {
     super.die(attacker)
