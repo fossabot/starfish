@@ -336,6 +336,40 @@ export default function (
     if ((ship as CombatShip).die) (ship as CombatShip).die()
   })
 
+  socket.on(`admin:kit`, async (id, password, shipId) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:kit`,
+      )
+    const ship = game.ships.find((p) => p.id === shipId)
+    if (!ship) return
+    c.log(`Admin kitting out ship ${ship.name}`)
+    ship.items = []
+    ship.equipLoadout(`test1`)
+  })
+
+  socket.on(
+    `admin:stamina`,
+    async (id, password, shipId) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:stamina`,
+        )
+      const ship = game.ships.find((p) => p.id === shipId)
+      if (!ship) return
+      c.log(`Admin kitting out ship ${ship.name}`)
+      ship.crewMembers.forEach((cm) => {
+        cm.stamina = cm.maxStamina
+        cm.bottomedOutOnStamina = false
+        cm.cockpitCharge = 1
+      })
+      ship.weapons.forEach((w) => (w.cooldownRemaining = 0))
+      ship.items.forEach((i) => (i.repair = 1))
+    },
+  )
+
   socket.on(
     `game:resetHomeworlds`,
     async (id, password) => {

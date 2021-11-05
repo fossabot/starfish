@@ -628,6 +628,13 @@ export default class Drawer {
             ],
             s.location,
           )
+      const highlight = Boolean(
+        ship?.contracts?.find(
+          (co) =>
+            co.status === `active` && s.id === co.targetId,
+        ),
+      )
+
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
@@ -642,6 +649,14 @@ export default class Drawer {
         color: c.guilds[s.guildId]?.color || `#bbb`,
         triangle: angle,
       })
+      if (highlight)
+        this.drawPoint({
+          location: [s.location[0], s.location[1] * -1],
+          radius:
+            ((3.5 * 8) / this.zoom) * devicePixelRatio,
+          color: c.guilds[s.guildId]?.color || `#bbb`,
+          glow: true,
+        })
     })
 
     if (ship) {
@@ -684,6 +699,46 @@ export default class Drawer {
         opacity: 0.8,
       })
     })
+
+    // ----- contracts
+    ship?.contracts
+      ?.filter(
+        (co) =>
+          co.status === `active` &&
+          !ship.visible?.ships.find(
+            (s) => s.id === co.targetId,
+          ),
+      )
+      .forEach((co) => {
+        this.drawPoint({
+          location: [
+            co.lastSeenLocation[0],
+            co.lastSeenLocation[1] * -1,
+          ],
+          labelCenter: co.targetName,
+          radius:
+            ship.gameSettings.contractLocationRadius *
+            this.flatScale,
+          color: co.targetGuildId
+            ? c.guilds[co.targetGuildId].color
+            : `#bb0`,
+          opacity: 0.4,
+          outline: true,
+        })
+        this.drawPoint({
+          location: [
+            co.lastSeenLocation[0],
+            co.lastSeenLocation[1] * -1,
+          ],
+          radius:
+            ship.gameSettings.contractLocationRadius *
+            this.flatScale,
+          color: co.targetGuildId
+            ? c.guilds[co.targetGuildId].color
+            : `#bb0`,
+          opacity: 0.02,
+        })
+      })
 
     // ----- clipped objects -----
 

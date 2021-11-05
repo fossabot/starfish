@@ -89,8 +89,11 @@ export class BasicPlanet extends Planet {
     setInterval(() => {
       this.updateFluctuator()
       this.decrementAllegiances()
-      this.refreshContracts()
     }, 1000 * 60 * 60 * 24 * 0.1) // every 1/10th of a day
+
+    setInterval(() => {
+      this.refreshContracts()
+    }, 1000 * 60 * 60 * 24) // every day
 
     if (this.guildId)
       this.incrementAllegiance(this.guildId, 1000000)
@@ -133,7 +136,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 3,
+        weight: 3 * c.distance([0, 0], this.location),
         value: `increaseMaxContracts`,
       },
       {
@@ -491,6 +494,9 @@ export class BasicPlanet extends Planet {
           !s.planet &&
           !this.contracts.find(
             (co) => co.targetId === s.id,
+          ) &&
+          !this.allegiances.find(
+            (a) => a.guildId === s.guildId,
           ),
       )
       const target = c.randomFromArray(validTargets)
@@ -511,7 +517,7 @@ export class BasicPlanet extends Planet {
             : Math.max(
                 0,
                 c.r2(
-                  1000 *
+                  2000 *
                     difficulty *
                     distance *
                     (Math.random() + 0.1),
@@ -550,7 +556,20 @@ export class BasicPlanet extends Planet {
         targetName: target.name,
         targetGuildId: target.guildId,
         difficulty,
-        claimCost: { credits: 100 },
+        claimCost: {
+          credits: c.lottery(1, 12)
+            ? 0
+            : Math.max(
+                0,
+                c.r2(
+                  100 *
+                    difficulty *
+                    distance *
+                    Math.random(),
+                  0,
+                ),
+              ),
+        },
         claimableExpiresAt:
           Date.now() + 1000 * 60 * 60 * 24,
       })

@@ -1,6 +1,7 @@
 <template>
   <Box
     class="contracts"
+    v-if="show"
     bgImage="/images/paneBackgrounds/23.webp"
   >
     <template #title
@@ -56,9 +57,19 @@ export default Vue.extend({
       return this.captain?.id === this.userId
     },
     active(): Contract[] {
-      return (this.ship.contracts as Contract[]).filter(
-        (co) => co.status === 'active',
-      )
+      return (this.ship.contracts as Contract[])
+        .filter((co) => co.status === 'active')
+        .sort(
+          (a, b) =>
+            c.distance(
+              a.lastSeenLocation,
+              this.ship.location,
+            ) -
+            c.distance(
+              b.lastSeenLocation,
+              this.ship.location,
+            ),
+        )
     },
     done(): Contract[] {
       return (this.ship.contracts as Contract[]).filter(

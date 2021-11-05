@@ -78,6 +78,7 @@ const shipSchemaFields: Record<
       targetName: String,
       targetGuildId: String,
       difficulty: Number,
+      lastSeenLocation: [Number],
       claimCost: {
         credits: Number,
         shipCosmeticCurrency: Number,

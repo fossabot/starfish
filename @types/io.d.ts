@@ -137,6 +137,16 @@ interface IOClientEvents {
     password: string,
     shipId: string,
   ) => void
+  [`admin:kit`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
+  [`admin:stamina`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`game:resetHomeworlds`]: (
     adminId: string,
     password: string,

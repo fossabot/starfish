@@ -7,7 +7,7 @@
     }"
     @click="!unavailable && $emit('click')"
   >
-    <div class="flexbetween marbotsmall">
+    <div class="flexbetween marbotsmall top">
       <div>
         Kill
         <h3
@@ -25,17 +25,19 @@
           {{ contract.targetName }}
         </h3>
         <span class="difficulty sub">
-          ({{
-            contract.difficulty < 5
-              ? 'Easy'
-              : contract.difficulty < 10
-              ? 'Medium'
-              : contract.difficulty < 20
-              ? 'Hard'
-              : contract.difficulty < 40
-              ? 'Murderous'
-              : 'Insane'
-          }})
+          <span class="fade">
+            ({{
+              contract.difficulty < 5
+                ? 'Easy'
+                : contract.difficulty < 10
+                ? 'Medium'
+                : contract.difficulty < 20
+                ? 'Hard'
+                : contract.difficulty < 40
+                ? 'Murderous'
+                : 'Insane'
+            }})
+          </span>
         </span>
       </div>
       <div class="reward success">
@@ -96,6 +98,11 @@ export default Vue.extend({
   margin: 0.5em 0;
   text-align: left;
   position: relative;
+}
+.top {
+  margin: -0.7em -1em 0 -1em;
+  padding: 0.7em 1em;
+  background: rgba(255, 255, 255, 0.1);
 }
 h3 {
   display: inline-block;

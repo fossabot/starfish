@@ -153,6 +153,7 @@ declare const _default: {
         id: any;
         humanShipLimit: any;
         safeZoneRadius: any;
+        contractLocationRadius: any;
         aiDifficultyMultiplier: any;
         baseXpGain: any;
         baseStaminaUse: any;
@@ -314,6 +315,7 @@ declare const _default: {
     degreesToRadians: (degrees?: number) => number;
     distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
     angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
+    mirrorAngleVertically: (angle?: number) => number;
     angleDifference: (a?: number, b?: number, signed?: boolean) => number;
     randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;

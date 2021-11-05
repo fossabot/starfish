@@ -855,7 +855,7 @@ export abstract class CombatShip extends Ship {
           ? attack.weapon.displayName
           : `passive effect`
       }, and ${
-        didDie ? `dies` : `has ${this.hp} hp left`
+        didDie ? `dies` : `has ${c.r2(this.hp)} hp left`
       }.`,
     )
 

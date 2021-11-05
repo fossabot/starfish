@@ -25,6 +25,16 @@ import socketIoClient, {
 } from 'socket.io-client'
 
 describe(`Attack remnant data`, () => {
+  before(async () => {
+    const g = new Game()
+    await g.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+    await g.db?.attackRemnant.wipe()
+  })
+
   let attackerId: string
   it(`should spawn an attack remnant`, async () => {
     const g = new Game()

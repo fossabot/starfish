@@ -33,10 +33,11 @@ import {
 import {
   startContract,
   abandonContract,
-  checkContractTimeOut,
+  checkContractTimeOuts,
   checkTurnInContract,
   completeContract,
   stolenContract,
+  updateActiveContractsLocations,
 } from './humanShipContracts'
 
 interface HumanVisibleShape {
@@ -394,26 +395,6 @@ export class HumanShip extends CombatShip {
     profiler.step(`frontend send`)
     // ----- send update to listeners -----
     if (Object.keys(this.toUpdate).length) {
-      // c.log(
-      //   `sending`,
-      //   Object.keys(this.toUpdate).map(
-      //     (k) =>
-      //       `${k}: ${
-      //         JSON.stringify(this.toUpdate[k])?.length
-      //       }`,
-      //   ),
-      //   `characters to frontend for`,
-      //   this.name,
-      // )
-      // this.toUpdate.log?.forEach((l) => {
-      //   c.log(l)
-      //   if (Array.isArray(l.content))
-      //     l.content.forEach((n) => {
-      //       if (typeof n === `object`) c.log(n.tooltipData)
-      //     })
-      // })
-      // c.log(JSON.stringify(this.toUpdate.log))
-      // c.log(JSON.stringify(this.toUpdate, null, 2))
       this.game?.io
         ?.to(`ship:${this.id}`)
         .emit(`ship:update`, {
@@ -422,8 +403,10 @@ export class HumanShip extends CombatShip {
         })
       this.toUpdate = {}
     }
-    for (let co of this.contracts)
-      this.checkContractTimeOut(co)
+
+    this.checkContractTimeOuts()
+    if ((this.game?.tickCount || 1) % 1000 === 0)
+      this.updateActiveContractsLocations()
 
     profiler.end()
   }
@@ -1027,15 +1010,14 @@ export class HumanShip extends CombatShip {
     ]
     const currentMagnitude =
       c.vectorToMagnitude(currentVelocity)
-    if (!currentMagnitude) return 0
 
     if (finalMagnitude > currentMagnitude) this.hardStop()
     else {
       const relativeScaleOfMagnitudeShrink =
-        (currentMagnitude - finalMagnitude) /
-        currentMagnitude
+        ((currentMagnitude || 0) - finalMagnitude) /
+        (currentMagnitude || 0)
       if (
-        ![undefined, null, NaN].includes(
+        [undefined, null, NaN].includes(
           relativeScaleOfMagnitudeShrink,
         ) ||
         relativeScaleOfMagnitudeShrink < 0
@@ -1045,6 +1027,10 @@ export class HumanShip extends CombatShip {
         this.velocity[0] * relativeScaleOfMagnitudeShrink,
         this.velocity[1] * relativeScaleOfMagnitudeShrink,
       ]
+      c.log({
+        relativeScaleOfMagnitudeShrink,
+        v: this.velocity,
+      })
     }
 
     this.toUpdate.velocity = this.velocity
@@ -1069,7 +1055,7 @@ export class HumanShip extends CombatShip {
 
     thruster.addStat(
       `totalSpeedApplied`,
-      (this.speed - currentMagnitude) * 60 * 60 * -1,
+      (this.speed - currentMagnitude || 0) * 60 * 60 * -1,
     )
 
     return (this.speed - currentMagnitude) * 60 * 60 * -1
@@ -2492,10 +2478,12 @@ export class HumanShip extends CombatShip {
 
   startContract = startContract
   abandonContract = abandonContract
-  checkContractTimeOut = checkContractTimeOut
+  checkContractTimeOuts = checkContractTimeOuts
   checkTurnInContract = checkTurnInContract
   completeContract = completeContract
   stolenContract = stolenContract
+  updateActiveContractsLocations =
+    updateActiveContractsLocations
 
   die(attacker?: CombatShip) {
     super.die(attacker)

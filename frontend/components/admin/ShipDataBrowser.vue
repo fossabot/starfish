@@ -2,7 +2,7 @@
   <div class="shipdatabrowser fullwidth">
     <div class="flexcolumn">
       <h5>Ship Data</h5>
-      <div class="flex marbotsmall">
+      <div class="marbotsmall">
         <ModelSelect
           :options="
             shipsBasics.map((s) => ({
@@ -18,9 +18,9 @@
           v-model="selectedShipId"
           placeholder="Select ship to inspect..."
         />
-        <div class="buttonrow flex">
+        <div class="martopsmall flexwrap">
           <div
-            class="button combo flexcenter marleftsmall"
+            class="button combo flexcenter"
             v-if="selectedShipId"
             @click="getShipData(selectedShipId)"
           >
@@ -39,6 +39,20 @@
             @click="achievement(selectedShipId)"
           >
             <div>Achievement</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="kit(selectedShipId)"
+          >
+            <div>Kit</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="stamina(selectedShipId)"
+          >
+            <div>Stamina</div>
           </div>
           <div
             class="button combo flexcenter"
@@ -235,6 +249,24 @@ export default Vue.extend({
         this.adminPassword,
         shipId,
         achievement,
+      )
+    },
+
+    async kit(shipId: string) {
+      ;(this as any).$socket?.emit(
+        `admin:kit`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+      )
+    },
+
+    async stamina(shipId: string) {
+      ;(this as any).$socket?.emit(
+        `admin:stamina`,
+        this.userId,
+        this.adminPassword,
+        shipId,
       )
     },
 

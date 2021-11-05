@@ -93,7 +93,7 @@ describe(`Admin resetters`, () => {
       password: `testpassword`,
     })
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 30; i++) {
       await g.addBasicPlanet(basicPlanetData())
     }
 
@@ -131,10 +131,10 @@ describe(`Admin resetters`, () => {
       password: `testpassword`,
     })
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 15; i++) {
       await g.addAIShip(aiShipData())
     }
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 15; i++) {
       await g.addHumanShip(humanShipData())
     }
 
@@ -153,8 +153,6 @@ describe(`Admin resetters`, () => {
         `adminKeys.password`,
         async () => {
           expect(g.ships.length).to.equal(0)
-          await c.sleep(200)
-          expect(g.ships.length).to.equal(0)
           expect(
             await g.db?.ship.getAllConstructible,
           ).to.have.lengthOf(0)
@@ -172,7 +170,7 @@ describe(`Admin resetters`, () => {
       password: `testpassword`,
     })
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 30; i++) {
       await g.addAIShip(aiShipData())
     }
 
@@ -192,8 +190,6 @@ describe(`Admin resetters`, () => {
         async () => {
           expect(g.ships.length).to.equal(0)
           expect(g.aiShips.length).to.equal(0)
-          await c.sleep(200)
-          expect(g.ships.length).to.equal(0)
           expect(
             await g.db?.ship.getAllConstructible,
           ).to.have.lengthOf(0)
