@@ -5,6 +5,7 @@ WORKDIR /usr/app/frontend
 COPY frontend/package.json .
 
 FROM base AS npm_install
+RUN apk add libtool automake autoconf nasm
 RUN npm install
 
 FROM node:16-alpine3.11 as npm_build
