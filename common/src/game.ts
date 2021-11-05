@@ -84,8 +84,9 @@ function getMineAmountPerTickForSingleCrewMember(
 
 function getStaminaGainPerTickForSingleCrewMember(
   baseStaminaUse: number,
+  rechargeSpeedMultiplier: number,
 ) {
-  return baseStaminaUse * 1.5
+  return baseStaminaUse * rechargeSpeedMultiplier
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {

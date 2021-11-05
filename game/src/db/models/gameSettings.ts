@@ -17,6 +17,14 @@ const gameSettingsSchemaFields: Record<
   aiDifficultyMultiplier: { type: Number, required: true },
   baseXpGain: { type: Number, required: true },
   baseStaminaUse: { type: Number, required: true },
+  staminaRechargeMultiplier: {
+    type: Number,
+    required: true,
+  },
+  staminaBottomedOutChargeSlowdown: {
+    type: Number,
+    required: true,
+  },
   brakeToThrustRatio: { type: Number, required: true },
   baseEngineThrustMultiplier: {
     type: Number,

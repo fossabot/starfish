@@ -177,9 +177,17 @@ export function bunk(this: CrewMember): void {
     c.getStaminaGainPerTickForSingleCrewMember(
       this.ship.game?.settings.baseStaminaUse ||
         c.defaultGameSettings.baseStaminaUse,
+      this.ship.game?.settings.staminaRechargeMultiplier ||
+        c.defaultGameSettings.staminaRechargeMultiplier,
     ) *
     boostStaminaRegenPassives *
-    generalBoostMultiplier
+    generalBoostMultiplier *
+    (this.bottomedOutOnStamina
+      ? this.ship.game?.settings
+          .staminaBottomedOutChargeSlowdown ||
+        c.defaultGameSettings
+          .staminaBottomedOutChargeSlowdown
+      : 1)
 
   this.stamina += staminaToAdd
 

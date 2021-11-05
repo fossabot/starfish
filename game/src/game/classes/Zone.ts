@@ -184,6 +184,10 @@ export class Zone extends Stubbable {
             c.getStaminaGainPerTickForSingleCrewMember(
               this.game?.settings.baseStaminaUse ||
                 c.defaultGameSettings.baseStaminaUse,
+              this.game?.settings
+                .staminaRechargeMultiplier ||
+                c.defaultGameSettings
+                  .staminaRechargeMultiplier,
             ) * intensity
 
           if (cm.stamina > cm.maxStamina)
