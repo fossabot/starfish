@@ -205,12 +205,12 @@ function msToTimeString(ms = 0) {
     if (!years && !days && !hours && !minutes)
         return `${negativePrefix}${seconds}s`;
     if (!years && !days && !hours)
-        return `${negativePrefix}${minutes}m ${seconds}s`;
+        return `${negativePrefix}${minutes}m ${seconds ? `${seconds}s` : ``}`;
     if (!years && !days)
-        return `${negativePrefix}${hours}h ${minutes}m`;
+        return `${negativePrefix}${hours}h  ${minutes ? `${minutes}m` : ``}`;
     if (!years)
-        return `${negativePrefix}${days}d ${hours}h`;
-    return `${negativePrefix}${years}y ${days}d`;
+        return `${negativePrefix}${days}d ${hours ? `${hours}h` : ``}`;
+    return `${negativePrefix}${years}y ${days ? `${days}d` : ``}`;
 }
 const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土월화수목금토일`;
 function garble(string = ``, percent = 0) {

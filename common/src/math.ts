@@ -2,16 +2,16 @@ import globals from './globals'
 
 function lerp(
   v0: number = 0,
-  v1: number = 0,
-  t: number = globals.tickInterval || 0,
+  v1: number = 1,
+  t: number = 0.5,
 ) {
   return v0 * (1 - t) + v1 * t
 }
 
 function clamp(
-  lowerBound: number,
-  n: number,
-  upperBound: number,
+  lowerBound: number = 0,
+  n: number = 0,
+  upperBound: number = 1,
 ) {
   return Math.min(Math.max(lowerBound, n), upperBound)
 }
@@ -22,7 +22,7 @@ function clamp(
 // @param floor? (boolean) If true, uses floor instead of round.
 //
 function r2( // "round to"
-  number: number,
+  number: number = 0,
   decimalPlaces: number = 2,
   floor?: boolean,
 ): number {
@@ -49,7 +49,7 @@ function vectorToRadians(
   coordPair: CoordinatePair = [0, 0],
 ): number {
   const [x, y] = coordPair
-  const angle = Math.atan2(y, x)
+  const angle = Math.atan2(y || 0, x || 0)
   return angle
 }
 function vectorToDegrees(
@@ -64,8 +64,8 @@ function distance(
   a: CoordinatePair = [0, 0],
   b: CoordinatePair = [0, 0],
 ) {
-  const c = a[0] - b[0]
-  const d = a[1] - b[1]
+  const c = (a[0] || 0) - (b[0] || 0)
+  const d = (a[1] || 0) - (b[1] || 0)
   return Math.sqrt(c * c + d * d)
 }
 /**
@@ -76,7 +76,11 @@ function angleFromAToB(
   b: CoordinatePair = [0, 0],
 ) {
   return (
-    ((Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) /
+    ((Math.atan2(
+      (b[1] || 0) - (a[1] || 0),
+      (b[0] || 0) - (a[0] || 0),
+    ) *
+      180) /
       Math.PI +
       360) %
     360
@@ -88,8 +92,8 @@ function angleFromAToB(
  * It will be in range [0, 180] if not signed.
  */
 function angleDifference(
-  a: number,
-  b: number,
+  a: number = 0,
+  b: number = 0,
   signed = false,
 ): number {
   if (signed) {
@@ -120,15 +124,18 @@ function vectorToUnitVector(
 ): CoordinatePair {
   const magnitude = vectorToMagnitude(vector)
   if (magnitude === 0) return [0, 0]
-  return [vector[0] / magnitude, vector[1] / magnitude]
+  return [
+    (vector[0] || 0) / magnitude,
+    (vector[1] || 0) / magnitude,
+  ]
 }
 function unitVectorFromThisPointToThatPoint(
   thisPoint: CoordinatePair = [0, 0],
   thatPoint: CoordinatePair = [0, 0],
 ): CoordinatePair {
   if (
-    thisPoint[0] === thatPoint[0] &&
-    thisPoint[1] === thatPoint[1]
+    (thisPoint[0] || 0) === (thatPoint[0] || 0) &&
+    (thisPoint[1] || 0) === (thatPoint[1] || 0)
   )
     return [0, 0]
   const angleBetween = angleFromAToB(thisPoint, thatPoint)
@@ -139,7 +146,8 @@ function vectorToMagnitude(
   vector: CoordinatePair = [0, 0],
 ): number {
   return Math.sqrt(
-    vector[0] * vector[0] + vector[1] * vector[1],
+    (vector[0] || 0) * (vector[0] || 0) +
+      (vector[1] || 0) * (vector[1] || 0),
   )
 }
 
@@ -149,8 +157,10 @@ function pointIsInsideCircle(
   radius: number = 0,
 ): boolean {
   return (
-    (point[0] - center[0]) * (point[0] - center[0]) +
-      (point[1] - center[1]) * (point[1] - center[1]) <=
+    ((point[0] || 0) - (center[0] || 0)) *
+      ((point[0] || 0) - (center[0] || 0)) +
+      ((point[1] || 0) - (center[1] || 0)) *
+        ((point[1] || 0) - (center[1] || 0)) <=
     radius * radius
   )
 }
@@ -160,12 +170,12 @@ function randomInsideCircle(
 ): CoordinatePair {
   const newCoords = (): CoordinatePair => {
     return [
-      Math.random() * radius * 2 - radius,
-      Math.random() * radius * 2 - radius,
+      Math.random() * (radius || 0) * 2 - (radius || 0),
+      Math.random() * (radius || 0) * 2 - (radius || 0),
     ]
   }
   let coords = newCoords()
-  while (!pointIsInsideCircle([0, 0], coords, radius))
+  while (!pointIsInsideCircle([0, 0], coords, radius || 0))
     coords = newCoords()
   return coords
 }
@@ -173,14 +183,20 @@ function randomInsideCircle(
 function randomSign() {
   return Math.random() > 0.5 ? 1 : -1
 }
-function randomInRange(a: number, b: number) {
+function randomInRange(a: number = 0, b: number = 1) {
   const diff = b - a
   return Math.random() * diff + a
 }
-function lottery(odds: number, outOf: number): boolean {
+function lottery(
+  odds: number = 1,
+  outOf: number = 10,
+): boolean {
   return Math.random() < odds / outOf
 }
-function randomBetween(start: number, end: number) {
+function randomBetween(
+  start: number = 1,
+  end: number = 10,
+) {
   const lesser = Math.min(start, end)
   const greater = Math.max(start, end)
   const diff = greater - lesser
