@@ -193,7 +193,6 @@ describe(`HumanShip cargo/credit distribution`, () => {
     ship.distributeCargoAmongCrew([
       { id: `carbon`, amount: 3 },
     ])
-    c.log(ship.crewMembers.map((cm) => cm.heldWeight))
     expect(
       ship.crewMembers[1].heldWeight,
     ).to.be.greaterThan(ship.crewMembers[0].heldWeight)
@@ -204,7 +203,6 @@ describe(`HumanShip cargo/credit distribution`, () => {
     ship.distributeCargoAmongCrew([
       { id: `carbon`, amount: 27 },
     ])
-    c.log(ship.crewMembers.map((cm) => cm.heldWeight))
     expect(ship.crewMembers[0].heldWeight).to.equal(10)
     expect(ship.crewMembers[1].heldWeight).to.equal(10)
     expect(ship.crewMembers[2].heldWeight).to.equal(10)

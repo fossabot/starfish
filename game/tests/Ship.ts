@@ -17,7 +17,6 @@ import {
   crewMemberData,
   humanShipData,
 } from './defaults'
-import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 
 describe(`Ship vision`, () => {
   it(`should be able to see another ship within range`, async () => {

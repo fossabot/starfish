@@ -1,3 +1,4 @@
+import c from '../../common/src'
 import { exec } from 'child_process'
 import isDocker from 'is-docker'
 
