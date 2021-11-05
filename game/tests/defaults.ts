@@ -1,3 +1,9 @@
+import c from '../../common/src'
+
+import socketIoClient, {
+  Socket as ClientSocket,
+} from 'socket.io-client' // yes, we're making a CLIENT here.
+
 export function crewMemberData(): BaseCrewMemberData {
   const randomId = Math.random().toString(36).substring(7)
   return {
@@ -73,4 +79,24 @@ export function miningPlanetData(): BaseMiningPlanetData {
     ...planetData(),
     planetType: `mining`,
   }
+}
+
+export function awaitIOConnection(client: ClientSocket) {
+  return new Promise<boolean>(async (r) => {
+    if (client.connected) {
+      r(true)
+      return
+    }
+    let timeout = 0
+    while (timeout < 500) {
+      // 5 seconds
+      await c.sleep(10)
+      if (client.connected) {
+        r(true)
+        return
+      }
+      timeout++
+    }
+    r(false)
+  })
 }

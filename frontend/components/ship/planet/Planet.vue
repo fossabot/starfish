@@ -158,14 +158,16 @@
             <ShipPlanetBuyShipCosmetics />
           </Tab>
 
-          <Tab
+          <!-- <Tab
             :title="`Jobs`"
             v-if="
-              crewMember && ship.planet && ship.planet.jobs
+              crewMember &&
+              ship.planet &&
+              ship.planet.maxContracts
             "
           >
-            <ShipPlanetJobs />
-          </Tab>
+            <ShipPlanetContracts />
+          </Tab> -->
 
           <Tab :title="`Downtown`">
             <ShipPlanetGuildRecruit />
@@ -246,7 +248,7 @@ export default Vue.extend({
   width: 420px;
 }
 .scroller {
-  max-height: 480px;
+  height: 440px;
   overflow-y: auto;
 }
 .badges {

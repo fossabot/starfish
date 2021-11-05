@@ -49,7 +49,7 @@ describe(`Attack remnant data`, () => {
 
     expect(g.attackRemnants.length).to.equal(1)
 
-    await c.sleep(100)
+    await c.sleep(400)
     const ars =
       await g.db?.attackRemnant.getAllConstructible()
     expect(ars?.length).to.equal(1)

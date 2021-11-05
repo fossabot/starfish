@@ -1,3 +1,7 @@
+interface PersistentGameData {
+  minimumGameRadius?: number
+}
+
 type ScanType =
   | `humanShip`
   | `aiShip`

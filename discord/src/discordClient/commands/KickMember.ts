@@ -2,6 +2,7 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
+import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
 export class KickMemberCommand implements Command {
   requiresShip = true
@@ -41,6 +42,26 @@ export class KickMemberCommand implements Command {
     )
     if (res) {
       await context.reply(res)
+    }
+
+    // remove role
+    const memberRole = await resolveOrCreateRole({
+      type: `crew`,
+      context,
+    })
+    try {
+      if (memberRole && !(`error` in memberRole)) {
+        if (
+          context.guildMember?.roles.cache.find(
+            (r) => r === memberRole,
+          )
+        )
+          context.guildMember?.roles
+            .remove(memberRole)
+            .catch((e) => c.log(e))
+      }
+    } catch (e) {
+      c.log(e)
     }
   }
 }

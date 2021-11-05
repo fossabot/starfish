@@ -61,6 +61,7 @@ interface ShipStub extends BaseStub {
   orderReactions?: ShipOrderReaction[]
   gameSettings?: AdminGameSettings
   banked?: BankEntry[]
+  contracts?: Contract[]
 
   spawnPoint?: CoordinatePair
   level?: number

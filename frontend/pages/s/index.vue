@@ -53,6 +53,8 @@
 
             <ShipLog />
 
+            <ShipContracts />
+
             <ShipPassives />
             <ShipStats />
 

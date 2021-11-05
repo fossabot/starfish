@@ -49,6 +49,18 @@
         </div>
       </div>
 
+      <div
+        v-if="dataToUse.defense"
+        class="flexbetween marbottiny"
+      >
+        <div class="marrightsmall fade">
+          Orbital Defense
+        </div>
+        <div class="textright">
+          Lv.{{ c.r2(dataToUse.defense) }}
+        </div>
+      </div>
+
       <template v-if="dataToUse.planetType === 'basic'">
         <div
           v-if="dataToUse.repairFactor"
@@ -56,18 +68,6 @@
         >
           <div class="fade">Repair Field</div>
           <div class="success">Active</div>
-        </div>
-
-        <div
-          v-if="dataToUse.defense"
-          class="flexbetween marbottiny"
-        >
-          <div class="marrightsmall fade">
-            Orbital Defense
-          </div>
-          <div class="textright">
-            Lv.{{ c.r2(dataToUse.defense) }}
-          </div>
         </div>
 
         <div

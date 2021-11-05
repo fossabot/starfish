@@ -15,6 +15,7 @@ import {
   humanShipData,
   basicPlanetData,
   aiShipData,
+  awaitIOConnection,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'
@@ -91,7 +92,7 @@ describe(`Planet levels`, () => {
         secure: true,
       },
     )
-    await awaitConnection(client)
+    await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
       client.emit(
@@ -126,7 +127,7 @@ describe(`Planet levels`, () => {
         secure: true,
       },
     )
-    await awaitConnection(client)
+    await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
       client.emit(
@@ -163,7 +164,7 @@ describe(`Planet levels`, () => {
         secure: true,
       },
     )
-    await awaitConnection(client)
+    await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
       client.emit(
@@ -316,23 +317,3 @@ describe(`Planet orbital defense`, () => {
     expect(res).to.be.undefined
   })
 })
-
-function awaitConnection(client: ClientSocket) {
-  return new Promise<boolean>(async (r) => {
-    if (client.connected) {
-      r(true)
-      return
-    }
-    let timeout = 0
-    while (timeout < 500) {
-      // 5 seconds
-      await c.sleep(10)
-      if (client.connected) {
-        r(true)
-        return
-      }
-      timeout++
-    }
-    r(false)
-  })
-}

@@ -38,6 +38,7 @@ interface BaseHumanShipData extends BaseShipData {
   seenCrewMembers?: string[]
   boughtHeaderBackgrounds?: HeaderBackground[]
   boughtTaglines?: string[]
+  contracts?: Contract[]
 }
 
 interface BaseAIShipData extends BaseShipData {
@@ -145,6 +146,7 @@ type ShipStatKey =
   | `highestSpeed`
   | `tutorials`
   | `netWorth`
+  | `completedContracts`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number
@@ -224,4 +226,12 @@ interface AchievementPropCondition {
 interface AchievementMembersInCondition {
   roomId: CrewLocation
   amount: `all` | number
+}
+
+interface Contract extends PlanetContractAvailable {
+  claimableExpiresAt: undefined
+  timeAccepted: number
+  fromPlanetId: string
+  status: `active` | `done` | `stolen`
+  lastSeenLocation: CoordinatePair
 }

@@ -12,6 +12,7 @@ import { describe, it } from 'mocha'
 import socketIoClient, {
   Socket as ClientSocket,
 } from 'socket.io-client' // yes, we're making a CLIENT here.
+import { awaitIOConnection } from './defaults'
 
 describe(`IO setup`, () => {
   it(`should have an io object on the game that is properly linked`, async () => {
@@ -28,7 +29,7 @@ describe(`IO setup`, () => {
       },
     )
 
-    const didConnect = await awaitConnection(client)
+    const didConnect = await awaitIOConnection(client)
 
     expect(didConnect).to.be.true
   })
@@ -41,7 +42,7 @@ describe(`IO setup`, () => {
         secure: true,
       },
     )
-    await awaitConnection(client)
+    await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
       client.emit(`hello`, (res) => {
@@ -53,23 +54,3 @@ describe(`IO setup`, () => {
     )
   })
 })
-
-function awaitConnection(client: ClientSocket) {
-  return new Promise<boolean>(async (r) => {
-    if (client.connected) {
-      r(true)
-      return
-    }
-    let timeout = 0
-    while (timeout < 500) {
-      // 5 seconds
-      await c.sleep(10)
-      if (client.connected) {
-        r(true)
-        return
-      }
-      timeout++
-    }
-    r(false)
-  })
-}

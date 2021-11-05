@@ -101,6 +101,7 @@ interface IOClientEvents {
   [`game:resetAllPlanets`]: (
     adminId: string,
     password: string,
+    callback?: () => void,
   ) => void
   [`game:resetAllComets`]: (
     adminId: string,
@@ -151,10 +152,12 @@ interface IOClientEvents {
   [`game:resetAllAIShips`]: (
     adminId: string,
     password: string,
+    callback?: () => void,
   ) => void
   [`game:resetAllShips`]: (
     adminId: string,
     password: string,
+    callback?: () => void,
   ) => void
   [`game:resetAllAttackRemnants`]: (
     adminId: string,
@@ -333,6 +336,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     amount: number,
+    callback?: (res: IOResponse<number>) => void,
   ) => void
   [`crew:donateToPlanet`]: (
     shipId: string,
@@ -388,6 +392,13 @@ interface IOClientEvents {
     itemType: ItemType,
     itemId: ItemId | ChassisId,
     callback: (res: IOResponse<ShipStub>) => void,
+  ) => void
+
+  [`ship:acceptContract`]: (
+    shipId: string,
+    crewId: string,
+    contractId: string,
+    callback: (res: IOResponse<Contract>) => void,
   ) => void
 
   [`ship:buyTagline`]: (

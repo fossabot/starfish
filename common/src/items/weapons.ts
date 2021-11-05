@@ -185,8 +185,8 @@ export const weapons: {
     type: `weapon`,
     id: `blaster1`,
     displayName: `Barnacle Blaster v1`,
-    description: ``,
-    mass: 4000 * game.itemMassMultiplier,
+    description: `Known for its corrosive effect on the hulls of ships, this weapon can melt through any armor given enough time.`,
+    mass: 2400 * game.itemMassMultiplier,
     basePrice: { credits: 50 * game.itemPriceMultiplier },
     range: 0.15,
     rarity: 4,
@@ -198,7 +198,7 @@ export const weapons: {
     passives: [
       {
         id: `boostDamageToItemType`,
-        intensity: 0.1,
+        intensity: 0.2,
         data: { type: `armor` },
       },
     ],
@@ -207,8 +207,8 @@ export const weapons: {
     type: `weapon`,
     id: `blaster2`,
     displayName: `Barnacle Blaster v2`,
-    description: ``,
-    mass: 4600 * game.itemMassMultiplier,
+    description: `Known for its corrosive effect on the hulls of ships, this weapon can melt through any armor given enough time.`,
+    mass: 2800 * game.itemMassMultiplier,
     basePrice: { credits: 305 * game.itemPriceMultiplier },
     range: 0.175,
     rarity: 7,
@@ -220,7 +220,7 @@ export const weapons: {
     passives: [
       {
         id: `boostDamageToItemType`,
-        intensity: 0.1,
+        intensity: 0.2,
         data: { type: `armor` },
       },
     ],
@@ -229,8 +229,8 @@ export const weapons: {
     type: `weapon`,
     id: `blaster3`,
     displayName: `Barnacle Blaster v3`,
-    description: ``,
-    mass: 5100 * game.itemMassMultiplier,
+    description: `Known for its corrosive effect on the hulls of ships, this weapon can melt through any armor given enough time.`,
+    mass: 3300 * game.itemMassMultiplier,
     basePrice: { credits: 810 * game.itemPriceMultiplier },
     range: 0.22,
     rarity: 11,
@@ -242,7 +242,7 @@ export const weapons: {
     passives: [
       {
         id: `boostDamageToItemType`,
-        intensity: 0.1,
+        intensity: 0.2,
         data: { type: `armor` },
       },
     ],

@@ -351,11 +351,17 @@ export class MiningPlanet extends Planet {
   async levelUp() {
     super.levelUp()
 
+    //* high chance to add mine speed boost
     if (this.level > 1 && Math.random() > 0.2) {
       this.addPassive({
         id: `boostMineSpeed`,
         intensity: 0.01,
       })
+    }
+
+    //* low chance to add orbital defense
+    if (this.level > 3 && Math.random() > 0.9) {
+      this.defense += 1
     }
 
     // todo add more passives

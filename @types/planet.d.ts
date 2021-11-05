@@ -13,6 +13,7 @@ interface BasePlanetData {
   xp: number
   baseLevel: number
   creatures: string[]
+  defense?: number
   passives?: ShipPassiveEffect[]
   pacifist?: boolean
   stats?: PlanetStats
@@ -24,7 +25,8 @@ interface BaseBasicPlanetData extends BasePlanetData {
   allegiances: PlanetAllegianceData[]
   vendor: PlanetVendor
   bank: boolean
-  defense: number
+  maxContracts?: number
+  contracts?: PlanetContractAvailable[]
 }
 
 interface BaseMiningPlanetData extends BasePlanetData {
@@ -111,4 +113,16 @@ type PlanetStatKey = `totalDonated` | `shipsLanded`
 interface PlanetStatEntry {
   stat: PlanetStatKey
   amount: number
+}
+
+interface PlanetContractAvailable {
+  id: string
+  targetId: string
+  targetName: string
+  targetGuildId?: GuildId
+  claimableExpiresAt: number
+  timeAllowed: number
+  reward: Price
+  difficulty: number
+  claimCost: Price
 }

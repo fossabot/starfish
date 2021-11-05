@@ -163,7 +163,24 @@
         <div class="panesubhead">Set Target</div>
       </div>
 
-      <span
+      <span>
+        <button
+          v-if="ship.speed"
+          @click="setTargetAlongPath"
+          :class="{
+            secondary:
+              c.angleDifference(
+                c.vectorToDegrees(ship.velocity),
+                c.angleFromAToB(
+                  ship.location,
+                  crewMember.targetLocation,
+                ),
+              ) > 2,
+          }"
+        >
+          <span>Current Trajectory</span>
+        </button> </span
+      ><span
         v-for="planet in planetsToShow"
         :key="'gotoplanet' + planet.name"
       >
@@ -409,6 +426,15 @@ export default Vue.extend({
     },
     setTarget(target: CoordinatePair): void {
       this.$store.commit('setTarget', target)
+    },
+    setTargetAlongPath() {
+      this.$store.commit(
+        'setTarget',
+        this.ship?.location.map(
+          (l, index) =>
+            l + this.ship?.velocity[index] * 1000,
+        ),
+      )
     },
     thrust(percent: number): void {
       this.animateThrust = true

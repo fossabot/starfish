@@ -253,6 +253,7 @@ export class CrewMember extends Stubbable {
   }
 
   buy(price: Price): true | string {
+    this.active()
     if (!c.canAfford(price, this.ship, this))
       return `Insufficient funds.`
 
@@ -309,7 +310,7 @@ export class CrewMember extends Stubbable {
 
     if (amount <= 0 || isNaN(amount)) return 0
 
-    amount = c.r2(amount, 2, true) // round down to 2 decimal places
+    amount = c.r2(amount, 2) // round to 2 decimal places
 
     const existingStock = this.inventory.find(
       (cargo) => cargo.id === id,

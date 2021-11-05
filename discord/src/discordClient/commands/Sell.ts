@@ -82,7 +82,7 @@ export class SellCommand implements Command {
         label: `${p.amount} ton${
           p.amount === 1 ? `` : `s`
         } of ${c.capitalize(c.camelCaseToWords(p.id))}:
-${c.priceToString(p.price)}`,
+${c.priceToString(p.price)}/ton`,
         style:
           (p.price.credits || 0) <
           (c.cargo[p.id].basePrice.credits || 0)
@@ -95,7 +95,6 @@ ${c.priceToString(p.price)}`,
       })),
       context: context,
       callback: async (choice) => {
-        c.log(choice)
         const inv = context.crewMember!.inventory.find(
           (i) => `sell` + i.id === choice,
         )

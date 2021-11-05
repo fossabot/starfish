@@ -22,17 +22,15 @@ try {
       .readFileSync(`/run/secrets/admin_keys`, `utf-8`)
       .trim()
   } catch (e) {
-    adminKeys = ``
+    adminKeys = `{}`
   }
 }
 
-if (process.env.NODE_ENV === `production`) {
-  try {
-    adminKeys = JSON.parse(adminKeys)
-  } catch (e) {
-    adminKeys = false
-    c.log(`red`, `Error loading admin keys!`, e)
-  }
+try {
+  adminKeys = JSON.parse(adminKeys)
+} catch (e) {
+  adminKeys = false
+  c.log(`red`, `Error loading admin keys!`, e)
 }
 
 function isAdmin(id, password) {
@@ -216,15 +214,19 @@ export default function (
 
   socket.on(
     `game:resetAllPlanets`,
-    async (id, password) => {
+    async (id, password, callback) => {
       if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetAllPlanets`,
         )
       c.log(`Admin resetting all planets`)
-      while (game.planets.length)
-        await game.removePlanet(game.planets[0])
+      const promises: Array<Promise<any>> = []
+      for (let planet of [...game.planets])
+        promises.push(game.removePlanet(planet))
+      await Promise.all(promises)
+
+      if (callback) callback()
     },
   )
 
@@ -235,8 +237,10 @@ export default function (
         `Non-admin attempted to access game:resetAllComets`,
       )
     c.log(`Admin resetting all comets`)
-    while (game.comets.length)
-      await game.removePlanet(game.comets[0])
+    const promises: Array<Promise<any>> = []
+    for (let comet of [...game.comets])
+      promises.push(game.removePlanet(comet))
+    await Promise.all(promises)
   })
 
   socket.on(
@@ -352,8 +356,11 @@ export default function (
         `Non-admin attempted to access game:resetAllZones`,
       )
     c.log(`Admin resetting all zones`)
-    while (game.zones.length)
-      await game.removeZone(game.zones[0])
+
+    const promises: Array<Promise<any>> = []
+    for (let zone of [...game.zones])
+      promises.push(game.removeZone(zone))
+    await Promise.all(promises)
   })
 
   socket.on(`game:resetAllCaches`, async (id, password) => {
@@ -363,8 +370,10 @@ export default function (
         `Non-admin attempted to access game:resetAllCaches`,
       )
     c.log(`Admin resetting all caches`)
-    while (game.caches.length)
-      await game.removeCache(game.caches[0])
+    const promises: Array<Promise<any>> = []
+    for (let cache of [...game.caches])
+      promises.push(game.removeCache(cache))
+    await Promise.all(promises)
   })
 
   socket.on(
@@ -385,34 +394,39 @@ export default function (
 
   socket.on(
     `game:resetAllAIShips`,
-    async (id, password) => {
+    async (id, password, callback) => {
       if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetAllAIShips`,
         )
       c.log(`Admin resetting all AI ships`)
-      for (let ship of game.ships) {
-        if (ship.ai) await game.removeShip(ship)
-      }
-      c.log(game.aiShips.length, `AI ships reset`)
-      game.spawnNewAIs()
+      const promises: Array<Promise<any>> = []
+      for (let ship of [...game.ships])
+        if (ship.ai) promises.push(game.removeShip(ship))
+      await Promise.all(promises)
+
+      if (callback) callback()
     },
   )
 
-  socket.on(`game:resetAllShips`, async (id, password) => {
-    if (!game) return
-    if (!isAdmin(id, password))
-      return c.log(
-        `Non-admin attempted to access game:resetAllShips`,
-      )
-    c.log(`Admin resetting all ships`)
-    for (let ship of game.ships) {
-      await game.removeShip(ship)
-    }
-    while (game.ships.length)
-      await game.removeShip(game.ships[0])
-  })
+  socket.on(
+    `game:resetAllShips`,
+    async (id, password, callback) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access game:resetAllShips`,
+        )
+      c.log(`Admin resetting all ships`)
+      const promises: Array<Promise<any>> = []
+      for (let ship of [...game.ships])
+        promises.push(game.removeShip(ship))
+      await Promise.all(promises)
+
+      if (callback) callback()
+    },
+  )
 
   socket.on(
     `game:shipList`,

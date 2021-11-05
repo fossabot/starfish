@@ -62,6 +62,29 @@ const shipSchemaFields: Record<
   banked: [
     { id: String, amount: Number, timestamp: Number },
   ],
+  contracts: [
+    {
+      id: String,
+      reward: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+      status: String,
+      timeAllowed: Number,
+      timeAccepted: Number,
+      fromPlanetId: String,
+      targetId: String,
+      targetName: String,
+      targetGuildId: String,
+      difficulty: Number,
+      claimCost: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+    },
+  ],
   crewMembers: [
     {
       name: { type: String, required: true },
