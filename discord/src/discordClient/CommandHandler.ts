@@ -36,6 +36,7 @@ import { CockpitCommand } from './commands/Cockpit'
 import { BuyCommand } from './commands/Buy'
 import { SellCommand } from './commands/Sell'
 import { CrewLeaveGameCommand } from './commands/CrewLeaveGame'
+import { ContributeToCommonFundCommand } from './commands/DonateToCommonFund'
 
 export class CommandHandler {
   private commands: Command[]
@@ -59,6 +60,7 @@ export class CommandHandler {
       WeaponsCommand,
       MineCommand,
       CockpitCommand,
+      ContributeToCommonFundCommand,
       RespawnCommand,
       ChangeShipNameCommand,
       AlertLevelCommand,
@@ -179,6 +181,9 @@ export class CommandHandler {
       if (
         commandContext.ship &&
         matchedCommand.requiresShip &&
+        ![`leave`, `leavegame`].includes(
+          matchedCommand.commandNames[0],
+        ) &&
         commandContext.ship.tutorial
       )
         runnable = `Discord commands are disabled while you're in the tutorial. Go to ${c.frontendUrl} to play!`

@@ -62,6 +62,30 @@ const shipSchemaFields: Record<
   banked: [
     { id: String, amount: Number, timestamp: Number },
   ],
+  contracts: [
+    {
+      id: String,
+      reward: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+      status: String,
+      timeAllowed: Number,
+      timeAccepted: Number,
+      fromPlanetId: String,
+      targetId: String,
+      targetName: String,
+      targetGuildId: String,
+      difficulty: Number,
+      lastSeenLocation: [Number],
+      claimCost: {
+        credits: Number,
+        shipCosmeticCurrency: Number,
+        crewCosmeticCurrency: Number,
+      },
+    },
+  ],
   crewMembers: [
     {
       name: { type: String, required: true },
@@ -96,7 +120,7 @@ const shipSchemaFields: Record<
       combatTactic: String,
       targetitemType: String,
       minePriority: String,
-      attackGuilds: [String],
+      // attackGuilds: [String],
       targetLocation: [Number, Number],
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],

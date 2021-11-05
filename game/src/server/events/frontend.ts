@@ -308,6 +308,50 @@ export default function (
   )
 
   socket.on(
+    `ship:acceptContract`,
+    (shipId, crewId, contractId, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== crewMember.id)
+        return callback({
+          error: `Only the captain may take on contracts.`,
+        })
+
+      const contract = (
+        ship.planet as BasicPlanet
+      )?.contracts?.find((co) => co.id === contractId)
+      if (!contract)
+        return callback({
+          error: `That contract is not available here.`,
+        })
+
+      const contractRes = ship.startContract(contract.id)
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${
+          ship.name
+        } accepted contract ${contract.id} at ${
+          ship.planet ? ship.planet.name : `???`
+        }.`,
+      )
+
+      callback(contractRes)
+    },
+  )
+
+  socket.on(
     `ship:donateCosmeticCurrencyToPlanet`,
     (shipId, crewId, amount, callback) => {
       if (!game) return
@@ -358,6 +402,8 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated ${amount} ${c.shipCosmeticCurrencyPlural} to the planet ${planet.name}.`,
       )
+
+      return callback({ data: ship._stub })
     },
   )
 
@@ -379,7 +425,7 @@ export default function (
         return callback({ error: `No crew member found.` })
       if (ship.captain !== crewMember.id)
         return callback({
-          error: `Only the captain may deposit common 💳${c.baseCurrencyPlural} in the bank.`,
+          error: `Only the captain may deposit currency in the bank.`,
         })
       const planet = ship.planet
       if (!planet)
@@ -400,6 +446,10 @@ export default function (
       if (amount < 0)
         return callback({
           error: `You can't deposit a negative amount!`,
+        })
+      if (amount === 0)
+        return callback({
+          error: `Ha ha, zero, nice one.`,
         })
 
       ship.depositInBank(amount)

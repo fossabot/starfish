@@ -35,9 +35,10 @@ export class MiningPlanet extends Planet {
     if (resourceId === `shipCosmeticCurrency`)
       return Math.ceil((Math.random() + 0.5) * 3)
     const rarity = (c.cargo[resourceId]?.rarity || 100) + 1
-    const scaledByLevel = this.level / rarity
-    return Math.floor(
-      (Math.random() + 0.3) * 100 * scaledByLevel,
+    const scaledByLevel =
+      Math.max(this.level, 1) / Math.max(rarity, 1)
+    return Math.ceil(
+      10 + (Math.random() + 0.3) * 100 * scaledByLevel,
     )
   }
 
@@ -351,11 +352,17 @@ export class MiningPlanet extends Planet {
   async levelUp() {
     super.levelUp()
 
+    //* high chance to add mine speed boost
     if (this.level > 1 && Math.random() > 0.2) {
       this.addPassive({
         id: `boostMineSpeed`,
         intensity: 0.01,
       })
+    }
+
+    //* low chance to add orbital defense
+    if (this.level > 3 && Math.random() > 0.9) {
+      this.defense += 1
     }
 
     // todo add more passives

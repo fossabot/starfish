@@ -152,6 +152,8 @@ declare const _default: {
     defaultGameSettings: {
         id: any;
         humanShipLimit: any;
+        safeZoneRadius: any;
+        contractLocationRadius: any;
         aiDifficultyMultiplier: any;
         baseXpGain: any;
         baseStaminaUse: any;
@@ -164,6 +166,8 @@ declare const _default: {
         baseCritChance: any;
         baseCritDamageMultiplier: any;
         staminaBottomedOutResetPoint: any;
+        staminaBottomedOutChargeSlowdown: any;
+        staminaRechargeMultiplier: any;
         newCrewMemberCredits: any;
         planetDensity: any;
         cometDensity: any;
@@ -203,9 +207,11 @@ declare const _default: {
     planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
+    itemMassMultiplier: number;
     weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
+    zoneExpireTime: number;
     baseShipScanProperties: {
         id: true;
         name: true;
@@ -238,7 +244,7 @@ declare const _default: {
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
-    getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number) => number;
+    getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number, rechargeSpeedMultiplier: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
     statToString: (data: {
@@ -272,6 +278,8 @@ declare const _default: {
         credits?: number | undefined;
         crewCosmeticCurrency?: number | undefined;
     } | null | undefined, useShipCommonCredits?: boolean) => number | false;
+    getPlanetDefenseRadius: (level: number) => number;
+    getPlanetDefenseDamage: (level: number) => number;
     log: (...args: any[]) => void;
     trace: () => void;
     sleep: (ms: number) => Promise<void>;
@@ -301,12 +309,14 @@ declare const _default: {
     acronym: (string?: string) => string;
     priceToString: (p: Price) => string;
     lerp: (v0?: number, v1?: number, t?: number) => number;
-    r2: (number: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
+    clamp: (lowerBound?: number, n?: number, upperBound?: number) => number;
+    r2: (number?: number, decimalPlaces?: number, floor?: boolean | undefined) => number;
     radiansToDegrees: (radians?: number) => number;
     degreesToRadians: (degrees?: number) => number;
     distance: (a?: CoordinatePair, b?: CoordinatePair) => number;
     angleFromAToB: (a?: CoordinatePair, b?: CoordinatePair) => number;
-    angleDifference: (a: number, b: number, signed?: boolean) => number;
+    mirrorAngleVertically: (angle?: number) => number;
+    angleDifference: (a?: number, b?: number, signed?: boolean) => number;
     randomInsideCircle: (radius: number) => CoordinatePair;
     degreesToUnitVector: (degrees?: number) => CoordinatePair;
     vectorToUnitVector: (vector?: CoordinatePair) => CoordinatePair;
@@ -316,9 +326,9 @@ declare const _default: {
     coordPairToRadians: (coordPair?: CoordinatePair) => number;
     vectorToMagnitude: (vector?: CoordinatePair) => number;
     randomSign: () => 1 | -1;
-    randomInRange: (a: number, b: number) => number;
-    lottery: (odds: number, outOf: number) => boolean;
-    randomBetween: (start: number, end: number) => number;
+    randomInRange: (a?: number, b?: number) => number;
+    lottery: (odds?: number, outOf?: number) => boolean;
+    randomBetween: (start?: number, end?: number) => number;
     gameName: string;
     gameDescription: string;
     gameColor: string;

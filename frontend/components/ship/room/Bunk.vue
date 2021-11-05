@@ -10,18 +10,30 @@
     <div class="panesection">zzzzZZZZzzzz.....</div>
     <div
       class="panesection"
-      v-if="crewMember.bottomedOutOnStamina"
+      v-if="
+        crewMember.bottomedOutOnStamina &&
+        msToBottomedOutResetPoint > 0
+      "
     >
       <div class="bold warning marbotsmall">
         You've hit your limit!
       </div>
-      You must rest until you're at least
-      {{
-        ship.gameSettings.staminaBottomedOutResetPoint *
-        100
-      }}% recovered. ({{
-        c.msToTimeString(msToBottomedOutResetPoint)
-      }})
+      You must rest at a
+      <span class="warning"
+        >{{
+          c.r2(
+            ship.gameSettings
+              .staminaBottomedOutChargeSlowdown,
+          ) * 100
+        }}% reduced</span
+      >
+      recovery rate until you're at least
+      <b
+        >{{
+          ship.gameSettings.staminaBottomedOutResetPoint *
+          100
+        }}% recovered</b
+      >. ({{ c.msToTimeString(msToBottomedOutResetPoint) }})
     </div>
     <div class="panesection" v-if="timeToRested">
       Fully rested in {{ timeToRested }}
@@ -102,6 +114,8 @@ export default Vue.extend({
           this.crewMember.stamina) /
           (c.getStaminaGainPerTickForSingleCrewMember(
             this.ship.gameSettings.baseStaminaUse,
+            this.ship.gameSettings
+              .staminaRechargeMultiplier,
           ) *
             generalBoostMultiplier *
             passiveBoostMultiplier)) *
@@ -139,7 +153,13 @@ export default Vue.extend({
           this.crewMember.stamina) /
           (c.getStaminaGainPerTickForSingleCrewMember(
             this.ship.gameSettings.baseStaminaUse,
+            this.ship.gameSettings
+              .staminaRechargeMultiplier,
           ) *
+            (this.crewMember.bottomedOutOnStamina
+              ? this.ship.gameSettings
+                  .staminaBottomedOutChargeSlowdown
+              : 1) *
             generalBoostMultiplier *
             passiveBoostMultiplier)) *
         c.tickInterval

@@ -1,7 +1,7 @@
 interface BaseAttackRemnantData {
   id?: string
-  attacker: CombatShip
-  defender: CombatShip
+  attacker?: CombatShip
+  defender?: CombatShip
   damageTaken: TakenDamageResult
   start: CoordinatePair
   end: CoordinatePair

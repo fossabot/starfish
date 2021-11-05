@@ -13,6 +13,7 @@ import { describe, it } from 'mocha'
 // chai.use(sinonChai)
 
 import {
+  aiShipData,
   basicPlanetData,
   crewMemberData,
   humanShipData,
@@ -26,8 +27,8 @@ describe(`Combat HumanShip target selection`, () => {
     let ship2 = await g.addHumanShip(humanShipData())
     let ship3 = await g.addHumanShip(humanShipData())
 
-    ship2.move([0.0001, 0])
-    ship3.move([0.0002, 0])
+    ship2.move([10.0001, 0])
+    ship3.move([10.0002, 0])
 
     ship.updateVisible()
 
@@ -166,9 +167,9 @@ describe(`Combat HumanShip target selection`, () => {
       await ship.addCrewMember(crewMemberData())
     for (let cm of ship.crewMembers) cm.goTo(`weapons`)
 
-    ship.move([0, 0])
-    ship2.move([0.0001, 0])
-    ship3.move([0.0002, 0])
+    ship.move([10, 0])
+    ship2.move([10.0001, 0])
+    ship3.move([10.0002, 0])
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(2)
 
@@ -190,9 +191,9 @@ describe(`Combat HumanShip target selection`, () => {
       await ship.addCrewMember(crewMemberData())
     for (let cm of ship.crewMembers) cm.goTo(`weapons`)
 
-    ship.move([0, 0])
-    ship2.move([0.0001, 0])
-    ship3.move([0.0002, 0])
+    ship.move([10, 0])
+    ship2.move([10.0001, 0])
+    ship3.move([10.0002, 0])
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(2)
 
@@ -218,8 +219,8 @@ describe(`Combat HumanShip target selection`, () => {
     const cm = ship.crewMembers[0]
     cm.goTo(`weapons`)
 
-    ship.move([0, 0])
-    ship2.move([0.0001, 0])
+    ship.move([10, 0])
+    ship2.move([10.0001, 0])
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(
       1,
@@ -236,14 +237,56 @@ describe(`Combat HumanShip target selection`, () => {
     )
   })
 
+  it(`should not be possible to target or be targeted by a human ship that's within the safe zone`, async () => {
+    const g = new Game()
+    let ship = await g.addHumanShip(humanShipData())
+    let ship2 = await g.addHumanShip(humanShipData())
+
+    await ship.addCrewMember(crewMemberData())
+    const cm = ship.crewMembers[0]
+    cm.goTo(`weapons`)
+
+    ship.move([0, 0])
+    ship2.move([0, 0])
+
+    ship2.updateVisible()
+    expect(ship2.getEnemiesInAttackRange().length).to.equal(
+      0,
+    )
+
+    ship.move([0 + g.settings.safeZoneRadius + 0.0001, 0])
+    ship2.move([0 + g.settings.safeZoneRadius - 0.0001, 0])
+    ship2.updateVisible()
+    expect(ship2.getEnemiesInAttackRange().length).to.equal(
+      0,
+    )
+
+    ship.move([0 + g.settings.safeZoneRadius - 0.0001, 0])
+    ship2.move([0 + g.settings.safeZoneRadius + 0.0001, 0])
+    ship2.updateVisible()
+    expect(ship2.getEnemiesInAttackRange().length).to.equal(
+      0,
+    )
+
+    const flamingo = await g.addAIShip(
+      aiShipData(3, `flamingos`),
+    )
+    ship2.move([0, 0])
+    flamingo.move([0, 0])
+    ship2.updateVisible()
+    expect(ship2.getEnemiesInAttackRange().length).to.equal(
+      1,
+    )
+  })
+
   it(`should find a new best target if the current target becomes untargetable`, async () => {
     const g = new Game()
     let ship = await g.addHumanShip(humanShipData())
     let ship2 = await g.addHumanShip(humanShipData())
     let ship3 = await g.addHumanShip(humanShipData())
 
-    ship2.move([0.0001, 0])
-    ship3.move([0.0002, 0])
+    ship2.move([10.0001, 0])
+    ship3.move([10.0002, 0])
 
     await ship.addCrewMember(crewMemberData())
     const cm = ship.crewMembers[0]

@@ -12,18 +12,21 @@
     </div>
 
     <div v-if="buyableItems.length || sellableItems.length">
-      <div class="sub marbot">
-        <div v-if="isCaptain">
-          Captain, you can use your ship's common fund to
-          buy and sell equipment for the ship.
-        </div>
+      <div class="sub marbot" v-if="isCaptain">
+        Captain, you can use your ship's common fund to buy
+        and sell equipment for the ship.
       </div>
 
       <div class="sub padbotsmall">
         <div class="flexbetween">
           <div>
             Common Fund:
-            <b>💳{{ ship && c.r2(ship.commonCredits) }}</b>
+            <b
+              >💳{{
+                ship &&
+                c.numberWithCommas(c.r2(ship.commonCredits))
+              }}</b
+            >
           </div>
           <div
             class="flexcenter"
@@ -198,7 +201,6 @@ export default Vue.extend({
           }
         })
         .filter((i: ItemStub) => i)
-        .filter((e) => e.price > 0)
     },
     swappableChassis() {
       return (this.ship.planet?.vendor?.chassis || []).map(

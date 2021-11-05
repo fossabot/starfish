@@ -41,18 +41,18 @@ export class JoinCommand implements Command {
         `chat`,
       )
 
-    // const crewRole = await resolveOrCreateRole({
-    //   type: `crew`,
-    //   guild: context.guild,
-    // })
-    // if (!crewRole) {
-    //   await context.reply(
-    //     `Failed to add you to the \`Crew\` server role.`,
-    //   )
-    // } else {
-    //   context.guildMember?.roles
-    //     .add(crewRole)
-    //     .catch(() => {})
-    // }
+    const crewRole = await resolveOrCreateRole({
+      type: `crew`,
+      context,
+    })
+    if (!crewRole || `error` in crewRole) {
+      await context.reply(
+        `Failed to add you to the \`Crew\` server role.`,
+      )
+    } else {
+      context.guildMember?.roles
+        .add(crewRole)
+        .catch(() => {})
+    }
   }
 }

@@ -41,7 +41,10 @@ export class GameChannel {
 
   async canSend() {
     return checkPermissions({
-      requiredPermissions: [`SEND_MESSAGES`],
+      requiredPermissions: [
+        `SEND_MESSAGES`,
+        `VIEW_CHANNEL`,
+      ],
       channel: this.channel,
       guild: this.guild || undefined,
     })

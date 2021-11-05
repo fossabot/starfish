@@ -205,7 +205,7 @@ export abstract class CombatShip extends Ship {
   ): boolean {
     // self
     if (this === otherShip) return false
-    // nonexistane
+    // nonexistant
     if (!otherShip) return false
     // not attackable
     if (!otherShip.attackable) return false
@@ -228,6 +228,16 @@ export abstract class CombatShip extends Ship {
     if (
       otherShip.guildId &&
       otherShip.guildId === this.guildId
+    )
+      return false
+    // human ships within protected zone
+    if (
+      this.human &&
+      otherShip.human &&
+      (c.distance([0, 0], otherShip.location) <
+        (this.game?.settings.safeZoneRadius || Infinity) ||
+        c.distance([0, 0], this.location) <
+          (this.game?.settings.safeZoneRadius || Infinity))
     )
       return false
     // too far, or not in sight range
@@ -344,16 +354,16 @@ export abstract class CombatShip extends Ship {
               guildMembersInRange++
           })
 
-          c.log(
-            `damage boosted by`,
-            (p.intensity || 0) * guildMembersInRange,
-            `because there are`,
-            guildMembersInRange,
-            `guild members within`,
-            passiveRange,
-            this.name,
-            guildMembersWithinDistancePassives,
-          )
+          // c.log(
+          //   `damage boosted by`,
+          //   (p.intensity || 0) * guildMembersInRange,
+          //   `because there are`,
+          //   guildMembersInRange,
+          //   `guild members within`,
+          //   passiveRange,
+          //   this.name,
+          //   guildMembersWithinDistancePassives,
+          // )
 
           damageMultiplier +=
             (p.intensity || 0) * guildMembersInRange
@@ -387,14 +397,14 @@ export abstract class CombatShip extends Ship {
           })
 
           if (!guildMembersInRange) {
-            c.log(
-              `damage boosted by`,
-              p.intensity || 0,
-              `because there are no guild members within passive range`,
-              passiveRange,
-              this.name,
-              soloPassives,
-            )
+            // c.log(
+            //   `damage boosted by`,
+            //   p.intensity || 0,
+            //   `because there are no guild members within passive range`,
+            //   passiveRange,
+            //   this.name,
+            //   soloPassives,
+            // )
             damageMultiplier += p.intensity || 0
           }
         })
@@ -404,14 +414,14 @@ export abstract class CombatShip extends Ship {
 
       const boostDamagePassiveMultiplier =
         this.getPassiveIntensity(`boostDamage`) + 1
-      if (boostDamagePassiveMultiplier > 1)
-        c.log(
-          `damage multiplied by`,
-          boostDamagePassiveMultiplier,
-          `because of damage boost passive(s)`,
-          this.name,
-          this.passives,
-        )
+      // if (boostDamagePassiveMultiplier > 1)
+      //   c.log(
+      //     `damage multiplied by`,
+      //     boostDamagePassiveMultiplier,
+      //     `because of damage boost passive(s)`,
+      //     this.name,
+      //     this.passives,
+      //   )
       damage *= boostDamagePassiveMultiplier
 
       // ----- done with passives -----
@@ -420,16 +430,16 @@ export abstract class CombatShip extends Ship {
     // * using weapon repair level only for damage rolls. hit rolls are unaffected to keep the excitement alive, know what I mean?
     if (damage === 0) miss = true
 
-    c.log(
-      `gray`,
-      `need to beat ${toHit}, rolled ${hitRoll} for a ${
-        miss
-          ? `miss`
-          : `${
-              didCrit ? `crit` : `hit`
-            } of damage ${damage}`
-      }`,
-    )
+    // c.log(
+    //   `gray`,
+    //   `need to beat ${toHit}, rolled ${hitRoll} for a ${
+    //     miss
+    //       ? `miss`
+    //       : `${
+    //           didCrit ? `crit` : `hit`
+    //         } of damage ${damage}`
+    //   }`,
+    // )
     const damageResult: AttackDamageResult = {
       miss,
       damage,
@@ -733,10 +743,10 @@ export abstract class CombatShip extends Ship {
       const remainingHp = equipmentToAttack.hp
       // ----- item not destroyed -----
       if (remainingHp >= adjustedRemainingDamage) {
-        c.log(
-          `gray`,
-          `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `hitting ${equipmentToAttack.displayName} with ${adjustedRemainingDamage} damage (${remainingHp} hp remaining)`,
+        // )
         equipmentToAttack.hp -= adjustedRemainingDamage
         equipmentToAttack._stub = null
         remainingDamage = 0
@@ -750,10 +760,10 @@ export abstract class CombatShip extends Ship {
       }
       // ----- item destroyed -----
       else {
-        c.log(
-          `gray`,
-          `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
-        )
+        // c.log(
+        //   `gray`,
+        //   `destroying ${equipmentToAttack.displayName} with ${remainingHp} damage`,
+        // )
         equipmentToAttack.hp = 0
         equipmentToAttack._stub = null
         remainingDamage -= remainingHp
@@ -786,7 +796,14 @@ export abstract class CombatShip extends Ship {
             ],
             `high`,
           )
-          if (`logEntry` in attacker && !didDie)
+          if (
+            `logEntry` in attacker &&
+            !didDie &&
+            // check to see if the attacker can actually see equipment repair
+            (attacker as HumanShip).visible?.ships?.find(
+              (s) => s.id === this.id,
+            )?.items?.[0]?.repair
+          )
             attacker.logEntry(
               [
                 `You have disabled`,
@@ -838,7 +855,7 @@ export abstract class CombatShip extends Ship {
           ? attack.weapon.displayName
           : `passive effect`
       }, and ${
-        didDie ? `dies` : `has ${this.hp} hp left`
+        didDie ? `dies` : `has ${c.r2(this.hp)} hp left`
       }.`,
     )
 
@@ -895,7 +912,10 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `(${c.r2(this._hp)} HP left).`,
+                {
+                  text: `(${c.r2(this._hp)} HP left).`,
+                  color: `rgba(255,255,255,.5)`,
+                },
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
@@ -912,7 +932,7 @@ export abstract class CombatShip extends Ship {
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,
-            tooltipData: attacker.toReference
+            tooltipData: attacker?.toReference
               ? attacker.toReference()
               : undefined,
           },
@@ -932,7 +952,10 @@ export abstract class CombatShip extends Ship {
                     },
                   },
                 },
-                `(${c.r2(this._hp)} HP left).`,
+                {
+                  text: `(${c.r2(this._hp)} HP left).`,
+                  color: `rgba(255,255,255,.5)`,
+                },
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
@@ -948,6 +971,21 @@ export abstract class CombatShip extends Ship {
       .filter((s) => (s as CombatShip).targetShip === this)
       .forEach((s) => {
         ;(s as CombatShip).determineTargetShip()
+      })
+    this.game?.humanShips
+      .filter((s) =>
+        (s as HumanShip).contracts.find(
+          (co) => co.targetId === this.id,
+        ),
+      )
+      .forEach((s) => {
+        const contract = (s as HumanShip).contracts.find(
+          (co) => co.targetId === this.id,
+        )
+        if (!contract) return
+        if (attacker?.id === s.id)
+          s.completeContract(contract)
+        else s.stolenContract(contract)
       })
   }
 

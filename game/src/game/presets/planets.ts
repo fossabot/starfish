@@ -68,7 +68,12 @@ function getLocation(game?: Game, isHomeworld?: any) {
     game?.zones.find(isTooClose) ||
     tooManyPlanetsInVicinity() ||
     c.distance(location, [0, 0]) >
-      (game?.gameSoftRadius || 1)
+      Math.min(
+        isHomeworld
+          ? game?.settings.safeZoneRadius || Infinity
+          : Infinity,
+        game?.gameSoftRadius || 1,
+      )
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
 
@@ -99,6 +104,7 @@ function getLocation(game?: Game, isHomeworld?: any) {
     }
 
     locationSearchRadius *= 1.01
+    // if (isHomeworld) c.log(isHomeworld, location)
   }
   return location
 }
@@ -223,14 +229,20 @@ export function generateBasicPlanet(
   const xp = 0
 
   const leanings: PlanetLeaning[] = []
-  // homeworlds always CAN have cargo, and lean slightly that way
-  if (homeworldGuildKey)
+  // homeworlds always CAN have cargo and defense, and lean slightly that way
+  if (homeworldGuildKey) {
     leanings.push({
       type: `cargo`,
       never: false,
       propensity: Math.random() * 2 + 1,
     })
-  while (leanings.length < 4 || Math.random() > 0.4) {
+    leanings.push({
+      type: `defense`,
+      never: false,
+      propensity: Math.random() * 2 + 1,
+    })
+  }
+  while (leanings.length < 5 || Math.random() > 0.4) {
     const leaningTypes: PlanetLeaningType[] = [
       `items`,
       `weapon`,
@@ -244,6 +256,7 @@ export function generateBasicPlanet(
       `cosmetics`,
       `cargo`,
       `repair`,
+      `defense`,
     ]
     const leaningType = c.randomFromArray(leaningTypes)
     if (leanings.find((l) => l.type === leaningType))
@@ -294,6 +307,7 @@ export function generateBasicPlanet(
     location,
     vendor,
     bank: false,
+    defense: 0,
     level,
     baseLevel,
     xp,

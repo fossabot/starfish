@@ -2,6 +2,8 @@ declare const _default: {
     defaultGameSettings: {
         id: any;
         humanShipLimit: any;
+        safeZoneRadius: any;
+        contractLocationRadius: any;
         aiDifficultyMultiplier: any;
         baseXpGain: any;
         baseStaminaUse: any;
@@ -14,6 +16,8 @@ declare const _default: {
         baseCritChance: any;
         baseCritDamageMultiplier: any;
         staminaBottomedOutResetPoint: any;
+        staminaBottomedOutChargeSlowdown: any;
+        staminaRechargeMultiplier: any;
         newCrewMemberCredits: any;
         planetDensity: any;
         cometDensity: any;
@@ -53,9 +57,11 @@ declare const _default: {
     planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
     itemPriceMultiplier: number;
+    itemMassMultiplier: number;
     weaponDamageMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
+    zoneExpireTime: number;
     baseShipScanProperties: {
         id: true;
         name: true;

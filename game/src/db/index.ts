@@ -7,6 +7,7 @@ import * as attackRemnant from './models/attackRemnant'
 import * as planet from './models/planet'
 import * as zone from './models/zone'
 import * as gameSettings from './models/gameSettings'
+import * as game from './models/game'
 dotEnvConfig()
 
 import c from '../../../common/dist'
@@ -20,6 +21,7 @@ export const db = {
   planet,
   zone,
   gameSettings,
+  game,
 }
 let ready = false
 

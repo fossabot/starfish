@@ -30,6 +30,15 @@ import {
   recalculateTargetItemType,
   autoAttack,
 } from './humanShipCombat'
+import {
+  startContract,
+  abandonContract,
+  checkContractTimeOuts,
+  checkTurnInContract,
+  completeContract,
+  stolenContract,
+  updateActiveContractsLocations,
+} from './humanShipContracts'
 
 interface HumanVisibleShape {
   ships: ShipStub[]
@@ -78,6 +87,7 @@ export class HumanShip extends CombatShip {
   maxScanProperties: ShipScanDataShape | null = null
   secondWind: boolean = false
   banked: BankEntry[] = []
+  contracts: Contract[] = []
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -128,6 +138,7 @@ export class HumanShip extends CombatShip {
     this.seenCrewMembers = data.seenCrewMembers || []
 
     this.banked = data.banked || []
+    this.contracts = data.contracts || []
 
     data.boughtHeaderBackgrounds?.forEach((bhb) =>
       this.addHeaderBackground(bhb, null, true),
@@ -194,23 +205,18 @@ export class HumanShip extends CombatShip {
     })
 
     if (!this.log.length && !this.tutorial)
-      // timeout so that the first messages don't spawn multiple alerts channels
-      setTimeout(
-        () =>
-          this.logEntry(
-            [
-              `Your crew boards the ship`,
-              {
-                text: this.name,
-                color: this.guildId
-                  ? c.guilds[this.guildId].color
-                  : undefined,
-              },
-              `for the first time, and sets out towards the stars.`,
-            ],
-            `medium`,
-          ),
-        2000,
+      this.logEntry(
+        [
+          `You board the ship`,
+          {
+            text: this.name,
+            color: this.guildId
+              ? c.guilds[this.guildId].color
+              : undefined,
+          },
+          `for the first time, and set out towards the stars.`,
+        ],
+        `medium`,
       )
 
     this.updateMaxScanProperties()
@@ -246,6 +252,8 @@ export class HumanShip extends CombatShip {
 
     setTimeout(() => {
       this.radii.gameSize = this.game?.gameSoftRadius || 1
+      this.radii.safeZone =
+        this.game?.settings.safeZoneRadius || 1
       this.toUpdate.radii = this.radii
 
       // give all the AI a chance to spawn and become visible
@@ -387,26 +395,6 @@ export class HumanShip extends CombatShip {
     profiler.step(`frontend send`)
     // ----- send update to listeners -----
     if (Object.keys(this.toUpdate).length) {
-      // c.log(
-      //   `sending`,
-      //   Object.keys(this.toUpdate).map(
-      //     (k) =>
-      //       `${k}: ${
-      //         JSON.stringify(this.toUpdate[k])?.length
-      //       }`,
-      //   ),
-      //   `characters to frontend for`,
-      //   this.name,
-      // )
-      // this.toUpdate.log?.forEach((l) => {
-      //   c.log(l)
-      //   if (Array.isArray(l.content))
-      //     l.content.forEach((n) => {
-      //       if (typeof n === `object`) c.log(n.tooltipData)
-      //     })
-      // })
-      // c.log(JSON.stringify(this.toUpdate.log))
-      // c.log(JSON.stringify(this.toUpdate, null, 2))
       this.game?.io
         ?.to(`ship:${this.id}`)
         .emit(`ship:update`, {
@@ -415,12 +403,18 @@ export class HumanShip extends CombatShip {
         })
       this.toUpdate = {}
     }
+
+    this.checkContractTimeOuts()
+    if ((this.game?.tickCount || 1) % 1000 === 0)
+      this.updateActiveContractsLocations()
+
     profiler.end()
   }
 
   // ----- log -----
 
   logEntry(content: LogContent, level: LogLevel = `low`) {
+    // c.log(content)
     if (!this.log) this.log = []
     this.log.push({ level, content, time: Date.now() })
     while (this.log.length > HumanShip.maxLogLength)
@@ -811,8 +805,8 @@ export class HumanShip extends CombatShip {
     ]
 
     this.velocity = [
-      this.velocity[0] + thrustVector[0],
-      this.velocity[1] + thrustVector[1],
+      this.velocity[0] + (thrustVector[0] || 0),
+      this.velocity[1] + (thrustVector[1] || 0),
     ]
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
@@ -1020,12 +1014,23 @@ export class HumanShip extends CombatShip {
     if (finalMagnitude > currentMagnitude) this.hardStop()
     else {
       const relativeScaleOfMagnitudeShrink =
-        (currentMagnitude - finalMagnitude) /
-        currentMagnitude
+        ((currentMagnitude || 0) - finalMagnitude) /
+        (currentMagnitude || 0)
+      if (
+        [undefined, null, NaN].includes(
+          relativeScaleOfMagnitudeShrink,
+        ) ||
+        relativeScaleOfMagnitudeShrink < 0
+      )
+        return 0
       this.velocity = [
         this.velocity[0] * relativeScaleOfMagnitudeShrink,
         this.velocity[1] * relativeScaleOfMagnitudeShrink,
       ]
+      c.log({
+        relativeScaleOfMagnitudeShrink,
+        v: this.velocity,
+      })
     }
 
     this.toUpdate.velocity = this.velocity
@@ -1050,7 +1055,7 @@ export class HumanShip extends CombatShip {
 
     thruster.addStat(
       `totalSpeedApplied`,
-      (this.speed - currentMagnitude) * 60 * 60 * -1,
+      (this.speed - currentMagnitude || 0) * 60 * 60 * -1,
     )
 
     return (this.speed - currentMagnitude) * 60 * 60 * -1
@@ -1080,11 +1085,23 @@ export class HumanShip extends CombatShip {
       return
     }
 
+    if (
+      [undefined, null, NaN].includes(this.velocity[0]) ||
+      [undefined, null, NaN].includes(this.velocity[1])
+    ) {
+      c.log(
+        `red`,
+        `Hard resetting velocity for ${this.name}, was`,
+        this.velocity,
+      )
+      this.velocity = [0, 0]
+    }
+
     if (this.velocity[0] === 0 && this.velocity[1] === 0)
       return
 
-    this.location[0] += this.velocity[0]
-    this.location[1] += this.velocity[1]
+    this.location[0] += this.velocity[0] || 0
+    this.location[1] += this.velocity[1] || 0
     this.toUpdate.location = this.location
 
     this.game?.chunkManager.addOrUpdate(
@@ -1151,6 +1168,8 @@ export class HumanShip extends CombatShip {
 
     // ----- game radius -----
     this.radii.gameSize = this.game?.gameSoftRadius || 1
+    this.radii.safeZone =
+      this.game?.settings.safeZoneRadius || 1
     this.toUpdate.radii = this.radii
     const isOutsideRadius =
       c.distance([0, 0], this.location) >
@@ -1398,11 +1417,11 @@ export class HumanShip extends CombatShip {
 
     if (this.planet) {
       // * landed!
-      if (!silent)
-        c.log(
-          `gray`,
-          `${this.name} landed at ${this.planet.name}`,
-        )
+      // if (!silent)
+      //   c.log(
+      //     `gray`,
+      //     `${this.name} landed at ${this.planet.name}`,
+      //   )
 
       this.hardStop()
       this.planet.rooms.forEach((r) => this.addRoom(r))
@@ -1411,13 +1430,15 @@ export class HumanShip extends CombatShip {
       )
       this.planet.addStat(`shipsLanded`, 1)
       this.checkAchievements(`land`)
+      for (let co of this.contracts)
+        this.checkTurnInContract(co)
     } else if (previousPlanet) {
-      c.log(
-        `gray`,
-        `${this.name} departed from ${
-          previousPlanet ? previousPlanet.name : ``
-        }`,
-      )
+      // c.log(
+      //   `gray`,
+      //   `${this.name} departed from ${
+      //     previousPlanet ? previousPlanet.name : ``
+      //   }`,
+      // )
 
       previousPlanet.rooms.forEach((r) =>
         this.removeRoom(r),
@@ -1518,7 +1539,6 @@ export class HumanShip extends CombatShip {
       crewMember.toUpdate.crewCosmeticCurrency =
         crewMember.crewCosmeticCurrency
     }
-    this._stub = null
     this.toUpdate.commonCredits = this.commonCredits
     this.toUpdate.shipCosmeticCurrency =
       this.shipCosmeticCurrency
@@ -1666,7 +1686,9 @@ export class HumanShip extends CombatShip {
   }
 
   updateZones(startingLocation: CoordinatePair) {
-    for (let z of this.visible.zones) {
+    for (let z of this.seenLandmarks.filter(
+      (z) => z.type === `zone`,
+    )) {
       const startedInside = c.pointIsInsideCircle(
         z.location,
         startingLocation,
@@ -2034,11 +2056,27 @@ export class HumanShip extends CombatShip {
     // ----- check for tutorial -----
     // if it is a fully new crew member (and not a temporary ship in the tutorial)
     if (!setupAdd && !this.tutorial) {
-      if (this.crewMembers.length > 0)
-        this.logEntry(
-          `${cm.name} has joined the ship's crew!`,
-          `high`,
-        )
+      if (this.crewMembers.length > 1) {
+        // not the first member
+        if (this.planet) {
+          const options = [
+            `${cm.name}, running from unknown pursuers, has found refuge among the ranks of ${this.name}'s crew.`,
+            `${cm.name} bribes their way onto the crew of ${this.name}.`,
+            `${cm.name} leaves a life as a dockhand to join the crew of ${this.name}.`,
+            `${cm.name} kisses their partner goodbye as they board the gangplank as a new crew member of ${this.name}.`,
+            `${cm.name}, after a rowdy night of partying with your deckhands, has decided to join the crew!`,
+            `${cm.name}, known about town as a hearty fellow, has joined the crew!`,
+          ]
+          this.logEntry(c.randomFromArray(options), `high`)
+        } else {
+          const options = [
+            `You pick up a distress signal only to find ${cm.name} floating helplessly in a cryo-pod. You defrost them and welcome them to the ship's crew!`,
+            `${cm.name} radios you from an escape craft, and you allow them onboard. They seem useful, so you welcome them as a member of the ship's crew.`,
+            `You find ${cm.name} hiding behind some cargo in the hold. Who knows how long they've been there, but you're in no position to say no to an extra pair of hands. You welcome them to the crew.`,
+          ]
+          this.logEntry(c.randomFromArray(options), `high`)
+        }
+      }
 
       // if this crew member has already done the tutorial in another ship, skip it
       const foundInOtherShip = (
@@ -2140,6 +2178,19 @@ export class HumanShip extends CombatShip {
   cumulativeSkillIn = cumulativeSkillIn
 
   distributeCargoAmongCrew(cargo: CacheContents[]) {
+    const getLeastTime = 1000 * 60 * 60 * 24 * 3 // 3 days
+    const getAmountMultiplier = (lastActive: number) => {
+      return c.lerp(
+        1,
+        0,
+        c.clamp(
+          0,
+          (Date.now() - lastActive) / getLeastTime,
+          1,
+        ),
+      )
+    }
+
     const leftovers: CacheContents[] = []
 
     cargo.forEach((contents) => {
@@ -2155,27 +2206,30 @@ export class HumanShip extends CombatShip {
       let toDistribute = contents.amount
       let canHoldMore = [...this.crewMembers]
 
+      let passes = 0
       while (canHoldMore.length && toDistribute > 0.01) {
         const newCanHoldMore = [...canHoldMore]
         const amountForEach =
           toDistribute / canHoldMore.length
 
-        toDistribute = 0
-
         canHoldMore.forEach((cm, index) => {
           const amountToGive =
             amountForEach *
+            getAmountMultiplier(
+              cm.lastActive + passes * 1000 * 60 * 60 * 24, // gets more forgiving to non-participants as loops continue
+            ) *
             (cm.getPassiveIntensity(`boostDropAmounts`) + 1)
+          toDistribute -= amountToGive
           // unweighted cargo
           if (contents.id === `credits`) {
-            cm.credits = Math.floor(
+            cm.credits = Math.round(
               cm.credits + amountToGive,
             )
             cm.toUpdate.credits = cm.credits
           } else if (
             contents.id === `crewCosmeticCurrency`
           ) {
-            cm.crewCosmeticCurrency = Math.floor(
+            cm.crewCosmeticCurrency = Math.round(
               cm.crewCosmeticCurrency + amountToGive,
             )
             cm.toUpdate.crewCosmeticCurrency =
@@ -2198,6 +2252,7 @@ export class HumanShip extends CombatShip {
           }
         })
         canHoldMore = newCanHoldMore
+        passes++
       }
 
       if (toDistribute > 1) {
@@ -2417,12 +2472,18 @@ export class HumanShip extends CombatShip {
   }
 
   determineTargetShip = determineTargetShip
-
   recalculateCombatTactic = recalculateCombatTactic
-
   recalculateTargetItemType = recalculateTargetItemType
-
   autoAttack = autoAttack
+
+  startContract = startContract
+  abandonContract = abandonContract
+  checkContractTimeOuts = checkContractTimeOuts
+  checkTurnInContract = checkTurnInContract
+  completeContract = completeContract
+  stolenContract = stolenContract
+  updateActiveContractsLocations =
+    updateActiveContractsLocations
 
   die(attacker?: CombatShip) {
     super.die(attacker)

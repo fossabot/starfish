@@ -3,9 +3,13 @@ const defaultGameSettings: {
 } = {
   id: `game` + `${Math.random()}`.substring(2),
   humanShipLimit: 100,
+  safeZoneRadius: 2.5,
+  contractLocationRadius: 0.7,
   baseXpGain: 0.4,
   baseStaminaUse: 0.0001,
+  staminaRechargeMultiplier: 1,
   staminaBottomedOutResetPoint: 0.05,
+  staminaBottomedOutChargeSlowdown: 0.4,
   newCrewMemberCredits: 1000,
 
   gravityMultiplier: 1.8,
@@ -50,6 +54,7 @@ const maxBroadcastLength = 200
 const defaultHomeworldLevel = 12
 
 const itemPriceMultiplier = 400
+const itemMassMultiplier = 10
 const weaponDamageMultiplier = 1
 
 const guildVendorMultiplier = 0.98
@@ -66,6 +71,7 @@ const planetLevelXpRequirementMultiplier = 15
 
 const attackRemnantExpireTime = 1000 * 60 * 60 * 24 * 0.35
 const cacheExpireTime = 1000 * 60 * 60 * 24 * 7 * 1.5
+const zoneExpireTime = 1000 * 60 * 60 * 24 * 7 * 4
 
 const supportServerLink = `https://discord.gg/aEKE3bFR6n`
 
@@ -185,9 +191,13 @@ export default {
   planetContributeCrewCosmeticCostPerXp,
   planetLevelXpRequirementMultiplier,
   itemPriceMultiplier,
+  itemMassMultiplier,
   weaponDamageMultiplier,
+
   attackRemnantExpireTime,
   cacheExpireTime,
+  zoneExpireTime,
+
   baseShipScanProperties,
   sameGuildShipScanProperties,
   tactics,

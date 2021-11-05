@@ -19,6 +19,7 @@ interface ShipStub extends BaseStub {
     scan: number
     broadcast: number
     gameSize: number
+    safeZone: number
     attack: number[]
   }
   obeysGravity?: boolean
@@ -60,6 +61,7 @@ interface ShipStub extends BaseStub {
   orderReactions?: ShipOrderReaction[]
   gameSettings?: AdminGameSettings
   banked?: BankEntry[]
+  contracts?: Contract[]
 
   spawnPoint?: CoordinatePair
   level?: number
@@ -105,6 +107,8 @@ interface PlanetStub extends BaseStub {
   vendor?: PlanetVendor
   allegiances: PlanetAllegianceData[]
   priceFluctuator: number
+  bank?: boolean
+  defense?: number
   [key: string]: any
 }
 interface PlanetLogStub extends BaseStub {

@@ -1,6 +1,8 @@
 interface AdminGameSettings {
   id: string
   humanShipLimit: number
+  safeZoneRadius: number
+  contractLocationRadius: number
   aiDifficultyMultiplier: number
   baseXpGain: number
   baseStaminaUse: number
@@ -13,6 +15,8 @@ interface AdminGameSettings {
   baseCritChance: number
   baseCritDamageMultiplier: number
   staminaBottomedOutResetPoint: number
+  staminaBottomedOutChargeSlowdown: number
+  staminaRechargeMultiplier: number
   newCrewMemberCredits: number
   planetDensity: number
   cometDensity: number
@@ -29,5 +33,6 @@ interface AdminVisibleData {
   attackRemnants: AttackRemnantStub[]
   zones: ZoneStub[]
   gameRadius: number
+  safeZoneRadius: number
   showAll: true
 }

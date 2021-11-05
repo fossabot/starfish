@@ -1,8 +1,11 @@
+import c from '../../common/src'
 import { exec } from 'child_process'
 import isDocker from 'is-docker'
 
 import './Game'
 import './dbSetup'
+import './ioCommands'
+import './AttackRemnant'
 import './CrewMember'
 import './Ship'
 import './HumanShip'
@@ -10,7 +13,8 @@ import './Tutorial'
 import './Combat'
 import './AIShip'
 import './Planet'
-import './ioCommands'
+import './Admin'
+import './Contracts'
 
 const host = isDocker() ? `mongodb` : `localhost`
 

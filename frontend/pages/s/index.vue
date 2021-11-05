@@ -4,11 +4,16 @@
       <ShipLeftBar />
 
       <div class="maincontentsholder">
-        <FadeIn :off="!loading && ready">
+        <FadeIn
+          :off="!loading && ready"
+          :outIsInstant="true"
+        >
           <div>
             <img
               src="/images/logo.svg"
               class="fadeinlogo marbotsmall"
+              height="45"
+              width="45"
             />
           </div>
         </FadeIn>
@@ -17,6 +22,7 @@
           id="masonrycontainer"
           class="container"
           ref="container"
+          :class="{ animate: ready }"
         >
           <ShipNoShip />
 
@@ -46,6 +52,8 @@
             <ShipItems />
 
             <ShipLog />
+
+            <ShipContracts />
 
             <ShipPassives />
             <ShipStats />
@@ -120,18 +128,28 @@ export default Vue.extend({
     shipIds(): void {
       if (!this.activeShipId) this.changeShip(0)
     },
-    ship(curr, prev): void {
-      this.masonryElement?.position()
+    async ship(curr, prev) {
+      if (!curr) {
+        this.ready = false
+        await this.$nextTick()
+        this.masonryElement?.position()
+        setTimeout(() => (this.ready = true), 300)
+      }
+      if (curr && !prev) {
+        setTimeout(() => (this.ready = true), 1000)
+      }
     },
     connected(): void {
       this.masonryElement?.position()
     },
+    ready() {
+      if (!this.ready)
+        setTimeout(() => (this.ready = true), 6000)
+    },
     // userId(): void {
     //   if (!this.userId) (this as any).$router.push('/login')
     // },
-    lastUpdated(): void {
-      setTimeout(() => (this.ready = true), 600)
-    },
+    lastUpdated(): void {},
   },
 
   async mounted(): Promise<void> {
@@ -237,6 +255,10 @@ export default Vue.extend({
     @media (max-width: 768px) {
       width: 100% !important;
     }
+  }
+
+  &:not(.animate) > * {
+    transition: none;
   }
 }
 

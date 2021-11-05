@@ -1,5 +1,7 @@
 import c from '../common/dist'
 
+c.log(process.env.BOT_ID, process.env.IS_DOCKER)
+
 export default {
   // target: `static`,
 
@@ -8,9 +10,14 @@ export default {
   },
 
   env: {
-    IS_DOCKER: process.env.IS_DOCKER !== `false`,
+    IS_DOCKER: process.env.IS_DOCKER,
     NODE_ENV: process.env.NODE_ENV,
     GAME_NAME: c.gameName,
+    BOT_ID:
+      process.env.BOT_ID ||
+      (process.env.IS_DOCKER
+        ? `804439178636558396` // real starfish
+        : `723017262369472603`), // j's test
   },
 
   vue: {
@@ -70,15 +77,19 @@ export default {
     `@nuxt/typescript-build`,
     `nuxt-font-loader`,
     `@aceforth/nuxt-optimized-images`,
+    `@nuxtjs/google-fonts`,
   ],
 
   modules: [`portal-vue/nuxt`],
 
-  fontLoader: {
-    url: `https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap`,
-    prefetch: true,
-    preconnect: {
-      crossorigin: `anonymous`,
+  googleFonts: {
+    display: `swap`,
+    preconnect: true,
+    preload: true,
+    families: {
+      Prompt: {
+        wght: [400, 600],
+      },
     },
   },
 

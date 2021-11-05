@@ -1,11 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const globals_1 = __importDefault(require("./globals"));
-function lerp(v0 = 0, v1 = 0, t = globals_1.default.tickInterval || 0) {
+function lerp(v0 = 0, v1 = 1, t = 0.5) {
     return v0 * (1 - t) + v1 * t;
+}
+function clamp(lowerBound = 0, n = 0, upperBound = 1) {
+    return Math.min(Math.max(lowerBound, n), upperBound);
 }
 // roundTo:
 // @param number (number) Initial number
@@ -13,7 +12,7 @@ function lerp(v0 = 0, v1 = 0, t = globals_1.default.tickInterval || 0) {
 // @param floor? (boolean) If true, uses floor instead of round.
 //
 function r2(// "round to"
-number, decimalPlaces = 2, floor) {
+number = 0, decimalPlaces = 2, floor) {
     if (floor)
         return (Math.floor(number * 10 ** decimalPlaces) /
             10 ** decimalPlaces);
@@ -28,7 +27,7 @@ function degreesToRadians(degrees = 0) {
 }
 function vectorToRadians(coordPair = [0, 0]) {
     const [x, y] = coordPair;
-    const angle = Math.atan2(y, x);
+    const angle = Math.atan2(y || 0, x || 0);
     return angle;
 }
 function vectorToDegrees(coordPair = [0, 0]) {
@@ -37,24 +36,28 @@ function vectorToDegrees(coordPair = [0, 0]) {
     return (360 + degrees) % 360;
 }
 function distance(a = [0, 0], b = [0, 0]) {
-    const c = a[0] - b[0];
-    const d = a[1] - b[1];
+    const c = (a[0] || 0) - (b[0] || 0);
+    const d = (a[1] || 0) - (b[1] || 0);
     return Math.sqrt(c * c + d * d);
 }
 /**
  * distance in degrees [0, 360] between two angles
  */
 function angleFromAToB(a = [0, 0], b = [0, 0]) {
-    return (((Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) /
+    return (((Math.atan2((b[1] || 0) - (a[1] || 0), (b[0] || 0) - (a[0] || 0)) *
+        180) /
         Math.PI +
         360) %
         360);
+}
+function mirrorAngleVertically(angle = 0) {
+    return (180 - angle + 360) % 360;
 }
 /**
  * shortest distance (in degrees) between two angles.
  * It will be in range [0, 180] if not signed.
  */
-function angleDifference(a, b, signed = false) {
+function angleDifference(a = 0, b = 0, signed = false) {
     if (signed) {
         const d = Math.abs(a - b) % 360;
         let r = d > 180 ? 360 - d : d;
@@ -79,46 +82,52 @@ function vectorToUnitVector(vector = [0, 0]) {
     const magnitude = vectorToMagnitude(vector);
     if (magnitude === 0)
         return [0, 0];
-    return [vector[0] / magnitude, vector[1] / magnitude];
+    return [
+        (vector[0] || 0) / magnitude,
+        (vector[1] || 0) / magnitude,
+    ];
 }
 function unitVectorFromThisPointToThatPoint(thisPoint = [0, 0], thatPoint = [0, 0]) {
-    if (thisPoint[0] === thatPoint[0] &&
-        thisPoint[1] === thatPoint[1])
+    if ((thisPoint[0] || 0) === (thatPoint[0] || 0) &&
+        (thisPoint[1] || 0) === (thatPoint[1] || 0))
         return [0, 0];
     const angleBetween = angleFromAToB(thisPoint, thatPoint);
     return degreesToUnitVector(angleBetween);
 }
 function vectorToMagnitude(vector = [0, 0]) {
-    return Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+    return Math.sqrt((vector[0] || 0) * (vector[0] || 0) +
+        (vector[1] || 0) * (vector[1] || 0));
 }
 function pointIsInsideCircle(center = [0, 0], point = [1, 1], radius = 0) {
-    return ((point[0] - center[0]) * (point[0] - center[0]) +
-        (point[1] - center[1]) * (point[1] - center[1]) <=
+    return (((point[0] || 0) - (center[0] || 0)) *
+        ((point[0] || 0) - (center[0] || 0)) +
+        ((point[1] || 0) - (center[1] || 0)) *
+            ((point[1] || 0) - (center[1] || 0)) <=
         radius * radius);
 }
 function randomInsideCircle(radius) {
     const newCoords = () => {
         return [
-            Math.random() * radius * 2 - radius,
-            Math.random() * radius * 2 - radius,
+            Math.random() * (radius || 0) * 2 - (radius || 0),
+            Math.random() * (radius || 0) * 2 - (radius || 0),
         ];
     };
     let coords = newCoords();
-    while (!pointIsInsideCircle([0, 0], coords, radius))
+    while (!pointIsInsideCircle([0, 0], coords, radius || 0))
         coords = newCoords();
     return coords;
 }
 function randomSign() {
     return Math.random() > 0.5 ? 1 : -1;
 }
-function randomInRange(a, b) {
+function randomInRange(a = 0, b = 1) {
     const diff = b - a;
     return Math.random() * diff + a;
 }
-function lottery(odds, outOf) {
+function lottery(odds = 1, outOf = 10) {
     return Math.random() < odds / outOf;
 }
-function randomBetween(start, end) {
+function randomBetween(start = 1, end = 10) {
     const lesser = Math.min(start, end);
     const greater = Math.max(start, end);
     const diff = greater - lesser;
@@ -126,11 +135,13 @@ function randomBetween(start, end) {
 }
 exports.default = {
     lerp,
+    clamp,
     r2,
     radiansToDegrees,
     degreesToRadians,
     distance,
     angleFromAToB,
+    mirrorAngleVertically,
     angleDifference,
     randomInsideCircle,
     degreesToUnitVector,

@@ -1,9 +1,9 @@
 <template>
   <div
     class="topzone pointer"
-    :class="{ captain: isCaptain }"
+    :class="{ interactive }"
     @click="
-      isCaptain &&
+      interactive &&
         $store.commit('set', {
           modal: 'headerBackgroundPicker',
         })
@@ -13,7 +13,9 @@
       class="bg"
       :style="{
         background: `url('/images/headerBackgrounds/${
-          data.headerBackground || 'default.webp'
+          data.headerBackground
+            ? data.headerBackground.replace('.jpg', '.webp')
+            : 'default.webp'
         }')`,
       }"
     ></div>
@@ -49,14 +51,6 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'userId']),
-    isCaptain() {
-      return (
-        this.interactive &&
-        this.ship?.id === this.data?.id &&
-        this.ship?.captain &&
-        this.ship?.captain === this.userId
-      )
-    },
   },
   mounted() {},
 })
@@ -70,7 +64,7 @@ export default Vue.extend({
   overflow: hidden;
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);
 
-  &.captain {
+  &.interactive {
     &:hover {
       .bg {
         transform: scale(1.05);

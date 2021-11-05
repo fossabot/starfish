@@ -84,12 +84,13 @@ function getMineAmountPerTickForSingleCrewMember(
 
 function getStaminaGainPerTickForSingleCrewMember(
   baseStaminaUse: number,
+  rechargeSpeedMultiplier: number,
 ) {
-  return baseStaminaUse * 1.5
+  return baseStaminaUse * rechargeSpeedMultiplier
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + math.lerp(1, 10, level / 100)) * 30
+  return (2 + math.lerp(1, 10, level / 100)) * 20
 }
 
 /**
@@ -121,6 +122,16 @@ function getGeneralMultiplierBasedOnCrewMemberProximity(
     boostPerMemberInSameRoom *
       crewMembersInSameRoom.length +
     1
+  )
+}
+
+function getPlanetDefenseRadius(level: number) {
+  return math.lerp(0.03, 2, level / 100)
+}
+function getPlanetDefenseDamage(level: number) {
+  return (
+    math.lerp(0.3, 5, level / 100) *
+    math.randomBetween(0.9, 1.1)
   )
 }
 
@@ -230,6 +241,7 @@ function getCargoSellPrice(
 ) {
   const buyPrice =
     getCargoBuyPrice(cargoId, planet, guildId).credits || 0
+  const buyPriceProximityLimit = 0.95
 
   const sellMultiplier =
     planet?.vendor?.cargo?.find(
@@ -239,7 +251,9 @@ function getCargoSellPrice(
 
   return {
     credits: Math.min(
-      Math.floor(buyPrice * amount),
+      Math.floor(
+        buyPrice * amount * buyPriceProximityLimit,
+      ),
       Math.floor(
         (cargo[cargoId].basePrice.credits || 0) *
           amount *
@@ -688,4 +702,6 @@ export default {
   getShipHeaderBackgroundPrice,
   canAfford,
   // getPlanetDescription,
+  getPlanetDefenseRadius,
+  getPlanetDefenseDamage,
 }

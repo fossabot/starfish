@@ -1,26 +1,44 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
-import { GameChannel } from '../models/GameChannel'
+import type { CommandContext } from '../models/CommandContext'
 
 export default async function removeChannel({
   name,
+  context,
   guild,
-}: {
-  name: string
-  guild: Discord.Guild
-}): Promise<
+}:
+  | {
+      name: GameChannelType
+      context: CommandContext
+      guild?: Discord.Guild
+    }
+  | {
+      name: GameChannelType
+      context?: CommandContext
+      guild: Discord.Guild
+    }): Promise<
   true | GamePermissionsFailure | { error: string }
 > {
+  if (!context && !guild)
+    return {
+      error: `No context or guild provided to removeChannel`,
+    }
+  if (context && !guild) guild = context.guild || undefined
+  if (!guild)
+    return {
+      error: `No context or guild provided to removeChannel`,
+    }
+
   const permissionsRes = await checkPermissions({
     requiredPermissions: [`MANAGE_CHANNELS`],
     guild,
   })
   if (`error` in permissionsRes) {
     c.log(permissionsRes)
+    context?.contactGuildAdmin(permissionsRes)
     return permissionsRes
   }
-  if (permissionsRes.message) c.log(permissionsRes.message)
 
   const existingChannels = [
     ...(await guild.channels.cache).values(),

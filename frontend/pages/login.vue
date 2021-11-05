@@ -20,16 +20,14 @@ export default Vue.extend({
   mounted() {
     if (this.userId) (this as any).$router.push('/s')
     else {
-      const botId =
-        window.location.hostname.indexOf('localhost') !== -1
-          ? '723017262369472603' // j's test bot
-          : `804439178636558396` // prod starfish bot
       const hostname = window.location.href.replace(
         '/login',
         '',
       )
       const postLoginPage = `${hostname}/postlogin`
-      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${botId}&redirect_uri=${encodeURIComponent(
+      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${
+        process.env.BOT_ID
+      }&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`
     }

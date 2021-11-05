@@ -15,6 +15,7 @@
         class="button nowrap combo"
         :class="{
           small: !bigTabs,
+          medium: bigTabs,
           secondary: selectedIndex !== index,
           arrowdown: selectedIndex === index,
         }"
@@ -26,6 +27,7 @@
       class="tabheader padbot"
       :class="{
         small: !bigTabs,
+        medium: bigTabs,
       }"
       v-else
     >

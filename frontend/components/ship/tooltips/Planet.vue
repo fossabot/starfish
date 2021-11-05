@@ -49,6 +49,18 @@
         </div>
       </div>
 
+      <div
+        v-if="dataToUse.defense"
+        class="flexbetween marbottiny"
+      >
+        <div class="marrightsmall fade">
+          Orbital Defense
+        </div>
+        <div class="textright">
+          Lv.{{ c.r2(dataToUse.defense) }}
+        </div>
+      </div>
+
       <template v-if="dataToUse.planetType === 'basic'">
         <div
           v-if="dataToUse.repairFactor"
@@ -75,7 +87,6 @@
                 ),
               )
             }}
-            for sale
           </div>
         </div>
 
@@ -144,7 +155,24 @@
         </div>
 
         <div
-          v-if="dataToUse.bank"
+          v-if="
+            dataToUse.contracts &&
+            dataToUse.contracts.length
+          "
+          class="flexbetween marbottiny"
+        >
+          <div class="fade">Contracts</div>
+          <div>{{ dataToUse.contracts.length }}</div>
+        </div>
+
+        <div
+          v-if="
+            dataToUse.bank ||
+            (ship &&
+              ship.banked.find(
+                (b) => b.id === dataToUse.id,
+              ))
+          "
           class="flexbetween marbottiny"
         >
           <div class="fade">Bank</div>

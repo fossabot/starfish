@@ -47,7 +47,9 @@ export default Vue.extend({
       else if (hostname.indexOf('www.') !== 0)
         hostname = `www.${hostname}:${window.location.port}`
       const postLoginPage = `https://${hostname}/postlogin`
-      return `https://discord.com/api/oauth2/authorize?client_id=886820342016925776&redirect_uri=${encodeURIComponent(
+      return `https://discord.com/api/oauth2/authorize?client_id=${
+        process.env.BOT_ID
+      }&redirect_uri=${encodeURIComponent(
         postLoginPage,
       )}&response_type=token&scope=identify%20guilds`
     },

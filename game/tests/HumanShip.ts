@@ -177,6 +177,36 @@ describe(`HumanShip cargo/credit distribution`, () => {
       expect(cm.heldWeight).to.equal(cm.maxCargoSpace)
     })
   })
+
+  it(`should add less cargo to a crew member who is inactive`, () => {
+    let ship = new HumanShip(humanShipData())
+    for (let i = 0; i < 3; i++) {
+      ship.addCrewMember(crewMemberData(), true)
+    }
+
+    ship.crewMembers[0].lastActive =
+      Date.now() - 1000 * 60 * 60 * 24 * 365
+    ship.crewMembers[1].lastActive =
+      Date.now() - 1000 * 60 * 60 * 24
+    ship.crewMembers[2].lastActive = Date.now()
+
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 3 },
+    ])
+    expect(
+      ship.crewMembers[1].heldWeight,
+    ).to.be.greaterThan(ship.crewMembers[0].heldWeight)
+    expect(
+      ship.crewMembers[2].heldWeight,
+    ).to.be.greaterThan(ship.crewMembers[1].heldWeight)
+
+    ship.distributeCargoAmongCrew([
+      { id: `carbon`, amount: 27 },
+    ])
+    expect(ship.crewMembers[0].heldWeight).to.equal(10)
+    expect(ship.crewMembers[1].heldWeight).to.equal(10)
+    expect(ship.crewMembers[2].heldWeight).to.equal(10)
+  })
 })
 
 describe(`HumanShip death`, () => {

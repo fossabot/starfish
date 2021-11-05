@@ -13,11 +13,10 @@ export class Zone extends Stubbable {
   readonly name: string
   location: CoordinatePair // wormholes can change location
   readonly radius: number
+  readonly spawnTime: number
   game: Game | undefined
   readonly effects: ZoneEffect[]
   readonly color: string
-
-  // ? should zones expire after a certain time?
 
   constructor(
     {
@@ -27,6 +26,7 @@ export class Zone extends Stubbable {
       color,
       name,
       effects,
+      spawnTime,
     }: BaseZoneData,
     game?: Game,
   ) {
@@ -38,10 +38,22 @@ export class Zone extends Stubbable {
     this.color = color
     this.id = id || `zone${Math.random()}`.substring(2)
     this.effects = effects
+    this.spawnTime = spawnTime || Date.now()
+  }
+
+  get shipsAt() {
+    return (
+      this.game?.humanShips.filter(
+        (s) =>
+          !s.tutorial &&
+          c.distance(s.location, this.location) <=
+            this.radius,
+      ) || []
+    )
   }
 
   shipEnter(ship: CombatShip) {
-    c.log(`ship enter`, ship.name, this.name)
+    // c.log(`ship enter`, ship.name, this.name)
     for (let effect of this.effects) {
       // wormhole
       if (effect.type === `wormhole`) {
@@ -49,10 +61,8 @@ export class Zone extends Stubbable {
           this.game?.gameSoftRadius || 1,
         )
         ship.logEntry(
-          [
-            `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
-          ],
-          `high`,
+          `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+          `critical`,
         )
 
         this.moveToRandomLocation()
@@ -86,7 +96,7 @@ export class Zone extends Stubbable {
   }
 
   shipLeave(ship: CombatShip) {
-    c.log(`ship leave`, ship.name, this.name)
+    // c.log(`ship leave`, ship.name, this.name)
     for (let effect of this.effects) {
       // broadcast boost
       if (effect.type === `broadcast boost`) {
@@ -130,7 +140,7 @@ export class Zone extends Stubbable {
         proximityMod *
         c.randomBetween(0.5, 1.5)
 
-      // dot
+      // damage over time
       if (effect.type === `damage over time`) {
         if (!ship.attackable || ship.planet) return
         let miss = false
@@ -174,6 +184,10 @@ export class Zone extends Stubbable {
             c.getStaminaGainPerTickForSingleCrewMember(
               this.game?.settings.baseStaminaUse ||
                 c.defaultGameSettings.baseStaminaUse,
+              this.game?.settings
+                .staminaRechargeMultiplier ||
+                c.defaultGameSettings
+                  .staminaRechargeMultiplier,
             ) * intensity
 
           if (cm.stamina > cm.maxStamina)
@@ -219,7 +233,9 @@ export class Zone extends Stubbable {
         s.seenLandmarks.indexOf(this),
         1,
       )
-      s.toUpdate.seenLandmarks = s.seenLandmarks
+      s.toUpdate.seenLandmarks = s.seenLandmarks.map((z) =>
+        z.stubify(),
+      )
     }
     const startingLocation: CoordinatePair = [
       ...this.location,

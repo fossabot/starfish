@@ -36,6 +36,7 @@ export class Ship extends Stubbable {
     scan: number
     broadcast: number
     gameSize: number
+    safeZone: number
     attack: number[]
   } = {
     sight: 0,
@@ -43,6 +44,7 @@ export class Ship extends Stubbable {
     scan: 0,
     attack: [],
     gameSize: 0,
+    safeZone: 0,
   }
 
   spawnedAt: number
@@ -102,6 +104,7 @@ export class Ship extends Stubbable {
 
   constructor(
     {
+      id,
       name,
       guildId,
       spawnedAt,
@@ -122,6 +125,7 @@ export class Ship extends Stubbable {
   ) {
     super()
     if (game) this.game = game
+    this.id = id || `ship${Math.random()}`.substring(2)
     this.name = name
     this.rename(name)
 
@@ -130,7 +134,7 @@ export class Ship extends Stubbable {
 
     this.spawnedAt = spawnedAt || Date.now()
 
-    this.velocity = velocity || [0, 0]
+    this.velocity = [velocity?.[0] || 0, velocity?.[1] || 0]
     if (
       location &&
       location[0] !== undefined &&
@@ -613,7 +617,10 @@ export class Ship extends Stubbable {
       ...this.location,
     ] as CoordinatePair
     if (toLocation) {
-      this.location = [...toLocation]
+      this.location = [
+        toLocation[0] || 0,
+        toLocation[1] || 0,
+      ]
       this.toUpdate.location = this.location
       this.game?.chunkManager.addOrUpdate(
         this,

@@ -81,11 +81,7 @@
       class="panesection"
       v-if="dataToUse.speed !== undefined"
     >
-      <div
-        class="arrow"
-        v-if="dataToUse.speed"
-        @click="setTargetAlongPath"
-      >
+      <div class="arrow" v-if="dataToUse.speed">
         <div>
           {{
             c.speedNumber(
@@ -212,9 +208,15 @@
           <div
             v-for="r in Object.keys(dataToUse.radii).map(
               (r) =>
-                `${c.capitalize(r)}: ${c.r2(
-                  dataToUse.radii[r],
-                )}AU`,
+                Array.isArray(dataToUse.radii[r])
+                  ? `${c.capitalize(r)}: ${dataToUse.radii[
+                      r
+                    ]
+                      .map((rad) => c.r2(rad) + 'AU')
+                      .join(', ')}`
+                  : `${c.capitalize(r)}: ${c.r2(
+                      dataToUse.radii[r],
+                    )}AU`,
             )"
           >
             {{ r }}
@@ -356,18 +358,6 @@ export default Vue.extend({
         this.ship?.visible?.ships.find(
           (p) => p.id === this.data.id,
         ) || this.data
-      )
-    },
-  },
-  methods: {
-    setTargetAlongPath() {
-      if (this.dataToUse.id !== this.ship?.id) return
-      this.$store.commit(
-        'setTarget',
-        this.ship?.location.map(
-          (l, index) =>
-            l + this.ship?.velocity[index] * 500,
-        ),
       )
     },
   },

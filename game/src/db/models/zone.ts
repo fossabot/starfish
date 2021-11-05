@@ -8,10 +8,11 @@ interface DBZoneDoc extends BaseZoneData, Document {
 
 const zoneSchemaFields: Record<keyof BaseZoneData, any> = {
   id: { type: String, required: true },
-  name: { type: String },
-  radius: { type: Number },
-  color: { type: String },
+  name: String,
+  radius: Number,
+  color: String,
   location: [{ type: Number, required: true }],
+  spawnTime: Number,
   passives: [
     {
       id: String,

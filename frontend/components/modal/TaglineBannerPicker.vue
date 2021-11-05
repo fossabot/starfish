@@ -6,11 +6,13 @@
       Certain actions will unlock taglines and banners!
     </div>
 
-    <h3 class="padtop padbot">Choose Ship Tagline</h3>
+    <h3 class="padtop padbot">
+      <span v-if="isCaptain">Choose</span> Ship Tagline
+    </h3>
     <div class="flexcenter flexwrap marbot">
       <div
-        class="preview flexcenter pointer"
-        @click="setTagline(null)"
+        class="preview flexcenter pointer fade"
+        @click="isCaptain && setTagline(null)"
         :class="{ current: !currentTagline }"
       >
         (No tagline)
@@ -20,18 +22,17 @@
         :class="{ current: option === currentTagline }"
         v-for="option in ship.availableTaglines || []"
         :key="'to' + option"
-        @click="setTagline(option)"
+        @click="isCaptain && setTagline(option)"
       >
         <div>
           {{ option }}
-          <!-- <span v-if="currentTagline === option" class="sub"
-            >(Current)</span
-          > -->
         </div>
       </div>
     </div>
 
-    <h3 class="padtop padbot">Choose Ship Banner</h3>
+    <h3 class="padtop padbot">
+      <span v-if="isCaptain">Choose</span> Ship Banner
+    </h3>
 
     <div class="flexcenter flexwrap">
       <div
@@ -45,7 +46,7 @@
         v-for="option in ship.availableHeaderBackgrounds ||
         []"
         :key="'hbgo' + option.id"
-        @click="setHeaderBackground(option.id)"
+        @click="isCaptain && setHeaderBackground(option.id)"
       >
         <img
           :src="'/images/headerBackgrounds/' + option.url"
@@ -76,6 +77,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    isCaptain() {
+      return (
+        this.ship?.captain &&
+        this.ship?.captain === this.crewMember?.id
+      )
+    },
     currentTagline() {
       return this.ship?.tagline
     },

@@ -63,11 +63,11 @@ function getRepairAmountPerTickForSingleCrewMember(level) {
 function getMineAmountPerTickForSingleCrewMember(level) {
     return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);
 }
-function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse) {
-    return baseStaminaUse * 1.5;
+function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedMultiplier) {
+    return baseStaminaUse * rechargeSpeedMultiplier;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + math_1.default.lerp(1, 10, level / 100)) * 30;
+    return (2 + math_1.default.lerp(1, 10, level / 100)) * 20;
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
@@ -88,6 +88,13 @@ function getGeneralMultiplierBasedOnCrewMemberProximity(cm, crewMembers) {
     return (boostPerMemberInSameRoom *
         crewMembersInSameRoom.length +
         1);
+}
+function getPlanetDefenseRadius(level) {
+    return math_1.default.lerp(0.03, 2, level / 100);
+}
+function getPlanetDefenseDamage(level) {
+    return (math_1.default.lerp(0.3, 5, level / 100) *
+        math_1.default.randomBetween(0.9, 1.1));
 }
 function statToString(data) {
     const { stat, amount } = data;
@@ -172,10 +179,11 @@ function getPlanetTitle(planet) {
 }
 function getCargoSellPrice(cargoId, planet, guildId, amount = 1) {
     const buyPrice = getCargoBuyPrice(cargoId, planet, guildId).credits || 0;
+    const buyPriceProximityLimit = 0.95;
     const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
         gameConstants_1.default.baseCargoSellMultiplier;
     return {
-        credits: Math.min(Math.floor(buyPrice * amount), Math.floor((cargo[cargoId].basePrice.credits || 0) *
+        credits: Math.min(Math.floor(buyPrice * amount * buyPriceProximityLimit), Math.floor((cargo[cargoId].basePrice.credits || 0) *
             amount *
             sellMultiplier *
             planet.priceFluctuator *
@@ -454,5 +462,7 @@ exports.default = {
     getShipHeaderBackgroundPrice,
     canAfford,
     // getPlanetDescription,
+    getPlanetDefenseRadius,
+    getPlanetDefenseDamage,
 };
 //# sourceMappingURL=game.js.map

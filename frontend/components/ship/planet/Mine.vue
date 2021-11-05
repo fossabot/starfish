@@ -3,8 +3,7 @@
     v-if="planet.mine"
     class="panesection"
     v-tooltip="
-      `When a job is completed, all ships actively mining that resource will share the payout evenly, regardless of size or guild.<br />
-      The crew members mining that resource will get priority on the results, with remaining cargo shared evenly between all other crew members.`
+      `When a job is completed, all ships actively mining that resource will share the payout evenly, regardless of size or guild.`
     "
   >
     <div class="panesubhead">Active Mines</div>
@@ -25,7 +24,7 @@
               : '') +
             `Remaining in vein: ${c.numberWithCommas(
               m.maxMineable,
-            )}${c.cargo[m.id] ? 'tons' : ''}`
+            )}${c.cargo[m.id] ? ' tons' : ''}`
           : `Upgrade the mine to uncover more resources.`
       "
     >

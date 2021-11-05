@@ -2,7 +2,12 @@
   <div class="container">
     <div class="textcolumn">
       <h1 class="title marbot">
-        <img src="/images/logo.svg" class="logo" />
+        <img
+          src="/images/logo.svg"
+          class="logo"
+          height="38"
+          width="38"
+        />
         <span>{{ c.gameName }}</span>
       </h1>
 
@@ -94,7 +99,9 @@ export default Vue.extend({
     ...mapState(['userId']),
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    c.log(process.env.BOT_ID, process.env.IS_DOCKER)
+  },
   methods: {},
 })
 </script>

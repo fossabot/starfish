@@ -1,3 +1,9 @@
+import c from '../../common/src'
+
+import socketIoClient, {
+  Socket as ClientSocket,
+} from 'socket.io-client' // yes, we're making a CLIENT here.
+
 export function crewMemberData(): BaseCrewMemberData {
   const randomId = Math.random().toString(36).substring(7)
   return {
@@ -14,7 +20,7 @@ export function humanShipData(
   return {
     id: `testShip` + id,
     name: `Test Ship ` + id,
-    location: [0, 0],
+    location: [10, 0],
     loadout,
   }
 }
@@ -26,7 +32,7 @@ export function aiShipData(
   return {
     id: `aiShip` + speciesId + id,
     name: `${speciesId} ` + id,
-    location: [0, 0],
+    location: [10, 0],
     level,
     speciesId,
   }
@@ -39,7 +45,7 @@ function planetData(): BasePlanetData {
     id: `planet` + randomId,
     name: `Planet ` + randomId,
     color: `red`,
-    location: [0, 0],
+    location: [10, 0],
     radius: 1000000,
     mass: 6e31,
     landingRadiusMultiplier: 1,
@@ -64,6 +70,7 @@ export function basicPlanetData(): BaseBasicPlanetData {
       shipCosmetics: [],
     },
     bank: true,
+    defense: 0,
   }
 }
 
@@ -72,4 +79,24 @@ export function miningPlanetData(): BaseMiningPlanetData {
     ...planetData(),
     planetType: `mining`,
   }
+}
+
+export function awaitIOConnection(client: ClientSocket) {
+  return new Promise<boolean>(async (r) => {
+    if (client.connected) {
+      r(true)
+      return
+    }
+    let timeout = 0
+    while (timeout < 500) {
+      // 5 seconds
+      await c.sleep(10)
+      if (client.connected) {
+        r(true)
+        return
+      }
+      timeout++
+    }
+    r(false)
+  })
 }

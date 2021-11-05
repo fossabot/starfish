@@ -49,6 +49,7 @@ export class Game {
   readonly chunkManager = new ChunkManager()
 
   settings: AdminGameSettings
+  minimumGameRadius: number = 0
 
   guildRankings: GuildRanking[] = []
 
@@ -97,11 +98,18 @@ export class Game {
         // await this.db.zone.wipe()
         // await this.db.ship.wipeAI()
 
-        const savedGameData =
+        const savedGameData = await this.db.game.get()
+        if (savedGameData) {
+          c.log(`gray`, `Loaded game data.`)
+          for (let key of Object.keys(savedGameData))
+            this[key] = savedGameData[key]
+        }
+
+        const savedGameSettings =
           await this.db.gameSettings.getAllConstructible()
-        if (savedGameData && savedGameData[0]) {
+        if (savedGameSettings && savedGameSettings[0]) {
           c.log(`gray`, `Loaded game settings.`)
-          this.setSettings(savedGameData[0])
+          this.setSettings(savedGameSettings[0])
         } else {
           c.log(
             `gray`,
@@ -127,7 +135,7 @@ export class Game {
             ).length
           } comet) from DB.`,
         )
-        for (let planet of savedPlanets)
+        for (let planet of savedPlanets) {
           if (planet.planetType === `basic`)
             await this.addBasicPlanet(
               planet as BaseBasicPlanetData,
@@ -143,6 +151,7 @@ export class Game {
               planet as BaseCometData,
               false,
             )
+        }
 
         const savedCaches =
           await this.db.cache.getAllConstructible()
@@ -216,6 +225,8 @@ export class Game {
     this.tick()
 
     this.recalculateGuildRankings()
+
+    setTimeout(() => c.log(`Game started.`), 100)
   }
 
   async save() {
@@ -223,14 +234,19 @@ export class Game {
 
     const saveStartTime = Date.now()
 
-    const promises: Promise<any>[] = []
+    const promises: (Promise<any> | undefined)[] = []
+    promises.push(
+      this.db?.game.addOrUpdateInDb({
+        minimumGameRadius: this.minimumGameRadius,
+      }),
+    )
     this.planets.forEach((p) => {
-      promises.push(db.planet.addOrUpdateInDb(p))
+      promises.push(this.db?.planet.addOrUpdateInDb(p))
     })
     this.comets.forEach((p) => {
-      promises.push(db.planet.addOrUpdateInDb(p))
+      promises.push(this.db?.planet.addOrUpdateInDb(p))
     })
-    await Promise.all(promises)
+    await Promise.all(promises.filter((p) => p))
 
     // * we were doing it this way but at a certain point we got a stack overflow (I think this was the cause)
     // this.ships.forEach((s) => {
@@ -274,8 +290,9 @@ export class Game {
 
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
+    // todo notify a day before
     // remove inactive ships
-    const inactiveCutoff = 21 * 24 * 60 * 60 * 1000 // 3 weeks
+    const inactiveCutoff = 4 * 7 * 24 * 60 * 60 * 1000 // 4 weeks
     const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
     const ic = Date.now() - inactiveCutoff,
       tic = Date.now() - tutorialInactiveCutoff
@@ -291,8 +308,11 @@ export class Game {
         }),
     )) {
       c.log(`Removing inactive ship`, inactiveShip.name)
-      this.removeShip(inactiveShip)
+      // this.removeShip(inactiveShip)
+      // todo put this back once we have tests in place
     }
+
+    this.announceCargoPrices()
   }
 
   // ----- game loop -----
@@ -327,12 +347,10 @@ export class Game {
       )
     // c.log(times.map((s) => s.ship.name + ` ` + s.time))
 
-    this.planets.forEach((p) => {
-      p.toUpdate = {}
-    })
+    this.planets.forEach((p) => p.tick())
     this.comets.forEach((p) => p.tick())
 
-    this.expireOldAttackRemnantsAndCaches()
+    this.expireOldElements()
     this.spawnNewCaches()
     this.spawnNewAIs()
     this.spawnNewPlanets()
@@ -628,8 +646,18 @@ export class Game {
   // ----- radii -----
 
   get gameSoftRadius() {
-    const count = this.humanShips.length || 1
-    return Math.max(5, Math.sqrt(count) * 2)
+    const count =
+      this.humanShips.filter(
+        (s) => !s.tutorial?.currentStep,
+      ).length || 1
+    const radius = Math.max(
+      5,
+      this.minimumGameRadius,
+      Math.sqrt(count) * 2,
+    )
+    if (radius > this.minimumGameRadius)
+      this.minimumGameRadius = radius
+    return radius
   }
 
   get gameSoftArea() {
@@ -638,7 +666,7 @@ export class Game {
 
   // ----- tick helpers -----
 
-  expireOldAttackRemnantsAndCaches() {
+  expireOldElements() {
     const attackRemnantExpirationTime =
       Date.now() - c.attackRemnantExpireTime
     this.attackRemnants.forEach((ar, index) => {
@@ -652,6 +680,22 @@ export class Game {
     this.caches.forEach((c, index) => {
       if (cacheExpirationTime > c.time) {
         this.removeCache(c)
+      }
+    })
+
+    const zoneExpirationTime = Date.now() - c.zoneExpireTime
+    this.zones.forEach((z, index) => {
+      const consistentSemiRandomModifier =
+        (z.id
+          .split(``)
+          .reduce((t, c) => t + c.charCodeAt(0), 0) %
+          200) *
+        10000000
+      if (
+        zoneExpirationTime >
+        z.spawnTime + consistentSemiRandomModifier
+      ) {
+        this.removeZone(z)
       }
     })
   }
@@ -834,15 +878,22 @@ export class Game {
       while (!spawnPoint) {
         let point = c.randomInsideCircle(radius)
         // c.log(point)
-        const tooClose = this.humanShips.find((hs) =>
-          c.pointIsInsideCircle(point, hs.location, 0.1),
+        const tooClose = this.ships.find((hs) =>
+          c.pointIsInsideCircle(point, hs.location, 0.2),
         )
         if (tooClose) spawnPoint = undefined
         else spawnPoint = point
-        radius += 0.1
+        radius += 0.001
       }
 
-      const level = c.distance([0, 0], spawnPoint) * 2 + 0.1
+      const isInSafeZone =
+        c.distance([0, 0], spawnPoint) <
+        this.settings.safeZoneRadius
+      const level =
+        c.distance([0, 0], spawnPoint) *
+          2 *
+          Number(isInSafeZone ? 0.5 : 1) +
+        1
       const species = c.randomFromArray(
         Object.values(c.species)
           .filter((s) => s.aiOnly)
@@ -857,8 +908,6 @@ export class Game {
         guildId: `fowl`,
         speciesId: species,
         level,
-        headerBackground: `ai.webp`,
-
       })
     }
   }
@@ -998,7 +1047,7 @@ export class Game {
       )
       return existing
     }
-    const newPlanet = await new BasicPlanet(
+    const newPlanet = new BasicPlanet(
       data as BaseBasicPlanetData,
       this,
     )
@@ -1032,7 +1081,7 @@ export class Game {
       )
       return existing
     }
-    const newPlanet = await new MiningPlanet(
+    const newPlanet = new MiningPlanet(
       data as BaseMiningPlanetData,
       this,
     )
@@ -1059,7 +1108,7 @@ export class Game {
       )
       return existing
     }
-    const newComet = await new Comet(data, this)
+    const newComet = new Comet(data, this)
     this.comets.push(newComet)
 
     this.chunkManager.addOrUpdate(newComet)
@@ -1070,7 +1119,7 @@ export class Game {
   }
 
   async removePlanet(planet: Planet) {
-    c.log(`Removing planet ${planet.name} from the game.`)
+    // c.log(`Removing planet ${planet.name} from the game.`)
     this.humanShips.forEach((hs) => {
       const seenThisPlanet = hs.seenPlanets.findIndex(
         (lm) => lm.type === `planet` && lm.id === planet.id,
@@ -1160,6 +1209,9 @@ export class Game {
 
   async removeZone(zone: Zone) {
     c.log(`Removing zone ${zone.name} from the game.`)
+    zone.shipsAt.forEach((s) => {
+      zone.shipLeave(s)
+    })
     this.humanShips.forEach((hs) => {
       const seenThisZone = hs.seenLandmarks.findIndex(
         (lm) => lm.type === `zone` && lm.id === zone.id,
@@ -1180,16 +1232,16 @@ export class Game {
     await this.db?.zone.removeFromDb(zone.id)
   }
 
-  addAttackRemnant(
+  async addAttackRemnant(
     data: BaseAttackRemnantData,
     save = true,
-  ): AttackRemnant {
+  ): Promise<AttackRemnant | undefined> {
     const newAttackRemnant = new AttackRemnant(data)
     this.attackRemnants.push(newAttackRemnant)
     this.chunkManager.addOrUpdate(newAttackRemnant)
 
     if (save)
-      this.db?.attackRemnant.addOrUpdateInDb(
+      await this.db?.attackRemnant.addOrUpdateInDb(
         newAttackRemnant,
       )
     return newAttackRemnant
@@ -1258,7 +1310,12 @@ export class Game {
       (g) => g !== `fowl`,
     ) as GuildId[]) {
       const newHomeworld = c.randomFromArray(
-        this.basicPlanets.filter((p) => !p.guildId),
+        this.basicPlanets.filter(
+          (p) =>
+            !p.guildId &&
+            c.distance([0, 0], p.location) <
+              this.settings.safeZoneRadius,
+        ),
       )
       newHomeworld.guildId = guildId
       newHomeworld.homeworld = guildId
@@ -1358,10 +1415,10 @@ export class Game {
           (s) => s.guildId === a.guildId,
         )
         if (!found) return
-        // c.log(`planet with allegiance:`, found) // todo remove
         found.score += a.level
       })
     }
+    // c.log(controlScores)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []
@@ -1440,6 +1497,72 @@ export class Game {
     )
   }
 
+  announceCargoPrices() {
+    // ----- announce cargo prices -----
+    const avgCargoPrices = Object.values(c.cargo).reduce(
+      (acc, cargo) => ({
+        ...acc,
+        [cargo.id]: {
+          id: cargo.id,
+          buy: 0,
+          sell: 0,
+          count: 0,
+        },
+      }),
+      {},
+    )
+    for (let cargoId of Object.keys(c.cargo)) {
+      for (let p of this.basicPlanets) {
+        const buyMult = p.vendor?.cargo?.find(
+          (ca) => ca.id === cargoId,
+        )?.buyMultiplier
+        if (buyMult) {
+          avgCargoPrices[cargoId].count++
+          avgCargoPrices[cargoId].buy +=
+            c.getCargoBuyPrice(cargoId as CargoId, p)
+              .credits || 0
+          avgCargoPrices[cargoId].sell +=
+            c.getCargoSellPrice(cargoId as CargoId, p)
+              .credits || 0
+        }
+      }
+    }
+    c.log(
+      `Cargo Prices:\n` +
+        Object.values(avgCargoPrices)
+          .map(
+            (a) =>
+              (a as any).id +
+              ` (base: ${
+                c.cargo[(a as any).id].basePrice.credits
+              })` +
+              `\n   buy avg  ` +
+              c.r2((a as any).buy / (a as any).count) +
+              ` (${
+                (a as any).buy / (a as any).count >
+                c.cargo[(a as any).id].basePrice.credits
+                  ? `+`
+                  : ``
+              }${c.r2(
+                (a as any).buy / (a as any).count -
+                  c.cargo[(a as any).id].basePrice.credits,
+              )}), ` +
+              `\n   sell avg ` +
+              c.r2((a as any).sell / (a as any).count) +
+              ` (${
+                (a as any).sell / (a as any).count >
+                c.cargo[(a as any).id].basePrice.credits
+                  ? `+`
+                  : ``
+              }${c.r2(
+                (a as any).sell / (a as any).count -
+                  c.cargo[(a as any).id].basePrice.credits,
+              )}),`,
+          )
+          .join(`\n`),
+    )
+  }
+
   toAdminMapData(): AdminVisibleData {
     // const startTime = Date.now()
     const mapData = {
@@ -1452,6 +1575,7 @@ export class Game {
         a.toAdminStub(),
       ),
       gameRadius: this.gameSoftRadius,
+      safeZoneRadius: this.settings.safeZoneRadius,
       showAll: true as true,
     }
     // c.log(

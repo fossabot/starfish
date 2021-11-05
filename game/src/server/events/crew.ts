@@ -421,30 +421,51 @@ export default function (
     },
   )
 
-  socket.on(`crew:contribute`, (shipId, crewId, amount) => {
-    if (!game) return
-    const ship = game.ships.find(
-      (s) => s.id === shipId,
-    ) as HumanShip
-    if (!ship) return
-    const crewMember = ship.crewMembers?.find(
-      (cm) => cm.id === crewId,
-    )
-    if (!crewMember) return
+  socket.on(
+    `crew:contribute`,
+    (shipId, crewId, amount, callback) => {
+      if (!game) {
+        if (callback) callback({ error: `No game found.` })
+        return
+      }
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship) {
+        if (callback)
+          callback({ error: `No ship found by that id.` })
+        return
+      }
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember) {
+        if (callback)
+          callback({
+            error: `No crew member found by that id.`,
+          })
+        return
+      }
 
-    amount = c.r2(amount, 2, true)
+      amount = c.r2(amount, 2, true)
 
-    if (amount > crewMember.credits) return
+      if (amount > crewMember.credits) {
+        if (callback)
+          callback({ error: `Not enough money.` })
+        return
+      }
 
-    crewMember.credits -= amount
-    crewMember.toUpdate.credits = crewMember.credits
-    ship.addCommonCredits(amount, crewMember)
+      crewMember.credits -= amount
+      crewMember.toUpdate.credits = crewMember.credits
+      ship.addCommonCredits(amount, crewMember)
 
-    c.log(
-      `gray`,
-      `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`,
-    )
-  })
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} contributed ${amount} to the common fund.`,
+      )
+      if (callback) callback({ data: ship.commonCredits })
+    },
+  )
 
   socket.on(
     `crew:donateToPlanet`,
@@ -492,6 +513,7 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated 💳${amount} ${c.baseCurrencyPlural} to the planet ${planet.name}.`,
       )
+      return callback({ data: crewMember._stub })
     },
   )
 
@@ -545,6 +567,8 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} donated ${amount} ${c.crewCosmeticCurrencyPlural} to the planet ${planet.name}.`,
       )
+
+      return callback({ data: crewMember._stub })
     },
   )
 
@@ -662,7 +686,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -904,7 +931,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -972,7 +1002,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,

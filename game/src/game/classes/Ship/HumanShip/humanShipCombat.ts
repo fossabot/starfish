@@ -120,7 +120,7 @@ export function determineTargetShip(
       const attackedByThatTarget =
         this.visible.attackRemnants.find(
           (ar) =>
-            ar.attacker.id ===
+            ar.attacker?.id ===
             mostViableManuallyTargetedShip.id,
         )
       if (attackedByThatTarget) {
@@ -138,14 +138,14 @@ export function determineTargetShip(
           ): AttackRemnant | AttackRemnantStub | null => {
             // was defense
             if (
-              ar.attacker.id === this.id ||
-              ar.defender.id !== this.id
+              ar.attacker?.id === this.id ||
+              ar.defender?.id !== this.id
             )
               return mostRecent
 
             // attacker still exists
             const foundAttacker = this.game?.ships.find(
-              (s) => s.id === ar.attacker.id,
+              (s) => s.id === ar.attacker?.id,
             )
             if (!foundAttacker) return mostRecent
 
@@ -197,11 +197,11 @@ export function determineTargetShip(
           ar,
         ): AttackRemnant | AttackRemnantStub | null => {
           const targetId =
-            ar.attacker.id === this.id
+            ar.attacker?.id === this.id
               ? ar.defender
               : ar.attacker
           const foundShip = this.game?.ships.find(
-            (s) => s.id === targetId.id,
+            (s) => s.id === targetId?.id,
           )
           if (
             !foundShip ||
@@ -223,9 +223,9 @@ export function determineTargetShip(
       const foundAttacker = this.game?.ships.find(
         (s) =>
           s.id ===
-          (mostRecentCombat.attacker.id === this.id
-            ? mostRecentCombat.defender.id
-            : mostRecentCombat.attacker.id),
+          (mostRecentCombat.attacker?.id === this.id
+            ? mostRecentCombat.defender?.id
+            : mostRecentCombat.attacker?.id),
       ) as CombatShip
       if (foundAttacker) {
         targetShip = foundAttacker
@@ -336,6 +336,7 @@ export function autoAttack(
 
   // ----- if there is a target, attack with EVERY AVAILABLE WEAPON -----
   // canAttack is handled in attack function
+  const res: TakenDamageResult[] = []
   if (this.targetShip)
     this.availableWeapons()
       .filter(
@@ -347,11 +348,14 @@ export function autoAttack(
           ),
       )
       .forEach((w) => {
-        this.attack(
-          this.targetShip!,
-          w,
-          this.targetItemType,
-          predeterminedHitChance,
+        res.push(
+          this.attack(
+            this.targetShip!,
+            w,
+            this.targetItemType,
+            predeterminedHitChance,
+          ),
         )
       })
+  return res
 }

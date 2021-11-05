@@ -24,4 +24,5 @@ interface BaseZoneData {
   radius: number
   effects: ZoneEffect[]
   passives?: ShipPassiveEffect[]
+  spawnTime?: number
 }

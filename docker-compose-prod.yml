@@ -67,8 +67,6 @@ services:
       - '443:443'
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
-    labels:
-      com.datadoghq.ad.logs: '[<LOGS_CONFIG>]'
 
 secrets:
   discord_token:

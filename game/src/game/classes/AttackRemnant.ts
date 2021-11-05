@@ -4,15 +4,19 @@ import { Stubbable } from './Stubbable'
 export class AttackRemnant extends Stubbable {
   readonly id: string
   readonly type = `attackRemnant`
-  readonly attacker: {
+  readonly attacker?: {
     id: string
     name: string
+    type: string
+    ai?: boolean
     toReference?: Function
   }
 
-  readonly defender: {
+  readonly defender?: {
     id: string
     name: string
+    type: string
+    ai?: boolean
     toReference?: Function
   }
 
@@ -58,10 +62,10 @@ export class AttackRemnant extends Stubbable {
     a?: number,
   ): AttackRemnantStub {
     return {
-      attacker: this.attacker.toReference
+      attacker: this.attacker?.toReference
         ? this.attacker.toReference()
         : this.attacker,
-      defender: this.defender.toReference
+      defender: this.defender?.toReference
         ? this.defender.toReference()
         : this.defender,
       damageTaken: this.damageTaken,

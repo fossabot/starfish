@@ -23,6 +23,13 @@ export class BrakeCommand implements Command {
       return
     }
 
+    if (context.ship.speed === 0) {
+      await context.reply(
+        `${context.ship.name} is already stopped.`,
+      )
+      return
+    }
+
     const engineThrustAmplification = Math.max(
       c.noEngineThrustMagnitude,
       (

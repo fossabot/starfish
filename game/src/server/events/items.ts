@@ -81,7 +81,10 @@ export default function (
 
       planet.addXp((price.credits || 0) / 100)
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -159,7 +162,10 @@ export default function (
       })
 
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price || 0) / 100,
+        )
 
       c.log(
         `gray`,
@@ -242,7 +248,10 @@ export default function (
       })
 
       if (ship.guildId)
-        planet.incrementAllegiance(ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.credits || 0) / 100,
+        )
       planet.addXp((price.credits || 0) / 100)
 
       c.log(
