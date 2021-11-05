@@ -13,7 +13,8 @@
       class="bg"
       :style="{
         background: `url('/images/headerBackgrounds/${
-          data.headerBackground || 'default.webp'
+          data.headerBackground.replace('.jpg', '.webp') ||
+          'default.webp'
         }')`,
       }"
     ></div>

@@ -24,7 +24,7 @@
               : '') +
             `Remaining in vein: ${c.numberWithCommas(
               m.maxMineable,
-            )}${c.cargo[m.id] ? 'tons' : ''}`
+            )}${c.cargo[m.id] ? ' tons' : ''}`
           : `Upgrade the mine to uncover more resources.`
       "
     >
