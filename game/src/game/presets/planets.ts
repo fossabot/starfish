@@ -104,7 +104,7 @@ function getLocation(game?: Game, isHomeworld?: any) {
     }
 
     locationSearchRadius *= 1.01
-    if (isHomeworld) c.log(isHomeworld, location)
+    // if (isHomeworld) c.log(isHomeworld, location)
   }
   return location
 }

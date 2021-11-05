@@ -133,7 +133,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 300,
+        weight: 3,
         value: `increaseMaxContracts`,
       },
       {
@@ -556,7 +556,7 @@ export class BasicPlanet extends Planet {
       })
     }
     this.updateFrontendForShipsAt()
-    c.log(`added contract:`, this.name, this.contracts)
+    // c.log(`added contract:`, this.name, this.contracts)
   }
 
   incrementAllegiance(guildId: GuildId, amount: number) {
