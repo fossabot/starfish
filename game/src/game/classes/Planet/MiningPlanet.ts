@@ -35,9 +35,10 @@ export class MiningPlanet extends Planet {
     if (resourceId === `shipCosmeticCurrency`)
       return Math.ceil((Math.random() + 0.5) * 3)
     const rarity = (c.cargo[resourceId]?.rarity || 100) + 1
-    const scaledByLevel = this.level / rarity
-    return Math.floor(
-      (Math.random() + 0.3) * 100 * scaledByLevel,
+    const scaledByLevel =
+      Math.max(this.level, 1) / Math.max(rarity, 1)
+    return Math.ceil(
+      10 + (Math.random() + 0.3) * 100 * scaledByLevel,
     )
   }
 
