@@ -78,6 +78,14 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v2
 
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+              - '${{matrix.folder}}/**'
+              - common/**
+
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -94,6 +102,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker images
+        if: steps.changes.outputs.src == 'true'
         uses: docker/build-push-action@v2
         with:
           file: ${{ matrix.dockerfile }}
@@ -111,10 +120,10 @@ jobs:
         with:
           repository: 'starfishgame/stonefish'
 
-      - name: NPM install + test
+      - name: NPM install
         run: |
           npm install
 
-      - name: NPM install + test
+      - name: Run Artillery test
         run: |
           npm run test
