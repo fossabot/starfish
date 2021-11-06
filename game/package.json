@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@newrelic/winston-enricher": "^2.0.0",
-    "@types/node": "^16.10.3",
+    "@types/node": "^16.11.6",
     "dotenv": "^10.0.0",
     "engine.io": "^6.0.0",
     "git-last-commit": "^1.0.1",
