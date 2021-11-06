@@ -113,6 +113,7 @@ jobs:
             ${{ runner.os }}-multi-buildx
 
       - name: Build Docker images
+        id: dockerbuild
         if: steps.changes.outputs.src == 'true'
         uses: docker/build-push-action@v2
         with:
@@ -125,6 +126,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: Move cache
+        if: steps.dockerbuild.outcome == 'success'
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
