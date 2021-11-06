@@ -58,7 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-multi-buildx
 
-      - name: Build Docker images
+      - name: Build and push Docker images
         id: dockerbuild
         if: steps.changes.outputs.src == 'true'
         uses: docker/build-push-action@v2
