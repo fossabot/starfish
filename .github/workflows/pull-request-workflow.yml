@@ -128,6 +128,7 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
   artillery:
     needs: docker-build-publish
     runs-on: ubuntu-latest
