@@ -46,7 +46,7 @@ jobs:
           name: test-results
 
       - uses: dorny/test-reporter@v1
-        if: success() || failure()
+        if: (success() || failure()) && (${{ github.actor }} != 'dependabot')
         with:
           name: test-results
           path: ${{matrix.folder}}/reports/test-results.json
