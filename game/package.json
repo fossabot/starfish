@@ -9,7 +9,7 @@
     "testlocal": "NODE_ENV=development nodemon tests/localTestRunner.ts"
   },
   "dependencies": {
-    "@newrelic/winston-enricher": "^2.0.0",
+    "@newrelic/winston-enricher": "^2.1.0",
     "@types/node": "^16.11.6",
     "dotenv": "^10.0.0",
     "engine.io": "^6.0.0",
