@@ -15,7 +15,7 @@
     "engine.io": "^6.0.1",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
-    "mongoose": "5.10.19",
+    "mongoose": "5.13.13",
     "newrelic": "^8.5.1",
     "nodemon": "^2.0.14",
     "npm": "^8.1.3",
