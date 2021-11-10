@@ -1,0 +1,160 @@
+name: Integration Tests
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - folder: 'game'
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: '16'
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: 5.0
+
+      - uses: c-hive/gha-npm-cache@v1
+
+      - name: NPM install on ${{matrix.folder}}
+        run: |
+          npm install
+          npm run test
+        working-directory: ${{matrix.folder}}
+
+      - uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+
+      - name: Download test result artifact
+        uses: actions/download-artifact@v2
+        if: success() || failure()
+        with:
+          name: test-results
+
+      - uses: dorny/test-reporter@v1
+        if: (success() || failure()) && (${{ github.actor }} != 'dependabot')
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+          reporter: mocha-json
+
+
+
+run-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Registry
+        run: docker login -u "$DOCKER_USERNAME" --password-stdin <<< "$DOCKER_PASSWORD"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Start env
+        run: docker-compose -f docker-compose-test.yml up -d
+
+      - name: Show running containers
+        run: docker-compose ps
+
+  # terraform-planning:
+  #   needs: ['npm-test']
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Check Out Repo
+  #     uses: actions/checkout@v2
+  #     with:
+  #       repository: 'starfishgame/tunaform'
+
+  #   - name: Setup Terraform
+  #     uses: hashicorp/setup-terraform@v1.2.1
+  #     with:
+  #       terraform_version: ${{ env.TF_VERSION }}
+
+  #   - name: Terraform Init
+  #       run: |
+  #         terraform init \
+  #         -backend-config="dynamodb_table=${{ env.TF_VAR_terraform-dynamodb-state-locking-table-name }}" \
+  #         -backend-config="access_key=${{ env.TF_VAR_aws-access-key }}" \
+  #         -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
+  #         -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
+  #         -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
+  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"
+
+  #   - name: Terraform Validate
+  #     run: terraform validate
+
+  #   - name: Terraform Plan
+  #     run: terraform plan
+
+  #   - name: Terraform Apply
+  #     run: terraform apply -auto-approve
+
+  # TODO: Add cypress tests
+
+  artillery:
+    needs: docker-build-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Stonefish repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'starfishgame/stonefish'
+
+      - name: NPM install
+        run: |
+          npm install
+
+      - name: Run Artillery test
+        run: |
+          npm run test
+
+  # # terraform-destroy:
+  #   needs: ['artillery'] #, 'cypress']
+  #   steps:
+  #     - name: Check Out Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: 'starfishgame/tunaform'
+
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v1.2.1
+  #       with:
+  #         terraform_version: ${{ env.TF_VERSION }}
+
+  #     - name: Terraform Init
+  #       run: |
+  #         terraform init \
+  #         -backend-config="dynamodb_table=${{ env.TF_VAR_terraform-dynamodb-state-locking-table-name }}" \
+  #         -backend-config="access_key=${{ env.TF_VAR_aws-access-key }}" \
+  #         -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
+  #         -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
+  #         -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
+  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"
+
+  #     - name: Terraform Validate
+  #       run: terraform validate
+
+  #     - name: Terraform Plan
+  #       run: terraform plan
+
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+
+  #       - name: Terraform Destroy
+  #         run: terraform destroy -auto-approve
