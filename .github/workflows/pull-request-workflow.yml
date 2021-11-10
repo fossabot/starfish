@@ -104,12 +104,12 @@ jobs:
   #     uses: actions/checkout@v2
   #     with:
   #       repository: 'starfishgame/tunaform'
-      
+
   #   - name: Setup Terraform
   #     uses: hashicorp/setup-terraform@v1.2.1
   #     with:
   #       terraform_version: ${{ env.TF_VERSION }}
-  
+
   #   - name: Terraform Init
   #       run: |
   #         terraform init \
@@ -118,7 +118,7 @@ jobs:
   #         -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
   #         -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
   #         -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
-  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"          
+  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"
 
   #   - name: Terraform Validate
   #     run: terraform validate
@@ -129,57 +129,32 @@ jobs:
   #   - name: Terraform Apply
   #     run: terraform apply -auto-approve
 
-
   # TODO: Add cypress tests
 
-  artillery:
-    needs: docker-build-publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone Stonefish repo
-        uses: actions/checkout@v2
-        with:
-          repository: 'starfishgame/stonefish'
+  # artillery:
+  #   needs: run-docker-compose
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Clone Stonefish repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: 'starfishgame/stonefish'
 
-      - name: NPM install
-        run: |
-          npm install
+  #     - name: NPM install
+  #       run: |
+  #         npm install
 
-      - name: Run Artillery test
-        run: |
-          npm run test
+  #     - name: Run Artillery test
+  #       run: |
+  #         npm run test
 
-  # terraform-destroy:
-    needs: ['artillery'] #, 'cypress']
+  terraform-destroy:
+    # needs: ['artillery'] #, 'cypress']
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
         with:
           repository: 'starfishgame/tunaform'
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1.2.1
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-    
-      - name: Terraform Init
-        run: |
-          terraform init \
-          -backend-config="dynamodb_table=${{ env.TF_VAR_terraform-dynamodb-state-locking-table-name }}" \
-          -backend-config="access_key=${{ env.TF_VAR_aws-access-key }}" \
-          -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
-          -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
-          -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
-          -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"          
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-
-        - name: Terraform Destroy
-          run: terraform destroy -auto-approve
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
