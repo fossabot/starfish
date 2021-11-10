@@ -131,6 +131,59 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
+  run-docker-compose:
+    needs: ['npm-test']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Registry
+        run: docker login -u "$DOCKER_USERNAME" --password-stdin <<< "$DOCKER_PASSWORD"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Start env
+        run: docker-compose -f docker-compose-test.yml up -d
+
+      - name: Show running containers
+        run: docker-compose ps
+
+  # terraform-planning:
+  #   needs: ['npm-test']
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Check Out Repo
+  #     uses: actions/checkout@v2
+  #     with:
+  #       repository: 'starfishgame/tunaform'
+
+  #   - name: Setup Terraform
+  #     uses: hashicorp/setup-terraform@v1.2.1
+  #     with:
+  #       terraform_version: ${{ env.TF_VERSION }}
+
+  #   - name: Terraform Init
+  #       run: |
+  #         terraform init \
+  #         -backend-config="dynamodb_table=${{ env.TF_VAR_terraform-dynamodb-state-locking-table-name }}" \
+  #         -backend-config="access_key=${{ env.TF_VAR_aws-access-key }}" \
+  #         -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
+  #         -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
+  #         -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
+  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"
+
+  #   - name: Terraform Validate
+  #     run: terraform validate
+
+  #   - name: Terraform Plan
+  #     run: terraform plan
+
+  #   - name: Terraform Apply
+  #     run: terraform apply -auto-approve
+
+  # TODO: Add cypress tests
+
   artillery:
     needs: docker-build-publish
     runs-on: ubuntu-latest
@@ -147,3 +200,38 @@ jobs:
       - name: Run Artillery test
         run: |
           npm run test
+
+  # # terraform-destroy:
+  #   needs: ['artillery'] #, 'cypress']
+  #   steps:
+  #     - name: Check Out Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: 'starfishgame/tunaform'
+
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v1.2.1
+  #       with:
+  #         terraform_version: ${{ env.TF_VERSION }}
+
+  #     - name: Terraform Init
+  #       run: |
+  #         terraform init \
+  #         -backend-config="dynamodb_table=${{ env.TF_VAR_terraform-dynamodb-state-locking-table-name }}" \
+  #         -backend-config="access_key=${{ env.TF_VAR_aws-access-key }}" \
+  #         -backend-config="secret_key=${{ env.TF_VAR_aws-secret-key }}" \
+  #         -backend-config="bucket=${{ env.TF_VAR_terraform-state-bucket }}" \
+  #         -backend-config="key=${{ env.TF_VAR_terraform-state-bucket-key }}" \
+  #         -backend-config="region=${{ env.TF_VAR_terraform-state-bucket-aws-region }}"
+
+  #     - name: Terraform Validate
+  #       run: terraform validate
+
+  #     - name: Terraform Plan
+  #       run: terraform plan
+
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+
+  #       - name: Terraform Destroy
+  #         run: terraform destroy -auto-approve
