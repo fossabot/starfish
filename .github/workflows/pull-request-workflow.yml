@@ -53,7 +53,6 @@ jobs:
           reporter: mocha-json
 
   docker-build-publish:
-    needs: npm-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -112,7 +111,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-multi-buildx
 
-      - name: Build and push Docker images
+      - name: Build  Docker images
         id: dockerbuild
         if: steps.changes.outputs.src == 'true'
         uses: docker/build-push-action@v2
