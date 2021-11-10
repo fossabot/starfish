@@ -53,9 +53,7 @@ jobs:
           path: ${{matrix.folder}}/reports/test-results.json
           reporter: mocha-json
 
-
-
-run-docker-compose:
+  run-docker-compose:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
