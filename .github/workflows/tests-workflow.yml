@@ -105,22 +105,21 @@ jobs:
 
   # TODO: Add cypress tests
 
-  artillery:
-    needs: docker-build-publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone Stonefish repo
-        uses: actions/checkout@v2
-        with:
-          repository: 'starfishgame/stonefish'
+  # artillery:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Clone Stonefish repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: 'starfishgame/stonefish'
 
-      - name: NPM install
-        run: |
-          npm install
+  #     - name: NPM install
+  #       run: |
+  #         npm install
 
-      - name: Run Artillery test
-        run: |
-          npm run test
+  #     - name: Run Artillery test
+  #       run: |
+  #         npm run test
 
   # # terraform-destroy:
   #   needs: ['artillery'] #, 'cypress']

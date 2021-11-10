@@ -82,19 +82,19 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  run-docker-compose:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
+  # run-docker-compose:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check Out Repo
+  #       uses: actions/checkout@v2
 
-      - name: Login to Docker Registry
-        run: docker login -u "$DOCKER_USERNAME" --password-stdin <<< "$DOCKER_PASSWORD"
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Start env
-        run: docker-compose -f docker-compose-test.yml up -d
+  #     - name: Login to Docker Registry
+  #       run: docker login -u "$DOCKER_USERNAME" --password-stdin <<< "$DOCKER_PASSWORD"
+  #       env:
+  #         DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+  #         DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+  #     - name: Start env
+  #       run: docker-compose -f docker-compose-test.yml up -d
 
   # terraform-planning:
   #   needs: ['npm-test']
@@ -148,13 +148,13 @@ jobs:
   #       run: |
   #         npm run test
 
-  terraform-destroy:
-    # needs: ['artillery'] #, 'cypress']
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
-        with:
-          repository: 'starfishgame/tunaform'
+  # terraform-destroy:
+  #   # needs: ['artillery'] #, 'cypress']
+  #   steps:
+  #     - name: Check Out Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: 'starfishgame/tunaform'
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+  #     - name: Terraform Destroy
+  #       run: terraform destroy -auto-approve
