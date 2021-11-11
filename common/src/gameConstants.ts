@@ -9,7 +9,7 @@ const defaultGameSettings: {
   baseStaminaUse: 0.0001,
   staminaRechargeMultiplier: 1,
   staminaBottomedOutResetPoint: 0.05,
-  staminaBottomedOutChargeMultiplier: 0,
+  staminaBottomedOutChargeMultiplier: 1,
   newCrewMemberCredits: 1000,
 
   gravityMultiplier: 1.8,

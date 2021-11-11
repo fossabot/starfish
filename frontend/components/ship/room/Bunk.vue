@@ -22,15 +22,16 @@
       <template
         v-if="
           ship.gameSettings
-            .staminaBottomedOutChargeMultiplier
+            .staminaBottomedOutChargeMultiplier !== 1
         "
       >
         at a
         <span class="warning"
           >{{
             c.r2(
-              ship.gameSettings
-                .staminaBottomedOutChargeMultiplier,
+              1 -
+                ship.gameSettings
+                  .staminaBottomedOutChargeMultiplier,
             ) * 100
           }}% reduced</span
         >
