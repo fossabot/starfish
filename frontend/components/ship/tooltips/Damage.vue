@@ -38,6 +38,10 @@
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
       </ul>
+      <template v-if="d.hpLeft">
+        <hr />
+        <div>{{ d.hpLeft }} HP remaining</div>
+      </template>
     </div>
   </div>
 </template>

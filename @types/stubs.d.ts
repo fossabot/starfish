@@ -80,6 +80,7 @@ interface CrewMemberStub extends BaseStub {
   id: string
   name: string
   skills: XPData[]
+  discordIcon?: string
   location?: CrewLocation
   speciesId?: SpeciesId
   stamina: number
@@ -103,13 +104,25 @@ interface PlanetStub extends BaseStub {
   location: CoordinatePair
   name: string
   id: string
+  color?: string
   guildId?: GuildId
   vendor?: PlanetVendor
-  allegiances: PlanetAllegianceData[]
-  priceFluctuator: number
+  allegiances?: PlanetAllegianceData[]
+  priceFluctuator?: number
   bank?: boolean
   defense?: number
-  [key: string]: any
+  level?: number
+  radius?: number
+  mass?: number
+  contracts?: PlanetContractAvailable[]
+  passives?: ShipPassiveEffect[]
+  landingRadiusMultiplier?: number
+  planetType?: PlanetType
+  trail?: CoordinatePair[]
+  mine?: PlanetMine
+  velocity?: CoordinatePair
+  speed?: number
+  direction?: number
 }
 interface PlanetLogStub extends BaseStub {
   type: `planet`
@@ -121,21 +134,22 @@ interface CacheStub extends BaseStub {
   [key: string]: any
 }
 interface ZoneStub extends BaseStub {
+  type: `zone`
+  id: string
   location: CoordinatePair
   radius: number
   color: string
   name: string
-  [key: string]: any
+  effects?: ZoneEffect[]
 }
 interface AttackRemnantStub extends BaseStub {
-  attacker: ShipStub
-  defender: ShipStub
+  attacker?: ShipStub
+  defender?: ShipStub
   damageTaken: TakenDamageResult
   start: CoordinatePair
   end: CoordinatePair
   time: number
   id: string
-  [key: string]: any
 }
 
 interface ItemStub extends BaseStub {
@@ -147,8 +161,7 @@ interface ItemStub extends BaseStub {
 }
 interface WeaponStub extends ItemStub {
   cooldownRemaining?: number
-  [key: string]: any
 }
 interface EngineStub extends ItemStub {
-  [key: string]: any
+  thrustAmplification?: number
 }

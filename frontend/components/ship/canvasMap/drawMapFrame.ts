@@ -317,7 +317,6 @@ export default class Drawer {
 
     // ----- distance circles -----
 
-    // todo make these fit the current view rather than radiate from the center point
     let auBetweenLines = 1 / 10 ** 6
     const diameter = Math.max(this.width, this.height)
     while (auBetweenLines / diameter < 0.02)
@@ -586,13 +585,16 @@ export default class Drawer {
           color: z.color,
           opacity: 0.02,
         })
+        if (z.effects.find((e) => e.type === `current`))
+          return `hi`
+        // todo
       })
 
     // ----- comets
     ;[...cometsToDraw].forEach((s) => {
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
-        labelTop: !s.planet && s.name,
+        labelTop: s.name,
         radius: (2 / this.zoom) * devicePixelRatio,
         color: s.color || `#bbb`,
       })
@@ -634,26 +636,34 @@ export default class Drawer {
             co.status === `active` && s.id === co.targetId,
         ),
       )
+      const radius =
+        (c.items.chassis[s.chassis?.id || `starter1`]
+          .slots +
+          5) /
+        3
+      const zoomRadius = Math.max(
+        radius / this.zoom,
+        ((radius * 600) / c.kmPerAu) * this.flatScale,
+      )
 
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
-        radius: (4.5 / this.zoom) * devicePixelRatio,
+        radius: (zoomRadius + 1) * devicePixelRatio,
         color: `rgba(30,30,30,.3)`,
         triangle: angle,
       })
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
         labelTop: !s.planet && s.name,
-        radius: (3.5 / this.zoom) * devicePixelRatio,
+        radius: zoomRadius * devicePixelRatio,
         color: c.guilds[s.guildId]?.color || `#bbb`,
         triangle: angle,
       })
       if (highlight)
         this.drawPoint({
           location: [s.location[0], s.location[1] * -1],
-          radius:
-            ((3.5 * 8) / this.zoom) * devicePixelRatio,
+          radius: zoomRadius * 8 * devicePixelRatio,
           color: c.guilds[s.guildId]?.color || `#bbb`,
           glow: true,
         })
@@ -661,10 +671,21 @@ export default class Drawer {
 
     if (ship) {
       // player ship
+
+      const radius =
+        (c.items.chassis[ship.chassis?.id || `starter1`]
+          .slots +
+          5) /
+        3
+      const zoomRadius = Math.max(
+        radius / this.zoom,
+        ((radius * 600) / c.kmPerAu) * this.flatScale,
+      )
+
       this.drawPoint({
         location: [ship.location[0], ship.location[1] * -1],
         labelTop: !ship.planet && ship.name,
-        radius: (4.5 / this.zoom) * devicePixelRatio,
+        radius: zoomRadius * devicePixelRatio,
         color: `white`,
         triangle: ship.direction
           ? ship.direction

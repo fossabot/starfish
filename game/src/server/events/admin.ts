@@ -208,7 +208,7 @@ export default function (
       ]
     game.humanShips.forEach((s) => {
       if (!game) return
-      s.logEntry(message, `critical`)
+      s.logEntry(message, `critical`, `alert`)
     })
   })
 

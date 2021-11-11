@@ -40,7 +40,7 @@ io.on(`disconnect`, () => {
 
 io.on(
   `ship:message`,
-  async (id, message, channelType = `alert`) => {
+  async (id, message, channelType, notify = false) => {
     const guild = discordClient.guilds.cache.find(
       (g) => g.id === id,
     )
@@ -53,13 +53,14 @@ io.on(
 
     enQueue({
       guild,
-      channelType,
+      channelType: channelType || `alert`,
       message:
         typeof message === `string`
           ? message
           : message
               .map((m: RichLogContentElement) => m.text)
               .join(` `),
+      notify,
     })
   },
 )

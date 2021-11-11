@@ -16,7 +16,7 @@ declare const _default: {
         baseCritChance: any;
         baseCritDamageMultiplier: any;
         staminaBottomedOutResetPoint: any;
-        staminaBottomedOutChargeSlowdown: any;
+        staminaBottomedOutChargeMultiplier: any;
         staminaRechargeMultiplier: any;
         newCrewMemberCredits: any;
         planetDensity: any;

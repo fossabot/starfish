@@ -44,6 +44,18 @@ export async function rename(
   return { data: true }
 }
 
+export async function setDiscordIcon(
+  shipId: string,
+  crewId: string,
+  iconUrl: string | undefined,
+): Promise<IOResponse<true>> {
+  if (!(await connected()))
+    return { error: `Failed to change icon of crew member` }
+
+  io.emit(`crew:discordIcon`, shipId, crewId, iconUrl)
+  return { data: true }
+}
+
 export async function move(
   shipId: string,
   crewId: string,

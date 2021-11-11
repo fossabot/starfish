@@ -90,6 +90,8 @@ const shipSchemaFields: Record<
     {
       name: { type: String, required: true },
       id: { type: String, required: true },
+      joinDate: Number,
+      discordIcon: { type: String },
       lastActive: Number,
       cockpitCharge: Number,
       skills: [

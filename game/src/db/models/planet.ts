@@ -132,6 +132,8 @@ const planetSchemaFields: Record<
       claimableExpiresAt: Number,
     },
   ],
+
+  hitList: [String],
 }
 const planetSchema = new Schema(planetSchemaFields)
 const DBPlanet = model<DBPlanetDoc>(

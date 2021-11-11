@@ -24,6 +24,7 @@ interface TutorialStepData {
     channel?: GameChannelType
     next?: string
     advance?: string
+    notify?: boolean
   }[]
   forceLocation?: CoordinatePair
   forceCommonCredits?: number
@@ -109,6 +110,7 @@ export class Tutorial {
               ``,
             )}`,
             channel: `alert`,
+            notify: true,
           },
           {
             message: `You made it! Cool!`,
@@ -979,6 +981,7 @@ export class Tutorial {
             this.ship.crewMembers[0].mainShipId,
             m.message,
             m.channel,
+            m.notify,
           )
       }
     // }, c.tickInterval)
@@ -998,6 +1001,7 @@ export class Tutorial {
           `page!`,
         ],
         `high`,
+        `mystery`,
       )
       ship.game?.io.emit(
         `ship:message`,
@@ -1019,22 +1023,20 @@ export class Tutorial {
         )
         .forEach((s) => {
           if (s === ship || !s.planet) return
-          s.logEntry([
-            {
-              text: ship.name,
-              color:
-                ship.guildId &&
-                c.guilds[ship.guildId].color,
-              tooltipData: ship.toReference() as any,
-            },
-            `has joined the game, starting out from`,
-            {
-              text: s.planet.name,
-              color: s.planet.color,
-              tooltipData: s.planet.toReference() as any,
-            },
-            `&nospace!`,
-          ])
+          s.logEntry(
+            [
+              {
+                text: ship.name,
+                color:
+                  ship.guildId &&
+                  c.guilds[ship.guildId].color,
+                tooltipData: ship.toReference() as any,
+              },
+              `joined the game.`,
+            ],
+            `low`,
+            `party`,
+          )
         })
   }
 

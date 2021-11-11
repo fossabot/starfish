@@ -17,6 +17,7 @@ interface BasePlanetData {
   passives?: ShipPassiveEffect[]
   pacifist?: boolean
   stats?: PlanetStats
+  hitList?: string[]
 }
 
 interface BaseBasicPlanetData extends BasePlanetData {

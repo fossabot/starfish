@@ -61,8 +61,9 @@ export class Zone extends Stubbable {
           this.game?.gameSoftRadius || 1,
         )
         ship.logEntry(
-          `Your ship has been instantly warped to another part of the universe! The wormhole closed behind you.`,
+          `Warped across the universe!`,
           `critical`,
+          `mystery`,
         )
 
         this.moveToRandomLocation()
@@ -221,6 +222,35 @@ export class Zone extends Stubbable {
         ship.toUpdate.speed = c.vectorToMagnitude(
           ship.velocity,
         )
+      }
+
+      // current
+      else if (effect.type === `current`) {
+        const angleDifference = c.angleDifference(
+          effect.data?.direction || 0,
+          ship.direction || 0,
+          true,
+        )
+        const newMagnitude =
+          c.vectorToMagnitude(ship.velocity) +
+          (ship.speed < 0.00005 * intensity
+            ? 0.0000001 * intensity * proximityMod
+            : 0)
+        const newDirection =
+          (ship.direction +
+            angleDifference *
+              (0.0000001 / newMagnitude) *
+              proximityMod) %
+          360
+        ship.speed = newMagnitude
+        ship.direction = newDirection
+        ship.velocity = c.vectorFromDegreesAndMagnitude(
+          newDirection,
+          newMagnitude,
+        )
+        ship.toUpdate.velocity = ship.velocity
+        ship.toUpdate.speed = newMagnitude
+        ship.toUpdate.direction = newDirection
       }
     }
   }

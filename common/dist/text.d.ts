@@ -11,7 +11,7 @@ declare function capitalize(string?: string): string;
 declare function sanitize(string?: string): SanitizeResult;
 declare function camelCaseToWords(string?: string, capitalizeFirst?: boolean): string;
 declare function acronym(string?: string): string;
-declare function msToTimeString(ms?: number): string;
+declare function msToTimeString(ms?: number, short?: boolean): string;
 declare function garble(string?: string, percent?: number): string;
 declare function priceToString(p: Price): string;
 declare const _default: {

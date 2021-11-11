@@ -275,11 +275,12 @@ export class Ship extends Stubbable {
     this.toUpdate.name = this.name
     this.logEntry(
       [
-        `The ship has been renamed to`,
+        `Ship renamed to`,
         { color: `var(--success)`, text: this.name },
         `&nospace!`,
       ],
       `high`,
+      `ship`,
     )
   }
 
@@ -301,7 +302,7 @@ export class Ship extends Stubbable {
 
       this.logEntry(
         [
-          `${this.name} has joined the`,
+          `${this.name} joined the`,
           {
             color: c.guilds[id].color,
             text: c.guilds[id].name + ` Guild`,
@@ -309,6 +310,7 @@ export class Ship extends Stubbable {
           `&nospace!`,
         ],
         `critical`,
+        `flag`,
       )
 
       if (this.planet)
@@ -316,21 +318,25 @@ export class Ship extends Stubbable {
           .filter((s) => s.guildId === this.guildId)
           .forEach((s) => {
             if (s === (this as any) || !s.planet) return
-            s.logEntry([
-              {
-                text: this.name,
-                color:
-                  this.guildId &&
-                  c.guilds[this.guildId].color,
-                tooltipData: this.toReference() as any,
-              },
-              `has joined the`,
-              {
-                color: c.guilds[id].color,
-                text: c.guilds[id].name + ` Guild`,
-              },
-              `&nospace!`,
-            ])
+            s.logEntry(
+              [
+                {
+                  text: this.name,
+                  color:
+                    this.guildId &&
+                    c.guilds[this.guildId].color,
+                  tooltipData: this.toReference() as any,
+                },
+                `joined the`,
+                {
+                  color: c.guilds[id].color,
+                  text: c.guilds[id].name + ` Guild`,
+                },
+                `&nospace!`,
+              ],
+              `low`,
+              `flag`,
+            )
           })
     }
   }
@@ -845,10 +851,11 @@ export class Ship extends Stubbable {
         this._maxHp * Ship.notifyWhenHealthDropsToPercent
     ) {
       this.logEntry(
-        `${this.name}'s HP has dropped below ${
+        `HP has dropped below ${
           Ship.notifyWhenHealthDropsToPercent * 100
         }%!`,
-        `critical`,
+        `notify`,
+        `warning`,
       )
     }
     return total
@@ -878,7 +885,7 @@ export class Ship extends Stubbable {
         stat: statname,
         amount,
       })
-    else existing.amount += amount
+    else existing.amount = (existing.amount || 0) + amount
     this.toUpdate.stats = this.stats
   }
 
@@ -920,6 +927,7 @@ export class Ship extends Stubbable {
       speed: this.speed,
       velocity: this.velocity,
       direction: this.direction,
+      chassis: this.chassis,
       items: this.items.map((i) => ({
         id: i.id,
         type: i.type,
@@ -953,7 +961,7 @@ export class Ship extends Stubbable {
 
   // ----- misc stubs -----
 
-  logEntry(s: LogContent, lv: LogLevel) {}
+  logEntry(s: LogContent, lv: LogLevel, icon?: LogIcon) {}
 
   updateMaxScanProperties() {}
 

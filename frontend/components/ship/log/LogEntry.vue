@@ -1,41 +1,50 @@
 <template>
-  <div class="logentry" :class="level">
-    <div class="text flashtextgoodonspawn">
-      <template v-for="(el, index) in outputElements">
-        <span
-          :key="id + index"
-          :style="
-            (el.style || '') +
-            (el.color ? `; color: ${el.color};` : '')
-          "
-          v-tooltip="el.tooltipData"
-          :class="{ tooltip: el.tooltipData }"
-          ><a v-if="el.url" :href="el.url">{{
-            (el.text || el).replace(/\s*&nospace/g, '')
-          }}</a>
-          <template v-else>{{
-            (el.text || el).replace(/\s*&nospace/g, '')
-          }}</template></span
-        ><span
-          class="space"
-          v-if="
-            outputElements[index + 1] &&
-            (
-              outputElements[index + 1].text ||
-              outputElements[index + 1]
-            ).indexOf('&nospace') !== 0
-          "
-          >&#32;
-        </span>
-      </template>
+  <div class="logentry flexstretch" :class="level">
+    <div class="icon flex">
+      <img :src="`/images/log/${icon || 'alert'}.svg`" />
     </div>
-    <div class="sub time flashtextgoodonspawn padtoptiny">
-      {{ timeString }}
+    <div class="content flexbetween">
+      <div class="text flashtextgoodonspawn">
+        <template
+          v-for="(el, index) in outputElements"
+          v-if="!el.discordOnly"
+        >
+          <span
+            :key="id + index"
+            :style="
+              (el.style || '') +
+              (el.color ? `; color: ${el.color};` : '')
+            "
+            v-tooltip="el.tooltipData"
+            :class="{ tooltip: el.tooltipData }"
+            ><a v-if="el.url" :href="el.url">{{
+              (el.text || el).replace(/\s*&nospace/g, '')
+            }}</a>
+            <template v-else>{{
+              (el.text || el).replace(/\s*&nospace/g, '')
+            }}</template></span
+          ><span
+            class="space"
+            v-if="
+              outputElements[index + 1] &&
+              (
+                outputElements[index + 1].text ||
+                outputElements[index + 1]
+              ).indexOf('&nospace') !== 0
+            "
+            >&#32;
+          </span>
+        </template>
+      </div>
+      <div class="sub time flashtextgoodonspawn padtoptiny">
+        {{ timeString }}
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import c from '../../../../common/dist'
 import Vue, { PropType } from 'vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -51,9 +60,10 @@ export default Vue.extend({
     },
     time: { type: Number },
     level: {},
+    icon: {},
   },
   data() {
-    return { timeString: '', id: Math.random() }
+    return { c, timeString: '', id: Math.random() }
   },
   computed: {
     outputElements(): any[] | false {
@@ -69,7 +79,10 @@ export default Vue.extend({
   },
   methods: {
     resetTimeString() {
-      this.timeString = dayjs().to(this.time)
+      this.timeString = c.msToTimeString(
+        Date.now() - this.time,
+        true,
+      )
     },
   },
 })
@@ -77,12 +90,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .logentry {
+  position: relative;
   -webkit-backface-visibility: none;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  margin-bottom: 1.5em;
-  padding: 0em 0.4em 0em 0.6em;
-  border-left: 3px solid var(--highlight-color);
+  margin-bottom: 0.5em;
   color: var(--text);
   border-radius: 0.2em;
   overflow: hidden;
@@ -90,9 +102,31 @@ export default Vue.extend({
   word-break: break-word;
 }
 
+.icon {
+  position: relative;
+  background: var(--highlight-color);
+  padding: 4px;
+  flex-shrink: 0;
+
+  img {
+    opacity: 0.7;
+    width: 100%;
+    max-width: 18px;
+    max-height: 18px;
+  }
+}
+
+.content {
+  width: 100%;
+  padding: 0.4em 0.5em 0.3em 0.5em;
+  background: rgba(45, 45, 45, 0.8);
+}
+
 .time {
   // opacity: 0.5;
   color: var(--text);
+  word-break: normal;
+  margin-left: 0.7em;
 }
 
 .text {
@@ -100,16 +134,19 @@ export default Vue.extend({
 }
 
 .low {
-  --highlight-color: #444;
+  --highlight-color: #666;
 }
 .medium {
   --highlight-color: #aaa;
 }
 .high {
-  --highlight-color: rgba(255, 200, 0, 0.9);
+  --highlight-color: rgb(208, 165, 38);
 }
 .critical {
-  --highlight-color: red;
+  --highlight-color: rgb(210, 42, 0);
+}
+.notify {
+  --highlight-color: rgb(210, 42, 0);
 }
 
 // .tooltip {

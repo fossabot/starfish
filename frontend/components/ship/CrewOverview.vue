@@ -6,62 +6,48 @@
     bgImage="/images/paneBackgrounds/15.webp"
   >
     <template #title>
-      <span class="sectionemoji">🫂</span>Crew Overview
+      <span class="sectionemoji">🫂</span>Crew
     </template>
 
-    <div class="crewoverviewholder">
-      <Tabs :dropdown="true">
-        <Tab
-          v-for="cm in ship.crewMembers"
-          :key="'cm' + cm.id"
-          :title="c.species[cm.speciesId].icon + cm.name"
-        >
-          <ul>
-            <li>
-              Last Active:
-              {{
-                new Date(cm.lastActive).toLocaleDateString()
-              }}
-            </li>
-            <li>
-              {{ c.capitalize(c.baseCurrencyPlural) }}: 💳{{
-                cm.credits
-              }}
-            </li>
-            <li v-if="cm.inventory.length">
-              Cargo:
-              <ul>
-                <li
-                  v-for="i in cm.inventory"
-                  :key="cm.id + i.id"
-                >
-                  {{ c.capitalize(i.id) }}:
-                  {{ i.amount }} tons
-                </li>
-              </ul>
-            </li>
-            <li v-if="cm.maxCargoSpace">
-              Max Cargo Space: {{ cm.maxCargoSpace }} tons
-            </li>
-            <li>
-              Skills:
-              <ul>
-                <li
-                  v-for="skill in cm.skills"
-                  :key="cm.id + skill.skill"
-                >
-                  {{ c.capitalize(skill.skill) }}: Lv.
-                  {{ skill.level }}
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </Tab>
-      </Tabs>
-
-      <div class="sub panesection">
-        Only the captain can see this information.
+    <div class="crewoverviewholder panesection">
+      <div
+        v-for="cm in ship.crewMembers"
+        :key="'cm' + cm.id"
+        class="crewmemberholder"
+      >
+        <ShipCrewIcon
+          :crewMember="cm"
+          :captain="ship.captain === cm.id"
+        />
       </div>
+    </div>
+
+    <div
+      class="sortpicker panesection flexcenter"
+      v-if="ship.crewMembers.length > 1"
+    >
+      <div>Sort by:</div>
+      <Tabs
+        :dropdown="true"
+        v-model="sortBy"
+        :noPad="true"
+        class="flexgrow"
+      >
+        <Tab title="Seniority"></Tab>
+        <Tab
+          :title="`Contributed 💳${c.capitalize(
+            c.baseCurrencyPlural,
+          )}`"
+        ></Tab>
+        <Tab title="Naps"></Tab>
+        <Tab
+          v-for="skill in ship.crewMembers[0].skills"
+          :key="'skillrank' + skill.skill"
+          :title="
+            c.capitalize(c.camelCaseToWords(skill.skill))
+          "
+        ></Tab>
+      </Tabs>
     </div>
   </Box>
 </template>
@@ -73,23 +59,62 @@ import { mapState } from 'vuex'
 
 export default Vue.extend({
   data() {
-    return { c }
+    return { c, sortBy: undefined }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show() {
+    show(): boolean {
       return (
         this.ship &&
-        this.ship.captain === this.userId &&
-        this.ship.crewMembers.length > 1 &&
+        // this.ship.crewMembers.length > 1 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewOverview'))
       )
     },
-    highlight() {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'crewOverview'
+      )
+    },
+    sortedCrewMembers(): CrewMemberStub[] {
+      const sortBy =
+        (this.sortBy || '').toLowerCase() || 'seniority'
+      if (sortBy === 'seniority') {
+        return this.ship.crewMembers.sort(
+          (a, b) => a.seniority - b.seniority,
+        )
+      }
+      if (
+        sortBy === `contributed 💳${c.baseCurrencyPlural}`
+      )
+        return this.ship.crewMembers.sort(
+          (a: CrewMemberStub, b) =>
+            (a.stats.find(
+              (s) =>
+                s.stat === 'totalContributedToCommonFund',
+            )?.amount || 0) -
+            (b.stats.find(
+              (s) =>
+                s.stat === 'totalContributedToCommonFund',
+            )?.amount || 0),
+        )
+
+      if (sortBy === `naps`)
+        return this.ship.crewMembers.sort(
+          (a: CrewMemberStub, b) =>
+            (a.stats.find((s) => s.stat === 'timeInBunk')
+              ?.amount || 0) -
+            (b.stats.find((s) => s.stat === 'timeInBunk')
+              ?.amount || 0),
+        )
+
+      return this.ship.crewMembers.sort(
+        (a, b) =>
+          (a.skills.find((s) => s.id === sortBy)?.level ||
+            0) -
+          (b.skills.find((s) => s.id === sortBy)?.level ||
+            0),
       )
     },
   },
@@ -101,11 +126,30 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .crewoverview {
-  width: 300px;
+  width: 250px;
   position: relative;
 }
+
+.sortpicker {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0 0 -10px 0;
+  white-space: nowrap;
+
+  *:first-child {
+    margin-right: 1em;
+  }
+}
+
 .crewoverviewholder {
   max-height: 300px;
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 0.2em;
+}
+
+.crewmemberholder {
+  width: 100%;
 }
 </style>

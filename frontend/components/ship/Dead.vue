@@ -18,7 +18,8 @@
         All of your cargo and most of your money have been
         jettisoned, and only shreds of your equipment are
         salvageable for scrap, but the crew managed to
-        escape back to their homeworld.
+        escape back to their homeworld. Respawn and get back
+        out there!
       </div>
 
       <div class="marbot">

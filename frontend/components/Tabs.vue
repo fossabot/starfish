@@ -24,10 +24,12 @@
       </div>
     </div>
     <div
-      class="tabheader padbot"
+      class="tabheader"
       :class="{
         small: !bigTabs,
         medium: bigTabs,
+        padbot: $slots.default && $slots.default.innerHTML,
+        padnone: noPad,
       }"
       v-else
     >
@@ -74,6 +76,10 @@ export default Vue.extend({
   watch: {
     dropdownSelection() {
       this.selectTab(this.dropdownSelection)
+      this.$emit(
+        'input',
+        (this.tabs[this.dropdownSelection] as any)?.title,
+      )
     },
   },
   created() {

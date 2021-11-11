@@ -111,10 +111,9 @@ export default function (
       ship.captain = crewMember.id
 
       ship.logEntry(
-        [
-          `${crewMember.name} has been promoted to captain!`,
-        ],
+        [`New captain: ${crewMember.name}!`],
         `critical`,
+        `crown`,
       )
 
       callback({ data: `ok` })
@@ -161,6 +160,26 @@ export default function (
       )
 
     crewMember.rename(newName)
+  })
+
+  socket.on(`crew:discordIcon`, (shipId, crewId, url) => {
+    if (!game) return
+    const ship = game.ships.find(
+      (s) => s.id === shipId,
+    ) as HumanShip
+    if (!ship)
+      return c.log(
+        `Attempted to change the icon of a user from a ship that did not exist. (${crewId} on ship ${shipId})`,
+      )
+    const crewMember = ship.crewMembers?.find(
+      (cm) => cm.id === crewId,
+    )
+    if (!crewMember)
+      return c.log(
+        `Attempted to change the icon of a user that did not exist. (${crewId} on ship ${shipId})`,
+      )
+
+    crewMember.discordIcon = url
   })
 
   socket.on(`ship:rename`, (shipId, newName, callback) => {

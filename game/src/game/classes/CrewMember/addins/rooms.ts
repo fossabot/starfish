@@ -184,9 +184,9 @@ export function bunk(this: CrewMember): void {
     generalBoostMultiplier *
     (this.bottomedOutOnStamina
       ? this.ship.game?.settings
-          .staminaBottomedOutChargeSlowdown ||
+          .staminaBottomedOutChargeMultiplier ||
         c.defaultGameSettings
-          .staminaBottomedOutChargeSlowdown
+          .staminaBottomedOutChargeMultiplier
       : 1)
 
   this.stamina += staminaToAdd

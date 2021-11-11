@@ -206,17 +206,9 @@ export class HumanShip extends CombatShip {
 
     if (!this.log.length && !this.tutorial)
       this.logEntry(
-        [
-          `You board the ship`,
-          {
-            text: this.name,
-            color: this.guildId
-              ? c.guilds[this.guildId].color
-              : undefined,
-          },
-          `for the first time, and set out towards the stars.`,
-        ],
+        [`You set out toward the stars.`],
         `medium`,
+        `ship`,
       )
 
     this.updateMaxScanProperties()
@@ -341,8 +333,9 @@ export class HumanShip extends CombatShip {
         ),
       )
       this.logEntry(
-        `The crew's second wind wears off.`,
+        `Second wind wears off.`,
         `low`,
+        `alert`,
       )
     } else if (
       !this.secondWind &&
@@ -356,14 +349,15 @@ export class HumanShip extends CombatShip {
       )
       this.logEntry(
         [
-          `${this.name} has dropped below`,
+          `Below`,
           {
             text: `${HumanShip.secondWindStartHp} HP`,
             color: `var(--warning)`,
           },
-          `&nospace! The crew has gained a second wind!`,
+          `&nospace! The crew gained a second wind!`,
         ],
         `high`,
+        `alert`,
       )
     }
 
@@ -413,10 +407,19 @@ export class HumanShip extends CombatShip {
 
   // ----- log -----
 
-  logEntry(content: LogContent, level: LogLevel = `low`) {
+  logEntry(
+    content: LogContent,
+    level: LogLevel = `low`,
+    icon?: LogIcon,
+  ) {
     // c.log(content)
     if (!this.log) this.log = []
-    this.log.push({ level, content, time: Date.now() })
+    this.log.push({
+      level,
+      content,
+      time: Date.now(),
+      icon,
+    })
     while (this.log.length > HumanShip.maxLogLength)
       this.log.shift()
 
@@ -427,11 +430,18 @@ export class HumanShip extends CombatShip {
     if (this.logAlertLevel === `off`) return
     const levelsToAlert = [this.logAlertLevel]
     if (this.logAlertLevel === `low`)
-      levelsToAlert.push(`medium`, `high`, `critical`)
+      levelsToAlert.push(
+        `medium`,
+        `high`,
+        `critical`,
+        `notify`,
+      )
     if (this.logAlertLevel === `medium`)
-      levelsToAlert.push(`high`, `critical`)
+      levelsToAlert.push(`high`, `critical`, `notify`)
     if (this.logAlertLevel === `high`)
-      levelsToAlert.push(`critical`)
+      levelsToAlert.push(`critical`, `notify`)
+    if (this.logAlertLevel === `critical`)
+      levelsToAlert.push(`notify`)
     if (levelsToAlert.includes(level))
       this.game?.io?.emit(
         `ship:message`,
@@ -454,6 +464,8 @@ export class HumanShip extends CombatShip {
               .join(` `)
               .replace(/\s*&nospace/g, ``)
           : content,
+        undefined,
+        level === `notify`,
       )
   }
 
@@ -465,7 +477,7 @@ export class HumanShip extends CombatShip {
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
-          `Discovered the planet`,
+          `Discovered`,
           {
             text: p.name,
             color: p.color,
@@ -474,6 +486,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
+        `planet`,
       )
 
     this.addStat(`seenPlanets`, 1)
@@ -498,6 +511,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
+        `zone`,
       )
 
     this.addStat(`seenLandmarks`, 1)
@@ -927,13 +941,14 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `thrusted towards`,
+          `thrusted at`,
           ...targetData,
           `at ${c.speedNumber(
             c.vectorToMagnitude(thrustVector) * 60 * 60,
           )}.`,
         ],
         `low`,
+        `fly`,
       )
     }
 
@@ -1043,11 +1058,12 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `braked, slowing the ship by ${c.speedNumber(
+          `braked by ${c.speedNumber(
             (this.speed - currentMagnitude) * 60 * 60 * -1,
           )}.`,
         ],
         `low`,
+        `fly`,
       )
 
     if (!HumanShip.movementIsFree)
@@ -1160,6 +1176,7 @@ export class HumanShip extends CombatShip {
         this.logEntry(
           `Automatically stopped the ship — Let's keep it close to home while we're learning the ropes.`,
           `high`,
+          `alert`,
         )
       }
 
@@ -1182,12 +1199,14 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         `Stopped at the edge of the known universe. You can continue, but nothing but the void awaits out here.`,
         `high`,
+        `mystery`,
       )
     }
     if (!isOutsideRadius && startedOutsideRadius)
       this.logEntry(
-        `Re-entered the known universe.`,
+        `Re-entered known universe.`,
         `high`,
+        `alert`,
       )
 
     // ----- random encounters -----
@@ -1219,19 +1238,23 @@ export class HumanShip extends CombatShip {
         `steel`,
       ] as CargoId[])
       this.distributeCargoAmongCrew([{ id, amount }])
-      this.logEntry([
-        `Encountered some space junk and managed to harvest ${amount} ton${
-          amount === 1 ? `` : `s`
-        } of`,
-        {
-          text: id,
-          tooltipData: {
-            ...c.cargo[id],
-            type: `cargo`,
+      this.logEntry(
+        [
+          `Harvested ${amount} ton${
+            amount === 1 ? `` : `s`
+          } of`,
+          {
+            text: id,
+            tooltipData: {
+              ...c.cargo[id],
+              type: `cargo`,
+            },
           },
-        },
-        `off of it.`,
-      ])
+          `from space junk.`,
+        ],
+        `medium`,
+        `cache`,
+      )
     }
 
     // - asteroid hit -
@@ -1338,7 +1361,9 @@ export class HumanShip extends CombatShip {
       ),
       attackRemnants: this.visible.attackRemnants.map(
         (ar) =>
-          ar.toVisibleStub?.() || ar.stubify?.() || ar,
+          (ar as AttackRemnant).toVisibleStub?.() ||
+          (ar as AttackRemnant).stubify?.() ||
+          ar,
       ),
       planets: planetDataToSend,
       caches: this.visible.caches.map((c) =>
@@ -1469,56 +1494,78 @@ export class HumanShip extends CombatShip {
           `&nospace.`,
         ],
         `high`,
+        this.planet.planetType === `comet`
+          ? `comet`
+          : `planet`,
       )
       if (!this.tutorial)
         this.planet.shipsAt.forEach((s) => {
           if (s === this || !s.planet) return
-          s.logEntry([
-            {
-              text: this.name,
-              color: this.guildId
-                ? c.guilds[this.guildId].color
-                : undefined,
-              tooltipData: this.toReference() as any,
-            },
-            `landed on`,
-            {
-              text: s.planet.name,
-              color: s.planet.color,
-              tooltipData: s.planet.toReference() as any,
-            },
-            `&nospace.`,
-          ])
+          s.logEntry(
+            [
+              {
+                text: this.name,
+                color: this.guildId
+                  ? c.guilds[this.guildId].color
+                  : undefined,
+                tooltipData: this.toReference() as any,
+              },
+              `landed on`,
+              {
+                text: s.planet.name,
+                color: s.planet.color,
+                tooltipData: s.planet.toReference() as any,
+              },
+              `&nospace.`,
+            ],
+            `low`,
+            (this.planet as Planet)?.planetType === `comet`
+              ? `comet`
+              : `planet`,
+          )
         })
     } else if (previousPlanet && !this.planet) {
-      this.logEntry([
-        `Departed from`,
-        {
-          text: previousPlanet.name,
-          color: previousPlanet.color,
-          tooltipData: previousPlanet.toReference() as any,
-        },
-        `&nospace.`,
-      ])
+      this.logEntry(
+        [
+          `Departed from`,
+          {
+            text: previousPlanet.name,
+            color: previousPlanet.color,
+            tooltipData:
+              previousPlanet.toReference() as any,
+          },
+          `&nospace.`,
+        ],
+        `low`,
+        previousPlanet.planetType === `comet`
+          ? `comet`
+          : `planet`,
+      )
       if (previousPlanet && !this.tutorial)
         previousPlanet.shipsAt.forEach((s) => {
           if (s === this || !s.planet) return
-          s.logEntry([
-            {
-              text: this.name,
-              color: this.guildId
-                ? c.guilds[this.guildId].color
-                : undefined,
-              tooltipData: this.toReference() as any,
-            },
-            `landed on`,
-            {
-              text: s.planet.name,
-              color: s.planet.color,
-              tooltipData: s.planet.toReference() as any,
-            },
-            `&nospace.`,
-          ])
+          s.logEntry(
+            [
+              {
+                text: this.name,
+                color: this.guildId
+                  ? c.guilds[this.guildId].color
+                  : undefined,
+                tooltipData: this.toReference() as any,
+              },
+              `landed on`,
+              {
+                text: s.planet.name,
+                color: s.planet.color,
+                tooltipData: s.planet.toReference() as any,
+              },
+              `&nospace.`,
+            ],
+            `low`,
+            previousPlanet.planetType === `comet`
+              ? `comet`
+              : `planet`,
+          )
         })
     }
   }
@@ -1571,15 +1618,10 @@ export class HumanShip extends CombatShip {
       [
         `💳${c.r2(amount)} ${
           c.baseCurrencyPlural
-        } deposited in the bank at`,
-        {
-          text: planet.name,
-          color: planet.color,
-          tooltipData: planet.toReference() as any,
-        },
-        `&nospace.`,
+        } deposited in the bank.`,
       ],
       `low`,
+      `money`,
     )
   }
 
@@ -1602,17 +1644,12 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `${c.r2(
-          amount,
-        )} credits withdrawn from the bank at`,
-        {
-          text: planet.name,
-          color: planet.color,
-          tooltipData: planet.toReference() as any,
-        },
-        `&nospace.`,
+        `${c.priceToString({
+          credits: c.r2(amount),
+        })} withdrawn from the bank.`,
       ],
       `low`,
+      `money`,
     )
   }
 
@@ -1671,14 +1708,15 @@ export class HumanShip extends CombatShip {
     })
     this.logEntry(
       [
-        `Picked up a cache with`,
+        `Picked up`,
         ...contentsToLog,
-        `inside!${
+        `!${
           cache.message &&
-          ` There was a message attached which said, "${cache.message}".`
+          ` The message said, "${cache.message}".`
         }`,
       ],
       `medium`,
+      `cache`,
     )
     this.game?.removeCache(cache)
 
@@ -1711,6 +1749,7 @@ export class HumanShip extends CombatShip {
             `&nospace.`,
           ],
           `high`,
+          `zone`,
         )
         z.shipLeave(this)
       }
@@ -1726,6 +1765,7 @@ export class HumanShip extends CombatShip {
             `&nospace.`,
           ],
           `high`,
+          `zone`,
         )
         z.shipEnter(this)
       }
@@ -1797,12 +1837,11 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} added 💳${c.numberWithCommas(
+        `${member.name} contributed 💳${c.numberWithCommas(
           c.r2(amount, 0),
-        )} ${
-          c.baseCurrencyPlural
-        } to the ship's common fund.`,
+        )} ${c.baseCurrencyPlural}.`,
         `low`,
+        `money`,
       )
 
     member.addStat(`totalContributedToCommonFund`, amount)
@@ -2067,14 +2106,22 @@ export class HumanShip extends CombatShip {
             `${cm.name}, after a rowdy night of partying with your deckhands, has decided to join the crew!`,
             `${cm.name}, known about town as a hearty fellow, has joined the crew!`,
           ]
-          this.logEntry(c.randomFromArray(options), `high`)
+          this.logEntry(
+            c.randomFromArray(options),
+            `high`,
+            `fish`,
+          )
         } else {
           const options = [
             `You pick up a distress signal only to find ${cm.name} floating helplessly in a cryo-pod. You defrost them and welcome them to the ship's crew!`,
             `${cm.name} radios you from an escape craft, and you allow them onboard. They seem useful, so you welcome them as a member of the ship's crew.`,
             `You find ${cm.name} hiding behind some cargo in the hold. Who knows how long they've been there, but you're in no position to say no to an extra pair of hands. You welcome them to the crew.`,
           ]
-          this.logEntry(c.randomFromArray(options), `high`)
+          this.logEntry(
+            c.randomFromArray(options),
+            `high`,
+            `fish`,
+          )
         }
       }
 
@@ -2154,8 +2201,9 @@ export class HumanShip extends CombatShip {
     this.game?.io?.to(`ship:${this.id}`).emit(`ship:reload`)
 
     this.logEntry(
-      `${cm.name} has been kicked from the crew. The remaining crew members watch forlornly as their icy body drifts by the observation window. `,
-      `critical`,
+      `${cm.name} left the crew.`,
+      `high`,
+      `fish`,
     )
 
     // * this could be abused to generate infinite money
@@ -2271,17 +2319,20 @@ export class HumanShip extends CombatShip {
     if (leftovers.length) {
       setTimeout(
         () =>
-          this.logEntry([
-            `Your crew couldn't hold everything, so`,
-            {
-              text: `some cargo`,
-              tooltipData: {
-                type: `cargo`,
-                cargo: leftovers,
+          this.logEntry(
+            [
+              {
+                text: `Excess cargo`,
+                tooltipData: {
+                  type: `cargo`,
+                  cargo: leftovers,
+                },
               },
-            },
-            `was released as a cache.`,
-          ]),
+              `jettisoned.`,
+            ],
+            `low`,
+            `cache`,
+          ),
         500,
       )
 
@@ -2454,8 +2505,9 @@ export class HumanShip extends CombatShip {
 
     if (!silent && this instanceof HumanShip) {
       this.logEntry(
-        `Your crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`,
+        `The crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`,
         `critical`,
+        `party`,
       )
     }
 
@@ -2489,10 +2541,7 @@ export class HumanShip extends CombatShip {
     super.die(attacker)
 
     setTimeout(() => {
-      this.logEntry(
-        `Your ship has been destroyed! All of your cargo and most of your 💳${c.baseCurrencyPlural} have been jettisoned, and only shreds of your equipment are salvageable for scrap, but the crew managed to escape back to their homeworld. Respawn and get back out there!`,
-        `critical`,
-      )
+      this.logEntry(`Ship destroyed!`, `notify`, `die`)
 
       this.checkAchievements(`death`)
     }, 100)
