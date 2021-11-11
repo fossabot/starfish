@@ -98,6 +98,7 @@ interface CrewMemberStub extends BaseStub {
   repairPriority: RepairPriority
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
+  lastActive?: number
 }
 
 interface PlanetStub extends BaseStub {

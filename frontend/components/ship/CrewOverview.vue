@@ -32,14 +32,14 @@
         v-model="sortBy"
         :noPad="true"
         class="flexgrow"
-      >
+        ><Tab title="Activity"></Tab>
         <Tab title="Seniority"></Tab>
         <Tab
           :title="`Contributed 💳${c.capitalize(
             c.baseCurrencyPlural,
           )}`"
         ></Tab>
-        <Tab title="Naps"></Tab>
+        <Tab title="Bunk Time"></Tab>
         <Tab
           v-for="skill in ship.crewMembers[0].skills"
           :key="'skillrank' + skill.skill"
@@ -79,7 +79,14 @@ export default Vue.extend({
     },
     sortedCrewMembers(): CrewMemberStub[] {
       const sortBy =
-        (this.sortBy || '').toLowerCase() || 'seniority'
+        (this.sortBy || '').toLowerCase() || 'activity'
+      if (sortBy === 'activity')
+        return this.ship.crewMembers.sort(
+          (a: CrewMemberStub, b) => {
+            return (b.lastActive || 0) - (a.lastActive || 0)
+          },
+        )
+
       if (sortBy === 'seniority') {
         return [...this.ship.crewMembers].sort(
           (a, b) => a.seniority - b.seniority,

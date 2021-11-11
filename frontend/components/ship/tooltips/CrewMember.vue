@@ -82,7 +82,7 @@
     </div>
 
     <div class="flexcenter flexbetween">
-      <div class="sub">Sleep Time</div>
+      <div class="sub">Bunk Time</div>
       <div>
         {{
           c.msToTimeString(
