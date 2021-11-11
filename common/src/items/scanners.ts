@@ -135,7 +135,6 @@ export const scanners: {
   peek4: {
     type: `scanner`,
     id: `peek4`,
-    buyable: false, // todo
     displayName: `Planet Scan Module`,
     description: `Contains language packs and encryptions for nearly any system of mercantile communication in use across the universe, allowing for direct interface with planet vendors' price databases within a certain range.`,
     mass: 160 * game.itemMassMultiplier,
@@ -147,7 +146,11 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
     },
-    scanPlanets: true,
+    passives: [
+      {
+        id: `scannableCargoPrices`,
+      },
+    ],
   },
 
   // wide

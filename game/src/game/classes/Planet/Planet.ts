@@ -295,7 +295,7 @@ export class Planet extends Stubbable {
 
   defend(force = false) {
     if (!this.defense) return
-    if (!force && !c.lottery(this.defense, 1000)) return
+    if (!force && !c.lottery(this.defense, 2000)) return
 
     const attackRemnantsInSight =
       this.game?.scanCircle(

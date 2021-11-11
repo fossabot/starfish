@@ -81,7 +81,7 @@ export default Vue.extend({
       const sortBy =
         (this.sortBy || '').toLowerCase() || 'activity'
       if (sortBy === 'activity')
-        return this.ship.crewMembers.sort(
+        return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) => {
             return (b.lastActive || 0) - (a.lastActive || 0)
           },

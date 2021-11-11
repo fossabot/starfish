@@ -89,6 +89,8 @@ type ShipPassiveEffectId =
   | `boostDamageToItemType`
   | `boostStaminaRegeneration`
   | `autoRepair`
+  | `visibleCargoPrices`
+  | `scannableCargoPrices`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectId
   intensity?: number
