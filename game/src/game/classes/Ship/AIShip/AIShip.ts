@@ -37,7 +37,7 @@ export class AIShip extends CombatShip {
   }
 
   readonly guildId: GuildId = `fowl`
-  speciesId: SpeciesId
+  readonly speciesId: SpeciesId
   targetLocation: CoordinatePair
 
   lastAttackedById: string | null = null

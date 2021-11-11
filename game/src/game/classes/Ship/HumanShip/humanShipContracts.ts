@@ -2,6 +2,7 @@ import c from '../../../../../../common/dist'
 
 import type { HumanShip } from './HumanShip'
 import type { BasicPlanet } from '../../Planet/BasicPlanet'
+import type { AIShip } from '../AIShip/AIShip'
 
 function reliablyFudgeLocation(
   location: CoordinatePair,
@@ -122,7 +123,11 @@ export function stolenContract(
       [
         `Contract for`,
         {
-          text: target.name,
+          text:
+            ((target as AIShip).speciesId
+              ? c.species[(target as AIShip).speciesId]
+                  ?.icon || ``
+              : ``) + target.name,
           color: target.guildId
             ? c.guilds[target.guildId].color
             : undefined,
@@ -205,7 +210,11 @@ export function checkContractTimeOuts(this: HumanShip) {
         [
           `Contract for`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color: target.guildId
               ? c.guilds[target.guildId].color
               : undefined,
@@ -238,7 +247,11 @@ export function abandonContract(
       [
         `Contract for`,
         {
-          text: target.name,
+          text:
+            ((target as AIShip).speciesId
+              ? c.species[(target as AIShip).speciesId]
+                  ?.icon || ``
+              : ``) + target.name,
           color: target.guildId
             ? c.guilds[target.guildId].color
             : undefined,

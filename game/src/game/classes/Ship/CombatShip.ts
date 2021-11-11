@@ -7,6 +7,7 @@ import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip/HumanShip'
+import type { AIShip } from './AIShip/AIShip'
 
 export abstract class CombatShip extends Ship {
   static percentOfCurrencyKeptOnDeath = 0.5
@@ -471,7 +472,11 @@ export abstract class CombatShip extends Ship {
         [
           `Missed`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color:
               target.guildId &&
               c.guilds[target.guildId].color,
@@ -496,7 +501,11 @@ export abstract class CombatShip extends Ship {
         [
           `Hit`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color:
               target.guildId &&
               c.guilds[target.guildId].color,
@@ -529,7 +538,11 @@ export abstract class CombatShip extends Ship {
         this.logEntry(
           [
             {
-              text: target.name,
+              text:
+                ((target as AIShip).speciesId
+                  ? c.species[(target as AIShip).speciesId]
+                      ?.icon || ``
+                  : ``) + target.name,
               color:
                 target.guildId &&
                 c.guilds[target.guildId].color,
@@ -681,7 +694,12 @@ export abstract class CombatShip extends Ship {
               [
                 `Disabled`,
                 {
-                  text: this.name,
+                  text:
+                    ((this as AIShip).speciesId
+                      ? c.species[
+                          (this as AIShip).speciesId
+                        ]?.icon || ``
+                      : ``) + this.name,
                   color:
                     this.guildId &&
                     c.guilds[this.guildId].color,
@@ -823,7 +841,12 @@ export abstract class CombatShip extends Ship {
               [
                 `Disabled`,
                 {
-                  text: this.name,
+                  text:
+                    ((this as AIShip).speciesId
+                      ? c.species[
+                          (this as AIShip).speciesId
+                        ]?.icon || ``
+                      : ``) + this.name,
                   color:
                     this.guildId &&
                     c.guilds[this.guildId].color,
@@ -899,7 +922,11 @@ export abstract class CombatShip extends Ship {
             : `Hit by`,
 
           {
-            text: attacker.name,
+            text:
+              ((attacker as AIShip).speciesId
+                ? c.species[(attacker as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + attacker.name,
             color:
               attacker.guildId &&
               c.guilds[attacker.guildId].color,
@@ -949,7 +976,11 @@ export abstract class CombatShip extends Ship {
             ? `Crit by`
             : `Hit by`,
           {
-            text: attacker.name,
+            text:
+              ((attacker as AIShip).speciesId
+                ? c.species[(attacker as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + attacker.name,
             color: attacker.color || `var(--warning)`,
             tooltipData: attacker?.toReference
               ? attacker.toReference()
