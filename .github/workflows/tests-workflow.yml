@@ -1,0 +1,88 @@
+name: Integration Tests
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  run-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Populate secrets files
+
+      - name: Launch containers
+        run: docker-compose -f docker-compose-test.yml up -d
+
+      - name: Show running containers
+        run: docker-compose ps
+
+  npm-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - folder: 'game'
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: '16'
+
+      - uses: c-hive/gha-npm-cache@v1
+
+      - name: NPM install on ${{matrix.folder}}
+        run: |
+          npm install
+          npm run test
+        working-directory: ${{matrix.folder}}
+
+      - uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+
+      - name: Download test result artifact
+        uses: actions/download-artifact@v2
+        if: success() || failure()
+        with:
+          name: test-results
+
+      - uses: dorny/test-reporter@v1
+        if: (success() || failure()) && (${{ github.actor }} != 'dependabot')
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+          reporter: mocha-json
+
+  # TODO: Add cypress tests
+
+  artillery:
+    needs: [run-docker-compose]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Stonefish repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'starfishgame/stonefish'
+
+      - name: NPM install
+        run: |
+          npm install
+
+      - name: Run Artillery test
+        run: |
+          npm run test
