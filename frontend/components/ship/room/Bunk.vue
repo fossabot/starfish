@@ -18,16 +18,26 @@
       <div class="bold warning marbotsmall">
         You've hit your limit!
       </div>
-      You must rest at a
-      <span class="warning"
-        >{{
-          c.r2(
-            ship.gameSettings
-              .staminaBottomedOutChargeSlowdown,
-          ) * 100
-        }}% reduced</span
+      You must rest
+      <template
+        v-if="
+          ship.gameSettings
+            .staminaBottomedOutChargeMultiplier !== 1
+        "
       >
-      recovery rate until you're at least
+        at a
+        <span class="warning"
+          >{{
+            c.r2(
+              1 -
+                ship.gameSettings
+                  .staminaBottomedOutChargeMultiplier,
+            ) * 100
+          }}% reduced</span
+        >
+        recovery rate
+      </template>
+      until you're at least
       <b
         >{{
           ship.gameSettings.staminaBottomedOutResetPoint *
@@ -158,7 +168,7 @@ export default Vue.extend({
           ) *
             (this.crewMember.bottomedOutOnStamina
               ? this.ship.gameSettings
-                  .staminaBottomedOutChargeSlowdown
+                  .staminaBottomedOutChargeMultiplier || 1
               : 1) *
             generalBoostMultiplier *
             passiveBoostMultiplier)) *

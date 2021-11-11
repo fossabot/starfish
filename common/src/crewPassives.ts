@@ -3,11 +3,32 @@ import math from './math'
 const data: {
   [key in CrewPassiveId]: CrewPassiveData
 } = {
+  boostMaxStamina: {
+    displayName: `Max Stamina Boost`,
+    id: `boostMaxStamina`,
+    buyable: {
+      rarity: 6,
+      basePrice: { credits: 8000 },
+      scaledCrewCosmeticCurrency: {
+        fromLevel: 2,
+        amount: 150,
+      },
+      baseIntensity: 4,
+      wholeNumbersOnly: true,
+    },
+    description: (data: CrewPassiveData, verbose = false) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } maximum stamina by ${math.r2(
+        (data.intensity || 0) / 100,
+      )}%`,
+  },
+
   cargoSpace: {
     displayName: `Cargo Space`,
     id: `cargoSpace`,
     buyable: {
-      rarity: 1,
+      rarity: 1.5,
       basePrice: { credits: 2000 },
       scaledCrewCosmeticCurrency: {
         fromLevel: 2,

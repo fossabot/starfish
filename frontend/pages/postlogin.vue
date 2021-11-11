@@ -42,11 +42,11 @@ export default Vue.extend({
     ...mapState(['userId']),
     loginUrl() {
       const hostname = window.location.href.replace(
-        /\/login.*/g,
+        /\/(?:post)?login.*/g,
         '',
       )
       const postLoginPage = `${hostname}/postlogin`
-      return `https://discord.com/api/oauth2/authorize?client_id=${
+      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${
         process.env.BOT_ID
       }&redirect_uri=${encodeURIComponent(
         postLoginPage,

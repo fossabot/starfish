@@ -694,6 +694,9 @@ ul {
   flex-grow: 0;
   flex-shrink: 0;
 }
+.flexgrow {
+  flex-grow: 1;
+}
 
 .mar {
   margin: 1em !important;
@@ -824,7 +827,7 @@ ul {
 
 .padnone,
 .nopad {
-  padding: 0;
+  padding: 0 !important;
 }
 .nopadtop {
   padding-top: 0 !important;

@@ -98,6 +98,13 @@ function vectorToMagnitude(vector = [0, 0]) {
     return Math.sqrt((vector[0] || 0) * (vector[0] || 0) +
         (vector[1] || 0) * (vector[1] || 0));
 }
+function vectorFromDegreesAndMagnitude(angle = 0, magnitude = 1) {
+    const rad = (Math.PI * angle) / 180;
+    return [
+        magnitude * Math.cos(rad),
+        magnitude * Math.sin(rad),
+    ];
+}
 function pointIsInsideCircle(center = [0, 0], point = [1, 1], radius = 0) {
     return (((point[0] || 0) - (center[0] || 0)) *
         ((point[0] || 0) - (center[0] || 0)) +
@@ -151,6 +158,7 @@ exports.default = {
     vectorToDegrees,
     coordPairToRadians: vectorToRadians,
     vectorToMagnitude,
+    vectorFromDegreesAndMagnitude,
     randomSign,
     randomInRange,
     lottery,

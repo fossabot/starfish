@@ -105,7 +105,6 @@ export class BasicPlanet extends Planet {
 
   tick() {
     super.tick()
-    this.defend()
   }
 
   levelUp() {
@@ -126,7 +125,7 @@ export class BasicPlanet extends Planet {
       : defensePassiveLeaning?.propensity || 1
 
     const levelUpOptions = [
-      { weight: 200 / this.level, value: `addItemToShop` },
+      { weight: 250 / this.level, value: `addItemToShop` },
       {
         weight: 1,
         value: `expandLandingZone`,
@@ -490,7 +489,6 @@ export class BasicPlanet extends Planet {
         )?.ships || []
       ).filter(
         (s) =>
-          s.ai &&
           !s.planet &&
           !this.contracts.find(
             (co) => co.targetId === s.id,
@@ -499,7 +497,14 @@ export class BasicPlanet extends Planet {
             (a) => a.guildId === s.guildId,
           ),
       )
-      const target = c.randomFromArray(validTargets)
+      const hitListTargets = validTargets.filter((t) =>
+        this.hitList.includes(t.id),
+      )
+      const target = c.randomFromArray(
+        hitListTargets.length
+          ? hitListTargets // only hit list humans can be targeted
+          : validTargets.filter((s) => s.ai), // otherwise, only ais
+      )
       if (!target) {
         scanRange += 0.2
         continue
@@ -551,7 +556,14 @@ export class BasicPlanet extends Planet {
                 ),
               ),
         },
-        timeAllowed: c.tickInterval * 60 * 60 * 24 * 7,
+        timeAllowed: Math.round(
+          c.tickInterval *
+            60 *
+            60 *
+            24 *
+            7 *
+            (distance + 0.2),
+        ),
         targetId: target.id,
         targetName: target.name,
         targetGuildId: target.guildId,
@@ -562,7 +574,7 @@ export class BasicPlanet extends Planet {
             : Math.max(
                 0,
                 c.r2(
-                  100 *
+                  300 *
                     difficulty *
                     distance *
                     Math.random(),
@@ -771,7 +783,6 @@ export class BasicPlanet extends Planet {
   }
 
   resetLevels(toDefault = false) {
-    // c.log(`resetLevels`, this.name)
     const targetLevel = toDefault
       ? this.homeworld
         ? c.defaultHomeworldLevel
@@ -781,8 +792,9 @@ export class BasicPlanet extends Planet {
           )
       : this.level
     const targetXp = toDefault ? 0 : this.xp
-    this.level = 0
-    this.xp = 0
+
+    super.resetLevels()
+    // c.log(`resetLevels`, this.name)
     this.bank = false
     this.maxContracts = 0
     this.contracts = []

@@ -39,6 +39,7 @@ const shipSchemaFields: Record<
       content: Schema.Types.Mixed,
       time: Number,
       level: String,
+      icon: String,
     },
   ],
   seenPlanets: [{ name: String, id: String }],
@@ -90,6 +91,8 @@ const shipSchemaFields: Record<
     {
       name: { type: String, required: true },
       id: { type: String, required: true },
+      joinDate: Number,
+      discordIcon: { type: String },
       lastActive: Number,
       cockpitCharge: Number,
       skills: [

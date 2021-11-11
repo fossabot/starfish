@@ -11,7 +11,9 @@ export class CrewMember extends Stubbable {
   readonly type = `crewMember`
   readonly id: string
   readonly ship: HumanShip
+  readonly joinDate: number
   name: string = `crew member`
+  discordIcon?: string
   location: CrewLocation
   skills: XPData[]
   stamina: number
@@ -46,6 +48,8 @@ export class CrewMember extends Stubbable {
   ) {
     super()
     this.id = data.id
+    this.joinDate = data.joinDate || Date.now()
+    this.discordIcon = data.discordIcon
     this.ship = ship
     this.rename(data.name)
 
@@ -428,7 +432,13 @@ export class CrewMember extends Stubbable {
   }
 
   recalculateAll() {
+    this.recalculateMaxStamina()
     this.recalculateMaxCargoSpace()
+  }
+
+  recalculateMaxStamina() {
+    this.maxStamina =
+      1 + this.getPassiveIntensity(`boostMaxStamina`) / 100
   }
 
   addStat(statname: CrewStatKey, amount: number) {
@@ -440,7 +450,7 @@ export class CrewMember extends Stubbable {
         stat: statname,
         amount,
       })
-    else existing.amount += amount
+    else existing.amount = (existing.amount || 0) + amount
     this.toUpdate.stats = this.stats
   }
 

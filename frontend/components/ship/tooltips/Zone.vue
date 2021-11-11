@@ -16,6 +16,10 @@
         :key="'effecttt' + index"
       >
         <div>{{ c.capitalize(e.type) }}</div>
+        <div class="sub" v-if="e.data && e.data.direction">
+          Direction:
+          <AngleArrow :angle="e.data.direction" />
+        </div>
         <div class="sub" v-if="e.intensity">
           Intensity: {{ c.r2(e.intensity * 100, 0) }}
         </div>

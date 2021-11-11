@@ -53,6 +53,7 @@ type CrewPassiveId =
   | `boostBroadcastRange`
   | `lessDamageOnEquipmentUse`
   | `boostBrake`
+  | `boostMaxStamina`
 
 type CrewStatKey =
   | `totalContributedToCommonFund`
@@ -69,6 +70,8 @@ interface CrewStatEntry {
 interface BaseCrewMemberData {
   name: string
   id: string
+  joinDate?: number
+  discordIcon?: string
   speciesId?: SpeciesId
   lastActive?: number
   skills?: XPData[]

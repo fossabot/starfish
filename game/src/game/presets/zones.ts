@@ -35,9 +35,8 @@ export function generateZoneData(
 
   const location = getValidZoneLocation(radius, game)
 
-  const color = `hsl(${Math.random() * 360}, ${Math.round(
-    Math.random() * 80 + 20,
-  )}%, ${Math.round(Math.random() * 40) + 45}%)`
+  let hue = Math.random() * 360
+  let saturation = Math.round(Math.random() * 80 + 20)
 
   const weightedTypes: {
     value: ZoneEffectType
@@ -51,6 +50,7 @@ export function generateZoneData(
     { value: `wormhole`, weight: 0.5 },
     { value: `broadcast boost`, weight: 1 },
     { value: `sight boost`, weight: 1 },
+    { value: `current`, weight: 2 },
   ]
   const type =
     c.randomWithWeights(weightedTypes) || `damage over time`
@@ -70,6 +70,7 @@ export function generateZoneData(
       dodgeable: true,
     })
     radius *= 3.5
+    hue = c.randomBetween(0, 20)
   } else if (type === `repair over time`) {
     name = c.randomFromArray(healZoneNames)
     effects.push({
@@ -78,6 +79,7 @@ export function generateZoneData(
       procChancePerTick: 1,
     })
     radius *= 1.5
+    hue = c.randomBetween(110, 130)
   } else if (type === `stamina regeneration`) {
     name = c.randomFromArray(staminaRegenZoneNames)
     effects.push({
@@ -87,6 +89,7 @@ export function generateZoneData(
       basedOnProximity: c.coinFlip(),
     })
     radius *= 1.5
+    hue = c.randomBetween(160, 180)
   } else if (type === `accelerate`) {
     name = c.randomFromArray(accelerateZoneNames)
     effects.push({
@@ -96,6 +99,7 @@ export function generateZoneData(
       basedOnProximity: c.coinFlip(),
     })
     radius *= 1.6
+    hue = c.randomBetween(70, 90)
   } else if (type === `decelerate`) {
     name = c.randomFromArray(decelerateZoneNames)
     effects.push({
@@ -105,6 +109,7 @@ export function generateZoneData(
       basedOnProximity: c.coinFlip(),
     })
     radius *= 1.5
+    hue = c.randomBetween(330, 350)
   } else if (type === `wormhole`) {
     name = c.randomFromArray(wormholeZoneNames)
     effects.push({
@@ -113,6 +118,7 @@ export function generateZoneData(
       procChancePerTick: 1,
     })
     radius *= 0.2
+    saturation = c.randomBetween(0, 40)
   } else if (type === `broadcast boost`) {
     name = c.randomFromArray(broadcastZoneNames)
     effects.push({
@@ -121,6 +127,7 @@ export function generateZoneData(
       procChancePerTick: 1,
     })
     radius *= 1.7
+    hue = c.randomBetween(290, 310)
   } else if (type === `sight boost`) {
     name = c.randomFromArray(sightZoneNames)
     effects.push({
@@ -129,9 +136,26 @@ export function generateZoneData(
       procChancePerTick: 1,
     })
     radius *= 1.6
+  } else if (type === `current`) {
+    name = c.randomFromArray(currentZoneNames)
+    effects.push({
+      type: `current`,
+      intensity,
+      procChancePerTick: 1,
+      basedOnProximity: c.coinFlip(),
+      data: {
+        direction: Math.random() * 360,
+      },
+    })
+    radius *= 1.6
+    hue = c.randomBetween(200, 220)
   }
 
   if (!name) return false
+
+  const color = `hsl(${hue}, ${saturation}%, ${
+    Math.round(Math.random() * 40) + 45
+  }%)`
 
   return {
     id: `zone${`${Math.random()}`.substring(2)}`,
@@ -186,8 +210,6 @@ const accelerateZoneNames = [
   `Boost Zone`,
   `Acceleration Field`,
   `Deep Eddy`,
-  `Riptide`,
-  `Trade Current`,
 ]
 const decelerateZoneNames = [
   `Magnesis Field`,
@@ -223,4 +245,12 @@ const sightZoneNames = [
   `Prismic Field`,
   `Refractory Dust Cloud`,
   `Longsight Shallows`,
+]
+const currentZoneNames = [
+  `Riptide`,
+  `Current`,
+  `Trade Current`,
+  `Cosmic Current`,
+  `Gentle Current`,
+  `Warm Flow`,
 ]

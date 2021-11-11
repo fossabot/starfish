@@ -36,20 +36,13 @@ const loadouts: { [key in LoadoutId]: Loadout } = {
   // ----- loadouts for testing -----
 
   test1: {
-    chassis: `mega2`,
+    chassis: `mega3`,
     items: [
       { type: `weapon`, id: `saber3` },
       { type: `weapon`, id: `sniper3` },
       { type: `communicator`, id: `distance3` },
       { type: `scanner`, id: `shipscanner3` },
       { type: `engine`, id: `basic3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
-      { type: `engine`, id: `glass3` },
       { type: `engine`, id: `glass3` },
       { type: `engine`, id: `glass3` },
       { type: `engine`, id: `glass3` },

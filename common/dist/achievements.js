@@ -54,7 +54,7 @@ const achievements = {
     alphaTester: {
         id: `alphaTester`,
         reward: { tagline: `Alpha Tester` },
-        for: `helping test ${globals_1.default.gameName}`,
+        for: `helping test`,
     },
     supporter: {
         id: `supporter`,
@@ -64,13 +64,13 @@ const achievements = {
     bugHunter: {
         id: `bugHunter`,
         reward: { tagline: `🐛 Bug Hunter` },
-        for: `finding bugs in ${globals_1.default.gameName}`,
+        for: `finding bugs`,
     },
     // flight
     speed1: {
         id: `speed1`,
         reward: { tagline: `River Runner` },
-        for: `going over 1AU/hr`,
+        for: `breaking 1AU/hr`,
         condition: {
             prop: {
                 id: `speed`,
@@ -86,7 +86,7 @@ const achievements = {
                 url: `gradient2.svg`,
             },
         },
-        for: `going over 3AU/hr`,
+        for: `breaking 3AU/hr`,
         condition: {
             prop: {
                 id: `speed`,
@@ -102,7 +102,7 @@ const achievements = {
                 url: `gradient3.svg`,
             },
         },
-        for: `breaking the speed of light`,
+        for: `breaking lightspeed`,
         condition: {
             prop: {
                 id: `speed`,
@@ -113,7 +113,7 @@ const achievements = {
     speed3: {
         id: `speed3`,
         reward: { tagline: `Flying Fish` },
-        for: `going over 15AU/hr`,
+        for: `breaking 15AU/hr`,
         condition: {
             prop: {
                 id: `speed`,
@@ -124,7 +124,7 @@ const achievements = {
     speed2: {
         id: `speed2`,
         reward: { tagline: `Hell's Angelfish` },
-        for: `going over 30AU/hr`,
+        for: `breaking 30AU/hr`,
         condition: {
             prop: {
                 id: `speed`,
@@ -272,7 +272,7 @@ const achievements = {
     chassis1: {
         id: `chassis1`,
         reward: { tagline: `Big Kahuna` },
-        for: `getting big, much like a kahuna`,
+        for: `getting big`,
         condition: {
             prop: {
                 id: `chassis`,
@@ -314,7 +314,7 @@ const achievements = {
                 url: `gradient1.svg`,
             },
         },
-        for: `destroying an enemy ship`,
+        for: `destroying a ship`,
         condition: {
             stat: {
                 id: `kills`,
@@ -325,7 +325,7 @@ const achievements = {
     combat1: {
         id: `combat1`,
         reward: { tagline: `Nibbler` },
-        for: ``,
+        for: `destroying 3 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -336,7 +336,7 @@ const achievements = {
     combat2: {
         id: `combat2`,
         reward: { tagline: `On the Hunt` },
-        for: ``,
+        for: `destroying 10 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -347,7 +347,7 @@ const achievements = {
     combat3: {
         id: `combat3`,
         reward: { tagline: `Blood in the Water` },
-        for: ``,
+        for: `destroying 25 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -358,7 +358,7 @@ const achievements = {
     combat4: {
         id: `combat4`,
         reward: { tagline: `Feeding Frenzied` },
-        for: ``,
+        for: `destroying 50 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -369,7 +369,7 @@ const achievements = {
     combat5: {
         id: `combat5`,
         reward: { tagline: `Venomous` },
-        for: ``,
+        for: `destroying 100 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -380,7 +380,7 @@ const achievements = {
     combat6: {
         id: `combat6`,
         reward: { tagline: `Big Chompers` },
-        for: ``,
+        for: `destroying 200 ships`,
         condition: {
             stat: {
                 id: `kills`,
@@ -391,7 +391,7 @@ const achievements = {
     combat7: {
         id: `combat7`,
         reward: { tagline: `Baited` },
-        for: ``,
+        for: `destroying 500 ships`,
         condition: {
             stat: {
                 id: `kills`,

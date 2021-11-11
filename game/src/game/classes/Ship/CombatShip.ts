@@ -179,7 +179,7 @@ export abstract class CombatShip extends Ship {
           ?.location ||
           c.randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld,
+              (p) => !p.homeworld && p.pacifist,
             ) || [],
           )?.location || [0, 0]),
       ].map(
@@ -477,23 +477,24 @@ export abstract class CombatShip extends Ship {
               c.guilds[target.guildId].color,
             tooltipData: target.toReference() as any,
           },
-          `with`,
-          {
-            text: weapon.displayName,
-            color: `var(--item)`,
-            tooltipData: {
-              ...(weapon.toReference() as any),
-              cooldownRemaining: undefined,
-            },
-          },
+          // `with`,
+          // {
+          //   text: weapon.displayName,
+          //   color: `var(--item)`,
+          //   tooltipData: {
+          //     ...(weapon.toReference() as any),
+          //     cooldownRemaining: undefined,
+          //   },
+          // },
           `&nospace.`,
         ],
         `low`,
+        `attack`,
       )
-    else
+    else {
       this.logEntry(
         [
-          `Attacked`,
+          `Hit`,
           {
             text: target.name,
             color:
@@ -501,32 +502,45 @@ export abstract class CombatShip extends Ship {
               c.guilds[target.guildId].color,
             tooltipData: target.toReference() as any,
           },
-          `with`,
-          {
-            text: weapon.displayName,
-            color: `var(--item)`,
-            tooltipData: {
-              ...(weapon.toReference() as any),
-            },
-          },
-          `&nospace, dealing`,
+          // `with`,
+          // {
+          //   text: weapon.displayName,
+          //   color: `var(--item)`,
+          //   tooltipData: {
+          //     ...(weapon.toReference() as any),
+          //   },
+          // },
+          `for`,
           {
             text:
-              c.r2(c.r2(attackResult.damageTaken)) +
-              ` damage`,
+              c.r2(attackResult.damageTaken, 1) + ` dmg`,
             color: `var(--success)`,
             tooltipData: {
               type: `damage`,
               ...attackResult,
             },
           },
-          `&nospace${didCrit ? ` in a critical hit` : ``}.`,
-          attackResult.didDie
-            ? `${target.name} died in the exchange.`
-            : ``,
+          `&nospace${didCrit ? ` (Crit!)` : ``}.`,
         ],
         `high`,
+        `attack`,
       )
+      if (attackResult.didDie)
+        this.logEntry(
+          [
+            {
+              text: target.name,
+              color:
+                target.guildId &&
+                c.guilds[target.guildId].color,
+              tooltipData: target.toReference() as any,
+            },
+            `was destroyed!`,
+          ],
+          `high`,
+          `die`,
+        )
+    }
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
 
@@ -652,20 +666,20 @@ export abstract class CombatShip extends Ship {
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
             [
-              `Your`,
               {
                 text: armor.displayName,
                 color: `var(--item)`,
                 tooltipData: armor.toReference() as any,
               },
-              `has been broken!`,
+              `disabled!`,
             ],
             `high`,
+            `hit`,
           )
           if (`logEntry` in attacker)
             attacker.logEntry(
               [
-                `You have broken through`,
+                `Disabled`,
                 {
                   text: this.name,
                   color:
@@ -687,6 +701,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
+              `attack`,
             )
           armor.announceWhenBroken = false
         }
@@ -785,16 +800,16 @@ export abstract class CombatShip extends Ship {
         setTimeout(() => {
           this.logEntry(
             [
-              `Your`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
                 tooltipData:
                   equipmentToAttack.toReference() as any,
               },
-              `has been disabled!`,
+              `disabled!`,
             ],
             `high`,
+            `hit`,
           )
           if (
             `logEntry` in attacker &&
@@ -806,7 +821,7 @@ export abstract class CombatShip extends Ship {
           )
             attacker.logEntry(
               [
-                `You have disabled`,
+                `Disabled`,
                 {
                   text: this.name,
                   color:
@@ -829,6 +844,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
+              `attack`,
             )
         }, 100)
         equipmentToAttack.announceWhenBroken = false
@@ -877,12 +893,11 @@ export abstract class CombatShip extends Ship {
       this.logEntry(
         [
           attack.miss
-            ? `Missed by an attack from`
-            : `${
-                attack.didCrit
-                  ? `Critical hit`
-                  : `Hit by an attack`
-              } from`,
+            ? `Missed by`
+            : attack.didCrit
+            ? `Crit by`
+            : `Hit by`,
+
           {
             text: attacker.name,
             color:
@@ -890,35 +905,39 @@ export abstract class CombatShip extends Ship {
               c.guilds[attacker.guildId].color,
             tooltipData: attacker?.toReference() as any,
           },
-          `&nospace's`,
-          {
-            text: attack.weapon.displayName,
-            color: `var(--item)`,
-            tooltipData: attack.weapon.toReference(),
-          },
-          `&nospace.`,
+          // `&nospace's`,
+          // {
+          //   text: attack.weapon.displayName,
+          //   color: `var(--item)`,
+          //   tooltipData: attack.weapon.toReference(),
+          // },
+
           ...(attack.miss
-            ? [``]
+            ? [`&nospace.`]
             : ([
-                `You took`,
+                `for`,
                 {
-                  text: `${c.r2(totalDamageDealt)} damage`,
+                  text: `${c.r2(totalDamageDealt)} dmg`,
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
                     ...{
                       ...damageResult,
+                      hpLeft: c.r2(this._hp),
                       weapon: undefined,
                     },
                   },
                 },
                 {
+                  discordOnly: true,
                   text: `(${c.r2(this._hp)} HP left).`,
                   color: `rgba(255,255,255,.5)`,
                 },
+                `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
+        `hit`,
       )
     // zone or passive damage
     else
@@ -926,9 +945,9 @@ export abstract class CombatShip extends Ship {
         [
           attack.miss
             ? `Missed by`
-            : `${
-                attack.didCrit ? `Critical hit` : `Hit`
-              } by`,
+            : attack.didCrit
+            ? `Crit by`
+            : `Hit by`,
           {
             text: attacker.name,
             color: attacker.color || `var(--warning)`,
@@ -936,11 +955,10 @@ export abstract class CombatShip extends Ship {
               ? attacker.toReference()
               : undefined,
           },
-          `&nospace.`,
           ...(attack.miss
-            ? [``]
+            ? [`&nospace.`]
             : ([
-                `You took`,
+                `for`,
                 {
                   text: `${c.r2(totalDamageDealt)} damage`,
                   color: `var(--warning)`,
@@ -948,17 +966,21 @@ export abstract class CombatShip extends Ship {
                     type: `damage`,
                     ...{
                       ...damageResult,
+                      hpLeft: c.r2(this._hp),
                       weapon: undefined,
                     },
                   },
                 },
                 {
+                  discordOnly: true,
                   text: `(${c.r2(this._hp)} HP left).`,
                   color: `rgba(255,255,255,.5)`,
                 },
+                `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
+        `hit`,
       )
 
     return damageResult
@@ -987,6 +1009,13 @@ export abstract class CombatShip extends Ship {
           s.completeContract(contract)
         else s.stolenContract(contract)
       })
+    this.game?.basicPlanets.forEach((p) => {
+      const contractIndex = p.contracts.findIndex(
+        (co) => co.targetId === this.id,
+      )
+      if (contractIndex !== -1)
+        p.contracts.splice(contractIndex, 1)
+    })
   }
 
   repair(

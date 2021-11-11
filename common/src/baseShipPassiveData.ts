@@ -4,6 +4,14 @@ const baseShipPassiveData: {
     description: (p: ShipPassiveEffect) => string
   }
 } = {
+  visibleCargoPrices: {
+    description: (p: ShipPassiveEffect) =>
+      `Planet cargo prices always visible`,
+  },
+  scannableCargoPrices: {
+    description: (p: ShipPassiveEffect) =>
+      `Planet cargo prices are scannable`,
+  },
   boostAccuracy: {
     description: (p: ShipPassiveEffect) =>
       `${(p.intensity || 1) * 100}% ${

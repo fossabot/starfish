@@ -5,6 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const text_1 = __importDefault(require("./text"));
 const baseShipPassiveData = {
+    visibleCargoPrices: {
+        description: (p) => `Planet cargo prices always visible`,
+    },
+    scannableCargoPrices: {
+        description: (p) => `Planet cargo prices are scannable`,
+    },
     boostAccuracy: {
         description: (p) => `${(p.intensity || 1) * 100}% ${(p.intensity || 1) >= 0 ? `increased` : `decreased`} attack accuracy`,
     },

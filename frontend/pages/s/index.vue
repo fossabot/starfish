@@ -43,6 +43,8 @@
             <ShipDiagram />
             <ShipRoom />
 
+            <ShipCrewOverview />
+
             <ShipMember />
 
             <ShipCaptainsQuarters />
@@ -58,8 +60,8 @@
             <ShipPassives />
             <ShipStats />
 
-            <ShipCrewOverview />
-            <ShipCrewRank />
+            <ShipCaptainCrewOverview />
+            <!-- <ShipCrewRank /> -->
 
             <ShipGuildRank />
           </template>

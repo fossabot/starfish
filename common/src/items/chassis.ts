@@ -13,7 +13,7 @@ export const chassis: {
     description: `It, uh, flies. I guess that much is undeniable.`,
     mass: 10000 * game.itemMassMultiplier,
     basePrice: { credits: 0 },
-    slots: 2,
+    slots: 4,
     agility: 0.2,
     maxCargoSpace: 1,
     rarity: 0.2,

@@ -46,6 +46,10 @@
           v-else-if="tooltip.type === 'ship'"
           :data="tooltip"
         />
+        <ShipTooltipsCrewMember
+          v-else-if="tooltip.type === 'crewMember'"
+          :data="tooltip"
+        />
         <ShipTooltipsShipheader
           v-else-if="tooltip.type === 'shipHeader'"
           :data="tooltip"
@@ -77,6 +81,10 @@
         />
         <ShipTooltipsReaction
           v-else-if="tooltip.type === 'reaction'"
+          :data="tooltip"
+        />
+        <ShipTooltipsMass
+          v-else-if="tooltip.type === 'mass'"
           :data="tooltip"
         />
         <div v-else>{{ tooltip }}</div>
@@ -178,7 +186,6 @@ export default Vue.extend({
 .hovertooltip {
   max-width: 250px;
   font-weight: 400;
-  padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
   background: #282828;
   color: var(--text);
   border-radius: 10px;
@@ -194,6 +201,10 @@ export default Vue.extend({
     opacity: 0.2;
     margin: 0.5em -2em;
     width: 200%;
+  }
+
+  & > * {
+    padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
   }
 }
 </style>

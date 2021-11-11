@@ -593,9 +593,11 @@ export default function (
       ship.commonCredits -= amount
       ship.toUpdate.commonCredits = ship.commonCredits
       ship.logEntry(
-        `The captain dispersed 💳${c.r2(amount)} ${
+        `Dispersed 💳${c.r2(amount)} ${
           c.baseCurrencyPlural
-        } from the common fund amongst the crew.`,
+        } from common fund.`,
+        `medium`,
+        `money`,
       )
       ship.distributeCargoAmongCrew([
         { amount: amount, id: `credits` },
@@ -840,11 +842,11 @@ export default function (
         })
 
         ship.logEntry(
-          `${
-            crewMember.name
-          } dropped a cache containing ${amount}${
+          `${crewMember.name} dropped ${amount}${
             cargoId === `credits` ? `` : ` tons of`
           } ${cargoId}.`,
+          `low`,
+          `cache`,
         )
 
         callback({
@@ -916,10 +918,11 @@ export default function (
       ship.repair(hp)
 
       ship.logEntry(
-        `${crewMember.name} bought ${
-          Math.round(hp * 100) / 100
-        } hp worth of repairs.`,
+        `${crewMember.name} bought ${c.r2(
+          hp,
+        )} hp of repairs.`,
         `medium`,
+        `fix`,
       )
       crewMember.addStat(`totalHpRepaired`, hp)
 

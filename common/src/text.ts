@@ -231,7 +231,10 @@ function acronym(string: string = ``): string {
     .toUpperCase()
 }
 
-function msToTimeString(ms: number = 0): string {
+function msToTimeString(
+  ms: number = 0,
+  short = false,
+): string {
   const negativePrefix = ms < 0 ? `-` : ``
   if (negativePrefix) ms *= -1
   let remainingSeconds = Math.floor(ms / 1000)
@@ -254,24 +257,24 @@ function msToTimeString(ms: number = 0): string {
   if (minutes < 10 && hours > 0) minutes = `0${minutes}`
 
   let seconds: any = remainingSeconds
-  if (seconds < 10) seconds = `0${seconds}`
+  if (seconds < 10 && minutes > 0) seconds = `0${seconds}`
 
   if (!years && !days && !hours && !minutes)
     return `${negativePrefix}${seconds}s`
   if (!years && !days && !hours)
     return `${negativePrefix}${minutes}m ${
-      seconds ? `${seconds}s` : ``
+      !short && seconds ? `${seconds}s` : ``
     }`
   if (!years && !days)
     return `${negativePrefix}${hours}h  ${
-      minutes ? `${minutes}m` : ``
+      !short && minutes ? `${minutes}m` : ``
     }`
   if (!years)
     return `${negativePrefix}${days}d ${
-      hours ? `${hours}h` : ``
+      !short && hours ? `${hours}h` : ``
     }`
   return `${negativePrefix}${years}y ${
-    days ? `${days}d` : ``
+    !short && days ? `${days}d` : ``
   }`
 }
 

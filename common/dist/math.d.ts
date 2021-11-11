@@ -21,6 +21,7 @@ declare function degreesToUnitVector(degrees?: number): CoordinatePair;
 declare function vectorToUnitVector(vector?: CoordinatePair): CoordinatePair;
 declare function unitVectorFromThisPointToThatPoint(thisPoint?: CoordinatePair, thatPoint?: CoordinatePair): CoordinatePair;
 declare function vectorToMagnitude(vector?: CoordinatePair): number;
+declare function vectorFromDegreesAndMagnitude(angle?: number, magnitude?: number): CoordinatePair;
 declare function pointIsInsideCircle(center?: CoordinatePair, point?: CoordinatePair, radius?: number): boolean;
 declare function randomInsideCircle(radius: number): CoordinatePair;
 declare function randomSign(): 1 | -1;
@@ -45,6 +46,7 @@ declare const _default: {
     vectorToDegrees: typeof vectorToDegrees;
     coordPairToRadians: typeof vectorToRadians;
     vectorToMagnitude: typeof vectorToMagnitude;
+    vectorFromDegreesAndMagnitude: typeof vectorFromDegreesAndMagnitude;
     randomSign: typeof randomSign;
     randomInRange: typeof randomInRange;
     lottery: typeof lottery;
