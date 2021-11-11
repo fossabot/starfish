@@ -11,7 +11,7 @@
 
     <div class="crewoverviewholder panesection">
       <div
-        v-for="cm in ship.crewMembers"
+        v-for="cm in sortedCrewMembers"
         :key="'cm' + cm.id"
         class="crewmemberholder"
       >
@@ -81,14 +81,14 @@ export default Vue.extend({
       const sortBy =
         (this.sortBy || '').toLowerCase() || 'seniority'
       if (sortBy === 'seniority') {
-        return this.ship.crewMembers.sort(
+        return [...this.ship.crewMembers].sort(
           (a, b) => a.seniority - b.seniority,
         )
       }
       if (
         sortBy === `contributed 💳${c.baseCurrencyPlural}`
       )
-        return this.ship.crewMembers.sort(
+        return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) =>
             (a.stats.find(
               (s) =>
@@ -101,7 +101,7 @@ export default Vue.extend({
         )
 
       if (sortBy === `naps`)
-        return this.ship.crewMembers.sort(
+        return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) =>
             (a.stats.find((s) => s.stat === 'timeInBunk')
               ?.amount || 0) -
@@ -109,7 +109,7 @@ export default Vue.extend({
               ?.amount || 0),
         )
 
-      return this.ship.crewMembers.sort(
+      return [...this.ship.crewMembers].sort(
         (a, b) =>
           (a.skills.find((s) => s.id === sortBy)?.level ||
             0) -
