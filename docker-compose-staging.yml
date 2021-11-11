@@ -101,4 +101,3 @@ volumes:
 
 networks:
   default:
-    external: true

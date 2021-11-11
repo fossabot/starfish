@@ -34,6 +34,7 @@ jobs:
         run: docker ps
 
   npm-test:
+    needs: [run-docker-compose]
     runs-on: ubuntu-latest
     strategy:
       matrix:
