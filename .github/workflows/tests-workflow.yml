@@ -19,6 +19,8 @@ jobs:
 
       - name: Populate secrets files
         run: |
+          mkdir discord/secrets
+          mkdir frontend/secrets
           echo "${{ secrets.DISCORD_BOT_ID }}" > discord/secrets/bot_id.txt
           echo "${{ secrets.DISCORD_TEST_TOKEN }}" > discord/secrets/discord_token.txt
           echo "${{ secrets.GOOGLE_CLIENT_EMAIL }}" > frontend/secrets/google_client_email.txt
