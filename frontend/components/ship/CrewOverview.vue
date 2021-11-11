@@ -90,11 +90,11 @@ export default Vue.extend({
       )
         return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) =>
-            (a.stats.find(
+            (b.stats.find(
               (s) =>
                 s.stat === 'totalContributedToCommonFund',
             )?.amount || 0) -
-            (b.stats.find(
+            (a.stats.find(
               (s) =>
                 s.stat === 'totalContributedToCommonFund',
             )?.amount || 0),
@@ -103,18 +103,18 @@ export default Vue.extend({
       if (sortBy === `naps`)
         return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) =>
-            (a.stats.find((s) => s.stat === 'timeInBunk')
-              ?.amount || 0) -
             (b.stats.find((s) => s.stat === 'timeInBunk')
+              ?.amount || 0) -
+            (a.stats.find((s) => s.stat === 'timeInBunk')
               ?.amount || 0),
         )
 
       return [...this.ship.crewMembers].sort(
-        (a, b) =>
-          (a.skills.find((s) => s.id === sortBy)?.level ||
-            0) -
-          (b.skills.find((s) => s.id === sortBy)?.level ||
-            0),
+        (a: CrewMemberStub, b) =>
+          (a.skills.find((s) => s.skill === sortBy)
+            ?.level || 0) -
+          (b.skills.find((s) => s.skill === sortBy)
+            ?.level || 0),
       )
     },
   },
