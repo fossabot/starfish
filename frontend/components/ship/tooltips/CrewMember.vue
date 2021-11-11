@@ -28,8 +28,12 @@
     <hr />
 
     <div class="flexcenter flexbetween">
-      <div class="sub">Joined</div>
-      <div>{{ dayjs().to(data.joinDate) }}</div>
+      <div class="sub">Member for</div>
+      <div>
+        {{
+          c.msToTimeString(Date.now() - data.joinDate, true)
+        }}
+      </div>
     </div>
 
     <hr />
@@ -99,13 +103,10 @@ import Vue from 'vue'
 import c from '../../../../common/dist'
 import { mapState } from 'vuex'
 
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
 export default Vue.extend({
   props: { data: {} },
   data() {
-    return { c, dayjs }
+    return { c }
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
