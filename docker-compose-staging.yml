@@ -14,7 +14,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
   game:
-    image: 'starfishgame/starfish-game:pull-request-${{ PULL_REQUEST_NUMBER }}'
+    image: 'starfishgame/starfish-game:pull-request-${PULL_REQUEST_NUMBER}'
     user: 'node'
     working_dir: /usr/app/game
     ports:
