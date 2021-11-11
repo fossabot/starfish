@@ -129,9 +129,9 @@ function getPlanetDefenseRadius(level: number) {
   return math.lerp(0.03, 2, level / 100)
 }
 function getPlanetDefenseDamage(level: number) {
-  return (
-    math.lerp(0.3, 5, level / 100) *
-    math.randomBetween(0.9, 1.1)
+  return math.r2(
+    math.lerp(0.6, 10, level / 100) *
+      math.randomBetween(0.8, 1.2),
   )
 }
 
