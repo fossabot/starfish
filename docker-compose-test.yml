@@ -99,3 +99,6 @@ secrets:
 
 volumes:
   db_data:
+
+networks:
+  default:
