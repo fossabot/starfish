@@ -1,4 +1,4 @@
 # Starfish
-[![Tests / Builds](https://github.com/starfishgame/starfish/actions/workflows/pull-request-workflow.yml/badge.svg)](https://github.com/starfishgame/starfish/actions/workflows/pull-request-workflow.yml)
+[![Push to production](https://github.com/starfishgame/starfish/actions/workflows/push-to-main-workflow.yml/badge.svg)](https://github.com/starfishgame/starfish/actions/workflows/push-to-main-workflow.yml)
 
 ![](https://www.starfish.cool/images/logo.svg)
