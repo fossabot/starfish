@@ -8,7 +8,7 @@
       <div class="bg"></div>
       <div class="captain" v-if="captain">
         <svg viewBox="0 0 14 13">
-          <text x="0" y="12">👑</text>
+          <text x="0" y="10">👑</text>
         </svg>
       </div>
       <div
@@ -111,8 +111,8 @@ export default Vue.extend({
 .captain {
   position: absolute;
   z-index: 3;
-  top: 1em;
-  right: 0;
+  top: 0;
+  left: 0;
   width: 28%;
   height: 28%;
 
