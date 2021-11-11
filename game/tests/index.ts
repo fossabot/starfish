@@ -16,7 +16,11 @@ import './Planet'
 import './Admin'
 import './Contracts'
 
-const host = isDocker() ? `mongodb` : `localhost`
+let host = `localhost`
+
+if (isDocker() || process.env.NODE_ENV === 'staging') {
+  host = `mongodb`
+}
 
 before(async () => {
   return new Promise((resolve) => {

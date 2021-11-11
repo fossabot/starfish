@@ -57,7 +57,7 @@ jobs:
         working-directory: ${{matrix.folder}}
 
       - name: Run test suite on ${{matrix.folder}}
-        run: npm run test
+        run: npm run teststaging
         working-directory: ${{matrix.folder}}
 
       - uses: actions/upload-artifact@v2 # upload test results
