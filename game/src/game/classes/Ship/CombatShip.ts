@@ -179,7 +179,7 @@ export abstract class CombatShip extends Ship {
           ?.location ||
           c.randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld,
+              (p) => !p.homeworld && p.pacifist,
             ) || [],
           )?.location || [0, 0]),
       ].map(
