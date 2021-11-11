@@ -87,9 +87,9 @@ export class ThrustCommand implements Command {
         else {
           await context.refreshShip()
           await context.reply(
-            `${
-              context.nickname
-            } thrusted at ${c.speedNumber(res.data)} ${
+            `${context.nickname} thrusted ${c.speedNumber(
+              res.data,
+            )} ${
               target.id === `current`
                 ? `along the ship's current trajectory`
                 : `towards ` + target.name

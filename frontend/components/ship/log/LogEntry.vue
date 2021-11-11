@@ -106,7 +106,7 @@ export default Vue.extend({
   img {
     opacity: 0.7;
     width: 100%;
-    max-width: 18px;
+    width: 18px;
     max-height: 18px;
   }
 }
@@ -118,7 +118,7 @@ export default Vue.extend({
 }
 
 .time {
-  // opacity: 0.5;
+  opacity: 0.35;
   color: var(--text);
   word-break: normal;
   margin-left: 0.7em;

@@ -941,7 +941,7 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         [
           thruster.name,
-          `thrusted at`,
+          `thrusted towards`,
           ...targetData,
           `at ${c.speedNumber(
             c.vectorToMagnitude(thrustVector) * 60 * 60,
@@ -1822,6 +1822,8 @@ export class HumanShip extends CombatShip {
     if (removeExisting) this.items = []
     const res = super.equipLoadout(l)
     if (!res) return res
+    this.toUpdate.chassis = this.chassis
+    this.toUpdate.passives = this.passives
     this.toUpdate.items = [
       ...this.items.map((i) => i.stubify()),
     ] as ItemStub[]
