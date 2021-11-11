@@ -14,7 +14,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
   game:
-    image: 'starfishgame/starfish-game:latest'
+    image: 'starfishgame/starfish-game:pull-request-${{ PULL_REQUEST_NUMBER }}'
     user: 'node'
     working_dir: /usr/app/game
     ports:
@@ -37,7 +37,7 @@ services:
       - admin_keys
 
   frontend:
-    image: 'starfishgame/starfish-frontend:latest'
+    image: 'starfishgame/starfish-frontend:pull-request-${{ PULL_REQUEST_NUMBER }}'
     user: 'node'
     working_dir: /usr/app/frontend
     ports:
@@ -52,7 +52,7 @@ services:
       - google_private_key
 
   discord:
-    image: 'starfishgame/starfish-discord:latest'
+    image: 'starfishgame/starfish-discord:pull-request-${{ PULL_REQUEST_NUMBER }}'
     user: 'node'
     working_dir: /usr/app/discord
     volumes:
@@ -68,7 +68,7 @@ services:
       - bot_id
 
   nginx:
-    image: 'starfishgame/starfish-nginx:latest'
+    image: 'starfishgame/starfish-nginx:pull-request-${{ PULL_REQUEST_NUMBER }}'
     volumes:
       - ./ssl:/etc/nginx/self-signed-ssl
       - ./nginx/sites-enabled/default-test:/etc/nginx/sites-enabled/default
