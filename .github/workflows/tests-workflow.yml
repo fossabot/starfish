@@ -24,6 +24,7 @@ jobs:
           echo "${{ secrets.DISCORD_TEST_TOKEN }}" > discord/secrets/discord_token.txt
           echo "${{ secrets.GOOGLE_CLIENT_EMAIL }}" > frontend/secrets/google_client_email.txt
           echo "${{ secrets.GOOGLE_PRIVATE_KEY }}" > frontend/secrets/google_private_key.txt
+          echo "${{ secrets.TEST_ADMIN_KEYS" }} > game/secrets/admin_keys.txt
 
       - name: Launch containers
         run: docker-compose -f docker-compose-test.yml up -d
