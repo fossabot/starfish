@@ -56,6 +56,7 @@ jobs:
           push_git_tag: true
 
   run-docker-compose:
+    needs: [docker-build-publish]
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
