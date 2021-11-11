@@ -111,9 +111,9 @@ export default Vue.extend({
 
       return [...this.ship.crewMembers].sort(
         (a: CrewMemberStub, b) =>
-          (a.skills.find((s) => s.skill === sortBy)
-            ?.level || 0) -
           (b.skills.find((s) => s.skill === sortBy)
+            ?.level || 0) -
+          (a.skills.find((s) => s.skill === sortBy)
             ?.level || 0),
       )
     },
