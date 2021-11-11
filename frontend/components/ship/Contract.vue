@@ -62,7 +62,7 @@
         </span>
       </div>
 
-      <div class="flex">
+      <div class="bottomrow flex">
         <div
           class="timeallowed"
           v-if="timeLeft && contract.status === 'active'"
@@ -309,6 +309,12 @@ export default Vue.extend({
   right: 1.3em;
   top: 50%;
   transform: translateY(-50%);
+}
+.bottomrow {
+  max-width: 80%;
+}
+.timeallowed {
+  white-space: nowrap;
 }
 .reward {
   flex-shrink: 0;

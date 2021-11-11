@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="tooltipheader">Damage Breakdown</div>
+    <!-- <div class="tooltipheader">Damage Breakdown</div>
 
-    <hr />
+    <hr /> -->
 
     <div>
       <ul
@@ -38,9 +38,11 @@
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
       </ul>
-      <template v-if="d.hpLeft">
+      <template v-if="data.hpLeft">
         <hr />
-        <div>{{ d.hpLeft }} HP remaining</div>
+        <div class="sub">
+          {{ data.hpLeft }} HP remaining
+        </div>
       </template>
     </div>
   </div>

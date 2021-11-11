@@ -5,10 +5,7 @@
     </div>
     <div class="content flexbetween">
       <div class="text flashtextgoodonspawn">
-        <template
-          v-for="(el, index) in outputElements"
-          v-if="!el.discordOnly"
-        >
+        <template v-for="(el, index) in outputElements">
           <span
             :key="id + index"
             :style="
@@ -46,9 +43,6 @@
 <script lang="ts">
 import c from '../../../../common/dist'
 import Vue, { PropType } from 'vue'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(relativeTime)
 import { mapState } from 'vuex'
 
 export default Vue.extend({
@@ -69,7 +63,7 @@ export default Vue.extend({
     outputElements(): any[] | false {
       if (!Array.isArray(this.content))
         return [this.content]
-      return this.content
+      return this.content.filter((el) => !el.discordOnly)
     },
   },
   watch: {},
@@ -107,6 +101,7 @@ export default Vue.extend({
   background: var(--highlight-color);
   padding: 4px;
   flex-shrink: 0;
+  align-items: center;
 
   img {
     opacity: 0.7;
@@ -140,13 +135,13 @@ export default Vue.extend({
   --highlight-color: #aaa;
 }
 .high {
-  --highlight-color: rgb(208, 165, 38);
+  --highlight-color: rgb(220, 183, 74);
 }
 .critical {
-  --highlight-color: rgb(210, 42, 0);
+  --highlight-color: rgb(230, 79, 41);
 }
 .notify {
-  --highlight-color: rgb(210, 42, 0);
+  --highlight-color: rgb(230, 79, 41);
 }
 
 // .tooltip {

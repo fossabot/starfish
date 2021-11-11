@@ -39,6 +39,7 @@ const shipSchemaFields: Record<
       content: Schema.Types.Mixed,
       time: Number,
       level: String,
+      icon: String,
     },
   ],
   seenPlanets: [{ name: String, id: String }],

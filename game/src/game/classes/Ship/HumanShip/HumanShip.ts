@@ -1240,17 +1240,16 @@ export class HumanShip extends CombatShip {
       this.distributeCargoAmongCrew([{ id, amount }])
       this.logEntry(
         [
-          `Harvested ${amount} ton${
-            amount === 1 ? `` : `s`
-          } of`,
+          `Found ${amount}t of`,
           {
             text: id,
+            color: `var(--cargo)`,
             tooltipData: {
               ...c.cargo[id],
               type: `cargo`,
             },
           },
-          `from space junk.`,
+          `on space debris.`,
         ],
         `medium`,
         `cache`,
