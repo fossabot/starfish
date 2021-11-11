@@ -125,7 +125,7 @@ export class BasicPlanet extends Planet {
       : defensePassiveLeaning?.propensity || 1
 
     const levelUpOptions = [
-      { weight: 200 / this.level, value: `addItemToShop` },
+      { weight: 250 / this.level, value: `addItemToShop` },
       {
         weight: 1,
         value: `expandLandingZone`,
