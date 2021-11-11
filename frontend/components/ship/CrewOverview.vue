@@ -85,6 +85,7 @@ export default Vue.extend({
           (a, b) => a.seniority - b.seniority,
         )
       }
+
       if (
         sortBy === `contributed 💳${c.baseCurrencyPlural}`
       )
