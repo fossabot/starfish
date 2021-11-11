@@ -7,6 +7,7 @@ type ZoneEffectType =
   | `wormhole`
   | `broadcast boost`
   | `sight boost`
+  | `current`
 
 interface ZoneEffect {
   type: ZoneEffectType
@@ -14,6 +15,9 @@ interface ZoneEffect {
   basedOnProximity?: boolean
   dodgeable?: boolean
   procChancePerTick: number
+  data?: {
+    direction?: number
+  }
 }
 
 interface BaseZoneData {

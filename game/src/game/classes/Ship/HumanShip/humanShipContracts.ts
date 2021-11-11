@@ -118,32 +118,29 @@ export function stolenContract(
     (p) => p.id === contract.fromPlanetId,
   )
   if (target)
-    this.logEntry([
-      `Contract to eliminate`,
-      {
-        text: target.name,
-        color: target.guildId
-          ? c.guilds[target.guildId].color
-          : undefined,
-        tooltipData: target.toReference(),
-      },
-      `has been completed, but not by you! Return to`,
-      planet
-        ? {
-            text: planet.name,
-            color: planet.color,
-            tooltipData: planet.toReference(),
-          }
-        : `the contract's starting planet`,
-      `to claim half of your`,
-      {
-        text: `reward`,
-        color: `var(--item)`,
-        tooltipData: c.priceToString(contract.reward),
-      },
-      `.`,
+    this.logEntry(
+      [
+        `Contract for`,
+        {
+          text: target.name,
+          color: target.guildId
+            ? c.guilds[target.guildId].color
+            : undefined,
+          tooltipData: target.toReference(),
+        },
+        `stolen! Return to`,
+        planet
+          ? {
+              text: planet.name,
+              color: planet.color,
+              tooltipData: planet.toReference(),
+            }
+          : `the contract's starting planet`,
+        `to claim half of the reward.`,
+      ],
       `high`,
-    ])
+      `contract`,
+    )
 
   this.checkTurnInContract(co)
 }
@@ -166,32 +163,21 @@ export function completeContract(
     (p) => p.id === contract.fromPlanetId,
   )
   if (target)
-    this.logEntry([
-      `Contract to eliminate`,
-      {
-        text: target.name,
-        color: target.guildId
-          ? c.guilds[target.guildId].color
-          : undefined,
-        tooltipData: target.toReference(),
-      },
-      `complete! Return to`,
-      planet
-        ? {
-            text: planet.name,
-            color: planet.color,
-            tooltipData: planet.toReference(),
-          }
-        : `the contract's starting planet`,
-      `to claim your`,
-      {
-        text: `reward`,
-        color: `var(--item)`,
-        tooltipData: c.priceToString(contract.reward),
-      },
-      `.`,
+    this.logEntry(
+      [
+        `Contract complete! Return to`,
+        planet
+          ? {
+              text: planet.name,
+              color: planet.color,
+              tooltipData: planet.toReference(),
+            }
+          : `the contract's starting planet`,
+        `&nospace.`,
+      ],
       `high`,
-    ])
+      `contract`,
+    )
 
   this.checkTurnInContract(co)
 }
@@ -215,18 +201,21 @@ export function checkContractTimeOuts(this: HumanShip) {
       (s) => s.id === contract.targetId,
     )
     if (target)
-      this.logEntry([
-        `Contract to eliminate`,
-        {
-          text: target.name,
-          color: target.guildId
-            ? c.guilds[target.guildId].color
-            : undefined,
-          tooltipData: target.toReference(),
-        },
-        `has expired.`,
+      this.logEntry(
+        [
+          `Contract for`,
+          {
+            text: target.name,
+            color: target.guildId
+              ? c.guilds[target.guildId].color
+              : undefined,
+            tooltipData: target.toReference(),
+          },
+          `expired.`,
+        ],
         `medium`,
-      ])
+        `contract`,
+      )
   }
 }
 
@@ -245,18 +234,21 @@ export function abandonContract(
     (s) => s.id === contract.targetId,
   )
   if (target)
-    this.logEntry([
-      `Contract to eliminate`,
-      {
-        text: target.name,
-        color: target.guildId
-          ? c.guilds[target.guildId].color
-          : undefined,
-        tooltipData: target.toReference(),
-      },
-      `has been abandoned.`,
+    this.logEntry(
+      [
+        `Contract for`,
+        {
+          text: target.name,
+          color: target.guildId
+            ? c.guilds[target.guildId].color
+            : undefined,
+          tooltipData: target.toReference(),
+        },
+        `abandoned.`,
+      ],
       `medium`,
-    ])
+      `contract`,
+    )
 }
 
 export function checkTurnInContract(
@@ -293,17 +285,15 @@ export function checkTurnInContract(
       ),
     }
     this.logEntry(
-      `Turned in a stolen contract for ${c.priceToString(
-        reward,
-      )}!`,
+      `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
+      `contract`,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
-      `Turned in a contract for ${c.priceToString(
-        reward,
-      )}!`,
+      `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
+      `contract`,
     )
   }
 
@@ -321,6 +311,8 @@ export function checkTurnInContract(
       amount: c.r2(reward.shipCosmeticCurrency || 0, 0),
     },
   ])
+
+  this.addStat(`completedContracts`, 1)
 
   c.log(`turning in contract`, contract.id)
 }

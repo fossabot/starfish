@@ -305,7 +305,7 @@ export class CommandHandler {
         })
     }
 
-    // ----- check for crew member still in guild, and update name if necessary -----
+    // ----- check for crew member still in guild, and update name/icon if necessary -----
     if (context.crewMember) {
       const guildMember = context.guild?.members.cache.find(
         (m) => m.user.id === context.crewMember?.id,
@@ -326,6 +326,27 @@ export class CommandHandler {
           context.ship.id,
           context.crewMember.id,
           context.nickname,
+        )
+      }
+
+      const guildMemberIcon = guildMember?.user.avatarURL({
+        size: 32,
+      })
+      if (
+        guildMember &&
+        context.ship &&
+        context.crewMember &&
+        context.crewMember.discordIcon !== guildMemberIcon
+      ) {
+        c.log(
+          `gray`,
+          `Auto-changing crew member with different icon:`,
+          context.crewMember.name,
+        )
+        ioInterface.crew.setDiscordIcon(
+          context.ship.id,
+          context.crewMember.id,
+          guildMemberIcon || undefined,
         )
       }
     }

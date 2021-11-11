@@ -51,12 +51,11 @@ export default function (
       ship.boughtTaglines.push(tagline)
       ship.logEntry(
         [
-          `Bought a new ship tagline for ${c.priceToString(
-            price,
-          )}:`,
+          `Bought tagline:`,
           { text: `"${tagline}"`, color: `var(--success)` },
         ],
         `high`,
+        `party`,
       )
 
       callback({
@@ -122,15 +121,14 @@ export default function (
       ship.boughtHeaderBackgrounds.push(headerBackground)
       ship.logEntry(
         [
-          `Bought a new ship banner for ${c.priceToString(
-            price,
-          )}:`,
+          `Bought banner:`,
           {
             text: `"${headerBackground.id}"`,
             color: `var(--success)`,
           },
         ],
         `high`,
+        `party`,
       )
 
       callback({

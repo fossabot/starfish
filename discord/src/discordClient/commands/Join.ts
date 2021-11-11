@@ -3,6 +3,7 @@ import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import { add } from '../../ioInterface/crew'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
+import ioInterface from '../../ioInterface'
 
 export class JoinCommand implements Command {
   requiresShip = true
@@ -53,6 +54,18 @@ export class JoinCommand implements Command {
       context.guildMember?.roles
         .add(crewRole)
         .catch(() => {})
+    }
+
+    if (context.guildMember) {
+      const guildMemberIcon =
+        context.guildMember.user.avatarURL({
+          size: 32,
+        })
+      ioInterface.crew.setDiscordIcon(
+        context.ship.id,
+        context.guildMember.user.id,
+        guildMemberIcon || undefined,
+      )
     }
   }
 }

@@ -39,6 +39,30 @@ describe(`Planet basics`, () => {
   })
 })
 
+describe(`Planet prices`, () => {
+  it(`should have better prices for allies than for normal ships`, async () => {
+    const g = new Game()
+    const p2 = await g.addBasicPlanet(basicPlanetData())
+
+    const itemPrice: PlanetVendorItemPrice = {
+      type: `armor`,
+      buyMultiplier: 1,
+      id: `block1`,
+    }
+    p2.vendor.items.push(itemPrice)
+    p2.incrementAllegiance(`explorer`, 100000)
+    const nonAlliedPrice = c.getItemBuyPrice(itemPrice, p2)
+    const alliedPrice = c.getItemBuyPrice(
+      itemPrice,
+      p2,
+      `explorer`,
+    )
+    expect(alliedPrice.credits || 0).to.be.below(
+      nonAlliedPrice.credits || 0,
+    )
+  })
+})
+
 describe(`Planet levels`, () => {
   it(`should be able to add xp to a planet`, async () => {
     const p = new BasicPlanet(basicPlanetData())

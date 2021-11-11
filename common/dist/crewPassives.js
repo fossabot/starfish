@@ -5,11 +5,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = __importDefault(require("./math"));
 const data = {
+    boostMaxStamina: {
+        displayName: `Max Stamina Boost`,
+        id: `boostMaxStamina`,
+        buyable: {
+            rarity: 6,
+            basePrice: { credits: 8000 },
+            scaledCrewCosmeticCurrency: {
+                fromLevel: 2,
+                amount: 150,
+            },
+            baseIntensity: 4,
+            wholeNumbersOnly: true,
+        },
+        description: (data, verbose = false) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} maximum stamina by ${math_1.default.r2((data.intensity || 0) / 100)}%`,
+    },
     cargoSpace: {
         displayName: `Cargo Space`,
         id: `cargoSpace`,
         buyable: {
-            rarity: 1,
+            rarity: 1.5,
             basePrice: { credits: 2000 },
             scaledCrewCosmeticCurrency: {
                 fromLevel: 2,

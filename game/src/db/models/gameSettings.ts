@@ -22,7 +22,7 @@ const gameSettingsSchemaFields: Record<
     type: Number,
     required: true,
   },
-  staminaBottomedOutChargeSlowdown: {
+  staminaBottomedOutChargeMultiplier: {
     type: Number,
     required: true,
   },

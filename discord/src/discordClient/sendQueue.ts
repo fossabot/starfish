@@ -4,11 +4,14 @@ import {
   Message,
   Guild,
   NewsChannel,
+  Role,
+  MessageEmbed,
 } from 'discord.js'
 import type { CommandContext } from './models/CommandContext'
 import { GameChannel } from './models/GameChannel'
 import checkPermissions from './actions/checkPermissions'
 import resolveOrCreateChannel from './actions/resolveOrCreateChannel'
+import { roleData } from './actions/resolveOrCreateRole'
 
 const sendQueue: {
   [key: string]: {
@@ -28,12 +31,14 @@ export async function enQueue({
   channel,
   channelType,
   context,
+  notify,
 }: {
   guild: Guild
   message: string | MessageOptions
   channel?: GameChannel
   channelType?: GameChannelType
   context?: CommandContext
+  notify?: boolean
 }) {
   let queue = sendQueue[guild.id]
 
@@ -65,7 +70,6 @@ export async function enQueue({
         })
         if (didCreate && !(`error` in didCreate))
           channel = didCreate
-        else c.log(didCreate)
       }
     }
 
@@ -84,6 +88,20 @@ export async function enQueue({
         null,
         context.initialMessage.channel,
       )
+    }
+
+    if (notify) {
+      // find the Crew role to @mention
+      const roleName = roleData.crew.name
+      const atRole = guild.roles.cache.find(
+        (r) => r.name === roleName,
+      )
+      if (atRole) {
+        if (typeof message === `string`)
+          message = `<@&${atRole.id}> ${message}`
+        else if (message.embeds?.[0])
+          message.embeds[0].description = `<@&${atRole.id}> ${message.embeds[0].description}`
+      }
     }
 
     let sendResult:

@@ -12,7 +12,7 @@ import type { HumanShip } from '../HumanShip/HumanShip'
 import ais from './ais'
 
 export class AIShip extends CombatShip {
-  static dropCacheValueMultiplier = 1000
+  static dropCacheValueMultiplier = 800
   static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
   readonly human: boolean = false

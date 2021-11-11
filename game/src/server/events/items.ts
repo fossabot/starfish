@@ -68,11 +68,10 @@ export default function (
             ],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.priceToString(
-            price,
-          )} ${c.baseCurrencyPlural}.`,
+          `bought for ${c.priceToString(price)}.`,
         ],
         `high`,
+        `ship`,
       )
 
       callback({
@@ -150,11 +149,12 @@ export default function (
             color: `var(--item)`,
             tooltipData: heldItem.toReference() as any,
           },
-          `sold by the captain for 💳${c.numberWithCommas(
+          `sold for 💳${c.numberWithCommas(
             c.r2(price, 0),
-          )} ${c.baseCurrencyPlural}.`,
+          )}.`,
         ],
         `high`,
+        `ship`,
       )
 
       callback({
@@ -236,11 +236,10 @@ export default function (
             tooltipData: c.items.chassis[itemForSale.id],
             color: `var(--item)`,
           },
-          `bought by the captain for ${c.priceToString(
-            price,
-          )}.`,
+          `bought for ${c.priceToString(price)}.`,
         ],
         `high`,
+        `ship`,
       )
 
       callback({

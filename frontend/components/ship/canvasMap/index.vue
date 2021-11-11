@@ -703,8 +703,8 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             hoverDistanceSubtract: p.radius,
-            type: 'zone',
             ...p,
+            type: 'zone',
           })
       })
 

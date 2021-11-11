@@ -2,6 +2,11 @@ import c from '../../../../common/dist'
 import { CommandContext } from '../models/CommandContext'
 import type { Command } from '../models/Command'
 import ioInterface from '../../ioInterface'
+import { BunkCommand } from './Bunk'
+import { CockpitCommand } from './Cockpit'
+import { MineCommand } from './Mine'
+import { RepairCommand } from './Repair'
+import { WeaponsCommand } from './Weapons'
 
 export class GoCommand implements Command {
   requiresShip = true
@@ -38,13 +43,12 @@ export class GoCommand implements Command {
       .replace(/[<>]/g, ``)
       .toLowerCase()
 
-    let roomToGoTo: CrewLocation | undefined
     if (
       [`bunk`, `sleep`, `cabin`, `rest`, `b`].includes(
         enteredString,
       )
     )
-      roomToGoTo = `bunk`
+      return new BunkCommand().run(context)
     if (
       [
         `cockpit`,
@@ -56,7 +60,7 @@ export class GoCommand implements Command {
         `c`,
       ].includes(enteredString)
     )
-      roomToGoTo = `cockpit`
+      return new CockpitCommand().run(context)
     if (
       [
         `mine`,
@@ -68,7 +72,7 @@ export class GoCommand implements Command {
         `m`,
       ].includes(enteredString)
     )
-      roomToGoTo = `mine`
+      return new MineCommand().run(context)
     if (
       [
         `repair`,
@@ -80,7 +84,7 @@ export class GoCommand implements Command {
         `rep`,
       ].includes(enteredString)
     )
-      roomToGoTo = `repair`
+      return new RepairCommand().run(context)
     if (
       [
         `weapon`,
@@ -94,31 +98,13 @@ export class GoCommand implements Command {
         `w`,
       ].includes(enteredString)
     )
-      roomToGoTo = `weapons`
+      return new WeaponsCommand().run(context)
 
-    if (!roomToGoTo || !context.ship.rooms[roomToGoTo]) {
-      context.reply(
-        this.getHelpMessage(
-          context.commandPrefix,
-          Object.keys(context.ship.rooms),
-        ),
-      )
-      return
-    }
-
-    const res = await ioInterface.crew.move(
-      context.ship.id,
-      context.crewMember.id,
-      roomToGoTo,
-    )
-    if (`error` in res) {
-      context.reply(res.error)
-      return
-    }
     context.reply(
-      `${context.nickname} moves to ${c.capitalize(
-        roomToGoTo,
-      )}.`,
+      this.getHelpMessage(
+        context.commandPrefix,
+        Object.keys(context.ship.rooms),
+      ),
     )
   }
 }

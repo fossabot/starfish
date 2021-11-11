@@ -23,6 +23,7 @@ interface IOServerEvents {
     id: string,
     message: string | RichLogContent,
     channelType?: GameChannelType,
+    notify?: boolean,
   ) => void
   [`ship:resetView`]: () => void
   [`ship:forwardTo`]: (id: string) => void
@@ -410,6 +411,12 @@ interface IOClientEvents {
     contractId: string,
     callback: (res: IOResponse<Contract>) => void,
   ) => void
+  [`ship:abandonContract`]: (
+    shipId: string,
+    crewId: string,
+    contractId: string,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
 
   [`ship:buyTagline`]: (
     shipId: string,
@@ -524,6 +531,11 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     name: string,
+  ) => void
+  [`crew:discordIcon`]: (
+    shipId: string,
+    crewId: string,
+    url?: string,
   ) => void
 }
 

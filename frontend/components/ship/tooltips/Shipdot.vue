@@ -2,7 +2,7 @@
   <div class="shipdataview">
     <ShipTooltipsShipheader
       :data="dataToUse"
-      :interactive="true"
+      :interactive="isSelf"
     />
 
     <div
@@ -228,7 +228,9 @@
         v-if="dataToUse.mass"
         class="flexbetween"
         v-tooltip="
-          `More mass requires more thrust to gain velocity.`
+          isSelf
+            ? { type: 'mass' }
+            : `More mass requires more thrust to gain velocity.`
         "
       >
         <div>Mass</div>
@@ -243,7 +245,7 @@
       </div>
 
       <div
-        v-if="dataToUse.crewMembers"
+        v-if="dataToUse.crewMembers && !isSelf"
         class="flexbetween"
         v-tooltip="
           !dataToUse.tutorial &&

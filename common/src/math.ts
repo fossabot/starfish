@@ -153,6 +153,17 @@ function vectorToMagnitude(
   )
 }
 
+function vectorFromDegreesAndMagnitude(
+  angle: number = 0,
+  magnitude: number = 1,
+): CoordinatePair {
+  const rad = (Math.PI * angle) / 180
+  return [
+    magnitude * Math.cos(rad),
+    magnitude * Math.sin(rad),
+  ]
+}
+
 function pointIsInsideCircle(
   center: CoordinatePair = [0, 0],
   point: CoordinatePair = [1, 1],
@@ -223,6 +234,7 @@ export default {
   vectorToDegrees,
   coordPairToRadians: vectorToRadians,
   vectorToMagnitude,
+  vectorFromDegreesAndMagnitude,
   randomSign,
   randomInRange,
   lottery,

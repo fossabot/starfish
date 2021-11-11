@@ -30,6 +30,7 @@ declare const _default: {
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
+        boostMaxStamina: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
@@ -166,7 +167,7 @@ declare const _default: {
         baseCritChance: any;
         baseCritDamageMultiplier: any;
         staminaBottomedOutResetPoint: any;
-        staminaBottomedOutChargeSlowdown: any;
+        staminaBottomedOutChargeMultiplier: any;
         staminaRechargeMultiplier: any;
         newCrewMemberCredits: any;
         planetDensity: any;
@@ -304,7 +305,7 @@ declare const _default: {
     capitalize: (string?: string) => string;
     camelCaseToWords: (string?: string, capitalizeFirst?: boolean | undefined) => string;
     sanitize: (string?: string) => SanitizeResult;
-    msToTimeString: (ms?: number) => string;
+    msToTimeString: (ms?: number, short?: boolean) => string;
     garble: (string?: string, percent?: number) => string;
     acronym: (string?: string) => string;
     priceToString: (p: Price) => string;
@@ -325,6 +326,7 @@ declare const _default: {
     vectorToDegrees: (coordPair?: CoordinatePair) => number;
     coordPairToRadians: (coordPair?: CoordinatePair) => number;
     vectorToMagnitude: (vector?: CoordinatePair) => number;
+    vectorFromDegreesAndMagnitude: (angle?: number, magnitude?: number) => CoordinatePair;
     randomSign: () => 1 | -1;
     randomInRange: (a?: number, b?: number) => number;
     lottery: (odds?: number, outOf?: number) => boolean;

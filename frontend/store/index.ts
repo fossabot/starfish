@@ -15,6 +15,7 @@ export const state = () => ({
   userId: null,
   shipIds: [],
   shipsBasics: [],
+  isCaptain: false,
   activeShipId: null,
   ship: null,
   crewMember: null,
@@ -405,6 +406,9 @@ export const actions = {
       crewMember: state.ship?.crewMembers?.find(
         (cm) => cm.id === state.userId,
       ),
+      isCaptain: state.ship?.crewMembers?.find(
+        (cm) => cm.id === state.ship?.captain,
+      ),
     })
   },
 
@@ -557,6 +561,7 @@ export const actions = {
       userId: null,
       shipsBasics: [],
       ship: null,
+      isCaptain: false,
     })
     storage.remove(`userId`)
     storage.remove(`shipIds`)

@@ -1,12 +1,13 @@
 <template>
   <ShipCanvasMap
+    class="zoommap"
     v-if="show"
     :emoji="'🔍'"
     :buffer="false"
     :interactive="false"
     background="black"
     :radius="ship.gameSettings.arrivalThreshold"
-    :width="200"
+    :width="222"
     label="vicinity"
   />
 </template>
@@ -32,3 +33,10 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped lang="scss">
+.zoommap {
+  width: 250px;
+  height: 250px;
+}
+</style>

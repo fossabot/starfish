@@ -3,6 +3,7 @@
     <template v-if="show">
       <h1>Admin</h1>
       <nuxt-link to="/s">Ship Page</nuxt-link>
+      <nuxt-link to="/admin/map">Admin Map</nuxt-link>
       <br />
       <nuxt-link to="/login" v-if="!userId"
         >Login Page</nuxt-link

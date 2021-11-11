@@ -77,12 +77,12 @@ export function weapons(this: CrewMember): void {
   // c.log({ passiveMultiplier, generalBoostMultiplier })
 
   const amountToReduceCooldowns =
-    (c.getWeaponCooldownReductionPerTick(
+    c.getWeaponCooldownReductionPerTick(
       this.munitions?.level || 1,
     ) *
-      passiveMultiplier *
-      generalBoostMultiplier) /
-    chargeableWeapons.length
+    passiveMultiplier *
+    generalBoostMultiplier
+  // / chargeableWeapons.length
   chargeableWeapons.forEach((cw) => {
     cw._stub = null // invalidate stub
     cw.cooldownRemaining -= amountToReduceCooldowns
@@ -184,9 +184,9 @@ export function bunk(this: CrewMember): void {
     generalBoostMultiplier *
     (this.bottomedOutOnStamina
       ? this.ship.game?.settings
-          .staminaBottomedOutChargeSlowdown ||
+          .staminaBottomedOutChargeMultiplier ||
         c.defaultGameSettings
-          .staminaBottomedOutChargeSlowdown
+          .staminaBottomedOutChargeMultiplier
       : 1)
 
   this.stamina += staminaToAdd

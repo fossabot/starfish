@@ -1036,7 +1036,7 @@ export class Game {
   async addBasicPlanet(
     data: BaseBasicPlanetData,
     save = true,
-  ): Promise<Planet> {
+  ): Promise<BasicPlanet> {
     const existing = this.planets.find(
       (p) => p.id === data.id,
     )
@@ -1045,7 +1045,7 @@ export class Game {
         `red`,
         `Attempted to add existing planet ${existing.name}.`,
       )
-      return existing
+      return existing as BasicPlanet
     }
     const newPlanet = new BasicPlanet(
       data as BaseBasicPlanetData,
@@ -1070,7 +1070,7 @@ export class Game {
   async addMiningPlanet(
     data: BaseMiningPlanetData,
     save = true,
-  ) {
+  ): Promise<MiningPlanet> {
     const existing = this.planets.find(
       (p) => p.id === data.id,
     )
@@ -1079,7 +1079,7 @@ export class Game {
         `red`,
         `Attempted to add existing planet ${existing.name}.`,
       )
-      return existing
+      return existing as MiningPlanet
     }
     const newPlanet = new MiningPlanet(
       data as BaseMiningPlanetData,

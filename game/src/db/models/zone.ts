@@ -27,6 +27,9 @@ const zoneSchemaFields: Record<keyof BaseZoneData, any> = {
       basedOnProximity: Boolean,
       dodgeable: Boolean,
       procChancePerTick: Number,
+      data: {
+        direction: Number,
+      },
     },
   ],
 }

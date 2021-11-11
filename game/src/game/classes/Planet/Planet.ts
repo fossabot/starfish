@@ -29,6 +29,7 @@ export class Planet extends Stubbable {
   level = 0
   stats: PlanetStatEntry[] = []
   defense: number = 0
+  hitList: string[] = []
 
   toUpdate: {
     landingRadiusMultiplier?: number
@@ -54,6 +55,7 @@ export class Planet extends Stubbable {
       baseLevel,
       stats,
       defense,
+      hitList,
     }: BasePlanetData,
     game?: Game,
   ) {
@@ -78,6 +80,7 @@ export class Planet extends Stubbable {
     this.xp = xp
     this.stats = [...(stats || [])]
     this.defense = defense || 0
+    this.hitList = (hitList || []).filter((h) => h)
 
     // * timeout so it has time to run subclass constructor
     setTimeout(() => {
@@ -101,6 +104,21 @@ export class Planet extends Stubbable {
               100 *
               c.planetLevelXpRequirementMultiplier,
           )
+
+      this.hitList = this.hitList.filter((h) => {
+        const found = this.game?.ships.find(
+          (s) => s.id === h,
+        )
+        if (!found) return false
+        if (
+          found.guildId &&
+          this.allegiances.find(
+            (g) => g.guildId === found.guildId,
+          )
+        )
+          return false
+        return true
+      })
     }, 10)
   }
 
@@ -114,6 +132,7 @@ export class Planet extends Stubbable {
 
   tick() {
     this.toUpdate = {}
+    this.defend()
   }
 
   tickEffectsOnShip(ship: HumanShip) {
@@ -305,6 +324,11 @@ export class Planet extends Stubbable {
       }, new Set()) as Set<string>,
     )
     if (!validTargetIds.length) return
+
+    // update hit list
+    this.hitList = Array.from(
+      new Set([...this.hitList, ...validTargetIds]),
+    )
 
     const shipsInSight =
       this.game?.scanCircle(
