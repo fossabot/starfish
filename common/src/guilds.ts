@@ -25,8 +25,7 @@ const guilds: {
         },
       },
       {
-        id: `boostXpGain`,
-        intensity: 0.03,
+        id: `visibleCargoPrices`,
         data: { source: { guildId: `trader` } },
       },
       {

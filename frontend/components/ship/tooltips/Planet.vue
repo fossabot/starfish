@@ -83,7 +83,25 @@
             {{
               c.printList(
                 dataToUse.vendor.cargo.map(
-                  (cargo) => c.cargo[cargo.id].name,
+                  (cargo) =>
+                    c.cargo[cargo.id].name +
+                    (showCargoPrices
+                      ? ` (B: ${c.priceToString(
+                          c.getCargoBuyPrice(
+                            cargo.id,
+                            ship.planet,
+                            ship.guildId,
+                            1,
+                          ),
+                        )}, S: ${c.priceToString(
+                          c.getCargoSellPrice(
+                            cargo.id,
+                            ship.planet,
+                            ship.guildId,
+                            1,
+                          ),
+                        )})`
+                      : ''),
                 ),
               )
             }}
@@ -234,6 +252,22 @@ export default Vue.extend({
       }
 
       return Array.from(ids)
+    },
+    showCargoPrices(): boolean {
+      return (
+        !!(this.ship as ShipStub).passives?.find(
+          (p) => p.id === 'visibleCargoPrices',
+        ) ||
+        !!(
+          (this.ship as ShipStub).passives?.find(
+            (p) => p.id === 'scannableCargoPrices',
+          ) &&
+          c.distance(
+            (this.data as PlanetStub).location,
+            this.ship.location,
+          ) < ((this.ship as ShipStub).radii?.scan || 0)
+        )
+      )
     },
   },
 })

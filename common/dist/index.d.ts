@@ -141,6 +141,12 @@ declare const _default: {
         autoRepair: {
             description: (p: ShipPassiveEffect) => string;
         };
+        visibleCargoPrices: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        scannableCargoPrices: {
+            description: (p: ShipPassiveEffect) => string;
+        };
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
