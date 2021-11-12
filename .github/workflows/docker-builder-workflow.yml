@@ -37,23 +37,40 @@ jobs:
               - '${{matrix.folder}}/**'
               - common/**
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and push Docker images
-        uses: whoan/docker-build-with-cache-action@v5
-        # if: steps.changes.outputs.src == 'true'
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          username: '${{ secrets.DOCKER_HUB_USERNAME }}'
-          password: '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}'
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      - uses: docker/build-push-action@v2
+        with:
           context: .
-          dockerfile: ${{ matrix.dockerfile }}
-          image_name: starfishgame/${{ matrix.image }}
-          image_tag: pull-request-${{ github.event.number }}
-          push_git_tag: true
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}
+
+          # - name: Build and push Docker images
+          #   uses: whoan/docker-build-with-cache-action@v5
+          #   # if: steps.changes.outputs.src == 'true'
+          #   with:
+          #     username: '${{ secrets.DOCKER_HUB_USERNAME }}'
+          #     password: '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}'
+          #     context: .
+          #     dockerfile: ${{ matrix.dockerfile }}
+          #     image_name: starfishgame/${{ matrix.image }}
+          #     image_tag: pull-request-${{ github.event.number }}
+          # push_git_tag: true
 
   run-docker-compose:
     needs: [docker-build-publish]
