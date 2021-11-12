@@ -83,9 +83,9 @@ secrets:
   bot_id:
     file: discord/secrets/bot_id.txt
   mongodb_username:
-    file: db/secrets/mongodb_username.txt
+    file: db/secrets/mongodb_testusername.txt
   mongodb_password:
-    file: db/secrets/mongodb_password.txt
+    file: db/secrets/mongodb_testpassword.txt
   mongodb_root_username:
     file: db/secrets/mongodb_root_username.txt
   mongodb_root_password:
@@ -99,3 +99,6 @@ secrets:
 
 volumes:
   db_data:
+
+networks:
+  default:

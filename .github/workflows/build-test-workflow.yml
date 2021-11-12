@@ -1,0 +1,176 @@
+name: Build and push Docker images
+on:
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  docker-build-publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - dockerfile: db/Dockerfile-prod
+            image: 'starfish-db'
+            folder: 'db'
+          - dockerfile: game/Dockerfile-prod
+            image: 'starfish-game'
+            folder: 'game'
+          - dockerfile: discord/Dockerfile-prod
+            image: 'starfish-discord'
+            folder: 'discord'
+          - dockerfile: frontend/Dockerfile-prod
+            image: 'starfish-frontend'
+            folder: 'frontend'
+          - dockerfile: nginx/Dockerfile-prod
+            image: 'starfish-nginx'
+            folder: 'nginx'
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+              - '${{matrix.folder}}/**'
+              - common/**
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.folder }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-${{ matrix.folder }}-
+
+      - uses: docker/build-push-action@v2
+        id: docker_build
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}, starfishgame/${{ matrix.image }}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Image digest
+        run:
+          echo ${{ steps.docker_build.outputs.digest }}
+
+          # - name: Build and push Docker images
+          #   uses: whoan/docker-build-with-cache-action@v5
+          #   # if: steps.changes.outputs.src == 'true'
+          #   with:
+          #     username: '${{ secrets.DOCKER_HUB_USERNAME }}'
+          #     password: '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}'
+          #     context: .
+          #     dockerfile: ${{ matrix.dockerfile }}
+          #     image_name: starfishgame/${{ matrix.image }}
+          #     image_tag: pull-request-${{ github.event.number }}
+          # push_git_tag: true
+
+  run-docker-compose:
+    needs: [docker-build-publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Populate secrets files
+        run: |
+          mkdir frontend/secrets
+          mkdir game/secrets
+          echo "${{ secrets.DISCORD_BOT_ID }}" > discord/secrets/bot_id.txt
+          echo "${{ secrets.DISCORD_TEST_TOKEN }}" > discord/secrets/discord_token.txt
+          echo "${{ secrets.GOOGLE_CLIENT_EMAIL }}" > frontend/secrets/google_client_email.txt
+          echo "${{ secrets.GOOGLE_PRIVATE_KEY }}" > frontend/secrets/google_private_key.txt
+          echo "${{ secrets.TEST_ADMIN_KEYS }}" > game/secrets/admin_keys.txt
+          echo "PULL_REQUEST_NUMBER=${{ github.event.number }}" >> .env
+
+      - name: Launch containers
+        run: docker-compose -f docker-compose-staging.yml --env-file .env up -d
+
+      - name: Show running containers
+        run: docker ps
+
+  npm-test:
+    needs: [run-docker-compose]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - folder: 'game'
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: '16'
+
+      - uses: c-hive/gha-npm-cache@v1
+
+      - name: NPM install on ${{matrix.folder}}
+        run: npm install
+        working-directory: ${{matrix.folder}}
+
+      - name: Run test suite on ${{matrix.folder}}
+        run: npm run teststaging
+        working-directory: ${{matrix.folder}}
+
+      - uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+
+      - name: Download test result artifact
+        uses: actions/download-artifact@v2
+        if: success() || failure()
+        with:
+          name: test-results
+
+      - uses: dorny/test-reporter@v1
+        if: (success() || failure()) && (${{ github.actor }} != 'dependabot')
+        with:
+          name: test-results
+          path: ${{matrix.folder}}/reports/test-results.json
+          reporter: mocha-json
+
+  # TODO: Add cypress tests
+
+  artillery:
+    needs: [run-docker-compose]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Stonefish repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'starfishgame/stonefish'
+
+      - name: NPM install
+        run: |
+          npm install
+
+      - name: Run Artillery test
+        run: |
+          npm run test
