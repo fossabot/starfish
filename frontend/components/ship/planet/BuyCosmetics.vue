@@ -32,8 +32,7 @@
           c.numberWithCommas(
             c.r2(ship.shipCosmeticCurrency, 0, true),
           )
-        }}) to buy and sell new taglines and banners for the
-        ship.
+        }}) to buy new taglines and banners for the ship.
       </div>
 
       <div
