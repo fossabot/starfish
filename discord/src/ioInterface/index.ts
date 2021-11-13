@@ -40,7 +40,13 @@ io.on(`disconnect`, () => {
 
 io.on(
   `ship:message`,
-  async (id, message, channelType, notify = false) => {
+  async (
+    id,
+    message,
+    channelType,
+    notify = false,
+    isGood = false,
+  ) => {
     const guild = discordClient.guilds.cache.find(
       (g) => g.id === id,
     )

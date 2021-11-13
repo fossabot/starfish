@@ -67,7 +67,7 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedM
     return baseStaminaUse * rechargeSpeedMultiplier;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + math_1.default.lerp(1, 10, level / 100)) * 20;
+    return (2 + math_1.default.lerp(1, 10, level / 100)) * 15;
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
@@ -335,14 +335,28 @@ function getGuildChangePrice(ship) {
 function getShipTaglinePrice(cosmetic) {
     const price = {};
     price.shipCosmeticCurrency = Math.ceil((cosmetic.tagline
-        ? gameConstants_1.default.baseTaglinePrice
+        ? gameConstants_1.default.baseShipTaglinePrice
         : 0) * cosmetic.priceMultiplier);
     return price;
 }
-function getShipHeaderBackgroundPrice(cosmetic) {
+function getShipBackgroundPrice(cosmetic) {
     const price = {};
     price.shipCosmeticCurrency = Math.ceil((cosmetic.headerBackground
-        ? gameConstants_1.default.baseHeaderBackgroundPrice
+        ? gameConstants_1.default.baseShipBackgroundPrice
+        : 0) * cosmetic.priceMultiplier);
+    return price;
+}
+function getCrewTaglinePrice(cosmetic) {
+    const price = {};
+    price.crewCosmeticCurrency = Math.ceil((cosmetic.tagline
+        ? gameConstants_1.default.baseCrewTaglinePrice
+        : 0) * cosmetic.priceMultiplier);
+    return price;
+}
+function getCrewBackgroundPrice(cosmetic) {
+    const price = {};
+    price.crewCosmeticCurrency = Math.ceil((cosmetic.background
+        ? gameConstants_1.default.baseCrewBackgroundPrice
         : 0) * cosmetic.priceMultiplier);
     return price;
 }
@@ -459,7 +473,9 @@ exports.default = {
     getChassisSwapPrice,
     getGuildChangePrice,
     getShipTaglinePrice,
-    getShipHeaderBackgroundPrice,
+    getShipBackgroundPrice,
+    getCrewTaglinePrice,
+    getCrewBackgroundPrice,
     canAfford,
     // getPlanetDescription,
     getPlanetDefenseRadius,

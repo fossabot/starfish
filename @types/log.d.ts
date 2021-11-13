@@ -36,6 +36,7 @@ interface LogEntry {
   level: LogLevel
   content: LogContent
   icon?: LogIcon
+  isGood?: boolean
 }
 
 interface RichLogContentElement {

@@ -24,6 +24,7 @@ interface IOServerEvents {
     message: string | RichLogContent,
     channelType?: GameChannelType,
     notify?: boolean,
+    isGood?: boolean,
   ) => void
   [`ship:resetView`]: () => void
   [`ship:forwardTo`]: (id: string) => void
@@ -384,6 +385,18 @@ interface IOClientEvents {
     crewId: string,
     reaction: string,
   ) => void
+  [`crew:background`]: (
+    shipId: string,
+    crewId: string,
+    bgId: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
+  [`crew:tagline`]: (
+    shipId: string,
+    crewId: string,
+    tagline: string,
+    callback: (res: IOResponse<string>) => void,
+  ) => void
 
   [`ship:redistribute`]: (
     shipId: string,
@@ -424,10 +437,23 @@ interface IOClientEvents {
     tagline: string,
     callback: (res: IOResponse<true>) => void,
   ) => void
-  [`ship:buyHeaderBackground`]: (
+  [`ship:buyBackground`]: (
     shipId: string,
     crewId: string,
-    headerBackground: HeaderBackground,
+    headerBackground: ShipBackground,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
+
+  [`crew:buyTagline`]: (
+    shipId: string,
+    crewId: string,
+    tagline: string,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
+  [`crew:buyBackground`]: (
+    shipId: string,
+    crewId: string,
+    headerBackground: ShipBackground,
     callback: (res: IOResponse<true>) => void,
   ) => void
 

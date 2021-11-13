@@ -206,8 +206,12 @@
         <div>Radii</div>
         <div class="marleft textright">
           <div
-            v-for="r in Object.keys(dataToUse.radii).map(
-              (r) =>
+            v-for="r in Object.keys(dataToUse.radii)
+              .filter(
+                (r) =>
+                  !['gameSize', 'safeZone'].includes(r),
+              )
+              .map((r) =>
                 Array.isArray(dataToUse.radii[r])
                   ? `${c.capitalize(r)}: ${dataToUse.radii[
                       r
@@ -217,7 +221,7 @@
                   : `${c.capitalize(r)}: ${c.r2(
                       dataToUse.radii[r],
                     )}AU`,
-            )"
+              )"
           >
             {{ r }}
           </div>
@@ -273,21 +277,18 @@
         "
       >
         <div>Captain</div>
-        <div>
+        <div
+          v-tooltip="
+            dataToUse.crewMembers.find(
+              (cm) => cm.id === dataToUse.captain,
+            )
+          "
+        >
           {{
             dataToUse.crewMembers.find(
               (cm) => cm.id === dataToUse.captain,
             ) //'👑' +
-              ? (dataToUse.crewMembers.find(
-                  (cm) => cm.id === dataToUse.captain,
-                ).speciesId
-                  ? c.species[
-                      dataToUse.crewMembers.find(
-                        (cm) => cm.id === dataToUse.captain,
-                      ).speciesId
-                    ].icon
-                  : '') +
-                dataToUse.crewMembers.find(
+              ? dataToUse.crewMembers.find(
                   (cm) => cm.id === dataToUse.captain,
                 ).name
               : 'No Captain'

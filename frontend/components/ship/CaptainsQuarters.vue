@@ -168,6 +168,23 @@
         >
           {{ s.name }}
         </option>
+        <option
+          v-for="s in ship.contracts.filter(
+            (co) =>
+              co.status === 'active' &&
+              !ship.visible.ships.find(
+                (vs) => vs.id === co.targetId,
+              ),
+          )"
+          :key="'cqo' + s.id"
+          :value="{
+            type: 'contract',
+            id: s.id,
+            targetName: s.targetName,
+          }"
+        >
+          {{ s.targetName }}
+        </option>
       </select>
 
       <select
@@ -520,6 +537,18 @@ export default Vue.extend({
         o.target = found
         o.target!.color = c.guilds[found.guildId]?.color
         o.target!.type = 'ship'
+      } else if (o.target!.type === 'contract') {
+        const found = this.ship.contracts
+          ?.filter((co) => co.status === 'active')
+          .find((s) => s.id === o.target!.id)
+        if (!found) return false
+        o.target = found
+        o.target!.color =
+          c.guilds[
+            (found as Contract).targetGuildId || ''
+          ]?.color
+        o.target!.name = found.targetName
+        o.target!.type = 'contract'
       } else if (o.target!.type === 'cache') {
         const found = this.ship.visible?.caches.find(
           (s) => s.id === o.target!.id,

@@ -166,6 +166,7 @@
       <!-- {{ contract }} -->
     </div>
     <button
+      v-if="interactive"
       class="abandon small secondary"
       @click="abandon"
     >
@@ -182,6 +183,10 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   props: {
     contract: { type: Object as PropType<Contract> },
+    interactive: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
   },
   data() {
     return { c, timeLeft: 0, angleTo: 0, distanceTo: 0 }
@@ -311,13 +316,13 @@ export default Vue.extend({
   transform: translateY(-50%);
 }
 .bottomrow {
-  max-width: 80%;
+  max-width: 85%;
 }
 .timeallowed {
   white-space: nowrap;
 }
 .reward {
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 .abandon {

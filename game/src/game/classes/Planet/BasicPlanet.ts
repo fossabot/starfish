@@ -21,11 +21,29 @@ type AddableElement =
     }
   | { class: `chassis`; id: ChassisId; propensity: number }
   | { class: `repair`; propensity: number }
-  | { class: `tagline`; value: string; propensity: number }
   | {
-      class: `headerBackground`
-      value: HeaderBackground
+      class: `shipTagline`
+      value: string
       propensity: number
+      rarity: number
+    }
+  | {
+      class: `shipBackground`
+      value: ShipBackground
+      propensity: number
+      rarity: number
+    }
+  | {
+      class: `crewTagline`
+      value: string
+      propensity: number
+      rarity: number
+    }
+  | {
+      class: `crewBackground`
+      value: CrewBackground
+      propensity: number
+      rarity: number
     }
 
 export class BasicPlanet extends Planet {
@@ -125,7 +143,7 @@ export class BasicPlanet extends Planet {
       : defensePassiveLeaning?.propensity || 1
 
     const levelUpOptions = [
-      { weight: 250 / this.level, value: `addItemToShop` },
+      { weight: 400 / this.level, value: `addItemToShop` },
       {
         weight: 1,
         value: `expandLandingZone`,
@@ -139,7 +157,7 @@ export class BasicPlanet extends Planet {
         value: `increaseMaxContracts`,
       },
       {
-        weight: 10 * defenseMultiplier,
+        weight: 8 * defenseMultiplier,
         value: `boostDefense`,
       },
       {
@@ -245,15 +263,34 @@ export class BasicPlanet extends Planet {
               type: toAddToVendor.type,
             })
 
-          if (toAddToVendor.class === `tagline`)
+          if (toAddToVendor.class === `shipTagline`)
             this.vendor.shipCosmetics.push({
               tagline: toAddToVendor.value,
-              priceMultiplier: buyMultiplier ** 2,
+              priceMultiplier:
+                buyMultiplier ** 2 *
+                (toAddToVendor.rarity / 5),
             })
-          if (toAddToVendor.class === `headerBackground`)
+          if (toAddToVendor.class === `shipBackground`)
             this.vendor.shipCosmetics.push({
               headerBackground: toAddToVendor.value,
-              priceMultiplier: buyMultiplier ** 2,
+              priceMultiplier:
+                buyMultiplier ** 2 *
+                (toAddToVendor.rarity / 5),
+            })
+
+          if (toAddToVendor.class === `crewTagline`)
+            this.vendor.crewCosmetics.push({
+              tagline: toAddToVendor.value,
+              priceMultiplier:
+                buyMultiplier ** 2 *
+                (toAddToVendor.rarity / 5),
+            })
+          if (toAddToVendor.class === `crewBackground`)
+            this.vendor.crewCosmetics.push({
+              background: toAddToVendor.value,
+              priceMultiplier:
+                buyMultiplier ** 2 *
+                (toAddToVendor.rarity / 5),
             })
 
           if (toAddToVendor.class === `chassis`)
@@ -413,27 +450,29 @@ export class BasicPlanet extends Planet {
         (p) => p.type === `cosmetics` && p.never === true,
       )
     ) {
-      const taglinePropensity =
+      const shipTaglinePropensity =
         (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) / c.buyableTaglines.length
-      for (let tagline of c.buyableTaglines)
+          ?.propensity || 1) / c.buyableShipTaglines.length
+      for (let tagline of c.buyableShipTaglines)
         if (
           !this.vendor?.shipCosmetics.find(
             (p) => p.tagline === tagline.value,
           )
         )
           addable.push({
-            class: `tagline`,
+            class: `shipTagline`,
             value: tagline.value,
             propensity:
-              taglinePropensity *
+              shipTaglinePropensity *
               rarityMultiplier(tagline.rarity),
+            rarity: tagline.rarity,
           })
 
-      const headerBackgroundPropensity =
+      const shipBackgroundPropensity =
         (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) / c.buyableTaglines.length
-      for (let headerBackground of c.buyableHeaderBackgrounds)
+          ?.propensity || 1) /
+        c.buyableShipBackgrounds.length
+      for (let headerBackground of c.buyableShipBackgrounds)
         if (
           !this.vendor?.shipCosmetics.find(
             (p) =>
@@ -443,11 +482,51 @@ export class BasicPlanet extends Planet {
           )
         )
           addable.push({
-            class: `headerBackground`,
+            class: `shipBackground`,
             value: headerBackground.value,
             propensity:
-              headerBackgroundPropensity *
+              shipBackgroundPropensity *
               rarityMultiplier(headerBackground.rarity),
+            rarity: headerBackground.rarity,
+          })
+
+      const crewTaglinePropensity =
+        (this.leanings.find((p) => p.type === `cosmetics`)
+          ?.propensity || 1) / c.buyableCrewTaglines.length
+      for (let tagline of c.buyableCrewTaglines)
+        if (
+          !this.vendor?.crewCosmetics.find(
+            (p) => p.tagline === tagline.value,
+          )
+        )
+          addable.push({
+            class: `crewTagline`,
+            value: tagline.value,
+            propensity:
+              crewTaglinePropensity *
+              rarityMultiplier(tagline.rarity),
+            rarity: tagline.rarity,
+          })
+
+      const crewBackgroundPropensity =
+        (this.leanings.find((p) => p.type === `cosmetics`)
+          ?.propensity || 1) /
+        c.buyableCrewBackgrounds.length
+      for (let background of c.buyableCrewBackgrounds)
+        if (
+          !this.vendor?.crewCosmetics.find(
+            (p) =>
+              p.background &&
+              p.background?.url === background.value.url,
+          )
+        )
+          addable.push({
+            class: `crewBackground`,
+            value: background.value,
+            propensity:
+              crewBackgroundPropensity *
+              rarityMultiplier(background.rarity),
+            rarity: background.rarity,
           })
     }
 
@@ -804,6 +883,7 @@ export class BasicPlanet extends Planet {
       chassis: [],
       passives: [],
       shipCosmetics: [],
+      crewCosmetics: [],
     }
     this.passives = []
     this.landingRadiusMultiplier = 1

@@ -115,7 +115,7 @@ export class HumanShip extends CombatShip {
   shipCosmeticCurrency: number
   orders: ShipOrders | false = false
   orderReactions: ShipOrderReaction[] = []
-  boughtHeaderBackgrounds: HeaderBackground[] = []
+  boughtHeaderBackgrounds: ShipBackground[] = []
   boughtTaglines: string[] = []
 
   tutorial: Tutorial | undefined = undefined
@@ -209,6 +209,7 @@ export class HumanShip extends CombatShip {
         [`You set out toward the stars.`],
         `medium`,
         `ship`,
+        true,
       )
 
     this.updateMaxScanProperties()
@@ -274,6 +275,7 @@ export class HumanShip extends CombatShip {
 
     profiler.step(`move`)
     // ----- move -----
+    this.passiveThrust()
     this.move()
     this.updatePlanet()
 
@@ -411,6 +413,7 @@ export class HumanShip extends CombatShip {
     content: LogContent,
     level: LogLevel = `low`,
     icon?: LogIcon,
+    isGood?: boolean,
   ) {
     // c.log(content)
     if (!this.log) this.log = []
@@ -419,6 +422,7 @@ export class HumanShip extends CombatShip {
       content,
       time: Date.now(),
       icon,
+      isGood,
     })
     while (this.log.length > HumanShip.maxLogLength)
       this.log.shift()
@@ -466,6 +470,7 @@ export class HumanShip extends CombatShip {
           : content,
         undefined,
         level === `notify`,
+        isGood,
       )
   }
 
@@ -487,6 +492,7 @@ export class HumanShip extends CombatShip {
         ],
         `high`,
         `planet`,
+        true,
       )
 
     this.addStat(`seenPlanets`, 1)
@@ -512,6 +518,7 @@ export class HumanShip extends CombatShip {
         ],
         `high`,
         `zone`,
+        true,
       )
 
     this.addStat(`seenLandmarks`, 1)
@@ -567,9 +574,7 @@ export class HumanShip extends CombatShip {
           (total, e) =>
             total + e.thrustAmplification * e.repair,
           0,
-        ) *
-        (this.game?.settings.baseEngineThrustMultiplier ||
-          c.defaultGameSettings.baseEngineThrustMultiplier),
+        ),
     )
     const magnitudePerPointOfCharge =
       c.getThrustMagnitudeForSingleCrewMember(
@@ -949,6 +954,7 @@ export class HumanShip extends CombatShip {
         ],
         `low`,
         `fly`,
+        true,
       )
     }
 
@@ -1054,7 +1060,7 @@ export class HumanShip extends CombatShip {
     this.direction = c.vectorToDegrees(this.velocity)
     this.toUpdate.direction = this.direction
 
-    if (charge > 1.5)
+    if (charge > 0.5)
       this.logEntry(
         [
           thruster.name,
@@ -1064,6 +1070,7 @@ export class HumanShip extends CombatShip {
         ],
         `low`,
         `fly`,
+        true,
       )
 
     if (!HumanShip.movementIsFree)
@@ -1078,6 +1085,96 @@ export class HumanShip extends CombatShip {
   }
 
   // ----- move -----
+  passiveThrust() {
+    const thrusters = this.membersIn(`cockpit`).filter(
+      (cm) => cm.targetLocation,
+    )
+    if (!thrusters.length) return
+
+    const chargeToApplyPerTick = 0.0005
+    const engineThrustMultiplier = Math.max(
+      c.noEngineThrustMagnitude,
+      this.engines
+        .filter((e) => e.repair > 0)
+        .reduce(
+          (total, e) =>
+            total + e.thrustAmplification * e.repair,
+          0,
+        ),
+    )
+
+    for (let thruster of thrusters) {
+      if (!thruster.targetLocation) continue
+
+      // add xp
+      const xpBoostMultiplier =
+        this.passives
+          .filter((p) => p.id === `boostXpGain`)
+          .reduce(
+            (total, p) => (p.intensity || 0) + total,
+            0,
+          ) + 1
+      thruster.addXp(
+        `piloting`,
+        (this.game?.settings.baseXpGain ||
+          c.defaultGameSettings.baseXpGain) *
+          300 *
+          chargeToApplyPerTick *
+          thruster.cockpitCharge *
+          xpBoostMultiplier,
+      )
+
+      const thrustBoostPassiveMultiplier =
+        thruster.getPassiveIntensity(`boostThrust`) + 1
+
+      const memberPilotingSkill =
+        thruster.piloting?.level || 1
+
+      const baseMagnitude =
+        c.getThrustMagnitudeForSingleCrewMember(
+          memberPilotingSkill,
+          engineThrustMultiplier,
+          this.game?.settings.baseEngineThrustMultiplier ||
+            c.defaultGameSettings
+              .baseEngineThrustMultiplier,
+        ) * thrustBoostPassiveMultiplier
+      const thrustMagnitudeToApply =
+        (baseMagnitude * chargeToApplyPerTick) / this.mass
+
+      let angleToThrustInDegrees = c.angleFromAToB(
+        this.location,
+        thruster.targetLocation,
+      )
+
+      // todo "brake" boost comes from % thrusting in opposite direction of the ship's velocity
+      // todo use engines
+      // todo don't notify about leaving and landing if it's within x seconds
+      // todo targetLocation can follow things, like a comet or ship
+      // todo redo cockpit pane
+
+      const unitVectorAlongWhichToThrust =
+        c.degreesToUnitVector(angleToThrustInDegrees)
+
+      const thrustVector: CoordinatePair = [
+        unitVectorAlongWhichToThrust[0] *
+          thrustMagnitudeToApply,
+        unitVectorAlongWhichToThrust[1] *
+          thrustMagnitudeToApply,
+      ]
+
+      this.velocity = [
+        this.velocity[0] + (thrustVector[0] || 0),
+        this.velocity[1] + (thrustVector[1] || 0),
+      ]
+    }
+
+    this.toUpdate.velocity = this.velocity
+    this.speed = c.vectorToMagnitude(this.velocity)
+    this.toUpdate.speed = this.speed
+    this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.direction = this.direction
+  }
+
   move(toLocation?: CoordinatePair) {
     const startingLocation: CoordinatePair = [
       ...this.location,
@@ -1207,6 +1304,7 @@ export class HumanShip extends CombatShip {
         `Re-entered known universe.`,
         `high`,
         `alert`,
+        true,
       )
 
     // ----- random encounters -----
@@ -1253,6 +1351,7 @@ export class HumanShip extends CombatShip {
         ],
         `medium`,
         `cache`,
+        true,
       )
     }
 
@@ -1496,6 +1595,7 @@ export class HumanShip extends CombatShip {
         this.planet.planetType === `comet`
           ? `comet`
           : `planet`,
+        true,
       )
       if (!this.tutorial)
         this.planet.shipsAt.forEach((s) => {
@@ -1539,6 +1639,7 @@ export class HumanShip extends CombatShip {
         previousPlanet.planetType === `comet`
           ? `comet`
           : `planet`,
+        true,
       )
       if (previousPlanet && !this.tutorial)
         previousPlanet.shipsAt.forEach((s) => {
@@ -1621,6 +1722,7 @@ export class HumanShip extends CombatShip {
       ],
       `low`,
       `money`,
+      true,
     )
   }
 
@@ -1649,6 +1751,7 @@ export class HumanShip extends CombatShip {
       ],
       `low`,
       `money`,
+      true,
     )
   }
 
@@ -1716,6 +1819,7 @@ export class HumanShip extends CombatShip {
       ],
       `medium`,
       `cache`,
+      true,
     )
     this.game?.removeCache(cache)
 
@@ -1840,9 +1944,10 @@ export class HumanShip extends CombatShip {
       this.logEntry(
         `${member.name} contributed 💳${c.numberWithCommas(
           c.r2(amount, 0),
-        )} ${c.baseCurrencyPlural}.`,
+        )}.`,
         `low`,
         `money`,
+        true,
       )
 
     member.addStat(`totalContributedToCommonFund`, amount)
@@ -2111,6 +2216,7 @@ export class HumanShip extends CombatShip {
             c.randomFromArray(options),
             `high`,
             `fish`,
+            true,
           )
         } else {
           const options = [
@@ -2122,6 +2228,7 @@ export class HumanShip extends CombatShip {
             c.randomFromArray(options),
             `high`,
             `fish`,
+            true,
           )
         }
       }
@@ -2509,6 +2616,7 @@ export class HumanShip extends CombatShip {
         `The crew, having barely managed to escape with their lives, scrounge together every credit they have to buy another basic ship.`,
         `critical`,
         `party`,
+        true,
       )
     }
 

@@ -8,10 +8,21 @@
     }"
   >
     <div class="icon">
-      {{ c.species[speciesId].icon }}
+      <ShipCrewIcon
+        class="icon"
+        v-if="c.species[crewMember.speciesId]"
+        v-tooltip="{
+          type: 'species',
+          ...c.species[crewMember.speciesId],
+        }"
+        :crewMember="crewMember"
+        :showDiscordIcon="false"
+        :hoverable="false"
+      />
     </div>
     <div class="name">
-      {{ ship.captain === id ? '👑' : '' }}{{ name }}
+      {{ ship.captain === crewMember.id ? '👑' : ''
+      }}{{ crewMember.name }}
     </div>
   </div>
 </template>
@@ -23,10 +34,11 @@ import c from '../../../../common/dist'
 
 export default Vue.extend({
   props: {
-    name: {},
-    speciesId: {},
-    id: {},
-    location: { type: String as PropType<CrewLocation> },
+    crewMember: {
+      type: Object as PropType<CrewMemberStub>,
+      required: true,
+    },
+    location: {},
     roomEls: {
       type: Object as PropType<{
         [key in CrewLocation]: HTMLDivElement
@@ -65,7 +77,7 @@ export default Vue.extend({
   methods: {
     calculateNewPosition() {
       let targetElement = this.roomEls[
-        this.location
+        this.crewMember.location || 'bunk'
       ] as HTMLDivElement
       if (!targetElement) return (this.hide = true)
       if (Array.isArray(targetElement))
@@ -125,13 +137,19 @@ export default Vue.extend({
 }
 
 .icon {
-  font-size: 1.1em;
+  position: relative;
+  z-index: 1;
+  width: 1.4em;
+  height: 1.4em;
 }
 
 .name {
+  position: relative;
+  top: -0.2em;
+  z-index: 2;
   font-size: 0.85em;
   font-weight: bold;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   max-width: 10em;
   white-space: nowrap;
   overflow: hidden;

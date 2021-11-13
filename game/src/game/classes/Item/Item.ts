@@ -135,6 +135,7 @@ export class Item extends Stubbable {
           ],
           `medium`,
           `fix`,
+          true,
         )
       this.announceWhenRepaired = false
     }

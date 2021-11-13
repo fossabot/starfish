@@ -36,7 +36,9 @@ declare function getGuildChangePrice(ship: {
     crewMembers: CrewMemberStub[];
 }): Price;
 declare function getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
-declare function getShipHeaderBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
+declare function getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
+declare function getCrewTaglinePrice(cosmetic: PlanetCrewCosmetic): Price;
+declare function getCrewBackgroundPrice(cosmetic: PlanetCrewCosmetic): Price;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare function canAfford(price: Price, ship: {
     captain?: string | null;
@@ -71,7 +73,9 @@ declare const _default: {
     getChassisSwapPrice: typeof getChassisSwapPrice;
     getGuildChangePrice: typeof getGuildChangePrice;
     getShipTaglinePrice: typeof getShipTaglinePrice;
-    getShipHeaderBackgroundPrice: typeof getShipHeaderBackgroundPrice;
+    getShipBackgroundPrice: typeof getShipBackgroundPrice;
+    getCrewTaglinePrice: typeof getCrewTaglinePrice;
+    getCrewBackgroundPrice: typeof getCrewBackgroundPrice;
     canAfford: typeof canAfford;
     getPlanetDefenseRadius: typeof getPlanetDefenseRadius;
     getPlanetDefenseDamage: typeof getPlanetDefenseDamage;

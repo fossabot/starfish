@@ -4,6 +4,11 @@ import * as roomActions from './addins/rooms'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
+import {
+  addBackground,
+  addTagline,
+} from './addins/cosmetics'
+
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoSpace = 10
@@ -37,6 +42,11 @@ export class CrewMember extends Stubbable {
   bottomedOutOnStamina: boolean = false
   fullyRestedTarget: CrewLocation | false = false
 
+  background: string | null
+  availableBackgrounds: CrewBackground[] = []
+  tagline: string | null
+  availableTaglines: string[] = []
+
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
 
@@ -52,6 +62,12 @@ export class CrewMember extends Stubbable {
     this.discordIcon = data.discordIcon
     this.ship = ship
     this.rename(data.name)
+
+    this.tagline = data.tagline || null
+    this.availableTaglines = data.availableTaglines || []
+    this.background = data.background || null
+    this.availableBackgrounds =
+      data.availableBackgrounds || []
 
     if (data.speciesId && c.species[data.speciesId])
       this.setSpecies(data.speciesId)
@@ -102,7 +118,11 @@ export class CrewMember extends Stubbable {
       this.targetItemType = data.targetItemType
     if (data.minePriority)
       this.minePriority = data.minePriority
-    if (data.targetLocation)
+    if (
+      data.targetLocation &&
+      data.targetLocation.length === 2 &&
+      !data.targetLocation.find((t: any) => !Number(t))
+    )
       this.targetLocation = data.targetLocation
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
@@ -112,6 +132,9 @@ export class CrewMember extends Stubbable {
 
     this.toUpdate = this
   }
+
+  addTagline = addTagline
+  addBackground = addBackground
 
   rename(newName: string) {
     this.name = c
@@ -439,6 +462,7 @@ export class CrewMember extends Stubbable {
   recalculateMaxStamina() {
     this.maxStamina =
       1 + this.getPassiveIntensity(`boostMaxStamina`) / 100
+    this.toUpdate.maxStamina = this.maxStamina
   }
 
   addStat(statname: CrewStatKey, amount: number) {

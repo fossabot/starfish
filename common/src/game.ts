@@ -90,7 +90,7 @@ function getStaminaGainPerTickForSingleCrewMember(
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + math.lerp(1, 10, level / 100)) * 20
+  return (2 + math.lerp(1, 10, level / 100)) * 15
 }
 
 /**
@@ -533,18 +533,41 @@ function getShipTaglinePrice(
   const price: Price = {}
   price.shipCosmeticCurrency = Math.ceil(
     (cosmetic.tagline
-      ? gameConstants.baseTaglinePrice
+      ? gameConstants.baseShipTaglinePrice
       : 0) * cosmetic.priceMultiplier,
   )
   return price
 }
-function getShipHeaderBackgroundPrice(
+function getShipBackgroundPrice(
   cosmetic: PlanetShipCosmetic,
 ): Price {
   const price: Price = {}
   price.shipCosmeticCurrency = Math.ceil(
     (cosmetic.headerBackground
-      ? gameConstants.baseHeaderBackgroundPrice
+      ? gameConstants.baseShipBackgroundPrice
+      : 0) * cosmetic.priceMultiplier,
+  )
+  return price
+}
+
+function getCrewTaglinePrice(
+  cosmetic: PlanetCrewCosmetic,
+): Price {
+  const price: Price = {}
+  price.crewCosmeticCurrency = Math.ceil(
+    (cosmetic.tagline
+      ? gameConstants.baseCrewTaglinePrice
+      : 0) * cosmetic.priceMultiplier,
+  )
+  return price
+}
+function getCrewBackgroundPrice(
+  cosmetic: PlanetCrewCosmetic,
+): Price {
+  const price: Price = {}
+  price.crewCosmeticCurrency = Math.ceil(
+    (cosmetic.background
+      ? gameConstants.baseCrewBackgroundPrice
       : 0) * cosmetic.priceMultiplier,
   )
   return price
@@ -704,7 +727,9 @@ export default {
   getChassisSwapPrice,
   getGuildChangePrice,
   getShipTaglinePrice,
-  getShipHeaderBackgroundPrice,
+  getShipBackgroundPrice,
+  getCrewTaglinePrice,
+  getCrewBackgroundPrice,
   canAfford,
   // getPlanetDescription,
   getPlanetDefenseRadius,

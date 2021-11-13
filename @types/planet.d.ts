@@ -74,6 +74,9 @@ interface PlanetVendorCrewPassivePrice {
 interface PlanetShipCosmetic extends ShipCosmetic {
   priceMultiplier: number
 }
+interface PlanetCrewCosmetic extends CrewCosmetic {
+  priceMultiplier: number
+}
 
 interface PlanetVendor {
   cargo: PlanetVendorCargoPrice[]
@@ -81,6 +84,7 @@ interface PlanetVendor {
   chassis: PlanetVendorChassisPrice[]
   passives: PlanetVendorCrewPassivePrice[]
   shipCosmetics: PlanetShipCosmetic[]
+  crewCosmetics: PlanetCrewCosmetic[]
   repairCostMultiplier?: number
 }
 

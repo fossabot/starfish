@@ -533,6 +533,7 @@ export abstract class CombatShip extends Ship {
         ],
         `high`,
         `attack`,
+        true,
       )
       if (attackResult.didDie)
         this.logEntry(
@@ -550,8 +551,9 @@ export abstract class CombatShip extends Ship {
             },
             `was destroyed!`,
           ],
-          `high`,
+          `critical`,
           `die`,
+          true,
         )
     }
 
@@ -720,6 +722,7 @@ export abstract class CombatShip extends Ship {
               ],
               `high`,
               `attack`,
+              true,
             )
           armor.announceWhenBroken = false
         }
@@ -868,6 +871,7 @@ export abstract class CombatShip extends Ship {
               ],
               `high`,
               `attack`,
+              true,
             )
         }, 100)
         equipmentToAttack.announceWhenBroken = false
@@ -991,7 +995,7 @@ export abstract class CombatShip extends Ship {
             : ([
                 `for`,
                 {
-                  text: `${c.r2(totalDamageDealt)} damage`,
+                  text: `${c.r2(totalDamageDealt)} dmg`,
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,

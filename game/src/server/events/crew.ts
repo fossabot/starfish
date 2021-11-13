@@ -598,6 +598,7 @@ export default function (
         } from common fund.`,
         `medium`,
         `money`,
+        true,
       )
       ship.distributeCargoAmongCrew([
         { amount: amount, id: `credits` },
@@ -847,6 +848,7 @@ export default function (
           } ${cargoId}.`,
           `low`,
           `cache`,
+          true,
         )
 
         callback({
@@ -923,6 +925,7 @@ export default function (
         )} hp of repairs.`,
         `medium`,
         `fix`,
+        true,
       )
       crewMember.addStat(`totalHpRepaired`, hp)
 
@@ -1126,6 +1129,108 @@ export default function (
         `gray`,
         `${crewMember.name} on ${ship.name} reacted ${reaction} to an order.`,
       )
+    },
+  )
+
+  socket.on(
+    `crew:background`,
+    (shipId, crewId, bgId, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      if (bgId === `Default`) {
+        crewMember.background = `default.svg`
+        crewMember.toUpdate.background = `default.svg`
+        c.log(
+          `gray`,
+          `${crewMember.name} on ${ship.name} cleared their banner.`,
+        )
+        callback({ data: `ok` })
+      }
+
+      if (
+        !crewMember.availableBackgrounds.find(
+          (a) => a.id === bgId,
+        )
+      )
+        return callback({
+          error: `You don't own that banner yet!`,
+        })
+
+      const found = crewMember.availableBackgrounds.find(
+        (b) => b.id === bgId,
+      )
+      if (!found)
+        return callback({
+          error: `Invalid banner id.`,
+        })
+
+      crewMember.background = found.url
+      crewMember.toUpdate.background = found.url
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} swapped banner to ${bgId}.`,
+      )
+
+      callback({ data: `ok` })
+    },
+  )
+
+  socket.on(
+    `crew:tagline`,
+    (shipId, crewId, tagline, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      if (!tagline) {
+        crewMember.tagline = null
+        crewMember.toUpdate.tagline = null
+
+        c.log(
+          `gray`,
+          `${crewMember.name} on ${ship.name} cleared their tagline.`,
+        )
+        callback({ data: `ok` })
+        return
+      }
+
+      if (!crewMember.availableTaglines.includes(tagline))
+        return callback({
+          error: `You don't own that tagline yet!`,
+        })
+
+      crewMember.tagline = tagline
+      crewMember.toUpdate.tagline = tagline
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} swapped tagline to ${tagline}.`,
+      )
+
+      callback({ data: `ok` })
     },
   )
 }

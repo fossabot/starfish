@@ -63,10 +63,8 @@ export class Game {
   constructor(options?: { ioPort?: number }) {
     this.settings = c.defaultGameSettings
 
-    this.ioPort = !options?.ioPort
-      ? Math.round(Math.random() * (65536 - 5000)) + 5000
-      : options?.ioPort
-    this.io = spawnIo(this, { port: this.ioPort })
+    this.io = spawnIo(this, { port: options?.ioPort || 0 })
+    this.ioPort = (this.io as any).httpServer?.address()?.port || 4200
 
     // c.log(
     //   `gray`,

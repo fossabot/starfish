@@ -155,7 +155,7 @@
             "
           >
             <ShipPlanetBuyCrewPassive />
-            <ShipPlanetBuyShipCosmetics />
+            <ShipPlanetBuyCosmetics />
           </Tab>
 
           <Tab
@@ -216,7 +216,7 @@ export default Vue.extend({
     planet(): PlanetStub {
       return this.ship?.planet
     },
-    type(): PlanetType {
+    type(): PlanetType | undefined {
       return this.planet?.planetType
     },
     alliedGuildIds(): string[] {

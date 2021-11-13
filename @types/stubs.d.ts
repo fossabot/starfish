@@ -99,6 +99,10 @@ interface CrewMemberStub extends BaseStub {
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
   lastActive?: number
+  tagline?: string
+  background?: string
+  availableTaglines?: string[]
+  availableBackgrounds?: { id: string; url: string }[]
 }
 
 interface PlanetStub extends BaseStub {

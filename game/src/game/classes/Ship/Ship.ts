@@ -281,6 +281,7 @@ export class Ship extends Stubbable {
       ],
       `high`,
       `ship`,
+      true,
     )
   }
 
@@ -311,6 +312,7 @@ export class Ship extends Stubbable {
         ],
         `critical`,
         `flag`,
+        true,
       )
 
       if (this.planet)
@@ -336,6 +338,7 @@ export class Ship extends Stubbable {
               ],
               `low`,
               `flag`,
+              true,
             )
           })
     }
@@ -961,7 +964,12 @@ export class Ship extends Stubbable {
 
   // ----- misc stubs -----
 
-  logEntry(s: LogContent, lv: LogLevel, icon?: LogIcon) {}
+  logEntry(
+    s: LogContent,
+    lv: LogLevel,
+    icon?: LogIcon,
+    isGood?: boolean,
+  ) {}
 
   updateMaxScanProperties() {}
 

@@ -1,5 +1,8 @@
 <template>
-  <div class="logentry flexstretch" :class="level">
+  <div
+    class="logentry flexstretch"
+    :class="level + ' ' + (isGood ? 'good' : 'bad')"
+  >
     <div class="icon flex">
       <img :src="`/images/log/${icon || 'alert'}.svg`" />
     </div>
@@ -55,6 +58,7 @@ export default Vue.extend({
     time: { type: Number },
     level: {},
     icon: {},
+    isGood: {},
   },
   data() {
     return { c, timeString: '', id: Math.random() }
@@ -85,6 +89,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .logentry {
   position: relative;
+  backface-visibility: none;
   -webkit-backface-visibility: none;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -134,14 +139,21 @@ export default Vue.extend({
 .medium {
   --highlight-color: #aaa;
 }
+
 .high {
   --highlight-color: rgb(220, 183, 74);
 }
-.critical {
-  --highlight-color: rgb(230, 79, 41);
-}
+.critical,
 .notify {
   --highlight-color: rgb(230, 79, 41);
+}
+
+.high.good {
+  --highlight-color: rgb(72, 167, 162);
+}
+.critical.good,
+.notify.good {
+  --highlight-color: rgb(26, 228, 124);
 }
 
 // .tooltip {

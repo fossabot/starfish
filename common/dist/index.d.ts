@@ -188,13 +188,23 @@ declare const _default: {
     shipCosmeticCurrencyPlural: string;
     crewCosmeticCurrencySingular: string;
     crewCosmeticCurrencyPlural: string;
-    baseTaglinePrice: number;
-    baseHeaderBackgroundPrice: number;
-    buyableHeaderBackgrounds: {
+    baseShipTaglinePrice: number;
+    baseShipBackgroundPrice: number;
+    buyableShipBackgrounds: {
         rarity: number;
-        value: HeaderBackground;
+        value: ShipBackground;
     }[];
-    buyableTaglines: {
+    buyableShipTaglines: {
+        rarity: number;
+        value: string;
+    }[];
+    baseCrewTaglinePrice: number;
+    baseCrewBackgroundPrice: number;
+    buyableCrewBackgrounds: {
+        rarity: number;
+        value: CrewBackground;
+    }[];
+    buyableCrewTaglines: {
         rarity: number;
         value: string;
     }[];
@@ -275,7 +285,9 @@ declare const _default: {
         crewMembers: CrewMemberStub[];
     }) => Price;
     getShipTaglinePrice: (cosmetic: PlanetShipCosmetic) => Price;
-    getShipHeaderBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
+    getShipBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
+    getCrewTaglinePrice: (cosmetic: PlanetCrewCosmetic) => Price;
+    getCrewBackgroundPrice: (cosmetic: PlanetCrewCosmetic) => Price;
     canAfford: (price: Price, ship: {
         captain?: string | null | undefined;
         commonCredits?: number | undefined;

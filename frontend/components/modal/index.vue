@@ -5,8 +5,11 @@
       @click="$store.commit('set', { modal: null })"
     ></div>
     <div class="modalbox">
-      <ModalTaglineBannerPicker
-        v-if="modal === 'headerBackgroundPicker'"
+      <ModalShipTaglineBannerPicker
+        v-if="modal === 'shipTaglineBannerPicker'"
+      />
+      <ModalCrewTaglineBannerPicker
+        v-if="modal === 'crewTaglineBannerPicker'"
       />
 
       <ModalCrewSpeciesPicker

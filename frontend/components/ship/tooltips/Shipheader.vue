@@ -5,7 +5,7 @@
     @click="
       interactive &&
         $store.commit('set', {
-          modal: 'headerBackgroundPicker',
+          modal: 'shipTaglineBannerPicker',
         })
     "
   >

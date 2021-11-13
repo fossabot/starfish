@@ -62,8 +62,6 @@ export function startContract(
     return { error: `Could not find target.` }
   }
 
-  this.buy(planetContract.claimCost)
-
   const contractData: Contract = {
     ...planetContract,
     timeAccepted: Date.now(),
@@ -78,6 +76,27 @@ export function startContract(
   }
   this.contracts.push(contractData)
   this.toUpdate.contracts = this.contracts
+
+  this.logEntry(
+    [
+      `Accepted contract for`,
+      {
+        text:
+          ((target as AIShip).speciesId
+            ? c.species[(target as AIShip).speciesId]
+                ?.icon || ``
+            : ``) + target.name,
+        color: target.guildId
+          ? c.guilds[target.guildId].color
+          : undefined,
+        tooltipData: target.toReference(),
+      },
+    ],
+    `high`,
+    `contract`,
+    true,
+  )
+
   return { data: contractData }
 }
 
@@ -182,6 +201,7 @@ export function completeContract(
       ],
       `high`,
       `contract`,
+      true,
     )
 
   this.checkTurnInContract(co)
@@ -301,12 +321,14 @@ export function checkTurnInContract(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
       `contract`,
+      true,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
       `contract`,
+      true,
     )
   }
 

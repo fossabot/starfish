@@ -25,6 +25,7 @@ interface TutorialStepData {
     next?: string
     advance?: string
     notify?: boolean
+    isGood?: boolean
   }[]
   forceLocation?: CoordinatePair
   forceCommonCredits?: number
@@ -1002,6 +1003,7 @@ export class Tutorial {
         ],
         `high`,
         `mystery`,
+        true,
       )
       ship.game?.io.emit(
         `ship:message`,

@@ -161,12 +161,13 @@ export function addTagline(
       ],
       `high`,
       `party`,
+      true,
     )
 }
 
 export function addHeaderBackground(
   this: HumanShip,
-  bg: HeaderBackground,
+  bg: ShipBackground,
   reason: string | null,
   silent: boolean,
 ) {
@@ -184,6 +185,7 @@ export function addHeaderBackground(
       ],
       `high`,
       `party`,
+      true,
     )
   }
 }
