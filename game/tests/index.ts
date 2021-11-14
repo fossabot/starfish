@@ -46,6 +46,9 @@ before(async () => {
 })
 
 after(async () => {
+  if (process.env.NODE_ENV === `staging`) {
+    return
+  }
   return new Promise((resolve) => {
     exec(
       `mongo --host ${host} --eval "
