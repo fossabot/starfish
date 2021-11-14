@@ -276,6 +276,7 @@ export function generateBasicPlanet(
     items: [],
     chassis: [],
     shipCosmetics: [],
+    crewCosmetics: [],
   }
 
   const creatures: string[] = []
