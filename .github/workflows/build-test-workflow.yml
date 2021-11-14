@@ -106,6 +106,9 @@ jobs:
           - folder: 'game'
 
     steps:
+      - name: Show running containers
+        run: docker ps
+
       - name: Check Out Repo
         uses: actions/checkout@v2
 
