@@ -9,17 +9,25 @@ import { humanShipData, aiShipData } from './defaults'
 // import sinonChai from 'sinon-chai'
 // chai.use(sinonChai)
 
+const game = new Game()
+
 describe(`Game`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should create a game with basic properties`, async () => {
-    const game = new Game()
-    expect(game).to.exist
-    expect(game.settings).to.exist
-    expect(game.io).to.exist
-    expect(game.db).to.not.exist
+    const g = new Game()
+    expect(g).to.exist
+    expect(g.settings).to.exist
+    expect(g.io).to.exist
+    expect(g.db).to.not.exist
   })
 
   it(`should expand the universe when humans are added`, async () => {
-    const game = new Game()
     for (let i = 0; i < 20; i++)
       await game.addHumanShip(humanShipData())
 
@@ -34,20 +42,14 @@ describe(`Game`, () => {
   })
 
   it(`should not shrink the universe when humans are removed`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
-    })
     for (let i = 0; i < 20; i++)
-      await g.addHumanShip(humanShipData())
-    const prevUniverseSize = g.gameSoftRadius
+      await game.addHumanShip(humanShipData())
+    const prevUniverseSize = game.gameSoftRadius
 
-    await g.removeShip(g.humanShips[0])
-    expect(g.gameSoftRadius).to.equal(prevUniverseSize)
+    await game.removeShip(game.humanShips[0])
+    expect(game.gameSoftRadius).to.equal(prevUniverseSize)
 
-    await g.save()
+    await game.save()
 
     const g2 = new Game()
     await g2.loadGameDataFromDb({
@@ -57,18 +59,12 @@ describe(`Game`, () => {
     })
     expect(g2.minimumGameRadius).to.equal(prevUniverseSize)
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
-    await g.removeShip(g.humanShips[0])
+    await game.removeShip(game.humanShips[0])
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
   })
 
   after(async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
-    })
-    await g.db?.ship.wipe()
-    await g.db?.game.wipe()
+    await game.db?.ship.wipe()
+    await game.db?.game.wipe()
   })
 })
