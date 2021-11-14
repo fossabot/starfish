@@ -22,14 +22,14 @@ before(async () => {
   return new Promise((resolve) => {
     exec(
       `mongo --host ${host} --eval "
-        db = db.getSiblingDB('starfish-test')
+        db = db.getSiblingDB('starfish')
         db.createUser({
           user: 'testuser',
           pwd: 'testpassword',
           roles: [
             {
               role: 'readWrite',
-              db: 'starfish-test',
+              db: 'starfish',
             },
           ],
         })"`,
@@ -52,7 +52,7 @@ after(async () => {
   return new Promise((resolve) => {
     exec(
       `mongo --host ${host} --eval "
-        db = db.getSiblingDB('starfish-test')
+        db = db.getSiblingDB('starfish')
         db.dropUser('testuser')
         db.dropDatabase()"`,
       undefined,

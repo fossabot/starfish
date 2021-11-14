@@ -15,7 +15,7 @@ describe(`DB setup`, () => {
   before(async () => {
     game = new Game()
     await game.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
@@ -37,7 +37,7 @@ describe(`DB setup`, () => {
   it(`should be able to load saved ships on new game start`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
