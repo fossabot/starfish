@@ -58,7 +58,7 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         baseEngineThrustMultiplier);
 }
 function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
-    const min = 1 / 45000;
+    const min = 1 / 4500;
     const max = 1 / 1500;
     return (math_1.default.lerp(min, max, level / 100) *
         engineThrustMultiplier *

@@ -150,7 +150,22 @@
       </div>
     </div> -->
 
-    <div class="panesection">
+    <div
+      class="panesection"
+      v-tooltip="
+        `You apply thrust to the ship passively as long as you are in the cockpit.
+          <p>
+            Braking (moving in an opposing direction to the ship's velocity) is <b>${
+              ship.gameSettings.brakeToThrustRatio *
+              passiveBrakeMultiplier
+            }x</b> more effective.
+          </p>
+          <hr />
+          <p>
+            Scales with engine base thrust and repair, your current level in <b>piloting</b>, and ship mass.
+          </p>`
+      "
+    >
       Your passive thrust:
       {{
         c.speedNumber(passiveThrustPerHourAddedPerHour)
@@ -332,9 +347,13 @@ export default Vue.extend({
     },
     thrustBoostMultiplier(): number {
       return (
-        this.crewMember?.passives?.find(
+        (this.ship?.passives?.find(
           (p) => p.id === `boostThrust`,
-        )?.level + 1 || 1
+        )?.level || 0) +
+          (this.crewMember?.passives?.find(
+            (p) => p.id === `boostThrust`,
+          )?.level || 0) +
+          1 || 1
       )
     },
     passiveThrustPerHourAddedPerSecond(): number {

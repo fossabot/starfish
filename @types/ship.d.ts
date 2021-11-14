@@ -70,7 +70,7 @@ type ShipPassiveEffectId =
   | `boostMineSpeed`
   | `boostMinePayouts`
   | `boostBrake`
-  // | `boostThrust`
+  | `boostThrust`
   | `boostCockpitChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`
@@ -90,7 +90,7 @@ type ShipPassiveEffectId =
   | `boostStaminaRegeneration`
   | `autoRepair`
   | `visibleCargoPrices`
-  | `scannableCargoPrices`
+  | `broadcastRangeCargoPrices`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectId
   intensity?: number

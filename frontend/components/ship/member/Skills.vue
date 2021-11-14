@@ -34,7 +34,7 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   data() {
     const skillTooltips = {
-      piloting: `Improves thrust charge speed and intensity.<br />Earned by using charged thrust.`,
+      piloting: `Improves thrust.<br />Earned by using charged thrust.`,
       munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
       mechanics: `Improves repair speed.<br />Earned by repairing.`,
       linguistics: `Improves clarity of broadcasts.<br />Earned by sending broadcasts.`,

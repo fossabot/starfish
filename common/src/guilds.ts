@@ -7,6 +7,10 @@ const guilds: {
     color: `hsl(300, 60%, 45%)`,
     passives: [
       {
+        id: `broadcastRangeCargoPrices`,
+        data: { source: { guildId: `trader` } },
+      },
+      {
         id: `boostCargoSpace`,
         intensity: 15,
         data: { source: { guildId: `trader` } },
@@ -23,10 +27,6 @@ const guilds: {
           distance: 0.2,
           source: { guildId: `trader` },
         },
-      },
-      {
-        id: `visibleCargoPrices`,
-        data: { source: { guildId: `trader` } },
       },
       {
         id: `boostRepairSpeed`,
@@ -64,7 +64,7 @@ const guilds: {
       },
       {
         id: `boostMineSpeed`,
-        intensity: -0.1,
+        intensity: -0.15,
         data: { source: { guildId: `hunter` } },
       },
     ],
@@ -108,22 +108,22 @@ const guilds: {
     passives: [
       {
         id: `boostSightRange`,
+        intensity: 0.3,
+        data: { source: { guildId: `explorer` } },
+      },
+      {
+        id: `boostScanRange`,
         intensity: 0.2,
         data: { source: { guildId: `explorer` } },
       },
       {
-        id: `boostCockpitChargeSpeed`,
+        id: `boostThrust`,
         intensity: 0.1,
         data: { source: { guildId: `explorer` } },
       },
       {
         id: `boostXpGain`,
         intensity: 0.08,
-        data: { source: { guildId: `explorer` } },
-      },
-      {
-        id: `boostScanRange`,
-        intensity: 0.2,
         data: { source: { guildId: `explorer` } },
       },
     ],
@@ -133,11 +133,6 @@ const guilds: {
     id: `peacekeeper`,
     color: `hsl(40, 60%, 50%)`,
     passives: [
-      {
-        id: `scaledDamageReduction`,
-        intensity: 0.1,
-        data: { source: { guildId: `peacekeeper` } },
-      },
       {
         id: `boostDamageToItemType`,
         intensity: 0.5,
@@ -153,6 +148,11 @@ const guilds: {
           type: `engine`,
           source: { guildId: `peacekeeper` },
         },
+      },
+      {
+        id: `scaledDamageReduction`,
+        intensity: 0.1,
+        data: { source: { guildId: `peacekeeper` } },
       },
       {
         id: `autoRepair`,

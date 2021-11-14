@@ -549,7 +549,9 @@ export class HumanShip extends CombatShip {
     thruster.active()
 
     const thrustBoostPassiveMultiplier =
-      thruster.getPassiveIntensity(`boostThrust`) + 1
+      thruster.getPassiveIntensity(`boostThrust`) +
+      this.getPassiveIntensity(`boostThrust`) +
+      1
 
     charge *= thruster.cockpitCharge
     charge *= thrustBoostPassiveMultiplier
@@ -1163,6 +1165,8 @@ export class HumanShip extends CombatShip {
         targetLocationToUse,
       )
 
+      // todo tooltips on frontend about brake etc
+
       // crew member brake passive
       const angleDifferenceToDirection = c.angleDifference(
         angleToThrustInDegrees,
@@ -1196,6 +1200,12 @@ export class HumanShip extends CombatShip {
       combinedThrustVector[0] += thrustVector[0]
       combinedThrustVector[1] += thrustVector[1]
     }
+
+    // full-ship thrust passive
+    const thrustBoostPassiveMultiplier =
+      this.getPassiveIntensity(`boostThrust`) + 1
+    combinedThrustVector[0] *= thrustBoostPassiveMultiplier
+    combinedThrustVector[1] *= thrustBoostPassiveMultiplier
 
     // full-ship brake passive
     const angleDifferenceToDirection = c.angleDifference(

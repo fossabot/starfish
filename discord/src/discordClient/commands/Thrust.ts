@@ -8,10 +8,10 @@ export class ThrustCommand implements Command {
   requiresShip = true
   requiresCrewMember = true
 
-  commandNames = [`thrust`]
+  commandNames = [`target`, `t`, `thrust`]
 
   getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - See thrust options and apply thrust to the ship.`
+    return `\`${commandPrefix}${this.commandNames[0]}\` - See and set movement target options.`
   }
 
   async run(context: CommandContext) {
@@ -26,21 +26,26 @@ export class ThrustCommand implements Command {
 
     const validTargets: {
       id: string
-      location: CoordinatePair
+      location: CoordinatePair | false
       name: string
     }[] = []
 
-    if (context.ship.speed)
-      validTargets.push({
-        id: `current`,
-        location: context.ship.location.map(
-          (l, index) =>
-            l +
-            (context.ship!.velocity || [0, 0])[index] *
-              1000,
-        ) as CoordinatePair,
-        name: `Current Trajectory`,
-      })
+    validTargets.push({
+      id: `average`,
+      location: false,
+      name: `Crew Target Average`,
+    })
+    // if (context.ship.speed)
+    //   validTargets.push({
+    //     id: `current`,
+    //     location: context.ship.location.map(
+    //       (l, index) =>
+    //         l +
+    //         (context.ship!.velocity || [0, 0])[index] *
+    //           1000,
+    //     ) as CoordinatePair,
+    //     name: `Current Trajectory`,
+    //   })
 
     context.ship.seenPlanets
       ?.sort(
@@ -52,51 +57,70 @@ export class ThrustCommand implements Command {
       .forEach((planet) => {
         validTargets.push({
           ...planet,
-          name: `🪐${planet.name}`,
+          name: `🪐${planet.name}: ${c.speedNumber(
+            c.distance(
+              context.ship?.location,
+              planet.location,
+            ),
+            true,
+            0,
+          )} km ${c.degreesToArrowEmoji(
+            c.angleFromAToB(
+              context.ship?.location,
+              planet.location,
+            ),
+          )}`,
         })
       })
 
     waitForButtonChoiceWithCallback({
       allowedUserId: context.author.id,
-      content: `${
-        context.crewMember.name
-      } can thrust with ${c.r2(
-        context.crewMember.cockpitCharge * 100,
-        0,
-      )}% of their capacity toward:`,
+      content: `${context.crewMember.name} can target:`,
+      // thrust with ${c.r2(
+      //   context.crewMember.cockpitCharge * 100,
+      //   0,
+      // )}% of their capacity toward:`,
       buttons: validTargets.map((p) => ({
         label: `${p.name}`,
         style: `SECONDARY`,
-        customId: `thrustAt` + p.id,
+        customId: `target` + p.id,
       })),
       context: context,
       callback: async (choice) => {
-        choice = choice.replace(`thrustAt`, ``)
+        choice = choice.replace(`target`, ``)
         const target = validTargets.find(
           (t) => t.id === choice,
         )
         if (!target) return
 
-        const res = await ioInterface.crew.thrustAt(
-          context.ship!.id,
-          context.crewMember!.id,
-          target.location,
-        )
+        const res =
+          await ioInterface.crew.setTargetObjectOrLocation(
+            context.ship!.id,
+            context.crewMember!.id,
+            target,
+          )
 
         if (`error` in res) await context.reply(res.error)
         else {
-          await context.refreshShip()
           await context.reply(
-            `${context.nickname} thrusted ${c.speedNumber(
-              res.data,
-            )} ${
-              target.id === `current`
-                ? `along the ship's current trajectory`
-                : `towards ` + target.name
-            }. The ship's current speed is ${c.speedNumber(
-              (context.ship?.speed || 0) * 60 * 60,
-            )}.`,
+            `${context.nickname} set their thrust target ` +
+              (target.id === `average`
+                ? `to the average of other crew members in the cockpit`
+                : `towards ` + target.name) +
+              `.`,
           )
+          // await context.refreshShip()
+          // await context.reply(
+          //   `${context.nickname} thrusted ${c.speedNumber(
+          //     res.data,
+          //   )} ${
+          //     target.id === `current`
+          //       ? `along the ship's current trajectory`
+          //       : `towards ` + target.name
+          //   }. The ship's current speed is ${c.speedNumber(
+          //     (context.ship?.speed || 0) * 60 * 60,
+          //   )}.`,
+          // )
         }
       },
     })

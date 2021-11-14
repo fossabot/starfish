@@ -98,6 +98,50 @@ export async function leave(
   return error // null = ok
 }
 
+export async function setTargetObjectOrLocation(
+  shipId: string,
+  crewId: string,
+  targetObjectOrLocation: any,
+) {
+  if (!(await connected()))
+    return { error: `Failed to set.` }
+
+  if (
+    Array.isArray(targetObjectOrLocation) ||
+    !targetObjectOrLocation
+  ) {
+    const res: IOResponse<any> = await new Promise(
+      (resolve) => {
+        io.emit(
+          `crew:targetLocation`,
+          shipId,
+          crewId,
+          targetObjectOrLocation,
+          () => {
+            resolve({ data: true })
+          },
+        )
+      },
+    )
+    return res
+  }
+
+  const res: IOResponse<any> = await new Promise(
+    (resolve) => {
+      io.emit(
+        `crew:targetObject`,
+        shipId,
+        crewId,
+        targetObjectOrLocation,
+        () => {
+          resolve({ data: true })
+        },
+      )
+    },
+  )
+  return res
+}
+
 export async function thrustAt(
   shipId: string,
   crewId: string,

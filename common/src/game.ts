@@ -73,7 +73,7 @@ function getPassiveThrustMagnitudePerTickForSingleCrewMember(
   engineThrustMultiplier: number = 1,
   baseEngineThrustMultiplier: number,
 ): number {
-  const min: number = 1 / 45000
+  const min: number = 1 / 4500
   const max: number = 1 / 1500
   return (
     math.lerp(min, max, level / 100) *

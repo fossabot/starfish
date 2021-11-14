@@ -327,12 +327,13 @@ export default Vue.extend({
         ) ||
         !!(
           (this.ship as ShipStub)?.passives?.find(
-            (p) => p.id === 'scannableCargoPrices',
+            (p) => p.id === 'broadcastRangeCargoPrices',
           ) &&
           c.distance(
             (this.data as PlanetStub).location,
             this.ship.location,
-          ) < ((this.ship as ShipStub).radii?.scan || 0)
+          ) <
+            ((this.ship as ShipStub).radii?.broadcast || 0)
         )
       )
     },

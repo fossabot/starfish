@@ -8,8 +8,8 @@ const baseShipPassiveData = {
     visibleCargoPrices: {
         description: (p) => `Planet cargo prices always visible`,
     },
-    scannableCargoPrices: {
-        description: (p) => `Planet cargo prices are scannable`,
+    broadcastRangeCargoPrices: {
+        description: (p) => `Planet cargo prices are visible within comms range`,
     },
     boostAccuracy: {
         description: (p) => `${(p.intensity || 1) * 100}% ${(p.intensity || 1) >= 0 ? `increased` : `decreased`} attack accuracy`,
@@ -62,10 +62,9 @@ const baseShipPassiveData = {
     boostBrake: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% ship braking`,
     },
-    // boostThrust: {
-    //   toString: (p) =>
-    //     `${(p.intensity || 1) >=0 ? '+' : ''}${Math.round((p.intensity || 1) * 100)}% more thrust`,
-    // },
+    boostThrust: {
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% thrust`,
+    },
     boostXpGain: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} XP gain`,
     },

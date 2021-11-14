@@ -148,7 +148,7 @@ exports.scanners = {
         },
         passives: [
             {
-                id: `scannableCargoPrices`,
+                id: `broadcastRangeCargoPrices`,
             },
         ],
     },

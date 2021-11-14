@@ -19,11 +19,11 @@ declare const _default: {
         boostBroadcastRange: CrewPassiveData;
         boostRepairSpeed: CrewPassiveData;
         boostMineSpeed: CrewPassiveData;
+        boostThrust: CrewPassiveData;
         boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
         cargoSpace: CrewPassiveData;
-        boostThrust: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
@@ -87,6 +87,9 @@ declare const _default: {
         boostMinePayouts: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostThrust: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostCockpitChargeSpeed: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -144,7 +147,7 @@ declare const _default: {
         visibleCargoPrices: {
             description: (p: ShipPassiveEffect) => string;
         };
-        scannableCargoPrices: {
+        broadcastRangeCargoPrices: {
             description: (p: ShipPassiveEffect) => string;
         };
     };
