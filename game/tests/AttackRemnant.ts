@@ -24,29 +24,25 @@ import socketIoClient, {
   Socket as ClientSocket,
 } from 'socket.io-client'
 
+const game = new Game()
+
 describe(`Attack remnant data`, () => {
   before(async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
+    await game.loadGameDataFromDb({
       dbName: `starfish-test`,
       username: `testuser`,
       password: `testpassword`,
     })
-    await g.db?.attackRemnant.wipe()
+    await game.db?.attackRemnant.wipe()
   })
 
   let attackerId: string
   it(`should spawn an attack remnant`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
-    })
-    while (g.attackRemnants.length) g.attackRemnants.pop()
+    while (game.attackRemnants.length)
+      game.attackRemnants.pop()
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addHumanShip(humanShipData())
 
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
@@ -57,29 +53,27 @@ describe(`Attack remnant data`, () => {
     s.autoAttack(999)
     attackerId = s.id
 
-    expect(g.attackRemnants.length).to.equal(1)
+    expect(game.attackRemnants.length).to.equal(1)
 
     await c.sleep(400)
     const ars =
-      await g.db?.attackRemnant.getAllConstructible()
+      await game.db?.attackRemnant.getAllConstructible()
     expect(ars?.length).to.equal(1)
 
-    const ar = g.attackRemnants[0]
+    const ar = game.attackRemnants[0]
     expect(ar.attacker?.id).to.equal(s.id)
     expect(ar.defender?.id).to.equal(s2.id)
   })
 
   it(`should maintain attack remnant data through db save`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
-    })
-
-    expect(g.attackRemnants.length).to.equal(1)
-    const ar = g.attackRemnants[0]
+    expect(game.attackRemnants.length).to.equal(1)
+    const ar = game.attackRemnants[0]
     expect(ar.attacker?.id).to.equal(attackerId)
     expect(ar.defender?.id).to.not.equal(attackerId)
+  })
+
+  after(async () => {
+    await game.db?.ship.wipe()
+    await game.db?.game.wipe()
   })
 })
