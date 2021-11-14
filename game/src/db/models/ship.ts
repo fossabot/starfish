@@ -130,6 +130,8 @@ const shipSchemaFields: Record<
       minePriority: String,
       // attackGuilds: [String],
       targetLocation: [Number, Number],
+      targetObject:
+        { id: String, type: { type: String } } || false,
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
       tutorialShipId: String,

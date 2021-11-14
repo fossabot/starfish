@@ -57,6 +57,13 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         engineThrustMultiplier *
         baseEngineThrustMultiplier);
 }
+function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
+    const min = 1 / 45000;
+    const max = 1 / 1500;
+    return (math_1.default.lerp(min, max, level / 100) *
+        engineThrustMultiplier *
+        baseEngineThrustMultiplier);
+}
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return math_1.default.lerp(1, 3, level / 100) / globals_1.default.tickInterval;
 }
@@ -458,6 +465,7 @@ exports.default = {
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
+    getPassiveThrustMagnitudePerTickForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
     getGeneralMultiplierBasedOnCrewMemberProximity,

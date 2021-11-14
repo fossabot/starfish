@@ -116,6 +116,19 @@
           Run away from
         </option>
         <option
+          value="Hunt"
+          v-if="
+            ship.visible.ships.filter(
+              (s) => s.guildId !== ship.guildId,
+            ).length ||
+            ship.contracts.filter(
+              (co) => co.status === 'active',
+            ).length
+          "
+        >
+          Hunt
+        </option>
+        <option
           value="Get"
           v-if="ship.visible.caches.length"
         >
@@ -151,7 +164,9 @@
 
       <select
         v-model="target"
-        v-if="['Attack', 'Run away from'].includes(verb)"
+        v-if="
+          ['Attack', 'Run away from', 'Hunt'].includes(verb)
+        "
       >
         <option value="">Select an enemy...</option>
         <option
@@ -416,7 +431,7 @@ export default Vue.extend({
     show(): boolean {
       return (
         this.ship &&
-        this.ship.crewMembers.length > 1 &&
+        // this.ship.crewMembers.length > 1 &&
         this.captain &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes(

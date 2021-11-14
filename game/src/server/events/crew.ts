@@ -204,23 +204,21 @@ export default function (
           error: `No crew member found by that id.`,
         })
 
+      let finalTargetLocation: any = targetLocation
+
       if (
+        !targetLocation ||
         !Array.isArray(targetLocation) ||
         targetLocation.length !== 2 ||
         targetLocation.find((l: any) => isNaN(parseInt(l)))
       ) {
-        c.log(
-          `Invalid call to set crew targetLocation:`,
-          shipId,
-          crewId,
-          targetLocation,
-        )
-        return callback({
-          error: `Invalid target location.`,
-        })
+        finalTargetLocation = false
       }
 
-      crewMember.targetLocation = targetLocation
+      crewMember.targetObject = false
+      crewMember.toUpdate.targetObject = false
+
+      crewMember.targetLocation = finalTargetLocation
       crewMember.toUpdate.targetLocation =
         crewMember.targetLocation
 
@@ -229,6 +227,48 @@ export default function (
       c.log(
         `gray`,
         `Set ${crewMember.name} on ${ship.name} targetLocation to ${targetLocation}.`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:targetObject`,
+    (shipId, crewId, targetObject, callback = () => {}) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `No ship found by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `No crew member found by that id.`,
+        })
+
+      crewMember.targetObject = targetObject
+      crewMember.toUpdate.targetObject =
+        crewMember.targetObject
+
+      if (targetObject?.location) {
+        crewMember.targetLocation = [
+          ...targetObject.location,
+        ]
+        crewMember.toUpdate.targetLocation =
+          crewMember.targetLocation
+      }
+
+      callback({ data: crewMember.targetObject })
+
+      c.log(
+        `gray`,
+        `Set ${crewMember.name} on ${ship.name} targetObject to ${targetObject?.id} (${targetObject?.type}).`,
       )
     },
   )

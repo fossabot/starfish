@@ -8,7 +8,7 @@
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
 
-    <div class="panesection">
+    <!-- <div class="panesection">
       <div class="marbotsmall">
         <LimitedChargeButton
           class="marbottiny"
@@ -148,6 +148,13 @@
             :number="c.speedNumber(maxPossibleSpeedChange)"
         /></span>
       </div>
+    </div> -->
+
+    <div class="panesection">
+      Your passive thrust:
+      {{
+        c.speedNumber(passiveThrustPerHourAddedPerHour)
+      }}/hr
     </div>
 
     <div
@@ -159,33 +166,25 @@
           ship.visible.caches.length)
       "
     >
-      <div>
+      <!-- <div>
         <div class="panesubhead">Set Target</div>
-      </div>
+      </div> -->
 
       <span>
         <button
-          v-if="ship.speed"
-          @click="setTargetAlongPath"
+          @click="clearTarget"
           :class="{
-            secondary:
-              c.angleDifference(
-                c.vectorToDegrees(ship.velocity),
-                c.angleFromAToB(
-                  ship.location,
-                  crewMember.targetLocation,
-                ),
-              ) > 2,
+            secondary: crewMember.targetLocation,
           }"
         >
-          <span>Current Trajectory</span>
-        </button> </span
+          <span>Crew Average Target</span>
+        </button></span
       ><span
         v-for="planet in planetsToShow"
         :key="'gotoplanet' + planet.name"
       >
         <button
-          @click="setTarget(planet.location)"
+          @click="setTargetObject(planet)"
           :class="{
             secondary:
               !planet ||
@@ -210,7 +209,7 @@
         v-tooltip="{ type: 'ship', id: ship.id }"
       >
         <button
-          @click="setTarget(otherShip.location)"
+          @click="setTargetObject(otherShip)"
           :class="{
             secondary:
               !crewMember.targetLocation ||
@@ -228,7 +227,7 @@
         v-tooltip="{ type: 'cache', id: cache.id }"
       >
         <button
-          @click="setTarget(cache.location)"
+          @click="setTargetObject(cache)"
           :class="{
             secondary:
               !crewMember.targetLocation ||
@@ -320,6 +319,7 @@ export default Vue.extend({
           this.ship.gameSettings.baseEngineThrustMultiplier,
         ) /
           this.ship.mass) *
+        (c.tickInterval / 1000) *
         60 *
         60
       )
@@ -328,6 +328,32 @@ export default Vue.extend({
       return (
         this.maxPossibleSpeedChange *
         this.crewMember.cockpitCharge
+      )
+    },
+    thrustBoostMultiplier(): number {
+      return (
+        this.crewMember?.passives?.find(
+          (p) => p.id === `boostThrust`,
+        )?.level + 1 || 1
+      )
+    },
+    passiveThrustPerHourAddedPerSecond(): number {
+      return (
+        ((c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
+          this.pilotingSkill,
+          this.engineThrustAmplification,
+          this.ship.gameSettings.baseEngineThrustMultiplier,
+        ) *
+          this.thrustBoostMultiplier) /
+          this.ship.mass) *
+        (c.tickInterval / 1000) *
+        60 *
+        60
+      )
+    },
+    passiveThrustPerHourAddedPerHour(): number {
+      return (
+        this.passiveThrustPerHourAddedPerSecond * 60 * 60
       )
     },
     maxCharge(): number {
@@ -424,8 +450,11 @@ export default Vue.extend({
       this.brakeChargeToUse = 0
       this.thrustChargeToUse = 0
     },
-    setTarget(target: CoordinatePair): void {
-      this.$store.commit('setTarget', target)
+    setTargetObject(target: any): void {
+      this.$store.commit('setTargetObject', target)
+    },
+    clearTarget() {
+      this.$store.commit('setTarget')
     },
     setTargetAlongPath() {
       this.$store.commit(

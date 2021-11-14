@@ -1089,9 +1089,9 @@ export class HumanShip extends CombatShip {
     const thrusters = this.membersIn(`cockpit`).filter(
       (cm) => cm.targetLocation,
     )
-    if (!thrusters.length) return
+    if (!thrusters.filter((t) => t.targetLocation).length)
+      return
 
-    const chargeToApplyPerTick = 0.0005
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
@@ -1103,8 +1103,28 @@ export class HumanShip extends CombatShip {
         ),
     )
 
+    const combinedThrustVector: CoordinatePair = [0, 0]
+
+    const averageTarget = thrusters
+      .reduce(
+        (target, t) => {
+          if (t.targetLocation) {
+            target[0] += t.targetLocation[0]
+            target[1] += t.targetLocation[1]
+          }
+          return target
+        },
+        [0, 0],
+      )
+      .map(
+        (target) =>
+          target /
+          thrusters.filter((t) => t.targetLocation).length,
+      ) as CoordinatePair
+
     for (let thruster of thrusters) {
-      if (!thruster.targetLocation) continue
+      const targetLocationToUse =
+        thruster.targetLocation || averageTarget
 
       // add xp
       const xpBoostMultiplier =
@@ -1118,9 +1138,7 @@ export class HumanShip extends CombatShip {
         `piloting`,
         (this.game?.settings.baseXpGain ||
           c.defaultGameSettings.baseXpGain) *
-          300 *
-          chargeToApplyPerTick *
-          thruster.cockpitCharge *
+          0.15 *
           xpBoostMultiplier,
       )
 
@@ -1131,26 +1149,39 @@ export class HumanShip extends CombatShip {
         thruster.piloting?.level || 1
 
       const baseMagnitude =
-        c.getThrustMagnitudeForSingleCrewMember(
+        c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
           memberPilotingSkill,
           engineThrustMultiplier,
           this.game?.settings.baseEngineThrustMultiplier ||
             c.defaultGameSettings
               .baseEngineThrustMultiplier,
         ) * thrustBoostPassiveMultiplier
-      const thrustMagnitudeToApply =
-        (baseMagnitude * chargeToApplyPerTick) / this.mass
+      let thrustMagnitudeToApply = baseMagnitude / this.mass
 
       let angleToThrustInDegrees = c.angleFromAToB(
         this.location,
-        thruster.targetLocation,
+        targetLocationToUse,
       )
 
-      // todo "brake" boost comes from % thrusting in opposite direction of the ship's velocity
-      // todo use engines
-      // todo don't notify about leaving and landing if it's within x seconds
-      // todo targetLocation can follow things, like a comet or ship
-      // todo redo cockpit pane
+      // crew member brake passive
+      const angleDifferenceToDirection = c.angleDifference(
+        angleToThrustInDegrees,
+        this.direction,
+      )
+      if (angleDifferenceToDirection > 10) {
+        let passiveBrakeMultiplier =
+          thruster.getPassiveIntensity(`boostBrake`)
+        const brakeBoost =
+          1 +
+          (angleDifferenceToDirection / 180) *
+            passiveBrakeMultiplier
+        thrustMagnitudeToApply *= brakeBoost
+      }
+
+      if (!HumanShip.movementIsFree)
+        this.engines.forEach((e) =>
+          e.passiveUse(0.1, [thruster]),
+        )
 
       const unitVectorAlongWhichToThrust =
         c.degreesToUnitVector(angleToThrustInDegrees)
@@ -1162,11 +1193,31 @@ export class HumanShip extends CombatShip {
           thrustMagnitudeToApply,
       ]
 
-      this.velocity = [
-        this.velocity[0] + (thrustVector[0] || 0),
-        this.velocity[1] + (thrustVector[1] || 0),
-      ]
+      combinedThrustVector[0] += thrustVector[0]
+      combinedThrustVector[1] += thrustVector[1]
     }
+
+    // full-ship brake passive
+    const angleDifferenceToDirection = c.angleDifference(
+      c.vectorToDegrees(combinedThrustVector),
+      this.direction,
+    )
+    if (angleDifferenceToDirection > 10) {
+      let passiveBrakeMultiplier =
+        this.getPassiveIntensity(`boostBrake`)
+      const brakeBoost =
+        1 +
+        (angleDifferenceToDirection / 180) *
+          passiveBrakeMultiplier
+      combinedThrustVector[0] *= brakeBoost
+      combinedThrustVector[1] *= brakeBoost
+    }
+
+    // final velocity adjustment
+    this.velocity = [
+      this.velocity[0] + (combinedThrustVector[0] || 0),
+      this.velocity[1] + (combinedThrustVector[1] || 0),
+    ]
 
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
@@ -1506,6 +1557,8 @@ export class HumanShip extends CombatShip {
     }
   }
 
+  private justLandedTimeout: NodeJS.Timeout | null = null
+  private justTookOffTimeout: NodeJS.Timeout | null = null
   async updatePlanet(silent?: boolean) {
     const previousPlanet = this.planet
     if (
@@ -1566,9 +1619,9 @@ export class HumanShip extends CombatShip {
       previousPlanet.rooms.forEach((r) =>
         this.removeRoom(r),
       )
-      previousPlanet.passives.forEach((p) =>
-        this.removePassive(p),
-      )
+      this.passives
+        .filter((p) => p.data?.source?.planetName)
+        .forEach((p) => this.removePassive(p))
     }
 
     if (silent) return
@@ -1581,6 +1634,18 @@ export class HumanShip extends CombatShip {
       this.planet &&
       !previousPlanet
     ) {
+      let shouldLog = true
+      if (this.justLandedTimeout !== null) {
+        clearTimeout(this.justLandedTimeout)
+        shouldLog = false
+      }
+
+      this.justLandedTimeout = setTimeout(() => {
+        this.justLandedTimeout = null
+      }, 10000)
+
+      if (!shouldLog) return
+
       this.logEntry(
         [
           `Landed on`,
@@ -1624,6 +1689,18 @@ export class HumanShip extends CombatShip {
           )
         })
     } else if (previousPlanet && !this.planet) {
+      let shouldLog = true
+      if (this.justTookOffTimeout !== null) {
+        clearTimeout(this.justTookOffTimeout)
+        shouldLog = false
+      }
+
+      this.justTookOffTimeout = setTimeout(() => {
+        this.justTookOffTimeout = null
+      }, 10000)
+
+      if (!shouldLog) return
+
       this.logEntry(
         [
           `Departed from`,

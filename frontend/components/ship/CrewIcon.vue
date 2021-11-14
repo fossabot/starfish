@@ -24,16 +24,14 @@
           <text x="0" y="10">👑</text>
         </svg>
       </div>
-      <div
-        class="cmispecies"
-        v-if="
-          crewMember.speciesId &&
-          c.species[crewMember.speciesId]
-        "
-      >
+      <div class="cmispecies">
         <svg viewBox="0 0 15 15">
           <text x="8" y="12">
-            {{ c.species[crewMember.speciesId].icon }}
+            {{
+              c.species[crewMember.speciesId]
+                ? c.species[crewMember.speciesId].icon
+                : '❔'
+            }}
           </text>
         </svg>
       </div>

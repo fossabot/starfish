@@ -49,6 +49,7 @@ export default Vue.extend({
 .contracttooltip {
   margin: 0;
   border: 0;
+  width: 250px;
 }
 .contracttooltipwrapper {
   padding: 0;

@@ -26,6 +26,10 @@ export class CrewMember extends Stubbable {
   maxStamina: number = 1
   lastActive: number
   targetLocation: CoordinatePair | false = false
+  targetObject:
+    | { id: string; type: string; location: CoordinatePair }
+    | false = false
+
   combatTactic: CombatTactic | `none` = `none`
   attackTargetId: string | `any` | `closest` = `any`
   targetItemType: ItemType | `any` = `any`
@@ -209,6 +213,32 @@ export class CrewMember extends Stubbable {
 
   tick() {
     this._stub = null // invalidate stub
+
+    // ----- reset targetLocation if targetObject has moved/gone out of sight -----
+    if (this.location === `cockpit` && this.targetObject) {
+      const movingObject =
+        this.ship.visible.comets.find(
+          (e) => e.id === (this.targetObject as any).id,
+        ) ||
+        this.ship.visible.ships.find(
+          (e) => e.id === (this.targetObject as any).id,
+        )
+      // * if more things start moving we might need to update this to include them
+
+      if (!movingObject) {
+        this.targetObject = false
+        this.toUpdate.targetObject = false
+      } else if (
+        movingObject.location[0] !==
+          this.targetLocation[0] ||
+        movingObject.location[1] !== this.targetLocation[1]
+      ) {
+        this.targetLocation = [
+          ...movingObject.location,
+        ] as CoordinatePair
+        this.toUpdate.targetLocation = this.targetLocation
+      }
+    }
 
     // ----- reset attack target if out of vision range -----
     if (

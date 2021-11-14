@@ -261,6 +261,7 @@ declare const _default: {
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
+    getPassiveThrustMagnitudePerTickForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number, rechargeSpeedMultiplier: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;

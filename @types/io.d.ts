@@ -257,8 +257,20 @@ interface IOClientEvents {
   [`crew:targetLocation`]: (
     shipId: string,
     crewId: string,
-    targetLocation: CoordinatePair,
-    callback?: (res: IOResponse<CoordinatePair>) => void,
+    targetLocation?: CoordinatePair,
+    callback?: (
+      res: IOResponse<CoordinatePair | false>,
+    ) => void,
+  ) => void
+  [`crew:targetObject`]: (
+    shipId: string,
+    crewId: string,
+    targetObject: {
+      id: string
+      type: string
+      location: CoordinatePair
+    },
+    callback?: (res: IOResponse<any>) => void,
   ) => void
   [`crew:leave`]: (
     shipId: string,

@@ -250,6 +250,7 @@ export default Vue.extend({
 .scroller {
   max-height: 440px;
   overflow-y: auto;
+  min-height: 350px;
 }
 .badges {
   margin-right: 2em;

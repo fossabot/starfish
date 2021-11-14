@@ -62,47 +62,49 @@ export abstract class CombatShip extends Ship {
 
   removePassive(p: ShipPassiveEffect) {
     let index
-    if (p.data?.source?.planetName)
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          for (let key in ep) {
-            if (ep[key] !== p[key]) return false
+    while (index !== -1) {
+      if (p.data?.source?.planetName)
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep) {
+              if (ep[key] !== p[key]) return false
+              if (
+                ep.data?.source?.planetName !==
+                p.data?.source?.planetName
+              )
+                return false
+            }
+            return true
+          },
+        )
+      else if (p.data?.source?.zoneName) {
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            if (ep.id !== p.id) return false
             if (
-              ep.data?.source?.planetName !==
-              p.data?.source?.planetName
+              ep.data?.source?.zoneName !==
+              p.data?.source?.zoneName
             )
               return false
-          }
-          return true
-        },
-      )
-    else if (p.data?.source?.zoneName) {
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          if (ep.id !== p.id) return false
-          if (
-            ep.data?.source?.zoneName !==
-            p.data?.source?.zoneName
-          )
-            return false
-          return true
-        },
-      )
-    } else
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          for (let key in ep)
-            if (ep[key] !== p[key]) return false
-          return true
-        },
-      )
-    if (index === -1) return
-    this.passives.splice(index, 1)
-    this.updateThingsThatCouldChangeOnItemChange()
-    this.updateAttackRadius()
-    this.updateMaxScanProperties()
-    this.updateSlots()
-    this.toUpdate.passives = this.passives
+            return true
+          },
+        )
+      } else
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
+            return true
+          },
+        )
+      if (index === -1) return
+      this.passives.splice(index, 1)
+      this.updateThingsThatCouldChangeOnItemChange()
+      this.updateAttackRadius()
+      this.updateMaxScanProperties()
+      this.updateSlots()
+      this.toUpdate.passives = this.passives
+    }
   }
 
   applyZoneTickEffects() {

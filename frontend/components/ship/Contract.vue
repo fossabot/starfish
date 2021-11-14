@@ -26,11 +26,7 @@
                 : `#bb0`,
             }
       "
-      @click="
-        setTarget(
-          seen ? seen.location : contract.lastSeenLocation,
-        )
-      "
+      @click="setTarget"
     >
       <div class="marbotsmall">
         <span
@@ -264,8 +260,13 @@ export default Vue.extend({
       )
     },
 
-    setTarget(target: CoordinatePair): void {
-      this.$store.commit('setTarget', target)
+    setTarget() {
+      if (!this.seen)
+        this.$store.commit(
+          'setTarget',
+          this.contract.lastSeenLocation,
+        )
+      else this.$store.commit('setTargetObject', this.seen)
     },
   },
 })

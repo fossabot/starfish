@@ -1,24 +1,17 @@
 <template>
-  <div
-    v-if="
-      ship.planet &&
-      ship.planet.vendor &&
-      ((ship.planet.vendor.shipCosmetics &&
-        ship.planet.vendor.shipCosmetics.length) ||
-        (ship.planet.vendor.crewCosmetics &&
-          ship.planet.vendor.crewCosmetics.length))
-    "
-    class="panesection"
-    v-tooltip="
-      isCaptain
-        ? null
-        : `The captain can buy cosmetics for the ship.`
-    "
-  >
-    <template
+  <div>
+    <div
       v-if="
+        ship.planet &&
+        ship.planet.vendor &&
         ship.planet.vendor.shipCosmetics &&
         ship.planet.vendor.shipCosmetics.length
+      "
+      class="panesection"
+      v-tooltip="
+        isCaptain
+          ? null
+          : `The captain can buy cosmetics for the ship.`
       "
     >
       <div class="panesubhead">
@@ -94,24 +87,18 @@
           </span>
         </div>
       </div>
-    </template>
+    </div>
 
-    <template
+    <div
       v-if="
+        ship.planet &&
+        ship.planet.vendor &&
         ship.planet.vendor.crewCosmetics &&
         ship.planet.vendor.crewCosmetics.length
       "
+      class="panesection"
     >
-      <div
-        class="panesubhead"
-        :class="{
-          martopbig:
-            ship.planet.vendor.shipCosmetics &&
-            ship.planet.vendor.shipCosmetics.length,
-        }"
-      >
-        Tailor
-      </div>
+      <div class="panesubhead">Tailor</div>
 
       <div
         class="panesection marbottiny"
@@ -171,7 +158,7 @@
           </span>
         </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 

@@ -97,6 +97,17 @@ export const mutations = {
       target,
     )
   },
+  setTargetObject(state, targetObject) {
+    if (!state.crewMember) return
+    state.forceMapRedraw++
+    Vue.set(state.crewMember, `targetObject`, targetObject)
+    this.$socket?.emit(
+      `crew:targetObject`,
+      state.ship.id,
+      state.userId,
+      targetObject,
+    )
+  },
 
   setTactic(state, tactic) {
     if (!state.crewMember) return

@@ -85,7 +85,7 @@
         <div>
           {{
             c.speedNumber(
-              (dataToUse && dataToUse.speed * 60 * 60) || 0,
+              (dataToUse && dataToUse.speed * 60 * 60 * (c.tickInterval/1000)) || 0,
             )
           }}
           <template v-if="dataToUse.direction">
@@ -277,22 +277,17 @@
         "
       >
         <div>Captain</div>
-        <div
-          v-tooltip="
-            dataToUse.crewMembers.find(
-              (cm) => cm.id === dataToUse.captain,
-            )
-          "
-        >
-          {{
-            dataToUse.crewMembers.find(
-              (cm) => cm.id === dataToUse.captain,
-            ) //'👑' +
-              ? dataToUse.crewMembers.find(
-                  (cm) => cm.id === dataToUse.captain,
-                ).name
-              : 'No Captain'
-          }}
+        <div v-tooltip="captain">
+          <span class="captainlabel flex" v-if="captain">
+            <div class="captainicon">
+              <ShipCrewIcon
+                :crewMember="captain"
+                :showDiscordIcon="false"
+              />
+            </div>
+            <div>{{ captain.name }}</div>
+          </span>
+          <span v-else>No Captain </span>
         </div>
       </div>
     </div>
@@ -363,6 +358,11 @@ export default Vue.extend({
         ) || this.data
       )
     },
+    captain() {
+      return this.dataToUse?.crewMembers?.find(
+        (cm) => cm.id === this.dataToUse?.captain,
+      )
+    },
   },
 })
 </script>
@@ -387,6 +387,14 @@ export default Vue.extend({
     // width: 25%;
     width: 60px;
     height: 40px;
+  }
+}
+
+.captainlabel {
+  .captainicon {
+    width: 1.3em;
+    margin-right: 2px;
+    position: relative;
   }
 }
 </style>
