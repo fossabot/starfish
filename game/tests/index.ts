@@ -21,7 +21,7 @@ const host = isDocker() ? `mongodb` : `localhost`
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongo --host ${host} --eval "
+      `mongo -u 'root' -p 'root' --host ${host} --eval "
         db = db.getSiblingDB('starfish')
         db.createUser({
           user: 'testuser',
@@ -51,7 +51,7 @@ after(async () => {
   }
   return new Promise((resolve) => {
     exec(
-      `mongo --host ${host} --eval "
+      `mongo -u 'root' -p 'root' --host ${host} --eval "
         db = db.getSiblingDB('starfish')
         db.dropUser('testuser')
         db.dropDatabase()"`,
