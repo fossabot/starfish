@@ -88,7 +88,7 @@ describe(`Admin resetters`, () => {
   it(`should properly remove all planets on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
@@ -126,7 +126,7 @@ describe(`Admin resetters`, () => {
   it(`should properly remove all ships on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
@@ -165,7 +165,7 @@ describe(`Admin resetters`, () => {
   it(`should properly remove all ai ships on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })

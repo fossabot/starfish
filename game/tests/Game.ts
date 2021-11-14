@@ -14,7 +14,7 @@ const game = new Game()
 describe(`Game`, () => {
   beforeEach(async () => {
     await game.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
@@ -53,7 +53,7 @@ describe(`Game`, () => {
 
     const g2 = new Game()
     await g2.loadGameDataFromDb({
-      dbName: `starfish-test`,
+      dbName: `starfish`,
       username: `testuser`,
       password: `testpassword`,
     })
