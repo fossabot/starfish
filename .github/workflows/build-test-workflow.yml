@@ -106,8 +106,10 @@ jobs:
           - folder: 'game'
 
     steps:
-      - name: Show running containers
-        run: docker ps
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: 4.0
 
       - name: Check Out Repo
         uses: actions/checkout@v2
