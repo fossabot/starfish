@@ -20,10 +20,8 @@ const host = isDocker() ? `--host mongodb` : ``
 
 before(async () => {
   return new Promise((resolve) => {
-    exec(`mongo`)
-    exec(`mongo --exec "use admin;"`)
     exec(
-      `mongo ${host} --eval "
+      `mongosh ${host} --eval "
         getSiblingDB('starfish-test').createUser({
           user: 'testuser',
           pwd: 'testpassword',
@@ -52,7 +50,7 @@ after(async () => {
   }
   return new Promise((resolve) => {
     exec(
-      `mongo ${host} --eval "
+      `mongosh ${host} --eval "
         getSiblingDB('starfish-test')
           .dropUser('testuser')
           .dropDatabase()"`,
