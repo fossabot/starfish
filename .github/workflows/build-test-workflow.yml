@@ -123,6 +123,9 @@ jobs:
         uses: supercharge/mongodb-github-action@1.6.0
         with:
           mongodb-version: 4.0
+          mongodb-db: starfish-test
+          mongodb-username: root
+          mongodb-password: root
 
       - name: Check Out Repo
         uses: actions/checkout@v2
