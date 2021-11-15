@@ -60,7 +60,7 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           push: true
-          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}, starfishgame/${{ matrix.image }}:latest
+          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
