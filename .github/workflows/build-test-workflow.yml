@@ -121,9 +121,22 @@ jobs:
 
       - uses: c-hive/gha-npm-cache@v1
 
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.folder }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-${{ matrix.folder }}-
+
       - name: NPM install on ${{matrix.folder}}
         run: npm install
         working-directory: ${{matrix.folder}}
+
+      - name: Move cache
+        if: steps.dockerbuild.outcome == 'success'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Run test suite on ${{matrix.folder}}
         run: npm run teststaging
