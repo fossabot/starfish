@@ -22,7 +22,8 @@ before(async () => {
   return new Promise((resolve) => {
     exec(
       `mongosh ${host} --eval "
-        db.getSiblingDB('starfish-test').createUser({
+        db.getSiblingDB('starfish-test')
+        db.createUser({
           user: 'testuser',
           pwd: 'testpassword',
           roles: [
@@ -52,8 +53,8 @@ after(async () => {
     exec(
       `mongosh ${host} --eval "
         db.getSiblingDB('starfish-test')
-          .dropUser('testuser')
-          .dropDatabase()"`,
+        db.dropUser('testuser')
+        db.dropDatabase()"`,
       undefined,
       (error, stdout, stderr) => {
         if (error) console.log(error)
