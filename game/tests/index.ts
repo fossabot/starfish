@@ -22,7 +22,7 @@ before(async () => {
   return new Promise((resolve) => {
     exec(
       `mongo ${host} --eval "
-        db = getSiblingDB('starfish-test');
+        db = getSiblingDB('starfish-test')\n;
         db.createUser({
           user: 'testuser',
           pwd: 'testpassword',
@@ -32,7 +32,7 @@ before(async () => {
               db: 'starfish',
             },
           ],
-        });"`,
+        });\n"`,
       undefined,
       (error, stdout, stderr) => {
         if (error) console.log(error)
@@ -52,9 +52,9 @@ after(async () => {
   return new Promise((resolve) => {
     exec(
       `mongo ${host} --eval "
-        db = db.getSiblingDB('starfish-test');
-        db.dropUser('testuser');
-        db.dropDatabase()"`,
+        db = db.getSiblingDB('starfish-test');\n
+        db.dropUser('testuser');\n
+        db.dropDatabase()\n"`,
       undefined,
       (error, stdout, stderr) => {
         if (error) console.log(error)
