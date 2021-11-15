@@ -12,7 +12,15 @@ import { describe, it } from 'mocha'
 
 import { crewMemberData, humanShipData } from './defaults'
 
+const game = new Game()
 describe(`CrewMember defaults`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should have the correct amount of base cargo space for crewMembers`, () => {
     let ship = new HumanShip(humanShipData())
     for (let i = 0; i < 10; i++) {

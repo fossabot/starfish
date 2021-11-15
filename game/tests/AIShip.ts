@@ -18,16 +18,24 @@ import {
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { AIShip } from '../src/game/classes/Ship/AIShip/AIShip'
 
+const game = new Game()
+
 describe(`AIShip spawn`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should add level-appropriate items/chassis on spawn`, async () => {
-    const g = new Game()
-    const ship = await g.addAIShip(aiShipData(3))
+    const ship = await game.addAIShip(aiShipData(3))
     const level3Value = ship.items.reduce(
       (t, i) => t + i.toRefundAmount(),
       0,
     )
 
-    const ship2 = await g.addAIShip(aiShipData(100))
+    const ship2 = await game.addAIShip(aiShipData(100))
     const level10Value = ship2.items.reduce(
       (t, i) => t + (i.baseData.basePrice.credits || 0),
       0,
@@ -136,5 +144,9 @@ describe(`AIShip death`, () => {
         10,
       )
     }
+  })
+  afterEach(async () => {
+    await game.db?.ship.wipe()
+    await game.db?.game.wipe()
   })
 })

@@ -15,10 +15,19 @@ import { describe, it } from 'mocha'
 import { crewMemberData, humanShipData } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 
+const game = new Game()
+
 describe(`HumanShip basics`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should create a HumanShip`, async () => {
     // created through game
-    let game = new Game()
+
     let ship = await game.addHumanShip(humanShipData())
     expect(ship).to.be.an.instanceof(HumanShip)
 

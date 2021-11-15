@@ -20,12 +20,20 @@ import {
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 
+const game = new Game()
+
 describe(`Combat HumanShip target selection`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should return ships closest to farthest from getEnemiesInAttackRange`, async () => {
-    const g = new Game()
-    let ship = await g.addHumanShip(humanShipData())
-    let ship2 = await g.addHumanShip(humanShipData())
-    let ship3 = await g.addHumanShip(humanShipData())
+    let ship = await game.addHumanShip(humanShipData())
+    let ship2 = await game.addHumanShip(humanShipData())
+    let ship3 = await game.addHumanShip(humanShipData())
 
     ship2.move([10.0001, 0])
     ship3.move([10.0002, 0])

@@ -25,24 +25,24 @@ import socketIoClient, {
   Socket as ClientSocket,
 } from 'socket.io-client'
 
+const game = new Game()
+
 describe(`Planet basics`, () => {
   it(`should be able to create a Planet`, async () => {
     const p = new BasicPlanet(basicPlanetData())
     expect(p).to.be.an.instanceof(Planet)
     expect(p).to.be.an.instanceof(BasicPlanet)
 
-    const g = new Game()
-    const p2 = await g.addBasicPlanet(basicPlanetData())
+    const p2 = await game.addBasicPlanet(basicPlanetData())
     expect(p2).to.be.an.instanceof(Planet)
     expect(p2).to.be.an.instanceof(BasicPlanet)
-    expect(g.planets.length).to.equal(1)
+    expect(game.planets.length).to.equal(1)
   })
 })
 
 describe(`Planet prices`, () => {
   it(`should have better prices for allies than for normal ships`, async () => {
-    const g = new Game()
-    const p2 = await g.addBasicPlanet(basicPlanetData())
+    const p2 = await game.addBasicPlanet(basicPlanetData())
 
     const itemPrice: PlanetVendorItemPrice = {
       type: `armor`,
@@ -100,18 +100,17 @@ describe(`Planet levels`, () => {
   })
 
   it(`should add xp correctly on credit donation`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
 
-    const s = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
     cm.credits = 1000
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -135,18 +134,17 @@ describe(`Planet levels`, () => {
   })
 
   it(`should add xp correctly on crew cosmetic donation`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
 
-    const s = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
     cm.crewCosmeticCurrency = 1000
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -172,18 +170,17 @@ describe(`Planet levels`, () => {
   })
 
   it(`should add xp correctly on ship cosmetic donation`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
 
-    const s = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
     s.shipCosmeticCurrency = 1000
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -213,15 +210,14 @@ describe(`Planet levels`, () => {
 
 describe(`Planet orbital defense`, () => {
   it(`should attack a ship in range when it sees an attack remnant`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
     p.location = [10.5, 0]
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addHumanShip(humanShipData())
 
     const res = p.defend(true)
     expect(res).to.not.exist
@@ -239,15 +235,14 @@ describe(`Planet orbital defense`, () => {
   })
 
   it(`should not attack a human ship that has attacked an ai ship`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
     p.location = [10.5, 0]
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addAIShip(aiShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addAIShip(aiShipData())
 
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
@@ -262,15 +257,14 @@ describe(`Planet orbital defense`, () => {
   })
 
   it(`should attack an ai ship that has attacked a human ship`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
     p.location = [10.5, 0]
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addAIShip(aiShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addAIShip(aiShipData())
 
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])
@@ -280,16 +274,15 @@ describe(`Planet orbital defense`, () => {
   })
 
   it(`should attack alongside an allied ship`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
     p.location = [10.5, 0]
     p.incrementAllegiance(`explorer`, 100000)
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addHumanShip(humanShipData())
     s2.guildId = `explorer`
 
     s2.updateVisible()
@@ -300,16 +293,15 @@ describe(`Planet orbital defense`, () => {
   })
 
   it(`should defend an attacked allied ship`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
     p.location = [10.5, 0]
     p.incrementAllegiance(`explorer`, 100000)
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addHumanShip(humanShipData())
     s.guildId = `explorer`
 
     s2.updateVisible()
@@ -320,8 +312,7 @@ describe(`Planet orbital defense`, () => {
   })
 
   it(`should not engage in a fight between allied ships`, async () => {
-    const g = new Game()
-    const p = (await g.addBasicPlanet(
+    const p = (await game.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
     p.defense = 100
@@ -329,8 +320,8 @@ describe(`Planet orbital defense`, () => {
     p.incrementAllegiance(`explorer`, 100000)
     p.incrementAllegiance(`hunter`, 100000)
 
-    const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addHumanShip(humanShipData())
+    const s = await game.addHumanShip(humanShipData())
+    const s2 = await game.addHumanShip(humanShipData())
     s.guildId = `explorer`
     s2.guildId = `hunter`
 
@@ -339,5 +330,9 @@ describe(`Planet orbital defense`, () => {
 
     const res = p.defend(true)
     expect(res).to.be.undefined
+  })
+  after(async () => {
+    await game.db?.ship.wipe()
+    await game.db?.game.wipe()
   })
 })

@@ -9,11 +9,10 @@ import { Game } from '../src/game/Game'
 
 import { crewMemberData, humanShipData } from './defaults'
 
-let game: Game
+const game = new Game()
 
 describe(`DB setup`, () => {
-  before(async () => {
-    game = new Game()
+  beforeEach(async () => {
     await game.loadGameDataFromDb({
       dbName: `starfish-test`,
       username: `testuser`,

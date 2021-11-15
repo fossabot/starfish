@@ -22,7 +22,7 @@ before(async () => {
   return new Promise((resolve) => {
     exec(
       `mongosh ${host} --eval "
-        db.getSiblingDB('starfish-test')
+        use starfish-test;
         db.createUser({
           user: 'testuser',
           pwd: 'testpassword',
@@ -52,7 +52,7 @@ after(async () => {
   return new Promise((resolve) => {
     exec(
       `mongosh ${host} --eval "
-        db.getSiblingDB('starfish-test')
+        use starfish-test;
         db.dropUser('testuser')
         db.dropDatabase()"`,
       undefined,

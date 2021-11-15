@@ -63,7 +63,7 @@ describe(`Game`, () => {
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
   })
 
-  after(async () => {
+  afterEach(async () => {
     await game.db?.ship.wipe()
     await game.db?.game.wipe()
   })

@@ -83,22 +83,28 @@ import socketIoClient, {
 //     )
 //   })
 // })
-
+const game = new Game()
 describe(`Admin resetters`, () => {
+  beforeEach(async () => {
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
   it(`should properly remove all planets on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
+    await game.loadGameDataFromDb({
       dbName: `starfish-test`,
       username: `testuser`,
       password: `testpassword`,
     })
 
     for (let i = 0; i < 30; i++) {
-      await g.addBasicPlanet(basicPlanetData())
+      await game.addBasicPlanet(basicPlanetData())
     }
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -111,11 +117,11 @@ describe(`Admin resetters`, () => {
         `hi`,
         `adminKeys.password`,
         async () => {
-          expect(g.planets.length).to.equal(0)
+          expect(game.planets.length).to.equal(0)
           await c.sleep(200)
-          expect(g.planets.length).to.equal(0)
+          expect(game.planets.length).to.equal(0)
           expect(
-            await g.db?.planet.getAllConstructible,
+            await game.db?.planet.getAllConstructible,
           ).to.have.lengthOf(0)
           r()
         },
@@ -124,22 +130,21 @@ describe(`Admin resetters`, () => {
   })
 
   it(`should properly remove all ships on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
+    await game.loadGameDataFromDb({
       dbName: `starfish-test`,
       username: `testuser`,
       password: `testpassword`,
     })
 
     for (let i = 0; i < 15; i++) {
-      await g.addAIShip(aiShipData())
+      await game.addAIShip(aiShipData())
     }
     for (let i = 0; i < 15; i++) {
-      await g.addHumanShip(humanShipData())
+      await game.addHumanShip(humanShipData())
     }
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -152,9 +157,9 @@ describe(`Admin resetters`, () => {
         `hi`,
         `adminKeys.password`,
         async () => {
-          expect(g.ships.length).to.equal(0)
+          expect(game.ships.length).to.equal(0)
           expect(
-            await g.db?.ship.getAllConstructible,
+            await game.db?.ship.getAllConstructible,
           ).to.have.lengthOf(0)
           r()
         },
@@ -163,19 +168,18 @@ describe(`Admin resetters`, () => {
   })
 
   it(`should properly remove all ai ships on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
+    await game.loadGameDataFromDb({
       dbName: `starfish-test`,
       username: `testuser`,
       password: `testpassword`,
     })
 
     for (let i = 0; i < 30; i++) {
-      await g.addAIShip(aiShipData())
+      await game.addAIShip(aiShipData())
     }
 
     const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
+      `http://0.0.0.0:${game.ioPort}`,
       {
         secure: true,
       },
@@ -188,10 +192,10 @@ describe(`Admin resetters`, () => {
         `hi`,
         `adminKeys.password`,
         async () => {
-          expect(g.ships.length).to.equal(0)
-          expect(g.aiShips.length).to.equal(0)
+          expect(game.ships.length).to.equal(0)
+          expect(game.aiShips.length).to.equal(0)
           expect(
-            await g.db?.ship.getAllConstructible,
+            await game.db?.ship.getAllConstructible,
           ).to.have.lengthOf(0)
           r()
         },

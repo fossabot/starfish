@@ -14,14 +14,14 @@ import socketIoClient, {
 } from 'socket.io-client' // yes, we're making a CLIENT here.
 import { awaitIOConnection } from './defaults'
 
+const game = new Game()
+
 describe(`IO setup`, () => {
   it(`should have an io object on the game that is properly linked`, async () => {
-    const game = new Game()
     expect(game.io).to.exist
   })
 
   it(`should should be able to be connected to from a local client`, async () => {
-    const game = new Game()
     const client = socketIoClient(
       `http://0.0.0.0:${game.ioPort}`,
       {
@@ -35,7 +35,6 @@ describe(`IO setup`, () => {
   })
 
   it(`should respond to a hello`, async () => {
-    const game = new Game()
     const client = socketIoClient(
       `http://0.0.0.0:${game.ioPort}`,
       {

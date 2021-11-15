@@ -25,17 +25,15 @@ import socketIoClient, {
 } from 'socket.io-client'
 
 const game = new Game()
+;async () => {
+  await game.loadGameDataFromDb({
+    dbName: `starfish-test`,
+    username: `testuser`,
+    password: `testpassword`,
+  })
+}
 
 describe(`Attack remnant data`, () => {
-  before(async () => {
-    await game.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
-    })
-    await game.db?.attackRemnant.wipe()
-  })
-
   let attackerId: string
   it(`should spawn an attack remnant`, async () => {
     while (game.attackRemnants.length)
@@ -70,10 +68,5 @@ describe(`Attack remnant data`, () => {
     const ar = game.attackRemnants[0]
     expect(ar.attacker?.id).to.equal(attackerId)
     expect(ar.defender?.id).to.not.equal(attackerId)
-  })
-
-  after(async () => {
-    await game.db?.ship.wipe()
-    await game.db?.game.wipe()
   })
 })
