@@ -64,7 +64,8 @@ export class Game {
     this.settings = c.defaultGameSettings
 
     this.io = spawnIo(this, { port: options?.ioPort || 0 })
-    this.ioPort = (this.io as any).httpServer?.address()?.port || 4200
+    this.ioPort =
+      (this.io as any).httpServer?.address()?.port || 4200
 
     // c.log(
     //   `gray`,
@@ -1535,25 +1536,29 @@ export class Game {
                 c.cargo[(a as any).id].basePrice.credits
               })` +
               `\n   buy avg  ` +
-              c.r2((a as any).buy / (a as any).count) +
+              c.r2(
+                (a as any).buy / ((a as any).count || 1),
+              ) +
               ` (${
-                (a as any).buy / (a as any).count >
+                (a as any).buy / ((a as any).count || 1) >
                 c.cargo[(a as any).id].basePrice.credits
                   ? `+`
                   : ``
               }${c.r2(
-                (a as any).buy / (a as any).count -
+                (a as any).buy / ((a as any).count || 1) -
                   c.cargo[(a as any).id].basePrice.credits,
               )}), ` +
               `\n   sell avg ` +
-              c.r2((a as any).sell / (a as any).count) +
+              c.r2(
+                (a as any).sell / ((a as any).count || 1),
+              ) +
               ` (${
-                (a as any).sell / (a as any).count >
+                (a as any).sell / ((a as any).count || 1) >
                 c.cargo[(a as any).id].basePrice.credits
                   ? `+`
                   : ``
               }${c.r2(
-                (a as any).sell / (a as any).count -
+                (a as any).sell / ((a as any).count || 1) -
                   c.cargo[(a as any).id].basePrice.credits,
               )}),`,
           )
