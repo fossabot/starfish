@@ -119,6 +119,11 @@ jobs:
           - folder: 'game'
 
     steps:
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: 4.0
+
       - name: Check Out Repo
         uses: actions/checkout@v2
 
