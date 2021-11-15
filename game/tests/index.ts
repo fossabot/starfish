@@ -16,12 +16,12 @@ import './Planet'
 import './Admin'
 import './Contracts'
 
-const host = `mongodb` ? isDocker() : `localhost`
+const host = isDocker() ? `mongodb` : `localhost`
 
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongo -u root -p root --host ${host} --eval "
+      `mongo -u 'root' -p 'root' --host ${host} --eval "
         db = db.getSiblingDB('starfish-test')
         db.createUser({
           user: 'testuser',
@@ -46,10 +46,13 @@ before(async () => {
 })
 
 after(async () => {
+  if (process.env.NODE_ENV === `staging`) {
+    return
+  }
   return new Promise((resolve) => {
     exec(
-      `mongo -u root -p root --host ${host} --eval "
-        db = db.getSiblingDB('starfish-test')
+      `mongo --host ${host} --eval "
+        db = db.getSiblingDB('starfish')
         db.dropUser('testuser')
         db.dropDatabase()"`,
       undefined,
