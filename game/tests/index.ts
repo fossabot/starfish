@@ -21,7 +21,7 @@ const host = isDocker() ? `--host mongodb` : ``
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongosh ${host} --eval "
+      `mongosh -u root -p root ${host} --eval "
         use starfish-test;
         db.createUser({
           user: 'testuser',
