@@ -16,12 +16,12 @@ import './Planet'
 import './Admin'
 import './Contracts'
 
-const host = isDocker() ? `mongodb` : `localhost`
+const host = isDocker() ? `--host mongodb` : ``
 
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongo -u 'root' -p 'root' --host ${host} --eval "
+      `mongo -u "root" -p "root" ${host} --eval "
         db = db.getSiblingDB('starfish')
         db.createUser({
           user: 'testuser',
@@ -51,7 +51,7 @@ after(async () => {
   }
   return new Promise((resolve) => {
     exec(
-      `mongo -u 'root' -p 'root' --host ${host} --eval "
+      `mongo -u "root" -p "root" ${host} --eval "
         db = db.getSiblingDB('starfish')
         db.dropUser('testuser')
         db.dropDatabase()"`,
