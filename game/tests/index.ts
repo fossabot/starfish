@@ -29,7 +29,7 @@ before(async () => {
           roles: [
             {
               role: 'readWrite',
-              db: 'starfish',
+              db: 'starfish-test',
             },
           ],
         });"`,

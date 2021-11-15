@@ -52,7 +52,7 @@ try {
 const defaultMongoOptions: GameDbOptions = {
   hostname: isDocker() ? `mongodb` : `localhost`,
   port: 27017,
-  dbName: `starfish`,
+  dbName: `starfish-test`,
   username: mongoUsername,
   password: mongoPassword,
 }

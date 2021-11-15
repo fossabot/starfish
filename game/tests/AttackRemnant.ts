@@ -29,7 +29,7 @@ const game = new Game()
 describe(`Attack remnant data`, () => {
   before(async () => {
     await game.loadGameDataFromDb({
-      dbName: `starfish`,
+      dbName: `starfish-test`,
       username: `testuser`,
       password: `testpassword`,
     })
