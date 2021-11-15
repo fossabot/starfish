@@ -37,8 +37,6 @@ describe(`Game`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
     })
     for (let i = 0; i < 20; i++)
       await g.addHumanShip(humanShipData())
@@ -52,8 +50,6 @@ describe(`Game`, () => {
     const g2 = new Game()
     await g2.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
     })
     expect(g2.minimumGameRadius).to.equal(prevUniverseSize)
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
