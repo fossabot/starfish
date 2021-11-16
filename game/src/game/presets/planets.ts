@@ -216,7 +216,7 @@ export function generateBasicPlanet(
 
     color = `hsl(${Math.round(hue)}, ${Math.round(
       Math.random() * 30 + 70,
-    )}%, ${Math.round(Math.random() * 40) + 40}%)`
+    )}%, ${Math.round(Math.random() * 40) + 50}%)`
   }
 
   const level = 0

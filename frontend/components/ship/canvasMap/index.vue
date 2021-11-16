@@ -624,6 +624,7 @@ export default Vue.extend({
 
     checkHoverPointForTooltip(e?: MouseEvent) {
       if (
+        !this.show ||
         !this.ship ||
         !this.ship.visible ||
         !this.isHovering

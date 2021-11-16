@@ -164,30 +164,34 @@ export class HumanShip extends CombatShip {
     if (data.tutorial && data.tutorial.step !== undefined) {
       this.tutorial = new Tutorial(data.tutorial, this)
       this.tagline = `📚 Tutorial Ship`
+    } else {
+      // * things that exclusively happen to non-tutorial ships
+
+      if (data.achievements)
+        this.addAchievement(data.achievements, true)
+
+      // human ships always know where their homeworld is
+      const homeworld = this.game?.getHomeworld(
+        this.guildId,
+      )
+      if (
+        homeworld &&
+        !this.seenPlanets.find((p) => p === homeworld)
+      )
+        this.discoverPlanet(homeworld)
+      // non-guild ships always know where all guild homeworlds are
+      else
+        for (let guildId of Object.keys(c.guilds)) {
+          const homeworld = this.game?.getHomeworld(
+            guildId as GuildId,
+          )
+          if (
+            homeworld &&
+            !this.seenPlanets.find((p) => p === homeworld)
+          )
+            this.discoverPlanet(homeworld)
+        }
     }
-
-    if (data.achievements)
-      this.addAchievement(data.achievements, true)
-
-    // human ships always know where their homeworld is
-    const homeworld = this.game?.getHomeworld(this.guildId)
-    if (
-      homeworld &&
-      !this.seenPlanets.find((p) => p === homeworld)
-    )
-      this.discoverPlanet(homeworld)
-    // non-guild ships always know where all guild homeworlds are
-    else
-      for (let guildId of Object.keys(c.guilds)) {
-        const homeworld = this.game?.getHomeworld(
-          guildId as GuildId,
-        )
-        if (
-          homeworld &&
-          !this.seenPlanets.find((p) => p === homeworld)
-        )
-          this.discoverPlanet(homeworld)
-      }
 
     this.recalculateShownPanels()
 
@@ -204,7 +208,7 @@ export class HumanShip extends CombatShip {
       this.addCrewMember(cm, true)
     })
 
-    if (!this.log.length && !this.tutorial)
+    if (!this.log.length && !this.tutorial?.currentStep)
       this.logEntry(
         [`You set out toward the stars.`],
         `medium`,
@@ -1856,7 +1860,7 @@ export class HumanShip extends CombatShip {
     const contentsToLog: LogContent = []
     cache.contents.forEach((cc, index) => {
       contentsToLog.push(
-        `${c.r2(cc.amount)}${
+        `${c.numberWithCommas(c.r2(cc.amount))}${
           [
             `credits`,
             `shipCosmeticCurrency`,

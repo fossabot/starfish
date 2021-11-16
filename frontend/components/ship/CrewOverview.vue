@@ -24,7 +24,7 @@
 
     <div
       class="sortpicker panesection flexcenter"
-      v-if="ship.crewMembers.length > 1"
+      v-if="dev || ship.crewMembers.length > 1"
     >
       <div>Sort by:</div>
       <Tabs
@@ -62,7 +62,7 @@ export default Vue.extend({
     return { c, sortBy: undefined }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState(['dev', 'userId', 'ship', 'crewMember']),
     show(): boolean {
       return (
         this.ship &&

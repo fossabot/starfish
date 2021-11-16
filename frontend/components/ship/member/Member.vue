@@ -26,7 +26,7 @@
           })
         "
       >
-        <div class="mainpreview">
+        <div class="mainpreview" v-if="!ship.tutorial">
           <ShipCrewIcon
             :crewMember="crewMember"
             :showDiscordIcon="false"

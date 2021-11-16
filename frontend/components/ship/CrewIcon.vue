@@ -118,7 +118,7 @@ export default Vue.extend({
 .discordicon {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 4%;
   width: 25%;
   border-radius: 50%;
   z-index: 3;
@@ -149,7 +149,7 @@ export default Vue.extend({
   position: absolute;
   z-index: 3;
   top: 0;
-  left: 0;
+  left: 4%;
   width: 28%;
   height: 28%;
 

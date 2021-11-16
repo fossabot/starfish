@@ -22,7 +22,7 @@
             "
             @click="advanceTutorial"
           >
-            {{ currentScript.advance }}
+            <span>{{ currentScript.advance }}</span>
           </button>
           <button
             v-else-if="
@@ -43,7 +43,7 @@
               confirmSkip = true
             "
           >
-            Skip Tutorial
+            <span>Skip Tutorial</span>
           </button>
 
           <portal to="prompt">

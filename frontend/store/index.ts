@@ -8,6 +8,7 @@ let slowModeUpdateInterval = null
 let alreadyLoggingIn = false
 
 export const state = () => ({
+  dev: process.env.NODE_ENV === `development`,
   lastUpdated: 0,
   connected: false,
   loading: false,

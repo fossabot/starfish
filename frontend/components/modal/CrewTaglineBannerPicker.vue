@@ -41,12 +41,16 @@
         :key="'hbgo' + option.id"
         @click="setBackground(option.id)"
       >
-        <img
-          :src="
-            '/images/headerBackgrounds/crew/' + option.url
-          "
-          :alt="option.id"
-        />
+        <div class="previewholder">
+          <ShipCrewIcon
+            :crewMember="{
+              ...crewMember,
+              background: option.url,
+            }"
+            :showDiscordIcon="false"
+            :showTagline="false"
+          />
+        </div>
         <div class="martopsmall">
           {{ option.id }}
         </div>
@@ -142,7 +146,7 @@ export default Vue.extend({
     background: rgba(255, 255, 255, 0.06);
   }
 
-  img {
+  .previewholder {
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: 150px;
   }

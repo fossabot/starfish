@@ -76,12 +76,12 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState(['dev', 'userId', 'ship', 'crewMember']),
     show() {
       return (
         this.ship &&
         this.ship.captain === this.userId &&
-        this.ship.crewMembers.length > 1 &&
+        (this.dev || this.ship.crewMembers.length > 1) &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewOverview'))
       )

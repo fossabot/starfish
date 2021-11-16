@@ -427,11 +427,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['ship', 'userId', 'crewMember']),
+    ...mapState(['dev', 'ship', 'userId', 'crewMember']),
     show(): boolean {
       return (
         this.ship &&
-        // this.ship.crewMembers.length > 1 &&
+        (this.dev || this.ship.crewMembers.length > 1) &&
         this.captain &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes(

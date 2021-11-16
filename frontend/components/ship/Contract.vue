@@ -326,6 +326,11 @@ export default Vue.extend({
   flex-shrink: 1;
 }
 
+.stolen .bottomrow,
+.done .bottomrow {
+  max-width: 100%;
+}
+
 .abandon {
   align-self: flex-end;
   margin-top: 0px;

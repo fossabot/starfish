@@ -133,6 +133,7 @@ interface PlanetLogStub extends BaseStub {
   type: `planet`
   name: string
   id: string
+  planetType: string
 }
 interface CacheStub extends BaseStub {
   location: CoordinatePair

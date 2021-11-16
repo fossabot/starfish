@@ -73,13 +73,13 @@
 
           <!-- <ShipNavPane v-if="ship && !ship.tutorial" /> -->
         </div>
-        <details
+        <!-- <details
           style="position: relative; margin-bottom: 2em"
           v-if="dev"
         >
           <summary>Raw Data</summary>
           <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
-        </details>
+        </details> -->
       </div>
     </div>
   </div>
@@ -105,6 +105,7 @@ export default Vue.extend({
 
   computed: {
     ...mapState([
+      'dev',
       'ship',
       'userId',
       'shipIds',
@@ -120,9 +121,6 @@ export default Vue.extend({
     },
     room(): CrewLocation {
       return this.crewMember?.location
-    },
-    dev(): boolean {
-      return process.env.NODE_ENV === 'development'
     },
   },
 
@@ -140,11 +138,19 @@ export default Vue.extend({
       if (curr && !prev) {
         setTimeout(() => (this.ready = true), 1000)
       }
+      if (curr?.id !== prev?.id) {
+        this.$store.commit('tooltip')
+        setTimeout(
+          () => this.$store.commit('tooltip'),
+          1000,
+        )
+      }
     },
     connected(): void {
       this.masonryElement?.position()
     },
     ready() {
+      this.$store.commit('tooltip')
       if (!this.ready)
         setTimeout(() => (this.ready = true), 6000)
     },

@@ -476,6 +476,7 @@ export class Planet extends Stubbable {
   toReference(): PlanetLogStub {
     return {
       type: `planet`,
+      planetType: this.planetType,
       name: this.name,
       id: this.id,
     }
