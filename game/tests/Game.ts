@@ -37,6 +37,8 @@ describe(`Game`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
     })
     for (let i = 0; i < 20; i++)
       await g.addHumanShip(humanShipData())

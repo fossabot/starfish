@@ -29,6 +29,8 @@ describe(`Attack remnant data`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
     })
     await g.db?.attackRemnant.wipe()
   })
@@ -38,6 +40,8 @@ describe(`Attack remnant data`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
     })
     while (g.attackRemnants.length) g.attackRemnants.pop()
 
@@ -71,6 +75,8 @@ describe(`Attack remnant data`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
     })
 
     expect(g.attackRemnants.length).to.equal(1)
