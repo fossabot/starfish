@@ -108,9 +108,8 @@ jobs:
 
     steps:
       - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.6.0
-        with:
-          mongodb-version: 4.0
+        run: |
+          docker run mongo:5.0 -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d
 
       - name: Check Out Repo
         uses: actions/checkout@v2
