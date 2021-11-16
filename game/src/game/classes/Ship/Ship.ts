@@ -102,6 +102,8 @@ export class Ship extends Stubbable {
   mass = 10000
   stats: ShipStatEntry[] = []
 
+  debugLocations: CoordinatePair[] = []
+
   constructor(
     {
       id,
@@ -257,6 +259,7 @@ export class Ship extends Stubbable {
   }
 
   tick() {
+    this.debugLocations = []
     this._stub = null // invalidate stub
 
     if (this.dead) return
@@ -555,6 +558,11 @@ export class Ship extends Stubbable {
     )
     this.updateThingsThatCouldChangeOnItemChange()
     return true
+  }
+
+  debugPoint(point: CoordinatePair) {
+    this.debugLocations.push(point)
+    this.toUpdate.debugLocations = this.debugLocations
   }
 
   // ----- radii -----
