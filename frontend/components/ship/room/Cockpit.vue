@@ -187,6 +187,28 @@
 
       <span>
         <button
+          @click="
+            setTargetObject({
+              id: ship.id,
+              location: ship.location,
+            })
+          "
+          :class="{
+            secondary:
+              !ship ||
+              !ship.location ||
+              !crewMember ||
+              !crewMember.targetLocation ||
+              ship.location[0] !==
+                crewMember.targetLocation[0] ||
+              ship.location[1] !==
+                crewMember.targetLocation[1],
+          }"
+        >
+          <span>Stop</span>
+        </button></span
+      ><span>
+        <button
           @click="clearTarget"
           :class="{
             secondary: crewMember.targetLocation,

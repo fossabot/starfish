@@ -115,14 +115,14 @@ ${c.percentToTextBars(
           )}
 🔋 ${c.r2(context.crewMember.stamina * 100, 0)}%`,
         })
-        youFields.push({
-          inline: true,
-          name: `Cockpit Charge`,
-          value: `${c.percentToTextBars(
-            context.crewMember.cockpitCharge,
-          )}
-🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
-        })
+        //         youFields.push({
+        //           inline: true,
+        //           name: `Cockpit Charge`,
+        //           value: `${c.percentToTextBars(
+        //             context.crewMember.cockpitCharge,
+        //           )}
+        // 🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
+        //         })
         youFields.push({
           inline: true,
           name: c.capitalize(c.baseCurrencyPlural),

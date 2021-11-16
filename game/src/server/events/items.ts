@@ -70,7 +70,7 @@ export default function (
           },
           `bought for ${c.priceToString(price)}.`,
         ],
-        `high`,
+        `critical`,
         `ship`,
         true,
       )
@@ -154,7 +154,7 @@ export default function (
             c.r2(price, 0),
           )}.`,
         ],
-        `high`,
+        `critical`,
         `ship`,
         true,
       )

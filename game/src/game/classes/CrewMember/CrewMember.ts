@@ -216,14 +216,16 @@ export class CrewMember extends Stubbable {
 
     // ----- reset targetLocation if targetObject has moved/gone out of sight -----
     if (this.location === `cockpit` && this.targetObject) {
-      const movingObject =
-        this.ship.visible.comets.find(
-          (e) => e.id === (this.targetObject as any).id,
-        ) ||
-        this.ship.visible.ships.find(
-          (e) => e.id === (this.targetObject as any).id,
-        )
-      // * if more things start moving we might need to update this to include them
+      const isSelf = this.targetObject?.id === this.ship.id
+      const movingObject = isSelf
+        ? this.ship
+        : this.ship.visible.comets.find(
+            (e) => e.id === (this.targetObject as any).id,
+          ) ||
+          this.ship.visible.ships.find(
+            (e) => e.id === (this.targetObject as any).id,
+          )
+      // if more things start moving we might need to update this to include them
 
       if (!movingObject) {
         this.targetObject = false

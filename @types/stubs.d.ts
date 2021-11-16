@@ -65,6 +65,8 @@ interface ShipStub extends BaseStub {
 
   spawnPoint?: CoordinatePair
   level?: number
+
+  debugLocations?: CoordinatePair[]
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
@@ -95,6 +97,9 @@ interface CrewMemberStub extends BaseStub {
   attackTargetId: string
   attackGuilds?: GuildId[]
   targetLocation: CoordinatePair | false
+  targetObject?:
+    | { id: string; type: string; location: CoordinatePair }
+    | false
   repairPriority: RepairPriority
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
