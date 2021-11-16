@@ -486,7 +486,7 @@ export class HumanShip extends CombatShip {
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
-          `Discovered`,
+          `🗺️ Discovered`,
           {
             text: p.name,
             color: p.color,
@@ -512,7 +512,7 @@ export class HumanShip extends CombatShip {
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
-          `Discovered`,
+          `:map: Discovered`,
           {
             text: l.name,
             color: l.color,
@@ -951,6 +951,7 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
+          `⏩`,
           thruster.name,
           `thrusted towards`,
           ...targetData,
@@ -1069,6 +1070,7 @@ export class HumanShip extends CombatShip {
     if (charge > 0.5)
       this.logEntry(
         [
+          `⏪`,
           thruster.name,
           `braked by ${c.speedNumber(
             (this.speed - currentMagnitude) * 60 * 60 * -1,
@@ -1748,7 +1750,7 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
-          `Landed on`,
+          `🛬 Landed on`,
           {
             text: this.planet.name,
             color: this.planet.color,
@@ -1767,6 +1769,7 @@ export class HumanShip extends CombatShip {
           if (s === this || !s.planet) return
           s.logEntry(
             [
+              `🛬`,
               {
                 text: this.name,
                 color: this.guildId
@@ -1803,7 +1806,7 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
-          `Departed from`,
+          `🛫 Departed from`,
           {
             text: previousPlanet.name,
             color: previousPlanet.color,
@@ -1823,6 +1826,7 @@ export class HumanShip extends CombatShip {
           if (s === this || !s.planet) return
           s.logEntry(
             [
+              `🛫`,
               {
                 text: this.name,
                 color: this.guildId
@@ -1830,7 +1834,7 @@ export class HumanShip extends CombatShip {
                   : undefined,
                 tooltipData: this.toReference() as any,
               },
-              `landed on`,
+              `departed from`,
               {
                 text: s.planet.name,
                 color: s.planet.color,
@@ -1893,7 +1897,7 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `💳${c.r2(amount)} ${
+        `💳 ${c.r2(amount)} ${
           c.baseCurrencyPlural
         } deposited in the bank.`,
       ],
@@ -1922,7 +1926,7 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `${c.priceToString({
+        `💳 ${c.priceToString({
           credits: c.r2(amount),
         })} withdrawn from the bank.`,
       ],
@@ -1987,7 +1991,7 @@ export class HumanShip extends CombatShip {
     })
     this.logEntry(
       [
-        `Picked up`,
+        `📦 Picked up`,
         ...contentsToLog,
         `!${
           cache.message &&
@@ -2119,7 +2123,9 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} contributed 💳${c.numberWithCommas(
+        `💸 ${
+          member.name
+        } contributed 💳 ${c.numberWithCommas(
           c.r2(amount, 0),
         )}.`,
         `low`,
@@ -2243,7 +2249,7 @@ export class HumanShip extends CombatShip {
       this.location,
       from.location,
     )
-    const prefix = `**${from.name}** says: *(${c.r2(
+    const prefix = `🗣️ **${from.name}** says: *(${c.r2(
       distance,
       2,
     )}AU away, ${c.r2(
