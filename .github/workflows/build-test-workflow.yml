@@ -66,20 +66,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Image digest
-        run:
-          echo ${{ steps.docker_build.outputs.digest }}
-
-          # - name: Build and push Docker images
-          #   uses: whoan/docker-build-with-cache-action@v5
-          #   # if: steps.changes.outputs.src == 'true'
-          #   with:
-          #     username: '${{ secrets.DOCKER_HUB_USERNAME }}'
-          #     password: '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}'
-          #     context: .
-          #     dockerfile: ${{ matrix.dockerfile }}
-          #     image_name: starfishgame/${{ matrix.image }}
-          #     image_tag: pull-request-${{ github.event.number }}
-          # push_git_tag: true
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
   run-docker-compose:
     needs: [docker-build-publish]
@@ -121,12 +108,8 @@ jobs:
 
     steps:
       - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.6.0
-        with:
-          mongodb-version: 4.0
-          mongodb-db: starfish-test
-          mongodb-username: testuser
-          mongodb-password: testpass
+        run: |
+          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d mongo:5.0
 
       - name: Check Out Repo
         uses: actions/checkout@v2
