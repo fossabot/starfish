@@ -5,6 +5,7 @@ import { CombatShip } from '../../CombatShip'
 export const commonTaglines = [
   { value: ``, weight: 8 },
   { value: `Thermal Rider`, weight: 0.8 },
+  { value: `Flocka`, weight: 0.2 },
   { value: `Glidin'`, weight: 0.8 },
   { value: `Vegetarian, I Promise`, weight: 0.8 },
   { value: `Wing and a Prayer`, weight: 0.8 },

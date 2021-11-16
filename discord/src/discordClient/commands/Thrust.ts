@@ -29,9 +29,12 @@ export class ThrustCommand implements Command {
       location: CoordinatePair | false
       name: string
     }[] = []
-
     validTargets.push({
-      id: `average`,
+      ...context.ship,
+      name: `Stop`,
+    })
+    validTargets.push({
+      id: ``,
       location: false,
       name: `Crew Target Average`,
     })
@@ -103,10 +106,13 @@ export class ThrustCommand implements Command {
         if (`error` in res) await context.reply(res.error)
         else {
           await context.reply(
-            `${context.nickname} set their thrust target ` +
-              (target.id === `average`
-                ? `to the average of other crew members in the cockpit`
-                : `towards ` + target.name) +
+            `${context.nickname} ` +
+              (target.id === context.ship?.id
+                ? `began braking`
+                : `set their thrust target ` +
+                  (target.id === ``
+                    ? `to the average of other crew members in the cockpit`
+                    : `towards ` + target.name)) +
               `.`,
           )
           // await context.refreshShip()

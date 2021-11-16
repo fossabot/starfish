@@ -252,17 +252,18 @@ export default function (
           error: `No crew member found by that id.`,
         })
 
-      crewMember.targetObject = targetObject
+      crewMember.targetObject = targetObject || false
       crewMember.toUpdate.targetObject =
         crewMember.targetObject
 
-      if (targetObject?.location) {
+      if (targetObject?.location)
         crewMember.targetLocation = [
           ...targetObject.location,
         ]
-        crewMember.toUpdate.targetLocation =
-          crewMember.targetLocation
-      }
+      else crewMember.targetLocation = false
+
+      crewMember.toUpdate.targetLocation =
+        crewMember.targetLocation
 
       callback({ data: crewMember.targetObject })
 

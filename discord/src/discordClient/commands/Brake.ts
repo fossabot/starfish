@@ -90,9 +90,7 @@ export class BrakeCommand implements Command {
 
     if (`error` in res) context.reply(res.error)
     else {
-      context.reply(
-        `${context.nickname} targeted the ship's current location, which begins to slow the ship.`,
-      )
+      context.reply(`${context.nickname} began braking.`)
       // await context.refreshShip()
       // context.reply(
       //   `${
