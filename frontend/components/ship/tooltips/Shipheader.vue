@@ -58,8 +58,9 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .topzone {
+  padding: 0;
   width: 100%;
-  min-width: 200px;
+  width: 230px;
   position: relative;
   overflow: hidden;
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);

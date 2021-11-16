@@ -37,6 +37,11 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
+.headerholder {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
 .tooltipheader {
   padding: 0;
   width: 200px;

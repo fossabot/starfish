@@ -541,52 +541,6 @@ function getGuildChangePrice(ship: {
   }
 }
 
-function getShipTaglinePrice(
-  cosmetic: PlanetShipCosmetic,
-): Price {
-  const price: Price = {}
-  price.shipCosmeticCurrency = Math.ceil(
-    (cosmetic.tagline
-      ? gameConstants.baseShipTaglinePrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-function getShipBackgroundPrice(
-  cosmetic: PlanetShipCosmetic,
-): Price {
-  const price: Price = {}
-  price.shipCosmeticCurrency = Math.ceil(
-    (cosmetic.headerBackground
-      ? gameConstants.baseShipBackgroundPrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-
-function getCrewTaglinePrice(
-  cosmetic: PlanetCrewCosmetic,
-): Price {
-  const price: Price = {}
-  price.crewCosmeticCurrency = Math.ceil(
-    (cosmetic.tagline
-      ? gameConstants.baseCrewTaglinePrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-function getCrewBackgroundPrice(
-  cosmetic: PlanetCrewCosmetic,
-): Price {
-  const price: Price = {}
-  price.crewCosmeticCurrency = Math.ceil(
-    (cosmetic.background
-      ? gameConstants.baseCrewBackgroundPrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-
 function getPlanetPopulation(planet: PlanetStub): number {
   if (!planet) return 0
   return math.r2(
@@ -741,10 +695,6 @@ export default {
   getItemSellPrice,
   getChassisSwapPrice,
   getGuildChangePrice,
-  getShipTaglinePrice,
-  getShipBackgroundPrice,
-  getCrewTaglinePrice,
-  getCrewBackgroundPrice,
   canAfford,
   // getPlanetDescription,
   getPlanetDefenseRadius,

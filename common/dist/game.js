@@ -339,34 +339,6 @@ function getGuildChangePrice(ship) {
             math_1.default.r2((ship.crewMembers?.length || 1) / 10, 0, true),
     };
 }
-function getShipTaglinePrice(cosmetic) {
-    const price = {};
-    price.shipCosmeticCurrency = Math.ceil((cosmetic.tagline
-        ? gameConstants_1.default.baseShipTaglinePrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
-function getShipBackgroundPrice(cosmetic) {
-    const price = {};
-    price.shipCosmeticCurrency = Math.ceil((cosmetic.headerBackground
-        ? gameConstants_1.default.baseShipBackgroundPrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
-function getCrewTaglinePrice(cosmetic) {
-    const price = {};
-    price.crewCosmeticCurrency = Math.ceil((cosmetic.tagline
-        ? gameConstants_1.default.baseCrewTaglinePrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
-function getCrewBackgroundPrice(cosmetic) {
-    const price = {};
-    price.crewCosmeticCurrency = Math.ceil((cosmetic.background
-        ? gameConstants_1.default.baseCrewBackgroundPrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
 function getPlanetPopulation(planet) {
     if (!planet)
         return 0;
@@ -480,10 +452,6 @@ exports.default = {
     getItemSellPrice,
     getChassisSwapPrice,
     getGuildChangePrice,
-    getShipTaglinePrice,
-    getShipBackgroundPrice,
-    getCrewTaglinePrice,
-    getCrewBackgroundPrice,
     canAfford,
     // getPlanetDescription,
     getPlanetDefenseRadius,

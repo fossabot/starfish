@@ -41,12 +41,6 @@ const shipCosmeticCurrencyPlural = `bubbloons`
 const crewCosmeticCurrencySingular = `squidcoin`
 const crewCosmeticCurrencyPlural = `squidcoin`
 
-const baseShipTaglinePrice = 2
-const baseShipBackgroundPrice = 4
-
-const baseCrewTaglinePrice = 1000
-const baseCrewBackgroundPrice = 2000
-
 const baseSightRange = 0.05
 const baseBroadcastRange = 0.002
 
@@ -126,91 +120,6 @@ const tactics: CombatTactic[] = [
 
 const baseCargoSellMultiplier = 0.3
 
-const buyableShipBackgrounds: {
-  rarity: number
-  value: ShipBackground
-}[] = [
-  {
-    value: { id: `Big Bertha`, url: `blue2.svg` },
-    rarity: 5,
-  },
-  {
-    value: { id: `Pescatarian`, url: `purple2.svg` },
-    rarity: 9,
-  },
-  {
-    value: { id: `Grappler`, url: `green2.svg` },
-    rarity: 13,
-  },
-]
-const buyableShipTaglines: {
-  rarity: number
-  value: string
-}[] = [
-  { value: `Very Shallow`, rarity: 8 },
-  { value: `Splish Splash`, rarity: 10 },
-  { value: `Holy Mackerel!`, rarity: 12 },
-  { value: `Flamingo Hunter`, rarity: 12 },
-  { value: `Eagle Hunter`, rarity: 12 },
-  { value: `Chicken Hunter`, rarity: 12 },
-  { value: `Gull Hunter`, rarity: 12 },
-  { value: `Small Pond 4 Life`, rarity: 14 },
-  { value: `Nautical Nonsense`, rarity: 16 },
-  { value: `Whale, I'll Be!`, rarity: 18 },
-  { value: `Yarr`, rarity: 20 },
-  { value: `Fish 'n' Chips`, rarity: 22 },
-  { value: `Gone Fishing`, rarity: 24 },
-  { value: `Omega 3 Fatty Acid`, rarity: 26 },
-  { value: `Washed Up`, rarity: 28 },
-]
-
-const buyableCrewBackgrounds: {
-  rarity: number
-  value: CrewBackground
-}[] = [
-  {
-    value: { id: `Ink Splat`, url: `blobs1.svg` },
-    rarity: 5,
-  },
-  {
-    value: { id: `Fronds`, url: `blobs2.svg` },
-    rarity: 7,
-  },
-  {
-    value: { id: `Supernova`, url: `nebula1.webp` },
-    rarity: 10,
-  },
-  {
-    value: { id: `Nebula`, url: `nebula2.webp` },
-    rarity: 12,
-  },
-  {
-    value: { id: `Super Star`, url: `star1.svg` },
-    rarity: 14,
-  },
-  {
-    value: { id: `Starfish`, url: `logo.svg` },
-    rarity: 16,
-  },
-]
-// todo achievements to earn "mining etc specialist" taglines
-const buyableCrewTaglines: {
-  rarity: number
-  value: string
-}[] = [
-  { value: `Squirt`, rarity: 3 },
-  { value: `Deckhand`, rarity: 4 },
-  { value: `Swabbie`, rarity: 5 },
-  { value: `Sleepyhead`, rarity: 5 },
-  { value: `Nocturnal`, rarity: 7 },
-  { value: `Beam Me Up!`, rarity: 9 },
-  { value: `Stowaway`, rarity: 10 },
-  { value: `Sailor`, rarity: 11 },
-  { value: `Aye Aye Cap'n!`, rarity: 13 },
-  { value: `Admiral`, rarity: 15 },
-  { value: `Captain Hook`, rarity: 17 },
-]
-
 export default {
   defaultGameSettings,
 
@@ -220,15 +129,6 @@ export default {
   shipCosmeticCurrencyPlural,
   crewCosmeticCurrencySingular,
   crewCosmeticCurrencyPlural,
-
-  baseShipTaglinePrice,
-  baseShipBackgroundPrice,
-  buyableShipBackgrounds,
-  buyableShipTaglines,
-  baseCrewTaglinePrice,
-  baseCrewBackgroundPrice,
-  buyableCrewBackgrounds,
-  buyableCrewTaglines,
 
   supportServerLink,
   baseSightRange,

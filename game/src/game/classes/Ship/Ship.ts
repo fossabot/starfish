@@ -168,7 +168,12 @@ export class Ship extends Stubbable {
         ...((c
           .randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld && p.pacifist,
+              (p) =>
+                !p.homeworld &&
+                p.pacifist &&
+                c.distance([0, 0], p.location) <
+                  (this.game?.settings.safeZoneRadius ||
+                    c.defaultGameSettings.safeZoneRadius),
             ) || [],
           )
           ?.location.map(
