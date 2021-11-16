@@ -1,7 +1,7 @@
 name: Build and push Docker images
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, synchronize]
     branches:
       - '*'
 jobs:
