@@ -702,7 +702,7 @@ export abstract class CombatShip extends Ship {
           if (`logEntry` in attacker)
             attacker.logEntry(
               [
-                `❌``Disabled`,
+                `❌ Disabled`,
                 {
                   text:
                     ((this as AIShip).speciesId
