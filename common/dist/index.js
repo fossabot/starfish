@@ -41,6 +41,7 @@ const rooms_1 = __importDefault(require("./rooms"));
 const stubify_1 = __importDefault(require("./stubify"));
 const items = __importStar(require("./items"));
 const achievements_1 = __importDefault(require("./achievements"));
+const cosmetics = __importStar(require("./cosmetics"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -51,6 +52,7 @@ exports.default = {
     ...gameConstants_1.default,
     ...physics_1.default,
     ...discord_1.default,
+    ...cosmetics,
     items,
     achievements: achievements_1.default,
     rooms: rooms_1.default,

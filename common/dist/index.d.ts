@@ -8,28 +8,28 @@ declare const _default: {
         [key: string]: Achievement;
     };
     rooms: {
-        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
+        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
     };
     crewPassives: {
-        boostBrake: CrewPassiveData;
-        boostBroadcastRange: CrewPassiveData;
-        boostRepairSpeed: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
-        boostThrust: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
-        boostXpGain: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
         cargoSpace: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
+        boostBrake: CrewPassiveData;
         boostMaxStamina: CrewPassiveData;
     };
     cargo: typeof cargo;
@@ -52,14 +52,35 @@ declare const _default: {
         shrimp: BaseSpeciesData;
     };
     guilds: {
+        fowl: BaseGuildData;
         trader: BaseGuildData;
-        peacekeeper: BaseGuildData;
-        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        fowl: BaseGuildData;
+        explorer: BaseGuildData;
+        peacekeeper: BaseGuildData;
     };
     baseShipPassiveData: {
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostThrust: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -75,25 +96,7 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostMinePayouts: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostThrust: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -138,9 +141,6 @@ declare const _default: {
         boostDamageToItemType: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostStaminaRegeneration: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         autoRepair: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -153,6 +153,30 @@ declare const _default: {
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
+    getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
+    getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
+    getCrewTaglinePrice(cosmetic: PlanetCrewCosmetic): Price;
+    getCrewBackgroundPrice(cosmetic: PlanetCrewCosmetic): Price;
+    baseShipTaglinePrice: 2;
+    baseShipBackgroundPrice: 3;
+    baseCrewTaglinePrice: 1000;
+    baseCrewBackgroundPrice: 2000;
+    buyableShipBackgrounds: {
+        rarity: number;
+        value: ShipBackground;
+    }[];
+    buyableShipTaglines: {
+        rarity: number;
+        value: string;
+    }[];
+    buyableCrewBackgrounds: {
+        rarity: number;
+        value: CrewBackground;
+    }[];
+    buyableCrewTaglines: {
+        rarity: number;
+        value: string;
+    }[];
     discordBotId: string;
     discordBotPermissionsString: string;
     frontendUrl: string;
@@ -191,26 +215,6 @@ declare const _default: {
     shipCosmeticCurrencyPlural: string;
     crewCosmeticCurrencySingular: string;
     crewCosmeticCurrencyPlural: string;
-    baseShipTaglinePrice: number;
-    baseShipBackgroundPrice: number;
-    buyableShipBackgrounds: {
-        rarity: number;
-        value: ShipBackground;
-    }[];
-    buyableShipTaglines: {
-        rarity: number;
-        value: string;
-    }[];
-    baseCrewTaglinePrice: number;
-    baseCrewBackgroundPrice: number;
-    buyableCrewBackgrounds: {
-        rarity: number;
-        value: CrewBackground;
-    }[];
-    buyableCrewTaglines: {
-        rarity: number;
-        value: string;
-    }[];
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;
@@ -288,10 +292,6 @@ declare const _default: {
         guildId: GuildId;
         crewMembers: CrewMemberStub[];
     }) => Price;
-    getShipTaglinePrice: (cosmetic: PlanetShipCosmetic) => Price;
-    getShipBackgroundPrice: (cosmetic: PlanetShipCosmetic) => Price;
-    getCrewTaglinePrice: (cosmetic: PlanetCrewCosmetic) => Price;
-    getCrewBackgroundPrice: (cosmetic: PlanetCrewCosmetic) => Price;
     canAfford: (price: Price, ship: {
         captain?: string | null | undefined;
         commonCredits?: number | undefined;

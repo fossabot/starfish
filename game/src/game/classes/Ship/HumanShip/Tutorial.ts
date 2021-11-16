@@ -622,7 +622,9 @@ export class Tutorial {
         nextStepTrigger: {
           location: {
             location: [
-              ...this.ship.seenPlanets[0].location,
+              ...(this.ship.seenPlanets[0]?.location || [
+                0, 0,
+              ]),
             ],
             label: `back home`,
           },
@@ -742,11 +744,11 @@ export class Tutorial {
             ),
           )?.location || [0, 0]),
       ].map(
-        (l) =>
-          l +
-          (this.ship.game?.settings.arrivalThreshold ||
-            c.defaultGameSettings.arrivalThreshold) *
-            (Math.random() - 0.5),
+        (l) => l,
+        //  +
+        // (this.ship.game?.settings.arrivalThreshold ||
+        //   c.defaultGameSettings.arrivalThreshold) *
+        //   (Math.random() - 0.5),
       ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
     if (this.step === -1) {

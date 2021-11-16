@@ -106,7 +106,7 @@ const planetSchemaFields: Record<
     crewCosmetics: [
       {
         tagline: String,
-        headerBackground: { id: String, url: String },
+        background: { id: String, url: String },
         priceMultiplier: Number,
       },
     ],

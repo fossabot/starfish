@@ -14,7 +14,11 @@
         <Tab
           v-for="cm in ship.crewMembers"
           :key="'cm' + cm.id"
-          :title="c.species[cm.speciesId].icon + cm.name"
+          :title="
+            (c.species[cm.speciesId]
+              ? c.species[cm.speciesId].icon
+              : '') + cm.name
+          "
         >
           <ul>
             <li>
