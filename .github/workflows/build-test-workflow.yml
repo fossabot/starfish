@@ -109,7 +109,7 @@ jobs:
     steps:
       - name: Start MongoDB
         run: |
-          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d mongo:5.0
+          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d -p 27017 mongo:5.0
 
       - name: Check Out Repo
         uses: actions/checkout@v2
