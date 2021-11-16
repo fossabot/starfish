@@ -52,6 +52,8 @@ describe(`Game`, () => {
     const g2 = new Game()
     await g2.loadGameDataFromDb({
       dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
     })
     expect(g2.minimumGameRadius).to.equal(prevUniverseSize)
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
