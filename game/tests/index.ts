@@ -16,13 +16,13 @@ import './Planet'
 import './Admin'
 import './Contracts'
 
-const host = isDocker() ? `--host mongodb` : ``
+const host = isDocker() ? `mongodb` : `localhost`
 
 before(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongosh ${host} --eval "
-        use starfish-test;
+      `mongo -u 'root' -p 'root' --host ${host} --eval "
+        db = db.getSiblingDB('starfish-test')
         db.createUser({
           user: 'testuser',
           pwd: 'testpassword',
@@ -32,7 +32,7 @@ before(async () => {
               db: 'starfish-test',
             },
           ],
-        });"`,
+        })"`,
       undefined,
       (error, stdout, stderr) => {
         if (error) console.log(error)
@@ -48,8 +48,8 @@ before(async () => {
 after(async () => {
   return new Promise((resolve) => {
     exec(
-      `mongosh ${host} --eval "
-        use starfish-test;
+      `mongo --host ${host} --eval "
+        db = db.getSiblingDB('starfish')
         db.dropUser('testuser')
         db.dropDatabase()"`,
       undefined,
