@@ -607,7 +607,7 @@ export default function (
         )
         if (captain) {
           const logEntry: LogContent = [
-            `New orders: "${orders.verb}`,
+            `❕ New orders: "${orders.verb}`,
           ]
           if (orders.target)
             logEntry.push({

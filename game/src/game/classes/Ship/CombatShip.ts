@@ -477,7 +477,7 @@ export abstract class CombatShip extends Ship {
     if (attackResult.miss)
       this.logEntry(
         [
-          `Missed`,
+          `💨 Missed`,
           {
             text:
               ((target as AIShip).speciesId
@@ -506,7 +506,7 @@ export abstract class CombatShip extends Ship {
     else {
       this.logEntry(
         [
-          `Hit`,
+          `💥 Hit`,
           {
             text:
               ((target as AIShip).speciesId
@@ -688,6 +688,7 @@ export abstract class CombatShip extends Ship {
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
             [
+              `❌`,
               {
                 text: armor.displayName,
                 color: `var(--item)`,
@@ -701,7 +702,7 @@ export abstract class CombatShip extends Ship {
           if (`logEntry` in attacker)
             attacker.logEntry(
               [
-                `Disabled`,
+                `❌``Disabled`,
                 {
                   text:
                     ((this as AIShip).speciesId
@@ -828,6 +829,7 @@ export abstract class CombatShip extends Ship {
         setTimeout(() => {
           this.logEntry(
             [
+              `❌`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
@@ -849,7 +851,7 @@ export abstract class CombatShip extends Ship {
           )
             attacker.logEntry(
               [
-                `Disabled`,
+                `❌ Disabled`,
                 {
                   text:
                     ((this as AIShip).speciesId
@@ -898,14 +900,14 @@ export abstract class CombatShip extends Ship {
 
     c.log(
       `gray`,
-      `${this.name} takes ${c.r2(
+      `💥 ${this.name} takes ${c.r2(
         totalDamageDealt,
       )} damage from ${attacker.name}'s ${
         attack.weapon
           ? attack.weapon.displayName
           : `passive effect`
       }, and ${
-        didDie ? `dies` : `has ${c.r2(this.hp)} hp left`
+        didDie ? `dies ☠️` : `has ${c.r2(this.hp)} hp left`
       }.`,
     )
 
@@ -927,10 +929,10 @@ export abstract class CombatShip extends Ship {
       this.logEntry(
         [
           attack.miss
-            ? `Missed by`
+            ? `💨 Missed by`
             : attack.didCrit
-            ? `Crit by`
-            : `Hit by`,
+            ? `⚡ Crit by`
+            : `💥 Hit by`,
 
           {
             text:
@@ -982,10 +984,10 @@ export abstract class CombatShip extends Ship {
       this.logEntry(
         [
           attack.miss
-            ? `Missed by`
+            ? `💨 Missed by`
             : attack.didCrit
-            ? `Crit by`
-            : `Hit by`,
+            ? `⚡ Crit by`
+            : `💥 Hit by`,
           {
             text:
               ((attacker as AIShip).speciesId

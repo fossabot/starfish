@@ -218,7 +218,7 @@ export class Comet extends MiningPlanet {
       this.shipsAt.forEach((ship) => {
         ship.logEntry(
           [
-            `Resources on`,
+            `📉 Resources on`,
             {
               text: this.name,
               color: this.color,

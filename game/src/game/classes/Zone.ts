@@ -61,7 +61,7 @@ export class Zone extends Stubbable {
           this.game?.gameSoftRadius || 1,
         )
         ship.logEntry(
-          `Warped across the universe!`,
+          `🌀 Warped across the universe!`,
           `critical`,
           `mystery`,
         )

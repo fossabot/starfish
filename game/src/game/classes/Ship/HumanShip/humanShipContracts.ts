@@ -79,7 +79,7 @@ export function startContract(
 
   this.logEntry(
     [
-      `Accepted contract for`,
+      `🤠 Accepted contract for`,
       {
         text:
           ((target as AIShip).speciesId
@@ -140,7 +140,7 @@ export function stolenContract(
   if (target)
     this.logEntry(
       [
-        `Contract for`,
+        `😖 Contract for`,
         {
           text:
             ((target as AIShip).speciesId
@@ -189,7 +189,7 @@ export function completeContract(
   if (target)
     this.logEntry(
       [
-        `Contract complete! Return to`,
+        `✅ Contract complete! Return to`,
         planet
           ? {
               text: planet.name,
@@ -228,7 +228,7 @@ export function checkContractTimeOuts(this: HumanShip) {
     if (target)
       this.logEntry(
         [
-          `Contract for`,
+          `😞 Contract for`,
           {
             text:
               ((target as AIShip).speciesId
@@ -265,7 +265,7 @@ export function abandonContract(
   if (target)
     this.logEntry(
       [
-        `Contract for`,
+        `🚮 Contract for`,
         {
           text:
             ((target as AIShip).speciesId
@@ -318,14 +318,18 @@ export function checkTurnInContract(
       ),
     }
     this.logEntry(
-      `Contract redeemed for ${c.priceToString(reward)}!`,
+      `💰 Contract redeemed for ${c.priceToString(
+        reward,
+      )}!`,
       `high`,
       `contract`,
       true,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
-      `Contract redeemed for ${c.priceToString(reward)}!`,
+      `💰 Contract redeemed for ${c.priceToString(
+        reward,
+      )}!`,
       `high`,
       `contract`,
       true,

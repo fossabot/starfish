@@ -59,6 +59,7 @@ export default function (
       ship.addItem({ type: itemType, id: itemId })
       ship.logEntry(
         [
+          `🏷️`,
           {
             text: (c.items[itemForSale.type] as any)[
               itemForSale.id
@@ -145,6 +146,7 @@ export default function (
 
       ship.logEntry(
         [
+          `🏷️`,
           {
             text: heldItem.displayName,
             color: `var(--item)`,
@@ -232,6 +234,7 @@ export default function (
       ship.swapChassis(c.items.chassis[itemForSale.id])
       ship.logEntry(
         [
+          `🏷️`,
           {
             text: c.items.chassis[itemForSale.id]!
               .displayName,

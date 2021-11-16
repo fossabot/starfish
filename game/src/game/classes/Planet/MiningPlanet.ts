@@ -209,7 +209,7 @@ export class MiningPlanet extends Planet {
         ship.logEntry(
           currentlyMiningShips.length > 1
             ? [
-                `Mined ${c.r2(finalPayoutAmount, 0)}${
+                `⛏️ Mined ${c.r2(finalPayoutAmount, 0)}${
                   c.cargo[resourceId] ? ` tons of` : ``
                 }`,
                 {
@@ -248,7 +248,7 @@ export class MiningPlanet extends Planet {
                 )}${c.cargo[resourceId] ? ` tons` : ``}.`,
               ]
             : [
-                `Mined ${c.r2(finalPayoutAmount, 0)}${
+                `⛏️ Mined ${c.r2(finalPayoutAmount, 0)}${
                   c.cargo[resourceId] ? ` tons of` : ``
                 }`,
                 {
@@ -334,6 +334,7 @@ export class MiningPlanet extends Planet {
       this.shipsAt.forEach((ship) => {
         ship.logEntry(
           [
+            `📉`,
             {
               text: this.name,
               color: this.color,

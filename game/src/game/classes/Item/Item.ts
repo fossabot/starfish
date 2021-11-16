@@ -126,6 +126,7 @@ export class Item extends Stubbable {
       if (this.announceWhenRepaired)
         this.ship.logEntry(
           [
+            `🛠️`,
             {
               text: this.displayName,
               color: `var(--item)`,

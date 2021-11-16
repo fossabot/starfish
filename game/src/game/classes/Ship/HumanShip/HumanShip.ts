@@ -2833,7 +2833,7 @@ export class HumanShip extends CombatShip {
     super.die(attacker)
 
     setTimeout(() => {
-      this.logEntry(`Ship destroyed!`, `notify`, `die`)
+      this.logEntry(`☠️ Ship destroyed!`, `notify`, `die`)
 
       this.checkAchievements(`death`)
     }, 100)

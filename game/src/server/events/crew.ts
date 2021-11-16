@@ -634,7 +634,7 @@ export default function (
       ship.commonCredits -= amount
       ship.toUpdate.commonCredits = ship.commonCredits
       ship.logEntry(
-        `Dispersed 💳${c.r2(amount)} ${
+        `Dispersed 💳 ${c.r2(amount)} ${
           c.baseCurrencyPlural
         } from common fund.`,
         `medium`,
@@ -884,7 +884,7 @@ export default function (
         })
 
         ship.logEntry(
-          `${crewMember.name} dropped ${amount}${
+          `📦 ${crewMember.name} dropped ${amount}${
             cargoId === `credits` ? `` : ` tons of`
           } ${cargoId}.`,
           `low`,
@@ -961,7 +961,7 @@ export default function (
       ship.repair(hp)
 
       ship.logEntry(
-        `${crewMember.name} bought ${c.r2(
+        `🛠️ ${crewMember.name} bought ${c.r2(
           hp,
         )} hp of repairs.`,
         `medium`,
