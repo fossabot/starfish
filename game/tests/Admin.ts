@@ -89,8 +89,6 @@ describe(`Admin resetters`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
     })
 
     for (let i = 0; i < 30; i++) {
@@ -127,8 +125,6 @@ describe(`Admin resetters`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
     })
 
     for (let i = 0; i < 15; i++) {
@@ -166,8 +162,6 @@ describe(`Admin resetters`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
     })
 
     for (let i = 0; i < 30; i++) {
