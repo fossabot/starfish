@@ -34,9 +34,9 @@
             <template #label
               ><span
                 v-tooltip="
-                  `Contribute to the ship's common fund`
+                  `Contribute to the ship's common fund of 💳${c.baseCurrencyPlural}`
                 "
-                >+ Common</span
+                >+ Fund</span
               ></template
             >
             <template>

@@ -30,69 +30,79 @@ export class BrakeCommand implements Command {
       return
     }
 
-    const engineThrustAmplification = Math.max(
-      c.noEngineThrustMagnitude,
-      (
-        context.ship?.items?.filter(
-          (e: ItemStub) =>
-            e.type === `engine` && (e.repair || 0) > 0,
-        ) || []
-      ).reduce(
-        (total: number, e: EngineStub) =>
-          total +
-          (e.thrustAmplification || 0) * (e.repair || 0),
-        0,
-      ) *
-        (context.ship.gameSettings
-          ?.baseEngineThrustMultiplier || 1),
-    )
-    const pilotingSkill =
-      context.crewMember.skills.find(
-        (s: XPData) => s && s.skill === `piloting`,
-      )?.level || 1
+    // const engineThrustAmplification = Math.max(
+    //   c.noEngineThrustMagnitude,
+    //   (
+    //     context.ship?.items?.filter(
+    //       (e: ItemStub) =>
+    //         e.type === `engine` && (e.repair || 0) > 0,
+    //     ) || []
+    //   ).reduce(
+    //     (total: number, e: EngineStub) =>
+    //       total +
+    //       (e.thrustAmplification || 0) * (e.repair || 0),
+    //     0,
+    //   ) *
+    //     (context.ship.gameSettings
+    //       ?.baseEngineThrustMultiplier || 1),
+    // )
+    // const pilotingSkill =
+    //   context.crewMember.skills.find(
+    //     (s: XPData) => s && s.skill === `piloting`,
+    //   )?.level || 1
 
-    const currentCockpitCharge =
-      context.crewMember?.cockpitCharge || 0
+    // const currentCockpitCharge =
+    //   context.crewMember?.cockpitCharge || 0
 
-    const maxPossibleSpeedChangeWithBrake =
-      currentCockpitCharge *
-      (c.getThrustMagnitudeForSingleCrewMember(
-        pilotingSkill,
-        engineThrustAmplification,
-        context.ship.gameSettings
-          ?.baseEngineThrustMultiplier || 1,
-      ) /
-        (context.ship.mass || 10000)) *
-      (context.ship.gameSettings?.brakeToThrustRatio || 1)
+    // const maxPossibleSpeedChangeWithBrake =
+    //   currentCockpitCharge *
+    //   (c.getThrustMagnitudeForSingleCrewMember(
+    //     pilotingSkill,
+    //     engineThrustAmplification,
+    //     context.ship.gameSettings
+    //       ?.baseEngineThrustMultiplier || 1,
+    //   ) /
+    //     (context.ship.mass || 10000)) *
+    //   (context.ship.gameSettings?.brakeToThrustRatio || 1)
 
-    const intentionallyOverBrakeMultiplier =
-      1 + Math.random() * 0.2
+    // const intentionallyOverBrakeMultiplier =
+    //   1 + Math.random() * 0.2
 
-    const currentSpeed = context.ship.speed || 0
-    const brakePercentNeeded = Math.min(
-      1,
-      (currentSpeed / maxPossibleSpeedChangeWithBrake) *
-        intentionallyOverBrakeMultiplier,
-    )
+    // const currentSpeed = context.ship.speed || 0
+    // const brakePercentNeeded = Math.min(
+    //   1,
+    //   (currentSpeed / maxPossibleSpeedChangeWithBrake) *
+    //     intentionallyOverBrakeMultiplier,
+    // )
 
-    const res = await ioInterface.crew.brake(
-      context.ship.id,
-      context.crewMember.id,
-      brakePercentNeeded,
-    )
+    // const res = await ioInterface.crew.brake(
+    //   context.ship.id,
+    //   context.crewMember.id,
+    //   brakePercentNeeded,
+    // )
+
+    const res =
+      await ioInterface.crew.setTargetObjectOrLocation(
+        context.ship.id,
+        context.crewMember.id,
+        context.ship.location,
+      )
 
     if (`error` in res) context.reply(res.error)
     else {
-      await context.refreshShip()
       context.reply(
-        `${
-          context.nickname
-        } braked, slowing the ship by ${c.speedNumber(
-          res.data,
-        )} to a speed of ${c.speedNumber(
-          (context.ship.speed || 0) * 60 * 60,
-        )}.`,
+        `${context.nickname} targeted the ship's current location, which begins to slow the ship.`,
       )
+      // await context.refreshShip()
+      // context.reply(
+      //   `${
+      //     context.nickname
+      //   } braked, slowing the ship by ${c.speedNumber(
+      //     res.data,
+      //   )} to a speed of ${c.speedNumber(
+      //     (context.ship.speed || 0) * 60 * 60,
+      //   )}.`,
+      // )
     }
   }
 }

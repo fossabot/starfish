@@ -17,6 +17,7 @@ import rooms from './rooms'
 import stubify from './stubify'
 import * as items from './items'
 import achievements from './achievements'
+import * as cosmetics from './cosmetics'
 
 export default {
   ...globals,
@@ -28,6 +29,7 @@ export default {
   ...gameConstants,
   ...physics,
   ...discord,
+  ...cosmetics,
   items,
   achievements,
   rooms,

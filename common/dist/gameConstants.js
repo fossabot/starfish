@@ -32,8 +32,6 @@ const shipCosmeticCurrencySingular = `bubbloon`;
 const shipCosmeticCurrencyPlural = `bubbloons`;
 const crewCosmeticCurrencySingular = `squidcoin`;
 const crewCosmeticCurrencyPlural = `squidcoin`;
-const baseTaglinePrice = 1;
-const baseHeaderBackgroundPrice = 2;
 const baseSightRange = 0.05;
 const baseBroadcastRange = 0.002;
 const baseRepairCost = 600;
@@ -83,37 +81,6 @@ const tactics = [
     `pacifist`,
 ];
 const baseCargoSellMultiplier = 0.3;
-const buyableTaglines = [
-    { value: `Very Shallow`, rarity: 8 },
-    { value: `Splish Splash`, rarity: 10 },
-    { value: `Holy Mackerel!`, rarity: 12 },
-    { value: `Flamingo Hunter`, rarity: 12 },
-    { value: `Eagle Hunter`, rarity: 12 },
-    { value: `Chicken Hunter`, rarity: 12 },
-    { value: `Gull Hunter`, rarity: 12 },
-    { value: `Small Pond 4 Life`, rarity: 14 },
-    { value: `Nautical Nonsense`, rarity: 16 },
-    { value: `Whale, I'll Be!`, rarity: 18 },
-    { value: `Yarr`, rarity: 20 },
-    { value: `Fish 'n' Chips`, rarity: 22 },
-    { value: `Gone Fishing`, rarity: 24 },
-    { value: `Omega 3 Fatty Acid`, rarity: 26 },
-    { value: `Washed Up`, rarity: 28 },
-];
-const buyableHeaderBackgrounds = [
-    {
-        value: { id: `Big Bertha`, url: `blue2.svg` },
-        rarity: 5,
-    },
-    {
-        value: { id: `Pescatarian`, url: `purple2.svg` },
-        rarity: 9,
-    },
-    {
-        value: { id: `Grappler`, url: `green2.svg` },
-        rarity: 13,
-    },
-];
 exports.default = {
     defaultGameSettings,
     baseCurrencySingular,
@@ -122,10 +89,6 @@ exports.default = {
     shipCosmeticCurrencyPlural,
     crewCosmeticCurrencySingular,
     crewCosmeticCurrencyPlural,
-    baseTaglinePrice,
-    baseHeaderBackgroundPrice,
-    buyableHeaderBackgrounds,
-    buyableTaglines,
     supportServerLink,
     baseSightRange,
     baseBroadcastRange,

@@ -10,6 +10,10 @@
           v-if="tooltip.type === 'image'"
           :data="tooltip"
         />
+        <ShipTooltipsContract
+          v-if="tooltip.type === 'contract'"
+          :data="tooltip"
+        />
         <ShipTooltipsEngine
           v-else-if="tooltip.type === 'engine'"
           :data="tooltip"
@@ -44,6 +48,10 @@
         />
         <ShipTooltipsShipdot
           v-else-if="tooltip.type === 'ship'"
+          :data="tooltip"
+        />
+        <ShipTooltipsCrewHeader
+          v-else-if="tooltip.type === 'crewHeader'"
           :data="tooltip"
         />
         <ShipTooltipsCrewMember

@@ -16,7 +16,7 @@ export const weapons: {
     rarity: 9999999,
     reliability: 5,
     damage: 1.5 * game.weaponDamageMultiplier,
-    baseCooldown: 0.05 * 60 * 1000,
+    baseCooldown: 0.02 * 60 * 1000,
     maxHp: 10,
   },
 

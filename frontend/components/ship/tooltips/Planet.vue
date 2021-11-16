@@ -80,31 +80,88 @@
         >
           <div class="marrightsmall fade">Cargo</div>
           <div class="textright">
-            {{
-              c.printList(
-                dataToUse.vendor.cargo.map(
-                  (cargo) =>
-                    c.cargo[cargo.id].name +
-                    (showCargoPrices
-                      ? ` (B: ${c.priceToString(
-                          c.getCargoBuyPrice(
+            <div v-if="showCargoPrices">
+              <div
+                v-for="cargo in dataToUse.vendor.cargo"
+                :key="cargo.id + 'tooltipbuy'"
+              >
+                {{ c.cargo[cargo.id].name }}
+                <span class="small">
+                  <span class="sub"
+                    >(B:
+                    <span
+                      :class="{
+                        success:
+                          (c.getCargoBuyPrice(
                             cargo.id,
-                            ship.planet,
+                            dataToUse,
                             ship.guildId,
                             1,
-                          ),
-                        )}, S: ${c.priceToString(
-                          c.getCargoSellPrice(
+                          ).credits || 0) <
+                          (c.cargo[cargo.id].basePrice
+                            .credits || 0),
+                        warning:
+                          (c.getCargoBuyPrice(
                             cargo.id,
-                            ship.planet,
+                            dataToUse,
                             ship.guildId,
                             1,
-                          ),
-                        )})`
-                      : ''),
-                ),
-              )
-            }}
+                          ).credits || 0) >
+                          (c.cargo[cargo.id].basePrice
+                            .credits || 0),
+                      }"
+                      >{{
+                        c.getCargoBuyPrice(
+                          cargo.id,
+                          dataToUse,
+                          ship.guildId,
+                          1,
+                        ).credits
+                      }}</span
+                    >, S:
+                    <span
+                      :class="{
+                        success:
+                          (c.getCargoSellPrice(
+                            cargo.id,
+                            dataToUse,
+                            ship.guildId,
+                            1,
+                          ).credits || 0) >
+                          (c.cargo[cargo.id].basePrice
+                            .credits || 0),
+                        warning:
+                          (c.getCargoSellPrice(
+                            cargo.id,
+                            dataToUse,
+                            ship.guildId,
+                            1,
+                          ).credits || 0) <
+                          (c.cargo[cargo.id].basePrice
+                            .credits || 0),
+                      }"
+                      >{{
+                        c.getCargoSellPrice(
+                          cargo.id,
+                          dataToUse,
+                          ship.guildId,
+                          1,
+                        ).credits
+                      }}</span
+                    >)
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div v-else>
+              {{
+                c.printList(
+                  dataToUse.vendor.cargo.map(
+                    (cargo) => c.cargo[cargo.id].name,
+                  ),
+                )
+              }}
+            </div>
           </div>
         </div>
 
@@ -160,14 +217,23 @@
         <div
           v-if="
             dataToUse.vendor &&
-            dataToUse.vendor.shipCosmetics &&
-            dataToUse.vendor.shipCosmetics.length
+            ((dataToUse.vendor.shipCosmetics &&
+              dataToUse.vendor.shipCosmetics.length) ||
+              (dataToUse.vendor.crewCosmetics &&
+                dataToUse.vendor.crewCosmetics.length))
           "
           class="flexbetween marbottiny"
         >
-          <div class="fade">Ship Cosmetics</div>
+          <div class="fade">Cosmetics</div>
           <div>
-            {{ dataToUse.vendor.shipCosmetics.length }}
+            {{
+              (dataToUse.vendor.shipCosmetics
+                ? dataToUse.vendor.shipCosmetics.length
+                : 0) +
+              (dataToUse.vendor.crewCosmetics
+                ? dataToUse.vendor.crewCosmetics.length
+                : 0)
+            }}
             for sale
           </div>
         </div>
@@ -195,15 +261,16 @@
         >
           <div class="fade">Bank</div>
           <div>
-            💳{{
+            {{
               ship &&
               ship.banked.find((b) => b.id === dataToUse.id)
-                ? ship.banked.find(
-                    (b) => b.id === dataToUse.id,
-                  ).amount
-                : 0
+                ? `💳${
+                    ship.banked.find(
+                      (b) => b.id === dataToUse.id,
+                    ).amount
+                  } stored`
+                : 'available'
             }}
-            stored
           </div>
         </div>
 
@@ -255,17 +322,18 @@ export default Vue.extend({
     },
     showCargoPrices(): boolean {
       return (
-        !!(this.ship as ShipStub).passives?.find(
+        !!(this.ship as ShipStub)?.passives?.find(
           (p) => p.id === 'visibleCargoPrices',
         ) ||
         !!(
-          (this.ship as ShipStub).passives?.find(
-            (p) => p.id === 'scannableCargoPrices',
+          (this.ship as ShipStub)?.passives?.find(
+            (p) => p.id === 'broadcastRangeCargoPrices',
           ) &&
           c.distance(
             (this.data as PlanetStub).location,
             this.ship.location,
-          ) < ((this.ship as ShipStub).radii?.scan || 0)
+          ) <
+            ((this.ship as ShipStub).radii?.broadcast || 0)
         )
       )
     },
@@ -277,11 +345,11 @@ export default Vue.extend({
 .planetview {
   width: 200px;
   position: relative;
-  margin: calc(-1 * var(--tooltip-pad-tb))
-    calc(-1 * var(--tooltip-pad-lr));
 
-  & > *:not(.header) {
-    padding: var(--tooltip-pad-tb) var(--tooltip-pad-lr);
+  & > .header {
+    margin: calc(-1 * var(--tooltip-pad-tb))
+      calc(-1 * var(--tooltip-pad-lr));
+    margin-bottom: var(--tooltip-pad-tb);
   }
 }
 </style>

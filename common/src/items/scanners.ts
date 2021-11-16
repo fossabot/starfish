@@ -139,7 +139,7 @@ export const scanners: {
     description: `Contains language packs and encryptions for nearly any system of mercantile communication in use across the universe, allowing for direct interface with planet vendors' price databases within a certain range.`,
     mass: 160 * game.itemMassMultiplier,
     basePrice: { credits: 77 * game.itemPriceMultiplier },
-    rarity: 10,
+    rarity: 2,
     sightRange: 0.1,
     shipScanRange: 0.1,
     maxHp: 1,
@@ -148,7 +148,7 @@ export const scanners: {
     },
     passives: [
       {
-        id: `scannableCargoPrices`,
+        id: `broadcastRangeCargoPrices`,
       },
     ],
   },

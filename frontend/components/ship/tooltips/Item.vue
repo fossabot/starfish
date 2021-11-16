@@ -119,7 +119,6 @@
       />
     </div>
     <div v-if="dataToUse.shipScanData">
-      Scannable Properties:
       <div class="marleft">{{ scanPropertyString }}</div>
     </div>
 

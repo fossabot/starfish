@@ -492,6 +492,36 @@ export default class Drawer {
           })
         }
       }
+      if (ship?.crewMembers) {
+        const crewMembers = ship?.crewMembers.filter(
+          (cm) =>
+            cm.location === `cockpit` &&
+            cm.targetLocation &&
+            cm.id !== crewMemberId,
+        )
+        crewMembers.forEach((cm) => {
+          this.drawLine({
+            end: [...shipLocation],
+            start: [
+              cm.targetLocation[0] * this.flatScale,
+              cm.targetLocation[1] * this.flatScale * -1,
+            ],
+            color: `white`,
+            opacity: 0.2,
+            dash: 10,
+          })
+
+          this.drawPoint({
+            location: [
+              cm.targetLocation[0],
+              cm.targetLocation[1] * -1,
+            ],
+            radius: (1.5 / this.zoom) * devicePixelRatio,
+            color: `white`,
+            opacity: 0.2,
+          })
+        })
+      }
 
       // ship trajectory line
       if ((ship.speed || 0) > 0 && ship.velocity) {

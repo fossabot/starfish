@@ -133,6 +133,7 @@ export class MiningPlanet extends Planet {
           ],
           `high`,
           `diamond`,
+          true,
         )
         ship.distributeCargoAmongCrew([
           {
@@ -159,6 +160,7 @@ export class MiningPlanet extends Planet {
           ],
           `high`,
           `diamond`,
+          true,
         )
         ship.distributeCargoAmongCrew([
           {
@@ -275,6 +277,7 @@ export class MiningPlanet extends Planet {
               ],
           `medium`,
           `mine`,
+          true,
         )
 
         const crewMembersWhoHelped =

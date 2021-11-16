@@ -4,6 +4,11 @@ import * as roomActions from './addins/rooms'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
+import {
+  addBackground,
+  addTagline,
+} from './addins/cosmetics'
+
 export class CrewMember extends Stubbable {
   static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoSpace = 10
@@ -21,6 +26,10 @@ export class CrewMember extends Stubbable {
   maxStamina: number = 1
   lastActive: number
   targetLocation: CoordinatePair | false = false
+  targetObject:
+    | { id: string; type: string; location: CoordinatePair }
+    | false = false
+
   combatTactic: CombatTactic | `none` = `none`
   attackTargetId: string | `any` | `closest` = `any`
   targetItemType: ItemType | `any` = `any`
@@ -37,6 +46,11 @@ export class CrewMember extends Stubbable {
   bottomedOutOnStamina: boolean = false
   fullyRestedTarget: CrewLocation | false = false
 
+  background: string | null
+  availableBackgrounds: CrewBackground[] = []
+  tagline: string | null
+  availableTaglines: string[] = []
+
   tutorialShipId: string | undefined = undefined
   mainShipId: string | undefined = undefined
 
@@ -52,6 +66,12 @@ export class CrewMember extends Stubbable {
     this.discordIcon = data.discordIcon
     this.ship = ship
     this.rename(data.name)
+
+    this.tagline = data.tagline || null
+    this.availableTaglines = data.availableTaglines || []
+    this.background = data.background || null
+    this.availableBackgrounds =
+      data.availableBackgrounds || []
 
     if (data.speciesId && c.species[data.speciesId])
       this.setSpecies(data.speciesId)
@@ -102,7 +122,11 @@ export class CrewMember extends Stubbable {
       this.targetItemType = data.targetItemType
     if (data.minePriority)
       this.minePriority = data.minePriority
-    if (data.targetLocation)
+    if (
+      data.targetLocation &&
+      data.targetLocation.length === 2 &&
+      !data.targetLocation.find((t: any) => !Number(t))
+    )
       this.targetLocation = data.targetLocation
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
@@ -112,6 +136,9 @@ export class CrewMember extends Stubbable {
 
     this.toUpdate = this
   }
+
+  addTagline = addTagline
+  addBackground = addBackground
 
   rename(newName: string) {
     this.name = c
@@ -186,6 +213,32 @@ export class CrewMember extends Stubbable {
 
   tick() {
     this._stub = null // invalidate stub
+
+    // ----- reset targetLocation if targetObject has moved/gone out of sight -----
+    if (this.location === `cockpit` && this.targetObject) {
+      const movingObject =
+        this.ship.visible.comets.find(
+          (e) => e.id === (this.targetObject as any).id,
+        ) ||
+        this.ship.visible.ships.find(
+          (e) => e.id === (this.targetObject as any).id,
+        )
+      // * if more things start moving we might need to update this to include them
+
+      if (!movingObject) {
+        this.targetObject = false
+        this.toUpdate.targetObject = false
+      } else if (
+        movingObject.location[0] !==
+          this.targetLocation[0] ||
+        movingObject.location[1] !== this.targetLocation[1]
+      ) {
+        this.targetLocation = [
+          ...movingObject.location,
+        ] as CoordinatePair
+        this.toUpdate.targetLocation = this.targetLocation
+      }
+    }
 
     // ----- reset attack target if out of vision range -----
     if (
@@ -439,6 +492,7 @@ export class CrewMember extends Stubbable {
   recalculateMaxStamina() {
     this.maxStamina =
       1 + this.getPassiveIntensity(`boostMaxStamina`) / 100
+    this.toUpdate.maxStamina = this.maxStamina
   }
 
   addStat(statname: CrewStatKey, amount: number) {

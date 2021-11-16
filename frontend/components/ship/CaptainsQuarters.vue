@@ -116,6 +116,19 @@
           Run away from
         </option>
         <option
+          value="Hunt"
+          v-if="
+            ship.visible.ships.filter(
+              (s) => s.guildId !== ship.guildId,
+            ).length ||
+            ship.contracts.filter(
+              (co) => co.status === 'active',
+            ).length
+          "
+        >
+          Hunt
+        </option>
+        <option
           value="Get"
           v-if="ship.visible.caches.length"
         >
@@ -151,7 +164,9 @@
 
       <select
         v-model="target"
-        v-if="['Attack', 'Run away from'].includes(verb)"
+        v-if="
+          ['Attack', 'Run away from', 'Hunt'].includes(verb)
+        "
       >
         <option value="">Select an enemy...</option>
         <option
@@ -167,6 +182,23 @@
           :value="{ type: 'ship', id: s.id, name: s.name }"
         >
           {{ s.name }}
+        </option>
+        <option
+          v-for="s in ship.contracts.filter(
+            (co) =>
+              co.status === 'active' &&
+              !ship.visible.ships.find(
+                (vs) => vs.id === co.targetId,
+              ),
+          )"
+          :key="'cqo' + s.id"
+          :value="{
+            type: 'contract',
+            id: s.id,
+            targetName: s.targetName,
+          }"
+        >
+          {{ s.targetName }}
         </option>
       </select>
 
@@ -395,11 +427,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['ship', 'userId', 'crewMember']),
+    ...mapState(['dev', 'ship', 'userId', 'crewMember']),
     show(): boolean {
       return (
         this.ship &&
-        this.ship.crewMembers.length > 1 &&
+        (this.dev || this.ship.crewMembers.length > 1) &&
         this.captain &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes(
@@ -520,6 +552,18 @@ export default Vue.extend({
         o.target = found
         o.target!.color = c.guilds[found.guildId]?.color
         o.target!.type = 'ship'
+      } else if (o.target!.type === 'contract') {
+        const found = this.ship.contracts
+          ?.filter((co) => co.status === 'active')
+          .find((s) => s.id === o.target!.id)
+        if (!found) return false
+        o.target = found
+        o.target!.color =
+          c.guilds[
+            (found as Contract).targetGuildId || ''
+          ]?.color
+        o.target!.name = found.targetName
+        o.target!.type = 'contract'
       } else if (o.target!.type === 'cache') {
         const found = this.ship.visible?.caches.find(
           (s) => s.id === o.target!.id,

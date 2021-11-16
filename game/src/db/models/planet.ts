@@ -103,6 +103,13 @@ const planetSchemaFields: Record<
         priceMultiplier: Number,
       },
     ],
+    crewCosmetics: [
+      {
+        tagline: String,
+        background: { id: String, url: String },
+        priceMultiplier: Number,
+      },
+    ],
     repairCostMultiplier: Number,
   },
 

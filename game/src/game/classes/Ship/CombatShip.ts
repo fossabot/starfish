@@ -7,6 +7,7 @@ import type { Engine } from '../Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip/HumanShip'
+import type { AIShip } from './AIShip/AIShip'
 
 export abstract class CombatShip extends Ship {
   static percentOfCurrencyKeptOnDeath = 0.5
@@ -61,47 +62,49 @@ export abstract class CombatShip extends Ship {
 
   removePassive(p: ShipPassiveEffect) {
     let index
-    if (p.data?.source?.planetName)
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          for (let key in ep) {
-            if (ep[key] !== p[key]) return false
+    while (index !== -1) {
+      if (p.data?.source?.planetName)
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep) {
+              if (ep[key] !== p[key]) return false
+              if (
+                ep.data?.source?.planetName !==
+                p.data?.source?.planetName
+              )
+                return false
+            }
+            return true
+          },
+        )
+      else if (p.data?.source?.zoneName) {
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            if (ep.id !== p.id) return false
             if (
-              ep.data?.source?.planetName !==
-              p.data?.source?.planetName
+              ep.data?.source?.zoneName !==
+              p.data?.source?.zoneName
             )
               return false
-          }
-          return true
-        },
-      )
-    else if (p.data?.source?.zoneName) {
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          if (ep.id !== p.id) return false
-          if (
-            ep.data?.source?.zoneName !==
-            p.data?.source?.zoneName
-          )
-            return false
-          return true
-        },
-      )
-    } else
-      index = this.passives.findIndex(
-        (ep: ShipPassiveEffect) => {
-          for (let key in ep)
-            if (ep[key] !== p[key]) return false
-          return true
-        },
-      )
-    if (index === -1) return
-    this.passives.splice(index, 1)
-    this.updateThingsThatCouldChangeOnItemChange()
-    this.updateAttackRadius()
-    this.updateMaxScanProperties()
-    this.updateSlots()
-    this.toUpdate.passives = this.passives
+            return true
+          },
+        )
+      } else
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
+            return true
+          },
+        )
+      if (index === -1) return
+      this.passives.splice(index, 1)
+      this.updateThingsThatCouldChangeOnItemChange()
+      this.updateAttackRadius()
+      this.updateMaxScanProperties()
+      this.updateSlots()
+      this.toUpdate.passives = this.passives
+    }
   }
 
   applyZoneTickEffects() {
@@ -179,7 +182,12 @@ export abstract class CombatShip extends Ship {
           ?.location ||
           c.randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld && p.pacifist,
+              (p) =>
+                !p.homeworld &&
+                p.pacifist &&
+                c.distance([0, 0], p.location) <
+                  (this.game?.settings.safeZoneRadius ||
+                    c.defaultGameSettings.safeZoneRadius),
             ) || [],
           )?.location || [0, 0]),
       ].map(
@@ -471,7 +479,11 @@ export abstract class CombatShip extends Ship {
         [
           `Missed`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color:
               target.guildId &&
               c.guilds[target.guildId].color,
@@ -496,7 +508,11 @@ export abstract class CombatShip extends Ship {
         [
           `Hit`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color:
               target.guildId &&
               c.guilds[target.guildId].color,
@@ -524,12 +540,17 @@ export abstract class CombatShip extends Ship {
         ],
         `high`,
         `attack`,
+        true,
       )
       if (attackResult.didDie)
         this.logEntry(
           [
             {
-              text: target.name,
+              text:
+                ((target as AIShip).speciesId
+                  ? c.species[(target as AIShip).speciesId]
+                      ?.icon || ``
+                  : ``) + target.name,
               color:
                 target.guildId &&
                 c.guilds[target.guildId].color,
@@ -537,8 +558,9 @@ export abstract class CombatShip extends Ship {
             },
             `was destroyed!`,
           ],
-          `high`,
+          `critical`,
           `die`,
+          true,
         )
     }
 
@@ -681,7 +703,12 @@ export abstract class CombatShip extends Ship {
               [
                 `Disabled`,
                 {
-                  text: this.name,
+                  text:
+                    ((this as AIShip).speciesId
+                      ? c.species[
+                          (this as AIShip).speciesId
+                        ]?.icon || ``
+                      : ``) + this.name,
                   color:
                     this.guildId &&
                     c.guilds[this.guildId].color,
@@ -702,6 +729,7 @@ export abstract class CombatShip extends Ship {
               ],
               `high`,
               `attack`,
+              true,
             )
           armor.announceWhenBroken = false
         }
@@ -823,7 +851,12 @@ export abstract class CombatShip extends Ship {
               [
                 `Disabled`,
                 {
-                  text: this.name,
+                  text:
+                    ((this as AIShip).speciesId
+                      ? c.species[
+                          (this as AIShip).speciesId
+                        ]?.icon || ``
+                      : ``) + this.name,
                   color:
                     this.guildId &&
                     c.guilds[this.guildId].color,
@@ -845,6 +878,7 @@ export abstract class CombatShip extends Ship {
               ],
               `high`,
               `attack`,
+              true,
             )
         }, 100)
         equipmentToAttack.announceWhenBroken = false
@@ -899,7 +933,11 @@ export abstract class CombatShip extends Ship {
             : `Hit by`,
 
           {
-            text: attacker.name,
+            text:
+              ((attacker as AIShip).speciesId
+                ? c.species[(attacker as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + attacker.name,
             color:
               attacker.guildId &&
               c.guilds[attacker.guildId].color,
@@ -949,7 +987,11 @@ export abstract class CombatShip extends Ship {
             ? `Crit by`
             : `Hit by`,
           {
-            text: attacker.name,
+            text:
+              ((attacker as AIShip).speciesId
+                ? c.species[(attacker as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + attacker.name,
             color: attacker.color || `var(--warning)`,
             tooltipData: attacker?.toReference
               ? attacker.toReference()
@@ -960,7 +1002,7 @@ export abstract class CombatShip extends Ship {
             : ([
                 `for`,
                 {
-                  text: `${c.r2(totalDamageDealt)} damage`,
+                  text: `${c.r2(totalDamageDealt)} dmg`,
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,

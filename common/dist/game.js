@@ -57,6 +57,13 @@ function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier
         engineThrustMultiplier *
         baseEngineThrustMultiplier);
 }
+function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
+    const min = 1 / 4500;
+    const max = 1 / 1500;
+    return (math_1.default.lerp(min, max, level / 100) *
+        engineThrustMultiplier *
+        baseEngineThrustMultiplier);
+}
 function getRepairAmountPerTickForSingleCrewMember(level) {
     return math_1.default.lerp(1, 3, level / 100) / globals_1.default.tickInterval;
 }
@@ -67,7 +74,7 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedM
     return baseStaminaUse * rechargeSpeedMultiplier;
 }
 function getWeaponCooldownReductionPerTick(level) {
-    return (2 + math_1.default.lerp(1, 10, level / 100)) * 20;
+    return (2 + math_1.default.lerp(1, 10, level / 100)) * 15;
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
@@ -332,20 +339,6 @@ function getGuildChangePrice(ship) {
             math_1.default.r2((ship.crewMembers?.length || 1) / 10, 0, true),
     };
 }
-function getShipTaglinePrice(cosmetic) {
-    const price = {};
-    price.shipCosmeticCurrency = Math.ceil((cosmetic.tagline
-        ? gameConstants_1.default.baseTaglinePrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
-function getShipHeaderBackgroundPrice(cosmetic) {
-    const price = {};
-    price.shipCosmeticCurrency = Math.ceil((cosmetic.headerBackground
-        ? gameConstants_1.default.baseHeaderBackgroundPrice
-        : 0) * cosmetic.priceMultiplier);
-    return price;
-}
 function getPlanetPopulation(planet) {
     if (!planet)
         return 0;
@@ -444,6 +437,7 @@ exports.default = {
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,
+    getPassiveThrustMagnitudePerTickForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
     getGeneralMultiplierBasedOnCrewMemberProximity,
@@ -458,8 +452,6 @@ exports.default = {
     getItemSellPrice,
     getChassisSwapPrice,
     getGuildChangePrice,
-    getShipTaglinePrice,
-    getShipHeaderBackgroundPrice,
     canAfford,
     // getPlanetDescription,
     getPlanetDefenseRadius,

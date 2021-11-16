@@ -2,6 +2,7 @@ import c from '../../../../../../common/dist'
 
 import type { HumanShip } from './HumanShip'
 import type { BasicPlanet } from '../../Planet/BasicPlanet'
+import type { AIShip } from '../AIShip/AIShip'
 
 function reliablyFudgeLocation(
   location: CoordinatePair,
@@ -61,8 +62,6 @@ export function startContract(
     return { error: `Could not find target.` }
   }
 
-  this.buy(planetContract.claimCost)
-
   const contractData: Contract = {
     ...planetContract,
     timeAccepted: Date.now(),
@@ -77,6 +76,27 @@ export function startContract(
   }
   this.contracts.push(contractData)
   this.toUpdate.contracts = this.contracts
+
+  this.logEntry(
+    [
+      `Accepted contract for`,
+      {
+        text:
+          ((target as AIShip).speciesId
+            ? c.species[(target as AIShip).speciesId]
+                ?.icon || ``
+            : ``) + target.name,
+        color: target.guildId
+          ? c.guilds[target.guildId].color
+          : undefined,
+        tooltipData: target.toReference(),
+      },
+    ],
+    `high`,
+    `contract`,
+    true,
+  )
+
   return { data: contractData }
 }
 
@@ -122,7 +142,11 @@ export function stolenContract(
       [
         `Contract for`,
         {
-          text: target.name,
+          text:
+            ((target as AIShip).speciesId
+              ? c.species[(target as AIShip).speciesId]
+                  ?.icon || ``
+              : ``) + target.name,
           color: target.guildId
             ? c.guilds[target.guildId].color
             : undefined,
@@ -177,6 +201,7 @@ export function completeContract(
       ],
       `high`,
       `contract`,
+      true,
     )
 
   this.checkTurnInContract(co)
@@ -205,7 +230,11 @@ export function checkContractTimeOuts(this: HumanShip) {
         [
           `Contract for`,
           {
-            text: target.name,
+            text:
+              ((target as AIShip).speciesId
+                ? c.species[(target as AIShip).speciesId]
+                    ?.icon || ``
+                : ``) + target.name,
             color: target.guildId
               ? c.guilds[target.guildId].color
               : undefined,
@@ -238,7 +267,11 @@ export function abandonContract(
       [
         `Contract for`,
         {
-          text: target.name,
+          text:
+            ((target as AIShip).speciesId
+              ? c.species[(target as AIShip).speciesId]
+                  ?.icon || ``
+              : ``) + target.name,
           color: target.guildId
             ? c.guilds[target.guildId].color
             : undefined,
@@ -288,12 +321,14 @@ export function checkTurnInContract(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
       `contract`,
+      true,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
       `contract`,
+      true,
     )
   }
 

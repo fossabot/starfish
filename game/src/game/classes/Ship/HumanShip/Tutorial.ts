@@ -25,6 +25,7 @@ interface TutorialStepData {
     next?: string
     advance?: string
     notify?: boolean
+    isGood?: boolean
   }[]
   forceLocation?: CoordinatePair
   forceCommonCredits?: number
@@ -202,11 +203,11 @@ export class Tutorial {
         visibleTypes: [`planet`, `cache`],
         script: [
           {
-            message: `Oho! That's clarified things a bit. We can now see for 0.03AU, which is a pretty long way, galactically speaking — somewhere around 4.5 million kilometers.`,
+            message: `Oho! That's clarified things a bit. We can now see for a few million kilometers, which is a pretty long way, galactically speaking.`,
             next: `Cool.`,
           },
           {
-            message: `You can zoom and pan the big map to get more perspective.<br />
+            message: `You can click, pan, and scroll to move and zoom the big map to get more perspective.<br />
             Things are going swimmingly!`,
             next: `Wait, what's that?`,
           },
@@ -219,8 +220,8 @@ export class Tutorial {
         ],
         caches: [
           {
-            contents: [{ amount: 10, id: `credits` }],
-            location: [0.015, 0],
+            contents: [{ amount: 1000, id: `credits` }],
+            location: [0.015, 0.005],
           },
         ],
         nextStepTrigger: {
@@ -241,16 +242,16 @@ export class Tutorial {
         visibleTypes: [`planet`, `cache`, `trail`],
         script: [
           {
-            message: `Click on the big map to set a destination.<br />
-            While you're in the <b>cockpit</b>, you will slowly charge up thrust (unique to you).<br /><br />
-            Click and hold the <b>Thrust</b> button in the cockpit pane to use your charged thrust toward your chosen direction!<br />
+            message: `Click on the big map to set a target destination. You will apply passive thrust to the ship while you're in the cockpit (more on that later).<br /><br />
             Since we're in space, once you start moving in a direction, you'll keep floating that way! That means that even a small ship can generate a huge amount of speed over time.<br /><br />
-            Try to <b>move the ship to the cache we found!</b>`,
+            Try to <b>move the ship to the cache we found!</b><br /><br />
+            <hr style="opacity: .1;" />
+            <div class="sub">It might look like the ship isn't moving, but it takes time to build speed — zoom in to see the thrust accumulate!</div>`,
           },
         ],
         nextStepTrigger: {
           location: {
-            location: [0.015, 0],
+            location: [0.015, 0.005],
             label: `cache`,
           },
         },
@@ -406,7 +407,7 @@ export class Tutorial {
           {
             message: `Now we can see what we're dealing with.<br />
             Ugh, they're <i>BIRDS</i>! The enemy of all fish!<br /><br />
-            It looks like they're outfitted with a weapon but no engine, the fools! They're sitting ducks!`,
+            It looks like they're outfitted with only the most basic equipment! They're sitting ducks!`,
             advance: `Let's take 'em out!`,
           },
         ],
@@ -474,9 +475,12 @@ export class Tutorial {
         ],
         script: [
           {
-            message: `Your ship will automatically fire when the weapons are charged and a valid target is in range.<br /><br />
+            message: `Your ship will automatically fire when the weapons are charged, your tactics are set, and a valid target is in range.<br /><br />
             Now's your chance to use what you've learned!<br />
-            Switch to the <b>Cockpit</b> to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the <b>Weapons Bay</b>. Destroy that fowl craft!`,
+            Switch to the <b>Cockpit</b> to pilot the ship into attack range (closer gives you a higher hit chance), and then charge your weapon in the <b>Weapons Bay</b>. Destroy that fowl craft!
+            <br />
+            <hr style="opacity: .1;" />
+            <div class="sub">Don't forget to set your tactic to <b>Aggressive</b> to attack any ship in range!</div>`,
           },
         ],
         nextStepTrigger: {
@@ -617,7 +621,11 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            location: [0, 0],
+            location: [
+              ...(this.ship.seenPlanets[0]?.location || [
+                0, 0,
+              ]),
+            ],
             label: `back home`,
           },
         },
@@ -722,8 +730,9 @@ export class Tutorial {
 
   constructor(data: BaseTutorialData, ship: HumanShip) {
     this.ship = ship
+
     this.initializeSteps()
-    this.step = data.step
+    this.step = Math.max(0, data.step - 1)
     this.baseLocation =
       data.baseLocation ||
       ([
@@ -735,11 +744,11 @@ export class Tutorial {
             ),
           )?.location || [0, 0]),
       ].map(
-        (l) =>
-          l +
-          (this.ship.game?.settings.arrivalThreshold ||
-            c.defaultGameSettings.arrivalThreshold) *
-            (Math.random() - 0.5),
+        (l) => l,
+        //  +
+        // (this.ship.game?.settings.arrivalThreshold ||
+        //   c.defaultGameSettings.arrivalThreshold) *
+        //   (Math.random() - 0.5),
       ) as CoordinatePair)
     this.currentStep = this.steps[this.step]
     if (this.step === -1) {
@@ -754,6 +763,18 @@ export class Tutorial {
           retries++
         }
         this.advanceStep()
+
+        // * clear any already seen planets, etc
+        while (this.ship.seenPlanets.length)
+          this.ship.seenPlanets.pop()
+        this.ship.toUpdate.seenPlanets =
+          this.ship.seenPlanets
+        while (this.ship.seenLandmarks.length)
+          this.ship.seenLandmarks.pop()
+        this.ship.toUpdate.seenLandmarks =
+          this.ship.seenLandmarks
+        while (this.ship.log.length) this.ship.log.pop()
+        this.ship.toUpdate.log = this.ship.log
       }, 1)
       this.currentStep = this.steps[this.step]
     }
@@ -1002,6 +1023,7 @@ export class Tutorial {
         ],
         `high`,
         `mystery`,
+        true,
       )
       ship.game?.io.emit(
         `ship:message`,

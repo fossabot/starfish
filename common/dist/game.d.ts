@@ -6,6 +6,7 @@ declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount:
 declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
 declare function getThrustMagnitudeForSingleCrewMember(level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number): number;
+declare function getPassiveThrustMagnitudePerTickForSingleCrewMember(level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number, rechargeSpeedMultiplier: number): number;
@@ -35,8 +36,6 @@ declare function getGuildChangePrice(ship: {
     guildId: GuildId;
     crewMembers: CrewMemberStub[];
 }): Price;
-declare function getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
-declare function getShipHeaderBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
 declare function getPlanetPopulation(planet: PlanetStub): number;
 declare function canAfford(price: Price, ship: {
     captain?: string | null;
@@ -56,6 +55,7 @@ declare const _default: {
     getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
     getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
+    getPassiveThrustMagnitudePerTickForSingleCrewMember: typeof getPassiveThrustMagnitudePerTickForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
     getGeneralMultiplierBasedOnCrewMemberProximity: typeof getGeneralMultiplierBasedOnCrewMemberProximity;
@@ -70,8 +70,6 @@ declare const _default: {
     getItemSellPrice: typeof getItemSellPrice;
     getChassisSwapPrice: typeof getChassisSwapPrice;
     getGuildChangePrice: typeof getGuildChangePrice;
-    getShipTaglinePrice: typeof getShipTaglinePrice;
-    getShipHeaderBackgroundPrice: typeof getShipHeaderBackgroundPrice;
     canAfford: typeof canAfford;
     getPlanetDefenseRadius: typeof getPlanetDefenseRadius;
     getPlanetDefenseDamage: typeof getPlanetDefenseDamage;

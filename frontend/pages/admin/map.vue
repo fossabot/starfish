@@ -37,13 +37,20 @@
               <div
                 class="button"
                 @click="
-                  give([{ id: 'credits', amount: 100000 }])
+                  give([
+                    { id: 'credits', amount: 100000 },
+                    {
+                      id: 'shipCosmeticCurrency',
+                      amount: 100,
+                    },
+                    {
+                      id: 'crewCosmeticCurrency',
+                      amount: 100000,
+                    },
+                  ])
                 "
               >
-                <span
-                  >Give 💳100,000
-                  {{ c.baseCurrencyPlural }}</span
-                >
+                <span>Give currency</span>
               </div>
             </template>
 

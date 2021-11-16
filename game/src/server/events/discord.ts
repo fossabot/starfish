@@ -114,6 +114,7 @@ export default function (
         [`New captain: ${crewMember.name}!`],
         `critical`,
         `crown`,
+        true,
       )
 
       callback({ data: `ok` })

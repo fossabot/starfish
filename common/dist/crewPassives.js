@@ -18,7 +18,7 @@ const data = {
             baseIntensity: 4,
             wholeNumbersOnly: true,
         },
-        description: (data, verbose = false) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} maximum stamina by ${math_1.default.r2((data.intensity || 0) / 100)}%`,
+        description: (data, verbose = false) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} maximum stamina by ${math_1.default.r2(data.intensity || 0)}`,
     },
     cargoSpace: {
         displayName: `Cargo Space`,

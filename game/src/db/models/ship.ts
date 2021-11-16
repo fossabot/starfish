@@ -40,6 +40,7 @@ const shipSchemaFields: Record<
       time: Number,
       level: String,
       icon: String,
+      isGood: Boolean,
     },
   ],
   seenPlanets: [{ name: String, id: String }],
@@ -94,6 +95,10 @@ const shipSchemaFields: Record<
       joinDate: Number,
       discordIcon: { type: String },
       lastActive: Number,
+      tagline: String,
+      availableTaglines: [String],
+      background: String,
+      availableBackgrounds: [{ id: String, url: String }],
       cockpitCharge: Number,
       skills: [
         {
@@ -125,6 +130,8 @@ const shipSchemaFields: Record<
       minePriority: String,
       // attackGuilds: [String],
       targetLocation: [Number, Number],
+      targetObject:
+        { id: String, type: { type: String } } || false,
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
       tutorialShipId: String,

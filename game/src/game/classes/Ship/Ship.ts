@@ -168,7 +168,12 @@ export class Ship extends Stubbable {
         ...((c
           .randomFromArray(
             this.game?.planets.filter(
-              (p) => !p.homeworld && p.pacifist,
+              (p) =>
+                !p.homeworld &&
+                p.pacifist &&
+                c.distance([0, 0], p.location) <
+                  (this.game?.settings.safeZoneRadius ||
+                    c.defaultGameSettings.safeZoneRadius),
             ) || [],
           )
           ?.location.map(
@@ -281,6 +286,7 @@ export class Ship extends Stubbable {
       ],
       `high`,
       `ship`,
+      true,
     )
   }
 
@@ -311,6 +317,7 @@ export class Ship extends Stubbable {
         ],
         `critical`,
         `flag`,
+        true,
       )
 
       if (this.planet)
@@ -336,6 +343,7 @@ export class Ship extends Stubbable {
               ],
               `low`,
               `flag`,
+              true,
             )
           })
     }
@@ -961,7 +969,12 @@ export class Ship extends Stubbable {
 
   // ----- misc stubs -----
 
-  logEntry(s: LogContent, lv: LogLevel, icon?: LogIcon) {}
+  logEntry(
+    s: LogContent,
+    lv: LogLevel,
+    icon?: LogIcon,
+    isGood?: boolean,
+  ) {}
 
   updateMaxScanProperties() {}
 

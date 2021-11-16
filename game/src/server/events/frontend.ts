@@ -613,6 +613,8 @@ export default function (
             logEntry.push({
               text: orders.target.name
                 ? orders.target.name
+                : orders.target.targetName
+                ? orders.target.targetName
                 : orders.target.type === `cache`
                 ? `that cache`
                 : [
@@ -658,7 +660,17 @@ export default function (
                         ship.visible.ships.find(
                           (s) => s.id === orders.target!.id,
                         )?.guildId as any
-                      ].color
+                      ]?.color
+                    : undefined
+                  : orders.target.type === `contract`
+                  ? ship.contracts.find(
+                      (s) => s.id === orders.target!.id,
+                    )
+                    ? c.guilds[
+                        ship.contracts.find(
+                          (s) => s.id === orders.target!.id,
+                        )?.targetGuildId as any
+                      ]?.color
                     : undefined
                   : orders.target.type === `cache`
                   ? `var(--cache)`
@@ -668,7 +680,7 @@ export default function (
           else logEntry.push(`&nospace${orders.addendum}`)
           logEntry.push(`&nospace"`)
 
-          ship.logEntry(logEntry, `high`, `speech`)
+          ship.logEntry(logEntry, `high`, `speech`, true)
         }
         /*
 

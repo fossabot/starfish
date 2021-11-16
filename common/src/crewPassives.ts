@@ -19,9 +19,7 @@ const data: {
     description: (data: CrewPassiveData, verbose = false) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } maximum stamina by ${math.r2(
-        (data.intensity || 0) / 100,
-      )}%`,
+      } maximum stamina by ${math.r2(data.intensity || 0)}`,
   },
 
   cargoSpace: {

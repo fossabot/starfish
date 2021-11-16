@@ -5,16 +5,36 @@
       bgImage="/images/paneBackgrounds/2.webp"
     >
       <template #title>
-        <span
-          class="sectionemoji"
-          v-if="c.species[crewMember.speciesId]"
-          v-tooltip="{
-            type: 'species',
-            ...c.species[crewMember.speciesId],
-          }"
-          >{{ c.species[crewMember.speciesId].icon }}</span
-        >{{ crewMember.name }}
+        <div class="membertitle">
+          <div class="iconholder">
+            <ShipCrewIcon
+              class="icon"
+              :hoverable="false"
+              :crewMember="crewMember"
+              :showDiscordIcon="false"
+            />
+          </div>
+          <div>{{ crewMember.name }}</div>
+        </div>
       </template>
+
+      <div
+        class="pointer customizeicon"
+        @click="
+          $store.commit('set', {
+            modal: 'crewTaglineBannerPicker',
+          })
+        "
+      >
+        <div class="mainpreview" v-if="!ship.tutorial">
+          <ShipCrewIcon
+            :crewMember="crewMember"
+            :showDiscordIcon="false"
+            :hoverable="false"
+            :showTagline="true"
+          />
+        </div>
+      </div>
 
       <div class="panesection">
         <ProgressBar
@@ -23,7 +43,15 @@
             crewMember.stamina / crewMember.maxStamina
           "
           v-tooltip="
-            'Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.'
+            `<b>${c.r2(
+              crewMember.stamina * 100,
+              1,
+            )}</b> of <b>${c.r2(
+              crewMember.maxStamina * 100,
+              1,
+            )}</b> max stamina.
+            <br />
+            Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.`
           "
         >
           <div>
@@ -99,5 +127,29 @@ export default Vue.extend({
 }
 .box {
   width: 100%;
+}
+.membertitle {
+  position: relative;
+  display: flex;
+
+  .iconholder {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.3em;
+    position: relative;
+  }
+}
+
+.mainpreview {
+  backface-visibility: none;
+  width: 100%;
+  padding: 1em 4em 1em 4em;
+}
+.customizeicon {
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 </style>

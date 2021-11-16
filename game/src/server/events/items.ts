@@ -72,6 +72,7 @@ export default function (
         ],
         `high`,
         `ship`,
+        true,
       )
 
       callback({
@@ -155,6 +156,7 @@ export default function (
         ],
         `high`,
         `ship`,
+        true,
       )
 
       callback({
@@ -240,6 +242,7 @@ export default function (
         ],
         `high`,
         `ship`,
+        true,
       )
 
       callback({

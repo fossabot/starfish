@@ -8,6 +8,7 @@ let slowModeUpdateInterval = null
 let alreadyLoggingIn = false
 
 export const state = () => ({
+  dev: process.env.NODE_ENV === `development`,
   lastUpdated: 0,
   connected: false,
   loading: false,
@@ -95,6 +96,17 @@ export const mutations = {
       state.ship.id,
       state.userId,
       target,
+    )
+  },
+  setTargetObject(state, targetObject) {
+    if (!state.crewMember) return
+    state.forceMapRedraw++
+    Vue.set(state.crewMember, `targetObject`, targetObject)
+    this.$socket?.emit(
+      `crew:targetObject`,
+      state.ship.id,
+      state.userId,
+      targetObject,
     )
   },
 

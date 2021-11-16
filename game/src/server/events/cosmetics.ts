@@ -56,6 +56,7 @@ export default function (
         ],
         `high`,
         `party`,
+        true,
       )
 
       callback({
@@ -77,7 +78,7 @@ export default function (
   )
 
   socket.on(
-    `ship:buyHeaderBackground`,
+    `ship:buyBackground`,
     (shipId, crewId, headerBackground, callback) => {
       if (!game) return
       const ship = game.ships.find(
@@ -111,7 +112,7 @@ export default function (
         })
 
       const price: Price =
-        c.getShipHeaderBackgroundPrice(itemForSale)
+        c.getShipBackgroundPrice(itemForSale)
 
       const buyRes = ship.buy(price, crewMember)
       if (buyRes !== true)
@@ -129,6 +130,7 @@ export default function (
         ],
         `high`,
         `party`,
+        true,
       )
 
       callback({
@@ -145,6 +147,117 @@ export default function (
       c.log(
         `gray`,
         `${crewMember.name} on ${ship.name} bought the header background: ${headerBackground.id}`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:buyTagline`,
+    (shipId, crewId, tagline, callback) => {
+      if (!game) return
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      const planet = ship.planet as BasicPlanet
+      if (!planet || planet.planetType !== `basic`)
+        return callback({ error: `Not at a planet.` })
+      const itemForSale =
+        planet?.vendor?.crewCosmetics?.find(
+          (i) => i.tagline === tagline,
+        )
+      if (!itemForSale)
+        return callback({
+          error: `That is not for sale here.`,
+        })
+
+      const price: Price =
+        c.getCrewTaglinePrice(itemForSale)
+
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
+
+      crewMember.addTagline(tagline)
+
+      callback({
+        data: true,
+      })
+
+      planet.addXp((price.crewCosmeticCurrency || 0) / 1000)
+      if (ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.crewCosmeticCurrency || 0) / 100,
+        )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} bought the tagline: ${tagline}`,
+      )
+    },
+  )
+
+  socket.on(
+    `crew:buyBackground`,
+    (shipId, crewId, background, callback) => {
+      if (!game) return
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      const planet = ship.planet as BasicPlanet
+      if (!planet || planet.planetType !== `basic`)
+        return callback({ error: `Not at a planet.` })
+      const itemForSale =
+        planet?.vendor?.crewCosmetics?.find(
+          (i) =>
+            i.background &&
+            i.background.id === background.id &&
+            i.background.url === background.url,
+        )
+      if (!itemForSale)
+        return callback({
+          error: `That is not for sale here.`,
+        })
+
+      const price: Price =
+        c.getCrewBackgroundPrice(itemForSale)
+
+      const buyRes = crewMember.buy(price)
+      if (buyRes !== true)
+        return callback({ error: buyRes })
+
+      crewMember.addBackground(background)
+
+      callback({
+        data: true,
+      })
+
+      planet.addXp((price.crewCosmeticCurrency || 0) / 1000)
+      if (ship.guildId)
+        planet.incrementAllegiance(
+          ship.guildId,
+          (price.crewCosmeticCurrency || 0) / 100,
+        )
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} bought the header background: ${background.id}`,
       )
     },
   )

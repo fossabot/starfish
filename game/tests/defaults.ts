@@ -68,6 +68,7 @@ export function basicPlanetData(): BaseBasicPlanetData {
       chassis: [],
       passives: [],
       shipCosmetics: [],
+      crewCosmetics: [],
     },
     bank: true,
     defense: 0,

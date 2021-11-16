@@ -155,7 +155,7 @@
             "
           >
             <ShipPlanetBuyCrewPassive />
-            <ShipPlanetBuyShipCosmetics />
+            <ShipPlanetBuyCosmetics />
           </Tab>
 
           <Tab
@@ -216,7 +216,7 @@ export default Vue.extend({
     planet(): PlanetStub {
       return this.ship?.planet
     },
-    type(): PlanetType {
+    type(): PlanetType | undefined {
       return this.planet?.planetType
     },
     alliedGuildIds(): string[] {
@@ -250,6 +250,7 @@ export default Vue.extend({
 .scroller {
   max-height: 440px;
   overflow-y: auto;
+  min-height: 350px;
 }
 .badges {
   margin-right: 2em;

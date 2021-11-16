@@ -1,31 +1,11 @@
 <template>
   <div class="crewmembertooltip">
-    <div class="tooltipheader">
-      <!-- <div
-        class="speciesicon"
-        v-if="data.speciesId && c.species[data.speciesId]"
-      >
-        {{ c.species[data.speciesId].icon }}
-      </div> -->
-      <img
-        v-if="data.discordIcon"
-        class="discordicon"
-        :src="data.discordIcon"
-      />
-      {{ data.name }}
-    </div>
-    <hr style="margin-bottom: 0" />
+    <ShipTooltipsCrewHeader
+      :data="crewMember"
+      class="header"
+    />
 
-    <div class="preview flexcenter">
-      <div class="iconholder">
-        <ShipCrewIcon
-          :crewMember="data"
-          :showDiscordIcon="false"
-        />
-      </div>
-    </div>
-
-    <hr />
+    <hr style="margin-top: 0" />
 
     <div class="flexcenter flexbetween">
       <div class="sub">Member for</div>
@@ -124,42 +104,9 @@ export default Vue.extend({
   padding-top: var(--tooltip-pad-tb);
   padding-bottom: var(--tooltip-pad-tb);
 
-  & > * {
+  & > *:not(.header) {
     padding-left: var(--tooltip-pad-lr);
     padding-right: var(--tooltip-pad-lr);
   }
-}
-.tooltipheader {
-  display: flex;
-  align-items: center;
-}
-.discordicon {
-  width: 1em;
-  border-radius: 50%;
-  margin-right: 0.3em;
-}
-.speciesicon {
-  margin-right: 0.1em;
-  line-height: 1;
-}
-
-.preview {
-  padding: 15%;
-  position: relative;
-  width: 100%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.3) 70%
-  );
-}
-.iconholder {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.preview + hr {
-  margin-top: 0;
 }
 </style>

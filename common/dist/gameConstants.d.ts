@@ -31,16 +31,6 @@ declare const _default: {
     shipCosmeticCurrencyPlural: string;
     crewCosmeticCurrencySingular: string;
     crewCosmeticCurrencyPlural: string;
-    baseTaglinePrice: number;
-    baseHeaderBackgroundPrice: number;
-    buyableHeaderBackgrounds: {
-        rarity: number;
-        value: HeaderBackground;
-    }[];
-    buyableTaglines: {
-        rarity: number;
-        value: string;
-    }[];
     supportServerLink: string;
     baseSightRange: number;
     baseBroadcastRange: number;

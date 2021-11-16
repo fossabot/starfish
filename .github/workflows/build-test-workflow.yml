@@ -1,6 +1,7 @@
 name: Build and push Docker images
 on:
   pull_request:
+    types: [opened, edited, synchronize]
     branches:
       - '*'
 jobs:
@@ -106,6 +107,10 @@ jobs:
           - folder: 'game'
 
     steps:
+      - name: Start MongoDB
+        run: |
+          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d -p 27017 mongo:5.0
+
       - name: Check Out Repo
         uses: actions/checkout@v2
 

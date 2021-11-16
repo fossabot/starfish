@@ -85,7 +85,7 @@
         <div>
           {{
             c.speedNumber(
-              (dataToUse && dataToUse.speed * 60 * 60) || 0,
+              (dataToUse && dataToUse.speed * 60 * 60 * (c.tickInterval/1000)) || 0,
             )
           }}
           <template v-if="dataToUse.direction">
@@ -206,8 +206,12 @@
         <div>Radii</div>
         <div class="marleft textright">
           <div
-            v-for="r in Object.keys(dataToUse.radii).map(
-              (r) =>
+            v-for="r in Object.keys(dataToUse.radii)
+              .filter(
+                (r) =>
+                  !['gameSize', 'safeZone'].includes(r),
+              )
+              .map((r) =>
                 Array.isArray(dataToUse.radii[r])
                   ? `${c.capitalize(r)}: ${dataToUse.radii[
                       r
@@ -217,7 +221,7 @@
                   : `${c.capitalize(r)}: ${c.r2(
                       dataToUse.radii[r],
                     )}AU`,
-            )"
+              )"
           >
             {{ r }}
           </div>
@@ -273,25 +277,17 @@
         "
       >
         <div>Captain</div>
-        <div>
-          {{
-            dataToUse.crewMembers.find(
-              (cm) => cm.id === dataToUse.captain,
-            ) //'👑' +
-              ? (dataToUse.crewMembers.find(
-                  (cm) => cm.id === dataToUse.captain,
-                ).speciesId
-                  ? c.species[
-                      dataToUse.crewMembers.find(
-                        (cm) => cm.id === dataToUse.captain,
-                      ).speciesId
-                    ].icon
-                  : '') +
-                dataToUse.crewMembers.find(
-                  (cm) => cm.id === dataToUse.captain,
-                ).name
-              : 'No Captain'
-          }}
+        <div v-tooltip="captain">
+          <span class="captainlabel flex" v-if="captain">
+            <div class="captainicon">
+              <ShipCrewIcon
+                :crewMember="captain"
+                :showDiscordIcon="false"
+              />
+            </div>
+            <div>{{ captain.name }}</div>
+          </span>
+          <span v-else>No Captain </span>
         </div>
       </div>
     </div>
@@ -362,6 +358,11 @@ export default Vue.extend({
         ) || this.data
       )
     },
+    captain() {
+      return this.dataToUse?.crewMembers?.find(
+        (cm) => cm.id === this.dataToUse?.captain,
+      )
+    },
   },
 })
 </script>
@@ -386,6 +387,14 @@ export default Vue.extend({
     // width: 25%;
     width: 60px;
     height: 40px;
+  }
+}
+
+.captainlabel {
+  .captainicon {
+    width: 1.3em;
+    margin-right: 2px;
+    position: relative;
   }
 }
 </style>

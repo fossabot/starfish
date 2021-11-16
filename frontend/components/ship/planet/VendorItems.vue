@@ -1,15 +1,15 @@
 <template>
   <div
-    class="panesection"
+    class="panesection shipyard"
     v-tooltip="
       isCaptain
         ? null
         : `The captain can use the ship's common fund to buy and sell equipment for the ship.`
     "
   >
-    <div>
+    <!-- <div>
       <div class="panesubhead">Ironworks</div>
-    </div>
+    </div> -->
 
     <div v-if="buyableItems.length || sellableItems.length">
       <div class="sub marbot" v-if="isCaptain">
@@ -327,6 +327,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.shipyard {
+  padding-top: 0;
+}
 .slots {
   margin-left: 0.5em;
 }

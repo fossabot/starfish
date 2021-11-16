@@ -54,9 +54,11 @@ describe(`Attack remnant data`, () => {
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
     s.recalculateCombatTactic()
-    s.autoAttack(999)
+    const attackRes = s.autoAttack(999)
+    expect(attackRes).to.not.be.undefined
     attackerId = s.id
 
+    // todo fails here often
     expect(g.attackRemnants.length).to.equal(1)
 
     await c.sleep(400)

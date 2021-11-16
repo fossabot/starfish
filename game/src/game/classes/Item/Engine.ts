@@ -54,4 +54,30 @@ export class Engine extends Item {
     this._stub = null // invalidate stub
     return repairLoss
   }
+
+  passiveUse(usePercent: number = 1, users?: CrewMember[]) {
+    if (this.ship.tutorial?.currentStep.disableRepair)
+      return 0
+
+    const skillLevel = users
+      ? users.reduce(
+          (total, u) =>
+            (u.skills.find((s) => s.skill === `piloting`)
+              ?.level || 1) + total,
+          0,
+        ) / users.length
+      : 1
+
+    let repairLoss =
+      c.getBaseDurabilityLossPerTick(
+        this.maxHp,
+        this.reliability,
+        skillLevel,
+      ) * usePercent
+    this.repair -= repairLoss
+    if (this.repair < 0) this.repair = 0
+    this.lastUse = Date.now()
+    this._stub = null // invalidate stub
+    return repairLoss
+  }
 }

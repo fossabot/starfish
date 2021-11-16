@@ -228,6 +228,18 @@ The available guilds are:`,
         }),
       ],
     })
+
+    if (context.guildMember) {
+      const guildMemberIcon =
+        context.guildMember.user.avatarURL({
+          size: 32,
+        })
+      ioInterface.crew.setDiscordIcon(
+        createdShip.id,
+        context.guildMember.user.id,
+        guildMemberIcon || undefined,
+      )
+    }
   }
 
   hasPermissionToRun(

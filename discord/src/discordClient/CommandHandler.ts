@@ -269,7 +269,14 @@ export class CommandHandler {
   }
 
   private couldBeCommand(message: Message): boolean {
-    if (message.content.startsWith(this.prefix)) return true
+    // has 1 but not multiple prefixes (i.e. '...')
+    if (
+      message.content.startsWith(this.prefix) &&
+      !message.content
+        .substring(this.prefix.length)
+        .startsWith(this.prefix)
+    )
+      return true
     if (
       message.channel instanceof TextChannel &&
       message.channel.name.indexOf(`📣`) !== -1

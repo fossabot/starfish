@@ -99,6 +99,10 @@ interface CrewMemberStub extends BaseStub {
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
   lastActive?: number
+  tagline?: string | null
+  background?: string
+  availableTaglines?: string[]
+  availableBackgrounds?: { id: string; url: string }[]
 }
 
 interface PlanetStub extends BaseStub {
@@ -129,6 +133,7 @@ interface PlanetLogStub extends BaseStub {
   type: `planet`
   name: string
   id: string
+  planetType: string
 }
 interface CacheStub extends BaseStub {
   location: CoordinatePair

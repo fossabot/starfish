@@ -68,6 +68,20 @@ function getThrustMagnitudeForSingleCrewMember(
   )
 }
 
+function getPassiveThrustMagnitudePerTickForSingleCrewMember(
+  level: number = 1,
+  engineThrustMultiplier: number = 1,
+  baseEngineThrustMultiplier: number,
+): number {
+  const min: number = 1 / 4500
+  const max: number = 1 / 1500
+  return (
+    math.lerp(min, max, level / 100) *
+    engineThrustMultiplier *
+    baseEngineThrustMultiplier
+  )
+}
+
 function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
@@ -90,7 +104,7 @@ function getStaminaGainPerTickForSingleCrewMember(
 }
 
 function getWeaponCooldownReductionPerTick(level: number) {
-  return (2 + math.lerp(1, 10, level / 100)) * 20
+  return (2 + math.lerp(1, 10, level / 100)) * 15
 }
 
 /**
@@ -527,29 +541,6 @@ function getGuildChangePrice(ship: {
   }
 }
 
-function getShipTaglinePrice(
-  cosmetic: PlanetShipCosmetic,
-): Price {
-  const price: Price = {}
-  price.shipCosmeticCurrency = Math.ceil(
-    (cosmetic.tagline
-      ? gameConstants.baseTaglinePrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-function getShipHeaderBackgroundPrice(
-  cosmetic: PlanetShipCosmetic,
-): Price {
-  const price: Price = {}
-  price.shipCosmeticCurrency = Math.ceil(
-    (cosmetic.headerBackground
-      ? gameConstants.baseHeaderBackgroundPrice
-      : 0) * cosmetic.priceMultiplier,
-  )
-  return price
-}
-
 function getPlanetPopulation(planet: PlanetStub): number {
   if (!planet) return 0
   return math.r2(
@@ -689,6 +680,7 @@ export default {
   getMaxCockpitChargeForSingleCrewMember,
   getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,
+  getPassiveThrustMagnitudePerTickForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
   getGeneralMultiplierBasedOnCrewMemberProximity,
@@ -703,8 +695,6 @@ export default {
   getItemSellPrice,
   getChassisSwapPrice,
   getGuildChangePrice,
-  getShipTaglinePrice,
-  getShipHeaderBackgroundPrice,
   canAfford,
   // getPlanetDescription,
   getPlanetDefenseRadius,

@@ -90,6 +90,11 @@ interface BaseCrewMemberData {
   stats?: CrewStatEntry[]
   tutorialShipId?: string
   mainShipId?: string
+
+  background?: string
+  availableBackgrounds?: CrewBackground[]
+  tagline?: string
+  availableTaglines?: string[]
 }
 
 interface XPData {
@@ -160,3 +165,12 @@ type HumanSpeciesId =
   | `blowfish`
   | `shrimp`
 type SpeciesId = AISpeciesId | HumanSpeciesId
+
+interface CrewBackground {
+  id: string
+  url: `${string}.${`svg` | `webp` | `png` | `jpg`}`
+}
+interface CrewCosmetic {
+  tagline?: string
+  background?: CrewBackground
+}
