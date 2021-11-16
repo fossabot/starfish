@@ -470,10 +470,11 @@ export default Vue.extend({
           this.$store.state.tooltip?.type !== 'zone' &&
           this.$store.state.tooltip?.location
         )
-          this.$store.commit(
-            'setTargetObject',
-            this.$store.state.tooltip,
-          )
+          this.$store.commit('setTargetObject', {
+            id: this.$store.state.tooltip.id,
+            type: this.$store.state.tooltip.type,
+            location: this.$store.state.tooltip.location,
+          })
         else
           this.$store.commit('setTarget', [
             ...(this.hoverPoint || [0, 0]),

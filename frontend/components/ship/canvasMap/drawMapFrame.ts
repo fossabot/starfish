@@ -6,6 +6,7 @@ interface HoverableElement {
 import c from '../../../../common/dist'
 export default class Drawer {
   readonly flatScale = 10000
+  readonly baseFontEm = 0.9
 
   element: HTMLCanvasElement
   elementScreenSize: CoordinatePair
@@ -467,7 +468,11 @@ export default class Drawer {
         )
         if (
           crewMember?.targetLocation &&
-          crewMember?.location === `cockpit`
+          crewMember?.location === `cockpit` &&
+          !(
+            crewMember?.targetObject &&
+            crewMember?.targetObject?.id === ship?.id
+          )
         ) {
           this.drawLine({
             end: [...shipLocation],
@@ -495,9 +500,13 @@ export default class Drawer {
       if (ship?.crewMembers) {
         const crewMembers = ship?.crewMembers.filter(
           (cm) =>
-            cm.location === `cockpit` &&
             cm.targetLocation &&
-            cm.id !== crewMemberId,
+            cm.location === `cockpit` &&
+            cm.id !== crewMemberId &&
+            !(
+              cm?.targetObject &&
+              cm?.targetObject?.id === ship?.id
+            ),
         )
         crewMembers.forEach((cm) => {
           this.drawLine({
@@ -512,6 +521,8 @@ export default class Drawer {
           })
 
           this.drawPoint({
+            labelTop: cm.name,
+            labelScale: 0.8,
             location: [
               cm.targetLocation[0],
               cm.targetLocation[1] * -1,
@@ -580,6 +591,17 @@ export default class Drawer {
         }
       }
     }
+
+    // ----- debug points -----
+
+    ship?.debugLocations?.forEach((loc) => {
+      this.drawPoint({
+        location: [loc[0], loc[1] * -1],
+        labelTop: `debug`,
+        radius: (2 / this.zoom) * devicePixelRatio,
+        color: `rgb(0, 255, 100)`,
+      })
+    })
 
     // ----- target points -----
 
@@ -935,6 +957,7 @@ export default class Drawer {
     labelTop,
     labelBottom,
     labelCenter,
+    labelScale = 1,
     color = `pink`,
     opacity = 1,
     outline = false,
@@ -945,10 +968,11 @@ export default class Drawer {
   {
     location: CoordinatePair
     radius: number
-    labelTop?: string | false
     opacity?: number
+    labelTop?: string | false
     labelBottom?: string | false
     labelCenter?: string | false
+    labelScale?: number
     color?: string
     outline?: boolean | `dash`
     glow?: boolean
@@ -991,10 +1015,14 @@ export default class Drawer {
         (this.zoom > 0.035 &&
           (!outline || radius > this.width / 10)))
     ) {
-      this.ctx.globalAlpha = Math.max(0.35, opacity * 0.5)
+      this.ctx.globalAlpha = Math.max(
+        labelScale ? 0.15 : 0.35,
+        opacity * 0.5,
+      )
 
       this.ctx.font = `bold ${
-        (0.9 / this.zoom) * window.devicePixelRatio
+        ((this.baseFontEm * labelScale) / this.zoom) *
+        window.devicePixelRatio
       }em Prompt`
       const drawLabel = (
         label: string,

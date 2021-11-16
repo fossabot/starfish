@@ -60,7 +60,7 @@ export default Vue.extend({
 .topzone {
   padding: 0;
   width: 100%;
-  width: 230px;
+  min-width: 222px;
   position: relative;
   overflow: hidden;
   text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.3);
