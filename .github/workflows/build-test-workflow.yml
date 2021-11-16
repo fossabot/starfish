@@ -126,7 +126,7 @@ jobs:
           mongodb-version: 4.0
           mongodb-db: starfish-test
           mongodb-username: testuser
-          mongodb-password: testpassword
+          mongodb-password: testpass
 
       - name: Check Out Repo
         uses: actions/checkout@v2
