@@ -9,23 +9,17 @@ import { Game } from '../src/game/Game'
 
 import { crewMemberData, humanShipData } from './defaults'
 
-const game = new Game()
-;async () =>
-  await game.loadGameDataFromDb({
-    dbName: `starfish-test`,
-    username: `testuser`,
-    password: `testpassword`,
-  })
+let game: Game
 
 describe(`DB setup`, () => {
-  // before(async () => {
-  //   game = new Game()
-  //   await game.loadGameDataFromDb({
-  //     dbName: `starfish-test`,
-  //     username: `testuser`,
-  //     password: `testpassword`,
-  //   })
-  // })
+  before(async () => {
+    game = new Game()
+    await game.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+  })
 
   it(`should be able to connect to the db from the game`, async () => {
     expect(game.db).to.exist

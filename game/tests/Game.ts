@@ -56,4 +56,15 @@ describe(`Game`, () => {
     await g.removeShip(g.humanShips[0])
     expect(g2.gameSoftRadius).to.equal(prevUniverseSize)
   })
+
+  after(async () => {
+    const g = new Game()
+    await g.loadGameDataFromDb({
+      dbName: `starfish-test`,
+      username: `testuser`,
+      password: `testpassword`,
+    })
+    await g.db?.ship.wipe()
+    await g.db?.game.wipe()
+  })
 })
