@@ -101,17 +101,17 @@ jobs:
   #     - name: Show open ports
   #       run: netstat -tulpn | grep LISTEN
 
-  # npm-test:
-  #   needs: [run-docker-compose]
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - folder: 'game'
+  npm-test:
+    # needs: [run-docker-compose]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - folder: 'game'
 
   steps:
-    - name: Show open ports BEFORE
-      run: netstat -tulpn | grep LISTEN
+    # - name: Show open ports BEFORE
+    #   run: netstat -tulpn | grep LISTEN
 
     - name: Start MongoDB
       run: |
