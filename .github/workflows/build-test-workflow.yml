@@ -115,8 +115,16 @@ jobs:
     - name: Start MongoDB
       run: |
         docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d -p 27017:27017 mongo:5.0
+
     - name: Show open ports AFTER
       run: netstat -tulpn | grep LISTEN
+
+    - name: Run mongosh and see if it connects
+      run: mongosh --host localhost --port 27017 --username testuser --password testpass --db starfish-test --eval 'db.getSiblingDB("starfish-test").getCollectionNames()' > output.json
+
+    - name: Check output
+      run: cat output.json
+
     - name: Check Out Repo
       uses: actions/checkout@v2
 
