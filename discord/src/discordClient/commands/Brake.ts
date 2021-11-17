@@ -23,6 +23,17 @@ export class BrakeCommand implements Command {
       return
     }
 
+    // first, move to the cockpit
+    const moveRes = await ioInterface.crew.move(
+      context.ship.id,
+      context.crewMember.id,
+      `cockpit`,
+    )
+    if (`error` in moveRes) {
+      context.reply(moveRes.error)
+      return
+    }
+
     if (context.ship.speed === 0) {
       await context.reply(
         `${context.ship.name} is already stopped.`,

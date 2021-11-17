@@ -24,6 +24,17 @@ export class ThrustCommand implements Command {
       return
     }
 
+    // first, move to the cockpit
+    const moveRes = await ioInterface.crew.move(
+      context.ship.id,
+      context.crewMember.id,
+      `cockpit`,
+    )
+    if (`error` in moveRes) {
+      context.reply(moveRes.error)
+      return
+    }
+
     const validTargets: {
       id: string
       location: CoordinatePair | false
