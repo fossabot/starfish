@@ -122,7 +122,7 @@ jobs:
 
       - name: Run mongosh and see if it connects
         run: |
-          mongosh -u testuser -p testpassword --eval 'db.getSiblingDB("starfish-test").getCollectionNames()' > output.json
+          mongosh -u testuser -p testpassword --eval 'db.getSiblingDB("starfish-test")' > output.json
 
       - name: Check output
         run: cat output.json
