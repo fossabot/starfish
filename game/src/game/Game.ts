@@ -225,7 +225,11 @@ export class Game {
 
     this.recalculateGuildRankings()
 
-    setTimeout(() => c.log(`Game started.`), 100)
+    setTimeout(() => {
+      if (this.paused)
+        c.log(`yellow`, `Game ready, but started paused.`)
+      else c.log(`Game started.`)
+    }, 100)
   }
 
   async save() {
@@ -282,6 +286,22 @@ export class Game {
         2,
       )}ms`,
     )
+  }
+
+  pause() {
+    this.paused = true
+    this.db?.game.addOrUpdateInDb({
+      paused: true,
+    })
+    c.log(`yellow`, `Game paused`)
+  }
+
+  unpause() {
+    this.paused = false
+    this.db?.game.addOrUpdateInDb({
+      paused: false,
+    })
+    c.log(`yellow`, `Game unpaused`)
   }
 
   async daily() {

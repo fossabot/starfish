@@ -223,7 +223,7 @@ export class Comet extends MiningPlanet {
               text: this.name,
               color: this.color,
             },
-            `exhausted.`,
+            `exhausted; it crumbles into debris.`,
           ],
           `high`,
           `comet`,

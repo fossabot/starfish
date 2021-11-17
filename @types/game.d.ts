@@ -1,5 +1,6 @@
 interface PersistentGameData {
   minimumGameRadius?: number
+  paused?: boolean
 }
 
 type ScanType =

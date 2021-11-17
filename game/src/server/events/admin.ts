@@ -152,8 +152,7 @@ export default function (
       return c.log(
         `Non-admin attempted to access game:pause`,
       )
-    game.paused = true
-    c.log(`yellow`, `Game paused`)
+    game.pause()
   })
 
   socket.on(`game:unpause`, (id, password) => {
@@ -162,8 +161,7 @@ export default function (
       return c.log(
         `Non-admin attempted to access game:unpause`,
       )
-    game.paused = false
-    c.log(`yellow`, `Game unpaused`)
+    game.unpause()
   })
 
   socket.on(`game:backups`, (id, password, callback) => {
@@ -208,7 +206,7 @@ export default function (
       ]
     game.humanShips.forEach((s) => {
       if (!game) return
-      s.logEntry(message, `critical`, `alert`, true,)
+      s.logEntry(message, `critical`, `alert`, true)
     })
   })
 

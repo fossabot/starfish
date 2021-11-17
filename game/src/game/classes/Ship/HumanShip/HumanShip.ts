@@ -1099,17 +1099,17 @@ export class HumanShip extends CombatShip {
         c.angleFromAToB(this.location, target),
       ) / 180
     const speedOverDistance =
-      (c.vectorToMagnitude(this.velocity) * 10000) /
+      (c.vectorToMagnitude(this.velocity) * 10000000) /
       distance
     const percentToAdjust = Math.min(
       percentMovingAwayFromTarget * speedOverDistance,
     )
     const adjustedTarget = [
-      target[0] - percentToAdjust * this.velocity[0] * 5,
-      target[1] - percentToAdjust * this.velocity[1] * 5,
+      target[0] - percentToAdjust * this.velocity[0],
+      target[1] - percentToAdjust * this.velocity[1],
     ] as CoordinatePair
 
-    // this.debugPoint(adjustedTarget)
+    this.debugPoint(adjustedTarget)
 
     return adjustedTarget
   }
@@ -1193,7 +1193,6 @@ export class HumanShip extends CombatShip {
       ...accelerators,
       ...tagalongs,
     ]) {
-      c.log(accelerators.map((a) => a.targetLocation))
       if (!accelerators.length) return
 
       let targetLocationToUse = adjustedAverageTarget
