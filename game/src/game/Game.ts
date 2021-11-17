@@ -30,6 +30,7 @@ import {
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
 import type { Server } from 'socket.io'
+import generateBasicAI from './classes/Ship/AIShip/generate'
 
 export class Game {
   static saveTimeInterval =
@@ -225,7 +226,11 @@ export class Game {
 
     this.recalculateGuildRankings()
 
-    setTimeout(() => c.log(`Game started.`), 100)
+    setTimeout(() => {
+      if (this.paused)
+        c.log(`yellow`, `Game ready, but started paused.`)
+      else c.log(`Game started.`)
+    }, 100)
   }
 
   async save() {
@@ -282,6 +287,22 @@ export class Game {
         2,
       )}ms`,
     )
+  }
+
+  pause() {
+    this.paused = true
+    this.db?.game.addOrUpdateInDb({
+      paused: true,
+    })
+    c.log(`yellow`, `Game paused`)
+  }
+
+  unpause() {
+    this.paused = false
+    this.db?.game.addOrUpdateInDb({
+      paused: false,
+    })
+    c.log(`yellow`, `Game unpaused`)
   }
 
   async daily() {
@@ -872,42 +893,7 @@ export class Game {
       this.aiShips.length <
         this.gameSoftArea * this.settings.aiShipDensity
     ) {
-      let radius = this.gameSoftRadius
-      let spawnPoint: CoordinatePair | undefined
-      while (!spawnPoint) {
-        let point = c.randomInsideCircle(radius)
-        // c.log(point)
-        const tooClose = this.ships.find((hs) =>
-          c.pointIsInsideCircle(point, hs.location, 0.2),
-        )
-        if (tooClose) spawnPoint = undefined
-        else spawnPoint = point
-        radius += 0.001
-      }
-
-      const isInSafeZone =
-        c.distance([0, 0], spawnPoint) <
-        this.settings.safeZoneRadius
-      const level =
-        c.distance([0, 0], spawnPoint) *
-          2 *
-          Number(isInSafeZone ? 0.5 : 1) +
-        1
-      const species = c.randomFromArray(
-        Object.values(c.species)
-          .filter((s) => s.aiOnly)
-          .map((s) => s.id),
-      ) as SpeciesId
-
-      this.addAIShip({
-        location: spawnPoint,
-        name: `${c.capitalize(
-          species.substring(0, species.length - 1),
-        )}${`${Math.random().toFixed(3)}`.substring(2)}`,
-        guildId: `fowl`,
-        speciesId: species,
-        level,
-      })
+      this.addAIShip(generateBasicAI(this))
     }
   }
 

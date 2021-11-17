@@ -626,7 +626,7 @@ export class BasicPlanet extends Planet {
             : Math.max(
                 0,
                 c.r2(
-                  100 *
+                  400 *
                     (difficulty - 3) *
                     distance *
                     (Math.random() + 0.1),

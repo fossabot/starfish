@@ -8,6 +8,7 @@ const gameSchemaFields: Record<
   any
 > = {
   minimumGameRadius: Number,
+  paused: Boolean,
 }
 const gameSchema = new Schema(gameSchemaFields)
 const DBGame = model<DBGameDoc>(`DBGame`, gameSchema)
