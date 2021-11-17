@@ -7,25 +7,40 @@ type LogLevel =
 type LogAlertLevel = LogLevel | `off`
 type LogIcon =
   | `alert`
-  | `attack`
+  | `arrive`
+  | `brake`
   | `cache`
   | `comet`
-  | `contract`
+  | `contractStart`
+  | `contractStolen`
+  | `contractCompleted`
   | `crown`
+  | `depart`
   | `diamond`
   | `die`
+  | `discovery`
   | `fish`
   | `fix`
   | `flag`
-  | `fly`
-  | `hit`
+  | `incomingAttackCrit`
+  | `incomingAttackDisable`
+  | `incomingAttackHit`
+  | `incomingAttackMiss`
+  | `kill`
   | `mine`
-  | `money`
+  | `moneyGained`
+  | `moneySpent`
   | `mystery`
+  | `outgoingAttackCrit`
+  | `outgoingAttackDisable`
+  | `outgoingAttackHit`
+  | `outgoingAttackMiss`
   | `party`
   | `planet`
   | `ship`
+  | `sellItem`
   | `speech`
+  | `thrust`
   | `warning`
   | `zone`
 type LogContent =

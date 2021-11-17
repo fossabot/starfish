@@ -71,7 +71,7 @@ export default function (
           `bought for ${c.priceToString(price)}.`,
         ],
         `critical`,
-        `ship`,
+        `sellItem`,
         true,
       )
 
@@ -154,8 +154,8 @@ export default function (
             c.r2(price, 0),
           )}.`,
         ],
-        `critical`,
-        `ship`,
+        `high`,
+        `sellItem`,
         true,
       )
 
@@ -240,8 +240,8 @@ export default function (
           },
           `bought for ${c.priceToString(price)}.`,
         ],
-        `high`,
-        `ship`,
+        `critical`,
+        `sellItem`,
         true,
       )
 

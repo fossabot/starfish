@@ -93,7 +93,7 @@ export function startContract(
       },
     ],
     `high`,
-    `contract`,
+    `contractStart`,
     true,
   )
 
@@ -163,7 +163,7 @@ export function stolenContract(
         `to claim half of the reward.`,
       ],
       `high`,
-      `contract`,
+      `contractStolen`,
     )
 
   this.checkTurnInContract(co)
@@ -200,7 +200,7 @@ export function completeContract(
         `&nospace.`,
       ],
       `high`,
-      `contract`,
+      `contractCompleted`,
       true,
     )
 
@@ -243,7 +243,7 @@ export function checkContractTimeOuts(this: HumanShip) {
           `expired.`,
         ],
         `medium`,
-        `contract`,
+        `contractStolen`,
       )
   }
 }
@@ -280,7 +280,7 @@ export function abandonContract(
         `abandoned.`,
       ],
       `medium`,
-      `contract`,
+      `contractStolen`,
     )
 }
 
@@ -320,14 +320,14 @@ export function checkTurnInContract(
     this.logEntry(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
-      `contract`,
+      `moneyGained`,
       true,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
       `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
-      `contract`,
+      `moneyGained`,
       true,
     )
   }

@@ -634,11 +634,11 @@ export default function (
       ship.commonCredits -= amount
       ship.toUpdate.commonCredits = ship.commonCredits
       ship.logEntry(
-        `Dispersed 💳${c.r2(amount)} ${
+        `Dispersed 💳 ${c.r2(amount)} ${
           c.baseCurrencyPlural
         } from common fund.`,
         `medium`,
-        `money`,
+        `moneyGained`,
         true,
       )
       ship.distributeCargoAmongCrew([

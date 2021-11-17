@@ -1,9 +1,6 @@
 <template>
   <div class="crewmembertooltip">
-    <ShipTooltipsCrewHeader
-      :data="crewMember"
-      class="header"
-    />
+    <ShipTooltipsCrewHeader :data="data" class="header" />
 
     <hr style="margin-top: 0" />
 

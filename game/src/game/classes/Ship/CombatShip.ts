@@ -501,7 +501,7 @@ export abstract class CombatShip extends Ship {
           `&nospace.`,
         ],
         `low`,
-        `attack`,
+        `outgoingAttackMiss`,
       )
     else {
       this.logEntry(
@@ -539,7 +539,7 @@ export abstract class CombatShip extends Ship {
           `&nospace${didCrit ? ` (Crit!)` : ``}.`,
         ],
         `high`,
-        `attack`,
+        `outgoingAttackHit`,
         true,
       )
       if (attackResult.didDie)
@@ -559,7 +559,7 @@ export abstract class CombatShip extends Ship {
             `was destroyed!`,
           ],
           `critical`,
-          `die`,
+          `kill`,
           true,
         )
     }
@@ -696,7 +696,7 @@ export abstract class CombatShip extends Ship {
               `disabled!`,
             ],
             `high`,
-            `hit`,
+            `incomingAttackDisable`,
           )
           if (`logEntry` in attacker)
             attacker.logEntry(
@@ -728,7 +728,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
-              `attack`,
+              `outgoingAttackDisable`,
               true,
             )
           armor.announceWhenBroken = false
@@ -837,7 +837,7 @@ export abstract class CombatShip extends Ship {
               `disabled!`,
             ],
             `high`,
-            `hit`,
+            `incomingAttackDisable`,
           )
           if (
             `logEntry` in attacker &&
@@ -877,7 +877,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
-              `attack`,
+              `outgoingAttackDisable`,
               true,
             )
         }, 100)
@@ -898,14 +898,14 @@ export abstract class CombatShip extends Ship {
 
     c.log(
       `gray`,
-      `${this.name} takes ${c.r2(
+      `💥 ${this.name} takes ${c.r2(
         totalDamageDealt,
       )} damage from ${attacker.name}'s ${
         attack.weapon
           ? attack.weapon.displayName
           : `passive effect`
       }, and ${
-        didDie ? `dies` : `has ${c.r2(this.hp)} hp left`
+        didDie ? `dies ☠️` : `has ${c.r2(this.hp)} hp left`
       }.`,
     )
 
@@ -931,7 +931,6 @@ export abstract class CombatShip extends Ship {
             : attack.didCrit
             ? `Crit by`
             : `Hit by`,
-
           {
             text:
               ((attacker as AIShip).speciesId
@@ -968,14 +967,18 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(this._hp)} HP left).`,
+                  text: `(${c.r2(this._hp)} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
-        `hit`,
+        attack.miss
+          ? `incomingAttackMiss`
+          : attack.didCrit
+          ? `incomingAttackCrit`
+          : `incomingAttackHit`,
       )
     // zone or passive damage
     else
@@ -1022,7 +1025,11 @@ export abstract class CombatShip extends Ship {
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
-        `hit`,
+        attack.miss
+          ? `incomingAttackMiss`
+          : attack.didCrit
+          ? `incomingAttackCrit`
+          : `incomingAttackHit`,
       )
 
     return damageResult

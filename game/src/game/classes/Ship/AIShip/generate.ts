@@ -1,4 +1,4 @@
-import c from '../../../../../../common/src'
+import c from '../../../../../../common/dist'
 import type { Game } from '../../../Game'
 
 export default function generateBasicAI(

@@ -474,6 +474,7 @@ export class HumanShip extends CombatShip {
           : content,
         undefined,
         level === `notify`,
+        icon,
         isGood,
       )
   }
@@ -495,7 +496,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
-        `planet`,
+        `discovery`,
         true,
       )
 
@@ -521,7 +522,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
-        `zone`,
+        `discovery`,
         true,
       )
 
@@ -959,7 +960,7 @@ export class HumanShip extends CombatShip {
           )}.`,
         ],
         `low`,
-        `fly`,
+        `thrust`,
         true,
       )
     }
@@ -1069,13 +1070,14 @@ export class HumanShip extends CombatShip {
     if (charge > 0.5)
       this.logEntry(
         [
+          `⏪`,
           thruster.name,
           `braked by ${c.speedNumber(
             (this.speed - currentMagnitude) * 60 * 60 * -1,
           )}.`,
         ],
         `low`,
-        `fly`,
+        `brake`,
         true,
       )
 
@@ -1756,9 +1758,7 @@ export class HumanShip extends CombatShip {
           `&nospace.`,
         ],
         `high`,
-        this.planet.planetType === `comet`
-          ? `comet`
-          : `planet`,
+        `arrive`,
         true,
       )
       if (!this.tutorial)
@@ -1782,9 +1782,7 @@ export class HumanShip extends CombatShip {
               `&nospace.`,
             ],
             `low`,
-            (this.planet as Planet)?.planetType === `comet`
-              ? `comet`
-              : `planet`,
+            `arrive`,
           )
         })
     } else if (previousPlanet && !this.planet) {
@@ -1812,9 +1810,7 @@ export class HumanShip extends CombatShip {
           `&nospace.`,
         ],
         `low`,
-        previousPlanet.planetType === `comet`
-          ? `comet`
-          : `planet`,
+        `depart`,
         true,
       )
       if (previousPlanet && !this.tutorial)
@@ -1829,7 +1825,7 @@ export class HumanShip extends CombatShip {
                   : undefined,
                 tooltipData: this.toReference() as any,
               },
-              `landed on`,
+              `departed from`,
               {
                 text: s.planet.name,
                 color: s.planet.color,
@@ -1838,9 +1834,7 @@ export class HumanShip extends CombatShip {
               `&nospace.`,
             ],
             `low`,
-            previousPlanet.planetType === `comet`
-              ? `comet`
-              : `planet`,
+            `depart`,
           )
         })
     }
@@ -1892,12 +1886,12 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `💳${c.r2(amount)} ${
+        `💳 ${c.r2(amount)} ${
           c.baseCurrencyPlural
         } deposited in the bank.`,
       ],
       `low`,
-      `money`,
+      `moneySpent`,
       true,
     )
   }
@@ -1921,12 +1915,12 @@ export class HumanShip extends CombatShip {
 
     this.logEntry(
       [
-        `${c.priceToString({
+        `💳 ${c.priceToString({
           credits: c.r2(amount),
         })} withdrawn from the bank.`,
       ],
       `low`,
-      `money`,
+      `moneyGained`,
       true,
     )
   }
@@ -1988,7 +1982,7 @@ export class HumanShip extends CombatShip {
       [
         `Picked up`,
         ...contentsToLog,
-        `!${
+        `&nospace!${
           cache.message &&
           ` The message said, "${cache.message}".`
         }`,
@@ -2118,11 +2112,11 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} contributed 💳${c.numberWithCommas(
+        `${member.name} contributed 💳 ${c.numberWithCommas(
           c.r2(amount, 0),
         )}.`,
         `low`,
-        `money`,
+        `moneySpent`,
         true,
       )
 
@@ -2242,7 +2236,7 @@ export class HumanShip extends CombatShip {
       this.location,
       from.location,
     )
-    const prefix = `**${from.name}** says: *(${c.r2(
+    const prefix = `🗣️ **${from.name}** says: *(${c.r2(
       distance,
       2,
     )}AU away, ${c.r2(
