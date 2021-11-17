@@ -534,6 +534,7 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `damage`,
               ...attackResult,
+              overkill: damage - attackResult.damageTaken,
             },
           },
           `&nospace${didCrit ? ` (Crit!)` : ``}.`,

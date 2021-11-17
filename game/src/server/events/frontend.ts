@@ -308,6 +308,43 @@ export default function (
   )
 
   socket.on(
+    `captain:sendToBunk`,
+    (shipId, crewId, targetCrewId, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const captain = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!captain)
+        return callback({ error: `No crew member found.` })
+      if (ship.captain !== captain.id)
+        return callback({
+          error: `Only the captain may change the ship tagline.`,
+        })
+
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === targetCrewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      crewMember.goTo(`bunk`, true)
+
+      c.log(
+        `gray`,
+        `${captain.name} on ${ship.name} sent ${crewMember.name} to the bunk.`,
+      )
+      callback({ data: true })
+    },
+  )
+
+  socket.on(
     `ship:acceptContract`,
     (shipId, crewId, contractId, callback) => {
       if (!game) return
@@ -607,7 +644,7 @@ export default function (
         )
         if (captain) {
           const logEntry: LogContent = [
-            `❕ New orders: "${orders.verb}`,
+            `New orders: "${orders.verb}`,
           ]
           if (orders.target)
             logEntry.push({
@@ -680,7 +717,12 @@ export default function (
           else logEntry.push(`&nospace${orders.addendum}`)
           logEntry.push(`&nospace"`)
 
-          ship.logEntry(logEntry, `high`, `speech`, true)
+          ship.logEntry(
+            logEntry,
+            `critical`,
+            `speech`,
+            true,
+          )
         }
         /*
 

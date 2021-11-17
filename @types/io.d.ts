@@ -560,6 +560,12 @@ interface IOClientEvents {
     name: string,
     callback: (res: IOResponse<string>) => void,
   ) => void
+  [`captain:sendToBunk`]: (
+    shipId: string,
+    crewMemberId: string,
+    name: string,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
 
   [`crew:add`]: (
     shipId: string,

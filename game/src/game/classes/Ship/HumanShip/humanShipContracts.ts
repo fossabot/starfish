@@ -92,7 +92,7 @@ export function startContract(
         tooltipData: target.toReference(),
       },
     ],
-    `high`,
+    `medium`,
     `contractStart`,
     true,
   )
@@ -187,24 +187,27 @@ export function completeContract(
     (p) => p.id === contract.fromPlanetId,
   )
   if (target)
-    this.logEntry(
-      [
-        `Contract complete! Return to`,
-        planet
-          ? {
-              text: planet.name,
-              color: planet.color,
-              tooltipData: planet.toReference(),
-            }
-          : `the contract's starting planet`,
-        `&nospace.`,
-      ],
-      `high`,
-      `contractCompleted`,
-      true,
-    )
+    setTimeout(() => {
+      // to come after death logs
+      this.logEntry(
+        [
+          `Contract complete! Return to`,
+          planet
+            ? {
+                text: planet.name,
+                color: planet.color,
+                tooltipData: planet.toReference(),
+              }
+            : `the contract's starting planet`,
+          `&nospace.`,
+        ],
+        `high`,
+        `contractCompleted`,
+        true,
+      )
 
-  this.checkTurnInContract(co)
+      this.checkTurnInContract(co)
+    }, 10)
 }
 
 export function checkContractTimeOuts(this: HumanShip) {

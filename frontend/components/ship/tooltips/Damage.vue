@@ -38,6 +38,9 @@
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
       </ul>
+      <template v-if="data.overkill">
+        <div>{{ c.r2(data.overkill) }} damage overkill</div>
+      </template>
       <template v-if="data.hpLeft">
         <hr />
         <div class="sub">

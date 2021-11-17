@@ -109,7 +109,9 @@ io.on(
               mappedIcon ? mappedIcon + ` ` : ``
             }${message}`
           : `${mappedIcon ? mappedIcon + ` ` : ``}${message
-              .map((m: RichLogContentElement) => m.text)
+              .map(
+                (m: RichLogContentElement) => m.text || m,
+              )
               .join(` `)}`,
       notify,
     })

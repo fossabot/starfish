@@ -178,6 +178,7 @@ const skipWords = [
 ]
 function capitalize(string: string = ``): string {
   return (string || ``)
+    .toLowerCase()
     .split(` `)
     .map((s, index) => {
       if (skipWords.includes(s) && index > 0) return s

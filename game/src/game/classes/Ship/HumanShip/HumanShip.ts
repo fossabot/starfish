@@ -458,8 +458,14 @@ export class HumanShip extends CombatShip {
           ? content
               .map(
                 (ce) =>
+                  ((ce as RichLogContentElement).color
+                    ? `**`
+                    : ``) +
                   ((ce as RichLogContentElement).text ||
                     ce) +
+                  ((ce as RichLogContentElement).color
+                    ? `**`
+                    : ``) +
                   ((ce as RichLogContentElement).url
                     ? ` (${c.frontendUrl.replace(
                         /\/s[^/]*\/?$/,
@@ -1101,8 +1107,7 @@ export class HumanShip extends CombatShip {
         c.angleFromAToB(this.location, target),
       ) / 180
     const speedOverDistance =
-      (c.vectorToMagnitude(this.velocity) * 10000000) /
-      distance
+      (c.vectorToMagnitude(this.velocity) * 10e9) / distance
     const percentToAdjust = Math.min(
       percentMovingAwayFromTarget * speedOverDistance,
     )
@@ -1111,7 +1116,7 @@ export class HumanShip extends CombatShip {
       target[1] - percentToAdjust * this.velocity[1],
     ] as CoordinatePair
 
-    this.debugPoint(adjustedTarget)
+    // this.debugPoint(adjustedTarget)
 
     return adjustedTarget
   }
@@ -1987,7 +1992,7 @@ export class HumanShip extends CombatShip {
           ` The message said, "${cache.message}".`
         }`,
       ],
-      `medium`,
+      `high`,
       `cache`,
       true,
     )
