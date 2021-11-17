@@ -209,7 +209,7 @@ export class MiningPlanet extends Planet {
         ship.logEntry(
           currentlyMiningShips.length > 1
             ? [
-                `⛏️ Mined ${c.r2(finalPayoutAmount, 0)}${
+                `Mined ${c.r2(finalPayoutAmount, 0)}${
                   c.cargo[resourceId] ? ` tons of` : ``
                 }`,
                 {

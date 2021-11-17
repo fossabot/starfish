@@ -638,7 +638,7 @@ export default function (
           c.baseCurrencyPlural
         } from common fund.`,
         `medium`,
-        `money`,
+        `moneyGained`,
         true,
       )
       ship.distributeCargoAmongCrew([
@@ -884,7 +884,7 @@ export default function (
         })
 
         ship.logEntry(
-          `📦 ${crewMember.name} dropped ${amount}${
+          `${crewMember.name} dropped ${amount}${
             cargoId === `credits` ? `` : ` tons of`
           } ${cargoId}.`,
           `low`,
@@ -961,7 +961,7 @@ export default function (
       ship.repair(hp)
 
       ship.logEntry(
-        `🛠️ ${crewMember.name} bought ${c.r2(
+        `${crewMember.name} bought ${c.r2(
           hp,
         )} hp of repairs.`,
         `medium`,

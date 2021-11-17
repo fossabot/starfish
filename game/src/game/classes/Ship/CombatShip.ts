@@ -477,7 +477,7 @@ export abstract class CombatShip extends Ship {
     if (attackResult.miss)
       this.logEntry(
         [
-          `💨 Missed`,
+          `Missed`,
           {
             text:
               ((target as AIShip).speciesId
@@ -501,12 +501,12 @@ export abstract class CombatShip extends Ship {
           `&nospace.`,
         ],
         `low`,
-        `attack`,
+        `outgoingAttackMiss`,
       )
     else {
       this.logEntry(
         [
-          `💥 Hit`,
+          `Hit`,
           {
             text:
               ((target as AIShip).speciesId
@@ -539,7 +539,7 @@ export abstract class CombatShip extends Ship {
           `&nospace${didCrit ? ` (Crit!)` : ``}.`,
         ],
         `high`,
-        `attack`,
+        `outgoingAttackHit`,
         true,
       )
       if (attackResult.didDie)
@@ -559,7 +559,7 @@ export abstract class CombatShip extends Ship {
             `was destroyed!`,
           ],
           `critical`,
-          `die`,
+          `kill`,
           true,
         )
     }
@@ -688,7 +688,6 @@ export abstract class CombatShip extends Ship {
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
             [
-              `❌`,
               {
                 text: armor.displayName,
                 color: `var(--item)`,
@@ -697,12 +696,12 @@ export abstract class CombatShip extends Ship {
               `disabled!`,
             ],
             `high`,
-            `hit`,
+            `incomingAttackDisable`,
           )
           if (`logEntry` in attacker)
             attacker.logEntry(
               [
-                `❌ Disabled`,
+                `Disabled`,
                 {
                   text:
                     ((this as AIShip).speciesId
@@ -729,7 +728,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
-              `attack`,
+              `outgoingAttackDisable`,
               true,
             )
           armor.announceWhenBroken = false
@@ -829,7 +828,6 @@ export abstract class CombatShip extends Ship {
         setTimeout(() => {
           this.logEntry(
             [
-              `❌`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
@@ -839,7 +837,7 @@ export abstract class CombatShip extends Ship {
               `disabled!`,
             ],
             `high`,
-            `hit`,
+            `incomingAttackDisable`,
           )
           if (
             `logEntry` in attacker &&
@@ -851,7 +849,7 @@ export abstract class CombatShip extends Ship {
           )
             attacker.logEntry(
               [
-                `❌ Disabled`,
+                `Disabled`,
                 {
                   text:
                     ((this as AIShip).speciesId
@@ -879,7 +877,7 @@ export abstract class CombatShip extends Ship {
                 `&nospace!`,
               ],
               `high`,
-              `attack`,
+              `outgoingAttackDisable`,
               true,
             )
         }, 100)
@@ -929,11 +927,10 @@ export abstract class CombatShip extends Ship {
       this.logEntry(
         [
           attack.miss
-            ? `💨 Missed by`
+            ? `Missed by`
             : attack.didCrit
-            ? `⚡ Crit by`
-            : `💥 Hit by`,
-
+            ? `Crit by`
+            : `Hit by`,
           {
             text:
               ((attacker as AIShip).speciesId
@@ -970,24 +967,28 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(this._hp)} HP left).`,
+                  text: `(${c.r2(this._hp)} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
-        `hit`,
+        attack.miss
+          ? `incomingAttackMiss`
+          : attack.didCrit
+          ? `incomingAttackCrit`
+          : `incomingAttackHit`,
       )
     // zone or passive damage
     else
       this.logEntry(
         [
           attack.miss
-            ? `💨 Missed by`
+            ? `Missed by`
             : attack.didCrit
-            ? `⚡ Crit by`
-            : `💥 Hit by`,
+            ? `Crit by`
+            : `Hit by`,
           {
             text:
               ((attacker as AIShip).speciesId
@@ -1024,7 +1025,11 @@ export abstract class CombatShip extends Ship {
               ] as RichLogContentElement[])),
         ],
         attack.miss || !totalDamageDealt ? `low` : `high`,
-        `hit`,
+        attack.miss
+          ? `incomingAttackMiss`
+          : attack.didCrit
+          ? `incomingAttackCrit`
+          : `incomingAttackHit`,
       )
 
     return damageResult

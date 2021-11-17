@@ -156,7 +156,7 @@ export function addTagline(
   if (!silent)
     this.logEntry(
       [
-        `🎊 Ship tagline unlocked for ${reason}:`,
+        `Ship tagline unlocked for ${reason}:`,
         { text: `"${tagline}"`, color: `var(--success)` },
       ],
       `high`,
@@ -180,7 +180,7 @@ export function addHeaderBackground(
   if (!silent) {
     this.logEntry(
       [
-        `🎊 Ship header unlocked for ${reason}:`,
+        `Ship header unlocked for ${reason}:`,
         { text: `"${bg.id}"`, color: `var(--success)` },
       ],
       `high`,

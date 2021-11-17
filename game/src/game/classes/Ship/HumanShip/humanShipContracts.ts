@@ -79,7 +79,7 @@ export function startContract(
 
   this.logEntry(
     [
-      `🤠 Accepted contract for`,
+      `Accepted contract for`,
       {
         text:
           ((target as AIShip).speciesId
@@ -93,7 +93,7 @@ export function startContract(
       },
     ],
     `high`,
-    `contract`,
+    `contractStart`,
     true,
   )
 
@@ -140,7 +140,7 @@ export function stolenContract(
   if (target)
     this.logEntry(
       [
-        `😖 Contract for`,
+        `Contract for`,
         {
           text:
             ((target as AIShip).speciesId
@@ -163,7 +163,7 @@ export function stolenContract(
         `to claim half of the reward.`,
       ],
       `high`,
-      `contract`,
+      `contractStolen`,
     )
 
   this.checkTurnInContract(co)
@@ -189,7 +189,7 @@ export function completeContract(
   if (target)
     this.logEntry(
       [
-        `✅ Contract complete! Return to`,
+        `Contract complete! Return to`,
         planet
           ? {
               text: planet.name,
@@ -200,7 +200,7 @@ export function completeContract(
         `&nospace.`,
       ],
       `high`,
-      `contract`,
+      `contractCompleted`,
       true,
     )
 
@@ -228,7 +228,7 @@ export function checkContractTimeOuts(this: HumanShip) {
     if (target)
       this.logEntry(
         [
-          `😞 Contract for`,
+          `Contract for`,
           {
             text:
               ((target as AIShip).speciesId
@@ -243,7 +243,7 @@ export function checkContractTimeOuts(this: HumanShip) {
           `expired.`,
         ],
         `medium`,
-        `contract`,
+        `contractStolen`,
       )
   }
 }
@@ -265,7 +265,7 @@ export function abandonContract(
   if (target)
     this.logEntry(
       [
-        `🚮 Contract for`,
+        `Contract for`,
         {
           text:
             ((target as AIShip).speciesId
@@ -280,7 +280,7 @@ export function abandonContract(
         `abandoned.`,
       ],
       `medium`,
-      `contract`,
+      `contractStolen`,
     )
 }
 
@@ -318,20 +318,16 @@ export function checkTurnInContract(
       ),
     }
     this.logEntry(
-      `💰 Contract redeemed for ${c.priceToString(
-        reward,
-      )}!`,
+      `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
-      `contract`,
+      `moneyGained`,
       true,
     )
   } else if (contract.status === `done`) {
     this.logEntry(
-      `💰 Contract redeemed for ${c.priceToString(
-        reward,
-      )}!`,
+      `Contract redeemed for ${c.priceToString(reward)}!`,
       `high`,
-      `contract`,
+      `moneyGained`,
       true,
     )
   }

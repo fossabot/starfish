@@ -474,6 +474,7 @@ export class HumanShip extends CombatShip {
           : content,
         undefined,
         level === `notify`,
+        icon,
         isGood,
       )
   }
@@ -486,7 +487,7 @@ export class HumanShip extends CombatShip {
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
-          `🗺️ Discovered`,
+          `Discovered`,
           {
             text: p.name,
             color: p.color,
@@ -495,7 +496,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
-        `planet`,
+        `discovery`,
         true,
       )
 
@@ -512,7 +513,7 @@ export class HumanShip extends CombatShip {
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
-          `:map: Discovered`,
+          `Discovered`,
           {
             text: l.name,
             color: l.color,
@@ -521,7 +522,7 @@ export class HumanShip extends CombatShip {
           `&nospace!`,
         ],
         `high`,
-        `zone`,
+        `discovery`,
         true,
       )
 
@@ -951,7 +952,6 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
-          `⏩`,
           thruster.name,
           `thrusted towards`,
           ...targetData,
@@ -960,7 +960,7 @@ export class HumanShip extends CombatShip {
           )}.`,
         ],
         `low`,
-        `fly`,
+        `thrust`,
         true,
       )
     }
@@ -1077,7 +1077,7 @@ export class HumanShip extends CombatShip {
           )}.`,
         ],
         `low`,
-        `fly`,
+        `brake`,
         true,
       )
 
@@ -1750,7 +1750,7 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
-          `🛬 Landed on`,
+          `Landed on`,
           {
             text: this.planet.name,
             color: this.planet.color,
@@ -1759,9 +1759,7 @@ export class HumanShip extends CombatShip {
           `&nospace.`,
         ],
         `high`,
-        this.planet.planetType === `comet`
-          ? `comet`
-          : `planet`,
+        `arrive`,
         true,
       )
       if (!this.tutorial)
@@ -1769,7 +1767,6 @@ export class HumanShip extends CombatShip {
           if (s === this || !s.planet) return
           s.logEntry(
             [
-              `🛬`,
               {
                 text: this.name,
                 color: this.guildId
@@ -1786,9 +1783,7 @@ export class HumanShip extends CombatShip {
               `&nospace.`,
             ],
             `low`,
-            (this.planet as Planet)?.planetType === `comet`
-              ? `comet`
-              : `planet`,
+            `arrive`,
           )
         })
     } else if (previousPlanet && !this.planet) {
@@ -1806,7 +1801,7 @@ export class HumanShip extends CombatShip {
 
       this.logEntry(
         [
-          `🛫 Departed from`,
+          `Departed from`,
           {
             text: previousPlanet.name,
             color: previousPlanet.color,
@@ -1816,9 +1811,7 @@ export class HumanShip extends CombatShip {
           `&nospace.`,
         ],
         `low`,
-        previousPlanet.planetType === `comet`
-          ? `comet`
-          : `planet`,
+        `depart`,
         true,
       )
       if (previousPlanet && !this.tutorial)
@@ -1826,7 +1819,6 @@ export class HumanShip extends CombatShip {
           if (s === this || !s.planet) return
           s.logEntry(
             [
-              `🛫`,
               {
                 text: this.name,
                 color: this.guildId
@@ -1843,9 +1835,7 @@ export class HumanShip extends CombatShip {
               `&nospace.`,
             ],
             `low`,
-            previousPlanet.planetType === `comet`
-              ? `comet`
-              : `planet`,
+            `depart`,
           )
         })
     }
@@ -1902,7 +1892,7 @@ export class HumanShip extends CombatShip {
         } deposited in the bank.`,
       ],
       `low`,
-      `money`,
+      `moneySpent`,
       true,
     )
   }
@@ -1931,7 +1921,7 @@ export class HumanShip extends CombatShip {
         })} withdrawn from the bank.`,
       ],
       `low`,
-      `money`,
+      `moneyGained`,
       true,
     )
   }
@@ -1991,9 +1981,9 @@ export class HumanShip extends CombatShip {
     })
     this.logEntry(
       [
-        `📦 Picked up`,
+        `Picked up`,
         ...contentsToLog,
-        `!${
+        `&nospace!${
           cache.message &&
           ` The message said, "${cache.message}".`
         }`,
@@ -2123,13 +2113,11 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `💸 ${
-          member.name
-        } contributed 💳 ${c.numberWithCommas(
+        `${member.name} contributed 💳 ${c.numberWithCommas(
           c.r2(amount, 0),
         )}.`,
         `low`,
-        `money`,
+        `moneySpent`,
         true,
       )
 
@@ -2833,7 +2821,7 @@ export class HumanShip extends CombatShip {
     super.die(attacker)
 
     setTimeout(() => {
-      this.logEntry(`☠️ Ship destroyed!`, `notify`, `die`)
+      this.logEntry(`Ship destroyed!`, `notify`, `die`)
 
       this.checkAchievements(`death`)
     }, 100)

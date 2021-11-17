@@ -311,7 +311,7 @@ export class Ship extends Stubbable {
 
       this.logEntry(
         [
-          `📋 ${this.name} joined the`,
+          `${this.name} joined the`,
           {
             color: c.guilds[id].color,
             text: c.guilds[id].name + ` Guild`,
@@ -330,7 +330,6 @@ export class Ship extends Stubbable {
             if (s === (this as any) || !s.planet) return
             s.logEntry(
               [
-                `📋`,
                 {
                   text: this.name,
                   color:
@@ -868,7 +867,7 @@ export class Ship extends Stubbable {
         this._maxHp * Ship.notifyWhenHealthDropsToPercent
     ) {
       this.logEntry(
-        `⚠️ HP has dropped below ${
+        `HP has dropped below ${
           Ship.notifyWhenHealthDropsToPercent * 100
         }%!`,
         `notify`,

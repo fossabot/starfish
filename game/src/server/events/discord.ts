@@ -111,7 +111,7 @@ export default function (
       ship.captain = crewMember.id
 
       ship.logEntry(
-        [`🧑‍✈️ New captain: ${crewMember.name}!`],
+        [`New captain: ${crewMember.name}!`],
         `critical`,
         `crown`,
         true,
