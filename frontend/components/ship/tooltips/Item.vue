@@ -52,7 +52,7 @@
     </div>
     <div v-if="dataToUse.maxCargoSpace">
       Cargo Space / Crew Member:
-      {{ dataToUse.maxCargoSpace }} tons
+      {{ dataToUse.maxCargoSpace }}t
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.maxCargoSpace"
@@ -312,6 +312,9 @@
     <div
       v-for="passive in dataToUse.passives"
       class="success marbotsmall"
+      :class="{
+        warning: passive.intensity < 0,
+      }"
     >
       {{
         c.baseShipPassiveData[passive.id].description(

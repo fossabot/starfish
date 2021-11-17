@@ -60,6 +60,15 @@
               </ul>
             </li>
           </ul>
+
+          <div v-if="cm.location !== 'bunk'">
+            <button
+              class="secondary"
+              @click="sendToBunk(cm)"
+            >
+              Send to bunk
+            </button>
+          </div>
         </Tab>
       </Tabs>
 
@@ -99,7 +108,26 @@ export default Vue.extend({
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    sendToBunk(cm: CrewMemberStub) {
+      ;(this as any).$socket?.emit(
+        'captain:sendToBunk',
+        this.ship.id,
+        this.crewMember?.id,
+        cm.id,
+        (res: IOResponse<CrewMemberStub>) => {
+          if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+            console.log(res.error)
+            return
+          }
+        },
+      )
+    },
+  },
 })
 </script>
 
