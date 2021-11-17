@@ -16,7 +16,7 @@ exports.engines = {
         mass: 100 * gameConstants_1.default.itemMassMultiplier,
         basePrice: { credits: 0 * gameConstants_1.default.itemPriceMultiplier },
         rarity: 999999,
-        thrustAmplification: 100,
+        thrustAmplification: 400,
         maxHp: 10,
         passives: [],
     },

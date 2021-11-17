@@ -732,7 +732,7 @@ export class Tutorial {
     this.ship = ship
 
     this.initializeSteps()
-    this.step = Math.max(0, data.step - 1)
+    this.step = Math.max(-1, data.step - 1)
     this.baseLocation =
       data.baseLocation ||
       ([
