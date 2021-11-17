@@ -124,10 +124,6 @@ jobs:
         run: |
           mongosh -u testuser -p testpassword --eval 'db.getSiblingDB("starfish-test").getCollectionNames()' > output.json
 
-      - name: Run mongosh and see if it connects
-        run: |
-          mongosh --host localhost --port 27017 --username testuser --password testpatestpasswordss --db starfish-test --eval 'db.getSiblingDB("starfish-test").getCollectionNames()' > output.json
-
       - name: Check output
         run: cat output.json
 
