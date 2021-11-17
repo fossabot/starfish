@@ -98,6 +98,9 @@ jobs:
       - name: Show running containers
         run: docker ps
 
+      - name: Show open ports
+        run: netstat -tulpn | grep LISTEN
+
   npm-test:
     needs: [run-docker-compose]
     runs-on: ubuntu-latest
@@ -107,10 +110,13 @@ jobs:
           - folder: 'game'
 
     steps:
+      - name: Show open ports BEFORE
+        run: netstat -tulpn | grep LISTEN
       - name: Start MongoDB
         run: |
           docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpass -e MONGO_INITDB_DATABASE=starfish-test -d -p 27017:27017 mongo:5.0
-
+      - name: Show open ports AFTER
+        run: netstat -tulpn | grep LISTEN
       - name: Check Out Repo
         uses: actions/checkout@v2
 
