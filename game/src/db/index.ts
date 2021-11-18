@@ -28,6 +28,7 @@ let ready = false
 const minBackupInterval = 1000 * 60 * 60 * 12
 const maxBackups = 20
 
+let databaseName: string
 let mongoUsername: string
 let mongoPassword: string
 
@@ -52,11 +53,11 @@ try {
       : (process.env.MONGODB_ADMINPASSWORD as string)
 }
 
-const databaseName =
+databaseName =
   process.env.NODE_ENV === `staging`
     ? `starfish-test`
     : `starfish`
-// c.log({ mongoUsername, mongoPassword })
+c.log({ databaseName, mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
   hostname: isDocker() ? `mongodb` : `localhost`,
