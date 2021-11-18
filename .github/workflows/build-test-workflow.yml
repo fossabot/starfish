@@ -122,6 +122,10 @@ jobs:
 
       - run: sleep 10
 
+      - name: Test connection to mongo
+        run: |
+          mongosh --host 127.0.0.1 --port 27017 --eval 'var status = db.serverStatus(); status.connection'
+
       # - name: Run mongosh and see if it connects
       #   if: always()
       #   run: |
