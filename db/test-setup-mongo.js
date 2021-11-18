@@ -1,4 +1,7 @@
-conn = Mongo(`mongodb://localhost:27017/admin`)
+conn = Mongo(
+  `mongodb://testuser:testpassword@localhost:27017/starfish-test`,
+)
+
 db = conn.getDB(`admin`)
 db.createUser({
   user: `testuser`,
