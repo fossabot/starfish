@@ -133,11 +133,19 @@ jobs:
                 },
               ]})
             '
-             > output.json
-
-      - name: Check output
-        if: always()
-        run: cat output.json
+      - name: Run mongosh and see if it connects
+        run: |
+          mongosh --eval 'db.getSiblingDB("starfish-test")
+            db.createUser({
+              user: 'testuser',
+              pwd: 'testpassword',
+              roles: [
+                {
+                  role: 'readWrite',
+                  db: 'starfish-test',
+                },
+              ]})
+            '
 
       - name: Check Out Repo
         uses: actions/checkout@v2
