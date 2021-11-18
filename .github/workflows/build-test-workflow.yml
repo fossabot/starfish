@@ -136,6 +136,7 @@ jobs:
              > output.json
 
       - name: Check output
+        if: always()
         run: cat output.json
 
       - name: Check Out Repo
