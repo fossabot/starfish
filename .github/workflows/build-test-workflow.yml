@@ -124,16 +124,17 @@ jobs:
 
       - name: Test connection to mongo
         run: |
-          mongosh --host 127.0.0.1 --port 27017 --eval 'use admin
-          db.createUser(
-            {
-              user: "root",
-              pwd: "root",
-              roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
-            }
-          )
-          db.auth("root", "root")
-          printjson(db.serverStatus())'
+          mongosh --host 127.0.0.1 --port 27017 --eval 'use admin'
+          mongosh --host 127.0.0.1 --port 27017 --eval '
+            db.createUser(
+              {
+                user: "root",
+                pwd: "root",
+                roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+              }
+            )'
+          mongosh --host 127.0.0.1 --port 27017 --eval 'db.auth("root", "root")'
+          mongosh --host 127.0.0.1 --port 27017 --eval 'db.auth("root", "root")\n printjson(db.serverStatus())'
 
       # use starfish-test;
       # print("Using starfish-test :D");
