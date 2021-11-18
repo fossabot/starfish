@@ -137,7 +137,8 @@ jobs:
                 },
               ]});
             db.getUsers();
-            '
+            ' > output.txt
+          cat output.txt
       - name: Run mongosh and see if it connects
         if: always()
         run: |
@@ -155,7 +156,8 @@ jobs:
               },
             ]});
           db.getUsers();
-            '
+            ' > output.txt
+          cat output.txt
 
       - name: Run mongosh and see if it connects
         if: always()
@@ -173,7 +175,8 @@ jobs:
                 },
               ]})
               db.getUsers();
-            '
+            ' > output.txt
+          cat output.txt
 
       - name: Check Out Repo
         uses: actions/checkout@v2
