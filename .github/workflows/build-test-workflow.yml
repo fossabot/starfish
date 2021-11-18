@@ -156,15 +156,14 @@ jobs:
       - name: Run mongosh and see if it connects
         if: always()
         run: |
-          mongosh --eval 'db.getSiblingDB("starfish-test");
-            use starfish-test;
+          mongosh --eval 'db = db.getSiblingDB("starfish-test");
             db.createUser({
-              user: 'testuser',
-              pwd: 'testpassword',
+              user: "testuser",
+              pwd: "testpassword",
               roles: [
                 {
-                  role: 'readWrite',
-                  db: 'starfish-test',
+                  role: "readWrite",
+                  db: "starfish-test",
                 },
               ]})
             '
