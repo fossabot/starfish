@@ -30,7 +30,7 @@ try {
 db = db.getSiblingDB(`starfish-test`)
 db.createUser({
   user: `testuser`,
-  pwd: `testpass`,
+  pwd: `testpassword`,
   roles: [
     {
       role: `readWrite`,
