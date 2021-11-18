@@ -125,7 +125,7 @@ jobs:
         run: |
           mongosh -u testuser -p testpassword --eval '
             use starfish-test;
-            db.getSiblingDB("starfish-test")
+            db.getSiblingDB("starfish-test");
             db.createUser({
               user: 'testuser',
               pwd: 'testpassword',
@@ -134,12 +134,12 @@ jobs:
                   role: 'readWrite',
                   db: 'starfish-test',
                 },
-              ]})
+              ]});
             '
       - name: Run mongosh and see if it connects
         if: always()
         run: |
-          mongosh --eval 'db.getSiblingDB("starfish-test")
+          mongosh --eval 'db.getSiblingDB("starfish-test");
             use starfish-test;
             db.createUser({
               user: 'testuser',
@@ -155,7 +155,7 @@ jobs:
       - name: Run mongosh and see if it connects
         if: always()
         run: |
-          mongosh --eval 'db.getSiblingDB("starfish-test")
+          mongosh --eval 'db.getSiblingDB("starfish-test");
             use starfish-test;
             db.createUser({
               user: 'testuser',
