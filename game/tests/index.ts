@@ -46,20 +46,20 @@ const host = isDocker() ? `--host mongodb` : ``
 //   })
 // })
 
-after(async () => {
-  return new Promise((resolve) => {
-    exec(
-      `mongosh -u testuser -p testpassword starfish-test  ${host} --eval "
-        db.dropDatabase()"`,
-      undefined,
-      (error, stdout, stderr) => {
-        if (error) console.log(error)
-        if (stderr) console.log(stderr)
-        else
-          console.log(`Database cleaned up after tests.\n`)
-        console.log(stdout)
-        resolve()
-      },
-    )
-  })
-})
+// after(async () => {
+//   return new Promise((resolve) => {
+//     exec(
+//       `mongosh -u testuser -p testpassword starfish-test  ${host} --eval "
+//         db.dropDatabase()"`,
+//       undefined,
+//       (error, stdout, stderr) => {
+//         if (error) console.log(error)
+//         if (stderr) console.log(stderr)
+//         else
+//           console.log(`Database cleaned up after tests.\n`)
+//         console.log(stdout)
+//         resolve()
+//       },
+//     )
+//   })
+// })
