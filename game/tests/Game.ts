@@ -65,8 +65,8 @@ describe(`Game`, () => {
     const g = new Game()
     await g.loadGameDataFromDb({
       dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
+      username: ``,
+      password: ``,
     })
     await g.db?.ship.wipe()
     await g.db?.game.wipe()
