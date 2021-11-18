@@ -125,6 +125,7 @@ jobs:
       - name: Test connection to mongo
         run: |
           mongosh --host 127.0.0.1 --port 27017 --eval 'use starfish-test;
+          printjson(db.serverStatus())
           print("Using starfish-test :D");
           db.auth("testuser", "testpassword");
           print("sweetness ;)")
