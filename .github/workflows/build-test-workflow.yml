@@ -124,6 +124,7 @@ jobs:
         if: always()
         run: |
           mongosh -u testuser -p testpassword --eval '
+            use admin;
             db.getMongo().getDBNames();
             db = db.getSiblingDB("starfish-test");
             db.createUser({
@@ -140,6 +141,7 @@ jobs:
         if: always()
         run: |
           mongosh --eval '
+          use admin
           db.getMongo().getDBNames();
           db = db.getSiblingDB("starfish-test");
             db.createUser({
@@ -156,7 +158,9 @@ jobs:
       - name: Run mongosh and see if it connects
         if: always()
         run: |
-          mongosh --eval 'db = db.getSiblingDB("starfish-test");
+          mongosh --eval '
+          use admin
+          db = db.getSiblingDB("starfish-test");
             db.createUser({
               user: "testuser",
               pwd: "testpassword",
