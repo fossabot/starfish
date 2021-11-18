@@ -50,8 +50,6 @@ after(async () => {
   return new Promise((resolve) => {
     exec(
       `mongosh -u testuser -p testpassword starfish-test  ${host} --eval "
-        use starfish-test
-        db.dropUser('testuser')
         db.dropDatabase()"`,
       undefined,
       (error, stdout, stderr) => {
