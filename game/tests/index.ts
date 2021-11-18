@@ -37,10 +37,9 @@ before(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        else {
-          console.log(stdout)
+        else
           console.log(`Database initialized for testing.\n`)
-        }
+        console.log(stdout)
         resolve()
       },
     )
@@ -58,7 +57,9 @@ after(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        else console.log(`Database cleaned up after tests.`)
+        else
+          console.log(`Database cleaned up after tests.\n`)
+        console.log(stdout)
         resolve()
       },
     )
