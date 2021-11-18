@@ -1,7 +1,6 @@
 conn = Mongo()
-db = conn.getDB(`starfish-test`)
+db = conn.getDB(`admin`)
 
-printjson(db.system.users.countDocuments())
 db.createUser({
   user: `testuser`,
   pwd: `testpassword`,
@@ -12,4 +11,6 @@ db.createUser({
     },
   ],
 })
+db = conn.getDB(`starfish-test`)
+db.auth(`testuser`, `testpassword`)
 printjson(db.system.users.countDocuments())
