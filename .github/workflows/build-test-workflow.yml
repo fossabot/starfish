@@ -122,8 +122,7 @@ jobs:
 
       - name: Run mongosh and see if it connects
         run: |
-          mongosh -u testuser -p testpassword --eval 
-           'db.getSiblingDB("starfish-test")
+          mongosh -u testuser -p testpassword --eval 'db.getSiblingDB("starfish-test")
             db.createUser({
               user: 'testuser',
               pwd: 'testpassword',
