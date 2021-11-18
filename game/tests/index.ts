@@ -20,18 +20,6 @@ const host = isDocker() ? `--host mongodb` : ``
 
 before(async () => {
   return new Promise((resolve) => {
-    c.log(`Executing : "mongosh ${host} --eval "
-    use starfish-test
-    db.createUser({
-      user: 'testuser',
-      pwd: 'testpassword',
-      roles: [
-        {
-          role: 'readWrite',
-          db: 'starfish-test',
-        },
-      ],
-    })"`)
     exec(
       `mongosh ${host} --eval "
         use starfish-test

@@ -36,23 +36,32 @@ try {
     .readFileSync(`/run/secrets/mongodb_username`, `utf-8`)
     .trim()
 } catch (e) {
-  mongoUsername = process.env
-    .MONGODB_ADMINUSERNAME as string
+  mongoUsername =
+    process.env.NODE_ENV === `staging`
+      ? `testuser`
+      : (process.env.MONGODB_ADMINUSERNAME as string)
 }
 try {
   mongoPassword = fs
     .readFileSync(`/run/secrets/mongodb_password`, `utf-8`)
     .trim()
 } catch (e) {
-  mongoPassword = process.env
-    .MONGODB_ADMINPASSWORD as string
+  mongoPassword =
+    process.env.NODE_ENV === `staging`
+      ? `testpassword`
+      : (process.env.MONGODB_ADMINPASSWORD as string)
 }
+
+const databaseName =
+  process.env.NODE_ENV === `staging`
+    ? `starfish-test`
+    : `starfish`
 // c.log({ mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
   hostname: isDocker() ? `mongodb` : `localhost`,
   port: 27017,
-  dbName: `starfish`,
+  dbName: databaseName,
   username: mongoUsername,
   password: mongoPassword,
 }
@@ -63,7 +72,7 @@ export const isReady = () => ready
 export const init = ({
   hostname = isDocker() ? `mongodb` : `localhost`,
   port = 27017,
-  dbName = `starfish`,
+  dbName = databaseName,
   username = mongoUsername,
   password = mongoPassword,
 }: GameDbOptions) => {
