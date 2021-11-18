@@ -124,7 +124,7 @@ jobs:
         if: always()
         run: |
           mongosh -u testuser -p testpassword --eval '
-            use starfish-test
+            use starfish-test;
             db.getSiblingDB("starfish-test")
             db.createUser({
               user: 'testuser',
@@ -140,7 +140,7 @@ jobs:
         if: always()
         run: |
           mongosh --eval 'db.getSiblingDB("starfish-test")
-            use starfish-test
+            use starfish-test;
             db.createUser({
               user: 'testuser',
               pwd: 'testpassword',
@@ -156,7 +156,7 @@ jobs:
         if: always()
         run: |
           mongosh --eval 'db.getSiblingDB("starfish-test")
-            use starfish-test
+            use starfish-test;
             db.createUser({
               user: 'testuser',
               pwd: 'testpassword',
