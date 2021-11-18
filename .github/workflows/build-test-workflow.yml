@@ -115,7 +115,7 @@ jobs:
 
       - name: Start MongoDB
         run: |
-          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpassword -e MONGO_INITDB_DATABASE=starfish-test -d -p 0.0.0.0:27017:27017 mongo:5.0
+          docker run -e MONGO_INITDB_ROOT_USERNAME=testuser -e MONGO_INITDB_ROOT_PASSWORD=testpassword -e MONGO_INITDB_DATABASE=starfish-test -d --network=host -p 0.0.0.0:27017:27017 mongo:5.0
 
       - name: Show open ports AFTER
         run: netstat -tulpn | grep LISTEN
