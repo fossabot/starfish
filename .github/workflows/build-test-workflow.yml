@@ -38,14 +38,14 @@ jobs:
               - '${{matrix.folder}}/**'
               - common/**
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -63,10 +63,13 @@ jobs:
           push: true
           tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}, starfishgame/${{ matrix.image }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Move cache
+        if: steps.dockerbuild.outcome == 'success'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   run-docker-compose:
     needs: [docker-build-publish]
@@ -121,36 +124,16 @@ jobs:
           docker build -t mongo-test -f db/Dockerfile-staging .
           docker run -d -p 0.0.0.0:27017:27017 mongo-test
 
-      - name: Show open ports AFTER
-        run: netstat -tulpn | grep LISTEN
-
-      - run: sleep 10
-
-      # - name: Test connection to mongo
-      #   run: |
-      #     mongosh --host 127.0.0.1 --port 27017 --eval 'use admin'
-      #     mongosh --host 127.0.0.1 --port 27017 --eval 'use admin;
-      #       db.createUser(
-      #         {
-      #           user: "root",
-      #           pwd: "root",
-      #           roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
-      #         }
-      #       )'
-      #     mongosh --host 127.0.0.1 --port 27017 --eval 'use admin; db.auth("root", "root")'
-      #     mongosh --host 127.0.0.1 --port 27017 --eval 'use starfish-test; db.auth("root", "root")'
-      #     mongosh --host 127.0.0.1 --port 27017 --eval 'db.auth("root", "root")\n printjson(db.serverStatus())'
-
       - name: Use Node.js
         uses: actions/setup-node@v2.4.1
         with:
           node-version: '16'
 
-      - uses: c-hive/gha-npm-cache@v1
-
-      - name: NPM install on ${{matrix.folder}}
-        run: npm install
-        working-directory: ${{matrix.folder}}
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: ${{matrix.folder}}
+      # - name: NPM install on ${{matrix.folder}}
+      #   run: npm install
 
       - name: Run test suite on ${{matrix.folder}}
         run: npm run teststaging
