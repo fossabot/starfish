@@ -141,9 +141,6 @@ jobs:
       #     mongosh --host 127.0.0.1 --port 27017 --eval 'use starfish-test; db.auth("root", "root")'
       #     mongosh --host 127.0.0.1 --port 27017 --eval 'db.auth("root", "root")\n printjson(db.serverStatus())'
 
-      - name: Run test setup script
-        run: mongosh --nodb --file db/test-setup-mongo.js
-
       - name: Use Node.js
         uses: actions/setup-node@v2.4.1
         with:
