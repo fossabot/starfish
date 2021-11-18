@@ -1,4 +1,7 @@
-db = db.getSiblingDB(`starfish-test`)
+conn = Mongo()
+db = conn.getDB(`starfish-test`)
+
+printjson(db.system.users.countDocuments())
 db.createUser({
   user: `testuser`,
   pwd: `testpassword`,
@@ -9,3 +12,4 @@ db.createUser({
     },
   ],
 })
+printjson(db.system.users.countDocuments())
