@@ -126,7 +126,7 @@ jobs:
         if: always()
         run: |
           mongosh --eval '
-          use starfish-test
+          use starfish-test;
           db.createUser({
               user: "testuser",
               pwd: "testpassword",
@@ -138,7 +138,9 @@ jobs:
               ]})
               db.getUsers();
             ' > output.txt
-          cat output.txt
+
+      - name: Check output
+        run: cat output.txt
 
       - name: Check Out Repo
         uses: actions/checkout@v2
