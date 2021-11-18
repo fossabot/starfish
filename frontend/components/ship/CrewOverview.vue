@@ -18,6 +18,7 @@
         <ShipCrewIcon
           :crewMember="cm"
           :captain="ship.captain === cm.id"
+          :showTagline="true"
         />
       </div>
     </div>

@@ -23,7 +23,7 @@ import type { Tutorial } from './HumanShip/Tutorial'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 70
-  static maxAIPreviousLocations: number = 25
+  static maxAIPreviousLocations: number = 70
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
@@ -102,7 +102,10 @@ export class Ship extends Stubbable {
   mass = 10000
   stats: ShipStatEntry[] = []
 
-  debugLocations: CoordinatePair[] = []
+  debugLocations: {
+    point: CoordinatePair
+    label?: string
+  }[] = []
 
   constructor(
     {
@@ -560,8 +563,9 @@ export class Ship extends Stubbable {
     return true
   }
 
-  debugPoint(point: CoordinatePair) {
-    this.debugLocations.push(point)
+  debugPoint(point: CoordinatePair, label?: string) {
+    if (process.env.NODE_ENV !== `development`) return
+    this.debugLocations.push({ point, label })
     this.toUpdate.debugLocations = this.debugLocations
   }
 
@@ -960,6 +964,7 @@ export class Ship extends Stubbable {
       level: (this as any).level,
       tagline: this.tagline || undefined,
       headerBackground: this.headerBackground || undefined,
+      debugLocations: this.debugLocations,
     }
   }
 
@@ -973,6 +978,120 @@ export class Ship extends Stubbable {
       headerBackground: this.headerBackground || undefined,
       level: (this as any).level,
     }
+  }
+
+  // ----- helpers -----
+
+  adjustedTarget(target: CoordinatePair) {
+    const angleToTarget = c.angleFromAToB(
+      this.location,
+      target,
+    )
+    const angleMovingAwayFromTarget = c.angleDifference(
+      this.direction,
+      angleToTarget,
+      true,
+    )
+    const percentMovingAwayFromTarget =
+      angleMovingAwayFromTarget / 180
+
+    const distance = c.distance(this.location, target)
+    const speedOverDistance = this.speed / distance
+    // * goes up with speed, proximity to target, and amount we're moving away. multiplier, goes from 1
+    const urgency =
+      1 +
+      c.clamp(
+        0,
+        (Math.abs(percentMovingAwayFromTarget) *
+          speedOverDistance) /
+          10e-5,
+        5,
+      )
+
+    // const ticksAtCurrentSpeedToReachTarget =
+    //   distance / c.vectorToMagnitude(this.velocity)
+    // const howHardToTurnPercent = Math.min(
+    //   Math.abs(percentMovingAwayFromTarget),
+    //   1,
+    // )
+    // const percentBackwards = c.clamp(
+    //   0,
+    //   (Math.abs(percentMovingAwayFromTarget) - 0.5) * 2,
+    //   1,
+    // )
+
+    // * multiplier that determines how many times more than the angle difference we should be
+    const intensity = 5
+
+    // * instead of permanently getting _closer_ to the desired angle, intentionally overshoot slightly to actually hit it
+    const intentionalOvershootDegrees = 0.2
+
+    const howHardToTurnDegrees = c.clamp(
+      -90 -
+        89.5 *
+          Math.min(
+            1,
+            Math.abs(percentMovingAwayFromTarget) * urgency,
+          ),
+
+      angleMovingAwayFromTarget * intensity * urgency * -1 +
+        intentionalOvershootDegrees *
+          (percentMovingAwayFromTarget > 0 ? -1 : 1),
+
+      90 +
+        89.5 *
+          Math.min(
+            1,
+            Math.abs(percentMovingAwayFromTarget) * urgency,
+          ),
+    )
+    // const approxTicksRequiredToReachTarget =
+    //   ticksAtCurrentSpeedToReachTarget *
+    //   (1 + Math.abs(percentMovingAwayFromTarget) * 5) // 1 = existing distance + time to stop and time to go back
+
+    // const percentToAdjust = Math.min(
+    //   Math.abs(percentMovingAwayFromTarget) *
+    //     speedOverDistance,
+    // )
+    // const adjustedTarget = [
+    //   target[0] - percentToAdjust * this.velocity[0],
+    //   target[1] - percentToAdjust * this.velocity[1],
+    // ] as CoordinatePair
+    const angleToThrust =
+      this.speed === 0
+        ? angleToTarget
+        : (howHardToTurnDegrees +
+            this.direction +
+            360 * 2) %
+          360
+    const turnUV = c.degreesToUnitVector(angleToThrust)
+    const adjustedTarget = [
+      this.location[0] +
+        turnUV[0] * Math.max(0.0001, this.speed * 200),
+      this.location[1] +
+        turnUV[1] * Math.max(0.0001, this.speed * 200),
+    ] as CoordinatePair
+
+    // if (this.human)
+    //   c.log({
+    //     // ticksAtCurrentSpeedToReachTarget,
+    //     // speedOverDistance,
+    //     urgency,
+    //     percentMovingAwayFromTarget,
+    //     // // ticksAtCurrentSpeedToReachTarget,
+    //     // howHardToTurnPercent,
+    //     howHardToTurnDegrees,
+    //     // percentBackwards,
+    //     currentDirection: this.direction,
+    //     angleToTarget,
+    //     angleToThrust,
+    //     // turnUV,
+    //     // approxTicksRequiredToReachTarget,
+    //   })
+
+    this.debugPoint(adjustedTarget, `adjusted`)
+
+    return adjustedTarget
   }
 
   // ----- misc stubs -----

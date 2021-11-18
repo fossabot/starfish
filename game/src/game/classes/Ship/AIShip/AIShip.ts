@@ -259,29 +259,76 @@ export class AIShip extends CombatShip {
           2
 
     if (!hasArrived) {
-      this.direction = c.angleFromAToB(
+      const adjustedTargetLocation = this.adjustedTarget(
+        this.targetLocation,
+      )
+
+      let angleToThrustInDegrees = c.angleFromAToB(
+        this.location,
+        adjustedTargetLocation,
+      )
+
+      const thrustBoostPassiveMultiplier =
+        this.getPassiveIntensity(`boostThrust`) + 1
+
+      const baseMagnitude =
+        c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
+          this.level * 2,
+          engineThrustMultiplier,
+          this.game?.settings.baseEngineThrustMultiplier ||
+            c.defaultGameSettings
+              .baseEngineThrustMultiplier,
+        ) * thrustBoostPassiveMultiplier
+
+      let thrustMagnitudeToApply = baseMagnitude / this.mass
+
+      // brake passive
+      const angleDifferenceToDirection = c.angleDifference(
+        angleToThrustInDegrees,
+        this.direction,
+      )
+      let passiveBrakeMultiplier =
+        this.getPassiveIntensity(`boostBrake`)
+      const brakeBoost =
+        1 +
+        (angleDifferenceToDirection / 180) *
+          passiveBrakeMultiplier
+      thrustMagnitudeToApply *= brakeBoost
+
+      const distanceToTarget = c.distance(
         this.location,
         this.targetLocation,
       )
-      const unitVectorToTarget = c.degreesToUnitVector(
-        this.direction,
-      )
+      if (distanceToTarget < thrustMagnitudeToApply)
+        thrustMagnitudeToApply = distanceToTarget
 
-      const thrustMagnitude =
-        c.lerp(0.00001, 0.001, this.level / 100) *
-        engineThrustMultiplier
+      const unitVectorAlongWhichToThrust =
+        c.degreesToUnitVector(angleToThrustInDegrees)
 
-      this.location[0] +=
-        unitVectorToTarget[0] * thrustMagnitude
-      this.location[1] +=
-        unitVectorToTarget[1] * thrustMagnitude
+      const thrustVector = [
+        unitVectorAlongWhichToThrust[0] *
+          thrustMagnitudeToApply,
+        unitVectorAlongWhichToThrust[1] *
+          thrustMagnitudeToApply,
+      ] as CoordinatePair
 
-      this.speed = thrustMagnitude
+      this.velocity[0] += thrustVector[0]
+      this.velocity[1] += thrustVector[1]
+
+      this.location[0] += this.velocity[0]
+      this.location[1] += this.velocity[1]
+
+      this.speed = c.vectorToMagnitude(this.velocity)
+      this.direction = c.vectorToDegrees(this.velocity)
 
       this.game?.chunkManager.addOrUpdate(
         this,
-        startingLocation,
+        this.location,
       )
+
+      this.debugPoint(this.targetLocation, `target`)
+      this.debugPoint(adjustedTargetLocation, `adjusted`)
+      this.debugPoint(this.spawnPoint, `spawn`)
 
       this.addPreviousLocation(
         startingLocation,

@@ -41,10 +41,14 @@
         :src="crewMember.discordIcon"
       />
       <div
-        class="cmitagline fade"
+        class="cmitagline"
         v-if="showTagline && crewMember.tagline"
       >
-        {{ crewMember.tagline }}
+        <svg viewBox="0 0 160 15">
+          <text x="80" y="12" text-anchor="middle">
+            {{ crewMember.tagline }}
+          </text>
+        </svg>
       </div>
     </div>
   </div>
@@ -98,10 +102,10 @@ export default Vue.extend({
 
 .cmibg {
   position: absolute;
-  top: -10%;
-  left: -10%;
-  width: 120%;
-  height: 120%;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -162,11 +166,18 @@ export default Vue.extend({
   position: absolute;
   z-index: 4;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  bottom: -5%;
-  font-size: 0.85rem;
-  text-shadow: 0 1px 0.3rem #000;
+  left: 0%;
+  bottom: 0%;
+
+  svg {
+    width: 100%;
+
+    text {
+      fill: var(--text);
+      opacity: 0.8;
+      filter: drop-shadow(0 1px 0.3rem #000);
+      font-size: 1rem;
+    }
+  }
 }
 </style>

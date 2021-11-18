@@ -66,7 +66,10 @@ interface ShipStub extends BaseStub {
   spawnPoint?: CoordinatePair
   level?: number
 
-  debugLocations?: CoordinatePair[]
+  debugLocations?: {
+    point: CoordinatePair
+    label?: string
+  }[]
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]

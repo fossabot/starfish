@@ -1099,30 +1099,10 @@ export class HumanShip extends CombatShip {
   }
 
   // ----- move -----
-  private adjustedTarget(target: CoordinatePair) {
-    const distance = c.distance(this.location, target)
-    const percentMovingAwayFromTarget =
-      c.angleDifference(
-        c.angleFromAToB([0, 0], this.velocity),
-        c.angleFromAToB(this.location, target),
-      ) / 180
-    const speedOverDistance =
-      (c.vectorToMagnitude(this.velocity) * 10e9) / distance
-    const percentToAdjust = Math.min(
-      percentMovingAwayFromTarget * speedOverDistance,
-    )
-    const adjustedTarget = [
-      target[0] - percentToAdjust * this.velocity[0],
-      target[1] - percentToAdjust * this.velocity[1],
-    ] as CoordinatePair
-
-    // this.debugPoint(adjustedTarget)
-
-    return adjustedTarget
-  }
-
   passiveThrust() {
     const thrusters = this.membersIn(`cockpit`)
+
+    if (!thrusters.length) return
 
     const brakers = thrusters.filter(
       (t) =>
@@ -2667,7 +2647,7 @@ export class HumanShip extends CombatShip {
   }
 
   shipToValidScanResult(ship: Ship): ShipStub {
-    let scanPropertiesToUse =
+    let scanPropertiesToUse: ShipScanDataShape =
       c.distance(this.location, ship.location) <
       this.radii.scan
         ? this.maxScanProperties || c.baseShipScanProperties
@@ -2679,6 +2659,9 @@ export class HumanShip extends CombatShip {
         ...scanPropertiesToUse,
         ...c.sameGuildShipScanProperties,
       }
+
+    if (process.env.NODE_ENV === `development`)
+      scanPropertiesToUse.debugLocations = true
 
     const partialShip: any = {} // sorry to the typescript gods for this one
     ;(
