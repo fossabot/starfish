@@ -143,7 +143,7 @@ export default Vue.extend({
 .mainpreview {
   backface-visibility: none;
   width: 100%;
-  padding: 1em 4em 1em 4em;
+  padding: 0.2em 4em 0.7em 4em;
 }
 .customizeicon {
   transition: transform 0.2s ease-in-out;

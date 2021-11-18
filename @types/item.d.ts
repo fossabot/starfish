@@ -1,5 +1,7 @@
 type ChassisId =
   | `tiny1`
+  | `ai1`
+  | `ai2`
   | `starter1`
   | `starter2`
   | `starter3`
@@ -217,4 +219,5 @@ interface ShipScanDataShape {
   attackable?: boolean
   targetShip?: boolean
   radii?: RadiusType[]
+  debugLocations?: boolean
 }

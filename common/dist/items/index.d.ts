@@ -73,6 +73,8 @@ export declare const chassis: {
     starter1: BaseChassisData;
     starter2: BaseChassisData;
     starter3: BaseChassisData;
+    ai1: BaseChassisData;
+    ai2: BaseChassisData;
     fighter1: BaseChassisData;
     fighter2: BaseChassisData;
     fighter3: BaseChassisData;

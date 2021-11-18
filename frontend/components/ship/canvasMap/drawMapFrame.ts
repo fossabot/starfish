@@ -593,15 +593,32 @@ export default class Drawer {
     }
 
     // ----- debug points -----
-
-    ship?.debugLocations?.forEach((loc) => {
-      this.drawPoint({
-        location: [loc[0], loc[1] * -1],
-        labelTop: `debug`,
-        radius: (2 / this.zoom) * devicePixelRatio,
-        color: `rgb(0, 255, 100)`,
+    if (process.env.NODE_ENV === `development`) {
+      ship?.debugLocations?.forEach((loc) => {
+        this.drawPoint({
+          location: [loc.point[0], loc.point[1] * -1],
+          labelTop: loc.label || `main debug`,
+          labelScale: 0.5,
+          radius: (1 / this.zoom) * devicePixelRatio,
+          color: `rgb(0, 255, 100)`,
+        })
       })
-    })
+      shipsToDraw?.forEach((s) => {
+        s.debugLocations?.forEach((loc) => {
+          this.drawPoint({
+            location: [loc.point[0], loc.point[1] * -1],
+            labelTop: loc.label
+              ? `${s.name}: ${loc.label}`
+              : `${s.name} debug`,
+            labelScale: 0.5,
+            radius: (1 / this.zoom) * devicePixelRatio,
+            color:
+              c.guilds[s.guildId]?.color ||
+              `rgb(0, 255, 100)`,
+          })
+        })
+      })
+    }
 
     // ----- target points -----
 
