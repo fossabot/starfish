@@ -139,6 +139,7 @@ jobs:
       #     db.getUsers();
       #       ' > output.txt
       #     cat output.txt
+      - run: sleep 10
 
       - name: Run mongosh and see if it connects
         if: always()
