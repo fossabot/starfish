@@ -717,8 +717,7 @@ export default class Drawer {
 
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
-        labelTop: !s.planet && s.name,
-        radius: (zoomRadius + 1) * devicePixelRatio,
+        radius: zoomRadius * 1.4 * devicePixelRatio,
         color: `rgba(30,30,30,.3)`,
         triangle: angle,
       })

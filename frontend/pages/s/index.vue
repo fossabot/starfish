@@ -211,6 +211,7 @@ export default Vue.extend({
         this.$refs.container as HTMLElement,
         {
           centerX: true,
+          // debug: true,
           // skipLessThanHeight: 40,
         },
       )

@@ -357,7 +357,7 @@ export default function (
         )
       const ship = game.ships.find((p) => p.id === shipId)
       if (!ship) return
-      c.log(`Admin kitting out ship ${ship.name}`)
+      c.log(`Admin stamina-ing out ship ${ship.name}`)
       ship.crewMembers.forEach((cm) => {
         cm.stamina = cm.maxStamina
         cm.bottomedOutOnStamina = false

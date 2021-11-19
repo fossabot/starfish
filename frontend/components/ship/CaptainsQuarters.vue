@@ -299,7 +299,7 @@
                   c.distance(ship.location, a.location) -
                   c.distance(ship.location, b.location),
               )
-              .slice(0, 10),
+              .slice(0, 8),
             ...[...ship.visible.ships]
               .sort(
                 (a, b) =>
@@ -322,17 +322,27 @@
             name: s.name,
           }"
         >
-          {{
-            s.type === 'ship'
-              ? '🚀'
-              : s.type === 'planet'
-              ? '🪐'
-              : s.type === 'cache'
-              ? '📦'
-              : s.type === 'zone'
-              ? '⭕'
-              : ''
-          }}{{ s.name }}
+          <template v-if="s.type === 'cache'">
+            📦Cache (<AngleArrow
+              :angle="
+                c.angleFromAToB(ship.location, s.location)
+              "
+            />
+            {{
+              c.r2(c.distance(ship.location, s.location))
+            }}AU)
+          </template>
+          <template v-else>
+            {{
+              s.type === 'ship'
+                ? '🚀'
+                : s.type === 'planet'
+                ? '🪐'
+                : s.type === 'zone'
+                ? '⭕'
+                : ''
+            }}{{ s.name }}
+          </template>
         </option>
       </select>
 

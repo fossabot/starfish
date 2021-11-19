@@ -7,8 +7,9 @@
       warning: !isEqual && isWorse,
       fade: isEqual,
     }"
-  >
-    {{ difference > 0 ? '+' : ''
+    >{{ !isEqual && isWorse && difference < 0 ? '-' : ''
+    }}{{ !isEqual && isBetter && difference < 0 ? '-' : ''
+    }}{{ difference > 0 ? '+' : ''
     }}{{
       Math.abs(difference) > 10000
         ? c.speedNumber(difference / c.kmPerAu, true, 0)

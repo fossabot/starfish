@@ -87,66 +87,87 @@ export default class FreeMase {
                 `base element mutated`,
               )
 
+            this.resizeObserver.disconnect()
+
+            // console.log(this.watchingForResize)
+            // for (let el of this.watchingForResize) {
+            //   console.log(el, parentEl.contains(el))
+            //   if (!parentEl.contains(el)) {
+            //     console.log(
+            //       `FreeMase:`,
+            //       `removing resize observer for`,
+            //       el,
+            //     )
+            //     this.watchingForResize.delete(el)
+            //   }
+            // }
+
+            // if (this.options.debug)
+            //   console.log(
+            //     `FreeMase:`,
+            //     entry,
+            //     entry.target.childNodes,
+            //     [...entry.target.childNodes].filter(
+            //       (n) => n.nodeType === 1,
+            //     ),
+            //     [...entry.target.childNodes].filter(
+            //       (n) =>
+            //         n.nodeType === 1 &&
+            //         !this.watchingForResize.has(n),
+            //     ),
+            //     this.watchingForResize,
+            //   )
+
             // handle initial elements
             for (let el of [
               ...entry.target.childNodes,
             ].filter(
               (n) => n.nodeType === 1,
             ) as Element[]) {
-              if (this.watchingForResize.has(el)) return
               if (this.resizeObserver)
                 this.resizeObserver.observe(el)
-              if (this.options.debug)
-                console.log(
-                  `FreeMase:`,
-                  `now watching for resize:`,
-                  el,
-                )
+              // if (this.options.debug)
+              //   console.log(
+              //     `FreeMase:`,
+              //     `now watching for resize (initial):`,
+              //     el,
+              //   )
               this.watchingForResize.add(el)
             }
 
-            // handle added elements
-            for (let addedElement of [
-              ...entry.addedNodes,
-            ].filter(
-              (n) => n.nodeType === 1,
-            ) as Element[]) {
-              if (this.watchingForResize.has(addedElement))
-                return
-              if (this.resizeObserver)
-                this.resizeObserver.observe(addedElement)
-              if (this.options.debug)
-                console.log(
-                  `FreeMase:`,
-                  `now watching for resize:`,
-                  addedElement,
-                )
-              this.watchingForResize.add(addedElement)
-            }
+            // // handle added elements
+            // for (let addedElement of [
+            //   ...entry.addedNodes,
+            // ].filter(
+            //   (n) => n.nodeType === 1,
+            // ) as Element[]) {
+            //   if (this.resizeObserver)
+            //     this.resizeObserver.observe(addedElement)
+            //   if (this.options.debug)
+            //     console.log(
+            //       `FreeMase:`,
+            //       `now watching for resize (added):`,
+            //       addedElement,
+            //     )
+            // }
 
-            // handle removed elements
-            for (let removedElement of [
-              ...entry.removedNodes,
-            ].filter(
-              (n) => n.nodeType === 1,
-            ) as Element[]) {
-              if (
-                !this.watchingForResize.has(removedElement)
-              )
-                return
-              if (this.resizeObserver)
-                this.resizeObserver.unobserve(
-                  removedElement,
-                )
-              if (this.options.debug)
-                console.log(
-                  `FreeMase:`,
-                  `stopped watching for resize:`,
-                  removedElement,
-                )
-
-              this.watchingForResize.delete(removedElement)
-            }
+            // // handle removed elements
+            // for (let removedElement of [
+            //   ...entry.removedNodes,
+            // ].filter(
+            //   (n) => n.nodeType === 1,
+            // ) as Element[]) {
+            //   if (this.resizeObserver)
+            //     this.resizeObserver.unobserve(
+            //       removedElement,
+            //     )
+            //   if (this.options.debug)
+            //     console.log(
+            //       `FreeMase:`,
+            //       `stopped watching for resize:`,
+            //       removedElement,
+            //     )
+            // }
           })
         this.position()
       },
@@ -155,10 +176,15 @@ export default class FreeMase {
 
     const resizeCallback = debounce(
       (els?: ResizeObserverEntry[]) => {
-        if (this.options.debug)
-          console.log(`FreeMase:`, `resized`, els)
         if (!ready) return
         this.position()
+        if (this.options.debug)
+          console.log(
+            `FreeMase:`,
+            `resized`,
+            els,
+            this.watchingForResize.size,
+          )
       },
       100,
     )
@@ -175,7 +201,7 @@ export default class FreeMase {
       if (this.options.debug)
         console.log(
           `FreeMase:`,
-          `now watching for resize:`,
+          `now watching for resize (start):`,
           child,
         )
       this.resizeObserver.observe(child)
@@ -192,6 +218,9 @@ export default class FreeMase {
       !this.mutationObserver
     )
       return 0
+
+    if (this.options.debug)
+      console.log(`FreeMase:`, `positioning`)
 
     const startTime = Date.now()
     // console.log('FreeMase:', `resetting positions`)
@@ -546,6 +575,7 @@ export default class FreeMase {
         debugContainer.style.left = `0`
         debugContainer.style.height = lastTakenSpace + `px`
         debugContainer.style.zIndex = `999999`
+        debugContainer.style.pointerEvents = `none`
         this.parentEl.prepend(debugContainer)
       } else {
         // clear existing elements
@@ -566,6 +596,13 @@ export default class FreeMase {
         `
         debugContainer.appendChild(debugEl)
       }
+
+      Array.from(this.watchingForResize).forEach((el) => {
+        if ((el as HTMLElement).style)
+          (
+            el as HTMLElement
+          ).style.border = `1px solid green`
+      })
     }
 
     const elapsedTime = Date.now() - startTime

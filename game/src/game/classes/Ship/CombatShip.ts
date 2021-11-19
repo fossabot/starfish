@@ -565,6 +565,8 @@ export abstract class CombatShip extends Ship {
         )
     }
 
+    // c.log(damage, attackResult)
+
     this.addStat(`damageDealt`, attackResult.damageTaken)
 
     // extra combat xp on attack for all crew members in the weapons bay

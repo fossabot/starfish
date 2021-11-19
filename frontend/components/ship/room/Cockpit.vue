@@ -8,10 +8,21 @@
       ><span class="sectionemoji">🛫</span>Cockpit</template
     >
 
-    <!-- <div class="panesection">
+    <div class="panesection" v-if="manualEngines.length">
       <div class="marbotsmall">
         <LimitedChargeButton
           class="marbottiny"
+          :class="{
+            disabled:
+              !crewMember.targetLocation ||
+              (crewMember.targetObject &&
+                crewMember.targetObject.id === ship.id),
+          }"
+          :disabled="
+            !crewMember.targetLocation ||
+            (crewMember.targetObject &&
+              crewMember.targetObject.id === ship.id)
+          "
           :big="true"
           :max="crewMember.cockpitCharge"
           :animate="1"
@@ -33,7 +44,7 @@
           >
             &nbsp;(+{{
               c.speedNumber(
-                maxPossibleSpeedChange *
+                maxPossibleManualSpeedChange *
                   crewMember.cockpitCharge *
                   thrustChargeToUse,
               )
@@ -57,10 +68,9 @@
           @mouseenter.native="
             $store.commit(
               'tooltip',
-              `Click and hold to use your charged thrust to stop the ship. ${
-                ship.gameSettings.brakeToThrustRatio *
-                passiveBrakeMultiplier
-              }x more powerful than thrusting.`,
+              `Click and hold to use your charged thrust to stop the ship. ${c.r2(
+                brakeMultiplier,
+              )}x more powerful than thrusting.`,
             )
           "
           @mouseleave.native="reset"
@@ -73,11 +83,10 @@
           >
             &nbsp;(-{{
               c.speedNumber(
-                maxPossibleSpeedChange *
-                  ship.gameSettings.brakeToThrustRatio *
+                maxPossibleManualSpeedChange *
                   crewMember.cockpitCharge *
                   brakeChargeToUse *
-                  passiveBrakeMultiplier,
+                  brakeMultiplier,
               )
             }})
           </span>
@@ -116,7 +125,7 @@
                 c.getCockpitChargePerTickForSingleCrewMember(
                   pilotingSkill,
                 ) /
-                passiveChargeBoost) *
+                chargeSpeedMultiplier) *
                 c.tickInterval,
             )
           }})</span
@@ -124,12 +133,17 @@
       </div>
       <div
         v-tooltip="
-          `The amount of speed that you can apply to the ship. 
+          `The amount of speed that you can manually apply to the ship. 
           <p>
-            Braking is <b>${
-              ship.gameSettings.brakeToThrustRatio *
-              passiveBrakeMultiplier
-            }x</b> more effective than thrusting.
+            Braking is <b>${c.r2(
+              brakeMultiplier,
+            )}x</b> more effective than thrusting.
+          </p>
+          <hr />
+          <p>
+            Manual engines: ${c.printList(
+              manualEngines.map((e) => e.displayName),
+            )}
           </p>
           <hr />
           <p>
@@ -142,23 +156,33 @@
       >
         Applicable Speed:
         <NumberChangeHighlighter
-          :number="c.speedNumber(possibleSpeedChange, true)"
+          :number="
+            c.speedNumber(possibleManualSpeedChange, true)
+          "
         /><span class="sub marlefttiny"
           >/<NumberChangeHighlighter
-            :number="c.speedNumber(maxPossibleSpeedChange)"
+            :number="
+              c.speedNumber(maxPossibleManualSpeedChange)
+            "
         /></span>
       </div>
-    </div> -->
+    </div>
 
     <div
       class="panesection"
+      v-if="passiveEngines.length"
       v-tooltip="
         `You apply thrust to the ship passively as long as you are in the cockpit.
           <p>
-            Braking (moving in an opposing direction to the ship's velocity) is <b>${
-              ship.gameSettings.brakeToThrustRatio *
-              passiveBrakeMultiplier
-            }x</b> more effective.
+            Braking (moving in an opposing direction to the ship's velocity) is <b>${c.r2(
+              brakeMultiplier,
+            )}x</b> more effective.
+          </p>
+          <hr />
+          <p>
+            Passive engines: ${c.printList(
+              passiveEngines.map((e) => e.displayName),
+            )}
           </p>
           <hr />
           <p>
@@ -314,21 +338,47 @@ export default Vue.extend({
         'room'
       )
     },
-    activeEngines(): ItemStub[] {
+    passiveEngines(): ItemStub[] {
       return (
         this.ship?.items.filter(
           (e: ItemStub) =>
-            e.type === 'engine' && (e.repair || 0) > 0,
+            e.type === 'engine' &&
+            (e.repair || 0) > 0 &&
+            (e as EngineStub).passiveThrustMultiplier,
         ) || []
       )
     },
-    engineThrustAmplification(): number {
+    passiveThrustAmplification(): number {
       return Math.max(
         c.noEngineThrustMagnitude,
-        this.activeEngines.reduce(
+        this.passiveEngines.reduce(
           (total: number, e: EngineStub) =>
             total +
-            (e.thrustAmplification || 0) * (e.repair || 0),
+            (e.passiveThrustMultiplier || 0) *
+              (e.repair || 0),
+          0,
+        ) *
+          this.ship.gameSettings.baseEngineThrustMultiplier,
+      )
+    },
+    manualEngines(): ItemStub[] {
+      return (
+        this.ship?.items.filter(
+          (e: ItemStub) =>
+            e.type === 'engine' &&
+            (e.repair || 0) > 0 &&
+            (e as EngineStub).manualThrustMultiplier,
+        ) || []
+      )
+    },
+    manualThrustAmplification(): number {
+      return Math.max(
+        c.noEngineThrustMagnitude,
+        this.manualEngines.reduce(
+          (total: number, e: EngineStub) =>
+            total +
+            (e.manualThrustMultiplier || 0) *
+              (e.repair || 0),
           0,
         ) *
           this.ship.gameSettings.baseEngineThrustMultiplier,
@@ -344,15 +394,15 @@ export default Vue.extend({
     memberThrust(): number {
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
-        this.engineThrustAmplification,
+        this.manualThrustAmplification,
         this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
-    maxPossibleSpeedChange(): number {
+    maxPossibleManualSpeedChange(): number {
       return (
         (c.getThrustMagnitudeForSingleCrewMember(
           this.pilotingSkill,
-          this.engineThrustAmplification,
+          this.manualThrustAmplification,
           this.ship.gameSettings.baseEngineThrustMultiplier,
         ) /
           this.ship.mass) *
@@ -361,9 +411,9 @@ export default Vue.extend({
         60
       )
     },
-    possibleSpeedChange(): number {
+    possibleManualSpeedChange(): number {
       return (
-        this.maxPossibleSpeedChange *
+        this.maxPossibleManualSpeedChange *
         this.crewMember.cockpitCharge
       )
     },
@@ -382,7 +432,7 @@ export default Vue.extend({
       return (
         ((c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
           this.pilotingSkill,
-          this.engineThrustAmplification,
+          this.passiveThrustAmplification,
           this.ship.gameSettings.baseEngineThrustMultiplier,
         ) *
           this.thrustBoostMultiplier) /
@@ -404,7 +454,7 @@ export default Vue.extend({
         )
       return baseMax
     },
-    passiveChargeBoost(): number {
+    chargeSpeedMultiplier(): number {
       const generalBoostMultiplier =
         c.getGeneralMultiplierBasedOnCrewMemberProximity(
           this.crewMember,
@@ -431,10 +481,10 @@ export default Vue.extend({
           ) || 0))
       )
     },
-    passiveBrakeMultiplier(): number {
-      return (
+    brakeMultiplier(): number {
+      const bm =
         1 +
-        ((
+        (((
           this.crewMember as CrewMemberStub
         ).passives?.reduce(
           (total, p: CrewPassiveData) =>
@@ -443,14 +493,15 @@ export default Vue.extend({
               : total,
           0,
         ) || 0) +
-        ((this.ship as ShipStub).passives?.reduce(
-          (total, p: ShipPassiveEffect) =>
-            p.id === 'boostBrake'
-              ? total + (p.intensity || 0)
-              : total,
-          0,
-        ) || 0)
-      )
+          ((this.ship as ShipStub).passives?.reduce(
+            (total, p: ShipPassiveEffect) =>
+              p.id === 'boostBrake'
+                ? total + (p.intensity || 0)
+                : total,
+            0,
+          ) || 0)) *
+          this.ship.gameSettings.brakeToThrustRatio
+      return bm
     },
     planetsToShow(): PlanetStub[] {
       const p = [...(this.ship.visible?.planets || [])]

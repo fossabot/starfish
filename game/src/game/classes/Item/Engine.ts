@@ -6,7 +6,8 @@ import { Item } from './Item'
 
 export class Engine extends Item {
   readonly id: EngineId
-  readonly thrustAmplification: number
+  readonly passiveThrustMultiplier: number
+  readonly manualThrustMultiplier: number
   lastUse: number = Date.now()
 
   constructor(
@@ -16,7 +17,10 @@ export class Engine extends Item {
   ) {
     super(data, ship, props)
     this.id = data.id
-    this.thrustAmplification = data.thrustAmplification
+    this.passiveThrustMultiplier =
+      data.passiveThrustMultiplier || 0
+    this.manualThrustMultiplier =
+      data.manualThrustMultiplier || 0
     this.lastUse = data.lastUse || 0
   }
 

@@ -50,14 +50,14 @@ function getCockpitChargePerTickForSingleCrewMember(level = 1) {
     const flatMod = 0.1;
     return math_1.default.lerp(0.002 * flatMod, 0.005 * flatMod, level / 100);
 }
-function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
+function getThrustMagnitudeForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier = 1) {
     const min = 0.45;
     const max = 1.4;
     return (math_1.default.lerp(min, max, level / 100) *
         engineThrustMultiplier *
         baseEngineThrustMultiplier);
 }
-function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier) {
+function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineThrustMultiplier = 1, baseEngineThrustMultiplier = 1) {
     const min = 1 / 4500;
     const max = 1 / 1500;
     return (math_1.default.lerp(min, max, level / 100) *

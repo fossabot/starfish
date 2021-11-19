@@ -57,7 +57,7 @@ function getCockpitChargePerTickForSingleCrewMember(
 function getThrustMagnitudeForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
-  baseEngineThrustMultiplier: number,
+  baseEngineThrustMultiplier: number = 1,
 ): number {
   const min: number = 0.45
   const max: number = 1.4
@@ -71,7 +71,7 @@ function getThrustMagnitudeForSingleCrewMember(
 function getPassiveThrustMagnitudePerTickForSingleCrewMember(
   level: number = 1,
   engineThrustMultiplier: number = 1,
-  baseEngineThrustMultiplier: number,
+  baseEngineThrustMultiplier: number = 1,
 ): number {
   const min: number = 1 / 4500
   const max: number = 1 / 1500

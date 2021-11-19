@@ -162,6 +162,9 @@
             :title="`Jobs`"
             v-if="
               crewMember &&
+              !(
+                ship.tutorial && ship.tutorial.currentStep
+              ) &&
               ship.planet &&
               ship.planet.maxContracts
             "
@@ -169,7 +172,12 @@
             <ShipPlanetContracts />
           </Tab>
 
-          <Tab :title="`Downtown`">
+          <Tab
+            :title="`Downtown`"
+            v-if="
+              !(ship.tutorial && ship.tutorial.currentStep)
+            "
+          >
             <ShipPlanetGuildRecruit />
             <ShipPlanetBank />
             <ShipPlanetLevel />

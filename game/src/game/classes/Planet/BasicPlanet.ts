@@ -153,7 +153,7 @@ export class BasicPlanet extends Planet {
         value: `increaseAutoRepair`,
       },
       {
-        weight: 3 * c.distance([0, 0], this.location),
+        weight: 4 * c.distance([0, 0], this.location),
         value: `increaseMaxContracts`,
       },
       {

@@ -149,6 +149,7 @@ type ShipStatKey =
   | `tutorials`
   | `netWorth`
   | `completedContracts`
+  | `leftUniverse`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

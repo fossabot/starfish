@@ -20,6 +20,7 @@ type ChassisId =
 
 type EngineId =
   | `tiny1`
+  | `ai1`
   | `tutorial1`
   | `starter1`
   | `starter2`
@@ -27,6 +28,9 @@ type EngineId =
   | `basic1`
   | `basic2`
   | `basic3`
+  | `duo1`
+  | `duo2`
+  | `duo3`
   | `glass1`
   | `glass2`
   | `glass3`
@@ -160,7 +164,8 @@ interface BaseWeaponData extends BaseItemData {
 interface BaseEngineData extends BaseItemData {
   type: `engine`
   id: EngineId
-  thrustAmplification: number
+  passiveThrustMultiplier?: number
+  manualThrustMultiplier?: number
 }
 
 interface BaseArmorData extends BaseItemData {

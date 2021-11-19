@@ -41,13 +41,20 @@
           )}`"
         ></Tab>
         <Tab title="Bunk Time"></Tab>
-        <Tab
-          v-for="skill in ship.crewMembers[0].skills"
-          :key="'skillrank' + skill.skill"
-          :title="
-            c.capitalize(c.camelCaseToWords(skill.skill))
+        <template
+          v-if="
+            ship.crewMembers[0] &&
+            ship.crewMembers[0].skills
           "
-        ></Tab>
+        >
+          <Tab
+            v-for="skill in ship.crewMembers[0].skills"
+            :key="'skillrank' + skill.skill"
+            :title="
+              c.capitalize(c.camelCaseToWords(skill.skill))
+            "
+          ></Tab>
+        </template>
       </Tabs>
     </div>
   </Box>
@@ -67,7 +74,7 @@ export default Vue.extend({
     show(): boolean {
       return (
         this.ship &&
-        // this.ship.crewMembers.length > 1 &&
+        !this.ship.tutorial?.currentStep &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('crewOverview'))
       )
@@ -120,9 +127,9 @@ export default Vue.extend({
 
       return [...this.ship.crewMembers].sort(
         (a: CrewMemberStub, b) =>
-          (b.skills.find((s) => s.skill === sortBy)
+          (b.skills?.find((s) => s.skill === sortBy)
             ?.level || 0) -
-          (a.skills.find((s) => s.skill === sortBy)
+          (a.skills?.find((s) => s.skill === sortBy)
             ?.level || 0),
       )
     },
