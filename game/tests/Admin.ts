@@ -82,8 +82,9 @@ import socketIoClient, {
 //     )
 //   })
 // })
-
-describe.skip(`Admin resetters`, () => {
+;(process.env.NODE_ENV === `development`
+  ? describe
+  : describe.skip)(`Admin resetters`, () => {
   it(`should properly remove all planets on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
