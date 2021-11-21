@@ -83,7 +83,7 @@ import socketIoClient, {
 //   })
 // })
 
-describe(`Admin resetters`, () => {
+describe.skip(`Admin resetters`, () => {
   it(`should properly remove all planets on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({
@@ -143,6 +143,7 @@ describe(`Admin resetters`, () => {
         secure: true,
       },
     )
+
     await awaitIOConnection(client)
 
     await new Promise<void>((r) =>

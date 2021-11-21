@@ -1,26 +1,11 @@
-print(`Start #################################################################`)
-
-db = db.getSiblingDB(`starfish`)
-// db.createUser({
-//   user: process.env.MONGO_USERNAME,
-//   pwd: process.env.MONGO_PASSWORD,
-//   roles: [
-//     {
-//       role: `readWrite`,
-//       db: `starfish`,
-//     },
-//   ],
-// })
-
-print(`END #################################################################`)
-
+db = db.getSiblingDB(`starfish-test`)
 db.createUser({
-  user: "starfish",
-  pwd: "starfish321",
+  user: `testuser`,
+  pwd: `testpassword`,
   roles: [
     {
       role: `readWrite`,
-      db: `starfish`,
+      db: `starfish-test`,
     },
   ],
 })

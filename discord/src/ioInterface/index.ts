@@ -76,7 +76,7 @@ io.on(
       fix: `🔧`,
       flag: `🚩`,
       incomingAttackCrit: `⚡`,
-      incomingAttackHit: `🩸`,
+      incomingAttackHit: `💔`,
       incomingAttackMiss: `😌`,
       incomingAttackDisable: `❌`,
       kill: `☠️`,
