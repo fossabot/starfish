@@ -15,7 +15,8 @@
     "hard-restart": "docker-compose down --remove-orphans --volumes && docker-compose up -d",
     "restart": "docker-compose down --remove-orphans && docker-compose up -d",
     "mongo": "mongod --dbpath ./db/data",
-    "circularcheck": "npx madge --circular ./game"
+    "circularcheck": "npx madge --circular ./game",
+    "setup": "npm install && for folder in discord frontend game; do cd $folder && npm install && cd ..; done"
   },
   "devDependencies": {
     "@types/mongoose": "5.11.97",
