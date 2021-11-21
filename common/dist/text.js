@@ -43,15 +43,15 @@ function speedNumber(numberInAu, noTag = false, maxDecimalPlaces = 2) {
         output +
         (noTag ? `` : ` km/hr`));
 }
-function printList(list) {
+function printList(list, separator = `and`) {
     if (!list)
         return ``;
     if (list.length === 1)
         return list[0];
     if (list.length === 2)
-        return `${list[0]} and ${list[1]}`;
+        return `${list[0]} ${separator} ${list[1]}`;
     return (list.slice(0, list.length - 1).join(`, `) +
-        `, and ` +
+        `, ${separator} ` +
         list[list.length - 1]);
 }
 const badwords_1 = require("./badwords");

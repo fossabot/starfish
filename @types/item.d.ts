@@ -145,7 +145,8 @@ type LoadoutId =
   | `tutorial2`
   | `humanDefault`
   | `aiTutorial1`
-  | `test1`
+  | `testManualEngine`
+  | `testMega`
 type Loadout = {
   chassis: ChassisId
   items: { type: ItemType; id: ItemId }[]

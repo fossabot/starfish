@@ -522,7 +522,7 @@ export default class Drawer {
 
           this.drawPoint({
             labelTop: cm.name,
-            labelScale: 0.8,
+            labelScale: 0.7,
             location: [
               cm.targetLocation[0],
               cm.targetLocation[1] * -1,

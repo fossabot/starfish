@@ -16,8 +16,6 @@ import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
 
-import loadouts from '../../presets/loadouts'
-
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './HumanShip/Tutorial'
 
@@ -230,10 +228,10 @@ export class Ship extends Stubbable {
       this.swapChassis(c.items.chassis[chassis.id])
     else if (
       loadout &&
-      c.items.chassis[loadouts[loadout]?.chassis]
+      c.items.chassis[c.loadouts[loadout]?.chassis]
     )
       this.swapChassis(
-        c.items.chassis[loadouts[loadout].chassis],
+        c.items.chassis[c.loadouts[loadout].chassis],
       )
     else this.swapChassis(c.items.chassis.starter1)
 
@@ -574,7 +572,7 @@ export class Ship extends Stubbable {
 
   equipLoadout(this: Ship, id: LoadoutId): boolean {
     // c.log(`equipping loadout to`, this.name)
-    const loadout = loadouts[id]
+    const loadout = c.loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })
     loadout.items.forEach(

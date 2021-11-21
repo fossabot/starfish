@@ -1,6 +1,6 @@
 declare function numberWithCommas(x: number): string | number;
 declare function speedNumber(numberInAu: number, noTag?: boolean, maxDecimalPlaces?: number): string;
-declare function printList(list: string[]): string;
+declare function printList(list: string[], separator?: string): string;
 declare function degreesToArrow(angle: number): string;
 declare function degreesToArrowEmoji(angle: number): string;
 declare function coordPairToArrow(coordPair: CoordinatePair): string;

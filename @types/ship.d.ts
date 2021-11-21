@@ -71,6 +71,7 @@ type ShipPassiveEffectId =
   | `boostMinePayouts`
   | `boostBrake`
   | `boostThrust`
+  | `boostPassiveThrust`
   | `boostCockpitChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`

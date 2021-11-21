@@ -1019,7 +1019,7 @@ export class Tutorial {
           `page!`,
         ],
         `high`,
-        `mystery`,
+        `party`,
         true,
       )
       ship.game?.io.emit(

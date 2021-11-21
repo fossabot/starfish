@@ -56,6 +56,16 @@ const data: {
         (data.intensity || 0) * 100,
       )}%`,
   },
+  boostPassiveThrust: {
+    displayName: `Pectoral Fins`,
+    id: `boostPassiveThrust`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } passive thrust by ${math.r2(
+        (data.intensity || 0) * 100,
+      )}%`,
+  },
 
   boostBrake: {
     displayName: `Grappling Claws`,

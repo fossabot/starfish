@@ -236,7 +236,7 @@ export default Vue.extend({
 
 .pagecontainer {
   width: 100%;
-  min-height: 100vh;
+  min-height: 80vh;
   position: relative;
   padding-bottom: 20vh;
   // display: flex;

@@ -4,7 +4,6 @@
 import c from '../../common/src'
 import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -308,7 +307,9 @@ describe(`Combat HumanShip target selection`, () => {
 describe(`Combat attacks`, () => {
   it(`should take damage on being hit by an attack`, async () => {
     const g = new Game()
-    let ship = await g.addHumanShip(humanShipData(`test1`))
+    let ship = await g.addHumanShip(
+      humanShipData(`testMega`),
+    )
     let ship2 = await g.addHumanShip(humanShipData())
 
     let prevHp = ship2._hp
@@ -327,7 +328,9 @@ describe(`Combat attacks`, () => {
 describe(`Combat death`, () => {
   it(`should die and become invisible and untargetable when taking lethal damage`, async () => {
     const g = new Game()
-    let ship = await g.addHumanShip(humanShipData(`test1`))
+    let ship = await g.addHumanShip(
+      humanShipData(`testMega`),
+    )
     let ship2 = await g.addHumanShip(humanShipData())
 
     let prevHp = ship2._hp

@@ -4,7 +4,6 @@
 import c from '../../common/src'
 import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -204,7 +203,9 @@ describe(`Contract basics`, () => {
     expect(p.contracts.length).to.equal(1)
     const planetContract = p.contracts[0]
 
-    const s = await g.addHumanShip(humanShipData(`test1`))
+    const s = await g.addHumanShip(
+      humanShipData(`testMega`),
+    )
     const cm = await s.addCrewMember(crewMemberData())
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
@@ -269,7 +270,9 @@ describe(`Contract basics`, () => {
     expect(p.contracts.length).to.equal(1)
     const planetContract = p.contracts[0]
 
-    const s = await g.addHumanShip(humanShipData(`test1`))
+    const s = await g.addHumanShip(
+      humanShipData(`testMega`),
+    )
     const cm = await s.addCrewMember(crewMemberData())
     s.commonCredits = 999999
     s.shipCosmeticCurrency = 999999

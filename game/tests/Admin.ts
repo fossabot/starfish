@@ -4,7 +4,6 @@
 import fs from 'fs'
 
 import c from '../../common/src'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'

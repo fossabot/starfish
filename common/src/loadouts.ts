@@ -1,5 +1,3 @@
-import c from '../../../../common/dist'
-
 const loadouts: { [key in LoadoutId]: Loadout } = {
   tutorial1: {
     chassis: `starter1`,
@@ -35,7 +33,14 @@ const loadouts: { [key in LoadoutId]: Loadout } = {
 
   // ----- loadouts for testing -----
 
-  test1: {
+  testManualEngine: {
+    chassis: `starter1`,
+    items: [
+      { type: `weapon`, id: `saber3` },
+      { type: `engine`, id: `glass3` },
+    ],
+  },
+  testMega: {
     chassis: `mega3`,
     items: [
       { type: `weapon`, id: `saber3` },

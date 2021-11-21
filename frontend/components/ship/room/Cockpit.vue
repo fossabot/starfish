@@ -209,7 +209,29 @@
         <div class="panesubhead">Set Target</div>
       </div> -->
 
-      <span>
+      <span
+        v-if="
+          manualEngines.length &&
+          !passiveEngines.length &&
+          ship.speed
+        "
+      >
+        <button
+          @click="setTargetAlongPath"
+          :class="{
+            secondary:
+              c.angleDifference(
+                c.vectorToDegrees(ship.velocity),
+                c.angleFromAToB(
+                  ship.location,
+                  crewMember.targetLocation,
+                ),
+              ) > 2,
+          }"
+        >
+          <span>Current Trajectory</span>
+        </button> </span
+      ><span v-if="passiveEngines.length">
         <button
           @click="
             setTargetObject({
@@ -231,7 +253,7 @@
         >
           <span>Stop</span>
         </button></span
-      ><span>
+      ><span v-if="ship.crewMembers.length > 1">
         <button
           @click="clearTarget"
           :class="{

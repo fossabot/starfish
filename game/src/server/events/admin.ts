@@ -334,18 +334,23 @@ export default function (
     if ((ship as CombatShip).die) (ship as CombatShip).die()
   })
 
-  socket.on(`admin:kit`, async (id, password, shipId) => {
-    if (!game) return
-    if (!isAdmin(id, password))
-      return c.log(
-        `Non-admin attempted to access admin:kit`,
+  socket.on(
+    `admin:loadout`,
+    async (id, password, shipId, loadoutId) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:loadout`,
+        )
+      const ship = game.ships.find((p) => p.id === shipId)
+      if (!ship || !c.loadouts[loadoutId]) return
+      c.log(
+        `Admin equipping loadout ${loadoutId} to ship ${ship.name}`,
       )
-    const ship = game.ships.find((p) => p.id === shipId)
-    if (!ship) return
-    c.log(`Admin kitting out ship ${ship.name}`)
-    ship.items = []
-    ship.equipLoadout(`test1`)
-  })
+      ship.items = []
+      ship.equipLoadout(loadoutId)
+    },
+  )
 
   socket.on(
     `admin:stamina`,

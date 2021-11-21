@@ -140,10 +140,11 @@ interface IOClientEvents {
     password: string,
     shipId: string,
   ) => void
-  [`admin:kit`]: (
+  [`admin:loadout`]: (
     adminId: string,
     password: string,
     shipId: string,
+    loadoutId: LoadoutId,
   ) => void
   [`admin:stamina`]: (
     adminId: string,

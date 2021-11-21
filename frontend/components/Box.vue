@@ -1,5 +1,8 @@
 <template>
-  <div class="boxholder" :class="{ mobile: isMobile }">
+  <div
+    class="boxholder"
+    :class="{ mobile: isMobile, minimized }"
+  >
     <div class="box flexcolumn" :class="{ highlight }">
       <div class="gradient" />
       <div
@@ -111,6 +114,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .boxholder {
   padding: 1em;
+
+  &.minimized {
+    min-width: 250px;
+  }
 
   @media (max-width: 768px) {
     width: 100% !important;

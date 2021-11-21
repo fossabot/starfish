@@ -1124,7 +1124,8 @@ export class HumanShip extends CombatShip {
     )
 
     const shipThrustBoostPassiveMultiplier =
-      this.getPassiveIntensity(`boostThrust`)
+      this.getPassiveIntensity(`boostThrust`) +
+      this.getPassiveIntensity(`boostPassiveThrust`)
 
     const brakers = thrusters.filter(
       (t) =>
@@ -1157,6 +1158,14 @@ export class HumanShip extends CombatShip {
         !accelerators.includes(t) &&
         !t.targetLocation,
     )
+
+    // tagalongs become brakers if that's the only action being taken
+    if (
+      !accelerators.length &&
+      tagalongs.length &&
+      brakers.length
+    )
+      brakers.push(...tagalongs)
 
     const combinedThrustVector: CoordinatePair = [0, 0]
 
@@ -1225,6 +1234,9 @@ export class HumanShip extends CombatShip {
 
       const thrustBoostPassiveMultiplier =
         accelerator.getPassiveIntensity(`boostThrust`) +
+        accelerator.getPassiveIntensity(
+          `boostPassiveThrust`,
+        ) +
         shipThrustBoostPassiveMultiplier +
         1
 
@@ -1293,6 +1305,7 @@ export class HumanShip extends CombatShip {
 
       const passiveMultiplier =
         braker.getPassiveIntensity(`boostThrust`) +
+        braker.getPassiveIntensity(`boostPassiveThrust`) +
         shipThrustBoostPassiveMultiplier +
         braker.getPassiveIntensity(`boostBrake`) +
         1

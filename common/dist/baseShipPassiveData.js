@@ -65,6 +65,9 @@ const baseShipPassiveData = {
     boostThrust: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% thrust`,
     },
+    boostPassiveThrust: {
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% passive thrust`,
+    },
     boostXpGain: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} XP gain`,
     },

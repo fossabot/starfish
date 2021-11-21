@@ -4,7 +4,6 @@
 import c from '../../common/src'
 import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -74,7 +73,7 @@ describe(`AIShip target selection`, () => {
       aiShipData(3, `flamingos`),
     )
     const human = await g.addHumanShip(
-      humanShipData(`test1`),
+      humanShipData(`testMega`),
     )
 
     human.move([10 - 0.3, 0])

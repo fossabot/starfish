@@ -185,6 +185,9 @@ export const chassis: {
     agility: 0.7,
     maxCargoSpace: 60,
     rarity: 4,
+    passives: [
+      { id: `boostPassiveThrust`, intensity: 0.05 },
+    ],
   },
   hauler2: {
     type: `chassis`,
@@ -198,6 +201,7 @@ export const chassis: {
     maxCargoSpace: 80,
     rarity: 8,
     passives: [
+      { id: `boostPassiveThrust`, intensity: 0.05 },
       {
         id: `boostBroadcastRange`,
         intensity: 0.08,
@@ -216,6 +220,7 @@ export const chassis: {
     maxCargoSpace: 100,
     rarity: 10,
     passives: [
+      { id: `boostPassiveThrust`, intensity: 0.05 },
       {
         id: `boostBroadcastRange`,
         intensity: 0.15,
@@ -238,6 +243,7 @@ export const chassis: {
     passives: [
       { id: `boostBrake`, intensity: 2 },
       { id: `boostCockpitChargeSpeed`, intensity: 0.4 },
+      { id: `boostPassiveThrust`, intensity: 0.05 },
     ],
   },
   sailer2: {
@@ -254,6 +260,7 @@ export const chassis: {
     passives: [
       { id: `boostBrake`, intensity: 2 },
       { id: `boostCockpitChargeSpeed`, intensity: 0.8 },
+      { id: `boostPassiveThrust`, intensity: 0.1 },
     ],
   },
   sailer3: {
@@ -270,6 +277,7 @@ export const chassis: {
     passives: [
       { id: `boostBrake`, intensity: 2 },
       { id: `boostCockpitChargeSpeed`, intensity: 0.12 },
+      { id: `boostPassiveThrust`, intensity: 0.15 },
     ],
   },
 

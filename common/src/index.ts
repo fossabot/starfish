@@ -18,6 +18,7 @@ import stubify from './stubify'
 import * as items from './items'
 import achievements from './achievements'
 import * as cosmetics from './cosmetics'
+import loadouts from './loadouts'
 
 export default {
   ...globals,
@@ -38,6 +39,7 @@ export default {
   species,
   guilds,
   baseShipPassiveData,
+  loadouts,
   Profiler,
   stubify,
 }
