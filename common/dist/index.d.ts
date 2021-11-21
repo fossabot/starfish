@@ -20,6 +20,7 @@ declare const _default: {
         boostRepairSpeed: CrewPassiveData;
         boostMineSpeed: CrewPassiveData;
         boostThrust: CrewPassiveData;
+        boostPassiveThrust: CrewPassiveData;
         boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
@@ -90,6 +91,9 @@ declare const _default: {
         boostThrust: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostPassiveThrust: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostCockpitChargeSpeed: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -150,6 +154,14 @@ declare const _default: {
         broadcastRangeCargoPrices: {
             description: (p: ShipPassiveEffect) => string;
         };
+    };
+    loadouts: {
+        tutorial1: Loadout;
+        tutorial2: Loadout;
+        humanDefault: Loadout;
+        aiTutorial1: Loadout;
+        testManualEngine: Loadout;
+        testMega: Loadout;
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
@@ -267,8 +279,8 @@ declare const _default: {
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
-    getThrustMagnitudeForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
-    getPassiveThrustMagnitudePerTickForSingleCrewMember: (level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number) => number;
+    getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
+    getPassiveThrustMagnitudePerTickForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number, rechargeSpeedMultiplier: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
     getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
@@ -317,7 +329,7 @@ declare const _default: {
     maxNameLength: number;
     numberWithCommas: (x: number) => string | number;
     speedNumber: (numberInAu: number, noTag?: boolean, maxDecimalPlaces?: number) => string;
-    printList: (list: string[]) => string;
+    printList: (list: string[], separator?: string) => string;
     degreesToArrow: (angle: number) => string;
     degreesToArrowEmoji: (angle: number) => string;
     coordPairToArrow: (coordPair: CoordinatePair) => string;

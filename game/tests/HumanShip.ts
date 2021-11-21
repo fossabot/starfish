@@ -4,7 +4,6 @@
 import c from '../../common/src'
 import { HumanShip } from '../src/game/classes/Ship/HumanShip/HumanShip'
 import { CrewMember } from '../src/game/classes/CrewMember/CrewMember'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -35,7 +34,7 @@ describe(`HumanShip basics`, () => {
     expect(ship.items).to.be.an(`array`)
     if (data.loadout)
       expect(ship.items).to.have.lengthOf(
-        loadouts[data.loadout]?.items?.length || Infinity,
+        c.loadouts[data.loadout]?.items?.length || Infinity,
       )
   })
 
@@ -290,7 +289,7 @@ describe(`HumanShip death`, () => {
     )
 
     // same test, this time with a big ship
-    ship = new HumanShip(humanShipData(`test1`))
+    ship = new HumanShip(humanShipData(`testMega`))
     for (let i = 0; i < 10; i++) {
       ship.addCrewMember(crewMemberData(), true)
     }
@@ -344,7 +343,7 @@ describe(`HumanShip death`, () => {
     )
 
     // same test, this time with a big ship
-    ship = new HumanShip(humanShipData(`test1`))
+    ship = new HumanShip(humanShipData(`testMega`))
     ship.commonCredits = distributeAmount
     const itemRefundValue1 = ship.items.reduce(
       (acc, item) => item.toRefundAmount() + acc,
@@ -381,7 +380,7 @@ describe(`HumanShip death`, () => {
     ).to.equal(12)
 
     // same test, this time with a big ship
-    ship = new HumanShip(humanShipData(`test1`))
+    ship = new HumanShip(humanShipData(`testMega`))
     for (let i = 0; i < 10; i++) {
       ship.addCrewMember(crewMemberData(), true)
     }

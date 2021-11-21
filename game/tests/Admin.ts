@@ -4,7 +4,6 @@
 import fs from 'fs'
 
 import c from '../../common/src'
-import loadouts from '../src/game/presets/loadouts'
 import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
@@ -83,8 +82,9 @@ import socketIoClient, {
 //     )
 //   })
 // })
-
-describe.skip(`Admin resetters`, () => {
+;(process.env.NODE_ENV === `development`
+  ? describe
+  : describe.skip)(`Admin resetters`, () => {
   it(`should properly remove all planets on wipe`, async () => {
     const g = new Game()
     await g.loadGameDataFromDb({

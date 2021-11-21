@@ -37,10 +37,15 @@
             >{{ c.r2(d.damage) }} damage</span
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
+        <template v-if="data.overkill">
+          <li>
+            <span class="warning"
+              >{{ c.r2(data.overkill) }} damage</span
+            >
+            overkill
+          </li>
+        </template>
       </ul>
-      <template v-if="data.overkill">
-        <div>{{ c.r2(data.overkill) }} damage overkill</div>
-      </template>
       <template v-if="data.hpLeft">
         <hr />
         <div class="sub">

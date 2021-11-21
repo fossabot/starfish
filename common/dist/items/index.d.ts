@@ -16,6 +16,7 @@ export declare const weapon: {
 };
 export declare const engine: {
     tiny1: BaseEngineData;
+    ai1: BaseEngineData;
     tutorial1: BaseEngineData;
     starter1: BaseEngineData;
     starter2: BaseEngineData;
@@ -23,6 +24,9 @@ export declare const engine: {
     basic1: BaseEngineData;
     basic2: BaseEngineData;
     basic3: BaseEngineData;
+    duo1: BaseEngineData;
+    duo2: BaseEngineData;
+    duo3: BaseEngineData;
     glass1: BaseEngineData;
     glass2: BaseEngineData;
     glass3: BaseEngineData;
@@ -70,10 +74,10 @@ export declare const armor: {
 };
 export declare const chassis: {
     tiny1: BaseChassisData;
+    ai1: BaseChassisData;
     starter1: BaseChassisData;
     starter2: BaseChassisData;
     starter3: BaseChassisData;
-    ai1: BaseChassisData;
     ai2: BaseChassisData;
     fighter1: BaseChassisData;
     fighter2: BaseChassisData;

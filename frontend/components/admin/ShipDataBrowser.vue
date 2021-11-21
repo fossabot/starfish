@@ -43,9 +43,9 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
-            @click="kit(selectedShipId)"
+            @click="loadout(selectedShipId)"
           >
-            <div>Kit</div>
+            <div>Loadout</div>
           </div>
           <div
             class="button combo flexcenter"
@@ -252,12 +252,18 @@ export default Vue.extend({
       )
     },
 
-    async kit(shipId: string) {
+    async loadout(shipId: string) {
+      const loadoutId = window.prompt(
+        `Which loadout id?\n` +
+          c.printList(Object.keys(c.loadouts), 'or'),
+      )
+      if (!loadoutId || !c.loadouts[loadoutId]) return
       ;(this as any).$socket?.emit(
-        `admin:kit`,
+        `admin:loadout`,
         this.userId,
         this.adminPassword,
         shipId,
+        loadoutId,
       )
     },
 

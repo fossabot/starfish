@@ -25,7 +25,7 @@ export const db = {
 }
 let ready = false
 
-const minBackupInterval = 1000 * 60 * 60 * 12
+const minBackupInterval = 1000 * 60 * 60 * 6 // hours
 const maxBackups = 20
 
 let databaseName: string

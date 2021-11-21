@@ -125,6 +125,11 @@ const species = {
                 data: { source: { speciesId: `angelfish` } },
                 intensity: 0.15,
             },
+            {
+                id: `boostPassiveThrust`,
+                data: { source: { speciesId: `angelfish` } },
+                intensity: 0.1,
+            },
         ],
     },
     blowfish: {

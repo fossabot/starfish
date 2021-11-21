@@ -217,14 +217,17 @@ export class HumanShip extends CombatShip {
       )
 
     this.updateMaxScanProperties()
-    this.updateVisible()
     this.recalculateMass()
 
-    this.checkAchievements()
-
-    this.updatePlanet(true)
     if (this.tutorial)
-      setTimeout(() => this.updatePlanet(true), 1500)
+      setTimeout(() => {
+        this.updatePlanet(true)
+      }, 1500)
+    else {
+      this.updateVisible()
+      this.checkAchievements()
+      this.updatePlanet(true)
+    }
 
     for (let z of this.visible.zones) {
       if (
@@ -575,7 +578,6 @@ export class HumanShip extends CombatShip {
     ]
     const initialMagnitude =
       c.vectorToMagnitude(initialVelocity)
-    const initialAngle = this.direction
 
     const memberPilotingSkill =
       thruster.piloting?.level || 1
@@ -585,7 +587,7 @@ export class HumanShip extends CombatShip {
         .filter((e) => e.repair > 0)
         .reduce(
           (total, e) =>
-            total + e.thrustAmplification * e.repair,
+            total + e.manualThrustMultiplier * e.repair,
           0,
         ),
     )
@@ -972,7 +974,9 @@ export class HumanShip extends CombatShip {
     }
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge, [thruster]))
+      this.manualEngines.forEach((e) =>
+        e.use(charge, [thruster]),
+      )
 
     thruster.addStat(
       `totalSpeedApplied`,
@@ -1021,7 +1025,7 @@ export class HumanShip extends CombatShip {
         .filter((e) => e.repair > 0)
         .reduce(
           (total, e) =>
-            total + e.thrustAmplification * e.repair,
+            total + e.manualThrustMultiplier * e.repair,
           0,
         ) *
         (this.game?.settings.baseEngineThrustMultiplier ||
@@ -1061,10 +1065,10 @@ export class HumanShip extends CombatShip {
         this.velocity[0] * relativeScaleOfMagnitudeShrink,
         this.velocity[1] * relativeScaleOfMagnitudeShrink,
       ]
-      c.log({
-        relativeScaleOfMagnitudeShrink,
-        v: this.velocity,
-      })
+      // c.log({
+      //   relativeScaleOfMagnitudeShrink,
+      //   v: this.velocity,
+      // })
     }
 
     this.toUpdate.velocity = this.velocity
@@ -1076,7 +1080,6 @@ export class HumanShip extends CombatShip {
     if (charge > 0.5)
       this.logEntry(
         [
-          `⏪`,
           thruster.name,
           `braked by ${c.speedNumber(
             (this.speed - currentMagnitude) * 60 * 60 * -1,
@@ -1088,11 +1091,16 @@ export class HumanShip extends CombatShip {
       )
 
     if (!HumanShip.movementIsFree)
-      this.engines.forEach((e) => e.use(charge, [thruster]))
+      this.manualEngines.forEach((e) =>
+        e.use(charge, [thruster]),
+      )
 
     thruster.addStat(
       `totalSpeedApplied`,
-      (this.speed - currentMagnitude || 0) * 60 * 60 * -1,
+      Math.abs(this.speed - currentMagnitude || 0) *
+        60 *
+        60 *
+        -1,
     )
 
     return (this.speed - currentMagnitude) * 60 * 60 * -1
@@ -1104,58 +1112,88 @@ export class HumanShip extends CombatShip {
 
     if (!thrusters.length) return
 
-    const brakers = thrusters.filter(
-      (t) =>
-        t.targetObject && t.targetObject.id === this.id,
-    )
-    const accelerators = thrusters.filter(
-      (t) =>
-        t.targetLocation &&
-        (!t.targetObject || t.targetObject.id !== this.id),
-    )
-    const tagalongs = thrusters.filter(
-      (t) => !t.targetLocation,
-    )
-
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
         .filter((e) => e.repair > 0)
         .reduce(
           (total, e) =>
-            total + e.thrustAmplification * e.repair,
+            total + e.passiveThrustMultiplier * e.repair,
           0,
         ),
     )
 
+    const shipThrustBoostPassiveMultiplier =
+      this.getPassiveIntensity(`boostThrust`) +
+      this.getPassiveIntensity(`boostPassiveThrust`)
+
+    const brakers = thrusters.filter(
+      (t) =>
+        (t.targetObject && t.targetObject.id === this.id) ||
+        (t.targetLocation &&
+          ((c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
+            t.skills.find((s) => s.skill === `piloting`)
+              ?.level || 1,
+            engineThrustMultiplier,
+            this.game?.settings
+              .baseEngineThrustMultiplier ||
+              c.defaultGameSettings
+                .baseEngineThrustMultiplier,
+          ) *
+            (shipThrustBoostPassiveMultiplier + 1)) /
+            this.mass) *
+            10 >
+            c.distance(this.location, t.targetLocation)),
+    )
+    const accelerators = thrusters.filter(
+      (t) =>
+        !brakers.includes(t) &&
+        t.targetLocation &&
+        (!t.targetObject || t.targetObject.id !== this.id),
+    )
+    // tagalongs are people in the cockpit without a specific target location
+    const tagalongs = thrusters.filter(
+      (t) =>
+        !brakers.includes(t) &&
+        !accelerators.includes(t) &&
+        !t.targetLocation,
+    )
+
+    // tagalongs become brakers if that's the only action being taken
+    if (
+      !accelerators.length &&
+      tagalongs.length &&
+      brakers.length
+    )
+      brakers.push(...tagalongs)
+
     const combinedThrustVector: CoordinatePair = [0, 0]
 
-    // calculate the average target of all accelerators in cockpit
-    let averageTarget = accelerators
-      .reduce(
-        (target, t) => {
-          target[0] += t.targetLocation[0]
-          target[1] += t.targetLocation[1]
-          return target
-        },
-        [0, 0],
-      )
-      .map(
-        (target) => target / accelerators.length,
-      ) as CoordinatePair
+    // calculate the average target of all accelerators in cockpit so tagalongs can aim there
+    let averageTarget: CoordinatePair = [0, 0],
+      adjustedAverageTarget: CoordinatePair = [0, 0]
+    if (tagalongs.length && accelerators.length) {
+      averageTarget = accelerators
+        .reduce(
+          (target, t) => {
+            target[0] += t.targetLocation[0]
+            target[1] += t.targetLocation[1]
+            return target
+          },
+          [0, 0],
+        )
+        .map(
+          (target) => target / accelerators.length,
+        ) as CoordinatePair
 
-    const adjustedAverageTarget =
-      this.adjustedTarget(averageTarget)
-
-    const shipThrustBoostPassiveMultiplier =
-      this.getPassiveIntensity(`boostThrust`)
-
-    let shipBrakeBoostPassiveMultiplier =
-      this.getPassiveIntensity(`boostBrake`)
+      adjustedAverageTarget =
+        this.adjustedTarget(averageTarget)
+    }
 
     const engineUsers = [...accelerators, ...brakers]
     if (accelerators.length) engineUsers.push(...tagalongs)
 
+    // * general upkeep for all engine users
     for (let thruster of engineUsers) {
       // add xp
       const xpBoostMultiplier =
@@ -1171,11 +1209,12 @@ export class HumanShip extends CombatShip {
       )
 
       if (!HumanShip.movementIsFree)
-        this.engines.forEach((e) =>
+        this.passiveEngines.forEach((e) =>
           e.passiveUse(0.1, [thruster]),
         )
     }
 
+    // * accelerators / tagalongs
     for (let accelerator of [
       ...accelerators,
       ...tagalongs,
@@ -1195,6 +1234,9 @@ export class HumanShip extends CombatShip {
 
       const thrustBoostPassiveMultiplier =
         accelerator.getPassiveIntensity(`boostThrust`) +
+        accelerator.getPassiveIntensity(
+          `boostPassiveThrust`,
+        ) +
         shipThrustBoostPassiveMultiplier +
         1
 
@@ -1218,8 +1260,7 @@ export class HumanShip extends CombatShip {
         this.direction,
       )
       let passiveBrakeMultiplier =
-        accelerator.getPassiveIntensity(`boostBrake`) +
-        shipBrakeBoostPassiveMultiplier
+        accelerator.getPassiveIntensity(`boostBrake`)
       const brakeBoost =
         1 +
         (angleDifferenceToDirection / 180) *
@@ -1245,8 +1286,14 @@ export class HumanShip extends CombatShip {
 
       combinedThrustVector[0] += thrustVector[0]
       combinedThrustVector[1] += thrustVector[1]
+
+      accelerator.addStat(
+        `totalSpeedApplied`,
+        c.vectorToMagnitude(thrustVector) * 60 * 60,
+      )
     }
 
+    // * brakers
     for (let braker of brakers) {
       const currentOutcomeVelocity = [
         this.velocity[0] + combinedThrustVector[0],
@@ -1258,9 +1305,9 @@ export class HumanShip extends CombatShip {
 
       const passiveMultiplier =
         braker.getPassiveIntensity(`boostThrust`) +
-        shipBrakeBoostPassiveMultiplier +
+        braker.getPassiveIntensity(`boostPassiveThrust`) +
+        shipThrustBoostPassiveMultiplier +
         braker.getPassiveIntensity(`boostBrake`) +
-        shipBrakeBoostPassiveMultiplier +
         1
 
       const memberPilotingSkill =
@@ -1275,7 +1322,10 @@ export class HumanShip extends CombatShip {
               .baseEngineThrustMultiplier,
         ) * passiveMultiplier
 
-      let brakeMagnitudeToApply = baseMagnitude / this.mass
+      let brakeMagnitudeToApply = Math.min(
+        baseMagnitude / this.mass,
+        this.speed,
+      )
 
       if (
         currentOutcomeVelocityMagnitude <
@@ -1292,9 +1342,49 @@ export class HumanShip extends CombatShip {
         (brakeMagnitudeToApply *
           currentOutcomeVelocity[1]) /
         currentOutcomeVelocityMagnitude
+
+      braker.addStat(
+        `totalSpeedApplied`,
+        brakeMagnitudeToApply * 60 * 60,
+      )
     }
 
-    // final velocity adjustment
+    // * full ship brake passive
+
+    const shipBrakePassive =
+      this.getPassiveIntensity(`boostBrake`)
+    if (shipBrakePassive > 1) {
+      const angleDifferenceToDirection = c.angleDifference(
+        c.vectorToDegrees(combinedThrustVector),
+        this.direction,
+      )
+      const brakeBoostMultiplier =
+        1 +
+        (angleDifferenceToDirection / 180) *
+          shipBrakePassive
+
+      // c.log(
+      //   this.id,
+      //   `brk1`,
+      //   brakeBoostMultiplier,
+      //   c.vectorToMagnitude(combinedThrustVector) *
+      //     brakeBoostMultiplier,
+      //   this.speed,
+      // )
+
+      if (
+        c.vectorToMagnitude(combinedThrustVector) *
+          brakeBoostMultiplier >
+        this.speed
+      )
+        this.hardStop()
+      else {
+        combinedThrustVector[0] *= brakeBoostMultiplier
+        combinedThrustVector[1] *= brakeBoostMultiplier
+      }
+    }
+
+    // * final velocity adjustment
     this.velocity = [
       this.velocity[0] + (combinedThrustVector[0] || 0),
       this.velocity[1] + (combinedThrustVector[1] || 0),
@@ -1424,12 +1514,21 @@ export class HumanShip extends CombatShip {
       c.distance([0, 0], startingLocation) >
       (this.game?.gameSoftRadius || 1)
     if (isOutsideRadius && !startedOutsideRadius) {
-      this.hardStop()
-      this.logEntry(
-        `Stopped at the edge of the known universe. You can continue, but nothing but the void awaits out here.`,
-        `high`,
-        `mystery`,
-      )
+      if (this.getStat(`leftUniverse`) === 0) {
+        this.hardStop()
+        this.logEntry(
+          `Stopped at the edge of the known universe. You can continue, but nothing but the void awaits out here. Next time you cross, you won't stop.`,
+          `high`,
+          `mystery`,
+        )
+      } else
+        this.logEntry(
+          `Exited the known universe`,
+          `high`,
+          `mystery`,
+        )
+
+      this.addStat(`leftUniverse`, 1)
     }
     if (!isOutsideRadius && startedOutsideRadius)
       this.logEntry(

@@ -5,15 +5,15 @@ import { CombatShip } from '../../CombatShip'
 export const commonTaglines = [
   { value: ``, weight: 8 },
   { value: `Thermal Rider`, weight: 0.8 },
-  { value: `Flocka`, weight: 0.2 },
+  { value: `Flocka`, weight: 0.1 },
   { value: `Glidin'`, weight: 0.8 },
-  { value: `Vegetarian, I Promise`, weight: 0.8 },
+  { value: `Vegetarian, I Promise`, weight: 0.6 },
   { value: `Wing and a Prayer`, weight: 0.8 },
   { value: `Feeling Peckish`, weight: 0.8 },
   { value: `Wingin' It`, weight: 0.8 },
-  { value: `Talonious Monk`, weight: 0.5 },
-  { value: `Of A Feather`, weight: 0.2 },
-  { weight: 0.1, value: `I'm a Seagull!` },
+  { value: `Talonious Monk`, weight: 0.4 },
+  { value: `Of A Feather`, weight: 0.1 },
+  { value: `I'm a Seagull!`, weight: 0.05 },
 ]
 
 export function getDefaultDistance(this: AIShip): number {

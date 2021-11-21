@@ -194,7 +194,10 @@ export class AIShip extends CombatShip {
 
     const isInBudget = (i: BaseItemData) =>
       i.rarity <= itemBudget
-    const isSelectable = (i: BaseItemData) => !i.special
+    const isSelectable = (i: BaseItemData) =>
+      !i.special &&
+      (i.type !== `engine` || // only passive engines (for now)
+        (i as BaseEngineData).passiveThrustMultiplier)
 
     while (true) {
       const typeToAdd: `engine` | `weapon` =
@@ -242,7 +245,7 @@ export class AIShip extends CombatShip {
         .filter((e) => e.repair > 0)
         .reduce(
           (total, e) =>
-            total + e.thrustAmplification * e.repair,
+            total + e.passiveThrustMultiplier * e.repair,
           0,
         ) *
       (this.game?.settings.baseEngineThrustMultiplier ||
@@ -326,9 +329,9 @@ export class AIShip extends CombatShip {
         this.location,
       )
 
-      this.debugPoint(this.targetLocation, `target`)
-      this.debugPoint(adjustedTargetLocation, `adjusted`)
-      this.debugPoint(this.spawnPoint, `spawn`)
+      // this.debugPoint(this.targetLocation, `target`)
+      // this.debugPoint(adjustedTargetLocation, `adjusted`)
+      // this.debugPoint(this.spawnPoint, `spawn`)
 
       this.addPreviousLocation(
         startingLocation,

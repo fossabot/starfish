@@ -109,7 +109,10 @@ export function updateActiveContractsLocations(
     const target = this.game?.ships.find(
       (s) => s.id === contract.targetId,
     )
-    if (!target) continue
+    if (!target) {
+      this.stolenContract(contract)
+      continue
+    }
 
     contract.lastSeenLocation = reliablyFudgeLocation(
       target.location,

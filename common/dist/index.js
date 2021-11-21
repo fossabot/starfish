@@ -42,6 +42,7 @@ const stubify_1 = __importDefault(require("./stubify"));
 const items = __importStar(require("./items"));
 const achievements_1 = __importDefault(require("./achievements"));
 const cosmetics = __importStar(require("./cosmetics"));
+const loadouts_1 = __importDefault(require("./loadouts"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -61,6 +62,7 @@ exports.default = {
     species: species_1.default,
     guilds: guilds_1.default,
     baseShipPassiveData: baseShipPassiveData_1.default,
+    loadouts: loadouts_1.default,
     Profiler: Profiler_1.Profiler,
     stubify: stubify_1.default,
 };

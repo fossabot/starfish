@@ -242,7 +242,7 @@ export class Tutorial {
         visibleTypes: [`planet`, `cache`, `trail`],
         script: [
           {
-            message: `Click on the big map to set a target destination. You will apply passive thrust to the ship while you're in the cockpit (more on that later).<br /><br />
+            message: `Click on the big map to set a target destination. Based on your engines, you can manually or passively apply thrust to the ship by being in the cockpit. Your current engine only has passive thrust.<br /><br />
             Since we're in space, once you start moving in a direction, you'll keep floating that way! That means that even a small ship can generate a huge amount of speed over time.<br /><br />
             Try to <b>move the ship to the cache we found!</b><br /><br />
             <hr style="opacity: .1;" />
@@ -372,7 +372,7 @@ export class Tutorial {
             id: `tutorialAI1` + this.ship.id,
             guildId: `fowl`,
             level: 1,
-            name: `Enemy Ship`,
+            name: `Chicken`,
             location: [0.015, 0.01],
           },
         ],
@@ -465,7 +465,6 @@ export class Tutorial {
           `scanShip`,
           `diagram`,
           `log`,
-          `crewMember`,
         ],
         visibleTypes: [
           `planet`,
@@ -508,7 +507,6 @@ export class Tutorial {
           `scanShip`,
           `diagram`,
           `log`,
-          `crewMember`,
           `items`,
         ],
         highlightPanel: `diagram`,
@@ -564,6 +562,7 @@ export class Tutorial {
           `trail`,
           `cache`,
         ],
+        highlightPanel: `crewMember`,
         forceStamina: 0.95,
         script: [
           {
@@ -621,11 +620,7 @@ export class Tutorial {
         ],
         nextStepTrigger: {
           location: {
-            location: [
-              ...(this.ship.seenPlanets[0]?.location || [
-                0, 0,
-              ]),
-            ],
+            location: [0, 0],
             label: `back home`,
           },
         },
@@ -730,6 +725,8 @@ export class Tutorial {
 
   constructor(data: BaseTutorialData, ship: HumanShip) {
     this.ship = ship
+
+    this.ship.guildId = undefined
 
     this.initializeSteps()
     this.step = Math.max(-1, data.step - 1)
@@ -1022,7 +1019,7 @@ export class Tutorial {
           `page!`,
         ],
         `high`,
-        `mystery`,
+        `party`,
         true,
       )
       ship.game?.io.emit(

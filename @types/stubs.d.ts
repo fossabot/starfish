@@ -177,5 +177,6 @@ interface WeaponStub extends ItemStub {
   cooldownRemaining?: number
 }
 interface EngineStub extends ItemStub {
-  thrustAmplification?: number
+  passiveThrustMultiplier?: number
+  manualThrustMultiplier?: number
 }

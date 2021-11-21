@@ -710,7 +710,7 @@ export class Game {
           .split(``)
           .reduce((t, c) => t + c.charCodeAt(0), 0) %
           200) *
-        10000000
+        20000000
       if (
         zoneExpirationTime >
         z.spawnTime + consistentSemiRandomModifier

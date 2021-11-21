@@ -40,6 +40,7 @@ type MinePriorityType = MineableResource | `closest`
 type CrewPassiveId =
   | `cargoSpace`
   | `boostCockpitChargeSpeed`
+  | `boostPassiveThrust`
   | `boostThrust`
   | `boostMineSpeed`
   | `boostRepairSpeed`

@@ -101,6 +101,8 @@ export function addAchievement(
   achievementIds: string | string[],
   silent = false,
 ) {
+  if (this.tutorial?.currentStep) return
+
   if (!Array.isArray(achievementIds))
     achievementIds = [achievementIds]
   const newIds = achievementIds.filter(

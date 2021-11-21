@@ -16,8 +16,6 @@ import { Scanner } from '../Item/Scanner'
 import { Communicator } from '../Item/Communicator'
 import { Armor } from '../Item/Armor'
 
-import loadouts from '../../presets/loadouts'
-
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './HumanShip/Tutorial'
 
@@ -230,10 +228,10 @@ export class Ship extends Stubbable {
       this.swapChassis(c.items.chassis[chassis.id])
     else if (
       loadout &&
-      c.items.chassis[loadouts[loadout]?.chassis]
+      c.items.chassis[c.loadouts[loadout]?.chassis]
     )
       this.swapChassis(
-        c.items.chassis[loadouts[loadout].chassis],
+        c.items.chassis[c.loadouts[loadout].chassis],
       )
     else this.swapChassis(c.items.chassis.starter1)
 
@@ -363,6 +361,18 @@ export class Ship extends Stubbable {
     ) as Engine[]
   }
 
+  get manualEngines(): Engine[] {
+    return this.engines.filter(
+      (i) => i.manualThrustMultiplier,
+    ) as Engine[]
+  }
+
+  get passiveEngines(): Engine[] {
+    return this.engines.filter(
+      (i) => i.passiveThrustMultiplier,
+    ) as Engine[]
+  }
+
   get weapons(): Weapon[] {
     return this.items.filter(
       (i) => i instanceof Weapon,
@@ -395,6 +405,16 @@ export class Ship extends Stubbable {
 
     const chassisToSwapTo =
       c.items.chassis[partialChassisData.id]
+
+    let foundChassisPassive = this.passives.find(
+      (p) => p.data?.source?.chassisId,
+    )
+    while (foundChassisPassive) {
+      this.removePassive(foundChassisPassive)
+      foundChassisPassive = this.passives.find(
+        (p) => p.data?.source?.chassisId,
+      )
+    }
 
     if (this.chassis && this.chassis.passives)
       this.chassis.passives.forEach((p) =>
@@ -552,7 +572,7 @@ export class Ship extends Stubbable {
 
   equipLoadout(this: Ship, id: LoadoutId): boolean {
     // c.log(`equipping loadout to`, this.name)
-    const loadout = loadouts[id]
+    const loadout = c.loadouts[id]
     if (!loadout) return false
     this.swapChassis({ id: loadout.chassis })
     loadout.items.forEach(
@@ -1004,7 +1024,7 @@ export class Ship extends Stubbable {
         0,
         (Math.abs(percentMovingAwayFromTarget) *
           speedOverDistance) /
-          10e-5,
+          4e-5,
         5,
       )
 
@@ -1020,31 +1040,37 @@ export class Ship extends Stubbable {
     //   1,
     // )
 
+    const approxTicksToTurnToTargetAngle =
+      Math.abs(percentMovingAwayFromTarget) *
+        this.speed *
+        1000000 || 1
+
     // * multiplier that determines how many times more than the angle difference we should be
     const intensity = 5
 
     // * instead of permanently getting _closer_ to the desired angle, intentionally overshoot slightly to actually hit it
     const intentionalOvershootDegrees = 0.2
 
+    // from "straight", how hard can the turn be? 0 - 179.5
+    const maximumTurnDegrees =
+      90 +
+      89.5 *
+        Math.min(
+          1,
+          Math.abs(percentMovingAwayFromTarget) * urgency,
+        ) *
+        c.clamp(0, approxTicksToTurnToTargetAngle, 1)
+
     const howHardToTurnDegrees = c.clamp(
-      -90 -
-        89.5 *
-          Math.min(
-            1,
-            Math.abs(percentMovingAwayFromTarget) * urgency,
-          ),
+      maximumTurnDegrees * -1,
 
       angleMovingAwayFromTarget * intensity * urgency * -1 +
         intentionalOvershootDegrees *
           (percentMovingAwayFromTarget > 0 ? -1 : 1),
 
-      90 +
-        89.5 *
-          Math.min(
-            1,
-            Math.abs(percentMovingAwayFromTarget) * urgency,
-          ),
+      maximumTurnDegrees,
     )
+
     // const approxTicksRequiredToReachTarget =
     //   ticksAtCurrentSpeedToReachTarget *
     //   (1 + Math.abs(percentMovingAwayFromTarget) * 5) // 1 = existing distance + time to stop and time to go back
@@ -1058,38 +1084,43 @@ export class Ship extends Stubbable {
     //   target[1] - percentToAdjust * this.velocity[1],
     // ] as CoordinatePair
     const angleToThrust =
-      this.speed === 0
+      this.speed < 0.000001
         ? angleToTarget
         : (howHardToTurnDegrees +
             this.direction +
             360 * 2) %
           360
+    // if (this.human)
+    //   c.log(this.speed, angleToTarget, angleToThrust)
     const turnUV = c.degreesToUnitVector(angleToThrust)
     const adjustedTarget = [
       this.location[0] +
-        turnUV[0] * Math.max(0.0001, this.speed * 200),
+        turnUV[0] * Math.max(0.001, this.speed * 1000),
       this.location[1] +
-        turnUV[1] * Math.max(0.0001, this.speed * 200),
+        turnUV[1] * Math.max(0.001, this.speed * 1000),
     ] as CoordinatePair
 
     // if (this.human)
     //   c.log({
+    //     // maximumTurnDegrees,
     //     // ticksAtCurrentSpeedToReachTarget,
     //     // speedOverDistance,
     //     urgency,
-    //     percentMovingAwayFromTarget,
-    //     // // ticksAtCurrentSpeedToReachTarget,
-    //     // howHardToTurnPercent,
-    //     howHardToTurnDegrees,
-    //     // percentBackwards,
-    //     currentDirection: this.direction,
-    //     angleToTarget,
-    //     angleToThrust,
-    //     // turnUV,
+    //     approxTicksToTurnToTargetAngle,
+    //     // percentMovingAwayFromTarget,
+    //     // // // ticksAtCurrentSpeedToReachTarget,
+    //     // // howHardToTurnPercent,
+    //     // howHardToTurnDegrees,
+    //     // // percentBackwards,
+    //     // currentDirection: this.direction,
+    //     // angleToTarget,
+    //     // angleToThrust,
+    //     // // turnUV,
     //     // approxTicksRequiredToReachTarget,
     //   })
 
-    this.debugPoint(adjustedTarget, `adjusted`)
+    if (this.human)
+      this.debugPoint(adjustedTarget, `adjusted`)
 
     return adjustedTarget
   }

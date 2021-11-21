@@ -5,8 +5,8 @@ declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
 declare function getMaxCockpitChargeForSingleCrewMember(level?: number): number;
 declare function getCockpitChargePerTickForSingleCrewMember(level?: number): number;
-declare function getThrustMagnitudeForSingleCrewMember(level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number): number;
-declare function getPassiveThrustMagnitudePerTickForSingleCrewMember(level: number | undefined, engineThrustMultiplier: number | undefined, baseEngineThrustMultiplier: number): number;
+declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number): number;
+declare function getPassiveThrustMagnitudePerTickForSingleCrewMember(level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number, rechargeSpeedMultiplier: number): number;

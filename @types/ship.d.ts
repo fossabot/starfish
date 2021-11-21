@@ -71,6 +71,7 @@ type ShipPassiveEffectId =
   | `boostMinePayouts`
   | `boostBrake`
   | `boostThrust`
+  | `boostPassiveThrust`
   | `boostCockpitChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`
@@ -149,6 +150,7 @@ type ShipStatKey =
   | `tutorials`
   | `netWorth`
   | `completedContracts`
+  | `leftUniverse`
 interface ShipStatEntry {
   stat: ShipStatKey
   amount: number

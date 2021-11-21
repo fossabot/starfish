@@ -43,6 +43,11 @@ const data = {
         id: `boostCockpitChargeSpeed`,
         description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} engine charge speed by ${math_1.default.r2((data.intensity || 0) * 100)}%`,
     },
+    boostPassiveThrust: {
+        displayName: `Pectoral Fins`,
+        id: `boostPassiveThrust`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} passive thrust by ${math_1.default.r2((data.intensity || 0) * 100)}%`,
+    },
     boostBrake: {
         displayName: `Grappling Claws`,
         id: `boostBrake`,
