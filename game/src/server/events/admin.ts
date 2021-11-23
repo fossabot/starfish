@@ -374,6 +374,21 @@ export default function (
   )
 
   socket.on(
+    `admin:upgrade`,
+    async (id, password, shipId) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:upgrade`,
+        )
+      const ship = game.ships.find((p) => p.id === shipId)
+      if (!ship) return
+      c.log(`Admin upgrading items on ship ${ship.name}`)
+      ship.items.forEach((i) => i.levelUp())
+    },
+  )
+
+  socket.on(
     `game:resetHomeworlds`,
     async (id, password) => {
       if (!game) return

@@ -34,11 +34,19 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   data() {
     const skillTooltips = {
-      piloting: `Improves thrust.<br />Earned by using charged thrust.`,
-      munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
-      mechanics: `Improves repair speed.<br />Earned by repairing.`,
-      linguistics: `Improves clarity of broadcasts.<br />Earned by sending broadcasts.`,
-      mining: `Improves mine speed.<br />Earned by mining.`,
+      strength:
+        'Strength improves your mining and repairing speeds. <br /> Earned by repairing and mining.',
+      dexterity:
+        'Dexterity improves piloting charge/thrust, as well as weapons charge speed. <br /> Earned by charging weapons and using thrust.',
+      intellect:
+        'Intellect improves your research speed. <br /> Earned by researching.',
+      charisma:
+        'Charisma improves your broadcast clarity. <br /> Earned by sending broadcasts.',
+      // piloting: `Improves thrust.<br />Earned by using charged thrust.`,
+      // munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
+      // mechanics: `Improves repair speed.<br />Earned by repairing.`,
+      // linguistics: `Improves clarity of broadcasts.<br />Earned by sending broadcasts.`,
+      // mining: `Improves mine speed.<br />Earned by mining.`,
     }
     return { c, skillTooltips }
   },

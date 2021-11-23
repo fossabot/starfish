@@ -108,7 +108,7 @@ interface CrewMemberStub extends BaseStub {
   maxCargoSpace: number
   lastActive?: number
   tagline?: string | null
-  background?: string
+  background?: string | null
   availableTaglines?: string[]
   availableBackgrounds?: { id: string; url: string }[]
 }
@@ -167,11 +167,18 @@ interface AttackRemnantStub extends BaseStub {
 }
 
 interface ItemStub extends BaseStub {
-  type: ItemType
-  id: ItemId
+  type?: `item`
+  id?: string
+  itemType: ItemType
+  itemId: ItemId
   repair?: number
   ownerId?: string
   displayName?: string
+  level?: number
+  maxLevel?: number
+  upgradeRequirements?: ItemUpgradeRequirements
+  upgradable?: boolean
+  upgradeBonus?: number
 }
 interface WeaponStub extends ItemStub {
   cooldownRemaining?: number

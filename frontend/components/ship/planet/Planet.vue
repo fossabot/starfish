@@ -265,6 +265,6 @@ export default Vue.extend({
 }
 
 // .bordertop {
-//   border-top: 1px solid var(--pane-border);
+//   border-top: 1px solid var(--gray);
 // }
 </style>

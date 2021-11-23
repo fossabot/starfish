@@ -9,6 +9,7 @@ declare function getThrustMagnitudeForSingleCrewMember(level?: number, engineThr
 declare function getPassiveThrustMagnitudePerTickForSingleCrewMember(level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number): number;
 declare function getRepairAmountPerTickForSingleCrewMember(level: number): number;
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
+declare function getResearchAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number, rechargeSpeedMultiplier: number): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
 /**
@@ -52,6 +53,7 @@ declare const _default: {
     getRadiusDiminishingReturns: typeof getRadiusDiminishingReturns;
     getRepairAmountPerTickForSingleCrewMember: typeof getRepairAmountPerTickForSingleCrewMember;
     getMineAmountPerTickForSingleCrewMember: typeof getMineAmountPerTickForSingleCrewMember;
+    getResearchAmountPerTickForSingleCrewMember: typeof getResearchAmountPerTickForSingleCrewMember;
     getMaxCockpitChargeForSingleCrewMember: typeof getMaxCockpitChargeForSingleCrewMember;
     getCockpitChargePerTickForSingleCrewMember: typeof getCockpitChargePerTickForSingleCrewMember;
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;

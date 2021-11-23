@@ -1,16 +1,15 @@
-import c from '../../../../../common/dist'
-import type { CrewMember } from '../CrewMember/CrewMember'
-import type { Ship } from '../Ship/Ship'
+import c from '../../../../../../common/dist'
+import type { CrewMember } from '../../CrewMember/CrewMember'
+import type { Ship } from '../Ship'
 
 import { Item } from './Item'
 
 export class Weapon extends Item {
-  readonly id: WeaponId
-  readonly range: number
-  readonly damage: number
-  readonly critChance: number = 0
+  range: number
+  damage: number
+  critChance: number = 0
   lastUse: number = 0
-  baseCooldown: number
+  chargeRequired: number
   cooldownRemaining: number
   rooms: CrewLocation[] = [`weapons`]
 
@@ -20,10 +19,9 @@ export class Weapon extends Item {
     props?: Partial<BaseWeaponData>,
   ) {
     super(data, ship, props)
-    this.id = data.id
     this.range = data.range
     this.damage = data.damage
-    this.baseCooldown = data.baseCooldown
+    this.chargeRequired = data.chargeRequired
     this.lastUse = data.lastUse || 0
     if (data.critChance !== undefined)
       this.critChance = data.critChance
@@ -31,8 +29,8 @@ export class Weapon extends Item {
       data.cooldownRemaining ||
       props?.cooldownRemaining ||
       0
-    if (this.cooldownRemaining > this.baseCooldown)
-      this.cooldownRemaining = this.baseCooldown
+    if (this.cooldownRemaining > this.chargeRequired)
+      this.cooldownRemaining = this.chargeRequired
   }
 
   get effectiveRange(): number {
@@ -40,7 +38,7 @@ export class Weapon extends Item {
   }
 
   use(usePercent: number = 1, users?: CrewMember[]) {
-    this.cooldownRemaining = this.baseCooldown
+    this.cooldownRemaining = this.chargeRequired
     if (this.ship.ai) return 0
     if (this.ship.tutorial?.currentStep.disableRepair)
       return 0
@@ -49,7 +47,7 @@ export class Weapon extends Item {
       (users?.reduce(
         (acc, user) =>
           acc +
-          (user.skills.find((s) => s.skill === `munitions`)
+          (user.skills.find((s) => s.skill === `dexterity`)
             ?.level || 1),
         0,
       ) || 1) / (users?.length || 1)

@@ -9,12 +9,12 @@ import type { CrewMember } from '../CrewMember/CrewMember'
 import type { CombatShip } from './CombatShip'
 import type { HumanShip } from './HumanShip/HumanShip'
 
-import type { Item } from '../Item/Item'
-import { Engine } from '../Item/Engine'
-import { Weapon } from '../Item/Weapon'
-import { Scanner } from '../Item/Scanner'
-import { Communicator } from '../Item/Communicator'
-import { Armor } from '../Item/Armor'
+import type { Item } from './Item/Item'
+import { Engine } from './Item/Engine'
+import { Weapon } from './Item/Weapon'
+import { Scanner } from './Item/Scanner'
+import { Communicator } from './Item/Communicator'
+import { Armor } from './Item/Armor'
 
 import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './HumanShip/Tutorial'
@@ -222,16 +222,16 @@ export class Ship extends Stubbable {
     this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
     if (
       chassis &&
-      chassis.id &&
-      c.items.chassis[chassis.id]
+      chassis.chassisId &&
+      c.items.chassis[chassis.chassisId]
     )
-      this.swapChassis(c.items.chassis[chassis.id])
+      this.swapChassis(c.items.chassis[chassis.chassisId])
     else if (
       loadout &&
-      c.items.chassis[c.loadouts[loadout]?.chassis]
+      c.items.chassis[c.loadouts[loadout]?.chassisId]
     )
       this.swapChassis(
-        c.items.chassis[c.loadouts[loadout].chassis],
+        c.items.chassis[c.loadouts[loadout].chassisId],
       )
     else this.swapChassis(c.items.chassis.starter1)
 
@@ -401,10 +401,10 @@ export class Ship extends Stubbable {
     this: Ship,
     partialChassisData: Partial<BaseChassisData>,
   ) {
-    if (!partialChassisData.id) return
+    if (!partialChassisData.chassisId) return
 
     const chassisToSwapTo =
-      c.items.chassis[partialChassisData.id]
+      c.items.chassis[partialChassisData.chassisId]
 
     let foundChassisPassive = this.passives.find(
       (p) => p.data?.source?.chassisId,
@@ -423,7 +423,7 @@ export class Ship extends Stubbable {
           data: {
             ...p.data,
             source: {
-              chassisId: this.chassis.id,
+              chassisId: this.chassis.chassisId,
             },
           },
         }),
@@ -438,15 +438,17 @@ export class Ship extends Stubbable {
           data: {
             ...p.data,
             source: {
-              chassisId: chassisToSwapTo.id,
+              chassisId: chassisToSwapTo.chassisId,
             },
           },
         }),
       )
     this.recalculateMass()
 
-    if (this.human)
-      (this as HumanShip).checkAchievements(`chassis`)
+    if (this.human) {
+      ;(this as HumanShip).resolveRooms()
+      ;(this as HumanShip).checkAchievements(`chassis`)
+    }
   }
 
   updateSlots() {
@@ -464,49 +466,61 @@ export class Ship extends Stubbable {
     itemData: Partial<BaseItemData>,
   ): Item | false {
     let item: Item | undefined
-    if (!itemData.type) return false
+    if (!itemData.itemType) {
+      // * updating to use new itemId
+      if (itemData.type)
+        itemData.itemType = itemData.type as any
+      if (itemData.id) itemData.itemId = itemData.id as any
+      if (!itemData.itemType) return false
+    }
     if (this.slots <= this.items.length) {
       c.log(`No chassis slots remaining to add item into.`)
       return false
     }
-    if (itemData.type === `engine`) {
+    if (itemData.itemType === `engine`) {
       const engineData = itemData as Partial<BaseEngineData>
       let foundItem: BaseEngineData | undefined
-      if (engineData.id && engineData.id in c.items.engine)
-        foundItem = c.items.engine[engineData.id]
+      if (
+        engineData.itemId &&
+        engineData.itemId in c.items.engine
+      )
+        foundItem = c.items.engine[engineData.itemId]
       if (!foundItem) return false
       item = new Engine(foundItem, this, engineData)
     }
-    if (itemData.type === `weapon`) {
+    if (itemData.itemType === `weapon`) {
       const weaponData = itemData as Partial<BaseWeaponData>
       let foundItem: BaseWeaponData | undefined
-      if (weaponData.id && weaponData.id in c.items.weapon)
-        foundItem = c.items.weapon[weaponData.id]
+      if (
+        weaponData.itemId &&
+        weaponData.itemId in c.items.weapon
+      )
+        foundItem = c.items.weapon[weaponData.itemId]
       if (!foundItem) return false
       item = new Weapon(foundItem, this, weaponData)
     }
-    if (itemData.type === `scanner`) {
+    if (itemData.itemType === `scanner`) {
       const scannerData =
         itemData as Partial<BaseScannerData>
       let foundItem: BaseScannerData | undefined
       if (
-        scannerData.id &&
-        scannerData.id in c.items.scanner
+        scannerData.itemId &&
+        scannerData.itemId in c.items.scanner
       )
-        foundItem = c.items.scanner[scannerData.id]
+        foundItem = c.items.scanner[scannerData.itemId]
       if (!foundItem) return false
       item = new Scanner(foundItem, this, scannerData)
     }
-    if (itemData.type === `communicator`) {
+    if (itemData.itemType === `communicator`) {
       const communicatorData =
         itemData as Partial<BaseCommunicatorData>
       let foundItem: BaseCommunicatorData | undefined
       if (
-        communicatorData.id &&
-        communicatorData.id in c.items.communicator
+        communicatorData.itemId &&
+        communicatorData.itemId in c.items.communicator
       )
         foundItem =
-          c.items.communicator[communicatorData.id]
+          c.items.communicator[communicatorData.itemId]
       if (!foundItem) return false
       item = new Communicator(
         foundItem,
@@ -514,11 +528,14 @@ export class Ship extends Stubbable {
         communicatorData,
       )
     }
-    if (itemData.type === `armor`) {
+    if (itemData.itemType === `armor`) {
       const armorData = itemData as Partial<BaseArmorData>
       let foundItem: BaseArmorData | undefined
-      if (armorData.id && armorData.id in c.items.armor)
-        foundItem = c.items.armor[armorData.id]
+      if (
+        armorData.itemId &&
+        armorData.itemId in c.items.armor
+      )
+        foundItem = c.items.armor[armorData.itemId]
       if (!foundItem) return false
       item = new Armor(foundItem, this, armorData)
     }
@@ -538,8 +555,8 @@ export class Ship extends Stubbable {
             ...p.data,
             source: {
               item: {
-                type: item!.type,
-                id: item!.id,
+                type: item!.itemType,
+                id: item!.itemId,
               },
             },
           },
@@ -574,7 +591,7 @@ export class Ship extends Stubbable {
     // c.log(`equipping loadout to`, this.name)
     const loadout = c.loadouts[id]
     if (!loadout) return false
-    this.swapChassis({ id: loadout.chassis })
+    this.swapChassis({ chassisId: loadout.chassisId })
     loadout.items.forEach(
       (baseData: Partial<BaseItemData>) =>
         this.addItem(baseData),
@@ -969,8 +986,8 @@ export class Ship extends Stubbable {
       direction: this.direction,
       chassis: this.chassis,
       items: this.items.map((i) => ({
-        id: i.id,
-        type: i.type,
+        itemId: i.itemId,
+        itemType: i.itemType,
         displayName: i.displayName,
         repair: i.repair,
         maxHp: i.maxHp,
@@ -1053,13 +1070,13 @@ export class Ship extends Stubbable {
 
     // from "straight", how hard can the turn be? 0 - 179.5
     const maximumTurnDegrees =
-      90 +
-      89.5 *
-        Math.min(
-          1,
-          Math.abs(percentMovingAwayFromTarget) * urgency,
-        ) *
-        c.clamp(0, approxTicksToTurnToTargetAngle, 1)
+      (90 +
+        89.5 *
+          Math.min(
+            1,
+            Math.abs(percentMovingAwayFromTarget) * urgency,
+          )) *
+      c.clamp(0, approxTicksToTurnToTargetAngle / 5, 1)
 
     const howHardToTurnDegrees = c.clamp(
       maximumTurnDegrees * -1,

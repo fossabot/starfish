@@ -1332,8 +1332,11 @@ export class Game {
             shipTotal += b.amount
           for (let i of (s as HumanShip).items) {
             shipTotal +=
-              (c.items[i.type][i.id] as BaseItemData)
-                .basePrice.credits || 0
+              (
+                c.items[i.itemType][
+                  i.itemId
+                ] as BaseItemData
+              ).basePrice.credits || 0
           }
           s.setStat(`netWorth`, shipTotal)
           s.checkAchievements(`money`)
@@ -1363,7 +1366,7 @@ export class Game {
           shipTotal += b.amount
         for (let i of (s as HumanShip).items) {
           shipTotal +=
-            (c.items[i.type][i.id] as BaseItemData)
+            (c.items[i.itemType][i.itemId] as BaseItemData)
               .basePrice.credits || 0
         }
         s.setStat(`netWorth`, shipTotal)

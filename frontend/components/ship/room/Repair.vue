@@ -58,31 +58,31 @@ export default Vue.extend({
       const choices: RepairPriority[] = ['most damaged']
       if (
         this.ship.items.find(
-          (i: ItemStub) => i.type === 'weapon',
+          (i: ItemStub) => i.itemType === 'weapon',
         )
       )
         choices.push('weapons')
       if (
         this.ship.items.find(
-          (i: ItemStub) => i.type === 'engine',
+          (i: ItemStub) => i.itemType === 'engine',
         )
       )
         choices.push('engines')
       if (
         this.ship.items.find(
-          (i: ItemStub) => i.type === 'scanner',
+          (i: ItemStub) => i.itemType === 'scanner',
         )
       )
         choices.push('scanners')
       if (
         this.ship.items.find(
-          (i: ItemStub) => i.type === 'communicator',
+          (i: ItemStub) => i.itemType === 'communicator',
         )
       )
         choices.push('communicators')
       if (
         this.ship.items.find(
-          (i: ItemStub) => i.type === 'armor',
+          (i: ItemStub) => i.itemType === 'armor',
         )
       )
         choices.push('armor')
@@ -122,7 +122,7 @@ export default Vue.extend({
         passiveBoostMultiplier *
         c.getRepairAmountPerTickForSingleCrewMember(
           this.crewMember?.skills.find(
-            (s: XPData) => s.skill === 'mechanics',
+            (s: XPData) => s.skill === 'strength',
           )?.level || 1,
         )
       )

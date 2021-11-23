@@ -1,1 +1,1 @@
-{"version":3,"file":"rooms.d.ts","sourceRoot":"","sources":["../src/rooms.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,KAAK,EAAE;KACjB,GAAG,IAAI,YAAY,GAAG,YAAY;CAsBpC,CAAA;AAED,eAAe,KAAK,CAAA"}
+{"version":3,"file":"rooms.d.ts","sourceRoot":"","sources":["../src/rooms.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,KAAK,EAAE;KACjB,GAAG,IAAI,YAAY,GAAG,YAAY;CA0BpC,CAAA;AAED,eAAe,KAAK,CAAA"}

@@ -530,17 +530,18 @@ export class BasicPlanet extends Planet {
           })
     }
 
-    if (
-      !this.leanings.find(
-        (p) => p.type === `repair` && p.never === true,
-      )
-    ) {
-      const propensity =
-        this.leanings.find((p) => p.type === `repair`)
-          ?.propensity || 0.1
-      if (!this.vendor?.repairCostMultiplier)
-        addable.push({ class: `repair`, propensity })
-    }
+    // * this was kind of useless (and also didn't really belong here)
+    // if (
+    //   !this.leanings.find(
+    //     (p) => p.type === `repair` && p.never === true,
+    //   )
+    // ) {
+    //   const propensity =
+    //     this.leanings.find((p) => p.type === `repair`)
+    //       ?.propensity || 0.1
+    //   if (!this.vendor?.repairCostMultiplier)
+    //     addable.push({ class: `repair`, propensity })
+    // }
 
     return addable
   }
@@ -762,7 +763,7 @@ export class BasicPlanet extends Planet {
             c.getChassisSwapPrice(
               p,
               this,
-              ship.chassis.id,
+              ship.chassis.chassisId,
               ship.guildId,
             ),
           )}!`,

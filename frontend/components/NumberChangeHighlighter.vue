@@ -6,7 +6,7 @@
       highlightBad = false
       highlightGood = false
     "
-    >{{ display || number }}</span
+    >{{ display || c.numberWithCommas(number) }}</span
   >
 </template>
 

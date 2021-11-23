@@ -188,16 +188,19 @@ export default Vue.extend({
       return this.ship?.items
         .map((item: ItemStub) => {
           const price = c.getItemSellPrice(
-            item.type,
-            item.id as ItemId,
+            item.itemType,
+            item.itemId as ItemId,
             this.ship.planet,
             this.ship.guildId,
           )
           return {
             ...item,
-            itemData: (c.items[item.type] as any)[item.id],
+            itemData: (c.items[item.itemType] as any)[
+              item.itemId
+            ],
             price,
-            canSell: this.isCaptain,
+            canSell:
+              this.isCaptain && this.ship.items.length > 1,
           }
         })
         .filter((i: ItemStub) => i)
@@ -270,7 +273,7 @@ export default Vue.extend({
       if (
         !confirm(
           `Really sell ${
-            c.items[data.type][data.id].displayName
+            c.items[data.itemType][data.itemId].displayName
           }?`,
         )
       )
@@ -279,15 +282,15 @@ export default Vue.extend({
       this.$store.commit('setShipProp', [
         'items',
         [...this.ship.items].filter(
-          (i) => i.id === data.id,
+          (i) => i.itemId === data.itemId,
         ),
       ])
       ;(this as any).$socket.emit(
         'ship:sellItem',
         this.ship.id,
         this.crewMember?.id,
-        data.type,
-        data.id,
+        data.itemType,
+        data.itemId,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

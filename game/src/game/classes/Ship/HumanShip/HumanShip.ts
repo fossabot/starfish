@@ -20,7 +20,7 @@ import type { Comet } from '../../Planet/Comet'
 import type { Cache } from '../../Cache'
 import type { Ship } from '../Ship'
 import type { Zone } from '../../Zone'
-import type { Item } from '../../Item/Item'
+import type { Item } from '../Item/Item'
 
 import { Tutorial } from './Tutorial'
 
@@ -552,7 +552,7 @@ export class HumanShip extends CombatShip {
           0,
         ) + 1
     thruster.addXp(
-      `piloting`,
+      `dexterity`,
       (this.game?.settings.baseXpGain ||
         c.defaultGameSettings.baseXpGain) *
         2000 *
@@ -580,7 +580,7 @@ export class HumanShip extends CombatShip {
       c.vectorToMagnitude(initialVelocity)
 
     const memberPilotingSkill =
-      thruster.piloting?.level || 1
+      thruster.dexterity?.level || 1
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
@@ -992,7 +992,7 @@ export class HumanShip extends CombatShip {
       (this.passives.find((p) => p.id === `boostXpGain`)
         ?.intensity || 0) + 1
     thruster.addXp(
-      `piloting`,
+      `dexterity`,
       (this.game?.settings.baseXpGain ||
         c.defaultGameSettings.baseXpGain) *
         2000 *
@@ -1018,7 +1018,7 @@ export class HumanShip extends CombatShip {
     charge *= passiveBrakeMultiplier
 
     const memberPilotingSkill =
-      thruster.piloting?.level || 1
+      thruster.dexterity?.level || 1
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
@@ -1132,8 +1132,7 @@ export class HumanShip extends CombatShip {
         (t.targetObject && t.targetObject.id === this.id) ||
         (t.targetLocation &&
           ((c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
-            t.skills.find((s) => s.skill === `piloting`)
-              ?.level || 1,
+            t.dexterity.level,
             engineThrustMultiplier,
             this.game?.settings
               .baseEngineThrustMultiplier ||
@@ -1201,7 +1200,7 @@ export class HumanShip extends CombatShip {
         thruster.getPassiveIntensity(`boostXpGain`) +
         1
       thruster.addXp(
-        `piloting`,
+        `dexterity`,
         (this.game?.settings.baseXpGain ||
           c.defaultGameSettings.baseXpGain) *
           0.15 *
@@ -1241,7 +1240,7 @@ export class HumanShip extends CombatShip {
         1
 
       const memberPilotingSkill =
-        accelerator.piloting?.level || 1
+        accelerator.dexterity.level
 
       const baseMagnitude =
         c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
@@ -1310,8 +1309,7 @@ export class HumanShip extends CombatShip {
         braker.getPassiveIntensity(`boostBrake`) +
         1
 
-      const memberPilotingSkill =
-        braker.piloting?.level || 1
+      const memberPilotingSkill = braker.dexterity.level
 
       const baseMagnitude =
         c.getPassiveThrustMagnitudePerTickForSingleCrewMember(
@@ -1322,26 +1320,26 @@ export class HumanShip extends CombatShip {
               .baseEngineThrustMultiplier,
         ) * passiveMultiplier
 
-      let brakeMagnitudeToApply = Math.min(
-        baseMagnitude / this.mass,
-        this.speed,
-      )
+      let brakeMagnitudeToApply = baseMagnitude / this.mass
 
       if (
-        currentOutcomeVelocityMagnitude <
-        brakeMagnitudeToApply
-      )
-        brakeMagnitudeToApply =
+        brakeMagnitudeToApply >=
+        c.vectorToMagnitude([
+          this.velocity[0] + combinedThrustVector[0],
+          this.velocity[1] + combinedThrustVector[1],
+        ])
+      ) {
+        this.hardStop()
+      } else {
+        combinedThrustVector[0] -=
+          (brakeMagnitudeToApply *
+            currentOutcomeVelocity[0]) /
           currentOutcomeVelocityMagnitude
-
-      combinedThrustVector[0] -=
-        (brakeMagnitudeToApply *
-          currentOutcomeVelocity[0]) /
-        currentOutcomeVelocityMagnitude
-      combinedThrustVector[1] -=
-        (brakeMagnitudeToApply *
-          currentOutcomeVelocity[1]) /
-        currentOutcomeVelocityMagnitude
+        combinedThrustVector[1] -=
+          (brakeMagnitudeToApply *
+            currentOutcomeVelocity[1]) /
+          currentOutcomeVelocityMagnitude
+      }
 
       braker.addStat(
         `totalSpeedApplied`,
@@ -1359,18 +1357,17 @@ export class HumanShip extends CombatShip {
         this.direction,
       )
       const brakeBoostMultiplier =
-        1 +
         (angleDifferenceToDirection / 180) *
           shipBrakePassive
 
-      // c.log(
-      //   this.id,
-      //   `brk1`,
-      //   brakeBoostMultiplier,
-      //   c.vectorToMagnitude(combinedThrustVector) *
-      //     brakeBoostMultiplier,
-      //   this.speed,
-      // )
+      c.log(
+        this.id,
+        `brk1`,
+        brakeBoostMultiplier,
+        c.vectorToMagnitude(combinedThrustVector) *
+          brakeBoostMultiplier,
+        this.speed,
+      )
 
       if (
         c.vectorToMagnitude(combinedThrustVector) *
@@ -1379,16 +1376,18 @@ export class HumanShip extends CombatShip {
       )
         this.hardStop()
       else {
-        combinedThrustVector[0] *= brakeBoostMultiplier
-        combinedThrustVector[1] *= brakeBoostMultiplier
+        combinedThrustVector[0] *= brakeBoostMultiplier + 1
+        combinedThrustVector[1] *= brakeBoostMultiplier + 1
       }
     }
 
+    c.log(this.velocity)
     // * final velocity adjustment
     this.velocity = [
       this.velocity[0] + (combinedThrustVector[0] || 0),
       this.velocity[1] + (combinedThrustVector[1] || 0),
     ]
+    c.log(this.velocity)
 
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
@@ -2196,7 +2195,7 @@ export class HumanShip extends CombatShip {
 
     if (amount > 100)
       this.logEntry(
-        `${member.name} contributed 💳 ${c.numberWithCommas(
+        `${member.name} contributed 💳${c.numberWithCommas(
           c.r2(amount, 0),
         )}.`,
         `low`,
@@ -2229,19 +2228,18 @@ export class HumanShip extends CombatShip {
 
     if (avgRepair > 0.05) {
       crewMember.addXp(
-        `linguistics`,
+        `charisma`,
         (this.game?.settings.baseXpGain ||
           c.defaultGameSettings.baseXpGain) * 100,
       )
 
-      const antiGarble = this.communicators.reduce(
-        (total, curr) =>
-          curr.antiGarble * curr.repair + total,
+      const clarity = this.communicators.reduce(
+        (total, curr) => curr.clarity * curr.repair + total,
         0,
       )
       const crewSkillAntiGarble =
         (crewMember.skills.find(
-          (s) => s.skill === `linguistics`,
+          (s) => s.skill === `charisma`,
         )?.level || 0) / 100
 
       // todo use chunks
@@ -2262,8 +2260,7 @@ export class HumanShip extends CombatShip {
         )
 
         const garbleAmount =
-          distance /
-          (range + antiGarble + crewSkillAntiGarble)
+          distance / (range + clarity + crewSkillAntiGarble)
         const garbled = c.garble(sanitized, garbleAmount)
         const toSend = `${garbled.substring(
           0,
@@ -2349,18 +2346,21 @@ export class HumanShip extends CombatShip {
         roomsToAdd.add(r),
       )
     else {
-      roomsToAdd = new Set([`bunk`, `cockpit`, `repair`])
+      roomsToAdd = new Set()
+      this.chassis.rooms?.forEach((r) => roomsToAdd.add(r))
       this.items.forEach((item) => {
         item.rooms.forEach((i) => roomsToAdd.add(i))
       })
     }
+
     for (let room of roomsToAdd) this.addRoom(room)
   }
 
   addRoom(room: CrewLocation) {
-    if (!(room in this.rooms))
+    if (!(room in this.rooms)) {
       this.rooms[room] = c.rooms[room]
-    this.toUpdate.rooms = this.rooms
+      this.toUpdate.rooms = this.rooms
+    }
   }
 
   removeRoom(room: CrewLocation) {
@@ -2379,7 +2379,7 @@ export class HumanShip extends CombatShip {
     const item = super.addItem(itemData)
     if (!item) return false
 
-    if (item.type === `scanner`)
+    if (item.itemType === `scanner`)
       this.updateMaxScanProperties()
 
     if (!this.rooms) this.rooms = {}
@@ -2406,7 +2406,7 @@ export class HumanShip extends CombatShip {
     }
 
     const res = super.removeItem(item)
-    if (item.type === `scanner`)
+    if (item.itemType === `scanner`)
       this.updateMaxScanProperties()
     return res
   }

@@ -53,6 +53,14 @@
                 <span>Give currency</span>
               </div>
             </template>
+            <template v-if="selectedElement.ai === false">
+              <div
+                class="button"
+                @click="give([{ id: 'salt', amount: 10 }])"
+              >
+                <span>Give Salt</span>
+              </div>
+            </template>
 
             <div class="button" @click="kill">
               <span>Kill</span>

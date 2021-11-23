@@ -25,10 +25,22 @@ const shipSchemaFields: Record<
   chassis: { id: { type: String, required: true } },
   items: [
     {
-      type: { type: String, required: true },
-      id: { type: String, required: true },
+      type: { type: String }, // * removable after update
+      itemType: { type: String, required: true },
+      itemId: { type: String, required: true },
+      id: { type: String },
       repair: Number,
       cooldownRemaining: Number,
+      level: Number,
+      upgradeRequirements: [
+        {
+          research: Boolean,
+          cargoId: String,
+          researchCurrency: Number,
+          required: Number,
+          current: Number,
+        },
+      ],
     },
   ],
   previousLocations: [[Number, Number]],
@@ -134,6 +146,8 @@ const shipSchemaFields: Record<
         { id: String, type: { type: String } } || false,
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
+      researchTargetId: String,
+
       tutorialShipId: String,
       mainShipId: String,
     },

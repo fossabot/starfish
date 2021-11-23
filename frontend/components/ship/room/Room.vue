@@ -13,6 +13,9 @@
     <ShipRoomMine
       v-else-if="crewMember.location === 'mine'"
     />
+    <ShipRoomLab
+      v-else-if="crewMember.location === 'lab'"
+    />
   </div>
 </template>
 

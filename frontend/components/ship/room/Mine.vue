@@ -112,7 +112,7 @@ export default Vue.extend({
         passiveBoostMultiplier *
         c.getMineAmountPerTickForSingleCrewMember(
           this.crewMember?.skills.find(
-            (s: XPData) => s.skill === 'mining',
+            (s: XPData) => s.skill === 'strength',
           )?.level || 1,
         )
       )

@@ -1,12 +1,11 @@
-import c from '../../../../../common/dist'
-import type { Ship } from '../Ship/Ship'
+import c from '../../../../../../common/dist'
+import type { Ship } from '../Ship'
 
 import { Item } from './Item'
 
 export class Scanner extends Item {
-  readonly id: ScannerId
-  readonly sightRange: number
-  readonly shipScanRange: number
+  sightRange: number
+  shipScanRange: number
   readonly shipScanData: ShipScanDataShape
 
   constructor(
@@ -15,7 +14,6 @@ export class Scanner extends Item {
     props?: Partial<BaseScannerData>,
   ) {
     super(data, ship, props)
-    this.id = data.id
     this.sightRange = data.sightRange
     this.shipScanRange = data.shipScanRange
     this.shipScanData = data.shipScanData

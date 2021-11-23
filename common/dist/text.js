@@ -21,27 +21,29 @@ function numberWithCommas(x) {
         (decimal ? `${math_1.default.r2(decimal, 6)}`.substring(1) : ``);
     return (negative ? `-` : ``) + total;
 }
-function speedNumber(numberInAu, noTag = false, maxDecimalPlaces = 2) {
-    const isNegative = numberInAu < 0;
+function abbreviateNumber(number = 0, maxDecimalPlaces = 2) {
+    const isNegative = number < 0;
     if (isNegative)
-        numberInAu = -numberInAu;
+        number = -number;
     let output = ``;
-    const numberInKm = numberInAu * globals_1.default.kmPerAu;
-    if (numberInKm < 1000)
-        output = `${math_1.default.r2(numberInKm, 0)}`;
-    else if (numberInKm < 1000000)
-        output = `${math_1.default.r2(numberInKm / 1000, 0)}k`;
-    else if (numberInKm < 1000000000)
-        output = `${math_1.default.r2(numberInKm / 1000000, Math.min(Math.max(maxDecimalPlaces, numberInKm / 1000000 / 10 < 1
+    if (number < 1000)
+        output = `${math_1.default.r2(number, 0)}`;
+    else if (number < 1000000)
+        output = `${math_1.default.r2(number / 1000, 0)}k`;
+    else if (number < 1000000000)
+        output = `${math_1.default.r2(number / 1000000, Math.min(Math.max(maxDecimalPlaces, number / 1000000 / 10 < 1
             ? maxDecimalPlaces + 1
             : maxDecimalPlaces), 2))}M`;
     else
-        output = `${math_1.default.r2(numberInKm / 1000000000, Math.min(Math.max(maxDecimalPlaces, numberInKm / 1000000000 / 10 < 1
+        output = `${math_1.default.r2(number / 1000000000, Math.min(Math.max(maxDecimalPlaces, number / 1000000000 / 10 < 1
             ? maxDecimalPlaces + 1
             : maxDecimalPlaces), 2))}B`;
-    return ((isNegative ? `-` : ``) +
-        output +
-        (noTag ? `` : ` km/hr`));
+    return (isNegative ? `-` : ``) + output;
+}
+function speedNumber(numberInAu, noTag = false, maxDecimalPlaces = 2) {
+    const numberInKm = numberInAu * globals_1.default.kmPerAu;
+    const output = abbreviateNumber(numberInKm, maxDecimalPlaces);
+    return output + (noTag ? `` : ` km/hr`);
 }
 function printList(list, separator = `and`) {
     if (!list)
@@ -270,6 +272,7 @@ function priceToString(p) {
 exports.default = {
     maxNameLength,
     numberWithCommas,
+    abbreviateNumber,
     speedNumber,
     printList,
     degreesToArrow,

@@ -88,7 +88,7 @@ export default Vue.extend({
   margin: 1.5em;
   z-index: 2;
   position: relative;
-  // border: 1px solid var(--pane-border);
+  // border: 1px solid var(--gray);
   border-radius: 10px;
   background: var(--bg);
   max-height: 90vh;

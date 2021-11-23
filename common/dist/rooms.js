@@ -22,6 +22,10 @@ exports.rooms = {
         id: `mine`,
         description: `Mine the planet's surface for resources.`,
     },
+    lab: {
+        id: `lab`,
+        description: `Research upgrades for the ship's equipment.`,
+    },
 };
 exports.default = exports.rooms;
 //# sourceMappingURL=rooms.js.map

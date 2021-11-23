@@ -5,7 +5,7 @@
         {{ dataToUse.displayName }}
       </h3>
       <span class="sub">{{
-        c.capitalize(dataToUse.type)
+        c.capitalize(dataToUse.itemType || dataToUse.type)
       }}</span>
     </div>
 
@@ -19,13 +19,20 @@
       class="marbotsmall"
     />
     <div v-else-if="dataToUse.repair" class="flexbetween">
-      Repair
+      <span class="sub">Repair</span>
       <span> {{ c.r2(dataToUse.repair * 100) }}% </span>
     </div>
     <div v-else-if="dataToUse.maxHp" class="flexbetween">
       <span class="sub">Max HP</span>
 
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.maxHp >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .maxHp,
+        }"
+      >
         {{ c.r2(dataToUse.maxHp) }}
         <ShipTooltipsCompareProp
           v-if="compareTo"
@@ -75,13 +82,20 @@
     <!-- engine -->
     <div
       v-if="
-        (compareTo && dataToUse.type === 'engine') ||
+        (compareTo && dataToUse.itemType === 'engine') ||
         dataToUse.manualThrustMultiplier
       "
       class="flexbetween"
     >
       <span class="sub">Manual Thrust</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.manualThrustMultiplier >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .manualThrustMultiplier,
+        }"
+      >
         {{
           c.r2(
             (dataToUse.manualThrustMultiplier || 0) *
@@ -123,13 +137,20 @@
 
     <div
       v-if="
-        (compareTo && dataToUse.type === 'engine') ||
+        (compareTo && dataToUse.itemType === 'engine') ||
         dataToUse.passiveThrustMultiplier
       "
       class="flexbetween"
     >
       <span class="sub">Passive Thrust</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.passiveThrustMultiplier >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .passiveThrustMultiplier,
+        }"
+      >
         {{
           c.r2(
             (dataToUse.passiveThrustMultiplier || 0) *
@@ -172,7 +193,14 @@
     <!-- scanner -->
     <div v-if="dataToUse.sightRange" class="flexbetween">
       <span class="sub">Max Sight Range</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.sightRange >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .sightRange,
+        }"
+      >
         {{ c.speedNumber(dataToUse.sightRange, true, 0) }}
         km
         <ShipTooltipsCompareProp
@@ -184,7 +212,14 @@
     </div>
     <div v-if="dataToUse.shipScanRange" class="flexbetween">
       <span class="sub">Max Ship Scan Range</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.shipScanRange >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .shipScanRange,
+        }"
+      >
         {{
           c.speedNumber(dataToUse.shipScanRange, true, 0)
         }}
@@ -196,8 +231,11 @@
         />
       </span>
     </div>
-    <div v-if="dataToUse.shipScanData">
-      <div class="marleft">{{ scanPropertyString }}</div>
+    <div v-if="dataToUse.shipScanData" class="flexbetween">
+      <div class="sub">Scannable</div>
+      <div class="marleftsmall textright">
+        {{ scanPropertyString }}
+      </div>
     </div>
 
     <!-- weapon -->
@@ -209,9 +247,9 @@
       <span>
         {{
           Math.floor(
-            ((dataToUse.baseCooldown -
+            ((dataToUse.chargeRequired -
               dataToUse.cooldownRemaining) /
-              dataToUse.baseCooldown) *
+              dataToUse.chargeRequired) *
               100,
           )
         }}%
@@ -221,18 +259,27 @@
       v-if="dataToUse.cooldownRemaining !== undefined"
       :micro="true"
       :percent="
-        (dataToUse.baseCooldown -
+        (dataToUse.chargeRequired -
           dataToUse.cooldownRemaining) /
-        dataToUse.baseCooldown
+        dataToUse.chargeRequired
       "
       :dangerZone="-1"
     />
     <div
-      v-if="dataToUse.type === 'weapon' && dataToUse.range"
+      v-if="
+        dataToUse.itemType === 'weapon' && dataToUse.range
+      "
       class="flexbetween"
     >
       <span class="sub">Max Range</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.range >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .range,
+        }"
+      >
         {{ c.speedNumber(dataToUse.range, true, 0) }} km
         <ShipTooltipsCompareProp
           v-if="compareTo"
@@ -243,7 +290,14 @@
     </div>
     <div v-if="dataToUse.damage" class="flexbetween">
       <span class="sub">Base Damage</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.damage >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .damage,
+        }"
+      >
         {{ dataToUse.damage }}
         <ShipTooltipsCompareProp
           v-if="compareTo"
@@ -254,13 +308,20 @@
     </div>
     <div
       v-if="
-        dataToUse.type === 'weapon' &&
+        dataToUse.itemType === 'weapon' &&
         dataToUse.critChance !== undefined
       "
       class="flexbetween"
     >
       <span class="sub">Crit Chance</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.critChance >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .critChance,
+        }"
+      >
         {{
           (dataToUse.critChance === undefined
             ? ship.gameSettings.baseCritChance
@@ -281,14 +342,24 @@
         />
       </span>
     </div>
-    <div v-if="dataToUse.baseCooldown" class="flexbetween">
+    <div
+      v-if="dataToUse.chargeRequired"
+      class="flexbetween"
+    >
       <span class="sub">Charge Required</span>
-      <span>
-        {{ c.numberWithCommas(dataToUse.baseCooldown) }}
+      <span
+        :class="{
+          success:
+            dataToUse.chargeRequired >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .chargeRequired,
+        }"
+      >
+        {{ c.numberWithCommas(dataToUse.chargeRequired) }}
         <ShipTooltipsCompareProp
           v-if="compareTo"
-          :a="compareTo.baseCooldown"
-          :b="dataToUse.baseCooldown"
+          :a="compareTo.chargeRequired"
+          :b="dataToUse.chargeRequired"
           :higherIsBetter="false"
         />
       </span>
@@ -302,7 +373,7 @@
         {{
           c.numberWithCommas(
             c.r2(
-              dataToUse.baseCooldown -
+              dataToUse.chargeRequired -
                 dataToUse.cooldownRemaining,
               0,
             ),
@@ -317,7 +388,14 @@
       class="flexbetween"
     >
       <span class="sub">Damage Reduction</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.damageReduction >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .damageReduction,
+        }"
+      >
         {{ dataToUse.damageReduction * 100 }}%
         <ShipTooltipsCompareProp
           v-if="compareTo"
@@ -331,33 +409,54 @@
     <!-- communicator -->
     <div
       v-if="
-        dataToUse.type === 'communicator' && dataToUse.range
+        dataToUse.itemType === 'communicator' &&
+        dataToUse.range
       "
       class="flexbetween"
     >
       <span class="sub">Max Broadast Range:</span>
-      {{ c.speedNumber(dataToUse.range, true, 0) }} km
+      <span
+        :class="{
+          success:
+            dataToUse.range >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .range,
+        }"
+        >{{
+          c.speedNumber(dataToUse.range, true, 0)
+        }}
+        km</span
+      >
       <ShipTooltipsCompareProp
         v-if="compareTo"
         :a="compareTo.range * c.kmPerAu"
         :b="dataToUse.range * c.kmPerAu"
       />
     </div>
-    <div v-if="dataToUse.antiGarble" class="flexbetween">
-      Clarity Boost
-      <span>
-        {{ dataToUse.antiGarble * 100 }}%
+    <div v-if="dataToUse.clarity" class="flexbetween">
+      <span class="sub">Clarity Boost</span>
+      <span
+        :class="{
+          success:
+            dataToUse.clarity >
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .clarity,
+        }"
+      >
+        {{ c.r2(dataToUse.clarity * 100, 0) }}%
         <ShipTooltipsCompareProp
           v-if="compareTo"
-          :a="compareTo.antiGarble * 100"
-          :b="dataToUse.antiGarble * 100"
+          :a="compareTo.clarity * 100"
+          :b="dataToUse.clarity * 100"
           addendum="%"
       /></span>
     </div>
 
     <!-- general -->
     <div
-      v-if="dataToUse.type !== 'chassis' && dataToUse.maxHp"
+      v-if="
+        dataToUse.itemType !== 'chassis' && dataToUse.maxHp
+      "
       class="flexbetween"
     >
       <span class="sub">Reliability</span>
@@ -369,7 +468,15 @@
           "
           >Normal</span
         >
-        <span v-else>
+        <span
+          v-else
+          :class="{
+            success:
+              dataToUse.reliability >
+              c.items[dataToUse.itemType][dataToUse.itemId]
+                .reliability,
+          }"
+        >
           {{ dataToUse.reliability > 1 ? '+' : ''
           }}{{ c.r2(dataToUse.reliability - 1) * 100 }}%
         </span>
@@ -381,7 +488,9 @@
       /></span>
     </div>
     <div
-      v-if="dataToUse.type !== 'chassis' && dataToUse.maxHp"
+      v-if="
+        dataToUse.itemType !== 'chassis' && dataToUse.maxHp
+      "
       class="flexbetween"
     >
       <span class="sub">Repair Difficulty</span>
@@ -394,7 +503,15 @@
           >Normal</span
         >
 
-        <span v-else>
+        <span
+          v-else
+          :class="{
+            success:
+              dataToUse.repairDifficulty <
+              c.items[dataToUse.itemType][dataToUse.itemId]
+                .repairDifficulty,
+          }"
+        >
           {{ dataToUse.repairDifficulty > 1 ? '+' : ''
           }}{{
             c.r2(dataToUse.repairDifficulty - 1) * 100
@@ -412,7 +529,14 @@
 
     <div v-if="dataToUse.mass" class="flexbetween">
       <span class="sub">Mass</span>
-      <span>
+      <span
+        :class="{
+          success:
+            dataToUse.mass <
+            c.items[dataToUse.itemType][dataToUse.itemId]
+              .mass,
+        }"
+      >
         {{
           c.numberWithCommas(c.r2(dataToUse.mass / 1000))
         }}
@@ -445,6 +569,81 @@
       </div>
     </template>
 
+    <template
+      v-if="
+        dataToUse.upgradableProperties &&
+        dataToUse.upgradableProperties.length
+      "
+    >
+      <hr />
+      <div class="flexbetween" v-if="dataToUse.level">
+        <span class="sub">Level</span>
+        <span
+          >{{ dataToUse.level }}
+          <span class="sub" v-if="dataToUse.maxLevel"
+            >(max {{ dataToUse.maxLevel }})</span
+          ></span
+        >
+      </div>
+      <div
+        class="flexbetween"
+        v-if="!dataToUse.level && dataToUse.maxLevel"
+      >
+        <span class="sub">Max Level</span>
+        <span>{{ dataToUse.maxLevel }}</span>
+      </div>
+      <div
+        v-if="dataToUse.upgradableProperties"
+        class="flexbetween"
+      >
+        <span class="sub nowrap">Upgrade Properties</span>
+        <span class="textright"
+          >{{
+            c.printList(
+              dataToUse.upgradableProperties.map((p) =>
+                c.capitalize(
+                  c.camelCaseToWords(
+                    p.replace('Multiplier', ''),
+                  ),
+                ),
+              ),
+            )
+          }}
+        </span>
+      </div>
+      <div
+        v-if="dataToUse.level && dataToUse.level > 1"
+        class="flexbetween"
+      >
+        <span class="sub">Bonus</span>
+        <span class="success"
+          >{{
+            c.r2(
+              ((dataToUse.level || 1) - 1) *
+                (dataToUse.upgradeBonus ||
+                  c.itemUpgradeMultiplier) *
+                100,
+            )
+          }}% better
+        </span>
+      </div>
+      <div v-else class="flexbetween">
+        <span class="sub">Bonus</span>
+        <span
+          >{{
+            c.r2(
+              (dataToUse.upgradeBonus ||
+                c.itemUpgradeMultiplier) * 100,
+            )
+          }}% better per level
+        </span>
+      </div>
+    </template>
+    <template v-else-if="dataToUse.type !== 'chassis'">
+      <hr />
+      <div class="flexbetween sub">Not Upgradable</div>
+    </template>
+
     <hr v-if="dataToUse.description" />
     <div class="sub">{{ dataToUse.description }}</div>
   </div>
@@ -462,7 +661,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship']),
-    dataToUse() {
+    dataToUse(): ItemStub {
       if (
         !this.ship ||
         (this.data as ItemStub).ownerId !== this.ship?.id
@@ -474,17 +673,18 @@ export default Vue.extend({
             Object.keys(this.data).length < 5)
         )
           return (
-            c.items[(this.data as ItemStub).type]?.[
-              (this.data as ItemStub).id
+            c.items[(this.data as ItemStub).itemType]?.[
+              (this.data as ItemStub).itemId
             ] || this.data
           )
-        return this.data
+        return this.data as ItemStub
       }
       return (
         this.ship.items?.find(
           (i) =>
-            i.type === (this.data as ItemStub).type &&
-            i.id === (this.data as ItemStub).id,
+            i.itemType ===
+              (this.data as ItemStub).itemType &&
+            i.itemId === (this.data as ItemStub).itemId,
         ) || this.data
       )
     },
@@ -493,7 +693,15 @@ export default Vue.extend({
       if ((this.data as any).type === 'chassis')
         return this.ship.chassis
       return this.ship?.items.find(
-        (i) => i.type === (this.data as any).type,
+        (i) => i.itemType === (this.data as any).itemType,
+      )
+    },
+    levelMultiplier(): number {
+      return (
+        1 +
+        (this.dataToUse.level || 1) *
+          (this.dataToUse.upgradeBonus ||
+            c.itemUpgradeMultiplier)
       )
     },
     scanPropertyString(): string | undefined {

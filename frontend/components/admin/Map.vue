@@ -135,7 +135,7 @@ export default Vue.extend({
       )
       window.addEventListener('touchmove', this.mouseMove)
     },
-    drawNextFrame(immediate = false) {
+    drawNextFrame(immediate = true) {
       if (this.widthScaledToDevice === 0)
         return this.start()
 
@@ -489,7 +489,6 @@ export default Vue.extend({
           hoverableElements.push({
             hoverDistance,
             hoverDistanceSubtract: p.radius,
-            type: 'zone',
             ...p,
           })
       })

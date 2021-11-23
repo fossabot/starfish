@@ -151,7 +151,7 @@ label {
 input,
 textarea {
   background: transparent;
-  border: 1px solid var(--pane-border);
+  border: 1px solid var(--gray);
   padding: 0.3em 0.4em;
   color: var(--text);
   width: 100%;
@@ -238,8 +238,8 @@ input[type='submit'] {
   &.secondary {
     color: var(--text) !important;
     background: transparent;
-    // box-shadow: 0 0 0 0.5px var(--pane-border),
-    //   inset 0 0 0 0.5px var(--pane-border);
+    // box-shadow: 0 0 0 0.5px var(--gray),
+    //   inset 0 0 0 0.5px var(--gray);
 
     &:before {
       opacity: 0.5;
@@ -499,11 +499,11 @@ select {
 .panesection {
   position: relative;
   // border-top: 1px solid
-  //   var(--highlight-color, var(--pane-border));
+  //   var(--highlight-color, var(--gray));
   // box-shadow: -1px 0 0 0
-  //     var(--highlight-color, var(--pane-border)),
-  //   1px 0 0 0 var(--highlight-color, var(--pane-border)),
-  //   0 1px 0 0 var(--highlight-color, var(--pane-border));
+  //     var(--highlight-color, var(--gray)),
+  //   1px 0 0 0 var(--highlight-color, var(--gray)),
+  //   0 1px 0 0 var(--highlight-color, var(--gray));
   padding: var(--panesectionpad-top)
     var(--panesectionpad-left);
   color: var(--highlight-color, var(--text));
@@ -531,6 +531,12 @@ select {
     var(--panesectionpad-left);
 }
 
+hr {
+  border: none;
+  border-bottom: 1px dashed var(--text);
+  opacity: 0.2;
+  margin: 0.7em auto;
+}
 hr.half {
   width: 30%;
   border: none;
@@ -606,6 +612,9 @@ ul {
 }
 .normal {
   font-weight: normal;
+}
+.uppercase {
+  text-transform: uppercase;
 }
 
 .rounded {

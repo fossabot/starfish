@@ -15,23 +15,38 @@
           :data="tooltip"
         />
         <ShipTooltipsEngine
-          v-else-if="tooltip.type === 'engine'"
+          v-else-if="
+            tooltip.type === 'item' &&
+            tooltip.itemType === 'engine'
+          "
           :data="tooltip"
         />
         <ShipTooltipsCommunicator
-          v-else-if="tooltip.type === 'communicator'"
+          v-else-if="
+            tooltip.type === 'item' &&
+            tooltip.itemType === 'communicator'
+          "
           :data="tooltip"
         />
         <ShipTooltipsScanner
-          v-else-if="tooltip.type === 'scanner'"
+          v-else-if="
+            tooltip.type === 'item' &&
+            tooltip.itemType === 'scanner'
+          "
           :data="tooltip"
         />
         <ShipTooltipsWeapon
-          v-else-if="tooltip.type === 'weapon'"
+          v-else-if="
+            tooltip.type === 'item' &&
+            tooltip.itemType === 'weapon'
+          "
           :data="tooltip"
         />
         <ShipTooltipsArmor
-          v-else-if="tooltip.type === 'armor'"
+          v-else-if="
+            tooltip.type === 'item' &&
+            tooltip.itemType === 'armor'
+          "
           :data="tooltip"
         />
         <ShipTooltipsChassis

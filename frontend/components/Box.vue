@@ -139,7 +139,7 @@ export default Vue.extend({
   user-select: none;
 
   &.highlight {
-    // --pane-border: #bbb;
+    // --gray: #bbb;
     animation: box-glow 1s ease-in-out infinite alternate;
   }
 
@@ -185,7 +185,7 @@ export default Vue.extend({
     width: 100%;
     padding-left: 0.8rem;
     height: 33px;
-    // background: var(--pane-border);
+    // background: var(--gray);
     color: var(--text);
     display: flex;
     align-items: center;
@@ -193,8 +193,8 @@ export default Vue.extend({
     font-weight: bold;
     line-height: 1;
     text-transform: uppercase;
-    // box-shadow: inset 0 0 0 1px var(--pane-border),
-    //   0 0 0 1px var(--pane-border);
+    // box-shadow: inset 0 0 0 1px var(--gray),
+    //   0 0 0 1px var(--gray);
     z-index: 5;
     margin-bottom: -0.4em;
 
@@ -250,7 +250,7 @@ export default Vue.extend({
 //   transition: box-shadow 0.2s;
 
 //   &.highlight {
-//     // --pane-border: #bbb;
+//     // --gray: #bbb;
 //     animation: box-glow 1s ease-in-out infinite alternate;
 //   }
 
@@ -259,7 +259,7 @@ export default Vue.extend({
 //     width: 100%;
 //     padding-top: 2px;
 //     height: 20px;
-//     background: var(--pane-border);
+//     background: var(--gray);
 //     color: var(--text);
 //     display: flex;
 //     align-items: center;
@@ -268,8 +268,8 @@ export default Vue.extend({
 //     line-height: 1;
 //     text-transform: uppercase;
 //     padding-left: 0.5rem;
-//     box-shadow: inset 0 0 0 1px var(--pane-border),
-//       0 0 0 1px var(--pane-border);
+//     box-shadow: inset 0 0 0 1px var(--gray),
+//       0 0 0 1px var(--gray);
 //     z-index: 4;
 
 //     transition: background 0.2s, box-shadow 0.2s;
@@ -283,10 +283,10 @@ export default Vue.extend({
 //     flex-direction: column;
 //     overflow: hidden;
 
-//     // box-shadow: inset 0 1px 0 1px var(--pane-border);
-//     border: 1px solid var(--pane-border);
+//     // box-shadow: inset 0 1px 0 1px var(--gray);
+//     border: 1px solid var(--gray);
 //     border-top: none;
-//     // border-bottom: 0.5px solid var(--pane-border);
+//     // border-bottom: 0.5px solid var(--gray);
 
 //     transition: box-shadow 0.2s;
 //   }

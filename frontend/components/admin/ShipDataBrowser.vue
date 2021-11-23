@@ -22,6 +22,13 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
+            @click="spectate(selectedShipId)"
+          >
+            <div>Spectate</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
             @click="getShipData(selectedShipId)"
           >
             <div>Reload</div>
@@ -53,6 +60,13 @@
             @click="stamina(selectedShipId)"
           >
             <div>Stamina</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="upgrade(selectedShipId)"
+          >
+            <div>Upgrade</div>
           </div>
           <div
             class="button combo flexcenter"
@@ -208,6 +222,11 @@ export default Vue.extend({
       )
     },
 
+    async spectate(shipId: string) {
+      this.$store.dispatch('socketSetup', shipId)
+      ;(this as any).$router.push('/s')
+    },
+
     async respawnShip(shipId: string) {
       if (
         !window.confirm(
@@ -270,6 +289,15 @@ export default Vue.extend({
     async stamina(shipId: string) {
       ;(this as any).$socket?.emit(
         `admin:stamina`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+      )
+    },
+
+    async upgrade(shipId: string) {
+      ;(this as any).$socket?.emit(
+        `admin:upgrade`,
         this.userId,
         this.adminPassword,
         shipId,

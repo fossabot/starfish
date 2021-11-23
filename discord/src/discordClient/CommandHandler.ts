@@ -37,6 +37,7 @@ import { BuyCommand } from './commands/Buy'
 import { SellCommand } from './commands/Sell'
 import { CrewLeaveGameCommand } from './commands/CrewLeaveGame'
 import { ContributeToCommonFundCommand } from './commands/DonateToCommonFund'
+import { LabCommand } from './commands/Lab'
 
 export class CommandHandler {
   private commands: Command[]
@@ -60,6 +61,7 @@ export class CommandHandler {
       WeaponsCommand,
       MineCommand,
       CockpitCommand,
+      LabCommand,
       ContributeToCommonFundCommand,
       RespawnCommand,
       ChangeShipNameCommand,
@@ -329,6 +331,7 @@ export class CommandHandler {
           `to`,
           context.nickname,
         )
+        context.crewMember.name = context.nickname
         ioInterface.crew.rename(
           context.ship.id,
           context.crewMember.id,
