@@ -266,7 +266,7 @@ export class Item extends Stubbable {
         `upgraded to lv. ${this.level}!`,
       ],
       `high`,
-      `party`,
+      `fix`,
       true,
     )
   }
