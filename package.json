@@ -16,13 +16,17 @@
     "restart": "docker-compose down --remove-orphans && docker-compose up -d",
     "mongo": "mongod --dbpath ./db/data",
     "circularcheck": "npx madge --circular ./game",
-    "setup": "npm install && for folder in discord frontend game; do cd $folder && npm install && cd ..; done"
+    "setup": "npm install && for folder in discord frontend game; do cd $folder && npm install && cd ..; done",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run --headed --browser chrome",
+    "cypress:runheadless": "cypress run --record --key e71b1fe6-adc8-4170-b7d7-733c6d9133e3"
   },
   "devDependencies": {
     "@types/mongoose": "5.11.97",
     "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^4.23.0",
+    "cypress": "^9.0.0",
     "eslint": "^8.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "nuxt-font-loader": "^1.1.3",

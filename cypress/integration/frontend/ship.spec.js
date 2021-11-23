@@ -10,16 +10,18 @@ describe(`Discord Login`, () => {
     cy.get(`a`).filter(`:contains(Log In)`).click()
     cy.get(`body`).then((body) => {
       if (
+        body.find(`button`).filter(`:contains(Authorize)`)
+      ) {
+        cy.get(`button`)
+          .filter(`:contains(Authorize)`)
+          .click()
+      } else if (
         body.find(`a[class^="logoutLink"]`).length === 0
       ) {
         cy.get(`[name=email]`).type(discordUser)
         cy.get(`[name=password]`).type(discordPass)
 
         cy.get(`[type=Submit]`).click() // Login
-        cy.get(`button`)
-          .filter(`:contains(Authorize)`)
-          .click()
-      } else {
         cy.get(`button`)
           .filter(`:contains(Authorize)`)
           .click()

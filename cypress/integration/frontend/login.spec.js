@@ -7,37 +7,29 @@ describe(`Homepage`, () => {
   const links = [
     {
       text: `About`,
-      href: `about`,
+      href: `${hostname}/about`,
     },
     {
       text: `How To Play`,
-      href: `howtoplay`,
+      href: `${hostname}/howtoplay`,
     },
     {
-      text: `Feedback`,
-      href: `feedback`,
-    },
-    {
-      text: `Bug Report`,
-      href: `feedback/bugreport`,
-    },
-    {
-      text: `Share a Story`,
-      href: `feedback/storytime`,
+      text: `Support Us`,
+      href: `${hostname}/supportus`,
     },
   ]
 
   links.forEach((link) => {
-    it(`"${link.text}" link correctly navigates to ${hostname}/${link.href}`, () => {
+    it(`"${link.text}" link correctly navigates to ${link.href}`, () => {
       cy.visit(hostname)
 
       cy.get(`a`).filter(`:contains(${link.text})`).click()
-      cy.url().should(`eq`, `${hostname}/${link.href}`)
+      cy.url().should(`eq`, link.href)
     })
   })
 })
 describe(`Discord Login`, () => {
-  it(`Log In takes user to Discord login page`, () => {
+  it.only(`Log In takes user to Discord login page`, () => {
     cy.visit(hostname)
 
     cy.get(`a`).filter(`:contains(Log In)`).click()
@@ -64,9 +56,15 @@ describe(`Discord Login`, () => {
     })
   })
 
-  it(`should authorize with Discord and redirect to /s`, () => {
+  it.only(`should authorize with Discord and redirect to /s`, () => {
     cy.get(`body`).then((body) => {
       if (
+        body.find(`button`).filter(`:contains(Authorize)`)
+      ) {
+        cy.get(`button`)
+          .filter(`:contains(Authorize)`)
+          .click()
+      } else if (
         body.find(`a[class^="logoutLink"]`).length === 0
       ) {
         expect(discordUser, `discordUser was set`).to.be.a(
@@ -80,10 +78,6 @@ describe(`Discord Login`, () => {
         cy.get(`[name=password]`).type(discordPass)
 
         cy.get(`[type=Submit]`).click() // Login
-        cy.get(`button`)
-          .filter(`:contains(Authorize)`)
-          .click()
-      } else {
         cy.get(`button`)
           .filter(`:contains(Authorize)`)
           .click()
