@@ -29,10 +29,14 @@
               ship
             </li>
             <li>
-              The satisguild of supporting an indie
+              Their name added to the
+              <b>AI/Comet name pool</b>
+            </li>
+            <li>
+              The <b>satisfaction</b> of supporting an indie
               developer
             </li>
-            <li>My sincere gratitude</li>
+            <li>My <b>sincere gratitude</b></li>
             <li>(More in-game rewards coming soon!)</li>
           </ul>
         </div>

@@ -220,6 +220,11 @@ export class Ship extends Stubbable {
         .filter((z: Zone | undefined) => z) as Zone[]
 
     this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
+
+    // * this is temporary
+    if (chassis && !chassis.chassisId)
+      chassis.chassisId = (chassis as any).id
+
     if (
       chassis &&
       chassis.chassisId &&
