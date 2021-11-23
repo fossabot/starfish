@@ -103,7 +103,7 @@ type ItemId =
   | ArmorId
 
 interface BaseChassisData {
-  id: ChassisId
+  chassisId: ChassisId
   type: `chassis`
   mass: number
   basePrice: Price
@@ -116,11 +116,14 @@ interface BaseChassisData {
   passives?: ShipPassiveEffect[]
   buyable?: false
   special?: true
+  rooms?: CrewLocation[]
 }
 
 interface BaseItemData {
-  id: ItemId
-  type: ItemType
+  type: `item`
+  id?: string
+  itemId: ItemId
+  itemType: ItemType
   displayName: string
   description: string
   mass: number
@@ -137,6 +140,12 @@ interface BaseItemData {
   lastUse?: number
   passives?: ShipPassiveEffect[]
   rooms?: CrewLocation[]
+  upgradeRequirements?: ItemUpgradeRequirements
+  upgradableProperties?: UpgradableProperty[]
+  upgradeBonus?: number
+  level?: number
+  maxLevel?: number
+
   [key: keyof BaseWeaponData | keyof BaseEngineData]: any // to cover generalized item type contruction
 }
 
@@ -148,43 +157,43 @@ type LoadoutId =
   | `testManualEngine`
   | `testMega`
 type Loadout = {
-  chassis: ChassisId
-  items: { type: ItemType; id: ItemId }[]
+  chassisId: ChassisId
+  items: { itemType: ItemType; itemId: ItemId }[]
 }
 
 interface BaseWeaponData extends BaseItemData {
-  type: `weapon`
-  id: WeaponId
+  itemType: `weapon`
+  itemId: WeaponId
   range: number
   damage: number
-  baseCooldown: number
+  chargeRequired: number
   cooldownRemaining?: number
   critChance?: number
 }
 
 interface BaseEngineData extends BaseItemData {
-  type: `engine`
-  id: EngineId
+  itemType: `engine`
+  itemId: EngineId
   passiveThrustMultiplier?: number
   manualThrustMultiplier?: number
 }
 
 interface BaseArmorData extends BaseItemData {
-  type: `armor`
-  id: ArmorId
+  itemType: `armor`
+  itemId: ArmorId
   damageReduction: number
 }
 
 interface BaseCommunicatorData extends BaseItemData {
-  type: `communicator`
-  id: CommunicatorId
+  itemType: `communicator`
+  itemId: CommunicatorId
   range: number
-  antiGarble: number
+  clarity: number
 }
 
 interface BaseScannerData extends BaseItemData {
-  type: `scanner`
-  id: ScannerId
+  itemType: `scanner`
+  itemId: ScannerId
   sightRange: number
   shipScanRange: number
   shipScanData: ShipScanDataShape
@@ -227,3 +236,27 @@ interface ShipScanDataShape {
   radii?: RadiusType[]
   debugLocations?: boolean
 }
+
+interface ItemUpgradeRequirement {
+  required: number
+  current: number
+  research?: boolean
+  cargoId?: CargoId
+  researchCurrency?: boolean
+}
+type ItemUpgradeRequirements = ItemUpgradeRequirement[]
+
+type UpgradableProperty =
+  | `damageReduction`
+  | `range`
+  | `clarity`
+  | `passiveThrustMultiplier`
+  | `manualThrustMultiplier`
+  | `repairDifficulty`
+  | `reliability`
+  | `sightRange`
+  | `shipScanRange`
+  | `damage`
+  | `critChance`
+  | `chargeRequired`
+  | `mass`

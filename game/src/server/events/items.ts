@@ -56,7 +56,7 @@ export default function (
       if (buyRes !== true)
         return callback({ error: buyRes })
 
-      ship.addItem({ type: itemType, id: itemId })
+      ship.addItem({ itemType: itemType, itemId: itemId })
       ship.logEntry(
         [
           {
@@ -117,7 +117,8 @@ export default function (
         return callback({ error: `Not at a planet.` })
 
       const heldItem = ship.items.find(
-        (i) => i.type === itemType && i.id === itemId,
+        (i) =>
+          i.itemType === itemType && i.itemId === itemId,
       )
       if (!heldItem)
         return callback({
@@ -213,7 +214,7 @@ export default function (
       const price = c.getChassisSwapPrice(
         itemForSale,
         planet,
-        ship.chassis.id,
+        ship.chassis.chassisId,
         ship.guildId,
       )
 

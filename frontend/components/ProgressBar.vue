@@ -17,7 +17,7 @@
             : micro
             ? ''
             : mini
-            ? 'rgba(255,255,255,.3)'
+            ? color || 'rgba(255,255,255,.3)'
             : color,
       }"
     ></div>
@@ -69,10 +69,10 @@ export default Vue.extend({
   border-radius: 5px;
   overflow: hidden;
 
-  // border-top: 1px solid var(--pane-border);
-  // border-left: 1px solid var(--pane-border);
+  // border-top: 1px solid var(--gray);
+  // border-left: 1px solid var(--gray);
   // border-bottom: 0;
-  // box-shadow: 0 0 0 1px var(--pane-border);
+  // box-shadow: 0 0 0 1px var(--gray);
 
   &.mini {
     border: 2px solid transparent;
@@ -84,7 +84,7 @@ export default Vue.extend({
       padding-top: 0.06em;
       padding-bottom: 0.04em;
       padding-left: 0.5em;
-      // padding-left: 0;
+      padding-right: 0.5em;
     }
 
     .bg {

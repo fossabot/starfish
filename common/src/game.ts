@@ -96,6 +96,14 @@ function getMineAmountPerTickForSingleCrewMember(
   )
 }
 
+function getResearchAmountPerTickForSingleCrewMember(
+  level: number,
+) {
+  return (
+    math.lerp(150, 800, level / 100) / globals.tickInterval
+  )
+}
+
 function getStaminaGainPerTickForSingleCrewMember(
   baseStaminaUse: number,
   rechargeSpeedMultiplier: number,
@@ -162,6 +170,9 @@ function statToString(data: {
 
   if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
     amountString = text.speedNumber(amount)
+
+  if ([`totalResearched`].includes(stat))
+    amountString = text.abbreviateNumber(amount)
 
   if ([`planetTime`, `timeInBunk`].includes(stat))
     amountString = text.msToTimeString(
@@ -677,6 +688,7 @@ export default {
   getRadiusDiminishingReturns,
   getRepairAmountPerTickForSingleCrewMember,
   getMineAmountPerTickForSingleCrewMember,
+  getResearchAmountPerTickForSingleCrewMember,
   getMaxCockpitChargeForSingleCrewMember,
   getCockpitChargePerTickForSingleCrewMember,
   getThrustMagnitudeForSingleCrewMember,

@@ -13,6 +13,7 @@ declare const _default: {
         cockpit: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
+        lab: BaseRoomData;
     };
     crewPassives: {
         boostBrake: CrewPassiveData;
@@ -242,6 +243,7 @@ declare const _default: {
     planetContributeShipCosmeticCostPerXp: number;
     planetContributeCrewCosmeticCostPerXp: number;
     planetLevelXpRequirementMultiplier: number;
+    itemUpgradeMultiplier: number;
     itemPriceMultiplier: number;
     itemMassMultiplier: number;
     weaponDamageMultiplier: number;
@@ -277,6 +279,7 @@ declare const _default: {
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
     getRepairAmountPerTickForSingleCrewMember: (level: number) => number;
     getMineAmountPerTickForSingleCrewMember: (level: number) => number;
+    getResearchAmountPerTickForSingleCrewMember: (level: number) => number;
     getMaxCockpitChargeForSingleCrewMember: (level?: number) => number;
     getCockpitChargePerTickForSingleCrewMember: (level?: number) => number;
     getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
@@ -328,6 +331,7 @@ declare const _default: {
     shuffleArray: (array: any[]) => any[];
     maxNameLength: number;
     numberWithCommas: (x: number) => string | number;
+    abbreviateNumber: (number?: number, maxDecimalPlaces?: number) => string;
     speedNumber: (numberInAu: number, noTag?: boolean, maxDecimalPlaces?: number) => string;
     printList: (list: string[], separator?: string) => string;
     degreesToArrow: (angle: number) => string;

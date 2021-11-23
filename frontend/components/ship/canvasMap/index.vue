@@ -291,11 +291,14 @@ export default Vue.extend({
             let radius,
               color = tp.color
             if (tp.location && !tp.radii) {
-              if (
-                tp.type &&
-                ['zone', 'weapon'].includes(tp.type)
-              )
+              if (tp.type && ['zone'].includes(tp.type))
                 radius = tp.radius
+              if (
+                tp.type === 'item' &&
+                tp.itemType === 'weapon'
+              ) {
+                radius = tp.radius
+              }
               if (tp.type && ['cache'].includes(tp.type))
                 tp.color = `rgb(216, 174, 3)`
               targetPoints.push({

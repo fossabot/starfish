@@ -8,7 +8,7 @@ interface BaseShipData {
   seenPlanets?: { id: string; name?: string }[]
   seenLandmarks?: { id: string; type: `zone` }[]
   loadout?: LoadoutId
-  chassis?: { id: ChassisId }
+  chassis?: { chassisId: ChassisId }
   items?: BaseItemData[]
   ai?: boolean
   previousLocations?: CoordinatePair[]
@@ -115,7 +115,7 @@ interface ShipPassiveEffect {
 interface TakenDamageResult extends ResponseWithMessage {
   damageTaken: number
   didDie: boolean
-  weapon: { id: WeaponId }
+  weapon: { itemId: ItemId }
   miss: boolean
   didCrit?: boolean
 }

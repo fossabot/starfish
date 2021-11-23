@@ -38,12 +38,12 @@ export class ThrustCommand implements Command {
 
     const hasPassiveEngines = context.ship.items?.find(
       (i) =>
-        i.type === `engine` &&
+        i.itemType === `engine` &&
         (i as EngineStub).passiveThrustMultiplier,
     )
     const hasManualEngines = context.ship.items?.find(
       (i) =>
-        i.type === `engine` &&
+        i.itemType === `engine` &&
         (i as EngineStub).manualThrustMultiplier,
     )
 

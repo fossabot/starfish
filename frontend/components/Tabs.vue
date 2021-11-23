@@ -60,6 +60,7 @@ export default Vue.extend({
     noPad: { type: Boolean, default: false },
     centerTabs: { type: Boolean, default: false },
     bigTabs: { type: Boolean, default: false },
+    preSelect: { type: Number, default: 0 },
   },
   data() {
     let tabs: Vue[] = []
@@ -74,11 +75,19 @@ export default Vue.extend({
     ...mapState([]),
   },
   watch: {
-    dropdownSelection() {
+    dropdownSelection(curr, prev) {
+      if (curr === prev) return
       this.selectTab(this.dropdownSelection)
       this.$emit(
         'input',
-        (this.tabs[this.dropdownSelection] as any)?.title,
+        (this.tabs[this.dropdownSelection] as any)
+          ?.inputKey ||
+          (this.tabs[this.dropdownSelection] as any)?.title,
+      )
+    },
+    preSelect() {
+      this.selectTab(
+        this.preSelect >= 0 ? this.preSelect : 0,
       )
     },
   },
@@ -86,10 +95,11 @@ export default Vue.extend({
     this.tabs = this.$children
   },
   mounted() {
-    this.selectTab(0)
+    this.selectTab(this.preSelect >= 0 ? this.preSelect : 0)
   },
   methods: {
     selectTab(i) {
+      this.dropdownSelection = i
       this.selectedIndex = i
 
       this.tabs.forEach(

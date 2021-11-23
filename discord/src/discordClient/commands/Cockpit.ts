@@ -36,7 +36,7 @@ export class CockpitCommand implements Command {
     // passive engine users will auto-target to crew average
     const hasPassiveEngines = context.ship.items?.find(
       (i) =>
-        i.type === `engine` &&
+        i.itemType === `engine` &&
         (i as EngineStub).passiveThrustMultiplier,
     )
     if (

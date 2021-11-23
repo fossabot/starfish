@@ -70,6 +70,9 @@ function getRepairAmountPerTickForSingleCrewMember(level) {
 function getMineAmountPerTickForSingleCrewMember(level) {
     return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);
 }
+function getResearchAmountPerTickForSingleCrewMember(level) {
+    return (math_1.default.lerp(150, 800, level / 100) / globals_1.default.tickInterval);
+}
 function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedMultiplier) {
     return baseStaminaUse * rechargeSpeedMultiplier;
 }
@@ -110,6 +113,8 @@ function statToString(data) {
     let suffix = ``;
     if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
         amountString = text_1.default.speedNumber(amount);
+    if ([`totalResearched`].includes(stat))
+        amountString = text_1.default.abbreviateNumber(amount);
     if ([`planetTime`, `timeInBunk`].includes(stat))
         amountString = text_1.default.msToTimeString(amount * globals_1.default.tickInterval);
     if ([`distanceTraveled`].includes(stat))
@@ -434,6 +439,7 @@ exports.default = {
     getRadiusDiminishingReturns,
     getRepairAmountPerTickForSingleCrewMember,
     getMineAmountPerTickForSingleCrewMember,
+    getResearchAmountPerTickForSingleCrewMember,
     getMaxCockpitChargeForSingleCrewMember,
     getCockpitChargePerTickForSingleCrewMember,
     getThrustMagnitudeForSingleCrewMember,

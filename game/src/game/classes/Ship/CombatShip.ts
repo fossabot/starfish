@@ -1,9 +1,9 @@
 import c from '../../../../../common/dist'
 
 import { Ship } from './Ship'
-import type { Weapon } from '../Item/Weapon'
-import type { Item } from '../Item/Item'
-import type { Engine } from '../Item/Engine'
+import type { Weapon } from './Item/Weapon'
+import type { Item } from './Item/Item'
+import type { Engine } from './Item/Engine'
 import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip/HumanShip'
@@ -285,7 +285,7 @@ export abstract class CombatShip extends Ship {
 
     const totalMunitionsSkill = this.cumulativeSkillIn(
       `weapons`,
-      `munitions`,
+      `dexterity`,
     )
     let miss: boolean,
       toHit: number,
@@ -581,7 +581,7 @@ export abstract class CombatShip extends Ship {
       .filter((cm) => cm.location === `weapons`)
       .forEach((cm: CrewMember) => {
         cm.addXp(
-          `munitions`,
+          `dexterity`,
           (this.game?.settings.baseXpGain ||
             c.defaultGameSettings.baseXpGain) *
             Math.round(weapon.damage * 40) *
@@ -595,7 +595,7 @@ export abstract class CombatShip extends Ship {
         .filter((cm) => cm.location === `weapons`)
         .forEach((cm: CrewMember) => {
           cm.addXp(
-            `munitions`,
+            `dexterity`,
             (this.game?.settings.baseXpGain ||
               c.defaultGameSettings.baseXpGain) *
               3000 *
@@ -722,10 +722,11 @@ export abstract class CombatShip extends Ship {
                   text: armor.displayName,
                   color: `var(--item)`,
                   tooltipData: {
-                    type: `armor`,
+                    type: `item`,
+                    itemType: `armor`,
                     description: armor.description,
                     displayName: armor.displayName,
-                    id: armor.id,
+                    itemId: armor.itemId,
                   },
                 },
                 `&nospace!`,
@@ -751,7 +752,8 @@ export abstract class CombatShip extends Ship {
       if (attack.targetType)
         attackableEquipment = this.items.filter(
           (i) =>
-            i.repair > 0 && i.type === attack.targetType,
+            i.repair > 0 &&
+            i.itemType === attack.targetType,
         )
       if (!attackableEquipment.length)
         attackableEquipment = this.items.filter(
@@ -771,14 +773,16 @@ export abstract class CombatShip extends Ship {
       let adjustedRemainingDamage = remainingDamage
       if (
         itemTypeDamageMultipliers[
-          equipmentToAttack.type
+          equipmentToAttack.itemType
         ] !== undefined
       ) {
         adjustedRemainingDamage *=
-          itemTypeDamageMultipliers[equipmentToAttack.type]!
+          itemTypeDamageMultipliers[
+            equipmentToAttack.itemType
+          ]!
         c.log(
           `damage to`,
-          equipmentToAttack.type,
+          equipmentToAttack.itemType,
           `boosted by passive:`,
           remainingDamage,
           `became`,
@@ -798,7 +802,7 @@ export abstract class CombatShip extends Ship {
         remainingDamage = 0
         totalDamageDealt += adjustedRemainingDamage
         damageTally.push({
-          targetType: equipmentToAttack.type,
+          targetType: equipmentToAttack.itemType,
           targetDisplayName: equipmentToAttack.displayName,
           damage: adjustedRemainingDamage,
           destroyed: false,
@@ -815,7 +819,7 @@ export abstract class CombatShip extends Ship {
         remainingDamage -= remainingHp
         totalDamageDealt += remainingHp
         damageTally.push({
-          targetType: equipmentToAttack.type,
+          targetType: equipmentToAttack.itemType,
           targetDisplayName: equipmentToAttack.displayName,
           damage: remainingHp,
           destroyed: true,
@@ -874,7 +878,9 @@ export abstract class CombatShip extends Ship {
                       equipmentToAttack.displayName,
                     description:
                       equipmentToAttack.description,
-                    type: equipmentToAttack.type,
+                    type: `item`,
+                    itemType: equipmentToAttack.itemType,
+                    itemId: equipmentToAttack.itemId,
                   },
                 },
                 `&nospace!`,
@@ -1084,22 +1090,22 @@ export abstract class CombatShip extends Ship {
 
     if (repairPriority === `engines`) {
       const r = repairableItems.filter(
-        (i) => i.type === `engine`,
+        (i) => i.itemType === `engine`,
       )
       itemsToRepair.push(...r)
     } else if (repairPriority === `weapons`) {
       const r = repairableItems.filter(
-        (i) => i.type === `weapon`,
+        (i) => i.itemType === `weapon`,
       )
       itemsToRepair.push(...r)
     } else if (repairPriority === `scanners`) {
       const r = repairableItems.filter(
-        (i) => i.type === `scanner`,
+        (i) => i.itemType === `scanner`,
       )
       itemsToRepair.push(...r)
     } else if (repairPriority === `communicators`) {
       const r = repairableItems.filter(
-        (i) => i.type === `communicator`,
+        (i) => i.itemType === `communicator`,
       )
       itemsToRepair.push(...r)
     }

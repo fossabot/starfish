@@ -156,6 +156,15 @@
           Repair
         </option>
         <option
+          value="Upgrade"
+          v-if="
+            ship.items.filter((i) => i.level < i.maxLevel)
+              .length
+          "
+        >
+          Upgrade
+        </option>
+        <option
           value="Just chill and do whatever, you know, have fun"
         >
           Whatever
@@ -348,7 +357,7 @@
 
       <select
         v-model="target"
-        v-if="['Repair'].includes(verb)"
+        v-if="['Repair', 'Upgrade'].includes(verb)"
       >
         <option value="">Select equipment...</option>
         <option

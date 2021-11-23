@@ -38,7 +38,7 @@ import c from '../../common/dist'
 export default Vue.extend({
   props: { disabled: {}, max: {}, yesNo: {} },
   data() {
-    let prompt: any,
+    let prompt: any = 1,
       results: any[] = []
     return { c, prompt, results }
   },
@@ -48,7 +48,7 @@ export default Vue.extend({
   watch: {
     modal() {
       if (!this.modal) {
-        this.prompt = null
+        this.prompt = 1
         this.results = []
       }
     },
@@ -77,13 +77,13 @@ export default Vue.extend({
         return
       }
       this.$emit('done', this.results)
-      this.prompt = null
+      this.prompt = 1
       this.results = []
       this.$store.commit('set', { modal: null })
     },
     cancel() {
       this.$emit('cancel', this.results)
-      this.prompt = null
+      this.prompt = 1
       this.results = []
       this.$store.commit('set', { modal: null })
     },

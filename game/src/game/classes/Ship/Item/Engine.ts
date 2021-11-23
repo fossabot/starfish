@@ -1,13 +1,12 @@
-import c from '../../../../../common/dist'
-import type { CrewMember } from '../CrewMember/CrewMember'
-import type { Ship } from '../Ship/Ship'
+import c from '../../../../../../common/dist'
+import type { CrewMember } from '../../CrewMember/CrewMember'
+import type { Ship } from '../Ship'
 
 import { Item } from './Item'
 
 export class Engine extends Item {
-  readonly id: EngineId
-  readonly passiveThrustMultiplier: number
-  readonly manualThrustMultiplier: number
+  passiveThrustMultiplier: number
+  manualThrustMultiplier: number
   lastUse: number = Date.now()
 
   constructor(
@@ -16,7 +15,6 @@ export class Engine extends Item {
     props?: Partial<BaseEngineData>,
   ) {
     super(data, ship, props)
-    this.id = data.id
     this.passiveThrustMultiplier =
       data.passiveThrustMultiplier || 0
     this.manualThrustMultiplier =
@@ -34,7 +32,7 @@ export class Engine extends Item {
     const skillLevel = users
       ? users.reduce(
           (total, u) =>
-            (u.skills.find((s) => s.skill === `piloting`)
+            (u.skills.find((s) => s.skill === `dexterity`)
               ?.level || 1) + total,
           0,
         ) / users.length
@@ -66,7 +64,7 @@ export class Engine extends Item {
     const skillLevel = users
       ? users.reduce(
           (total, u) =>
-            (u.skills.find((s) => s.skill === `piloting`)
+            (u.skills.find((s) => s.skill === `dexterity`)
               ?.level || 1) + total,
           0,
         ) / users.length

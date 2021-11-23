@@ -675,8 +675,9 @@ export default function (
                 ? ship.items
                     .find(
                       (i) =>
-                        i.type === orders.target?.type &&
-                        i.id === orders.target.id,
+                        i.itemType ===
+                          orders.target?.type &&
+                        i.itemId === orders.target.id,
                     )
                     ?.toReference()
                 : (orders.target as any),

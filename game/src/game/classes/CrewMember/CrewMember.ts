@@ -30,6 +30,8 @@ export class CrewMember extends Stubbable {
     | { id: string; type: string; location: CoordinatePair }
     | false = false
 
+  researchTargetId: string | null = null
+
   combatTactic: CombatTactic | `none` = `none`
   attackTargetId: string | `any` | `closest` = `any`
   targetItemType: ItemType | `any` = `any`
@@ -96,16 +98,69 @@ export class CrewMember extends Stubbable {
     this.crewCosmeticCurrency =
       data.crewCosmeticCurrency ?? 0
 
-    this.skills =
-      data.skills && data.skills.length
-        ? [...(data.skills.filter((s) => s) || [])]
-        : [
-            { skill: `piloting`, level: 1, xp: 0 },
-            { skill: `munitions`, level: 1, xp: 0 },
-            { skill: `mechanics`, level: 1, xp: 0 },
-            { skill: `linguistics`, level: 1, xp: 0 },
-            { skill: `mining`, level: 1, xp: 0 },
-          ]
+    // * this is for migrating from old skills
+    if (
+      data.skills?.find(
+        (s) => (s.skill as any) === `piloting`,
+      )
+    ) {
+      this.skills = [
+        {
+          skill: `strength`,
+          level:
+            data.skills?.find(
+              (s) => (s.skill as any) === `mechanics`,
+            )?.level || 1,
+          xp:
+            data.skills?.find(
+              (s) => (s.skill as any) === `mechanics`,
+            )?.xp || 0,
+        },
+        {
+          skill: `dexterity`,
+          level:
+            data.skills?.find(
+              (s) => (s.skill as any) === `piloting`,
+            )?.level || 1,
+          xp:
+            data.skills?.find(
+              (s) => (s.skill as any) === `piloting`,
+            )?.xp || 0,
+        },
+        {
+          skill: `intellect`,
+          level:
+            data.skills?.find(
+              (s) => (s.skill as any) === `munitions`,
+            )?.level || 1,
+          xp:
+            data.skills?.find(
+              (s) => (s.skill as any) === `munitions`,
+            )?.xp || 0,
+        },
+        {
+          skill: `charisma`,
+          level:
+            data.skills?.find(
+              (s) => (s.skill as any) === `linguistics`,
+            )?.level || 1,
+          xp:
+            data.skills?.find(
+              (s) => (s.skill as any) === `linguistics`,
+            )?.xp || 0,
+        },
+      ]
+    } else {
+      this.skills =
+        data.skills && data.skills.length
+          ? [...(data.skills.filter((s) => s) || [])]
+          : [
+              { skill: `strength`, level: 1, xp: 0 },
+              { skill: `dexterity`, level: 1, xp: 0 },
+              { skill: `intellect`, level: 1, xp: 0 },
+              { skill: `charisma`, level: 1, xp: 0 },
+            ]
+    }
 
     if (data.tutorialShipId)
       this.tutorialShipId = data.tutorialShipId
@@ -131,6 +186,9 @@ export class CrewMember extends Stubbable {
     if (data.repairPriority)
       this.repairPriority = data.repairPriority
     if (data.stats) this.stats = [...data.stats]
+
+    if (data.researchTargetId)
+      this.researchTargetId = data.researchTargetId
 
     this.recalculateAll()
 
@@ -210,6 +268,7 @@ export class CrewMember extends Stubbable {
   weaponsAction = roomActions.weapons
   bunkAction = roomActions.bunk
   mineAction = roomActions.mine
+  labAction = roomActions.lab
 
   tick() {
     this._stub = null // invalidate stub
@@ -290,6 +349,8 @@ export class CrewMember extends Stubbable {
       this.weaponsAction()
     // ----- mine -----
     else if (this.location === `mine`) this.mineAction()
+    // ----- lab -----
+    else if (this.location === `lab`) this.labAction()
   }
 
   active() {
@@ -497,6 +558,24 @@ export class CrewMember extends Stubbable {
     this.toUpdate.maxStamina = this.maxStamina
   }
 
+  recalculateResearchTargetId() {
+    this.researchTargetId =
+      this.ship.items
+        .filter(
+          (i) =>
+            i.upgradable &&
+            i.level < i.maxLevel &&
+            (i.upgradeRequirements.find(
+              (req) => req.research,
+            )?.current || 0) <
+              (i.upgradeRequirements.find(
+                (req) => req.research,
+              )?.required || 0),
+        )
+        .sort((a, b) => a.level - b.level)?.[0]?.id || null
+    this.toUpdate.researchTargetId = this.researchTargetId
+  }
+
   addStat(statname: CrewStatKey, amount: number) {
     const existing = this.stats.find(
       (s) => s.stat === statname,
@@ -510,48 +589,40 @@ export class CrewMember extends Stubbable {
     this.toUpdate.stats = this.stats
   }
 
-  get piloting() {
+  get strength() {
     return (
-      this.skills.find((s) => s?.skill === `piloting`) || {
-        skill: `piloting`,
+      this.skills.find((s) => s?.skill === `strength`) || {
+        skill: `strength`,
         level: 1,
         xp: 0,
       }
     )
   }
 
-  get linguistics() {
+  get dexterity() {
     return (
-      this.skills.find(
-        (s) => s?.skill === `linguistics`,
-      ) || { skill: `linguistics`, level: 1, xp: 0 }
-    )
-  }
-
-  get munitions() {
-    return (
-      this.skills.find((s) => s?.skill === `munitions`) || {
-        skill: `munitions`,
+      this.skills.find((s) => s?.skill === `dexterity`) || {
+        skill: `dexterity`,
         level: 1,
         xp: 0,
       }
     )
   }
 
-  get mechanics() {
+  get charisma() {
     return (
-      this.skills.find((s) => s?.skill === `mechanics`) || {
-        skill: `mechanics`,
+      this.skills.find((s) => s?.skill === `charisma`) || {
+        skill: `charisma`,
         level: 1,
         xp: 0,
       }
     )
   }
 
-  get mining() {
+  get intellect() {
     return (
-      this.skills.find((s) => s?.skill === `mining`) || {
-        skill: `mining`,
+      this.skills.find((s) => s?.skill === `intellect`) || {
+        skill: `intellect`,
         level: 1,
         xp: 0,
       }

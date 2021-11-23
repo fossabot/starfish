@@ -151,6 +151,11 @@ interface IOClientEvents {
     password: string,
     shipId: string,
   ) => void
+  [`admin:upgrade`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`game:resetHomeworlds`]: (
     adminId: string,
     password: string,
@@ -345,6 +350,21 @@ interface IOClientEvents {
         price: Price
       }>,
     ) => void,
+  ) => void
+  [`crew:applyCargoToResearch`]: (
+    shipId: string,
+    crewId: string,
+    researchType: `item`,
+    researchId: string,
+    cargoId: CargoId,
+    amount: number,
+    callback: (res: IOResponse<true>) => void,
+  ) => void
+  [`crew:researchTargetId`]: (
+    shipId: string,
+    crewId: string,
+    researchId: string,
+    callback: (res: IOResponse<true>) => void,
   ) => void
   [`crew:buyRepair`]: (
     shipId: string,

@@ -95,7 +95,7 @@
 
       <div
         v-tooltip="
-          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>piloting</b>.
+          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>dexterity</b>.
           <br /><br />
           Charge builds slowly even while in the bunk.`
         "
@@ -147,7 +147,7 @@
           </p>
           <hr />
           <p>
-            Scales with your charge percent, engine base thrust and repair, your current level in <b>piloting</b>, and lower ship mass.
+            Scales with your charge percent, engine base thrust and repair, your current level in <b>dexterity</b>, and lower ship mass.
           </p>
           <p>
             Final speed will take into account the ship's current trajectory.
@@ -186,7 +186,7 @@
           </p>
           <hr />
           <p>
-            Scales with engine base thrust and repair, your current level in <b>piloting</b>, and ship mass.
+            Scales with engine base thrust and repair, your current level in <b>dexterity</b>, and ship mass.
           </p>`
       "
     >
@@ -364,7 +364,7 @@ export default Vue.extend({
       return (
         this.ship?.items.filter(
           (e: ItemStub) =>
-            e.type === 'engine' &&
+            e.itemType === 'engine' &&
             (e.repair || 0) > 0 &&
             (e as EngineStub).passiveThrustMultiplier,
         ) || []
@@ -387,7 +387,7 @@ export default Vue.extend({
       return (
         this.ship?.items.filter(
           (e: ItemStub) =>
-            e.type === 'engine' &&
+            e.itemType === 'engine' &&
             (e.repair || 0) > 0 &&
             (e as EngineStub).manualThrustMultiplier,
         ) || []
@@ -409,7 +409,7 @@ export default Vue.extend({
     pilotingSkill(): number {
       return (
         this.crewMember.skills.find(
-          (s: XPData) => s && s.skill === 'piloting',
+          (s: XPData) => s && s.skill === 'dexterity',
         )?.level || 1
       )
     },

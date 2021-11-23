@@ -234,7 +234,7 @@ export default Vue.extend({
     position: relative;
     display: inline-flex;
     width: 9em;
-    height: 9em;
+    height: 8em;
     overflow: hidden;
     align-items: center;
     justify-content: center;
@@ -258,7 +258,7 @@ export default Vue.extend({
 
     &.unselectable {
       background: rgba(70, 70, 70, 0.6);
-      box-shadow: 0 0 0 1px var(--pane-border);
+      box-shadow: 0 0 0 1px var(--gray);
       border-bottom: none;
     }
 

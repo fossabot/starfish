@@ -37,8 +37,8 @@
             <ProgressBar
               :micro="true"
               :percent="
-                (i.baseCooldown - i.cooldownRemaining) /
-                i.baseCooldown
+                (i.chargeRequired - i.cooldownRemaining) /
+                i.chargeRequired
               "
               :dangerZone="-1"
             />
@@ -216,14 +216,14 @@ export default Vue.extend({
     },
     weapons() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'weapon',
+        (i: ItemStub) => i.itemType === 'weapon',
       )
     },
     chargePerSecond() {
       return (
         (c.getWeaponCooldownReductionPerTick(
           (this.crewMember as CrewMemberStub).skills.find(
-            (s) => s.skill === 'munitions',
+            (s) => s.skill === 'dexterity',
           )?.level || 1,
         ) *
           c.tickInterval) /

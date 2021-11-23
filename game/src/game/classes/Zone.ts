@@ -155,7 +155,7 @@ export class Zone extends Stubbable {
         }
         if (miss) return // * misses being announced was annoying and just noise
         ship.takeDamage(this, {
-          damage: miss ? 0 : intensity,
+          damage: miss ? 0 : intensity * 0.8, // * times 1 was killing people a little too much
           miss,
           targetType: `any`,
         })

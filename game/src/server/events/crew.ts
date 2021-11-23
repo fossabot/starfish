@@ -831,6 +831,101 @@ export default function (
   )
 
   socket.on(
+    `crew:applyCargoToResearch`,
+    (
+      shipId,
+      crewId,
+      researchType,
+      researchId,
+      cargoId,
+      amount,
+      callback,
+    ) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      const existingStock = crewMember.inventory.find(
+        (cargo) => cargo.id === cargoId,
+      )
+      if (!existingStock || existingStock.amount < amount)
+        return callback({
+          error: `Not holding enough stock of that cargo.`,
+        })
+
+      amount = c.r2(amount, 2, true)
+
+      if (researchType === `item`) {
+        const item = ship.items.find(
+          (i) => i.id === researchId,
+        )
+        if (!item)
+          return callback({ error: `Invalid item.` })
+        if (!item.upgradable)
+          return callback({
+            error: `That item is not upgradable.`,
+          })
+        const requirement = item.upgradeRequirements.find(
+          (r) => r.cargoId === cargoId,
+        )
+        if (!requirement)
+          return callback({
+            error: `That item doesn't require that cargo.`,
+          })
+
+        crewMember.removeCargo(cargoId, amount)
+        item.applyCargoTowardsUpgrade(cargoId, amount)
+
+        c.log(
+          `gray`,
+          `${crewMember.name} on ${ship.name} put ${amount} ${cargoId} towards research.`,
+        )
+        return callback({ data: true })
+      }
+
+      return callback({ error: `Invalid research type.` })
+    },
+  )
+
+  socket.on(
+    `crew:researchTargetId`,
+    (shipId, crewId, researchId, callback) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({ error: `No ship found.` })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({ error: `No crew member found.` })
+
+      crewMember.researchTargetId = researchId
+      crewMember.toUpdate.researchTargetId = researchId
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} set their research target id.`,
+      )
+      return callback({ data: true })
+    },
+  )
+
+  socket.on(
     `crew:drop`,
     async (
       shipId,

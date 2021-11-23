@@ -1,13 +1,12 @@
-import c from '../../../../../common/dist'
-import type { CrewMember } from '../CrewMember/CrewMember'
-import type { Ship } from '../Ship/Ship'
+import c from '../../../../../../common/dist'
+import type { CrewMember } from '../../CrewMember/CrewMember'
+import type { Ship } from '../Ship'
 
 import { Item } from './Item'
 
 export class Communicator extends Item {
-  readonly id: CommunicatorId
-  readonly range: number
-  readonly antiGarble: number
+  range: number
+  clarity: number
   lastUse: number = 0
 
   constructor(
@@ -16,9 +15,8 @@ export class Communicator extends Item {
     props?: Partial<BaseCommunicatorData>,
   ) {
     super(data, ship, props)
-    this.id = data.id
     this.range = data.range
-    this.antiGarble = data.antiGarble
+    this.clarity = data.clarity
   }
 
   use(usePercent: number = 1, users?: CrewMember[]) {
@@ -29,7 +27,7 @@ export class Communicator extends Item {
     const skillLevel = users
       ? users.reduce(
           (total, u) =>
-            (u.skills.find((s) => s.skill === `linguistics`)
+            (u.skills.find((s) => s.skill === `charisma`)
               ?.level || 1) + total,
           0,
         ) / users.length

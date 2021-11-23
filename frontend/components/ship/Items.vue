@@ -9,14 +9,21 @@
         <div
           v-for="i in armor"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -29,20 +36,28 @@
         <div
           v-for="i in weapons"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
           v-targetpoint="{
             color: '#ff7733',
-            type: 'weapon',
+            type: 'item',
+            itemType: 'weapon',
             location: ship.location,
             radius: i.range * i.repair,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -55,8 +70,8 @@
             <ProgressBar
               :micro="true"
               :percent="
-                (i.baseCooldown - i.cooldownRemaining) /
-                i.baseCooldown
+                (i.chargeRequired - i.cooldownRemaining) /
+                i.chargeRequired
               "
               :dangerZone="-1"
             />
@@ -65,14 +80,21 @@
         <div
           v-for="i in engines"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -85,14 +107,21 @@
         <div
           v-for="i in scanners"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -105,14 +134,21 @@
         <div
           v-for="i in communicators"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -125,14 +161,21 @@
         <div
           v-for="i in other"
           v-tooltip="{
-            type: i.type,
-            id: i.id,
+            type: 'item',
+            itemType: i.itemType,
+            itemId: i.itemId,
             ownerId: ship.id,
           }"
         >
           {{ i.displayName }}
+          <span
+            v-if="i.level && i.maxLevel && i.maxLevel > 1"
+            class="level"
+            :class="{ max: i.level === i.maxLevel }"
+            >{{ i.level }}</span
+          >
           <span class="sub">{{
-            c.capitalize(i.type)
+            c.capitalize(i.itemType)
           }}</span>
           <div class="hpbar">
             <PillBar
@@ -187,37 +230,37 @@ export default Vue.extend({
     },
     engines() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'engine',
+        (i: ItemStub) => i.itemType === 'engine',
       )
     },
     weapons() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'weapon',
+        (i: ItemStub) => i.itemType === 'weapon',
       )
     },
     scanners() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'scanner',
+        (i: ItemStub) => i.itemType === 'scanner',
       )
     },
     communicators() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'communicator',
+        (i: ItemStub) => i.itemType === 'communicator',
       )
     },
     armor() {
       return this.ship.items.filter(
-        (i: ItemStub) => i.type === 'armor',
+        (i: ItemStub) => i.itemType === 'armor',
       )
     },
     other() {
       return this.ship.items.filter(
         (i: ItemStub) =>
-          i.type !== 'engine' &&
-          i.type !== 'weapon' &&
-          i.type !== 'scanner' &&
-          i.type !== 'communicator' &&
-          i.type !== 'armor',
+          i.itemType !== 'engine' &&
+          i.itemType !== 'weapon' &&
+          i.itemType !== 'scanner' &&
+          i.itemType !== 'communicator' &&
+          i.itemType !== 'armor',
       )
     },
   },
@@ -229,7 +272,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .items {
-  width: 250px;
+  width: 300px;
   position: relative;
   grid-column: span 2;
 }
@@ -246,5 +289,25 @@ export default Vue.extend({
 
 .slots {
   margin-left: 0.5em;
+}
+
+.level {
+  position: relative;
+  display: inline-block;
+  height: 1.3em;
+  top: -0.3em;
+  background: var(--gray);
+  // color: var(--bg);
+  font-weight: bold;
+  text-shadow: 0 0 0.2em var(--bg);
+  font-size: 0.6em;
+  line-height: 1;
+  padding: 0.2em 0.4em 0em 0.4em;
+  border-radius: 1em;
+  // margin: 0 0.4em;
+
+  &.max {
+    background: var(--success);
+  }
 }
 </style>

@@ -24,6 +24,21 @@
           <text x="0" y="10">👑</text>
         </svg>
       </div>
+      <div class="cmilevel" v-if="showLevel">
+        <svg viewBox="0 0 30 15">
+          <!-- <circle cx="15" cy="7.5" r="1em" /> -->
+          <text x="8" y="12">
+            {{
+              Math.floor(
+                crewMember.skills.reduce(
+                  (acc, skill) => acc + skill.level,
+                  0,
+                ) / crewMember.skills.length,
+              )
+            }}
+          </text>
+        </svg>
+      </div>
       <div class="cmispecies">
         <svg viewBox="0 0 15 15">
           <text x="8" y="12">
@@ -69,6 +84,7 @@ export default Vue.extend({
     crewMember: Object,
     showDiscordIcon: { default: true },
     showTagline: { default: false },
+    showLevel: { default: false },
   },
   data() {
     return { c }
@@ -152,13 +168,35 @@ export default Vue.extend({
 .cmicaptain {
   position: absolute;
   z-index: 3;
-  top: 0;
-  left: 4%;
+  top: -4%;
+  left: 50%;
+  transform: translateX(-50%);
   width: 28%;
   height: 28%;
 
   svg {
     width: 100%;
+  }
+}
+.cmilevel {
+  position: absolute;
+  z-index: 3;
+  top: -4%;
+  left: -2%;
+  width: 50%;
+
+  svg {
+    width: 100%;
+
+    text {
+      position: relative;
+      // left: 50%;
+      // transform: translateX(-50%);
+      fill: var(--text);
+      opacity: 0.8;
+      filter: drop-shadow(0 1px 1rem #000);
+      font-size: 1rem;
+    }
   }
 }
 

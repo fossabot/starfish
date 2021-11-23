@@ -9,7 +9,7 @@ import type { Comet } from '../../Planet/Comet'
 import type { Cache } from '../../Cache'
 import type { Ship } from '../Ship'
 import type { Zone } from '../../Zone'
-import type { Item } from '../../Item/Item'
+import type { Item } from '../Item/Item'
 import type { HumanShip } from './HumanShip'
 
 export function determineTargetShip(
@@ -76,7 +76,7 @@ export function determineTargetShip(
         (t) => t.target.id === targetId,
       )
       const skillWeight =
-        cm.skills.find((s) => s.skill === `munitions`)
+        cm.skills.find((s) => s.skill === `dexterity`)
           ?.level || 1
       if (existingTotal) existingTotal.total += skillWeight
       else {
@@ -274,9 +274,7 @@ export function recalculateCombatTactic(this: HumanShip) {
       const existingTotal = totals.find(
         (t: any) => t.tactic === cm.combatTactic,
       )
-      const toAdd =
-        cm.skills.find((s) => s.skill === `munitions`)
-          ?.level || 1
+      const toAdd = cm.dexterity.level
       if (existingTotal) existingTotal.total += toAdd
       else
         totals.push({
@@ -306,9 +304,7 @@ export function recalculateTargetItemType(this: HumanShip) {
     const existingTotal = totals.find(
       (t: any) => t.target === cm.targetItemType,
     )
-    const toAdd =
-      cm.skills.find((s) => s.skill === `munitions`)
-        ?.level || 1
+    const toAdd = cm.dexterity.level
     if (existingTotal) existingTotal.total += toAdd
     else
       totals.push({

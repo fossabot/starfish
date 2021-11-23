@@ -4,17 +4,22 @@ type CrewLocation =
   | `repair`
   | `weapons`
   | `mine`
+  | `lab`
 interface BaseRoomData {
   id: CrewLocation
   description: string
 }
 
 type SkillId =
-  | `piloting`
-  | `munitions`
-  | `mechanics`
-  | `linguistics`
-  | `mining`
+  | `strength`
+  | `dexterity`
+  | `intellect`
+  | `charisma`
+// | `piloting`
+// | `munitions`
+// | `mechanics`
+// | `linguistics`
+// | `mining`
 
 type CombatTactic =
   | `defensive`
@@ -63,6 +68,7 @@ type CrewStatKey =
   | `totalTonsMined`
   | `timeInBunk`
   | `totalSpeedApplied`
+  | `totalResearched`
 interface CrewStatEntry {
   stat: CrewStatKey
   amount: number
@@ -89,6 +95,8 @@ interface BaseCrewMemberData {
   targetLocation?: CoordinatePair | null
   repairPriority?: RepairPriority
   stats?: CrewStatEntry[]
+  researchTargetId?: string
+
   tutorialShipId?: string
   mainShipId?: string
 

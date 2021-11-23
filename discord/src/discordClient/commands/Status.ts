@@ -27,6 +27,12 @@ export class StatusCommand implements Command {
     if (!context.ship) return
     const ship = context.ship
 
+    const hasManualEngines = context.ship.items?.find(
+      (i) =>
+        i.itemType === `engine` &&
+        (i as EngineStub).manualThrustMultiplier,
+    )
+
     let color = c.gameColor
     const hslColor = c.guilds[ship.guildId]?.color
     if (hslColor) {
@@ -64,16 +70,17 @@ export class StatusCommand implements Command {
       for (let i of ship.items) {
         fields.push({
           inline: true,
-          name: c.items[i.type][i.id].displayName,
-          value: `(${c.capitalize(i.type)})
+          name: c.items[i.itemType][i.itemId].displayName,
+          value: `(${c.capitalize(i.itemType)})
 ${c.percentToTextBars(
-  ((i.repair || 0) * c.items[i.type][i.id].maxHp) /
-    c.items[i.type][i.id].maxHp,
-  c.items[i.type][i.id].maxHp * 2,
+  ((i.repair || 0) * c.items[i.itemType][i.itemId].maxHp) /
+    c.items[i.itemType][i.itemId].maxHp,
+  c.items[i.itemType][i.itemId].maxHp * 2,
 )}
-🇨🇭 ${c.r2((i.repair || 0) * c.items[i.type][i.id].maxHp)}/${
-            c.items[i.type][i.id].maxHp
-          } HP`,
+🇨🇭 ${c.r2(
+            (i.repair || 0) *
+              c.items[i.itemType][i.itemId].maxHp,
+          )}/${c.items[i.itemType][i.itemId].maxHp} HP`,
         })
       }
 
@@ -115,14 +122,15 @@ ${c.percentToTextBars(
           )}
 🔋 ${c.r2(context.crewMember.stamina * 100, 0)}%`,
         })
-        //         youFields.push({
-        //           inline: true,
-        //           name: `Cockpit Charge`,
-        //           value: `${c.percentToTextBars(
-        //             context.crewMember.cockpitCharge,
-        //           )}
-        // 🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
-        //         })
+        if (hasManualEngines)
+          youFields.push({
+            inline: true,
+            name: `Cockpit Charge`,
+            value: `${c.percentToTextBars(
+              context.crewMember.cockpitCharge,
+            )}
+🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
+          })
         youFields.push({
           inline: true,
           name: c.capitalize(c.baseCurrencyPlural),

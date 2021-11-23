@@ -17,6 +17,10 @@ export default Vue.extend({
       type: String,
       default: 'Tab',
     },
+    inputKey: {
+      // * this is for watching @input on Tabs
+      type: String,
+    },
   },
   data() {
     return {

@@ -7,6 +7,7 @@ import { CockpitCommand } from './Cockpit'
 import { MineCommand } from './Mine'
 import { RepairCommand } from './Repair'
 import { WeaponsCommand } from './Weapons'
+import { LabCommand } from './Lab'
 
 export class GoCommand implements Command {
   requiresShip = true
@@ -99,6 +100,16 @@ export class GoCommand implements Command {
       ].includes(enteredString)
     )
       return new WeaponsCommand().run(context)
+    if (
+      [
+        `lab`,
+        `l`,
+        `laboratory`,
+        `research`,
+        `upgrade`,
+      ].includes(enteredString)
+    )
+      return new LabCommand().run(context)
 
     context.reply(
       this.getHelpMessage(

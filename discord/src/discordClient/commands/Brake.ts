@@ -36,12 +36,12 @@ export class BrakeCommand implements Command {
 
     const hasPassiveEngines = context.ship.items?.find(
       (i) =>
-        i.type === `engine` &&
+        i.itemType === `engine` &&
         (i as EngineStub).passiveThrustMultiplier,
     )
     const hasManualEngines = context.ship.items?.find(
       (i) =>
-        i.type === `engine` &&
+        i.itemType === `engine` &&
         (i as EngineStub).manualThrustMultiplier,
     )
 
@@ -58,7 +58,8 @@ export class BrakeCommand implements Command {
         (
           context.ship?.items?.filter(
             (e: ItemStub) =>
-              e.type === `engine` && (e.repair || 0) > 0,
+              e.itemType === `engine` &&
+              (e.repair || 0) > 0,
           ) || []
         ).reduce(
           (total: number, e: EngineStub) =>
@@ -72,7 +73,7 @@ export class BrakeCommand implements Command {
       )
       const pilotingSkill =
         context.crewMember.skills.find(
-          (s: XPData) => s && s.skill === `piloting`,
+          (s: XPData) => s && s.skill === `dexterity`,
         )?.level || 1
 
       const currentCockpitCharge =

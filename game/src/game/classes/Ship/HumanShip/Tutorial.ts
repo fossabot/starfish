@@ -289,30 +289,30 @@ export class Tutorial {
         ],
         nextStepTrigger: { awaitFrontend: true },
       },
-      {
-        sightRange: 0.03,
-        maxDistanceFromSpawn: 0.03,
-        shownRooms: [`cockpit`],
-        shownPanels: [
-          `mapZoom`,
-          `map`,
-          `room`,
-          `inventory`,
-          `ship`,
-          `log`,
-        ],
-        highlightPanel: `room`,
-        disableRepair: true,
-        disableStamina: true,
-        forceCockpitCharge: 0.85,
-        visibleTypes: [`planet`, `trail`],
-        script: [
-          {
-            message: `Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
-          },
-        ],
-        nextStepTrigger: { stopped: true },
-      },
+      // {
+      //   sightRange: 0.03,
+      //   maxDistanceFromSpawn: 0.03,
+      //   shownRooms: [`cockpit`],
+      //   shownPanels: [
+      //     `mapZoom`,
+      //     `map`,
+      //     `room`,
+      //     `inventory`,
+      //     `ship`,
+      //     `log`,
+      //   ],
+      //   highlightPanel: `room`,
+      //   disableRepair: true,
+      //   disableStamina: true,
+      //   forceCockpitCharge: 0.85,
+      //   visibleTypes: [`planet`, `trail`],
+      //   script: [
+      //     {
+      //       message: `Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
+      //     },
+      //   ],
+      //   nextStepTrigger: { stopped: true },
+      // },
 
       {
         sightRange: 0.03,
@@ -566,7 +566,7 @@ export class Tutorial {
         forceStamina: 0.95,
         script: [
           {
-            message: `Well, that was a productive venture! You've gained some XP in piloting, munitions, and mechanics for all the work you put in.<br />
+            message: `Well, that was a productive venture! You've gained some XP in strength and dexterity for all the work you put in.<br />
             You'll get faster and more efficient at various tasks around the ship by leveling up your skills.`,
             next: `Sounds good.`,
           },

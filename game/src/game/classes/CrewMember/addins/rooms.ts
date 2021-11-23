@@ -1,5 +1,5 @@
 import c from '../../../../../../common/dist'
-import type { Item } from '../../Item/Item'
+import type { Item } from '../../Ship/Item/Item'
 import type { MiningPlanet } from '../../Planet/MiningPlanet'
 import type { CrewMember } from '../CrewMember'
 
@@ -21,7 +21,7 @@ export function cockpit(this: CrewMember): void {
 
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
-      this.piloting?.level || 1,
+      this.dexterity?.level || 1,
     ) *
     chargeBoost *
     generalBoostMultiplier
@@ -42,7 +42,7 @@ export function repair(this: CrewMember) {
   const previousShipHp = this.ship.hp
   const repairAmount =
     c.getRepairAmountPerTickForSingleCrewMember(
-      this.mechanics?.level || 1,
+      this.strength.level,
     ) *
     chargeBoost *
     generalBoostMultiplier
@@ -54,9 +54,49 @@ export function repair(this: CrewMember) {
   this.addStat(`totalHpRepaired`, totalRepaired)
 
   if (this.ship.maxHp - previousShipHp > 0.01) {
-    this.addXp(`mechanics`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
+    this.addXp(`strength`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
     this.toUpdate.skills = this.skills
   }
+}
+
+export function lab(this: CrewMember) {
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
+
+  if (!this.researchTargetId)
+    this.recalculateResearchTargetId()
+  if (!this.researchTargetId) return
+
+  const researchTarget = this.ship.items.find(
+    (i) =>
+      i.upgradable &&
+      i.id === this.researchTargetId &&
+      (i.upgradeRequirements.find((r) => r.research)
+        ?.current || 0) <
+        (i.upgradeRequirements.find((r) => r.research)
+          ?.required || 0),
+  )
+  if (!researchTarget) {
+    this.researchTargetId = null
+    this.toUpdate.researchTargetId = null
+    return
+  }
+
+  const researchAmount =
+    c.getResearchAmountPerTickForSingleCrewMember(
+      this.intellect.level,
+    ) * generalBoostMultiplier
+
+  const amountResearched =
+    researchTarget.applyResearchTowardsUpgrade(
+      researchAmount,
+    )
+
+  this.addStat(`totalResearched`, amountResearched)
+  if (amountResearched) this.addXp(`intellect`)
 }
 
 export function weapons(this: CrewMember): void {
@@ -78,7 +118,7 @@ export function weapons(this: CrewMember): void {
 
   const amountToReduceCooldowns =
     c.getWeaponCooldownReductionPerTick(
-      this.munitions?.level || 1,
+      this.dexterity?.level || 1,
     ) *
     passiveMultiplier *
     generalBoostMultiplier
@@ -89,7 +129,7 @@ export function weapons(this: CrewMember): void {
     if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
   })
 
-  this.addXp(`munitions`)
+  this.addXp(`dexterity`)
   this.toUpdate.skills = this.skills
 }
 
@@ -111,7 +151,7 @@ export function mine(this: CrewMember): void {
 
     const amountToMine =
       c.getMineAmountPerTickForSingleCrewMember(
-        this.mining.level || 1,
+        this.strength.level || 1,
       ) *
       passiveSpeedBonus *
       generalBoostMultiplier
@@ -121,7 +161,7 @@ export function mine(this: CrewMember): void {
       amountToMine,
     )
 
-    this.addXp(`mining`)
+    this.addXp(`strength`)
     this.toUpdate.skills = this.skills
   }
 }
@@ -147,7 +187,7 @@ export function bunk(this: CrewMember): void {
       1
     this.cockpitCharge +=
       c.getCockpitChargePerTickForSingleCrewMember(
-        this.piloting?.level || 1,
+        this.dexterity?.level || 1,
       ) *
       chargeBoost *
       percentOfNormalChargeToGive *

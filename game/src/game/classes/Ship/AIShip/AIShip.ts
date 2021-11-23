@@ -6,7 +6,7 @@ import type { Planet } from '../../Planet/Planet'
 import type { Cache } from '../../Cache'
 import type { Zone } from '../../Zone'
 import type { AttackRemnant } from '../../AttackRemnant'
-import type { Weapon } from '../../Item/Weapon'
+import type { Weapon } from '../Item/Weapon'
 import type { HumanShip } from '../HumanShip/HumanShip'
 
 import ais from './ais'
@@ -87,9 +87,9 @@ export class AIShip extends CombatShip {
     if (this.items.length === 0)
       this.addLevelAppropriateItems()
     if (this.weapons.length === 0)
-      this.addItem({ type: `weapon`, id: `tiny1` })
+      this.addItem({ itemType: `weapon`, itemId: `tiny1` })
     if (this.engines.length === 0)
-      this.addItem({ type: `engine`, id: `tiny1` })
+      this.addItem({ itemType: `engine`, itemId: `tiny1` })
     if (data.spawnPoint?.length === 2)
       this.spawnPoint = [...data.spawnPoint]
     else this.spawnPoint = [...this.location]
@@ -196,7 +196,7 @@ export class AIShip extends CombatShip {
       i.rarity <= itemBudget
     const isSelectable = (i: BaseItemData) =>
       !i.special &&
-      (i.type !== `engine` || // only passive engines (for now)
+      (i.itemType !== `engine` || // only passive engines (for now)
         (i as BaseEngineData).passiveThrustMultiplier)
 
     while (true) {

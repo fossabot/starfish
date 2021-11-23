@@ -37,6 +37,7 @@ const baseBroadcastRange = 0.002;
 const baseRepairCost = 600;
 const maxBroadcastLength = 200;
 const defaultHomeworldLevel = 12;
+const itemUpgradeMultiplier = 0.02;
 const itemPriceMultiplier = 400;
 const itemMassMultiplier = 10;
 const weaponDamageMultiplier = 1;
@@ -104,6 +105,7 @@ exports.default = {
     planetContributeShipCosmeticCostPerXp,
     planetContributeCrewCosmeticCostPerXp,
     planetLevelXpRequirementMultiplier,
+    itemUpgradeMultiplier,
     itemPriceMultiplier,
     itemMassMultiplier,
     weaponDamageMultiplier,

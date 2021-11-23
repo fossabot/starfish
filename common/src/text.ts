@@ -19,26 +19,23 @@ function numberWithCommas(x: number) {
   return (negative ? `-` : ``) + total
 }
 
-function speedNumber(
-  numberInAu: number,
-  noTag = false,
+function abbreviateNumber(
+  number: number = 0,
   maxDecimalPlaces = 2,
-): string {
-  const isNegative = numberInAu < 0
-  if (isNegative) numberInAu = -numberInAu
+) {
+  const isNegative = number < 0
+  if (isNegative) number = -number
   let output = ``
-  const numberInKm = numberInAu * globals.kmPerAu
-  if (numberInKm < 1000)
-    output = `${math.r2(numberInKm, 0)}`
-  else if (numberInKm < 1000000)
-    output = `${math.r2(numberInKm / 1000, 0)}k`
-  else if (numberInKm < 1000000000)
+  if (number < 1000) output = `${math.r2(number, 0)}`
+  else if (number < 1000000)
+    output = `${math.r2(number / 1000, 0)}k`
+  else if (number < 1000000000)
     output = `${math.r2(
-      numberInKm / 1000000,
+      number / 1000000,
       Math.min(
         Math.max(
           maxDecimalPlaces,
-          numberInKm / 1000000 / 10 < 1
+          number / 1000000 / 10 < 1
             ? maxDecimalPlaces + 1
             : maxDecimalPlaces,
         ),
@@ -47,22 +44,31 @@ function speedNumber(
     )}M`
   else
     output = `${math.r2(
-      numberInKm / 1000000000,
+      number / 1000000000,
       Math.min(
         Math.max(
           maxDecimalPlaces,
-          numberInKm / 1000000000 / 10 < 1
+          number / 1000000000 / 10 < 1
             ? maxDecimalPlaces + 1
             : maxDecimalPlaces,
         ),
         2,
       ),
     )}B`
-  return (
-    (isNegative ? `-` : ``) +
-    output +
-    (noTag ? `` : ` km/hr`)
+  return (isNegative ? `-` : ``) + output
+}
+
+function speedNumber(
+  numberInAu: number,
+  noTag = false,
+  maxDecimalPlaces = 2,
+): string {
+  const numberInKm = numberInAu * globals.kmPerAu
+  const output = abbreviateNumber(
+    numberInKm,
+    maxDecimalPlaces,
   )
+  return output + (noTag ? `` : ` km/hr`)
 }
 
 function printList(
@@ -364,6 +370,7 @@ function priceToString(p: Price): string {
 export default {
   maxNameLength,
   numberWithCommas,
+  abbreviateNumber,
   speedNumber,
   printList,
   degreesToArrow,

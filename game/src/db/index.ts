@@ -57,7 +57,7 @@ databaseName =
   process.env.NODE_ENV === `staging`
     ? `starfish-test`
     : `starfish`
-c.log({ databaseName, mongoUsername, mongoPassword })
+// c.log({ databaseName, mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
   hostname: isDocker() ? `mongodb` : `localhost`,

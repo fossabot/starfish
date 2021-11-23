@@ -706,7 +706,7 @@ export default class Drawer {
         ),
       )
       const radius =
-        (c.items.chassis[s.chassis?.id || `starter1`]
+        (c.items.chassis[s.chassis?.chassisId || `starter1`]
           .slots +
           5) /
         3
@@ -741,7 +741,7 @@ export default class Drawer {
       // player ship
 
       const radius =
-        (c.items.chassis[ship.chassis?.id || `starter1`]
+        (c.items.chassis[ship.chassis?.chassisId || `starter1`]
           .slots +
           5) /
         3

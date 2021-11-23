@@ -276,7 +276,7 @@ const achievements = {
         condition: {
             prop: {
                 id: `chassis`,
-                secondaryId: items.chassis.mega1.id,
+                secondaryId: items.chassis.mega1.chassisId,
             },
         },
     },

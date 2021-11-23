@@ -1,11 +1,10 @@
-import c from '../../../../../common/dist'
-import type { Ship } from '../Ship/Ship'
+import c from '../../../../../../common/dist'
+import type { Ship } from '../Ship'
 
 import { Item } from './Item'
 
 export class Armor extends Item {
-  readonly id: ArmorId
-  readonly damageReduction: number
+  damageReduction: number
 
   constructor(
     data: BaseArmorData,
@@ -13,7 +12,6 @@ export class Armor extends Item {
     props?: Partial<BaseArmorData>,
   ) {
     super(data, ship, props)
-    this.id = data.id
     this.damageReduction = data.damageReduction
   }
 

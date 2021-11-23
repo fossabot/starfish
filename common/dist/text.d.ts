@@ -1,4 +1,5 @@
 declare function numberWithCommas(x: number): string | number;
+declare function abbreviateNumber(number?: number, maxDecimalPlaces?: number): string;
 declare function speedNumber(numberInAu: number, noTag?: boolean, maxDecimalPlaces?: number): string;
 declare function printList(list: string[], separator?: string): string;
 declare function degreesToArrow(angle: number): string;
@@ -17,6 +18,7 @@ declare function priceToString(p: Price): string;
 declare const _default: {
     maxNameLength: number;
     numberWithCommas: typeof numberWithCommas;
+    abbreviateNumber: typeof abbreviateNumber;
     speedNumber: typeof speedNumber;
     printList: typeof printList;
     degreesToArrow: typeof degreesToArrow;
