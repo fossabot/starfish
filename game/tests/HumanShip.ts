@@ -52,12 +52,12 @@ describe(`HumanShip items`, () => {
     const data = humanShipData()
     let ship = new HumanShip(data)
     expect(ship.slots).to.equal(
-      c.items.chassis[ship.chassis.id]?.slots,
+      c.items.chassis[ship.chassis.chassisId]?.slots,
     )
     expect(ship.slots).to.exist
     const prevSlots = ship.slots
 
-    ship.swapChassis({ id: `mega3` })
+    ship.swapChassis({ chassisId: `mega3` })
     expect(ship.slots).to.be.greaterThan(prevSlots)
     expect(ship.slots).to.equal(c.items.chassis.mega3.slots)
   })
