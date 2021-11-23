@@ -13,7 +13,7 @@
         @done="done"
         @apply="apply"
         :max="prompt === 1 ? max : null"
-        :key="'prompt' + prompt"
+        :key="'prompt' + Math.random()"
       >
         <slot v-if="prompt === 1" />
         <slot name="second" v-if="prompt === 2" />
@@ -22,7 +22,7 @@
         v-else
         @yes="done"
         @no="cancel"
-        :key="'ynprompt' + prompt"
+        :key="'ynprompt' + Math.random()"
       >
         <slot />
       </PromptYesNo>
@@ -38,7 +38,7 @@ import c from '../../common/dist'
 export default Vue.extend({
   props: { disabled: {}, max: {}, yesNo: {} },
   data() {
-    let prompt: any = 1,
+    let prompt: any = null,
       results: any[] = []
     return { c, prompt, results }
   },
@@ -48,12 +48,13 @@ export default Vue.extend({
   watch: {
     modal() {
       if (!this.modal) {
-        this.prompt = 1
+        this.prompt = null
         this.results = []
       }
     },
     prompt() {
-      if (!this.prompt) {
+      c.log(this.$slots, this.prompt)
+      if (this.prompt === null) {
         this.results = []
         this.$store.commit('set', { modal: null })
       }
@@ -77,13 +78,13 @@ export default Vue.extend({
         return
       }
       this.$emit('done', this.results)
-      this.prompt = 1
+      this.prompt = null
       this.results = []
       this.$store.commit('set', { modal: null })
     },
     cancel() {
       this.$emit('cancel', this.results)
-      this.prompt = 1
+      this.prompt = null
       this.results = []
       this.$store.commit('set', { modal: null })
     },
