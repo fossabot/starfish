@@ -13,4 +13,4 @@ EXPOSE 80 443
 
 COPY nginx/nginx-prod.conf /etc/nginx/nginx.conf
 
-RUN echo "0 23 * * * certbot renew --dry-run" | crontab -
+RUN echo "0 23 * * * certbot renew" | crontab -
