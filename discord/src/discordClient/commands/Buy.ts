@@ -35,6 +35,10 @@ export class BuyCommand implements Command {
         cargoForSale.id,
         planet,
         context.ship!.guildId,
+        1,
+        context.crewMember?.skills.find(
+          (s) => s.skill === `charisma`,
+        )?.level || 1,
       )
     }
 
