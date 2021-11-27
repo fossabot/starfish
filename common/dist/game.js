@@ -66,7 +66,7 @@ function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineTh
         baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return math_1.default.lerp(1, 3, level / 100) / globals_1.default.tickInterval;
+    return (math_1.default.lerp(0.8, 2, level / 100) / globals_1.default.tickInterval);
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
     return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);

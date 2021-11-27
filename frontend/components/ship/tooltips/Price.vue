@@ -288,9 +288,9 @@ export default Vue.extend({
           ((this.data.planet as PlanetStub)
             .priceFluctuator || 1) -
             1 >
-          1
+          0
             ? `+`
-            : ``,
+            : '',
           `${c.r2(
             (((this.data.planet as PlanetStub)
               .priceFluctuator || 1) -
