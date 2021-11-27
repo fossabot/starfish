@@ -13,7 +13,12 @@
       <div class="">
         Your repair speed:
         {{
-          Math.round(totalRepairPower * 60 * 60 * 100) / 100
+          c.r2(
+            totalRepairPower *
+              60 *
+              60 *
+              c.displayHPMultiplier,
+          )
         }}
         HP/hr
       </div>

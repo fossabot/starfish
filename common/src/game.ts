@@ -86,7 +86,9 @@ function getPassiveThrustMagnitudePerTickForSingleCrewMember(
 function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
-  return math.lerp(1, 3, level / 100) / globals.tickInterval
+  return (
+    math.lerp(0.8, 2, level / 100) / globals.tickInterval
+  )
 }
 
 function getMineAmountPerTickForSingleCrewMember(
