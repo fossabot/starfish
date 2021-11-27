@@ -1,7 +1,5 @@
 import c from '../common/dist'
 
-c.log(process.env.BOT_ID, process.env.IS_DOCKER)
-
 export default {
   // target: `static`,
 
@@ -80,7 +78,7 @@ export default {
     `@nuxtjs/google-fonts`,
   ],
 
-  modules: [`portal-vue/nuxt`],
+  modules: [`@nuxt/content`, `portal-vue/nuxt`],
 
   googleFonts: {
     display: `swap`,
