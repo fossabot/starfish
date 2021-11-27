@@ -13,9 +13,15 @@
 
     <span
       v-for="passive in passives"
-      :key="'buypassive' + passive.id"
+      :key="'buypassive' + passive.data.id"
       v-if="passive.data"
-      v-tooltip="passive.data.description(passive, true)"
+      v-tooltip="{
+        context: passive.data.description(passive, true),
+        type: 'price',
+        buyOrSell: 'buy',
+        planet: ship.planet,
+        passive: passive,
+      }"
     >
       <button
         :class="{ disabled: !passive.canBuy }"
@@ -83,8 +89,12 @@ export default Vue.extend({
             ] || 0,
             this.ship.planet,
             this.ship.guildId,
+            this.crewMember.skills.find(
+              (s) => s.skill === 'charisma',
+            )?.level || 1,
           )
           return {
+            buyMultiplier: passive.buyMultiplier,
             data: c.crewPassives[passive.id],
             canBuy: c.canAfford(
               price,

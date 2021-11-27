@@ -7,13 +7,15 @@
       warning: !isEqual && isWorse,
       fade: isEqual,
     }"
-    >{{ !isEqual && isWorse && difference < 0 ? '-' : ''
-    }}{{ !isEqual && isBetter && difference < 0 ? '-' : ''
-    }}{{ difference > 0 ? '+' : ''
+    >{{ sign
     }}{{
-      Math.abs(difference) > 10000
-        ? c.speedNumber(difference / c.kmPerAu, true, 0)
-        : c.numberWithCommas(c.r2(difference, 4))
+      Math.abs(difference) >= 10000
+        ? c.speedNumber(
+            Math.abs(difference) / c.kmPerAu,
+            true,
+            0,
+          )
+        : c.numberWithCommas(c.r2(Math.abs(difference), 2))
     }}{{ addendum }}
   </span>
 </template>
@@ -40,16 +42,19 @@ export default Vue.extend({
     },
     isBetter(): boolean {
       return this.higherIsBetter
-        ? this.difference > 0
-        : this.difference < 0
+        ? this.difference > 0.00001
+        : this.difference < 0.00001
     },
     isWorse(): boolean {
       return this.higherIsBetter
-        ? this.difference < 0
-        : this.difference > 0
+        ? this.difference < 0.00001
+        : this.difference > 0.00001
     },
     isEqual(): boolean {
-      return Math.abs(this.difference) < 0.00001
+      return Math.abs(this.difference) <= 0.00001
+    },
+    sign(): string {
+      return this.difference > 0 ? '+' : '-'
     },
   },
   mounted() {

@@ -19,7 +19,14 @@
                 ? 'success'
                 : 'warning'
             "
-            >{{ c.r2(data.damageMitigated) }} damage</span
+            >{{
+              c.r2(
+                data.damageMitigated *
+                  c.displayHPMultiplier,
+                0,
+              )
+            }}
+            damage</span
           >
           {{
             data.damageMitigated > 0 ? 'mitigated' : 'added'
@@ -34,13 +41,22 @@
           >
           took
           <span class="warning"
-            >{{ c.r2(d.damage) }} damage</span
+            >{{
+              c.r2(d.damage * c.displayHPMultiplier, 0)
+            }}
+            damage</span
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
         <template v-if="data.overkill">
           <li>
             <span class="warning"
-              >{{ c.r2(data.overkill) }} damage</span
+              >{{
+                c.r2(
+                  data.overkill * c.displayHPMultiplier,
+                  0,
+                )
+              }}
+              damage</span
             >
             overkill
           </li>
@@ -49,7 +65,10 @@
       <template v-if="data.hpLeft">
         <hr />
         <div class="sub">
-          {{ data.hpLeft }} HP remaining
+          {{
+            c.r2(data.hpLeft * c.displayHPMultiplier, 0)
+          }}
+          HP remaining
         </div>
       </template>
     </div>

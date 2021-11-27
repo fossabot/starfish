@@ -53,7 +53,7 @@ export default Vue.extend({
       }
     },
     prompt() {
-      c.log(this.$slots, this.prompt)
+      // c.log(this.$slots, this.prompt)
       if (this.prompt === null) {
         this.results = []
         this.$store.commit('set', { modal: null })

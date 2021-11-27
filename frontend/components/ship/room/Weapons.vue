@@ -13,37 +13,13 @@
     </div>
     <div v-else>
       <div class="panesection">
-        <div
+        <ShipItem
           v-for="i in weapons"
-          v-tooltip="{
-            type: i.type,
-            id: i.id,
-            ownerId: ship.id,
-          }"
-          v-targetpoint="{
-            color: '#ff7733',
-            type: 'weapon',
-            location: ship.location,
-            radius: i.range * i.repair,
-          }"
-        >
-          {{ i.displayName }}
-          <div class="">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-            <ProgressBar
-              :micro="true"
-              :percent="
-                (i.chargeRequired - i.cooldownRemaining) /
-                i.chargeRequired
-              "
-              :dangerZone="-1"
-            />
-          </div>
-        </div>
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+
         <div class="martop sub">
           Your charge speed:
           {{

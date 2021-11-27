@@ -136,6 +136,14 @@ h5 {
   }
 }
 
+.nuxt-content-container {
+  h1,
+  h2,
+  h3 {
+    margin-top: 1em;
+  }
+}
+
 .bold {
   font-weight: bold;
 }
@@ -160,6 +168,8 @@ textarea {
 }
 textarea {
   height: 10em;
+  width: 100%;
+  min-width: 100%;
   line-height: 1.4;
 
   &.big {
@@ -731,6 +741,9 @@ ul {
 .martoptiny {
   margin-top: 0.25em !important;
 }
+.martopnone {
+  margin-top: 0 !important;
+}
 .marbot {
   margin-bottom: 1em !important;
 }
@@ -742,6 +755,9 @@ ul {
 }
 .marbottiny {
   margin-bottom: 0.2em !important;
+}
+.marbotnone {
+  margin-bottom: 0 !important;
 }
 .marleft {
   margin-left: 1em !important;
@@ -755,6 +771,9 @@ ul {
 .marlefttiny {
   margin-left: 0.25em !important;
 }
+.marleftnone {
+  margin-left: 0 !important;
+}
 .marright {
   margin-right: 1em !important;
 }
@@ -766,6 +785,9 @@ ul {
 }
 .marrighttiny {
   margin-right: 0.2em !important;
+}
+.marrightnone {
+  margin-right: 0 !important;
 }
 .marauto,
 .marginauto {

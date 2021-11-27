@@ -41,7 +41,7 @@ export default Vue.extend({
       intellect:
         'Intellect improves your research speed. <br /> Earned by researching.',
       charisma:
-        'Charisma improves your broadcast clarity. <br /> Earned by sending broadcasts.',
+        'Charisma improves your broadcast clarity and vendor prices. <br /> Earned by sending broadcast and trading cargo.',
       // piloting: `Improves thrust.<br />Earned by using charged thrust.`,
       // munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
       // mechanics: `Improves repair speed.<br />Earned by repairing.`,

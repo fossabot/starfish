@@ -17,8 +17,9 @@
       @click="buyRepair(o.amount)"
     >
       <span
-        >🛠{{ c.r2(o.amount, 2, true) }}HP:
-        {{ c.priceToString(o.price) }}</span
+        >🛠{{
+          c.r2(o.amount * c.displayHPMultiplier, 0, true)
+        }}HP: {{ c.priceToString(o.price) }}</span
       >
     </button>
   </div>

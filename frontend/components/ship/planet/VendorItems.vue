@@ -57,8 +57,11 @@
           v-for="ca in buyableItems"
           :key="'buyitem' + ca.type + ca.id"
           v-tooltip="{
-            type: ca.itemData && ca.itemData.type,
-            ...{ ...ca.itemData, compare: true },
+            type: 'price',
+            buyOrSell: 'buy',
+            planet: ship.planet,
+            item: ca,
+            compare: true,
           }"
         >
           <button
@@ -82,8 +85,15 @@
         </div>
         <span
           v-for="(ca, index) in sellableItems"
-          :key="'sellitem' + ca.type + ca.id + index"
-          v-tooltip="ca"
+          :key="
+            'sellitem' + ca.itemType + ca.itemId + index
+          "
+          v-tooltip="{
+            type: 'price',
+            buyOrSell: 'sell',
+            planet: ship.planet,
+            item: ca,
+          }"
         >
           <button
             :disabled="!ca.canSell"
@@ -106,14 +116,15 @@
           v-for="ca in swappableChassis"
           :key="
             ca.chassisData
-              ? 'swapchassis' +
-                ca.chassisData.type +
-                ca.chassisData.id
+              ? 'swapchassis' + ca.chassisData.chassisId
               : Math.random()
           "
           v-tooltip="{
-            type: 'chassis',
-            ...{ ...ca.chassisData, compare: true },
+            type: 'price',
+            buyOrSell: 'buy',
+            planet: ship.planet,
+            chassis: ca,
+            compare: true,
           }"
         >
           <button
@@ -170,10 +181,17 @@ export default Vue.extend({
             item,
             this.ship.planet,
             this.ship.guildId,
+            this.crewMember?.skills.find(
+              (s) => s.skill === 'charisma',
+            )?.level || 1,
           )
           return {
             ...item,
-            itemData: (c.items[item.type] as any)[item.id],
+            itemType: item.type,
+            itemId: item.id,
+            itemData: (c.items[item.type] as any)?.[
+              item.id
+            ],
             price,
             canBuy: c.canAfford(
               price,
@@ -192,6 +210,10 @@ export default Vue.extend({
             item.itemId as ItemId,
             this.ship.planet,
             this.ship.guildId,
+            item.level,
+            this.crewMember?.skills.find(
+              (s) => s.skill === 'charisma',
+            )?.level || 1,
           )
           return {
             ...item,
@@ -211,8 +233,11 @@ export default Vue.extend({
           const price = c.getChassisSwapPrice(
             chassis,
             this.ship.planet,
-            this.ship.chassis.id,
+            this.ship.chassis.chassisId,
             this.ship.guildId,
+            this.crewMember?.skills.find(
+              (s) => s.skill === 'charisma',
+            )?.level || 1,
           )
           return {
             ...chassis,
@@ -289,8 +314,7 @@ export default Vue.extend({
         'ship:sellItem',
         this.ship.id,
         this.crewMember?.id,
-        data.itemType,
-        data.itemId,
+        data.id,
         (res: IOResponse<ShipStub>) => {
           if ('error' in res) {
             this.$store.dispatch('notifications/notify', {

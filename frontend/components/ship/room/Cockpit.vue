@@ -156,15 +156,15 @@
       >
         Applicable Speed:
         <NumberChangeHighlighter
-          :number="
+          :number="possibleManualSpeedChange"
+          :display="
             c.speedNumber(possibleManualSpeedChange, true)
           "
         /><span class="sub marlefttiny"
-          >/<NumberChangeHighlighter
-            :number="
-              c.speedNumber(maxPossibleManualSpeedChange)
-            "
-        /></span>
+          >/{{
+            c.speedNumber(maxPossibleManualSpeedChange)
+          }}
+        </span>
       </div>
     </div>
 
@@ -416,7 +416,8 @@ export default Vue.extend({
     memberThrust(): number {
       return c.getThrustMagnitudeForSingleCrewMember(
         this.pilotingSkill,
-        this.manualThrustAmplification,
+        this.manualThrustAmplification /
+          this.ship.gameSettings.baseEngineThrustMultiplier,
         this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
@@ -424,7 +425,9 @@ export default Vue.extend({
       return (
         (c.getThrustMagnitudeForSingleCrewMember(
           this.pilotingSkill,
-          this.manualThrustAmplification,
+          this.manualThrustAmplification /
+            this.ship.gameSettings
+              .baseEngineThrustMultiplier,
           this.ship.gameSettings.baseEngineThrustMultiplier,
         ) /
           this.ship.mass) *

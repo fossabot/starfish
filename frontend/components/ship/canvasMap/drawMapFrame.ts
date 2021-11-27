@@ -715,9 +715,11 @@ export default class Drawer {
         ((radius * 600) / c.kmPerAu) * this.flatScale,
       )
 
+      // shadow underneath so we can see them over homeworlds
+      this.ctx.globalCompositeOperation = `source-over`
       this.drawPoint({
         location: [s.location[0], s.location[1] * -1],
-        radius: zoomRadius * 1.4 * devicePixelRatio,
+        radius: zoomRadius * 1.5 * devicePixelRatio,
         color: `rgba(30,30,30,.3)`,
         triangle: angle,
       })
@@ -728,6 +730,7 @@ export default class Drawer {
         color: c.guilds[s.guildId]?.color || `#bbb`,
         triangle: angle,
       })
+      this.ctx.globalCompositeOperation = `lighten`
       if (highlight)
         this.drawPoint({
           location: [s.location[0], s.location[1] * -1],
@@ -741,8 +744,9 @@ export default class Drawer {
       // player ship
 
       const radius =
-        (c.items.chassis[ship.chassis?.chassisId || `starter1`]
-          .slots +
+        (c.items.chassis[
+          ship.chassis?.chassisId || `starter1`
+        ].slots +
           5) /
         3
       const zoomRadius = Math.max(
