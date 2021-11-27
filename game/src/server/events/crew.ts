@@ -711,6 +711,7 @@ export default function (
         planet as BasicPlanet,
         ship.guildId,
         amount,
+        crewMember.charisma.level,
       )
 
       const buyRes = crewMember.buy(price)
@@ -719,6 +720,22 @@ export default function (
 
       crewMember.addCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
+
+      // crew member xp
+      const sellPrice = c.getCargoSellPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
+        crewMember.charisma.level,
+      )
+      const priceDifference =
+        (price.credits || 0) - sellPrice.credits
+      if (priceDifference > 1)
+        crewMember.addXp(
+          `charisma`,
+          Math.floor((price.credits || 0) * 0.2),
+        )
 
       callback({
         data: {
@@ -788,6 +805,7 @@ export default function (
         planet as BasicPlanet,
         ship.guildId,
         amount,
+        crewMember.charisma.level,
       )
 
       crewMember.credits = Math.round(
@@ -811,6 +829,22 @@ export default function (
 
       crewMember.removeCargo(cargoId, amount)
       crewMember.addStat(`cargoTransactions`, 1)
+
+      // crew member xp
+      const buyPrice = c.getCargoBuyPrice(
+        cargoId,
+        planet as BasicPlanet,
+        ship.guildId,
+        amount,
+        crewMember.charisma.level,
+      )
+      const priceDifference =
+        (buyPrice.credits || 0) - (price.credits || 0)
+      if (priceDifference > 1)
+        crewMember.addXp(
+          `charisma`,
+          Math.floor((price.credits || 0) * 0.2),
+        )
 
       if (ship.guildId)
         planet.incrementAllegiance(ship.guildId)
@@ -1057,8 +1091,9 @@ export default function (
 
       ship.logEntry(
         `${crewMember.name} bought ${c.r2(
-          hp,
-        )} hp of repairs.`,
+          hp * c.displayHPMultiplier,
+          0,
+        )}HP of repairs.`,
         `medium`,
         `fix`,
         true,
@@ -1126,6 +1161,7 @@ export default function (
         currentIntensity,
         planet,
         ship.guildId,
+        crewMember.charisma.level,
       )
 
       const buyRes = crewMember.buy(price)

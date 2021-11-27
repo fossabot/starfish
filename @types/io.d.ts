@@ -447,8 +447,7 @@ interface IOClientEvents {
   [`ship:sellItem`]: (
     shipId: string,
     crewId: string,
-    itemType: ItemType,
-    itemId: ItemId | ChassisId,
+    id: string,
     callback: (res: IOResponse<ShipStub>) => void,
   ) => void
 

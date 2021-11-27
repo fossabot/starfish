@@ -62,25 +62,57 @@ export abstract class CombatShip extends Ship {
 
   removePassive(p: ShipPassiveEffect) {
     let index
+    // if (this.id === `passiveTester`) c.log(p)
     while (index !== -1) {
-      if (p.data?.source?.planetName)
+      if (p.data?.source?.guildId)
         index = this.passives.findIndex(
           (ep: ShipPassiveEffect) => {
-            for (let key in ep) {
+            for (let key in ep)
               if (ep[key] !== p[key]) return false
-              if (
-                ep.data?.source?.planetName !==
-                p.data?.source?.planetName
-              )
-                return false
-            }
+            if (
+              ep.data?.source?.guildId !==
+              p.data?.source?.guildId
+            )
+              return false
+
+            return true
+          },
+        )
+      if (p.data?.source?.item) {
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
+            if (
+              ep.data?.source?.item?.id !==
+                p.data?.source?.item?.id ||
+              ep.data?.source?.item?.type !==
+                p.data?.source?.item?.type
+            )
+              return false
+
+            return true
+          },
+        )
+      } else if (p.data?.source?.planetName)
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
+            if (
+              ep.data?.source?.planetName !==
+              p.data?.source?.planetName
+            )
+              return false
+
             return true
           },
         )
       else if (p.data?.source?.zoneName) {
         index = this.passives.findIndex(
           (ep: ShipPassiveEffect) => {
-            if (ep.id !== p.id) return false
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
             if (
               ep.data?.source?.zoneName !==
               p.data?.source?.zoneName
@@ -170,7 +202,7 @@ export abstract class CombatShip extends Ship {
   async respawn() {
     c.log(`Respawning`, this.name)
     this.spawnedAt = Date.now()
-    this.items.forEach((i) => this.removeItem(i))
+    this.passives = []
     this.items = []
     this.previousLocations = []
     this.recalculateMaxHp()
@@ -529,7 +561,13 @@ export abstract class CombatShip extends Ship {
           `for`,
           {
             text:
-              c.r2(attackResult.damageTaken, 1) + ` dmg`,
+              c.numberWithCommas(
+                c.r2(
+                  attackResult.damageTaken *
+                    c.displayHPMultiplier,
+                  0,
+                ),
+              ) + ` dmg`,
             color: `var(--success)`,
             tooltipData: {
               type: `damage`,
@@ -963,13 +1001,19 @@ export abstract class CombatShip extends Ship {
             : ([
                 `for`,
                 {
-                  text: `${c.r2(totalDamageDealt)} dmg`,
+                  text: `${c.numberWithCommas(
+                    c.r2(
+                      totalDamageDealt *
+                        c.displayHPMultiplier,
+                      0,
+                    ),
+                  )} dmg`,
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
                     ...{
                       ...damageResult,
-                      hpLeft: c.r2(this._hp),
+                      hpLeft: c.r2(this._hp, 0),
                       weapon: undefined,
                     },
                   },
@@ -1014,13 +1058,19 @@ export abstract class CombatShip extends Ship {
             : ([
                 `for`,
                 {
-                  text: `${c.r2(totalDamageDealt)} dmg`,
+                  text: `${c.numberWithCommas(
+                    c.r2(
+                      totalDamageDealt *
+                        c.displayHPMultiplier,
+                      0,
+                    ),
+                  )} dmg`,
                   color: `var(--warning)`,
                   tooltipData: {
                     type: `damage`,
                     ...{
                       ...damageResult,
-                      hpLeft: c.r2(this._hp),
+                      hpLeft: c.r2(this._hp, 0),
                       weapon: undefined,
                     },
                   },

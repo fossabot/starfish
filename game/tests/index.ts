@@ -15,6 +15,8 @@ import './AIShip'
 import './Planet'
 import './Admin'
 import './Contracts'
+import './Movement'
+import './Research'
 
 const host = isDocker() ? `--host mongodb` : ``
 

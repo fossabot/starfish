@@ -250,67 +250,78 @@ export class BasicPlanet extends Planet {
           })),
         )
 
-        if (toAddToVendor.class === `repair`)
-          this.vendor.repairCostMultiplier =
-            getRepairCostMultiplier()
-        else {
-          const { buyMultiplier, sellMultiplier } =
-            getBuyAndSellMultipliers()
-          if (toAddToVendor.class === `items`)
-            this.vendor.items.push({
-              buyMultiplier,
-              id: toAddToVendor.id,
-              type: toAddToVendor.type,
-            })
+        // if (toAddToVendor.class === `repair`)
+        //   this.vendor.repairCostMultiplier =
+        //     getRepairCostMultiplier()
+        // else {
+        const { buyMultiplier, sellMultiplier } =
+          getBuyAndSellMultipliers()
+        if (
+          toAddToVendor.class === `items` &&
+          toAddToVendor.type &&
+          toAddToVendor.id
+        ) {
+          // c.log(this.vendor.items, toAddToVendor)
+          this.vendor.items.push({
+            buyMultiplier,
+            id: toAddToVendor.id,
+            type: toAddToVendor.type,
+          })
+        } else if (toAddToVendor.class === `items`)
+          c.log(
+            `red`,
+            `Attempted to add an item to a vendor that did not have the proper data:`,
+            toAddToVendor,
+          )
 
-          if (toAddToVendor.class === `shipTagline`)
-            this.vendor.shipCosmetics.push({
-              tagline: toAddToVendor.value,
-              priceMultiplier:
-                buyMultiplier ** 2 *
-                (toAddToVendor.rarity / 5),
-            })
-          if (toAddToVendor.class === `shipBackground`)
-            this.vendor.shipCosmetics.push({
-              headerBackground: toAddToVendor.value,
-              priceMultiplier:
-                buyMultiplier ** 2 *
-                (toAddToVendor.rarity / 5),
-            })
+        if (toAddToVendor.class === `shipTagline`)
+          this.vendor.shipCosmetics.push({
+            tagline: toAddToVendor.value,
+            priceMultiplier:
+              buyMultiplier ** 2 *
+              (toAddToVendor.rarity / 5),
+          })
+        if (toAddToVendor.class === `shipBackground`)
+          this.vendor.shipCosmetics.push({
+            headerBackground: toAddToVendor.value,
+            priceMultiplier:
+              buyMultiplier ** 2 *
+              (toAddToVendor.rarity / 5),
+          })
 
-          if (toAddToVendor.class === `crewTagline`)
-            this.vendor.crewCosmetics.push({
-              tagline: toAddToVendor.value,
-              priceMultiplier:
-                buyMultiplier ** 2 *
-                (toAddToVendor.rarity / 5),
-            })
-          if (toAddToVendor.class === `crewBackground`)
-            this.vendor.crewCosmetics.push({
-              background: toAddToVendor.value,
-              priceMultiplier:
-                buyMultiplier ** 2 *
-                (toAddToVendor.rarity / 5),
-            })
+        if (toAddToVendor.class === `crewTagline`)
+          this.vendor.crewCosmetics.push({
+            tagline: toAddToVendor.value,
+            priceMultiplier:
+              buyMultiplier ** 2 *
+              (toAddToVendor.rarity / 5),
+          })
+        if (toAddToVendor.class === `crewBackground`)
+          this.vendor.crewCosmetics.push({
+            background: toAddToVendor.value,
+            priceMultiplier:
+              buyMultiplier ** 2 *
+              (toAddToVendor.rarity / 5),
+          })
 
-          if (toAddToVendor.class === `chassis`)
-            this.vendor.chassis.push({
-              buyMultiplier,
-              id: toAddToVendor.id,
-            })
-          if (toAddToVendor.class === `crewPassives`)
-            this.vendor.passives.push({
-              buyMultiplier,
-              id: toAddToVendor.id,
-              intensity: toAddToVendor.intensity,
-            })
-          if (toAddToVendor.class === `cargo`)
-            this.vendor.cargo.push({
-              buyMultiplier,
-              sellMultiplier,
-              id: toAddToVendor.id,
-            })
-        }
+        if (toAddToVendor.class === `chassis`)
+          this.vendor.chassis.push({
+            buyMultiplier,
+            id: toAddToVendor.id,
+          })
+        if (toAddToVendor.class === `crewPassives`)
+          this.vendor.passives.push({
+            buyMultiplier,
+            id: toAddToVendor.id,
+            intensity: toAddToVendor.intensity,
+          })
+        if (toAddToVendor.class === `cargo`)
+          this.vendor.cargo.push({
+            buyMultiplier,
+            sellMultiplier,
+            id: toAddToVendor.id,
+          })
+        // }
       }
     }
 
@@ -381,29 +392,46 @@ export class BasicPlanet extends Planet {
           ).length || 0
         propensity *= 2 + alreadySellingOfType
 
-        for (let item of Object.values(itemGroup))
-          if (
-            item.buyable !== false &&
-            !item.special &&
-            !this.vendor?.items.find(
-              (i) =>
-                i.type === item.type && i.id === item.id,
-            ) &&
-            !this.vendor?.chassis.find(
-              (i) =>
-                item.type === `chassis` && i.id === item.id,
+        for (let item of Object.values(
+          itemGroup,
+        ) as BaseItemOrChassisData[])
+          if (item.type === `chassis`) {
+            if (
+              item.buyable !== false &&
+              !item.special &&
+              !this.vendor?.chassis.find(
+                (i) =>
+                  i.id ===
+                  (item as BaseChassisData).chassisId,
+              )
             )
-          )
-            addable.push({
-              class:
-                item.type === `chassis`
-                  ? `chassis`
-                  : `items`,
-              type: item.type,
-              id: item.id,
-              propensity:
-                propensity * rarityMultiplier(item.rarity),
-            })
+              addable.push({
+                class: `chassis`,
+                id: (item as BaseChassisData).chassisId,
+                propensity:
+                  propensity *
+                  rarityMultiplier(item.rarity),
+              })
+          } else {
+            if (
+              item.buyable !== false &&
+              !item.special &&
+              !this.vendor?.items.find(
+                (i) =>
+                  i.type ===
+                    (item as BaseItemData).itemType &&
+                  i.id === (item as BaseItemData).itemId,
+              )
+            )
+              addable.push({
+                class: `items`,
+                type: (item as BaseItemData).itemType,
+                id: (item as BaseItemData).itemId,
+                propensity:
+                  propensity *
+                  rarityMultiplier(item.rarity),
+              })
+          }
       }
     }
 
@@ -738,7 +766,7 @@ export class BasicPlanet extends Planet {
     if (this.vendor) {
       const goodCargoPrices = this.vendor.cargo.filter(
         (ca) =>
-          c.getCargoBuyPrice(ca.id, this, ship.guildId) <
+          c.getCargoBuyPrice(ca.id, this, ship.guildId, 1) <
           c.cargo[ca.id].basePrice,
       )
       goodCargoPrices.forEach((p) => {

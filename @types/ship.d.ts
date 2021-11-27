@@ -162,7 +162,7 @@ interface ShipOrders {
     id?: string
     type?: string
     name?: string
-    species?: { id: string }
+    speciesId?: string
     [key: string]: any
   }
   addendum?: string

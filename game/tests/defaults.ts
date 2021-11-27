@@ -81,6 +81,13 @@ export function miningPlanetData(): BaseMiningPlanetData {
     planetType: `mining`,
   }
 }
+export function cometData(): BaseCometData {
+  return {
+    ...planetData(),
+    planetType: `comet`,
+    velocity: [0.1, 0.1],
+  }
+}
 
 export function awaitIOConnection(client: ClientSocket) {
   return new Promise<boolean>(async (r) => {
