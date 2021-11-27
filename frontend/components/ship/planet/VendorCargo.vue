@@ -22,8 +22,10 @@
             (ca.cargoData ? ca.cargoData.id : Math.random())
           "
           v-tooltip="{
-            type: 'cargo',
-            ...ca,
+            type: 'price',
+            buyOrSell: 'buy',
+            planet: ship.planet,
+            cargoId: ca.cargoData ? ca.cargoData.id : null,
           }"
         >
           <PromptButton
@@ -76,8 +78,10 @@
             (ca.cargoData ? ca.cargoData.id : Math.random())
           "
           v-tooltip="{
-            type: 'cargo',
-            ...ca,
+            type: 'price',
+            buyOrSell: 'sell',
+            planet: ship.planet,
+            cargoId: ca.cargoData ? ca.cargoData.id : null,
           }"
         >
           <PromptButton
@@ -163,6 +167,10 @@ export default Vue.extend({
             cargo.id,
             this.ship.planet,
             this.ship.guildId,
+            1,
+            this.crewMember?.skills?.find(
+              (s) => s.skill === 'charisma',
+            )?.level || 1,
           )
 
           const maxCanBuy = c.r2(
@@ -201,6 +209,10 @@ export default Vue.extend({
               cargo.id,
               this.ship.planet,
               this.ship.guildId,
+              1,
+              this.crewMember?.skills?.find(
+                (s) => s.skill === 'charisma',
+              )?.level || 1,
             )
 
             const heldAmount =

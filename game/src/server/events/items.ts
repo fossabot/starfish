@@ -46,6 +46,7 @@ export default function (
         itemForSale,
         planet,
         ship.guildId,
+        crewMember.charisma.level,
       )
       if (ship.slots <= ship.items.length)
         return callback({
@@ -95,7 +96,7 @@ export default function (
 
   socket.on(
     `ship:sellItem`,
-    (shipId, crewId, itemType, itemId, callback) => {
+    (shipId, crewId, id, callback) => {
       if (!game) return
       const ship = game.ships.find(
         (s) => s.id === shipId,
@@ -116,26 +117,27 @@ export default function (
       if (!planet || planet.planetType !== `basic`)
         return callback({ error: `Not at a planet.` })
 
-      const heldItem = ship.items.find(
-        (i) =>
-          i.itemType === itemType && i.itemId === itemId,
-      )
+      const heldItem = ship.items.find((i) => i.id === id)
       if (!heldItem)
         return callback({
           error: `Your ship doesn't have that item equipped.`,
         })
 
-      const itemData = (c.items[itemType] as any)[itemId]
+      const itemData = (c.items[heldItem.itemType] as any)[
+        heldItem.itemId
+      ]
       if (!itemData)
         return callback({
           error: `No item found by that id.`,
         })
 
       const price = c.getItemSellPrice(
-        itemType,
-        itemId as any,
+        heldItem.itemType,
+        heldItem.itemId,
         planet,
         ship.guildId,
+        heldItem.level,
+        crewMember.charisma.level,
       )
 
       ship.commonCredits += price
@@ -172,7 +174,7 @@ export default function (
 
       c.log(
         `gray`,
-        `${crewMember.name} on ${ship.name} sold the ship's ${itemType} of id ${itemId}.`,
+        `${crewMember.name} on ${ship.name} sold the ship's ${heldItem.itemType} of id ${heldItem.itemId}.`,
       )
     },
   )
@@ -216,6 +218,7 @@ export default function (
         planet,
         ship.chassis.chassisId,
         ship.guildId,
+        crewMember.charisma.level,
       )
 
       if (

@@ -14,6 +14,10 @@
           v-if="tooltip.type === 'contract'"
           :data="tooltip"
         />
+        <ShipTooltipsPrice
+          v-if="tooltip.type === 'price'"
+          :data="tooltip"
+        />
         <ShipTooltipsEngine
           v-else-if="
             tooltip.type === 'item' &&
@@ -47,6 +51,10 @@
             tooltip.type === 'item' &&
             tooltip.itemType === 'armor'
           "
+          :data="tooltip"
+        />
+        <ShipTooltipsItem
+          v-else-if="tooltip.type === 'item'"
           :data="tooltip"
         />
         <ShipTooltipsChassis

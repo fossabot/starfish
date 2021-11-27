@@ -260,11 +260,11 @@ function arrayMove(arr, oldIndex, newIndex) {
 function priceToString(p) {
     let s = ``;
     if (p.credits)
-        s += `💳${numberWithCommas(math_1.default.r2(p.credits))} `;
+        s += `💳${numberWithCommas(math_1.default.r2(p.credits, 0))} `;
     if (p.crewCosmeticCurrency)
-        s += `🟡${numberWithCommas(math_1.default.r2(p.crewCosmeticCurrency))} `;
+        s += `🟡${numberWithCommas(math_1.default.r2(p.crewCosmeticCurrency, 0))} `;
     if (p.shipCosmeticCurrency)
-        s += `💎${numberWithCommas(math_1.default.r2(p.shipCosmeticCurrency))} `;
+        s += `💎${numberWithCommas(math_1.default.r2(p.shipCosmeticCurrency, 0))} `;
     if (!s)
         s = `Free`;
     return s.trim();

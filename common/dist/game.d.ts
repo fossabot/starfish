@@ -1,5 +1,6 @@
 declare function getHitDamage(weapon: {
     damage: number;
+    repair: number;
 }, totalMunitionsSkill?: number): number;
 declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number, useLevel?: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
@@ -23,15 +24,15 @@ declare function statToString(data: {
     amount: number;
 }): string;
 declare function getPlanetTitle(planet: PlanetStub): string;
-declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId, amount?: number): {
+declare function getCargoSellPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId, amount?: number, charismaLevel?: number, ignoreProximityLimit?: boolean): {
     credits: number;
 };
-declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId, amount?: number): Price;
+declare function getCargoBuyPrice(cargoId: CargoId, planet: PlanetStub, guildId?: GuildId, amount?: number, charismaLevel?: number): Price;
 declare function getRepairPrice(planet: PlanetStub, hp: number, guildId?: GuildId): Price;
-declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId): Price;
-declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId): Price;
-declare function getItemSellPrice(itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId): number;
-declare function getChassisSwapPrice(chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId): Price;
+declare function getCrewPassivePrice(passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId, charismaLevel?: number): Price;
+declare function getItemBuyPrice(itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId, charismaLevel?: number): Price;
+declare function getItemSellPrice(itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId, itemLevel?: number, charismaLevel?: number): number;
+declare function getChassisSwapPrice(chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId, charismaLevel?: number): Price;
 declare function getGuildChangePrice(ship: {
     planet: PlanetStub | false;
     guildId: GuildId;
@@ -64,12 +65,14 @@ declare const _default: {
     statToString: typeof statToString;
     getPlanetTitle: typeof getPlanetTitle;
     getPlanetPopulation: typeof getPlanetPopulation;
+    cargoBuyPriceProximityLimit: number;
     getCargoSellPrice: typeof getCargoSellPrice;
     getCargoBuyPrice: typeof getCargoBuyPrice;
     getRepairPrice: typeof getRepairPrice;
     getCrewPassivePrice: typeof getCrewPassivePrice;
     getItemBuyPrice: typeof getItemBuyPrice;
     getItemSellPrice: typeof getItemSellPrice;
+    itemSellPriceBoostPerLevel: number;
     getChassisSwapPrice: typeof getChassisSwapPrice;
     getGuildChangePrice: typeof getGuildChangePrice;
     canAfford: typeof canAfford;

@@ -57,7 +57,7 @@ export class Weapon extends Item {
         this.maxHp,
         this.reliability,
         avgLevel,
-      ) * 200
+      ) * 400
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()

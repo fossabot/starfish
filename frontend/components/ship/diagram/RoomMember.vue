@@ -9,7 +9,6 @@
   >
     <div class="icon">
       <ShipCrewIcon
-        class="icon"
         v-if="c.species[crewMember.speciesId]"
         v-tooltip="{
           type: 'species',

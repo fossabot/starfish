@@ -46,10 +46,15 @@
         the ship.
       </div>
       <div>
-        Being in the cockpit slowly charges your personal
-        charge of thrust. Other crew members have their own
-        separate charges, so don't be shy about using the
-        thrust you have!
+        There are two types of engines: passive and manual.
+        Passive engines apply thrust in your target
+        direction as long as you are in the cockpit.
+      </div>
+      <div>
+        For manual engines, being in the cockpit slowly
+        charges your personal charge of thrust. Other crew
+        members have their own separate charges, so don't be
+        shy about using the thrust you have!
       </div>
       <ul>
         <li>
@@ -59,8 +64,10 @@
           indicating where your target is.
         </li>
         <li>
-          Then, click and hold the Thrust button to
-          designate the amount of charge you'd like to use.
+          If you only have passive engines, you're done! If
+          you have manual engines, click and hold the Thrust
+          button to designate the amount of charge you'd
+          like to use.
         </li>
         <li>
           Release the Thrust button to apply thrust! The
@@ -68,12 +75,14 @@
         </li>
       </ul>
       <div>
-        You can also slow or stop the ship by using the
-        Brake button. The Brake button works in the same way
-        as the Thrust button.
+        For manual engine users, you can also slow or stop
+        the ship by using the Brake button. The Brake button
+        works in the same way as the Thrust button. For
+        passive engines, setting your target to "Stop" will
+        begin to stop the ship.
       </div>
       <div>
-        Braking the ship is easier than thrusting it.
+        Braking the ship is more powerful than thrusting it.
       </div>
       <div>
         The amount of thrust applied is determined by the
@@ -252,7 +261,31 @@
         changing guilds will cost you.
       </div>
       <div>
-        You cannot attack a ship from your own guild.
+        <div>
+          The guilds (and their respective bonuses) are:
+        </div>
+
+        <div class="marleft">
+          <div
+            v-for="g in Object.values(c.guilds).filter(
+              (g) => !g.aiOnly,
+            )"
+          >
+            <div
+              class="bold marbotnone"
+              :style="{ color: g.color }"
+            >
+              {{ g.name }}
+            </div>
+            <ul class="martopnone">
+              <li v-for="p in g.passives" :key="p.id">
+                {{
+                  c.baseShipPassiveData[p.id].description(p)
+                }}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <h3>Crew Species</h3>

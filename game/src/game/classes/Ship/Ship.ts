@@ -300,7 +300,7 @@ export class Ship extends Stubbable {
   }
 
   changeGuild(this: Ship, id: GuildId) {
-    // if somehow there already was one, remove its passives
+    // if there already was one, remove its passives
     if (this.guildId) {
       for (let p of c.guilds[this.id].passives)
         this.removePassive(p)

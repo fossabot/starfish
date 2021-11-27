@@ -353,6 +353,10 @@ export class Game {
 
     this.tickCount++
     const times: any[] = []
+
+    this.planets.forEach((p) => p.tick())
+    this.comets.forEach((p) => p.tick())
+
     this.ships.forEach((s) => {
       const start = Date.now()
       s.tick()
@@ -366,9 +370,6 @@ export class Game {
         0.1,
       )
     // c.log(times.map((s) => s.ship.name + ` ` + s.time))
-
-    this.planets.forEach((p) => p.tick())
-    this.comets.forEach((p) => p.tick())
 
     this.expireOldElements()
     this.spawnNewCaches()

@@ -6,185 +6,42 @@
       </template>
 
       <div class="panesection itemlist">
-        <div
+        <ShipItem
           v-for="i in armor"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-        </div>
-        <div
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+        <ShipItem
           v-for="i in weapons"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-          v-targetpoint="{
-            color: '#ff7733',
-            type: 'item',
-            itemType: 'weapon',
-            location: ship.location,
-            radius: i.range * i.repair,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-          <div class="">
-            <ProgressBar
-              :micro="true"
-              :percent="
-                (i.chargeRequired - i.cooldownRemaining) /
-                i.chargeRequired
-              "
-              :dangerZone="-1"
-            />
-          </div>
-        </div>
-        <div
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+        <ShipItem
           v-for="i in engines"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-        </div>
-        <div
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+        <ShipItem
           v-for="i in scanners"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-        </div>
-        <div
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+        <ShipItem
           v-for="i in communicators"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-        </div>
-        <div
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
+        <ShipItem
           v-for="i in other"
-          v-tooltip="{
-            type: 'item',
-            itemType: i.itemType,
-            itemId: i.itemId,
-            ownerId: ship.id,
-          }"
-        >
-          {{ i.displayName }}
-          <span
-            v-if="i.level && i.maxLevel && i.maxLevel > 1"
-            class="level"
-            :class="{ max: i.level === i.maxLevel }"
-            >{{ i.level }}</span
-          >
-          <span class="sub">{{
-            c.capitalize(i.itemType)
-          }}</span>
-          <div class="hpbar">
-            <PillBar
-              :mini="true"
-              :value="i.repair * i.maxHp"
-              :max="i.maxHp"
-            />
-          </div>
-        </div>
+          :key="i.id"
+          :item="i"
+          :owner="ship"
+        />
       </div>
 
       <div class="panesection sub flexcenter">
@@ -302,7 +159,7 @@ export default Vue.extend({
   text-shadow: 0 0 0.2em var(--bg);
   font-size: 0.6em;
   line-height: 1;
-  padding: 0.2em 0.4em 0em 0.4em;
+  padding: 0.3em 0.4em 0em 0.4em;
   border-radius: 1em;
   // margin: 0 0.4em;
 

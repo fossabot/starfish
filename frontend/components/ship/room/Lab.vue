@@ -116,9 +116,10 @@
               v-for="req in item.upgradeRequirements"
               :key="
                 item.id +
+                req.research +
                 req.current +
                 req.required +
-                req.cargoType
+                req.cargoId
               "
             >
               <ProgressBar
@@ -176,14 +177,6 @@
                 "
               >
                 <PromptButton
-                  :disabled="
-                    !crewMember.inventory.find(
-                      (ca) => ca.id === req.cargoId,
-                    ) ||
-                    crewMember.inventory.find(
-                      (ca) => ca.id === req.cargoId,
-                    ).amount < 0.01
-                  "
                   :max="
                     Math.min(
                       (crewMember.inventory.find(
@@ -320,14 +313,20 @@ export default Vue.extend({
       cargoId: CargoId,
       amount: number | 'all',
     ) {
+      c.log(amount)
       const requirements = item.upgradeRequirements?.find(
         (r) => r.cargoId === cargoId,
       )
       if (!requirements) return
 
       if (amount === 'all')
-        amount =
-          requirements.required - requirements.current
+        amount = Math.min(
+          (
+            this.crewMember as CrewMemberStub
+          ).inventory.find((i) => i.id === cargoId)
+            ?.amount || 0,
+          requirements.required - requirements.current,
+        )
       amount = c.r2(
         parseFloat(`${amount}` || '0') || 0,
         2,

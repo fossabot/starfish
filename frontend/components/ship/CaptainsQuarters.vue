@@ -188,7 +188,12 @@
             )
             .slice(0, 10)"
           :key="'cqo' + s.id"
-          :value="{ type: 'ship', id: s.id, name: s.name }"
+          :value="{
+            type: 'ship',
+            id: s.id,
+            name: s.name,
+            speciesId: s.speciesId,
+          }"
         >
           {{ s.name }}
         </option>
@@ -226,7 +231,12 @@
             )
             .slice(0, 10)"
           :key="'cqo' + s.id"
-          :value="{ type: 'ship', id: s.id, name: s.name }"
+          :value="{
+            type: 'ship',
+            id: s.id,
+            name: s.name,
+            speciesId: s.speciesId,
+          }"
         >
           {{ s.name }}
         </option>
@@ -329,6 +339,7 @@
             type: s.type || 'ship',
             id: s.id,
             name: s.name,
+            speciesId: s.speciesId,
           }"
         >
           <template v-if="s.type === 'cache'">
@@ -419,7 +430,7 @@
         class="martop flexbetween"
         v-if="toValidOrders(inputOrders)"
       >
-        <div class="button" @click="setOrders">
+        <div class="button" @click="setOrders(false)">
           <span>Set Orders</span>
         </div>
       </div>

@@ -61,6 +61,27 @@ describe(`HumanShip items`, () => {
     expect(ship.slots).to.be.greaterThan(prevSlots)
     expect(ship.slots).to.equal(c.items.chassis.mega3.slots)
   })
+
+  it(`should properly clear passives on item/chassis change`, async () => {
+    const g = new Game()
+    let basic = await g.addHumanShip(humanShipData())
+    const basicPassiveLength = basic.passives.length
+
+    let ship = await g.addHumanShip({
+      ...humanShipData(`testMega`),
+      id: `passiveTester`,
+    })
+    expect(ship.passives.length).to.be.greaterThan(
+      basicPassiveLength,
+    )
+
+    ship.die()
+    await ship.respawn()
+
+    expect(ship.passives.length).to.equal(
+      basicPassiveLength,
+    )
+  })
 })
 
 describe(`HumanShip cargo/credit distribution`, () => {

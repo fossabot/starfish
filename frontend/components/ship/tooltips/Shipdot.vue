@@ -9,8 +9,10 @@
       v-if="dataToUse._hp && dataToUse._maxHp"
       class="panesection"
       v-tooltip="
-        `🇨🇭HP: ${c.r2(dataToUse._hp)}/${c.r2(
-          dataToUse._maxHp,
+        `HP: ${c.numberWithCommas(
+          c.r2(dataToUse._hp * c.displayHPMultiplier, 0),
+        )}/${c.numberWithCommas(
+          c.r2(dataToUse._maxHp * c.displayHPMultiplier, 0),
         )}<br /><br />The sum total of all of the ship's equipment's health.`
       "
     >
@@ -85,7 +87,12 @@
         <div>
           {{
             c.speedNumber(
-              (dataToUse && dataToUse.speed * 60 * 60 * (c.tickInterval/1000)) || 0,
+              (dataToUse &&
+                dataToUse.speed *
+                  60 *
+                  60 *
+                  (c.tickInterval / 1000)) ||
+                0,
             )
           }}
           <template v-if="dataToUse.direction">

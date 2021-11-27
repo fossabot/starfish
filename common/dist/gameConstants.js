@@ -41,8 +41,10 @@ const itemUpgradeMultiplier = 0.02;
 const itemPriceMultiplier = 400;
 const itemMassMultiplier = 10;
 const weaponDamageMultiplier = 1;
+const displayHPMultiplier = 1000;
 const guildVendorMultiplier = 0.98;
 const guildAllegianceFriendCutoff = 50;
+const maxCharismaVendorMultiplier = 0.1;
 const baseItemSellMultiplier = 0.6;
 const noEngineThrustMagnitude = 0.02;
 const planetContributeCostPerXp = 1;
@@ -68,6 +70,7 @@ const baseShipScanProperties = {
     location: true,
     planet: [`name`, `location`],
     guildId: true,
+    speciesId: true,
     chassis: [`displayName`],
 };
 const sameGuildShipScanProperties = {
@@ -98,6 +101,7 @@ exports.default = {
     maxBroadcastLength,
     guildVendorMultiplier,
     guildAllegianceFriendCutoff,
+    maxCharismaVendorMultiplier,
     userIsOfflineTimeout,
     baseItemSellMultiplier,
     noEngineThrustMagnitude,
@@ -109,6 +113,7 @@ exports.default = {
     itemPriceMultiplier,
     itemMassMultiplier,
     weaponDamageMultiplier,
+    displayHPMultiplier,
     attackRemnantExpireTime,
     cacheExpireTime,
     zoneExpireTime,

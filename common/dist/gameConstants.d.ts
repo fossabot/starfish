@@ -39,6 +39,7 @@ declare const _default: {
     maxBroadcastLength: number;
     guildVendorMultiplier: number;
     guildAllegianceFriendCutoff: number;
+    maxCharismaVendorMultiplier: number;
     userIsOfflineTimeout: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
@@ -50,6 +51,7 @@ declare const _default: {
     itemPriceMultiplier: number;
     itemMassMultiplier: number;
     weaponDamageMultiplier: number;
+    displayHPMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     zoneExpireTime: number;
@@ -59,6 +61,7 @@ declare const _default: {
         human: true;
         ai: true;
         guildId: true;
+        speciesId: true;
         headerBackground: true;
         tagline: true;
         level: true;

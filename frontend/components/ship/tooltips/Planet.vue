@@ -97,6 +97,7 @@
                             dataToUse,
                             ship.guildId,
                             1,
+                            charismaLevel,
                           ).credits || 0) <
                           (c.cargo[cargo.id].basePrice
                             .credits || 0),
@@ -106,6 +107,7 @@
                             dataToUse,
                             ship.guildId,
                             1,
+                            charismaLevel,
                           ).credits || 0) >
                           (c.cargo[cargo.id].basePrice
                             .credits || 0),
@@ -116,6 +118,7 @@
                           dataToUse,
                           ship.guildId,
                           1,
+                          charismaLevel,
                         ).credits
                       }}</span
                     >, S:
@@ -127,6 +130,7 @@
                             dataToUse,
                             ship.guildId,
                             1,
+                            charismaLevel,
                           ).credits || 0) >
                           (c.cargo[cargo.id].basePrice
                             .credits || 0),
@@ -136,6 +140,7 @@
                             dataToUse,
                             ship.guildId,
                             1,
+                            charismaLevel,
                           ).credits || 0) <
                           (c.cargo[cargo.id].basePrice
                             .credits || 0),
@@ -146,6 +151,7 @@
                           dataToUse,
                           ship.guildId,
                           1,
+                          charismaLevel,
                         ).credits
                       }}</span
                     >)
@@ -298,12 +304,19 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'crewMember']),
     dataToUse(): PlanetStub {
       return (
         this.ship?.seenPlanets?.find(
           (p) => p.id === (this.data as any).id,
         ) || this.data
+      )
+    },
+    charismaLevel(): number {
+      return (
+        this.crewMember?.skills.find(
+          (s) => s.skill === 'charisma',
+        )?.level || 1
       )
     },
     alliedGuildIds(): string[] {

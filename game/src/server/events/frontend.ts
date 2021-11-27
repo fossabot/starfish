@@ -648,23 +648,30 @@ export default function (
           ]
           if (orders.target)
             logEntry.push({
-              text: orders.target.name
-                ? orders.target.name
-                : orders.target.targetName
-                ? orders.target.targetName
-                : orders.target.type === `cache`
-                ? `that cache`
-                : [
-                    `weapon`,
-                    `armor`,
-                    `engine`,
-                    `communicator`,
-                    `scanner`,
-                  ].includes(orders.target.type as any)
-                ? c.items[orders.target.type as ItemType][
-                    orders.target.id as ItemId
-                  ].displayName
-                : orders.target.id,
+              text:
+                orders.target.speciesId &&
+                orders.target.name // ai ship, include emoji
+                  ? `${
+                      c.species[orders.target.speciesId]
+                        ?.icon || ``
+                    }${orders.target.name}`
+                  : orders.target.name
+                  ? orders.target.name
+                  : orders.target.targetName
+                  ? orders.target.targetName
+                  : orders.target.type === `cache`
+                  ? `that cache`
+                  : [
+                      `weapon`,
+                      `armor`,
+                      `engine`,
+                      `communicator`,
+                      `scanner`,
+                    ].includes(orders.target.type as any)
+                  ? c.items[orders.target.type as ItemType][
+                      orders.target.id as ItemId
+                    ].displayName
+                  : orders.target.id,
               tooltipData: [
                 `weapon`,
                 `armor`,

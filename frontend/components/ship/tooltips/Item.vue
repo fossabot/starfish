@@ -22,7 +22,7 @@
       <span class="sub">Repair</span>
       <span> {{ c.r2(dataToUse.repair * 100) }}% </span>
     </div>
-    <div v-else-if="dataToUse.maxHp" class="flexbetween">
+    <div v-if="dataToUse.maxHp" class="flexbetween">
       <span class="sub">Max HP</span>
 
       <span
@@ -33,11 +33,18 @@
               .maxHp,
         }"
       >
-        {{ c.r2(dataToUse.maxHp) }}
+        {{
+          c.numberWithCommas(
+            c.r2(
+              dataToUse.maxHp * c.displayHPMultiplier,
+              0,
+            ),
+          )
+        }}
         <ShipTooltipsCompareProp
           v-if="compareTo"
-          :a="compareTo.maxHp"
-          :b="dataToUse.maxHp"
+          :a="compareTo.maxHp * c.displayHPMultiplier"
+          :b="dataToUse.maxHp * c.displayHPMultiplier"
         />
       </span>
     </div>
@@ -167,6 +174,7 @@
             (dataToUse.passiveThrustMultiplier || 0) *
             ship.gameSettings.baseEngineThrustMultiplier
           "
+          addendum="x"
         />
       </span>
     </div>
@@ -256,6 +264,7 @@
       </span>
     </div>
     <ProgressBar
+      class="marbotsmall"
       v-if="dataToUse.cooldownRemaining !== undefined"
       :micro="true"
       :percent="
@@ -267,7 +276,9 @@
     />
     <div
       v-if="
-        dataToUse.itemType === 'weapon' && dataToUse.range
+        dataToUse.itemType &&
+        dataToUse.itemType === 'weapon' &&
+        dataToUse.range
       "
       class="flexbetween"
     >
@@ -298,16 +309,24 @@
               .damage,
         }"
       >
-        {{ dataToUse.damage }}
+        {{
+          c.numberWithCommas(
+            c.r2(
+              dataToUse.damage * c.displayHPMultiplier,
+              0,
+            ),
+          )
+        }}
         <ShipTooltipsCompareProp
           v-if="compareTo"
-          :a="compareTo.damage"
-          :b="dataToUse.damage"
+          :a="compareTo.damage * c.displayHPMultiplier"
+          :b="dataToUse.damage * c.displayHPMultiplier"
         />
       </span>
     </div>
     <div
       v-if="
+        dataToUse.itemType &&
         dataToUse.itemType === 'weapon' &&
         dataToUse.critChance !== undefined
       "
@@ -339,6 +358,7 @@
               ? ship.gameSettings.baseCritChance
               : dataToUse.critChance) * 100
           "
+          addendum="%"
         />
       </span>
     </div>
@@ -409,6 +429,7 @@
     <!-- communicator -->
     <div
       v-if="
+        dataToUse.itemType &&
         dataToUse.itemType === 'communicator' &&
         dataToUse.range
       "
@@ -454,9 +475,7 @@
 
     <!-- general -->
     <div
-      v-if="
-        dataToUse.itemType !== 'chassis' && dataToUse.maxHp
-      "
+      v-if="dataToUse.itemType && dataToUse.maxHp"
       class="flexbetween"
     >
       <span class="sub">Reliability</span>
@@ -488,9 +507,7 @@
       /></span>
     </div>
     <div
-      v-if="
-        dataToUse.itemType !== 'chassis' && dataToUse.maxHp
-      "
+      v-if="dataToUse.itemType && dataToUse.maxHp"
       class="flexbetween"
     >
       <span class="sub">Repair Difficulty</span>
@@ -533,8 +550,11 @@
         :class="{
           success:
             dataToUse.mass <
-            c.items[dataToUse.itemType][dataToUse.itemId]
-              .mass,
+            c.items[
+              dataToUse.itemType
+                ? dataToUse.itemType
+                : 'chassis'
+            ][dataToUse.itemId || dataToUse.chassisId].mass,
         }"
       >
         {{

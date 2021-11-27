@@ -12,6 +12,7 @@
     <a :href="c.supportServerLink" target="_blank"
       >Discord Server</a
     >
+    <nuxt-link to="/patchnotes">Patch Notes</nuxt-link>
     <nuxt-link to="/supportus">Support Us</nuxt-link>
 
     <nuxt-link to="/s" v-if="ship" class="button"

@@ -568,10 +568,11 @@ export class HumanShip extends CombatShip {
       1
 
     charge *= thruster.cockpitCharge
-    charge *= thrustBoostPassiveMultiplier
 
     if (!HumanShip.movementIsFree)
       thruster.cockpitCharge -= charge
+
+    charge *= thrustBoostPassiveMultiplier
 
     const initialVelocity: CoordinatePair = [
       ...this.velocity,
@@ -1109,7 +1110,6 @@ export class HumanShip extends CombatShip {
   // ----- move -----
   passiveThrust() {
     const thrusters = this.membersIn(`cockpit`)
-
     if (!thrusters.length) return
 
     const engineThrustMultiplier = Math.max(
@@ -1218,7 +1218,7 @@ export class HumanShip extends CombatShip {
       ...accelerators,
       ...tagalongs,
     ]) {
-      if (!accelerators.length) return
+      if (!accelerators.length) continue
 
       let targetLocationToUse = adjustedAverageTarget
       if (accelerator.targetLocation)
@@ -1358,16 +1358,16 @@ export class HumanShip extends CombatShip {
       )
       const brakeBoostMultiplier =
         (angleDifferenceToDirection / 180) *
-          shipBrakePassive
+        shipBrakePassive
 
-      c.log(
-        this.id,
-        `brk1`,
-        brakeBoostMultiplier,
-        c.vectorToMagnitude(combinedThrustVector) *
-          brakeBoostMultiplier,
-        this.speed,
-      )
+      // c.log(
+      //   this.id,
+      //   `brk1`,
+      //   brakeBoostMultiplier,
+      //   c.vectorToMagnitude(combinedThrustVector) *
+      //     brakeBoostMultiplier,
+      //   this.speed,
+      // )
 
       if (
         c.vectorToMagnitude(combinedThrustVector) *
@@ -1381,13 +1381,18 @@ export class HumanShip extends CombatShip {
       }
     }
 
-    c.log(this.velocity)
     // * final velocity adjustment
     this.velocity = [
       this.velocity[0] + (combinedThrustVector[0] || 0),
       this.velocity[1] + (combinedThrustVector[1] || 0),
     ]
-    c.log(this.velocity)
+    // c.log(
+    //   this.velocity,
+    //   combinedThrustVector,
+    //   accelerators.length,
+    //   tagalongs.length,
+    //   brakers.length,
+    // )
 
     this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
@@ -2391,7 +2396,6 @@ export class HumanShip extends CombatShip {
   }
 
   removeItem(item: Item): boolean {
-    c.log(`removing item from`, this.name, item.displayName)
     if (item.rooms) {
       item.rooms.forEach((room) => {
         if (
@@ -2856,6 +2860,8 @@ export class HumanShip extends CombatShip {
   // ----- respawn -----
 
   async respawn(silent = false) {
+    while (this.items.length) this.removeItem(this.items[0])
+
     await super.respawn()
 
     this.equipLoadout(`humanDefault`)

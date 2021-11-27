@@ -102,44 +102,39 @@ type ItemId =
   | CommunicatorId
   | ArmorId
 
-interface BaseChassisData {
-  chassisId: ChassisId
-  type: `chassis`
+interface BaseItemOrChassisData {
+  type: `item` | `chassis`
   mass: number
   basePrice: Price
   displayName: string
   description: string
-  slots: number
-  agility: number
-  maxCargoSpace: number
   rarity: number
   passives?: ShipPassiveEffect[]
   buyable?: false
   special?: true
   rooms?: CrewLocation[]
+  aiOnly?: boolean
 }
 
-interface BaseItemData {
+interface BaseChassisData extends BaseItemOrChassisData {
+  chassisId: ChassisId
+  type: `chassis`
+  slots: number
+  agility: number
+  maxCargoSpace: number
+}
+
+interface BaseItemData extends BaseItemOrChassisData {
   type: `item`
   id?: string
   itemId: ItemId
   itemType: ItemType
-  displayName: string
-  description: string
-  mass: number
-  basePrice: Price
-  rarity: number
   reliability?: number
   repairDifficulty?: number
   repair?: number
   hp?: number
   maxHp: number
-  buyable?: false
-  special?: true
-  aiOnly?: boolean
   lastUse?: number
-  passives?: ShipPassiveEffect[]
-  rooms?: CrewLocation[]
   upgradeRequirements?: ItemUpgradeRequirements
   upgradableProperties?: UpgradableProperty[]
   upgradeBonus?: number
