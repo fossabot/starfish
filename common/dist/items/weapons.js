@@ -233,6 +233,7 @@ exports.weapons = {
         chargeRequired: 1.2 * 60 * 1000,
         maxHp: 4,
         repairDifficulty: 0.7,
+        reliability: 0.8,
         critChance: 0.35,
         passives: [
             {
@@ -258,6 +259,7 @@ exports.weapons = {
         chargeRequired: 1.2 * 60 * 1000,
         maxHp: 4,
         repairDifficulty: 0.65,
+        reliability: 0.8,
         critChance: 0.38,
         passives: [
             {
@@ -283,6 +285,7 @@ exports.weapons = {
         chargeRequired: 1.1 * 60 * 1000,
         maxHp: 4,
         repairDifficulty: 0.5,
+        reliability: 0.8,
         critChance: 0.42,
         passives: [
             {

@@ -39,6 +39,33 @@ describe(`Planet basics`, () => {
 })
 
 describe(`Planet prices`, () => {
+  it(`should have better prices for higher level items`, async () => {
+    const g = new Game()
+    const p2 = await g.addBasicPlanet(basicPlanetData())
+
+    const s = await g.addHumanShip(humanShipData())
+    const item = s.items[0]
+    const highLevelSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+      undefined,
+      10,
+      1,
+    )
+    const lowLevelSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+      undefined,
+      1,
+      1,
+    )
+    expect(lowLevelSellPrice).to.be.below(
+      highLevelSellPrice,
+    )
+  })
+
   it(`should have better prices for allies than for normal ships`, async () => {
     const g = new Game()
     const p2 = await g.addBasicPlanet(basicPlanetData())
@@ -50,14 +77,145 @@ describe(`Planet prices`, () => {
     }
     p2.vendor.items.push(itemPrice)
     p2.incrementAllegiance(`explorer`, 100000)
-    const nonAlliedPrice = c.getItemBuyPrice(itemPrice, p2)
-    const alliedPrice = c.getItemBuyPrice(
+    const nonAlliedBuyPrice = c.getItemBuyPrice(
+      itemPrice,
+      p2,
+    )
+    const alliedBuyPrice = c.getItemBuyPrice(
       itemPrice,
       p2,
       `explorer`,
     )
-    expect(alliedPrice.credits || 0).to.be.below(
-      nonAlliedPrice.credits || 0,
+    expect(alliedBuyPrice.credits || 0).to.be.below(
+      nonAlliedBuyPrice.credits || 0,
+    )
+
+    const s = await g.addHumanShip(humanShipData())
+    const item = s.items[0]
+    const nonAlliedSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+    )
+    const alliedSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+      `explorer`,
+    )
+    expect(alliedSellPrice).to.be.above(nonAlliedSellPrice)
+  })
+
+  it(`should have better prices for charismatic members than for normal members`, async () => {
+    const g = new Game()
+    const p2 = await g.addBasicPlanet(basicPlanetData())
+
+    const itemPrice: PlanetVendorItemPrice = {
+      type: `armor`,
+      buyMultiplier: 1,
+      id: `block1`,
+    }
+    p2.vendor.items.push(itemPrice)
+    const basicPrice = c.getItemBuyPrice(
+      itemPrice,
+      p2,
+      undefined,
+      1,
+    )
+    const charismaticPrice = c.getItemBuyPrice(
+      itemPrice,
+      p2,
+      undefined,
+      10,
+    )
+    expect(charismaticPrice.credits || 0).to.be.below(
+      basicPrice.credits || 0,
+    )
+
+    const s = await g.addHumanShip(humanShipData())
+    const item = s.items[0]
+    const normalSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+      undefined,
+      1,
+    )
+    const charismaticSellPrice = c.getItemSellPrice(
+      item.itemType,
+      item.itemId,
+      p2,
+      undefined,
+      10,
+    )
+    expect(charismaticSellPrice).to.be.above(
+      normalSellPrice,
+    )
+
+    p2.vendor.cargo.push({
+      id: `carbon`,
+      buyMultiplier: 6,
+      sellMultiplier: 3,
+    })
+    expect(
+      c.getCargoBuyPrice(`carbon`, p2, undefined, 1, 10)
+        .credits || 0,
+    ).to.be.below(
+      c.getCargoBuyPrice(`carbon`, p2, undefined, 1, 1)
+        .credits || 0,
+    )
+
+    expect(
+      c.getCargoSellPrice(`carbon`, p2, undefined, 1, 10)
+        .credits || 0,
+    ).to.be.above(
+      c.getCargoSellPrice(`carbon`, p2, undefined, 1, 1)
+        .credits || 0,
+    )
+
+    p2.vendor.chassis.push({
+      id: `fighter3`,
+      buyMultiplier: 1,
+    })
+    expect(
+      c.getChassisSwapPrice(
+        p2.vendor.chassis[0],
+        p2,
+        `starter1`,
+        undefined,
+        10,
+      ).credits || 0,
+    ).to.be.below(
+      c.getChassisSwapPrice(
+        p2.vendor.chassis[0],
+        p2,
+        `starter1`,
+        undefined,
+        1,
+      ).credits || 0,
+    )
+
+    p2.vendor.passives.push({
+      id: `cargoSpace`,
+      intensity: 100,
+      buyMultiplier: 1,
+    })
+    expect(
+      c.getCrewPassivePrice(
+        p2.vendor.passives[0],
+        1,
+        p2,
+        undefined,
+        10,
+      ).credits || 0,
+    ).to.be.below(
+      c.getCrewPassivePrice(
+        p2.vendor.passives[0],
+        1,
+        p2,
+        undefined,
+        1,
+      ).credits || 0,
     )
   })
 })

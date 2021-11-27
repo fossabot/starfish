@@ -236,6 +236,7 @@ declare const _default: {
     maxBroadcastLength: number;
     guildVendorMultiplier: number;
     guildAllegianceFriendCutoff: number;
+    maxCharismaVendorMultiplier: number;
     userIsOfflineTimeout: number;
     baseItemSellMultiplier: number;
     noEngineThrustMagnitude: number;
@@ -247,6 +248,7 @@ declare const _default: {
     itemPriceMultiplier: number;
     itemMassMultiplier: number;
     weaponDamageMultiplier: number;
+    displayHPMultiplier: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     zoneExpireTime: number;
@@ -256,6 +258,7 @@ declare const _default: {
         human: true;
         ai: true;
         guildId: true;
+        speciesId: true;
         headerBackground: true;
         tagline: true;
         level: true;
@@ -274,6 +277,7 @@ declare const _default: {
     baseCargoSellMultiplier: number;
     getHitDamage: (weapon: {
         damage: number;
+        repair: number;
     }, totalMunitionsSkill?: number) => number;
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number, useLevel?: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
@@ -293,15 +297,17 @@ declare const _default: {
     }) => string;
     getPlanetTitle: (planet: PlanetStub) => string;
     getPlanetPopulation: (planet: PlanetStub) => number;
-    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => {
+    cargoBuyPriceProximityLimit: number;
+    getCargoSellPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number, charismaLevel?: number, ignoreProximityLimit?: boolean) => {
         credits: number;
     };
-    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number) => Price;
+    getCargoBuyPrice: (cargoId: CargoId, planet: PlanetStub, guildId?: GuildId | undefined, amount?: number, charismaLevel?: number) => Price;
     getRepairPrice: (planet: PlanetStub, hp: number, guildId?: GuildId | undefined) => Price;
-    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
-    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined) => Price;
-    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId | undefined) => number;
-    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId | undefined) => Price;
+    getCrewPassivePrice: (passiveForSale: PlanetVendorCrewPassivePrice, currentIntensity: number, planet: PlanetStub, guildId?: GuildId | undefined, charismaLevel?: number) => Price;
+    getItemBuyPrice: (itemForSale: PlanetVendorItemPrice, planet: PlanetStub, guildId?: GuildId | undefined, charismaLevel?: number) => Price;
+    getItemSellPrice: (itemType: ItemType, itemId: ItemId, planet: PlanetStub, guildId?: GuildId | undefined, itemLevel?: number, charismaLevel?: number) => number;
+    itemSellPriceBoostPerLevel: number;
+    getChassisSwapPrice: (chassis: PlanetVendorChassisPrice, planet: PlanetStub, currentChassisId: ChassisId, guildId?: GuildId | undefined, charismaLevel?: number) => Price;
     getGuildChangePrice: (ship: {
         planet: false | PlanetStub;
         guildId: GuildId;

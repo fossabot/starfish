@@ -31,7 +31,8 @@ const items = __importStar(require("./items"));
 const gameConstants_1 = __importDefault(require("./gameConstants"));
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
-        math_1.default.lerp(1, 4, totalMunitionsSkill / 100));
+        math_1.default.lerp(1, 4, totalMunitionsSkill / 100) *
+        math_1.default.lerp(0.8, 1, weapon.repair));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability, useLevel = 1) {
     return (((0.001 / maxHp) * math_1.default.lerp(1, 0.5, useLevel / 100)) /
@@ -189,35 +190,44 @@ function getPlanetTitle(planet) {
     return names[Math.floor(planet.level - 1)] || `Domain`;
     // todo finish
 }
-function getCargoSellPrice(cargoId, planet, guildId, amount = 1) {
-    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId).credits || 0;
-    const buyPriceProximityLimit = 0.95;
-    const sellMultiplier = planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
-        gameConstants_1.default.baseCargoSellMultiplier;
+const cargoBuyPriceProximityLimit = 0.97;
+function getCargoSellPrice(cargoId, planet, guildId, amount = 1, charismaLevel = 1, ignoreProximityLimit = false) {
+    const buyPrice = getCargoBuyPrice(cargoId, planet, guildId, 1, charismaLevel).credits || 0;
+    const charismaMultiplier = 1 +
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
+    const sellMultiplier = (planet?.vendor?.cargo?.find((cbb) => cbb.id === cargoId && cbb.sellMultiplier)?.sellMultiplier ||
+        gameConstants_1.default.baseCargoSellMultiplier) *
+        charismaMultiplier *
+        (planet.priceFluctuator || 1) *
+        ((planet.allegiances?.find((a) => a.guildId === guildId)
+            ?.level || 0) >=
+            gameConstants_1.default.guildAllegianceFriendCutoff
+            ? 1 + (1 - (gameConstants_1.default.guildVendorMultiplier || 1))
+            : 1);
     return {
-        credits: Math.min(Math.floor(buyPrice * amount * buyPriceProximityLimit), Math.floor((cargo[cargoId].basePrice.credits || 0) *
-            amount *
-            sellMultiplier *
-            (planet.priceFluctuator || 1) *
-            ((planet.allegiances?.find((a) => a.guildId === guildId)?.level || 0) >=
-                gameConstants_1.default.guildAllegianceFriendCutoff
-                ? 1 +
-                    (1 -
-                        (gameConstants_1.default.guildVendorMultiplier || 1))
-                : 1))),
+        credits: ignoreProximityLimit
+            ? Math.floor((cargo[cargoId].basePrice.credits || 0) *
+                amount *
+                sellMultiplier)
+            : Math.min(Math.floor(buyPrice * amount * cargoBuyPriceProximityLimit), Math.floor((cargo[cargoId].basePrice.credits || 0) *
+                amount *
+                sellMultiplier)),
     };
 }
-function getCargoBuyPrice(cargoId, planet, guildId, amount = 1) {
+function getCargoBuyPrice(cargoId, planet, guildId, amount = 1, charismaLevel = 1) {
     const cargoForSale = planet?.vendor?.cargo?.find((cfs) => cfs.id === cargoId && cfs.buyMultiplier);
     if (!cargoForSale)
         return { credits: 99999 };
+    const charismaMultiplier = 1 -
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
     const multiplier = cargoForSale.buyMultiplier *
         (planet.priceFluctuator || 1) *
         ((planet.allegiances?.find((a) => a.guildId === guildId)
             ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1);
+            : 1) *
+        charismaMultiplier;
     const basePrice = cargo[cargoId].basePrice;
     const price = {};
     if (basePrice?.credits)
@@ -240,19 +250,25 @@ function getRepairPrice(planet, hp, guildId) {
                 : 1), 0, true),
     };
 }
-function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId) {
+function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId, charismaLevel = 1) {
+    const charismaMultiplier = 1 -
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
     const multiplier = passiveForSale.buyMultiplier *
+        (passiveForSale.intensity /
+            (crewPassives_1.default[passiveForSale.id].buyable
+                ?.baseIntensity || 1)) *
         (1 +
             (currentIntensity /
                 (crewPassives_1.default[passiveForSale.id].buyable
                     ?.baseIntensity || 1)) **
-                2) *
+                1.5) *
         (planet.priceFluctuator || 1) *
         ((planet.allegiances?.find((a) => a.guildId === guildId)
             ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1);
+            : 1) *
+        charismaMultiplier;
     const basePrice = {
         ...crewPassives_1.default[passiveForSale.id].buyable?.basePrice,
     };
@@ -277,14 +293,17 @@ function getCrewPassivePrice(passiveForSale, currentIntensity, planet, guildId) 
         price.shipCosmeticCurrency = Math.ceil(basePrice.shipCosmeticCurrency * multiplier);
     return price;
 }
-function getItemBuyPrice(itemForSale, planet, guildId) {
+function getItemBuyPrice(itemForSale, planet, guildId, charismaLevel = 1) {
+    const charismaMultiplier = 1 -
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
     const multiplier = itemForSale.buyMultiplier *
         (planet.priceFluctuator || 1) *
         ((planet.allegiances?.find((a) => a.guildId === guildId)
             ?.level || 0) >=
             gameConstants_1.default.guildAllegianceFriendCutoff
             ? gameConstants_1.default.guildVendorMultiplier
-            : 1);
+            : 1) *
+        charismaMultiplier;
     const price = {};
     if (items[itemForSale.type][itemForSale.id]?.basePrice
         ?.credits)
@@ -300,7 +319,11 @@ function getItemBuyPrice(itemForSale, planet, guildId) {
             .shipCosmeticCurrency * multiplier);
     return price;
 }
-function getItemSellPrice(itemType, itemId, planet, guildId) {
+const itemSellPriceBoostPerLevel = 0.1;
+function getItemSellPrice(itemType, itemId, planet, guildId, itemLevel = 1, charismaLevel = 1) {
+    const levelMultiplier = 1 + (itemLevel - 1) * itemSellPriceBoostPerLevel;
+    const charismaMultiplier = 1 +
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
     const itemData = items[itemType][itemId];
     if (!itemData)
         return 9999999;
@@ -309,18 +332,24 @@ function getItemSellPrice(itemType, itemId, planet, guildId) {
         (planet.priceFluctuator || 1) *
         (planet.allegiances?.find((a) => a.guildId === guildId) || gameConstants_1.default.guildAllegianceFriendCutoff < 0
             ? 1 + (1 - gameConstants_1.default.guildVendorMultiplier || 1)
-            : 1), 0, true);
+            : 1) *
+        charismaMultiplier *
+        levelMultiplier, 0, true);
 }
-function getChassisSwapPrice(chassis, planet, currentChassisId, guildId) {
+function getChassisSwapPrice(chassis, planet, currentChassisId, guildId, charismaLevel = 1) {
+    const charismaMultiplier = 1 -
+        math_1.default.lerp(0, gameConstants_1.default.maxCharismaVendorMultiplier, (charismaLevel - 1) / 100);
     const multiplier = chassis.buyMultiplier *
         (planet.priceFluctuator || 1) *
         (planet.allegiances?.find((a) => a.guildId === guildId) || gameConstants_1.default.guildAllegianceFriendCutoff < 0
             ? 1 + (1 - gameConstants_1.default.guildVendorMultiplier || 1)
-            : 1);
-    const currentChassisSellPrice = Math.floor(((items.chassis[currentChassisId]?.basePrice || 0)
+            : 1) *
+        charismaMultiplier;
+    const currentChassisSellPrice = Math.floor(((items.chassis[currentChassisId]?.basePrice || {})
         .credits || 0) * gameConstants_1.default.baseItemSellMultiplier);
     const price = {};
-    price.credits = math_1.default.r2(Math.max((items.chassis[chassis.id]?.basePrice.credits || 0) -
+    price.credits = math_1.default.r2(Math.max((items.chassis[chassis.id]?.basePrice.credits || 0) *
+        multiplier -
         currentChassisSellPrice, 0), 0, true);
     if (items.chassis[chassis.id]?.basePrice
         ?.crewCosmeticCurrency)
@@ -450,12 +479,14 @@ exports.default = {
     statToString,
     getPlanetTitle,
     getPlanetPopulation,
+    cargoBuyPriceProximityLimit,
     getCargoSellPrice,
     getCargoBuyPrice,
     getRepairPrice,
     getCrewPassivePrice,
     getItemBuyPrice,
     getItemSellPrice,
+    itemSellPriceBoostPerLevel,
     getChassisSwapPrice,
     getGuildChangePrice,
     canAfford,
