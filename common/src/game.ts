@@ -165,9 +165,17 @@ function statToString(data: {
   amount: number
 }): string {
   const { stat, amount } = data
-  let titleString = text.camelCaseToWords(stat)
+  let titleString = text
+    .camelCaseToWords(stat)
+    .replace(`Hp`, `HP`)
   let amountString: string = `${text.numberWithCommas(
-    math.r2(amount),
+    math.r2(
+      amount *
+        ((stat.toLowerCase().includes(`hp`) ||
+        stat.toLowerCase().includes(`damage`))
+          ? gameConstants.displayHPMultiplier
+          : 1),
+    ),
   )}`
   let suffix = ``
 
