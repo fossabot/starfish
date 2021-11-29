@@ -63,8 +63,11 @@ export class StatusCommand implements Command {
         (ship._hp || 0) / (ship._maxHp || 0),
         (ship._maxHp || 0) * 2,
       )}
-🇨🇭 ${c.r2(ship._hp * c.displayHPMultiplier || 0)}/${c.r2(
-        ship._maxHp * c.displayHPMultiplier || 0,
+🇨🇭 ${c.r2(
+        (ship._hp as number) * c.displayHPMultiplier || 0,
+      )}/${c.r2(
+        (ship._maxHp as number) * c.displayHPMultiplier ||
+          0,
       )}`,
     })
 
