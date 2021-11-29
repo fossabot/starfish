@@ -63,7 +63,9 @@ export class StatusCommand implements Command {
         (ship._hp || 0) / (ship._maxHp || 0),
         (ship._maxHp || 0) * 2,
       )}
-🇨🇭 ${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
+🇨🇭 ${c.r2(ship._hp * c.displayHPMultiplier || 0)}/${c.r2(
+        ship._maxHp * c.displayHPMultiplier || 0,
+      )}`,
     })
 
     if (ship.items)
@@ -79,8 +81,12 @@ ${c.percentToTextBars(
 )}
 🇨🇭 ${c.r2(
             (i.repair || 0) *
-              c.items[i.itemType][i.itemId].maxHp,
-          )}/${c.items[i.itemType][i.itemId].maxHp} HP`,
+              c.items[i.itemType][i.itemId].maxHp *
+              c.displayHPMultiplier,
+          )}/${
+            c.items[i.itemType][i.itemId].maxHp *
+            c.displayHPMultiplier
+          } HP`,
         })
       }
 
