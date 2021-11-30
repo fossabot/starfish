@@ -89,6 +89,7 @@ interface CrewMemberStub extends BaseStub {
   location?: CrewLocation
   speciesId?: SpeciesId
   stamina: number
+  maxStamina?: number
   stats: CrewStatEntry[]
   inventory: Cargo[]
   credits: number

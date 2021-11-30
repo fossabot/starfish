@@ -45,8 +45,13 @@
         </svg>
       </div>
       <div class="cmispecies">
-        <svg viewBox="0 0 15 15">
-          <text x="8" y="12">
+        <svg viewBox="0 0 24 24">
+          <text
+            x="50%"
+            y="57%"
+            dominant-baseline="middle"
+            text-anchor="middle"
+          >
             {{
               c.species[crewMember.speciesId]
                 ? c.species[crewMember.speciesId].icon
@@ -151,8 +156,10 @@ export default Vue.extend({
 .cmispecies {
   position: absolute;
   z-index: 2;
-  width: 70%;
-  height: 70%;
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,7 +172,6 @@ export default Vue.extend({
     width: 100%;
 
     text {
-      transform: translateX(-50%);
       font-size: 1rem;
     }
   }

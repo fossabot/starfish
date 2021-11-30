@@ -1077,7 +1077,7 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(this._hp)} HP left).`,
+                  text: `(${c.r2(this._hp, 0)} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,

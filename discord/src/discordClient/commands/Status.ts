@@ -63,7 +63,11 @@ export class StatusCommand implements Command {
         (ship._hp || 0) / (ship._maxHp || 0),
         (ship._maxHp || 0) * 2,
       )}
-🇨🇭 ${c.r2(ship._hp || 0)}/${c.r2(ship._maxHp || 0)}`,
+🇨🇭 ${c.abbreviateNumber(
+        (ship._hp || 0) * c.displayHPMultiplier,
+      )}/${c.abbreviateNumber(
+        (ship._maxHp || 0) * c.displayHPMultiplier,
+      )}`,
     })
 
     if (ship.items)
@@ -77,10 +81,14 @@ ${c.percentToTextBars(
     c.items[i.itemType][i.itemId].maxHp,
   c.items[i.itemType][i.itemId].maxHp * 2,
 )}
-🇨🇭 ${c.r2(
+🇨🇭 ${c.abbreviateNumber(
             (i.repair || 0) *
-              c.items[i.itemType][i.itemId].maxHp,
-          )}/${c.items[i.itemType][i.itemId].maxHp} HP`,
+              c.items[i.itemType][i.itemId].maxHp *
+              c.displayHPMultiplier,
+          )}/${c.abbreviateNumber(
+            c.items[i.itemType][i.itemId].maxHp *
+              c.displayHPMultiplier,
+          )}`,
         })
       }
 
@@ -120,7 +128,12 @@ ${c.percentToTextBars(
           value: `${c.percentToTextBars(
             context.crewMember.stamina,
           )}
-🔋 ${c.r2(context.crewMember.stamina * 100, 0)}%`,
+🔋 ${c.r2(
+            (context.crewMember.stamina /
+              (context.crewMember.maxStamina || 1)) *
+              100,
+            0,
+          )}%`,
         })
         if (hasManualEngines)
           youFields.push({

@@ -19,6 +19,7 @@
           :crewMember="cm"
           :captain="ship.captain === cm.id"
           :showTagline="true"
+          :showLevel="false"
         />
       </div>
     </div>

@@ -13,6 +13,12 @@
       }}
     </span>
     <span
+      v-if="guildMembersWithinDistance !== null"
+      class="sub"
+    >
+      ({{ guildMembersWithinDistance }} in range) -
+    </span>
+    <span
       class="sub nowrap"
       v-if="passive.data && passive.data.source"
     >
@@ -57,7 +63,41 @@ export default Vue.extend({
   data() {
     return { c }
   },
-  computed: {},
+  computed: {
+    ...mapState(['ship']),
+    guildMembersWithinDistance(): null | number {
+      if (
+        (this.passive as ShipPassiveEffect).data?.distance
+      ) {
+        const guildMembersWithinDistance = !this.ship
+          .guildId
+          ? 0
+          : this.ship.visible?.ships?.filter(
+              (s) =>
+                c.distance(
+                  s.location,
+                  this.ship.location,
+                ) <=
+                  (this.passive as ShipPassiveEffect).data!
+                    .distance! &&
+                s.guildId === this.ship.guildId,
+            ).length
+        if (
+          (this.passive as ShipPassiveEffect).id ===
+          'boostDamageWhenNoAlliesWithinDistance'
+        ) {
+          return guildMembersWithinDistance
+        }
+        if (
+          (this.passive as ShipPassiveEffect).id ===
+          'boostDamageWithNumberOfGuildMembersWithinDistance'
+        ) {
+          return guildMembersWithinDistance
+        }
+      }
+      return null
+    },
+  },
   watch: {},
   mounted() {},
   methods: {},
