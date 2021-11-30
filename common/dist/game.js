@@ -110,8 +110,14 @@ function getPlanetDefenseDamage(level) {
 }
 function statToString(data) {
     const { stat, amount } = data;
-    let titleString = text_1.default.camelCaseToWords(stat);
-    let amountString = `${text_1.default.numberWithCommas(math_1.default.r2(amount))}`;
+    let titleString = text_1.default
+        .camelCaseToWords(stat)
+        .replace(`Hp`, `HP`);
+    let amountString = `${text_1.default.numberWithCommas(math_1.default.r2(amount *
+        ((stat.toLowerCase().includes(`hp`) ||
+            stat.toLowerCase().includes(`damage`))
+            ? gameConstants_1.default.displayHPMultiplier
+            : 1)))}`;
     let suffix = ``;
     if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
         amountString = text_1.default.speedNumber(amount);

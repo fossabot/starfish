@@ -952,7 +952,11 @@ export abstract class CombatShip extends Ship {
           ? attack.weapon.displayName
           : `passive effect`
       }, and ${
-        didDie ? `dies ☠️` : `has ${c.r2(this.hp)} hp left`
+        didDie
+          ? `dies ☠️`
+          : `has ${c.r2(
+              this.hp * c.displayHPMultiplier,
+            )} hp left`
       }.`,
     )
 
@@ -1020,7 +1024,9 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(this._hp)} HP left)`,
+                  text: `(${c.r2(
+                    this._hp * c.displayHPMultiplier,
+                  )} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,
@@ -1077,7 +1083,10 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(this._hp, 0)} HP left)`,
+                  text: `(${c.r2(
+                    this._hp * c.displayHPMultiplier,
+                    0,
+                  )} HP left).`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,
