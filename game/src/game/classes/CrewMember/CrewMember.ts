@@ -98,69 +98,15 @@ export class CrewMember extends Stubbable {
     this.crewCosmeticCurrency =
       data.crewCosmeticCurrency ?? 0
 
-    // * this is for migrating from old skills
-    if (
-      data.skills?.find(
-        (s) => (s.skill as any) === `piloting`,
-      )
-    ) {
-      this.skills = [
-        {
-          skill: `strength`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `mechanics`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `mechanics`,
-            )?.xp || 0,
-        },
-        {
-          skill: `dexterity`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `piloting`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `piloting`,
-            )?.xp || 0,
-        },
-        {
-          skill: `intellect`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `munitions`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `munitions`,
-            )?.xp || 0,
-        },
-        {
-          skill: `charisma`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `linguistics`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `linguistics`,
-            )?.xp || 0,
-        },
-      ]
-    } else {
-      this.skills =
-        data.skills && data.skills.length
-          ? [...(data.skills.filter((s) => s) || [])]
-          : [
-              { skill: `strength`, level: 1, xp: 0 },
-              { skill: `dexterity`, level: 1, xp: 0 },
-              { skill: `intellect`, level: 1, xp: 0 },
-              { skill: `charisma`, level: 1, xp: 0 },
-            ]
-    }
+    this.skills =
+      data.skills && data.skills.length
+        ? [...(data.skills.filter((s) => s) || [])]
+        : [
+            { skill: `strength`, level: 1, xp: 0 },
+            { skill: `dexterity`, level: 1, xp: 0 },
+            { skill: `intellect`, level: 1, xp: 0 },
+            { skill: `charisma`, level: 1, xp: 0 },
+          ]
 
     if (data.tutorialShipId)
       this.tutorialShipId = data.tutorialShipId
