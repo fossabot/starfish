@@ -502,7 +502,7 @@ export class Planet extends Stubbable {
       })
 
     this.shipsAt.forEach((s) => {
-      s.updateThingsThatCouldChangeOnItemChange()
+      s.recalculateAll()
     })
   }
 

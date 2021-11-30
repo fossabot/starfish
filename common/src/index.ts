@@ -19,6 +19,7 @@ import * as items from './items'
 import achievements from './achievements'
 import * as cosmetics from './cosmetics'
 import loadouts from './loadouts'
+import * as crewActives from './crewActives'
 
 export default {
   ...globals,
@@ -31,6 +32,7 @@ export default {
   ...physics,
   ...discord,
   ...cosmetics,
+  ...crewActives,
   items,
   achievements,
   rooms,

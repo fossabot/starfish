@@ -52,7 +52,7 @@
             <ShipScanShip />
 
             <ShipItems />
-            <ShipAbilities />
+            <ShipActives />
 
             <ShipLog />
 

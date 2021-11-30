@@ -279,7 +279,7 @@ export default Vue.extend({
           text: 'You must drop at least 1.',
           type: 'error',
         })
-        return console.log('You must drop at least 1.')
+        return c.log('You must drop at least 1.')
       }
 
       message = message?.substring(0, 200)

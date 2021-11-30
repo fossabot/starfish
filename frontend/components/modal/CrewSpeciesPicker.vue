@@ -111,7 +111,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
           } else {
             this.$store.dispatch('notifications/notify', {
               text: 'Species set!',

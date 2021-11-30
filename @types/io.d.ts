@@ -284,6 +284,12 @@ interface IOClientEvents {
     crewId: string,
     callback: (res: IOResponse<true>) => void,
   ) => void
+  [`crew:useActive`]: (
+    shipId: string,
+    crewId: string,
+    activeId: CrewActiveId,
+    callback?: (res: IOResponse<string>) => void,
+  ) => void
   [`crew:tactic`]: (
     shipId: string,
     crewId: string,

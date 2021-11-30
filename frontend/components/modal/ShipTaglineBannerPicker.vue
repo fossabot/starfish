@@ -118,7 +118,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
           } else {
             this.$store.dispatch('notifications/notify', {
               text: 'Banner set!',
@@ -146,7 +146,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
           } else {
             this.$store.dispatch('notifications/notify', {
               text: 'Tagline set!',

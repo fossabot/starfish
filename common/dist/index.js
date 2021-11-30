@@ -43,6 +43,7 @@ const items = __importStar(require("./items"));
 const achievements_1 = __importDefault(require("./achievements"));
 const cosmetics = __importStar(require("./cosmetics"));
 const loadouts_1 = __importDefault(require("./loadouts"));
+const crewActives = __importStar(require("./crewActives"));
 exports.default = {
     ...globals_1.default,
     ...math_1.default,
@@ -54,6 +55,7 @@ exports.default = {
     ...physics_1.default,
     ...discord_1.default,
     ...cosmetics,
+    ...crewActives,
     items,
     achievements: achievements_1.default,
     rooms: rooms_1.default,

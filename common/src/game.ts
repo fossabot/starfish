@@ -88,7 +88,7 @@ function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    math.lerp(0.8, 2, level / 100) / globals.tickInterval
+    math.lerp(0.65, 2, level / 100) / globals.tickInterval
   )
 }
 
@@ -172,8 +172,8 @@ function statToString(data: {
   let amountString: string = `${text.numberWithCommas(
     math.r2(
       amount *
-        ((stat.toLowerCase().includes(`hp`) ||
-        stat.toLowerCase().includes(`damage`))
+        (stat.toLowerCase().includes(`hp`) ||
+        stat.toLowerCase().includes(`damage`)
           ? gameConstants.displayHPMultiplier
           : 1),
     ),

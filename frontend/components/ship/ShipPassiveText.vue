@@ -19,52 +19,70 @@
       ({{ guildMembersWithinDistance }} in range) -
     </span>
     <span
-      class="sub nowrap"
+      class="sub"
+      :class="{ nowrap: sourceText.length < 30 }"
       v-if="passive.data && passive.data.source"
     >
-      {{
-        passive.data.source.guildId
-          ? `${c.capitalize(
-              c.guilds[passive.data.source.guildId].name,
-            )} Guild`
-          : passive.data.source.speciesId
-          ? `${c.capitalize(
-              c.species[passive.data.source.speciesId]
-                .singular,
-            )} species`
-          : passive.data.source.planetName
-          ? `${passive.data.source.planetName}`
-          : passive.data.source.zoneName
-          ? `${passive.data.source.zoneName}`
-          : passive.data.source.item
-          ? `${
-              c.items[passive.data.source.item.type][
-                passive.data.source.item.id
-              ].displayName
-            }`
-          : passive.data.source.chassisId
-          ? `${
-              c.items.chassis[passive.data.source.chassisId]
-                .displayName
-            }`
-          : passive.data.source
-      }}
+      {{ sourceText }}
+    </span>
+    <span class="sub nowrap" v-if="timeRemaining">
+      ({{ c.msToTimeString(timeRemaining) }} left)
     </span>
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { passive: { required: true } },
+  props: {
+    passive: {
+      required: true,
+      type: Object as PropType<ShipPassiveEffect>,
+    },
+  },
   data() {
-    return { c }
+    let timeRemaining = 0,
+      timeRemainingInterval: any
+    return { c, timeRemaining, timeRemainingInterval }
   },
   computed: {
     ...mapState(['ship']),
+    sourceText(): string {
+      const s = this.passive.data?.source
+      if (!s) return ''
+      return s.guildId
+        ? `${c.capitalize(c.guilds[s.guildId].name)} Guild`
+        : s.crewActive
+        ? `${
+            c.crewActives[s.crewActive.activeId].displayName
+          } by ${
+            this.ship.crewMembers.find(
+              (cm) => cm.id === s.crewActive!.crewMemberId,
+            )
+              ? this.ship.crewMembers.find(
+                  (cm) =>
+                    cm.id === s.crewActive!.crewMemberId,
+                ).name
+              : 'a crew member'
+          }`
+        : s.speciesId
+        ? `${c.capitalize(
+            c.species[s.speciesId].singular,
+          )} species`
+        : s.planetName
+        ? `${s.planetName}`
+        : s.zoneName
+        ? `${s.zoneName}`
+        : s.item
+        ? `${c.items[s.item.type][s.item.id].displayName}`
+        : s.chassisId
+        ? `${c.items.chassis[s.chassisId].displayName}`
+        : `${s}`
+    },
+
     guildMembersWithinDistance(): null | number {
       if (
         (this.passive as ShipPassiveEffect).data?.distance
@@ -99,8 +117,26 @@ export default Vue.extend({
     },
   },
   watch: {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.timeRemainingInterval = setInterval(
+      this.recalculateRemaining,
+      1000,
+    )
+  },
+  beforeDestroy() {
+    clearInterval(this.timeRemainingInterval)
+  },
+  methods: {
+    recalculateRemaining() {
+      c.log(this.passive)
+      if (!this.passive.until) {
+        this.timeRemaining = 0
+        clearInterval(this.timeRemainingInterval)
+        return
+      }
+      this.timeRemaining = this.passive.until - Date.now()
+    },
+  },
 })
 </script>
 

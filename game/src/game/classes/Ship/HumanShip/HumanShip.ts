@@ -2161,8 +2161,8 @@ export class HumanShip extends CombatShip {
     this.toUpdate.radii = this.radii
   }
 
-  updateThingsThatCouldChangeOnItemChange() {
-    super.updateThingsThatCouldChangeOnItemChange()
+  recalculateAll() {
+    super.recalculateAll()
     this.updateBroadcastRadius()
     this.crewMembers.forEach((c) => c.recalculateAll())
     this.toUpdate._hp = this.hp
@@ -2190,7 +2190,7 @@ export class HumanShip extends CombatShip {
       ...this.items.map((i) => i.stubify()),
     ] as ItemStub[]
     this.resolveRooms()
-    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateAll()
     return true
   }
 

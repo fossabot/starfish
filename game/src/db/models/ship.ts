@@ -76,6 +76,14 @@ const shipSchemaFields: Record<
   banked: [
     { id: String, amount: Number, timestamp: Number },
   ],
+  timedPassives: [
+    {
+      id: { required: true, type: String },
+      intensity: Number,
+      until: Number,
+      data: Schema.Types.Mixed,
+    },
+  ],
   contracts: [
     {
       id: String,
@@ -127,9 +135,11 @@ const shipSchemaFields: Record<
       actives: [
         {
           id: { required: true, type: String },
-          cooldownRemaining: Number,
+          lastUsed: Number,
+          intensity: Number,
         },
       ],
+      lastActiveUse: Number,
       speciesId: String,
       permanentPassives: [
         {
@@ -137,10 +147,17 @@ const shipSchemaFields: Record<
           intensity: Number,
         },
       ],
+      timedPassives: [
+        {
+          id: { required: true, type: String },
+          intensity: Number,
+          until: Number,
+          data: Schema.Types.Mixed,
+        },
+      ],
       combatTactic: String,
       targetitemType: String,
       minePriority: String,
-      // attackGuilds: [String],
       targetLocation: [Number, Number],
       targetObject:
         { id: String, type: { type: String } } || false,

@@ -67,7 +67,7 @@ function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineTh
         baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return (math_1.default.lerp(0.8, 2, level / 100) / globals_1.default.tickInterval);
+    return (math_1.default.lerp(0.65, 2, level / 100) / globals_1.default.tickInterval);
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
     return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);
@@ -114,8 +114,8 @@ function statToString(data) {
         .camelCaseToWords(stat)
         .replace(`Hp`, `HP`);
     let amountString = `${text_1.default.numberWithCommas(math_1.default.r2(amount *
-        ((stat.toLowerCase().includes(`hp`) ||
-            stat.toLowerCase().includes(`damage`))
+        (stat.toLowerCase().includes(`hp`) ||
+            stat.toLowerCase().includes(`damage`)
             ? gameConstants_1.default.displayHPMultiplier
             : 1)))}`;
     let suffix = ``;

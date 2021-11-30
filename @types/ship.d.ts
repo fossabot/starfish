@@ -19,6 +19,7 @@ interface BaseShipData {
   boughtHeaderBackgrounds?: ShipBackground[]
   achievements?: string[]
   stats?: ShipStatEntry[]
+  timedPassives?: ShipPassiveEffect[]
 }
 
 interface BaseHumanShipData extends BaseShipData {
@@ -95,8 +96,13 @@ type ShipPassiveEffectId =
 interface ShipPassiveEffect {
   id: ShipPassiveEffectId
   intensity?: number
+  until?: number
   data?: {
     source?: {
+      crewActive?: {
+        activeId: CrewActiveId
+        crewMemberId: string
+      }
       planetName?: string
       zoneName?: string
       speciesId?: SpeciesId

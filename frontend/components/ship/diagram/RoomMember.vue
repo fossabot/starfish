@@ -86,7 +86,7 @@ export default Vue.extend({
         targetElement.getBoundingClientRect()
       const parentTop = targetElement.offsetTop
       const parentLeft = targetElement.offsetLeft
-      // console.log(parentBCR, parentTop, parentLeft)
+      // c.log(parentBCR, parentTop, parentLeft)
 
       const paddingLeft =
         (this.$el as HTMLElement).offsetWidth / 1.5

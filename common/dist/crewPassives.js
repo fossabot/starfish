@@ -38,6 +38,11 @@ const data = {
                 ? ` (if your ship's chassis can support it)`
                 : ``),
     },
+    boostSkillLevel: {
+        id: `boostSkillLevel`,
+        displayName: `Boost Skill Level`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} ${data.data?.skill} level by ${math_1.default.r2(data.intensity || 0)}`,
+    },
     boostCockpitChargeSpeed: {
         displayName: `Dorsal Fins`,
         id: `boostCockpitChargeSpeed`,

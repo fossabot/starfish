@@ -118,6 +118,10 @@
           v-else-if="tooltip.type === 'mass'"
           :data="tooltip"
         />
+        <ShipTooltipsActive
+          v-else-if="tooltip.type === 'active'"
+          :data="tooltip"
+        />
         <div v-else>{{ tooltip }}</div>
       </template>
       <div v-else v-html="tooltip" />

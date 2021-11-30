@@ -27,16 +27,8 @@ export abstract class CombatShip extends Ship {
     this.updateAttackRadius()
   }
 
-  // move(toLocation?: CoordinatePair) {
-  //   const previousLocation: CoordinatePair = [
-  //     ...this.location,
-  //   ]
-  //   super.move(toLocation)
-  //   // * this does nothing yet, just chilling
-  // }
-
-  updateThingsThatCouldChangeOnItemChange() {
-    super.updateThingsThatCouldChangeOnItemChange()
+  recalculateAll() {
+    super.recalculateAll()
     this.updateAttackRadius()
   }
 
@@ -53,17 +45,39 @@ export abstract class CombatShip extends Ship {
 
   applyPassive(p: ShipPassiveEffect) {
     this.passives.push(p)
-    this.updateThingsThatCouldChangeOnItemChange()
-    this.updateAttackRadius()
-    this.updateMaxScanProperties()
-    this.updateSlots()
+    this.recalculateAll()
     this.toUpdate.passives = this.passives
+  }
+
+  applyTimedPassive(
+    p: ShipPassiveEffect & { until: number },
+  ) {
+    // this just saves it in the db; it has no effect until the game is restarted and timed passives are loaded
+    this.timedPassives.push(p)
+
+    this.passives.push(p)
+    this.toUpdate.passives = this.passives
+    this.recalculateAll()
   }
 
   removePassive(p: ShipPassiveEffect) {
     let index
-    // if (this.id === `passiveTester`) c.log(p)
     while (index !== -1) {
+      if (p.data?.source?.crewActive)
+        index = this.passives.findIndex(
+          (ep: ShipPassiveEffect) => {
+            for (let key in ep)
+              if (ep[key] !== p[key]) return false
+            if (
+              ep.data?.source?.crewActive?.activeId !==
+                p.data?.source?.crewActive?.activeId ||
+              ep.data?.source?.crewActive?.crewMemberId !==
+                p.data?.source?.crewActive?.crewMemberId
+            )
+              return false
+            return true
+          },
+        )
       if (p.data?.source?.guildId)
         index = this.passives.findIndex(
           (ep: ShipPassiveEffect) => {
@@ -74,7 +88,6 @@ export abstract class CombatShip extends Ship {
               p.data?.source?.guildId
             )
               return false
-
             return true
           },
         )
@@ -90,7 +103,6 @@ export abstract class CombatShip extends Ship {
                 p.data?.source?.item?.type
             )
               return false
-
             return true
           },
         )
@@ -104,7 +116,6 @@ export abstract class CombatShip extends Ship {
               p.data?.source?.planetName
             )
               return false
-
             return true
           },
         )
@@ -131,12 +142,16 @@ export abstract class CombatShip extends Ship {
         )
       if (index === -1) return
       this.passives.splice(index, 1)
-      this.updateThingsThatCouldChangeOnItemChange()
-      this.updateAttackRadius()
-      this.updateMaxScanProperties()
-      this.updateSlots()
+      this.recalculateAll()
       this.toUpdate.passives = this.passives
     }
+  }
+
+  checkExpiredPassives() {
+    this.passives.forEach((p) => {
+      if (!p.until) return
+      if (p.until < Date.now()) this.removePassive(p)
+    })
   }
 
   applyZoneTickEffects() {
@@ -1202,7 +1217,7 @@ export abstract class CombatShip extends Ship {
       totalRepaired += ri.repair - previousRepair
     })
 
-    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateAll()
     return { totalRepaired, overRepair }
   }
 }

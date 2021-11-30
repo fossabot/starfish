@@ -179,7 +179,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(
@@ -214,7 +214,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.shipsBasics = res.data
@@ -245,7 +245,7 @@ export default Vue.extend({
               text: res.error,
               type: `error`,
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(
@@ -322,7 +322,7 @@ export default Vue.extend({
               text: res.error,
               type: `error`,
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(

@@ -200,20 +200,19 @@ function msToTimeString(ms = 0, short = false) {
     remainingSeconds -= hours * 60 * 60;
     let minutes = Math.floor(remainingSeconds / 60);
     remainingSeconds -= minutes * 60;
-    if (minutes < 10 && hours > 0)
-        minutes = `0${minutes}`;
+    // if (minutes < 10 && hours > 0) minutes = `0${minutes}`
     let seconds = remainingSeconds;
     if (seconds < 10 && minutes > 0)
         seconds = `0${seconds}`;
     if (!years && !days && !hours && !minutes)
         return `${negativePrefix}${seconds}s`;
     if (!years && !days && !hours)
-        return `${negativePrefix}${minutes}m ${!short && seconds ? `${seconds}s` : ``}`;
+        return `${negativePrefix}${minutes}${!short && seconds ? `:${seconds}` : `m`}`;
     if (!years && !days)
-        return `${negativePrefix}${hours}h  ${!short && minutes ? `${minutes}m` : ``}`;
+        return `${negativePrefix}${hours}h${!short && minutes ? ` ${minutes}m` : ``}`;
     if (!years)
-        return `${negativePrefix}${days}d ${!short && hours ? `${hours}h` : ``}`;
-    return `${negativePrefix}${years}y ${!short && days ? `${days}d` : ``}`;
+        return `${negativePrefix}${days}d${!short && hours ? ` ${hours}h` : ``}`;
+    return `${negativePrefix}${years}y${!short && days ? ` ${days}d` : ``}`;
 }
 const possibleRandomCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz1234567890.,$%&*-?!'🚀⚡️📣🙏💳🪐💪🌏🛸🌌🔧🎉🧭📍🔥🛠📦📡⏱😀☠️👍👎🖕👀 あいうえおるった月火水木金土월화수목금토일`;
 function garble(string = ``, percent = 0) {
