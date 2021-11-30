@@ -31,6 +31,7 @@ const mainDirs: string[] = [
 ]
 
 const log = (...args: any[]): void => {
+  if (process.env.NODE_ENV !== `development`) return
   const regexResult =
     /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(
       `${new Error().stack}`,
