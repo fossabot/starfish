@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "build-once": "tsc --project ./tsconfig.game.json",
+    "build-once": "tsc --pretty --project ./tsconfig.game.json",
     "build": "tsc --project ./tsconfig.game.json -w",
     "dev": "NODE_ENV=development nodemon dist/index.js",
     "prod": "NODE_ENV=production node dist/index.js",
     "analyze": "NODE_ENV=production node --prof dist/index.js",
     "test": "NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --timeout 10000 --require ts-node/register --reporter json --reporter-option output=reports/test-results.json --exit 'tests/index.ts'",
+    "testhook": "NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --timeout 10000 --require ts-node/register --reporter min --exit 'tests/index.ts'",
     "testlocal": "NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true nodemon tests/localTestRunner.ts",
     "teststaging": "NODE_ENV=staging TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"tsconfig.test.json\" mocha --timeout 10000 --require ts-node/register --reporter json --reporter-option output=reports/test-results.json --exit 'tests/index.ts'"
   },
