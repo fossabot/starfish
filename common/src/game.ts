@@ -14,7 +14,8 @@ function getHitDamage(
   return (
     weapon.damage *
     math.lerp(1, 4, totalMunitionsSkill / 100) *
-    math.lerp(0.8, 1, weapon.repair)
+    math.lerp(0.8, 1, weapon.repair) *
+    math.randomBetween(0.9, 1.1)
   )
 }
 

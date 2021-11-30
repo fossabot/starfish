@@ -24,7 +24,7 @@ const guilds: {
         id: `boostDamageWithNumberOfGuildMembersWithinDistance`,
         intensity: 0.1,
         data: {
-          distance: 0.2,
+          distance: 0.20055,
           source: { guildId: `trader` },
         },
       },
@@ -58,7 +58,7 @@ const guilds: {
         id: `boostDamageWhenNoAlliesWithinDistance`,
         intensity: 0.2,
         data: {
-          distance: 0.3,
+          distance: 0.3008064205,
           source: { guildId: `hunter` },
         },
       },

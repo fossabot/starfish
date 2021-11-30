@@ -32,7 +32,8 @@ const gameConstants_1 = __importDefault(require("./gameConstants"));
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         math_1.default.lerp(1, 4, totalMunitionsSkill / 100) *
-        math_1.default.lerp(0.8, 1, weapon.repair));
+        math_1.default.lerp(0.8, 1, weapon.repair) *
+        math_1.default.randomBetween(0.9, 1.1));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability, useLevel = 1) {
     return (((0.001 / maxHp) * math_1.default.lerp(1, 0.5, useLevel / 100)) /
