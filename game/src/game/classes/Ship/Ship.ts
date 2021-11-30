@@ -597,10 +597,10 @@ export class Ship extends Stubbable {
     const loadout = c.loadouts[id]
     if (!loadout) return false
     this.swapChassis({ chassisId: loadout.chassisId })
-    loadout.items.forEach(
-      (baseData: Partial<BaseItemData>) =>
-        this.addItem(baseData),
-    )
+    // loadout.items.forEach(
+    //   (baseData: Partial<BaseItemData>) =>
+    //     this.addItem(baseData),
+    // )
     this.updateThingsThatCouldChangeOnItemChange()
     return true
   }
