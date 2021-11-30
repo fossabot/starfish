@@ -44,6 +44,6 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "**/*.ts": "tsc-files --noEmit"
+    "**/*.ts": "tsc-files --pretty --noEmit"
   }
 }
