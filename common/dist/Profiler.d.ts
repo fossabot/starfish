@@ -1,15 +1,14 @@
-export var __esModule: boolean;
-export class Profiler {
-    constructor(top?: number, name?: boolean, enabled?: boolean, cutoff?: number);
+export declare class Profiler {
     enabled: boolean;
     showTop: number;
     cutoff: number;
-    name: boolean;
-    snapshots: any[];
-    metric: Performance | DateConstructor;
-    set currentSnapshot(arg: any);
-    get currentSnapshot(): any;
-    step(name: any): void;
+    name: string | false;
+    private snapshots;
+    readonly metric: any;
+    constructor(top?: number, name?: string | false, enabled?: boolean, cutoff?: number);
+    private get currentSnapshot();
+    private set currentSnapshot(value);
+    step(name?: string): void;
     end(): void;
 }
 //# sourceMappingURL=Profiler.d.ts.map

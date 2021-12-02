@@ -32,3 +32,10 @@ interface HasMassAndLocationAndVelocity {
   velocity: CoordinatePair
   [key: string]: any
 }
+
+interface ProfilerSnapshot {
+  name: string
+  time: number
+  timeFromStart: number
+  duration?: number
+}
