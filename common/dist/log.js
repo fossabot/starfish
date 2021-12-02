@@ -25,6 +25,8 @@ const mainDirs = [
 // 'common', 'discord', 'frontend', 'game'
 ];
 const log = (...args) => {
+    if (process.env.NODE_ENV !== `development`)
+        return;
     const regexResult = /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || ``;
     const lineNumber = regexResult?.[3] || ``;
