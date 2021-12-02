@@ -40,7 +40,9 @@ describe(`Human movement`, () => {
 
   it(`should properly apply passive thrust if alone in cockpit with a target`, async () => {
     const g = new Game()
-    const s = await g.addHumanShip(humanShipData())
+    const s = await g.addHumanShip(
+      humanShipData(`testPassiveEngine`),
+    )
     const cm = await s.addCrewMember(crewMemberData(), true)
     cm.targetLocation = [10.001, 0]
     cm.location = `cockpit`
@@ -52,7 +54,9 @@ describe(`Human movement`, () => {
 
   it(`should properly target crew average if someone is already targeting something in the cockpit`, async () => {
     const g = new Game()
-    const s = await g.addHumanShip(humanShipData())
+    const s = await g.addHumanShip(
+      humanShipData(`testPassiveEngine`),
+    )
     const cm = await s.addCrewMember(crewMemberData(), true)
     const cm2 = await s.addCrewMember(
       crewMemberData(),

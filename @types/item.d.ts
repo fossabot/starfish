@@ -152,6 +152,7 @@ type LoadoutId =
   | `humanDefault`
   | `aiTutorial1`
   | `testManualEngine`
+  | `testPassiveEngine`
   | `testMega`
 type Loadout = {
   chassisId: ChassisId

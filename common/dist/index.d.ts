@@ -163,6 +163,7 @@ declare const _default: {
         humanDefault: Loadout;
         aiTutorial1: Loadout;
         testManualEngine: Loadout;
+        testPassiveEngine: Loadout;
         testMega: Loadout;
     };
     Profiler: typeof Profiler;
