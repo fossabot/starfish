@@ -24,6 +24,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `itemType`,
                 `itemId`,
                 `displayName`,
@@ -54,6 +55,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `itemType`,
                 `itemId`,
                 `displayName`,
@@ -85,6 +87,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `itemType`,
                 `itemId`,
                 `displayName`,
@@ -149,6 +152,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `repair`,
                 `maxHp`,
                 `itemType`,
@@ -197,6 +201,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `maxHp`,
                 `itemType`,
                 `itemId`,
@@ -223,6 +228,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `maxHp`,
                 `itemType`,
                 `itemId`,
@@ -249,6 +255,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `maxHp`,
                 `itemType`,
                 `itemId`,
@@ -283,6 +290,7 @@ exports.scanners = {
             speed: true,
             direction: true,
             items: [
+                `id`,
                 `repair`,
                 `maxHp`,
                 `itemType`,
@@ -327,6 +335,7 @@ exports.scanners = {
             speed: true,
             direction: true,
             items: [
+                `id`,
                 `repair`,
                 `maxHp`,
                 `itemType`,
@@ -371,6 +380,7 @@ exports.scanners = {
             speed: true,
             direction: true,
             items: [
+                `id`,
                 `repair`,
                 `maxHp`,
                 `itemType`,
@@ -412,6 +422,7 @@ exports.scanners = {
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
+                `id`,
                 `maxHp`,
                 `itemType`,
                 `itemId`,

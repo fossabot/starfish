@@ -26,13 +26,13 @@
         }}
       </div>
       <div v-else class="sub">
-        Global cooldown remaining:
-        <div>
+        Global cooldown:
+        <span>
           {{ c.msToTimeString(globalCooldownRemaining) }} /
           {{
             c.msToTimeString(c.crewActiveBaseGlobalCooldown)
           }}
-        </div>
+        </span>
       </div>
     </div>
   </Box>
@@ -53,10 +53,16 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState([
+      'userId',
+      'ship',
+      'crewMember',
+      'lastUpdated',
+    ]),
     show(): boolean {
       return (
         this.ship &&
+        this.crewMember?.actives?.length > 0 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('actives'))
       )
@@ -75,6 +81,9 @@ export default Vue.extend({
     lastActiveUse() {
       this.updateCooldown()
     },
+    lastUpdated() {
+      this.updateCooldown()
+    },
   },
   mounted() {
     this.updateCooldown()
@@ -89,11 +98,6 @@ export default Vue.extend({
       )
       if (this.updateCooldownTimer)
         clearTimeout(this.updateCooldownTimer)
-      if (this.globalCooldownRemaining > 0)
-        this.updateCooldownTimer = setTimeout(
-          this.updateCooldown,
-          1000,
-        )
     },
   },
 })

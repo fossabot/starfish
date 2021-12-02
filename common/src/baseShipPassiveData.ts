@@ -134,7 +134,7 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         (p.intensity || 1) * 100,
-      )}% passive thrust`,
+      )}% auto-nav`,
   },
   boostXpGain: {
     description: (p) =>

@@ -120,8 +120,8 @@ export class CrewMember extends Stubbable {
       this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
-    // if (data.actives) this.actives = data.actives
-    this.lastActiveUse = 0 // data.lastActiveUse || 0
+    if (data.actives) this.actives = data.actives
+    this.lastActiveUse = data.lastActiveUse || 0
     this.addActive({
       id: `instantStamina`,
       lastUsed: 0,
@@ -135,7 +135,7 @@ export class CrewMember extends Stubbable {
     this.addActive({
       id: `boostShipSightRange`,
       lastUsed: 0,
-      intensity: 0.1,
+      intensity: 0.2,
     })
 
     if (data.permanentPassives) {

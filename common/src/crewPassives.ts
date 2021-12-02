@@ -71,7 +71,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } passive thrust by ${math.r2(
+      } auto-nav power by ${math.r2(
         (data.intensity || 0) * 100,
       )}%`,
   },

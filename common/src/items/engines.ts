@@ -14,8 +14,8 @@ export const engines: {
     mass: 100 * game.itemMassMultiplier,
     basePrice: { credits: 0 * game.itemPriceMultiplier },
     rarity: 999999,
-    // manualThrustMultiplier: 10,
-    passiveThrustMultiplier: 400,
+    manualThrustMultiplier: 10,
+    // passiveThrustMultiplier: 400,
     maxHp: 10,
     passives: [],
   },
@@ -57,7 +57,7 @@ export const engines: {
     mass: 600 * game.itemMassMultiplier,
     basePrice: { credits: 17 * game.itemPriceMultiplier },
     rarity: 0.4,
-    passiveThrustMultiplier: 0.7,
+    manualThrustMultiplier: 0.7,
     maxHp: 5,
     repairDifficulty: 0.9,
     passives: [
@@ -67,8 +67,8 @@ export const engines: {
       },
     ],
     maxLevel: 2,
-    upgradableProperties: [`passiveThrustMultiplier`],
-    upgradeBonus: 0.01,
+    upgradableProperties: [`manualThrustMultiplier`],
+    upgradeBonus: 0.04,
   },
   starter2: {
     type: `item`,
@@ -79,7 +79,7 @@ export const engines: {
     mass: 800 * game.itemMassMultiplier,
     basePrice: { credits: 21 * game.itemPriceMultiplier },
     rarity: 1,
-    passiveThrustMultiplier: 0.8,
+    manualThrustMultiplier: 0.8,
     maxHp: 5,
     repairDifficulty: 0.85,
     passives: [
@@ -89,8 +89,8 @@ export const engines: {
       },
     ],
     maxLevel: 3,
-    upgradableProperties: [`passiveThrustMultiplier`],
-    upgradeBonus: 0.01,
+    upgradableProperties: [`manualThrustMultiplier`],
+    upgradeBonus: 0.04,
   },
   starter3: {
     type: `item`,
@@ -101,7 +101,7 @@ export const engines: {
     mass: 1000 * game.itemMassMultiplier,
     basePrice: { credits: 49 * game.itemPriceMultiplier },
     rarity: 1.5,
-    passiveThrustMultiplier: 0.9,
+    manualThrustMultiplier: 0.9,
     maxHp: 5,
     repairDifficulty: 0.8,
     passives: [
@@ -111,8 +111,8 @@ export const engines: {
       },
     ],
     maxLevel: 4,
-    upgradableProperties: [`passiveThrustMultiplier`],
-    upgradeBonus: 0.01,
+    upgradableProperties: [`manualThrustMultiplier`],
+    upgradeBonus: 0.04,
   },
 
   // basic
@@ -125,7 +125,7 @@ export const engines: {
     mass: 900 * game.itemMassMultiplier,
     basePrice: { credits: 80 * game.itemPriceMultiplier },
     rarity: 2,
-    passiveThrustMultiplier: 1.2,
+    manualThrustMultiplier: 1.2,
     maxHp: 4,
     passives: [
       {
@@ -135,7 +135,7 @@ export const engines: {
     ],
     maxLevel: 5,
     upgradableProperties: [
-      `passiveThrustMultiplier`,
+      `manualThrustMultiplier`,
       `repairDifficulty`,
     ],
   },
@@ -148,7 +148,7 @@ export const engines: {
     mass: 1200 * game.itemMassMultiplier,
     basePrice: { credits: 190 * game.itemPriceMultiplier },
     rarity: 6,
-    passiveThrustMultiplier: 1.4,
+    manualThrustMultiplier: 1.4,
     maxHp: 4,
     passives: [
       {
@@ -158,7 +158,7 @@ export const engines: {
     ],
     maxLevel: 8,
     upgradableProperties: [
-      `passiveThrustMultiplier`,
+      `manualThrustMultiplier`,
       `repairDifficulty`,
     ],
   },
@@ -171,7 +171,7 @@ export const engines: {
     mass: 1500 * game.itemMassMultiplier,
     basePrice: { credits: 350 * game.itemPriceMultiplier },
     rarity: 7,
-    passiveThrustMultiplier: 1.6,
+    manualThrustMultiplier: 1.6,
     maxHp: 4,
     passives: [
       {
@@ -181,7 +181,7 @@ export const engines: {
     ],
     maxLevel: 10,
     upgradableProperties: [
-      `passiveThrustMultiplier`,
+      `manualThrustMultiplier`,
       `repairDifficulty`,
     ],
   },
@@ -310,6 +310,44 @@ export const engines: {
     ],
   },
 
+  // passive
+  passive1: {
+    type: `item`,
+    itemType: `engine`,
+    itemId: `passive1`,
+    displayName: `Sleep Swimmer v1`,
+    description: `You can't always micromanage things — this engine is designed for those who prefer a smoother ride.`,
+    mass: 1000 * game.itemMassMultiplier,
+    basePrice: { credits: 105 * game.itemPriceMultiplier },
+    rarity: 7,
+    passiveThrustMultiplier: 1.1,
+    maxHp: 3,
+    maxLevel: 4,
+    upgradeBonus: 0.08,
+    upgradableProperties: [
+      `passiveThrustMultiplier`,
+      `repairDifficulty`,
+    ],
+  },
+  passive2: {
+    type: `item`,
+    itemType: `engine`,
+    itemId: `passive2`,
+    displayName: `Sleep Swimmer v2`,
+    description: `You can't always micromanage things — this engine is designed for those who prefer a smoother ride.`,
+    mass: 900 * game.itemMassMultiplier,
+    basePrice: { credits: 315 * game.itemPriceMultiplier },
+    rarity: 14,
+    passiveThrustMultiplier: 1.2,
+    maxHp: 3,
+    maxLevel: 7,
+    upgradeBonus: 0.08,
+    upgradableProperties: [
+      `passiveThrustMultiplier`,
+      `repairDifficulty`,
+    ],
+  },
+
   // heavy
   heavy1: {
     type: `item`,
@@ -325,7 +363,7 @@ export const engines: {
     maxHp: 6,
     repairDifficulty: 0.8,
     maxLevel: 2,
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
     upgradableProperties: [
       `manualThrustMultiplier`,
       `reliability`,
@@ -346,7 +384,7 @@ export const engines: {
     maxHp: 7,
     repairDifficulty: 0.8,
     maxLevel: 3,
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
     upgradableProperties: [
       `manualThrustMultiplier`,
       `reliability`,
@@ -367,7 +405,7 @@ export const engines: {
     maxHp: 8,
     repairDifficulty: 0.8,
     maxLevel: 4,
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
     upgradableProperties: [
       `manualThrustMultiplier`,
       `reliability`,

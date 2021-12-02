@@ -253,8 +253,10 @@ export class Ship extends Stubbable {
       this.changeGuild(guildId)
 
     if (timedPassives?.length) {
-      c.log(timedPassives)
-      for (let p of timedPassives) this.applyPassive(p)
+      for (let p of timedPassives) {
+        this.timedPassives.push(p)
+        this.applyPassive(p)
+      }
     }
     this.checkExpiredPassives()
 
@@ -1072,13 +1074,13 @@ export class Ship extends Stubbable {
     const approxTicksToTurnToTargetAngle =
       Math.abs(percentMovingAwayFromTarget) *
         this.speed *
-        1000000 || 1
+        10e7 || 1
 
     // * multiplier that determines how many times more than the angle difference we should be
-    const intensity = 5
+    const intensity = 6
 
     // * instead of permanently getting _closer_ to the desired angle, intentionally overshoot slightly to actually hit it
-    const intentionalOvershootDegrees = 0.2
+    const intentionalOvershootDegrees = 3
 
     // from "straight", how hard can the turn be? 0 - 179.5
     const maximumTurnDegrees =
@@ -1088,7 +1090,7 @@ export class Ship extends Stubbable {
             1,
             Math.abs(percentMovingAwayFromTarget) * urgency,
           )) *
-      c.clamp(0, approxTicksToTurnToTargetAngle / 5, 1)
+      c.clamp(0.01, approxTicksToTurnToTargetAngle / 5, 1)
 
     const howHardToTurnDegrees = c.clamp(
       maximumTurnDegrees * -1,
@@ -1113,7 +1115,7 @@ export class Ship extends Stubbable {
     //   target[1] - percentToAdjust * this.velocity[1],
     // ] as CoordinatePair
     const angleToThrust =
-      this.speed < 0.000001
+      this.speed < 0.0000002
         ? angleToTarget
         : (howHardToTurnDegrees +
             this.direction +
@@ -1131,7 +1133,7 @@ export class Ship extends Stubbable {
 
     // if (this.human)
     //   c.log({
-    //     // maximumTurnDegrees,
+    //     maximumTurnDegrees,
     //     // ticksAtCurrentSpeedToReachTarget,
     //     // speedOverDistance,
     //     urgency,
@@ -1139,11 +1141,11 @@ export class Ship extends Stubbable {
     //     // percentMovingAwayFromTarget,
     //     // // // ticksAtCurrentSpeedToReachTarget,
     //     // // howHardToTurnPercent,
-    //     // howHardToTurnDegrees,
+    //     howHardToTurnDegrees,
     //     // // percentBackwards,
     //     // currentDirection: this.direction,
-    //     // angleToTarget,
-    //     // angleToThrust,
+    //     angleToTarget,
+    //     angleToThrust,
     //     // // turnUV,
     //     // approxTicksRequiredToReachTarget,
     //   })

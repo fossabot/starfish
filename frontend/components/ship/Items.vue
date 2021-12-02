@@ -71,7 +71,12 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState([
+      'userId',
+      'ship',
+      'crewMember',
+      'tooltip',
+    ]),
     show() {
       return (
         this.ship &&
@@ -86,38 +91,50 @@ export default Vue.extend({
       )
     },
     engines() {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'engine',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) => i.itemType === 'engine',
+        ) || []
       )
     },
     weapons() {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'weapon',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) => i.itemType === 'weapon',
+        ) || []
       )
     },
     scanners() {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'scanner',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) => i.itemType === 'scanner',
+        ) || []
       )
     },
     communicators() {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'communicator',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) => i.itemType === 'communicator',
+        ) || []
       )
     },
     armor() {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'armor',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) => i.itemType === 'armor',
+        ) || []
       )
     },
     other() {
-      return this.ship.items.filter(
-        (i: ItemStub) =>
-          i.itemType !== 'engine' &&
-          i.itemType !== 'weapon' &&
-          i.itemType !== 'scanner' &&
-          i.itemType !== 'communicator' &&
-          i.itemType !== 'armor',
+      return (
+        this.ship.items.filter(
+          (i: ItemStub) =>
+            i.itemType !== 'engine' &&
+            i.itemType !== 'weapon' &&
+            i.itemType !== 'scanner' &&
+            i.itemType !== 'communicator' &&
+            i.itemType !== 'armor',
+        ) || []
       )
     },
   },
@@ -135,10 +152,6 @@ export default Vue.extend({
 }
 .itemlist {
   line-height: 1.1;
-
-  & > * {
-    margin-bottom: 0.6em;
-  }
 }
 .hpbar {
   margin-top: 0.2em;

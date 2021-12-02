@@ -98,6 +98,27 @@ export function useActive(
       error: `That ability is not implemented yet.`,
     }
 
+  if (data.notify)
+    this.ship.logEntry(
+      [
+        {
+          text: this.name,
+          color: `var(--item)`,
+          tooltipData: { type: `crewMember`, id: this.id },
+        },
+        `used`,
+        {
+          text: data.displayName,
+          color: `var(--item)`,
+          tooltipData: data.description(active),
+        },
+        `&nospace.`,
+      ],
+      `medium`,
+      `ability`,
+      true,
+    )
+
   this.toUpdate.actives = this.actives
 
   return { result: res }

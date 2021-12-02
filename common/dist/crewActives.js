@@ -12,13 +12,13 @@ exports.crewActives = {
         id: `instantStamina`,
         displayName: `Sunny Day`,
         description: (p) => `Instantly gain ${math_1.default.r2(p.intensity * 100, 0)} stamina.`,
-        cooldown: 1000, //* 60, //* 60 * 24 * 3,
+        cooldown: exports.crewActiveBaseGlobalCooldown * 2,
     },
     cargoSweep: {
         id: `cargoSweep`,
         displayName: `Cargo Magnet`,
         description: (p) => `Sweep the immediate area to look for floating cargo (attractor power ${math_1.default.r2(p.intensity * 100, 0)}%).`,
-        cooldown: 1000 * 60 * 3, //* 60, //* 60 * 24 * 3,
+        cooldown: exports.crewActiveBaseGlobalCooldown * 3,
     },
     boostShipSightRange: {
         id: `boostShipSightRange`,
@@ -26,7 +26,8 @@ exports.crewActives = {
         description: function (p) {
             return `Boost the ship's sight range by ${math_1.default.r2(p.intensity * 100, 0)}% for ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`;
         },
-        cooldown: 1000,
+        notify: true,
+        cooldown: exports.crewActiveBaseGlobalCooldown * 2.5,
         duration: 1000 * 60 * 60 * 1,
     },
 };

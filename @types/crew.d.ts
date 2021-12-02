@@ -166,6 +166,7 @@ interface CrewActiveData {
   description: (a: CrewActive) => string
   cooldown: number
   duration?: number
+  notify?: boolean
 }
 
 interface BaseSpeciesData {

@@ -30,6 +30,8 @@ export declare const engine: {
     glass1: BaseEngineData;
     glass2: BaseEngineData;
     glass3: BaseEngineData;
+    passive1: BaseEngineData;
+    passive2: BaseEngineData;
     heavy1: BaseEngineData;
     heavy2: BaseEngineData;
     heavy3: BaseEngineData;

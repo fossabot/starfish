@@ -198,6 +198,10 @@ export default function (
         return callback({
           error: `No crew member found by that id.`,
         })
+      if (crewMember.bottomedOutOnStamina)
+        return callback({
+          error: `You must wait until your stamina regenerates to use an active ability.`,
+        })
 
       const res = crewMember.useActive(activeId)
 

@@ -19,12 +19,18 @@ export function cockpit(this: CrewMember): void {
       this.ship.crewMembers,
     )
 
+  const isInTutorialMultiplier = this.ship.tutorial
+    ?.currentStep
+    ? 10
+    : 1
+
   this.cockpitCharge +=
     c.getCockpitChargePerTickForSingleCrewMember(
       this.dexterity?.level || 1,
     ) *
     chargeBoost *
-    generalBoostMultiplier
+    generalBoostMultiplier *
+    isInTutorialMultiplier
   if (this.cockpitCharge > 1) this.cockpitCharge = 1
   this.toUpdate.cockpitCharge = this.cockpitCharge
 }

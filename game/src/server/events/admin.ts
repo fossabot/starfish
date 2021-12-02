@@ -118,6 +118,36 @@ export default function (
     },
   )
 
+  socket.on(`admin:speedUpShip`, (id, password, shipId) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:speedUpShip`,
+      )
+    const ship = game.humanShips.find(
+      (s) => s.id === shipId,
+    )
+    if (!ship) return
+    ship.velocity[0] *= 10
+    ship.velocity[1] *= 10
+    ship.toUpdate.velocity = ship.velocity
+    ship.toUpdate.speed = c.vectorToMagnitude(ship.velocity)
+    c.log(`Accelerated ship ${ship.name}.`)
+  })
+  socket.on(`admin:stopShip`, (id, password, shipId) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(
+        `Non-admin attempted to access admin:stopShip`,
+      )
+    const ship = game.humanShips.find(
+      (s) => s.id === shipId,
+    )
+    if (!ship) return
+    ship.hardStop()
+    c.log(`Stopped ship ${ship.name}.`)
+  })
+
   socket.on(
     `admin:deleteCrewMember`,
     (id, password, shipId, crewMemberId) => {

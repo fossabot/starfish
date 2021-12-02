@@ -25,9 +25,14 @@
     >
       {{ sourceText }}
     </span>
-    <span class="sub nowrap" v-if="timeRemaining">
-      ({{ c.msToTimeString(timeRemaining) }} left)
-    </span>
+    <div class="sub" v-if="timeRemaining">
+      <span class="fade"
+        >({{
+          c.msToTimeString(timeRemaining)
+        }}
+        remaining)</span
+      >
+    </div>
   </span>
 </template>
 
@@ -49,7 +54,7 @@ export default Vue.extend({
     return { c, timeRemaining, timeRemainingInterval }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'lastUpdated']),
     sourceText(): string {
       const s = this.passive.data?.source
       if (!s) return ''
@@ -116,19 +121,20 @@ export default Vue.extend({
       return null
     },
   },
-  watch: {},
+  watch: {
+    lastUpdated() {
+      this.recalculateRemaining()
+    },
+  },
   mounted() {
-    this.timeRemainingInterval = setInterval(
-      this.recalculateRemaining,
-      1000,
-    )
+    this.recalculateRemaining()
   },
   beforeDestroy() {
     clearInterval(this.timeRemainingInterval)
   },
   methods: {
     recalculateRemaining() {
-      c.log(this.passive)
+      // c.log(this.passive)
       if (!this.passive.until) {
         this.timeRemaining = 0
         clearInterval(this.timeRemainingInterval)

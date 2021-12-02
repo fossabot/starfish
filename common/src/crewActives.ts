@@ -14,7 +14,7 @@ export const crewActives: {
         p.intensity * 100,
         0,
       )} stamina.`,
-    cooldown: 1000, //* 60, //* 60 * 24 * 3,
+    cooldown: crewActiveBaseGlobalCooldown * 2,
   },
 
   cargoSweep: {
@@ -25,7 +25,7 @@ export const crewActives: {
         p.intensity * 100,
         0,
       )}%).`,
-    cooldown: 1000 * 60 * 3, //* 60, //* 60 * 24 * 3,
+    cooldown: crewActiveBaseGlobalCooldown * 3,
   },
 
   boostShipSightRange: {
@@ -39,7 +39,8 @@ export const crewActives: {
         this.duration || 1000 * 60 * 60 * 24 * 1,
       )}.`
     },
-    cooldown: 1000, //* 60, //* 60 * 24 * 3,
+    notify: true,
+    cooldown: crewActiveBaseGlobalCooldown * 2.5,
     duration: 1000 * 60 * 60 * 1,
   },
 }

@@ -7,7 +7,13 @@
     <div>
       {{ activeData.description(data) }}
     </div>
-    <div class="sub martopsmall" v-if="!cooldownRemaining">
+    <div
+      class="sub martopsmall"
+      v-if="
+        !crewMember.bottomedOutOnStamina &&
+        !cooldownRemaining
+      "
+    >
       Click to activate!
     </div>
     <hr />
@@ -42,7 +48,7 @@ export default Vue.extend({
     return { c, cooldownRemaining: 0 }
   },
   computed: {
-    ...mapState(['tooltip', 'crewMember']),
+    ...mapState(['tooltip', 'crewMember', 'lastUpdated']),
     activeData(): CrewActiveData {
       return c.crewActives[(this.data as CrewActive).id]
     },
@@ -53,6 +59,9 @@ export default Vue.extend({
   watch: {
     lastActiveUse() {
       this.updateCooldown()
+    },
+    lastUpdated() {
+      if (this.tooltip === this.data) this.updateCooldown()
     },
   },
   mounted() {
@@ -69,8 +78,6 @@ export default Vue.extend({
           (Date.now() -
             ((this.data as CrewActive).lastUsed || 0)),
       )
-      if (this.tooltip === this.data)
-        setTimeout(this.updateCooldown, 1000)
     },
   },
 })

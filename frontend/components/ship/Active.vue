@@ -7,8 +7,9 @@
     }"
     class="active pointer"
     :class="{
-      disabled: cooldownRemaining,
-      fade: cooldownRemaining,
+      disabled:
+        crewMember.bottomedOutOnStamina ||
+        percentCooldownRemaining,
     }"
     @click="use"
   >
@@ -26,8 +27,18 @@
         }deg, rgba(30,30,30,.8))`,
       }"
     ></div>
-    <div class="contents">
+    <div
+      class="contents"
+      :class="{
+        fade:
+          crewMember.bottomedOutOnStamina ||
+          percentCooldownRemaining,
+      }"
+    >
       <img :src="`/images/crewActives/${active.id}.svg`" />
+    </div>
+    <div class="displaytimer" v-if="cooldownRemaining">
+      {{ c.msToTimeString(cooldownRemaining, true) }}
     </div>
   </div>
 </template>
@@ -40,10 +51,19 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   props: { active: { type: Object, required: true } },
   data() {
-    return { c, cooldownRemaining: 0 }
+    return {
+      c,
+      globalCooldownRemaining: 0,
+      cooldownRemaining: 0,
+    }
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState([
+      'userId',
+      'ship',
+      'crewMember',
+      'lastUpdated',
+    ]),
     data(): CrewActiveData {
       return c.crewActives[this.active.id]
     },
@@ -54,6 +74,10 @@ export default Vue.extend({
           0,
           c.crewActiveBaseGlobalCooldown,
           this.data.cooldown,
+          // this.globalCooldownRemaining >=
+          //   this.cooldownRemaining
+          //   ? c.crewActiveBaseGlobalCooldown
+          //   : this.data.cooldown,
         )
       )
     },
@@ -62,25 +86,36 @@ export default Vue.extend({
     active() {
       this.updateCooldown()
     },
+    lastUpdated() {
+      this.updateCooldown()
+    },
   },
   mounted() {
     this.updateCooldown()
   },
   methods: {
     updateCooldown() {
-      this.cooldownRemaining = Math.max(
+      this.globalCooldownRemaining = Math.max(
         0,
         c.crewActiveBaseGlobalCooldown -
           (Date.now() -
             (this.crewMember?.lastActiveUse || 0)),
+      )
+      this.cooldownRemaining = Math.max(
+        0,
+        this.globalCooldownRemaining,
         this.data.cooldown -
           (Date.now() - this.active.lastUsed),
       )
-      if (this.cooldownRemaining > 0) {
-        setTimeout(this.updateCooldown, 1000)
-      }
     },
     use() {
+      if (this.crewMember.bottomedOutOnStamina) {
+        this.$store.dispatch('notifications/notify', {
+          text: `You need to rest before you can use an ability.`,
+          type: 'error',
+        })
+        return
+      }
       if (this.cooldownRemaining > 0) {
         this.$store.dispatch('notifications/notify', {
           text: 'That ability is on cooldown.',
@@ -153,6 +188,10 @@ export default Vue.extend({
     // transform: scale(1.05);
   }
 }
+
+.fade {
+  opacity: 0.3;
+}
 .cooldownradial {
   position: absolute;
   top: 0;
@@ -172,5 +211,15 @@ export default Vue.extend({
     width: 100%;
     height: 100%;
   }
+}
+.displaytimer {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  opacity: 0.8;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 0.4em black, 0 0 0.2em black;
 }
 </style>

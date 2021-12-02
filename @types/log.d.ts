@@ -6,6 +6,7 @@ type LogLevel =
   | `notify`
 type LogAlertLevel = LogLevel | `off`
 type LogIcon =
+  | `ability`
   | `alert`
   | `arrive`
   | `brake`

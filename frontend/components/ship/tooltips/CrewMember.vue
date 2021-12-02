@@ -1,6 +1,9 @@
 <template>
   <div class="crewmembertooltip">
-    <ShipTooltipsCrewHeader :data="data" class="header" />
+    <ShipTooltipsCrewHeader
+      :data="dataToUse"
+      class="header"
+    />
 
     <hr style="margin-top: 0" />
 
@@ -8,7 +11,10 @@
       <div class="sub">Member for</div>
       <div>
         {{
-          c.msToTimeString(Date.now() - data.joinDate, true)
+          c.msToTimeString(
+            Date.now() - dataToUse.joinDate,
+            true,
+          )
         }}
       </div>
     </div>
@@ -17,10 +23,10 @@
 
     <div>
       <div
-        v-for="skill in [...data.skills].sort(
+        v-for="skill in [...dataToUse.skills].sort(
           (a, b) => b.level - a.level,
         )"
-        :key="data.id + skill.skill"
+        :key="dataToUse.id + skill.skill"
         class="flexcenter flexbetween"
       >
         <div class="sub">
@@ -37,8 +43,8 @@
     <div
       class="flexcenter flexbetween"
       v-if="
-        data.stats &&
-        data.stats.find(
+        dataToUse.stats &&
+        dataToUse.stats.find(
           (s) => s.stat === 'totalContributedToCommonFund',
         )
       "
@@ -48,7 +54,7 @@
         {{
           c.numberWithCommas(
             Math.round(
-              data.stats.find(
+              dataToUse.stats.find(
                 (s) =>
                   s.stat === 'totalContributedToCommonFund',
               ).amount || 0,
@@ -63,8 +69,10 @@
       <div>
         {{
           c.msToTimeString(
-            (data.stats.find((s) => s.stat === 'timeInBunk')
-              ? data.stats.find(
+            (dataToUse.stats.find(
+              (s) => s.stat === 'timeInBunk',
+            )
+              ? dataToUse.stats.find(
                   (s) => s.stat === 'timeInBunk',
                 ).amount
               : 0) * 1000,
@@ -87,8 +95,15 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    dataToUse() {
+      return (
+        this.ship.crewMembers.find(
+          (cm) => cm.id === this.data.id,
+        ) || this.data
+      )
+    },
     isSelf() {
-      return this.crewMember?.id === this.data.id
+      return this.crewMember?.id === this.dataToUse.id
     },
   },
 })

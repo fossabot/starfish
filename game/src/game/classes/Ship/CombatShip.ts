@@ -62,6 +62,11 @@ export abstract class CombatShip extends Ship {
 
   removePassive(p: ShipPassiveEffect) {
     let index
+    if (this.timedPassives.indexOf(p) !== -1)
+      this.timedPassives.splice(
+        this.timedPassives.indexOf(p),
+        1,
+      )
     while (index !== -1) {
       if (p.data?.source?.crewActive)
         index = this.passives.findIndex(

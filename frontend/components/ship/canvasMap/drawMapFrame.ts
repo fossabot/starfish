@@ -3,6 +3,8 @@ interface HoverableElement {
   screenPos: CoordinatePair
 }
 
+const blendMode = `lighten` // `hard-light` // `screen`
+
 import c from '../../../../common/dist'
 export default class Drawer {
   readonly flatScale = 10000
@@ -312,7 +314,7 @@ export default class Drawer {
         alwaysShowLabels: true,
       })
 
-    this.ctx.globalCompositeOperation = `lighten` // `hard-light` // `screen`
+    this.ctx.globalCompositeOperation = blendMode
 
     // ----- non-clipped objects -----
 
@@ -344,6 +346,7 @@ export default class Drawer {
     }
 
     if (ship && ship.radii) {
+      this.ctx.globalCompositeOperation = `source-over`
       // ----- radii -----
       if (ship.radii.scan)
         this.drawPoint({
@@ -354,7 +357,7 @@ export default class Drawer {
           labelBottom:
             c.speedNumber(ship.radii.scan, true, 0) + ` km`,
           radius: ship.radii.scan * this.flatScale,
-          color: `#66ffdd`,
+          color: `#26e0b0`,
           outline: true,
           opacity: 0.4,
         })
@@ -366,7 +369,7 @@ export default class Drawer {
           labelTop: index === 0 ? `attack` : undefined,
           labelBottom: c.speedNumber(ar, true, 0) + ` km`,
           radius: ar * this.flatScale,
-          color: `#ff7733`,
+          color: `#ff5a5c`,
           outline: true,
           opacity: 0.5,
         }),
@@ -381,10 +384,12 @@ export default class Drawer {
             c.speedNumber(ship.radii.broadcast, true, 0) +
             ` km`,
           radius: ship.radii.broadcast * this.flatScale,
-          color: `#dd88ff`,
+          color: `#a175ef`,
           outline: true,
-          opacity: 0.45,
+          opacity: 0.5,
         })
+
+      this.ctx.globalCompositeOperation = blendMode
     }
 
     // ----- planets
@@ -427,7 +432,7 @@ export default class Drawer {
           radius:
             c.getPlanetDefenseRadius(p.defense) *
             this.flatScale,
-          color: `#ff7733`,
+          color: `#ff5a5c`,
           outline: `dash`,
           opacity: 0.4,
         })
@@ -730,7 +735,7 @@ export default class Drawer {
         color: c.guilds[s.guildId]?.color || `#bbb`,
         triangle: angle,
       })
-      this.ctx.globalCompositeOperation = `lighten`
+      this.ctx.globalCompositeOperation = blendMode
       if (highlight)
         this.drawPoint({
           location: [s.location[0], s.location[1] * -1],
@@ -780,7 +785,7 @@ export default class Drawer {
         radius:
           (ship?.gameSettings?.arrivalThreshold || 0.002) *
           this.flatScale,
-        color: `rgb(216, 174, 3)`, // var(--cargo)
+        color: `#f9c74f`, // var(--cargo)
         outline: `dash`,
         opacity: 0.4,
       })
@@ -788,7 +793,7 @@ export default class Drawer {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
         radius: (1.5 / this.zoom) * devicePixelRatio,
-        color: `rgb(216, 174, 3)`,
+        color: `#f9c74f`,
         opacity: 0.8,
       })
     })

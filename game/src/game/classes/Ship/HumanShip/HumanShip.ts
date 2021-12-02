@@ -1112,6 +1112,11 @@ export class HumanShip extends CombatShip {
     const thrusters = this.membersIn(`cockpit`)
     if (!thrusters.length) return
 
+    const passiveEngines = this.engines.filter(
+      (e) => e.passiveThrustMultiplier,
+    )
+    if (!passiveEngines.length) return
+
     const engineThrustMultiplier = Math.max(
       c.noEngineThrustMagnitude,
       this.engines
@@ -1262,7 +1267,7 @@ export class HumanShip extends CombatShip {
         accelerator.getPassiveIntensity(`boostBrake`)
       const brakeBoost =
         1 +
-        (angleDifferenceToDirection / 180) *
+        (angleDifferenceToDirection / 180) ** 10 * // * exponential curve — only really kicks in right near 100%
           passiveBrakeMultiplier
       thrustMagnitudeToApply *= brakeBoost
 

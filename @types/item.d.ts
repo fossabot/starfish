@@ -34,6 +34,8 @@ type EngineId =
   | `glass1`
   | `glass2`
   | `glass3`
+  | `passive1`
+  | `passive2`
   | `heavy1`
   | `heavy2`
   | `heavy3`

@@ -1,16 +1,18 @@
 <template>
   <div
     class="item"
+    :class="{
+      highlight: tooltip && tooltip.id === item.id,
+    }"
     v-tooltip="{
       type: 'item',
-      itemType: item.itemType,
-      itemId: item.itemId,
-      ownerId: owner.id,
+      id: item.id,
+      owner: owner,
     }"
     v-targetpoint="
       item.itemType === 'weapon' && owner
         ? {
-            color: '#ff7733',
+            color: '#ff5a5c',
             type: 'item',
             itemType: 'weapon',
             location: owner.location,
@@ -19,23 +21,26 @@
         : null
     "
   >
-    {{ item.displayName }}
-    <span
-      v-if="
-        item.level && item.maxLevel && item.maxLevel > 1
-      "
-      class="level"
-      :class="{ max: item.level === item.maxLevel }"
-      >{{ item.level }}</span
-    >
-    <span class="sub">{{
-      c.capitalize(item.itemType)
-    }}</span>
+    <div class="labels">
+      {{ item.displayName }}
+      <span
+        v-if="
+          item.level && item.maxLevel && item.maxLevel > 1
+        "
+        class="level"
+        :class="{ max: item.level === item.maxLevel }"
+        >{{ item.level }}</span
+      >
+      <span class="sub">{{
+        c.capitalize(item.itemType)
+      }}</span>
+    </div>
     <div class="hpbar">
-      <PillBar
-        :mini="true"
-        :value="item.repair * item.maxHp"
+      <HealthBar
         :max="item.maxHp"
+        :percent="item.repair"
+        :color="`var(--${item.itemType})`"
+        :style="{ height: `${item.maxHp / 5}em` }"
       />
     </div>
     <ProgressBar
@@ -60,7 +65,9 @@ export default Vue.extend({
   data() {
     return { c }
   },
-  computed: {},
+  computed: {
+    ...mapState(['tooltip']),
+  },
   watch: {},
   mounted() {},
   methods: {},
@@ -68,6 +75,21 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.item:not(:last-of-type) {
+  margin-bottom: 1.1em;
+}
+.highlight {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 0.5em rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.labels {
+  line-height: 0.9;
+}
+
 .hpbar {
   margin-top: 0.2em;
 }

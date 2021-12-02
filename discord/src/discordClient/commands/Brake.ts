@@ -111,7 +111,7 @@ export class BrakeCommand implements Command {
         context.reply(
           `${context.nickname} manually braked${
             hasPassiveEngines
-              ? ` and set their passive thrust to brake`
+              ? ` and set their auto-nav to brake`
               : ``
           }, slowing the ship by ${c.speedNumber(
             res.data,

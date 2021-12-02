@@ -190,7 +190,7 @@
           </p>`
       "
     >
-      Your passive thrust:
+      Your auto-nav power:
       {{
         c.speedNumber(passiveThrustPerHourAddedPerHour)
       }}/hr

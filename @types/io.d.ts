@@ -71,6 +71,16 @@ interface IOClientEvents {
     shipId: string,
     achievement: string,
   ) => void
+  [`admin:speedUpShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
+  [`admin:stopShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`admin:deleteCrewMember`]: (
     adminId: string,
     password: string,

@@ -22,6 +22,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `itemType`,
         `itemId`,
         `displayName`,
@@ -54,6 +55,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `itemType`,
         `itemId`,
         `displayName`,
@@ -86,6 +88,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `itemType`,
         `itemId`,
         `displayName`,
@@ -152,6 +155,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `repair`,
         `maxHp`,
         `itemType`,
@@ -201,6 +205,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `maxHp`,
         `itemType`,
         `itemId`,
@@ -227,6 +232,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `maxHp`,
         `itemType`,
         `itemId`,
@@ -253,6 +259,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `maxHp`,
         `itemType`,
         `itemId`,
@@ -288,6 +295,7 @@ export const scanners: {
       speed: true,
       direction: true,
       items: [
+        `id`,
         `repair`,
         `maxHp`,
         `itemType`,
@@ -332,6 +340,7 @@ export const scanners: {
       speed: true,
       direction: true,
       items: [
+        `id`,
         `repair`,
         `maxHp`,
         `itemType`,
@@ -376,6 +385,7 @@ export const scanners: {
       speed: true,
       direction: true,
       items: [
+        `id`,
         `repair`,
         `maxHp`,
         `itemType`,
@@ -418,6 +428,7 @@ export const scanners: {
     shipScanData: {
       ...game.baseShipScanProperties,
       items: [
+        `id`,
         `maxHp`,
         `itemType`,
         `itemId`,
