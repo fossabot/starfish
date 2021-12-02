@@ -223,6 +223,10 @@ export class Ship extends Stubbable {
 
     this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
 
+    // todo remove, temporary
+    if (chassis && (chassis as any).id)
+      chassis.chassisId = (chassis as any).id
+
     if (
       chassis &&
       chassis.chassisId &&

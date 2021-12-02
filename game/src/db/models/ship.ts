@@ -22,7 +22,7 @@ const shipSchemaFields: Record<
   velocity: [{ type: Number, required: true }],
   name: { type: String, required: true },
   loadout: String,
-  chassis: { id: { type: String, required: true } },
+  chassis: { chassisId: { type: String, required: true } },
   items: [
     {
       type: { type: String }, // * removable after update
