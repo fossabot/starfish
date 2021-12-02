@@ -13,54 +13,136 @@
       }}
     </span>
     <span
-      class="sub nowrap"
+      v-if="guildMembersWithinDistance !== null"
+      class="sub"
+    >
+      ({{ guildMembersWithinDistance }} in range) -
+    </span>
+    <span
+      class="sub"
+      :class="{ nowrap: sourceText.length < 30 }"
       v-if="passive.data && passive.data.source"
     >
-      {{
-        passive.data.source.guildId
-          ? `${c.capitalize(
-              c.guilds[passive.data.source.guildId].name,
-            )} Guild`
-          : passive.data.source.speciesId
-          ? `${c.capitalize(
-              c.species[passive.data.source.speciesId]
-                .singular,
-            )} species`
-          : passive.data.source.planetName
-          ? `${passive.data.source.planetName}`
-          : passive.data.source.zoneName
-          ? `${passive.data.source.zoneName}`
-          : passive.data.source.item
-          ? `${
-              c.items[passive.data.source.item.type][
-                passive.data.source.item.id
-              ].displayName
-            }`
-          : passive.data.source.chassisId
-          ? `${
-              c.items.chassis[passive.data.source.chassisId]
-                .displayName
-            }`
-          : passive.data.source
-      }}
+      {{ sourceText }}
     </span>
+    <div class="sub" v-if="timeRemaining">
+      <span class="fade"
+        >({{
+          c.msToTimeString(timeRemaining)
+        }}
+        remaining)</span
+      >
+    </div>
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { passive: { required: true } },
-  data() {
-    return { c }
+  props: {
+    passive: {
+      required: true,
+      type: Object as PropType<ShipPassiveEffect>,
+    },
   },
-  computed: {},
-  watch: {},
-  mounted() {},
-  methods: {},
+  data() {
+    let timeRemaining = 0,
+      timeRemainingInterval: any
+    return { c, timeRemaining, timeRemainingInterval }
+  },
+  computed: {
+    ...mapState(['ship', 'lastUpdated']),
+    sourceText(): string {
+      const s = this.passive.data?.source
+      if (!s) return ''
+      return s.guildId
+        ? `${c.capitalize(c.guilds[s.guildId].name)} Guild`
+        : s.crewActive
+        ? `${
+            c.crewActives[s.crewActive.activeId].displayName
+          } by ${
+            this.ship.crewMembers.find(
+              (cm) => cm.id === s.crewActive!.crewMemberId,
+            )
+              ? this.ship.crewMembers.find(
+                  (cm) =>
+                    cm.id === s.crewActive!.crewMemberId,
+                ).name
+              : 'a crew member'
+          }`
+        : s.speciesId
+        ? `${c.capitalize(
+            c.species[s.speciesId].singular,
+          )} species`
+        : s.planetName
+        ? `${s.planetName}`
+        : s.zoneName
+        ? `${s.zoneName}`
+        : s.item
+        ? `${c.items[s.item.type][s.item.id].displayName}`
+        : s.chassisId
+        ? `${c.items.chassis[s.chassisId].displayName}`
+        : `${s}`
+    },
+
+    guildMembersWithinDistance(): null | number {
+      if (
+        (this.passive as ShipPassiveEffect).data?.distance
+      ) {
+        const guildMembersWithinDistance = !this.ship
+          .guildId
+          ? 0
+          : this.ship.visible?.ships?.filter(
+              (s) =>
+                c.distance(
+                  s.location,
+                  this.ship.location,
+                ) <=
+                  (this.passive as ShipPassiveEffect).data!
+                    .distance! &&
+                s.guildId === this.ship.guildId,
+            ).length
+        if (
+          (this.passive as ShipPassiveEffect).id ===
+          'boostDamageWhenNoAlliesWithinDistance'
+        ) {
+          return guildMembersWithinDistance
+        }
+        if (
+          (this.passive as ShipPassiveEffect).id ===
+          'boostDamageWithNumberOfGuildMembersWithinDistance'
+        ) {
+          return guildMembersWithinDistance
+        }
+      }
+      return null
+    },
+  },
+  watch: {
+    lastUpdated() {
+      this.recalculateRemaining()
+    },
+  },
+  mounted() {
+    this.recalculateRemaining()
+  },
+  beforeDestroy() {
+    clearInterval(this.timeRemainingInterval)
+  },
+  methods: {
+    recalculateRemaining() {
+      // c.log(this.passive)
+      if (!this.passive.until) {
+        this.timeRemaining = 0
+        clearInterval(this.timeRemainingInterval)
+        return
+      }
+      this.timeRemaining = this.passive.until - Date.now()
+    },
+  },
 })
 </script>
 

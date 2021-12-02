@@ -209,7 +209,7 @@ If you're not sure what to do, please reach out in the [support server](${c.supp
         members = [
           ...(
             await this.guild.members.fetch().catch((e) => {
-              console.log(e)
+              c.log(e)
               return []
             })
           ).values(),
@@ -231,7 +231,7 @@ If you're not sure what to do, please reach out in the [support server](${c.supp
             await this.guild.members
               .fetch({ user: ids })
               .catch((e) => {
-                console.log(e)
+                c.log(e)
                 return []
               })
           ).values(),

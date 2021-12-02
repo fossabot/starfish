@@ -190,7 +190,7 @@
           </p>`
       "
     >
-      Your passive thrust:
+      Your auto-nav power:
       {{
         c.speedNumber(passiveThrustPerHourAddedPerHour)
       }}/hr
@@ -604,7 +604,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             this.$store.commit('updateACrewMember', {
               id: this.crewMember.id,
               cockpitCharge: initialCharge,
@@ -641,7 +641,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             this.$store.commit('updateACrewMember', {
               id: this.crewMember.id,
               cockpitCharge: initialCharge,

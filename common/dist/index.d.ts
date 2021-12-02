@@ -25,6 +25,7 @@ declare const _default: {
         boostCockpitChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
+        boostSkillLevel: CrewPassiveData;
         cargoSpace: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
@@ -162,10 +163,17 @@ declare const _default: {
         humanDefault: Loadout;
         aiTutorial1: Loadout;
         testManualEngine: Loadout;
+        testPassiveEngine: Loadout;
         testMega: Loadout;
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
+    crewActiveBaseGlobalCooldown: number;
+    crewActives: {
+        instantStamina: CrewActiveData;
+        cargoSweep: CrewActiveData;
+        boostShipSightRange: CrewActiveData;
+    };
     getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
     getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
     getCrewTaglinePrice(cosmetic: PlanetCrewCosmetic): Price;

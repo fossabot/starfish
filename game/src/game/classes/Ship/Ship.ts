@@ -91,6 +91,7 @@ export class Ship extends Stubbable {
 
   achievements: string[] = []
   passives: ShipPassiveEffect[] = []
+  timedPassives: ShipPassiveEffect[] = []
   slots: number = 1
   attackable = false
   _hp = 10 // set in hp setter below
@@ -123,6 +124,7 @@ export class Ship extends Stubbable {
       achievements,
       headerBackground,
       stats,
+      timedPassives,
     }: BaseShipData = {} as any,
     game?: Game,
   ) {
@@ -221,10 +223,6 @@ export class Ship extends Stubbable {
 
     this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
 
-    // * this is temporary
-    if (chassis && !chassis.chassisId)
-      chassis.chassisId = (chassis as any).id
-
     if (
       chassis &&
       chassis.chassisId &&
@@ -254,6 +252,14 @@ export class Ship extends Stubbable {
     if (guildId && c.guilds[guildId])
       this.changeGuild(guildId)
 
+    if (timedPassives?.length) {
+      for (let p of timedPassives) {
+        this.timedPassives.push(p)
+        this.applyPassive(p)
+      }
+    }
+    this.checkExpiredPassives()
+
     // passively lose previous locations over time
     // so someone who, for example, sits forever at a planet loses their trail eventually
     setInterval(() => {
@@ -267,6 +273,7 @@ export class Ship extends Stubbable {
   tick() {
     this.debugLocations = []
     this._stub = null // invalidate stub
+    this.checkExpiredPassives()
 
     if (this.dead) return
     if (this.obeysGravity) this.applyTickOfGravity()
@@ -568,7 +575,7 @@ export class Ship extends Stubbable {
         }),
       )
 
-    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateAll()
     this.recalculateMass()
 
     if (this.human)
@@ -587,7 +594,7 @@ export class Ship extends Stubbable {
     if (item.passives)
       item.passives.forEach((p) => this.removePassive(p))
 
-    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateAll()
     this.recalculateMass()
     return true
   }
@@ -601,7 +608,7 @@ export class Ship extends Stubbable {
       (baseData: Partial<BaseItemData>) =>
         this.addItem(baseData),
     )
-    this.updateThingsThatCouldChangeOnItemChange()
+    this.recalculateAll()
     return true
   }
 
@@ -612,9 +619,11 @@ export class Ship extends Stubbable {
   }
 
   // ----- radii -----
-  updateThingsThatCouldChangeOnItemChange() {
+  recalculateAll() {
     this.recalculateMaxHp()
     this.updateSightAndScanRadius()
+    this.updateMaxScanProperties()
+    this.updateSlots()
   }
 
   recalculateMass() {
@@ -1065,13 +1074,13 @@ export class Ship extends Stubbable {
     const approxTicksToTurnToTargetAngle =
       Math.abs(percentMovingAwayFromTarget) *
         this.speed *
-        1000000 || 1
+        10e7 || 1
 
     // * multiplier that determines how many times more than the angle difference we should be
-    const intensity = 5
+    const intensity = 6
 
     // * instead of permanently getting _closer_ to the desired angle, intentionally overshoot slightly to actually hit it
-    const intentionalOvershootDegrees = 0.2
+    const intentionalOvershootDegrees = 3
 
     // from "straight", how hard can the turn be? 0 - 179.5
     const maximumTurnDegrees =
@@ -1081,7 +1090,7 @@ export class Ship extends Stubbable {
             1,
             Math.abs(percentMovingAwayFromTarget) * urgency,
           )) *
-      c.clamp(0, approxTicksToTurnToTargetAngle / 5, 1)
+      c.clamp(0.01, approxTicksToTurnToTargetAngle / 5, 1)
 
     const howHardToTurnDegrees = c.clamp(
       maximumTurnDegrees * -1,
@@ -1106,7 +1115,7 @@ export class Ship extends Stubbable {
     //   target[1] - percentToAdjust * this.velocity[1],
     // ] as CoordinatePair
     const angleToThrust =
-      this.speed < 0.000001
+      this.speed < 0.0000002
         ? angleToTarget
         : (howHardToTurnDegrees +
             this.direction +
@@ -1124,7 +1133,7 @@ export class Ship extends Stubbable {
 
     // if (this.human)
     //   c.log({
-    //     // maximumTurnDegrees,
+    //     maximumTurnDegrees,
     //     // ticksAtCurrentSpeedToReachTarget,
     //     // speedOverDistance,
     //     urgency,
@@ -1132,11 +1141,11 @@ export class Ship extends Stubbable {
     //     // percentMovingAwayFromTarget,
     //     // // // ticksAtCurrentSpeedToReachTarget,
     //     // // howHardToTurnPercent,
-    //     // howHardToTurnDegrees,
+    //     howHardToTurnDegrees,
     //     // // percentBackwards,
     //     // currentDirection: this.direction,
-    //     // angleToTarget,
-    //     // angleToThrust,
+    //     angleToTarget,
+    //     angleToThrust,
     //     // // turnUV,
     //     // approxTicksRequiredToReachTarget,
     //   })
@@ -1159,8 +1168,13 @@ export class Ship extends Stubbable {
   updateMaxScanProperties() {}
 
   applyPassive(p: ShipPassiveEffect) {}
+  applyTimedPassive(
+    p: ShipPassiveEffect & { until: number },
+  ) {}
 
   removePassive(p: ShipPassiveEffect) {}
+
+  checkExpiredPassives() {}
 
   takeActionOnVisibleChange(
     previousVisible,

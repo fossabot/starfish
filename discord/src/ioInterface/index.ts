@@ -59,6 +59,7 @@ io.on(
       )
 
     const iconMap: { [key in LogIcon]: string } = {
+      ability: `💪`,
       alert: `🚨`,
       arrive: `🛬`,
       brake: `⏪`,

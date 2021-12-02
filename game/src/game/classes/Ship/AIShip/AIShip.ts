@@ -185,7 +185,7 @@ export class AIShip extends CombatShip {
           b.rarity - a.rarity,
       )
     const chassisToBuy: BaseChassisData =
-      validChassis[0] || c.items.chassis.starter1
+      validChassis[0] || c.items.chassis.ai1
     this.swapChassis(chassisToBuy)
     itemBudget = c.r2(itemBudget - chassisToBuy.rarity, 2)
     // c.log(
@@ -194,10 +194,7 @@ export class AIShip extends CombatShip {
 
     const isInBudget = (i: BaseItemData) =>
       i.rarity <= itemBudget
-    const isSelectable = (i: BaseItemData) =>
-      !i.special &&
-      (i.itemType !== `engine` || // only passive engines (for now)
-        (i as BaseEngineData).passiveThrustMultiplier)
+    const isSelectable = (i: BaseItemData) => !i.special
 
     while (true) {
       const typeToAdd: `engine` | `weapon` =
@@ -245,7 +242,10 @@ export class AIShip extends CombatShip {
         .filter((e) => e.repair > 0)
         .reduce(
           (total, e) =>
-            total + e.passiveThrustMultiplier * e.repair,
+            total +
+            ((e.passiveThrustMultiplier || 0) +
+              (e.manualThrustMultiplier || 0)) *
+              e.repair,
           0,
         ) *
       (this.game?.settings.baseEngineThrustMultiplier ||

@@ -1,13 +1,6 @@
 import c from './log'
 import math from './math'
 
-interface ProfilerSnapshot {
-  name: string
-  time: number
-  timeFromStart: number
-  duration?: number
-}
-
 export class Profiler {
   enabled = true
   showTop = 10

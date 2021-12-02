@@ -11,16 +11,31 @@
 
     <hr v-if="Object.keys(dataToUse).length > 3" />
 
-    <PillBar
+    <HealthBar
       v-if="dataToUse.repair && dataToUse.maxHp"
-      :mini="true"
-      :value="dataToUse.repair * dataToUse.maxHp"
       :max="dataToUse.maxHp"
+      :percent="dataToUse.repair"
+      :color="`var(--${dataToUse.itemType})`"
+      :style="{ height: `${dataToUse.maxHp / 5}em` }"
       class="marbotsmall"
     />
-    <div v-else-if="dataToUse.repair" class="flexbetween">
-      <span class="sub">Repair</span>
-      <span> {{ c.r2(dataToUse.repair * 100) }}% </span>
+    <div
+      v-if="dataToUse.repair && dataToUse.maxHp"
+      class="flexbetween"
+    >
+      <span class="sub">HP</span>
+      <span>
+        {{
+          c.numberWithCommas(
+            c.r2(
+              dataToUse.repair *
+                dataToUse.maxHp *
+                c.displayHPMultiplier,
+              0,
+            ),
+          )
+        }}
+      </span>
     </div>
     <div v-if="dataToUse.maxHp" class="flexbetween">
       <span class="sub">Max HP</span>
@@ -149,7 +164,7 @@
       "
       class="flexbetween"
     >
-      <span class="sub">Passive Thrust</span>
+      <span class="sub">Auto-Nav Power</span>
       <span
         :class="{
           success:
@@ -186,7 +201,7 @@
       "
       class="flexbetween"
     >
-      <span class="sub">Effective Passive Thrust</span>
+      <span class="sub">Effective Auto-Nav Power</span>
       <span>
         {{
           c.r2(
@@ -659,7 +674,12 @@
         </span>
       </div>
     </template>
-    <template v-else-if="dataToUse.type !== 'chassis'">
+    <template
+      v-else-if="
+        (!data.owner || data.owner.id === ship.id) &&
+        dataToUse.type !== 'chassis'
+      "
+    >
       <hr />
       <div class="flexbetween sub">Not Upgradable</div>
     </template>
@@ -682,30 +702,21 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship']),
     dataToUse(): ItemStub {
-      if (
-        !this.ship ||
-        (this.data as ItemStub).ownerId !== this.ship?.id
-      ) {
-        if (
-          this.data &&
-          typeof this.data === 'object' &&
-          ((this.data as any).type === 'chassis' ||
-            Object.keys(this.data).length < 5)
-        )
-          return (
-            c.items[(this.data as ItemStub).itemType]?.[
-              (this.data as ItemStub).itemId
-            ] || this.data
-          )
-        return this.data as ItemStub
-      }
       return (
-        this.ship.items?.find(
+        (
+          ((this.data as any).owner as ShipStub) ||
+          this.ship
+        ).items?.find(
           (i) =>
-            i.itemType ===
+            i.id === (this.data as ItemStub).id ||
+            (i.itemType ===
               (this.data as ItemStub).itemType &&
-            i.itemId === (this.data as ItemStub).itemId,
-        ) || this.data
+              i.itemId === (this.data as ItemStub).itemId),
+        ) ||
+        c.items[(this.data as ItemStub).itemType]?.[
+          (this.data as ItemStub).itemId
+        ] ||
+        this.data
       )
     },
     compareTo(): any {

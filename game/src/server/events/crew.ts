@@ -179,6 +179,45 @@ export default function (
   })
 
   socket.on(
+    `crew:useActive`,
+    (shipId, crewId, activeId, callback = () => {}) => {
+      if (!game) return
+      if (typeof callback !== `function`)
+        callback = () => {}
+      const ship = game.ships.find(
+        (s) => s.id === shipId,
+      ) as HumanShip
+      if (!ship)
+        return callback({
+          error: `No ship found by that id.`,
+        })
+      const crewMember = ship.crewMembers?.find(
+        (cm) => cm.id === crewId,
+      )
+      if (!crewMember)
+        return callback({
+          error: `No crew member found by that id.`,
+        })
+      if (crewMember.bottomedOutOnStamina)
+        return callback({
+          error: `You must wait until your stamina regenerates to use an active ability.`,
+        })
+
+      const res = crewMember.useActive(activeId)
+
+      if (`error` in res)
+        return callback({ error: res.error })
+
+      callback({ data: res.result })
+
+      c.log(
+        `gray`,
+        `${crewMember.name} on ${ship.name} used active ${activeId}.`,
+      )
+    },
+  )
+
+  socket.on(
     `crew:targetLocation`,
     (
       shipId,

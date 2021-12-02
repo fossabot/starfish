@@ -13,7 +13,7 @@
         @done="done"
         @apply="apply"
         :max="prompt === 1 ? max : null"
-        :key="'prompt' + Math.random()"
+        :key="'prompt' + id"
       >
         <slot v-if="prompt === 1" />
         <slot name="second" v-if="prompt === 2" />
@@ -22,7 +22,7 @@
         v-else
         @yes="done"
         @no="cancel"
-        :key="'ynprompt' + Math.random()"
+        :key="'ynprompt' + id"
       >
         <slot />
       </PromptYesNo>
@@ -40,7 +40,7 @@ export default Vue.extend({
   data() {
     let prompt: any = null,
       results: any[] = []
-    return { c, prompt, results }
+    return { c, prompt, results, id: Math.random() }
   },
   computed: {
     ...mapState(['modal']),

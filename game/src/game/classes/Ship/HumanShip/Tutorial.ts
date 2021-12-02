@@ -242,11 +242,17 @@ export class Tutorial {
         visibleTypes: [`planet`, `cache`, `trail`],
         script: [
           {
-            message: `Click on the big map to set a target destination. Based on your engines, you can manually or passively apply thrust to the ship by being in the cockpit. Your current engine only has passive thrust.<br /><br />
+            message:
+              `While you're in the <b>cockpit</b>, you will slowly charge up thrust (unique to you).<br /><br />
+            Click on the big map to set a target destination. ` +
+              // Based on your engines, you can manually or passively apply thrust to the ship by being in the cockpit. Your current engine only has manual thrust.
+              `<br /><br />
+            Click and hold the <b>Thrust</b> button in the cockpit pane to use your charged thrust toward your chosen direction!<br />
             Since we're in space, once you start moving in a direction, you'll keep floating that way! That means that even a small ship can generate a huge amount of speed over time.<br /><br />
-            Try to <b>move the ship to the cache we found!</b><br /><br />
-            <hr style="opacity: .1;" />
-            <div class="sub">It might look like the ship isn't moving, but it takes time to build speed — zoom in to see the thrust accumulate!</div>`,
+            Try to <b>move the ship to the cache we found!</b>`,
+            // <br /><br />
+            // <hr style="opacity: .1;" />`
+            // <div class="sub">It might look like the ship isn't moving, but it takes time to build speed — zoom in to see the thrust accumulate!</div>`,
           },
         ],
         nextStepTrigger: {
@@ -289,30 +295,30 @@ export class Tutorial {
         ],
         nextStepTrigger: { awaitFrontend: true },
       },
-      // {
-      //   sightRange: 0.03,
-      //   maxDistanceFromSpawn: 0.03,
-      //   shownRooms: [`cockpit`],
-      //   shownPanels: [
-      //     `mapZoom`,
-      //     `map`,
-      //     `room`,
-      //     `inventory`,
-      //     `ship`,
-      //     `log`,
-      //   ],
-      //   highlightPanel: `room`,
-      //   disableRepair: true,
-      //   disableStamina: true,
-      //   forceCockpitCharge: 0.85,
-      //   visibleTypes: [`planet`, `trail`],
-      //   script: [
-      //     {
-      //       message: `Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
-      //     },
-      //   ],
-      //   nextStepTrigger: { stopped: true },
-      // },
+      {
+        sightRange: 0.03,
+        maxDistanceFromSpawn: 0.03,
+        shownRooms: [`cockpit`],
+        shownPanels: [
+          `mapZoom`,
+          `map`,
+          `room`,
+          `inventory`,
+          `ship`,
+          `log`,
+        ],
+        highlightPanel: `room`,
+        disableRepair: true,
+        disableStamina: true,
+        forceCockpitCharge: 0.85,
+        visibleTypes: [`planet`, `trail`],
+        script: [
+          {
+            message: `Now we're drifting through space, though. Click and hold <b>Brake</b> to fire the thrusters in the opposite direction and come to a complete stop.`,
+          },
+        ],
+        nextStepTrigger: { stopped: true },
+      },
 
       {
         sightRange: 0.03,
@@ -406,7 +412,7 @@ export class Tutorial {
         script: [
           {
             message: `Now we can see what we're dealing with.<br />
-            Ugh, they're <i>BIRDS</i>! The enemy of all fish!<br /><br />
+            Ugh, they're <i>BIRDS!</i> The enemy of all fish!<br /><br />
             It looks like they're outfitted with only the most basic equipment! They're sitting ducks!`,
             advance: `Let's take 'em out!`,
           },
@@ -524,7 +530,7 @@ export class Tutorial {
           },
           {
             message: `You're right! Equipment loses repair when used or when hit by an attack. Your ship's health is simply the total of your equipment's HP, so make sure to keep everything ship-shape!<br /><br />
-            Go to the repair bay on the ship schematic to start repairing your ship.`,
+            Go to the <b>Repair Bay</b> on the ship schematic to start repairing your ship.`,
           },
         ],
         nextStepTrigger: {

@@ -46,6 +46,15 @@ const data: {
         : ``),
   },
 
+  boostSkillLevel: {
+    id: `boostSkillLevel`,
+    displayName: `Boost Skill Level`,
+    description: (data: CrewPassiveData) =>
+      `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} ${
+        data.data?.skill
+      } level by ${math.r2(data.intensity || 0)}`,
+  },
+
   boostCockpitChargeSpeed: {
     displayName: `Dorsal Fins`,
     id: `boostCockpitChargeSpeed`,
@@ -62,7 +71,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } passive thrust by ${math.r2(
+      } auto-nav power by ${math.r2(
         (data.intensity || 0) * 100,
       )}%`,
   },

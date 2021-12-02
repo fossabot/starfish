@@ -121,7 +121,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
         },

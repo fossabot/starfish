@@ -46,7 +46,7 @@ exports.weapons = {
             `chargeRequired`,
             `critChance`,
         ],
-        upgradeBonus: 0.008,
+        upgradeBonus: 0.005,
     },
     // cannons
     cannon1: {
@@ -123,7 +123,7 @@ exports.weapons = {
         critChance: 0.15,
         maxLevel: 11,
         upgradableProperties: [`range`, `critChance`],
-        upgradeBonus: 0.01,
+        upgradeBonus: 0.03,
     },
     sniper2: {
         type: `item`,
@@ -142,7 +142,7 @@ exports.weapons = {
         critChance: 0.2,
         maxLevel: 15,
         upgradableProperties: [`range`, `critChance`],
-        upgradeBonus: 0.01,
+        upgradeBonus: 0.03,
     },
     sniper3: {
         type: `item`,
@@ -161,7 +161,7 @@ exports.weapons = {
         critChance: 0.25,
         maxLevel: 18,
         upgradableProperties: [`range`, `critChance`],
-        upgradeBonus: 0.01,
+        upgradeBonus: 0.03,
     },
     // sabers
     saber1: {
@@ -172,7 +172,7 @@ exports.weapons = {
         description: `Gets its name from its short range and relatively quick recharge time. Dueling ships wielding Swordfish Sabers have been known to perform fantastic dogfights around the moons of Osiris.`,
         mass: 2200 * gameConstants_1.default.itemMassMultiplier,
         basePrice: { credits: 31 * gameConstants_1.default.itemPriceMultiplier },
-        range: 0.05,
+        range: 0.07,
         rarity: 1.75,
         damage: 1.7 * gameConstants_1.default.weaponDamageMultiplier,
         chargeRequired: 0.8 * 60 * 1000,
@@ -190,7 +190,7 @@ exports.weapons = {
         description: `Gets its name from its short range and relatively quick recharge time. Dueling ships wielding Swordfish Sabers have been known to perform fantastic dogfights around the moons of Osiris.`,
         mass: 2600 * gameConstants_1.default.itemMassMultiplier,
         basePrice: { credits: 106 * gameConstants_1.default.itemPriceMultiplier },
-        range: 0.055,
+        range: 0.075,
         rarity: 4.5,
         damage: 2 * gameConstants_1.default.weaponDamageMultiplier,
         chargeRequired: 0.8 * 60 * 1000,
@@ -208,7 +208,7 @@ exports.weapons = {
         description: `Gets its name from its short range and relatively quick recharge time. Dueling ships wielding Swordfish Sabers have been known to perform fantastic dogfights around the moons of Osiris.`,
         mass: 2600 * gameConstants_1.default.itemMassMultiplier,
         basePrice: { credits: 410 * gameConstants_1.default.itemPriceMultiplier },
-        range: 0.065,
+        range: 0.085,
         rarity: 10,
         damage: 2.3 * gameConstants_1.default.weaponDamageMultiplier,
         chargeRequired: 0.7 * 60 * 1000,

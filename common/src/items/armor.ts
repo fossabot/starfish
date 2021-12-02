@@ -62,8 +62,8 @@ export const armor: {
   block3: {
     type: `item`,
     itemType: `armor`,
-    itemId: `block2`,
-    displayName: `Hardened Shell 02`,
+    itemId: `block3`,
+    displayName: `Hardened Shell 03`,
     description: `Absorbs shockwaves effectively, as long as the armor doesn't crack.`,
     mass: 1100 * game.itemMassMultiplier,
     rarity: 6,
@@ -76,14 +76,15 @@ export const armor: {
   block4: {
     type: `item`,
     itemType: `armor`,
-    itemId: `block2`,
-    displayName: `Hardened Shell 02`,
+    itemId: `block4`,
+    displayName: `Hardened Shell 04`,
     description: `Absorbs shockwaves effectively, as long as the armor doesn't crack.`,
     mass: 1100 * game.itemMassMultiplier,
     rarity: 8,
     basePrice: { credits: 1090 * game.itemPriceMultiplier },
     damageReduction: 0.5,
     maxHp: 6,
+    upgradableProperties: [`damageReduction`],
   },
 
   // tough
@@ -100,7 +101,7 @@ export const armor: {
     maxHp: 7,
     maxLevel: 3,
     upgradableProperties: [`mass`],
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
   },
   tough2: {
     type: `item`,
@@ -115,7 +116,7 @@ export const armor: {
     maxHp: 9,
     maxLevel: 5,
     upgradableProperties: [`mass`],
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
   },
   tough3: {
     type: `item`,
@@ -130,6 +131,6 @@ export const armor: {
     maxHp: 12,
     maxLevel: 7,
     upgradableProperties: [`mass`],
-    upgradeBonus: 0.05,
+    upgradeBonus: 0.1,
   },
 }

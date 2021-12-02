@@ -265,7 +265,7 @@ function msToTimeString(
 
   let minutes: any = Math.floor(remainingSeconds / 60)
   remainingSeconds -= minutes * 60
-  if (minutes < 10 && hours > 0) minutes = `0${minutes}`
+  // if (minutes < 10 && hours > 0) minutes = `0${minutes}`
 
   let seconds: any = remainingSeconds
   if (seconds < 10 && minutes > 0) seconds = `0${seconds}`
@@ -273,19 +273,19 @@ function msToTimeString(
   if (!years && !days && !hours && !minutes)
     return `${negativePrefix}${seconds}s`
   if (!years && !days && !hours)
-    return `${negativePrefix}${minutes}m ${
-      !short && seconds ? `${seconds}s` : ``
+    return `${negativePrefix}${minutes}${
+      !short && seconds ? `:${seconds}` : `m`
     }`
   if (!years && !days)
-    return `${negativePrefix}${hours}h  ${
-      !short && minutes ? `${minutes}m` : ``
+    return `${negativePrefix}${hours}h${
+      !short && minutes ? ` ${minutes}m` : ``
     }`
   if (!years)
-    return `${negativePrefix}${days}d ${
-      !short && hours ? `${hours}h` : ``
+    return `${negativePrefix}${days}d${
+      !short && hours ? ` ${hours}h` : ``
     }`
-  return `${negativePrefix}${years}y ${
-    !short && days ? `${days}d` : ``
+  return `${negativePrefix}${years}y${
+    !short && days ? ` ${days}d` : ``
   }`
 }
 

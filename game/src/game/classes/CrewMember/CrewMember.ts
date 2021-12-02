@@ -1,6 +1,11 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
+import {
+  useActive,
+  addActive,
+  removeActive,
+} from './addins/actives'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
@@ -10,7 +15,6 @@ import {
 } from './addins/cosmetics'
 
 export class CrewMember extends Stubbable {
-  static readonly levelXPNumbers = c.levels
   static readonly baseMaxCargoSpace = 10
 
   readonly type = `crewMember`
@@ -44,6 +48,10 @@ export class CrewMember extends Stubbable {
   crewCosmeticCurrency: number
   passives: CrewPassiveData[] = []
   permanentPassives: CrewPassiveData[] = []
+  timedPassives: CrewPassiveData[] = []
+  actives: CrewActive[] = []
+  lastActiveUse: number = 0
+
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
   fullyRestedTarget: CrewLocation | false = false
@@ -98,77 +106,44 @@ export class CrewMember extends Stubbable {
     this.crewCosmeticCurrency =
       data.crewCosmeticCurrency ?? 0
 
-    // * this is for migrating from old skills
-    if (
-      data.skills?.find(
-        (s) => (s.skill as any) === `piloting`,
-      )
-    ) {
-      this.skills = [
-        {
-          skill: `strength`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `mechanics`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `mechanics`,
-            )?.xp || 0,
-        },
-        {
-          skill: `dexterity`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `piloting`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `piloting`,
-            )?.xp || 0,
-        },
-        {
-          skill: `intellect`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `munitions`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `munitions`,
-            )?.xp || 0,
-        },
-        {
-          skill: `charisma`,
-          level:
-            data.skills?.find(
-              (s) => (s.skill as any) === `linguistics`,
-            )?.level || 1,
-          xp:
-            data.skills?.find(
-              (s) => (s.skill as any) === `linguistics`,
-            )?.xp || 0,
-        },
-      ]
-    } else {
-      this.skills =
-        data.skills && data.skills.length
-          ? [...(data.skills.filter((s) => s) || [])]
-          : [
-              { skill: `strength`, level: 1, xp: 0 },
-              { skill: `dexterity`, level: 1, xp: 0 },
-              { skill: `intellect`, level: 1, xp: 0 },
-              { skill: `charisma`, level: 1, xp: 0 },
-            ]
-    }
+    this.skills =
+      data.skills && data.skills.length
+        ? [...(data.skills.filter((s) => s) || [])]
+        : [
+            { skill: `strength`, level: 1, xp: 0 },
+            { skill: `dexterity`, level: 1, xp: 0 },
+            { skill: `intellect`, level: 1, xp: 0 },
+            { skill: `charisma`, level: 1, xp: 0 },
+          ]
 
     if (data.tutorialShipId)
       this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
+    if (data.actives) this.actives = data.actives
+    this.lastActiveUse = data.lastActiveUse || 0
+    this.addActive({
+      id: `instantStamina`,
+      lastUsed: 0,
+      intensity: 0.3,
+    })
+    this.addActive({
+      id: `cargoSweep`,
+      lastUsed: 0,
+      intensity: 0.3,
+    })
+    this.addActive({
+      id: `boostShipSightRange`,
+      lastUsed: 0,
+      intensity: 0.2,
+    })
+
     if (data.permanentPassives) {
       for (let p of data.permanentPassives)
         this.addToPermanentPassive(p)
+    }
+    if (data.timedPassives) {
+      for (let p of data.timedPassives) this.applyPassive(p)
     }
 
     if (data.combatTactic)
@@ -340,6 +315,8 @@ export class CrewMember extends Stubbable {
     }
     this.toUpdate.stamina = this.stamina
 
+    this.checkExpiredPassives()
+
     // ----- cockpit -----
     if (this.location === `cockpit`) this.cockpitAction()
     // ----- repair -----
@@ -410,13 +387,16 @@ export class CrewMember extends Stubbable {
       skillElement = this.skills[index - 1]
     } else skillElement.xp += xp
 
-    skillElement.level =
-      CrewMember.levelXPNumbers.findIndex(
-        (l) => (skillElement?.xp || 0) < l,
-      )
+    skillElement.level = c.levels.findIndex(
+      (l) => (skillElement?.xp || 0) < l,
+    )
 
     this.toUpdate.skills = this.skills
   }
+
+  useActive = useActive
+  addActive = addActive
+  removeActive = removeActive
 
   /**
    * returns the amount left over after filling the crew member's max carryable capacity
@@ -536,6 +516,17 @@ export class CrewMember extends Stubbable {
     this.recalculateAll()
   }
 
+  applyTimedPassive(
+    p: CrewPassiveData & { until: number },
+  ) {
+    // this just saves it in the db; it has no effect until the game is restarted and timed passives are loaded
+    this.timedPassives.push(p)
+
+    this.passives.push(p)
+    this.toUpdate.passives = this.passives
+    this.recalculateAll()
+  }
+
   removePassive(p: CrewPassiveData) {
     const foundIndex = this.passives.findIndex(
       (p2) => p2.id === p.id,
@@ -547,9 +538,17 @@ export class CrewMember extends Stubbable {
     this.recalculateAll()
   }
 
+  checkExpiredPassives() {
+    this.passives.forEach((p) => {
+      if (!p.until) return
+      if (p.until < Date.now()) this.removePassive(p)
+    })
+  }
+
   recalculateAll() {
     this.recalculateMaxStamina()
     this.recalculateMaxCargoSpace()
+    this.checkExpiredPassives()
   }
 
   recalculateMaxStamina() {

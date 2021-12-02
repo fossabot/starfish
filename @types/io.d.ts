@@ -71,6 +71,16 @@ interface IOClientEvents {
     shipId: string,
     achievement: string,
   ) => void
+  [`admin:speedUpShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
+  [`admin:stopShip`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+  ) => void
   [`admin:deleteCrewMember`]: (
     adminId: string,
     password: string,
@@ -283,6 +293,12 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     callback: (res: IOResponse<true>) => void,
+  ) => void
+  [`crew:useActive`]: (
+    shipId: string,
+    crewId: string,
+    activeId: CrewActiveId,
+    callback?: (res: IOResponse<string>) => void,
   ) => void
   [`crew:tactic`]: (
     shipId: string,

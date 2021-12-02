@@ -43,6 +43,20 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
+            @click="speedUp(selectedShipId)"
+          >
+            <div>Speed Up</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
+            @click="stop(selectedShipId)"
+          >
+            <div>Stop</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
             @click="achievement(selectedShipId)"
           >
             <div>Achievement</div>
@@ -179,7 +193,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(
@@ -214,7 +228,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.shipsBasics = res.data
@@ -245,7 +259,7 @@ export default Vue.extend({
               text: res.error,
               type: `error`,
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(
@@ -255,6 +269,24 @@ export default Vue.extend({
           )
           this.updateFilteredShipData()
         },
+      )
+    },
+
+    async speedUp(shipId: string) {
+      ;(this as any).$socket?.emit(
+        `admin:speedUpShip`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+      )
+    },
+
+    async stop(shipId: string) {
+      ;(this as any).$socket?.emit(
+        `admin:stopShip`,
+        this.userId,
+        this.adminPassword,
+        shipId,
       )
     },
 
@@ -322,7 +354,7 @@ export default Vue.extend({
               text: res.error,
               type: `error`,
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.displayShipData = JSON.stringify(

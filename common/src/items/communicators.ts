@@ -122,7 +122,7 @@ export const communicators: {
     reliability: 0.8,
     maxLevel: 5,
     upgradableProperties: [`clarity`],
-    upgradeBonus: 0.1,
+    upgradeBonus: 0.3,
   },
   clarity2: {
     type: `item`,
@@ -139,7 +139,7 @@ export const communicators: {
     reliability: 0.8,
     maxLevel: 6,
     upgradableProperties: [`clarity`],
-    upgradeBonus: 0.1,
+    upgradeBonus: 0.3,
   },
   clarity3: {
     type: `item`,
@@ -156,6 +156,6 @@ export const communicators: {
     reliability: 0.8,
     maxLevel: 8,
     upgradableProperties: [`clarity`],
-    upgradeBonus: 0.1,
+    upgradeBonus: 0.3,
   },
 }

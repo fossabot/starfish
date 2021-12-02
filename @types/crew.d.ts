@@ -42,25 +42,6 @@ type MineableResource =
   | `crewCosmeticCurrency`
 type MinePriorityType = MineableResource | `closest`
 
-type CrewPassiveId =
-  | `cargoSpace`
-  | `boostCockpitChargeSpeed`
-  | `boostPassiveThrust`
-  | `boostThrust`
-  | `boostMineSpeed`
-  | `boostRepairSpeed`
-  | `boostWeaponChargeSpeed`
-  | `boostStaminaRegeneration`
-  | `reduceStaminaDrain`
-  | `boostXpGain`
-  | `generalImprovementWhenAlone`
-  | `generalImprovementPerCrewMemberInSameRoom`
-  | `boostDropAmounts`
-  | `boostBroadcastRange`
-  | `lessDamageOnEquipmentUse`
-  | `boostBrake`
-  | `boostMaxStamina`
-
 type CrewStatKey =
   | `totalContributedToCommonFund`
   | `cargoTransactions`
@@ -87,7 +68,10 @@ interface BaseCrewMemberData {
   inventory?: Cargo[]
   credits?: number
   crewCosmeticCurrency?: number
+  actives?: CrewActive[]
+  lastActiveUse?: number
   permanentPassives?: CrewPassiveData[]
+  timedPassives?: CrewPassiveData[]
   cockpitCharge?: number
   combatTactic?: CombatTactic
   targetItemType?: ItemType
@@ -112,10 +96,30 @@ interface XPData {
   xp: number
 }
 
+type CrewPassiveId =
+  | `boostSkillLevel`
+  | `cargoSpace`
+  | `boostCockpitChargeSpeed`
+  | `boostPassiveThrust`
+  | `boostThrust`
+  | `boostMineSpeed`
+  | `boostRepairSpeed`
+  | `boostWeaponChargeSpeed`
+  | `boostStaminaRegeneration`
+  | `reduceStaminaDrain`
+  | `boostXpGain`
+  | `generalImprovementWhenAlone`
+  | `generalImprovementPerCrewMemberInSameRoom`
+  | `boostDropAmounts`
+  | `boostBroadcastRange`
+  | `lessDamageOnEquipmentUse`
+  | `boostBrake`
+  | `boostMaxStamina`
 interface CrewPassiveData {
   id: CrewPassiveId
   intensity?: number
   displayName?: string
+  until?: number
   description?: (data: CrewPassiveData) => string
   buyable?: {
     rarity: number
@@ -133,6 +137,7 @@ interface CrewPassiveData {
           planetName?: string
           speciesId?: SpeciesId
           chassisId?: ChassisId
+          crewActivePlusCrewId?: string
           item?: {
             type: ItemType
             id: ItemId
@@ -141,8 +146,27 @@ interface CrewPassiveData {
       | `secondWind`
       | `permanent`
     type?: ItemType
+    skill?: SkillId
     distance?: number
   }
+}
+
+type CrewActiveId =
+  | `instantStamina`
+  | `cargoSweep`
+  | `boostShipSightRange`
+interface CrewActive {
+  id: CrewActiveId
+  lastUsed: number
+  intensity: number
+}
+interface CrewActiveData {
+  id: CrewActiveId
+  displayName: string
+  description: (a: CrewActive) => string
+  cooldown: number
+  duration?: number
+  notify?: boolean
 }
 
 interface BaseSpeciesData {

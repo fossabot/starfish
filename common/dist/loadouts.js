@@ -40,6 +40,13 @@ const loadouts = {
             { itemType: `engine`, itemId: `glass3` },
         ],
     },
+    testPassiveEngine: {
+        chassisId: `starter1`,
+        items: [
+            { itemType: `weapon`, itemId: `saber3` },
+            { itemType: `engine`, itemId: `passive1` },
+        ],
+    },
     testMega: {
         chassisId: `mega3`,
         items: [

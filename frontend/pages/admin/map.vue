@@ -180,7 +180,7 @@ export default Vue.extend({
                 text: res.error,
                 type: 'error',
               })
-              console.log(res.error)
+              c.log(res.error)
               return
             }
             this.$store.dispatch('notifications/notify', {
@@ -222,7 +222,7 @@ export default Vue.extend({
               text: res.error,
               type: 'error',
             })
-            console.log(res.error)
+            c.log(res.error)
             return
           }
           this.$store.dispatch('notifications/notify', {

@@ -6,20 +6,19 @@
     />
 
     <div
-      v-if="dataToUse._hp && dataToUse._maxHp"
-      class="panesection"
-      v-tooltip="
-        `HP: ${c.numberWithCommas(
-          c.r2(dataToUse._hp * c.displayHPMultiplier, 0),
-        )}/${c.numberWithCommas(
-          c.r2(dataToUse._maxHp * c.displayHPMultiplier, 0),
-        )}<br /><br />The sum total of all of the ship's equipment's health.`
+      v-if="
+        dataToUse._hp &&
+        dataToUse._maxHp &&
+        dataToUse.items &&
+        dataToUse.items.length > 0 &&
+        dataToUse.items[0].repair
       "
     >
-      <PillBar
+      <ShipHealthBar :ship="dataToUse" />
+      <!-- <PillBar
         :value="dataToUse._hp"
         :max="dataToUse._maxHp"
-      />
+      /> -->
     </div>
     <!-- <ProgressBar
       v-if="dataToUse._hp && dataToUse._maxHp"
@@ -307,38 +306,13 @@
         dataToUse.items.length
       "
     >
-      <div>
-        <div
-          v-for="(item, index) in dataToUse.items || []"
-          :key="'tooltipscanitem' + dataToUse.id + index"
-          v-tooltip="item"
-        >
-          <div>
-            {{ item.displayName }}
-            <span class="sub">{{
-              c.capitalize(item.type)
-            }}</span>
-          </div>
-          <PillBar
-            v-if="item.repair !== undefined && item.maxHp"
-            :mini="true"
-            :value="item.repair * item.maxHp"
-            :max="item.maxHp"
-          />
-          <div
-            v-else-if="item.repair"
-            class="sub marbotsmall"
-          >
-            Repair: {{ c.r2(item.repair * 100) }}%
-          </div>
-          <div
-            v-else-if="item.maxHp"
-            class="sub marbotsmall"
-          >
-            Max HP: {{ c.r2(item.maxHp) }}
-          </div>
-        </div>
-      </div>
+      <ShipItem
+        v-for="(item, index) in dataToUse.items || []"
+        :key="'tooltipscanitem' + dataToUse.id + index"
+        :item="item"
+        :owner="dataToUse"
+        v-tooltip="item"
+      />
     </div>
   </div>
 </template>

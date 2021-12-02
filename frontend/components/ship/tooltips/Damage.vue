@@ -20,10 +20,12 @@
                 : 'warning'
             "
             >{{
-              c.r2(
-                data.damageMitigated *
-                  c.displayHPMultiplier,
-                0,
+              c.numberWithCommas(
+                c.r2(
+                  data.damageMitigated *
+                    c.displayHPMultiplier,
+                  0,
+                ),
               )
             }}
             damage</span
@@ -42,7 +44,9 @@
           took
           <span class="warning"
             >{{
-              c.r2(d.damage * c.displayHPMultiplier, 0)
+              c.numberWithCommas(
+                c.r2(d.damage * c.displayHPMultiplier, 0),
+              )
             }}
             damage</span
           >{{ d.destroyed ? ' (destroyed)' : '' }}
@@ -51,9 +55,11 @@
           <li>
             <span class="warning"
               >{{
-                c.r2(
-                  data.overkill * c.displayHPMultiplier,
-                  0,
+                c.numberWithCommas(
+                  c.r2(
+                    data.overkill * c.displayHPMultiplier,
+                    0,
+                  ),
                 )
               }}
               damage</span
@@ -66,7 +72,9 @@
         <hr />
         <div class="sub">
           {{
-            c.r2(data.hpLeft * c.displayHPMultiplier, 0)
+            c.numberWithCommas(
+              c.r2(data.hpLeft * c.displayHPMultiplier, 0),
+            )
           }}
           HP remaining
         </div>

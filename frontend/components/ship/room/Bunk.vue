@@ -45,7 +45,7 @@
         }}% recovered</b
       >. ({{ c.msToTimeString(msToBottomedOutResetPoint) }})
     </div>
-    <div class="panesection" v-if="timeToRested">
+    <div class="panesection" v-if="msToRested">
       Fully rested in {{ timeToRested }}
     </div>
     <div
@@ -55,7 +55,7 @@
       Fully rested!
     </div>
 
-    <div class="panesection" v-if="timeToRested">
+    <div class="panesection" v-if="msToRested">
       <div>
         <div class="panesubhead">
           When Fully Rested, Go To...

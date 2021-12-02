@@ -93,14 +93,26 @@ export const buyableCrewTaglines: {
   { value: `Squirt`, rarity: 3 },
   { value: `Deckhand`, rarity: 4 },
   { value: `Swabbie`, rarity: 5 },
-  { value: `Sleepyhead`, rarity: 5 },
+  { value: `Sleepyhead`, rarity: 6 },
   { value: `Nocturnal`, rarity: 7 },
+  { value: `Wet Blanket`, rarity: 8 },
   { value: `Beam Me Up!`, rarity: 9 },
   { value: `Stowaway`, rarity: 10 },
-  { value: `Sailor`, rarity: 11 },
+  { value: `HM03`, rarity: 11 },
+  { value: `Salty Dog`, rarity: 12 },
   { value: `Aye Aye Cap'n!`, rarity: 13 },
+  { value: `Poseidon's Nephew`, rarity: 14 },
   { value: `Admiral`, rarity: 15 },
+  { value: `Belly-up`, rarity: 16 },
   { value: `Captain Hook`, rarity: 17 },
+  { value: `Manatee O’ War`, rarity: 19 },
+  { value: `Aquaman's Poker Buddy`, rarity: 20 },
+  { value: `42 Wallaby Way`, rarity: 21 },
+  { value: `Touched the Butt`, rarity: 23 },
+  /*
+
+
+  */
 ]
 
 export function getShipTaglinePrice(

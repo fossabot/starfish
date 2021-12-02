@@ -64,8 +64,8 @@ exports.armor = {
     block3: {
         type: `item`,
         itemType: `armor`,
-        itemId: `block2`,
-        displayName: `Hardened Shell 02`,
+        itemId: `block3`,
+        displayName: `Hardened Shell 03`,
         description: `Absorbs shockwaves effectively, as long as the armor doesn't crack.`,
         mass: 1100 * gameConstants_1.default.itemMassMultiplier,
         rarity: 6,
@@ -78,14 +78,15 @@ exports.armor = {
     block4: {
         type: `item`,
         itemType: `armor`,
-        itemId: `block2`,
-        displayName: `Hardened Shell 02`,
+        itemId: `block4`,
+        displayName: `Hardened Shell 04`,
         description: `Absorbs shockwaves effectively, as long as the armor doesn't crack.`,
         mass: 1100 * gameConstants_1.default.itemMassMultiplier,
         rarity: 8,
         basePrice: { credits: 1090 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.5,
         maxHp: 6,
+        upgradableProperties: [`damageReduction`],
     },
     // tough
     tough1: {
@@ -101,7 +102,7 @@ exports.armor = {
         maxHp: 7,
         maxLevel: 3,
         upgradableProperties: [`mass`],
-        upgradeBonus: 0.05,
+        upgradeBonus: 0.1,
     },
     tough2: {
         type: `item`,
@@ -116,7 +117,7 @@ exports.armor = {
         maxHp: 9,
         maxLevel: 5,
         upgradableProperties: [`mass`],
-        upgradeBonus: 0.05,
+        upgradeBonus: 0.1,
     },
     tough3: {
         type: `item`,
@@ -131,7 +132,7 @@ exports.armor = {
         maxHp: 12,
         maxLevel: 7,
         upgradableProperties: [`mass`],
-        upgradeBonus: 0.05,
+        upgradeBonus: 0.1,
     },
 };
 //# sourceMappingURL=armor.js.map

@@ -13,11 +13,14 @@
       <div class="">
         Your repair speed:
         {{
-          c.r2(
-            totalRepairPower *
-              60 *
-              60 *
-              c.displayHPMultiplier,
+          c.numberWithCommas(
+            c.r2(
+              totalRepairPower *
+                60 *
+                60 *
+                c.displayHPMultiplier,
+              0,
+            ),
           )
         }}
         HP/hr

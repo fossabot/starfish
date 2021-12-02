@@ -300,7 +300,7 @@ export default Vue.extend({
                 radius = tp.radius
               }
               if (tp.type && ['cache'].includes(tp.type))
-                tp.color = `rgb(216, 174, 3)`
+                tp.color = `#f9c74f`
               targetPoints.push({
                 location: tp.location,
                 radius,
@@ -382,9 +382,9 @@ export default Vue.extend({
                       key === 'vision'
                         ? `#bbbbbb`
                         : key === 'broadcast'
-                        ? `#dd88ff`
+                        ? `#a175ef`
                         : key === 'scan'
-                        ? `#66ffdd`
+                        ? `#26e0b0`
                         : '#bbbbbb',
                   })),
               )
@@ -394,7 +394,7 @@ export default Vue.extend({
                     location: tp.location,
                     labelTop: 'attack',
                     radius: a,
-                    color: `#ff7733`,
+                    color: `#ff5a5c`,
                   })
             }
           }

@@ -50,7 +50,7 @@ const maxBroadcastLength = 200
 
 const defaultHomeworldLevel = 12
 
-const itemUpgradeMultiplier = 0.02
+const itemUpgradeMultiplier = 0.05
 const itemPriceMultiplier = 400
 const itemMassMultiplier = 10
 const weaponDamageMultiplier = 1

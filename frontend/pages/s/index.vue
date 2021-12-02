@@ -52,6 +52,7 @@
             <ShipScanShip />
 
             <ShipItems />
+            <!-- <ShipActives /> -->
 
             <ShipLog />
 
@@ -236,9 +237,9 @@ export default Vue.extend({
 
 .pagecontainer {
   width: 100%;
-  min-height: 80vh;
+  min-height: 70vh;
   position: relative;
-  padding-bottom: 20vh;
+  padding-bottom: 30vh;
   // display: flex;
   // align-items: center;
   // justify-content: center;

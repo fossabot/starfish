@@ -108,7 +108,7 @@ export class Item extends Stubbable {
 
   set hp(newHp: number) {
     this.repair = newHp / this.maxHp
-    this.ship.updateThingsThatCouldChangeOnItemChange()
+    this.ship.recalculateAll()
   }
 
   get baseData(): BaseItemData {
@@ -299,7 +299,7 @@ export class Item extends Stubbable {
         else this[prop] += multiplier
       }
     this._stub = null // invalidate stub
-    this.ship.updateThingsThatCouldChangeOnItemChange()
+    this.ship.recalculateAll()
   }
 
   getUpgradeRequirements(): ItemUpgradeRequirements {

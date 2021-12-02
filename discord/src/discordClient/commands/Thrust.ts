@@ -121,9 +121,9 @@ export class ThrustCommand implements Command {
       } can thrust with ${c.r2(
         context.crewMember.cockpitCharge * 100,
         0,
-      )}% of their capacity, as well as set their passive thrust toward:`
+      )}% of their capacity, as well as target their auto-nav toward:`
     else if (hasPassiveEngines)
-      label = `${context.crewMember.name} can set their passive thrust toward:`
+      label = `${context.crewMember.name} can target their auto-nav toward:`
     else label = hasManualEngines + ` ` + hasPassiveEngines
 
     waitForButtonChoiceWithCallback({
@@ -159,7 +159,7 @@ export class ThrustCommand implements Command {
             await context.reply(
               `${context.nickname} ${
                 hasPassiveEngines
-                  ? `directed their passive thrust and manually `
+                  ? `targeted their auto-nav and manually `
                   : ``
               }thrusted ${c.speedNumber(res.data)} ${
                 target.id === `current`

@@ -51,7 +51,11 @@
         style="flex-grow: 3"
         @keydown.enter="done"
       />
-      <div class="button attach" @click="done">
+      <div
+        class="button attach"
+        :class="{ disabled: value === '' }"
+        @click="done"
+      >
         <span>Go</span>
       </div>
     </div>
