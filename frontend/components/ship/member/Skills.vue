@@ -1,28 +1,66 @@
 <template>
   <div class="inventory panesection">
-    <div class="panesubhead">Skills</div>
-    <ProgressBar
-      :mini="true"
-      :dangerZone="-1"
-      :percent="skill.progress"
-      v-for="skill in sortedSkills"
-      v-if="skill"
-      :key="'skill' + skill.skill"
-      v-tooltip="skillTooltips[skill.skill]"
+    <!-- <div class="panesubhead">Skills</div> -->
+
+    <div
+      class="marbotsmall"
+      v-tooltip="
+        `Level up your skills to gain character levels!<br />
+            Character level increases your number of active slots and the power of your active abilities.`
+      "
     >
-      <div>
-        <b>{{ c.capitalize(skill.skill) }}</b
-        >: <NumberChangeHighlighter :number="skill.level" />
-        <span class="sub"
-          ><NumberChangeHighlighter
-            :number="Math.round(skill.xp)"
-            :display="`(${c.numberWithCommas(
-              Math.round(skill.xp),
-            )} xp)`"
-          />
-        </span>
-      </div>
-    </ProgressBar>
+      <h4>
+        Lv.
+        <NumberChangeHighlighter
+          :number="crewMember.level"
+        />
+        {{
+          c.capitalize(
+            c.species[crewMember.speciesId].singular,
+          )
+        }}
+        <span class="sub normal"
+          >({{
+            crewMember.level * crewMember.skills.length +
+            c.r2(levelPercent * crewMember.skills.length)
+          }}/{{
+            (crewMember.level + 1) *
+            crewMember.skills.length
+          }})</span
+        >
+      </h4>
+    </div>
+
+    <div class="grid2" style="grid-gap: 0.2em">
+      <ProgressBar
+        :mini="true"
+        :dangerZone="-1"
+        :percent="skill.progress"
+        v-for="skill in sortedSkills"
+        v-if="skill"
+        :key="'skill' + skill.skill"
+        v-tooltip="getTooltip(skill)"
+      >
+        <div class="flexbetween fullwidth">
+          <div class="">
+            <NumberChangeHighlighter
+              :number="c.r2(skill.xp, 0)"
+              :display="skillAbbreviations[skill.skill]"
+            />
+          </div>
+          <div class="">
+            <span
+              class="small fade normal"
+              style="font-size: 0.8em; margin-right: 0.2em"
+              >Lv.</span
+            ><NumberChangeHighlighter
+              :number="getLevel(skill).level"
+              :class="{ success: getLevel(skill).boost }"
+            />
+          </div>
+        </div>
+      </ProgressBar>
+    </div>
   </div>
 </template>
 
@@ -35,24 +73,30 @@ export default Vue.extend({
   data() {
     const skillTooltips = {
       strength:
-        'Strength improves your mining and repairing speeds. <br /> Earned by repairing and mining.',
+        '<b>Strength</b> improves your mining and repairing speeds. <br /> Earned by repairing and mining.',
       dexterity:
-        'Dexterity improves piloting charge/thrust, as well as weapons charge speed. <br /> Earned by charging weapons and using thrust.',
+        '<b>Dexterity</b> improves engine charge/thrust, as well as weapon damage/charge speed. <br /> Earned by charging weapons and using thrust.',
       intellect:
-        'Intellect improves your research speed. <br /> Earned by researching.',
+        '<b>Intellect</b> improves your research speed. <br /> Earned by researching.',
       charisma:
-        'Charisma improves your broadcast clarity and vendor prices. <br /> Earned by sending broadcast and trading cargo.',
+        '<b>Charisma</b> improves your broadcast clarity and vendor prices. <br /> Earned by sending broadcasts and trading cargo.',
       // piloting: `Improves thrust.<br />Earned by using charged thrust.`,
       // munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
       // mechanics: `Improves repair speed.<br />Earned by repairing.`,
       // linguistics: `Improves clarity of broadcasts.<br />Earned by sending broadcasts.`,
       // mining: `Improves mine speed.<br />Earned by mining.`,
     }
-    return { c, skillTooltips }
+    const skillAbbreviations = {
+      strength: 'STR',
+      dexterity: 'DEX',
+      intellect: 'INT',
+      charisma: 'CHA',
+    }
+    return { c, skillTooltips, skillAbbreviations }
   },
   computed: {
     ...mapState(['crewMember']),
-    sortedSkills() {
+    sortedSkills(): XPData[] {
       return [...this.crewMember.skills]
         .filter((s) => s)
         .sort((a: XPData, b: XPData) => b.xp - a.xp)
@@ -64,10 +108,50 @@ export default Vue.extend({
           return { ...s, progress }
         })
     },
+    levelPercent(): number {
+      return (
+        (this.crewMember.skills.reduce(
+          (acc, skill) => acc + skill.level,
+          0,
+        ) /
+          this.crewMember.skills.length) %
+        1
+      )
+    },
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    getTooltip(skill: XPData) {
+      const boost = this.getLevel(skill).boost
+      return (
+        this.skillTooltips[skill.skill] +
+        `<br/><span class="sub martopsmall">${c.numberWithCommas(
+          Math.round(skill.xp),
+        )} xp</span>` +
+        (boost
+          ? `<br/><span class="sub success">Boosted by ${boost} level${
+              boost === 1 ? '' : 's'
+            }</span>`
+          : '')
+      )
+    },
+    getLevel(skill: XPData): any {
+      const boost = this.crewMember.passives.reduce(
+        (acc, p) => {
+          if (p.id === `boost${c.capitalize(skill.skill)}`)
+            return acc + (p.intensity || 0)
+          return acc
+        },
+        0,
+      )
+      return {
+        level: skill.level + boost,
+        xp: skill.xp,
+        boost: boost,
+      }
+    },
+  },
 })
 </script>
 

@@ -426,7 +426,7 @@ export default Vue.extend({
       const hoverRadius =
         Math.max(this.drawer?.width || 1, 50) /
         (this.drawer?.flatScale || 1) /
-        30
+        50
       const hoverableElements: any[] = []
       const vd = this.visibleData as AdminVisibleData
       if (!vd) return

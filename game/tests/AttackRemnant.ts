@@ -13,7 +13,7 @@ import {
   crewMemberData,
   humanShipData,
   basicPlanetData,
-  aiShipData,
+  enemyAiShipData,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'

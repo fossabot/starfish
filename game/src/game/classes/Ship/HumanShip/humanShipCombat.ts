@@ -75,9 +75,7 @@ export function determineTargetShip(
       const existingTotal = totals.find(
         (t) => t.target.id === targetId,
       )
-      const skillWeight =
-        cm.skills.find((s) => s.skill === `dexterity`)
-          ?.level || 1
+      const skillWeight = cm.dexterity.level
       if (existingTotal) existingTotal.total += skillWeight
       else {
         const foundShip = this.game?.ships.find(

@@ -11,7 +11,7 @@ interface BaseShipData {
   chassis?: { chassisId: ChassisId }
   items?: BaseItemData[]
   ai?: boolean
-  previousLocations?: CoordinatePair[]
+  previousLocations?: PreviousLocation[]
   spawnPoint?: CoordinatePair
   level?: number
   tagline?: string
@@ -44,7 +44,10 @@ interface BaseHumanShipData extends BaseShipData {
 
 interface BaseAIShipData extends BaseShipData {
   onlyVisibleToShipId?: string
-  speciesId: SpeciesId
+  speciesId?: SpeciesId
+  until?: number
+  neverAttackIds?: string[]
+  spawnedById?: string
 }
 
 type GameChannelType = `alert` | `chat` | `broadcast`
@@ -74,6 +77,7 @@ type ShipPassiveEffectId =
   | `boostThrust`
   | `boostPassiveThrust`
   | `boostCockpitChargeSpeed`
+  | `boostWeaponChargeSpeed`
   | `boostXpGain`
   | `flatSkillBoost`
   | `scaledDamageReduction`

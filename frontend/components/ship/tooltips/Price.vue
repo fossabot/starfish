@@ -66,6 +66,19 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
+    charismaLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostCharisma' ? p.intensity || 0 : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'charisma',
+        )?.level || 1) + passiveBoost
+      )
+    },
     basePrice(): Price {
       if (this.data.item)
         return (
@@ -323,12 +336,7 @@ export default Vue.extend({
             c.lerp(
               0,
               c.maxCharismaVendorMultiplier,
-              (((
-                this.crewMember as CrewMemberStub
-              ).skills.find((s) => s.skill === 'charisma')
-                ?.level || 1) -
-                1) /
-                100,
+              (this.charismaLevel - 1) / 100,
             ) * 100,
             2,
           )}%`,
@@ -348,9 +356,7 @@ export default Vue.extend({
             this.data.planet,
             this.ship.guildId,
             1,
-            (this.crewMember as CrewMemberStub).skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
           ).credits || 0
         const baseSellPrice =
           c.getCargoSellPrice(
@@ -358,9 +364,7 @@ export default Vue.extend({
             this.data.planet,
             this.ship.guildId,
             1,
-            (this.crewMember as CrewMemberStub).skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
             true,
           ).credits || 0
 

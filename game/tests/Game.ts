@@ -5,7 +5,7 @@ import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { humanShipData, aiShipData } from './defaults'
+import { humanShipData, enemyAiShipData } from './defaults'
 // import sinonChai from 'sinon-chai'
 // chai.use(sinonChai)
 
@@ -24,7 +24,7 @@ describe(`Game`, () => {
       await game.addHumanShip(humanShipData())
 
     const prevUniverseSize = game.gameSoftRadius
-    await game.addAIShip(aiShipData())
+    await game.addAIShip(enemyAiShipData())
     expect(game.gameSoftRadius).to.equal(prevUniverseSize)
 
     await game.addHumanShip(humanShipData())

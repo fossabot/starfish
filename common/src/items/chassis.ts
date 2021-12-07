@@ -19,6 +19,22 @@ export const chassis: {
     rarity: 0.2,
     passives: [{ id: `boostBrake`, intensity: -0.6 }],
   },
+
+  drone1: {
+    type: `chassis`,
+    chassisId: `drone1`,
+    buyable: false,
+    displayName: `Drone 1`,
+    special: true,
+    description: `A mechanical pod designed to house various drone components.`,
+    mass: 100 * game.itemMassMultiplier,
+    basePrice: { credits: 0 },
+    slots: 3,
+    agility: 1.5,
+    maxCargoSpace: 0,
+    rarity: 1,
+  },
+
   ai1: {
     type: `chassis`,
     chassisId: `ai1`,

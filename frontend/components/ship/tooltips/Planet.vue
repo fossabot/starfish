@@ -313,10 +313,16 @@ export default Vue.extend({
       )
     },
     charismaLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostCharisma' ? p.intensity || 0 : 0),
+        0,
+      )
       return (
-        this.crewMember?.skills.find(
+        (this.crewMember.skills.find(
           (s) => s.skill === 'charisma',
-        )?.level || 1
+        )?.level || 1) + passiveBoost
       )
     },
     alliedGuildIds(): string[] {

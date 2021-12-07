@@ -13,6 +13,7 @@ import {
   addBackground,
   addTagline,
 } from './addins/cosmetics'
+import type { BasicPlanet } from '../Planet/BasicPlanet'
 
 export class CrewMember extends Stubbable {
   static readonly baseMaxCargoSpace = 10
@@ -24,8 +25,10 @@ export class CrewMember extends Stubbable {
   name: string = `crew member`
   discordIcon?: string
   location: CrewLocation
-  skills: XPData[]
+  skills: XPData[] = []
+  level: number = 1
   stamina: number
+  morale: number
   speciesId?: SpeciesId
   maxStamina: number = 1
   lastActive: number
@@ -51,6 +54,7 @@ export class CrewMember extends Stubbable {
   timedPassives: CrewPassiveData[] = []
   actives: CrewActive[] = []
   lastActiveUse: number = 0
+  activeSlots: number = 0
 
   stats: CrewStatEntry[] = []
   bottomedOutOnStamina: boolean = false
@@ -98,6 +102,7 @@ export class CrewMember extends Stubbable {
 
     this.lastActive = data.lastActive || Date.now()
     this.stamina = data.stamina || this.maxStamina
+    this.morale = data.morale || 1
     this.cockpitCharge = data.cockpitCharge || 0
 
     this.inventory =
@@ -128,12 +133,52 @@ export class CrewMember extends Stubbable {
       intensity: 0.3,
     })
     this.addActive({
+      id: `combatDrone`,
+      lastUsed: 0,
+      intensity: 0.02,
+    })
+    this.addActive({
+      id: `repairDrone`,
+      lastUsed: 0,
+      intensity: 2,
+    })
+    this.addActive({
       id: `cargoSweep`,
       lastUsed: 0,
       intensity: 0.3,
     })
     this.addActive({
       id: `boostShipSightRange`,
+      lastUsed: 0,
+      intensity: 0.2,
+    })
+    this.addActive({
+      id: `weaponRechargeSpeed`,
+      lastUsed: 0,
+      intensity: 0.2,
+    })
+    this.addActive({
+      id: `boostCharisma`,
+      lastUsed: 0,
+      intensity: 4,
+    })
+    this.addActive({
+      id: `boostIntellect`,
+      lastUsed: 0,
+      intensity: 3,
+    })
+    this.addActive({
+      id: `boostDexterity`,
+      lastUsed: 0,
+      intensity: 5,
+    })
+    this.addActive({
+      id: `boostStrength`,
+      lastUsed: 0,
+      intensity: 2,
+    })
+    this.addActive({
+      id: `boostMorale`,
       lastUsed: 0,
       intensity: 0.2,
     })
@@ -288,6 +333,20 @@ export class CrewMember extends Stubbable {
       this.toUpdate.attackTargetId = this.attackTargetId
     }
 
+    // ----- drip-feed morale changes -----
+    if (this.ship.planet) {
+      if ((this.ship.planet as BasicPlanet).vendor)
+        this.changeMorale(
+          0.000005 *
+            this.ship.planet.level *
+            (c.tickInterval / 1000),
+        ) // more morale gain from basic planets
+    } else {
+      this.changeMorale(
+        -1 * 0.000003 * (c.tickInterval / 1000),
+      )
+    }
+
     // ----- bunk -----
     if (this.location === `bunk`) {
       this.bunkAction()
@@ -307,6 +366,7 @@ export class CrewMember extends Stubbable {
     }
     if (this.stamina <= 0) {
       this.stamina = 0
+      this.changeMorale(-0.1)
       this.bottomedOutOnStamina = true
       this.toUpdate.bottomedOutOnStamina = true
       this.goTo(`bunk`)
@@ -360,6 +420,12 @@ export class CrewMember extends Stubbable {
     this.toUpdate.crewCosmeticCurrency =
       this.crewCosmeticCurrency
     this.toUpdate.credits = this.credits
+
+    if (price.credits)
+      this.changeMorale(price.credits * 0.001)
+    if (price.crewCosmeticCurrency)
+      this.changeMorale(price.crewCosmeticCurrency * 0.01)
+
     return true
   }
 
@@ -392,11 +458,155 @@ export class CrewMember extends Stubbable {
     )
 
     this.toUpdate.skills = this.skills
+    this.updateLevel()
+  }
+
+  updateLevel() {
+    this.level = Math.floor(
+      this.skills.reduce(
+        (acc, skill) => acc + skill.level,
+        0,
+      ) / this.skills.length,
+    )
+    this.toUpdate.level = this.level
+  }
+
+  updateActiveSlots() {
+    const passiveBoost = this.getPassiveIntensity(
+      `boostActiveSlots`,
+    )
+    this.activeSlots =
+      Math.floor(this.level / 5 + passiveBoost) + 2
+    this.toUpdate.activeSlots = this.activeSlots
   }
 
   useActive = useActive
   addActive = addActive
   removeActive = removeActive
+
+  /**
+   * @param amount morale to add, or negative to subtract
+   */
+  changeMorale(amount: number) {
+    // negative things hurt less when u sleepin
+    if (this.location === `bunk` && amount < 0)
+      amount *= 0.5
+
+    this.morale += amount
+    if (this.morale > 1) this.morale = 1
+    if (this.morale < 0) this.morale = 0
+
+    if (
+      this.morale <
+      (this.ship.game?.settings.moraleLowThreshold ||
+        c.defaultGameSettings.moraleLowThreshold)
+    )
+      this.setLowMorale()
+    else if (
+      this.morale >
+      (this.ship.game?.settings.moraleHighThreshold ||
+        c.defaultGameSettings.moraleHighThreshold)
+    )
+      this.setHighMorale()
+    else this.clearMoralePassives()
+
+    this.toUpdate.morale = this.morale
+  }
+
+  clearMoralePassives() {
+    this.passives.forEach((p) => {
+      if (
+        typeof p.data?.source === `string` &&
+        [`highMorale`, `lowMorale`].includes(p.data?.source)
+      ) {
+        this.removePassive(p)
+      }
+    })
+  }
+
+  setLowMorale() {
+    const passives: CrewPassiveData[] = [
+      { id: `boostMaxStamina`, intensity: -40 },
+      {
+        id: `boostThrust`,
+        intensity: -0.2,
+      },
+      {
+        id: `boostPassiveThrust`,
+        intensity: -0.2,
+      },
+      {
+        id: `generalImprovementWhenAlone`,
+        intensity: 0.3,
+      },
+    ]
+    if (
+      this.passives.find(
+        (p) =>
+          p.id === passives[0].id &&
+          p.intensity === passives[0].intensity,
+      )
+    )
+      return
+
+    for (let p of passives)
+      this.applyPassive({
+        id: p.id,
+        intensity: p.intensity,
+        data: { ...(p.data || {}), source: `lowMorale` },
+      })
+
+    // todo lower damage
+  }
+
+  setHighMorale() {
+    if (
+      this.passives.find(
+        (p) =>
+          p.id === `reduceStaminaDrain` &&
+          p.intensity === 0.1,
+      )
+    )
+      return
+
+    const passives: CrewPassiveData[] = [
+      {
+        id: `reduceStaminaDrain`,
+        intensity: 0.1,
+      },
+      {
+        id: `boostThrust`,
+        intensity: 0.1,
+      },
+      {
+        id: `boostPassiveThrust`,
+        intensity: 0.1,
+      },
+      {
+        id: `boostXpGain`,
+        intensity: 0.1,
+      },
+      {
+        id: `generalImprovementPerCrewMemberInSameRoom`,
+        intensity: 0.05,
+      },
+    ]
+    if (
+      this.passives.find(
+        (p) =>
+          p.id === passives[0].id &&
+          p.intensity === passives[0].intensity,
+      )
+    )
+      return
+
+    for (let p of passives)
+      this.applyPassive({
+        id: p.id,
+        intensity: p.intensity,
+        data: { ...(p.data || {}), source: `highMorale` },
+      })
+  }
 
   /**
    * returns the amount left over after filling the crew member's max carryable capacity
@@ -528,9 +738,39 @@ export class CrewMember extends Stubbable {
   }
 
   removePassive(p: CrewPassiveData) {
-    const foundIndex = this.passives.findIndex(
-      (p2) => p2.id === p.id,
-    )
+    const foundIndex = this.passives.findIndex((p2) => {
+      for (let key in p)
+        if (
+          typeof p[key] !== `object` &&
+          p2[key] !== p[key]
+        )
+          return false
+
+      if (typeof p.data?.source === `string`)
+        return p.data.source === p2.data?.source
+
+      for (let prop of Object.keys(p.data?.source || {}))
+        if (typeof p.data?.source?.[prop] === `string`)
+          if (
+            p2.data?.source?.[prop] !==
+            p.data?.source?.[prop]
+          )
+            return false
+          else if (
+            typeof p.data?.source?.[prop] === `object`
+          )
+            for (let prop2 of Object.keys(
+              p.data?.source[prop] || {},
+            ))
+              if (
+                p2.data?.source?.[prop]?.[prop2] !==
+                p.data?.source?.[prop]?.[prop2]
+              )
+                return false
+
+      return true
+    })
+    if (foundIndex === -1) return
     this.passives.splice(foundIndex, 1)
     this.toUpdate.passives = this.passives
 
@@ -546,9 +786,12 @@ export class CrewMember extends Stubbable {
   }
 
   recalculateAll() {
+    this.changeMorale(0)
+    this.updateLevel()
     this.recalculateMaxStamina()
     this.recalculateMaxCargoSpace()
     this.checkExpiredPassives()
+    this.updateActiveSlots()
   }
 
   recalculateMaxStamina() {
@@ -589,42 +832,50 @@ export class CrewMember extends Stubbable {
   }
 
   get strength() {
-    return (
-      this.skills.find((s) => s?.skill === `strength`) || {
-        skill: `strength`,
-        level: 1,
-        xp: 0,
-      }
-    )
+    const boost = this.getPassiveIntensity(`boostStrength`)
+    const val = this.skills.find(
+      (s) => s?.skill === `strength`,
+    ) || {
+      skill: `strength`,
+      level: 1,
+      xp: 0,
+    }
+    return { ...val, level: val.level + boost }
   }
 
   get dexterity() {
-    return (
-      this.skills.find((s) => s?.skill === `dexterity`) || {
-        skill: `dexterity`,
-        level: 1,
-        xp: 0,
-      }
-    )
+    const boost = this.getPassiveIntensity(`boostDexterity`)
+    const val = this.skills.find(
+      (s) => s?.skill === `dexterity`,
+    ) || {
+      skill: `dexterity`,
+      level: 1,
+      xp: 0,
+    }
+    return { ...val, level: val.level + boost }
   }
 
   get charisma() {
-    return (
-      this.skills.find((s) => s?.skill === `charisma`) || {
-        skill: `charisma`,
-        level: 1,
-        xp: 0,
-      }
-    )
+    const boost = this.getPassiveIntensity(`boostCharisma`)
+    const val = this.skills.find(
+      (s) => s?.skill === `charisma`,
+    ) || {
+      skill: `charisma`,
+      level: 1,
+      xp: 0,
+    }
+    return { ...val, level: val.level + boost }
   }
 
   get intellect() {
-    return (
-      this.skills.find((s) => s?.skill === `intellect`) || {
-        skill: `intellect`,
-        level: 1,
-        xp: 0,
-      }
-    )
+    const boost = this.getPassiveIntensity(`boostIntellect`)
+    const val = this.skills.find(
+      (s) => s?.skill === `intellect`,
+    ) || {
+      skill: `intellect`,
+      level: 1,
+      xp: 0,
+    }
+    return { ...val, level: val.level + boost }
   }
 }

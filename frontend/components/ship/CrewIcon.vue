@@ -33,14 +33,7 @@
             dominant-baseline="middle"
             text-anchor="middle"
           >
-            {{
-              Math.floor(
-                crewMember.skills.reduce(
-                  (acc, skill) => acc + skill.level,
-                  0,
-                ) / crewMember.skills.length,
-              )
-            }}
+            {{ crewMember.level }}
           </text>
         </svg>
       </div>

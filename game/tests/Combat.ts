@@ -12,7 +12,7 @@ import { describe, it } from 'mocha'
 // chai.use(sinonChai)
 
 import {
-  aiShipData,
+  enemyAiShipData,
   basicPlanetData,
   crewMemberData,
   humanShipData,
@@ -268,7 +268,7 @@ describe(`Combat HumanShip target selection`, () => {
     )
 
     const flamingo = await g.addAIShip(
-      aiShipData(3, `flamingos`),
+      enemyAiShipData(3, `flamingos`),
     )
     ship2.move([0, 0])
     flamingo.move([0, 0])

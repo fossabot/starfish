@@ -9,52 +9,83 @@
       {{ c.crewPassives[passive.id].description(passive) }}
     </span>
     <span
-      class="sub nowrap"
+      class="sub"
+      :class="{ nowrap: sourceText.length < 30 }"
       v-if="passive.data && passive.data.source"
     >
-      {{
-        passive.data.source.speciesId
-          ? `${c.capitalize(
-              c.species[passive.data.source.speciesId]
-                .singular,
-            )} species`
-          : passive.data.source.planetName
-          ? `Planet ${passive.data.source.planetName}`
-          : passive.data.source.item
-          ? `${
-              c.items[passive.data.source.item.type][
-                passive.data.source.item.id
-              ].displayName
-            }`
-          : passive.data.source.chassisId
-          ? `${
-              c.items.chassis[passive.data.source.chassisId]
-                .displayName
-            }`
-          : passive.data.source === 'secondWind'
-          ? 'Second Wind'
-          : passive.data.source === 'permanent'
-          ? 'Permanent'
-          : passive.data.source
-      }}
+      {{ sourceText }}
     </span>
+    <div class="sub" v-if="timeRemaining">
+      <span class="fade"
+        >({{
+          c.msToTimeString(timeRemaining)
+        }}
+        remaining)</span
+      >
+    </div>
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { passive: { required: true } },
-  data() {
-    return { c }
+  props: {
+    passive: {
+      required: true,
+      type: Object as PropType<CrewPassiveData>,
+    },
   },
-  computed: {},
-  watch: {},
-  mounted() {},
-  methods: {},
+  data() {
+    let timeRemaining = 0
+    return { c, timeRemaining }
+  },
+  computed: {
+    ...mapState(['lastUpdated']),
+    sourceText(): string {
+      const s = this.passive.data?.source
+      if (!s) return ''
+      if (s === 'secondWind') return 'Second Wind'
+      if (s === 'permanent') return 'Permanent'
+      if (s === 'lowMorale') return 'Space Madness'
+      if (s === 'highMorale') return 'High Morale'
+
+      return s.speciesId
+        ? `${c.capitalize(
+            c.species[s.speciesId].singular,
+          )} species`
+        : s.planetName
+        ? `Planet ${s.planetName}`
+        : s.item
+        ? `${
+            c.items[s.item?.type]?.[s.item?.id].displayName
+          }`
+        : s.chassisId
+        ? `${c.items.chassis[s.chassisId].displayName}`
+        : s.crewActive
+        ? `${
+            c.crewActives[s.crewActive.activeId].displayName
+          }`
+        : ''
+    },
+  },
+  watch: {
+    lastUpdated() {
+      this.recalculateRemaining()
+    },
+  },
+  mounted() {
+    this.recalculateRemaining()
+  },
+  methods: {
+    recalculateRemaining() {
+      if (!this.passive.until) this.timeRemaining = 0
+      else
+        this.timeRemaining = this.passive.until - Date.now()
+    },
+  },
 })
 </script>
 

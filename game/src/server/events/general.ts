@@ -85,4 +85,32 @@ export default function (
     if (!game) return
     callback({ data: game.settings })
   })
+
+  socket.on(`game:stats`, (callback) => {
+    if (!game) return
+    callback({
+      data: {
+        gameArea:
+          c.numberWithCommas(c.r2(game.gameSoftArea, 0)) +
+          `AU²`,
+        ships: game.ships.length,
+        planets: game.planets.length,
+        zones: game.zones.length,
+        caches: game.caches.length,
+        playingSince: new Date(game.gameInitializedAt),
+        // discordServers: game.humanShips.length,
+        // players: game.humanShips.reduce(
+        //   (t, hs) => t + hs.crewMembers.length,
+        //   0,
+        // ),
+      },
+    })
+  })
+
+  socket.on(`game:guildRankings`, (callback) => {
+    if (!game) return
+    callback({
+      data: game.guildRankings,
+    })
+  })
 }

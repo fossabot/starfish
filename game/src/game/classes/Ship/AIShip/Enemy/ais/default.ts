@@ -1,6 +1,6 @@
-import c from '../../../../../../../common/dist'
-import type { AIShip } from '../AIShip'
-import { CombatShip } from '../../CombatShip'
+import c from '../../../../../../../../common/dist'
+import type { AIShip } from '../../AIShip'
+import { CombatShip } from '../../../CombatShip'
 
 export const commonTaglines = [
   { value: ``, weight: 8 },

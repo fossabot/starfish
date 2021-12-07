@@ -113,7 +113,11 @@ export function weapons(this: CrewMember): void {
   if (!chargeableWeapons.length) return
 
   const passiveMultiplier =
-    this.getPassiveIntensity(`boostWeaponChargeSpeed`) + 1
+    this.getPassiveIntensity(`boostWeaponChargeSpeed`) +
+    this.ship.getPassiveIntensity(
+      `boostWeaponChargeSpeed`,
+    ) +
+    1
 
   const generalBoostMultiplier =
     c.getGeneralMultiplierBasedOnCrewMemberProximity(

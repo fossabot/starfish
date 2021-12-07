@@ -1,6 +1,7 @@
 interface PersistentGameData {
   minimumGameRadius?: number
   paused?: boolean
+  gameInitializedAt?: number
 }
 
 type ScanType =
@@ -25,4 +26,9 @@ interface Price {
   credits?: number
   shipCosmeticCurrency?: number
   crewCosmeticCurrency?: number
+}
+
+interface PreviousLocation {
+  time: number
+  location: CoordinatePair
 }

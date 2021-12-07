@@ -218,34 +218,45 @@ export function getBackups() {
 }
 
 export function resetDbToBackup(backupId: string) {
-  try {
-    if (
-      !fs.existsSync(backupsFolderPath) ||
-      !fs.existsSync(
-        path.resolve(backupsFolderPath, backupId),
-      )
-    )
-      return c.log(
-        `red`,
-        `Attempted to reset db to nonexistent backup`,
-      )
-  } catch (e) {
-    return c.log(`red`, `Unable to find db backups folder`)
-  }
-
-  c.log(`yellow`, `Resetting db to backup`, backupId)
-
-  let cmd = `mongorestore --drop ${path.resolve(
-    backupsFolderPath,
-    backupId,
-  )}`
-
-  exec(cmd, undefined, (error, stdout, stderr) => {
-    if (error) {
-      console.log({ error })
+  return new Promise<true | string>(async (resolve) => {
+    try {
+      if (
+        !fs.existsSync(backupsFolderPath) ||
+        !fs.existsSync(
+          path.resolve(backupsFolderPath, backupId),
+        )
+      ) {
+        resolve(
+          `Attempted to reset db to nonexistent backup`,
+        )
+        return
+      }
+    } catch (e) {
+      resolve(`Unable to find db backups folder`)
+      return
     }
-    console.log({ stderr })
 
-    process.exit()
+    c.log(`yellow`, `Resetting db to backup`, backupId)
+
+    let cmd = `mongorestore --drop --verbose --uri="mongodb://${
+      defaultMongoOptions.username
+    }:${defaultMongoOptions.password}@${
+      defaultMongoOptions.hostname
+    }:${defaultMongoOptions.port}/${
+      defaultMongoOptions.dbName
+    }" ${path.resolve(
+      backupsFolderPath,
+      backupId,
+      `starfish`,
+    )}`
+
+    exec(cmd, undefined, (error, stdout, stderr) => {
+      if (error) {
+        resolve(error.message)
+      }
+
+      c.log({ stderr })
+      resolve(true)
+    })
   })
 }

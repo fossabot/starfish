@@ -49,9 +49,8 @@ export default Vue.extend({
     },
   },
   data() {
-    let timeRemaining = 0,
-      timeRemainingInterval: any
-    return { c, timeRemaining, timeRemainingInterval }
+    let timeRemaining = 0
+    return { c, timeRemaining }
   },
   computed: {
     ...mapState(['ship', 'lastUpdated']),
@@ -129,18 +128,11 @@ export default Vue.extend({
   mounted() {
     this.recalculateRemaining()
   },
-  beforeDestroy() {
-    clearInterval(this.timeRemainingInterval)
-  },
   methods: {
     recalculateRemaining() {
-      // c.log(this.passive)
-      if (!this.passive.until) {
-        this.timeRemaining = 0
-        clearInterval(this.timeRemainingInterval)
-        return
-      }
-      this.timeRemaining = this.passive.until - Date.now()
+      if (!this.passive.until) this.timeRemaining = 0
+      else
+        this.timeRemaining = this.passive.until - Date.now()
     },
   },
 })

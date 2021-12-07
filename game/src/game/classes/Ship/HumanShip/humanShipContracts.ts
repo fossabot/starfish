@@ -3,6 +3,7 @@ import c from '../../../../../../common/dist'
 import type { HumanShip } from './HumanShip'
 import type { BasicPlanet } from '../../Planet/BasicPlanet'
 import type { AIShip } from '../AIShip/AIShip'
+import type { EnemyAIShip } from '../AIShip/Enemy/EnemyAIShip'
 
 function reliablyFudgeLocation(
   location: CoordinatePair,
@@ -62,6 +63,8 @@ export function startContract(
     return { error: `Could not find target.` }
   }
 
+  this.crewMembers.forEach((cm) => cm.changeMorale(0.05))
+
   const contractData: Contract = {
     ...planetContract,
     timeAccepted: Date.now(),
@@ -82,8 +85,8 @@ export function startContract(
       `Accepted contract for`,
       {
         text:
-          ((target as AIShip).speciesId
-            ? c.species[(target as AIShip).speciesId]
+          ((target as EnemyAIShip).speciesId
+            ? c.species[(target as EnemyAIShip).speciesId]
                 ?.icon || ``
             : ``) + target.name,
         color: target.guildId
@@ -140,14 +143,16 @@ export function stolenContract(
   const planet = this.game?.planets.find(
     (p) => p.id === contract.fromPlanetId,
   )
-  if (target)
+  if (target) {
+    this.crewMembers.forEach((cm) => cm.changeMorale(-0.1))
+
     this.logEntry(
       [
         `Contract for`,
         {
           text:
-            ((target as AIShip).speciesId
-              ? c.species[(target as AIShip).speciesId]
+            ((target as EnemyAIShip).speciesId
+              ? c.species[(target as EnemyAIShip).speciesId]
                   ?.icon || ``
               : ``) + target.name,
           color: target.guildId
@@ -168,6 +173,7 @@ export function stolenContract(
       `high`,
       `contractStolen`,
     )
+  }
 
   this.checkTurnInContract(co)
 }
@@ -209,6 +215,8 @@ export function completeContract(
         true,
       )
 
+      this.crewMembers.forEach((cm) => cm.changeMorale(0.3))
+
       this.checkTurnInContract(co)
     }, 10)
 }
@@ -237,9 +245,10 @@ export function checkContractTimeOuts(this: HumanShip) {
           `Contract for`,
           {
             text:
-              ((target as AIShip).speciesId
-                ? c.species[(target as AIShip).speciesId]
-                    ?.icon || ``
+              ((target as EnemyAIShip).speciesId
+                ? c.species[
+                    (target as EnemyAIShip).speciesId
+                  ]?.icon || ``
                 : ``) + target.name,
             color: target.guildId
               ? c.guilds[target.guildId].color
@@ -268,14 +277,16 @@ export function abandonContract(
   const target = this.game?.ships.find(
     (s) => s.id === contract.targetId,
   )
-  if (target)
+  if (target) {
+    this.crewMembers.forEach((cm) => cm.changeMorale(-0.05))
+
     this.logEntry(
       [
         `Contract for`,
         {
           text:
-            ((target as AIShip).speciesId
-              ? c.species[(target as AIShip).speciesId]
+            ((target as EnemyAIShip).speciesId
+              ? c.species[(target as EnemyAIShip).speciesId]
                   ?.icon || ``
               : ``) + target.name,
           color: target.guildId
@@ -288,6 +299,7 @@ export function abandonContract(
       `medium`,
       `contractStolen`,
     )
+  }
 }
 
 export function checkTurnInContract(

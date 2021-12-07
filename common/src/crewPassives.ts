@@ -46,6 +46,27 @@ const data: {
         : ``),
   },
 
+  boostActiveSlots: {
+    displayName: `Active Slot Boost`,
+    id: `boostActiveSlots`,
+    buyable: {
+      rarity: 2,
+      basePrice: { credits: 11000 },
+      scaledCrewCosmeticCurrency: {
+        fromLevel: 1,
+        amount: 220,
+      },
+      baseIntensity: 0, // will always default to 1
+      wholeNumbersOnly: true,
+    },
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } active slot count by ${math.r2(
+        data.intensity || 0,
+      )}`,
+  },
+
   boostSkillLevel: {
     id: `boostSkillLevel`,
     displayName: `Boost Skill Level`,
@@ -213,6 +234,39 @@ const data: {
       `${math.r2((data.intensity || 0) * 100)}% ${
         (data.intensity || 1) >= 0 ? `improved` : `reduced`
       } performance when alone in a room`,
+  },
+
+  boostCharisma: {
+    displayName: `Charisma Boost`,
+    id: `boostCharisma`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } charisma by ${math.r2(data.intensity || 0)}`,
+  },
+  boostStrength: {
+    displayName: `Strength Boost`,
+    id: `boostStrength`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } strength by ${math.r2(data.intensity || 0)}`,
+  },
+  boostDexterity: {
+    displayName: `Dexterity Boost`,
+    id: `boostDexterity`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } dexterity by ${math.r2(data.intensity || 0)}`,
+  },
+  boostIntellect: {
+    displayName: `Intellect Boost`,
+    id: `boostIntellect`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } intellect by ${math.r2(data.intensity || 0)}`,
   },
 }
 export default data

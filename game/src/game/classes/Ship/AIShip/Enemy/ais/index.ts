@@ -1,6 +1,6 @@
-import c from '../../../../../../../common/src'
-import type { AIShip } from '../AIShip'
-import type { CombatShip } from '../../CombatShip'
+import c from '../../../../../../../../common/src'
+import type { AIShip } from '../../AIShip'
+import type { CombatShip } from '../../../CombatShip'
 
 import defaultBehavior from './default'
 import flamingos from './flamingos'

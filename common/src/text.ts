@@ -351,6 +351,7 @@ function arrayMove(
 }
 
 function priceToString(p: Price): string {
+  if (!p) return `Free`
   let s = ``
 
   if (p.credits)
@@ -363,7 +364,7 @@ function priceToString(p: Price): string {
     s += `💎${numberWithCommas(
       math.r2(p.shipCosmeticCurrency, 0),
     )} `
-  if (!s) s = `Free`
+  if (!s) return `Free`
   return s.trim()
 }
 

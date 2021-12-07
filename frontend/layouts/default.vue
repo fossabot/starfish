@@ -1,7 +1,7 @@
 <template>
   <div>
     <client-only>
-      <div :class="ship ? `${ship.guildId}guild` : ''">
+      <div>
         <DevBanner />
         <DynamicBackground />
         <Notifications />
@@ -9,9 +9,13 @@
           <Modal />
         </transition>
         <InfoTooltip />
-        <slot>
-          <Nuxt />
-        </slot>
+
+        <div class="flex">
+          <ShipLeftBar />
+          <slot>
+            <Nuxt />
+          </slot>
+        </div>
       </div>
     </client-only>
   </div>

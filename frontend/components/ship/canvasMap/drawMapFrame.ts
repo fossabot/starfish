@@ -74,11 +74,14 @@ export default class Drawer {
     // }
   }) {
     if (!visible) return
+
     if (
       !this.element ||
       !document.body.contains(this.element)
     )
       return
+
+    const now = Date.now()
     this.ctx = this.element.getContext(`2d`)
 
     this.ctx.globalCompositeOperation = `source-over`
@@ -189,11 +192,13 @@ export default class Drawer {
     // ----- trails -----
     const trailsToDraw: {
       color?: string
-      points: CoordinatePair[]
+      points: PreviousLocation[]
     }[] = ((visible as VisibleStub).trails || []).filter(
       (p) =>
         (visible as AdminVisibleData).showAll ||
-        this.isTrailInSightRange(p.points),
+        this.isTrailInSightRange(
+          p.points.map((po) => po.location),
+        ),
     )
 
     // ----- caches -----
@@ -441,27 +446,33 @@ export default class Drawer {
     if (ship) {
       // ----- main ship trail
 
-      let prev: CoordinatePair | undefined
-      const mainShipTrailPositions = [
+      let prev: PreviousLocation | undefined
+      const mainShipTrailPositions: PreviousLocation[] = [
         ...(ship?.previousLocations || []),
-        ship.location,
+        { time: now, location: ship.location },
       ]
       mainShipTrailPositions.forEach((pl, index) => {
         prev = ship.previousLocations[index - 1]
         if (!prev) return
         this.drawLine({
           start: [
-            prev[0] * this.flatScale,
-            prev[1] * this.flatScale * -1,
+            prev.location[0] * this.flatScale,
+            prev.location[1] * this.flatScale * -1,
           ],
           end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
+            pl.location[0] * this.flatScale,
+            pl.location[1] * this.flatScale * -1,
           ],
           color: `white`,
           width: 2,
           opacity:
-            (index / (mainShipTrailPositions.length - 1)) *
+            (1 -
+              c.clamp(
+                0,
+                (now - prev.time) /
+                  c.previousLocationTimeout,
+                1,
+              )) *
             0.2,
         })
       })
@@ -701,7 +712,7 @@ export default class Drawer {
         : c.angleFromAToB(
             s.previousLocations[
               s.previousLocations.length - 1
-            ],
+            ]?.location,
             s.location,
           )
       const highlight = Boolean(
@@ -771,7 +782,7 @@ export default class Drawer {
           : c.angleFromAToB(
               ship.previousLocations[
                 ship.previousLocations.length - 1
-              ],
+              ]?.location,
               ship.location,
             ),
       })
@@ -855,36 +866,46 @@ export default class Drawer {
     profiler.step(`draw trails`)
     // ----- trails
     visible.ships?.forEach((s) => {
-      const pointsToDraw = [
+      const pointsToDraw: PreviousLocation[] = [
         ...(Array.isArray(s.previousLocations)
           ? s.previousLocations
           : []),
-        s.location,
+        { time: now, location: s.location },
       ]
       pointsToDraw.forEach((pl, index) => {
-        let prevShipLocationPoint
+        let prevShipLocationPoint: PreviousLocation
         prevShipLocationPoint =
           s.previousLocations[index - 1]
         if (!prevShipLocationPoint) return
         this.drawLine({
           start: [
-            prevShipLocationPoint[0] * this.flatScale,
-            prevShipLocationPoint[1] * this.flatScale * -1,
+            prevShipLocationPoint.location[0] *
+              this.flatScale,
+            prevShipLocationPoint.location[1] *
+              this.flatScale *
+              -1,
           ],
           end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
+            pl.location[0] * this.flatScale,
+            pl.location[1] * this.flatScale * -1,
           ],
           color: c.guilds[s.guildId]?.color || `#bbb`,
           opacity:
-            (index / (pointsToDraw.length - 1)) * 0.45,
+            (1 -
+              c.clamp(
+                0,
+                (now - prevShipLocationPoint.time) /
+                  c.previousLocationTimeout,
+                1,
+              )) *
+            0.45,
         })
       })
     })
     visible.comets?.forEach((s: PlanetStub) => {
       const pointsToDraw = [
         ...(Array.isArray(s.trail) ? s.trail : []),
-        s.location,
+        { time: now, location: s.location },
       ]
       pointsToDraw.forEach((pl, index) => {
         let prevLocationPoint
@@ -892,12 +913,14 @@ export default class Drawer {
         if (!prevLocationPoint) return
         this.drawLine({
           start: [
-            prevLocationPoint[0] * this.flatScale,
-            prevLocationPoint[1] * this.flatScale * -1,
+            prevLocationPoint.location[0] * this.flatScale,
+            prevLocationPoint.location[1] *
+              this.flatScale *
+              -1,
           ],
           end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
+            pl.location[0] * this.flatScale,
+            pl.location[1] * this.flatScale * -1,
           ],
           color: s.color || `#bbb`,
           opacity:
@@ -906,30 +929,38 @@ export default class Drawer {
       })
     })
     ;[...trailsToDraw].forEach((t) => {
-      let prevTrailPoint
+      let prevTrailPoint: PreviousLocation
+
       t.points.forEach((pl, index) => {
         prevTrailPoint = t.points[index - 1]
         if (!prevTrailPoint) return
         this.drawLine({
           start: [
-            prevTrailPoint[0] * this.flatScale,
-            prevTrailPoint[1] * this.flatScale * -1,
+            prevTrailPoint.location[0] * this.flatScale,
+            prevTrailPoint.location[1] *
+              this.flatScale *
+              -1,
           ],
           end: [
-            pl[0] * this.flatScale,
-            pl[1] * this.flatScale * -1,
+            pl.location[0] * this.flatScale,
+            pl.location[1] * this.flatScale * -1,
           ],
           width: 1.5,
           color: t.color || `#ffffff`,
           opacity:
-            (index / (t.points.length - 1)) *
+            (1 -
+              c.clamp(
+                0,
+                (now - prevTrailPoint.time) /
+                  c.previousLocationTimeout,
+                1,
+              )) *
             (t.color ? 0.45 : 0.2),
         })
       })
     })
 
     // ----- attack remnants
-    const now = Date.now()
     attackRemnantsToDraw.forEach(
       (ar: AttackRemnantStub) => {
         let grd = this.ctx.createLinearGradient(

@@ -1,64 +1,66 @@
 <template>
-  <div class="items" v-if="show" :highlight="highlight">
-    <Box bgImage="/images/paneBackgrounds/3.webp">
-      <template #title>
-        <span class="sectionemoji">🛠</span>Ship Equipment
-      </template>
+  <Box
+    class="items"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/3.webp"
+  >
+    <template #title>
+      <span class="sectionemoji">🛠</span>Ship Equipment
+    </template>
 
-      <div class="panesection itemlist">
-        <ShipItem
-          v-for="i in armor"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-        <ShipItem
-          v-for="i in weapons"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-        <ShipItem
-          v-for="i in engines"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-        <ShipItem
-          v-for="i in scanners"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-        <ShipItem
-          v-for="i in communicators"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-        <ShipItem
-          v-for="i in other"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
-      </div>
+    <div class="panesection itemlist">
+      <ShipItem
+        v-for="i in armor"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+      <ShipItem
+        v-for="i in weapons"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+      <ShipItem
+        v-for="i in engines"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+      <ShipItem
+        v-for="i in scanners"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+      <ShipItem
+        v-for="i in communicators"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+      <ShipItem
+        v-for="i in other"
+        :key="i.id"
+        :item="i"
+        :owner="ship"
+      />
+    </div>
 
-      <div class="panesection sub flexcenter">
-        <div class="nowrap">
-          Equipment Slots Used: {{ ship.items.length }}/{{
-            ship.slots
-          }}
-        </div>
-        <PillBar
-          :micro="true"
-          :value="ship.items.length"
-          :max="ship.slots"
-          class="slots"
-        />
+    <div class="panesection sub flexcenter">
+      <div class="nowrap">
+        {{ ship.items.length }}/{{ ship.slots }} equipment
+        slots used
       </div>
-    </Box>
-  </div>
+      <PillBar
+        :micro="true"
+        :value="ship.items.length"
+        :max="ship.slots"
+        class="slots"
+      />
+    </div>
+  </Box>
 </template>
 
 <script lang="ts">

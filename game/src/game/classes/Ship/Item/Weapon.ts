@@ -1,6 +1,7 @@
 import c from '../../../../../../common/dist'
 import type { CrewMember } from '../../CrewMember/CrewMember'
 import type { Ship } from '../Ship'
+import type { CombatShip } from '../CombatShip'
 
 import { Item } from './Item'
 
@@ -45,10 +46,7 @@ export class Weapon extends Item {
 
     const avgLevel =
       (users?.reduce(
-        (acc, user) =>
-          acc +
-          (user.skills.find((s) => s.skill === `dexterity`)
-            ?.level || 1),
+        (acc, user) => acc + user.dexterity.level,
         0,
       ) || 1) / (users?.length || 1)
 
@@ -62,6 +60,7 @@ export class Weapon extends Item {
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()
     repairLoss += super.use()
+    ;(this.ship as CombatShip).updateAttackRadius?.()
     return repairLoss
   }
 }

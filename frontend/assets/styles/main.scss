@@ -117,30 +117,32 @@ h5 {
   font-size: 1em;
 }
 
-.textcolumn {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1em;
-  margin-bottom: 8em;
-
-  h1 {
-    margin-top: 2em;
-  }
-
-  h2,
-  h3 {
-    margin-top: 4em;
-  }
-  div {
-    margin-bottom: 1.5em;
-  }
-}
-
 .nuxt-content-container {
   h1,
   h2,
   h3 {
     margin-top: 1em;
+  }
+}
+
+.container {
+  display: inline-block;
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+}
+.masonrycontainer {
+  & > * {
+    display: inline-block;
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out,
+      opacity 1s;
+    margin-bottom: 0px;
+    opacity: 0;
+
+    @media (max-width: 768px) {
+      width: 100% !important;
+    }
   }
 }
 
@@ -395,6 +397,10 @@ summary:hover {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
+.grid4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 
 select {
   display: block;
@@ -536,6 +542,19 @@ select {
   //   border-bottom: none;
   // }
 }
+
+.textcolumn {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: calc(var(--panesectionpad-top) * 2)
+    calc(var(--panesectionpad-left) * 2);
+  line-height: 1.5;
+
+  div:not(:last-child) {
+    margin-bottom: 1.5em;
+  }
+}
+
 .padpane {
   padding: var(--panesectionpad-top)
     var(--panesectionpad-left);
@@ -616,6 +635,9 @@ ul {
 }
 .medium {
   font-size: 0.92em;
+}
+.big {
+  font-size: 1.15em;
 }
 .fade {
   opacity: 0.7;

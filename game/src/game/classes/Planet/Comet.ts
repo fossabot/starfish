@@ -9,12 +9,12 @@ export class Comet extends MiningPlanet {
   velocity: CoordinatePair
   speed: number
   direction: number
-  trail: CoordinatePair[]
+  trail: PreviousLocation[]
 
   toUpdate: {
     landingRadiusMultiplier?: number
     passives?: ShipPassiveEffect[]
-    trail?: CoordinatePair[]
+    trail?: PreviousLocation[]
     velocity?: CoordinatePair
     location?: CoordinatePair
     speed?: number
@@ -30,7 +30,8 @@ export class Comet extends MiningPlanet {
     this.velocity = data.velocity
     this.speed = c.vectorToMagnitude(data.velocity)
     this.direction = c.vectorToDegrees(data.velocity)
-    this.trail = data.trail || []
+    this.trail =
+      (data.trail?.[0]?.location ? data.trail : []) || []
 
     this.previousLocation = [...this.location]
   }
@@ -177,13 +178,13 @@ export class Comet extends MiningPlanet {
 
     const distance = c.distance(
       this.location,
-      this.trail[this.trail.length - 1],
+      this.trail[this.trail.length - 1]?.location,
     )
     const angle =
       distance > spawnDistanceCutoff
         ? Math.abs(
             c.angleFromAToB(
-              this.trail[this.trail.length - 1],
+              this.trail[this.trail.length - 1]?.location,
               previousLocation,
             ) -
               c.angleFromAToB(
@@ -197,12 +198,15 @@ export class Comet extends MiningPlanet {
       (angle >= 5 && distance > spawnDistanceCutoff) ||
       distance > 0.1
     ) {
-      this.trail.push([
-        ...(currentLocation.map((l) =>
-          c.r2(l, 7),
-        ) as CoordinatePair),
-      ])
-      while (this.trail.length > 20) this.trail.shift()
+      this.trail.push({
+        time: Date.now(),
+        location: [
+          ...(currentLocation.map((l) =>
+            c.r2(l, 7),
+          ) as CoordinatePair),
+        ],
+      })
+      while (this.trail.length > 100) this.trail.shift()
       this.toUpdate.trail = this.trail
     }
   }
@@ -218,7 +222,7 @@ export class Comet extends MiningPlanet {
       this.shipsAt.forEach((ship) => {
         ship.logEntry(
           [
-            `📉 Resources on`,
+            `Resources on`,
             {
               text: this.name,
               color: this.color,

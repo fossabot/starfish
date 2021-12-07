@@ -1,56 +1,58 @@
 <template>
-  <div class="passives" v-if="show" :highlight="highlight">
-    <Box bgImage="/images/paneBackgrounds/12.webp">
-      <template #title>
-        <span class="sectionemoji">🦾</span>Passives
-      </template>
+  <Box
+    class="passives"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/12.webp"
+  >
+    <template #title>
+      <span class="sectionemoji">🦾</span>Passives
+    </template>
 
-      <Tabs class="tabs">
-        <Tab
-          v-if="crewMember"
-          :title="
-            (c.species[crewMember.speciesId] &&
-              c.species[crewMember.speciesId].icon + ' ') +
-            'You'
-          "
+    <Tabs class="tabs">
+      <Tab
+        v-if="crewMember"
+        :title="
+          (c.species[crewMember.speciesId] &&
+            c.species[crewMember.speciesId].icon + ' ') +
+          'You'
+        "
+      >
+        <div
+          v-for="(p, index) in crewMember.passives"
+          :class="{
+            marbot: index < crewMember.passives.length - 1,
+          }"
+          v-if="c.crewPassives[p.id]"
         >
-          <div
-            v-for="(p, index) in crewMember.passives"
-            :class="{
-              marbot:
-                index < crewMember.passives.length - 1,
-            }"
-            v-if="c.crewPassives[p.id]"
-          >
-            <ShipCrewPassiveText :passive="p" />
-          </div>
-          <div
-            v-if="crewMember.passives.length === 0"
-            class="sub textcenter"
-          >
-            No crew passives yet!
-          </div>
-        </Tab>
-        <Tab :title="'🚀 Ship'">
-          <div
-            v-for="(p, index) in ship.passives"
-            :class="{
-              marbot: index < ship.passives.length - 1,
-            }"
-            v-if="c.baseShipPassiveData[p.id]"
-          >
-            <ShipPassiveText :passive="p" />
-          </div>
-          <div
-            v-if="ship.passives.length === 0"
-            class="sub textcenter"
-          >
-            No ship passives yet!
-          </div>
-        </Tab>
-      </Tabs>
-    </Box>
-  </div>
+          <ShipCrewPassiveText :passive="p" />
+        </div>
+        <div
+          v-if="crewMember.passives.length === 0"
+          class="sub textcenter"
+        >
+          No crew passives yet!
+        </div>
+      </Tab>
+      <Tab :title="'🚀 Ship'">
+        <div
+          v-for="(p, index) in ship.passives"
+          :class="{
+            marbot: index < ship.passives.length - 1,
+          }"
+          v-if="c.baseShipPassiveData[p.id]"
+        >
+          <ShipPassiveText :passive="p" />
+        </div>
+        <div
+          v-if="ship.passives.length === 0"
+          class="sub textcenter"
+        >
+          No ship passives yet!
+        </div>
+      </Tab>
+    </Tabs>
+  </Box>
 </template>
 
 <script lang="ts">

@@ -20,6 +20,7 @@ import type { Comet } from '../../Planet/Comet'
 import type { Cache } from '../../Cache'
 import type { Ship } from '../Ship'
 import type { Zone } from '../../Zone'
+import type { BasicPlanet } from '../../Planet/BasicPlanet'
 import type { Item } from '../Item/Item'
 
 import { Tutorial } from './Tutorial'
@@ -47,7 +48,7 @@ interface HumanVisibleShape {
   attackRemnants: (AttackRemnant | AttackRemnantStub)[]
   trails?: {
     color?: string
-    points: CoordinatePair[]
+    points: PreviousLocation[]
   }[]
   zones: Zone[]
 }
@@ -88,6 +89,7 @@ export class HumanShip extends CombatShip {
   secondWind: boolean = false
   banked: BankEntry[] = []
   contracts: Contract[] = []
+  crewAverageMorale: number = 1
 
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
@@ -98,7 +100,10 @@ export class HumanShip extends CombatShip {
     comets: Comet[]
     caches: Cache[]
     attackRemnants: (AttackRemnant | AttackRemnantStub)[]
-    trails?: { color?: string; points: CoordinatePair[] }[]
+    trails?: {
+      color?: string
+      points: PreviousLocation[]
+    }[]
     zones: Zone[]
   } = {
     ships: [],
@@ -327,8 +332,9 @@ export class HumanShip extends CombatShip {
         60 /
         1000) *
       c.tickInterval
-    if (autoRepairIntensity)
+    if (autoRepairIntensity) {
       this.repair(autoRepairIntensity)
+    }
 
     // ----- second wind -----
     if (
@@ -1675,7 +1681,10 @@ export class HumanShip extends CombatShip {
     comets: Comet[]
     caches: Cache[]
     attackRemnants: (AttackRemnant | AttackRemnantStub)[]
-    trails?: { color?: string; points: CoordinatePair[] }[]
+    trails?: {
+      color?: string
+      points: PreviousLocation[]
+    }[]
     zones: Zone[]
   }) {
     let planetDataToSend: Partial<PlanetStub>[] = []
@@ -1735,6 +1744,15 @@ export class HumanShip extends CombatShip {
     ) {
       this.determineTargetShip()
     }
+    // if there are people in weapons and no target ship but ships are visible, make sure one hasn't come into range
+    else if (
+      !this.targetShip &&
+      this.membersIn(`weapons`) &&
+      this.combatTactic !== `pacifist` &&
+      this.visible.ships.length
+    ) {
+      this.determineTargetShip()
+    }
     // if the most "voted" ship comes into range/attackability, switch to it
     else if (
       this.idealTargetShip &&
@@ -1787,6 +1805,16 @@ export class HumanShip extends CombatShip {
       //     `gray`,
       //     `${this.name} landed at ${this.planet.name}`,
       //   )
+
+      this.crewMembers.forEach((cm) =>
+        cm.changeMorale(
+          ((this.planet as BasicPlanet).level || 1) * 0.02,
+        ),
+      )
+      if (this.planet.planetType === `comet`)
+        this.crewMembers.forEach((cm) =>
+          cm.changeMorale(0.3),
+        )
 
       this.hardStop()
       this.planet.rooms.forEach((r) => this.addRoom(r))
@@ -2170,6 +2198,11 @@ export class HumanShip extends CombatShip {
     super.recalculateAll()
     this.updateBroadcastRadius()
     this.crewMembers.forEach((c) => c.recalculateAll())
+    this.crewAverageMorale =
+      this.crewMembers.reduce((total, cm) => {
+        return total + cm.morale
+      }, 0) / this.crewMembers.length
+    this.toUpdate.crewAverageMorale = this.crewAverageMorale
     this.toUpdate._hp = this.hp
     this.toUpdate._maxHp = this._maxHp
   }
@@ -2248,9 +2281,7 @@ export class HumanShip extends CombatShip {
         0,
       )
       const crewSkillAntiGarble =
-        (crewMember.skills.find(
-          (s) => s.skill === `charisma`,
-        )?.level || 0) / 100
+        crewMember.charisma.level / 100
 
       // todo use chunks
       for (let otherShip of this.game?.ships || []) {
@@ -2623,6 +2654,17 @@ export class HumanShip extends CombatShip {
       }
 
       let toDistribute = contents.amount
+      this.crewMembers.forEach((cm) =>
+        cm.changeMorale(
+          [`credits`].includes(contents.id)
+            ? contents.amount * 0.001
+            : [`crewCosmeticCurrency`].includes(contents.id)
+            ? contents.amount * 0.01
+            : [`shipCosmeticCurrency`].includes(contents.id)
+            ? contents.amount * 0.2
+            : contents.amount * 0.03,
+        ),
+      )
       let canHoldMore = [...this.crewMembers]
 
       let passes = 0
@@ -2877,6 +2919,8 @@ export class HumanShip extends CombatShip {
     this.crewMembers.forEach((cm) => {
       cm.targetLocation = false
       cm.location = `bunk`
+      cm.stamina = 0
+      cm.changeMorale(-1000)
     })
 
     if (!silent && this instanceof HumanShip) {
@@ -2897,6 +2941,9 @@ export class HumanShip extends CombatShip {
   ): TakenDamageResult {
     const res = super.takeDamage(attacker, attack)
     this.determineTargetShip()
+    this.crewMembers.forEach((cm) =>
+      cm.changeMorale((-1 * res.damageTaken) / 100),
+    )
     return res
   }
 
@@ -2916,6 +2963,8 @@ export class HumanShip extends CombatShip {
 
   die(attacker?: CombatShip) {
     super.die(attacker)
+
+    this.crewMembers.forEach((cm) => cm.changeMorale(-0.8))
 
     setTimeout(() => {
       this.logEntry(`Ship destroyed!`, `notify`, `die`)

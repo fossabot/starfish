@@ -11,6 +11,8 @@ const defaultGameSettings = {
     staminaBottomedOutResetPoint: 0.05,
     staminaBottomedOutChargeMultiplier: 1,
     newCrewMemberCredits: 1000,
+    moraleLowThreshold: 0.2,
+    moraleHighThreshold: 0.8,
     gravityMultiplier: 1.8,
     gravityCurveSteepness: 10,
     gravityRadius: 0.5,
@@ -26,6 +28,7 @@ const defaultGameSettings = {
     cacheDensity: 1.5,
     aiDifficultyMultiplier: 0.5,
 };
+const previousLocationTimeout = 1000 * 60 * 60 * 24 * 3;
 const baseCurrencySingular = `speso`;
 const baseCurrencyPlural = `spesos`;
 const shipCosmeticCurrencySingular = `bubbloon`;
@@ -61,6 +64,7 @@ const baseShipScanProperties = {
     name: true,
     human: true,
     ai: true,
+    until: true,
     headerBackground: true,
     tagline: true,
     level: true,
@@ -76,6 +80,18 @@ const baseShipScanProperties = {
 const sameGuildShipScanProperties = {
     _hp: true,
     _maxHp: true,
+    items: [
+        `displayName`,
+        `maxHp`,
+        `repair`,
+        `cooldownRemaining`,
+        `chargeRequired`,
+        `id`,
+        `range`,
+        `itemId`,
+        `itemType`,
+        `description`,
+    ],
 };
 const tactics = [
     `aggressive`,
@@ -87,6 +103,7 @@ const tactics = [
 const baseCargoSellMultiplier = 0.3;
 exports.default = {
     defaultGameSettings,
+    previousLocationTimeout,
     baseCurrencySingular,
     baseCurrencyPlural,
     shipCosmeticCurrencySingular,

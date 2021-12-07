@@ -20,8 +20,8 @@ import { Stubbable } from '../Stubbable'
 import type { Tutorial } from './HumanShip/Tutorial'
 
 export class Ship extends Stubbable {
-  static maxPreviousLocations: number = 70
-  static maxAIPreviousLocations: number = 70
+  static maxPreviousLocations: number = 300
+  static maxAIPreviousLocations: number = 100
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`
@@ -60,7 +60,10 @@ export class Ship extends Stubbable {
     planets: Planet[]
     caches: Cache[]
     attackRemnants: (AttackRemnant | AttackRemnantStub)[]
-    trails?: { color?: string; points: CoordinatePair[] }[]
+    trails?: {
+      color?: string
+      points: PreviousLocation[]
+    }[]
     zones: Zone[]
   } = {
     ships: [],
@@ -74,7 +77,7 @@ export class Ship extends Stubbable {
   readonly seenLandmarks: Zone[] = []
   chassis: BaseChassisData
   items: Item[] = []
-  previousLocations: CoordinatePair[] = []
+  previousLocations: PreviousLocation[] = []
   id = `${Math.random()}`.substring(2) // re-set in subclasses
   location: CoordinatePair = [0, 0]
   velocity: CoordinatePair = [0, 0]
@@ -195,7 +198,10 @@ export class Ship extends Stubbable {
           ) as CoordinatePair) || [0, 0]),
       ]
 
-    if (previousLocations)
+    if (
+      previousLocations &&
+      !Array.isArray(previousLocations[0])
+    )
       this.previousLocations = [...previousLocations]
 
     if (tagline) this.tagline = tagline
@@ -265,13 +271,14 @@ export class Ship extends Stubbable {
     this.checkExpiredPassives()
 
     // passively lose previous locations over time
-    // so someone who, for example, sits forever at a planet loses their trail eventually
     setInterval(() => {
       if (!this.previousLocations.length) return
-      this.previousLocations.shift()
-      if (this.human)
-        c.log(`removing previous location from`, this.name)
-    }, c.tickInterval * 100000)
+      while (
+        this.previousLocations[0]?.time <
+        Date.now() - c.previousLocationTimeout
+      )
+        this.previousLocations.shift()
+    }, c.tickInterval * 10)
   }
 
   tick() {
@@ -722,34 +729,19 @@ export class Ship extends Stubbable {
       previousLocation[0] ===
         this.previousLocations[
           this.previousLocations.length - 1
-        ]?.[0] &&
+        ]?.location[0] &&
       previousLocation[1] ===
         this.previousLocations[
           this.previousLocations.length - 1
-        ]?.[1]
+        ]?.location[1]
     )
       return
-
-    // if (this.ai)
-    //   c.log(
-    //     this.name,
-    //     c.angleFromAToB(
-    //       this.previousLocations[
-    //         this.previousLocations.length - 1
-    //       ],
-    //       previousLocation,
-    //     ) -
-    //       c.angleFromAToB(
-    //         previousLocation,
-    //         currentLocation,
-    //       ),
-    //   )
 
     const distance = c.distance(
       this.location,
       this.previousLocations[
         this.previousLocations.length - 1
-      ],
+      ]?.location,
     )
 
     const angle =
@@ -758,7 +750,7 @@ export class Ship extends Stubbable {
             c.angleFromAToB(
               this.previousLocations[
                 this.previousLocations.length - 1
-              ],
+              ]?.location,
               previousLocation,
             ) -
               c.angleFromAToB(
@@ -782,11 +774,14 @@ export class Ship extends Stubbable {
       //     angle,
       //     distance,
       //   )
-      this.previousLocations.push([
-        ...(currentLocation.map((l) =>
-          c.r2(l, 7),
-        ) as CoordinatePair),
-      ])
+      this.previousLocations.push({
+        time: Date.now(),
+        location: [
+          ...(currentLocation.map((l) =>
+            c.r2(l, 7),
+          ) as CoordinatePair),
+        ],
+      })
       while (
         this.previousLocations.length >
         (this.ai
@@ -1003,10 +998,12 @@ export class Ship extends Stubbable {
       velocity: this.velocity,
       direction: this.direction,
       chassis: this.chassis,
-      items: this.items.map((i) => ({
+      items: this.items.map((i: any) => ({
         itemId: i.itemId,
         itemType: i.itemType,
         displayName: i.displayName,
+        cooldownRemaining: i.cooldownRemaining,
+        chargeRequired: i.chargeRequired,
         repair: i.repair,
         maxHp: i.maxHp,
       })),
@@ -1020,6 +1017,8 @@ export class Ship extends Stubbable {
       tagline: this.tagline || undefined,
       headerBackground: this.headerBackground || undefined,
       debugLocations: this.debugLocations,
+      targetShip:
+        (this as any).targetShip?.toReference() || null,
     }
   }
 

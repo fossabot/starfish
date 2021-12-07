@@ -1,87 +1,80 @@
 <template>
   <div class="pagecontainer">
-    <div class="flex">
-      <ShipLeftBar />
-
-      <div class="maincontentsholder">
-        <FadeIn
-          :off="!loading && ready"
-          :outIsInstant="true"
-        >
-          <div>
-            <img
-              src="/images/logo.svg"
-              class="fadeinlogo marbotsmall"
-              height="45"
-              width="45"
-            />
-          </div>
-        </FadeIn>
-
-        <div
-          id="masonrycontainer"
-          class="container"
-          ref="container"
-          :class="{ animate: ready }"
-        >
-          <ShipNoShip />
-
-          <template v-if="ship && !ship.dead">
-            <ShipSpectator v-if="!ship.tutorial" />
-
-            <ShipTutorial />
-
-            <Ship />
-
-            <ShipCanvasMap />
-            <ShipPlanet />
-
-            <ShipCanvasMapZoom />
-
-            <ShipMemberInventory />
-
-            <ShipDiagram />
-            <ShipRoom />
-
-            <ShipCrewOverview />
-
-            <ShipMember />
-
-            <ShipCaptainsQuarters />
-
-            <ShipScanShip />
-
-            <ShipItems />
-            <!-- <ShipActives /> -->
-
-            <ShipLog />
-
-            <ShipContracts />
-
-            <ShipPassives />
-            <ShipStats />
-
-            <ShipCaptainCrewOverview />
-            <!-- <ShipCrewRank /> -->
-
-            <ShipGuildRank />
-          </template>
-
-          <template v-if="ship && ship.dead">
-            <ShipDead />
-            <ShipLog />
-          </template>
-
-          <!-- <ShipNavPane v-if="ship && !ship.tutorial" /> -->
+    <div class="maincontentsholder">
+      <FadeIn :off="!loading && ready" :outIsInstant="true">
+        <div>
+          <img
+            src="/images/logo.svg"
+            class="fadeinlogo marbotsmall"
+            height="45"
+            width="45"
+          />
         </div>
-        <!-- <details
+      </FadeIn>
+
+      <div
+        id="masonrycontainer"
+        class="container masonrycontainer"
+        ref="container"
+        :class="{ animate: ready }"
+      >
+        <ShipNoShip />
+
+        <template v-if="ship && !ship.dead">
+          <ShipSpectator v-if="!ship.tutorial" />
+
+          <ShipTutorial />
+
+          <Ship />
+
+          <ShipCanvasMap />
+          <ShipPlanet />
+
+          <ShipCanvasMapZoom />
+
+          <ShipMemberInventory />
+
+          <ShipDiagram />
+          <ShipRoom />
+
+          <ShipCrewOverview />
+
+          <ShipMember />
+
+          <ShipCaptainsQuarters />
+
+          <ShipScanShip />
+
+          <ShipItems />
+          <!-- <ShipActives /> -->
+
+          <ShipLog />
+
+          <ShipContracts />
+
+          <ShipPassives />
+          <ShipStats />
+
+          <ShipCaptainCrewOverview />
+          <!-- <ShipCrewRank /> -->
+
+          <ShipGuildRank />
+        </template>
+
+        <template v-if="ship && ship.dead">
+          <ShipDead />
+          <ShipLog />
+        </template>
+
+        <!-- <ShipNavPane v-if="ship && !ship.tutorial" /> -->
+      </div>
+      <!-- <details
           style="position: relative; margin-bottom: 2em"
           v-if="dev"
         >
           <summary>Raw Data</summary>
           <pre>{{ JSON.stringify(ship, null, 2) }}</pre>
         </details> -->
-      </div>
     </div>
   </div>
 </template>
@@ -251,22 +244,7 @@ export default Vue.extend({
 }
 
 .container {
-  display: inline-block;
-  position: relative;
-  margin: 0 auto;
   height: 100%;
-
-  & > * {
-    display: inline-block;
-    transition: top 0.3s ease-in-out, left 0.3s ease-in-out,
-      opacity 1s;
-    margin-bottom: 0px;
-    opacity: 0;
-
-    @media (max-width: 768px) {
-      width: 100% !important;
-    }
-  }
 
   &:not(.animate) > * {
     transition: none;

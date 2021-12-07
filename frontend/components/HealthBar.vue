@@ -9,6 +9,28 @@
           background: color,
         }"
       ></div>
+      <div
+        class="highlighter"
+        :style="{
+          width:
+            Math.min(
+              Math.max(highlightBad, highlightGood, 0.01),
+              1,
+            ) *
+              100 +
+            '%',
+          left:
+            (percent -
+              Math.max(highlightBad, highlightGood, 0.01)) *
+              100 +
+            '%',
+        }"
+        :class="{ highlightBad, highlightGood }"
+        @animationend="
+          highlightBad = 0
+          highlightGood = 0
+        "
+      ></div>
     </slot>
 
     <div
@@ -65,6 +87,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import c from '../../common/dist'
 
 export default Vue.extend({
   props: {
@@ -73,12 +96,20 @@ export default Vue.extend({
     percent: { default: 0 },
   },
   data() {
-    return {}
+    return { c, highlightBad: 0, highlightGood: 0 }
   },
   computed: {
     ...mapState([]),
   },
-  watch: {},
+  watch: {
+    percent(newVal, oldVal) {
+      if (c.r2(newVal, 4) > c.r2(oldVal, 4)) {
+        this.highlightGood = newVal - oldVal
+      } else if (c.r2(newVal, 4) < c.r2(oldVal, 4)) {
+        this.highlightBad = oldVal - newVal
+      }
+    },
+  },
   mounted() {},
   methods: {},
 })
@@ -135,6 +166,11 @@ export default Vue.extend({
     width: 100%;
     height: 100%;
     transition: width 0.5s ease-in-out;
+  }
+  .highlighter {
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -208,5 +244,12 @@ export default Vue.extend({
       var(--tickColor) 25%
     );
   }
+}
+
+.highlightBad {
+  animation: highlight-bg-bad 0.9s ease-out 1;
+}
+.highlightGood {
+  animation: highlight-bg-good 0.9s ease-out 1;
 }
 </style>

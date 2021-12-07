@@ -14,7 +14,7 @@ import socketIoClient, {
 } from 'socket.io-client' // yes, we're making a CLIENT here.
 import {
   awaitIOConnection,
-  aiShipData,
+  enemyAiShipData,
   basicPlanetData,
   crewMemberData,
   humanShipData,
@@ -25,7 +25,7 @@ import { BasicPlanet } from '../src/game/classes/Planet/BasicPlanet'
 describe(`Contract basics`, () => {
   it(`should spawn contracts on planets`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
     const p = (await g.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
@@ -37,7 +37,7 @@ describe(`Contract basics`, () => {
 
   it(`should not spawn contracts on allied ships`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
     const p = (await g.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
@@ -50,7 +50,7 @@ describe(`Contract basics`, () => {
 
   it(`should be able to accept contracts`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
     const s = await g.addHumanShip(humanShipData())
     const cm = await s.addCrewMember(crewMemberData())
     s.guildId = `explorer`
@@ -99,7 +99,7 @@ describe(`Contract basics`, () => {
 
   it(`should steal contracts on target ship dying by another's hand`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
     const s = await g.addHumanShip(humanShipData())
     const cm = await s.addCrewMember(crewMemberData())
     s.guildId = `explorer`
@@ -148,7 +148,7 @@ describe(`Contract basics`, () => {
 
   it(`should time out contracts`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
     const p = (await g.addBasicPlanet(
       basicPlanetData(),
     )) as BasicPlanet
@@ -193,7 +193,7 @@ describe(`Contract basics`, () => {
 
   it(`should flag contracts as done on target ship dying by contractor's hand`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
 
     const p = (await g.addBasicPlanet(
       basicPlanetData(),
@@ -260,7 +260,7 @@ describe(`Contract basics`, () => {
 
   it(`should complete done contracts on returning to a planet`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(aiShipData())
+    const ai = await g.addAIShip(enemyAiShipData())
 
     const p = (await g.addBasicPlanet(
       basicPlanetData(),

@@ -1,5 +1,6 @@
 type ChassisId =
   | `tiny1`
+  | `drone1`
   | `ai1`
   | `ai2`
   | `starter1`
@@ -42,6 +43,7 @@ type EngineId =
 
 type WeaponId =
   | `tutorial1`
+  | `drone1`
   | `cannon1`
   | `cannon2`
   | `cannon3`
@@ -258,3 +260,4 @@ type UpgradableProperty =
   | `critChance`
   | `chargeRequired`
   | `mass`
+  | `maxHp`

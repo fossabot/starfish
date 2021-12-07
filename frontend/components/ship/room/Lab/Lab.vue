@@ -101,6 +101,21 @@ export default Vue.extend({
         (i: ItemStub) => i.upgradable,
       )
     },
+    intellectLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostIntellect'
+            ? p.intensity || 0
+            : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'intellect',
+        )?.level || 1) + passiveBoost
+      )
+    },
     researchPerTick(): number {
       const passiveBoostMultiplier = 1
       // +
@@ -129,9 +144,7 @@ export default Vue.extend({
         generalBoostMultiplier *
         passiveBoostMultiplier *
         c.getResearchAmountPerTickForSingleCrewMember(
-          this.crewMember?.skills.find(
-            (s: XPData) => s.skill === 'intellect',
-          )?.level || 1,
+          this.intellectLevel,
         )
       )
     },

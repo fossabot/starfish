@@ -15,7 +15,7 @@ import {
   crewMemberData,
   humanShipData,
   basicPlanetData,
-  aiShipData,
+  enemyAiShipData,
   awaitIOConnection,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
@@ -132,7 +132,7 @@ import socketIoClient, {
     })
 
     for (let i = 0; i < 15; i++) {
-      await g.addAIShip(aiShipData())
+      await g.addAIShip(enemyAiShipData())
     }
     for (let i = 0; i < 15; i++) {
       await g.addHumanShip(humanShipData())
@@ -172,7 +172,7 @@ import socketIoClient, {
     })
 
     for (let i = 0; i < 30; i++) {
-      await g.addAIShip(aiShipData())
+      await g.addAIShip(enemyAiShipData())
     }
 
     const client = socketIoClient(

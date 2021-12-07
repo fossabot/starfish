@@ -422,7 +422,7 @@
           See if I care.
         </option>
         <option value=", if you know what I mean 😉">
-          IFKWIM 😉
+          IYKWIM 😉
         </option>
       </select>
 

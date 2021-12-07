@@ -56,13 +56,13 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    highlight() {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'room'
       )
     },
-    choicesToShow() {
+    choicesToShow(): string[] {
       const choices: RepairPriority[] = ['most damaged']
       if (
         this.ship.items.find(
@@ -96,12 +96,25 @@ export default Vue.extend({
         choices.push('armor')
       return choices
     },
-    selected() {
+    selected(): boolean {
       return (
         this.crewMember?.repairPriority || 'most damaged'
       )
     },
-    totalRepairPower() {
+    strengthLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostStrength' ? p.intensity || 0 : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'strength',
+        )?.level || 1) + passiveBoost
+      )
+    },
+    totalRepairPower(): number {
       const passiveBoostMultiplier =
         1 +
         ((
@@ -129,9 +142,7 @@ export default Vue.extend({
         generalBoostMultiplier *
         passiveBoostMultiplier *
         c.getRepairAmountPerTickForSingleCrewMember(
-          this.crewMember?.skills.find(
-            (s: XPData) => s.skill === 'strength',
-          )?.level || 1,
+          this.strengthLevel,
         )
       )
     },

@@ -180,7 +180,12 @@ export default function (
 
   socket.on(
     `crew:useActive`,
-    (shipId, crewId, activeId, callback = () => {}) => {
+    async (
+      shipId,
+      crewId,
+      activeId,
+      callback = () => {},
+    ) => {
       if (!game) return
       if (typeof callback !== `function`)
         callback = () => {}
@@ -203,7 +208,7 @@ export default function (
           error: `You must wait until your stamina regenerates to use an active ability.`,
         })
 
-      const res = crewMember.useActive(activeId)
+      const res = await crewMember.useActive(activeId)
 
       if (`error` in res)
         return callback({ error: res.error })

@@ -35,7 +35,7 @@
         c.capitalize(item.itemType)
       }}</span>
     </div>
-    <div class="hpbar">
+    <div class="hpbar" v-if="item.repair !== undefined">
       <HealthBar
         :max="item.maxHp"
         :percent="item.repair"
@@ -44,7 +44,10 @@
       />
     </div>
     <ProgressBar
-      v-if="item.itemType === 'weapon'"
+      v-if="
+        item.itemType === 'weapon' &&
+        item.cooldownRemaining !== undefined
+      "
       :micro="true"
       :percent="
         (item.chargeRequired - item.cooldownRemaining) /

@@ -253,7 +253,12 @@
         >
           <span>Stop</span>
         </button></span
-      ><span v-if="ship.crewMembers.length > 1">
+      ><span
+        v-if="
+          ship.crewMembers.length > 1 &&
+          passiveEngines.length
+        "
+      >
         <button
           @click="clearTarget"
           :class="{
@@ -407,10 +412,18 @@ export default Vue.extend({
       )
     },
     pilotingSkill(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostDexterity'
+            ? p.intensity || 0
+            : 0),
+        0,
+      )
       return (
-        this.crewMember.skills.find(
+        (this.crewMember.skills.find(
           (s: XPData) => s && s.skill === 'dexterity',
-        )?.level || 1
+        )?.level || 1) + passiveBoost
       )
     },
     memberThrust(): number {

@@ -13,7 +13,7 @@ import {
   crewMemberData,
   humanShipData,
   basicPlanetData,
-  aiShipData,
+  enemyAiShipData,
   awaitIOConnection,
 } from './defaults'
 import { CombatShip } from '../src/game/classes/Ship/CombatShip'
@@ -404,7 +404,7 @@ describe(`Planet orbital defense`, () => {
     p.location = [10.5, 0]
 
     const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addAIShip(aiShipData())
+    const s2 = await g.addAIShip(enemyAiShipData())
 
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
@@ -427,7 +427,7 @@ describe(`Planet orbital defense`, () => {
     p.location = [10.5, 0]
 
     const s = await g.addHumanShip(humanShipData())
-    const s2 = await g.addAIShip(aiShipData())
+    const s2 = await g.addAIShip(enemyAiShipData())
 
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])

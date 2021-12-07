@@ -15,7 +15,6 @@ import c from '../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  layout: 'withnavbar',
   data() {
     return { c }
   },

@@ -39,7 +39,10 @@
       ></div>
     </div>
     <div
-      v-for="pill in Math.floor((max || 10) - (value || 0))"
+      v-for="pill in Math.max(
+        0,
+        Math.floor((max || 10) - (value || 0)),
+      )"
       :key="'emptypill' + pill"
       class="pill empty"
     ></div>

@@ -43,7 +43,9 @@ const shipSchemaFields: Record<
       ],
     },
   ],
-  previousLocations: [[Number, Number]],
+  previousLocations: [
+    { time: Number, location: [Number, Number] },
+  ],
 
   // ----- human
   log: [
@@ -129,6 +131,7 @@ const shipSchemaFields: Record<
       ],
       location: String,
       stamina: Number,
+      morale: Number,
       inventory: [{ id: { type: String }, amount: Number }],
       credits: Number,
       crewCosmeticCurrency: Number,
@@ -188,6 +191,9 @@ const shipSchemaFields: Record<
   level: Number,
   speciesId: String,
   onlyVisibleToShipId: String,
+  until: Number,
+  neverAttackIds: [String],
+  spawnedById: String,
 }
 const shipSchema = new Schema(shipSchemaFields)
 const DBShip = model<DBShipDoc>(`DBShip`, shipSchema)
