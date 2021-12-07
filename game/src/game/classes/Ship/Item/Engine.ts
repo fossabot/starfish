@@ -31,9 +31,7 @@ export class Engine extends Item {
 
     const skillLevel = users
       ? users.reduce(
-          (total, u) =>
-            (u.skills.find((s) => s.skill === `dexterity`)
-              ?.level || 1) + total,
+          (total, u) => u.dexterity.level + total,
           0,
         ) / users.length
       : 1
@@ -63,9 +61,7 @@ export class Engine extends Item {
 
     const skillLevel = users
       ? users.reduce(
-          (total, u) =>
-            (u.skills.find((s) => s.skill === `dexterity`)
-              ?.level || 1) + total,
+          (total, u) => u.dexterity.level + total,
           0,
         ) / users.length
       : 1

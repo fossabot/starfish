@@ -88,7 +88,7 @@ function getRepairAmountPerTickForSingleCrewMember(
   level: number,
 ) {
   return (
-    math.lerp(0.65, 2, level / 100) / globals.tickInterval
+    math.lerp(0.55, 2, level / 100) / globals.tickInterval
   )
 }
 
@@ -117,6 +117,15 @@ function getStaminaGainPerTickForSingleCrewMember(
 
 function getWeaponCooldownReductionPerTick(level: number) {
   return (2 + math.lerp(1, 10, level / 100)) * 15
+}
+
+function getActiveIntensity(
+  active: CrewActive,
+  level: number,
+) {
+  return (
+    (active.intensity || 1) * math.lerp(1, 4, level / 100)
+  )
 }
 
 /**
@@ -166,9 +175,7 @@ function statToString(data: {
   amount: number
 }): string {
   const { stat, amount } = data
-  let titleString = text
-    .camelCaseToWords(stat)
-    .replace(`Hp`, `HP`)
+  let titleString = text.camelCaseToWords(stat)
   let amountString: string = `${text.numberWithCommas(
     math.r2(
       amount *
@@ -176,6 +183,7 @@ function statToString(data: {
         stat.toLowerCase().includes(`damage`)
           ? gameConstants.displayHPMultiplier
           : 1),
+      0,
     ),
   )}`
   let suffix = ``
@@ -193,9 +201,9 @@ function statToString(data: {
 
   if ([`distanceTraveled`].includes(stat)) suffix = `AU`
 
-  return `${text.capitalize(
-    titleString,
-  )}: ${amountString}${suffix}`
+  return `${text
+    .capitalize(titleString)
+    .replace(`Hp`, `HP`)}: ${amountString}${suffix}`
 }
 
 function getPlanetTitle(planet: PlanetStub) {
@@ -783,6 +791,7 @@ export default {
   getPassiveThrustMagnitudePerTickForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
+  getActiveIntensity,
   getGeneralMultiplierBasedOnCrewMemberProximity,
   statToString,
   getPlanetTitle,

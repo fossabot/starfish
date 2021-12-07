@@ -105,6 +105,7 @@ interface IOClientEvents {
     adminId: string,
     password: string,
     backupId: string,
+    callback: (res: IOResponse<true>) => void,
   ) => void
   [`game:messageAll`]: (
     adminId: string,
@@ -237,6 +238,12 @@ interface IOClientEvents {
   ) => void
   [`game:settings`]: (
     callback: (res: IOResponse<AdminGameSettings>) => void,
+  ) => void
+  [`game:stats`]: (
+    callback: (res: IOResponse<any>) => void,
+  ) => void
+  [`game:guildRankings`]: (
+    callback: (res: IOResponse<any>) => void,
   ) => void
   [`frontend:unlistenAll`]: () => void
 

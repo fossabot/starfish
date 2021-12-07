@@ -6,12 +6,12 @@
     bgImage="/images/paneBackgrounds/12.webp"
   >
     <template #title>
-      <span class="sectionemoji">🏆</span>Global Rankings
+      <span class="sectionemoji">🏆</span>Guild Rankings
     </template>
 
     <Tabs>
       <Tab
-        v-for="ranking in ship.guildRankings"
+        v-for="ranking in rankings"
         :key="'guildRanking' + ranking.category"
         :title="
           c.capitalize(c.camelCaseToWords(ranking.category))
@@ -125,28 +125,42 @@ import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
+  props: { loadSelf: { type: Boolean, default: false } },
   data() {
-    return { c }
+    return { c, loadedRankings: {} }
   },
   computed: {
     ...mapState(['userId', 'ship', 'crewMember']),
-    show() {
-      return (
-        this.ship &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('guildRank'))
-      )
+    show(): boolean {
+      return true
     },
-    highlight() {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'guildRank'
       )
     },
+    rankings(): any {
+      return this.ship?.guildRankings || this.loadedRankings
+    },
   },
   watch: {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    if (this.loadSelf) this.loadRankings()
+  },
+  methods: {
+    async loadRankings() {
+      await new Promise(async (r) => {
+        ;(this as any).$socket?.emit(
+          'game:guildRankings',
+          (res) => {
+            if ('error' in res) return
+            this.loadedRankings = res.data
+          },
+        )
+      })
+    },
+  },
 })
 </script>
 

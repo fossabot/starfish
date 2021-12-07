@@ -257,6 +257,8 @@ function arrayMove(arr, oldIndex, newIndex) {
     arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
 }
 function priceToString(p) {
+    if (!p)
+        return `Free`;
     let s = ``;
     if (p.credits)
         s += `💳${numberWithCommas(math_1.default.r2(p.credits, 0))} `;
@@ -265,7 +267,7 @@ function priceToString(p) {
     if (p.shipCosmeticCurrency)
         s += `💎${numberWithCommas(math_1.default.r2(p.shipCosmeticCurrency, 0))} `;
     if (!s)
-        s = `Free`;
+        return `Free`;
     return s.trim();
 }
 exports.default = {

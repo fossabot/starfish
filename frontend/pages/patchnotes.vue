@@ -24,7 +24,6 @@ import c from '../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  layout: 'withnavbar',
   async asyncData({ $content }) {
     const updates = await $content('patchnotes')
       .sortBy('createdAt', 'desc')

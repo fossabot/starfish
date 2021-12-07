@@ -1,4 +1,7 @@
 import text from './text'
+import math from './math'
+import constants from './gameConstants'
+
 const baseShipPassiveData: {
   [key in ShipPassiveEffectId]: {
     description: (p: ShipPassiveEffect) => string
@@ -118,6 +121,12 @@ const baseShipPassiveData: {
         (p.intensity || 1) * 100,
       )}% cockpit charge speed`,
   },
+  boostWeaponChargeSpeed: {
+    description: (p) =>
+      `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
+        (p.intensity || 1) * 100,
+      )}% weapon charge speed`,
+  },
   boostBrake: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
@@ -200,9 +209,12 @@ const baseShipPassiveData: {
   },
   autoRepair: {
     description: (p) =>
-      `${(p.intensity || 1) >= 0 ? `+` : ``}${
-        Math.round((p.intensity || 1) * 10) / 10
-      }HP/hr ${
+      `${
+        (p.intensity || 1) >= 0 ? `+` : ``
+      }${text.numberWithCommas(
+        math.r2(p.intensity || 1) *
+          constants.displayHPMultiplier,
+      )}HP/hr ${
         (p.intensity || 1) >= 0
           ? `auto-repair`
           : `damage over time`

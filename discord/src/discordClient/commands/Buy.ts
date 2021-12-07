@@ -28,6 +28,16 @@ export class BuyCommand implements Command {
       return
     }
 
+    const charismaLevel =
+      context.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === `boostCharisma` ? p.intensity || 0 : 0),
+        0,
+      ) +
+      (context.crewMember.skills.find(
+        (s) => s.skill === `charisma`,
+      )?.level || 1)
     const getPrice = (
       cargoForSale: PlanetVendorCargoPrice,
     ) => {
@@ -36,9 +46,7 @@ export class BuyCommand implements Command {
         planet,
         context.ship!.guildId,
         1,
-        context.crewMember?.skills.find(
-          (s) => s.skill === `charisma`,
-        )?.level || 1,
+        charismaLevel,
       )
     }
 

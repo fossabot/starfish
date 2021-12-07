@@ -14,7 +14,7 @@
 
   --noguild: rgb(180, 180, 180);
 
-  --stamina: rgb(59, 228, 12);
+  --stamina: #f3ff17; //rgb(59, 228, 12);
   --cargo: #f9c74f;
   --cache: var(--cargo);
   --item: rgb(164, 183, 206);
@@ -47,5 +47,23 @@
   }
   from {
     color: var(--success);
+  }
+}
+
+@keyframes highlight-bg-bad {
+  to {
+    background: inherit;
+  }
+  from {
+    background: var(--warning);
+  }
+}
+
+@keyframes highlight-bg-good {
+  to {
+    background: inherit;
+  }
+  from {
+    background: var(--success);
   }
 }

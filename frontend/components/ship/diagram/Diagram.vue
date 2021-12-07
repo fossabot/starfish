@@ -1,139 +1,133 @@
 <template>
-  <div class="holder" v-if="show">
-    <Box
-      :highlight="highlight"
-      bgImage="/images/paneBackgrounds/14.webp"
+  <Box
+    class="holder"
+    v-if="show"
+    :highlight="highlight"
+    bgImage="/images/paneBackgrounds/14.webp"
+  >
+    <template #title>
+      <span class="sectionemoji">🚪</span>Ship Schematic
+    </template>
+    <div
+      class="shipdiagram"
+      :style="
+        rotate
+          ? {
+              transform: `rotate(${
+                ship && ship.direction * -1 + 90
+              }deg)`,
+            }
+          : ''
+      "
     >
-      <template #title>
-        <span class="sectionemoji">🚪</span>Ship Schematic
-      </template>
+      <svg
+        width="1776"
+        height="2090"
+        viewBox="0 0 1776 2090"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g>
+          <path d="M1200 0H1057.15L1009 213H1200V0Z" />
+          <path d="M576 0H718.849L767 213H576V0Z" />
+          <path
+            d="M472 558L472 486.95L576 463L576 558L472 558Z"
+          />
+          <path
+            d="M1304 558L1304 486.95L1200 463L1200 558L1304 558Z"
+          />
+          <path d="M0 1432L576 684V2090L0 1783V1432Z" />
+          <path
+            d="M1776 1432L1200 684V2090L1776 1783V1432Z"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M1200 213H576V2090H700L800 1961H976L1076 2090H1200V213Z"
+          />
+        </g>
+        <g>
+          <rect x="671" y="272" width="434" height="1554" />
+          <path
+            d="M448 1354H1328V1518.75V1683.5V1848.25L1208 2013H1108L998 1886.27L888 1890.36L778 1886.27L668 2013H568L448 1848.25V1683.5V1354Z"
+          />
+          <path
+            d="M135 1387L687.5 713L730 937.5L220 1387H135Z"
+          />
+          <path
+            d="M1641 1387L1088.5 713L1046 937.5L1556 1387H1641Z"
+          />
+        </g>
+      </svg>
+
       <div
-        class="shipdiagram"
+        class="roomrotator"
         :style="
           rotate
             ? {
-                transform: `rotate(${
-                  ship && ship.direction * -1 + 90
-                }deg)`,
+                transform: `rotate(-45deg)`,
               }
             : ''
         "
       >
-        <svg
-          width="1776"
-          height="2090"
-          viewBox="0 0 1776 2090"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g>
-            <path d="M1200 0H1057.15L1009 213H1200V0Z" />
-            <path d="M576 0H718.849L767 213H576V0Z" />
-            <path
-              d="M472 558L472 486.95L576 463L576 558L472 558Z"
-            />
-            <path
-              d="M1304 558L1304 486.95L1200 463L1200 558L1304 558Z"
-            />
-            <path d="M0 1432L576 684V2090L0 1783V1432Z" />
-            <path
-              d="M1776 1432L1200 684V2090L1776 1783V1432Z"
-            />
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M1200 213H576V2090H700L800 1961H976L1076 2090H1200V213Z"
-            />
-          </g>
-          <g>
-            <rect
-              x="671"
-              y="272"
-              width="434"
-              height="1554"
-            />
-            <path
-              d="M448 1354H1328V1518.75V1683.5V1848.25L1208 2013H1108L998 1886.27L888 1890.36L778 1886.27L668 2013H568L448 1848.25V1683.5V1354Z"
-            />
-            <path
-              d="M135 1387L687.5 713L730 937.5L220 1387H135Z"
-            />
-            <path
-              d="M1641 1387L1088.5 713L1046 937.5L1556 1387H1641Z"
-            />
-          </g>
-        </svg>
-
         <div
-          class="roomrotator"
-          :style="
-            rotate
-              ? {
-                  transform: `rotate(-45deg)`,
-                }
-              : ''
+          class="room"
+          :class="{
+            current:
+              crewMember && crewMember.location === room.id,
+            pointer:
+              crewMember &&
+              (!crewMember.bottomedOutOnStamina ||
+                (crewMember.bottomedOutOnStamina &&
+                  room.id === 'bunk')),
+            'unselectable notallowed':
+              crewMember &&
+              crewMember.bottomedOutOnStamina &&
+              room.id !== 'bunk',
+          }"
+          v-for="room in ship.rooms"
+          :key="'ar' + room.id"
+          :ref="room.id"
+          @click="
+            crewMember &&
+              (!crewMember.bottomedOutOnStamina ||
+                (crewMember.bottomedOutOnStamina &&
+                  room.id === 'bunk')) &&
+              crewMember.location !== room.id &&
+              $store.commit('setRoom', room.id)
           "
+          v-tooltip="{
+            type: 'room',
+            ...room,
+          }"
         >
           <div
-            class="room"
-            :class="{
-              current:
-                crewMember &&
-                crewMember.location === room.id,
-              pointer:
-                crewMember &&
-                (!crewMember.bottomedOutOnStamina ||
-                  (crewMember.bottomedOutOnStamina &&
-                    room.id === 'bunk')),
-              'unselectable notallowed':
-                crewMember &&
-                crewMember.bottomedOutOnStamina &&
-                room.id !== 'bunk',
-            }"
-            v-for="room in ship.rooms"
-            :key="'ar' + room.id"
-            :ref="room.id"
-            @click="
-              crewMember &&
-                (!crewMember.bottomedOutOnStamina ||
-                  (crewMember.bottomedOutOnStamina &&
-                    room.id === 'bunk')) &&
-                crewMember.location !== room.id &&
-                $store.commit('setRoom', room.id)
-            "
-            v-tooltip="{
-              type: 'room',
-              ...room,
+            class="roomlabel"
+            :style="{
+              transform: rotate
+                ? `rotate(${
+                    ship && ship.direction - 90 + 45
+                  }deg)`
+                : '',
             }"
           >
-            <div
-              class="roomlabel"
-              :style="{
-                transform: rotate
-                  ? `rotate(${
-                      ship && ship.direction - 90 + 45
-                    }deg)`
-                  : '',
-              }"
-            >
-              {{ room.id }}
-            </div>
+            {{ room.id }}
           </div>
-          <template v-for="roomWithCrew in crewByRoom">
-            <ShipDiagramRoomMember
-              v-for="member in roomWithCrew.crewMembers"
-              v-if="member.speciesId && member.name"
-              :key="'roomMember' + member.id"
-              :crewMember="member"
-              :location="member.location"
-              :highlight="member.id === userId"
-              :roomEls="$refs"
-            />
-          </template>
         </div>
+        <template v-for="roomWithCrew in crewByRoom">
+          <ShipDiagramRoomMember
+            v-for="member in roomWithCrew.crewMembers"
+            v-if="member.speciesId && member.name"
+            :key="'roomMember' + member.id"
+            :crewMember="member"
+            :location="member.location"
+            :highlight="member.id === userId"
+            :roomEls="$refs"
+          />
+        </template>
       </div>
-    </Box>
-  </div>
+    </div>
+  </Box>
 </template>
 
 <script lang="ts">

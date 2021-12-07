@@ -23,17 +23,22 @@ declare const _default: {
         boostThrust: CrewPassiveData;
         boostPassiveThrust: CrewPassiveData;
         boostCockpitChargeSpeed: CrewPassiveData;
+        boostWeaponChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
         boostSkillLevel: CrewPassiveData;
         cargoSpace: CrewPassiveData;
-        boostWeaponChargeSpeed: CrewPassiveData;
         reduceStaminaDrain: CrewPassiveData;
+        boostMaxStamina: CrewPassiveData;
         generalImprovementWhenAlone: CrewPassiveData;
         generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
         boostDropAmounts: CrewPassiveData;
         lessDamageOnEquipmentUse: CrewPassiveData;
-        boostMaxStamina: CrewPassiveData;
+        boostStrength: CrewPassiveData;
+        boostDexterity: CrewPassiveData;
+        boostIntellect: CrewPassiveData;
+        boostCharisma: CrewPassiveData;
+        boostActiveSlots: CrewPassiveData;
     };
     cargo: typeof cargo;
     species: {
@@ -97,6 +102,9 @@ declare const _default: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostWeaponChargeSpeed: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostXpGain: {
@@ -170,9 +178,17 @@ declare const _default: {
     stubify: typeof stubify;
     crewActiveBaseGlobalCooldown: number;
     crewActives: {
+        boostStrength: CrewActiveData;
+        boostDexterity: CrewActiveData;
+        boostIntellect: CrewActiveData;
+        boostCharisma: CrewActiveData;
         instantStamina: CrewActiveData;
         cargoSweep: CrewActiveData;
         boostShipSightRange: CrewActiveData;
+        repairDrone: CrewActiveData;
+        combatDrone: CrewActiveData;
+        weaponRechargeSpeed: CrewActiveData;
+        boostMorale: CrewActiveData;
     };
     getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
     getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
@@ -229,7 +245,10 @@ declare const _default: {
         zoneDensity: any;
         aiShipDensity: any;
         cacheDensity: any;
+        moraleLowThreshold: any;
+        moraleHighThreshold: any;
     };
+    previousLocationTimeout: number;
     baseCurrencySingular: string;
     baseCurrencyPlural: string;
     shipCosmeticCurrencySingular: string;
@@ -267,6 +286,7 @@ declare const _default: {
         ai: true;
         guildId: true;
         speciesId: true;
+        until: true;
         headerBackground: true;
         tagline: true;
         level: true;
@@ -277,10 +297,7 @@ declare const _default: {
         planet: (keyof BasePlanetData)[];
         chassis: (keyof BaseChassisData)[];
     };
-    sameGuildShipScanProperties: {
-        _hp: boolean;
-        _maxHp: boolean;
-    };
+    sameGuildShipScanProperties: Partial<ShipScanDataShape>;
     tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
     getHitDamage: (weapon: {
@@ -298,6 +315,7 @@ declare const _default: {
     getPassiveThrustMagnitudePerTickForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number, rechargeSpeedMultiplier: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
+    getActiveIntensity: (active: CrewActive, level: number) => number;
     getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
     statToString: (data: {
         stat: string;

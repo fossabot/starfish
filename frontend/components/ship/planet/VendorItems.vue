@@ -159,10 +159,10 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'userId', 'crewMember']),
-    isCaptain() {
+    isCaptain(): boolean {
       return this.ship?.captain === this.userId
     },
-    isFriendlyToGuild() {
+    isFriendlyToGuild(): boolean {
       return (
         (this.ship.planet.allegiances.find(
           (a: PlanetAllegianceData) =>
@@ -170,7 +170,20 @@ export default Vue.extend({
         )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
-    buyableItems() {
+    charismaLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostCharisma' ? p.intensity || 0 : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'charisma',
+        )?.level || 1) + passiveBoost
+      )
+    },
+    buyableItems(): any[] {
       return (this.ship?.planet?.vendor?.items || [])
         .filter(
           (item: PlanetVendorItemPrice) =>
@@ -181,9 +194,7 @@ export default Vue.extend({
             item,
             this.ship.planet,
             this.ship.guildId,
-            this.crewMember?.skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
           )
           return {
             ...item,
@@ -202,7 +213,7 @@ export default Vue.extend({
           }
         })
     },
-    sellableItems() {
+    sellableItems(): any[] {
       return this.ship?.items
         .map((item: ItemStub) => {
           const price = c.getItemSellPrice(
@@ -211,9 +222,7 @@ export default Vue.extend({
             this.ship.planet,
             this.ship.guildId,
             item.level,
-            this.crewMember?.skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
           )
           return {
             ...item,
@@ -227,7 +236,7 @@ export default Vue.extend({
         })
         .filter((i: ItemStub) => i)
     },
-    swappableChassis() {
+    swappableChassis(): any[] {
       return (this.ship.planet?.vendor?.chassis || []).map(
         (chassis: PlanetVendorChassisPrice) => {
           const price = c.getChassisSwapPrice(
@@ -235,9 +244,7 @@ export default Vue.extend({
             this.ship.planet,
             this.ship.chassis.chassisId,
             this.ship.guildId,
-            this.crewMember?.skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
           )
           return {
             ...chassis,

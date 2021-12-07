@@ -12,6 +12,9 @@ const defaultGameSettings: {
   staminaBottomedOutChargeMultiplier: 1,
   newCrewMemberCredits: 1000,
 
+  moraleLowThreshold: 0.2,
+  moraleHighThreshold: 0.8,
+
   gravityMultiplier: 1.8,
   gravityCurveSteepness: 10, // integers
   gravityRadius: 0.5,
@@ -31,6 +34,8 @@ const defaultGameSettings: {
 
   aiDifficultyMultiplier: 0.5,
 }
+
+const previousLocationTimeout = 1000 * 60 * 60 * 24 * 3
 
 const baseCurrencySingular = `speso`
 const baseCurrencyPlural = `spesos`
@@ -85,6 +90,7 @@ const baseShipScanProperties: {
   ai: true
   guildId: true
   speciesId: true
+  until: true
   headerBackground: true
   tagline: true
   level: true
@@ -99,6 +105,7 @@ const baseShipScanProperties: {
   name: true,
   human: true,
   ai: true,
+  until: true,
   headerBackground: true,
   tagline: true,
   level: true,
@@ -111,10 +118,23 @@ const baseShipScanProperties: {
   speciesId: true,
   chassis: [`displayName`],
 }
-const sameGuildShipScanProperties = {
-  _hp: true,
-  _maxHp: true,
-}
+const sameGuildShipScanProperties: Partial<ShipScanDataShape> =
+  {
+    _hp: true,
+    _maxHp: true,
+    items: [
+      `displayName`,
+      `maxHp`,
+      `repair`,
+      `cooldownRemaining`,
+      `chargeRequired`,
+      `id`,
+      `range`,
+      `itemId`,
+      `itemType`,
+      `description`,
+    ] as (keyof BaseItemData)[],
+  }
 
 const tactics: CombatTactic[] = [
   `aggressive`,
@@ -128,6 +148,8 @@ const baseCargoSellMultiplier = 0.3
 
 export default {
   defaultGameSettings,
+
+  previousLocationTimeout,
 
   baseCurrencySingular,
   baseCurrencyPlural,

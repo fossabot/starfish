@@ -23,7 +23,9 @@
         <div class="martop sub">
           Your charge speed:
           {{
-            c.numberWithCommas(c.r2(chargePerSecond * 60))
+            c.numberWithCommas(
+              c.r2(chargePerSecond * 60, 0),
+            )
           }}/min
         </div>
       </div>
@@ -184,29 +186,61 @@ export default Vue.extend({
   },
   computed: {
     ...mapState(['ship', 'crewMember']),
-    highlight() {
+    highlight(): boolean {
       return (
         this.ship?.tutorial?.currentStep?.highlightPanel ===
         'room'
       )
     },
-    weapons() {
+    weapons(): WeaponStub[] {
       return this.ship.items.filter(
         (i: ItemStub) => i.itemType === 'weapon',
       )
     },
-    chargePerSecond() {
+    dexterityLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostDexterity'
+            ? p.intensity || 0
+            : 0),
+        0,
+      )
       return (
-        (c.getWeaponCooldownReductionPerTick(
-          (this.crewMember as CrewMemberStub).skills.find(
-            (s) => s.skill === 'dexterity',
-          )?.level || 1,
-        ) *
-          c.tickInterval) /
-        1000
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'dexterity',
+        )?.level || 1) + passiveBoost
       )
     },
-    targetItemTypes() {
+    chargePerSecond(): number {
+      const passiveMultiplier =
+        this.ship.passives.reduce(
+          (total: number, p: ShipPassiveEffect) =>
+            total +
+            (p.id === `boostWeaponChargeSpeed`
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        this.crewMember.passives.reduce(
+          (total: number, p: ShipPassiveEffect) =>
+            total +
+            (p.id === `boostWeaponChargeSpeed`
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        1
+      return (
+        ((c.getWeaponCooldownReductionPerTick(
+          this.dexterityLevel,
+        ) *
+          c.tickInterval) /
+          1000) *
+        passiveMultiplier
+      )
+    },
+    targetItemTypes(): ItemType[] {
       const its: ItemType[] = [
         'weapon',
         'engine',
@@ -216,7 +250,7 @@ export default Vue.extend({
       ]
       return its
     },
-    targetShip() {
+    targetShip(): ShipStub | undefined {
       return (
         this.ship.targetShip &&
         this.ship.visible?.ships.find(
@@ -224,7 +258,7 @@ export default Vue.extend({
         )
       )
     },
-    visibleEnemies() {
+    visibleEnemies(): ShipStub[] {
       return this.ship.visible?.ships
         .filter(
           (s) =>

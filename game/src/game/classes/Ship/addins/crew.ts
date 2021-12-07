@@ -16,10 +16,6 @@ export function cumulativeSkillIn(
   s: SkillId,
 ): number {
   return this.membersIn(l).reduce((total, m) => {
-    return (
-      total +
-      (m.skills.find((skill) => skill.skill === s)?.level ||
-        0)
-    )
+    return total + m[s].level
   }, 0)
 }

@@ -76,6 +76,7 @@ export default {
     `nuxt-font-loader`,
     `@aceforth/nuxt-optimized-images`,
     `@nuxtjs/google-fonts`,
+    `@nuxtjs/google-analytics`,
   ],
 
   modules: [`@nuxt/content`, `portal-vue/nuxt`],
@@ -93,5 +94,13 @@ export default {
 
   optimizedImages: {
     optimizeImages: true,
+  },
+
+  googleAnalytics: {
+    id: `UA-112989318-4`,
+    debug: {
+      enabled: true,
+      sendHitTask: true,
+    },
   },
 }

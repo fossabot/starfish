@@ -294,6 +294,7 @@ export class Item extends Stubbable {
           `range`,
           `sightRange`,
           `shipScanRange`,
+          `maxHp`,
         ].includes(prop)
         if (multiply) this[prop] = base * (1 + multiplier)
         else this[prop] += multiplier

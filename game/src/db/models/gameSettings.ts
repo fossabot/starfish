@@ -31,6 +31,8 @@ const gameSettingsSchemaFields: Record<
     type: Number,
     required: true,
   },
+  moraleHighThreshold: { type: Number, required: true },
+  moraleLowThreshold: { type: Number, required: true },
   gravityMultiplier: { type: Number, required: true },
   gravityCurveSteepness: { type: Number, required: true },
   gravityRadius: { type: Number, required: true },

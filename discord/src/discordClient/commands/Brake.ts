@@ -71,10 +71,19 @@ export class BrakeCommand implements Command {
           (context.ship.gameSettings
             ?.baseEngineThrustMultiplier || 1),
       )
+
       const pilotingSkill =
-        context.crewMember.skills.find(
+        context.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc +
+            (p.id === `boostDexterity`
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        (context.crewMember.skills.find(
           (s: XPData) => s && s.skill === `dexterity`,
-        )?.level || 1
+        )?.level || 1)
 
       const currentCockpitCharge =
         context.crewMember?.cockpitCharge || 0

@@ -5,7 +5,7 @@ interface ShipStub extends BaseStub {
   name: string
   chassis?: BaseChassisData
   items?: ItemStub[]
-  previousLocations: CoordinatePair[]
+  previousLocations: PreviousLocation[]
   location: CoordinatePair
   velocity?: CoordinatePair
   visible?: VisibleStub
@@ -38,6 +38,7 @@ interface ShipStub extends BaseStub {
   shownPanels?: FrontendPanelType[] | false
   commonCredits?: number
   shipCosmeticCurrency?: number
+  crewAverageMorale?: number
 
   combatTactic?: CombatTactic
   targetItemType?: ItemType | `any`
@@ -73,7 +74,7 @@ interface ShipStub extends BaseStub {
 }
 interface VisibleStub extends BaseStub {
   ships: ShipStub[]
-  trails: { color?: string; points: CoordinatePair[] }[]
+  trails: { color?: string; points: PreviousLocation[] }[]
   planets: Partial<PlanetStub>[]
   comets: Partial<PlanetStub>[]
   caches: CacheStub[] | Partial<CacheStub>[]
@@ -132,7 +133,7 @@ interface PlanetStub extends BaseStub {
   passives?: ShipPassiveEffect[]
   landingRadiusMultiplier?: number
   planetType?: PlanetType
-  trail?: CoordinatePair[]
+  trail?: PreviousLocation[]
   mine?: PlanetMine
   velocity?: CoordinatePair
   speed?: number

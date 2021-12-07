@@ -15,29 +15,7 @@
       "
     >
       <ShipHealthBar :ship="dataToUse" />
-      <!-- <PillBar
-        :value="dataToUse._hp"
-        :max="dataToUse._maxHp"
-      /> -->
     </div>
-    <!-- <ProgressBar
-      v-if="dataToUse._hp && dataToUse._maxHp"
-      :percent="dataToUse._hp / dataToUse._maxHp"
-      @mouseenter.native="
-        $store.commit(
-          'tooltip',
-          `The sum total of all of the ship's equipment's health.`,
-        )
-      "
-      @mouseleave.native="$store.commit('tooltip')"
-    >
-      <div>
-        🇨🇭HP:
-        <NumberChangeHighlighter :number="c.r2(dataToUse._hp)" />
-        /
-        {{ c.r2(dataToUse._maxHp) }}
-      </div>
-    </ProgressBar> -->
 
     <div
       class="panesection"
@@ -141,22 +119,55 @@
       <div v-else>Stopped</div>
     </div>
     <div
-      class="panesection"
+      class="panesection padtop"
       v-if="
         (dataToUse._hp === undefined && dataToUse._maxHp) ||
         dataToUse.chassis ||
         dataToUse.level ||
         dataToUse.mass ||
-        dataToUse.crewMembers
+        dataToUse.crewMembers ||
+        (dataToUse.crewMembers &&
+          dataToUse.crewMembers.length > 1 &&
+          dataToUse.crewAverageMorale !== undefined)
       "
     >
+      <ProgressBar
+        class="marbottiny"
+        v-if="
+          dataToUse.crewMembers &&
+          dataToUse.crewMembers.length > 1 &&
+          dataToUse.crewAverageMorale !== undefined
+        "
+        :mini="true"
+        :percent="dataToUse.crewAverageMorale"
+        :color="
+          dataToUse.crewAverageMorale >
+          ship.gameSettings.moraleHighThreshold
+            ? 'var(--success)'
+            : 'rgba(255,255,255,.5)'
+        "
+        :dangerZone="ship.gameSettings.moraleLowThreshold"
+        v-tooltip="
+          `The average morale of crew members on the ship.`
+        "
+      >
+        <div class="flexcenter flexbetween fullwidth">
+          <div class="small">Avg. Morale</div>
+          <div>
+            {{
+              c.r2(dataToUse.crewAverageMorale * 100, 0)
+            }}%
+          </div>
+        </div>
+      </ProgressBar>
+
       <div
         v-if="
           dataToUse._hp === undefined && dataToUse._maxHp
         "
         class="flexbetween"
       >
-        <div>Max HP</div>
+        <div class="sub">Max HP</div>
         <div>{{ dataToUse._maxHp }}</div>
       </div>
       <div
@@ -167,14 +178,20 @@
           ...dataToUse.chassis,
         }"
       >
-        <div>Chassis</div>
+        <div class="sub">Chassis</div>
         <div>{{ dataToUse.chassis.displayName }}</div>
       </div>
 
       <div v-if="dataToUse.level" class="flexbetween">
-        <div>Level</div>
+        <div class="sub">Level</div>
         <div>
           {{ Math.round(dataToUse.level) }}
+        </div>
+      </div>
+      <div v-if="timeRemaining" class="flexbetween">
+        <div class="sub">Time Remaining</div>
+        <div>
+          {{ c.msToTimeString(timeRemaining) }}
         </div>
       </div>
 
@@ -182,7 +199,7 @@
         v-if="!isSelf && dataToUse.targetShip"
         class="flexbetween"
       >
-        <div>Targeting</div>
+        <div class="sub">Targeting</div>
         <div class="marleft textright">
           {{ dataToUse.targetShip.name }}
         </div>
@@ -192,7 +209,7 @@
         v-if="!isSelf && dataToUse.rooms"
         class="flexbetween"
       >
-        <div>Rooms</div>
+        <div class="sub">Rooms</div>
         <div class="marleft textright">
           {{
             c.printList(
@@ -209,7 +226,7 @@
         v-if="!isSelf && dataToUse.radii"
         class="flexbetween"
       >
-        <div>Radii</div>
+        <div class="sub">Radii</div>
         <div class="marleft textright">
           <div
             v-for="r in Object.keys(dataToUse.radii)
@@ -243,7 +260,7 @@
             : `More mass requires more thrust to gain velocity.`
         "
       >
-        <div>Mass</div>
+        <div class="sub">Mass</div>
         <div>
           {{
             c.numberWithCommas(
@@ -268,7 +285,7 @@
             : null
         "
       >
-        <div>Crew Members</div>
+        <div class="sub">Crew Members</div>
         <div>
           {{ dataToUse.crewMembers.length }}
         </div>
@@ -282,7 +299,7 @@
           Array.isArray(dataToUse.crewMembers)
         "
       >
-        <div>Captain</div>
+        <div class="sub">Captain</div>
         <div v-tooltip="captain">
           <span class="captainlabel flex" v-if="captain">
             <div class="captainicon">
@@ -293,7 +310,7 @@
             </div>
             <div>{{ captain.name }}</div>
           </span>
-          <span v-else>No Captain </span>
+          <span v-else>No Captain</span>
         </div>
       </div>
     </div>
@@ -325,10 +342,11 @@ import { mapState } from 'vuex'
 export default Vue.extend({
   props: { data: {}, showItems: { default: true } },
   data() {
-    return { c }
+    let timeRemaining = 0
+    return { c, timeRemaining }
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(['ship', 'lastUpdated']),
     isSelf() {
       return this.ship?.id === this.data.id
     },
@@ -343,6 +361,23 @@ export default Vue.extend({
       return this.dataToUse?.crewMembers?.find(
         (cm) => cm.id === this.dataToUse?.captain,
       )
+    },
+  },
+
+  watch: {
+    lastUpdated() {
+      this.recalculateRemaining()
+    },
+  },
+  mounted() {
+    this.recalculateRemaining()
+  },
+  methods: {
+    recalculateRemaining() {
+      if (!this.dataToUse.until) this.timeRemaining = 0
+      else
+        this.timeRemaining =
+          this.dataToUse.until - Date.now()
     },
   },
 })

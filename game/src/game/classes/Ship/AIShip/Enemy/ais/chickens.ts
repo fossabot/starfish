@@ -1,5 +1,5 @@
-import c from '../../../../../../../common/dist'
-import type { AIShip } from '../AIShip'
+import c from '../../../../../../../../common/dist'
+import type { AIShip } from '../../AIShip'
 import defaultBehavior, {
   getDefaultAngle,
   commonTaglines,

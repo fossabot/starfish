@@ -65,6 +65,7 @@ interface BaseCrewMemberData {
   skills?: XPData[]
   location?: CrewLocation
   stamina?: number
+  morale?: number
   inventory?: Cargo[]
   credits?: number
   crewCosmeticCurrency?: number
@@ -107,6 +108,7 @@ type CrewPassiveId =
   | `boostWeaponChargeSpeed`
   | `boostStaminaRegeneration`
   | `reduceStaminaDrain`
+  | `boostMaxStamina`
   | `boostXpGain`
   | `generalImprovementWhenAlone`
   | `generalImprovementPerCrewMemberInSameRoom`
@@ -114,7 +116,11 @@ type CrewPassiveId =
   | `boostBroadcastRange`
   | `lessDamageOnEquipmentUse`
   | `boostBrake`
-  | `boostMaxStamina`
+  | `boostStrength`
+  | `boostDexterity`
+  | `boostIntellect`
+  | `boostCharisma`
+  | `boostActiveSlots`
 interface CrewPassiveData {
   id: CrewPassiveId
   intensity?: number
@@ -137,7 +143,10 @@ interface CrewPassiveData {
           planetName?: string
           speciesId?: SpeciesId
           chassisId?: ChassisId
-          crewActivePlusCrewId?: string
+          crewActive?: {
+            activeId: CrewActiveId
+            crewMemberId: string
+          }
           item?: {
             type: ItemType
             id: ItemId
@@ -145,6 +154,8 @@ interface CrewPassiveData {
         }
       | `secondWind`
       | `permanent`
+      | `lowMorale`
+      | `highMorale`
     type?: ItemType
     skill?: SkillId
     distance?: number
@@ -155,6 +166,14 @@ type CrewActiveId =
   | `instantStamina`
   | `cargoSweep`
   | `boostShipSightRange`
+  | `repairDrone`
+  | `combatDrone`
+  | `weaponRechargeSpeed`
+  | `boostStrength`
+  | `boostDexterity`
+  | `boostIntellect`
+  | `boostCharisma`
+  | `boostMorale`
 interface CrewActive {
   id: CrewActiveId
   lastUsed: number
@@ -163,7 +182,10 @@ interface CrewActive {
 interface CrewActiveData {
   id: CrewActiveId
   displayName: string
-  description: (a: CrewActive) => string
+  description: (
+    a: CrewActive,
+    crewMemberLevel: number,
+  ) => string
   cooldown: number
   duration?: number
   notify?: boolean

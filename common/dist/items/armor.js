@@ -17,6 +17,8 @@ exports.armor = {
         basePrice: { credits: 22 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.1,
         maxHp: 5,
+        maxLevel: 2,
+        upgradableProperties: [`maxHp`],
     },
     starter2: {
         type: `item`,
@@ -28,9 +30,9 @@ exports.armor = {
         rarity: 0.5,
         basePrice: { credits: 55 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.13,
-        maxHp: 4,
+        maxHp: 4.2,
         maxLevel: 2,
-        upgradableProperties: [`damageReduction`],
+        upgradableProperties: [`damageReduction`, `maxHp`],
     },
     // block
     block1: {
@@ -57,7 +59,7 @@ exports.armor = {
         rarity: 3.5,
         basePrice: { credits: 160 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.4,
-        maxHp: 4,
+        maxHp: 3.9,
         maxLevel: 4,
         upgradableProperties: [`damageReduction`],
     },
@@ -71,7 +73,7 @@ exports.armor = {
         rarity: 6,
         basePrice: { credits: 510 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.45,
-        maxHp: 5,
+        maxHp: 4.8,
         maxLevel: 5,
         upgradableProperties: [`damageReduction`],
     },
@@ -85,7 +87,7 @@ exports.armor = {
         rarity: 8,
         basePrice: { credits: 1090 * gameConstants_1.default.itemPriceMultiplier },
         damageReduction: 0.5,
-        maxHp: 6,
+        maxHp: 5.7,
         upgradableProperties: [`damageReduction`],
     },
     // tough
@@ -101,7 +103,7 @@ exports.armor = {
         damageReduction: 0.05,
         maxHp: 7,
         maxLevel: 3,
-        upgradableProperties: [`mass`],
+        upgradableProperties: [`mass`, `maxHp`],
         upgradeBonus: 0.1,
     },
     tough2: {
@@ -116,7 +118,7 @@ exports.armor = {
         damageReduction: 0.05,
         maxHp: 9,
         maxLevel: 5,
-        upgradableProperties: [`mass`],
+        upgradableProperties: [`mass`, `maxHp`],
         upgradeBonus: 0.1,
     },
     tough3: {
@@ -131,7 +133,7 @@ exports.armor = {
         damageReduction: 0.05,
         maxHp: 12,
         maxLevel: 7,
-        upgradableProperties: [`mass`],
+        upgradableProperties: [`mass`, `maxHp`],
         upgradeBonus: 0.1,
     },
 };

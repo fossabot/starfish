@@ -1,35 +1,38 @@
 <template>
-  <div class="stats" v-if="show" :highlight="highlight">
-    <Box bgImage="/images/paneBackgrounds/22.webp">
-      <template #title>
-        <span class="sectionemoji">📊</span>Stats
-      </template>
+  <Box
+    bgImage="/images/paneBackgrounds/22.webp"
+    class="stats"
+    v-if="show"
+    :highlight="highlight"
+  >
+    <template #title>
+      <span class="sectionemoji">📊</span>Stats
+    </template>
 
-      <Tabs class="tabs">
-        <Tab
-          v-if="crewMember"
-          :title="
-            (c.species[crewMember.speciesId] &&
-              c.species[crewMember.speciesId].icon + ' ') +
-            'You'
-          "
-        >
-          <ul>
-            <li v-for="s in crewMember.stats">
-              {{ c.statToString(s) }}
-            </li>
-          </ul>
-        </Tab>
-        <Tab :title="'🚀 Ship'">
-          <ul>
-            <li v-for="s in ship.stats">
-              {{ c.statToString(s) }}
-            </li>
-          </ul>
-        </Tab>
-      </Tabs>
-    </Box>
-  </div>
+    <Tabs class="tabs">
+      <Tab
+        v-if="crewMember"
+        :title="
+          (c.species[crewMember.speciesId] &&
+            c.species[crewMember.speciesId].icon + ' ') +
+          'You'
+        "
+      >
+        <ul>
+          <li v-for="s in crewMember.stats">
+            {{ c.statToString(s) }}
+          </li>
+        </ul>
+      </Tab>
+      <Tab :title="'🚀 Ship'">
+        <ul>
+          <li v-for="s in ship.stats">
+            {{ c.statToString(s) }}
+          </li>
+        </ul>
+      </Tab>
+    </Tabs>
+  </Box>
 </template>
 
 <script lang="ts">

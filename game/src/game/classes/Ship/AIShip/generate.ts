@@ -1,7 +1,7 @@
 import c from '../../../../../../common/dist'
 import type { Game } from '../../../Game'
 
-export default function generateBasicAI(
+export default function generateBasicEnemyAI(
   game: Game,
 ): BaseAIShipData {
   let radius = game.gameSoftRadius
@@ -171,7 +171,6 @@ const possibleAINames = [
   `Anika`,
   `Ayana`,
   `Bakari`,
-  `Obama`,
   `Chioma`,
   `Adamma`,
   `Bosede`,

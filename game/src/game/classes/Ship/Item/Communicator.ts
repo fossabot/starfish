@@ -26,9 +26,7 @@ export class Communicator extends Item {
 
     const skillLevel = users
       ? users.reduce(
-          (total, u) =>
-            (u.skills.find((s) => s.skill === `charisma`)
-              ?.level || 1) + total,
+          (total, u) => u.charisma.level + total,
           0,
         ) / users.length
       : 1

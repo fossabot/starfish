@@ -460,16 +460,22 @@ export class BasicPlanet extends Planet {
               propensity *
               5 *
               rarityMultiplier(crewPassive.buyable.rarity),
-            intensity: c.r2(
-              c.crewPassives[crewPassive.id].buyable!
-                .baseIntensity *
-                Math.random() +
-                0.5,
-              c.crewPassives[crewPassive.id].buyable!
+            intensity:
+              c.r2(
+                c.crewPassives[crewPassive.id].buyable!
+                  .baseIntensity *
+                  Math.random() +
+                  0.5,
+                c.crewPassives[crewPassive.id].buyable!
+                  .wholeNumbersOnly
+                  ? 0
+                  : 2,
+              ) ||
+              // could be zero, bounce back
+              (c.crewPassives[crewPassive.id].buyable!
                 .wholeNumbersOnly
-                ? 0
-                : 2,
-            ),
+                ? 1
+                : 0.1),
           })
     }
 
@@ -598,6 +604,7 @@ export class BasicPlanet extends Planet {
       ).filter(
         (s) =>
           !s.planet &&
+          !(s as AIShip).until &&
           !this.contracts.find(
             (co) => co.targetId === s.id,
           ) &&

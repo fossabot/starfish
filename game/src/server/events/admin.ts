@@ -204,13 +204,19 @@ export default function (
   })
   socket.on(
     `game:resetToBackup`,
-    (id, password, backupId) => {
+    async (id, password, backupId, callback) => {
       if (!game) return
       if (!isAdmin(id, password))
         return c.log(
           `Non-admin attempted to access game:resetToBackup`,
         )
-      resetDbToBackup(backupId)
+      game.pause()
+      const res = await resetDbToBackup(backupId)
+      if (res !== true) {
+        c.log(`red`, `Failed to reset to backup:`, res)
+        callback({ error: res })
+      } else await game.restart()
+      callback({ data: true })
     },
   )
 

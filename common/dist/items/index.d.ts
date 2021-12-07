@@ -1,6 +1,7 @@
 export declare const weapon: {
     tiny1: BaseWeaponData;
     tutorial1: BaseWeaponData;
+    drone1: BaseWeaponData;
     cannon1: BaseWeaponData;
     cannon2: BaseWeaponData;
     cannon3: BaseWeaponData;
@@ -80,6 +81,7 @@ export declare const chassis: {
     starter1: BaseChassisData;
     starter2: BaseChassisData;
     starter3: BaseChassisData;
+    drone1: BaseChassisData;
     ai2: BaseChassisData;
     fighter1: BaseChassisData;
     fighter2: BaseChassisData;

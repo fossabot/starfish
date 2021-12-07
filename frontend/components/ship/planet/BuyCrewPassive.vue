@@ -65,6 +65,19 @@ export default Vue.extend({
         )?.level || 0) >= c.guildAllegianceFriendCutoff
       )
     },
+    charismaLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostCharisma' ? p.intensity || 0 : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'charisma',
+        )?.level || 1) + passiveBoost
+      )
+    },
 
     crewMemberPassiveIntensitites(): {
       [key in CrewPassiveId]?: number
@@ -89,9 +102,7 @@ export default Vue.extend({
             ] || 0,
             this.ship.planet,
             this.ship.guildId,
-            this.crewMember.skills.find(
-              (s) => s.skill === 'charisma',
-            )?.level || 1,
+            this.charismaLevel,
           )
           return {
             buyMultiplier: passive.buyMultiplier,

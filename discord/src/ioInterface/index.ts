@@ -73,6 +73,7 @@ io.on(
       diamond: `✨`,
       die: `⚰️`,
       discovery: `🗺️`, // 💡
+      drone: `🤖`,
       fish: `🐟`,
       fix: `🔧`,
       flag: `🚩`,

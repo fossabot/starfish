@@ -1,26 +1,47 @@
 <template>
-  <div class="progressbar" :class="{ mini, micro }">
+  <div
+    class="progressbar"
+    :class="{ mini, micro, nofade: noFade }"
+  >
     <div class="bg"></div>
     <div
       class="fill"
       :class="{ mini }"
       :style="{
         width: Math.min(percent, 1) * 100 + '%',
-        opacity: micro
-          ? 1
-          : percent <= dangerZone
-          ? 0.4
-          : 0.4,
-        background:
-          percent <= dangerZone
-            ? 'var(--warning)'
-            : micro
-            ? ''
-            : mini
-            ? color || 'rgba(255,255,255,.3)'
-            : color,
       }"
-    ></div>
+    >
+      <div
+        class="fillborder"
+        v-if="!noFade && percent < 1 && percent > 0"
+        :style="{
+          'border-right':
+            `1px solid ` +
+            (percent <= dangerZone
+              ? 'var(--warning)'
+              : micro
+              ? ''
+              : mini
+              ? color || 'rgba(255,255,255,.3)'
+              : color),
+          opacity: micro ? 1 : 0.5,
+        }"
+      ></div>
+      <div
+        class="fillbg"
+        :style="{
+          background:
+            percent <= dangerZone
+              ? 'var(--warning)'
+              : micro
+              ? ''
+              : mini
+              ? color || 'rgba(255,255,255,.3)'
+              : color,
+          opacity: micro || noFade ? 1 : 0.4,
+        }"
+      ></div>
+    </div>
     <div
       class="label padpane"
       :style="{
@@ -44,8 +65,9 @@ export default Vue.extend({
     micro: {},
     mini: {},
     percent: { default: 1 },
-    color: { default: 'rgba(255,255,255,.3)' },
+    color: { default: 'rgba(255,255,255,.4)' },
     dangerZone: { default: 0.2 },
+    noFade: { default: false },
   },
   data() {
     return {}
@@ -81,10 +103,10 @@ export default Vue.extend({
     box-shadow: none;
 
     .label {
-      padding-top: 0.06em;
-      padding-bottom: 0.04em;
-      padding-left: 0.5em;
-      padding-right: 0.5em;
+      padding-top: 0.05em;
+      padding-bottom: 0.035em;
+      padding-left: 0.4em;
+      padding-right: 0.4em;
     }
 
     .bg {
@@ -127,10 +149,12 @@ export default Vue.extend({
     width: 100%;
     height: 100%;
     transition: width 0.5s ease-in-out;
-    // border-radius: 5px;
 
-    &.mini {
-      border-radius: 0.3em;
+    .fillbg,
+    .fillborder {
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -140,6 +164,8 @@ export default Vue.extend({
     height: 100%;
     display: flex;
     align-items: center;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     padding-top: 0.11em;
     padding-bottom: 0.09em;
   }

@@ -20,6 +20,7 @@ type LogIcon =
   | `diamond`
   | `die`
   | `discovery`
+  | `drone`
   | `fish`
   | `fix`
   | `flag`

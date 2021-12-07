@@ -52,6 +52,17 @@ export class SellCommand implements Command {
       ...context.crewMember.inventory.map((i) => i.id),
     )
 
+    const charismaLevel =
+      context.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === `boostCharisma` ? p.intensity || 0 : 0),
+        0,
+      ) +
+      (context.crewMember.skills.find(
+        (s) => s.skill === `charisma`,
+      )?.level || 1)
+
     const withPrices = context.crewMember.inventory
       .filter((i) => i.amount)
       .map((i) => {
@@ -60,9 +71,7 @@ export class SellCommand implements Command {
           planet,
           context.ship!.guildId,
           1,
-          context.crewMember?.skills.find(
-            (s) => s.skill === `charisma`,
-          )?.level || 1,
+          charismaLevel,
         )
 
         return {

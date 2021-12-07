@@ -17,7 +17,9 @@
           class="icon guildicon pointer"
           v-for="s in shipsBasics"
           @click="shipSelected(s.id)"
-          :class="{ active: ship && ship.id === s.id }"
+          :class="{
+            active: onShipPage && ship && ship.id === s.id,
+          }"
           v-tooltip="{ type: 'ship', ...s }"
         >
           <div class="activeicon"></div>
@@ -147,11 +149,16 @@ export default Vue.extend({
       'shipIds',
       'shipsBasics',
     ]),
+    onShipPage() {
+      return (this as any).$route.path === '/s'
+    },
   },
   watch: {},
   mounted() {},
   methods: {
     async shipSelected(id) {
+      if (!this.onShipPage)
+        (this as any).$router.push({ path: `/s` })
       if (this.ship && this.ship.id === id) return
       this.$store.commit('set', {
         loading: true,

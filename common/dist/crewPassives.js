@@ -38,6 +38,21 @@ const data = {
                 ? ` (if your ship's chassis can support it)`
                 : ``),
     },
+    boostActiveSlots: {
+        displayName: `Active Slot Boost`,
+        id: `boostActiveSlots`,
+        buyable: {
+            rarity: 2,
+            basePrice: { credits: 11000 },
+            scaledCrewCosmeticCurrency: {
+                fromLevel: 1,
+                amount: 220,
+            },
+            baseIntensity: 0,
+            wholeNumbersOnly: true,
+        },
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} active slot count by ${math_1.default.r2(data.intensity || 0)}`,
+    },
     boostSkillLevel: {
         id: `boostSkillLevel`,
         displayName: `Boost Skill Level`,
@@ -117,6 +132,26 @@ const data = {
         displayName: `Solo Training`,
         id: `generalImprovementWhenAlone`,
         description: (data) => `${math_1.default.r2((data.intensity || 0) * 100)}% ${(data.intensity || 1) >= 0 ? `improved` : `reduced`} performance when alone in a room`,
+    },
+    boostCharisma: {
+        displayName: `Charisma Boost`,
+        id: `boostCharisma`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} charisma by ${math_1.default.r2(data.intensity || 0)}`,
+    },
+    boostStrength: {
+        displayName: `Strength Boost`,
+        id: `boostStrength`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} strength by ${math_1.default.r2(data.intensity || 0)}`,
+    },
+    boostDexterity: {
+        displayName: `Dexterity Boost`,
+        id: `boostDexterity`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} dexterity by ${math_1.default.r2(data.intensity || 0)}`,
+    },
+    boostIntellect: {
+        displayName: `Intellect Boost`,
+        id: `boostIntellect`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} intellect by ${math_1.default.r2(data.intensity || 0)}`,
     },
 };
 exports.default = data;

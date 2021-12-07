@@ -19,6 +19,8 @@ import { AttackRemnant } from './classes/AttackRemnant'
 import { Zone } from './classes/Zone'
 import { HumanShip } from './classes/Ship/HumanShip/HumanShip'
 import { AIShip } from './classes/Ship/AIShip/AIShip'
+import { FriendlyAIShip } from './classes/Ship/AIShip/Friendly/FriendlyAIShip'
+import { EnemyAIShip } from './classes/Ship/AIShip/Enemy/EnemyAIShip'
 import { CombatShip } from './classes/Ship/CombatShip'
 import { ChunkManager } from './classes/Chunks/ChunkManager'
 
@@ -30,7 +32,7 @@ import {
 import { generateComet } from './presets/comets'
 import { generateZoneData } from './presets/zones'
 import type { Server } from 'socket.io'
-import generateBasicAI from './classes/Ship/AIShip/generate'
+import generateBasicEnemyAI from './classes/Ship/AIShip/generate'
 
 export class Game {
   static saveTimeInterval =
@@ -38,16 +40,20 @@ export class Game {
     60 *
     1000
 
-  readonly createTime = Date.now()
-  startTime: number = 0
-  readonly ships: Ship[] = []
-  readonly planets: Planet[] = []
-  readonly comets: Comet[] = []
-  readonly caches: Cache[] = []
-  readonly zones: Zone[] = []
-  readonly attackRemnants: AttackRemnant[] = []
+  private saveInterval: any
+  private dailyInterval: any
 
-  readonly chunkManager = new ChunkManager()
+  readonly createTime = Date.now()
+  readonly initialOptions: { ioPort?: number }
+  startTime: number = 0
+  ships: Ship[] = []
+  planets: Planet[] = []
+  comets: Comet[] = []
+  caches: Cache[] = []
+  zones: Zone[] = []
+  attackRemnants: AttackRemnant[] = []
+
+  chunkManager = new ChunkManager()
 
   settings: AdminGameSettings
   minimumGameRadius: number = 0
@@ -56,13 +62,17 @@ export class Game {
 
   paused: boolean = false
   activePlayers: number = 0
+  gameInitializedAt: number
 
   db: typeof db | null = null
   io: Server<IOClientEvents, IOServerEvents>
   ioPort: number
 
   constructor(options?: { ioPort?: number }) {
+    this.initialOptions = options || {}
     this.settings = c.defaultGameSettings
+
+    this.gameInitializedAt = Date.now()
 
     this.io = spawnIo(this, { port: options?.ioPort || 0 })
     this.ioPort =
@@ -218,8 +228,14 @@ export class Game {
 
     this.startTime = Date.now()
 
-    setInterval(() => this.save(), Game.saveTimeInterval)
-    setInterval(() => this.daily(), 24 * 60 * 60 * 1000)
+    this.saveInterval = setInterval(
+      () => this.save(),
+      Game.saveTimeInterval,
+    )
+    this.dailyInterval = setInterval(
+      () => this.daily(),
+      24 * 60 * 60 * 1000,
+    )
     this.daily()
 
     this.tick()
@@ -229,8 +245,28 @@ export class Game {
     setTimeout(() => {
       if (this.paused)
         c.log(`yellow`, `Game ready, but started paused.`)
-      else c.log(`Game started.`)
+      else c.log(`green`, `----- Game started. -----`)
     }, 100)
+  }
+
+  async restart() {
+    c.log(`yellow`, `Restarting game...`)
+    await this.pause()
+    clearInterval(this.saveInterval)
+    clearInterval(this.dailyInterval)
+    this.startTime = Date.now()
+    this.ships = []
+    this.planets = []
+    this.comets = []
+    this.caches = []
+    this.zones = []
+    this.chunkManager = new ChunkManager()
+    this.attackRemnants = []
+    this.db = null
+
+    await this.loadGameDataFromDb()
+    await this.unpause()
+    this.startGame()
   }
 
   async save() {
@@ -429,7 +465,7 @@ export class Game {
     tutorial: boolean = false,
   ): {
     ships: Ship[]
-    trails: { color?: string; points: CoordinatePair[] }[]
+    trails: { color?: string; points: PreviousLocation[] }[]
     planets: Planet[]
     comets: Comet[]
     caches: Cache[]
@@ -439,7 +475,7 @@ export class Game {
     let ships: Ship[] = [],
       trails: {
         color?: string
-        points: CoordinatePair[]
+        points: PreviousLocation[]
       }[] = [],
       planets: Planet[] = [],
       comets: Comet[] = [],
@@ -447,10 +483,11 @@ export class Game {
       attackRemnants: AttackRemnant[] = [],
       zones: Zone[] = []
 
+    const trailMultiplier = includeTrails ? 2 : 1 // * making scan radius bigger to catch trails of ships outside of scan radius
     const visible =
       this.chunkManager.getElementsWithinRadius(
         center,
-        radius,
+        radius * trailMultiplier,
       )
 
     if (!types || types.includes(`humanShip`))
@@ -460,7 +497,8 @@ export class Game {
             (s) =>
               s.type === `ship` &&
               !s.dead &&
-              s.ai === false,
+              s.ai === false &&
+              c.distance(center, s.location) < radius,
           ) as HumanShip[]
         ).filter((s) => {
           if (
@@ -495,7 +533,10 @@ export class Game {
         ...(
           visible.filter(
             (s) =>
-              s.type === `ship` && !s.dead && s.ai === true,
+              s.type === `ship` &&
+              !s.dead &&
+              s.ai === true &&
+              c.distance(center, s.location) < radius,
           ) as AIShip[]
         ).filter((s) => {
           if (
@@ -542,7 +583,13 @@ export class Game {
           if (s.id === ignoreSelf) return false
           if (ships.find((ship) => ship === s)) return false
           for (let l of s.previousLocations) {
-            if (c.pointIsInsideCircle(center, l, radius))
+            if (
+              c.pointIsInsideCircle(
+                center,
+                l.location,
+                radius,
+              )
+            )
               return true
           }
           return false
@@ -555,8 +602,11 @@ export class Game {
                 : undefined,
             points: [
               ...s.previousLocations,
-              s.location,
-            ] as CoordinatePair[],
+              {
+                location: [...s.location],
+                time: Date.now(),
+              },
+            ],
           }
         })
 
@@ -564,7 +614,13 @@ export class Game {
         ...this.comets
           .filter((s) => {
             for (let l of s.trail) {
-              if (c.pointIsInsideCircle(center, l, radius))
+              if (
+                c.pointIsInsideCircle(
+                  center,
+                  l.location,
+                  radius,
+                )
+              )
                 return true
             }
             return false
@@ -574,17 +630,20 @@ export class Game {
               color: s.color,
               points: [
                 ...s.trail,
-                s.location,
-              ] as CoordinatePair[],
+                { time: Date.now(), location: s.location },
+              ] as PreviousLocation[],
             }
           }),
       )
     }
+
     if (!types || types.includes(`planet`))
       planets = (
         visible.filter(
           (s) =>
-            s.type === `planet` && s.planetType !== `comet`,
+            s.type === `planet` &&
+            s.planetType !== `comet` &&
+            c.distance(center, s.location) < radius,
         ) as Planet[]
       ).filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
@@ -593,14 +652,20 @@ export class Game {
       comets = (
         visible.filter(
           (s) =>
-            s.type === `planet` && s.planetType === `comet`,
+            s.type === `planet` &&
+            s.planetType === `comet` &&
+            c.distance(center, s.location) < radius,
         ) as Comet[]
       ).filter((p) =>
         c.pointIsInsideCircle(center, p.location, radius),
       )
     if (!types || types.includes(`cache`))
       caches = (
-        visible.filter((s) => s.type === `cache`) as Cache[]
+        visible.filter(
+          (s) =>
+            s.type === `cache` &&
+            c.distance(center, s.location) < radius,
+        ) as Cache[]
       ).filter((k) => {
         if (
           k.onlyVisibleToShipId &&
@@ -617,7 +682,10 @@ export class Game {
     if (!types || types.includes(`attackRemnant`))
       attackRemnants = (
         visible.filter(
-          (s) => s.type === `attackRemnant`,
+          (s) =>
+            s.type === `attackRemnant` &&
+            (c.distance(center, s.start) < radius ||
+              c.distance(center, s.end) < radius),
         ) as AttackRemnant[]
       ).filter((a) => {
         if (
@@ -894,7 +962,7 @@ export class Game {
       this.aiShips.length <
         this.gameSoftArea * this.settings.aiShipDensity
     ) {
-      this.addAIShip(generateBasicAI(this))
+      this.addAIShip(generateBasicEnemyAI(this))
     }
   }
 
@@ -946,8 +1014,11 @@ export class Game {
     //   `gray`,
     //   `Adding level ${data.level} AI ship ${data.name} to game at ${data.location}`,
     // )
+    let newShip: AIShip
+    if (data.guildId === `fowl`)
+      newShip = new EnemyAIShip(data, this)
+    else newShip = new FriendlyAIShip(data, this)
 
-    const newShip = new AIShip(data, this)
     this.ships.push(newShip)
     this.chunkManager.addOrUpdate(newShip)
     if (save) await this.db?.ship.addOrUpdateInDb(newShip)
@@ -1570,12 +1641,8 @@ export class Game {
       gameRadius: this.gameSoftRadius,
       safeZoneRadius: this.settings.safeZoneRadius,
       showAll: true as true,
+      trails: undefined,
     }
-    // c.log(
-    //   `Generated full game map data in ${
-    //     Date.now() - startTime
-    //   }ms`,
-    // )
     return mapData
   }
 }

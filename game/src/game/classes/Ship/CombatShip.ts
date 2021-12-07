@@ -8,6 +8,8 @@ import type { Game } from '../../Game'
 import type { CrewMember } from '../CrewMember/CrewMember'
 import type { HumanShip } from './HumanShip/HumanShip'
 import type { AIShip } from './AIShip/AIShip'
+import type { FriendlyAIShip } from './AIShip/Friendly/FriendlyAIShip'
+import type { EnemyAIShip } from './AIShip/Enemy/EnemyAIShip'
 
 export abstract class CombatShip extends Ship {
   static percentOfCurrencyKeptOnDeath = 0.5
@@ -68,83 +70,38 @@ export abstract class CombatShip extends Ship {
         1,
       )
     while (index !== -1) {
-      if (p.data?.source?.crewActive)
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
+      index = this.passives.findIndex((p2) => {
+        for (let key in p)
+          if (
+            typeof p[key] !== `object` &&
+            p2[key] !== p[key]
+          )
+            return false
+
+        if (typeof p.data?.source === `string`)
+          return p.data.source === p2.data?.source
+
+        for (let prop of Object.keys(p.data?.source || {}))
+          if (typeof p.data?.source?.[prop] === `string`)
             if (
-              ep.data?.source?.crewActive?.activeId !==
-                p.data?.source?.crewActive?.activeId ||
-              ep.data?.source?.crewActive?.crewMemberId !==
-                p.data?.source?.crewActive?.crewMemberId
+              p2.data?.source?.[prop] !==
+              p.data?.source?.[prop]
             )
               return false
-            return true
-          },
-        )
-      if (p.data?.source?.guildId)
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
-            if (
-              ep.data?.source?.guildId !==
-              p.data?.source?.guildId
+            else if (
+              typeof p.data?.source?.[prop] === `object`
             )
-              return false
-            return true
-          },
-        )
-      if (p.data?.source?.item) {
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
-            if (
-              ep.data?.source?.item?.id !==
-                p.data?.source?.item?.id ||
-              ep.data?.source?.item?.type !==
-                p.data?.source?.item?.type
-            )
-              return false
-            return true
-          },
-        )
-      } else if (p.data?.source?.planetName)
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
-            if (
-              ep.data?.source?.planetName !==
-              p.data?.source?.planetName
-            )
-              return false
-            return true
-          },
-        )
-      else if (p.data?.source?.zoneName) {
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
-            if (
-              ep.data?.source?.zoneName !==
-              p.data?.source?.zoneName
-            )
-              return false
-            return true
-          },
-        )
-      } else
-        index = this.passives.findIndex(
-          (ep: ShipPassiveEffect) => {
-            for (let key in ep)
-              if (ep[key] !== p[key]) return false
-            return true
-          },
-        )
+              for (let prop2 of Object.keys(
+                p.data?.source[prop] || {},
+              ))
+                if (
+                  p2.data?.source?.[prop]?.[prop2] !==
+                  p.data?.source?.[prop]?.[prop2]
+                )
+                  return false
+
+        return true
+      })
       if (index === -1) return
       this.passives.splice(index, 1)
       this.recalculateAll()
@@ -288,6 +245,13 @@ export abstract class CombatShip extends Ship {
     if (
       otherShip.guildId &&
       otherShip.guildId === this.guildId
+    )
+      return false
+    // friendly ai ships
+    if (
+      (otherShip as AIShip).neverAttackIds?.includes(
+        this.id,
+      )
     )
       return false
     // human ships within protected zone
@@ -526,15 +490,20 @@ export abstract class CombatShip extends Ship {
         : undefined,
     })
 
+    this.crewMembers.forEach((cm) =>
+      cm.changeMorale(miss ? 0.001 : 0.03),
+    )
+
     if (attackResult.miss)
       this.logEntry(
         [
           `Missed`,
           {
             text:
-              ((target as AIShip).speciesId
-                ? c.species[(target as AIShip).speciesId]
-                    ?.icon || ``
+              ((target as EnemyAIShip).speciesId
+                ? c.species[
+                    (target as EnemyAIShip).speciesId
+                  ]?.icon || ``
                 : ``) + target.name,
             color:
               target.guildId &&
@@ -561,9 +530,10 @@ export abstract class CombatShip extends Ship {
           `Hit`,
           {
             text:
-              ((target as AIShip).speciesId
-                ? c.species[(target as AIShip).speciesId]
-                    ?.icon || ``
+              ((target as EnemyAIShip).speciesId
+                ? c.species[
+                    (target as EnemyAIShip).speciesId
+                  ]?.icon || ``
                 : ``) + target.name,
             color:
               target.guildId &&
@@ -592,7 +562,9 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `damage`,
               ...attackResult,
-              overkill: damage - attackResult.damageTaken,
+              overkill: attackResult.didDie
+                ? damage - attackResult.damageTaken
+                : undefined,
             },
           },
           `&nospace${didCrit ? ` (Crit!)` : ``}.`,
@@ -601,14 +573,18 @@ export abstract class CombatShip extends Ship {
         `outgoingAttackHit`,
         true,
       )
-      if (attackResult.didDie)
+      if (attackResult.didDie) {
+        this.crewMembers.forEach((cm) =>
+          cm.changeMorale(0.5),
+        )
         this.logEntry(
           [
             {
               text:
-                ((target as AIShip).speciesId
-                  ? c.species[(target as AIShip).speciesId]
-                      ?.icon || ``
+                ((target as EnemyAIShip).speciesId
+                  ? c.species[
+                      (target as EnemyAIShip).speciesId
+                    ]?.icon || ``
                   : ``) + target.name,
               color:
                 target.guildId &&
@@ -621,6 +597,7 @@ export abstract class CombatShip extends Ship {
           `kill`,
           true,
         )
+      }
     }
 
     // c.log(damage, attackResult)
@@ -701,6 +678,11 @@ export abstract class CombatShip extends Ship {
 
     const attackDamageAfterPassives = remainingDamage
 
+    if (attack.didCrit)
+      this.crewMembers.forEach((cm) =>
+        cm.changeMorale(0.03),
+      )
+
     // calculate passive item type damage boosts from attacker
     let itemTypeDamageMultipliers: {
       [key in ItemType]?: number
@@ -746,15 +728,22 @@ export abstract class CombatShip extends Ship {
         const damageRemovedFromTotal =
           adjustedRemainingDamage - remaining
         remainingDamage -= damageRemovedFromTotal
+
+        if (armor.hp === 0 && this.crewMembers.length)
+          this.crewMembers.forEach((cm) =>
+            cm.changeMorale(-0.04),
+          )
+
         if (armor.hp === 0 && armor.announceWhenBroken) {
           this.logEntry(
             [
+              `Your`,
               {
                 text: armor.displayName,
                 color: `var(--item)`,
                 tooltipData: armor.toReference() as any,
               },
-              `disabled!`,
+              `was disabled!`,
             ],
             `high`,
             `incomingAttackDisable`,
@@ -765,9 +754,9 @@ export abstract class CombatShip extends Ship {
                 `Disabled`,
                 {
                   text:
-                    ((this as AIShip).speciesId
+                    ((this as EnemyAIShip).speciesId
                       ? c.species[
-                          (this as AIShip).speciesId
+                          (this as EnemyAIShip).speciesId
                         ]?.icon || ``
                       : ``) + this.name,
                   color:
@@ -884,6 +873,13 @@ export abstract class CombatShip extends Ship {
         })
       }
 
+      if (
+        equipmentToAttack.hp === 0 &&
+        this.crewMembers.length
+      )
+        this.crewMembers.forEach((cm) =>
+          cm.changeMorale(-0.04),
+        )
       // ----- notify both sides -----
       if (
         equipmentToAttack.hp === 0 &&
@@ -893,13 +889,14 @@ export abstract class CombatShip extends Ship {
         setTimeout(() => {
           this.logEntry(
             [
+              `Your`,
               {
                 text: equipmentToAttack.displayName,
                 color: `var(--item)`,
                 tooltipData:
                   equipmentToAttack.toReference() as any,
               },
-              `disabled!`,
+              `was disabled!`,
             ],
             `high`,
             `incomingAttackDisable`,
@@ -917,9 +914,9 @@ export abstract class CombatShip extends Ship {
                 `Disabled`,
                 {
                   text:
-                    ((this as AIShip).speciesId
+                    ((this as EnemyAIShip).speciesId
                       ? c.species[
-                          (this as AIShip).speciesId
+                          (this as EnemyAIShip).speciesId
                         ]?.icon || ``
                       : ``) + this.name,
                   color:
@@ -966,7 +963,7 @@ export abstract class CombatShip extends Ship {
     c.log(
       `gray`,
       `💥 ${this.name} takes ${c.r2(
-        totalDamageDealt,
+        totalDamageDealt * c.displayHPMultiplier,
       )} damage from ${attacker.name}'s ${
         attack.weapon
           ? attack.weapon.displayName
@@ -1004,9 +1001,10 @@ export abstract class CombatShip extends Ship {
             : `Hit by`,
           {
             text:
-              ((attacker as AIShip).speciesId
-                ? c.species[(attacker as AIShip).speciesId]
-                    ?.icon || ``
+              ((attacker as EnemyAIShip).speciesId
+                ? c.species[
+                    (attacker as EnemyAIShip).speciesId
+                  ]?.icon || ``
                 : ``) + attacker.name,
             color:
               attacker.guildId &&
@@ -1044,8 +1042,11 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(
-                    this._hp * c.displayHPMultiplier,
+                  text: `(${c.numberWithCommas(
+                    c.r2(
+                      this._hp * c.displayHPMultiplier,
+                      0,
+                    ),
                   )} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
@@ -1070,9 +1071,10 @@ export abstract class CombatShip extends Ship {
             : `Hit by`,
           {
             text:
-              ((attacker as AIShip).speciesId
-                ? c.species[(attacker as AIShip).speciesId]
-                    ?.icon || ``
+              ((attacker as EnemyAIShip).speciesId
+                ? c.species[
+                    (attacker as EnemyAIShip).speciesId
+                  ]?.icon || ``
                 : ``) + attacker.name,
             color: attacker.color || `var(--warning)`,
             tooltipData: attacker?.toReference
@@ -1103,10 +1105,12 @@ export abstract class CombatShip extends Ship {
                 },
                 {
                   discordOnly: true,
-                  text: `(${c.r2(
-                    this._hp * c.displayHPMultiplier,
-                    0,
-                  )} HP left).`,
+                  text: `(${c.numberWithCommas(
+                    c.r2(
+                      this._hp * c.displayHPMultiplier,
+                      0,
+                    ),
+                  )} HP left)`,
                   color: `rgba(255,255,255,.5)`,
                 },
                 `&nospace.`,

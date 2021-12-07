@@ -182,16 +182,17 @@ export default Vue.extend({
             ?.amount || 0,
           requirements.required - requirements.current,
         )
-      amount = c.r2(
-        parseFloat(`${amount}` || '0') || 0,
-        2,
-        true,
-      )
+      amount = c.r2(parseFloat(`${amount}` || '0') || 0, 2)
+      c.log(amount)
       if (
         !amount ||
         amount < 0 ||
         amount >
-          requirements.required - requirements.current
+          Math.ceil(
+            (requirements.required - requirements.current) *
+              100,
+          ) /
+            100
       ) {
         this.$store.dispatch('notifications/notify', {
           text: 'Invalid amount.',

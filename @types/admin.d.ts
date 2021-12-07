@@ -23,6 +23,8 @@ interface AdminGameSettings {
   zoneDensity: number
   aiShipDensity: number
   cacheDensity: number
+  moraleLowThreshold: number
+  moraleHighThreshold: number
 }
 
 interface AdminVisibleData {
@@ -35,4 +37,5 @@ interface AdminVisibleData {
   gameRadius: number
   safeZoneRadius: number
   showAll: true
+  trails: undefined
 }

@@ -29,7 +29,6 @@ import * as storage from '../assets/scripts/storage'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  layout: 'withnavbar',
   data() {
     return {
       errorMessage: '',

@@ -30,7 +30,7 @@ export const engines: {
     basePrice: { credits: 0 * game.itemPriceMultiplier },
     rarity: 0.5,
     passiveThrustMultiplier: 0.5,
-    maxHp: 2,
+    maxHp: 1.4,
     passives: [],
   },
   ai1: {
@@ -58,7 +58,7 @@ export const engines: {
     basePrice: { credits: 17 * game.itemPriceMultiplier },
     rarity: 0.4,
     manualThrustMultiplier: 0.7,
-    maxHp: 5,
+    maxHp: 4.5,
     repairDifficulty: 0.9,
     passives: [
       {
@@ -80,7 +80,7 @@ export const engines: {
     basePrice: { credits: 21 * game.itemPriceMultiplier },
     rarity: 1,
     manualThrustMultiplier: 0.8,
-    maxHp: 5,
+    maxHp: 4.5,
     repairDifficulty: 0.85,
     passives: [
       {
@@ -102,7 +102,7 @@ export const engines: {
     basePrice: { credits: 49 * game.itemPriceMultiplier },
     rarity: 1.5,
     manualThrustMultiplier: 0.9,
-    maxHp: 5,
+    maxHp: 4.5,
     repairDifficulty: 0.8,
     passives: [
       {
@@ -216,7 +216,7 @@ export const engines: {
     rarity: 6,
     passiveThrustMultiplier: 0.4,
     manualThrustMultiplier: 0.5,
-    maxHp: 3,
+    maxHp: 3.3,
     maxLevel: 7,
     upgradableProperties: [
       `passiveThrustMultiplier`,
@@ -234,7 +234,7 @@ export const engines: {
     rarity: 7,
     passiveThrustMultiplier: 0.4,
     manualThrustMultiplier: 0.6,
-    maxHp: 3,
+    maxHp: 3.6,
     maxLevel: 12,
     upgradableProperties: [
       `passiveThrustMultiplier`,
@@ -276,7 +276,7 @@ export const engines: {
     rarity: 9,
     manualThrustMultiplier: 2,
     reliability: 0.4,
-    maxHp: 1,
+    maxHp: 1.2,
     repairDifficulty: 1.2,
     passives: [
       { id: `boostChassisAgility`, intensity: 0.06 },
@@ -298,7 +298,7 @@ export const engines: {
     rarity: 12,
     manualThrustMultiplier: 2.3,
     reliability: 0.5,
-    maxHp: 1,
+    maxHp: 1.4,
     repairDifficulty: 1.2,
     passives: [
       { id: `boostChassisAgility`, intensity: 0.1 },
@@ -321,7 +321,7 @@ export const engines: {
     basePrice: { credits: 105 * game.itemPriceMultiplier },
     rarity: 7,
     passiveThrustMultiplier: 1.1,
-    maxHp: 3,
+    maxHp: 2.8,
     maxLevel: 4,
     upgradeBonus: 0.08,
     upgradableProperties: [
@@ -339,7 +339,7 @@ export const engines: {
     basePrice: { credits: 315 * game.itemPriceMultiplier },
     rarity: 14,
     passiveThrustMultiplier: 1.2,
-    maxHp: 3,
+    maxHp: 3.1,
     maxLevel: 7,
     upgradeBonus: 0.08,
     upgradableProperties: [
@@ -360,7 +360,7 @@ export const engines: {
     rarity: 5,
     manualThrustMultiplier: 1.1,
     reliability: 3,
-    maxHp: 6,
+    maxHp: 5.5,
     repairDifficulty: 0.8,
     maxLevel: 2,
     upgradeBonus: 0.1,
@@ -381,7 +381,7 @@ export const engines: {
     rarity: 9,
     manualThrustMultiplier: 1.2,
     reliability: 4,
-    maxHp: 7,
+    maxHp: 6.5,
     repairDifficulty: 0.8,
     maxLevel: 3,
     upgradeBonus: 0.1,
@@ -402,7 +402,7 @@ export const engines: {
     rarity: 12,
     manualThrustMultiplier: 1.3,
     reliability: 5,
-    maxHp: 8,
+    maxHp: 7.5,
     repairDifficulty: 0.8,
     maxLevel: 4,
     upgradeBonus: 0.1,

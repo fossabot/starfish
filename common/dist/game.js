@@ -67,7 +67,7 @@ function getPassiveThrustMagnitudePerTickForSingleCrewMember(level = 1, engineTh
         baseEngineThrustMultiplier);
 }
 function getRepairAmountPerTickForSingleCrewMember(level) {
-    return (math_1.default.lerp(0.65, 2, level / 100) / globals_1.default.tickInterval);
+    return (math_1.default.lerp(0.55, 2, level / 100) / globals_1.default.tickInterval);
 }
 function getMineAmountPerTickForSingleCrewMember(level) {
     return (math_1.default.lerp(180, 500, level / 100) / globals_1.default.tickInterval);
@@ -80,6 +80,9 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedM
 }
 function getWeaponCooldownReductionPerTick(level) {
     return (2 + math_1.default.lerp(1, 10, level / 100)) * 15;
+}
+function getActiveIntensity(active, level) {
+    return ((active.intensity || 1) * math_1.default.lerp(1, 4, level / 100));
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
@@ -110,14 +113,12 @@ function getPlanetDefenseDamage(level) {
 }
 function statToString(data) {
     const { stat, amount } = data;
-    let titleString = text_1.default
-        .camelCaseToWords(stat)
-        .replace(`Hp`, `HP`);
+    let titleString = text_1.default.camelCaseToWords(stat);
     let amountString = `${text_1.default.numberWithCommas(math_1.default.r2(amount *
         (stat.toLowerCase().includes(`hp`) ||
             stat.toLowerCase().includes(`damage`)
             ? gameConstants_1.default.displayHPMultiplier
-            : 1)))}`;
+            : 1), 0))}`;
     let suffix = ``;
     if ([`highestSpeed`, `totalSpeedApplied`].includes(stat))
         amountString = text_1.default.speedNumber(amount);
@@ -127,7 +128,9 @@ function statToString(data) {
         amountString = text_1.default.msToTimeString(amount * globals_1.default.tickInterval);
     if ([`distanceTraveled`].includes(stat))
         suffix = `AU`;
-    return `${text_1.default.capitalize(titleString)}: ${amountString}${suffix}`;
+    return `${text_1.default
+        .capitalize(titleString)
+        .replace(`Hp`, `HP`)}: ${amountString}${suffix}`;
 }
 function getPlanetTitle(planet) {
     if (!planet || !planet.level)
@@ -482,6 +485,7 @@ exports.default = {
     getPassiveThrustMagnitudePerTickForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
+    getActiveIntensity,
     getGeneralMultiplierBasedOnCrewMemberProximity,
     statToString,
     getPlanetTitle,

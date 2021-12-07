@@ -24,7 +24,10 @@ declare const _default: {
         zoneDensity: any;
         aiShipDensity: any;
         cacheDensity: any;
+        moraleLowThreshold: any;
+        moraleHighThreshold: any;
     };
+    previousLocationTimeout: number;
     baseCurrencySingular: string;
     baseCurrencyPlural: string;
     shipCosmeticCurrencySingular: string;
@@ -62,6 +65,7 @@ declare const _default: {
         ai: true;
         guildId: true;
         speciesId: true;
+        until: true;
         headerBackground: true;
         tagline: true;
         level: true;
@@ -72,10 +76,7 @@ declare const _default: {
         planet: (keyof BasePlanetData)[];
         chassis: (keyof BaseChassisData)[];
     };
-    sameGuildShipScanProperties: {
-        _hp: boolean;
-        _maxHp: boolean;
-    };
+    sameGuildShipScanProperties: Partial<ShipScanDataShape>;
     tactics: CombatTactic[];
     baseCargoSellMultiplier: number;
 };

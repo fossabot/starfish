@@ -10,7 +10,7 @@ import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
 
 import {
-  aiShipData,
+  enemyAiShipData,
   crewMemberData,
   humanShipData,
 } from './defaults'
@@ -20,13 +20,13 @@ import { AIShip } from '../src/game/classes/Ship/AIShip/AIShip'
 describe(`AIShip spawn`, () => {
   it(`should add level-appropriate items/chassis on spawn`, async () => {
     const g = new Game()
-    const ship = await g.addAIShip(aiShipData(3))
+    const ship = await g.addAIShip(enemyAiShipData(3))
     const level3Value = ship.items.reduce(
       (t, i) => t + i.toRefundAmount(),
       0,
     )
 
-    const ship2 = await g.addAIShip(aiShipData(100))
+    const ship2 = await g.addAIShip(enemyAiShipData(100))
     const level10Value = ship2.items.reduce(
       (t, i) => t + (i.baseData.basePrice.credits || 0),
       0,
@@ -43,7 +43,7 @@ describe(`AIShip target selection`, () => {
   it(`should properly auto-target`, async () => {
     const g = new Game()
     const flamingo = await g.addAIShip(
-      aiShipData(3, `flamingos`),
+      enemyAiShipData(3, `flamingos`),
     )
     const human = await g.addHumanShip(humanShipData())
 
@@ -58,7 +58,9 @@ describe(`AIShip target selection`, () => {
     human.autoAttack(1)
     expect(flamingo.targetShip).to.equal(human)
 
-    const eagle = await g.addAIShip(aiShipData(3, `eagles`))
+    const eagle = await g.addAIShip(
+      enemyAiShipData(3, `eagles`),
+    )
     eagle.updateVisible() // also runs determineTargetShip
     expect(eagle.targetShip).to.equal(human)
 
@@ -70,7 +72,7 @@ describe(`AIShip target selection`, () => {
   it(`should properly move flamingos`, async () => {
     const g = new Game()
     const flamingo = await g.addAIShip(
-      aiShipData(3, `flamingos`),
+      enemyAiShipData(3, `flamingos`),
     )
     const human = await g.addHumanShip(
       humanShipData(`testMega`),
@@ -105,7 +107,7 @@ describe(`AIShip death`, () => {
     const g = new Game()
 
     for (let i = 1; i < 100; i += 4) {
-      const ship = await g.addAIShip(aiShipData(i))
+      const ship = await g.addAIShip(enemyAiShipData(i))
       ship.die()
 
       const expectedValue = Math.round(
@@ -135,5 +137,18 @@ describe(`AIShip death`, () => {
         10,
       )
     }
+  })
+
+  it(`should properly kill timed ais`, async () => {
+    const g = new Game()
+
+    const ship = await g.addAIShip({
+      ...enemyAiShipData(),
+      until: Date.now() + 1,
+    })
+
+    await c.sleep(2)
+    ship.tick()
+    expect(ship.dead).to.be.true
   })
 })

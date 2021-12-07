@@ -167,7 +167,6 @@ import {
 } from '../../assets/scripts/storage'
 
 export default Vue.extend({
-  layout: 'withnavbar',
   head() {
     return {
       title: 'Admin',
@@ -447,6 +446,20 @@ export default Vue.extend({
         this.userId,
         this.adminPassword,
         b,
+        (res) => {
+          if ('error' in res) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+            c.log(res.error)
+            return
+          } else
+            this.$store.dispatch('notifications/notify', {
+              text: `Game reset to backup ${b}.`,
+              type: 'success',
+            })
+        },
       )
     },
   },

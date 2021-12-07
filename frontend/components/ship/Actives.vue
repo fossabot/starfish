@@ -34,6 +34,21 @@
           }}
         </span>
       </div>
+      <div class="sub">
+        <div class="nowrap padbottiny">
+          {{ crewMember.actives.length }}/{{
+            crewMember.activeSlots
+          }}
+          active slots used
+        </div>
+        <PillBar
+          v-if="crewMember.activeSlots > 1"
+          :micro="true"
+          :value="crewMember.actives.length"
+          :max="crewMember.activeSlots"
+          class="slots"
+        />
+      </div>
     </div>
   </Box>
 </template>

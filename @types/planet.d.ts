@@ -36,7 +36,7 @@ interface BaseMiningPlanetData extends BasePlanetData {
 
 interface BaseCometData extends BaseMiningPlanetData {
   velocity: CoordinatePair
-  trail?: CoordinatePair[]
+  trail?: PreviousLocation[]
 }
 
 interface PlanetMineEntry {

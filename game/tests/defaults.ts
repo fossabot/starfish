@@ -24,7 +24,7 @@ export function humanShipData(
     loadout,
   }
 }
-export function aiShipData(
+export function enemyAiShipData(
   level: number = 1,
   speciesId: AISpeciesId = `eagles`,
 ): BaseAIShipData {
@@ -35,6 +35,7 @@ export function aiShipData(
     location: [10, 0],
     level,
     speciesId,
+    guildId: `fowl`,
   }
 }
 

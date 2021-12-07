@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const text_1 = __importDefault(require("./text"));
+const math_1 = __importDefault(require("./math"));
+const gameConstants_1 = __importDefault(require("./gameConstants"));
 const baseShipPassiveData = {
     visibleCargoPrices: {
         description: (p) => `Planet cargo prices always visible`,
@@ -59,6 +61,9 @@ const baseShipPassiveData = {
     boostCockpitChargeSpeed: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% cockpit charge speed`,
     },
+    boostWeaponChargeSpeed: {
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% weapon charge speed`,
+    },
     boostBrake: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% ship braking`,
     },
@@ -100,7 +105,8 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} stamina regeneration`,
     },
     autoRepair: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 10) / 10}HP/hr ${(p.intensity || 1) >= 0
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${text_1.default.numberWithCommas(math_1.default.r2(p.intensity || 1) *
+            gameConstants_1.default.displayHPMultiplier)}HP/hr ${(p.intensity || 1) >= 0
             ? `auto-repair`
             : `damage over time`}`,
     },

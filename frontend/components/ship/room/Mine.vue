@@ -83,6 +83,19 @@ export default Vue.extend({
         ? priority
         : 'closest'
     },
+    strengthLevel(): number {
+      const passiveBoost = this.crewMember.passives.reduce(
+        (acc: number, p: CrewPassiveData) =>
+          acc +
+          (p.id === 'boostStrength' ? p.intensity || 0 : 0),
+        0,
+      )
+      return (
+        (this.crewMember.skills.find(
+          (s) => s.skill === 'strength',
+        )?.level || 1) + passiveBoost
+      )
+    },
     minePower(): number {
       const passiveBoostMultiplier =
         1 +
@@ -111,9 +124,7 @@ export default Vue.extend({
         generalBoostMultiplier *
         passiveBoostMultiplier *
         c.getMineAmountPerTickForSingleCrewMember(
-          this.crewMember?.skills.find(
-            (s: XPData) => s.skill === 'strength',
-          )?.level || 1,
+          this.strengthLevel,
         )
       )
     },

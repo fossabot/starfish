@@ -49,7 +49,7 @@ exports.scanners = {
         rarity: 0.6,
         sightRange: 0.3,
         shipScanRange: 0.1,
-        maxHp: 3,
+        maxHp: 2.8,
         maxLevel: 3,
         upgradableProperties: [`sightRange`],
         shipScanData: {
@@ -81,7 +81,7 @@ exports.scanners = {
         sightRange: 0.35,
         shipScanRange: 0.13,
         reliability: 1.2,
-        maxHp: 3,
+        maxHp: 2.8,
         maxLevel: 3,
         upgradableProperties: [`sightRange`],
         shipScanData: {
@@ -113,7 +113,7 @@ exports.scanners = {
         rarity: 5,
         sightRange: 0.1,
         shipScanRange: 0.1,
-        maxHp: 1,
+        maxHp: 0.3,
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             _hp: true,
@@ -131,7 +131,7 @@ exports.scanners = {
         rarity: 8,
         sightRange: 0.1,
         shipScanRange: 0.1,
-        maxHp: 1,
+        maxHp: 0.3,
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             crewMembers: [`location`, `stamina`],
@@ -148,7 +148,7 @@ exports.scanners = {
         rarity: 10,
         sightRange: 0.1,
         shipScanRange: 0.1,
-        maxHp: 1,
+        maxHp: 0.3,
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
             items: [
@@ -173,7 +173,7 @@ exports.scanners = {
         rarity: 2,
         sightRange: 0.1,
         shipScanRange: 0.1,
-        maxHp: 1,
+        maxHp: 0.3,
         shipScanData: {
             ...gameConstants_1.default.baseShipScanProperties,
         },
@@ -195,7 +195,7 @@ exports.scanners = {
         rarity: 1.3,
         sightRange: 0.45,
         shipScanRange: 0.2,
-        maxHp: 4,
+        maxHp: 3.1,
         maxLevel: 6,
         upgradableProperties: [`sightRange`],
         shipScanData: {
@@ -222,7 +222,7 @@ exports.scanners = {
         rarity: 4,
         sightRange: 0.6,
         shipScanRange: 0.28,
-        maxHp: 4,
+        maxHp: 3.7,
         maxLevel: 9,
         upgradableProperties: [`sightRange`],
         shipScanData: {
@@ -279,7 +279,7 @@ exports.scanners = {
         shipScanRange: 0.35,
         reliability: 0.7,
         repairDifficulty: 0.85,
-        maxHp: 3,
+        maxHp: 1.8,
         maxLevel: 6,
         upgradableProperties: [`shipScanRange`, `reliability`],
         shipScanData: {
@@ -324,7 +324,7 @@ exports.scanners = {
         shipScanRange: 0.42,
         reliability: 0.7,
         repairDifficulty: 0.85,
-        maxHp: 3,
+        maxHp: 2.1,
         maxLevel: 8,
         upgradableProperties: [`sightRange`, `reliability`],
         shipScanData: {
@@ -369,7 +369,7 @@ exports.scanners = {
         shipScanRange: 0.57,
         reliability: 0.7,
         repairDifficulty: 0.85,
-        maxHp: 3,
+        maxHp: 2.4,
         maxLevel: 10,
         upgradableProperties: [`sightRange`, `reliability`],
         shipScanData: {
