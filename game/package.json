@@ -14,7 +14,7 @@
     "@newrelic/winston-enricher": "^2.1.0",
     "@types/node": "^16.11.8",
     "dotenv": "^10.0.0",
-    "engine.io": "^6.0.0",
+    "engine.io": "^6.1.0",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
     "mongoose": "5.10.19",
