@@ -155,6 +155,7 @@ jobs:
         if: (success() || failure())
         with:
           name: test-results
+          fail-on-error: false
           path: ${{matrix.folder}}/reports/test-results.json
           reporter: mocha-json
 
