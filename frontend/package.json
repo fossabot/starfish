@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@aceforth/nuxt-optimized-images": "^1.4.0",
-    "@mapbox/node-pre-gyp": "^1.0.5",
+    "@mapbox/node-pre-gyp": "^1.0.7",
     "@nuxt/content": "^1.15.1",
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
