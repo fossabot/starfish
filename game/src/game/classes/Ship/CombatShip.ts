@@ -285,7 +285,9 @@ export abstract class CombatShip extends Ship {
   attack(
     this: CombatShip,
     target: CombatShip,
-    weapon: Weapon,
+    weapon:
+      | Weapon
+      | { displayName: string; damage: number },
     targetType: ItemType | `any` = `any`,
     predeterminedHitChance?: number,
   ): TakenDamageResult {
@@ -297,7 +299,8 @@ export abstract class CombatShip extends Ship {
         miss: true,
       }
 
-    weapon.use(1, this.membersIn(`weapons`))
+    if (`use` in weapon)
+      weapon.use(1, this.membersIn(`weapons`))
 
     const totalMunitionsSkill = this.cumulativeSkillIn(
       `weapons`,
@@ -316,7 +319,10 @@ export abstract class CombatShip extends Ship {
         target.location,
       )
       const distanceAsPercent =
-        range / weapon.effectiveRange // 1 = far away, 0 = close
+        range /
+        (`effectiveRange` in weapon
+          ? weapon.effectiveRange
+          : 10000) // 1 = far away, 0 = close
       const minHitChance = 0.08
       // 1.0 agility is "normal", higher is better
       const enemyAgility =
@@ -339,10 +345,10 @@ export abstract class CombatShip extends Ship {
     const didCrit = miss
       ? false
       : Math.random() <=
-        (weapon.critChance === undefined
-          ? this.game?.settings.baseCritChance ||
-            c.defaultGameSettings.baseCritChance
-          : weapon.critChance)
+        (`critChance` in weapon
+          ? weapon.critChance
+          : this.game?.settings.baseCritChance ||
+            c.defaultGameSettings.baseCritChance)
 
     let damage = miss
       ? 0
@@ -490,9 +496,10 @@ export abstract class CombatShip extends Ship {
         : undefined,
     })
 
-    this.crewMembers.forEach((cm) =>
-      cm.changeMorale(miss ? 0.001 : 0.03),
-    )
+    if (`use` in weapon)
+      this.crewMembers.forEach((cm) =>
+        cm.changeMorale(miss ? 0.001 : 0.03),
+      )
 
     if (attackResult.miss)
       this.logEntry(
@@ -599,8 +606,6 @@ export abstract class CombatShip extends Ship {
         )
       }
     }
-
-    // c.log(damage, attackResult)
 
     this.addStat(`damageDealt`, attackResult.damageTaken)
 
@@ -827,14 +832,14 @@ export abstract class CombatShip extends Ship {
           itemTypeDamageMultipliers[
             equipmentToAttack.itemType
           ]!
-        c.log(
-          `damage to`,
-          equipmentToAttack.itemType,
-          `boosted by passive:`,
-          remainingDamage,
-          `became`,
-          adjustedRemainingDamage,
-        )
+        // c.log(
+        //   `damage to`,
+        //   equipmentToAttack.itemType,
+        //   `boosted by passive:`,
+        //   remainingDamage,
+        //   `became`,
+        //   adjustedRemainingDamage,
+        // )
       }
 
       const remainingHp = equipmentToAttack.hp
@@ -986,7 +991,8 @@ export abstract class CombatShip extends Ship {
       damageMitigated:
         attack.damage - attackDamageAfterPassives,
       didDie: didDie,
-      weapon: attack.weapon?.toReference(),
+      weapon:
+        attack.weapon?.toReference?.() || attack.weapon,
       damageTally,
     }
 

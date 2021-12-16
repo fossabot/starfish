@@ -7,40 +7,23 @@
     <div>
       {{ activeData.description(data, crewMember.level) }}
     </div>
-    <div class="sub martopsmall">
+
+    <div class="sub" v-if="data.unlockLevel">
+      Unlocks at level {{ data.unlockLevel }}
+    </div>
+
+    <div class="sub martopsmall" v-if="!data.unlockLevel">
       Base amplification factor:
-      <span v-if="data.id === 'combatDrone'">
-        {{
-          1 +
-          c.r2(
-            c.getActiveIntensity(data, crewMember.level) *
-              4,
-          )
-        }}
+      <span>
+        {{ activeData.displayIntensity(data.intensity) }}
       </span>
-      <span
-        v-if="
-          [
-            'boostStrength',
-            'boostIntellect',
-            'boostCharisma',
-            'boostDexterity',
-          ].includes(data.id)
-        "
-      >
-        {{
-          Math.floor(c.getActiveIntensity(data, 1) * 4) + 1
-        }}
-      </span>
-      <span v-else>
-        {{ c.r2(data.intensity * 100, 0) }}</span
-      >
       <br />
       Scales with your level.
     </div>
     <div
       class="sub"
       v-if="
+        !data.unlockLevel &&
         !crewMember.bottomedOutOnStamina &&
         !cooldownRemaining
       "

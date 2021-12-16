@@ -46,7 +46,7 @@
           <ShipScanShip />
 
           <ShipItems />
-          <!-- <ShipActives /> -->
+          <ShipActives />
 
           <ShipLog />
 
@@ -56,7 +56,6 @@
           <ShipStats />
 
           <ShipCaptainCrewOverview />
-          <!-- <ShipCrewRank /> -->
 
           <ShipGuildRank />
         </template>

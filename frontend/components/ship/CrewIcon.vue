@@ -37,7 +37,23 @@
           </text>
         </svg>
       </div>
-      <div class="cmispecies">
+      <div
+        class="cmispecies"
+        :class="{
+          lowmorale:
+            crewMember.morale !== undefined &&
+            crewMember.morale <
+              (ship
+                ? ship.gameSettings.moraleLowThreshold
+                : 0),
+          highmorale:
+            crewMember.morale !== undefined &&
+            crewMember.morale >
+              (ship
+                ? ship.gameSettings.moraleHighThreshold
+                : 1),
+        }"
+      >
         <svg viewBox="0 0 24 24">
           <text
             x="50%"
@@ -93,7 +109,7 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['ship']),
   },
   watch: {},
   mounted() {},
@@ -167,6 +183,15 @@ export default Vue.extend({
     text {
       font-size: 1rem;
     }
+  }
+
+  &.lowmorale {
+    filter: contrast(0.8)
+      drop-shadow(0 0 0.3em var(--warning));
+  }
+  &.highmorale {
+    filter: contrast(1.3)
+      drop-shadow(0 0 0.18em var(--success));
   }
 }
 .cmicaptain {

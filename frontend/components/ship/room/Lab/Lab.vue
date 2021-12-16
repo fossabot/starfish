@@ -12,17 +12,28 @@
     <div class="panesection">
       <div>
         Your research speed:
-        {{
-          c.numberWithCommas(
-            c.r2(
-              (researchPerTick / c.tickInterval) *
-                1000 *
-                60 *
-                60,
-              0,
-            ),
-          )
-        }}/hr
+        <span
+          :class="{ success: boostedAmount }"
+          v-tooltip="
+            boostedAmount
+              ? `Research speed boosted by ${
+                  c.r2(boostedAmount) * 100
+                }%`
+              : null
+          "
+        >
+          {{
+            c.numberWithCommas(
+              c.r2(
+                (researchPerTick / c.tickInterval) *
+                  1000 *
+                  60 *
+                  60,
+                0,
+              ),
+            )
+          }}/hr
+        </span>
       </div>
 
       <div class="sub" v-if="upgradableItems.length > 1">
@@ -102,18 +113,37 @@ export default Vue.extend({
       )
     },
     intellectLevel(): number {
-      const passiveBoost = this.crewMember.passives.reduce(
-        (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === 'boostIntellect'
-            ? p.intensity || 0
-            : 0),
-        0,
-      )
+      const passiveBoost =
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc +
+            (p.id === 'boostIntellect'
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`)
+            return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return (
         (this.crewMember.skills.find(
           (s) => s.skill === 'intellect',
         )?.level || 1) + passiveBoost
+      )
+    },
+    boostedAmount(): number {
+      return (
+        c.getResearchAmountPerTickForSingleCrewMember(
+          this.intellectLevel,
+        ) /
+          c.getResearchAmountPerTickForSingleCrewMember(
+            this.crewMember.skills.find(
+              (s) => s.skill === 'intellect',
+            )?.level || 1,
+          ) -
+        1
       )
     },
     researchPerTick(): number {

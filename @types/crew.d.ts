@@ -168,15 +168,29 @@ type CrewActiveId =
   | `boostShipSightRange`
   | `repairDrone`
   | `combatDrone`
-  | `weaponRechargeSpeed`
+  | `boostWeaponChargeSpeed`
   | `boostStrength`
   | `boostDexterity`
   | `boostIntellect`
   | `boostCharisma`
   | `boostMorale`
+  | `boostThrust`
+  | `boostMineSpeed`
+  | `boostRepairSpeed`
+  | `generalImprovementWhenAlone`
+  | `generalImprovementPerCrewMemberInSameRoom`
+  | `fullCrewSkillBoost`
+  | `flatDamageReduction`
+  | `boostChassisAgility`
+  | `seeTrailColors`
+  | `boostDamageToEngines`
+  | `boostDamageToWeapons`
+  | `boostDamageToScanners`
+  | `broadcastRangeCargoPrices`
+  | `damageToAllNearbyEnemies`
 interface CrewActive {
   id: CrewActiveId
-  lastUsed: number
+  lastUsed?: number
   intensity: number
 }
 interface CrewActiveData {
@@ -186,9 +200,15 @@ interface CrewActiveData {
     a: CrewActive,
     crewMemberLevel: number,
   ) => string
+  range?: number
   cooldown: number
   duration?: number
   notify?: boolean
+  intensityAdapter: (intensity: number) => number
+  displayIntensity: (
+    intensity: number,
+    level?: number,
+  ) => number
 }
 
 interface BaseSpeciesData {
@@ -198,6 +218,7 @@ interface BaseSpeciesData {
   singular: string
   description: string
   passives: CrewPassiveData[]
+  activeTree: CrewActive[]
 }
 
 type AISpeciesId =

@@ -14,11 +14,13 @@
         <NumberChangeHighlighter
           :number="crewMember.level"
         />
-        {{
-          c.capitalize(
-            c.species[crewMember.speciesId].singular,
-          )
-        }}
+        <span v-if="c.species[crewMember.speciesId]">
+          {{
+            c.capitalize(
+              c.species[crewMember.speciesId].singular,
+            )
+          }}</span
+        >
         <span class="sub normal"
           >({{
             crewMember.level * crewMember.skills.length +
@@ -95,7 +97,7 @@ export default Vue.extend({
     return { c, skillTooltips, skillAbbreviations }
   },
   computed: {
-    ...mapState(['crewMember']),
+    ...mapState(['crewMember', 'ship']),
     sortedSkills(): XPData[] {
       return [...this.crewMember.skills]
         .filter((s) => s)
@@ -137,14 +139,17 @@ export default Vue.extend({
       )
     },
     getLevel(skill: XPData): any {
-      const boost = this.crewMember.passives.reduce(
-        (acc, p) => {
+      const boost =
+        this.crewMember.passives.reduce((acc, p) => {
           if (p.id === `boost${c.capitalize(skill.skill)}`)
             return acc + (p.intensity || 0)
           return acc
-        },
-        0,
-      )
+        }, 0) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`)
+            return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return {
         level: skill.level + boost,
         xp: skill.xp,

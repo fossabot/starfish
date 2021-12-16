@@ -99,7 +99,7 @@ export default {
   googleAnalytics: {
     id: `UA-112989318-4`,
     debug: {
-      enabled: true,
+      // enabled: true,
       sendHitTask: true,
     },
   },

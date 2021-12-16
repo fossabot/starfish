@@ -1,4 +1,5 @@
 import c from '../../../../../../common/dist'
+import type { CombatShip } from '../../Ship/CombatShip'
 import type { CrewMember } from '../CrewMember'
 
 const effects: {
@@ -6,14 +7,21 @@ const effects: {
     cm: CrewMember,
     a: CrewActive,
     d: CrewActiveData,
-    i: number,
+    displayIntensity: number,
+    baseIntensity: number,
   ) => string | Promise<string>
 } = {
-  repairDrone: (cm, a, d, i) => {
+  repairDrone: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     cm.ship.applyTimedPassive({
       id: `autoRepair`,
-      intensity: i,
+      intensity: baseIntensity,
       until: Date.now() + duration,
       data: {
         source: {
@@ -29,7 +37,13 @@ const effects: {
     )}!`
   },
 
-  combatDrone: async (cm, a, d, i) => {
+  combatDrone: async (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const s = await cm.ship.game?.addAIShip({
       neverAttackIds: [cm.ship.id],
       spawnedById: cm.ship.id,
@@ -42,28 +56,34 @@ const effects: {
           (l) => l + c.randomBetween(-1, 1) * 0.0001,
         ) as [number, number]),
       ],
-      level:
-        1 +
-        Math.floor(c.getActiveIntensity(a, cm.level) * 4),
+      level: displayIntensity,
     })
-    s?.applyPassive({ id: `boostDamage`, intensity: i })
+    s?.applyPassive({
+      id: `boostDamage`,
+      intensity: baseIntensity,
+    })
     s?.applyPassive({
       id: `boostWeaponChargeSpeed`,
-      intensity: i,
+      intensity: baseIntensity,
     })
-    return `Released a level ${
-      1 + Math.floor(c.getActiveIntensity(a, cm.level) * 4)
-    } combat drone that lasts for ${c.msToTimeString(
+    return `Released a level ${displayIntensity} combat drone that lasts for ${c.msToTimeString(
       d.duration || 1000 * 60 * 60 * 1,
     )}!`
   },
 
-  cargoSweep: (cm, a, d, i) => {
-    if (c.lottery(i, 1)) {
+  cargoSweep: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    if (c.lottery(baseIntensity, 1)) {
       const id = c.randomFromArray([
         ...Object.keys(c.cargo),
       ]) as CargoId
-      const amount = c.r2(Math.random() * 2 * i, 2) + 0.01
+      const amount =
+        c.r2(Math.random() * 2 * baseIntensity, 2) + 0.01
       const leftOver = cm.addCargo(id, amount)
       return `Discovered ${c.r2(
         amount * 1000,
@@ -78,108 +98,439 @@ const effects: {
     return `You didn't find anything this time.`
   },
 
-  instantStamina: (cm, a, d, i) => {
-    cm.stamina += i
+  instantStamina: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    cm.stamina += baseIntensity
     if (cm.stamina > 1) cm.stamina = 1
     cm.toUpdate.stamina = cm.stamina
-    return `Stamina boosted by ${c.r2(i * 100, 0)}!`
+    return `Stamina boosted by ${displayIntensity}!`
   },
 
-  boostShipSightRange: (cm, a, d, i) => {
+  boostShipSightRange: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedShipPassiveFromActive(
       `boostSightRange`,
-      i,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Ship sight range boosted by ${c.r2(
-      i * 100,
-      0,
-    )}% for ${c.msToTimeString(duration)}!`
+    return `Ship sight range boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  weaponRechargeSpeed: (cm, a, d, i) => {
+  boostWeaponChargeSpeed: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedShipPassiveFromActive(
       `boostWeaponChargeSpeed`,
-      i,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Weapon recharge speed boosted by ${c.r2(
-      i * 100,
-      0,
-    )}% for ${c.msToTimeString(duration)}!`
+    return `Weapon recharge speed boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  boostCharisma: (cm, a, d, i) => {
+  boostCharisma: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedCrewPassiveFromActive(
       `boostCharisma`,
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Charisma boosted by ${c.r2(
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
-      0,
-    )} for ${c.msToTimeString(duration)}!`
+    return `Charisma boosted by ${baseIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  boostDexterity: (cm, a, d, i) => {
+  boostDexterity: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedCrewPassiveFromActive(
       `boostDexterity`,
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Dexterity boosted by ${c.r2(
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
-      0,
-    )} for ${c.msToTimeString(duration)}!`
+    return `Dexterity boosted by ${baseIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  boostStrength: (cm, a, d, i) => {
+  boostStrength: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedCrewPassiveFromActive(
       `boostStrength`,
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Strength boosted by ${c.r2(
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
-      0,
-    )} for ${c.msToTimeString(duration)}!`
+    return `Strength boosted by ${baseIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  boostIntellect: (cm, a, d, i) => {
+  boostIntellect: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedCrewPassiveFromActive(
       `boostIntellect`,
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
+      baseIntensity,
       duration,
       a,
       cm,
     )
-    return `Intellect boosted by ${c.r2(
-      Math.floor(c.getActiveIntensity(a, cm.level) * 4) + 1,
-      0,
-    )} for ${c.msToTimeString(duration)}!`
+    return `Intellect boosted by ${baseIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 
-  boostMorale: (cm, a, d, i) => {
+  boostMorale: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
     cm.ship.crewMembers.forEach((member) =>
-      member.changeMorale(i),
+      member.changeMorale(baseIntensity),
     )
-    return `Morale boosted by ${c.r2(i * 100, 0)}%!`
+    return `Crew morale boosted by ${displayIntensity}%!`
+  },
+  seeTrailColors: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `alwaysSeeTrailColors`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `You can see the trail colors of other ships!`
+  },
+  boostChassisAgility: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostChassisAgility`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Chassis agility boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostDamageToEngines: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostDamageToItemType`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+      { type: `engine` },
+    )
+    return `Damage to engines boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostDamageToScanners: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostDamageToItemType`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+      { type: `scanner` },
+    )
+    return `Damage to scanners boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostDamageToWeapons: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostDamageToItemType`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+      { type: `weapon` },
+    )
+    return `Damage to weapons boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostMineSpeed: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostMineSpeed`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Mine speed boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostRepairSpeed: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostRepairSpeed`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Repair speed boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  boostThrust: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `boostThrust`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Thrust boosted by ${displayIntensity}% for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  damageToAllNearbyEnemies: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const range = d.range || 0.01
+    const nearbyShips = (
+      cm.ship.game?.scanCircle(
+        cm.ship.location,
+        range,
+        cm.ship.id,
+        [`aiShip`, `humanShip`],
+      )?.ships || []
+    ).filter(
+      (s) =>
+        `takeDamage` in s && s.guildId !== cm.ship.guildId,
+    ) as CombatShip[]
+    let didHit = 0
+    for (let s of nearbyShips) {
+      const res = cm.ship.attack(
+        s,
+        {
+          displayName: d.displayName,
+          damage: baseIntensity,
+        },
+        `any`,
+        1000,
+      )
+      if (res.damageTaken > 0) didHit++
+    }
+
+    if (nearbyShips.length)
+      return `Hit ${didHit} nearby enem${
+        didHit === 1 ? `y` : `ies`
+      }!`
+    return `No enemies were in range.`
+  },
+
+  flatDamageReduction: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `flatDamageReduction`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Damage reduced by ${displayIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+
+  fullCrewSkillBoost: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `flatSkillBoost`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Full crew skills boosted by ${displayIntensity} for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  generalImprovementPerCrewMemberInSameRoom: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedCrewPassiveFromActive(
+      `generalImprovementPerCrewMemberInSameRoom`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `${displayIntensity}% better performance per crew member in same room for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  generalImprovementWhenAlone: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedCrewPassiveFromActive(
+      `generalImprovementWhenAlone`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `${displayIntensity}% better performance when alone for ${c.msToTimeString(
+      duration,
+    )}!`
+  },
+  broadcastRangeCargoPrices: (
+    cm,
+    a,
+    d,
+    displayIntensity,
+    baseIntensity,
+  ) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `broadcastRangeCargoPrices`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `Cargo prices visible at planets within broadcast range for ${c.msToTimeString(
+      duration,
+    )}!`
   },
 }
 
@@ -189,12 +540,14 @@ function applyTimedShipPassiveFromActive(
   duration,
   active,
   crewMember: CrewMember,
+  data?: { type: ItemType },
 ) {
   crewMember.ship.applyTimedPassive({
     id,
     intensity,
     until: Date.now() + duration,
     data: {
+      ...data,
       source: {
         crewActive: {
           activeId: active.id,
@@ -262,15 +615,7 @@ export async function useActive(
   this.lastActiveUse = Date.now()
   this.toUpdate.lastActiveUse = this.lastActiveUse
 
-  let res: string
-  if (effects[activeId]) {
-    res = await effects[activeId](
-      this,
-      active,
-      data,
-      c.getActiveIntensity(active, this.level),
-    )
-  } else
+  if (!effects[activeId])
     return {
       error: `That ability is not implemented yet.`,
     }
@@ -296,6 +641,19 @@ export async function useActive(
       true,
     )
 
+  const res = await effects[activeId](
+    this,
+    active,
+    data,
+    data.displayIntensity(active.intensity, this.level),
+    data.intensityAdapter(
+      c.getActiveIntensityScaledByLevel(
+        active.intensity,
+        this.level,
+      ),
+    ),
+  )
+
   this.toUpdate.actives = this.actives
 
   return { result: res }
@@ -306,6 +664,7 @@ export function addActive(
   active: CrewActive,
 ) {
   // if (this.actives.length >= this.activeSlots) return
+  if (!active.lastUsed) active.lastUsed = 0
   const found = this.actives.find((a) => a.id === active.id)
   if (found) {
     found.intensity = Math.max(
