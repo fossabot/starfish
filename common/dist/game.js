@@ -32,7 +32,7 @@ const gameConstants_1 = __importDefault(require("./gameConstants"));
 function getHitDamage(weapon, totalMunitionsSkill = 0) {
     return (weapon.damage *
         math_1.default.lerp(1, 4, totalMunitionsSkill / 100) *
-        math_1.default.lerp(0.8, 1, weapon.repair) *
+        math_1.default.lerp(0.8, 1, weapon.repair || 1) *
         math_1.default.randomBetween(0.9, 1.1));
 }
 function getBaseDurabilityLossPerTick(maxHp, reliability, useLevel = 1) {
@@ -80,9 +80,6 @@ function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse, rechargeSpeedM
 }
 function getWeaponCooldownReductionPerTick(level) {
     return (2 + math_1.default.lerp(1, 10, level / 100)) * 15;
-}
-function getActiveIntensity(active, level) {
-    return ((active.intensity || 1) * math_1.default.lerp(1, 4, level / 100));
 }
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
@@ -485,7 +482,6 @@ exports.default = {
     getPassiveThrustMagnitudePerTickForSingleCrewMember,
     getStaminaGainPerTickForSingleCrewMember,
     getWeaponCooldownReductionPerTick,
-    getActiveIntensity,
     getGeneralMultiplierBasedOnCrewMemberProximity,
     statToString,
     getPlanetTitle,

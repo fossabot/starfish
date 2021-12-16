@@ -707,11 +707,7 @@ export default Vue.extend({
           ((this.data as any).owner as ShipStub) ||
           this.ship
         ).items?.find(
-          (i) =>
-            i.id === (this.data as ItemStub).id ||
-            (i.itemType ===
-              (this.data as ItemStub).itemType &&
-              i.itemId === (this.data as ItemStub).itemId),
+          (i) => i.id === (this.data as ItemStub).id,
         ) ||
         c.items[(this.data as ItemStub).itemType]?.[
           (this.data as ItemStub).itemId

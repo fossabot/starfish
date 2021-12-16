@@ -125,63 +125,108 @@ export class CrewMember extends Stubbable {
       this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
-    if (data.actives) this.actives = data.actives
+    // if (data.actives) this.actives = data.actives
     this.lastActiveUse = data.lastActiveUse || 0
-    this.addActive({
-      id: `instantStamina`,
-      lastUsed: 0,
-      intensity: 0.3,
-    })
+    // this.addActive({
+    //   id: `instantStamina`,
+    //   intensity: 0.3,
+    // })
     this.addActive({
       id: `combatDrone`,
-      lastUsed: 0,
-      intensity: 0.02,
-    })
-    this.addActive({
-      id: `repairDrone`,
-      lastUsed: 0,
-      intensity: 2,
-    })
-    this.addActive({
-      id: `cargoSweep`,
-      lastUsed: 0,
-      intensity: 0.3,
-    })
-    this.addActive({
-      id: `boostShipSightRange`,
-      lastUsed: 0,
       intensity: 0.2,
     })
-    this.addActive({
-      id: `weaponRechargeSpeed`,
-      lastUsed: 0,
-      intensity: 0.2,
-    })
-    this.addActive({
-      id: `boostCharisma`,
-      lastUsed: 0,
-      intensity: 4,
-    })
-    this.addActive({
-      id: `boostIntellect`,
-      lastUsed: 0,
-      intensity: 3,
-    })
-    this.addActive({
-      id: `boostDexterity`,
-      lastUsed: 0,
-      intensity: 5,
-    })
-    this.addActive({
-      id: `boostStrength`,
-      lastUsed: 0,
-      intensity: 2,
-    })
-    this.addActive({
-      id: `boostMorale`,
-      lastUsed: 0,
-      intensity: 0.2,
-    })
+    // this.addActive({
+    //   id: `repairDrone`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `cargoSweep`,
+    //   intensity: 0.3,
+    // })
+    // this.addActive({
+    //   id: `boostShipSightRange`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostWeaponChargeSpeed`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostCharisma`,
+    //   intensity: 0.4,
+    // })
+    // this.addActive({
+    //   id: `boostIntellect`,
+    //   intensity: 0.3,
+    // })
+    // this.addActive({
+    //   id: `boostDexterity`,
+    //   intensity: 0.5,
+    // })
+    // this.addActive({
+    //   id: `boostStrength`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostMorale`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostThrust`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostMineSpeed`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostRepairSpeed`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `generalImprovementWhenAlone`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `generalImprovementPerCrewMemberInSameRoom`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `fullCrewSkillBoost`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `flatDamageReduction`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostChassisAgility`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `seeTrailColors`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostDamageToEngines`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostDamageToScanners`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `boostDamageToWeapons`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `broadcastRangeCargoPrices`,
+    //   intensity: 0.2,
+    // })
+    // this.addActive({
+    //   id: `damageToAllNearbyEnemies`,
+    //   intensity: 0.2,
+    // })
 
     if (data.permanentPassives) {
       for (let p of data.permanentPassives)
@@ -334,14 +379,18 @@ export class CrewMember extends Stubbable {
     }
 
     // ----- drip-feed morale changes -----
-    if (this.ship.planet) {
-      if ((this.ship.planet as BasicPlanet).vendor)
-        this.changeMorale(
-          0.000005 *
-            this.ship.planet.level *
-            (c.tickInterval / 1000),
-        ) // more morale gain from basic planets
-    } else {
+    // morale gain from basic planets
+    if (
+      (this.ship.planet as BasicPlanet)?.planetType ===
+      `basic`
+    )
+      this.changeMorale(
+        0.000005 *
+          ((this.ship.planet as BasicPlanet).level || 0) *
+          (c.tickInterval / 1000),
+      )
+    // morale loss otherwise
+    else {
       this.changeMorale(
         -1 * 0.000003 * (c.tickInterval / 1000),
       )
@@ -464,20 +513,28 @@ export class CrewMember extends Stubbable {
   updateLevel() {
     this.level = Math.floor(
       this.skills.reduce(
-        (acc, skill) => acc + skill.level,
+        (acc, skill) => acc + (skill.level || 1),
         0,
-      ) / this.skills.length,
+      ) / this.skills.length || 1,
     )
     this.toUpdate.level = this.level
   }
 
-  updateActiveSlots() {
+  updateActives() {
+    const activeCountToAdd = c.activeUnlockLevels.findIndex(
+      (l) => this.level < l,
+    )
     const passiveBoost = this.getPassiveIntensity(
       `boostActiveSlots`,
     )
-    this.activeSlots =
-      Math.floor(this.level / 5 + passiveBoost) + 2
+    this.activeSlots = activeCountToAdd + passiveBoost
     this.toUpdate.activeSlots = this.activeSlots
+
+    if (this.speciesId)
+      for (let a of c.species[
+        this.speciesId
+      ].activeTree.slice(0, this.activeSlots))
+        this.addActive(a)
   }
 
   useActive = useActive
@@ -576,10 +633,6 @@ export class CrewMember extends Stubbable {
       },
       {
         id: `boostThrust`,
-        intensity: 0.1,
-      },
-      {
-        id: `boostPassiveThrust`,
         intensity: 0.1,
       },
       {
@@ -791,7 +844,7 @@ export class CrewMember extends Stubbable {
     this.recalculateMaxStamina()
     this.recalculateMaxCargoSpace()
     this.checkExpiredPassives()
-    this.updateActiveSlots()
+    this.updateActives()
   }
 
   recalculateMaxStamina() {
@@ -832,7 +885,9 @@ export class CrewMember extends Stubbable {
   }
 
   get strength() {
-    const boost = this.getPassiveIntensity(`boostStrength`)
+    const boost =
+      this.getPassiveIntensity(`boostStrength`) +
+      this.ship.getPassiveIntensity(`flatSkillBoost`)
     const val = this.skills.find(
       (s) => s?.skill === `strength`,
     ) || {
@@ -844,7 +899,9 @@ export class CrewMember extends Stubbable {
   }
 
   get dexterity() {
-    const boost = this.getPassiveIntensity(`boostDexterity`)
+    const boost =
+      this.getPassiveIntensity(`boostDexterity`) +
+      this.ship.getPassiveIntensity(`flatSkillBoost`)
     const val = this.skills.find(
       (s) => s?.skill === `dexterity`,
     ) || {
@@ -856,7 +913,9 @@ export class CrewMember extends Stubbable {
   }
 
   get charisma() {
-    const boost = this.getPassiveIntensity(`boostCharisma`)
+    const boost =
+      this.getPassiveIntensity(`boostCharisma`) +
+      this.ship.getPassiveIntensity(`flatSkillBoost`)
     const val = this.skills.find(
       (s) => s?.skill === `charisma`,
     ) || {
@@ -868,7 +927,9 @@ export class CrewMember extends Stubbable {
   }
 
   get intellect() {
-    const boost = this.getPassiveIntensity(`boostIntellect`)
+    const boost =
+      this.getPassiveIntensity(`boostIntellect`) +
+      this.ship.getPassiveIntensity(`flatSkillBoost`)
     const val = this.skills.find(
       (s) => s?.skill === `intellect`,
     ) || {

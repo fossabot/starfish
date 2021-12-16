@@ -357,6 +357,7 @@ export default Vue.extend({
       animateThrust: false,
     }
   },
+
   computed: {
     ...mapState(['ship', 'crewMember']),
     highlight(): boolean {
@@ -375,17 +376,61 @@ export default Vue.extend({
         ) || []
       )
     },
-    passiveThrustAmplification(): number {
-      return Math.max(
-        c.noEngineThrustMagnitude,
-        this.passiveEngines.reduce(
-          (total: number, e: EngineStub) =>
-            total +
-            (e.passiveThrustMultiplier || 0) *
-              (e.repair || 0),
+
+    allThrustBoostMultiplier(): number {
+      return (
+        1 +
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            p.id === 'boostThrust'
+              ? acc + (p.intensity || 0)
+              : acc,
           0,
+        ) +
+        this.ship.passives.reduce(
+          (acc: number, p: ShipPassiveEffect) =>
+            p.id === 'boostThrust'
+              ? acc + (p.intensity || 0)
+              : acc,
+          0,
+        )
+      )
+    },
+    passiveThrustBoostMultiplier(): number {
+      return (
+        1 +
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            p.id === 'boostPassiveThrust'
+              ? acc + (p.intensity || 0)
+              : acc,
+          0,
+        ) +
+        this.ship.passives.reduce(
+          (acc: number, p: ShipPassiveEffect) =>
+            p.id === 'boostPassiveThrust'
+              ? acc + (p.intensity || 0)
+              : acc,
+          0,
+        )
+      )
+    },
+    passiveThrustAmplification(): number {
+      return (
+        Math.max(
+          c.noEngineThrustMagnitude,
+          this.passiveEngines.reduce(
+            (total: number, e: EngineStub) =>
+              total +
+              (e.passiveThrustMultiplier || 0) *
+                (e.repair || 0),
+            0,
+          ) *
+            this.ship.gameSettings
+              .baseEngineThrustMultiplier,
         ) *
-          this.ship.gameSettings.baseEngineThrustMultiplier,
+        this.allThrustBoostMultiplier *
+        this.passiveThrustBoostMultiplier
       )
     },
     manualEngines(): ItemStub[] {
@@ -399,39 +444,40 @@ export default Vue.extend({
       )
     },
     manualThrustAmplification(): number {
-      return Math.max(
-        c.noEngineThrustMagnitude,
-        this.manualEngines.reduce(
-          (total: number, e: EngineStub) =>
-            total +
-            (e.manualThrustMultiplier || 0) *
-              (e.repair || 0),
-          0,
-        ) *
-          this.ship.gameSettings.baseEngineThrustMultiplier,
+      return (
+        Math.max(
+          c.noEngineThrustMagnitude,
+          this.manualEngines.reduce(
+            (total: number, e: EngineStub) =>
+              total +
+              (e.manualThrustMultiplier || 0) *
+                (e.repair || 0),
+            0,
+          ) *
+            this.ship.gameSettings
+              .baseEngineThrustMultiplier,
+        ) * this.allThrustBoostMultiplier
       )
     },
     pilotingSkill(): number {
-      const passiveBoost = this.crewMember.passives.reduce(
-        (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === 'boostDexterity'
-            ? p.intensity || 0
-            : 0),
-        0,
-      )
+      const passiveBoost =
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc +
+            (p.id === 'boostDexterity'
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`)
+            return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return (
         (this.crewMember.skills.find(
           (s: XPData) => s && s.skill === 'dexterity',
         )?.level || 1) + passiveBoost
-      )
-    },
-    memberThrust(): number {
-      return c.getThrustMagnitudeForSingleCrewMember(
-        this.pilotingSkill,
-        this.manualThrustAmplification /
-          this.ship.gameSettings.baseEngineThrustMultiplier,
-        this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
     maxPossibleManualSpeedChange(): number {

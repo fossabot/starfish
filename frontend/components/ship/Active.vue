@@ -3,10 +3,12 @@
     :key="active.id"
     v-tooltip="{
       type: 'active',
+      unlockLevel,
       ...active,
     }"
-    class="active pointer"
+    class="active"
     :class="{
+      pointer: !unlockLevel,
       disabled:
         crewMember.bottomedOutOnStamina ||
         percentCooldownRemaining,
@@ -14,6 +16,7 @@
     @click="use"
   >
     <div
+      v-if="!unlockLevel"
       class="cooldownradial"
       :style="{
         background: `conic-gradient(transparent, ${
@@ -37,7 +40,10 @@
     >
       <img :src="`/images/crewActives/${active.id}.svg`" />
     </div>
-    <div class="displaytimer" v-if="cooldownRemaining">
+    <div
+      class="displaytimer"
+      v-if="!unlockLevel && cooldownRemaining"
+    >
       {{ c.msToTimeString(cooldownRemaining, true) }}
     </div>
   </div>
@@ -49,7 +55,10 @@ import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { active: { type: Object, required: true } },
+  props: {
+    active: { type: Object, required: true },
+    unlockLevel: { type: Number },
+  },
   data() {
     return {
       c,
@@ -68,6 +77,8 @@ export default Vue.extend({
       return c.crewActives[this.active.id]
     },
     percentCooldownRemaining(): number {
+      if (!this.unlockLevel) return 0
+
       return (
         this.cooldownRemaining /
         Math.max(
@@ -95,6 +106,8 @@ export default Vue.extend({
   },
   methods: {
     updateCooldown() {
+      if (this.unlockLevel) return
+
       this.globalCooldownRemaining = Math.max(
         0,
         c.crewActiveBaseGlobalCooldown -
@@ -109,6 +122,8 @@ export default Vue.extend({
       )
     },
     use() {
+      if (this.unlockLevel) return
+
       if (this.crewMember.bottomedOutOnStamina) {
         this.$store.dispatch('notifications/notify', {
           text: `You need to rest before you can use an ability.`,

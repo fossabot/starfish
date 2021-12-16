@@ -8,13 +8,13 @@ import * as items from './items'
 import gameConstants from './gameConstants'
 
 function getHitDamage(
-  weapon: { damage: number; repair: number },
+  weapon: { damage: number; repair?: number },
   totalMunitionsSkill: number = 0,
 ) {
   return (
     weapon.damage *
     math.lerp(1, 4, totalMunitionsSkill / 100) *
-    math.lerp(0.8, 1, weapon.repair) *
+    math.lerp(0.8, 1, weapon.repair || 1) *
     math.randomBetween(0.9, 1.1)
   )
 }
@@ -117,15 +117,6 @@ function getStaminaGainPerTickForSingleCrewMember(
 
 function getWeaponCooldownReductionPerTick(level: number) {
   return (2 + math.lerp(1, 10, level / 100)) * 15
-}
-
-function getActiveIntensity(
-  active: CrewActive,
-  level: number,
-) {
-  return (
-    (active.intensity || 1) * math.lerp(1, 4, level / 100)
-  )
 }
 
 /**
@@ -791,7 +782,6 @@ export default {
   getPassiveThrustMagnitudePerTickForSingleCrewMember,
   getStaminaGainPerTickForSingleCrewMember,
   getWeaponCooldownReductionPerTick,
-  getActiveIntensity,
   getGeneralMultiplierBasedOnCrewMemberProximity,
   statToString,
   getPlanetTitle,

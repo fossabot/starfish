@@ -84,12 +84,20 @@ export default Vue.extend({
         : 'closest'
     },
     strengthLevel(): number {
-      const passiveBoost = this.crewMember.passives.reduce(
-        (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === 'boostStrength' ? p.intensity || 0 : 0),
-        0,
-      )
+      const passiveBoost =
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc +
+            (p.id === 'boostStrength'
+              ? p.intensity || 0
+              : 0),
+          0,
+        ) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`)
+            return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return (
         (this.crewMember.skills.find(
           (s) => s.skill === 'strength',

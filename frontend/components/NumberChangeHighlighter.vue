@@ -98,7 +98,7 @@ export default Vue.extend({
   methods: {
     pushHistoryState() {
       this.history.push(this.raw || this.number)
-      if (this.history.length > 2) this.history.shift()
+      if (this.history.length > 3) this.history.shift()
     },
   },
 })

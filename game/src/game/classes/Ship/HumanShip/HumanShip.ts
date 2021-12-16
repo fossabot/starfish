@@ -1808,7 +1808,7 @@ export class HumanShip extends CombatShip {
 
       this.crewMembers.forEach((cm) =>
         cm.changeMorale(
-          ((this.planet as BasicPlanet).level || 1) * 0.02,
+          ((this.planet as BasicPlanet).level || 1) * 0.01,
         ),
       )
       if (this.planet.planetType === `comet`)

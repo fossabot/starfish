@@ -8,7 +8,11 @@
     <template #title>
       <span class="sectionemoji">▶️</span>Abilities
     </template>
-    <div class="panesection grid3 activelist">
+
+    <div
+      v-if="crewMember.actives.length > 0"
+      class="panesection grid3 activelist"
+    >
       <ShipActive
         v-for="a in crewMember.actives"
         :key="a.id"
@@ -28,13 +32,15 @@
       <div v-else class="sub">
         Global cooldown:
         <span>
-          {{ c.msToTimeString(globalCooldownRemaining) }} /
+          {{ c.msToTimeString(globalCooldownRemaining) }}
+          /
           {{
             c.msToTimeString(c.crewActiveBaseGlobalCooldown)
           }}
         </span>
       </div>
-      <div class="sub">
+
+      <!-- <div class="sub">
         <div class="nowrap padbottiny">
           {{ crewMember.actives.length }}/{{
             crewMember.activeSlots
@@ -48,7 +54,7 @@
           :max="crewMember.activeSlots"
           class="slots"
         />
-      </div>
+      </div> -->
     </div>
   </Box>
 </template>
@@ -77,7 +83,6 @@ export default Vue.extend({
     show(): boolean {
       return (
         this.ship &&
-        this.crewMember?.actives?.length > 0 &&
         (!this.ship.shownPanels ||
           this.ship.shownPanels.includes('actives'))
       )

@@ -83,6 +83,7 @@ export default Vue.extend({
 
 .modalbox {
   box-shadow: 0 5px 20px -5px var(--bg), 0 1px 3px var(--bg);
+  width: 100%;
   max-width: calc(min(900px, 90vw));
   padding: 3em;
   margin: 1.5em;
