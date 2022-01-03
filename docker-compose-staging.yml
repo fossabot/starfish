@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   mongodb:
+    container_name: mongodb
     image: 'mongo:4.0'
     restart: always
     volumes:
@@ -14,6 +15,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
   game:
+    container_name: game
     image: 'starfishgame/starfish-game:pull-request-$PULL_REQUEST_NUMBER'
     user: 'node'
     working_dir: /usr/app/game
@@ -37,6 +39,7 @@ services:
       - admin_keys
 
   frontend:
+    container_name: frontend
     image: 'starfishgame/starfish-frontend:pull-request-$PULL_REQUEST_NUMBER'
     user: 'node'
     working_dir: /usr/app/frontend
@@ -52,6 +55,7 @@ services:
       - google_private_key
 
   discord:
+    container_name: discord
     image: 'starfishgame/starfish-discord:pull-request-$PULL_REQUEST_NUMBER'
     user: 'node'
     working_dir: /usr/app/discord
@@ -68,6 +72,7 @@ services:
       - bot_id
 
   nginx:
+    container_name: nginx
     image: 'starfishgame/starfish-nginx:pull-request-$PULL_REQUEST_NUMBER'
     volumes:
       - ./ssl:/etc/nginx/self-signed-ssl

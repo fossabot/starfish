@@ -1,0 +1,65 @@
+---
+- name: Set up Starfish host VM
+  hosts: all
+  become: true
+  tasks:
+    - ping:
+    - name: Install prerequisites
+      apt:
+        name: '{{ item }}'
+        state: latest
+      with_items:
+        - python3-pip
+        - python-apt
+        - git
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+
+    - name: Install docker-py
+      pip:
+        name: docker-py
+        state: latest
+
+    - name: Install the Docker apt repository key
+      shell:
+        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Install the Docker apt repository
+      shell:
+        cmd: "echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        update_cache: yes
+        state: latest
+
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
+        state: latest
+
+    - name: Create starfish user
+      user:
+        name: starfishuser
+        state: present
+
+    - name: Clone Starfish repository
+      ansible.builtin.git:
+        repo: 'https://github.com/starfishgame/starfish.git'
+        dest: /home/starfishuser/starfish
+
+    - name: Pull Starfish Docker images
+      docker_image:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - starfishgame/starfish-db
+        - starfishgame/starfish-discord
+        - starfishgame/starfish-frontend
+        - starfishgame/starfish-game
+        - starfishgame/starfish-nginx
