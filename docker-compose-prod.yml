@@ -50,9 +50,6 @@ services:
     ports:
       - '4300:4300'
     command: 'npm run start'
-    secrets:
-      - google_client_email
-      - google_private_key
 
   discord:
     container_name: discord
@@ -86,10 +83,6 @@ secrets:
     file: db/secrets/mongodb_root_username.txt
   mongodb_root_password:
     file: db/secrets/mongodb_root_password.txt
-  google_client_email:
-    file: frontend/secrets/google_client_email.txt
-  google_private_key:
-    file: frontend/secrets/google_private_key.txt
   admin_keys:
     file: game/secrets/admin_keys.txt
 
