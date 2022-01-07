@@ -3,34 +3,46 @@
   hosts: all
   become: true
   tasks:
-    - ping:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+
     - name: Install prerequisites
       apt:
-        name: '{{ item }}'
+        name:
+          [
+            'python3-pip',
+            'python-apt',
+            'git',
+            'ca-certificates',
+            'curl',
+            'gnupg',
+            'lsb-release',
+          ]
         state: latest
-      with_items:
-        - python3-pip
-        - python-apt
-        - git
-        - ca-certificates
-        - curl
-        - gnupg
-        - lsb-release
 
-    - name: Install docker-py
-      pip:
-        name: docker-py
-        state: latest
+    - name: Check for gpg file
+      stat:
+        path: /root/gpg.complete
+      register: gpg
 
     - name: Install the Docker apt repository key
       shell:
-        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && touch /root/gpg.complete
+      when: gpg.stat.exists == False
+
+    - name: Check for repo file
+      stat:
+        path: /root/repo.complete
+      register: repo
 
     - name: Install the Docker apt repository
       shell:
-        cmd: "echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
+        cmd: >
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && touch /root/repo.complete
+      when: repo.stat.exists == False
 
     - name: Install Docker
       apt:
@@ -47,19 +59,14 @@
       user:
         name: starfishuser
         state: present
+        groups: docker
 
     - name: Clone Starfish repository
       ansible.builtin.git:
         repo: 'https://github.com/starfishgame/starfish.git'
         dest: /home/starfishuser/starfish
+        user: starfishuser
 
     - name: Pull Starfish Docker images
-      docker_image:
-        name: '{{ item }}'
-        state: present
-      with_items:
-        - starfishgame/starfish-db
-        - starfishgame/starfish-discord
-        - starfishgame/starfish-frontend
-        - starfishgame/starfish-game
-        - starfishgame/starfish-nginx
+      shell:
+        cmd: docker-compose -f /home/starfishuser/starfish/docker-compose-prod.yml pull
