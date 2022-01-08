@@ -4,23 +4,14 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/9.webp"
   >
-    <template #title
-      ><span class="sectionemoji">🔧</span>Repair
-      Bay</template
-    >
+    <template #title><span class="sectionemoji">🔧</span>Repair Bay</template>
 
     <div class="panesection">
       <div class="">
         Your repair speed:
         {{
           c.numberWithCommas(
-            c.r2(
-              totalRepairPower *
-                60 *
-                60 *
-                c.displayHPMultiplier,
-              0,
-            ),
+            c.r2(totalRepairPower * 60 * 60 * c.displayHPMultiplier, 0),
           )
         }}
         HP/hr
@@ -57,88 +48,52 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'room'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'room'
     },
     choicesToShow(): string[] {
       const choices: RepairPriority[] = ['most damaged']
-      if (
-        this.ship.items.find(
-          (i: ItemStub) => i.itemType === 'weapon',
-        )
-      )
+      if (this.ship.items.find((i: ItemStub) => i.itemType === 'weapon'))
         choices.push('weapons')
-      if (
-        this.ship.items.find(
-          (i: ItemStub) => i.itemType === 'engine',
-        )
-      )
+      if (this.ship.items.find((i: ItemStub) => i.itemType === 'engine'))
         choices.push('engines')
-      if (
-        this.ship.items.find(
-          (i: ItemStub) => i.itemType === 'scanner',
-        )
-      )
+      if (this.ship.items.find((i: ItemStub) => i.itemType === 'scanner'))
         choices.push('scanners')
-      if (
-        this.ship.items.find(
-          (i: ItemStub) => i.itemType === 'communicator',
-        )
-      )
+      if (this.ship.items.find((i: ItemStub) => i.itemType === 'communicator'))
         choices.push('communicators')
-      if (
-        this.ship.items.find(
-          (i: ItemStub) => i.itemType === 'armor',
-        )
-      )
+      if (this.ship.items.find((i: ItemStub) => i.itemType === 'armor'))
         choices.push('armor')
       return choices
     },
     selected(): boolean {
-      return (
-        this.crewMember?.repairPriority || 'most damaged'
-      )
+      return this.crewMember?.repairPriority || 'most damaged'
     },
-    strengthLevel(): number {
+    dexterityLevel(): number {
       const passiveBoost =
         this.crewMember.passives.reduce(
           (acc: number, p: CrewPassiveData) =>
-            acc +
-            (p.id === 'boostStrength'
-              ? p.intensity || 0
-              : 0),
+            acc + (p.id === 'boostDexterity' ? p.intensity || 0 : 0),
           0,
         ) +
         this.ship.passives.reduce((acc, p) => {
-          if (p.id === `flatSkillBoost`)
-            return acc + (p.intensity || 0)
+          if (p.id === `flatSkillBoost`) return acc + (p.intensity || 0)
           return acc
         }, 0)
       return (
-        (this.crewMember.skills.find(
-          (s) => s.skill === 'strength',
-        )?.level || 1) + passiveBoost
+        (this.crewMember.skills.find((s) => s.skill === 'dexterity')?.level ||
+          1) + passiveBoost
       )
     },
     totalRepairPower(): number {
       const passiveBoostMultiplier =
         1 +
-        ((
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
+        ((this.crewMember as CrewMemberStub).passives?.reduce(
           (total, p: CrewPassiveData) =>
-            p.id === 'boostRepairSpeed'
-              ? total + (p.intensity || 0)
-              : total,
+            p.id === 'boostRepairSpeed' ? total + (p.intensity || 0) : total,
           0,
         ) || 0) +
         ((this.ship as ShipStub).passives?.reduce(
           (total, p: ShipPassiveEffect) =>
-            p.id === 'boostRepairSpeed'
-              ? total + (p.intensity || 0)
-              : total,
+            p.id === 'boostRepairSpeed' ? total + (p.intensity || 0) : total,
           0,
         ) || 0)
       const generalBoostMultiplier =
@@ -149,9 +104,7 @@ export default Vue.extend({
       return (
         generalBoostMultiplier *
         passiveBoostMultiplier *
-        c.getRepairAmountPerTickForSingleCrewMember(
-          this.strengthLevel,
-        )
+        c.getRepairAmountPerTickForSingleCrewMember(this.dexterityLevel)
       )
     },
   },

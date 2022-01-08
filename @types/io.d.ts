@@ -1,9 +1,7 @@
 interface IOServerEvents {
   [`connect`]: () => void
   [`disconnectFromServer`]: () => void
-  [`hello`]: (
-    callback?: (res: IOResponse<`hello`>) => void,
-  ) => void
+  [`hello`]: (callback?: (res: IOResponse<`hello`>) => void) => void
   [`game:tick`]: ({
     deltaTime,
     game,
@@ -35,9 +33,7 @@ interface IOServerEvents {
 }
 
 interface IOClientEvents {
-  [`hello`]: (
-    callback?: (res: IOResponse<`hello`>) => void,
-  ) => void
+  [`hello`]: (callback?: (res: IOResponse<`hello`>) => void) => void
 
   // admin events
   [`game:adminCheck`]: (
@@ -87,15 +83,16 @@ interface IOClientEvents {
     shipId: string,
     crewMemberId: string,
   ) => void
+  [`admin:addCrewMemberXp`]: (
+    adminId: string,
+    password: string,
+    shipId: string,
+    crewMemberId: string,
+  ) => void
+
   [`game:save`]: (adminId: string, password: string) => void
-  [`game:pause`]: (
-    adminId: string,
-    password: string,
-  ) => void
-  [`game:unpause`]: (
-    adminId: string,
-    password: string,
-  ) => void
+  [`game:pause`]: (adminId: string, password: string) => void
+  [`game:unpause`]: (adminId: string, password: string) => void
   [`game:backups`]: (
     adminId: string,
     password: string,
@@ -117,14 +114,8 @@ interface IOClientEvents {
     password: string,
     callback?: () => void,
   ) => void
-  [`game:resetAllComets`]: (
-    adminId: string,
-    password: string,
-  ) => void
-  [`game:reLevelAllPlanets`]: (
-    adminId: string,
-    password: string,
-  ) => void
+  [`game:resetAllComets`]: (adminId: string, password: string) => void
+  [`game:reLevelAllPlanets`]: (adminId: string, password: string) => void
   [`game:reLevelAllPlanetsOfType`]: (
     adminId: string,
     password: string,
@@ -146,39 +137,18 @@ interface IOClientEvents {
     shipId: string,
     cargo: Cargo[],
   ) => void
-  [`admin:kill`]: (
-    adminId: string,
-    password: string,
-    shipId: string,
-  ) => void
+  [`admin:kill`]: (adminId: string, password: string, shipId: string) => void
   [`admin:loadout`]: (
     adminId: string,
     password: string,
     shipId: string,
     loadoutId: LoadoutId,
   ) => void
-  [`admin:stamina`]: (
-    adminId: string,
-    password: string,
-    shipId: string,
-  ) => void
-  [`admin:upgrade`]: (
-    adminId: string,
-    password: string,
-    shipId: string,
-  ) => void
-  [`game:resetHomeworlds`]: (
-    adminId: string,
-    password: string,
-  ) => void
-  [`game:resetAllZones`]: (
-    adminId: string,
-    password: string,
-  ) => void
-  [`game:resetAllCaches`]: (
-    adminId: string,
-    password: string,
-  ) => void
+  [`admin:stamina`]: (adminId: string, password: string, shipId: string) => void
+  [`admin:upgrade`]: (adminId: string, password: string, shipId: string) => void
+  [`game:resetHomeworlds`]: (adminId: string, password: string) => void
+  [`game:resetAllZones`]: (adminId: string, password: string) => void
+  [`game:resetAllCaches`]: (adminId: string, password: string) => void
   [`game:resetAllAIShips`]: (
     adminId: string,
     password: string,
@@ -189,10 +159,7 @@ interface IOClientEvents {
     password: string,
     callback?: () => void,
   ) => void
-  [`game:resetAllAttackRemnants`]: (
-    adminId: string,
-    password: string,
-  ) => void
+  [`game:resetAllAttackRemnants`]: (adminId: string, password: string) => void
   [`game:shipList`]: (
     adminId: string,
     password: string,
@@ -239,12 +206,8 @@ interface IOClientEvents {
   [`game:settings`]: (
     callback: (res: IOResponse<AdminGameSettings>) => void,
   ) => void
-  [`game:stats`]: (
-    callback: (res: IOResponse<any>) => void,
-  ) => void
-  [`game:guildRankings`]: (
-    callback: (res: IOResponse<any>) => void,
-  ) => void
+  [`game:stats`]: (callback: (res: IOResponse<any>) => void) => void
+  [`game:guildRankings`]: (callback: (res: IOResponse<any>) => void) => void
   [`frontend:unlistenAll`]: () => void
 
   // client
@@ -268,10 +231,7 @@ interface IOClientEvents {
     speciesId: SpeciesId,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
-  [`crew:toTutorial`]: (
-    shipId: string,
-    crewId: string,
-  ) => void
+  [`crew:toTutorial`]: (shipId: string, crewId: string) => void
   [`crew:move`]: (
     shipId: string,
     crewId: string,
@@ -282,9 +242,7 @@ interface IOClientEvents {
     shipId: string,
     crewId: string,
     targetLocation?: CoordinatePair,
-    callback?: (
-      res: IOResponse<CoordinatePair | false>,
-    ) => void,
+    callback?: (res: IOResponse<CoordinatePair | false>) => void,
   ) => void
   [`crew:targetObject`]: (
     shipId: string,
@@ -344,9 +302,7 @@ interface IOClientEvents {
     cargoId: CargoId | `credits`,
     amount: number,
     message: string,
-    callback: (
-      res: IOResponse<CacheStub | undefined>,
-    ) => void,
+    callback: (res: IOResponse<CacheStub | undefined>) => void,
   ) => void
   [`crew:buyCargo`]: (
     shipId: string,
@@ -615,16 +571,8 @@ interface IOClientEvents {
     data: BaseCrewMemberData,
     callback: (res: IOResponse<CrewMemberStub>) => void,
   ) => void
-  [`crew:rename`]: (
-    shipId: string,
-    crewId: string,
-    name: string,
-  ) => void
-  [`crew:discordIcon`]: (
-    shipId: string,
-    crewId: string,
-    url?: string,
-  ) => void
+  [`crew:rename`]: (shipId: string, crewId: string, name: string) => void
+  [`crew:discordIcon`]: (shipId: string, crewId: string, url?: string) => void
 }
 
 interface IOError {

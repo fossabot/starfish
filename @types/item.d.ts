@@ -83,6 +83,7 @@ type CommunicatorId =
   | `clarity2`
   | `clarity3`
 type ArmorId =
+  | `ai1`
   | `starter1`
   | `starter2`
   | `block1`
@@ -93,18 +94,8 @@ type ArmorId =
   | `tough2`
   | `tough3`
 
-type ItemType =
-  | `weapon`
-  | `engine`
-  | `scanner`
-  | `communicator`
-  | `armor`
-type ItemId =
-  | WeaponId
-  | EngineId
-  | ScannerId
-  | CommunicatorId
-  | ArmorId
+type ItemType = `weapon` | `engine` | `scanner` | `communicator` | `armor`
+type ItemId = WeaponId | EngineId | ScannerId | CommunicatorId | ArmorId
 
 interface BaseItemOrChassisData {
   type: `item` | `chassis`
@@ -211,9 +202,7 @@ interface ShipScanDataShape {
   human: true
   level: true
   attackable: true
-  planet:
-    | (keyof BasePlanetData)[]
-    | (keyof BaseBasicPlanetData)[]
+  planet: (keyof BasePlanetData)[] | (keyof BaseBasicPlanetData)[]
   guildId: true
   items?: (
     | keyof BaseItemData

@@ -8,8 +8,6 @@ import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 
 import {
   crewMemberData,
@@ -22,9 +20,7 @@ import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'
 import { BasicPlanet } from '../src/game/classes/Planet/BasicPlanet'
 
-import socketIoClient, {
-  Socket as ClientSocket,
-} from 'socket.io-client'
+import socketIoClient, { Socket as ClientSocket } from 'socket.io-client'
 
 // let adminKeys: any
 // try {
@@ -82,121 +78,107 @@ import socketIoClient, {
 //     )
 //   })
 // })
-;(process.env.NODE_ENV === `development`
-  ? describe
-  : describe.skip)(`Admin resetters`, () => {
-  it(`should properly remove all planets on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
+;(process.env.NODE_ENV === `development` ? describe : describe.skip)(
+  `Admin resetters`,
+  () => {
+    it(`should properly remove all planets on wipe`, async () => {
+      const g = new Game()
+      await g.loadGameDataFromDb({
+        dbName: `starfish-test`,
+        username: `testuser`,
+        password: `testpassword`,
+      })
+
+      for (let i = 0; i < 30; i++) {
+        await g.addBasicPlanet(basicPlanetData())
+      }
+
+      const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+        secure: true,
+      })
+      await awaitIOConnection(client)
+
+      await new Promise<void>((r) =>
+        client.emit(
+          `game:resetAllPlanets`,
+          `hi`,
+          `adminKeys.password`,
+          async () => {
+            expect(g.planets.length).to.equal(0)
+            await c.sleep(200)
+            expect(g.planets.length).to.equal(0)
+            expect(await g.db?.planet.getAllConstructible).to.have.lengthOf(0)
+            r()
+          },
+        ),
+      )
     })
 
-    for (let i = 0; i < 30; i++) {
-      await g.addBasicPlanet(basicPlanetData())
-    }
+    it(`should properly remove all ships on wipe`, async () => {
+      const g = new Game()
+      await g.loadGameDataFromDb({
+        dbName: `starfish-test`,
+        username: `testuser`,
+        password: `testpassword`,
+      })
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
+      for (let i = 0; i < 15; i++) {
+        await g.addAIShip(enemyAiShipData())
+      }
+      for (let i = 0; i < 15; i++) {
+        await g.addHumanShip(humanShipData())
+      }
+
+      const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
         secure: true,
-      },
-    )
-    await awaitIOConnection(client)
+      })
 
-    await new Promise<void>((r) =>
-      client.emit(
-        `game:resetAllPlanets`,
-        `hi`,
-        `adminKeys.password`,
-        async () => {
-          expect(g.planets.length).to.equal(0)
-          await c.sleep(200)
-          expect(g.planets.length).to.equal(0)
-          expect(
-            await g.db?.planet.getAllConstructible,
-          ).to.have.lengthOf(0)
-          r()
-        },
-      ),
-    )
-  })
+      await awaitIOConnection(client)
 
-  it(`should properly remove all ships on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
+      await new Promise<void>((r) =>
+        client.emit(
+          `game:resetAllShips`,
+          `hi`,
+          `adminKeys.password`,
+          async () => {
+            expect(g.ships.length).to.equal(0)
+            expect(await g.db?.ship.getAllConstructible).to.have.lengthOf(0)
+            r()
+          },
+        ),
+      )
     })
 
-    for (let i = 0; i < 15; i++) {
-      await g.addAIShip(enemyAiShipData())
-    }
-    for (let i = 0; i < 15; i++) {
-      await g.addHumanShip(humanShipData())
-    }
+    it(`should properly remove all ai ships on wipe`, async () => {
+      const g = new Game()
+      await g.loadGameDataFromDb({
+        dbName: `starfish-test`,
+        username: `testuser`,
+        password: `testpassword`,
+      })
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
+      for (let i = 0; i < 30; i++) {
+        await g.addAIShip(enemyAiShipData())
+      }
+
+      const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
         secure: true,
-      },
-    )
+      })
+      await awaitIOConnection(client)
 
-    await awaitIOConnection(client)
-
-    await new Promise<void>((r) =>
-      client.emit(
-        `game:resetAllShips`,
-        `hi`,
-        `adminKeys.password`,
-        async () => {
-          expect(g.ships.length).to.equal(0)
-          expect(
-            await g.db?.ship.getAllConstructible,
-          ).to.have.lengthOf(0)
-          r()
-        },
-      ),
-    )
-  })
-
-  it(`should properly remove all ai ships on wipe`, async () => {
-    const g = new Game()
-    await g.loadGameDataFromDb({
-      dbName: `starfish-test`,
-      username: `testuser`,
-      password: `testpassword`,
+      await new Promise<void>((r) =>
+        client.emit(
+          `game:resetAllAIShips`,
+          `hi`,
+          `adminKeys.password`,
+          async () => {
+            expect(g.ships.length).to.equal(0)
+            expect(g.aiShips.length).to.equal(0)
+            expect(await g.db?.ship.getAllConstructible).to.have.lengthOf(0)
+            r()
+          },
+        ),
+      )
     })
-
-    for (let i = 0; i < 30; i++) {
-      await g.addAIShip(enemyAiShipData())
-    }
-
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
-    await awaitIOConnection(client)
-
-    await new Promise<void>((r) =>
-      client.emit(
-        `game:resetAllAIShips`,
-        `hi`,
-        `adminKeys.password`,
-        async () => {
-          expect(g.ships.length).to.equal(0)
-          expect(g.aiShips.length).to.equal(0)
-          expect(
-            await g.db?.ship.getAllConstructible,
-          ).to.have.lengthOf(0)
-          r()
-        },
-      ),
-    )
-  })
-})
+  },
+)

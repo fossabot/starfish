@@ -4,11 +4,7 @@
     <div class="actualbar flexcolumn flexbetween">
       <div class="flexcolumn flexcenter">
         <nuxt-link class="logoholder" to="/"
-          ><img
-            src="/images/logo.svg"
-            class="logo"
-            height="38"
-            width="38"
+          ><img src="/images/logo.svg" class="logo" height="38" width="38"
         /></nuxt-link>
 
         <hr />
@@ -24,19 +20,14 @@
         >
           <div class="activeicon"></div>
 
-          <div
-            class="iconholder"
-            :class="{ active: ship && ship.id === s.id }"
-          >
+          <div class="iconholder" :class="{ active: ship && ship.id === s.id }">
             <div class="underimage flexcenter">
               {{ c.acronym(s.name).substring(0, 3) }}
             </div>
             <div
               class="image"
               :style="{
-                'background-image': s.guildIcon
-                  ? `url('${s.guildIcon}')`
-                  : '',
+                'background-image': s.guildIcon ? `url('${s.guildIcon}')` : '',
               }"
             ></div>
           </div>
@@ -98,7 +89,21 @@
             width="25"
           />
         </div>
-        <hr />
+        <div
+          class="icon subicon smaller pointer martop"
+          @click="frontendSettings"
+          v-tooltip="`Interface Settings`"
+        >
+          <img
+            src="/images/icons/icon-settings.svg"
+            alt="settings button"
+            height="25"
+            width="25"
+          />
+        </div>
+
+        <hr class="marbot" />
+
         <div
           class="icon subicon smaller pointer"
           @click="logout"
@@ -112,11 +117,7 @@
             width="25"
           />
         </div>
-        <div
-          class="icon smaller pointer"
-          v-tooltip="`Log In`"
-          v-else
-        >
+        <div class="icon smaller pointer" v-tooltip="`Log In`" v-else>
           <nuxt-link to="/login">
             <img
               src="/images/icons/icon-login.svg"
@@ -157,8 +158,7 @@ export default Vue.extend({
   mounted() {},
   methods: {
     async shipSelected(id) {
-      if (!this.onShipPage)
-        (this as any).$router.push({ path: `/s` })
+      if (!this.onShipPage) (this as any).$router.push({ path: `/s` })
       if (this.ship && this.ship.id === id) return
       this.$store.commit('set', {
         loading: true,
@@ -175,6 +175,11 @@ export default Vue.extend({
         this.ship.id,
         this.crewMember?.id,
       )
+    },
+    frontendSettings() {
+      this.$store.commit(`set`, {
+        modal: 'frontendSettings',
+      })
     },
   },
 })
@@ -195,7 +200,7 @@ export default Vue.extend({
 hr {
   margin: 0.7em auto;
   border: 0;
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.7);
   width: 50%;
 }
 
@@ -268,8 +273,8 @@ hr {
     border-bottom-right-radius: 5px;
 
     left: calc(-1 * var(--activewidth));
-    transition: left 0.15s ease-in-out,
-      top 0.15s ease-in-out, height 0.15s ease-in-out;
+    transition: left 0.15s ease-in-out, top 0.15s ease-in-out,
+      height 0.15s ease-in-out;
   }
 
   .iconholder {
@@ -285,8 +290,7 @@ hr {
       border-radius: calc(var(--icon-width) / 2);
       width: 100%;
       height: 100%;
-      transition: background 0.15s ease-in-out,
-        box-shadow 0.15s ease-in-out,
+      transition: background 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
         border-radius 0.15s ease-in-out;
     }
     .underimage {

@@ -12,6 +12,7 @@ class Profiler {
     cutoff = 1;
     name;
     snapshots = [];
+    averages = {};
     metric;
     constructor(top = 10, name = false, enabled = true, cutoff = 2) {
         this.enabled = enabled;
@@ -33,6 +34,15 @@ class Profiler {
             timeFromStart: 0,
         };
     }
+    start() {
+        if (!this.enabled)
+            return;
+        this.currentSnapshot = {
+            name: `start`,
+            time: this.metric.now(),
+            timeFromStart: 0,
+        };
+    }
     get currentSnapshot() {
         if (!this.snapshots.length)
             return null;
@@ -46,12 +56,19 @@ class Profiler {
         if (!this.enabled)
             return;
         const time = this.metric.now();
-        if (this.currentSnapshot)
+        if (this.currentSnapshot) {
             this.currentSnapshot.duration =
-                time -
-                    this.snapshots[this.snapshots.length - 1].time;
+                time - this.snapshots[this.snapshots.length - 1].time;
+            if (!this.averages[this.currentSnapshot.name]) {
+                this.averages[this.currentSnapshot.name] = this.currentSnapshot.duration;
+            }
+            else {
+                this.averages[this.currentSnapshot.name] = math_1.default.lerp(this.averages[this.currentSnapshot.name] || 0, this.currentSnapshot.duration, 0.1);
+            }
+        }
+        name = name || `${this.snapshots.length}`;
         this.currentSnapshot = {
-            name: name || `${this.snapshots.length}`,
+            name,
             time,
             timeFromStart: time - this.snapshots[0].time,
         };
@@ -62,16 +79,15 @@ class Profiler {
         const time = this.metric.now();
         if (this.currentSnapshot)
             this.currentSnapshot.duration =
-                time -
-                    this.snapshots[this.snapshots.length - 1].time;
+                time - this.snapshots[this.snapshots.length - 1].time;
         const toPrint = this.snapshots
-            .filter((ss) => ss.duration && ss.duration >= this.cutoff)
-            .sort((a, b) => (b.duration || 0) - (a.duration || 0))
+            .filter((s) => s.duration && s.duration >= this.cutoff)
+            .sort((a, b) => (this.averages[b.name] || 0) - (this.averages[a.name] || 0))
             .slice(0, this.showTop);
         if (!toPrint.length)
             return;
         log_1.default.log(`----- ${this.name ? String(this.name) : `profiler start`} -----`);
-        toPrint.forEach((ss) => log_1.default.log(`${this.name ? this.name + `/` : ``}${ss.name}: ${math_1.default.r2(ss.duration || 0)}ms`));
+        toPrint.forEach((s) => log_1.default.log(`${s.name}: ${math_1.default.r2(this.averages[s.name] || 0)}ms`));
         this.snapshots = [];
     }
 }

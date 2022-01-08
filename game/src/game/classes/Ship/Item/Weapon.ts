@@ -24,12 +24,9 @@ export class Weapon extends Item {
     this.damage = data.damage
     this.chargeRequired = data.chargeRequired
     this.lastUse = data.lastUse || 0
-    if (data.critChance !== undefined)
-      this.critChance = data.critChance
+    if (data.critChance !== undefined) this.critChance = data.critChance
     this.cooldownRemaining =
-      data.cooldownRemaining ||
-      props?.cooldownRemaining ||
-      0
+      data.cooldownRemaining || props?.cooldownRemaining || 0
     if (this.cooldownRemaining > this.chargeRequired)
       this.cooldownRemaining = this.chargeRequired
   }
@@ -41,21 +38,15 @@ export class Weapon extends Item {
   use(usePercent: number = 1, users?: CrewMember[]) {
     this.cooldownRemaining = this.chargeRequired
     if (this.ship.ai) return 0
-    if (this.ship.tutorial?.currentStep.disableRepair)
-      return 0
+    if (this.ship.tutorial?.currentStep.disableRepair) return 0
 
     const avgLevel =
-      (users?.reduce(
-        (acc, user) => acc + user.dexterity.level,
-        0,
-      ) || 1) / (users?.length || 1)
+      (users?.reduce((acc, user) => acc + user.strength.level, 0) || 1) /
+      (users?.length || 1)
 
     let repairLoss =
-      c.getBaseDurabilityLossPerTick(
-        this.maxHp,
-        this.reliability,
-        avgLevel,
-      ) * 400
+      c.getBaseDurabilityLossPerTick(this.maxHp, this.reliability, avgLevel) *
+      400
     this.repair -= repairLoss
     if (this.repair < 0) this.repair = 0
     this.lastUse = Date.now()

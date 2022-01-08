@@ -31,8 +31,9 @@
           success: data.upgradeBonus * (data.level - 1) > 0,
         }"
       >
-        {{ data.upgradeBonus * (data.level - 1) * 100 }}%
-        better
+        {{
+          c.r2(data.upgradeBonus * (data.level - 1) * 100)
+        }}% better
         <span class="sub"
           >(+{{ data.upgradeBonus * 100 }}%/level)</span
         >
@@ -110,6 +111,7 @@
               req.required - req.current,
             )
           "
+          :numeric="true"
           v-tooltip="
             `Add ${
               c.cargo[req.cargoId].name

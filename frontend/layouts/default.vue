@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ disableanimations: frontendSettings.disableAnimations }">
     <client-only>
       <div>
         <DevBanner />
@@ -28,10 +28,7 @@ import * as storage from '../assets/scripts/storage'
 import { mapState } from 'vuex'
 
 const detectMobile = () => {
-  const a =
-    navigator.userAgent ||
-    navigator.vendor ||
-    (window as any).opera
+  const a = navigator.userAgent || navigator.vendor || (window as any).opera
   if (
     /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
       a,
@@ -45,14 +42,20 @@ const detectMobile = () => {
 
 export default Vue.extend({
   computed: {
-    ...mapState(['ship', 'shipsBasics']),
+    ...mapState(['ship', 'shipsBasics', 'frontendSettings']),
   },
 
   mounted() {
+    try {
+      this.$store.commit('set', {
+        frontendSettings: JSON.parse(storage.get('frontendSettings') || '{}'),
+      })
+    } catch (e) {
+      console.log(e)
+    }
+
     const userId = storage.get('userId')
-    const shipIds = JSON.parse(
-      storage.get('shipIds') || '[]',
-    )
+    const shipIds = JSON.parse(storage.get('shipIds') || '[]')
     if (userId) {
       this.$store.dispatch('logIn', {
         userId,
@@ -67,20 +70,13 @@ export default Vue.extend({
       }, 1000)
     })
 
-    window.addEventListener(
-      'resize',
-      c.debounce(this.resetWindowSize, 1000),
-      {
-        passive: true,
-      },
-    )
+    window.addEventListener('resize', c.debounce(this.resetWindowSize, 1000), {
+      passive: true,
+    })
     this.resetWindowSize()
   },
   beforeDestroy() {
-    window.removeEventListener(
-      'resize',
-      this.resetWindowSize,
-    )
+    window.removeEventListener('resize', this.resetWindowSize)
   },
   methods: {
     resetWindowSize() {
@@ -89,15 +85,9 @@ export default Vue.extend({
         isMobile: !!detectMobile(),
       })
       let vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty(
-        '--vh',
-        `${vh}px`,
-      )
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
       let vw = window.innerWidth * 0.01
-      document.documentElement.style.setProperty(
-        '--vw',
-        `${vw}px`,
-      )
+      document.documentElement.style.setProperty('--vw', `${vw}px`)
     },
   },
 })

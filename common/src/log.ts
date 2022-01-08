@@ -1,5 +1,6 @@
 const fillCharacter = `.`
 
+let ignoreGray = false
 let longest = 0
 
 const reset = `\x1b[0m`,
@@ -38,12 +39,11 @@ const log = (...args: any[]): void => {
     )
   const fullPath: string = regexResult?.[1] || ``
   const lineNumber: string = regexResult?.[3] || ``
-  const mainDir = mainDirs.find(
-    (d) => fullPath.indexOf(`/${d}/`) !== -1,
-  )
+  const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1)
   const pathName: string =
     regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``
 
+  if (ignoreGray && args[0] === `gray`) return
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]
     if (arg in colors) {
@@ -57,8 +57,7 @@ const log = (...args: any[]): void => {
         // ]
         args.splice(index, 1)
       } else {
-        args[index + 1] =
-          colors[arg] + `${args[index + 1]}` + reset
+        args[index + 1] = colors[arg] + `${args[index + 1]}` + reset
         args.splice(index, 1)
       }
     }
@@ -83,12 +82,7 @@ const log = (...args: any[]): void => {
         minute: `2-digit`,
       })}]` +
       (mainDir
-        ? reset +
-          mainDirColor +
-          mainDir +
-          colors.white +
-          dim +
-          `:`
+        ? reset + mainDirColor + mainDir + colors.white + dim + `:`
         : ``) +
       pathName,
     // +
@@ -97,9 +91,7 @@ const log = (...args: any[]): void => {
   )
 
   if (prefix.length > longest) longest = prefix.length
-  while (
-    prefix.length < Math.min(45, Math.max(25, longest))
-  )
+  while (prefix.length < Math.min(45, Math.max(25, longest)))
     prefix += fillCharacter
   prefix += reset
 
@@ -110,4 +102,8 @@ function trace() {
   console.trace()
 }
 
-export default { log, trace }
+function ignoreGrayLogs() {
+  ignoreGray = true
+}
+
+export default { log, trace, ignoreGrayLogs }

@@ -6,29 +6,20 @@
       class="marbotsmall"
       v-tooltip="
         `Level up your skills to gain character levels!<br />
-            Character level increases your number of active slots and the power of your active abilities.`
+        Raising your character level will unlock new active abilities, as well as increase the power of all of your actives.`
       "
     >
       <h4>
         Lv.
-        <NumberChangeHighlighter
-          :number="crewMember.level"
-        />
+        <NumberChangeHighlighter :number="crewMember.level" />
         <span v-if="c.species[crewMember.speciesId]">
-          {{
-            c.capitalize(
-              c.species[crewMember.speciesId].singular,
-            )
-          }}</span
+          {{ c.capitalize(c.species[crewMember.speciesId].singular) }}</span
         >
         <span class="sub normal"
           >({{
             crewMember.level * crewMember.skills.length +
             c.r2(levelPercent * crewMember.skills.length)
-          }}/{{
-            (crewMember.level + 1) *
-            crewMember.skills.length
-          }})</span
+          }}/{{ (crewMember.level + 1) * crewMember.skills.length }})</span
         >
       </h4>
     </div>
@@ -75,13 +66,15 @@ export default Vue.extend({
   data() {
     const skillTooltips = {
       strength:
-        '<b>Strength</b> improves your mining and repairing speeds. <br /> Earned by repairing and mining.',
+        '<b>Strength</b> improves your weapon damage/charge speed, and also your mining speed. <br /> Earned by charging weapons and mining.',
       dexterity:
-        '<b>Dexterity</b> improves engine charge/thrust, as well as weapon damage/charge speed. <br /> Earned by charging weapons and using thrust.',
+        '<b>Dexterity</b> improves engine charge/thrust, as well as your repair speed. <br /> Earned by using thrust and repairing.',
       intellect:
         '<b>Intellect</b> improves your research speed. <br /> Earned by researching.',
       charisma:
         '<b>Charisma</b> improves your broadcast clarity and vendor prices. <br /> Earned by sending broadcasts and trading cargo.',
+      endurance:
+        '<b>Endurance</b> improves your max stamina. <br /> Earned by being awake and active on the ship.',
       // piloting: `Improves thrust.<br />Earned by using charged thrust.`,
       // munitions: `Improves weapon charge time and attack accuracy, and gives slight priority in choosing tactics and targets.<br />Earned by charging weapons, and for destroying enemies.`,
       // mechanics: `Improves repair speed.<br />Earned by repairing.`,
@@ -93,6 +86,7 @@ export default Vue.extend({
       dexterity: 'DEX',
       intellect: 'INT',
       charisma: 'CHA',
+      endurance: 'END',
     }
     return { c, skillTooltips, skillAbbreviations }
   },
@@ -104,18 +98,14 @@ export default Vue.extend({
         .sort((a: XPData, b: XPData) => b.xp - a.xp)
         .map((s: XPData) => {
           const toNext = c.levels[s.level] - s.xp
-          const levelSize =
-            c.levels[s.level] - c.levels[s.level - 1]
+          const levelSize = c.levels[s.level] - c.levels[s.level - 1]
           const progress = 1 - toNext / levelSize
           return { ...s, progress }
         })
     },
     levelPercent(): number {
       return (
-        (this.crewMember.skills.reduce(
-          (acc, skill) => acc + skill.level,
-          0,
-        ) /
+        (this.crewMember.skills.reduce((acc, skill) => acc + skill.level, 0) /
           this.crewMember.skills.length) %
         1
       )
@@ -146,8 +136,7 @@ export default Vue.extend({
           return acc
         }, 0) +
         this.ship.passives.reduce((acc, p) => {
-          if (p.id === `flatSkillBoost`)
-            return acc + (p.intensity || 0)
+          if (p.id === `flatSkillBoost`) return acc + (p.intensity || 0)
           return acc
         }, 0)
       return {

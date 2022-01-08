@@ -18,10 +18,7 @@ export class EnemyAIShip extends AIShip {
   guildId: GuildId = `fowl`
   readonly speciesId: SpeciesId
 
-  constructor(
-    data: BaseAIShipData = {} as BaseAIShipData,
-    game?: Game,
-  ) {
+  constructor(data: BaseAIShipData = {} as BaseAIShipData, game?: Game) {
     super(data, game)
 
     this.speciesId = data.speciesId || `chickens`
@@ -36,9 +33,7 @@ export class EnemyAIShip extends AIShip {
       `addLevelAppropriateItems`,
     ]) {
       this[prop] =
-        ais[this.speciesId]?.[prop] ||
-        ais.default[prop] ||
-        this[prop]
+        ais[this.speciesId]?.[prop] || ais.default[prop] || this[prop]
     }
 
     // tagline
@@ -53,8 +48,7 @@ export class EnemyAIShip extends AIShip {
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
 
-    if (this.items.length === 0)
-      this.addLevelAppropriateItems()
+    if (this.items.length === 0) this.addLevelAppropriateItems()
     if (this.weapons.length === 0)
       this.addItem({ itemType: `weapon`, itemId: `tiny1` })
     if (this.engines.length === 0)
@@ -71,44 +65,35 @@ export class EnemyAIShip extends AIShip {
         c.defaultGameSettings.aiDifficultyMultiplier)
 
     const validChassis = Object.values(c.items.chassis)
-      .filter(
-        (i: BaseChassisData) =>
-          !i.special && i.rarity <= itemBudget / 3,
-      )
-      .sort(
-        (a: BaseChassisData, b: BaseChassisData) =>
-          b.rarity - a.rarity,
-      )
-    const chassisToBuy: BaseChassisData =
-      validChassis[0] || c.items.chassis.ai1
+      .filter((i: BaseChassisData) => !i.special && i.rarity <= itemBudget / 3)
+      .sort((a: BaseChassisData, b: BaseChassisData) => b.rarity - a.rarity)
+    const chassisToBuy: BaseChassisData = validChassis[0] || c.items.chassis.ai1
     this.swapChassis(chassisToBuy)
     itemBudget = c.r2(itemBudget - chassisToBuy.rarity, 2)
     // c.log(
     //   `adding chassis ${chassisToBuy.displayName} with remaining budget of ${itemBudget}`,
     // )
 
-    const isInBudget = (i: BaseItemData) =>
-      i.rarity <= itemBudget
+    const isInBudget = (i: BaseItemData) => i.rarity <= itemBudget
     const isSelectable = (i: BaseItemData) => !i.special
 
     while (true) {
-      const typeToAdd: `engine` | `weapon` =
+      const typeToAdd: `engine` | `weapon` | `armor` =
         this.weapons.length <= this.items.length / 2
           ? `weapon`
           : this.engines.length === 0
           ? `engine`
+          : this.weapons.length > 0 && this.engines.length > 0
+          ? c.randomFromArray([`weapon`, `engine`, `armor`])
           : c.randomFromArray([`engine`, `weapon`])
       const itemPool = c.items[typeToAdd]
-      const validItems: BaseItemData[] = Object.values(
-        itemPool,
-      )
+      const validItems: BaseItemData[] = Object.values(itemPool)
         .filter(isInBudget)
         .filter(isSelectable)
 
       if (!validItems.length) break
 
-      const itemToBuy: BaseItemData =
-        c.randomFromArray(validItems)
+      const itemToBuy: BaseItemData = c.randomFromArray(validItems)
       this.addItem(itemToBuy)
       itemBudget = c.r2(itemBudget - itemToBuy.rarity, 2)
       // c.log(
@@ -123,19 +108,14 @@ export class EnemyAIShip extends AIShip {
     super.die(attacker)
 
     if (!silently) {
-      let creditValue = Math.round(
-        AIShip.dropCacheValueMultiplier * this.level,
-      )
+      let creditValue = Math.round(AIShip.dropCacheValueMultiplier * this.level)
 
       if (attacker) {
         // apply "rarity boost" passive
         const rarityBoostPassive = (
-          attacker.passives?.filter(
-            (p) => p.id === `boostDropRarity`,
-          ) || []
+          attacker.passives?.filter((p) => p.id === `boostDropRarity`) || []
         ).reduce(
-          (total: number, p: ShipPassiveEffect) =>
-            total + (p.intensity || 0),
+          (total: number, p: ShipPassiveEffect) => total + (p.intensity || 0),
           0,
         )
         creditValue *= 1 + rarityBoostPassive
@@ -152,45 +132,31 @@ export class EnemyAIShip extends AIShip {
         if (Math.random() > 0.75) {
           let amount = Math.round(
             Math.min(
-              Math.ceil(
-                Math.random() + 0.3 * creditValue * 70,
-              ) * 100,
+              Math.ceil(Math.random() + 0.3 * creditValue * 70) * 100,
               creditValue,
             ),
           )
-          const existing = cacheContents.find(
-            (cc) => cc.id === `credits`,
-          )
+          const existing = cacheContents.find((cc) => cc.id === `credits`)
           if (existing) existing.amount += amount
           else cacheContents.push({ id: `credits`, amount })
           creditValue -= amount
           continue
         }
 
-        const cargoData = c.randomFromArray(
-          Object.values(c.cargo),
-        )
+        const cargoData = c.randomFromArray(Object.values(c.cargo))
 
         const amount = c.r2(
           Math.min(
-            creditValue /
-              (cargoData.basePrice.credits || 100),
-            c.r2(
-              Math.random() * this.level * 4 + this.level,
-            ),
+            creditValue / (cargoData.basePrice.credits || 100),
+            c.r2(Math.random() * this.level * 4 + this.level),
           ),
           2,
           true,
         )
-        const existing = cacheContents.find(
-          (cc) => cc.id === cargoData.id,
-        )
-        if (existing)
-          existing.amount = c.r2(existing.amount + amount)
-        else
-          cacheContents.push({ id: cargoData.id, amount })
-        creditValue -=
-          amount * (cargoData.basePrice.credits || 100)
+        const existing = cacheContents.find((cc) => cc.id === cargoData.id)
+        if (existing) existing.amount = c.r2(existing.amount + amount)
+        else cacheContents.push({ id: cargoData.id, amount })
+        creditValue -= amount * (cargoData.basePrice.credits || 100)
       }
       // c.log(5000 * this.level, cacheContents)
 
@@ -203,9 +169,7 @@ export class EnemyAIShip extends AIShip {
         })
       }
       if (c.lottery(1, 500 / this.level)) {
-        const amount = Math.round(
-          (Math.random() + 0.1) * 1000,
-        )
+        const amount = Math.round((Math.random() + 0.1) * 1000)
         cacheContents.push({
           id: `crewCosmeticCurrency`,
           amount,
@@ -221,22 +185,12 @@ export class EnemyAIShip extends AIShip {
     }
   }
 
-  takeActionOnVisibleChange(
-    previousVisible,
-    currentVisible,
-  ) {
-    super.takeActionOnVisibleChange(
-      previousVisible,
-      currentVisible,
-    )
+  takeActionOnVisibleChange(previousVisible, currentVisible) {
+    super.takeActionOnVisibleChange(previousVisible, currentVisible)
 
-    const newlyVisibleHumanShips =
-      currentVisible.ships.filter(
-        (s) =>
-          s.human &&
-          !s.planet &&
-          !previousVisible.ships.includes(s),
-      )
+    const newlyVisibleHumanShips = currentVisible.ships.filter(
+      (s) => s.human && !s.planet && !previousVisible.ships.includes(s),
+    )
     newlyVisibleHumanShips.forEach((s: HumanShip) => {
       setTimeout(() => {
         this.broadcastTo(s)
@@ -252,11 +206,7 @@ export class EnemyAIShip extends AIShip {
   ) {
     let oddsToIgnore = 0.99
     if (recipients.length === 1) oddsToIgnore *= 0.4
-    if (
-      message
-        .toLowerCase()
-        .indexOf(this.name.toLowerCase()) > -1
-    )
+    if (message.toLowerCase().indexOf(this.name.toLowerCase()) > -1)
       oddsToIgnore = 0.1
     if (Math.random() < oddsToIgnore) return
 
@@ -281,24 +231,15 @@ export class EnemyAIShip extends AIShip {
     // textOptions.push()
     const text = c.randomFromArray(textOptions)
     const garbled = c.garble(text, garbleAmount)
-    const toSend = `${garbled.substring(
-      0,
-      c.maxBroadcastLength,
-    )}`
-    from.receiveBroadcast(toSend, this, garbleAmount, [
-      from,
-    ])
+    const toSend = `${garbled.substring(0, c.maxBroadcastLength)}`
+    from.receiveBroadcast(toSend, this, garbleAmount, [from])
   }
 
   broadcastTo(ship: Ship) {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.05, 0.3, this.level / 100))
-      return
+    if (Math.random() > c.lerp(0.05, 0.3, this.level / 100)) return
 
-    const distance = c.distance(
-      this.location,
-      ship.location,
-    )
+    const distance = c.distance(this.location, ship.location)
     const maxBroadcastRadius = this.level * 0.04
 
     // don't message ships that are too far
@@ -306,11 +247,9 @@ export class EnemyAIShip extends AIShip {
     // // don't message ships that are currently at a planet
     // if (ship.planet) return
 
-    const distanceAsPercentOfMaxBroadcastRadius =
-      distance / maxBroadcastRadius
+    const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius
 
-    const garbleAmount =
-      distanceAsPercentOfMaxBroadcastRadius
+    const garbleAmount = distanceAsPercentOfMaxBroadcastRadius
     let messageOptions = [
       `My, my, if it isn't a lovely snack!`,
       `Resistance is futile.`,
@@ -329,12 +268,7 @@ export class EnemyAIShip extends AIShip {
       `Food sighted. Prepare to engage.`,
       `PREY SIGHTED! PREPARE FOR COMBA— Oops, wrong channel. Disregard.`,
     ]
-    const message = c.garble(
-      c.randomFromArray(messageOptions),
-      garbleAmount,
-    )
-    ship.receiveBroadcast(message, this, garbleAmount, [
-      ship,
-    ])
+    const message = c.garble(c.randomFromArray(messageOptions), garbleAmount)
+    ship.receiveBroadcast(message, this, garbleAmount, [ship])
   }
 }

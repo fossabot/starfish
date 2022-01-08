@@ -3,7 +3,7 @@ import text from './text'
 import constants from './gameConstants'
 import log from './log'
 
-export const crewActiveBaseGlobalCooldown = 1000 // * 60 * 60 * 24 * 1
+export const crewActiveBaseGlobalCooldown = 1000 * 60 * 60 * 24 * 1
 
 export const activeUnlockLevels = [
   1, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
@@ -13,9 +13,7 @@ export function getActiveIntensityScaledByLevel(
   intensity: number,
   level: number,
 ) {
-  return (
-    (intensity || 1) * math.lerp(1, 4, (level - 1) / 100)
-  )
+  return (intensity || 1) * math.lerp(1, 4, (level - 1) / 100)
 }
 
 export const crewActives: {
@@ -34,9 +32,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -55,9 +51,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -70,9 +64,7 @@ export const crewActives: {
       return `Boost the ship's sight range by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     cooldown: crewActiveBaseGlobalCooldown * 2.5,
@@ -80,9 +72,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -105,9 +95,8 @@ export const crewActives: {
     intensityAdapter: (i) => i * 10,
     displayIntensity: function (i, level = 0) {
       return (
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * constants.displayHPMultiplier
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+        constants.displayHPMultiplier
       )
     },
   },
@@ -128,9 +117,7 @@ export const crewActives: {
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => 1 + Math.floor(i * 4),
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
 
@@ -141,9 +128,7 @@ export const crewActives: {
       return `Increase full crew's weapon recharge speed by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     cooldown: crewActiveBaseGlobalCooldown * 11,
@@ -151,9 +136,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -166,17 +149,13 @@ export const crewActives: {
       return `Increase strength level by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
 
@@ -187,17 +166,13 @@ export const crewActives: {
       return `Increase dexterity level by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
 
@@ -208,17 +183,13 @@ export const crewActives: {
       return `Increase intellect level by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
 
@@ -229,17 +200,13 @@ export const crewActives: {
       return `Increase charisma level by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
 
@@ -257,9 +224,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -272,17 +237,13 @@ export const crewActives: {
       return `Increase the thrust of the entire crew by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -297,17 +258,13 @@ export const crewActives: {
       return `Increase the mine speed of the entire crew by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -321,17 +278,13 @@ export const crewActives: {
       return `Increase the repair speed of the entire crew by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -352,9 +305,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -375,9 +326,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -391,20 +340,17 @@ export const crewActives: {
       return `Increase all skill levels of the whole crew by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => Math.floor(i * 2) + 1,
     displayIntensity: function (i, level = 0) {
-      return this.intensityAdapter(
-        getActiveIntensityScaledByLevel(i, level),
-      )
+      return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
     cooldown: crewActiveBaseGlobalCooldown * 4,
     duration: 1000 * 60 * 60 * 4,
   },
+
   flatDamageReduction: {
     id: `flatDamageReduction`,
     displayName: `Shrug it Off`,
@@ -412,17 +358,14 @@ export const crewActives: {
       return `Reduce all incoming damage by ${this.displayIntensity(
         a.intensity,
         level,
-      )} for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )} for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
-    intensityAdapter: (i) => i * 0.7,
+    intensityAdapter: (i) => i * 0.5,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * constants.displayHPMultiplier,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+          constants.displayHPMultiplier,
         0,
       )
     },
@@ -436,17 +379,13 @@ export const crewActives: {
       return `Increase the ship's agility by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i * 1.2,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -465,9 +404,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -481,17 +418,13 @@ export const crewActives: {
       return `Increase all damage dealt to enemy engines by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -505,17 +438,13 @@ export const crewActives: {
       return `Increase all damage dealt to enemy weapons by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -529,17 +458,13 @@ export const crewActives: {
       return `Increase all damage dealt to enemy scanners by ${this.displayIntensity(
         a.intensity,
         level,
-      )}% for ${text.msToTimeString(
-        this.duration || 1000 * 60 * 60 * 24 * 1,
-      )}.`
+      )}% for ${text.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`
     },
     notify: true,
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -558,9 +483,7 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * 100,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
       )
     },
@@ -583,9 +506,8 @@ export const crewActives: {
     intensityAdapter: (i) => i,
     displayIntensity: function (i, level = 0) {
       return math.r2(
-        this.intensityAdapter(
-          getActiveIntensityScaledByLevel(i, level),
-        ) * constants.displayHPMultiplier,
+        this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+          constants.displayHPMultiplier,
         0,
       )
     },

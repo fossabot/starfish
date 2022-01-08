@@ -14,6 +14,7 @@
         @apply="apply"
         :max="prompt === 1 ? max : null"
         :key="'prompt' + id"
+        :numeric="prompt === 1 && numeric"
       >
         <slot v-if="prompt === 1" />
         <slot name="second" v-if="prompt === 2" />
@@ -36,7 +37,7 @@ import { mapState } from 'vuex'
 import c from '../../common/dist'
 
 export default Vue.extend({
-  props: { disabled: {}, max: {}, yesNo: {} },
+  props: { disabled: {}, max: {}, yesNo: {}, numeric: {} },
   data() {
     let prompt: any = null,
       results: any[] = []

@@ -7,9 +7,7 @@ export function cockpit(this: CrewMember): void {
   if (this.cockpitCharge >= 1) return
 
   const chargeBoost =
-    this.ship.getPassiveIntensity(
-      `boostCockpitChargeSpeed`,
-    ) +
+    this.ship.getPassiveIntensity(`boostCockpitChargeSpeed`) +
     this.getPassiveIntensity(`boostCockpitChargeSpeed`) +
     1
 
@@ -19,15 +17,10 @@ export function cockpit(this: CrewMember): void {
       this.ship.crewMembers,
     )
 
-  const isInTutorialMultiplier = this.ship.tutorial
-    ?.currentStep
-    ? 10
-    : 1
+  const isInTutorialMultiplier = this.ship.tutorial?.currentStep ? 10 : 1
 
   this.cockpitCharge +=
-    c.getCockpitChargePerTickForSingleCrewMember(
-      this.dexterity?.level || 1,
-    ) *
+    c.getCockpitChargePerTickForSingleCrewMember(this.dexterity?.level || 1) *
     chargeBoost *
     generalBoostMultiplier *
     isInTutorialMultiplier
@@ -36,8 +29,7 @@ export function cockpit(this: CrewMember): void {
 }
 
 export function repair(this: CrewMember) {
-  const chargeBoost =
-    this.getPassiveIntensity(`boostRepairSpeed`) + 1 // * ship passive repair speed is handled in main ship repair function since it can come from other sources
+  const chargeBoost = this.getPassiveIntensity(`boostRepairSpeed`) + 1 // * ship passive repair speed is handled in main ship repair function since it can come from other sources
 
   const generalBoostMultiplier =
     c.getGeneralMultiplierBasedOnCrewMemberProximity(
@@ -47,9 +39,7 @@ export function repair(this: CrewMember) {
 
   const previousShipHp = this.ship.hp
   const repairAmount =
-    c.getRepairAmountPerTickForSingleCrewMember(
-      this.strength.level,
-    ) *
+    c.getRepairAmountPerTickForSingleCrewMember(this.dexterity.level) *
     chargeBoost *
     generalBoostMultiplier
   const { overRepair, totalRepaired } = this.ship.repair(
@@ -60,8 +50,7 @@ export function repair(this: CrewMember) {
   this.addStat(`totalHpRepaired`, totalRepaired)
 
   if (this.ship.maxHp - previousShipHp > 0.01) {
-    this.addXp(`strength`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
-    this.toUpdate.skills = this.skills
+    this.addXp(`dexterity`) // don't give xp for forever topping up something like the scanner which constantly loses a drip of repair
   }
 }
 
@@ -72,18 +61,15 @@ export function lab(this: CrewMember) {
       this.ship.crewMembers,
     )
 
-  if (!this.researchTargetId)
-    this.recalculateResearchTargetId()
+  if (!this.researchTargetId) this.recalculateResearchTargetId()
   if (!this.researchTargetId) return
 
   const researchTarget = this.ship.items.find(
     (i) =>
       i.upgradable &&
       i.id === this.researchTargetId &&
-      (i.upgradeRequirements.find((r) => r.research)
-        ?.current || 0) <
-        (i.upgradeRequirements.find((r) => r.research)
-          ?.required || 0),
+      (i.upgradeRequirements.find((r) => r.research)?.current || 0) <
+        (i.upgradeRequirements.find((r) => r.research)?.required || 0),
   )
   if (!researchTarget) {
     this.researchTargetId = null
@@ -92,14 +78,11 @@ export function lab(this: CrewMember) {
   }
 
   const researchAmount =
-    c.getResearchAmountPerTickForSingleCrewMember(
-      this.intellect.level,
-    ) * generalBoostMultiplier
+    c.getResearchAmountPerTickForSingleCrewMember(this.intellect.level) *
+    generalBoostMultiplier
 
   const amountResearched =
-    researchTarget.applyResearchTowardsUpgrade(
-      researchAmount,
-    )
+    researchTarget.applyResearchTowardsUpgrade(researchAmount)
 
   this.addStat(`totalResearched`, amountResearched)
   if (amountResearched) this.addXp(`intellect`)
@@ -114,9 +97,7 @@ export function weapons(this: CrewMember): void {
 
   const passiveMultiplier =
     this.getPassiveIntensity(`boostWeaponChargeSpeed`) +
-    this.ship.getPassiveIntensity(
-      `boostWeaponChargeSpeed`,
-    ) +
+    this.ship.getPassiveIntensity(`boostWeaponChargeSpeed`) +
     1
 
   const generalBoostMultiplier =
@@ -127,9 +108,7 @@ export function weapons(this: CrewMember): void {
   // c.log({ passiveMultiplier, generalBoostMultiplier })
 
   const amountToReduceCooldowns =
-    c.getWeaponCooldownReductionPerTick(
-      this.dexterity?.level || 1,
-    ) *
+    c.getWeaponCooldownReductionPerTick(this.strength?.level || 1) *
     passiveMultiplier *
     generalBoostMultiplier
   // / chargeableWeapons.length
@@ -139,15 +118,11 @@ export function weapons(this: CrewMember): void {
     if (cw.cooldownRemaining < 0) cw.cooldownRemaining = 0
   })
 
-  this.addXp(`dexterity`)
-  this.toUpdate.skills = this.skills
+  this.addXp(`strength`)
 }
 
 export function mine(this: CrewMember): void {
-  if (
-    this.ship.planet &&
-    (this.ship.planet as MiningPlanet).mine
-  ) {
+  if (this.ship.planet && (this.ship.planet as MiningPlanet).mine) {
     const passiveSpeedBonus =
       this.ship.getPassiveIntensity(`boostMineSpeed`) +
       this.getPassiveIntensity(`boostMineSpeed`) +
@@ -160,9 +135,7 @@ export function mine(this: CrewMember): void {
       )
 
     const amountToMine =
-      c.getMineAmountPerTickForSingleCrewMember(
-        this.strength.level || 1,
-      ) *
+      c.getMineAmountPerTickForSingleCrewMember(this.strength.level || 1) *
       passiveSpeedBonus *
       generalBoostMultiplier
 
@@ -172,7 +145,6 @@ export function mine(this: CrewMember): void {
     )
 
     this.addXp(`strength`)
-    this.toUpdate.skills = this.skills
   }
 }
 
@@ -190,15 +162,11 @@ export function bunk(this: CrewMember): void {
     const percentOfNormalChargeToGive = 0.1
 
     const chargeBoost =
-      this.ship.getPassiveIntensity(
-        `boostCockpitChargeSpeed`,
-      ) +
+      this.ship.getPassiveIntensity(`boostCockpitChargeSpeed`) +
       this.getPassiveIntensity(`boostCockpitChargeSpeed`) +
       1
     this.cockpitCharge +=
-      c.getCockpitChargePerTickForSingleCrewMember(
-        this.dexterity?.level || 1,
-      ) *
+      c.getCockpitChargePerTickForSingleCrewMember(this.dexterity?.level || 1) *
       chargeBoost *
       percentOfNormalChargeToGive *
       generalBoostMultiplier
@@ -217,9 +185,7 @@ export function bunk(this: CrewMember): void {
   }
 
   const boostStaminaRegenPassives =
-    this.ship.getPassiveIntensity(
-      `boostStaminaRegeneration`,
-    ) +
+    this.ship.getPassiveIntensity(`boostStaminaRegeneration`) +
     this.getPassiveIntensity(`boostStaminaRegeneration`) +
     1
 
@@ -233,22 +199,18 @@ export function bunk(this: CrewMember): void {
     boostStaminaRegenPassives *
     generalBoostMultiplier *
     (this.bottomedOutOnStamina
-      ? this.ship.game?.settings
-          .staminaBottomedOutChargeMultiplier ||
-        c.defaultGameSettings
-          .staminaBottomedOutChargeMultiplier
+      ? this.ship.game?.settings.staminaBottomedOutChargeMultiplier ||
+        c.defaultGameSettings.staminaBottomedOutChargeMultiplier
       : 1)
 
   this.stamina += staminaToAdd
 
-  if (this.stamina > this.maxStamina)
-    this.stamina = this.maxStamina
+  if (this.stamina > this.maxStamina) this.stamina = this.maxStamina
 
   if (
     this.bottomedOutOnStamina &&
     this.stamina >
-      (this.ship.game?.settings
-        .staminaBottomedOutResetPoint ||
+      (this.ship.game?.settings.staminaBottomedOutResetPoint ||
         c.defaultGameSettings.staminaBottomedOutResetPoint)
   ) {
     this.bottomedOutOnStamina = false

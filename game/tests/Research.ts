@@ -7,14 +7,8 @@ import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 
-import {
-  cometData,
-  crewMemberData,
-  humanShipData,
-} from './defaults'
+import { cometData, crewMemberData, humanShipData } from './defaults'
 
 describe(`Research leveling`, () => {
   // todo

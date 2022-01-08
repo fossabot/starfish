@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="crewmemberdatabrowser"
-    v-if="crewMembers.length"
-  >
+  <div class="crewmemberdatabrowser" v-if="crewMembers.length">
     <h5>Crew Member Data</h5>
     <div class="flex marbotsmall">
       <ModelSelect
@@ -23,13 +20,17 @@
         >
           <div>Delete</div>
         </div>
+        <div
+          class="button combo flexcenter nowrap"
+          v-if="selectedCrewMemberId"
+          @click="addXp(selectedCrewMemberId)"
+        >
+          <div>Add XP</div>
+        </div>
       </div>
     </div>
 
-    <div
-      v-if="displayCrewMemberData"
-      class="property flexstretch marbotsmall"
-    >
+    <div v-if="displayCrewMemberData" class="property flexstretch marbotsmall">
       <input
         placeholder="Select property to search..."
         v-model="propertySearchTerm"
@@ -77,10 +78,7 @@ export default Vue.extend({
     ...mapState(['userId', 'adminPassword']),
     crewMembers(): CrewMemberStub[] {
       if (!this.text) return []
-      return (
-        (JSON.parse(this.text) as ShipStub).crewMembers ||
-        []
-      )
+      return (JSON.parse(this.text) as ShipStub).crewMembers || []
     },
   },
   watch: {
@@ -117,19 +115,14 @@ export default Vue.extend({
             line.includes(this.propertySearchTerm!)
               ? `<div class="highlight">${line}</div>`
               : `<span class="sub" style="opacity: ${
-                  1 /
-                  ((line.length - line.trim().length) / 3)
+                  1 / ((line.length - line.trim().length) / 3)
                 }">${line.trim()}</span>`,
           )
           .join('')
     },
 
     async deleteCrewMember(crewMemberId: string) {
-      if (
-        !window.confirm(
-          `Are you sure you want to DELETE ${crewMemberId}?`,
-        )
-      )
+      if (!window.confirm(`Are you sure you want to DELETE ${crewMemberId}?`))
         return
 
       const shipId = (JSON.parse(this.text) as ShipStub).id
@@ -141,6 +134,17 @@ export default Vue.extend({
         crewMemberId,
       )
       this.$emit('reload')
+    },
+
+    async addXp(crewMemberId: string) {
+      const shipId = (JSON.parse(this.text) as ShipStub).id
+      ;(this as any).$socket?.emit(
+        `admin:addCrewMemberXp`,
+        this.userId,
+        this.adminPassword,
+        shipId,
+        crewMemberId,
+      )
     },
   },
 })

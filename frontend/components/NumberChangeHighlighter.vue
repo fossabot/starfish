@@ -121,7 +121,7 @@ export default Vue.extend({
     font-size: 0.6em;
     position: relative;
     top: -0.2em;
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
 </style>

@@ -34,9 +34,16 @@ body {
   min-width: 100%;
 }
 
+.disableanimations {
+  *,
+  *.before,
+  *.after {
+    transition-duration: 0s !important;
+  }
+}
+
 .pointerblue {
-  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_blue.webp') 1x,
       url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
@@ -44,8 +51,7 @@ body {
     pointer;
 }
 .pointergreen {
-  cursor: url('/images/cursors/cursor_pointer_green.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_green.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_green.webp') 1x,
       url('/images/cursors/cursor_pointer_green_2x.webp') 2x
@@ -53,12 +59,10 @@ body {
     pointer;
 }
 .pointerpurple {
-  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_purple.webp') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.webp')
-        2x
+      url('/images/cursors/cursor_pointer_purple_2x.webp') 2x
     ),
     pointer;
 }
@@ -77,8 +81,7 @@ a:hover {
     pointer;
 }
 .blueguild a {
-  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_blue.webp') 1x,
       url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
@@ -86,8 +89,7 @@ a:hover {
     pointer;
 }
 .greenguild a {
-  cursor: url('/images/cursors/cursor_pointer_green.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_green.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_green.webp') 1x,
       url('/images/cursors/cursor_pointer_green_2x.webp') 2x
@@ -95,12 +97,10 @@ a:hover {
     pointer;
 }
 .purpleguild a {
-  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_purple.webp') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.webp')
-        2x
+      url('/images/cursors/cursor_pointer_purple_2x.webp') 2x
     ),
     pointer;
 }
@@ -135,8 +135,7 @@ h5 {
 .masonrycontainer {
   & > * {
     display: inline-block;
-    transition: top 0.3s ease-in-out, left 0.3s ease-in-out,
-      opacity 1s;
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out, opacity 1s;
     margin-bottom: 0px;
     opacity: 0;
 
@@ -183,8 +182,7 @@ textarea {
 *:disabled,
 .disabled {
   opacity: 0.3;
-  cursor: url('/images/cursors/cursor_not_allowed.svg'),
-    auto !important;
+  cursor: url('/images/cursors/cursor_not_allowed.svg'), auto !important;
   cursor: image-set(
       url('/images/cursors/cursor_not_allowed.webp') 1x,
       url('/images/cursors/cursor_not_allowed_2x.webp') 2x
@@ -193,8 +191,7 @@ textarea {
   pointer-events: auto;
 }
 .notallowed {
-  cursor: url('/images/cursors/cursor_not_allowed.svg'),
-    auto !important;
+  cursor: url('/images/cursors/cursor_not_allowed.svg'), auto !important;
   cursor: image-set(
       url('/images/cursors/cursor_not_allowed.webp') 1x,
       url('/images/cursors/cursor_not_allowed_2x.webp') 2x
@@ -356,8 +353,7 @@ summary:hover {
 .blueguild .button,
 .blueguild input,
 .blueguild select {
-  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_blue.webp') 1x,
       url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
@@ -368,8 +364,7 @@ summary:hover {
 .greenguild .button,
 .greenguild input,
 .greenguild select {
-  cursor: url('/images/cursors/cursor_pointer_green.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_green.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_green.webp') 1x,
       url('/images/cursors/cursor_pointer_green_2x.webp') 2x
@@ -380,12 +375,10 @@ summary:hover {
 .purpleguild .button,
 .purpleguild input,
 .purpleguild select {
-  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_purple.webp') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.webp')
-        2x
+      url('/images/cursors/cursor_pointer_purple_2x.webp') 2x
     ),
     pointer;
 }
@@ -400,6 +393,10 @@ summary:hover {
 .grid4 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.grid5 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
 select {
@@ -445,8 +442,7 @@ select {
   /* Disabled styles */
   &:disabled,
   &[aria-disabled='true'] {
-    cursor: url('/images/cursors/cursor_not_allowed.svg'),
-      auto;
+    cursor: url('/images/cursors/cursor_not_allowed.svg'), auto;
     cursor: image-set(
         url('/images/cursors/cursor_not_allowed.webp') 1x,
         url('/images/cursors/cursor_not_allowed_2x.webp') 2x
@@ -470,8 +466,7 @@ select {
     pointer;
 }
 .blueguild .link {
-  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_blue.webp') 1x,
       url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
@@ -479,8 +474,7 @@ select {
     pointer;
 }
 .greenguild .link {
-  cursor: url('/images/cursors/cursor_pointer_green.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_green.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_green.webp') 1x,
       url('/images/cursors/cursor_pointer_green_2x.webp') 2x
@@ -488,12 +482,10 @@ select {
     pointer;
 }
 .purpleguild .link {
-  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_purple.webp') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.webp')
-        2x
+      url('/images/cursors/cursor_pointer_purple_2x.webp') 2x
     ),
     pointer;
 }
@@ -520,8 +512,7 @@ select {
   //     var(--highlight-color, var(--gray)),
   //   1px 0 0 0 var(--highlight-color, var(--gray)),
   //   0 1px 0 0 var(--highlight-color, var(--gray));
-  padding: var(--panesectionpad-top)
-    var(--panesectionpad-left);
+  padding: var(--panesectionpad-top) var(--panesectionpad-left);
   color: var(--highlight-color, var(--text));
 
   .panesection {
@@ -556,8 +547,7 @@ select {
 }
 
 .padpane {
-  padding: var(--panesectionpad-top)
-    var(--panesectionpad-left);
+  padding: var(--panesectionpad-top) var(--panesectionpad-left);
 }
 
 hr {
@@ -667,8 +657,7 @@ ul {
     pointer;
 }
 .blueguild .pointer {
-  cursor: url('/images/cursors/cursor_pointer_blue.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_blue.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_blue.webp') 1x,
       url('/images/cursors/cursor_pointer_blue_2x.webp') 2x
@@ -676,8 +665,7 @@ ul {
     pointer;
 }
 .greenguild .pointer {
-  cursor: url('/images/cursors/cursor_pointer_green.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_green.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_green.webp') 1x,
       url('/images/cursors/cursor_pointer_green_2x.webp') 2x
@@ -685,12 +673,10 @@ ul {
     pointer;
 }
 .purpleguild .pointer {
-  cursor: url('/images/cursors/cursor_pointer_purple.svg'),
-    pointer;
+  cursor: url('/images/cursors/cursor_pointer_purple.svg'), pointer;
   cursor: image-set(
       url('/images/cursors/cursor_pointer_purple.webp') 1x,
-      url('/images/cursors/cursor_pointer_purple_2x.webp')
-        2x
+      url('/images/cursors/cursor_pointer_purple_2x.webp') 2x
     ),
     pointer;
 }

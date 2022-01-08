@@ -134,19 +134,23 @@
       <ProgressBar
         class="marbottiny"
         v-if="
-          dataToUse.crewMembers &&
-          dataToUse.crewMembers.length > 1 &&
-          dataToUse.crewAverageMorale !== undefined
+          (dev &&
+            dataToUse.crewAverageMorale !== undefined) ||
+          (dataToUse.crewMembers &&
+            dataToUse.crewMembers.length > 1 &&
+            dataToUse.crewAverageMorale !== undefined)
         "
         :mini="true"
         :percent="dataToUse.crewAverageMorale"
         :color="
-          dataToUse.crewAverageMorale >
+          dataToUse.crewAverageMorale > ship &&
           ship.gameSettings.moraleHighThreshold
             ? 'var(--success)'
             : 'rgba(255,255,255,.5)'
         "
-        :dangerZone="ship.gameSettings.moraleLowThreshold"
+        :dangerZone="
+          ship && ship.gameSettings.moraleLowThreshold
+        "
         v-tooltip="
           `The average morale of crew members on the ship.`
         "
@@ -346,7 +350,7 @@ export default Vue.extend({
     return { c, timeRemaining }
   },
   computed: {
-    ...mapState(['ship', 'lastUpdated']),
+    ...mapState(['ship', 'lastUpdated', 'dev']),
     isSelf() {
       return this.ship?.id === this.data.id
     },

@@ -133,6 +133,7 @@
         :disabled="crewMember.credits < 1"
         class="noflex marlefttiny"
         :max="crewMember.credits"
+        :numeric="true"
         @done="contributeToPlanet(...arguments)"
         @apply="contributeToPlanet(...arguments)"
       >
@@ -157,6 +158,7 @@
         v-if="crewMember && crewMember.crewCosmeticCurrency"
         class="noflex marlefttiny"
         :max="crewMember.crewCosmeticCurrency"
+        :numeric="true"
         @done="
           contributeCrewCosmeticCurrencyToPlanet(
             ...arguments,
@@ -197,6 +199,7 @@
         :disabled="ship.shipCosmeticCurrency < 1"
         class="noflex marlefttiny"
         :max="ship.shipCosmeticCurrency"
+        :numeric="true"
         @done="
           contributeShipCosmeticCurrencyToPlanet(
             ...arguments,
