@@ -826,8 +826,8 @@ export default class Drawer {
           ],
           labelCenter: co.targetName,
           radius:
-            ship.gameSettings.contractLocationRadius *
-            this.flatScale,
+            (ship?.gameSettings.contractLocationRadius ||
+              0.2) * this.flatScale,
           color: co.targetGuildId
             ? c.guilds[co.targetGuildId].color
             : `#bb0`,
@@ -840,8 +840,8 @@ export default class Drawer {
             co.lastSeenLocation[1] * -1,
           ],
           radius:
-            ship.gameSettings.contractLocationRadius *
-            this.flatScale,
+            (ship?.gameSettings.contractLocationRadius ||
+              0.2) * this.flatScale,
           color: co.targetGuildId
             ? c.guilds[co.targetGuildId].color
             : `#bb0`,

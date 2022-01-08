@@ -8,14 +8,8 @@ import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 
-import {
-  basicPlanetData,
-  crewMemberData,
-  humanShipData,
-} from './defaults'
+import { basicPlanetData, crewMemberData, humanShipData } from './defaults'
 
 describe(`Ship vision`, () => {
   it(`should be able to see another ship within range`, async () => {
@@ -25,25 +19,17 @@ describe(`Ship vision`, () => {
     let ship2 = await game.addHumanShip(humanShipData())
     ship.updateVisible()
     ship2.updateVisible()
-    expect(ship.visible.ships.map((s) => s.id)).to.include(
-      ship2.id,
-    )
-    expect(ship2.visible.ships.map((s) => s.id)).to.include(
-      ship.id,
-    )
+    expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
+    expect(ship2.visible.ships.map((s) => s.id)).to.include(ship.id)
   })
 
   it(`should be able to see a planet within range`, async () => {
     // created through game
     let game = new Game()
     let ship = await game.addHumanShip(humanShipData())
-    let planet = await game.addBasicPlanet(
-      basicPlanetData(),
-    )
+    let planet = await game.addBasicPlanet(basicPlanetData())
     ship.updateVisible()
-    expect(
-      ship.visible.planets.map((s) => s.id),
-    ).to.include(planet.id)
+    expect(ship.visible.planets.map((s) => s.id)).to.include(planet.id)
   })
 
   it(`should not be able to see another ship outside of vision range`, async () => {
@@ -52,15 +38,11 @@ describe(`Ship vision`, () => {
     let ship = await game.addHumanShip(humanShipData())
     let ship2 = await game.addHumanShip(humanShipData())
     ship.updateVisible()
-    expect(ship.visible.ships.map((s) => s.id)).to.include(
-      ship2.id,
-    )
+    expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
 
     ship2.move([10 + ship.radii.sight - 0.00001, 0])
     ship.updateVisible()
-    expect(ship.visible.ships.map((s) => s.id)).to.include(
-      ship2.id,
-    )
+    expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
 
     ship2.move([10 + ship.radii.sight + 0.00001, 0])
     ship.updateVisible()

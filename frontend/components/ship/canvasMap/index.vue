@@ -17,8 +17,7 @@
       <div
         class="panesection padnone mappane"
         :class="{
-          killtouchevents:
-            interactive && (isPanning || isZooming),
+          killtouchevents: interactive && (isPanning || isZooming),
         }"
         :style="{
           width: widthAdjustedToWindowSize + 'px',
@@ -122,20 +121,19 @@ export default Vue.extend({
       'forceMapRedraw',
       'tooltip',
       'targetPoint',
+      'frontendSettings',
     ]),
+    disableAnimations(): boolean {
+      return !!this.frontendSettings.disableAnimations
+    },
     mapFollowingShip(): boolean {
-      return (
-        !this.interactive ||
-        this.$store.state.mapFollowingShip
-      )
+      return !this.interactive || this.$store.state.mapFollowingShip
     },
     show(): boolean {
       return (
         this.ship &&
         (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes(
-            this.interactive ? 'map' : 'mapZoom',
-          ))
+          this.ship.shownPanels.includes(this.interactive ? 'map' : 'mapZoom'))
       )
     },
     highlight(): boolean {
@@ -183,13 +181,11 @@ export default Vue.extend({
       this.$store.commit('tooltip', null)
     },
     resize() {
-      const parentWidth =
-        this.$el.parentElement?.offsetWidth || 0
+      const parentWidth = this.$el.parentElement?.offsetWidth || 0
 
       this.widthAdjustedToWindowSize =
         this.$el.clientWidth === parentWidth
-          ? (this.$refs.resizewatcher as HTMLElement)
-              ?.offsetWidth
+          ? (this.$refs.resizewatcher as HTMLElement)?.offsetWidth
           : this.width
 
       // c.log(
@@ -208,52 +204,36 @@ export default Vue.extend({
       if (!this.widthAdjustedToWindowSize)
         this.widthAdjustedToWindowSize = this.width
       this.widthScaledToDevice =
-        this.widthAdjustedToWindowSize *
-        this.devicePixelRatio
+        this.widthAdjustedToWindowSize * this.devicePixelRatio
       this.drawNextFrame()
 
-      window.removeEventListener(
-        'mousemove',
-        this.mouseMove,
-      )
+      window.removeEventListener('mousemove', this.mouseMove)
       window.addEventListener('mousemove', this.mouseMove)
-      window.removeEventListener(
-        'touchmove',
-        this.mouseMove,
-      )
+      window.removeEventListener('touchmove', this.mouseMove)
       window.addEventListener('touchmove', this.mouseMove)
     },
     drawNextFrame(immediate = false) {
       if (this.paused || !this.show) return
-      if (this.widthScaledToDevice === 0)
-        return this.start()
+      if (this.widthScaledToDevice === 0) return this.start()
 
       return new Promise<void>((resolve) => {
         if (!this.$el || !this.$el.querySelector) return
-        const profiler = new c.Profiler(
-          4,
-          `canvasmap`,
-          false,
-          0,
-        )
+        const profiler = new c.Profiler(4, `canvasmap`, false, 0)
         profiler.step('called')
         requestAnimationFrame(async () => {
           if (this.paused || !this.show) return
           profiler.step('framestart')
           if (!this.element) {
-            this.element = this.$el.querySelector(
-              '#map',
-            ) as HTMLCanvasElement
+            this.element = this.$el.querySelector('#map') as HTMLCanvasElement
             this.drawNextFrame()
             resolve()
             return
           }
-          if (this.radius) immediate = true
+          if (this.disableAnimations || this.radius) immediate = true
 
           if (
             !this.drawer ||
-            this.drawer.elementScreenSize[0] !==
-              this.widthScaledToDevice
+            this.drawer.elementScreenSize[0] !== this.widthScaledToDevice
           )
             this.drawer = new Drawer({
               element: this.element,
@@ -267,9 +247,7 @@ export default Vue.extend({
           ) {
             await this.$nextTick()
 
-            this.element = this.$el.querySelector(
-              '#map',
-            ) as HTMLCanvasElement
+            this.element = this.$el.querySelector('#map') as HTMLCanvasElement
             this.drawer.element = this.element!
           }
 
@@ -291,46 +269,35 @@ export default Vue.extend({
             let radius,
               color = tp.color
             if (tp.location && !tp.radii) {
-              if (tp.type && ['zone'].includes(tp.type))
-                radius = tp.radius
-              if (
-                tp.type === 'item' &&
-                tp.itemType === 'weapon'
-              ) {
+              if (tp.type && ['zone'].includes(tp.type)) radius = tp.radius
+              if (tp.type === 'item' && tp.itemType === 'weapon') {
                 radius = tp.radius
               }
-              if (tp.type && ['cache'].includes(tp.type))
-                tp.color = `#f9c74f`
+              if (tp.type && ['cache'].includes(tp.type)) tp.color = `#f9c74f`
               targetPoints.push({
                 location: tp.location,
                 radius,
-                color: tp.guildId
-                  ? c.guilds[tp.guildId].color
-                  : color,
+                color: tp.guildId ? c.guilds[tp.guildId].color : color,
               })
             } else if (tp.type && !tp.radii) {
               if (tp.type === 'ship') {
                 const found =
                   tp.id === this.ship.id
                     ? this.ship
-                    : (
-                        this.ship.visible as VisibleStub
-                      )?.ships.find((s) => s.id === tp.id)
+                    : (this.ship.visible as VisibleStub)?.ships.find(
+                        (s) => s.id === tp.id,
+                      )
                 if (found)
                   targetPoints.push({
                     location: found.location,
-                    color: tp.guildId
-                      ? c.guilds[tp.guildId].color
-                      : tp.color,
+                    color: tp.guildId ? c.guilds[tp.guildId].color : tp.color,
                   })
               }
 
               // todo cannot be true (zone too)
               if (
                 tp.type === 'planet' &&
-                this.ship.seenPlanets.find(
-                  (s) => s.name === tp.name,
-                )
+                this.ship.seenPlanets.find((s) => s.name === tp.name)
               ) {
                 targetPoints.push({
                   location: this.ship.seenPlanets.find(
@@ -339,17 +306,15 @@ export default Vue.extend({
                   color:
                     (
                       tp.name &&
-                      this.ship.seenPlanets.find(
-                        (sp) => sp.name === tp.name,
-                      )
+                      this.ship.seenPlanets.find((sp) => sp.name === tp.name)
                     )?.color || tp.color,
                 })
               }
               if (
                 tp.type === 'zone' &&
-                (
-                  this.ship.visible as VisibleStub
-                )?.zones.find((s) => s.id === tp.id)
+                (this.ship.visible as VisibleStub)?.zones.find(
+                  (s) => s.id === tp.id,
+                )
               ) {
                 const found = this.ship.visible.zones.find(
                   (s) => s.id === tp.id,
@@ -367,12 +332,7 @@ export default Vue.extend({
               targetPoints.push(
                 ...Object.keys(tp.radii)
                   .filter(
-                    (k) =>
-                      ![
-                        'gameSize',
-                        'safeZone',
-                        'attack',
-                      ].includes(k),
+                    (k) => !['gameSize', 'safeZone', 'attack'].includes(k),
                   )
                   .map((key) => ({
                     location: tp.location,
@@ -403,17 +363,12 @@ export default Vue.extend({
 
           this.drawer.draw({
             zoom: this.radius
-              ? (((1 / this.radius) *
-                  this.drawer.flatScale) /
-                  1000000) *
-                2
+              ? (((1 / this.radius) * this.drawer.flatScale) / 1000000) * 2
               : this.mapFollowingShip
               ? undefined
               : this.zoom,
             ship: this.ship,
-            center: this.mapFollowingShip
-              ? undefined
-              : this.mapCenter,
+            center: this.mapFollowingShip ? undefined : this.mapCenter,
             visible: this.ship?.visible,
             immediate: !!immediate,
             crewMemberId: this.userId,
@@ -433,9 +388,7 @@ export default Vue.extend({
 
           profiler.step('drawn')
           this.zoom = this.drawer.targetZoom || 1
-          this.mapCenter = [
-            ...(this.drawer.center || [0, 0]),
-          ]
+          this.mapCenter = [...(this.drawer.center || [0, 0])]
           profiler.end()
           if (!immediate && !this.drawer?.isIdle()) {
             this.drawNextFrame()
@@ -451,13 +404,9 @@ export default Vue.extend({
       this.$store.commit('set', { mapFollowingShip: false })
       this.mouseIsDown = true
       this.dragStartPoint =
-        'x' in e
-          ? [e.x, e.y]
-          : [e.touches[0].clientX, e.touches[0].clientY]
+        'x' in e ? [e.x, e.y] : [e.touches[0].clientX, e.touches[0].clientY]
       this.zoom = this.drawer?.zoom
-      this.mapCenterAtDragStart = [
-        ...(this.mapCenter || [0, 0]),
-      ]
+      this.mapCenterAtDragStart = [...(this.mapCenter || [0, 0])]
       window.addEventListener('mouseup', this.mouseUp)
     },
     mouseUp(e: MouseEvent | TouchEvent) {
@@ -478,10 +427,7 @@ export default Vue.extend({
             type: this.$store.state.tooltip.type,
             location: this.$store.state.tooltip.location,
           })
-        else
-          this.$store.commit('setTarget', [
-            ...(this.hoverPoint || [0, 0]),
-          ])
+        else this.$store.commit('setTarget', [...(this.hoverPoint || [0, 0])])
       }
 
       this.isPanning = false
@@ -490,8 +436,7 @@ export default Vue.extend({
       window.removeEventListener('mouseup', this.mouseUp)
     },
     mouseLeave(e: MouseEvent) {
-      if (this.$store.state.tooltip)
-        this.$store.commit('tooltip')
+      if (this.$store.state.tooltip) this.$store.commit('tooltip')
     },
     async mouseMove(e: MouseEvent | TouchEvent) {
       if (e.target === this.$refs.canvas && 'clientX' in e)
@@ -501,19 +446,10 @@ export default Vue.extend({
 
       if (!this.mouseIsDown) return
 
-      if (
-        !this.dragStartPoint ||
-        !this.mapCenterAtDragStart
-      )
-        return
+      if (!this.dragStartPoint || !this.mapCenterAtDragStart) return
       this.dragEndPoint =
-        'x' in e
-          ? [e.x, e.y]
-          : [e.touches[0].clientX, e.touches[0].clientY]
-      if (
-        c.distance(this.dragStartPoint, this.dragEndPoint) >
-        4
-      )
+        'x' in e ? [e.x, e.y] : [e.touches[0].clientX, e.touches[0].clientY]
+      if (c.distance(this.dragStartPoint, this.dragEndPoint) > 4)
         this.isPanning = true
       else return
 
@@ -552,10 +488,7 @@ export default Vue.extend({
 
       clearTimeout(this.isZoomingTimeout)
       this.isZooming = true
-      this.isZoomingTimeout = setTimeout(
-        () => (this.isZooming = false),
-        100,
-      )
+      this.isZoomingTimeout = setTimeout(() => (this.isZooming = false), 100)
 
       this.$store.commit('set', { mapFollowingShip: false })
       clearTimeout(this.followCenterTimeout)
@@ -572,8 +505,7 @@ export default Vue.extend({
       if (this.zoom > 1500000 / fs && e.deltaY < 0) return
 
       const zoomSpeed = 0.0015
-      const zoomChange =
-        this.zoom * Math.abs(e.deltaY) * zoomSpeed
+      const zoomChange = this.zoom * Math.abs(e.deltaY) * zoomSpeed
       if (e.deltaY < 0) this.zoom += zoomChange
       else this.zoom -= zoomChange
 
@@ -587,17 +519,12 @@ export default Vue.extend({
       const my = e.offsetY / this.widthAdjustedToWindowSize
 
       const mapDistanceFromMouseToCenter = this.drawer
-        ? [
-            this.drawer.width * (mx - 0.5),
-            this.drawer.height * (my - 0.5),
-          ]
+        ? [this.drawer.width * (mx - 0.5), this.drawer.height * (my - 0.5)]
         : [1, 1]
 
       this.mapCenter = [
-        this.mapCenter[0] -
-          mapDistanceFromMouseToCenter[0] * sizeDifference,
-        this.mapCenter[1] -
-          mapDistanceFromMouseToCenter[1] * sizeDifference,
+        this.mapCenter[0] - mapDistanceFromMouseToCenter[0] * sizeDifference,
+        this.mapCenter[1] - mapDistanceFromMouseToCenter[1] * sizeDifference,
       ]
 
       await this.drawNextFrame(true)
@@ -627,17 +554,11 @@ export default Vue.extend({
     },
 
     checkHoverPointForTooltip(e?: MouseEvent) {
-      if (
-        !this.show ||
-        !this.ship ||
-        !this.ship.visible ||
-        !this.isHovering
-      )
+      if (!this.show || !this.ship || !this.ship.visible || !this.isHovering)
         return
 
       if (this.isPanning) {
-        if (this.$store.state.tooltip)
-          this.$store.commit('tooltip')
+        if (this.$store.state.tooltip) this.$store.commit('tooltip')
         return
       }
 
@@ -652,10 +573,7 @@ export default Vue.extend({
       if (!s) return
 
       s.seenPlanets!.forEach((p: PlanetStub) => {
-        const hoverDistance = c.distance(
-          p.location,
-          this.hoverPoint,
-        )
+        const hoverDistance = c.distance(p.location, this.hoverPoint)
         if (hoverDistance <= hoverRadius)
           hoverableElements.push({
             hoverDistance,
@@ -664,26 +582,18 @@ export default Vue.extend({
           })
       })
 
-      s.visible?.comets.forEach(
-        (p: Partial<PlanetStub>) => {
-          const hoverDistance = c.distance(
-            p.location,
-            this.hoverPoint,
-          )
-          if (hoverDistance <= hoverRadius)
-            hoverableElements.push({
-              hoverDistance,
-              ...p,
-              type: 'comet',
-            })
-        },
-      )
+      s.visible?.comets.forEach((p: Partial<PlanetStub>) => {
+        const hoverDistance = c.distance(p.location, this.hoverPoint)
+        if (hoverDistance <= hoverRadius)
+          hoverableElements.push({
+            hoverDistance,
+            ...p,
+            type: 'comet',
+          })
+      })
 
       s.visible?.caches.forEach((p: Partial<CacheStub>) => {
-        const hoverDistance = c.distance(
-          p.location,
-          this.hoverPoint,
-        )
+        const hoverDistance = c.distance(p.location, this.hoverPoint)
         if (hoverDistance <= hoverRadius)
           hoverableElements.push({
             hoverDistance,
@@ -693,10 +603,7 @@ export default Vue.extend({
       })
 
       s.visible?.ships.forEach((p: ShipStub) => {
-        const hoverDistance = c.distance(
-          p.location,
-          this.hoverPoint,
-        )
+        const hoverDistance = c.distance(p.location, this.hoverPoint)
         if (hoverDistance <= hoverRadius)
           hoverableElements.push({
             hoverDistance,
@@ -705,24 +612,21 @@ export default Vue.extend({
           })
       })
 
-      s.seenLandmarks!.filter(
-        (l: any) => l.type === 'zone',
-      ).forEach((p: ZoneStub) => {
-        const hoverDistance =
-          c.distance(p.location, this.hoverPoint) - p.radius
-        if (hoverDistance <= hoverRadius)
-          hoverableElements.push({
-            hoverDistance,
-            hoverDistanceSubtract: p.radius,
-            ...p,
-            type: 'zone',
-          })
-      })
-
-      const hd = c.distance(
-        this.ship.location,
-        this.hoverPoint,
+      s.seenLandmarks!.filter((l: any) => l.type === 'zone').forEach(
+        (p: ZoneStub) => {
+          const hoverDistance =
+            c.distance(p.location, this.hoverPoint) - p.radius
+          if (hoverDistance <= hoverRadius)
+            hoverableElements.push({
+              hoverDistance,
+              hoverDistanceSubtract: p.radius,
+              ...p,
+              type: 'zone',
+            })
+        },
       )
+
+      const hd = c.distance(this.ship.location, this.hoverPoint)
       if (hd <= hoverRadius)
         hoverableElements.push({
           hoverDistance: hd,
@@ -730,26 +634,20 @@ export default Vue.extend({
           ...this.ship,
         })
 
-      const toShow = hoverableElements.reduce(
-        (closest, curr) => {
-          if (
-            !closest ||
-            curr.hoverDistance +
-              (curr.hoverDistanceSubtract || 0) <=
-              closest.hoverDistance +
-                (closest.hoverDistanceSubtract || 0)
-          )
-            return curr
-          return closest
-        },
-        null,
-      )
+      const toShow = hoverableElements.reduce((closest, curr) => {
+        if (
+          !closest ||
+          curr.hoverDistance + (curr.hoverDistanceSubtract || 0) <=
+            closest.hoverDistance + (closest.hoverDistanceSubtract || 0)
+        )
+          return curr
+        return closest
+      }, null)
       if (
         this.$store.state.tooltip === toShow ||
         (this.$store.state.tooltip?.type === toShow?.type &&
           this.$store.state.tooltip?.id === toShow?.id &&
-          this.$store.state.tooltip?.location?.[0] ===
-            toShow?.location?.[0])
+          this.$store.state.tooltip?.location?.[0] === toShow?.location?.[0])
       )
         return
 

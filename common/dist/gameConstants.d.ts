@@ -18,6 +18,7 @@ declare const _default: {
         staminaBottomedOutResetPoint: any;
         staminaBottomedOutChargeMultiplier: any;
         staminaRechargeMultiplier: any;
+        enduranceXpGainPerSecond: any;
         newCrewMemberCredits: any;
         planetDensity: any;
         cometDensity: any;

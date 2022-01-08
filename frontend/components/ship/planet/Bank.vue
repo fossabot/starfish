@@ -36,6 +36,7 @@
         :disabled="!ship.commonCredits"
         class="inlineblock"
         :max="ship.commonCredits"
+        :numeric="true"
         @done="deposit"
         @apply="deposit"
       >
@@ -58,6 +59,7 @@
         :disabled="!creditsStoredHere"
         class="inlineblock"
         :max="creditsStoredHere"
+        :numeric="true"
         @done="withdraw"
         @apply="withdraw"
       >

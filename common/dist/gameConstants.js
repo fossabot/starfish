@@ -11,6 +11,7 @@ const defaultGameSettings = {
     staminaBottomedOutResetPoint: 0.05,
     staminaBottomedOutChargeMultiplier: 1,
     newCrewMemberCredits: 1000,
+    enduranceXpGainPerSecond: 0.1,
     moraleLowThreshold: 0.2,
     moraleHighThreshold: 0.8,
     gravityMultiplier: 1.8,

@@ -27,6 +27,8 @@ export const state = () => ({
   forceMapRedraw: 0,
   mapFollowingShip: true,
 
+  frontendSettings: {},
+
   adminPassword: false,
 })
 
@@ -53,14 +55,10 @@ export const mutations = {
       (c) => c.id === updates?.id,
     )
     if (!crewMember) state.ship?.crewMembers?.push(updates)
-    else
-      for (let prop in updates)
-        Vue.set(crewMember, prop, updates[prop])
+    else for (let prop in updates) Vue.set(crewMember, prop, updates[prop])
   },
   removeACrewMember(state, id) {
-    const crewMember = state.ship?.crewMembers?.find(
-      (c) => c.id === id,
-    )
+    const crewMember = state.ship?.crewMembers?.find((c) => c.id === id)
     if (crewMember)
       state.ship?.crewMembers?.splice(
         state.ship.crewMembers.indexOf(crewMember),
@@ -70,21 +68,14 @@ export const mutations = {
 
   setBasicsProp(state, { shipId, prop, value }) {
     // c.log(`setBasicsProp`, shipId, prop, value)
-    const foundShip = state.shipsBasics.find(
-      (s) => s.id === shipId,
-    )
+    const foundShip = state.shipsBasics.find((s) => s.id === shipId)
     if (foundShip) Vue.set(foundShip, prop, value)
   },
 
   setRoom(state, target) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `location`, target)
-    this.$socket?.emit(
-      `crew:move`,
-      state.ship.id,
-      state.userId,
-      target,
-    )
+    this.$socket?.emit(`crew:move`, state.ship.id, state.userId, target)
   },
 
   setTarget(state, target) {
@@ -113,90 +104,53 @@ export const mutations = {
   setTactic(state, tactic) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `combatTactic`, tactic)
-    this.$socket?.emit(
-      `crew:tactic`,
-      state.ship.id,
-      state.userId,
-      tactic,
-    )
+    this.$socket?.emit(`crew:tactic`, state.ship.id, state.userId, tactic)
   },
 
   setAttackTarget(state, target) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `attackTargetId`, target)
-    this.$socket?.emit(
-      `crew:attackTarget`,
-      state.ship.id,
-      state.userId,
-      target,
-    )
+    this.$socket?.emit(`crew:attackTarget`, state.ship.id, state.userId, target)
   },
 
   setTargetItemType(state, target) {
     if (!state.crewMember) return
     Vue.set(state.crewMember, `targetItemType`, target)
-    this.$socket?.emit(
-      `crew:itemTarget`,
-      state.ship.id,
-      state.userId,
-      target,
-    )
+    this.$socket?.emit(`crew:itemTarget`, state.ship.id, state.userId, target)
   },
 
   setRepairPriority(state, rp) {
     if (!state.crewMember) return
     Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
+      state.ship?.crewMembers?.find((cm) => cm.id === state.userId),
       `repairPriority`,
       rp,
     )
-    this.$socket?.emit(
-      `crew:repairPriority`,
-      state.ship.id,
-      state.userId,
-      rp,
-    )
+    this.$socket?.emit(`crew:repairPriority`, state.ship.id, state.userId, rp)
   },
 
   setMinePriority(state, rp) {
     if (!state.crewMember) return
     Vue.set(
-      state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
+      state.ship?.crewMembers?.find((cm) => cm.id === state.userId),
       `minePriority`,
       rp,
     )
-    this.$socket?.emit(
-      `crew:minePriority`,
-      state.ship.id,
-      state.userId,
-      rp,
-    )
+    this.$socket?.emit(`crew:minePriority`, state.ship.id, state.userId, rp)
   },
 }
 
 export const actions = {
-  async getAndSetShipDataById(
-    { state, dispatch, commit },
-    shipId,
-  ) {
+  async getAndSetShipDataById({ state, dispatch, commit }, shipId) {
     if (!shipId) return
     // c.log(`getAndSetShipDataById`, shipId)
     // c.trace()
 
-    this.$socket?.emit(
-      `ship:listen`,
-      shipId,
-      state.userId,
-      async (res) => {
-        if (`error` in res) return c.log(res.error)
-        // * first load (no visible)
-        dispatch(`updateShip`, { ...res.data })
-      },
-    )
+    this.$socket?.emit(`ship:listen`, shipId, state.userId, async (res) => {
+      if (`error` in res) return c.log(res.error)
+      // * first load (no visible)
+      dispatch(`updateShip`, { ...res.data })
+    })
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return
       if (state.ship.id !== id) return
@@ -230,8 +184,7 @@ export const actions = {
 
   async socketSetup({ state, dispatch, commit }, shipId) {
     this.$socket.removeAllListeners()
-    if (!shipId)
-      shipId = state.ship?.id || state.activeShipId
+    if (!shipId) shipId = state.ship?.id || state.activeShipId
 
     // c.log(
     //   `setting up socket with id`,
@@ -240,8 +193,7 @@ export const actions = {
     //   shipId,
     // )
 
-    const previousShipId =
-      state.ship?.id || state.activeShipId
+    const previousShipId = state.ship?.id || state.activeShipId
 
     commit(`set`, {
       modal: null,
@@ -266,38 +218,29 @@ export const actions = {
 
       dispatch(`watchUserId`)
 
-      this.$socket.emit(
-        `ship:listen`,
-        shipId,
-        state.userId,
-        async (res) => {
-          if (state.loading)
-            commit(`set`, { loading: false })
-          // * here we get the first full load of the ship's data
-          if (`error` in res) {
-            c.log(res.error, `Reloading ships...`)
-            commit(`set`, {
-              shipIds: null,
-              activeShipId: null,
-            })
-            dispatch(`logIn`)
-            return
-          }
-          // c.log(
-          //   JSON.stringify(res.data).length,
-          //   `characters of data received from initial load`,
-          // )
-          if (
-            previousShipId !== res.data.id ||
-            wasDisconnected
-          ) {
-            commit(`set`, { ship: null, crewMember: null })
-            await Vue.nextTick() // testing this to make sure data fully resets
-            commit(`set`, { ship: res.data })
-          }
-          dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
-        },
-      )
+      this.$socket.emit(`ship:listen`, shipId, state.userId, async (res) => {
+        if (state.loading) commit(`set`, { loading: false })
+        // * here we get the first full load of the ship's data
+        if (`error` in res) {
+          c.log(res.error, `Reloading ships...`)
+          commit(`set`, {
+            shipIds: null,
+            activeShipId: null,
+          })
+          dispatch(`logIn`)
+          return
+        }
+        // c.log(
+        //   JSON.stringify(res.data).length,
+        //   `characters of data received from initial load`,
+        // )
+        if (previousShipId !== res.data.id || wasDisconnected) {
+          commit(`set`, { ship: null, crewMember: null })
+          await Vue.nextTick() // testing this to make sure data fully resets
+          commit(`set`, { ship: res.data })
+        }
+        dispatch(`updateShip`, { ...res.data }) // this gets the crewMember for us
+      })
     }
     if (this.$socket.connected) connected()
     this.$socket.on(`connect`, connected)
@@ -305,8 +248,7 @@ export const actions = {
     this.$socket.on(`ship:update`, ({ id, updates }) => {
       if (state.ship === null) return connected()
       if (state.ship.id !== id) return
-      if (stillWorkingOnTick)
-        return c.log(`skipping tick because too busy`)
+      if (stillWorkingOnTick) return c.log(`skipping tick because too busy`)
       // c.log(
       //   JSON.stringify(updates).length,
       //   `characters of data received from update`,
@@ -317,10 +259,7 @@ export const actions = {
       stillWorkingOnTick = true
       dispatch(`updateShip`, { ...updates })
 
-      setTimeout(
-        () => (stillWorkingOnTick = false),
-        c.tickInterval * 0.7,
-      )
+      setTimeout(() => (stillWorkingOnTick = false), c.tickInterval * 0.7)
     })
 
     this.$socket.on(`ship:forwardTo`, (id) => {
@@ -353,11 +292,7 @@ export const actions = {
 
     for (let prop in updates) {
       // update basics if relevant (i.e. name change)
-      if (
-        basics &&
-        basics[prop] &&
-        basics[prop] !== updates[prop]
-      ) {
+      if (basics && basics[prop] && basics[prop] !== updates[prop]) {
         commit(`setBasicsProp`, {
           shipId: basics.id,
           prop,
@@ -368,41 +303,26 @@ export const actions = {
       if (prop === `crewMembers`) {
         const existingMembers = state.ship.crewMembers
         if (!existingMembers)
-          commit(`setShipProp`, [
-            `crewMembers`,
-            updates.crewMembers,
-          ])
+          commit(`setShipProp`, [`crewMembers`, updates.crewMembers])
         updates.crewMembers.forEach((cmStub) =>
           commit(`updateACrewMember`, cmStub),
         )
         const removedCrewMembers = existingMembers.filter(
-          (em) =>
-            updates.crewMembers.findIndex(
-              (cm) => cm.id === em.id,
-            ) === -1,
+          (em) => updates.crewMembers.findIndex((cm) => cm.id === em.id) === -1,
         )
-        removedCrewMembers.forEach((cm) =>
-          commit(`removeACrewMember`, cm.id),
-        )
+        removedCrewMembers.forEach((cm) => commit(`removeACrewMember`, cm.id))
       } else if (prop === `visible` && updates.visible) {
         // * planets send only the things that updated, so we update that here
         if (!state.ship?.visible)
-          commit(`setShipProp`, [
-            `visible`,
-            updates.visible,
-          ])
+          commit(`setShipProp`, [`visible`, updates.visible])
         else {
           const newVisible = { ...updates.visible }
-          newVisible.planets = [
-            ...(state.visible?.planets || []),
-          ]
-          for (let updatedPlanet of updates.visible
-            ?.planets || []) {
+          newVisible.planets = [...(state.visible?.planets || [])]
+          for (let updatedPlanet of updates.visible?.planets || []) {
             const existingData = newVisible.planets.find(
               (p) => updatedPlanet.id === p.id,
             )
-            if (!existingData)
-              newVisible.planets.push(updatedPlanet)
+            if (!existingData) newVisible.planets.push(updatedPlanet)
             else
               for (let prop in updatedPlanet)
                 existingData[prop] = updatedPlanet[prop]
@@ -415,9 +335,7 @@ export const actions = {
     commit(`setShipProp`, [`lastUpdated`, Date.now()])
     commit(`set`, {
       lastUpdated: Date.now(),
-      crewMember: state.ship?.crewMembers?.find(
-        (cm) => cm.id === state.userId,
-      ),
+      crewMember: state.ship?.crewMembers?.find((cm) => cm.id === state.userId),
       isCaptain: state.ship?.crewMembers?.find(
         (cm) => cm.id === state.ship?.captain,
       ),
@@ -426,22 +344,15 @@ export const actions = {
 
   respawn({ state, dispatch }) {
     if (!state.ship?.dead) return
-    this.$socket?.emit(
-      `ship:respawn`,
-      state.ship.id,
-      ({ data, error }) => {
-        if (error) return c.log(error)
-        dispatch(`updateShip`, { ...data, dead: false })
-      },
-    )
+    this.$socket?.emit(`ship:respawn`, state.ship.id, ({ data, error }) => {
+      if (error) return c.log(error)
+      dispatch(`updateShip`, { ...data, dead: false })
+    })
   },
 
   async logIn(
     { commit, state, dispatch },
-    {
-      userId,
-      shipIds,
-    }: { userId?: string; shipIds?: string[] } = {},
+    { userId, shipIds }: { userId?: string; shipIds?: string[] } = {},
   ) {
     if (alreadyLoggingIn) return
     alreadyLoggingIn = true
@@ -485,10 +396,7 @@ export const actions = {
               accessToken,
             })
             .catch((e) => {
-              c.log(
-                `error loading game guilds from discord api`,
-                e,
-              )
+              c.log(`error loading game guilds from discord api`, e)
             })
 
           if (guildsRes && `error` in guildsRes) {
@@ -512,16 +420,12 @@ export const actions = {
             shipIds = guildsRes ? guildsRes.data : undefined
           }
         } catch (e) {
-          c.log(
-            `failed to get ship ids from discord api`,
-            e,
-          )
+          c.log(`failed to get ship ids from discord api`, e)
           alreadyLoggingIn = false
           return
         }
       }
-      if (shipIds)
-        storage.set(`shipIds`, JSON.stringify(shipIds))
+      if (shipIds) storage.set(`shipIds`, JSON.stringify(shipIds))
     }
 
     // c.log(`logging in...`, { userId, shipIds })
@@ -531,31 +435,24 @@ export const actions = {
     const shipsBasics = []
     for (let id of shipIds) {
       await new Promise<void>((resolve) => {
-        this.$socket?.emit(
-          `ship:basics`,
-          id,
-          ({ data, error }) => {
-            if (error) {
-              c.log(`ship basics error:`, error)
-              // something's up with one of the guilds, so reset the whole deal
-              storage.remove(`shipIds`)
-              commit(`set`, { shipIds: [] })
-              alreadyLoggingIn = false
-              dispatch(`logIn`, { userId })
-              resolve()
-              return
-            }
-            shipsBasics.push(data)
+        this.$socket?.emit(`ship:basics`, id, ({ data, error }) => {
+          if (error) {
+            c.log(`ship basics error:`, error)
+            // something's up with one of the guilds, so reset the whole deal
+            storage.remove(`shipIds`)
+            commit(`set`, { shipIds: [] })
+            alreadyLoggingIn = false
+            dispatch(`logIn`, { userId })
             resolve()
-          },
-        )
+            return
+          }
+          shipsBasics.push(data)
+          resolve()
+        })
       })
     }
 
-    if (
-      state.ship &&
-      !shipIds.find((sid) => sid === state.ship.id)
-    )
+    if (state.ship && !shipIds.find((sid) => sid === state.ship.id))
       commit(`set`, {
         ship: null,
         crewMember: null,

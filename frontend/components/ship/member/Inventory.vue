@@ -28,6 +28,7 @@
             class="inlineblock"
             v-if="crewMember.credits >= 1"
             :max="crewMember.credits"
+            :numeric="true"
             @done="addToCommonFund(...arguments)"
             @apply="addToCommonFund(...arguments)"
           >
@@ -52,6 +53,7 @@
           ><PromptButton
             class="inlineblock"
             v-if="crewMember.credits >= 1"
+            :numeric="true"
             @done="drop('credits', ...arguments)"
             @apply="drop('credits', ...arguments)"
           >
@@ -148,6 +150,7 @@ ${
             class="inlineblock"
             v-if="item.amount >= 1"
             :max="item.amount"
+            :numeric="true"
             @done="drop(item.id, ...arguments)"
             @apply="drop(item.id, ...arguments)"
           >

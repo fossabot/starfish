@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fillCharacter = `.`;
+let ignoreGray = false;
 let longest = 0;
 const reset = `\x1b[0m`, dim = `\x1b[2m`, bright = `\x1b[1m`;
 const colors = {
@@ -32,6 +33,8 @@ const log = (...args) => {
     const lineNumber = regexResult?.[3] || ``;
     const mainDir = mainDirs.find((d) => fullPath.indexOf(`/${d}/`) !== -1);
     const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``;
+    if (ignoreGray && args[0] === `gray`)
+        return;
     for (let index = 0; index < args.length; index++) {
         const arg = args[index];
         if (arg in colors) {
@@ -47,8 +50,7 @@ const log = (...args) => {
                 args.splice(index, 1);
             }
             else {
-                args[index + 1] =
-                    colors[arg] + `${args[index + 1]}` + reset;
+                args[index + 1] = colors[arg] + `${args[index + 1]}` + reset;
                 args.splice(index, 1);
             }
         }
@@ -68,12 +70,7 @@ const log = (...args) => {
             minute: `2-digit`,
         })}]` +
         (mainDir
-            ? reset +
-                mainDirColor +
-                mainDir +
-                colors.white +
-                dim +
-                `:`
+            ? reset + mainDirColor + mainDir + colors.white + dim + `:`
             : ``) +
         pathName);
     if (prefix.length > longest)
@@ -86,5 +83,8 @@ const log = (...args) => {
 function trace() {
     console.trace();
 }
-exports.default = { log, trace };
+function ignoreGrayLogs() {
+    ignoreGray = true;
+}
+exports.default = { log, trace, ignoreGrayLogs };
 //# sourceMappingURL=log.js.map

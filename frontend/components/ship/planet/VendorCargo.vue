@@ -32,6 +32,7 @@
             :disabled="ca.maxCanBuy < 0.01"
             class="inlineblock"
             :max="ca.maxCanBuy"
+            :numeric="true"
             @done="buyCargo(ca, ...arguments)"
             @apply="buyCargo(ca, ...arguments)"
           >
@@ -88,6 +89,7 @@
             :disabled="!ca.canSell"
             class="inlineblock"
             :max="ca.heldAmount"
+            :numeric="true"
             @done="sellCargo(ca, ...arguments)"
             @apply="sellCargo(ca, ...arguments)"
           >

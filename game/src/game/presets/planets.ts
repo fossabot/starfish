@@ -7,42 +7,31 @@ import type { Zone } from '../classes/Zone'
 function getName(game?: Game) {
   let name: string | undefined
   const possibleNames = [...planetNames]
-  while (!name && possibleNames.length) {
-    const chosenIndex = Math.floor(
-      Math.random() * possibleNames.length,
-    )
-    let thisName: string | undefined =
-      possibleNames[chosenIndex]
-    possibleNames.splice(chosenIndex, 1)
-    if (
-      thisName &&
-      game?.planets.find((p) => p.name == thisName)
-    )
-      thisName = undefined
-    name = thisName
-  }
-  if (!name || Math.random() > 0.9) {
-    const useSuffix = Math.random() > 0.2
-    name = `${
-      !useSuffix
-        ? `${c.randomFromArray(planetNamePrefixes)} `
-        : ``
-    }${c.randomFromArray(Array.from(planetNames))}${
-      useSuffix
-        ? `${c.randomFromArray(planetNameSuffixes)}`
-        : ``
-    }`
-    if (game?.planets.find((p) => p.name === name))
+  while (!name) {
+    if (Math.random() > 0.9) {
+      const useSuffix = Math.random() > 0.2
+      name = `${
+        !useSuffix ? `${c.randomFromArray(planetNamePrefixes)} ` : ``
+      }${c.randomFromArray(possibleNames)}${
+        useSuffix ? `${c.randomFromArray(planetNameSuffixes)}` : ``
+      }`
+    } else name = c.randomFromArray(possibleNames)
+
+    if (game?.planets.find((p) => p.name === name)) {
       name = undefined
+    }
   }
+
   return name
 }
 
 function getLocation(game?: Game, isHomeworld?: any) {
-  let locationSearchRadius =
-    (game?.gameSoftRadius || 1) * 0.75
-  const tooClose = 0.2
+  let locationSearchRadius = isHomeworld
+    ? game?.settings.safeZoneRadius || 1
+    : (game?.gameSoftRadius || 1) * 0.75
+  let tooClose = 0.2
   let location: CoordinatePair = [0, 0]
+
   const isTooClose = (p: Planet | Ship | Zone) =>
     c.distance(location, p.location) <
     tooClose + (p.type === `zone` ? p.radius : 0)
@@ -51,13 +40,10 @@ function getLocation(game?: Game, isHomeworld?: any) {
     c.distance(closest?.location || [0, 0], location)
       ? p
       : closest
-
   const tooManyPlanetsInVicinity = () =>
     (game?.planets.reduce(
       (count: number, p: Planet): number =>
-        c.distance(p.location, location) > 1
-          ? count
-          : count + 1,
+        c.distance(p.location, location) > 1 ? count : count + 1,
       0,
     ) || 0) >
     Math.floor(Math.random() * 3) + 1
@@ -67,13 +53,9 @@ function getLocation(game?: Game, isHomeworld?: any) {
     game?.humanShips.find(isTooClose) ||
     game?.zones.find(isTooClose) ||
     tooManyPlanetsInVicinity() ||
-    c.distance(location, [0, 0]) >
-      Math.min(
-        isHomeworld
-          ? game?.settings.safeZoneRadius || Infinity
-          : Infinity,
-        game?.gameSoftRadius || 1,
-      )
+    (isHomeworld &&
+      c.distance(location, [0, 0]) >
+        (game?.settings.safeZoneRadius || Infinity))
   ) {
     location = c.randomInsideCircle(locationSearchRadius)
 
@@ -83,35 +65,36 @@ function getLocation(game?: Game, isHomeworld?: any) {
       game.planets[0],
     )
     if (closestPlanet) {
-      const distance = c.distance(
-        location,
-        closestPlanet.location,
-      )
+      const distance = c.distance(location, closestPlanet.location)
       if (distance < 1) {
         const vectorTowardsClosestPlanet =
-          c.getUnitVectorFromThatBodyToThisBody(
-            { location },
-            closestPlanet,
-          )
+          c.getUnitVectorFromThatBodyToThisBody({ location }, closestPlanet)
 
-        const magnitude =
-          distance * 0.6 * (isHomeworld ? -1 : 1) // spawn homeworlds as "seeds" so they land farther away from other possible homeworlds
-        location[0] -=
-          vectorTowardsClosestPlanet[0] * magnitude
-        location[1] -=
-          vectorTowardsClosestPlanet[1] * magnitude
+        const magnitude = distance * 0.6 * (isHomeworld ? -1 : 1) // spawn homeworlds as "seeds" so they land farther away from other possible homeworlds
+        location[0] -= vectorTowardsClosestPlanet[0] * magnitude
+        location[1] -= vectorTowardsClosestPlanet[1] * magnitude
       }
     }
 
-    locationSearchRadius *= 1.01
+    if (!isHomeworld) locationSearchRadius *= 1.01
+    else tooClose *= 0.999
     // if (isHomeworld) c.log(isHomeworld, location)
+    // c.log(
+    //   `searching...`,
+    //   location,
+    //   Boolean(game?.planets.find(isTooClose)),
+    //   Boolean(game?.humanShips.find(isTooClose)),
+    //   Boolean(game?.zones.find(isTooClose)),
+    //   Boolean(tooManyPlanetsInVicinity()),
+    //   isHomeworld &&
+    //     c.distance(location, [0, 0]) >
+    //       (game?.settings.safeZoneRadius || Infinity),
+    // )
   }
   return location
 }
 
-export function generateMiningPlanet(
-  game: Game,
-): BaseMiningPlanetData | false {
+export function generateMiningPlanet(game: Game): BaseMiningPlanetData | false {
   const name = getName(game)
   if (!name) return false
   const location = getLocation(game)
@@ -119,23 +102,16 @@ export function generateMiningPlanet(
   const baseLevel = 1
   const xp = 0
 
-  const color = `hsl(${Math.round(
-    Math.random() * 360,
-  )}, ${Math.round(Math.random() * 40)}%, ${
-    Math.round(Math.random() * 50) + 30
-  }%)`
+  const color = `hsl(${Math.round(Math.random() * 360)}, ${Math.round(
+    Math.random() * 40,
+  )}%, ${Math.round(Math.random() * 50) + 30}%)`
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
-  const mass =
-    ((4e30 * radius) / 36000) *
-    (1 + 0.2 * (Math.random() - 0.5))
+  const mass = ((4e30 * radius) / 36000) * (1 + 0.2 * (Math.random() - 0.5))
 
   const creatures: string[] = []
   while (Math.random() > 0.7) {
-    const viableCreatures = [
-      ...seaCreatures,
-      ...landCreatures,
-    ]
+    const viableCreatures = [...seaCreatures, ...landCreatures]
     const chosen = c.randomFromArray(viableCreatures)
     if (!creatures.find((cre) => cre === chosen.name))
       creatures.push(chosen.name)
@@ -168,9 +144,7 @@ export function generateBasicPlanet(
   const location = getLocation(game, homeworldGuildKey)
 
   const radius = Math.floor(Math.random() * 60000 + 10000)
-  const mass =
-    ((5.974e30 * radius) / 36000) *
-    (1 + 0.2 * (Math.random() - 0.5))
+  const mass = ((5.974e30 * radius) / 36000) * (1 + 0.2 * (Math.random() - 0.5))
 
   let guildId: GuildId | undefined
   if (homeworldGuildKey) guildId = homeworldGuildKey
@@ -190,9 +164,7 @@ export function generateBasicPlanet(
     // don't let color be too close to a guild color
     while (
       Object.values(c.guilds).find((f) => {
-        let guildHue: any = /hsl\(([^,]*),.*/g.exec(
-            f.color,
-          )?.[1],
+        let guildHue: any = /hsl\(([^,]*),.*/g.exec(f.color)?.[1],
           potentialHue = hue
         try {
           guildHue = parseInt(`${guildHue}`)
@@ -206,26 +178,22 @@ export function generateBasicPlanet(
         }
         if (guildHue > 180) guildHue -= 360
         if (potentialHue > 180) potentialHue -= 360
-        if (Math.abs(guildHue - potentialHue) < 15)
-          return true
+        if (Math.abs(guildHue - potentialHue) < 15) return true
         return false
       })
     ) {
       hue = Math.random() * 360
     }
 
-    color = `hsl(${Math.round(hue)}, ${Math.round(
-      Math.random() * 30 + 70,
-    )}%, ${Math.round(Math.random() * 40) + 50}%)`
+    color = `hsl(${Math.round(hue)}, ${Math.round(Math.random() * 30 + 70)}%, ${
+      Math.round(Math.random() * 40) + 50
+    }%)`
   }
 
   const level = 0
   const baseLevel = homeworldGuildKey
     ? c.defaultHomeworldLevel
-    : Math.ceil(
-        Math.random() * 5 +
-          c.distance(location, [0, 0]) / 3,
-      )
+    : Math.ceil(Math.random() * 5 + c.distance(location, [0, 0]) / 3)
   const xp = 0
 
   const leanings: PlanetLeaning[] = []
@@ -259,8 +227,7 @@ export function generateBasicPlanet(
       `defense`,
     ]
     const leaningType = c.randomFromArray(leaningTypes)
-    if (leanings.find((l) => l.type === leaningType))
-      continue
+    if (leanings.find((l) => l.type === leaningType)) continue
     const never = c.coinFlip()
     leanings.push({
       type: leaningType,
@@ -281,17 +248,12 @@ export function generateBasicPlanet(
 
   const creatures: string[] = []
   while (creatures.length === 0 || Math.random() > 0.5) {
-    const chosen = c.randomFromArray([
-      ...seaCreatures,
-      ...landCreatures,
-    ])
+    const chosen = c.randomFromArray([...seaCreatures, ...landCreatures])
     if (!creatures.find((cre) => cre === chosen.name))
       creatures.push(chosen.name)
   }
 
-  const pacifist = homeworldGuildKey
-    ? true
-    : Math.random() > 0.2
+  const pacifist = homeworldGuildKey ? true : Math.random() > 0.2
 
   return {
     planetType,
@@ -320,9 +282,7 @@ function getBuyAndSellMultipliers(item: boolean = false) {
   const buyMultiplier = c.r2(0.8 + Math.random() * 0.4, 3)
   const sellMultiplier =
     Math.min(
-      buyMultiplier *
-        c.guildVendorMultiplier *
-        c.guildVendorMultiplier,
+      buyMultiplier * c.guildVendorMultiplier * c.guildVendorMultiplier,
       c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8, 3),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }
@@ -394,7 +354,7 @@ const planetNames = new Set([
   `Aran`,
   `Woaka`,
   `Shalos`,
-  `Hon‘an`,
+  `Hon'an`,
   `Maztes`,
   `Meron`,
   `Bevis`,
@@ -411,7 +371,7 @@ const planetNames = new Set([
   `Boon`,
   `Oxtus`,
   `Cortus`,
-  `Ca‘us`,
+  `Ca'us`,
   `Sonor`,
   `Ae'o`,
   `K'arth`,
@@ -420,7 +380,7 @@ const planetNames = new Set([
   `Taleos`,
   `Cynia`,
   `Konar`,
-  `C’lax`,
+  `C'lax`,
   `Arcton`,
   `Arara`,
   `Ruza`,
@@ -479,19 +439,27 @@ const planetNames = new Set([
   `Umi`,
   `Kawa`,
   `Geos`,
+  `Honrax`,
+  `Amus`,
+  `Ovlos`,
+  `Loenia`,
+  `Deian`,
 
   // todo MORE
 ])
-const planetNamePrefixes = [`New`, `Old`]
+const planetNamePrefixes = [`Moon of`, `New`, `Old`]
 const planetNameSuffixes = [
   ` Prime`,
-  ` II`,
-  ` IV`,
   ` Beta`,
-  ` VI`,
+  ` II`,
   ` III`,
-  `'s Landing`,
+  ` IV`,
   ` V`,
+  ` VI`,
+  ` VII`,
+  ` Base`,
+  `'s Landing`,
+  `'s World`,
 ]
 
 const seaCreatures: {

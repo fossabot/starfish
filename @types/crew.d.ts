@@ -15,6 +15,7 @@ type SkillId =
   | `dexterity`
   | `intellect`
   | `charisma`
+  | `endurance`
 // | `piloting`
 // | `munitions`
 // | `mechanics`
@@ -120,6 +121,7 @@ type CrewPassiveId =
   | `boostDexterity`
   | `boostIntellect`
   | `boostCharisma`
+  | `boostEndurance`
   | `boostActiveSlots`
 interface CrewPassiveData {
   id: CrewPassiveId

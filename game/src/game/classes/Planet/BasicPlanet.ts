@@ -143,7 +143,7 @@ export class BasicPlanet extends Planet {
       : defensePassiveLeaning?.propensity || 1
 
     const levelUpOptions = [
-      { weight: 400 / this.level, value: `addItemToShop` },
+      { weight: 600 / this.level, value: `addItemToShop` },
       {
         weight: 1,
         value: `expandLandingZone`,
@@ -366,7 +366,7 @@ export class BasicPlanet extends Planet {
     ) {
       const baseItemPropensity =
         (this.leanings.find((l) => l.type === `items`)
-          ?.propensity || 1) * 2
+          ?.propensity || 1) * 4
       for (let itemGroup of Object.values(c.items)) {
         if (
           this.leanings.find(

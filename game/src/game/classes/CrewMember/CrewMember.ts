@@ -1,18 +1,11 @@
 import c from '../../../../../common/dist'
 
 import * as roomActions from './addins/rooms'
-import {
-  useActive,
-  addActive,
-  removeActive,
-} from './addins/actives'
+import { useActive, addActive, removeActive } from './addins/actives'
 import type { HumanShip } from '../Ship/HumanShip/HumanShip'
 import { Stubbable } from '../Stubbable'
 
-import {
-  addBackground,
-  addTagline,
-} from './addins/cosmetics'
+import { addBackground, addTagline } from './addins/cosmetics'
 import type { BasicPlanet } from '../Planet/BasicPlanet'
 
 export class CrewMember extends Stubbable {
@@ -27,15 +20,16 @@ export class CrewMember extends Stubbable {
   location: CrewLocation
   skills: XPData[] = []
   level: number = 1
+  /** amount, not percent. */
   stamina: number
   morale: number
   speciesId?: SpeciesId
-  maxStamina: number = 1
+  /** default 1 */
+  maxStamina: number = 0.3
   lastActive: number
   targetLocation: CoordinatePair | false = false
-  targetObject:
-    | { id: string; type: string; location: CoordinatePair }
-    | false = false
+  targetObject: { id: string; type: string; location: CoordinatePair } | false =
+    false
 
   researchTargetId: string | null = null
 
@@ -84,8 +78,7 @@ export class CrewMember extends Stubbable {
     this.tagline = data.tagline || null
     this.availableTaglines = data.availableTaglines || []
     this.background = data.background || null
-    this.availableBackgrounds =
-      data.availableBackgrounds || []
+    this.availableBackgrounds = data.availableBackgrounds || []
 
     if (data.speciesId && c.species[data.speciesId])
       this.setSpecies(data.speciesId)
@@ -95,9 +88,7 @@ export class CrewMember extends Stubbable {
       data.location ||
       ((hasBunk
         ? `bunk`
-        : c.randomFromArray(
-            Object.keys(ship.rooms),
-          )) as CrewLocation) ||
+        : c.randomFromArray(Object.keys(ship.rooms))) as CrewLocation) ||
       `bunk`
 
     this.lastActive = data.lastActive || Date.now()
@@ -105,11 +96,9 @@ export class CrewMember extends Stubbable {
     this.morale = data.morale || 1
     this.cockpitCharge = data.cockpitCharge || 0
 
-    this.inventory =
-      data.inventory?.filter((i) => i && i.amount > 0) || []
+    this.inventory = data.inventory?.filter((i) => i && i.amount > 0) || []
     this.credits = data.credits ?? 0
-    this.crewCosmeticCurrency =
-      data.crewCosmeticCurrency ?? 0
+    this.crewCosmeticCurrency = data.crewCosmeticCurrency ?? 0
 
     this.skills =
       data.skills && data.skills.length
@@ -119,10 +108,13 @@ export class CrewMember extends Stubbable {
             { skill: `dexterity`, level: 1, xp: 0 },
             { skill: `intellect`, level: 1, xp: 0 },
             { skill: `charisma`, level: 1, xp: 0 },
+            { skill: `endurance`, level: 1, xp: 0 },
           ]
+    // todo temporary, remove
+    if (!this.skills.find((s) => s.skill === `endurance`))
+      this.skills.push({ skill: `endurance`, level: 1, xp: 0 })
 
-    if (data.tutorialShipId)
-      this.tutorialShipId = data.tutorialShipId
+    if (data.tutorialShipId) this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
     // if (data.actives) this.actives = data.actives
@@ -131,10 +123,10 @@ export class CrewMember extends Stubbable {
     //   id: `instantStamina`,
     //   intensity: 0.3,
     // })
-    this.addActive({
-      id: `combatDrone`,
-      intensity: 0.2,
-    })
+    // this.addActive({
+    //   id: `combatDrone`,
+    //   intensity: 0.2,
+    // })
     // this.addActive({
     //   id: `repairDrone`,
     //   intensity: 0.2,
@@ -229,31 +221,25 @@ export class CrewMember extends Stubbable {
     // })
 
     if (data.permanentPassives) {
-      for (let p of data.permanentPassives)
-        this.addToPermanentPassive(p)
+      for (let p of data.permanentPassives) this.addToPermanentPassive(p)
     }
     if (data.timedPassives) {
       for (let p of data.timedPassives) this.applyPassive(p)
     }
 
-    if (data.combatTactic)
-      this.combatTactic = data.combatTactic
-    if (data.targetItemType)
-      this.targetItemType = data.targetItemType
-    if (data.minePriority)
-      this.minePriority = data.minePriority
+    if (data.combatTactic) this.combatTactic = data.combatTactic
+    if (data.targetItemType) this.targetItemType = data.targetItemType
+    if (data.minePriority) this.minePriority = data.minePriority
     if (
       data.targetLocation &&
       data.targetLocation.length === 2 &&
       !data.targetLocation.find((t: any) => !Number(t))
     )
       this.targetLocation = data.targetLocation
-    if (data.repairPriority)
-      this.repairPriority = data.repairPriority
+    if (data.repairPriority) this.repairPriority = data.repairPriority
     if (data.stats) this.stats = [...data.stats]
 
-    if (data.researchTargetId)
-      this.researchTargetId = data.researchTargetId
+    if (data.researchTargetId) this.researchTargetId = data.researchTargetId
 
     this.recalculateAll()
 
@@ -264,41 +250,29 @@ export class CrewMember extends Stubbable {
   addBackground = addBackground
 
   rename(newName: string) {
-    this.name = c
-      .sanitize(newName)
-      .result.substring(0, c.maxNameLength)
-    if (this.name.replace(/\s/g, ``).length === 0)
-      this.name = `crew member`
+    this.name = c.sanitize(newName).result.substring(0, c.maxNameLength)
+    if (this.name.replace(/\s/g, ``).length === 0) this.name = `crew member`
 
     this.toUpdate.name = this.name
   }
 
-  goTo(
-    location: CrewLocation,
-    automated = false,
-  ): undefined | string {
+  goTo(location: CrewLocation, automated = false): undefined | string {
     const previousLocation = this.location
     if (!automated) this.active()
 
-    if (!(location in this.ship.rooms))
-      return `Invalid room.`
+    if (!(location in this.ship.rooms)) return `Invalid room.`
 
     // * if you hit 0, you must recharge to 5% to do anything
-    this.location = this.bottomedOutOnStamina
-      ? `bunk`
-      : location
+    this.location = this.bottomedOutOnStamina ? `bunk` : location
     this.toUpdate.location = this.location
 
     if (this.location !== previousLocation) {
       // if it's in a position to possibly immediately auto-attack something, don't
       if (
         this.location === `weapons` &&
-        (
-          [`aggressive`, `onlyPlayers`] as (
-            | CombatTactic
-            | `none`
-          )[]
-        ).includes(this.combatTactic) &&
+        ([`aggressive`, `onlyPlayers`] as (CombatTactic | `none`)[]).includes(
+          this.combatTactic,
+        ) &&
         this.ship.membersIn(`weapons`).length <= 1 &&
         this.ship.availableWeapons().length >= 1 &&
         this.ship.getEnemiesInAttackRange().length > 0
@@ -307,10 +281,7 @@ export class CrewMember extends Stubbable {
         this.toUpdate.combatTactic = this.combatTactic
       }
 
-      if (
-        this.location === `weapons` ||
-        previousLocation === `weapons`
-      ) {
+      if (this.location === `weapons` || previousLocation === `weapons`) {
         // recalculate ship combat strategy on joining/leaving weapons bay
         this.ship.recalculateTargetItemType()
         this.ship.recalculateCombatTactic()
@@ -321,10 +292,8 @@ export class CrewMember extends Stubbable {
 
     if (this.bottomedOutOnStamina && location !== `bunk`)
       return `You've hit your limit! You must rest until you're at least ${c.r2(
-        (this.ship.game?.settings
-          .staminaBottomedOutResetPoint ||
-          c.defaultGameSettings
-            .staminaBottomedOutResetPoint) * 100,
+        (this.ship.game?.settings.staminaBottomedOutResetPoint ||
+          c.defaultGameSettings.staminaBottomedOutResetPoint) * 100,
       )}% recovered.`
   }
 
@@ -355,13 +324,10 @@ export class CrewMember extends Stubbable {
         this.targetObject = false
         this.toUpdate.targetObject = false
       } else if (
-        movingObject.location[0] !==
-          this.targetLocation[0] ||
+        movingObject.location[0] !== this.targetLocation[0] ||
         movingObject.location[1] !== this.targetLocation[1]
       ) {
-        this.targetLocation = [
-          ...movingObject.location,
-        ] as CoordinatePair
+        this.targetLocation = [...movingObject.location] as CoordinatePair
         this.toUpdate.targetLocation = this.targetLocation
       }
     }
@@ -370,9 +336,7 @@ export class CrewMember extends Stubbable {
     if (
       this.attackTargetId &&
       ![`closest`, `any`].includes(this.attackTargetId) &&
-      !this.ship.visible.ships.find(
-        (s) => s.id === this.attackTargetId,
-      )
+      !this.ship.visible.ships.find((s) => s.id === this.attackTargetId)
     ) {
       this.attackTargetId = `any`
       this.toUpdate.attackTargetId = this.attackTargetId
@@ -380,10 +344,7 @@ export class CrewMember extends Stubbable {
 
     // ----- drip-feed morale changes -----
     // morale gain from basic planets
-    if (
-      (this.ship.planet as BasicPlanet)?.planetType ===
-      `basic`
-    )
+    if ((this.ship.planet as BasicPlanet)?.planetType === `basic`)
       this.changeMorale(
         0.000005 *
           ((this.ship.planet as BasicPlanet).level || 0) *
@@ -391,9 +352,7 @@ export class CrewMember extends Stubbable {
       )
     // morale loss otherwise
     else {
-      this.changeMorale(
-        -1 * 0.000003 * (c.tickInterval / 1000),
-      )
+      this.changeMorale(-1 * 0.000003 * (c.tickInterval / 1000))
     }
 
     // ----- bunk -----
@@ -410,8 +369,7 @@ export class CrewMember extends Stubbable {
         1 - this.getPassiveIntensity(`reduceStaminaDrain`)
       this.stamina -=
         (this.ship.game?.settings.baseStaminaUse ||
-          c.defaultGameSettings.baseStaminaUse) *
-        reducedStaminaDrain
+          c.defaultGameSettings.baseStaminaUse) * reducedStaminaDrain
     }
     if (this.stamina <= 0) {
       this.stamina = 0
@@ -431,12 +389,19 @@ export class CrewMember extends Stubbable {
     // ----- repair -----
     else if (this.location === `repair`) this.repairAction()
     // ----- weapons -----
-    else if (this.location === `weapons`)
-      this.weaponsAction()
+    else if (this.location === `weapons`) this.weaponsAction()
     // ----- mine -----
     else if (this.location === `mine`) this.mineAction()
     // ----- lab -----
     else if (this.location === `lab`) this.labAction()
+
+    // ----- add endurance xp -----
+    this.addXp(
+      `endurance`,
+      (this.ship.game?.settings.enduranceXpGainPerSecond ||
+        c.defaultGameSettings.enduranceXpGainPerSecond) *
+        (c.tickInterval / 1000),
+    )
   }
 
   active() {
@@ -447,31 +412,25 @@ export class CrewMember extends Stubbable {
   setSpecies(speciesId: SpeciesId) {
     // if somehow there already was one, remove its passives
     if (this.speciesId)
-      for (let p of c.species[this.speciesId].passives)
-        this.removePassive(p)
+      for (let p of c.species[this.speciesId].passives) this.removePassive(p)
 
     if (c.species[speciesId]) {
       this.speciesId = speciesId
       this.toUpdate.speciesId = speciesId
-      for (let p of c.species[speciesId].passives)
-        this.applyPassive(p)
+      for (let p of c.species[speciesId].passives) this.applyPassive(p)
     }
   }
 
   buy(price: Price): true | string {
     this.active()
-    if (!c.canAfford(price, this.ship, this))
-      return `Insufficient funds.`
+    if (!c.canAfford(price, this.ship, this)) return `Insufficient funds.`
 
     this.credits -= price.credits || 0
-    this.crewCosmeticCurrency -=
-      price.crewCosmeticCurrency || 0
-    this.toUpdate.crewCosmeticCurrency =
-      this.crewCosmeticCurrency
+    this.crewCosmeticCurrency -= price.crewCosmeticCurrency || 0
+    this.toUpdate.crewCosmeticCurrency = this.crewCosmeticCurrency
     this.toUpdate.credits = this.credits
 
-    if (price.credits)
-      this.changeMorale(price.credits * 0.001)
+    if (price.credits) this.changeMorale(price.credits * 0.001)
     if (price.crewCosmeticCurrency)
       this.changeMorale(price.crewCosmeticCurrency * 0.01)
 
@@ -487,12 +446,9 @@ export class CrewMember extends Stubbable {
     if (!xp)
       xp =
         (this.ship.game?.settings.baseXpGain ||
-          c.defaultGameSettings.baseXpGain) *
-        xpBoostMultiplier
+          c.defaultGameSettings.baseXpGain) * xpBoostMultiplier
 
-    let skillElement = this.skills.find(
-      (s) => s?.skill === skill,
-    )
+    let skillElement = this.skills.find((s) => s?.skill === skill)
     if (!skillElement) {
       const index = this.skills.push({
         skill,
@@ -502,20 +458,24 @@ export class CrewMember extends Stubbable {
       skillElement = this.skills[index - 1]
     } else skillElement.xp += xp
 
-    skillElement.level = c.levels.findIndex(
-      (l) => (skillElement?.xp || 0) < l,
-    )
+    const prevLevel = skillElement.level
+
+    skillElement.level = c.levels.findIndex((l) => (skillElement?.xp || 0) < l)
+
+    // level up checks
+    if (prevLevel !== skillElement.level) {
+      this.updateLevel()
+
+      if (skill === `endurance`) this.recalculateMaxStamina()
+    }
 
     this.toUpdate.skills = this.skills
-    this.updateLevel()
   }
 
   updateLevel() {
     this.level = Math.floor(
-      this.skills.reduce(
-        (acc, skill) => acc + (skill.level || 1),
-        0,
-      ) / this.skills.length || 1,
+      this.skills.reduce((acc, skill) => acc + (skill.level || 1), 0) /
+        this.skills.length || 1,
     )
     this.toUpdate.level = this.level
   }
@@ -524,16 +484,15 @@ export class CrewMember extends Stubbable {
     const activeCountToAdd = c.activeUnlockLevels.findIndex(
       (l) => this.level < l,
     )
-    const passiveBoost = this.getPassiveIntensity(
-      `boostActiveSlots`,
-    )
+    const passiveBoost = this.getPassiveIntensity(`boostActiveSlots`)
     this.activeSlots = activeCountToAdd + passiveBoost
     this.toUpdate.activeSlots = this.activeSlots
 
     if (this.speciesId)
-      for (let a of c.species[
-        this.speciesId
-      ].activeTree.slice(0, this.activeSlots))
+      for (let a of c.species[this.speciesId].activeTree.slice(
+        0,
+        this.activeSlots,
+      ))
         this.addActive(a)
   }
 
@@ -545,9 +504,9 @@ export class CrewMember extends Stubbable {
    * @param amount morale to add, or negative to subtract
    */
   changeMorale(amount: number) {
+    if (Math.abs(amount) < 0.00000000001) return
     // negative things hurt less when u sleepin
-    if (this.location === `bunk` && amount < 0)
-      amount *= 0.5
+    if (this.location === `bunk` && amount < 0) amount *= 0.5
 
     this.morale += amount
     if (this.morale > 1) this.morale = 1
@@ -568,6 +527,10 @@ export class CrewMember extends Stubbable {
     else this.clearMoralePassives()
 
     this.toUpdate.morale = this.morale
+    if (Math.abs(amount) > 1) {
+      c.log(this.ship.name, this.name, amount, this.morale)
+      c.trace()
+    }
   }
 
   clearMoralePassives() {
@@ -599,9 +562,7 @@ export class CrewMember extends Stubbable {
     ]
     if (
       this.passives.find(
-        (p) =>
-          p.id === passives[0].id &&
-          p.intensity === passives[0].intensity,
+        (p) => p.id === passives[0].id && p.intensity === passives[0].intensity,
       )
     )
       return
@@ -613,15 +574,15 @@ export class CrewMember extends Stubbable {
         data: { ...(p.data || {}), source: `lowMorale` },
       })
 
+    if (this.stamina > this.maxStamina) this.stamina = this.maxStamina
+
     // todo lower damage
   }
 
   setHighMorale() {
     if (
       this.passives.find(
-        (p) =>
-          p.id === `reduceStaminaDrain` &&
-          p.intensity === 0.1,
+        (p) => p.id === `reduceStaminaDrain` && p.intensity === 0.1,
       )
     )
       return
@@ -646,9 +607,7 @@ export class CrewMember extends Stubbable {
     ]
     if (
       this.passives.find(
-        (p) =>
-          p.id === passives[0].id &&
-          p.intensity === passives[0].intensity,
+        (p) => p.id === passives[0].id && p.intensity === passives[0].intensity,
       )
     )
       return
@@ -666,18 +625,14 @@ export class CrewMember extends Stubbable {
    */
   addCargo(id: CargoId, amount: number): number {
     const canHold =
-      Math.min(
-        this.ship.chassis.maxCargoSpace,
-        this.maxCargoSpace,
-      ) - this.heldWeight
+      Math.min(this.ship.chassis.maxCargoSpace, this.maxCargoSpace) -
+      this.heldWeight
 
     if (amount <= 0 || isNaN(amount)) return 0
 
     amount = c.r2(amount, 2) // round to 2 decimal places
 
-    const existingStock = this.inventory.find(
-      (cargo) => cargo.id === id,
-    )
+    const existingStock = this.inventory.find((cargo) => cargo.id === id)
     if (existingStock)
       existingStock.amount = c.r2(
         existingStock.amount + Math.min(canHold, amount),
@@ -700,18 +655,13 @@ export class CrewMember extends Stubbable {
 
     if (amount <= 0 || isNaN(amount)) return
 
-    const existingStock = this.inventory.find(
-      (cargo) => cargo.id === id,
-    )
+    const existingStock = this.inventory.find((cargo) => cargo.id === id)
     if (existingStock) {
       existingStock.amount = c.r2(
-        existingStock.amount -
-          Math.min(existingStock.amount, amount),
+        existingStock.amount - Math.min(existingStock.amount, amount),
       )
       if (existingStock.amount <= 0)
-        this.inventory = this.inventory.filter(
-          (cargo) => cargo.id !== id,
-        )
+        this.inventory = this.inventory.filter((cargo) => cargo.id !== id)
     }
     this.toUpdate.inventory = this.inventory
     this.ship.recalculateMass()
@@ -741,12 +691,9 @@ export class CrewMember extends Stubbable {
   addToPermanentPassive(
     passive: CrewPassiveData | PlanetVendorCrewPassivePrice,
   ) {
-    const found = this.permanentPassives.find(
-      (p) => p.id === passive.id,
-    )
+    const found = this.permanentPassives.find((p) => p.id === passive.id)
     if (found) {
-      if (found.intensity)
-        found.intensity += passive.intensity || 0
+      if (found.intensity) found.intensity += passive.intensity || 0
       else found.intensity = passive.intensity || 0
     } else this.permanentPassives.push(passive)
     this.applyPassive({
@@ -762,16 +709,13 @@ export class CrewMember extends Stubbable {
     if (
       p.data?.source === `permanent` &&
       this.passives.find(
-        (ep) =>
-          ep.data?.source === `permanent` && ep.id === p.id,
+        (ep) => ep.data?.source === `permanent` && ep.id === p.id,
       )
     ) {
       const existing = this.passives.find(
-        (ep) =>
-          ep.data?.source === `permanent` && ep.id === p.id,
+        (ep) => ep.data?.source === `permanent` && ep.id === p.id,
       )
-      if (existing?.intensity)
-        existing.intensity += p.intensity || 0
+      if (existing?.intensity) existing.intensity += p.intensity || 0
     } else this.passives.push(p)
     this.toUpdate.passives = this.passives
 
@@ -779,9 +723,7 @@ export class CrewMember extends Stubbable {
     this.recalculateAll()
   }
 
-  applyTimedPassive(
-    p: CrewPassiveData & { until: number },
-  ) {
+  applyTimedPassive(p: CrewPassiveData & { until: number }) {
     // this just saves it in the db; it has no effect until the game is restarted and timed passives are loaded
     this.timedPassives.push(p)
 
@@ -793,28 +735,16 @@ export class CrewMember extends Stubbable {
   removePassive(p: CrewPassiveData) {
     const foundIndex = this.passives.findIndex((p2) => {
       for (let key in p)
-        if (
-          typeof p[key] !== `object` &&
-          p2[key] !== p[key]
-        )
-          return false
+        if (typeof p[key] !== `object` && p2[key] !== p[key]) return false
 
       if (typeof p.data?.source === `string`)
         return p.data.source === p2.data?.source
 
       for (let prop of Object.keys(p.data?.source || {}))
         if (typeof p.data?.source?.[prop] === `string`)
-          if (
-            p2.data?.source?.[prop] !==
-            p.data?.source?.[prop]
-          )
-            return false
-          else if (
-            typeof p.data?.source?.[prop] === `object`
-          )
-            for (let prop2 of Object.keys(
-              p.data?.source[prop] || {},
-            ))
+          if (p2.data?.source?.[prop] !== p.data?.source?.[prop]) return false
+          else if (typeof p.data?.source?.[prop] === `object`)
+            for (let prop2 of Object.keys(p.data?.source[prop] || {}))
               if (
                 p2.data?.source?.[prop]?.[prop2] !==
                 p.data?.source?.[prop]?.[prop2]
@@ -848,9 +778,13 @@ export class CrewMember extends Stubbable {
   }
 
   recalculateMaxStamina() {
-    this.maxStamina =
-      1 + this.getPassiveIntensity(`boostMaxStamina`) / 100
-    this.toUpdate.maxStamina = this.maxStamina
+    const prev = this.maxStamina
+    const baseMax = c.getMaxStamina(this.endurance.level)
+    this.maxStamina = Math.max(
+      0.3,
+      c.r2(baseMax + this.getPassiveIntensity(`boostMaxStamina`) / 100, 3),
+    )
+    if (this.maxStamina !== prev) this.toUpdate.maxStamina = this.maxStamina
   }
 
   recalculateResearchTargetId() {
@@ -860,21 +794,16 @@ export class CrewMember extends Stubbable {
           (i) =>
             i.upgradable &&
             i.level < i.maxLevel &&
-            (i.upgradeRequirements.find(
-              (req) => req.research,
-            )?.current || 0) <
-              (i.upgradeRequirements.find(
-                (req) => req.research,
-              )?.required || 0),
+            (i.upgradeRequirements.find((req) => req.research)?.current || 0) <
+              (i.upgradeRequirements.find((req) => req.research)?.required ||
+                0),
         )
         .sort((a, b) => a.level - b.level)?.[0]?.id || null
     this.toUpdate.researchTargetId = this.researchTargetId
   }
 
   addStat(statname: CrewStatKey, amount: number) {
-    const existing = this.stats.find(
-      (s) => s.stat === statname,
-    )
+    const existing = this.stats.find((s) => s.stat === statname)
     if (!existing)
       this.stats.push({
         stat: statname,
@@ -888,9 +817,7 @@ export class CrewMember extends Stubbable {
     const boost =
       this.getPassiveIntensity(`boostStrength`) +
       this.ship.getPassiveIntensity(`flatSkillBoost`)
-    const val = this.skills.find(
-      (s) => s?.skill === `strength`,
-    ) || {
+    const val = this.skills.find((s) => s?.skill === `strength`) || {
       skill: `strength`,
       level: 1,
       xp: 0,
@@ -902,9 +829,7 @@ export class CrewMember extends Stubbable {
     const boost =
       this.getPassiveIntensity(`boostDexterity`) +
       this.ship.getPassiveIntensity(`flatSkillBoost`)
-    const val = this.skills.find(
-      (s) => s?.skill === `dexterity`,
-    ) || {
+    const val = this.skills.find((s) => s?.skill === `dexterity`) || {
       skill: `dexterity`,
       level: 1,
       xp: 0,
@@ -916,9 +841,7 @@ export class CrewMember extends Stubbable {
     const boost =
       this.getPassiveIntensity(`boostCharisma`) +
       this.ship.getPassiveIntensity(`flatSkillBoost`)
-    const val = this.skills.find(
-      (s) => s?.skill === `charisma`,
-    ) || {
+    const val = this.skills.find((s) => s?.skill === `charisma`) || {
       skill: `charisma`,
       level: 1,
       xp: 0,
@@ -930,10 +853,20 @@ export class CrewMember extends Stubbable {
     const boost =
       this.getPassiveIntensity(`boostIntellect`) +
       this.ship.getPassiveIntensity(`flatSkillBoost`)
-    const val = this.skills.find(
-      (s) => s?.skill === `intellect`,
-    ) || {
+    const val = this.skills.find((s) => s?.skill === `intellect`) || {
       skill: `intellect`,
+      level: 1,
+      xp: 0,
+    }
+    return { ...val, level: val.level + boost }
+  }
+
+  get endurance() {
+    const boost =
+      this.getPassiveIntensity(`boostEndurance`) +
+      this.ship.getPassiveIntensity(`flatSkillBoost`)
+    const val = this.skills.find((s) => s?.skill === `endurance`) || {
+      skill: `endurance`,
       level: 1,
       xp: 0,
     }

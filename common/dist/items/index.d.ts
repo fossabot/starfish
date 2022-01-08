@@ -65,6 +65,7 @@ export declare const communicator: {
     clarity3: BaseCommunicatorData;
 };
 export declare const armor: {
+    ai1: BaseArmorData;
     starter1: BaseArmorData;
     starter2: BaseArmorData;
     block1: BaseArmorData;

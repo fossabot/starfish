@@ -12,18 +12,13 @@
         v-if="modal === 'crewTaglineBannerPicker'"
       />
 
-      <ModalCrewSpeciesPicker
-        v-if="forceState === 'crewSpeciesPicker'"
-      />
+      <ModalCrewSpeciesPicker v-if="forceState === 'crewSpeciesPicker'" />
 
-      <portal-target
-        v-if="modal === 'prompt'"
-        name="prompt"
-      />
+      <ModalFrontendSettings v-if="modal === 'frontendSettings'" />
 
-      <div v-if="modal === 'pause' && $route.path === '/s'">
-        Updates Paused
-      </div>
+      <portal-target v-if="modal === 'prompt'" name="prompt" />
+
+      <div v-if="modal === 'pause' && $route.path === '/s'">Updates Paused</div>
     </div>
   </div>
 </template>
@@ -43,8 +38,7 @@ export default Vue.extend({
     forceState(): undefined | string {
       if (
         this.crewMember &&
-        (!this.crewMember.speciesId ||
-          !c.species[this.crewMember.speciesId])
+        (!this.crewMember.speciesId || !c.species[this.crewMember.speciesId])
       )
         return 'crewSpeciesPicker'
     },
@@ -59,8 +53,7 @@ export default Vue.extend({
   methods: {
     keyListener(e: KeyboardEvent) {
       if (!this.modal) return
-      if (e.key === 'Escape')
-        this.$store.commit('set', { modal: null })
+      if (e.key === 'Escape') this.$store.commit('set', { modal: null })
     },
   },
 })

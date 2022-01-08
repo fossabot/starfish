@@ -367,6 +367,7 @@ export class Item extends Stubbable {
     addCargoRequirement()
     // then possible to add more
     while (
+      requirements.length < this.level / 2 &&
       requirements.length <
         Object.keys(c.cargo).length + 1 &&
       Math.random() <

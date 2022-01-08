@@ -9,9 +9,7 @@
               value: s.id,
               text:
                 s.name +
-                (s.isTutorial
-                  ? ` (tutorial for ${s.isTutorial})`
-                  : '') +
+                (s.isTutorial ? ` (tutorial for ${s.isTutorial})` : '') +
                 ` [${s.id}]`,
             }))
           "
@@ -85,6 +83,13 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
+            @click="kill(selectedShipId)"
+          >
+            <div>Kill</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
             @click="deleteShip(selectedShipId)"
           >
             <div>Delete</div>
@@ -92,10 +97,7 @@
         </div>
       </div>
 
-      <div
-        v-if="displayShipData"
-        class="property flexstretch marbotsmall"
-      >
+      <div v-if="displayShipData" class="property flexstretch marbotsmall">
         <input
           placeholder="Select property to search..."
           v-model="propertySearchTerm"
@@ -167,8 +169,7 @@ export default Vue.extend({
   methods: {
     updateFilteredShipData() {
       if (!this.displayShipData) return
-      if (!this.propertySearchTerm)
-        this.filteredShipData = this.displayShipData
+      if (!this.propertySearchTerm) this.filteredShipData = this.displayShipData
       else
         this.filteredShipData = this.displayShipData
           .split('\n')
@@ -176,8 +177,7 @@ export default Vue.extend({
             line.includes(this.propertySearchTerm)
               ? `<div class="highlight">${line}</div>`
               : `<span class="sub" style="opacity: ${
-                  1 /
-                  ((line.length - line.trim().length) / 3)
+                  1 / ((line.length - line.trim().length) / 3)
                 }">${line.trim()}</span>`,
           )
           .join('')
@@ -196,11 +196,7 @@ export default Vue.extend({
             c.log(res.error)
             return
           }
-          this.displayShipData = JSON.stringify(
-            res.data,
-            null,
-            2,
-          )
+          this.displayShipData = JSON.stringify(res.data, null, 2)
           this.updateFilteredShipData()
         },
       )
@@ -242,12 +238,7 @@ export default Vue.extend({
     },
 
     async respawnShip(shipId: string) {
-      if (
-        !window.confirm(
-          `Are you sure you want to respawn ${shipId}?`,
-        )
-      )
-        return
+      if (!window.confirm(`Are you sure you want to respawn ${shipId}?`)) return
       ;(this as any).$socket?.emit(
         `admin:respawnShip`,
         this.userId,
@@ -262,11 +253,7 @@ export default Vue.extend({
             c.log(res.error)
             return
           }
-          this.displayShipData = JSON.stringify(
-            res.data,
-            null,
-            2,
-          )
+          this.displayShipData = JSON.stringify(res.data, null, 2)
           this.updateFilteredShipData()
         },
       )
@@ -290,10 +277,17 @@ export default Vue.extend({
       )
     },
 
-    async achievement(shipId: string) {
-      const achievement = window.prompt(
-        `Which achievement id?`,
+    kill(shipId: string) {
+      ;(this as any).$socket?.emit(
+        'admin:kill',
+        this.userId,
+        this.adminPassword,
+        shipId,
       )
+    },
+
+    async achievement(shipId: string) {
+      const achievement = window.prompt(`Which achievement id?`)
       ;(this as any).$socket?.emit(
         `admin:achievementToShip`,
         this.userId,
@@ -305,8 +299,7 @@ export default Vue.extend({
 
     async loadout(shipId: string) {
       const loadoutId = window.prompt(
-        `Which loadout id?\n` +
-          c.printList(Object.keys(c.loadouts), 'or'),
+        `Which loadout id?\n` + c.printList(Object.keys(c.loadouts), 'or'),
       )
       if (!loadoutId || !c.loadouts[loadoutId]) return
       ;(this as any).$socket?.emit(
@@ -337,12 +330,7 @@ export default Vue.extend({
     },
 
     async deleteShip(shipId: string) {
-      if (
-        !window.confirm(
-          `Are you sure you want to DELETE ${shipId}?`,
-        )
-      )
-        return
+      if (!window.confirm(`Are you sure you want to DELETE ${shipId}?`)) return
       ;(this as any).$socket?.emit(
         `admin:deleteShip`,
         this.userId,
@@ -357,11 +345,7 @@ export default Vue.extend({
             c.log(res.error)
             return
           }
-          this.displayShipData = JSON.stringify(
-            res.data,
-            null,
-            2,
-          )
+          this.displayShipData = JSON.stringify(res.data, null, 2)
           this.updateFilteredShipData()
         },
       )

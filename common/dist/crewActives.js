@@ -7,12 +7,12 @@ exports.crewActives = exports.getActiveIntensityScaledByLevel = exports.activeUn
 const math_1 = __importDefault(require("./math"));
 const text_1 = __importDefault(require("./text"));
 const gameConstants_1 = __importDefault(require("./gameConstants"));
-exports.crewActiveBaseGlobalCooldown = 1000; // * 60 * 60 * 24 * 1
+exports.crewActiveBaseGlobalCooldown = 1000 * 60 * 60 * 24 * 1;
 exports.activeUnlockLevels = [
     1, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
 ];
 function getActiveIntensityScaledByLevel(intensity, level) {
-    return ((intensity || 1) * math_1.default.lerp(1, 4, (level - 1) / 100));
+    return (intensity || 1) * math_1.default.lerp(1, 4, (level - 1) / 100);
 }
 exports.getActiveIntensityScaledByLevel = getActiveIntensityScaledByLevel;
 exports.crewActives = {
@@ -65,7 +65,8 @@ exports.crewActives = {
         notify: true,
         intensityAdapter: (i) => i * 10,
         displayIntensity: function (i, level = 0) {
-            return (this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * gameConstants_1.default.displayHPMultiplier);
+            return (this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+                gameConstants_1.default.displayHPMultiplier);
         },
     },
     combatDrone: {
@@ -250,9 +251,10 @@ exports.crewActives = {
             return `Reduce all incoming damage by ${this.displayIntensity(a.intensity, level)} for ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`;
         },
         notify: true,
-        intensityAdapter: (i) => i * 0.7,
+        intensityAdapter: (i) => i * 0.5,
         displayIntensity: function (i, level = 0) {
-            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * gameConstants_1.default.displayHPMultiplier, 0);
+            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+                gameConstants_1.default.displayHPMultiplier, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 10,
         duration: 1000 * 60 * 60 * 7,
@@ -350,7 +352,8 @@ exports.crewActives = {
         notify: true,
         intensityAdapter: (i) => i,
         displayIntensity: function (i, level = 0) {
-            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * gameConstants_1.default.displayHPMultiplier, 0);
+            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+                gameConstants_1.default.displayHPMultiplier, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 10,
         range: 0.0802,

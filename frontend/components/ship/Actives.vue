@@ -5,38 +5,39 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/25.webp"
   >
-    <template #title>
-      <span class="sectionemoji">▶️</span>Abilities
-    </template>
+    <template #title> <span class="sectionemoji">▶️</span>Abilities</template>
 
     <div
       v-if="crewMember.actives.length > 0"
       class="panesection grid3 activelist"
     >
       <ShipActive
-        v-for="a in crewMember.actives"
+        v-for="a in activesWithUnlockLevels.filter((a) => a.usable)"
         :key="a.id"
         :active="a"
       />
     </div>
-    <div
-      class="panesection"
-      v-if="crewMember.actives.length > 1"
-    >
+    <div class="panesection">
+      <div class="panesubhead">Unlockable Abilities</div>
+      <div class="grid5 activelist">
+        <ShipActive
+          v-for="a in activesWithUnlockLevels.filter((a) => !a.usable)"
+          :key="a.id"
+          :active="a"
+        />
+      </div>
+    </div>
+    <div class="panesection" v-if="crewMember.actives.length > 1">
       <div class="sub" v-if="!globalCooldownRemaining">
         Global ability cooldown:
-        {{
-          c.msToTimeString(c.crewActiveBaseGlobalCooldown)
-        }}
+        {{ c.msToTimeString(c.crewActiveBaseGlobalCooldown) }}
       </div>
       <div v-else class="sub">
         Global cooldown:
         <span>
           {{ c.msToTimeString(globalCooldownRemaining) }}
           /
-          {{
-            c.msToTimeString(c.crewActiveBaseGlobalCooldown)
-          }}
+          {{ c.msToTimeString(c.crewActiveBaseGlobalCooldown) }}
         </span>
       </div>
 
@@ -74,27 +75,51 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState([
-      'userId',
-      'ship',
-      'crewMember',
-      'lastUpdated',
-    ]),
+    ...mapState(['userId', 'ship', 'crewMember', 'lastUpdated']),
     show(): boolean {
       return (
         this.ship &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('actives'))
+        this.crewMember &&
+        (!this.ship.shownPanels || this.ship.shownPanels.includes('actives'))
       )
     },
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'actives'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'actives'
     },
     lastActiveUse(): number {
       return this.crewMember?.lastActiveUse || 0
+    },
+    activesWithUnlockLevels(): (CrewActive & {
+      usable: boolean
+      unlockLevel: number
+    })[] {
+      const unlockLevels = c.activeUnlockLevels
+      const actives: (CrewActive & { usable: boolean; unlockLevel: number })[] =
+        []
+      const activeTree = c.species[this.crewMember.speciesId]?.activeTree || []
+
+      this.crewMember.actives.forEach((a) => {
+        const fullData = {
+          ...a,
+          unlockLevel:
+            unlockLevels[activeTree.findIndex((at) => at.id === a.id)] || 0,
+        }
+        fullData.usable =
+          !fullData.unlockLevel || this.crewMember.level >= fullData.unlockLevel
+        actives.push(fullData)
+      })
+
+      activeTree.forEach((a, index) => {
+        if (actives.find((ea) => ea.id === a.id)) return
+        const fullData = {
+          ...a,
+          unlockLevel: unlockLevels[index],
+          usable: false,
+        }
+        actives.push(fullData)
+      })
+
+      return actives
     },
   },
   watch: {
@@ -113,11 +138,9 @@ export default Vue.extend({
       this.globalCooldownRemaining = Math.max(
         0,
         c.crewActiveBaseGlobalCooldown -
-          (Date.now() -
-            (this.crewMember?.lastActiveUse || 0)),
+          (Date.now() - (this.crewMember?.lastActiveUse || 0)),
       )
-      if (this.updateCooldownTimer)
-        clearTimeout(this.updateCooldownTimer)
+      if (this.updateCooldownTimer) clearTimeout(this.updateCooldownTimer)
     },
   },
 })
@@ -130,5 +153,8 @@ export default Vue.extend({
 }
 .activelist {
   grid-gap: 1em;
+}
+.grid5.activelist {
+  font-size: 0.35em;
 }
 </style>

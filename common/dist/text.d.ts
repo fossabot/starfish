@@ -8,7 +8,7 @@ declare function coordPairToArrow(coordPair: CoordinatePair): string;
 declare function percentToTextBars(percent?: number, barCount?: number): string;
 declare function numberToEmoji(number?: number): string;
 declare function emojiToNumber(emoji?: string): number;
-declare function capitalize(string?: string): string;
+declare function capitalize(string?: string, firstOnly?: boolean): string;
 declare function sanitize(string?: string): SanitizeResult;
 declare function camelCaseToWords(string?: string, capitalizeFirst?: boolean): string;
 declare function acronym(string?: string): string;
