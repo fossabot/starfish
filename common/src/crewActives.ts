@@ -6,7 +6,7 @@ import log from './log'
 export const crewActiveBaseGlobalCooldown = 1000 * 60 * 60 * 24 * 1
 
 export const activeUnlockLevels = [
-  1, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
+  5, 10, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
 ]
 
 export function getActiveIntensityScaledByLevel(
@@ -94,9 +94,10 @@ export const crewActives: {
     notify: true,
     intensityAdapter: (i) => i * 10,
     displayIntensity: function (i, level = 0) {
-      return (
+      return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
-        constants.displayHPMultiplier
+          constants.displayHPMultiplier,
+        0,
       )
     },
   },

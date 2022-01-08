@@ -18,7 +18,9 @@
       />
     </div>
     <div class="panesection">
-      <div class="panesubhead">Unlockable Abilities</div>
+      <div class="panesubhead" v-if="crewMember.actives.length">
+        Unlockable Abilities
+      </div>
       <div class="grid5 activelist">
         <ShipActive
           v-for="a in activesWithUnlockLevels.filter((a) => !a.usable)"

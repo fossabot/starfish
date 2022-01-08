@@ -9,7 +9,7 @@ const text_1 = __importDefault(require("./text"));
 const gameConstants_1 = __importDefault(require("./gameConstants"));
 exports.crewActiveBaseGlobalCooldown = 1000 * 60 * 60 * 24 * 1;
 exports.activeUnlockLevels = [
-    1, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
+    5, 10, 15, 25, 35, 45, 55, 65, 75, 85, 95, 100,
 ];
 function getActiveIntensityScaledByLevel(intensity, level) {
     return (intensity || 1) * math_1.default.lerp(1, 4, (level - 1) / 100);
@@ -65,8 +65,8 @@ exports.crewActives = {
         notify: true,
         intensityAdapter: (i) => i * 10,
         displayIntensity: function (i, level = 0) {
-            return (this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
-                gameConstants_1.default.displayHPMultiplier);
+            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
+                gameConstants_1.default.displayHPMultiplier, 0);
         },
     },
     combatDrone: {

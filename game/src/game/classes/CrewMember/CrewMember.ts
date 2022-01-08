@@ -117,7 +117,7 @@ export class CrewMember extends Stubbable {
     if (data.tutorialShipId) this.tutorialShipId = data.tutorialShipId
     if (data.mainShipId) this.mainShipId = data.mainShipId
 
-    // if (data.actives) this.actives = data.actives
+    if (data.actives) this.actives = data.actives
     this.lastActiveUse = data.lastActiveUse || 0
     // this.addActive({
     //   id: `instantStamina`,
