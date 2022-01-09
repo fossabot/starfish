@@ -89,8 +89,8 @@ jobs:
             cd starfish;
             git pull;
             docker-compose -f docker-compose-prod.yml pull;
-            export NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }};
-            export NEW_RELIC_APP_NAME_GAME=${{ secrets.NEW_RELIC_APP_NAME_GAME }};
+            export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}";
+            export NEW_RELIC_APP_NAME_GAME="${{ secrets.NEW_RELIC_APP_NAME_GAME }}";
             docker-compose -f docker-compose-prod.yml up -d;
             docker image prune -f
           host: ${{ secrets.HOST }}
