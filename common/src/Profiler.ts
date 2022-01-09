@@ -8,6 +8,8 @@ export class Profiler {
   name: string | false
   private snapshots: ProfilerSnapshot[] = []
 
+  averages: { [key: string]: number } = {}
+
   readonly metric: any
 
   constructor(
@@ -37,6 +39,16 @@ export class Profiler {
     }
   }
 
+  start() {
+    if (!this.enabled) return
+
+    this.currentSnapshot = {
+      name: `start`,
+      time: this.metric.now(),
+      timeFromStart: 0,
+    }
+  }
+
   private get currentSnapshot(): ProfilerSnapshot | null {
     if (!this.snapshots.length) return null
     return this.snapshots[this.snapshots.length - 1]
@@ -50,12 +62,23 @@ export class Profiler {
     if (!this.enabled) return
 
     const time = this.metric.now()
-    if (this.currentSnapshot)
+    if (this.currentSnapshot) {
       this.currentSnapshot.duration =
-        time -
-        this.snapshots[this.snapshots.length - 1].time
+        time - this.snapshots[this.snapshots.length - 1].time
+      if (!this.averages[this.currentSnapshot.name]) {
+        this.averages[this.currentSnapshot.name] = this.currentSnapshot.duration
+      } else {
+        this.averages[this.currentSnapshot.name] = math.lerp(
+          this.averages[this.currentSnapshot.name] || 0,
+          this.currentSnapshot.duration,
+          0.1,
+        )
+      }
+    }
+
+    name = name || `${this.snapshots.length}`
     this.currentSnapshot = {
-      name: name || `${this.snapshots.length}`,
+      name,
       time,
       timeFromStart: time - this.snapshots[0].time,
     }
@@ -67,28 +90,19 @@ export class Profiler {
     const time = this.metric.now()
     if (this.currentSnapshot)
       this.currentSnapshot.duration =
-        time -
-        this.snapshots[this.snapshots.length - 1].time
+        time - this.snapshots[this.snapshots.length - 1].time
 
     const toPrint = this.snapshots
-      .filter(
-        (ss) => ss.duration && ss.duration >= this.cutoff,
+      .filter((s) => s.duration && s.duration >= this.cutoff)
+      .sort(
+        (a, b) => (this.averages[b.name] || 0) - (this.averages[a.name] || 0),
       )
-      .sort((a, b) => (b.duration || 0) - (a.duration || 0))
       .slice(0, this.showTop)
     if (!toPrint.length) return
 
-    c.log(
-      `----- ${
-        this.name ? String(this.name) : `profiler start`
-      } -----`,
-    )
-    toPrint.forEach((ss) =>
-      c.log(
-        `${this.name ? this.name + `/` : ``}${
-          ss.name
-        }: ${math.r2(ss.duration || 0)}ms`,
-      ),
+    c.log(`----- ${this.name ? String(this.name) : `profiler start`} -----`)
+    toPrint.forEach((s) =>
+      c.log(`${s.name}: ${math.r2(this.averages[s.name] || 0)}ms`),
     )
 
     this.snapshots = []

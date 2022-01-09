@@ -92,6 +92,7 @@ interface CrewMemberStub extends BaseStub {
   stamina: number
   maxStamina?: number
   stats: CrewStatEntry[]
+  level: number
   inventory: Cargo[]
   credits: number
   crewCosmeticCurrency?: number

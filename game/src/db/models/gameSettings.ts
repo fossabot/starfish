@@ -46,6 +46,10 @@ const gameSettingsSchemaFields: Record<
     type: Number,
     required: true,
   },
+  enduranceXpGainPerSecond: {
+    type: Number,
+    required: true,
+  },
   newCrewMemberCredits: { type: Number, required: true },
 
   planetDensity: { type: Number, required: true },

@@ -1,6 +1,6 @@
 <template>
   <div class="speciespicker flexcenter flexcolumn">
-    <div v-if="!chosenId">
+    <template v-if="!chosenId">
       <h1>Choose Your Species</h1>
       <div class="martop marbotbig flexcenter flexcolumn">
         <h3>Welcome to {{ c.gameName }}!</h3>
@@ -44,15 +44,32 @@
             }}</span>
           </div>
 
+          <div class="martop marbottiny sub">
+            <span class="fade"
+              >First 3 Unlockable Abilities</span
+            >
+          </div>
+          <div class="activetree grid3 fullwidth">
+            <ShipActive
+              v-for="(a, index) in species.activeTree.slice(
+                0,
+                3,
+              )"
+              :key="species.id + a.id"
+              :active="a"
+              :unlockLevel="c.activeUnlockLevels[index]"
+            />
+          </div>
+
           <hr />
           <div class="sub textcenter">
             {{ species.description }}
           </div>
         </div>
       </div>
-    </div>
+    </template>
 
-    <div v-else>
+    <template v-else>
       <h2>Are you sure?</h2>
       <div>
         <div class="icon">
@@ -63,19 +80,21 @@
         }}</b
         >'s the species for you, eh?
       </div>
-      <button
-        class="big martop"
-        @click="pickSpecies(chosenId)"
-      >
-        <span>Yep!</span>
-      </button>
-      <button
-        class="big secondary martop"
-        @click="chosenId = null"
-      >
-        <span>Wait, no...</span>
-      </button>
-    </div>
+      <div class="flex">
+        <button
+          class="big martop marright"
+          @click="pickSpecies(chosenId)"
+        >
+          <span>Yep!</span>
+        </button>
+        <button
+          class="big secondary martop"
+          @click="chosenId = null"
+        >
+          <span>Wait, no...</span>
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -92,7 +111,11 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
   },
-  watch: {},
+  watch: {
+    chosenId() {
+      this.$store.commit('tooltip')
+    },
+  },
   mounted() {},
   methods: {
     pickSpecies(speciesId: SpeciesId) {
@@ -131,18 +154,20 @@ export default Vue.extend({
 .speciespicker {
   text-align: center;
   width: 100%;
+  line-height: 1.3;
 }
 .options {
+  width: 100%;
   display: grid;
   grid-gap: 1em;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(180px, 1fr)
+    minmax(200px, 1fr)
   );
 }
 
 .icon {
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 .option {
   justify-content: flex-start;
@@ -152,6 +177,11 @@ export default Vue.extend({
   &:hover {
     background: rgba(255, 255, 255, 0.04);
   }
+}
+
+.activetree {
+  max-width: 150px;
+  grid-gap: 0.8em;
 }
 
 hr {

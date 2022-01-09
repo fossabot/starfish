@@ -268,5 +268,13 @@ const data: {
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
       } intellect by ${math.r2(data.intensity || 0)}`,
   },
+  boostEndurance: {
+    displayName: `Endurance Boost`,
+    id: `boostEndurance`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } endurance by ${math.r2(data.intensity || 0)}`,
+  },
 }
 export default data

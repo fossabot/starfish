@@ -153,6 +153,11 @@ const data = {
         id: `boostIntellect`,
         description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} intellect by ${math_1.default.r2(data.intensity || 0)}`,
     },
+    boostEndurance: {
+        displayName: `Endurance Boost`,
+        id: `boostEndurance`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} endurance by ${math_1.default.r2(data.intensity || 0)}`,
+    },
 };
 exports.default = data;
 //# sourceMappingURL=crewPassives.js.map

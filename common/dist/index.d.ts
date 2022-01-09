@@ -8,36 +8,37 @@ declare const _default: {
         [key: string]: Achievement;
     };
     rooms: {
-        repair: BaseRoomData;
         bunk: BaseRoomData;
         cockpit: BaseRoomData;
+        repair: BaseRoomData;
         weapons: BaseRoomData;
         mine: BaseRoomData;
         lab: BaseRoomData;
     };
     crewPassives: {
-        boostBrake: CrewPassiveData;
-        boostBroadcastRange: CrewPassiveData;
-        boostRepairSpeed: CrewPassiveData;
-        boostMineSpeed: CrewPassiveData;
-        boostThrust: CrewPassiveData;
-        boostPassiveThrust: CrewPassiveData;
-        boostCockpitChargeSpeed: CrewPassiveData;
         boostWeaponChargeSpeed: CrewPassiveData;
-        boostXpGain: CrewPassiveData;
-        boostStaminaRegeneration: CrewPassiveData;
-        boostSkillLevel: CrewPassiveData;
-        cargoSpace: CrewPassiveData;
-        reduceStaminaDrain: CrewPassiveData;
-        boostMaxStamina: CrewPassiveData;
-        generalImprovementWhenAlone: CrewPassiveData;
-        generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
-        boostDropAmounts: CrewPassiveData;
-        lessDamageOnEquipmentUse: CrewPassiveData;
         boostStrength: CrewPassiveData;
         boostDexterity: CrewPassiveData;
         boostIntellect: CrewPassiveData;
         boostCharisma: CrewPassiveData;
+        boostThrust: CrewPassiveData;
+        boostMineSpeed: CrewPassiveData;
+        boostRepairSpeed: CrewPassiveData;
+        generalImprovementWhenAlone: CrewPassiveData;
+        generalImprovementPerCrewMemberInSameRoom: CrewPassiveData;
+        boostSkillLevel: CrewPassiveData;
+        cargoSpace: CrewPassiveData;
+        boostCockpitChargeSpeed: CrewPassiveData;
+        boostPassiveThrust: CrewPassiveData;
+        boostStaminaRegeneration: CrewPassiveData;
+        reduceStaminaDrain: CrewPassiveData;
+        boostMaxStamina: CrewPassiveData;
+        boostXpGain: CrewPassiveData;
+        boostDropAmounts: CrewPassiveData;
+        boostBroadcastRange: CrewPassiveData;
+        lessDamageOnEquipmentUse: CrewPassiveData;
+        boostBrake: CrewPassiveData;
+        boostEndurance: CrewPassiveData;
         boostActiveSlots: CrewPassiveData;
     };
     cargo: typeof cargo;
@@ -60,14 +61,50 @@ declare const _default: {
         shrimp: BaseSpeciesData;
     };
     guilds: {
+        fowl: BaseGuildData;
         trader: BaseGuildData;
-        peacekeeper: BaseGuildData;
-        explorer: BaseGuildData;
         hunter: BaseGuildData;
         miner: BaseGuildData;
-        fowl: BaseGuildData;
+        explorer: BaseGuildData;
+        peacekeeper: BaseGuildData;
     };
     baseShipPassiveData: {
+        boostWeaponChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostThrust: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostMineSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostRepairSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        flatDamageReduction: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostChassisAgility: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        broadcastRangeCargoPrices: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostCockpitChargeSpeed: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostPassiveThrust: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostStaminaRegeneration: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostXpGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        boostBroadcastRange: {
+            description: (p: ShipPassiveEffect) => string;
+        };
         boostBrake: {
             description: (p: ShipPassiveEffect) => string;
         };
@@ -83,31 +120,7 @@ declare const _default: {
         boostSightRange: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostBroadcastRange: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostRepairSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostMineSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         boostMinePayouts: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostThrust: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostPassiveThrust: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostCockpitChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostWeaponChargeSpeed: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostXpGain: {
             description: (p: ShipPassiveEffect) => string;
         };
         flatSkillBoost: {
@@ -116,16 +129,10 @@ declare const _default: {
         scaledDamageReduction: {
             description: (p: ShipPassiveEffect) => string;
         };
-        flatDamageReduction: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         extraEquipmentSlots: {
             description: (p: ShipPassiveEffect) => string;
         };
         boostCargoSpace: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        boostChassisAgility: {
             description: (p: ShipPassiveEffect) => string;
         };
         disguiseCrewMemberCount: {
@@ -152,16 +159,10 @@ declare const _default: {
         boostDamageToItemType: {
             description: (p: ShipPassiveEffect) => string;
         };
-        boostStaminaRegeneration: {
-            description: (p: ShipPassiveEffect) => string;
-        };
         autoRepair: {
             description: (p: ShipPassiveEffect) => string;
         };
         visibleCargoPrices: {
-            description: (p: ShipPassiveEffect) => string;
-        };
-        broadcastRangeCargoPrices: {
             description: (p: ShipPassiveEffect) => string;
         };
     };
@@ -176,19 +177,35 @@ declare const _default: {
     };
     Profiler: typeof Profiler;
     stubify: typeof stubify;
+    getActiveIntensityScaledByLevel(intensity: number, level: number): number;
     crewActiveBaseGlobalCooldown: number;
+    activeUnlockLevels: number[];
     crewActives: {
-        boostStrength: CrewActiveData;
-        boostDexterity: CrewActiveData;
-        boostIntellect: CrewActiveData;
-        boostCharisma: CrewActiveData;
         instantStamina: CrewActiveData;
         cargoSweep: CrewActiveData;
         boostShipSightRange: CrewActiveData;
         repairDrone: CrewActiveData;
         combatDrone: CrewActiveData;
-        weaponRechargeSpeed: CrewActiveData;
+        boostWeaponChargeSpeed: CrewActiveData;
+        boostStrength: CrewActiveData;
+        boostDexterity: CrewActiveData;
+        boostIntellect: CrewActiveData;
+        boostCharisma: CrewActiveData;
         boostMorale: CrewActiveData;
+        boostThrust: CrewActiveData;
+        boostMineSpeed: CrewActiveData;
+        boostRepairSpeed: CrewActiveData;
+        generalImprovementWhenAlone: CrewActiveData;
+        generalImprovementPerCrewMemberInSameRoom: CrewActiveData;
+        fullCrewSkillBoost: CrewActiveData;
+        flatDamageReduction: CrewActiveData;
+        boostChassisAgility: CrewActiveData;
+        seeTrailColors: CrewActiveData;
+        boostDamageToEngines: CrewActiveData;
+        boostDamageToWeapons: CrewActiveData;
+        boostDamageToScanners: CrewActiveData;
+        broadcastRangeCargoPrices: CrewActiveData;
+        damageToAllNearbyEnemies: CrewActiveData;
     };
     getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
     getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;
@@ -239,6 +256,7 @@ declare const _default: {
         staminaBottomedOutResetPoint: any;
         staminaBottomedOutChargeMultiplier: any;
         staminaRechargeMultiplier: any;
+        enduranceXpGainPerSecond: any;
         newCrewMemberCredits: any;
         planetDensity: any;
         cometDensity: any;
@@ -302,7 +320,7 @@ declare const _default: {
     baseCargoSellMultiplier: number;
     getHitDamage: (weapon: {
         damage: number;
-        repair: number;
+        repair?: number | undefined;
     }, totalMunitionsSkill?: number) => number;
     getBaseDurabilityLossPerTick: (maxHp: number, reliability: number, useLevel?: number) => number;
     getRadiusDiminishingReturns: (totalValue: number, equipmentCount: number) => number;
@@ -314,8 +332,8 @@ declare const _default: {
     getThrustMagnitudeForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
     getPassiveThrustMagnitudePerTickForSingleCrewMember: (level?: number, engineThrustMultiplier?: number, baseEngineThrustMultiplier?: number) => number;
     getStaminaGainPerTickForSingleCrewMember: (baseStaminaUse: number, rechargeSpeedMultiplier: number) => number;
+    getMaxStamina: (enduranceLevel?: number) => number;
     getWeaponCooldownReductionPerTick: (level: number) => number;
-    getActiveIntensity: (active: CrewActive, level: number) => number;
     getGeneralMultiplierBasedOnCrewMemberProximity: (cm: CrewMemberStub, crewMembers: CrewMemberStub[]) => number;
     statToString: (data: {
         stat: string;
@@ -352,6 +370,7 @@ declare const _default: {
     getPlanetDefenseDamage: (level: number) => number;
     log: (...args: any[]) => void;
     trace: () => void;
+    ignoreGrayLogs: () => void;
     sleep: (ms: number) => Promise<void>;
     coinFlip: () => boolean;
     randomFromArray: <T>(array: T[]) => T;
@@ -372,7 +391,7 @@ declare const _default: {
     percentToTextBars: (percent?: number, barCount?: number) => string;
     numberToEmoji: (number?: number) => string;
     emojiToNumber: (emoji?: string) => number;
-    capitalize: (string?: string) => string;
+    capitalize: (string?: string, firstOnly?: boolean) => string;
     camelCaseToWords: (string?: string, capitalizeFirst?: boolean | undefined) => string;
     sanitize: (string?: string) => SanitizeResult;
     msToTimeString: (ms?: number, short?: boolean) => string;

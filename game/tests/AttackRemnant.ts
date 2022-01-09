@@ -6,8 +6,6 @@ import { Game } from '../src/game/Game'
 
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 
 import {
   crewMemberData,
@@ -19,9 +17,7 @@ import { CombatShip } from '../src/game/classes/Ship/CombatShip'
 import { Planet } from '../src/game/classes/Planet/Planet'
 import { BasicPlanet } from '../src/game/classes/Planet/BasicPlanet'
 
-import socketIoClient, {
-  Socket as ClientSocket,
-} from 'socket.io-client'
+import socketIoClient, { Socket as ClientSocket } from 'socket.io-client'
 
 describe(`Attack remnant data`, () => {
   before(async () => {
@@ -61,8 +57,7 @@ describe(`Attack remnant data`, () => {
     expect(g.attackRemnants.length).to.equal(1)
 
     await c.sleep(400)
-    const ars =
-      await g.db?.attackRemnant.getAllConstructible()
+    const ars = await g.db?.attackRemnant.getAllConstructible()
     expect(ars?.length).to.equal(1)
 
     const ar = g.attackRemnants[0]

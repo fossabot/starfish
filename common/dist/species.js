@@ -22,17 +22,62 @@ const species = {
                 intensity: 0.1,
             },
         ],
+        activeTree: [
+            {
+                id: `boostIntellect`,
+                intensity: 0.2,
+            },
+            {
+                id: `boostDamageToScanners`,
+                intensity: 0.15,
+            },
+            {
+                id: `boostShipSightRange`,
+                intensity: 0.1,
+            },
+            { id: `cargoSweep`, intensity: 0.2 },
+            {
+                id: `broadcastRangeCargoPrices`,
+                intensity: 0.15,
+            },
+            {
+                id: `damageToAllNearbyEnemies`,
+                intensity: 0.14,
+            },
+        ],
     },
     lobsters: {
         icon: `🦞`,
         id: `lobsters`,
         singular: `lobster`,
-        description: `Lobsters' speed is no issue when it comes to mining for materials.`,
+        description: `Lobsters' speed is no issue when it comes to crushing and clamping.`,
         passives: [
             {
                 id: `boostMineSpeed`,
                 data: { source: { speciesId: `lobsters` } },
                 intensity: 0.3,
+            },
+        ],
+        activeTree: [
+            {
+                id: `boostMineSpeed`,
+                intensity: 0.19,
+            },
+            {
+                id: `generalImprovementWhenAlone`,
+                intensity: 0.25,
+            },
+            {
+                id: `boostStrength`,
+                intensity: 0.22,
+            },
+            {
+                id: `flatDamageReduction`,
+                intensity: 0.15,
+            },
+            {
+                id: `instantStamina`,
+                intensity: 0.16,
             },
         ],
     },
@@ -48,6 +93,16 @@ const species = {
                 intensity: 2,
             },
         ],
+        activeTree: [
+            {
+                id: `boostDexterity`,
+                intensity: 0.22,
+            },
+            { id: `boostThrust`, intensity: 0.14 },
+            { id: `boostCharisma`, intensity: 0.13 },
+            { id: `boostChassisAgility`, intensity: 0.2 },
+            { id: `damageToAllNearbyEnemies`, intensity: 0.13 },
+        ],
     },
     'sea turtles': {
         icon: `🐢`,
@@ -60,6 +115,16 @@ const species = {
                 data: { source: { speciesId: `sea turtles` } },
                 intensity: 0.1,
             },
+        ],
+        activeTree: [
+            { id: `flatDamageReduction`, intensity: 0.19 },
+            {
+                id: `instantStamina`,
+                intensity: 0.15,
+            },
+            { id: `boostDamageToEngines`, intensity: 0.18 },
+            { id: `fullCrewSkillBoost`, intensity: 0.24 },
+            { id: `repairDrone`, intensity: 0.17 },
         ],
     },
     sharks: {
@@ -74,17 +139,47 @@ const species = {
                 intensity: 0.2,
             },
         ],
+        activeTree: [
+            {
+                id: `generalImprovementWhenAlone`,
+                intensity: 0.16,
+            },
+            { id: `boostWeaponChargeSpeed`, intensity: 0.16 },
+            { id: `boostDamageToWeapons`, intensity: 0.19 },
+            {
+                id: `boostDexterity`,
+                intensity: 0.2,
+            },
+            { id: `combatDrone`, intensity: 0.21 },
+            { id: `seeTrailColors`, intensity: 1 },
+        ],
     },
     dolphins: {
         icon: `🐬`,
         id: `dolphins`,
         singular: `dolphin`,
-        description: `The chattiest of all undersea creatures.`,
+        description: `The friendliest of all undersea creatures.`,
         passives: [
             {
                 id: `boostBroadcastRange`,
                 data: { source: { speciesId: `dolphins` } },
                 intensity: 0.35,
+            },
+        ],
+        activeTree: [
+            { id: `broadcastRangeCargoPrices`, intensity: 1 },
+            {
+                id: `generalImprovementPerCrewMemberInSameRoom`,
+                intensity: 0.21,
+            },
+            {
+                id: `boostCharisma`,
+                intensity: 0.28,
+            },
+            { id: `boostMorale`, intensity: 0.21 },
+            {
+                id: `fullCrewSkillBoost`,
+                intensity: 0.19,
             },
         ],
     },
@@ -100,6 +195,16 @@ const species = {
                 intensity: 0.15,
             },
         ],
+        activeTree: [
+            {
+                id: `repairDrone`,
+                intensity: 0.2,
+            },
+            { id: `boostRepairSpeed`, intensity: 0.15 },
+            { id: `boostWeaponChargeSpeed`, intensity: 0.17 },
+            { id: `boostShipSightRange`, intensity: 0.16 },
+            { id: `fullCrewSkillBoost`, intensity: 0.17 },
+        ],
     },
     whales: {
         icon: `🐋`,
@@ -113,6 +218,25 @@ const species = {
                 intensity: 30,
             },
         ],
+        activeTree: [
+            { id: `cargoSweep`, intensity: 0.2 },
+            {
+                id: `boostStrength`,
+                intensity: 0.21,
+            },
+            {
+                id: `damageToAllNearbyEnemies`,
+                intensity: 0.18,
+            },
+            {
+                id: `flatDamageReduction`,
+                intensity: 0.15,
+            },
+            {
+                id: `boostMineSpeed`,
+                intensity: 0.2,
+            },
+        ],
     },
     angelfish: {
         icon: `🐠`,
@@ -123,13 +247,26 @@ const species = {
             {
                 id: `boostCockpitChargeSpeed`,
                 data: { source: { speciesId: `angelfish` } },
-                intensity: 0.15,
+                intensity: 0.1,
             },
             {
-                id: `boostPassiveThrust`,
+                id: `boostThrust`,
                 data: { source: { speciesId: `angelfish` } },
                 intensity: 0.1,
             },
+        ],
+        activeTree: [
+            { id: `boostThrust`, intensity: 0.22 },
+            {
+                id: `boostDexterity`,
+                intensity: 0.2,
+            },
+            { id: `boostChassisAgility`, intensity: 0.21 },
+            {
+                id: `generalImprovementPerCrewMemberInSameRoom`,
+                intensity: 0.16,
+            },
+            { id: `instantStamina`, intensity: 0.18 },
         ],
     },
     blowfish: {
@@ -144,6 +281,13 @@ const species = {
                 data: { source: { speciesId: `blowfish` } },
             },
         ],
+        activeTree: [
+            { id: `boostWeaponChargeSpeed`, intensity: 0.21 },
+            { id: `boostDexterity`, intensity: 0.19 },
+            { id: `damageToAllNearbyEnemies`, intensity: 0.22 },
+            { id: `boostDamageToEngines`, intensity: 0.19 },
+            { id: `boostDamageToScanners`, intensity: 0.18 },
+        ],
     },
     shrimp: {
         icon: `🦐`,
@@ -153,11 +297,24 @@ const species = {
         passives: [
             {
                 id: `generalImprovementPerCrewMemberInSameRoom`,
-                intensity: 0.02,
+                intensity: 0.04,
                 data: {
                     source: { speciesId: `shrimp` },
                 },
             },
+        ],
+        activeTree: [
+            {
+                id: `boostMorale`,
+                intensity: 0.21,
+            },
+            { id: `fullCrewSkillBoost`, intensity: 0.2 },
+            {
+                id: `generalImprovementPerCrewMemberInSameRoom`,
+                intensity: 0.2,
+            },
+            { id: `boostCharisma`, intensity: 0.2 },
+            { id: `repairDrone`, intensity: 0.2 },
         ],
     },
     eagles: {
@@ -167,6 +324,7 @@ const species = {
         singular: `eagle`,
         description: ``,
         passives: [],
+        activeTree: [],
     },
     seagulls: {
         aiOnly: true,
@@ -175,6 +333,7 @@ const species = {
         singular: `seagull`,
         description: ``,
         passives: [],
+        activeTree: [],
     },
     chickens: {
         aiOnly: true,
@@ -183,6 +342,7 @@ const species = {
         singular: `chicken`,
         description: ``,
         passives: [],
+        activeTree: [],
     },
     flamingos: {
         aiOnly: true,
@@ -191,6 +351,7 @@ const species = {
         singular: `flamingo`,
         description: ``,
         passives: [],
+        activeTree: [],
     },
     vultures: {
         aiOnly: true,
@@ -199,6 +360,7 @@ const species = {
         singular: `vulture`,
         description: ``,
         passives: [],
+        activeTree: [],
     },
 };
 exports.default = species;

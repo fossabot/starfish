@@ -98,7 +98,7 @@ export default Vue.extend({
   methods: {
     pushHistoryState() {
       this.history.push(this.raw || this.number)
-      if (this.history.length > 2) this.history.shift()
+      if (this.history.length > 3) this.history.shift()
     },
   },
 })
@@ -121,7 +121,7 @@ export default Vue.extend({
     font-size: 0.6em;
     position: relative;
     top: -0.2em;
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
 </style>

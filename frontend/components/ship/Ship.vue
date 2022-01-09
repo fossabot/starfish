@@ -43,6 +43,7 @@
       <PromptButton
         v-if="isCaptain && ship.commonCredits"
         :max="ship.commonCredits"
+        :numeric="true"
         @done="redistributeCommonFund(...arguments)"
         @apply="redistributeCommonFund(...arguments)"
       >

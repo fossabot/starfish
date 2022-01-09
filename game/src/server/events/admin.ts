@@ -166,6 +166,28 @@ export default function (
         )
     },
   )
+  socket.on(
+    `admin:addCrewMemberXp`,
+    (id, password, shipId, crewMemberId) => {
+      if (!game) return
+      if (!isAdmin(id, password))
+        return c.log(
+          `Non-admin attempted to access admin:addCrewMemberXp`,
+        )
+      const foundShip = game.ships.find(
+        (s) => s.id == shipId,
+      )
+      const cm = foundShip?.crewMembers.find(
+        (cm) => cm.id == crewMemberId,
+      )
+      if (!cm) return
+      cm.addXp(`charisma`, 10000)
+      cm.addXp(`strength`, 10000)
+      cm.addXp(`intellect`, 10000)
+      cm.addXp(`dexterity`, 10000)
+      cm.addXp(`endurance`, 10000)
+    },
+  )
 
   socket.on(`game:save`, (id, password) => {
     if (!game) return

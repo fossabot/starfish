@@ -1,6 +1,6 @@
 declare function getHitDamage(weapon: {
     damage: number;
-    repair: number;
+    repair?: number;
 }, totalMunitionsSkill?: number): number;
 declare function getBaseDurabilityLossPerTick(maxHp: number, reliability: number, useLevel?: number): number;
 declare function getRadiusDiminishingReturns(totalValue: number, equipmentCount: number): number;
@@ -12,8 +12,8 @@ declare function getRepairAmountPerTickForSingleCrewMember(level: number): numbe
 declare function getMineAmountPerTickForSingleCrewMember(level: number): number;
 declare function getResearchAmountPerTickForSingleCrewMember(level: number): number;
 declare function getStaminaGainPerTickForSingleCrewMember(baseStaminaUse: number, rechargeSpeedMultiplier: number): number;
+declare function getMaxStamina(enduranceLevel?: number): number;
 declare function getWeaponCooldownReductionPerTick(level: number): number;
-declare function getActiveIntensity(active: CrewActive, level: number): number;
 /**
  * Returns a multiplier (1 being the baseline) that incorporates general improvement when alone AND when with friends
  */
@@ -61,8 +61,8 @@ declare const _default: {
     getThrustMagnitudeForSingleCrewMember: typeof getThrustMagnitudeForSingleCrewMember;
     getPassiveThrustMagnitudePerTickForSingleCrewMember: typeof getPassiveThrustMagnitudePerTickForSingleCrewMember;
     getStaminaGainPerTickForSingleCrewMember: typeof getStaminaGainPerTickForSingleCrewMember;
+    getMaxStamina: typeof getMaxStamina;
     getWeaponCooldownReductionPerTick: typeof getWeaponCooldownReductionPerTick;
-    getActiveIntensity: typeof getActiveIntensity;
     getGeneralMultiplierBasedOnCrewMemberProximity: typeof getGeneralMultiplierBasedOnCrewMemberProximity;
     statToString: typeof statToString;
     getPlanetTitle: typeof getPlanetTitle;

@@ -5,39 +5,41 @@
       type: 'active',
       ...active,
     }"
-    class="active pointer"
+    class="active"
     :class="{
+      pointer: active.usable,
       disabled:
+        !active.usable ||
         crewMember.bottomedOutOnStamina ||
         percentCooldownRemaining,
     }"
     @click="use"
   >
     <div
+      v-if="active.usable"
       class="cooldownradial"
       :style="{
         background: `conic-gradient(transparent, ${
           360 - percentCooldownRemaining * 360
         }deg, transparent, ${
-          360 -
-          Math.min(
-            360,
-            percentCooldownRemaining * 360 + 0.001,
-          )
+          360 - Math.min(360, percentCooldownRemaining * 360 + 0.001)
         }deg, rgba(30,30,30,.8))`,
       }"
     ></div>
     <div
+      v-else
+      class="disabledactive"
+      style="background: rgba(30, 30, 30, 0.3)"
+    ></div>
+    <div
       class="contents"
       :class="{
-        fade:
-          crewMember.bottomedOutOnStamina ||
-          percentCooldownRemaining,
+        fade: crewMember.bottomedOutOnStamina || percentCooldownRemaining,
       }"
     >
       <img :src="`/images/crewActives/${active.id}.svg`" />
     </div>
-    <div class="displaytimer" v-if="cooldownRemaining">
+    <div class="displaytimer" v-if="!active.unlockLevel && cooldownRemaining">
       {{ c.msToTimeString(cooldownRemaining, true) }}
     </div>
   </div>
@@ -49,7 +51,9 @@ import c from '../../../common/dist'
 import { mapState } from 'vuex'
 
 export default Vue.extend({
-  props: { active: { type: Object, required: true } },
+  props: {
+    active: { type: Object, required: true },
+  },
   data() {
     return {
       c,
@@ -58,16 +62,19 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState([
-      'userId',
-      'ship',
-      'crewMember',
-      'lastUpdated',
-    ]),
+    ...mapState(['userId', 'ship', 'crewMember', 'lastUpdated']),
     data(): CrewActiveData {
       return c.crewActives[this.active.id]
     },
     percentCooldownRemaining(): number {
+      // c.log(
+      //   'percentCooldownRemaining',
+      //   this.cooldownRemaining,
+      //   this.data.cooldown,
+      //   this.active.unlockLevel,
+      // )
+      if (!this.active.usable) return 0
+
       return (
         this.cooldownRemaining /
         Math.max(
@@ -95,20 +102,22 @@ export default Vue.extend({
   },
   methods: {
     updateCooldown() {
+      if (!this.active.usable) return
+
       this.globalCooldownRemaining = Math.max(
         0,
         c.crewActiveBaseGlobalCooldown -
-          (Date.now() -
-            (this.crewMember?.lastActiveUse || 0)),
+          (Date.now() - (this.crewMember?.lastActiveUse || 0)),
       )
       this.cooldownRemaining = Math.max(
         0,
         this.globalCooldownRemaining,
-        this.data.cooldown -
-          (Date.now() - this.active.lastUsed),
+        this.data.cooldown - (Date.now() - this.active.lastUsed),
       )
     },
     use() {
+      if (!this.active.usable) return
+
       if (this.crewMember.bottomedOutOnStamina) {
         this.$store.dispatch('notifications/notify', {
           text: `You need to rest before you can use an ability.`,
@@ -127,14 +136,11 @@ export default Vue.extend({
       const unchangedActives = [
         ...this.crewMember.actives.map((a) => ({ ...a })),
       ]
-      const updatedActives = [
-        ...this.crewMember.actives.map((a) => ({ ...a })),
-      ]
+      const updatedActives = [...this.crewMember.actives.map((a) => ({ ...a }))]
       const activeInQuestion = updatedActives.find(
         (a) => a.id === this.active.id,
       )
-      if (activeInQuestion)
-        activeInQuestion.lastUsed = Date.now()
+      if (activeInQuestion) activeInQuestion.lastUsed = Date.now()
       this.$store.commit('updateACrewMember', {
         id: this.crewMember.id,
         actives: updatedActives,
@@ -192,7 +198,8 @@ export default Vue.extend({
 .fade {
   opacity: 0.3;
 }
-.cooldownradial {
+.cooldownradial,
+.disabledactive {
   position: absolute;
   top: 0;
   z-index: 3;

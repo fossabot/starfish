@@ -94,7 +94,7 @@ const baseShipPassiveData = {
             : `taken increase`}`,
     },
     flatDamageReduction: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.abs(p.intensity || 1)} HP flat damage ${(p.intensity || 1) >= 0
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${math_1.default.r2(Math.abs(p.intensity || 1), 0)} HP flat damage ${(p.intensity || 1) >= 0
             ? `reduction`
             : `taken increase`}`,
     },

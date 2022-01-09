@@ -204,12 +204,14 @@ export default Vue.extend({
               item.id
             ],
             price,
-            canBuy: c.canAfford(
-              price,
-              this.ship,
-              this.crewMember,
-              true,
-            ),
+            canBuy:
+              this.ship.items.length < this.ship.slots &&
+              c.canAfford(
+                price,
+                this.ship,
+                this.crewMember,
+                true,
+              ),
           }
         })
     },

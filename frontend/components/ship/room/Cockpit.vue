@@ -4,9 +4,7 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/10.webp"
   >
-    <template #title
-      ><span class="sectionemoji">🛫</span>Cockpit</template
-    >
+    <template #title><span class="sectionemoji">🛫</span>Cockpit</template>
 
     <div class="panesection" v-if="manualEngines.length">
       <div class="marbotsmall">
@@ -20,8 +18,7 @@
           }"
           :disabled="
             !crewMember.targetLocation ||
-            (crewMember.targetObject &&
-              crewMember.targetObject.id === ship.id)
+            (crewMember.targetObject && crewMember.targetObject.id === ship.id)
           "
           :big="true"
           :max="crewMember.cockpitCharge"
@@ -38,10 +35,7 @@
           @mousedown.native="reset"
         >
           Thrust
-          <span
-            v-if="thrustChargeToUse"
-            class="chargecounter nowrap"
-          >
+          <span v-if="thrustChargeToUse" class="chargecounter nowrap">
             &nbsp;(+{{
               c.speedNumber(
                 maxPossibleManualSpeedChange *
@@ -53,16 +47,12 @@
         </LimitedChargeButton>
         <LimitedChargeButton
           :class="{
-            disabled:
-              ship.velocity[0] === 0 &&
-              ship.velocity[1] === 0,
+            disabled: ship.velocity[0] === 0 && ship.velocity[1] === 0,
           }"
           :big="true"
           :max="crewMember.cockpitCharge"
           :animate="1"
-          :disabled="
-            ship.velocity[0] === 0 && ship.velocity[1] === 0
-          "
+          :disabled="ship.velocity[0] === 0 && ship.velocity[1] === 0"
           @percent="brakeChargeToUse = arguments[0]"
           @end="brake"
           @mouseenter.native="
@@ -77,10 +67,7 @@
           @mousedown.native="reset"
         >
           Brake
-          <span
-            v-if="brakeChargeToUse"
-            class="chargecounter nowrap"
-          >
+          <span v-if="brakeChargeToUse" class="chargecounter nowrap">
             &nbsp;(-{{
               c.speedNumber(
                 maxPossibleManualSpeedChange *
@@ -95,36 +82,22 @@
 
       <div
         v-tooltip="
-          `The percent of the engines' power that you have charged. This percent is unique to you. <hr />Your charge speed goes up as you gain levels in <b>dexterity</b>.
+          `The percent of the engines' power that you have charged. This percent is unique to you. <hr /> Your charge speed goes up as you gain levels in <b>dexterity</b>.
           <br /><br />
-          Charge builds slowly even while in the bunk.`
+          Charge builds slowly even while in the bunk, but faster in the cockpit.`
         "
       >
         Charge:
         <NumberChangeHighlighter
-          :number="
-            c.r2(
-              crewMember.cockpitCharge * maxCharge * 100,
-              0,
-            )
-          "
-          :display="
-            c.r2(
-              crewMember.cockpitCharge * maxCharge * 100,
-              0,
-            ) + '%'
-          "
+          :number="c.r2(crewMember.cockpitCharge * maxCharge * 100, 0)"
+          :display="c.r2(crewMember.cockpitCharge * maxCharge * 100, 0) + '%'"
         />
-        <span
-          class="sub"
-          v-if="maxCharge > crewMember.cockpitCharge"
+        <span class="sub" v-if="maxCharge > crewMember.cockpitCharge"
           >(Full in
           {{
             c.msToTimeString(
               ((maxCharge - crewMember.cockpitCharge) /
-                c.getCockpitChargePerTickForSingleCrewMember(
-                  pilotingSkill,
-                ) /
+                c.getCockpitChargePerTickForSingleCrewMember(pilotingSkill) /
                 chargeSpeedMultiplier) *
                 c.tickInterval,
             )
@@ -157,13 +130,9 @@
         Applicable Speed:
         <NumberChangeHighlighter
           :number="possibleManualSpeedChange"
-          :display="
-            c.speedNumber(possibleManualSpeedChange, true)
-          "
+          :display="c.speedNumber(possibleManualSpeedChange, true)"
         /><span class="sub marlefttiny"
-          >/{{
-            c.speedNumber(maxPossibleManualSpeedChange)
-          }}
+          >/{{ c.speedNumber(maxPossibleManualSpeedChange) }}
         </span>
       </div>
     </div>
@@ -191,9 +160,7 @@
       "
     >
       Your auto-nav power:
-      {{
-        c.speedNumber(passiveThrustPerHourAddedPerHour)
-      }}/hr
+      {{ c.speedNumber(passiveThrustPerHourAddedPerHour) }}/hr
     </div>
 
     <div
@@ -209,23 +176,14 @@
         <div class="panesubhead">Set Target</div>
       </div> -->
 
-      <span
-        v-if="
-          manualEngines.length &&
-          !passiveEngines.length &&
-          ship.speed
-        "
-      >
+      <span v-if="manualEngines.length && !passiveEngines.length && ship.speed">
         <button
           @click="setTargetAlongPath"
           :class="{
             secondary:
               c.angleDifference(
                 c.vectorToDegrees(ship.velocity),
-                c.angleFromAToB(
-                  ship.location,
-                  crewMember.targetLocation,
-                ),
+                c.angleFromAToB(ship.location, crewMember.targetLocation),
               ) > 2,
           }"
         >
@@ -245,20 +203,13 @@
               !ship.location ||
               !crewMember ||
               !crewMember.targetLocation ||
-              ship.location[0] !==
-                crewMember.targetLocation[0] ||
-              ship.location[1] !==
-                crewMember.targetLocation[1],
+              ship.location[0] !== crewMember.targetLocation[0] ||
+              ship.location[1] !== crewMember.targetLocation[1],
           }"
         >
           <span>Stop</span>
         </button></span
-      ><span
-        v-if="
-          ship.crewMembers.length > 1 &&
-          passiveEngines.length
-        "
-      >
+      ><span v-if="ship.crewMembers.length > 1 && passiveEngines.length">
         <button
           @click="clearTarget"
           :class="{
@@ -267,10 +218,7 @@
         >
           <span>Crew Average Target</span>
         </button></span
-      ><span
-        v-for="planet in planetsToShow"
-        :key="'gotoplanet' + planet.name"
-      >
+      ><span v-for="planet in planetsToShow" :key="'gotoplanet' + planet.name">
         <button
           @click="setTargetObject(planet)"
           :class="{
@@ -279,16 +227,12 @@
               !planet.location ||
               !crewMember ||
               !crewMember.targetLocation ||
-              planet.location[0] !==
-                crewMember.targetLocation[0] ||
-              planet.location[1] !==
-                crewMember.targetLocation[1],
+              planet.location[0] !== crewMember.targetLocation[0] ||
+              planet.location[1] !== crewMember.targetLocation[1],
           }"
           v-tooltip="{ type: 'planet', id: planet.id }"
         >
-          <span :style="{ color: planet.color }"
-            >🪐{{ planet.name }}</span
-          >
+          <span :style="{ color: planet.color }">🪐{{ planet.name }}</span>
         </button> </span
       ><span
         v-for="otherShip in ship.visible.ships"
@@ -301,10 +245,8 @@
           :class="{
             secondary:
               !crewMember.targetLocation ||
-              otherShip.location[0] !==
-                crewMember.targetLocation[0] ||
-              otherShip.location[1] !==
-                crewMember.targetLocation[1],
+              otherShip.location[0] !== crewMember.targetLocation[0] ||
+              otherShip.location[1] !== crewMember.targetLocation[1],
           }"
         >
           <span>🚀{{ otherShip.name }}</span>
@@ -319,10 +261,8 @@
           :class="{
             secondary:
               !crewMember.targetLocation ||
-              cache.location[0] !==
-                crewMember.targetLocation[0] ||
-              cache.location[1] !==
-                crewMember.targetLocation[1],
+              cache.location[0] !== crewMember.targetLocation[0] ||
+              cache.location[1] !== crewMember.targetLocation[1],
           }"
         >
           <span
@@ -334,8 +274,7 @@
       </span>
 
       <div class="sub padtopsmall">
-        Click on the map or a button above to set your
-        target destination.
+        Click on the map or a button above to set your target destination.
       </div>
     </div>
 
@@ -357,13 +296,11 @@ export default Vue.extend({
       animateThrust: false,
     }
   },
+
   computed: {
     ...mapState(['ship', 'crewMember']),
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'room'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'room'
     },
     passiveEngines(): ItemStub[] {
       return (
@@ -375,17 +312,49 @@ export default Vue.extend({
         ) || []
       )
     },
-    passiveThrustAmplification(): number {
-      return Math.max(
-        c.noEngineThrustMagnitude,
-        this.passiveEngines.reduce(
-          (total: number, e: EngineStub) =>
-            total +
-            (e.passiveThrustMultiplier || 0) *
-              (e.repair || 0),
+
+    allThrustBoostMultiplier(): number {
+      return (
+        1 +
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            p.id === 'boostThrust' ? acc + (p.intensity || 0) : acc,
           0,
+        ) +
+        this.ship.passives.reduce(
+          (acc: number, p: ShipPassiveEffect) =>
+            p.id === 'boostThrust' ? acc + (p.intensity || 0) : acc,
+          0,
+        )
+      )
+    },
+    passiveThrustBoostMultiplier(): number {
+      return (
+        1 +
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            p.id === 'boostPassiveThrust' ? acc + (p.intensity || 0) : acc,
+          0,
+        ) +
+        this.ship.passives.reduce(
+          (acc: number, p: ShipPassiveEffect) =>
+            p.id === 'boostPassiveThrust' ? acc + (p.intensity || 0) : acc,
+          0,
+        )
+      )
+    },
+    passiveThrustAmplification(): number {
+      return (
+        Math.max(
+          c.noEngineThrustMagnitude,
+          this.passiveEngines.reduce(
+            (total: number, e: EngineStub) =>
+              total + (e.passiveThrustMultiplier || 0) * (e.repair || 0),
+            0,
+          ) * this.ship.gameSettings.baseEngineThrustMultiplier,
         ) *
-          this.ship.gameSettings.baseEngineThrustMultiplier,
+        this.allThrustBoostMultiplier *
+        this.passiveThrustBoostMultiplier
       )
     },
     manualEngines(): ItemStub[] {
@@ -399,39 +368,32 @@ export default Vue.extend({
       )
     },
     manualThrustAmplification(): number {
-      return Math.max(
-        c.noEngineThrustMagnitude,
-        this.manualEngines.reduce(
-          (total: number, e: EngineStub) =>
-            total +
-            (e.manualThrustMultiplier || 0) *
-              (e.repair || 0),
-          0,
-        ) *
-          this.ship.gameSettings.baseEngineThrustMultiplier,
+      return (
+        Math.max(
+          c.noEngineThrustMagnitude,
+          this.manualEngines.reduce(
+            (total: number, e: EngineStub) =>
+              total + (e.manualThrustMultiplier || 0) * (e.repair || 0),
+            0,
+          ) * this.ship.gameSettings.baseEngineThrustMultiplier,
+        ) * this.allThrustBoostMultiplier
       )
     },
     pilotingSkill(): number {
-      const passiveBoost = this.crewMember.passives.reduce(
-        (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === 'boostDexterity'
-            ? p.intensity || 0
-            : 0),
-        0,
-      )
+      const passiveBoost =
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc + (p.id === 'boostDexterity' ? p.intensity || 0 : 0),
+          0,
+        ) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`) return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return (
         (this.crewMember.skills.find(
           (s: XPData) => s && s.skill === 'dexterity',
         )?.level || 1) + passiveBoost
-      )
-    },
-    memberThrust(): number {
-      return c.getThrustMagnitudeForSingleCrewMember(
-        this.pilotingSkill,
-        this.manualThrustAmplification /
-          this.ship.gameSettings.baseEngineThrustMultiplier,
-        this.ship.gameSettings.baseEngineThrustMultiplier,
       )
     },
     maxPossibleManualSpeedChange(): number {
@@ -439,8 +401,7 @@ export default Vue.extend({
         (c.getThrustMagnitudeForSingleCrewMember(
           this.pilotingSkill,
           this.manualThrustAmplification /
-            this.ship.gameSettings
-              .baseEngineThrustMultiplier,
+            this.ship.gameSettings.baseEngineThrustMultiplier,
           this.ship.gameSettings.baseEngineThrustMultiplier,
         ) /
           this.ship.mass) *
@@ -450,19 +411,13 @@ export default Vue.extend({
       )
     },
     possibleManualSpeedChange(): number {
-      return (
-        this.maxPossibleManualSpeedChange *
-        this.crewMember.cockpitCharge
-      )
+      return this.maxPossibleManualSpeedChange * this.crewMember.cockpitCharge
     },
     thrustBoostMultiplier(): number {
       return (
-        (this.ship?.passives?.find(
-          (p) => p.id === `boostThrust`,
-        )?.level || 0) +
-          (this.crewMember?.passives?.find(
-            (p) => p.id === `boostThrust`,
-          )?.level || 0) +
+        (this.ship?.passives?.find((p) => p.id === `boostThrust`)?.level || 0) +
+          (this.crewMember?.passives?.find((p) => p.id === `boostThrust`)
+            ?.level || 0) +
           1 || 1
       )
     },
@@ -481,15 +436,12 @@ export default Vue.extend({
       )
     },
     passiveThrustPerHourAddedPerHour(): number {
-      return (
-        this.passiveThrustPerHourAddedPerSecond * 60 * 60
-      )
+      return this.passiveThrustPerHourAddedPerSecond * 60 * 60
     },
     maxCharge(): number {
-      const baseMax =
-        c.getMaxCockpitChargeForSingleCrewMember(
-          this.pilotingSkill,
-        )
+      const baseMax = c.getMaxCockpitChargeForSingleCrewMember(
+        this.pilotingSkill,
+      )
       return baseMax
     },
     chargeSpeedMultiplier(): number {
@@ -501,9 +453,7 @@ export default Vue.extend({
       return (
         generalBoostMultiplier *
         (1 +
-          ((
-            this.crewMember as CrewMemberStub
-          ).passives?.reduce(
+          ((this.crewMember as CrewMemberStub).passives?.reduce(
             (total, p: CrewPassiveData) =>
               p.id === 'boostCockpitChargeSpeed'
                 ? total + (p.intensity || 0)
@@ -522,20 +472,14 @@ export default Vue.extend({
     brakeMultiplier(): number {
       const bm =
         1 +
-        (((
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
+        (((this.crewMember as CrewMemberStub).passives?.reduce(
           (total, p: CrewPassiveData) =>
-            p.id === 'boostBrake'
-              ? total + (p.intensity || 0)
-              : total,
+            p.id === 'boostBrake' ? total + (p.intensity || 0) : total,
           0,
         ) || 0) +
           ((this.ship as ShipStub).passives?.reduce(
             (total, p: ShipPassiveEffect) =>
-              p.id === 'boostBrake'
-                ? total + (p.intensity || 0)
-                : total,
+              p.id === 'boostBrake' ? total + (p.intensity || 0) : total,
             0,
           ) || 0)) *
           this.ship.gameSettings.brakeToThrustRatio
@@ -544,8 +488,7 @@ export default Vue.extend({
     planetsToShow(): PlanetStub[] {
       const p = [...(this.ship.visible?.planets || [])]
       for (let seen of this.ship.seenPlanets) {
-        if (!p.find((pl) => pl.name === seen.name))
-          p.push(seen)
+        if (!p.find((pl) => pl.name === seen.name)) p.push(seen)
       }
       return p
         .sort(
@@ -559,14 +502,8 @@ export default Vue.extend({
       return this.ship?.visible?.caches
         .map((cache: CacheStub) => ({
           ...cache,
-          distance: c.distance(
-            this.ship.location,
-            cache.location,
-          ),
-          angle: c.angleFromAToB(
-            this.ship.location,
-            cache.location,
-          ),
+          distance: c.distance(this.ship.location, cache.location),
+          angle: c.angleFromAToB(this.ship.location, cache.location),
         }))
         .sort((a: any, b: any) => a.distance - b.distance)
         .slice(0, 6)
@@ -590,8 +527,7 @@ export default Vue.extend({
       this.$store.commit(
         'setTarget',
         this.ship?.location.map(
-          (l, index) =>
-            l + this.ship?.velocity[index] * 1000,
+          (l, index) => l + this.ship?.velocity[index] * 1000,
         ),
       )
     },

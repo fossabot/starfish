@@ -6,8 +6,6 @@ import { Game } from '../src/game/Game'
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { humanShipData, enemyAiShipData } from './defaults'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 
 describe(`Game`, () => {
   it(`should create a game with basic properties`, async () => {
@@ -20,17 +18,14 @@ describe(`Game`, () => {
 
   it(`should expand the universe when humans are added`, async () => {
     const game = new Game()
-    for (let i = 0; i < 20; i++)
-      await game.addHumanShip(humanShipData())
+    for (let i = 0; i < 20; i++) await game.addHumanShip(humanShipData())
 
     const prevUniverseSize = game.gameSoftRadius
     await game.addAIShip(enemyAiShipData())
     expect(game.gameSoftRadius).to.equal(prevUniverseSize)
 
     await game.addHumanShip(humanShipData())
-    expect(game.gameSoftRadius).to.be.above(
-      prevUniverseSize,
-    )
+    expect(game.gameSoftRadius).to.be.above(prevUniverseSize)
   })
 
   it(`should not shrink the universe when humans are removed`, async () => {
@@ -40,8 +35,7 @@ describe(`Game`, () => {
       username: `testuser`,
       password: `testpassword`,
     })
-    for (let i = 0; i < 20; i++)
-      await g.addHumanShip(humanShipData())
+    for (let i = 0; i < 20; i++) await g.addHumanShip(humanShipData())
     const prevUniverseSize = g.gameSoftRadius
 
     await g.removeShip(g.humanShips[0])

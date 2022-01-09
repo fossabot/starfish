@@ -50,6 +50,7 @@
         ref="input"
         style="flex-grow: 3"
         @keydown.enter="done"
+        :type="numeric ? 'number' : 'text'"
       />
       <div
         class="button attach"
@@ -67,7 +68,7 @@ import Vue from 'vue'
 import c from '../../common/dist'
 
 export default Vue.extend({
-  props: { max: {} },
+  props: { max: {}, numeric: { default: false } },
   data() {
     return { c, value: '' }
   },

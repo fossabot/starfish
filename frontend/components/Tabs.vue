@@ -86,19 +86,18 @@ export default Vue.extend({
       )
     },
     preSelect() {
-      this.selectTab(
-        this.preSelect >= 0 ? this.preSelect : 0,
-      )
+      this.selectTab(this.preSelect)
     },
   },
   created() {
     this.tabs = this.$children
   },
   mounted() {
-    this.selectTab(this.preSelect >= 0 ? this.preSelect : 0)
+    this.selectTab(this.preSelect)
   },
   methods: {
     selectTab(i) {
+      if (i === undefined) i = this.selectedIndex
       this.dropdownSelection = i
       this.selectedIndex = i
 

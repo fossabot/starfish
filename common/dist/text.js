@@ -140,12 +140,14 @@ const skipWords = [
     `to`,
     `per`,
 ];
-function capitalize(string = ``) {
+function capitalize(string = ``, firstOnly = false) {
     return (string || ``)
         .toLowerCase()
         .split(` `)
         .map((s, index) => {
         if (skipWords.includes(s) && index > 0)
+            return s;
+        if (firstOnly && index > 0)
             return s;
         return (s.substring(0, 1).toUpperCase() +
             s.substring(1).toLowerCase());

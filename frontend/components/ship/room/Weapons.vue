@@ -4,42 +4,24 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/8.webp"
   >
-    <template #title
-      ><span class="sectionemoji">🎯</span>Weapons
-      Bay</template
-    >
+    <template #title><span class="sectionemoji">🎯</span>Weapons Bay</template>
     <div class="panesection" v-if="!weapons.length">
       No weapons on the ship!
     </div>
     <div v-else>
       <div class="panesection">
-        <ShipItem
-          v-for="i in weapons"
-          :key="i.id"
-          :item="i"
-          :owner="ship"
-        />
+        <ShipItem v-for="i in weapons" :key="i.id" :item="i" :owner="ship" />
 
         <div class="martop sub">
           Your charge speed:
-          {{
-            c.numberWithCommas(
-              c.r2(chargePerSecond * 60, 0),
-            )
-          }}/min
+          {{ c.numberWithCommas(c.r2(chargePerSecond * 60, 0)) }}/min
         </div>
       </div>
       <div class="panesection">
-        <div class="panesubhead">
-          Majority Combat Strategy
-        </div>
+        <div class="panesubhead">Majority Combat Strategy</div>
         <div>
           <div>
-            <b>{{
-              c.capitalize(
-                c.camelCaseToWords(ship.combatTactic),
-              )
-            }}</b>
+            <b>{{ c.capitalize(c.camelCaseToWords(ship.combatTactic)) }}</b>
           </div>
           <div>
             <span v-if="targetShip">
@@ -51,9 +33,7 @@
             <span v-if="ship.targetItemType !== 'any'">
               Focusing fire on
               <b>{{ ship.targetItemType }}s</b></span
-            ><span v-else>
-              No specific target equipment
-            </span>
+            ><span v-else> No specific target equipment </span>
           </div>
         </div>
       </div>
@@ -90,9 +70,7 @@
                 : null
             "
           >
-            <span>{{
-              c.capitalize(c.camelCaseToWords(tactic))
-            }}</span>
+            <span>{{ c.capitalize(c.camelCaseToWords(tactic)) }}</span>
           </button>
         </div>
       </div>
@@ -102,31 +80,22 @@
         <div>
           <button
             :class="{
-              secondary:
-                crewMember.attackTargetId !== 'any',
+              secondary: crewMember.attackTargetId !== 'any',
             }"
             @click="$store.commit('setAttackTarget', 'any')"
           >
             <span>Any Target</span></button
           ><button
             :class="{
-              secondary:
-                crewMember.attackTargetId !== 'closest',
+              secondary: crewMember.attackTargetId !== 'closest',
             }"
-            @click="
-              $store.commit('setAttackTarget', 'closest')
-            "
+            @click="$store.commit('setAttackTarget', 'closest')"
           >
             <span>Closest Target</span></button
           ><button
             v-for="targetShip in visibleEnemies"
             :key="'inattackrange' + targetShip.id"
-            @click="
-              $store.commit(
-                'setAttackTarget',
-                targetShip.id,
-              )
-            "
+            @click="$store.commit('setAttackTarget', targetShip.id)"
             :class="{
               secondary:
                 !crewMember.attackTargetId ||
@@ -140,18 +109,13 @@
       </div>
 
       <div class="panesection">
-        <div class="panesubhead">
-          Your Target Equipment Type
-        </div>
+        <div class="panesubhead">Your Target Equipment Type</div>
         <div>
           <button
             :class="{
-              secondary:
-                crewMember.targetItemType !== 'any',
+              secondary: crewMember.targetItemType !== 'any',
             }"
-            @click="
-              $store.commit('setTargetItemType', 'any')
-            "
+            @click="$store.commit('setTargetItemType', 'any')"
           >
             <span>Any Equipment</span></button
           ><button
@@ -160,14 +124,10 @@
             @click="$store.commit('setTargetItemType', i)"
             :class="{
               secondary:
-                !crewMember.targetItemType ||
-                crewMember.targetItemType !== i,
+                !crewMember.targetItemType || crewMember.targetItemType !== i,
             }"
           >
-            <span
-              >{{ c.capitalize(i)
-              }}{{ i === 'armor' ? '' : 's' }}</span
-            >
+            <span>{{ c.capitalize(i) }}{{ i === 'armor' ? '' : 's' }}</span>
           </button>
         </div>
       </div>
@@ -187,54 +147,42 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'room'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'room'
     },
     weapons(): WeaponStub[] {
-      return this.ship.items.filter(
-        (i: ItemStub) => i.itemType === 'weapon',
-      )
+      return this.ship.items.filter((i: ItemStub) => i.itemType === 'weapon')
     },
-    dexterityLevel(): number {
-      const passiveBoost = this.crewMember.passives.reduce(
-        (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === 'boostDexterity'
-            ? p.intensity || 0
-            : 0),
-        0,
-      )
+    strengthLevel(): number {
+      const passiveBoost =
+        this.crewMember.passives.reduce(
+          (acc: number, p: CrewPassiveData) =>
+            acc + (p.id === 'boostStrength' ? p.intensity || 0 : 0),
+          0,
+        ) +
+        this.ship.passives.reduce((acc, p) => {
+          if (p.id === `flatSkillBoost`) return acc + (p.intensity || 0)
+          return acc
+        }, 0)
       return (
-        (this.crewMember.skills.find(
-          (s) => s.skill === 'dexterity',
-        )?.level || 1) + passiveBoost
+        (this.crewMember.skills.find((s) => s.skill === 'strength')?.level ||
+          1) + passiveBoost
       )
     },
     chargePerSecond(): number {
       const passiveMultiplier =
         this.ship.passives.reduce(
           (total: number, p: ShipPassiveEffect) =>
-            total +
-            (p.id === `boostWeaponChargeSpeed`
-              ? p.intensity || 0
-              : 0),
+            total + (p.id === `boostWeaponChargeSpeed` ? p.intensity || 0 : 0),
           0,
         ) +
         this.crewMember.passives.reduce(
           (total: number, p: ShipPassiveEffect) =>
-            total +
-            (p.id === `boostWeaponChargeSpeed`
-              ? p.intensity || 0
-              : 0),
+            total + (p.id === `boostWeaponChargeSpeed` ? p.intensity || 0 : 0),
           0,
         ) +
         1
       return (
-        ((c.getWeaponCooldownReductionPerTick(
-          this.dexterityLevel,
-        ) *
+        ((c.getWeaponCooldownReductionPerTick(this.strengthLevel) *
           c.tickInterval) /
           1000) *
         passiveMultiplier
@@ -253,17 +201,12 @@ export default Vue.extend({
     targetShip(): ShipStub | undefined {
       return (
         this.ship.targetShip &&
-        this.ship.visible?.ships.find(
-          (s) => s.id === this.ship.targetShip.id,
-        )
+        this.ship.visible?.ships.find((s) => s.id === this.ship.targetShip.id)
       )
     },
     visibleEnemies(): ShipStub[] {
       return this.ship.visible?.ships
-        .filter(
-          (s) =>
-            !s.guildId || s.guildId !== this.ship.guildId,
-        )
+        .filter((s) => !s.guildId || s.guildId !== this.ship.guildId)
         .sort(
           (a, b) =>
             c.distance(a.location, this.ship.location) -

@@ -125,7 +125,12 @@ interface ShipPassiveEffect {
 interface TakenDamageResult extends ResponseWithMessage {
   damageTaken: number
   didDie: boolean
-  weapon: { itemId: ItemId }
+  weapon: {
+    id?: string
+    itemType?: ItemType
+    itemId?: ItemId
+    displayName: string
+  }
   miss: boolean
   didCrit?: boolean
 }

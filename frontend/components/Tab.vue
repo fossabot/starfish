@@ -24,7 +24,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      isActive: true,
+      isActive: false,
     }
   },
   computed: {

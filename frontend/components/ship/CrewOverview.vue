@@ -35,6 +35,7 @@
         :noPad="true"
         class="flexgrow"
         ><Tab title="Activity"></Tab>
+        <Tab title="Level"></Tab>
         <Tab title="Seniority"></Tab>
         <Tab
           :title="`Contributed 💳${c.capitalize(
@@ -93,6 +94,12 @@ export default Vue.extend({
         return [...this.ship.crewMembers].sort(
           (a: CrewMemberStub, b) => {
             return (b.lastActive || 0) - (a.lastActive || 0)
+          },
+        )
+      if (sortBy === 'level')
+        return [...this.ship.crewMembers].sort(
+          (a: CrewMemberStub, b) => {
+            return (b.level || 0) - (a.level || 0)
           },
         )
 

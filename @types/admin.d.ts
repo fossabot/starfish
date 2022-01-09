@@ -17,6 +17,7 @@ interface AdminGameSettings {
   staminaBottomedOutResetPoint: number
   staminaBottomedOutChargeMultiplier: number
   staminaRechargeMultiplier: number
+  enduranceXpGainPerSecond: number
   newCrewMemberCredits: number
   planetDensity: number
   cometDensity: number
