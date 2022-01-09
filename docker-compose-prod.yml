@@ -32,7 +32,7 @@ services:
       ADMIN_KEYS_FILE: /run/secrets/admin_keys
       NEW_RELIC_APP_NAME: '${NEW_RELIC_APP_NAME_GAME}'
       NEW_RELIC_LICENSE_KEY: '${NEW_RELIC_LICENSE_KEY}'
-      NEW_RELIC_NO_CONFIG_FILE: true
+      NEW_RELIC_NO_CONFIG_FILE: 'true'
       NODE_ENV: production
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
