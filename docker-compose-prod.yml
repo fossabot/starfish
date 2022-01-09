@@ -30,6 +30,10 @@ services:
       MONGODB_USERNAME_FILE: /run/secrets/mongodb_username
       MONGODB_PASSWORD_FILE: /run/secrets/mongodb_password
       ADMIN_KEYS_FILE: /run/secrets/admin_keys
+      NEW_RELIC_APP_NAME: '${NEW_RELIC_APP_NAME_GAME}'
+      NEW_RELIC_LICENSE_KEY: '${NEW_RELIC_LICENSE_KEY}'
+      NEW_RELIC_NO_CONFIG_FILE: true
+      NODE_ENV: production
     volumes:
       - /var/lib/nginx/letsencrypt:/etc/letsencrypt
       - /mnt/disks/mongodb/:/usr/app/game/db_volume
