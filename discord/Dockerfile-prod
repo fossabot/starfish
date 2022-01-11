@@ -27,7 +27,7 @@ COPY --from=npm /usr/app/discord/package.json ./package.json
 COPY --from=npm /usr/app/discord/node_modules ./node_modules
 
 RUN mkdir /usr/app/common
-COPY --from=npm cmmon/dist /usr/app/common/dist
+COPY --from=npm common/dist /usr/app/common/dist
 COPY --from=npm common/node_modules /usr/app/common/node_modules
 COPY @types /usr/app/@types
 
