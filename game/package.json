@@ -18,7 +18,6 @@
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
     "mongoose": "5.10.19",
-    "newrelic": "^8.6.0",
     "nodemon": "^2.0.15",
     "npm": "^8.3.0",
     "socket.io": "^4.4.0",
