@@ -17,6 +17,7 @@ COPY common /usr/app/common
 WORKDIR /usr/app/common
 RUN npm install
 
+WORKDIR /usr/app/game
 COPY @types /usr/app/@types
 RUN npm run build-once
 
