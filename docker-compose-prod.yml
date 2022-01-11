@@ -53,6 +53,8 @@ services:
     command: 'npm run start'
     environment:
       NEW_RELIC_LICENSE_KEY: '${NEW_RELIC_LICENSE_KEY}'
+      NODE_ENV: production
+      IS_DOCKER: 'true'
     secrets:
       - google_client_email
       - google_private_key
@@ -64,6 +66,7 @@ services:
     command: 'npm run prod'
     environment:
       NEW_RELIC_LICENSE_KEY: '${NEW_RELIC_LICENSE_KEY}'
+      NODE_ENV: production
     secrets:
       - discord_token
       - bot_id

@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "nuxt",
     "build": "IS_DOCKER=true nuxt build",
+    "prod": "nuxt start",
     "start": "IS_DOCKER=true nuxt start",
     "generate": "nuxt generate"
   },

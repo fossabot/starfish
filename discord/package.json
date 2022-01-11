@@ -3,7 +3,7 @@
     "build": "tsc --project ./tsconfig.discord.json -w",
     "buildprod": "tsc --project ./tsconfig.discord.json",
     "dev": "NODE_ENV=development nodemon dist/index.js",
-    "prod": "NODE_ENV=production node dist/index.js"
+    "prod": "node dist/index.js"
   },
   "dependencies": {
     "discord.js": "^13.3.1",

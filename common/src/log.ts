@@ -40,7 +40,6 @@ const mainDirs: string[] = [
 ]
 
 const log = (...args: any[]): void => {
-  if (process.env.NODE_ENV !== `development`) return
   const regexResult =
     /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(
       `${new Error().stack}`,
@@ -110,6 +109,9 @@ const log = (...args: any[]): void => {
 
   console.log(prefix, ...args)
 
+  if (typeof window !== `undefined` || process.env.NODE_ENV !== `production`) {
+    return
+  }
   try {
     const data = {
       timestamp: Date.now(),
