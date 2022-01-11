@@ -3,5 +3,7 @@
     "build": "tsc --project ./tsconfig.common.json -w",
     "build-once": "tsc --project ./tsconfig.common.json"
   },
-  "dependencies": {}
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
 }
