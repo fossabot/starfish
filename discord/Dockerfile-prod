@@ -7,8 +7,11 @@ RUN npm install
 
 # 2nd stage - compile typescript
 FROM builder as npm
+WORKDIR /usr/app/common
+COPY common .
+RUN npm install
+
 WORKDIR /usr/app/discord
-COPY common /usr/app/common
 COPY @types /usr/app/@types
 COPY discord .
 COPY tsconfig.json /usr/app/tsconfig.json
@@ -22,7 +25,10 @@ WORKDIR /usr/app/discord
 COPY --from=npm /usr/app/discord/dist ./dist
 COPY --from=npm /usr/app/discord/package.json ./package.json
 COPY --from=npm /usr/app/discord/node_modules ./node_modules
-COPY common /usr/app/common
+
+WORKDIR /usr/app/common
+COPY --from=npm /usr/app/common/dist ./dist
+COPY --from=npm /usr/app/common/node_modules ./node_modules
 COPY @types /usr/app/@types
 
 

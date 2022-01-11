@@ -14,6 +14,11 @@ COPY --from=npm_install /usr/app/frontend/node_modules /usr/app/frontend/node_mo
 
 ADD @types/ /usr/app/@types
 ADD common/ /usr/app/common
+WORKDIR /usr/app/common
+
+RUN npm install
+
+WORKDIR /usr/app/frontend
 ADD frontend /usr/app/frontend
 RUN chown -R node:node /usr/app/frontend/node_modules
 RUN chmod -R 755 /usr/app/frontend/node_modules
@@ -28,6 +33,7 @@ ENV HOST 0.0.0.0
 COPY frontend/package.json .
 COPY frontend/nuxt.config.js .
 COPY --from=npm_build /usr/app/@types /usr/app/@types
-COPY --from=npm_build /usr/app/common /usr/app/common
+COPY --from=npm_build /usr/app/common/dist /usr/app/common/dist
+COPY --from=npm_build /usr/app/common/node_modules /usr/app/common/node_modules
 COPY --from=npm_build /usr/app/frontend /usr/app/frontend
 CMD ["npm", "run", "start"]

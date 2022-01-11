@@ -1,3 +1,4 @@
+const axios = require(`axios`)
 const fillCharacter = `.`
 
 let ignoreGray = false
@@ -18,6 +19,13 @@ const colors: any = {
   white: `\x1b[37m`,
 }
 
+const logLevelColors: any = {
+  red: `error`,
+  yellow: `warn`,
+  white: `info`,
+  grey: `debug`,
+}
+
 const dirColors: any = {
   red: `\x1b[31m`,
   green: `\x1b[32m`,
@@ -32,7 +40,6 @@ const mainDirs: string[] = [
 ]
 
 const log = (...args: any[]): void => {
-  if (process.env.NODE_ENV !== `development`) return
   const regexResult =
     /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(
       `${new Error().stack}`,
@@ -44,9 +51,14 @@ const log = (...args: any[]): void => {
     regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``
 
   if (ignoreGray && args[0] === `gray`) return
+
+  let mainColor = `white`
+
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]
     if (arg in colors) {
+      if (index === 0) mainColor = arg
+
       if (!args[index + 1]) continue
       if (typeof args[index + 1] === `object`) {
         // args[index] = colors[arg]
@@ -96,6 +108,29 @@ const log = (...args: any[]): void => {
   prefix += reset
 
   console.log(prefix, ...args)
+
+  if (typeof window !== `undefined` || process.env.NODE_ENV !== `production`) {
+    return
+  }
+  try {
+    const data = {
+      timestamp: Date.now(),
+      message: args.map((arg) => JSON.stringify(arg)).join(` `),
+      logtype: logLevelColors[mainColor] || `debug`,
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': `application/json`,
+        // 'Api-Key': process.env.NEW_RELIC_API_KEY,
+      },
+    }
+    axios.post(
+      `https://log-api.newrelic.com/log/v1?Api-Key=${process.env.NEW_RELIC_LICENSE_KEY}`,
+      data,
+      config,
+    )
+  } catch (e) {}
 }
 
 function trace() {
