@@ -110,6 +110,7 @@ jobs:
     strategy:
       matrix:
         include:
+          - folder: 'common'
           - folder: 'game'
 
     steps:
