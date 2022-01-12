@@ -238,21 +238,12 @@ export class HumanShip extends CombatShip {
   addHeaderBackground = addHeaderBackground
   addTagline = addTagline
 
-  private tickProfiler = new c.Profiler(
-    4,
-    `human ship tick (${this.name})`,
-    false,
-    0,
-  )
-
   tick() {
-    this.tickProfiler.start()
     super.tick()
     if (this.dead) return
 
     if (this.tutorial) this.tutorial.tick()
 
-    this.tickProfiler.step(`move`)
     // ----- move -----
     this.passiveThrust()
     this.move()
@@ -261,7 +252,6 @@ export class HumanShip extends CombatShip {
     // ----- planet effects -----
     if (this.planet) this.planet.tickEffectsOnShip(this)
 
-    this.tickProfiler.step(`update visible`)
     // ----- scan -----
     const previousVisible = { ...this.visible }
     this.updateVisible()
@@ -269,7 +259,6 @@ export class HumanShip extends CombatShip {
     this.scanners.forEach((s) => s.use())
     this.generateVisiblePayload(previousVisible)
 
-    this.tickProfiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers
       .filter((cm) => Object.keys(cm.toUpdate || {}).length)
@@ -325,7 +314,6 @@ export class HumanShip extends CombatShip {
       )
     }
 
-    this.tickProfiler.step(`get caches`)
     // ----- get nearby caches -----
     // * this is on a random timeout so that the "first" ship doesn't always have priority on picking up caches if 2 or more ships could have gotten it
     setTimeout(() => {
@@ -338,19 +326,16 @@ export class HumanShip extends CombatShip {
         })
     }, Math.round((Math.random() * c.tickInterval) / 3))
 
-    this.tickProfiler.step(`auto attack`)
     // ----- auto-attacks -----
     if (!this.dead) this.autoAttack()
 
     // ----- zone effects -----
     if (!this.dead) this.applyZoneTickEffects()
 
-    this.tickProfiler.step(`frontend stubify`)
     // todo if no io watchers, skip this
     // ----- updates for frontend -----
     this.toUpdate.items = this.items.map((i) => i.stubify())
 
-    this.tickProfiler.step(`frontend send`)
     // ----- send update to listeners -----
     if (Object.keys(this.toUpdate).length) {
       this.game?.io?.to(`ship:${this.id}`).emit(`ship:update`, {
@@ -363,8 +348,6 @@ export class HumanShip extends CombatShip {
     this.checkContractTimeOuts()
     if ((this.game?.tickCount || 1) % 1000 === 0)
       this.updateActiveContractsLocations()
-
-    this.tickProfiler.end()
   }
 
   // ----- log -----
@@ -2131,6 +2114,7 @@ export class HumanShip extends CombatShip {
     this.crewMembers.push(cm)
     if (!this.captain) {
       this.captain = cm.id
+      cm.updateActives()
 
       if (
         [

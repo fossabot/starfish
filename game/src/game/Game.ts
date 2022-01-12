@@ -40,6 +40,7 @@ export class Game {
 
   readonly createTime = Date.now()
   readonly initialOptions: { ioPort?: number }
+  readonly massProfiler = new c.MassProfiler()
   startTime: number = 0
   ships: Ship[] = []
   planets: Planet[] = []
@@ -215,6 +216,8 @@ export class Game {
 
     const saveStartTime = Date.now()
 
+    this.massProfiler.print()
+
     const promises: (Promise<any> | undefined)[] = []
     promises.push(
       this.db?.game.addOrUpdateInDb({
@@ -299,7 +302,7 @@ export class Game {
       // todo put this back once we have tests in place
     }
 
-    this.announceCargoPrices()
+    // this.announceCargoPrices()
   }
 
   // ----- game loop -----
@@ -321,6 +324,8 @@ export class Game {
       // c.log(`tick`, Date.now() - this.lastTickTime)
 
       const tickStartTime = Date.now()
+
+      this.massProfiler.resetForNextTick()
 
       this.tickCount++
       const times: any[] = []

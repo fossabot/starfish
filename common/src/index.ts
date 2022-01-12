@@ -7,7 +7,7 @@ import game from './game'
 import gameConstants from './gameConstants'
 import physics from './physics'
 import discord from './discord'
-import { Profiler } from './Profiler'
+import MassProfiler from './MassProfiler'
 import species from './species'
 import guilds from './guilds'
 import baseShipPassiveData from './baseShipPassiveData'
@@ -42,6 +42,6 @@ export default {
   guilds,
   baseShipPassiveData,
   loadouts,
-  Profiler,
+  MassProfiler,
   stubify,
 }

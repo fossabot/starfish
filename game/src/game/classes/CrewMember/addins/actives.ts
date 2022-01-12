@@ -295,7 +295,7 @@ const effects: {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedShipPassiveFromActive(
       `flatDamageReduction`,
-      baseIntensity,
+      displayIntensity,
       duration,
       a,
       cm,
@@ -362,6 +362,14 @@ const effects: {
     return `Cargo prices visible at planets within broadcast range for ${c.msToTimeString(
       duration,
     )}!`
+  },
+
+  // ----- captain-only -----
+  moveAllCrewMembersToRepair: (cm, a, d, displayIntensity, baseIntensity) => {
+    cm.ship.crewMembers.forEach((crewMember) => {
+      crewMember.goTo(`repair`)
+    })
+    return `All crew members moved to the repair bay!`
   },
 }
 
@@ -431,6 +439,11 @@ export async function useActive(
   if (c.crewActiveBaseGlobalCooldown - (Date.now() - this.lastActiveUse) > 0)
     return {
       error: `You can't use another ability so soon.`,
+    }
+
+  if (data.captain && this.ship.captain !== this.id)
+    return {
+      error: `Only the captain can use this ability.`,
     }
 
   this.changeMorale(0.05)

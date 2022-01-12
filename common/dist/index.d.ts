@@ -1,4 +1,4 @@
-import { Profiler } from './Profiler';
+import MassProfiler from './MassProfiler';
 import * as cargo from './cargo';
 import stubify from './stubify';
 import * as items from './items';
@@ -175,7 +175,7 @@ declare const _default: {
         testPassiveEngine: Loadout;
         testMega: Loadout;
     };
-    Profiler: typeof Profiler;
+    MassProfiler: typeof MassProfiler;
     stubify: typeof stubify;
     getActiveIntensityScaledByLevel(intensity: number, level: number): number;
     crewActiveBaseGlobalCooldown: number;
@@ -206,6 +206,7 @@ declare const _default: {
         boostDamageToScanners: CrewActiveData;
         broadcastRangeCargoPrices: CrewActiveData;
         damageToAllNearbyEnemies: CrewActiveData;
+        moveAllCrewMembersToRepair: CrewActiveData;
     };
     getShipTaglinePrice(cosmetic: PlanetShipCosmetic): Price;
     getShipBackgroundPrice(cosmetic: PlanetShipCosmetic): Price;

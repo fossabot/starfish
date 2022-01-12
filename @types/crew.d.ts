@@ -1,21 +1,10 @@
-type CrewLocation =
-  | `bunk`
-  | `cockpit`
-  | `repair`
-  | `weapons`
-  | `mine`
-  | `lab`
+type CrewLocation = `bunk` | `cockpit` | `repair` | `weapons` | `mine` | `lab`
 interface BaseRoomData {
   id: CrewLocation
   description: string
 }
 
-type SkillId =
-  | `strength`
-  | `dexterity`
-  | `intellect`
-  | `charisma`
-  | `endurance`
+type SkillId = `strength` | `dexterity` | `intellect` | `charisma` | `endurance`
 // | `piloting`
 // | `munitions`
 // | `mechanics`
@@ -190,6 +179,7 @@ type CrewActiveId =
   | `boostDamageToScanners`
   | `broadcastRangeCargoPrices`
   | `damageToAllNearbyEnemies`
+  | `moveAllCrewMembersToRepair`
 interface CrewActive {
   id: CrewActiveId
   lastUsed?: number
@@ -198,19 +188,14 @@ interface CrewActive {
 interface CrewActiveData {
   id: CrewActiveId
   displayName: string
-  description: (
-    a: CrewActive,
-    crewMemberLevel: number,
-  ) => string
+  description: (a: CrewActive, crewMemberLevel: number) => string
+  captain?: true
   range?: number
   cooldown: number
   duration?: number
   notify?: boolean
   intensityAdapter: (intensity: number) => number
-  displayIntensity: (
-    intensity: number,
-    level?: number,
-  ) => number
+  displayIntensity: (intensity: number, level?: number) => number
 }
 
 interface BaseSpeciesData {
@@ -223,12 +208,7 @@ interface BaseSpeciesData {
   activeTree: CrewActive[]
 }
 
-type AISpeciesId =
-  | `eagles`
-  | `seagulls`
-  | `chickens`
-  | `flamingos`
-  | `vultures`
+type AISpeciesId = `eagles` | `seagulls` | `chickens` | `flamingos` | `vultures`
 
 type HumanSpeciesId =
   | `octopi`

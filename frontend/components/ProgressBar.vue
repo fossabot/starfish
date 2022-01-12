@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="progressbar"
-    :class="{ mini, micro, nofade: noFade }"
-  >
+  <div class="progressbar" :class="{ mini, micro, nofade: noFade }">
     <div class="bg"></div>
     <div
       class="fill"
@@ -42,13 +39,18 @@
         }"
       ></div>
     </div>
+    <div class="ticks" v-if="max">
+      <div
+        class="tens"
+        :style="{
+          'background-size': `${(1 / max) * 10}%`,
+        }"
+      ></div>
+    </div>
     <div
       class="label padpane"
       :style="{
-        color:
-          percent <= dangerZone
-            ? 'var(--warning)'
-            : 'inherit',
+        color: percent <= dangerZone ? 'var(--warning)' : 'inherit',
       }"
     >
       <slot />
@@ -65,6 +67,7 @@ export default Vue.extend({
     micro: {},
     mini: {},
     percent: { default: 1 },
+    max: {},
     color: { default: 'rgba(255,255,255,.4)' },
     dangerZone: { default: 0.2 },
     noFade: { default: false },
@@ -168,6 +171,33 @@ export default Vue.extend({
     padding-right: 0.5em;
     padding-top: 0.11em;
     padding-bottom: 0.09em;
+  }
+}
+
+.ticks {
+  mix-blend-mode: hard-light;
+  pointer-events: none;
+  --tickColor: rgb(70, 70, 70);
+  --tickWidth: 0.08em;
+
+  &,
+  & > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .tens {
+    height: 7px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent calc(100% - var(--tickWidth)),
+      var(--tickColor) calc(100% - var(--tickWidth)),
+      var(--tickColor) 100%
+    );
   }
 }
 </style>

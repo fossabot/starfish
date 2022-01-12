@@ -488,6 +488,11 @@ export class CrewMember extends Stubbable {
     this.activeSlots = activeCountToAdd + passiveBoost
     this.toUpdate.activeSlots = this.activeSlots
 
+    for (let a of Object.values(c.crewActives).filter((ca) => ca.captain))
+      if (this.id === this.ship.captain)
+        this.addActive({ id: a.id, intensity: 1 })
+      else this.removeActive(a.id)
+
     if (this.speciesId)
       for (let a of c.species[this.speciesId].activeTree.slice(
         0,
@@ -529,7 +534,6 @@ export class CrewMember extends Stubbable {
     this.toUpdate.morale = this.morale
     if (Math.abs(amount) > 1) {
       c.log(this.ship.name, this.name, amount, this.morale)
-      c.trace()
     }
   }
 

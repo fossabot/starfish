@@ -218,11 +218,8 @@ export default Vue.extend({
 
       return new Promise<void>((resolve) => {
         if (!this.$el || !this.$el.querySelector) return
-        const profiler = new c.Profiler(4, `canvasmap`, false, 0)
-        profiler.step('called')
         requestAnimationFrame(async () => {
           if (this.paused || !this.show) return
-          profiler.step('framestart')
           if (!this.element) {
             this.element = this.$el.querySelector('#map') as HTMLCanvasElement
             this.drawNextFrame()
@@ -359,8 +356,6 @@ export default Vue.extend({
             }
           }
 
-          profiler.step('startdraw')
-
           this.drawer.draw({
             zoom: this.radius
               ? (((1 / this.radius) * this.drawer.flatScale) / 1000000) * 2
@@ -386,10 +381,8 @@ export default Vue.extend({
           //   }
           // else this.previousData = undefined
 
-          profiler.step('drawn')
           this.zoom = this.drawer.targetZoom || 1
           this.mapCenter = [...(this.drawer.center || [0, 0])]
-          profiler.end()
           if (!immediate && !this.drawer?.isIdle()) {
             this.drawNextFrame()
           }

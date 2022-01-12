@@ -157,7 +157,7 @@ exports.crewActives = {
         },
         notify: true,
         cooldown: exports.crewActiveBaseGlobalCooldown * 2,
-        intensityAdapter: (i) => i,
+        intensityAdapter: (i) => i * 0.25,
         displayIntensity: function (i, level = 0) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
@@ -357,6 +357,21 @@ exports.crewActives = {
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 10,
         range: 0.0802,
+    },
+    // ----- captain-only actives -----
+    moveAllCrewMembersToRepair: {
+        captain: true,
+        id: `moveAllCrewMembersToRepair`,
+        displayName: `All Fins On Deck!`,
+        description: function (a, level) {
+            return `Move all crew members to the repair bay.`;
+        },
+        notify: true,
+        intensityAdapter: (i) => i,
+        displayIntensity: function () {
+            return 1;
+        },
+        cooldown: exports.crewActiveBaseGlobalCooldown * 20,
     },
 };
 //# sourceMappingURL=crewActives.js.map

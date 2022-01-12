@@ -8,31 +8,7 @@ const host = isDocker() ? `--host mongodb` : ``
 
 async function stressTest() {
   const log = console.log
-  // console.log = () => {}
-
-  // await new Promise<void>((resolve) => {
-  //   exec(
-  //     `mongosh -u testuser -p testpassword starfish-test ${host} --eval "
-  //       use starfish-test
-  //       db.createUser({
-  //         user: 'testuser',
-  //         pwd: 'testpassword',
-  //         roles: [
-  //           {
-  //             role: 'readWrite',
-  //             db: 'starfish-test',
-  //           },
-  //         ],
-  //       })"`,
-  //     undefined,
-  //     (error, stdout, stderr) => {
-  //       if (error) log(error)
-  //       if (stderr) log(stderr)
-  //       else log(`Database initialized for stress test.\n`)
-  //       resolve()
-  //     },
-  //   )
-  // })
+  console.log = () => {}
 
   const output: {
     humanShips: number
@@ -63,6 +39,7 @@ async function stressTest() {
       }
     }
     await g.tick(false)
+    await c.sleep(1)
 
     const totals: number[] = []
     for (let i = 0; i < 10; i++) {
@@ -77,6 +54,9 @@ async function stressTest() {
     const time = totals.reduce((a, b) => a + b, 0) / totals.length
 
     log(`done with human:`, humanCount)
+    console.log = log
+    g.massProfiler.print()
+    console.log = () => {}
 
     output.push({
       humanShips: g.humanShips.length,
@@ -116,6 +96,9 @@ async function stressTest() {
     const time = totals.reduce((a, b) => a + b, 0) / totals.length
 
     log(`done with ai:`, aiCount)
+    console.log = log
+    g.massProfiler.print()
+    console.log = () => {}
 
     output.push({
       humanShips: g.humanShips.length,
@@ -140,19 +123,6 @@ async function stressTest() {
       )
       .join(`\n`),
   )
-
-  // await new Promise<void>((resolve) => {
-  //   exec(
-  //     `mongosh -u testuser -p testpassword starfish-test  ${host} --eval "db.dropDatabase()"`,
-  //     undefined,
-  //     (error, stdout, stderr) => {
-  //       if (error) log(`cleanup error:`, error)
-  //       if (stderr) log(`cleanup output:`, stderr)
-  //       else log(`Database cleaned up after stress test.\n`)
-  //       resolve()
-  //     },
-  //   )
-  // })
 
   log(`done!`)
 }

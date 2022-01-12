@@ -4,62 +4,38 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/13.webp"
   >
-    <template #title
-      ><span class="sectionemoji">🛌</span>Bunk</template
-    >
+    <template #title><span class="sectionemoji">🛌</span>Bunk</template>
     <div class="panesection">zzzzZZZZzzzz.....</div>
     <div
       class="panesection"
-      v-if="
-        crewMember.bottomedOutOnStamina &&
-        msToBottomedOutResetPoint > 0
-      "
+      v-if="crewMember.bottomedOutOnStamina && msToBottomedOutResetPoint > 0"
     >
-      <div class="bold warning marbotsmall">
-        You've hit your limit!
-      </div>
+      <div class="bold warning marbotsmall">You've hit your limit!</div>
       You must rest
       <template
-        v-if="
-          ship.gameSettings
-            .staminaBottomedOutChargeMultiplier !== 1
-        "
+        v-if="ship.gameSettings.staminaBottomedOutChargeMultiplier !== 1"
       >
         at a
         <span class="warning"
           >{{
-            c.r2(
-              1 -
-                ship.gameSettings
-                  .staminaBottomedOutChargeMultiplier,
-            ) * 100
+            c.r2(1 - ship.gameSettings.staminaBottomedOutChargeMultiplier) *
+            100
           }}% reduced</span
         >
         recovery rate
       </template>
-      until you're at least
-      <b
-        >{{
-          ship.gameSettings.staminaBottomedOutResetPoint *
-          100
-        }}% recovered</b
-      >. ({{ c.msToTimeString(msToBottomedOutResetPoint) }})
+      until you've recovered at least
+      <b>{{ ship.gameSettings.staminaBottomedOutResetPoint * 100 }} stamina</b>.
+      ({{ c.msToTimeString(msToBottomedOutResetPoint) }})
     </div>
     <div class="panesection" v-if="msToRested">
       Fully rested in {{ timeToRested }}
     </div>
-    <div
-      class="panesection"
-      v-if="crewMember.stamina === 1"
-    >
-      Fully rested!
-    </div>
+    <div class="panesection" v-if="crewMember.stamina === 1">Fully rested!</div>
 
     <div class="panesection" v-if="msToRested">
       <div>
-        <div class="panesubhead">
-          When Fully Rested, Go To...
-        </div>
+        <div class="panesubhead">When Fully Rested, Go To...</div>
       </div>
       <button
         v-for="room in Object.keys(ship.rooms)"
@@ -69,9 +45,7 @@
         }"
         @click="setFullyRestedTarget(room)"
       >
-        <span>{{
-          c.capitalize(c.camelCaseToWords(room))
-        }}</span>
+        <span>{{ c.capitalize(c.camelCaseToWords(room)) }}</span>
       </button>
     </div>
   </Box>
@@ -89,17 +63,12 @@ export default Vue.extend({
   computed: {
     ...mapState(['ship', 'crewMember']),
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'room'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'room'
     },
     msToRested(): number {
       const passiveBoostMultiplier =
         1 +
-        ((
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
+        ((this.crewMember as CrewMemberStub).passives?.reduce(
           (total, p: CrewPassiveData) =>
             p.id === 'boostStaminaRegeneration'
               ? total + (p.intensity || 0)
@@ -120,12 +89,10 @@ export default Vue.extend({
         )
 
       return (
-        ((this.crewMember.maxStamina -
-          this.crewMember.stamina) /
+        ((this.crewMember.maxStamina - this.crewMember.stamina) /
           (c.getStaminaGainPerTickForSingleCrewMember(
             this.ship.gameSettings.baseStaminaUse,
-            this.ship.gameSettings
-              .staminaRechargeMultiplier,
+            this.ship.gameSettings.staminaRechargeMultiplier,
           ) *
             generalBoostMultiplier *
             passiveBoostMultiplier)) *
@@ -135,9 +102,7 @@ export default Vue.extend({
     msToBottomedOutResetPoint(): number {
       const passiveBoostMultiplier =
         1 +
-        ((
-          this.crewMember as CrewMemberStub
-        ).passives?.reduce(
+        ((this.crewMember as CrewMemberStub).passives?.reduce(
           (total, p: CrewPassiveData) =>
             p.id === 'boostStaminaRegeneration'
               ? total + (p.intensity || 0)
@@ -158,17 +123,14 @@ export default Vue.extend({
         )
 
       return (
-        ((this.ship.gameSettings
-          .staminaBottomedOutResetPoint -
+        ((this.ship.gameSettings.staminaBottomedOutResetPoint -
           this.crewMember.stamina) /
           (c.getStaminaGainPerTickForSingleCrewMember(
             this.ship.gameSettings.baseStaminaUse,
-            this.ship.gameSettings
-              .staminaRechargeMultiplier,
+            this.ship.gameSettings.staminaRechargeMultiplier,
           ) *
             (this.crewMember.bottomedOutOnStamina
-              ? this.ship.gameSettings
-                  .staminaBottomedOutChargeMultiplier || 1
+              ? this.ship.gameSettings.staminaBottomedOutChargeMultiplier || 1
               : 1) *
             generalBoostMultiplier *
             passiveBoostMultiplier)) *

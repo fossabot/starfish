@@ -5,8 +5,8 @@
       <div class="martop marbotbig flexcenter flexcolumn">
         <h3>Welcome to {{ c.gameName }}!</h3>
         <div>
-          Each crew member has a species, which provides
-          passive buffs and abilities.
+          Each crew member has a species, which provides passive buffs and
+          abilities.
         </div>
         <div>Choose a species to join the crew!</div>
         <div class="martop warning">
@@ -18,9 +18,7 @@
         <div
           class="option flexcenter flexcolumn pointer"
           v-for="species in c.shuffleArray(
-            Object.values(c.species).filter(
-              (s) => !s.aiOnly,
-            ),
+            Object.values(c.species).filter((s) => !s.aiOnly),
           )"
           :key="'species' + species.id"
           @click="chosenId = species.id"
@@ -45,16 +43,11 @@
           </div>
 
           <div class="martop marbottiny sub">
-            <span class="fade"
-              >First 3 Unlockable Abilities</span
-            >
+            <span class="fade">First 3 Unlockable Abilities</span>
           </div>
           <div class="activetree grid3 fullwidth">
             <ShipActive
-              v-for="(a, index) in species.activeTree.slice(
-                0,
-                3,
-              )"
+              v-for="(a, index) in species.activeTree.slice(0, 3)"
               :key="species.id + a.id"
               :active="a"
               :unlockLevel="c.activeUnlockLevels[index]"
@@ -75,22 +68,14 @@
         <div class="icon">
           {{ c.species[chosenId].icon }}
         </div>
-        <b>{{
-          c.capitalize(c.species[chosenId].singular)
-        }}</b
+        <b>{{ c.capitalize(c.species[chosenId].singular) }}</b
         >'s the species for you, eh?
       </div>
       <div class="flex">
-        <button
-          class="big martop marright"
-          @click="pickSpecies(chosenId)"
-        >
+        <button class="big martop marright" @click="pickSpecies(chosenId)">
           <span>Yep!</span>
         </button>
-        <button
-          class="big secondary martop"
-          @click="chosenId = null"
-        >
+        <button class="big secondary martop" @click="chosenId = null">
           <span>Wait, no...</span>
         </button>
       </div>
@@ -160,10 +145,7 @@ export default Vue.extend({
   width: 100%;
   display: grid;
   grid-gap: 1em;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(200px, 1fr)
-  );
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .icon {
