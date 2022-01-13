@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const log_1 = __importDefault(require("./log"));
+const massProfiler_1 = __importDefault(require("./massProfiler"));
 const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`];
 const alwaysReferencize = [
     `ship`,
@@ -17,6 +18,7 @@ const alwaysReferencize = [
     `species`,
 ];
 function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
+    const startTime = massProfiler_1.default.getTime();
     if (!baseObject)
         return undefined;
     let objectWithGetters;
@@ -28,6 +30,8 @@ function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
         objectWithGetters = baseObject;
     // c.log(`with getters`, Object.keys(gettersIncluded))
     const objectWithCircularReferencesRemoved = removeCircularReferences(objectWithGetters, keysToReferencize, allowRecursionDepth);
+    const time = massProfiler_1.default.getTime() - startTime;
+    massProfiler_1.default.call(`stubify`, baseObject.constructor?.name || `(no constructor)`, time);
     return objectWithCircularReferencesRemoved;
 }
 exports.default = stubify;

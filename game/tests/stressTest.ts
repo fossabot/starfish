@@ -1,10 +1,6 @@
-import c from '../../common/src'
-import { exec } from 'child_process'
-import isDocker from 'is-docker'
+import c from '../../common/dist'
 import { Game } from '../src/game/Game'
 import { crewMemberData, enemyAiShipData, humanShipData } from './defaults'
-
-const host = isDocker() ? `--host mongodb` : ``
 
 async function stressTest() {
   const log = console.log
@@ -20,9 +16,11 @@ async function stressTest() {
     comment?: string
   }[] = []
 
+  const tickCount = 20
   const crewMemberCount = 10
 
-  for (let humanCount of [1, 10, 100, 200, 300, 400, 500]) {
+  for (let humanCount of [1, 10, 100, 200, 500]) {
+    log(`starting human:`, humanCount)
     const g = new Game()
     for (let i = 0; i < humanCount; i++) {
       const s = await g.addHumanShip({
@@ -41,10 +39,12 @@ async function stressTest() {
     await g.tick(false)
     await c.sleep(1)
 
+    c.massProfiler.fullReset()
+
     const totals: number[] = []
-    for (let i = 0; i < 10; i++) {
+    log(`ticking ${tickCount} times...`)
+    for (let i = 0; i < tickCount; i++) {
       const start = performance.now()
-      log(`ticking...`)
       await g.tick(false)
       const end = performance.now()
 
@@ -53,9 +53,8 @@ async function stressTest() {
 
     const time = totals.reduce((a, b) => a + b, 0) / totals.length
 
-    log(`done with human:`, humanCount)
     console.log = log
-    g.massProfiler.print()
+    c.massProfiler.print()
     console.log = () => {}
 
     output.push({
@@ -70,6 +69,7 @@ async function stressTest() {
   }
 
   for (let aiCount of [100, 500, 1000, 2000]) {
+    log(`starting ai:`, aiCount)
     const g = new Game()
     for (let i = 0; i < aiCount; i++) {
       const s = await g.addAIShip({
@@ -82,11 +82,14 @@ async function stressTest() {
       })
     }
     await g.tick(false)
+    await c.sleep(1)
+
+    c.massProfiler.fullReset()
 
     const totals: number[] = []
-    for (let i = 0; i < 10; i++) {
+    log(`ticking ${tickCount} times...`)
+    for (let i = 0; i < tickCount; i++) {
       const start = performance.now()
-      log(`ticking...`)
       await g.tick(false)
       const end = performance.now()
 
@@ -95,9 +98,8 @@ async function stressTest() {
 
     const time = totals.reduce((a, b) => a + b, 0) / totals.length
 
-    log(`done with ai:`, aiCount)
     console.log = log
-    g.massProfiler.print()
+    c.massProfiler.print()
     console.log = () => {}
 
     output.push({

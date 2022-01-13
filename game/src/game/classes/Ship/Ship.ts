@@ -154,16 +154,13 @@ export class Ship extends Stubbable {
     // if new guild member, spawn at homeworld
     else if (guildId) {
       this.location = [
-        ...(this.game?.getHomeworld(guildId)?.location || [
-          0, 0,
-        ]),
+        ...(this.game?.getHomeworld(guildId)?.location || [0, 0]),
       ].map(
         (pos) =>
           pos +
           c.randomBetween(
             (this.game?.settings.arrivalThreshold ||
-              c.defaultGameSettings.arrivalThreshold) *
-              -0.4,
+              c.defaultGameSettings.arrivalThreshold) * -0.4,
             (this.game?.settings.arrivalThreshold ||
               c.defaultGameSettings.arrivalThreshold) * 0.4,
           ),
@@ -189,33 +186,25 @@ export class Ship extends Stubbable {
               pos +
               c.randomBetween(
                 (this.game?.settings.arrivalThreshold ||
-                  c.defaultGameSettings.arrivalThreshold) *
-                  -0.4,
+                  c.defaultGameSettings.arrivalThreshold) * -0.4,
                 (this.game?.settings.arrivalThreshold ||
-                  c.defaultGameSettings.arrivalThreshold) *
-                  0.4,
+                  c.defaultGameSettings.arrivalThreshold) * 0.4,
               ),
           ) as CoordinatePair) || [0, 0]),
       ]
 
-    if (
-      previousLocations &&
-      !Array.isArray(previousLocations[0])
-    )
+    if (previousLocations && !Array.isArray(previousLocations[0]))
       this.previousLocations = [...previousLocations]
 
     if (tagline) this.tagline = tagline
-    if (headerBackground)
-      this.headerBackground = headerBackground
+    if (headerBackground) this.headerBackground = headerBackground
 
     if (seenPlanets)
       this.seenPlanets = seenPlanets
-        .map(
-          ({ id, name }: { id: string; name?: string }) =>
-            this.game?.planets.find(
-              (p) =>
-                p.id === id || (p.name && p.name === name),
-            ),
+        .map(({ id, name }: { id: string; name?: string }) =>
+          this.game?.planets.find(
+            (p) => p.id === id || (p.name && p.name === name),
+          ),
         )
         .filter((p) => p) as Planet[]
 
@@ -230,22 +219,12 @@ export class Ship extends Stubbable {
     this.chassis = c.items.chassis.starter1 // this is just here to placate typescript, chassis is definitely assigned
 
     // todo remove, temporary
-    if (chassis && (chassis as any).id)
-      chassis.chassisId = (chassis as any).id
+    if (chassis && (chassis as any).id) chassis.chassisId = (chassis as any).id
 
-    if (
-      chassis &&
-      chassis.chassisId &&
-      c.items.chassis[chassis.chassisId]
-    )
+    if (chassis && chassis.chassisId && c.items.chassis[chassis.chassisId])
       this.swapChassis(c.items.chassis[chassis.chassisId])
-    else if (
-      loadout &&
-      c.items.chassis[c.loadouts[loadout]?.chassisId]
-    )
-      this.swapChassis(
-        c.items.chassis[c.loadouts[loadout].chassisId],
-      )
+    else if (loadout && c.items.chassis[c.loadouts[loadout]?.chassisId])
+      this.swapChassis(c.items.chassis[c.loadouts[loadout].chassisId])
     else this.swapChassis(c.items.chassis.starter1)
 
     this.updateSlots()
@@ -259,8 +238,7 @@ export class Ship extends Stubbable {
 
     if (stats) this.stats = [...stats]
 
-    if (guildId && c.guilds[guildId])
-      this.changeGuild(guildId)
+    if (guildId && c.guilds[guildId]) this.changeGuild(guildId)
 
     if (timedPassives?.length) {
       for (let p of timedPassives) {
@@ -293,11 +271,8 @@ export class Ship extends Stubbable {
 
   rename(newName: string) {
     const prevName = this.name
-    this.name = c
-      .sanitize(newName)
-      .result.substring(0, c.maxNameLength)
-    if (this.name.replace(/\s/g, ``).length === 0)
-      this.name = `ship`
+    this.name = c.sanitize(newName).result.substring(0, c.maxNameLength)
+    if (this.name.replace(/\s/g, ``).length === 0) this.name = `ship`
 
     if (this.name === prevName) return
 
@@ -320,18 +295,15 @@ export class Ship extends Stubbable {
   changeGuild(this: Ship, id: GuildId) {
     // if there already was one, remove its passives
     if (this.guildId) {
-      for (let p of c.guilds[this.id].passives)
-        this.removePassive(p)
+      for (let p of c.guilds[this.id].passives) this.removePassive(p)
     }
 
     if (c.guilds[id]) {
       this.guildId = id
       this.toUpdate.guildId = id
-      for (let p of c.guilds[id].passives)
-        this.applyPassive(p)
+      for (let p of c.guilds[id].passives) this.applyPassive(p)
 
-      if (this.human)
-        (this as HumanShip).checkAchievements(`guild`)
+      if (this.human) (this as HumanShip).checkAchievements(`guild`)
 
       this.logEntry(
         [
@@ -356,9 +328,7 @@ export class Ship extends Stubbable {
               [
                 {
                   text: this.name,
-                  color:
-                    this.guildId &&
-                    c.guilds[this.guildId].color,
+                  color: this.guildId && c.guilds[this.guildId].color,
                   tooltipData: this.toReference() as any,
                 },
                 `joined the`,
@@ -379,64 +349,44 @@ export class Ship extends Stubbable {
   // ----- item mgmt -----
 
   get engines(): Engine[] {
-    return this.items.filter(
-      (i) => i instanceof Engine,
-    ) as Engine[]
+    return this.items.filter((i) => i instanceof Engine) as Engine[]
   }
 
   get manualEngines(): Engine[] {
-    return this.engines.filter(
-      (i) => i.manualThrustMultiplier,
-    ) as Engine[]
+    return this.engines.filter((i) => i.manualThrustMultiplier) as Engine[]
   }
 
   get passiveEngines(): Engine[] {
-    return this.engines.filter(
-      (i) => i.passiveThrustMultiplier,
-    ) as Engine[]
+    return this.engines.filter((i) => i.passiveThrustMultiplier) as Engine[]
   }
 
   get weapons(): Weapon[] {
-    return this.items.filter(
-      (i) => i instanceof Weapon,
-    ) as Weapon[]
+    return this.items.filter((i) => i instanceof Weapon) as Weapon[]
   }
 
   get scanners(): Scanner[] {
-    return this.items.filter(
-      (i) => i instanceof Scanner,
-    ) as Scanner[]
+    return this.items.filter((i) => i instanceof Scanner) as Scanner[]
   }
 
   get communicators(): Communicator[] {
-    return this.items.filter(
-      (i) => i instanceof Communicator,
-    ) as Communicator[]
+    return this.items.filter((i) => i instanceof Communicator) as Communicator[]
   }
 
   get armor(): Armor[] {
-    return this.items.filter(
-      (i) => i instanceof Armor,
-    ) as Armor[]
+    return this.items.filter((i) => i instanceof Armor) as Armor[]
   }
 
-  swapChassis(
-    this: Ship,
-    partialChassisData: Partial<BaseChassisData>,
-  ) {
+  swapChassis(this: Ship, partialChassisData: Partial<BaseChassisData>) {
     if (!partialChassisData.chassisId) return
 
-    const chassisToSwapTo =
-      c.items.chassis[partialChassisData.chassisId]
+    const chassisToSwapTo = c.items.chassis[partialChassisData.chassisId]
 
     let foundChassisPassive = this.passives.find(
       (p) => p.data?.source?.chassisId,
     )
     while (foundChassisPassive) {
       this.removePassive(foundChassisPassive)
-      foundChassisPassive = this.passives.find(
-        (p) => p.data?.source?.chassisId,
-      )
+      foundChassisPassive = this.passives.find((p) => p.data?.source?.chassisId)
     }
 
     if (this.chassis && this.chassis.passives)
@@ -476,23 +426,17 @@ export class Ship extends Stubbable {
 
   updateSlots() {
     let slots = this.chassis.slots
-    const extraSlots = this.getPassiveIntensity(
-      `extraEquipmentSlots`,
-    )
+    const extraSlots = this.getPassiveIntensity(`extraEquipmentSlots`)
     slots += Math.round(extraSlots)
     this.slots = slots
     this.toUpdate.slots = slots
   }
 
-  addItem(
-    this: Ship,
-    itemData: Partial<BaseItemData>,
-  ): Item | false {
+  addItem(this: Ship, itemData: Partial<BaseItemData>): Item | false {
     let item: Item | undefined
     if (!itemData.itemType) {
       // * updating to use new itemId
-      if (itemData.type)
-        itemData.itemType = itemData.type as any
+      if (itemData.type) itemData.itemType = itemData.type as any
       if (itemData.id) itemData.itemId = itemData.id as any
       if (!itemData.itemType) return false
     }
@@ -503,10 +447,7 @@ export class Ship extends Stubbable {
     if (itemData.itemType === `engine`) {
       const engineData = itemData as Partial<BaseEngineData>
       let foundItem: BaseEngineData | undefined
-      if (
-        engineData.itemId &&
-        engineData.itemId in c.items.engine
-      )
+      if (engineData.itemId && engineData.itemId in c.items.engine)
         foundItem = c.items.engine[engineData.itemId]
       if (!foundItem) return false
       item = new Engine(foundItem, this, engineData)
@@ -514,50 +455,34 @@ export class Ship extends Stubbable {
     if (itemData.itemType === `weapon`) {
       const weaponData = itemData as Partial<BaseWeaponData>
       let foundItem: BaseWeaponData | undefined
-      if (
-        weaponData.itemId &&
-        weaponData.itemId in c.items.weapon
-      )
+      if (weaponData.itemId && weaponData.itemId in c.items.weapon)
         foundItem = c.items.weapon[weaponData.itemId]
       if (!foundItem) return false
       item = new Weapon(foundItem, this, weaponData)
     }
     if (itemData.itemType === `scanner`) {
-      const scannerData =
-        itemData as Partial<BaseScannerData>
+      const scannerData = itemData as Partial<BaseScannerData>
       let foundItem: BaseScannerData | undefined
-      if (
-        scannerData.itemId &&
-        scannerData.itemId in c.items.scanner
-      )
+      if (scannerData.itemId && scannerData.itemId in c.items.scanner)
         foundItem = c.items.scanner[scannerData.itemId]
       if (!foundItem) return false
       item = new Scanner(foundItem, this, scannerData)
     }
     if (itemData.itemType === `communicator`) {
-      const communicatorData =
-        itemData as Partial<BaseCommunicatorData>
+      const communicatorData = itemData as Partial<BaseCommunicatorData>
       let foundItem: BaseCommunicatorData | undefined
       if (
         communicatorData.itemId &&
         communicatorData.itemId in c.items.communicator
       )
-        foundItem =
-          c.items.communicator[communicatorData.itemId]
+        foundItem = c.items.communicator[communicatorData.itemId]
       if (!foundItem) return false
-      item = new Communicator(
-        foundItem,
-        this,
-        communicatorData,
-      )
+      item = new Communicator(foundItem, this, communicatorData)
     }
     if (itemData.itemType === `armor`) {
       const armorData = itemData as Partial<BaseArmorData>
       let foundItem: BaseArmorData | undefined
-      if (
-        armorData.itemId &&
-        armorData.itemId in c.items.armor
-      )
+      if (armorData.itemId && armorData.itemId in c.items.armor)
         foundItem = c.items.armor[armorData.itemId]
       if (!foundItem) return false
       item = new Armor(foundItem, this, armorData)
@@ -589,21 +514,17 @@ export class Ship extends Stubbable {
     this.recalculateAll()
     this.recalculateMass()
 
-    if (this.human)
-      (this as HumanShip).checkAchievements(`items`)
+    if (this.human) (this as HumanShip).checkAchievements(`items`)
 
     return item
   }
 
   removeItem(this: Ship, item: Item): boolean {
-    const itemIndex = this.items.findIndex(
-      (i) => i === item,
-    )
+    const itemIndex = this.items.findIndex((i) => i === item)
     if (itemIndex === -1) return false
     this.items.splice(itemIndex, 1)
 
-    if (item.passives)
-      item.passives.forEach((p) => this.removePassive(p))
+    if (item.passives) item.passives.forEach((p) => this.removePassive(p))
 
     this.recalculateAll()
     this.recalculateMass()
@@ -615,9 +536,8 @@ export class Ship extends Stubbable {
     const loadout = c.loadouts[id]
     if (!loadout) return false
     this.swapChassis({ chassisId: loadout.chassisId })
-    loadout.items.forEach(
-      (baseData: Partial<BaseItemData>) =>
-        this.addItem(baseData),
+    loadout.items.forEach((baseData: Partial<BaseItemData>) =>
+      this.addItem(baseData),
     )
     this.recalculateAll()
     return true
@@ -654,10 +574,8 @@ export class Ship extends Stubbable {
   updateSightAndScanRadius() {
     if (this.tutorial) {
       this.radii.sight =
-        this.tutorial.currentStep?.sightRange ||
-        c.baseSightRange
-      this.radii.scan =
-        this.tutorial.currentStep?.scanRange || 0
+        this.tutorial.currentStep?.sightRange || c.baseSightRange
+      this.radii.scan = this.tutorial.currentStep?.scanRange || 0
       this.toUpdate.radii = this.radii
       return
     }
@@ -666,27 +584,19 @@ export class Ship extends Stubbable {
     this.radii.sight = Math.max(
       c.baseSightRange,
       c.getRadiusDiminishingReturns(
-        this.scanners.reduce(
-          (max, s) => s.sightRange * s.repair + max,
-          0,
-        ),
+        this.scanners.reduce((max, s) => s.sightRange * s.repair + max, 0),
         this.scanners.length,
       ),
     )
-    const boostSight =
-      this.getPassiveIntensity(`boostSightRange`) + 1
+    const boostSight = this.getPassiveIntensity(`boostSightRange`) + 1
     this.radii.sight *= boostSight
 
     // ----- scan -----
     this.radii.scan = c.getRadiusDiminishingReturns(
-      this.scanners.reduce(
-        (max, s) => s.shipScanRange * s.repair + max,
-        0,
-      ),
+      this.scanners.reduce((max, s) => s.shipScanRange * s.repair + max, 0),
       this.scanners.length,
     )
-    const boostScan =
-      this.getPassiveIntensity(`boostScanRange`) + 1
+    const boostScan = this.getPassiveIntensity(`boostScanRange`) + 1
     this.radii.scan *= boostScan
 
     this.radii.gameSize = this.game?.gameSoftRadius || 1
@@ -701,20 +611,23 @@ export class Ship extends Stubbable {
   }
 
   move(toLocation?: CoordinatePair) {
-    const previousLocation = [
-      ...this.location,
-    ] as CoordinatePair
-    if (toLocation) {
-      this.location = [
-        toLocation[0] || 0,
-        toLocation[1] || 0,
-      ]
-      this.toUpdate.location = this.location
-      this.game?.chunkManager.addOrUpdate(
-        this,
-        previousLocation,
-      )
+    if (!this.canMove) {
+      this.hardStop()
+      return
     }
+    const previousLocation = [...this.location] as CoordinatePair
+    if (toLocation) {
+      this.location = [toLocation[0] || 0, toLocation[1] || 0]
+      this.toUpdate.location = this.location
+      this.game?.chunkManager.addOrUpdate(this, previousLocation)
+    }
+  }
+
+  hardStop() {
+    this.velocity = [0, 0]
+    this.speed = 0
+    this.toUpdate.velocity = this.velocity
+    this.toUpdate.speed = this.speed
   }
 
   addPreviousLocation(
@@ -727,44 +640,30 @@ export class Ship extends Stubbable {
     if (
       this.previousLocations.length > 1 &&
       previousLocation[0] ===
-        this.previousLocations[
-          this.previousLocations.length - 1
-        ]?.location[0] &&
+        this.previousLocations[this.previousLocations.length - 1]
+          ?.location[0] &&
       previousLocation[1] ===
-        this.previousLocations[
-          this.previousLocations.length - 1
-        ]?.location[1]
+        this.previousLocations[this.previousLocations.length - 1]?.location[1]
     )
       return
 
     const distance = c.distance(
       this.location,
-      this.previousLocations[
-        this.previousLocations.length - 1
-      ]?.location,
+      this.previousLocations[this.previousLocations.length - 1]?.location,
     )
 
     const angle =
       distance > newPLDistanceCutoff
         ? Math.abs(
             c.angleFromAToB(
-              this.previousLocations[
-                this.previousLocations.length - 1
-              ]?.location,
+              this.previousLocations[this.previousLocations.length - 1]
+                ?.location,
               previousLocation,
-            ) -
-              c.angleFromAToB(
-                previousLocation,
-                currentLocation,
-              ),
+            ) - c.angleFromAToB(previousLocation, currentLocation),
           )
         : 0
 
-    if (
-      this.previousLocations.length < 1 ||
-      angle >= 5 ||
-      distance > 0.1
-    ) {
+    if (this.previousLocations.length < 1 || angle >= 5 || distance > 0.1) {
       // if (this.human)
       //   // c.log(this.previousLocations)
       //   c.log(
@@ -777,20 +676,15 @@ export class Ship extends Stubbable {
       this.previousLocations.push({
         time: Date.now(),
         location: [
-          ...(currentLocation.map((l) =>
-            c.r2(l, 7),
-          ) as CoordinatePair),
+          ...(currentLocation.map((l) => c.r2(l, 7)) as CoordinatePair),
         ],
       })
       while (
         this.previousLocations.length >
-        (this.ai
-          ? Ship.maxAIPreviousLocations
-          : Ship.maxPreviousLocations)
+        (this.ai ? Ship.maxAIPreviousLocations : Ship.maxPreviousLocations)
       )
         this.previousLocations.shift()
-      this.toUpdate.previousLocations =
-        this.previousLocations
+      this.toUpdate.previousLocations = this.previousLocations
     }
   }
 
@@ -803,8 +697,7 @@ export class Ship extends Stubbable {
       coords,
       this.location,
       (this.game?.settings.arrivalThreshold ||
-        c.defaultGameSettings.arrivalThreshold) *
-        arrivalThresholdMultiplier,
+        c.defaultGameSettings.arrivalThreshold) * arrivalThresholdMultiplier,
     )
   }
 
@@ -814,10 +707,7 @@ export class Ship extends Stubbable {
     if (!this.canMove) return
 
     for (let planet of this.seenPlanets || []) {
-      const distance = c.distance(
-        planet.location,
-        this.location,
-      )
+      const distance = c.distance(planet.location, this.location)
       if (
         distance <=
           (this.game?.settings.gravityRadius ||
@@ -850,8 +740,7 @@ export class Ship extends Stubbable {
         //     Math.abs(vectorToAdd[1]),
         // )
         if (
-          Math.abs(vectorToAdd[0]) +
-            Math.abs(vectorToAdd[1]) <
+          Math.abs(vectorToAdd[0]) + Math.abs(vectorToAdd[1]) <
           0.0000000000001
         )
           return
@@ -888,10 +777,7 @@ export class Ship extends Stubbable {
   }
 
   recalculateMaxHp() {
-    this._maxHp = this.items.reduce(
-      (total, i) => i.maxHp + total,
-      0,
-    )
+    this._maxHp = this.items.reduce((total, i) => i.maxHp + total, 0)
     if (this.hp > this._maxHp) this.hp = this._maxHp
   }
 
@@ -908,22 +794,17 @@ export class Ship extends Stubbable {
     this._hp = total
     const wasDead = this.dead
     this.dead = total <= 0
-    if (this.dead !== wasDead)
-      this.toUpdate.dead = this.dead
+    if (this.dead !== wasDead) this.toUpdate.dead = this.dead
 
     if (
       `logEntry` in this &&
       this.human &&
       !this.dead &&
-      prevHp >
-        this._maxHp * Ship.notifyWhenHealthDropsToPercent &&
-      this._hp <=
-        this._maxHp * Ship.notifyWhenHealthDropsToPercent
+      prevHp > this._maxHp * Ship.notifyWhenHealthDropsToPercent &&
+      this._hp <= this._maxHp * Ship.notifyWhenHealthDropsToPercent
     ) {
       this.logEntry(
-        `HP has dropped below ${
-          Ship.notifyWhenHealthDropsToPercent * 100
-        }%!`,
+        `HP has dropped below ${Ship.notifyWhenHealthDropsToPercent * 100}%!`,
         `notify`,
         `warning`,
       )
@@ -947,9 +828,7 @@ export class Ship extends Stubbable {
 
   // ----- stats -----
   addStat(statname: ShipStatKey, amount: number) {
-    const existing = this.stats.find(
-      (s) => s.stat === statname,
-    )
+    const existing = this.stats.find((s) => s.stat === statname)
     if (!existing)
       this.stats.push({
         stat: statname,
@@ -960,9 +839,7 @@ export class Ship extends Stubbable {
   }
 
   setStat(statname: ShipStatKey, amount: number) {
-    const existing = this.stats.find(
-      (s) => s.stat === statname,
-    )
+    const existing = this.stats.find((s) => s.stat === statname)
     if (!existing)
       this.stats.push({
         stat: statname,
@@ -973,9 +850,7 @@ export class Ship extends Stubbable {
   }
 
   getStat(statname: ShipStatKey) {
-    const existing = this.stats.find(
-      (s) => s.stat === statname,
-    )
+    const existing = this.stats.find((s) => s.stat === statname)
     if (!existing) return 0
     return existing.amount
   }
@@ -1017,8 +892,7 @@ export class Ship extends Stubbable {
       tagline: this.tagline || undefined,
       headerBackground: this.headerBackground || undefined,
       debugLocations: this.debugLocations,
-      targetShip:
-        (this as any).targetShip?.toReference() || null,
+      targetShip: (this as any).targetShip?.toReference() || null,
     }
   }
 
@@ -1037,17 +911,13 @@ export class Ship extends Stubbable {
   // ----- helpers -----
 
   adjustedTarget(target: CoordinatePair) {
-    const angleToTarget = c.angleFromAToB(
-      this.location,
-      target,
-    )
+    const angleToTarget = c.angleFromAToB(this.location, target)
     const angleMovingAwayFromTarget = c.angleDifference(
       this.direction,
       angleToTarget,
       true,
     )
-    const percentMovingAwayFromTarget =
-      angleMovingAwayFromTarget / 180
+    const percentMovingAwayFromTarget = angleMovingAwayFromTarget / 180
 
     const distance = c.distance(this.location, target)
     const speedOverDistance = this.speed / distance
@@ -1056,9 +926,7 @@ export class Ship extends Stubbable {
       1 +
       c.clamp(
         0,
-        (Math.abs(percentMovingAwayFromTarget) *
-          speedOverDistance) /
-          4e-5,
+        (Math.abs(percentMovingAwayFromTarget) * speedOverDistance) / 4e-5,
         5,
       )
 
@@ -1075,9 +943,7 @@ export class Ship extends Stubbable {
     // )
 
     const approxTicksToTurnToTargetAngle =
-      Math.abs(percentMovingAwayFromTarget) *
-        this.speed *
-        10e7 || 1
+      Math.abs(percentMovingAwayFromTarget) * this.speed * 10e7 || 1
 
     // * multiplier that determines how many times more than the angle difference we should be
     const intensity = 6
@@ -1088,11 +954,7 @@ export class Ship extends Stubbable {
     // from "straight", how hard can the turn be? 0 - 179.5
     const maximumTurnDegrees =
       (90 +
-        89.5 *
-          Math.min(
-            1,
-            Math.abs(percentMovingAwayFromTarget) * urgency,
-          )) *
+        89.5 * Math.min(1, Math.abs(percentMovingAwayFromTarget) * urgency)) *
       c.clamp(0.01, approxTicksToTurnToTargetAngle / 5, 1)
 
     const howHardToTurnDegrees = c.clamp(
@@ -1120,18 +982,13 @@ export class Ship extends Stubbable {
     const angleToThrust =
       this.speed < 0.0000002
         ? angleToTarget
-        : (howHardToTurnDegrees +
-            this.direction +
-            360 * 2) %
-          360
+        : (howHardToTurnDegrees + this.direction + 360 * 2) % 360
     // if (this.human)
     //   c.log(this.speed, angleToTarget, angleToThrust)
     const turnUV = c.degreesToUnitVector(angleToThrust)
     const adjustedTarget = [
-      this.location[0] +
-        turnUV[0] * Math.max(0.001, this.speed * 1000),
-      this.location[1] +
-        turnUV[1] * Math.max(0.001, this.speed * 1000),
+      this.location[0] + turnUV[0] * Math.max(0.001, this.speed * 1000),
+      this.location[1] + turnUV[1] * Math.max(0.001, this.speed * 1000),
     ] as CoordinatePair
 
     // if (this.human)
@@ -1153,36 +1010,25 @@ export class Ship extends Stubbable {
     //     // approxTicksRequiredToReachTarget,
     //   })
 
-    if (this.human)
-      this.debugPoint(adjustedTarget, `adjusted`)
+    if (this.human) this.debugPoint(adjustedTarget, `adjusted`)
 
     return adjustedTarget
   }
 
   // ----- misc stubs -----
 
-  logEntry(
-    s: LogContent,
-    lv: LogLevel,
-    icon?: LogIcon,
-    isGood?: boolean,
-  ) {}
+  logEntry(s: LogContent, lv: LogLevel, icon?: LogIcon, isGood?: boolean) {}
 
   updateMaxScanProperties() {}
 
   applyPassive(p: ShipPassiveEffect) {}
-  applyTimedPassive(
-    p: ShipPassiveEffect & { until: number },
-  ) {}
+  applyTimedPassive(p: ShipPassiveEffect & { until: number }) {}
 
   removePassive(p: ShipPassiveEffect) {}
 
   checkExpiredPassives() {}
 
-  takeActionOnVisibleChange(
-    previousVisible,
-    currentVisible,
-  ) {}
+  takeActionOnVisibleChange(previousVisible, currentVisible) {}
 
   receiveBroadcast(
     message: string,

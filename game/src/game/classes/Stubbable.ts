@@ -1,14 +1,11 @@
 import c from '../../../../common/dist'
-import MassProfiler from '../../../../common/dist/MassProfiler'
 
 export class Stubbable {
   /* new profiler approach */
 
   constructor() {
     setTimeout(() => {
-      // @ts-ignore-line
-      const profiler = (this.game || this.ship?.game)
-        ?.massProfiler as MassProfiler
+      const profiler = c.massProfiler
 
       if (!profiler || !profiler.enabled) return
       Object.getOwnPropertyNames(this)
@@ -32,7 +29,7 @@ export class Stubbable {
               return result
             }
         })
-    })
+    }, 1)
   }
 
   _stub: any | null = null

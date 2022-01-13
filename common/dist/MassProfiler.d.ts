@@ -1,4 +1,4 @@
-export default class MassProfiler {
+export declare class MassProfiler {
     readonly enabled: boolean;
     readonly metric: Performance | DateConstructor;
     trackedNames: {
@@ -11,11 +11,18 @@ export default class MassProfiler {
             };
         };
     };
-    constructor();
+    printLength: number;
+    private totalTime;
+    private avgTotalTime;
+    constructor(options?: {
+        printLength?: number;
+    });
     fullReset(): void;
     getTime(): number;
-    call(className: string, functionName: string, time: number): void;
+    call(categoryName: string, subCategoryName: string, time: number): void;
     print(): void;
     resetForNextTick(): void;
 }
+declare const massProfiler: MassProfiler;
+export default massProfiler;
 //# sourceMappingURL=MassProfiler.d.ts.map

@@ -40,7 +40,6 @@ export class Game {
 
   readonly createTime = Date.now()
   readonly initialOptions: { ioPort?: number }
-  readonly massProfiler = new c.MassProfiler()
   startTime: number = 0
   ships: Ship[] = []
   planets: Planet[] = []
@@ -216,7 +215,7 @@ export class Game {
 
     const saveStartTime = Date.now()
 
-    this.massProfiler.print()
+    c.massProfiler.print()
 
     const promises: (Promise<any> | undefined)[] = []
     promises.push(
@@ -323,21 +322,34 @@ export class Game {
 
       // c.log(`tick`, Date.now() - this.lastTickTime)
 
-      const tickStartTime = Date.now()
-
-      this.massProfiler.resetForNextTick()
+      c.massProfiler.resetForNextTick()
+      const tickStartTime = performance.now()
 
       this.tickCount++
       const times: any[] = []
 
-      this.planets.forEach((p) => p.tick())
-      this.comets.forEach((p) => p.tick())
+      this.planets.forEach((p) => {
+        const start = performance.now()
+        p.tick()
+        c.massProfiler.call(`Planet`, `tick`, performance.now() - start)
+      })
+      this.comets.forEach((p) => {
+        const start = performance.now()
+        p.tick()
+        c.massProfiler.call(`Planet`, `tick`, performance.now() - start)
+      })
 
-      this.ships.forEach((s) => {
-        const start = Date.now()
+      this.humanShips.forEach((s) => {
+        const start = performance.now()
         s.tick()
-        const time = Date.now() - start
-        times.push({ ship: s, time })
+        times.push({ ship: s, time: performance.now() - start })
+        c.massProfiler.call(`HumanShip`, `tick`, performance.now() - start)
+      })
+      this.aiShips.forEach((s) => {
+        const start = performance.now()
+        s.tick()
+        times.push({ ship: s, time: performance.now() - start })
+        c.massProfiler.call(`AiShip`, `tick`, performance.now() - start)
       })
       if (times.length)
         this.averageWorstShipTickLag = c.lerp(
@@ -347,16 +359,22 @@ export class Game {
         )
       // c.log(times.map((s) => s.ship.name + ` ` + s.time))
 
+      const startSpawn = performance.now()
       this.expireOldElements()
       this.spawnNewCaches()
       this.spawnNewAIs()
       await this.spawnNewPlanets()
       await this.spawnNewComets()
       await this.spawnNewZones()
+      c.massProfiler.call(
+        `Game`,
+        `spawn elements`,
+        performance.now() - startSpawn,
+      )
 
       // ----- timing
 
-      const tickDoneTime = Date.now()
+      const tickDoneTime = performance.now()
 
       c.deltaTime = tickDoneTime - this.lastTickTime
 
@@ -384,6 +402,8 @@ export class Game {
       //     c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
       // }
       this.averageTickTime = c.lerp(this.averageTickTime, elapsedTimeInMs, 0.1)
+
+      c.massProfiler.call(`Game`, `tick`, tickDoneTime - tickStartTime)
 
       resolve(elapsedTimeInMs)
     })

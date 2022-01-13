@@ -31,7 +31,7 @@ const game_1 = __importDefault(require("./game"));
 const gameConstants_1 = __importDefault(require("./gameConstants"));
 const physics_1 = __importDefault(require("./physics"));
 const discord_1 = __importDefault(require("./discord"));
-const MassProfiler_1 = __importDefault(require("./MassProfiler"));
+const massProfiler_1 = __importDefault(require("./massProfiler"));
 const species_1 = __importDefault(require("./species"));
 const guilds_1 = __importDefault(require("./guilds"));
 const baseShipPassiveData_1 = __importDefault(require("./baseShipPassiveData"));
@@ -65,7 +65,7 @@ exports.default = {
     guilds: guilds_1.default,
     baseShipPassiveData: baseShipPassiveData_1.default,
     loadouts: loadouts_1.default,
-    MassProfiler: MassProfiler_1.default,
+    massProfiler: massProfiler_1.default,
     stubify: stubify_1.default,
 };
 //# sourceMappingURL=index.js.map

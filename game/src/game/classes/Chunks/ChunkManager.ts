@@ -5,7 +5,6 @@ import type { Planet } from '../Planet/Planet'
 import type { Zone } from '../Zone'
 import type { Ship } from '../Ship/Ship'
 import { Chunk } from './Chunk'
-import { log } from 'console'
 
 type HasUsableLocation = (
   | { location: CoordinatePair }
@@ -17,16 +16,10 @@ function isInRadius(
   center: CoordinatePair,
   radius: number,
 ): boolean {
-  return c.pointIsInsideCircle(
-    center,
-    getLocation(el),
-    radius,
-  )
+  return c.pointIsInsideCircle(center, getLocation(el), radius)
 }
 
-function getLocation(
-  el: HasUsableLocation,
-): CoordinatePair {
+function getLocation(el: HasUsableLocation): CoordinatePair {
   return `location` in el
     ? el.location
     : ([
@@ -43,36 +36,23 @@ export class ChunkManager {
     location: CoordinatePair,
     radius: number,
   ): (Ship | AttackRemnant | Cache | Planet | Zone)[] {
+    const startTime = performance.now()
     const chunkX = Math.floor(location[0] / this.chunkSize)
     const chunkY = Math.floor(location[1] / this.chunkSize)
-    const radiusInChunks = Math.ceil(
-      radius / this.chunkSize,
-    )
+    const radiusInChunks = Math.ceil(radius / this.chunkSize)
     const elements: Set<any> = new Set()
-    for (
-      let x = chunkX - radiusInChunks;
-      x <= chunkX + radiusInChunks;
-      x++
-    ) {
-      for (
-        let y = chunkY - radiusInChunks;
-        y <= chunkY + radiusInChunks;
-        y++
-      ) {
-        for (let el of this.chunks[x]?.[y]?.elements || [])
-          elements.add(el)
+    for (let x = chunkX - radiusInChunks; x <= chunkX + radiusInChunks; x++) {
+      for (let y = chunkY - radiusInChunks; y <= chunkY + radiusInChunks; y++) {
+        for (let el of this.chunks[x]?.[y]?.elements || []) elements.add(el)
       }
     }
-    const finalElements = Array.from(elements).filter(
-      (el) =>
-        isInRadius(
-          el,
-          location,
-          radius +
-            (((el.radius || 0) < this.chunkSize * 100
-              ? el.radius
-              : 0) || 0),
-        ),
+    const finalElements = Array.from(elements).filter((el) =>
+      isInRadius(
+        el,
+        location,
+        radius +
+          (((el.radius || 0) < this.chunkSize * 100 ? el.radius : 0) || 0),
+      ),
     )
     // if (Math.random() > 0.999)
     //   c.log(
@@ -81,46 +61,33 @@ export class ChunkManager {
     //     `elements, ended up with`,
     //     finalElements.length,
     //   )
+
+    c.massProfiler.call(
+      `ChunkManager`,
+      `getElementsWithinRadius`,
+      performance.now() - startTime,
+    )
     return finalElements
   }
 
-  remove(
-    element: HasUsableLocation,
-    previousLocation?: CoordinatePair,
-  ) {
+  remove(element: HasUsableLocation, previousLocation?: CoordinatePair) {
     const location = previousLocation
       ? getLocation({ location: previousLocation })
       : getLocation(element)
     const radius =
-      ((element.radius || 0) < this.chunkSize * 100
-        ? element.radius
-        : 0) || 0
+      ((element.radius || 0) < this.chunkSize * 100 ? element.radius : 0) || 0
     const chunkX = Math.floor(location[0] / this.chunkSize)
     const chunkY = Math.floor(location[1] / this.chunkSize)
-    const radiusInChunks = Math.ceil(
-      radius / this.chunkSize,
-    )
+    const radiusInChunks = Math.ceil(radius / this.chunkSize)
 
     if (radiusInChunks === 0) {
-      ;(
-        this.chunks[chunkX]?.[chunkY] as Chunk | undefined
-      )?.remove(element)
+      ;(this.chunks[chunkX]?.[chunkY] as Chunk | undefined)?.remove(element)
       return
     }
 
-    for (
-      let x = chunkX - radiusInChunks;
-      x <= chunkX + radiusInChunks;
-      x++
-    ) {
-      for (
-        let y = chunkY - radiusInChunks;
-        y <= chunkY + radiusInChunks;
-        y++
-      ) {
-        ;(this.chunks[x]?.[y] as Chunk | undefined)?.remove(
-          element,
-        )
+    for (let x = chunkX - radiusInChunks; x <= chunkX + radiusInChunks; x++) {
+      for (let y = chunkY - radiusInChunks; y <= chunkY + radiusInChunks; y++) {
+        ;(this.chunks[x]?.[y] as Chunk | undefined)?.remove(element)
       }
     }
   }
@@ -132,22 +99,14 @@ export class ChunkManager {
   ) {
     let previousChunkX, previousChunkY
     if (previousLocation) {
-      previousChunkX = Math.floor(
-        previousLocation[0] / this.chunkSize,
-      )
-      previousChunkY = Math.floor(
-        previousLocation[1] / this.chunkSize,
-      )
+      previousChunkX = Math.floor(previousLocation[0] / this.chunkSize)
+      previousChunkY = Math.floor(previousLocation[1] / this.chunkSize)
     }
 
     const location = getLocation(element)
 
-    const destinationChunkX = Math.floor(
-      location[0] / this.chunkSize,
-    )
-    const destinationChunkY = Math.floor(
-      location[1] / this.chunkSize,
-    )
+    const destinationChunkX = Math.floor(location[0] / this.chunkSize)
+    const destinationChunkY = Math.floor(location[1] / this.chunkSize)
 
     // didn't move chunks, we're done
     if (
@@ -158,16 +117,11 @@ export class ChunkManager {
       return
 
     // remove from previous chunk/s
-    if (previousLocation)
-      this.remove(element, previousLocation)
+    if (previousLocation) this.remove(element, previousLocation)
 
     const radius =
-      ((element.radius || 0) < this.chunkSize * 100
-        ? element.radius
-        : 0) || 0
-    const radiusInChunks = Math.ceil(
-      radius / this.chunkSize,
-    )
+      ((element.radius || 0) < this.chunkSize * 100 ? element.radius : 0) || 0
+    const radiusInChunks = Math.ceil(radius / this.chunkSize)
 
     // add to all chunks it touches
 
@@ -178,20 +132,15 @@ export class ChunkManager {
         this.chunks[destinationChunkX] = []
       }
       // new chunk
-      if (
-        !this.chunks[destinationChunkX][destinationChunkY]
-      ) {
-        this.chunks[destinationChunkX][destinationChunkY] =
-          new Chunk({
-            width: this.chunkSize,
-            x: destinationChunkX,
-            y: destinationChunkY,
-          })
+      if (!this.chunks[destinationChunkX][destinationChunkY]) {
+        this.chunks[destinationChunkX][destinationChunkY] = new Chunk({
+          width: this.chunkSize,
+          x: destinationChunkX,
+          y: destinationChunkY,
+        })
       }
       // add
-      this.chunks[destinationChunkX][destinationChunkY].add(
-        element,
-      )
+      this.chunks[destinationChunkX][destinationChunkY].add(element)
       return
     }
 

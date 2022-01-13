@@ -14,6 +14,9 @@ export declare const weapon: {
     blaster1: BaseWeaponData;
     blaster2: BaseWeaponData;
     blaster3: BaseWeaponData;
+    slowing1: BaseWeaponData;
+    slowing2: BaseWeaponData;
+    slowing3: BaseWeaponData;
 };
 export declare const engine: {
     tiny1: BaseEngineData;

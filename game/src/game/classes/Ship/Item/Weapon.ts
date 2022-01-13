@@ -9,6 +9,7 @@ export class Weapon extends Item {
   range: number
   damage: number
   critChance: number = 0
+  slowingFactor: number = 0
   lastUse: number = 0
   chargeRequired: number
   cooldownRemaining: number
@@ -25,6 +26,8 @@ export class Weapon extends Item {
     this.chargeRequired = data.chargeRequired
     this.lastUse = data.lastUse || 0
     if (data.critChance !== undefined) this.critChance = data.critChance
+    if (data.slowingFactor !== undefined)
+      this.slowingFactor = data.slowingFactor
     this.cooldownRemaining =
       data.cooldownRemaining || props?.cooldownRemaining || 0
     if (this.cooldownRemaining > this.chargeRequired)

@@ -221,7 +221,14 @@ export abstract class CombatShip extends Ship {
   attack(
     this: CombatShip,
     target: CombatShip,
-    weapon: Weapon | { displayName: string; damage: number },
+    weapon:
+      | Weapon
+      | {
+          displayName: string
+          damage: number
+          slowingFactor?: number
+          repair?: number
+        },
     targetType: ItemType | `any` = `any`,
     predeterminedHitChance?: number,
     attackRegardlessOfAttackability = false,
@@ -233,8 +240,6 @@ export abstract class CombatShip extends Ship {
         weapon,
         miss: true,
       }
-
-    if (`use` in weapon) weapon.use(1, this.membersIn(`weapons`))
 
     const totalMunitionsSkill = this.cumulativeSkillIn(`weapons`, `strength`)
     let miss: boolean,
@@ -468,6 +473,7 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `damage`,
               ...attackResult,
+              slowedBy: (weapon.slowingFactor || 0) * (weapon?.repair ?? 1),
               overkill: attackResult.didDie
                 ? damage - attackResult.damageTaken
                 : undefined,
@@ -535,6 +541,9 @@ export abstract class CombatShip extends Ship {
       this.addStat(`kills`, 1)
       if (this.human) (this as HumanShip).checkAchievements(`combat`)
     }
+
+    // use weapons at the end so we get at 1 shot on perfect repair
+    if (`use` in weapon) weapon.use(1, this.membersIn(`weapons`))
 
     return attackResult
   }
@@ -794,6 +803,14 @@ export abstract class CombatShip extends Ship {
     }
     this.toUpdate.items = this.items.map((i) => i.stubify())
 
+    // ----- slow down if weapon had slowing factor -----
+    let slowedPercent = 0
+    if (attack.weapon?.slowingFactor) {
+      slowedPercent = attack.weapon.slowingFactor * (attack.weapon?.repair ?? 1)
+      this.velocity[0] *= 1 - slowedPercent
+      this.velocity[1] *= 1 - slowedPercent
+    }
+
     const didDie = previousHp > 0 && this.hp <= 0
     if (didDie) this.die(attacker instanceof CombatShip ? attacker : undefined)
 
@@ -858,6 +875,7 @@ export abstract class CombatShip extends Ship {
                     ...{
                       ...damageResult,
                       hpLeft: c.r2(this._hp, 0),
+                      slowedBy: slowedPercent,
                       weapon: undefined,
                     },
                   },
@@ -908,6 +926,7 @@ export abstract class CombatShip extends Ship {
                     ...{
                       ...damageResult,
                       hpLeft: c.r2(this._hp, 0),
+                      slowedBy: slowedPercent,
                       weapon: undefined,
                     },
                   },

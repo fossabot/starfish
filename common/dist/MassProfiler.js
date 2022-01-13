@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MassProfiler = void 0;
 const log_1 = __importDefault(require("./log"));
 const math_1 = __importDefault(require("./math"));
 // register sections
@@ -16,7 +17,12 @@ class MassProfiler {
     enabled = process.env.NODE_ENV !== `production`;
     metric;
     trackedNames = {};
-    constructor() {
+    printLength = 20;
+    totalTime = 0;
+    avgTotalTime = 0;
+    constructor(options = {}) {
+        if (options.printLength)
+            this.printLength = options.printLength;
         this.metric = Date;
         try {
             this.metric = performance;
@@ -27,22 +33,25 @@ class MassProfiler {
     }
     fullReset() {
         this.trackedNames = {};
+        this.totalTime = 0;
+        this.avgTotalTime = 0;
     }
     getTime() {
         return this.metric.now();
     }
-    call(className, functionName, time) {
-        if (!this.trackedNames[className])
-            this.trackedNames[className] = {};
-        if (!this.trackedNames[className][functionName])
-            this.trackedNames[className][functionName] = {
+    call(categoryName, subCategoryName, time) {
+        if (!this.trackedNames[categoryName])
+            this.trackedNames[categoryName] = {};
+        if (!this.trackedNames[categoryName][subCategoryName])
+            this.trackedNames[categoryName][subCategoryName] = {
                 calls: 0,
                 totalTime: 0,
                 averageTotalTime: 0,
                 averageCalls: 0,
             };
-        this.trackedNames[className][functionName].calls++;
-        this.trackedNames[className][functionName].totalTime += time;
+        this.trackedNames[categoryName][subCategoryName].calls++;
+        this.trackedNames[categoryName][subCategoryName].totalTime += time;
+        this.totalTime += time;
     }
     print() {
         if (!this.enabled)
@@ -51,7 +60,7 @@ class MassProfiler {
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
         const dateTime = `Profiler result: ${date} ${time}`;
-        let output = `${dateTime}\n`;
+        let output = [`${dateTime}\n`];
         let sortedByAvgTotalTime = [];
         for (const key in this.trackedNames) {
             for (const key2 in this.trackedNames[key]) {
@@ -67,12 +76,13 @@ class MassProfiler {
             .sort((a, b) => {
             return b.averageTotalTime - a.averageTotalTime;
         })
-            .slice(0, 10);
+            .slice(0, this.printLength);
         for (const item of sortedByAvgTotalTime) {
-            output += `${item.className}.${item.functionName}: 
-  ${math_1.default.r2(item.averageTotalTime, 4)}ms cumulative avg/tick
-  ${math_1.default.r2(item.averageCalls, 1)} calls avg/tick
-  ${math_1.default.r2(item.averageTotalTime / item.averageCalls, 4)}ms avg/call\n`;
+            output.push(`${item.className}.${item.functionName}\n  `);
+            output.push(`gray`, `${math_1.default.r2(item.averageTotalTime, 4)}ms total/tick`.padEnd(35));
+            output.push(`gray`, `${math_1.default.r2(item.averageCalls, 1)} calls/tick`.padEnd(25));
+            output.push(`gray`, `${math_1.default.r2(item.averageTotalTime / item.averageCalls, 4)}ms/call`);
+            output.push(`\n`);
         }
         // for (const key in this.trackedNames) {
         //   output += `  ${key}\n`
@@ -93,18 +103,31 @@ class MassProfiler {
         //     )} avg calls/tick\n`
         //   }
         // }
-        log_1.default.log(output);
+        log_1.default.log(...output);
     }
     resetForNextTick() {
         for (const key in this.trackedNames) {
             for (const key2 in this.trackedNames[key]) {
-                this.trackedNames[key][key2].averageTotalTime = math_1.default.lerp(this.trackedNames[key][key2].averageTotalTime || 0, this.trackedNames[key][key2].totalTime || 0, 0.1);
-                this.trackedNames[key][key2].averageCalls = math_1.default.lerp(this.trackedNames[key][key2].averageCalls || 0, this.trackedNames[key][key2].calls || 0, 0.1);
+                this.trackedNames[key][key2].averageTotalTime =
+                    this.trackedNames[key][key2].averageTotalTime === 0
+                        ? this.trackedNames[key][key2].totalTime
+                        : math_1.default.lerp(this.trackedNames[key][key2].averageTotalTime || 0, this.trackedNames[key][key2].totalTime || 0, 0.1);
+                this.trackedNames[key][key2].averageCalls =
+                    this.trackedNames[key][key2].averageCalls === 0
+                        ? this.trackedNames[key][key2].calls
+                        : math_1.default.lerp(this.trackedNames[key][key2].averageCalls || 0, this.trackedNames[key][key2].calls || 0, 0.1);
                 this.trackedNames[key][key2].calls = 0;
                 this.trackedNames[key][key2].totalTime = 0;
             }
         }
+        this.avgTotalTime =
+            this.avgTotalTime === 0
+                ? this.totalTime
+                : math_1.default.lerp(this.avgTotalTime, this.totalTime, 0.1);
+        this.totalTime = 0;
     }
 }
-exports.default = MassProfiler;
+exports.MassProfiler = MassProfiler;
+const massProfiler = new MassProfiler();
+exports.default = massProfiler;
 //# sourceMappingURL=MassProfiler.js.map

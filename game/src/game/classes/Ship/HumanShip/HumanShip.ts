@@ -1217,11 +1217,6 @@ export class HumanShip extends CombatShip {
       return
     }
 
-    if (!this.canMove) {
-      this.hardStop()
-      return
-    }
-
     if (
       [undefined, null, NaN].includes(this.velocity[0]) ||
       [undefined, null, NaN].includes(this.velocity[1])
@@ -1367,13 +1362,6 @@ export class HumanShip extends CombatShip {
         )
       }
     }
-  }
-
-  hardStop() {
-    this.velocity = [0, 0]
-    this.speed = 0
-    this.toUpdate.velocity = this.velocity
-    this.toUpdate.speed = this.speed
   }
 
   updateVisible() {

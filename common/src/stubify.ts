@@ -1,5 +1,5 @@
 import c from './log'
-import { Profiler } from './Profiler'
+import massProfiler from './massProfiler'
 
 const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`]
 const alwaysReferencize = [
@@ -14,11 +14,15 @@ const alwaysReferencize = [
   `species`,
 ]
 
-export default function stubify<BaseType, StubType extends BaseStub>(
+export default function stubify<
+  BaseType extends Object,
+  StubType extends BaseStub,
+>(
   baseObject: BaseType,
   keysToReferencize: string[] = [],
   allowRecursionDepth: number = 8,
 ): StubType {
+  const startTime = massProfiler.getTime()
   if (!baseObject) return undefined as any
 
   let objectWithGetters: StubType
@@ -37,6 +41,13 @@ export default function stubify<BaseType, StubType extends BaseStub>(
       keysToReferencize,
       allowRecursionDepth,
     )
+
+  const time = massProfiler.getTime() - startTime
+  massProfiler.call(
+    `stubify`,
+    baseObject.constructor?.name || `(no constructor)`,
+    time,
+  )
 
   return objectWithCircularReferencesRemoved
 }

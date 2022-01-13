@@ -8,8 +8,6 @@ import type { Zone } from '../../Zone'
 import type { AttackRemnant } from '../../AttackRemnant'
 import type { Weapon } from '../Item/Weapon'
 
-import ais from './Enemy/ais'
-
 export class AIShip extends CombatShip {
   static dropCacheValueMultiplier = 800
   static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
@@ -48,10 +46,7 @@ export class AIShip extends CombatShip {
 
   obeysGravity = false
 
-  constructor(
-    data: BaseAIShipData = {} as BaseAIShipData,
-    game?: Game,
-  ) {
+  constructor(data: BaseAIShipData = {} as BaseAIShipData, game?: Game) {
     super(data, game)
 
     this.ai = true
@@ -62,21 +57,17 @@ export class AIShip extends CombatShip {
 
     if (data.onlyVisibleToShipId)
       this.onlyVisibleToShipId = data.onlyVisibleToShipId
-    if (data.neverAttackIds)
-      this.neverAttackIds = data.neverAttackIds
+    if (data.neverAttackIds) this.neverAttackIds = data.neverAttackIds
     if (data.until) this.until = data.until
     if (data.guildId) this.guildId = data.guildId
-    if (data.spawnedById)
-      this.spawnedById = data.spawnedById
+    if (data.spawnedById) this.spawnedById = data.spawnedById
 
     this.planet = false
 
     if (data.level) this.level = data.level
 
-    if (data.spawnPoint?.length === 2)
-      this.spawnPoint = [...data.spawnPoint]
-    else if (data.location?.length === 2)
-      this.spawnPoint = [...data.location]
+    if (data.spawnPoint?.length === 2) this.spawnPoint = [...data.spawnPoint]
+    else if (data.location?.length === 2) this.spawnPoint = [...data.location]
     else this.spawnPoint = [...this.location]
     this.targetLocation = [...this.location]
 
@@ -105,8 +96,7 @@ export class AIShip extends CombatShip {
       .filter((w) => w.cooldownRemaining > 0)
       .forEach((w) => {
         w.cooldownRemaining -=
-          c.getWeaponCooldownReductionPerTick(this.level) *
-          rechargePassive
+          c.getWeaponCooldownReductionPerTick(this.level) * rechargePassive
         if (w.cooldownRemaining < 0) w.cooldownRemaining = 0
       })
 
@@ -118,15 +108,11 @@ export class AIShip extends CombatShip {
       const weapons = this.availableWeapons()
       if (!weapons.length) return
 
-      const distance = c.distance(
-        this.targetShip.location,
-        this.location,
-      )
+      const distance = c.distance(this.targetShip.location, this.location)
       const randomWeapon = c.randomFromArray(
         weapons.filter((w) => w.range >= distance),
       ) as Weapon
-      if (randomWeapon)
-        this.attack(this.targetShip, randomWeapon)
+      if (randomWeapon) this.attack(this.targetShip, randomWeapon)
     }
   }
 
@@ -148,20 +134,14 @@ export class AIShip extends CombatShip {
       const onlyVisibleShip = this.game?.humanShips.find(
         (s) => s.id === this.onlyVisibleToShipId,
       )
-      if (onlyVisibleShip)
-        this.visible.ships.push(onlyVisibleShip)
+      if (onlyVisibleShip) this.visible.ships.push(onlyVisibleShip)
     }
-    this.takeActionOnVisibleChange(
-      previousVisible,
-      this.visible,
-    )
+    this.takeActionOnVisibleChange(previousVisible, this.visible)
   }
 
   // ----- move -----
   move(toLocation?: CoordinatePair) {
-    const startingLocation: CoordinatePair = [
-      ...this.location,
-    ]
+    const startingLocation: CoordinatePair = [...this.location]
 
     super.move(toLocation)
     if (toLocation) {
@@ -195,9 +175,7 @@ export class AIShip extends CombatShip {
           2
 
     if (!hasArrived) {
-      const adjustedTargetLocation = this.adjustedTarget(
-        this.targetLocation,
-      )
+      const adjustedTargetLocation = this.adjustedTarget(this.targetLocation)
 
       let angleToThrustInDegrees = c.angleFromAToB(
         this.location,
@@ -212,8 +190,7 @@ export class AIShip extends CombatShip {
           this.level * 2,
           engineThrustMultiplier,
           this.game?.settings.baseEngineThrustMultiplier ||
-            c.defaultGameSettings
-              .baseEngineThrustMultiplier,
+            c.defaultGameSettings.baseEngineThrustMultiplier,
         ) * thrustBoostPassiveMultiplier
 
       let thrustMagnitudeToApply = baseMagnitude / this.mass
@@ -223,29 +200,22 @@ export class AIShip extends CombatShip {
         angleToThrustInDegrees,
         this.direction,
       )
-      let passiveBrakeMultiplier =
-        this.getPassiveIntensity(`boostBrake`)
+      let passiveBrakeMultiplier = this.getPassiveIntensity(`boostBrake`)
       const brakeBoost =
-        1 +
-        (angleDifferenceToDirection / 180) *
-          passiveBrakeMultiplier
+        1 + (angleDifferenceToDirection / 180) * passiveBrakeMultiplier
       thrustMagnitudeToApply *= brakeBoost
 
-      const distanceToTarget = c.distance(
-        this.location,
-        this.targetLocation,
-      )
+      const distanceToTarget = c.distance(this.location, this.targetLocation)
       if (distanceToTarget < thrustMagnitudeToApply)
         thrustMagnitudeToApply = distanceToTarget
 
-      const unitVectorAlongWhichToThrust =
-        c.degreesToUnitVector(angleToThrustInDegrees)
+      const unitVectorAlongWhichToThrust = c.degreesToUnitVector(
+        angleToThrustInDegrees,
+      )
 
       const thrustVector = [
-        unitVectorAlongWhichToThrust[0] *
-          thrustMagnitudeToApply,
-        unitVectorAlongWhichToThrust[1] *
-          thrustMagnitudeToApply,
+        unitVectorAlongWhichToThrust[0] * thrustMagnitudeToApply,
+        unitVectorAlongWhichToThrust[1] * thrustMagnitudeToApply,
       ] as CoordinatePair
 
       this.velocity[0] += thrustVector[0]
@@ -257,19 +227,13 @@ export class AIShip extends CombatShip {
       this.speed = c.vectorToMagnitude(this.velocity)
       this.direction = c.vectorToDegrees(this.velocity)
 
-      this.game?.chunkManager.addOrUpdate(
-        this,
-        this.location,
-      )
+      this.game?.chunkManager.addOrUpdate(this, this.location)
 
       // this.debugPoint(this.targetLocation, `target`)
       // this.debugPoint(adjustedTargetLocation, `adjusted`)
       // this.debugPoint(this.spawnPoint, `spawn`)
 
-      this.addPreviousLocation(
-        startingLocation,
-        this.location,
-      )
+      this.addPreviousLocation(startingLocation, this.location)
     }
 
     // arrived, look for new target
@@ -297,8 +261,7 @@ export class AIShip extends CombatShip {
 
   updateSightAndScanRadius() {
     this.updateAttackRadius()
-    this.radii.sight =
-      Math.max(...this.radii.attack, 0.1) * 1.3
+    this.radii.sight = Math.max(...this.radii.attack, 0.1) * 1.3
   }
 
   cumulativeSkillIn(l: CrewLocation, s: SkillId) {
@@ -325,14 +288,8 @@ export class AIShip extends CombatShip {
     return (this.targetShip = null)
   }
 
-  takeActionOnVisibleChange(
-    previousVisible,
-    currentVisible,
-  ) {
-    if (
-      !this.targetShip ||
-      !this.canAttack(this.targetShip)
-    )
+  takeActionOnVisibleChange(previousVisible, currentVisible) {
+    if (!this.targetShip || !this.canAttack(this.targetShip))
       this.targetShip = this.determineTargetShip()
   }
 

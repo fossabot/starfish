@@ -8,58 +8,45 @@
       <ul
         v-if="
           (data.damageTally && data.damageTally.length) ||
-          (data.damageMitigated !== undefined &&
-            data.damageMitigated !== 0)
+          (data.damageMitigated !== undefined && data.damageMitigated !== 0)
         "
       >
         <li v-if="data.damageMitigated">
-          <span
-            :class="
-              data.damageMitigated > 0
-                ? 'success'
-                : 'warning'
-            "
+          <span :class="data.damageMitigated > 0 ? 'success' : 'warning'"
             >{{
               c.numberWithCommas(
-                c.r2(
-                  data.damageMitigated *
-                    c.displayHPMultiplier,
-                  0,
-                ),
+                c.r2(data.damageMitigated * c.displayHPMultiplier, 0),
               )
             }}
             damage</span
           >
-          {{
-            data.damageMitigated > 0 ? 'mitigated' : 'added'
-          }}
+          {{ data.damageMitigated > 0 ? 'mitigated' : 'added' }}
           by passives
         </li>
         <li v-for="d in data.damageTally">
           <span style="color: var(--item)"
-            >{{ d.targetDisplayName }} ({{
-              d.targetType
-            }})</span
+            >{{ d.targetDisplayName }} ({{ d.targetType }})</span
           >
           took
           <span class="warning"
             >{{
-              c.numberWithCommas(
-                c.r2(d.damage * c.displayHPMultiplier, 0),
-              )
+              c.numberWithCommas(c.r2(d.damage * c.displayHPMultiplier, 0))
             }}
             damage</span
           >{{ d.destroyed ? ' (destroyed)' : '' }}
         </li>
+        <template v-if="data.slowedBy">
+          <li>
+            Defender slowed by
+            <span class="warning">{{ c.r2(data.slowedBy * 100, 0) }}%</span>
+          </li>
+        </template>
         <template v-if="data.overkill">
           <li>
             <span class="warning"
               >{{
                 c.numberWithCommas(
-                  c.r2(
-                    data.overkill * c.displayHPMultiplier,
-                    0,
-                  ),
+                  c.r2(data.overkill * c.displayHPMultiplier, 0),
                 )
               }}
               damage</span
@@ -71,11 +58,7 @@
       <template v-if="data.hpLeft">
         <hr />
         <div class="sub">
-          {{
-            c.numberWithCommas(
-              c.r2(data.hpLeft * c.displayHPMultiplier, 0),
-            )
-          }}
+          {{ c.numberWithCommas(c.r2(data.hpLeft * c.displayHPMultiplier, 0)) }}
           HP remaining
         </div>
       </template>
