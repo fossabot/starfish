@@ -5,12 +5,6 @@ on:
     branches:
       - '*'
 jobs:
-  checkout-repo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
-
   docker-build-publish:
     runs-on: ubuntu-latest
     strategy:
@@ -40,6 +34,10 @@ jobs:
             src:
               - '${{matrix.folder}}/**'
               - common/**
+
+      - name: Check Out Repo
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/checkout@v2
 
       - name: Login to Docker Hub
         if: steps.changes.outputs.src == 'true'
