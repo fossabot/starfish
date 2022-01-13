@@ -26,9 +26,6 @@ jobs:
             image: 'starfish-nginx'
             folder: 'nginx'
     steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
-
       - uses: dorny/paths-filter@v2
         id: changes
         with:
@@ -36,6 +33,10 @@ jobs:
             src:
               - '${{matrix.folder}}/**'
               - common/**
+
+      - name: Check Out Repo
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/checkout@v2
 
       - name: Login to Docker Hub
         if: steps.changes.outputs.src == 'true'

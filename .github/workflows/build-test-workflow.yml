@@ -27,9 +27,6 @@ jobs:
             folder: 'nginx'
 
     steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
-
       - uses: dorny/paths-filter@v2
         id: changes
         with:
@@ -37,6 +34,10 @@ jobs:
             src:
               - '${{matrix.folder}}/**'
               - common/**
+
+      - name: Check Out Repo
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/checkout@v2
 
       - name: Login to Docker Hub
         if: steps.changes.outputs.src == 'true'
@@ -57,7 +58,6 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ matrix.folder }}-${{ github.sha }}
           restore-keys: ${{ runner.os }}-buildx-${{ matrix.folder }}-
-
 
       - uses: docker/build-push-action@v2
         if: steps.changes.outputs.src == 'true'
