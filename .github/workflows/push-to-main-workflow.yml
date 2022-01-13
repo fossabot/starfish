@@ -34,7 +34,7 @@ jobs:
         with:
           filters: |
             src:
-              - '${{matrix.folder}}/**'
+              - '${{matrix.folder}}/**'x
               - common/**
 
       - name: Login to Docker Hub
@@ -53,10 +53,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-multi-buildx
+          key: ${{ runner.os }}-buildx-${{ matrix.folder }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-${{ matrix.folder }}-
 
       - name: Build and push Docker images
         id: dockerbuild
