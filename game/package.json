@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@types/node": "^17.0.9",
-    "dotenv": "^10.0.0",
+    "dotenv": "^14.2.0",
     "engine.io": "^6.1.1",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
