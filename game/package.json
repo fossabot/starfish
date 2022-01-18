@@ -12,7 +12,7 @@
     "stresstest": "NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true nodemon tests/stressTest.ts"
   },
   "dependencies": {
-    "@types/node": "^17.0.8",
+    "@types/node": "^17.0.9",
     "dotenv": "^10.0.0",
     "engine.io": "^6.1.1",
     "git-last-commit": "^1.0.1",
