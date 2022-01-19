@@ -1,8 +1,6 @@
 import c from '../../common/src'
 
-import socketIoClient, {
-  Socket as ClientSocket,
-} from 'socket.io-client' // yes, we're making a CLIENT here.
+import socketIoClient, { Socket as ClientSocket } from 'socket.io-client' // yes, we're making a CLIENT here.
 
 export function crewMemberData(): BaseCrewMemberData {
   const randomId = Math.random().toString(36).substring(7)
@@ -87,6 +85,24 @@ export function cometData(): BaseCometData {
     ...planetData(),
     planetType: `comet`,
     velocity: [0.1, 0.1],
+  }
+}
+
+export function zoneData(type: ZoneEffectType): BaseZoneData {
+  const randomId = Math.random().toString(36).substring(7)
+  return {
+    id: `zone` + randomId,
+    name: `Zone ` + randomId,
+    location: [10, 0],
+    radius: 0.1,
+    color: `red`,
+    effects: [
+      {
+        type: type,
+        intensity: 0.5,
+        procChancePerTick: 1,
+      },
+    ],
   }
 }
 

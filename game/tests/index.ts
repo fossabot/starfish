@@ -17,6 +17,7 @@ import './Admin'
 import './Contracts'
 import './Movement'
 import './Research'
+import './Zones'
 
 const host = isDocker() ? `--host mongodb` : ``
 
@@ -39,8 +40,7 @@ before(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        else
-          console.log(`Database initialized for testing.\n`)
+        else console.log(`Database initialized for testing.\n`)
         resolve()
       },
     )
@@ -56,8 +56,7 @@ after(async () => {
       (error, stdout, stderr) => {
         if (error) console.log(error)
         if (stderr) console.log(stderr)
-        else
-          console.log(`Database cleaned up after tests.\n`)
+        else console.log(`Database cleaned up after tests.\n`)
         resolve()
       },
     )
