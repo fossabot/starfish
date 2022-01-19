@@ -4,17 +4,16 @@
       contracttooltipwrapper: !targetInSight && dataToUse,
     }"
   >
-    <ShipTooltipsShipdot
-      v-if="targetInSight"
-      :data="targetInSight"
-    />
-    <div v-else-if="dataToUse">
+    <template v-if="targetInSight">
+      <ShipTooltipsShipdot :data="targetInSight" />
+    </template>
+    <template v-else-if="dataToUse">
       <ShipContract
         :interactive="false"
         :contract="dataToUse"
         class="contracttooltip"
       />
-    </div>
+    </template>
     <div v-else class="sub">Ended contract</div>
   </div>
 </template>
@@ -37,9 +36,7 @@ export default Vue.extend({
       )
     },
     dataToUse(): Contract {
-      return this.ship?.contracts?.find(
-        (p) => p.id === (this.data as any).id,
-      )
+      return this.ship?.contracts?.find((p) => p.id === (this.data as any).id)
     },
   },
 })
@@ -52,6 +49,7 @@ export default Vue.extend({
   width: 250px;
 }
 .contracttooltipwrapper {
+  display: flex;
   padding: 0;
   border: 0;
 }
