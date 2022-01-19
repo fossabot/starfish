@@ -14,7 +14,7 @@
   "dependencies": {
     "@types/node": "^17.0.9",
     "dotenv": "^14.2.0",
-    "engine.io": "^6.1.1",
+    "engine.io": "^6.1.2",
     "git-last-commit": "^1.0.1",
     "is-docker": "^2.2.1",
     "mongoose": "5.10.19",
