@@ -101,9 +101,14 @@ export class Game {
 
         const savedGameData = await this.db.game.get()
         if (savedGameData) {
-          c.log(`gray`, `Loaded game data.`)
+          c.log(`gray`, `Loaded game data: `, savedGameData)
           for (let key of Object.keys(savedGameData))
             this[key] = savedGameData[key]
+
+          if (!savedGameData.gameInitializedAt)
+            this.db.game.addOrUpdateInDb({
+              gameInitializedAt: this.gameInitializedAt,
+            })
         }
 
         const savedGameSettings =
