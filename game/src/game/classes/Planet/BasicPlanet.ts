@@ -72,8 +72,7 @@ export class BasicPlanet extends Planet {
 
     this.guildId = data.guildId ? data.guildId : undefined
     this.homeworld = this.guildId
-    if (this.guildId)
-      this.color = c.guilds[this.guildId].color
+    if (this.guildId) this.color = c.guilds[this.guildId].color
 
     this.leanings = data.leanings || []
 
@@ -113,12 +112,10 @@ export class BasicPlanet extends Planet {
       this.refreshContracts()
     }, 1000 * 60 * 60 * 24) // every day
 
-    if (this.guildId)
-      this.incrementAllegiance(this.guildId, 1000000)
+    if (this.guildId) this.incrementAllegiance(this.guildId, 1000000)
 
     if (this.homeworld)
-      while (this.level < c.defaultHomeworldLevel)
-        this.levelUp()
+      while (this.level < c.defaultHomeworldLevel) this.levelUp()
   }
 
   tick() {
@@ -191,8 +188,7 @@ export class BasicPlanet extends Planet {
     let levelUpEffect = c.randomWithWeights(levelUpOptions)
 
     // homeworlds always have repair factor to some degree
-    if (this.level === 1 && this.homeworld)
-      levelUpEffect = `increaseAutoRepair`
+    if (this.level === 1 && this.homeworld) levelUpEffect = `increaseAutoRepair`
 
     if (levelUpEffect === `expandLandingZone`) {
       this.landingRadiusMultiplier *= 2
@@ -212,9 +208,7 @@ export class BasicPlanet extends Planet {
         id: `boostSightRange`,
         intensity: 0.1,
       })
-    } else if (
-      levelUpEffect === `boostStaminaRegeneration`
-    ) {
+    } else if (levelUpEffect === `boostStaminaRegeneration`) {
       this.addPassive({
         id: `boostStaminaRegeneration`,
         intensity: 0.1,
@@ -229,9 +223,7 @@ export class BasicPlanet extends Planet {
         id: `boostRepairSpeed`,
         intensity: 0.1,
       })
-    } else if (
-      levelUpEffect === `boostCockpitChargeSpeed`
-    ) {
+    } else if (levelUpEffect === `boostCockpitChargeSpeed`) {
       this.addPassive({
         id: `boostCockpitChargeSpeed`,
         intensity: 0.1,
@@ -254,8 +246,7 @@ export class BasicPlanet extends Planet {
         //   this.vendor.repairCostMultiplier =
         //     getRepairCostMultiplier()
         // else {
-        const { buyMultiplier, sellMultiplier } =
-          getBuyAndSellMultipliers()
+        const { buyMultiplier, sellMultiplier } = getBuyAndSellMultipliers()
         if (
           toAddToVendor.class === `items` &&
           toAddToVendor.type &&
@@ -277,31 +268,23 @@ export class BasicPlanet extends Planet {
         if (toAddToVendor.class === `shipTagline`)
           this.vendor.shipCosmetics.push({
             tagline: toAddToVendor.value,
-            priceMultiplier:
-              buyMultiplier ** 2 *
-              (toAddToVendor.rarity / 5),
+            priceMultiplier: buyMultiplier ** 2 * (toAddToVendor.rarity / 5),
           })
         if (toAddToVendor.class === `shipBackground`)
           this.vendor.shipCosmetics.push({
             headerBackground: toAddToVendor.value,
-            priceMultiplier:
-              buyMultiplier ** 2 *
-              (toAddToVendor.rarity / 5),
+            priceMultiplier: buyMultiplier ** 2 * (toAddToVendor.rarity / 5),
           })
 
         if (toAddToVendor.class === `crewTagline`)
           this.vendor.crewCosmetics.push({
             tagline: toAddToVendor.value,
-            priceMultiplier:
-              buyMultiplier ** 2 *
-              (toAddToVendor.rarity / 5),
+            priceMultiplier: buyMultiplier ** 2 * (toAddToVendor.rarity / 5),
           })
         if (toAddToVendor.class === `crewBackground`)
           this.vendor.crewCosmetics.push({
             background: toAddToVendor.value,
-            priceMultiplier:
-              buyMultiplier ** 2 *
-              (toAddToVendor.rarity / 5),
+            priceMultiplier: buyMultiplier ** 2 * (toAddToVendor.rarity / 5),
           })
 
         if (toAddToVendor.class === `chassis`)
@@ -334,45 +317,29 @@ export class BasicPlanet extends Planet {
       1 / (Math.abs(rarity - targetRarity) + 1)
     const addable: AddableElement[] = []
 
-    if (
-      !this.leanings.find(
-        (p) => p.type === `cargo` && p.never === true,
-      )
-    ) {
+    if (!this.leanings.find((p) => p.type === `cargo` && p.never === true)) {
       const propensity =
-        ((this.leanings.find((p) => p.type === `cargo`)
-          ?.propensity || 1) /
+        ((this.leanings.find((p) => p.type === `cargo`)?.propensity || 1) /
           Object.keys(c.cargo).length) *
         3
       // * multiplied to make cargo slightly more common
       for (let cargo of Object.values(c.cargo))
-        if (
-          !this.vendor?.cargo.find(
-            (ca) => ca.id === cargo.id,
-          )
-        )
+        if (!this.vendor?.cargo.find((ca) => ca.id === cargo.id))
           addable.push({
             class: `cargo`,
             id: cargo.id,
-            propensity:
-              propensity * rarityMultiplier(cargo.rarity),
+            propensity: propensity * rarityMultiplier(cargo.rarity),
           })
     }
 
-    if (
-      !this.leanings.find(
-        (l) => l.type === `items` && l.never === true,
-      )
-    ) {
+    if (!this.leanings.find((l) => l.type === `items` && l.never === true)) {
       const baseItemPropensity =
-        (this.leanings.find((l) => l.type === `items`)
-          ?.propensity || 1) * 4
+        (this.leanings.find((l) => l.type === `items`)?.propensity || 1) * 4
       for (let itemGroup of Object.values(c.items)) {
         if (
           this.leanings.find(
             (p) =>
-              p.type === Object.values(itemGroup)[0].type &&
-              p.never === true,
+              p.type === Object.values(itemGroup)[0].type && p.never === true,
           )
         )
           continue
@@ -380,37 +347,29 @@ export class BasicPlanet extends Planet {
         let propensity =
           baseItemPropensity *
           (this.leanings.find(
-            (p) =>
-              p.type === Object.values(itemGroup)[0].type,
+            (p) => p.type === Object.values(itemGroup)[0].type,
           )?.propensity || 0.2)
         propensity /= Object.keys(itemGroup).length
         // * lightly encourage specialization
         const alreadySellingOfType =
           this.vendor?.items.filter(
-            (i) =>
-              i.type === Object.values(itemGroup)[0].type,
+            (i) => i.type === Object.values(itemGroup)[0].type,
           ).length || 0
         propensity *= 2 + alreadySellingOfType
 
-        for (let item of Object.values(
-          itemGroup,
-        ) as BaseItemOrChassisData[])
+        for (let item of Object.values(itemGroup) as BaseItemOrChassisData[])
           if (item.type === `chassis`) {
             if (
               item.buyable !== false &&
               !item.special &&
               !this.vendor?.chassis.find(
-                (i) =>
-                  i.id ===
-                  (item as BaseChassisData).chassisId,
+                (i) => i.id === (item as BaseChassisData).chassisId,
               )
             )
               addable.push({
                 class: `chassis`,
                 id: (item as BaseChassisData).chassisId,
-                propensity:
-                  propensity *
-                  rarityMultiplier(item.rarity),
+                propensity: propensity * rarityMultiplier(item.rarity),
               })
           } else {
             if (
@@ -418,8 +377,7 @@ export class BasicPlanet extends Planet {
               !item.special &&
               !this.vendor?.items.find(
                 (i) =>
-                  i.type ===
-                    (item as BaseItemData).itemType &&
+                  i.type === (item as BaseItemData).itemType &&
                   i.id === (item as BaseItemData).itemId,
               )
             )
@@ -427,92 +385,71 @@ export class BasicPlanet extends Planet {
                 class: `items`,
                 type: (item as BaseItemData).itemType,
                 id: (item as BaseItemData).itemId,
-                propensity:
-                  propensity *
-                  rarityMultiplier(item.rarity),
+                propensity: propensity * rarityMultiplier(item.rarity),
               })
           }
       }
     }
 
     if (
-      !this.leanings.find(
-        (p) =>
-          p.type === `crewPassives` && p.never === true,
-      )
+      !this.leanings.find((p) => p.type === `crewPassives` && p.never === true)
     ) {
       const propensity =
-        (this.leanings.find(
-          (p) => p.type === `crewPassives`,
-        )?.propensity || 1) /
-        Object.keys(c.crewPassives).length
+        (this.leanings.find((p) => p.type === `crewPassives`)?.propensity ||
+          1) / Object.keys(c.crewPassives).length
       for (let crewPassive of Object.values(c.crewPassives))
         if (
           crewPassive.buyable &&
-          !this.vendor?.passives.find(
-            (p) => p.id === crewPassive.id,
-          )
+          !this.vendor?.passives.find((p) => p.id === crewPassive.id)
         )
           addable.push({
             class: `crewPassives`,
             id: crewPassive.id,
             propensity:
-              propensity *
-              5 *
-              rarityMultiplier(crewPassive.buyable.rarity),
+              propensity * 5 * rarityMultiplier(crewPassive.buyable.rarity),
             intensity:
               c.r2(
-                c.crewPassives[crewPassive.id].buyable!
-                  .baseIntensity *
+                c.crewPassives[crewPassive.id].buyable!.baseIntensity *
                   Math.random() +
                   0.5,
-                c.crewPassives[crewPassive.id].buyable!
-                  .wholeNumbersOnly
+                c.crewPassives[crewPassive.id].buyable!.wholeNumbersOnly
                   ? 0
                   : 2,
               ) ||
               // could be zero, bounce back
-              (c.crewPassives[crewPassive.id].buyable!
-                .wholeNumbersOnly
+              (c.crewPassives[crewPassive.id].buyable!.wholeNumbersOnly
                 ? 1
                 : 0.1),
           })
     }
 
     if (
-      !this.leanings.find(
-        (p) => p.type === `cosmetics` && p.never === true,
-      )
+      !this.leanings.find((p) => p.type === `cosmetics` && p.never === true)
     ) {
       const shipTaglinePropensity =
-        (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) / c.buyableShipTaglines.length
+        (this.leanings.find((p) => p.type === `cosmetics`)?.propensity || 1) /
+        c.buyableShipTaglines.length
       for (let tagline of c.buyableShipTaglines)
         if (
-          !this.vendor?.shipCosmetics.find(
-            (p) => p.tagline === tagline.value,
-          )
+          !this.vendor?.shipCosmetics.find((p) => p.tagline === tagline.value)
         )
           addable.push({
             class: `shipTagline`,
             value: tagline.value,
             propensity:
-              shipTaglinePropensity *
-              rarityMultiplier(tagline.rarity),
+              shipTaglinePropensity * rarityMultiplier(tagline.rarity),
             rarity: tagline.rarity,
           })
 
       const shipBackgroundPropensity =
-        (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) /
+        (this.leanings.find((p) => p.type === `cosmetics`)?.propensity || 1) /
         c.buyableShipBackgrounds.length
       for (let headerBackground of c.buyableShipBackgrounds)
         if (
           !this.vendor?.shipCosmetics.find(
             (p) =>
               p.headerBackground &&
-              p.headerBackground?.url ===
-                headerBackground.value.url,
+              p.headerBackground?.url === headerBackground.value.url,
           )
         )
           addable.push({
@@ -525,41 +462,34 @@ export class BasicPlanet extends Planet {
           })
 
       const crewTaglinePropensity =
-        (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) / c.buyableCrewTaglines.length
+        (this.leanings.find((p) => p.type === `cosmetics`)?.propensity || 1) /
+        c.buyableCrewTaglines.length
       for (let tagline of c.buyableCrewTaglines)
         if (
-          !this.vendor?.crewCosmetics.find(
-            (p) => p.tagline === tagline.value,
-          )
+          !this.vendor?.crewCosmetics.find((p) => p.tagline === tagline.value)
         )
           addable.push({
             class: `crewTagline`,
             value: tagline.value,
             propensity:
-              crewTaglinePropensity *
-              rarityMultiplier(tagline.rarity),
+              crewTaglinePropensity * rarityMultiplier(tagline.rarity),
             rarity: tagline.rarity,
           })
 
       const crewBackgroundPropensity =
-        (this.leanings.find((p) => p.type === `cosmetics`)
-          ?.propensity || 1) /
+        (this.leanings.find((p) => p.type === `cosmetics`)?.propensity || 1) /
         c.buyableCrewBackgrounds.length
       for (let background of c.buyableCrewBackgrounds)
         if (
           !this.vendor?.crewCosmetics.find(
-            (p) =>
-              p.background &&
-              p.background?.url === background.value.url,
+            (p) => p.background && p.background?.url === background.value.url,
           )
         )
           addable.push({
             class: `crewBackground`,
             value: background.value,
             propensity:
-              crewBackgroundPropensity *
-              rarityMultiplier(background.rarity),
+              crewBackgroundPropensity * rarityMultiplier(background.rarity),
             rarity: background.rarity,
           })
     }
@@ -605,12 +535,8 @@ export class BasicPlanet extends Planet {
         (s) =>
           !s.planet &&
           !(s as AIShip).until &&
-          !this.contracts.find(
-            (co) => co.targetId === s.id,
-          ) &&
-          !this.allegiances.find(
-            (a) => a.guildId === s.guildId,
-          ),
+          !this.contracts.find((co) => co.targetId === s.id) &&
+          !this.allegiances.find((a) => a.guildId === s.guildId),
       )
       const hitListTargets = validTargets.filter((t) =>
         this.hitList.includes(t.id),
@@ -626,9 +552,7 @@ export class BasicPlanet extends Planet {
       }
 
       const difficulty = (target as AIShip).level || 10
-      const distance =
-        c.distance(this.location, target.location) /
-        scanRange // 0-1
+      const distance = c.distance(this.location, target.location) / scanRange // 0-1
       this.contracts.push({
         id: `contract` + `${Math.random()}`.slice(2),
         reward: {
@@ -636,23 +560,14 @@ export class BasicPlanet extends Planet {
             ? 0
             : Math.max(
                 0,
-                c.r2(
-                  2000 *
-                    difficulty *
-                    distance *
-                    (Math.random() + 0.1),
-                  0,
-                ),
+                c.r2(2000 * difficulty * distance * (Math.random() + 0.1), 0),
               ),
           shipCosmeticCurrency: c.lottery(1, 4)
             ? 0
             : Math.max(
                 0,
                 c.r2(
-                  0.35 *
-                    (difficulty - 3) *
-                    distance *
-                    (Math.random() + 0.1),
+                  0.35 * (difficulty - 3) * distance * (Math.random() + 0.1),
                   0,
                   true,
                 ),
@@ -662,22 +577,14 @@ export class BasicPlanet extends Planet {
             : Math.max(
                 0,
                 c.r2(
-                  400 *
-                    (difficulty - 3) *
-                    distance *
-                    (Math.random() + 0.1),
+                  400 * (difficulty - 3) * distance * (Math.random() + 0.1),
                   0,
                   true,
                 ),
               ),
         },
         timeAllowed: Math.round(
-          c.tickInterval *
-            60 *
-            60 *
-            24 *
-            7 *
-            (distance + 0.2),
+          c.tickInterval * 60 * 60 * 24 * 7 * (distance + 0.2),
         ),
         targetId: target.id,
         targetName: target.name,
@@ -686,19 +593,9 @@ export class BasicPlanet extends Planet {
         claimCost: {
           credits: c.lottery(1, 12)
             ? 0
-            : Math.max(
-                0,
-                c.r2(
-                  300 *
-                    difficulty *
-                    distance *
-                    Math.random(),
-                  0,
-                ),
-              ),
+            : Math.max(0, c.r2(300 * difficulty * distance * Math.random(), 0)),
         },
-        claimableExpiresAt:
-          Date.now() + 1000 * 60 * 60 * 24,
+        claimableExpiresAt: Date.now() + 1000 * 60 * 60 * 24,
       })
     }
     this.updateFrontendForShipsAt()
@@ -710,16 +607,11 @@ export class BasicPlanet extends Planet {
 
     let allegianceAmountToIncrement = (amount || 0) / 100
 
-    const existingAllegiances = this.allegiances.filter(
-      (a) => a.level > 1,
-    )
-    allegianceAmountToIncrement /=
-      existingAllegiances.length + 1
+    const existingAllegiances = this.allegiances.filter((a) => a.level > 1)
+    allegianceAmountToIncrement /= existingAllegiances.length + 1
 
     const maxAllegiance = 100
-    const found = this.allegiances.find(
-      (a) => a.guildId === guildId,
-    )
+    const found = this.allegiances.find((a) => a.guildId === guildId)
     if (found)
       found.level = Math.min(
         maxAllegiance,
@@ -728,10 +620,7 @@ export class BasicPlanet extends Planet {
     else
       this.allegiances.push({
         guildId,
-        level: Math.min(
-          maxAllegiance,
-          allegianceAmountToIncrement,
-        ),
+        level: Math.min(maxAllegiance, allegianceAmountToIncrement),
       })
     this.toUpdate.allegiances = this.allegiances
 
@@ -745,21 +634,16 @@ export class BasicPlanet extends Planet {
 
   decrementAllegiances() {
     ;[...this.allegiances].forEach((a) => {
-      if (this.guildId !== a.guildId)
-        a.level = (a.level || 0) * 0.995
+      if (this.guildId !== a.guildId) a.level = (a.level || 0) * 0.995
       if (a.level < 0.01)
-        this.allegiances.splice(
-          this.allegiances.indexOf(a),
-          1,
-        )
+        this.allegiances.splice(this.allegiances.indexOf(a), 1)
     })
     this.toUpdate.allegiances = this.allegiances
     this.updateFrontendForShipsAt()
   }
 
   broadcastTo(ship: HumanShip): number | undefined {
-    const distanceAsPercentOfMaxBroadcastRadius =
-      super.broadcastTo(ship)
+    const distanceAsPercentOfMaxBroadcastRadius = super.broadcastTo(ship)
     if (!distanceAsPercentOfMaxBroadcastRadius) return
 
     const garbleAmount = c.randomBetween(
@@ -833,27 +717,16 @@ export class BasicPlanet extends Planet {
         `You there, from the ${
           ship.guildId && c.guilds[ship.guildId].name
         }! You may land, but don't cause any trouble.`,
-        `${
-          ship.guildId && c.guilds[ship.guildId].name
-        } are welcome here.`,
+        `${ship.guildId && c.guilds[ship.guildId].name} are welcome here.`,
       )
     }
 
-    const message = c.garble(
-      c.randomFromArray(messageOptions),
-      garbleAmount,
-    )
-    ship.receiveBroadcast(message, this, garbleAmount, [
-      ship,
-    ])
+    const message = c.garble(c.randomFromArray(messageOptions), garbleAmount)
+    ship.receiveBroadcast(message, this, garbleAmount, [ship])
   }
 
-  respondTo(
-    message: string,
-    ship: HumanShip,
-  ): number | undefined {
-    const distanceAsPercentOfMaxBroadcastRadius =
-      super.respondTo(message, ship)
+  respondTo(message: string, ship: HumanShip): number | undefined {
+    const distanceAsPercentOfMaxBroadcastRadius = super.respondTo(message, ship)
     if (!distanceAsPercentOfMaxBroadcastRadius) return
 
     const garbleAmount = c.randomBetween(
@@ -883,28 +756,18 @@ export class BasicPlanet extends Planet {
         `Can't talk now, the ${c.randomFromArray(
           this.creatures,
         )} are causing trouble again, over.`,
-        `Aren't ${c.randomFromArray(
-          this.creatures,
-        )} beautiful? Over.`,
+        `Aren't ${c.randomFromArray(this.creatures)} beautiful? Over.`,
       )
     }
-    const response = c.garble(
-      c.randomFromArray(responseOptions),
-      garbleAmount,
-    )
-    ship.receiveBroadcast(response, this, garbleAmount, [
-      ship,
-    ])
+    const response = c.garble(c.randomFromArray(responseOptions), garbleAmount)
+    ship.receiveBroadcast(response, this, garbleAmount, [ship])
   }
 
   resetLevels(toDefault = false) {
     const targetLevel = toDefault
       ? this.homeworld
         ? c.defaultHomeworldLevel
-        : Math.ceil(
-            Math.random() * 5 +
-              c.distance(this.location, [0, 0]) / 3,
-          )
+        : Math.ceil(Math.random() * 5 + c.distance(this.location, [0, 0]) / 3)
       : this.level
     const targetXp = toDefault ? 0 : this.xp
 
@@ -929,8 +792,7 @@ export class BasicPlanet extends Planet {
     }
     if (
       targetXp >
-      c.levels[this.level - 1] *
-        c.planetLevelXpRequirementMultiplier
+      c.levels[this.level - 1] * c.planetLevelXpRequirementMultiplier
     )
       this.xp = targetXp
     this.updateFrontendForShipsAt()
@@ -943,18 +805,13 @@ export class BasicPlanet extends Planet {
       .reduce((t, c) => t + c.charCodeAt(0), 0)
 
     const dateDependentRandomNumberBetweenZeroAndOne =
-      ((new Date().getDate() * 13 +
-        mod +
-        (new Date().getMonth() * 7 + mod)) %
+      ((new Date().getDate() * 13 + mod + (new Date().getMonth() * 7 + mod)) %
         100) /
       100
 
     this.priceFluctuator =
       1 +
-      (dateDependentRandomNumberBetweenZeroAndOne *
-        intensity *
-        2 -
-        intensity)
+      (dateDependentRandomNumberBetweenZeroAndOne * intensity * 2 - intensity)
 
     this._stub = null // invalidate stub
     this.toUpdate.priceFluctuator = this.priceFluctuator
@@ -964,19 +821,11 @@ export class BasicPlanet extends Planet {
 
 function getBuyAndSellMultipliers(item: boolean = false) {
   const overallBoost = 0.1
-  const buyMultiplier = c.r2(
-    0.8 + Math.random() * 0.4 + overallBoost,
-    2,
-  )
+  const buyMultiplier = c.r2(0.8 + Math.random() * 0.4 + overallBoost, 2)
   const sellMultiplier =
     Math.min(
       buyMultiplier,
-      c.r2(
-        buyMultiplier * (Math.random() * 0.2) +
-          0.8 +
-          overallBoost,
-        2,
-      ),
+      c.r2(buyMultiplier * (Math.random() * 0.2) + 0.8 + overallBoost, 2),
     ) * (item ? 0.4 : 1)
   return { buyMultiplier, sellMultiplier }
 }
@@ -984,9 +833,7 @@ function getBuyAndSellMultipliers(item: boolean = false) {
 function getRepairCostMultiplier() {
   const repairCostVariance = 0.5
   const repairCostMultiplier = c.r2(
-    1 +
-      Math.random() * repairCostVariance -
-      repairCostVariance / 2,
+    1 + Math.random() * repairCostVariance - repairCostVariance / 2,
     3,
   )
   return repairCostMultiplier

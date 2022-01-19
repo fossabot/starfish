@@ -532,9 +532,9 @@ export class CrewMember extends Stubbable {
     else this.clearMoralePassives()
 
     this.toUpdate.morale = this.morale
-    if (Math.abs(amount) > 1) {
-      c.log(this.ship.name, this.name, amount, this.morale)
-    }
+    // if (Math.abs(amount) > 1) {
+    //   c.log(this.ship.name, this.name, amount, this.morale)
+    // }
   }
 
   clearMoralePassives() {

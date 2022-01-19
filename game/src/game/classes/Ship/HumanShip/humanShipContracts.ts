@@ -28,9 +28,7 @@ export function startContract(
     return {
       error: `You need to be on a normal planet to start a contract.`,
     }
-  const planetContract = (
-    planet as BasicPlanet
-  ).contracts.find(
+  const planetContract = (planet as BasicPlanet).contracts.find(
     (co) => co.id === contractId && co.targetId !== this.id,
   )
   if (!planetContract)
@@ -49,16 +47,12 @@ export function startContract(
       error: `You cannot afford to claim this contract!`,
     }
   ;(planet as BasicPlanet).contracts?.splice(
-    (planet as BasicPlanet).contracts.indexOf(
-      planetContract,
-    ),
+    (planet as BasicPlanet).contracts.indexOf(planetContract),
     1,
   )
   planet.updateFrontendForShipsAt()
 
-  const target = this.game?.ships.find(
-    (s) => s.id === planetContract.targetId,
-  )
+  const target = this.game?.ships.find((s) => s.id === planetContract.targetId)
   if (!target) {
     return { error: `Could not find target.` }
   }
@@ -86,12 +80,9 @@ export function startContract(
       {
         text:
           ((target as EnemyAIShip).speciesId
-            ? c.species[(target as EnemyAIShip).speciesId]
-                ?.icon || ``
+            ? c.species[(target as EnemyAIShip).speciesId]?.icon || ``
             : ``) + target.name,
-        color: target.guildId
-          ? c.guilds[target.guildId].color
-          : undefined,
+        color: target.guildId ? c.guilds[target.guildId].color : undefined,
         tooltipData: target.toReference(),
       },
     ],
@@ -103,15 +94,9 @@ export function startContract(
   return { data: contractData }
 }
 
-export function updateActiveContractsLocations(
-  this: HumanShip,
-) {
-  for (let contract of this.contracts.filter(
-    (co) => co.status === `active`,
-  )) {
-    const target = this.game?.ships.find(
-      (s) => s.id === contract.targetId,
-    )
+export function updateActiveContractsLocations(this: HumanShip) {
+  for (let contract of this.contracts.filter((co) => co.status === `active`)) {
+    const target = this.game?.ships.find((s) => s.id === contract.targetId)
     if (!target) {
       this.stolenContract(contract)
       continue
@@ -126,23 +111,14 @@ export function updateActiveContractsLocations(
   }
 }
 
-export function stolenContract(
-  this: HumanShip,
-  co: Contract,
-) {
-  const contract = this.contracts.find(
-    (con) => con.id === co.id,
-  )
+export function stolenContract(this: HumanShip, co: Contract) {
+  const contract = this.contracts.find((con) => con.id === co.id)
   if (!contract) return
   contract.status = `stolen`
   this.toUpdate.contracts = this.contracts
 
-  const target = this.game?.ships.find(
-    (s) => s.id === contract.targetId,
-  )
-  const planet = this.game?.planets.find(
-    (p) => p.id === contract.fromPlanetId,
-  )
+  const target = this.game?.ships.find((s) => s.id === contract.targetId)
+  const planet = this.game?.planets.find((p) => p.id === contract.fromPlanetId)
   if (target) {
     this.crewMembers.forEach((cm) => cm.changeMorale(-0.1))
 
@@ -152,12 +128,9 @@ export function stolenContract(
         {
           text:
             ((target as EnemyAIShip).speciesId
-              ? c.species[(target as EnemyAIShip).speciesId]
-                  ?.icon || ``
+              ? c.species[(target as EnemyAIShip).speciesId]?.icon || ``
               : ``) + target.name,
-          color: target.guildId
-            ? c.guilds[target.guildId].color
-            : undefined,
+          color: target.guildId ? c.guilds[target.guildId].color : undefined,
           tooltipData: target.toReference(),
         },
         `stolen! Return to`,
@@ -178,23 +151,14 @@ export function stolenContract(
   this.checkTurnInContract(co)
 }
 
-export function completeContract(
-  this: HumanShip,
-  co: Contract,
-) {
-  const contract = this.contracts.find(
-    (con) => con.id === co.id,
-  )
+export function completeContract(this: HumanShip, co: Contract) {
+  const contract = this.contracts.find((con) => con.id === co.id)
   if (!contract) return
   contract.status = `done`
   this.toUpdate.contracts = this.contracts
 
-  const target = this.game?.ships.find(
-    (s) => s.id === contract.targetId,
-  )
-  const planet = this.game?.planets.find(
-    (p) => p.id === contract.fromPlanetId,
-  )
+  const target = this.game?.ships.find((s) => s.id === contract.targetId)
+  const planet = this.game?.planets.find((p) => p.id === contract.fromPlanetId)
   if (target)
     setTimeout(() => {
       // to come after death logs
@@ -222,23 +186,13 @@ export function completeContract(
 }
 
 export function checkContractTimeOuts(this: HumanShip) {
-  for (let contract of this.contracts.filter(
-    (co) => co.status === `active`,
-  )) {
-    if (
-      Date.now() - contract.timeAccepted <
-      contract.timeAllowed
-    )
-      continue
-    const index = this.contracts.findIndex(
-      (co) => co.id === contract.id,
-    )
+  for (let contract of this.contracts.filter((co) => co.status === `active`)) {
+    if (Date.now() - contract.timeAccepted < contract.timeAllowed) continue
+    const index = this.contracts.findIndex((co) => co.id === contract.id)
     if (index === -1) return
     this.contracts.splice(index, 1)
     this.toUpdate.contracts = this.contracts
-    const target = this.game?.ships.find(
-      (s) => s.id === contract.targetId,
-    )
+    const target = this.game?.ships.find((s) => s.id === contract.targetId)
     if (target)
       this.logEntry(
         [
@@ -246,13 +200,9 @@ export function checkContractTimeOuts(this: HumanShip) {
           {
             text:
               ((target as EnemyAIShip).speciesId
-                ? c.species[
-                    (target as EnemyAIShip).speciesId
-                  ]?.icon || ``
+                ? c.species[(target as EnemyAIShip).speciesId]?.icon || ``
                 : ``) + target.name,
-            color: target.guildId
-              ? c.guilds[target.guildId].color
-              : undefined,
+            color: target.guildId ? c.guilds[target.guildId].color : undefined,
             tooltipData: target.toReference(),
           },
           `expired.`,
@@ -263,20 +213,13 @@ export function checkContractTimeOuts(this: HumanShip) {
   }
 }
 
-export function abandonContract(
-  this: HumanShip,
-  contract: Contract,
-) {
-  const index = this.contracts.findIndex(
-    (co) => co.id === contract.id,
-  )
+export function abandonContract(this: HumanShip, contract: Contract) {
+  const index = this.contracts.findIndex((co) => co.id === contract.id)
   if (index === -1) return
   this.contracts.splice(index, 1)
   this.toUpdate.contracts = this.contracts
 
-  const target = this.game?.ships.find(
-    (s) => s.id === contract.targetId,
-  )
+  const target = this.game?.ships.find((s) => s.id === contract.targetId)
   if (target) {
     this.crewMembers.forEach((cm) => cm.changeMorale(-0.05))
 
@@ -286,12 +229,9 @@ export function abandonContract(
         {
           text:
             ((target as EnemyAIShip).speciesId
-              ? c.species[(target as EnemyAIShip).speciesId]
-                  ?.icon || ``
+              ? c.species[(target as EnemyAIShip).speciesId]?.icon || ``
               : ``) + target.name,
-          color: target.guildId
-            ? c.guilds[target.guildId].color
-            : undefined,
+          color: target.guildId ? c.guilds[target.guildId].color : undefined,
           tooltipData: target.toReference(),
         },
         `abandoned.`,
@@ -302,10 +242,7 @@ export function abandonContract(
   }
 }
 
-export function checkTurnInContract(
-  this: HumanShip,
-  contract: Contract,
-) {
+export function checkTurnInContract(this: HumanShip, contract: Contract) {
   if (
     !this.planet ||
     this.planet.id !== contract.fromPlanetId ||
@@ -313,9 +250,7 @@ export function checkTurnInContract(
   )
     return
 
-  const index = this.contracts.findIndex(
-    (co) => co.id === contract.id,
-  )
+  const index = this.contracts.findIndex((co) => co.id === contract.id)
   if (index === -1) return
   this.contracts.splice(index, 1)
   this.toUpdate.contracts = this.contracts

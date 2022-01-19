@@ -1531,7 +1531,9 @@ export class HumanShip extends CombatShip {
       this.planet.passives.forEach((p) => this.applyPassive(p))
       this.planet.addStat(`shipsLanded`, 1)
       this.checkAchievements(`land`)
-      for (let co of this.contracts) this.checkTurnInContract(co)
+      for (let co of [...this.contracts]) {
+        this.checkTurnInContract(co)
+      }
 
       this.membersIn(`cockpit`).forEach((cm) => {
         cm.targetLocation = false

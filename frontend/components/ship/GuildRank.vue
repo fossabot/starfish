@@ -13,9 +13,7 @@
       <Tab
         v-for="ranking in rankings"
         :key="'guildRanking' + ranking.category"
-        :title="
-          c.capitalize(c.camelCaseToWords(ranking.category))
-        "
+        :title="c.capitalize(c.camelCaseToWords(ranking.category))"
       >
         <div class="flex rounded">
           <div
@@ -28,24 +26,20 @@
                   ? 'var(--noguild)'
                   : c.guilds[score.guildId].color,
             }"
-            :key="
-              'score' + ranking.category + score.guildId
-            "
+            :key="'score' + ranking.category + score.guildId"
             v-tooltip="
               `#${index + 1}) ${
                 score.guildId === 'noGuild'
                   ? 'No Guild'
-                  : c.capitalize(
-                      c.guilds[score.guildId].name,
-                    )
-              }: ${c.numberWithCommas(
-                c.r2(score.score, 0),
-              )}`
+                  : c.capitalize(c.guilds[score.guildId].name)
+              }: ${c.numberWithCommas(c.r2(score.score, 0))}`
             "
           ></div>
         </div>
         <div v-if="ranking.top" class="martop">
-          <h5 class="sub">Top Ships</h5>
+          <h5 class="sub">
+            Top {{ ranking.category === 'control' ? 'Factions' : 'Ships' }}
+          </h5>
           <ol>
             <li
               v-for="(score, index) in ranking.top"
@@ -59,9 +53,7 @@
                   <b>{{ score.name }}</b>
                 </div>
                 <div class="sub scorenumber">
-                  {{
-                    c.numberWithCommas(c.r2(score.score, 0))
-                  }}
+                  {{ c.numberWithCommas(c.r2(score.score, 0)) }}
                 </div>
               </div>
             </li>
@@ -71,6 +63,7 @@
             v-if="
               ship &&
               ranking.top &&
+              ['netWorth', 'members'].includes(ranking.category) &&
               !ranking.top.find((r) => r.name === ship.name)
             "
           >
@@ -92,14 +85,9 @@
                       c.numberWithCommas(
                         c.r2(
                           ranking.category === 'netWorth'
-                            ? ship.stats.find(
-                                (s) =>
-                                  s.stat === 'netWorth',
-                              )
-                              ? ship.stats.find(
-                                  (s) =>
-                                    s.stat === 'netWorth',
-                                ).amount
+                            ? ship.stats.find((s) => s.stat === 'netWorth')
+                              ? ship.stats.find((s) => s.stat === 'netWorth')
+                                  .amount
                               : 0
                             : ranking.category === 'members'
                             ? ship.crewMembers.length
@@ -135,10 +123,7 @@ export default Vue.extend({
       return true
     },
     highlight(): boolean {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'guildRank'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'guildRank'
     },
     rankings(): any {
       return this.ship?.guildRankings || this.loadedRankings
@@ -151,13 +136,10 @@ export default Vue.extend({
   methods: {
     async loadRankings() {
       await new Promise(async (r) => {
-        ;(this as any).$socket?.emit(
-          'game:guildRankings',
-          (res) => {
-            if ('error' in res) return
-            this.loadedRankings = res.data
-          },
-        )
+        ;(this as any).$socket?.emit('game:guildRankings', (res) => {
+          if ('error' in res) return
+          this.loadedRankings = res.data
+        })
       })
     },
   },

@@ -1263,6 +1263,7 @@ export class Game {
 
     // control
     const controlScores: GuildRankingScoreEntry[] = []
+    let topControlGuilds: GuildRankingTopEntry[] = []
     for (let guild of Object.values(c.guilds)) {
       if (guild.id === `fowl`) continue
       controlScores.push({
@@ -1279,6 +1280,14 @@ export class Game {
       })
     }
     // c.log(controlScores)
+    topControlGuilds = controlScores
+      .map((cs) => ({
+        name: c.capitalize(cs.guildId) + `s`,
+        color: c.guilds[cs.guildId].color,
+        score: cs.score,
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []
@@ -1333,6 +1342,7 @@ export class Game {
       {
         category: `control`,
         scores: controlScores.sort((a, b) => b.score - a.score),
+        top: topControlGuilds,
       },
       {
         category: `members`,
