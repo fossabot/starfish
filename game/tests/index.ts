@@ -18,6 +18,7 @@ import './Contracts'
 import './Movement'
 import './Research'
 import './Zones'
+import './Morale'
 
 const host = isDocker() ? `--host mongodb` : ``
 

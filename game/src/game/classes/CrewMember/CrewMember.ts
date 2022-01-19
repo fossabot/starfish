@@ -538,7 +538,7 @@ export class CrewMember extends Stubbable {
   }
 
   clearMoralePassives() {
-    this.passives.forEach((p) => {
+    ;[...this.passives].forEach((p) => {
       if (
         typeof p.data?.source === `string` &&
         [`highMorale`, `lowMorale`].includes(p.data?.source)
@@ -571,6 +571,8 @@ export class CrewMember extends Stubbable {
     )
       return
 
+    this.clearMoralePassives()
+
     for (let p of passives)
       this.applyPassive({
         id: p.id,
@@ -584,13 +586,6 @@ export class CrewMember extends Stubbable {
   }
 
   setHighMorale() {
-    if (
-      this.passives.find(
-        (p) => p.id === `reduceStaminaDrain` && p.intensity === 0.1,
-      )
-    )
-      return
-
     const passives: CrewPassiveData[] = [
       {
         id: `reduceStaminaDrain`,
@@ -615,6 +610,8 @@ export class CrewMember extends Stubbable {
       )
     )
       return
+
+    this.clearMoralePassives()
 
     for (let p of passives)
       this.applyPassive({
