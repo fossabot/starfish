@@ -1,6 +1,6 @@
 export declare class MassProfiler {
-    readonly enabled: boolean;
     readonly metric: Performance | DateConstructor;
+    enabled: boolean;
     trackedNames: {
         [key: string]: {
             [key: string]: {

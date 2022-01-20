@@ -14,8 +14,8 @@ const math_1 = __importDefault(require("./math"));
 // count total number of calls
 // sort by total time spent and time spent per call
 class MassProfiler {
-    enabled = process.env.NODE_ENV !== `production`;
     metric;
+    enabled = process.env.NODE_ENV !== `production`;
     trackedNames = {};
     printLength = 20;
     totalTime = 0;
@@ -32,14 +32,20 @@ class MassProfiler {
         }
     }
     fullReset() {
+        if (!this.enabled)
+            return;
         this.trackedNames = {};
         this.totalTime = 0;
         this.avgTotalTime = 0;
     }
     getTime() {
+        if (!this.enabled)
+            return 0;
         return this.metric.now();
     }
     call(categoryName, subCategoryName, time) {
+        if (!this.enabled)
+            return;
         if (!this.trackedNames[categoryName])
             this.trackedNames[categoryName] = {};
         if (!this.trackedNames[categoryName][subCategoryName])
@@ -106,6 +112,8 @@ class MassProfiler {
         log_1.default.log(...output);
     }
     resetForNextTick() {
+        if (!this.enabled)
+            return;
         for (const key in this.trackedNames) {
             for (const key2 in this.trackedNames[key]) {
                 this.trackedNames[key][key2].averageTotalTime =

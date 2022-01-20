@@ -10,8 +10,9 @@ import math from './math'
 // sort by total time spent and time spent per call
 
 export class MassProfiler {
-  readonly enabled = process.env.NODE_ENV !== `production`
   readonly metric: Performance | DateConstructor
+
+  enabled = process.env.NODE_ENV !== `production`
 
   trackedNames: {
     [key: string]: {
@@ -39,16 +40,19 @@ export class MassProfiler {
   }
 
   fullReset() {
+    if (!this.enabled) return
     this.trackedNames = {}
     this.totalTime = 0
     this.avgTotalTime = 0
   }
 
   getTime() {
+    if (!this.enabled) return 0
     return this.metric.now()
   }
 
   call(categoryName: string, subCategoryName: string, time: number) {
+    if (!this.enabled) return
     if (!this.trackedNames[categoryName]) this.trackedNames[categoryName] = {}
     if (!this.trackedNames[categoryName][subCategoryName])
       this.trackedNames[categoryName][subCategoryName] = {
@@ -127,6 +131,7 @@ export class MassProfiler {
   }
 
   resetForNextTick() {
+    if (!this.enabled) return
     for (const key in this.trackedNames) {
       for (const key2 in this.trackedNames[key]) {
         this.trackedNames[key][key2].averageTotalTime =
