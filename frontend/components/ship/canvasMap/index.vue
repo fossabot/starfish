@@ -13,6 +13,16 @@
       <span class="sectionemoji">{{ emoji }}</span
       >{{ label }}
     </template>
+
+    <input
+      class="search"
+      v-if="searchable"
+      type="text"
+      v-model="searchText"
+      placeholder="Search..."
+      @keyup="search"
+    />
+
     <div ref="resizewatcher">
       <div
         class="panesection padnone mappane"
@@ -71,6 +81,7 @@ export default Vue.extend({
     background: {},
     width: { default: 600 },
     buffer: { default: true },
+    searchable: { default: true },
   },
   data() {
     let element: HTMLCanvasElement | undefined | null,
@@ -111,6 +122,7 @@ export default Vue.extend({
       isZoomingTimeout,
       resetCenterTime: 2 * 60 * 1000,
       hoverPoint,
+      searchText: '',
     }
   },
   computed: {
@@ -656,6 +668,30 @@ export default Vue.extend({
       this.paused = false
       this.drawNextFrame(true)
     },
+
+    search() {
+      if (!this.show || !this.ship || !this.ship.visible) return
+      const t = this.searchText.toLowerCase()
+      const v = this.ship.visible as VisibleStub
+      let target: CoordinatePair | undefined
+
+      const foundShip = v.ships.find((s) => s.name.toLowerCase() === t)
+      if (foundShip) target = foundShip.location
+
+      const foundPlanet = this.ship.seenPlanets.find(
+        (s) => s.name?.toLowerCase() === t,
+      )
+      if (foundPlanet) target = foundPlanet.location
+
+      if (target) {
+        this.$store.commit('set', { mapFollowingShip: false })
+        this.mapCenter = [
+          target[0] * this.drawer!.flatScale,
+          target[1] * this.drawer!.flatScale * -1,
+        ]
+      }
+      this.drawNextFrame(true)
+    },
   },
 })
 </script>
@@ -682,5 +718,15 @@ export default Vue.extend({
 .resizewatcher,
 canvas {
   max-width: 100%;
+}
+
+.search {
+  position: absolute;
+  top: 0.2em;
+  right: 2.3em;
+  width: 10em;
+  border-radius: 0.5em;
+  z-index: 1;
+  outline: none;
 }
 </style>
