@@ -55,4 +55,17 @@ describe(`Morale extremes`, () => {
     cm.tick()
     expect(cm.passives.length).to.be.lessThanOrEqual(passivesLength)
   })
+
+  it(`should properly apply morale and passives on respawn`, async () => {
+    const g = new Game()
+    const hs = await g.addHumanShip(humanShipData())
+    const cm = await hs.addCrewMember(crewMemberData())
+    cm.morale = g.settings.moraleHighThreshold + 0.1
+    cm.tick()
+    const passivesLength = cm.passives.length
+    hs.die()
+    hs.respawn()
+    expect(cm.morale).to.be.lessThan(g.settings.moraleHighThreshold + 0.1)
+    expect(cm.passives.length).to.be.lessThanOrEqual(passivesLength)
+  })
 })

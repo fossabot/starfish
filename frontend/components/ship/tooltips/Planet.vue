@@ -2,9 +2,7 @@
   <div class="planetview">
     <ShipTooltipsHeader
       :name="dataToUse.name"
-      :bg="`/images/paneBackgrounds/${
-        dataToUse.planetType === 'basic' ? 5 : 19
-      }.webp`"
+      :bg="`/images/paneBackgrounds/${dataToUse.planetType === 'basic' ? 5 : 19}.webp`"
       :tagline="c.getPlanetTitle(dataToUse)"
       :color="dataToUse.color"
       :guilds="alliedGuildIds"
@@ -29,9 +27,7 @@
       <div v-if="dataToUse.planetType === 'mining'">
         <div v-if="dataToUse.mine && dataToUse.mine.length" class="marbottiny">
           <div class="bold">
-            {{
-              c.printList(dataToUse.mine.map((cargo) => c.cargo[cargo.id].name))
-            }}
+            {{ c.printList(dataToUse.mine.map((cargo) => c.cargo[cargo.id].name)) }}
           </div>
           mining colony
         </div>
@@ -44,7 +40,9 @@
 
       <template v-if="dataToUse.planetType === 'basic'">
         <div
-          v-if="dataToUse.repairFactor"
+          v-if="
+            dataToUse.passives && dataToUse.passives.find((p) => p.id === 'autoRepair')
+          "
           class="success flexbetween marbottiny"
         >
           <div class="fade">Repair Field</div>
@@ -53,19 +51,14 @@
 
         <div
           v-if="
-            dataToUse.vendor &&
-            dataToUse.vendor.cargo &&
-            dataToUse.vendor.cargo.length
+            dataToUse.vendor && dataToUse.vendor.cargo && dataToUse.vendor.cargo.length
           "
           class="flexbetween marbottiny"
         >
           <div class="marrightsmall fade">Cargo</div>
           <div class="textright">
             <div v-if="showCargoPrices">
-              <div
-                v-for="cargo in dataToUse.vendor.cargo"
-                :key="cargo.id + 'tooltipbuy'"
-              >
+              <div v-for="cargo in dataToUse.vendor.cargo" :key="cargo.id + 'tooltipbuy'">
                 {{ c.cargo[cargo.id].name }}
                 <span class="small">
                   <span class="sub"
@@ -78,18 +71,16 @@
                             dataToUse,
                             ship.guildId,
                             1,
-                            charismaLevel,
-                          ).credits || 0) <
-                          (c.cargo[cargo.id].basePrice.credits || 0),
+                            charismaLevel
+                          ).credits || 0) < (c.cargo[cargo.id].basePrice.credits || 0),
                         warning:
                           (c.getCargoBuyPrice(
                             cargo.id,
                             dataToUse,
                             ship.guildId,
                             1,
-                            charismaLevel,
-                          ).credits || 0) >
-                          (c.cargo[cargo.id].basePrice.credits || 0),
+                            charismaLevel
+                          ).credits || 0) > (c.cargo[cargo.id].basePrice.credits || 0),
                       }"
                       >{{
                         c.getCargoBuyPrice(
@@ -97,7 +88,7 @@
                           dataToUse,
                           ship.guildId,
                           1,
-                          charismaLevel,
+                          charismaLevel
                         ).credits
                       }}</span
                     >, S:
@@ -109,18 +100,16 @@
                             dataToUse,
                             ship.guildId,
                             1,
-                            charismaLevel,
-                          ).credits || 0) >
-                          (c.cargo[cargo.id].basePrice.credits || 0),
+                            charismaLevel
+                          ).credits || 0) > (c.cargo[cargo.id].basePrice.credits || 0),
                         warning:
                           (c.getCargoSellPrice(
                             cargo.id,
                             dataToUse,
                             ship.guildId,
                             1,
-                            charismaLevel,
-                          ).credits || 0) <
-                          (c.cargo[cargo.id].basePrice.credits || 0),
+                            charismaLevel
+                          ).credits || 0) < (c.cargo[cargo.id].basePrice.credits || 0),
                       }"
                       >{{
                         c.getCargoSellPrice(
@@ -128,7 +117,7 @@
                           dataToUse,
                           ship.guildId,
                           1,
-                          charismaLevel,
+                          charismaLevel
                         ).credits
                       }}</span
                     >)
@@ -138,9 +127,7 @@
             </div>
             <div v-else>
               {{
-                c.printList(
-                  dataToUse.vendor.cargo.map((cargo) => c.cargo[cargo.id].name),
-                )
+                c.printList(dataToUse.vendor.cargo.map((cargo) => c.cargo[cargo.id].name))
               }}
             </div>
           </div>
@@ -148,9 +135,7 @@
 
         <div
           v-if="
-            dataToUse.vendor &&
-            dataToUse.vendor.items &&
-            dataToUse.vendor.items.length
+            dataToUse.vendor && dataToUse.vendor.items && dataToUse.vendor.items.length
           "
           class="flexbetween marbottiny"
         >
@@ -194,10 +179,8 @@
         <div
           v-if="
             dataToUse.vendor &&
-            ((dataToUse.vendor.shipCosmetics &&
-              dataToUse.vendor.shipCosmetics.length) ||
-              (dataToUse.vendor.crewCosmetics &&
-                dataToUse.vendor.crewCosmetics.length))
+            ((dataToUse.vendor.shipCosmetics && dataToUse.vendor.shipCosmetics.length) ||
+              (dataToUse.vendor.crewCosmetics && dataToUse.vendor.crewCosmetics.length))
           "
           class="flexbetween marbottiny"
         >
@@ -207,9 +190,7 @@
               (dataToUse.vendor.shipCosmetics
                 ? dataToUse.vendor.shipCosmetics.length
                 : 0) +
-              (dataToUse.vendor.crewCosmetics
-                ? dataToUse.vendor.crewCosmetics.length
-                : 0)
+              (dataToUse.vendor.crewCosmetics ? dataToUse.vendor.crewCosmetics.length : 0)
             }}
             for sale
           </div>
@@ -225,8 +206,7 @@
 
         <div
           v-if="
-            dataToUse.bank ||
-            (ship && ship.banked.find((b) => b.id === dataToUse.id))
+            dataToUse.bank || (ship && ship.banked.find((b) => b.id === dataToUse.id))
           "
           class="flexbetween marbottiny"
         >
@@ -234,10 +214,8 @@
           <div>
             {{
               ship && ship.banked.find((b) => b.id === dataToUse.id)
-                ? `💳${
-                    ship.banked.find((b) => b.id === dataToUse.id).amount
-                  } stored`
-                : 'available'
+                ? `💳${ship.banked.find((b) => b.id === dataToUse.id).amount} stored`
+                : "available"
             }}
           </div>
         </div>
@@ -256,63 +234,60 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import c from '../../../../common/dist'
-import { mapState } from 'vuex'
+import Vue from "vue";
+import c from "../../../../common/dist";
+import { mapState } from "vuex";
 
 export default Vue.extend({
   props: { data: {} },
   data() {
-    return { c }
+    return { c };
   },
   computed: {
-    ...mapState(['ship', 'crewMember']),
+    ...mapState(["ship", "crewMember"]),
     dataToUse(): PlanetStub {
       return (
-        this.ship?.seenPlanets?.find((p) => p.id === (this.data as any).id) ||
-        this.data
-      )
+        this.ship?.seenPlanets?.find((p) => p.id === (this.data as any).id) || this.data
+      );
     },
     charismaLevel(): number {
       const passiveBoost = this.crewMember.passives.reduce(
         (acc: number, p: CrewPassiveData) =>
-          acc + (p.id === 'boostCharisma' ? p.intensity || 0 : 0),
-        0,
-      )
+          acc + (p.id === "boostCharisma" ? p.intensity || 0 : 0),
+        0
+      );
       return (
-        (this.crewMember.skills.find((s) => s.skill === 'charisma')?.level ||
-          1) + passiveBoost
-      )
+        (this.crewMember.skills.find((s) => s.skill === "charisma")?.level || 1) +
+        passiveBoost
+      );
     },
     alliedGuildIds(): string[] {
-      const ids: Set<string> = new Set()
+      const ids: Set<string> = new Set();
       if (this.dataToUse.guildId) {
-        ids.add(this.dataToUse.guildId)
+        ids.add(this.dataToUse.guildId);
       }
       if (this.dataToUse.allegiances) {
         this.dataToUse.allegiances.forEach((a) => {
-          if (a.level >= c.guildAllegianceFriendCutoff) ids.add(a.guildId)
-        })
+          if (a.level >= c.guildAllegianceFriendCutoff) ids.add(a.guildId);
+        });
       }
 
-      return Array.from(ids)
+      return Array.from(ids);
     },
     showCargoPrices(): boolean {
       return (
-        !!(this.ship as ShipStub)?.passives?.find(
-          (p) => p.id === 'visibleCargoPrices',
-        ) ||
+        !!(this.ship as ShipStub)?.passives?.find((p) => p.id === "visibleCargoPrices") ||
         !!(
           (this.ship as ShipStub)?.passives?.find(
-            (p) => p.id === 'broadcastRangeCargoPrices',
+            (p) => p.id === "broadcastRangeCargoPrices"
           ) &&
           c.distance((this.data as PlanetStub).location, this.ship.location) <
             ((this.ship as ShipStub).radii?.broadcast || 0)
         )
-      )
+      );
     },
   },
-})
+});
 </script>
 
 <style scoped lang="scss">

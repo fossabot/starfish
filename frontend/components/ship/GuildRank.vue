@@ -5,9 +5,7 @@
     :highlight="highlight"
     bgImage="/images/paneBackgrounds/12.webp"
   >
-    <template #title>
-      <span class="sectionemoji">🏆</span>Guild Rankings
-    </template>
+    <template #title> <span class="sectionemoji">🏆</span>Guild Rankings </template>
 
     <Tabs>
       <Tab
@@ -38,7 +36,7 @@
         </div>
         <div v-if="ranking.top" class="martop">
           <h5 class="sub">
-            Top {{ ranking.category === 'control' ? 'Factions' : 'Ships' }}
+            Top {{ ranking.category === "control" ? "Factions" : "Ships" }}
           </h5>
           <ol>
             <li
@@ -84,16 +82,15 @@
                     {{
                       c.numberWithCommas(
                         c.r2(
-                          ranking.category === 'netWorth'
-                            ? ship.stats.find((s) => s.stat === 'netWorth')
-                              ? ship.stats.find((s) => s.stat === 'netWorth')
-                                  .amount
+                          ranking.category === "netWorth"
+                            ? ship.stats.find((s) => s.stat === "netWorth")
+                              ? ship.stats.find((s) => s.stat === "netWorth").amount
                               : 0
-                            : ranking.category === 'members'
+                            : ranking.category === "members"
                             ? ship.crewMembers.length
                             : 0,
-                          0,
-                        ),
+                          0
+                        )
                       )
                     }}
                   </div>
@@ -108,42 +105,46 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import c from '../../../common/dist'
-import { mapState } from 'vuex'
+import Vue from "vue";
+import c from "../../../common/dist";
+import { mapState } from "vuex";
 
 export default Vue.extend({
   props: { loadSelf: { type: Boolean, default: false } },
   data() {
-    return { c, loadedRankings: {} }
+    return { c, loadedRankings: {} };
   },
   computed: {
-    ...mapState(['userId', 'ship', 'crewMember']),
+    ...mapState(["userId", "ship", "crewMember"]),
     show(): boolean {
-      return true
+      return (
+        (this as any).$route.path !== "/s" ||
+        !this.ship ||
+        !this.ship.tutorial?.currentStep
+      );
     },
     highlight(): boolean {
-      return this.ship?.tutorial?.currentStep?.highlightPanel === 'guildRank'
+      return this.ship?.tutorial?.currentStep?.highlightPanel === "guildRank";
     },
     rankings(): any {
-      return this.ship?.guildRankings || this.loadedRankings
+      return this.ship?.guildRankings || this.loadedRankings;
     },
   },
   watch: {},
   mounted() {
-    if (this.loadSelf) this.loadRankings()
+    if (this.loadSelf) this.loadRankings();
   },
   methods: {
     async loadRankings() {
       await new Promise(async (r) => {
-        ;(this as any).$socket?.emit('game:guildRankings', (res) => {
-          if ('error' in res) return
-          this.loadedRankings = res.data
-        })
-      })
+        (this as any).$socket?.emit("game:guildRankings", (res) => {
+          if ("error" in res) return;
+          this.loadedRankings = res.data;
+        });
+      });
     },
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>

@@ -101,7 +101,7 @@ export class Game {
 
         const savedGameData = await this.db.game.get()
         if (savedGameData) {
-          c.log(`gray`, `Loaded game data: `, savedGameData)
+          c.log(`gray`, `Loaded game data`)
           for (let key of Object.keys(savedGameData))
             this[key] = savedGameData[key]
 

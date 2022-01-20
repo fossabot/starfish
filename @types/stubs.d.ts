@@ -103,9 +103,7 @@ interface CrewMemberStub extends BaseStub {
   attackTargetId: string
   attackGuilds?: GuildId[]
   targetLocation: CoordinatePair | false
-  targetObject?:
-    | { id: string; type: string; location: CoordinatePair }
-    | false
+  targetObject?: { id: string; type: string; location: CoordinatePair } | false
   repairPriority: RepairPriority
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
@@ -139,6 +137,7 @@ interface PlanetStub extends BaseStub {
   velocity?: CoordinatePair
   speed?: number
   direction?: number
+  pacifist?: boolean
 }
 interface PlanetLogStub extends BaseStub {
   type: `planet`

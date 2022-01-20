@@ -35,11 +35,7 @@
         v-html="filteredPlanetData"
       ></div>
     </div>
-    <AdminShipCrewMemberBrowser
-      class=""
-      :text="displayPlanetData"
-      @reload="getPlanetData(selectedPlanetId)"
-    />
+    <AdminShipCrewMemberBrowser class="" :text="displayPlanetData" />
   </div>
 </template>
 
