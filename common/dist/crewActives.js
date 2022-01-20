@@ -287,9 +287,23 @@ exports.crewActives = {
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
         duration: 1000 * 60 * 60 * 10,
     },
+    attacksSlow: {
+        id: `attacksSlow`,
+        displayName: `Bola Strike`,
+        description: function (a, level) {
+            return `For ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}, hits on enemies will slow them by ${this.displayIntensity(a.intensity, level)}%.`;
+        },
+        notify: true,
+        intensityAdapter: (i) => i * 0.5,
+        displayIntensity: function (i, level = 0) {
+            return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
+        },
+        cooldown: 5 * exports.crewActiveBaseGlobalCooldown,
+        duration: 1000 * 60 * 60 * 3,
+    },
     boostDamageToEngines: {
         id: `boostDamageToEngines`,
-        displayName: `Bola Strike`,
+        displayName: `Destabilizer`,
         description: function (a, level) {
             return `Increase all damage dealt to enemy engines by ${this.displayIntensity(a.intensity, level)}% for ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`;
         },

@@ -61,7 +61,7 @@ export default Vue.extend({
 }
 
 .preview {
-  padding: 15%;
+  padding: 10%;
   margin: 0;
   position: relative;
   width: 100%;

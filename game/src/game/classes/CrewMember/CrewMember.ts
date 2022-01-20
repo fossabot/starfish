@@ -199,6 +199,10 @@ export class CrewMember extends Stubbable {
     //   id: `seeTrailColors`,
     //   intensity: 0.2,
     // })
+    this.addActive({
+      id: `attacksSlow`,
+      intensity: 0.2,
+    })
     // this.addActive({
     //   id: `boostDamageToEngines`,
     //   intensity: 0.2,
@@ -303,6 +307,7 @@ export class CrewMember extends Stubbable {
   bunkAction = roomActions.bunk
   mineAction = roomActions.mine
   labAction = roomActions.lab
+  loungeAction = roomActions.lounge
 
   tick() {
     this._stub = null // invalidate stub
@@ -394,6 +399,8 @@ export class CrewMember extends Stubbable {
     else if (this.location === `mine`) this.mineAction()
     // ----- lab -----
     else if (this.location === `lab`) this.labAction()
+    // ----- lounge -----
+    else if (this.location === `lounge`) this.loungeAction()
 
     // ----- add endurance xp -----
     this.addXp(
@@ -506,7 +513,7 @@ export class CrewMember extends Stubbable {
   removeActive = removeActive
 
   /**
-   * @param amount morale to add, or negative to subtract
+   * @param amount morale to add, or negative to subtract. Morale goes from 0 to 1.
    */
   changeMorale(amount: number) {
     if (Math.abs(amount) < 0.00000000001) return

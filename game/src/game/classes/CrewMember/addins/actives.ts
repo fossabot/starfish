@@ -191,6 +191,19 @@ const effects: {
       duration,
     )}!`
   },
+  attacksSlow: (cm, a, d, displayIntensity, baseIntensity) => {
+    const duration = d.duration || 1000 * 60 * 60 * 1
+    applyTimedShipPassiveFromActive(
+      `attacksSlow`,
+      baseIntensity,
+      duration,
+      a,
+      cm,
+    )
+    return `For ${c.msToTimeString(
+      duration,
+    )}, hits slow enemies by ${displayIntensity}%!`
+  },
   boostDamageToEngines: (cm, a, d, displayIntensity, baseIntensity) => {
     const duration = d.duration || 1000 * 60 * 60 * 1
     applyTimedShipPassiveFromActive(

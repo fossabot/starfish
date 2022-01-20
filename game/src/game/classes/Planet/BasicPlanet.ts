@@ -166,15 +166,15 @@ export class BasicPlanet extends Planet {
         value: `boostStaminaRegeneration`,
       },
       {
-        weight: shipPassiveMultiplier * 1.01,
+        weight: 1.01 * shipPassiveMultiplier,
         value: `boostBroadcastRange`,
       },
       {
-        weight: shipPassiveMultiplier * 1.01,
+        weight: 1.01 * shipPassiveMultiplier,
         value: `boostRepairSpeed`,
       },
       {
-        weight: shipPassiveMultiplier * 1.01,
+        weight: 1.01 * shipPassiveMultiplier,
         value: `boostCockpitChargeSpeed`,
       },
     ]

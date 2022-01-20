@@ -417,6 +417,10 @@ export abstract class CombatShip extends Ship {
     if (`use` in weapon)
       this.crewMembers.forEach((cm) => cm.changeMorale(miss ? 0.001 : 0.03))
 
+    const slowingFactor =
+      this.getPassiveIntensity(`attacksSlow`) +
+      (weapon.slowingFactor || 0) * (weapon.repair ?? 1)
+
     if (attackResult.miss)
       this.logEntry(
         [
@@ -473,7 +477,7 @@ export abstract class CombatShip extends Ship {
             tooltipData: {
               type: `damage`,
               ...attackResult,
-              slowedBy: (weapon.slowingFactor || 0) * (weapon?.repair ?? 1),
+              slowedBy: slowingFactor,
               overkill: attackResult.didDie
                 ? damage - attackResult.damageTaken
                 : undefined,
@@ -804,11 +808,16 @@ export abstract class CombatShip extends Ship {
     this.toUpdate.items = this.items.map((i) => i.stubify())
 
     // ----- slow down if weapon had slowing factor -----
-    let slowedPercent = 0
+    let slowedPercent = attacker.getPassiveIntensity?.(`attacksSlow`) || 0
     if (attack.weapon?.slowingFactor) {
-      slowedPercent = attack.weapon.slowingFactor * (attack.weapon?.repair ?? 1)
+      slowedPercent +=
+        attack.weapon.slowingFactor * (attack.weapon?.repair ?? 1)
+    }
+    if (slowedPercent > 0) {
       this.velocity[0] *= 1 - slowedPercent
       this.velocity[1] *= 1 - slowedPercent
+      this.toUpdate.velocity = this.velocity
+      this.toUpdate.speed = c.vectorToMagnitude(this.velocity)
     }
 
     const didDie = previousHp > 0 && this.hp <= 0
@@ -826,7 +835,7 @@ export abstract class CombatShip extends Ship {
         didDie
           ? `dies ☠️`
           : `has ${c.r2(this.hp * c.displayHPMultiplier)} hp left`
-      }.`,
+      }.` + (slowedPercent ? ` Slowed by ${c.r2(slowedPercent * 100)}%` : ``),
     )
 
     this.toUpdate._hp = this.hp

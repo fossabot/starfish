@@ -13,6 +13,7 @@ declare const _default: {
         weapons: BaseRoomData;
         mine: BaseRoomData;
         lab: BaseRoomData;
+        lounge: BaseRoomData;
     };
     crewPassives: {
         boostBrake: CrewPassiveData;
@@ -25,6 +26,7 @@ declare const _default: {
         boostWeaponChargeSpeed: CrewPassiveData;
         boostXpGain: CrewPassiveData;
         boostStaminaRegeneration: CrewPassiveData;
+        boostMoraleGain: CrewPassiveData;
         boostStrength: CrewPassiveData;
         boostDexterity: CrewPassiveData;
         boostIntellect: CrewPassiveData;
@@ -164,6 +166,12 @@ declare const _default: {
         broadcastRangeCargoPrices: {
             description: (p: ShipPassiveEffect) => string;
         };
+        boostMoraleGain: {
+            description: (p: ShipPassiveEffect) => string;
+        };
+        attacksSlow: {
+            description: (p: ShipPassiveEffect) => string;
+        };
     };
     loadouts: {
         tutorial1: Loadout;
@@ -188,6 +196,7 @@ declare const _default: {
         flatDamageReduction: CrewActiveData;
         boostChassisAgility: CrewActiveData;
         broadcastRangeCargoPrices: CrewActiveData;
+        attacksSlow: CrewActiveData;
         instantStamina: CrewActiveData;
         cargoSweep: CrewActiveData;
         boostShipSightRange: CrewActiveData;
@@ -295,6 +304,7 @@ declare const _default: {
     itemMassMultiplier: number;
     weaponDamageMultiplier: number;
     displayHPMultiplier: number;
+    loungeMoraleGainBasisPerTick: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     zoneExpireTime: number;

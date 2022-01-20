@@ -1520,25 +1520,30 @@ export class HumanShip extends CombatShip {
       //     `${this.name} landed at ${this.planet.name}`,
       //   )
 
-      this.crewMembers.forEach((cm) =>
-        cm.changeMorale(((this.planet as BasicPlanet).level || 1) * 0.01),
-      )
-      if (this.planet.planetType === `comet`)
-        this.crewMembers.forEach((cm) => cm.changeMorale(0.3))
+      // don't take some actions on game load
+      if ((this.game?.tickCount || 0) > 1) {
+        this.crewMembers.forEach((cm) =>
+          cm.changeMorale(((this.planet as BasicPlanet).level || 1) * 0.01),
+        )
+        if (this.planet.planetType === `comet`)
+          this.crewMembers.forEach((cm) => cm.changeMorale(0.3))
 
-      this.hardStop()
-      this.planet.rooms.forEach((r) => this.addRoom(r))
-      this.planet.passives.forEach((p) => this.applyPassive(p))
-      this.planet.addStat(`shipsLanded`, 1)
-      this.checkAchievements(`land`)
+        this.planet.addStat(`shipsLanded`, 1)
+        this.hardStop()
+        this.checkAchievements(`land`)
+
+        this.membersIn(`cockpit`).forEach((cm) => {
+          cm.targetLocation = false
+          cm.toUpdate.targetLocation = false
+        })
+      }
+
       for (let co of [...this.contracts]) {
         this.checkTurnInContract(co)
       }
 
-      this.membersIn(`cockpit`).forEach((cm) => {
-        cm.targetLocation = false
-        cm.toUpdate.targetLocation = false
-      })
+      this.planet.rooms.forEach((r) => this.addRoom(r))
+      this.planet.passives.forEach((p) => this.applyPassive(p))
     } else if (previousPlanet) {
       // c.log(
       //   `gray`,
@@ -2021,11 +2026,10 @@ export class HumanShip extends CombatShip {
 
   resolveRooms() {
     this.rooms = {}
-    let roomsToAdd: Set<CrewLocation> = new Set()
+    const roomsToAdd: Set<CrewLocation> = new Set()
     if (this.tutorial)
       this.tutorial.currentStep?.shownRooms?.forEach((r) => roomsToAdd.add(r))
     else {
-      roomsToAdd = new Set()
       this.chassis.rooms?.forEach((r) => roomsToAdd.add(r))
       this.items.forEach((item) => {
         item.rooms.forEach((i) => roomsToAdd.add(i))

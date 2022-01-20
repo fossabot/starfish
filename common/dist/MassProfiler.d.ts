@@ -25,4 +25,4 @@ export declare class MassProfiler {
 }
 declare const massProfiler: MassProfiler;
 export default massProfiler;
-//# sourceMappingURL=MassProfiler.d.ts.map
+//# sourceMappingURL=massProfiler.d.ts.map

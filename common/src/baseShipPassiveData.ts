@@ -8,8 +8,7 @@ const baseShipPassiveData: {
   }
 } = {
   visibleCargoPrices: {
-    description: (p: ShipPassiveEffect) =>
-      `Planet cargo prices always visible`,
+    description: (p: ShipPassiveEffect) => `Planet cargo prices always visible`,
   },
   broadcastRangeCargoPrices: {
     description: (p: ShipPassiveEffect) =>
@@ -28,8 +27,7 @@ const baseShipPassiveData: {
       } damage dealt`,
   },
   alwaysSeeTrailColors: {
-    description: (p: ShipPassiveEffect) =>
-      `Trail colors always visible`,
+    description: (p: ShipPassiveEffect) => `Trail colors always visible`,
   },
   boostDamageWhenNoAlliesWithinDistance: {
     description: (p: ShipPassiveEffect) =>
@@ -77,25 +75,19 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         Math.abs(p.intensity || 1) * 100,
-      )}% ${
-        (p.intensity || 1) >= 0 ? `faster` : `slower`
-      } repairs`,
+      )}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} repairs`,
   },
   boostMineSpeed: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         Math.abs(p.intensity || 1) * 100,
-      )}% ${
-        (p.intensity || 1) >= 0 ? `faster` : `slower`
-      } mining`,
+      )}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} mining`,
   },
   boostMinePayouts: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         Math.abs(p.intensity || 1) * 100,
-      )}% ${
-        (p.intensity || 1) >= 0 ? `higher` : `lower`
-      } mining payouts`,
+      )}% ${(p.intensity || 1) >= 0 ? `higher` : `lower`} mining payouts`,
   },
   boostScanRange: {
     description: (p) =>
@@ -149,9 +141,7 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         Math.abs(p.intensity || 1) * 100,
-      )}% ${
-        (p.intensity || 1) >= 0 ? `faster` : `slower`
-      } XP gain`,
+      )}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} XP gain`,
   },
   disguiseChassisType: {
     description: (p) => `Chassis type hidden`,
@@ -163,9 +153,7 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         p.intensity || 1,
-      )} item slot${
-        Math.round(p.intensity || 1) === 1 ? `` : `s`
-      }`,
+      )} item slot${Math.round(p.intensity || 1) === 1 ? `` : `s`}`,
   },
   boostDamageToItemType: {
     description: (p) =>
@@ -177,11 +165,7 @@ const baseShipPassiveData: {
     description: (p) =>
       `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
         Math.abs(p.intensity || 1) * 100,
-      )}% damage ${
-        (p.intensity || 1) >= 0
-          ? `reduction`
-          : `taken increase`
-      }`,
+      )}% damage ${(p.intensity || 1) >= 0 ? `reduction` : `taken increase`}`,
   },
   flatDamageReduction: {
     description: (p) =>
@@ -189,9 +173,7 @@ const baseShipPassiveData: {
         Math.abs(p.intensity || 1),
         0,
       )} HP flat damage ${
-        (p.intensity || 1) >= 0
-          ? `reduction`
-          : `taken increase`
+        (p.intensity || 1) >= 0 ? `reduction` : `taken increase`
       }`,
   },
   flatSkillBoost: {
@@ -210,16 +192,21 @@ const baseShipPassiveData: {
   },
   autoRepair: {
     description: (p) =>
-      `${
-        (p.intensity || 1) >= 0 ? `+` : ``
-      }${text.numberWithCommas(
-        math.r2(p.intensity || 1) *
-          constants.displayHPMultiplier,
-      )}HP/hr ${
-        (p.intensity || 1) >= 0
-          ? `auto-repair`
-          : `damage over time`
-      }`,
+      `${(p.intensity || 1) >= 0 ? `+` : ``}${text.numberWithCommas(
+        math.r2(p.intensity || 1) * constants.displayHPMultiplier,
+      )}HP/hr ${(p.intensity || 1) >= 0 ? `auto-repair` : `damage over time`}`,
+  },
+  boostMoraleGain: {
+    description: (p) =>
+      `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(
+        (p.intensity || 1) * 100,
+      )}% faster morale gain`,
+  },
+  attacksSlow: {
+    description: (p) =>
+      `Hits ${
+        (p.intensity || 1) >= 0 ? `slow` : `speed up`
+      } enemies by ${Math.round((p.intensity || 1) * 100)}%`,
   },
 }
 export default baseShipPassiveData

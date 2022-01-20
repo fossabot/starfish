@@ -71,6 +71,8 @@ const baseItemSellMultiplier = 0.6
 
 const noEngineThrustMagnitude = 0.02
 
+const loungeMoraleGainBasisPerTick = 0.00003
+
 const planetContributeCostPerXp = 1
 const planetContributeShipCosmeticCostPerXp = 0.00005
 const planetContributeCrewCosmeticCostPerXp = 0.05
@@ -182,6 +184,8 @@ export default {
   weaponDamageMultiplier,
 
   displayHPMultiplier,
+
+  loungeMoraleGainBasisPerTick,
 
   attackRemnantExpireTime,
   cacheExpireTime,

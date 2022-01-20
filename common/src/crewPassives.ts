@@ -38,12 +38,8 @@ const data: {
     description: (data: CrewPassiveData, verbose = false) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } personal cargo capacity by ${math.r2(
-        data.intensity || 0,
-      )} tons` +
-      (verbose
-        ? ` (if your ship's chassis can support it)`
-        : ``),
+      } personal cargo capacity by ${math.r2(data.intensity || 0)} tons` +
+      (verbose ? ` (if your ship's chassis can support it)` : ``),
   },
 
   boostActiveSlots: {
@@ -62,9 +58,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } active slot count by ${math.r2(
-        data.intensity || 0,
-      )}`,
+      } active slot count by ${math.r2(data.intensity || 0)}`,
   },
 
   boostSkillLevel: {
@@ -82,9 +76,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } engine charge speed by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } engine charge speed by ${math.r2((data.intensity || 0) * 100)}%`,
   },
   boostPassiveThrust: {
     displayName: `Pectoral Fins`,
@@ -92,9 +84,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } auto-nav power by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } auto-nav power by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostBrake: {
@@ -103,9 +93,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } brake power by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } brake power by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostBroadcastRange: {
@@ -114,9 +102,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } personal broadcast range by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } personal broadcast range by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostDropAmounts: {
@@ -125,9 +111,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } your share of drop amounts by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } your share of drop amounts by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostMineSpeed: {
@@ -136,9 +120,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } mine speed by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } mine speed by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostRepairSpeed: {
@@ -147,9 +129,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } repair speed by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } repair speed by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   reduceStaminaDrain: {
@@ -158,9 +138,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Reduce` : `Boost`
-      } stamina drain by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } stamina drain by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostStaminaRegeneration: {
@@ -169,18 +147,16 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } stamina regeneration by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } stamina regeneration by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostThrust: {
     displayName: `Hydrodynamics`,
     id: `boostThrust`,
     description: (data: CrewPassiveData) =>
-      `${
-        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } thrust by ${math.r2((data.intensity || 0) * 100)}%`,
+      `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} thrust by ${math.r2(
+        (data.intensity || 0) * 100,
+      )}%`,
   },
 
   boostWeaponChargeSpeed: {
@@ -189,18 +165,14 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } weapon charge speed by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } weapon charge speed by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   boostXpGain: {
     displayName: `Developed Cerebrum`,
     id: `boostXpGain`,
     description: (data: CrewPassiveData) =>
-      `${
-        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } xp gain by ${math.r2(
+      `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} xp gain by ${math.r2(
         (data.intensity || 0) * 100,
       )}%`,
   },
@@ -211,9 +183,7 @@ const data: {
     description: (data: CrewPassiveData) =>
       `${
         (data.intensity || 1) >= 0 ? `Reduce` : `Boost`
-      } item damage on use by ${math.r2(
-        (data.intensity || 0) * 100,
-      )}%`,
+      } item damage on use by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 
   generalImprovementPerCrewMemberInSameRoom: {
@@ -240,17 +210,17 @@ const data: {
     displayName: `Charisma Boost`,
     id: `boostCharisma`,
     description: (data: CrewPassiveData) =>
-      `${
-        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } charisma by ${math.r2(data.intensity || 0)}`,
+      `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} charisma by ${math.r2(
+        data.intensity || 0,
+      )}`,
   },
   boostStrength: {
     displayName: `Strength Boost`,
     id: `boostStrength`,
     description: (data: CrewPassiveData) =>
-      `${
-        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
-      } strength by ${math.r2(data.intensity || 0)}`,
+      `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} strength by ${math.r2(
+        data.intensity || 0,
+      )}`,
   },
   boostDexterity: {
     displayName: `Dexterity Boost`,
@@ -275,6 +245,14 @@ const data: {
       `${
         (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
       } endurance by ${math.r2(data.intensity || 0)}`,
+  },
+  boostMoraleGain: {
+    displayName: `Attitude Adjustment`,
+    id: `boostMoraleGain`,
+    description: (data: CrewPassiveData) =>
+      `${
+        (data.intensity || 1) >= 0 ? `Boost` : `Reduce`
+      } morale gain by ${math.r2((data.intensity || 0) * 100)}%`,
   },
 }
 export default data

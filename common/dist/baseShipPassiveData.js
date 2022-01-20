@@ -89,14 +89,10 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 0) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% damage dealt to ${p.data?.type}s`,
     },
     scaledDamageReduction: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% damage ${(p.intensity || 1) >= 0
-            ? `reduction`
-            : `taken increase`}`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(Math.abs(p.intensity || 1) * 100)}% damage ${(p.intensity || 1) >= 0 ? `reduction` : `taken increase`}`,
     },
     flatDamageReduction: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${math_1.default.r2(Math.abs(p.intensity || 1), 0)} HP flat damage ${(p.intensity || 1) >= 0
-            ? `reduction`
-            : `taken increase`}`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${math_1.default.r2(Math.abs(p.intensity || 1), 0)} HP flat damage ${(p.intensity || 1) >= 0 ? `reduction` : `taken increase`}`,
     },
     flatSkillBoost: {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round(p.intensity || 1)} crew skill levels`,
@@ -105,10 +101,13 @@ const baseShipPassiveData = {
         description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% ${(p.intensity || 1) >= 0 ? `faster` : `slower`} stamina regeneration`,
     },
     autoRepair: {
-        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${text_1.default.numberWithCommas(math_1.default.r2(p.intensity || 1) *
-            gameConstants_1.default.displayHPMultiplier)}HP/hr ${(p.intensity || 1) >= 0
-            ? `auto-repair`
-            : `damage over time`}`,
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${text_1.default.numberWithCommas(math_1.default.r2(p.intensity || 1) * gameConstants_1.default.displayHPMultiplier)}HP/hr ${(p.intensity || 1) >= 0 ? `auto-repair` : `damage over time`}`,
+    },
+    boostMoraleGain: {
+        description: (p) => `${(p.intensity || 1) >= 0 ? `+` : ``}${Math.round((p.intensity || 1) * 100)}% faster morale gain`,
+    },
+    attacksSlow: {
+        description: (p) => `Hits ${(p.intensity || 1) >= 0 ? `slow` : `speed up`} enemies by ${Math.round((p.intensity || 1) * 100)}%`,
     },
 };
 exports.default = baseShipPassiveData;

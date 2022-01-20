@@ -130,4 +130,4 @@ class MassProfiler {
 exports.MassProfiler = MassProfiler;
 const massProfiler = new MassProfiler();
 exports.default = massProfiler;
-//# sourceMappingURL=MassProfiler.js.map
+//# sourceMappingURL=massProfiler.js.map

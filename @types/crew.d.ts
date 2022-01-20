@@ -1,4 +1,11 @@
-type CrewLocation = `bunk` | `cockpit` | `repair` | `weapons` | `mine` | `lab`
+type CrewLocation =
+  | `bunk`
+  | `cockpit`
+  | `repair`
+  | `weapons`
+  | `mine`
+  | `lab`
+  | `lounge`
 interface BaseRoomData {
   id: CrewLocation
   description: string
@@ -112,6 +119,7 @@ type CrewPassiveId =
   | `boostCharisma`
   | `boostEndurance`
   | `boostActiveSlots`
+  | `boostMoraleGain`
 interface CrewPassiveData {
   id: CrewPassiveId
   intensity?: number
@@ -174,6 +182,7 @@ type CrewActiveId =
   | `flatDamageReduction`
   | `boostChassisAgility`
   | `seeTrailColors`
+  | `attacksSlow`
   | `boostDamageToEngines`
   | `boostDamageToWeapons`
   | `boostDamageToScanners`
