@@ -1,5 +1,5 @@
 Hello again! Happy new year to every fish in the sea, and those in space too.
-It's been a little quiet around these parts, what with teavel and family and whatnot, but that doesn't mean nothing is in the works!
+It's been a little quiet around these parts, what with travel and family and whatnot, but that doesn't mean nothing is in the works!
 
 ## ▶️ Active Abilities
 
@@ -27,9 +27,18 @@ Morale is an individual metric that is gained and lost through various positive 
 
 Morale passively falls when offworld, and passively rises when planetside. Morale falls slower while sleeping.
 
+## ⚡️ Disable Animation Setting
+
+Mobile users! Those with a lower-spec computer! Rejoice! Your hour has come!
+
+There's a new settings pane in the left-side bar. In it, you'll find but a single option: Disable Animations.
+
+This will drastically improve performance in any computer/phone that has struggled to keep its frame rate up during gameplay.
+Go! Go and be free!
+
 ### Other minor changes
 
-- Added a frontend setting to disable animations for slower computers
+- Added glow around characters with high/low morale
 - Rebalanced armor to be slightly more effective for the weight cost
 - Skills required for Repairs and Weapons have been swapped
 - The starfish.cool website has been generally upgraded to look more like the game, go check it out!

@@ -19,15 +19,7 @@ export class Zone extends Stubbable {
   readonly color: string
 
   constructor(
-    {
-      location,
-      radius,
-      id,
-      color,
-      name,
-      effects,
-      spawnTime,
-    }: BaseZoneData,
+    { location, radius, id, color, name, effects, spawnTime }: BaseZoneData,
     game?: Game,
   ) {
     super()
@@ -45,26 +37,18 @@ export class Zone extends Stubbable {
     return (
       this.game?.humanShips.filter(
         (s) =>
-          !s.tutorial &&
-          c.distance(s.location, this.location) <=
-            this.radius,
+          !s.tutorial && c.distance(s.location, this.location) <= this.radius,
       ) || []
     )
   }
 
   shipEnter(ship: CombatShip) {
-    // c.log(`ship enter`, ship.name, this.name)
+    c.log(`ship enter`, ship.name, this.name)
     for (let effect of this.effects) {
       // wormhole
       if (effect.type === `wormhole`) {
-        ship.location = c.randomInsideCircle(
-          this.game?.gameSoftRadius || 1,
-        )
-        ship.logEntry(
-          `Warped across the universe!`,
-          `critical`,
-          `mystery`,
-        )
+        ship.location = c.randomInsideCircle(this.game?.gameSoftRadius || 1)
+        ship.logEntry(`Warped across the universe!`, `critical`, `mystery`)
 
         this.moveToRandomLocation()
         c.log(`Moved wormhole to ${this.location}`)
@@ -127,19 +111,14 @@ export class Zone extends Stubbable {
   affectShip(ship: CombatShip) {
     if (ship.planet) return
     for (let effect of this.effects) {
-      if (Math.random() / 10 > effect.procChancePerTick)
-        return
+      if (Math.random() / 10 > effect.procChancePerTick) return
 
       const proximityMod = effect.basedOnProximity
-        ? (c.distance(this.location, ship.location) /
-            this.radius) *
-          2 // if based on proximity, doubles at center
+        ? (c.distance(this.location, ship.location) / this.radius) * 2 // if based on proximity, doubles at center
         : 1 // otherwise always 1
 
       const intensity =
-        effect.intensity *
-        proximityMod *
-        c.randomBetween(0.5, 1.5)
+        effect.intensity * proximityMod * c.randomBetween(0.5, 1.5)
 
       // damage over time
       if (effect.type === `damage over time`) {
@@ -150,8 +129,7 @@ export class Zone extends Stubbable {
           const hitRoll = Math.random()
           if (hitRoll < 0.1) miss = true
           // random passive miss chance
-          else
-            miss = hitRoll < proximityMod / enemyAgility / 2
+          else miss = hitRoll < proximityMod / enemyAgility / 2
         }
         if (miss) return // * misses being announced was annoying and just noise
         ship.takeDamage(this, {
@@ -163,14 +141,9 @@ export class Zone extends Stubbable {
 
       // repair
       else if (effect.type === `repair over time`) {
-        const repairableItems = ship.items.filter(
-          (i) => i.repair <= 0.9995,
-        )
+        const repairableItems = ship.items.filter((i) => i.repair <= 0.9995)
         const amountToRepair =
-          (effect.intensity /
-            100 /
-            repairableItems.length) *
-          proximityMod
+          (effect.intensity / 100 / repairableItems.length) * proximityMod
         repairableItems.forEach((ri) => {
           ri.applyRepair(amountToRepair)
         })
@@ -185,14 +158,11 @@ export class Zone extends Stubbable {
             c.getStaminaGainPerTickForSingleCrewMember(
               this.game?.settings.baseStaminaUse ||
                 c.defaultGameSettings.baseStaminaUse,
-              this.game?.settings
-                .staminaRechargeMultiplier ||
-                c.defaultGameSettings
-                  .staminaRechargeMultiplier,
+              this.game?.settings.staminaRechargeMultiplier ||
+                c.defaultGameSettings.staminaRechargeMultiplier,
             ) * intensity
 
-          if (cm.stamina > cm.maxStamina)
-            cm.stamina = cm.maxStamina
+          if (cm.stamina > cm.maxStamina) cm.stamina = cm.maxStamina
 
           cm.toUpdate.stamina = cm.stamina
         })
@@ -205,23 +175,29 @@ export class Zone extends Stubbable {
         ship.velocity[0] *= accelerateMultiplier
         ship.velocity[1] *= accelerateMultiplier
         ship.toUpdate.velocity = ship.velocity
-        ship.toUpdate.speed = c.vectorToMagnitude(
-          ship.velocity,
-        )
+        ship.speed = c.vectorToMagnitude(ship.velocity)
+        ship.toUpdate.speed = ship.speed
       }
 
       // decelerate
       else if (effect.type === `decelerate`) {
-        if (ship.speed <= 0.01 * (effect.intensity + 0.5))
-          return // don't slow SO far down if already slow
-        const decelerateMultiplier =
-          1 - effect.intensity * proximityMod * 0.001
+        let effectiveIntensity = effect.intensity
+        if (
+          c.vectorToMagnitude(ship.velocity) <=
+          0.001 * (effect.intensity + 0.5)
+        )
+          effectiveIntensity *= 0.2 // don't slow SO far down if already slow
+
+        const decelerateMultiplier = c.clamp(
+          0.05,
+          1 - effectiveIntensity * proximityMod * 0.001,
+          1,
+        )
         ship.velocity[0] *= decelerateMultiplier
         ship.velocity[1] *= decelerateMultiplier
         ship.toUpdate.velocity = ship.velocity
-        ship.toUpdate.speed = c.vectorToMagnitude(
-          ship.velocity,
-        )
+        ship.speed = c.vectorToMagnitude(ship.velocity)
+        ship.toUpdate.speed = ship.speed
       }
 
       // current
@@ -238,9 +214,7 @@ export class Zone extends Stubbable {
             : 0)
         const newDirection =
           (ship.direction +
-            angleDifference *
-              (0.0000001 / newMagnitude) *
-              proximityMod) %
+            angleDifference * (0.0000001 / newMagnitude) * proximityMod) %
           360
         ship.speed = newMagnitude
         ship.direction = newDirection
@@ -256,28 +230,15 @@ export class Zone extends Stubbable {
   }
 
   moveToRandomLocation() {
-    for (let s of (this.game?.humanShips || []).filter(
-      (s) => s.seenLandmarks.includes(this),
+    for (let s of (this.game?.humanShips || []).filter((s) =>
+      s.seenLandmarks.includes(this),
     )) {
-      s.seenLandmarks.splice(
-        s.seenLandmarks.indexOf(this),
-        1,
-      )
-      s.toUpdate.seenLandmarks = s.seenLandmarks.map((z) =>
-        z.stubify(),
-      )
+      s.seenLandmarks.splice(s.seenLandmarks.indexOf(this), 1)
+      s.toUpdate.seenLandmarks = s.seenLandmarks.map((z) => z.stubify())
     }
-    const startingLocation: CoordinatePair = [
-      ...this.location,
-    ]
-    this.location = getValidZoneLocation(
-      this.radius,
-      this.game,
-    )
-    this.game?.chunkManager.addOrUpdate(
-      this,
-      startingLocation,
-    )
+    const startingLocation: CoordinatePair = [...this.location]
+    this.location = getValidZoneLocation(this.radius, this.game)
+    this.game?.chunkManager.addOrUpdate(this, startingLocation)
   }
 
   toVisibleStub() {

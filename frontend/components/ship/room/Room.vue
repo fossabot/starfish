@@ -1,21 +1,12 @@
 <template>
   <div class="room" v-if="show">
     <ShipRoomBunk v-if="crewMember.location === 'bunk'" />
-    <ShipRoomCockpit
-      v-else-if="crewMember.location === 'cockpit'"
-    />
-    <ShipRoomRepair
-      v-else-if="crewMember.location === 'repair'"
-    />
-    <ShipRoomWeapons
-      v-else-if="crewMember.location === 'weapons'"
-    />
-    <ShipRoomMine
-      v-else-if="crewMember.location === 'mine'"
-    />
-    <ShipRoomLab
-      v-else-if="crewMember.location === 'lab'"
-    />
+    <ShipRoomCockpit v-else-if="crewMember.location === 'cockpit'" />
+    <ShipRoomRepair v-else-if="crewMember.location === 'repair'" />
+    <ShipRoomWeapons v-else-if="crewMember.location === 'weapons'" />
+    <ShipRoomMine v-else-if="crewMember.location === 'mine'" />
+    <ShipRoomLab v-else-if="crewMember.location === 'lab'" />
+    <ShipRoomLounge v-else-if="crewMember.location === 'lounge'" />
   </div>
 </template>
 
@@ -33,8 +24,7 @@ export default Vue.extend({
       return (
         this.ship &&
         this.crewMember &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('room'))
+        (!this.ship.shownPanels || this.ship.shownPanels.includes('room'))
       )
     },
   },

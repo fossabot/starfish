@@ -42,14 +42,10 @@
         <ProgressBar
           class="marbotsmall"
           :color="'var(--stamina)'"
-          :percent="
-            crewMember.stamina / crewMember.maxStamina
-          "
+          :max="crewMember.maxStamina"
+          :percent="crewMember.stamina / crewMember.maxStamina"
           v-tooltip="
-            `<b>${c.r2(
-              crewMember.stamina * 100,
-              1,
-            )}</b> of <b>${c.r2(
+            `<b>${c.r2(crewMember.stamina * 100, 1)}</b> of <b>${c.r2(
               crewMember.maxStamina * 100,
               1,
             )}</b> max stamina.
@@ -57,34 +53,16 @@
             Use stamina to perform actions on the ship. You will automatically go to sleep when you run out of stamina.`
           "
         >
-          <div
-            class="
-              fullwidth
-              flexbetween
-              padtoptiny
-              padbottiny
-            "
-          >
+          <div class="fullwidth flexbetween padtoptiny padbottiny">
             <div>Stamina</div>
             <NumberChangeHighlighter
-              :raw="
-                crewMember.stamina / crewMember.maxStamina
-              "
+              :raw="crewMember.stamina / crewMember.maxStamina"
               :number="
-                c.r2(
-                  (crewMember.stamina /
-                    crewMember.maxStamina) *
-                    100,
-                  1,
-                )
+                c.r2((crewMember.stamina / crewMember.maxStamina) * 100, 1)
               "
               :display="
-                c.r2(
-                  (crewMember.stamina /
-                    crewMember.maxStamina) *
-                    100,
-                  1,
-                ) + '%'
+                c.r2((crewMember.stamina / crewMember.maxStamina) * 100, 1) +
+                '%'
               "
               :arrow="true"
             />
@@ -92,8 +70,7 @@
         </ProgressBar>
         <ProgressBar
           :color="
-            crewMember.morale >
-            ship.gameSettings.moraleHighThreshold
+            crewMember.morale > ship.gameSettings.moraleHighThreshold
               ? 'var(--success)'
               : 'rgba(255,255,255,0.7)'
           "
@@ -113,10 +90,7 @@
           <div
             class="moraleoverlay"
             :style="{
-              left:
-                ship.gameSettings.moraleHighThreshold *
-                  100 +
-                '%',
+              left: ship.gameSettings.moraleHighThreshold * 100 + '%',
               width: '100%',
               'border-left': '1px solid var(--success)',
             }"
@@ -133,9 +107,7 @@
             :style="{
               opacity: 0.7,
               left: 0,
-              width:
-                ship.gameSettings.moraleLowThreshold * 100 +
-                '%',
+              width: ship.gameSettings.moraleLowThreshold * 100 + '%',
               'border-right': '1px solid var(--warning)',
             }"
           >
@@ -147,24 +119,14 @@
             ></div>
           </div>
           <div
-            class="
-              fullwidth
-              flexbetween
-              padtoptiny
-              padbottiny
-            "
+            class="fullwidth flexbetween padtoptiny padbottiny"
             style="position: relative"
           >
             <div>Morale</div>
             <NumberChangeHighlighter
               :raw="crewMember.morale || 0"
-              :number="
-                c.r2((crewMember.morale || 0) * 100, 1)
-              "
-              :display="
-                c.r2((crewMember.morale || 0) * 100, 1) +
-                '%'
-              "
+              :number="c.r2((crewMember.morale || 0) * 100, 1)"
+              :display="c.r2((crewMember.morale || 0) * 100, 1) + '%'"
               :arrow="true"
             />
           </div>
@@ -195,15 +157,11 @@ export default Vue.extend({
       return (
         this.ship &&
         this.crewMember &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('crewMember'))
+        (!this.ship.shownPanels || this.ship.shownPanels.includes('crewMember'))
       )
     },
     highlight() {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'crewMember'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'crewMember'
     },
   },
   watch: {},

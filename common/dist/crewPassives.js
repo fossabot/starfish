@@ -34,9 +34,7 @@ const data = {
             wholeNumbersOnly: true,
         },
         description: (data, verbose = false) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} personal cargo capacity by ${math_1.default.r2(data.intensity || 0)} tons` +
-            (verbose
-                ? ` (if your ship's chassis can support it)`
-                : ``),
+            (verbose ? ` (if your ship's chassis can support it)` : ``),
     },
     boostActiveSlots: {
         displayName: `Active Slot Boost`,
@@ -157,6 +155,11 @@ const data = {
         displayName: `Endurance Boost`,
         id: `boostEndurance`,
         description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} endurance by ${math_1.default.r2(data.intensity || 0)}`,
+    },
+    boostMoraleGain: {
+        displayName: `Attitude Adjustment`,
+        id: `boostMoraleGain`,
+        description: (data) => `${(data.intensity || 1) >= 0 ? `Boost` : `Reduce`} morale gain by ${math_1.default.r2((data.intensity || 0) * 100)}%`,
     },
 };
 exports.default = data;

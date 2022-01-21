@@ -1,62 +1,39 @@
 <template>
-  <div
-    class="tooltipholder"
-    :style="tooltipStyle"
-    v-if="tooltip && !isMobile"
-  >
+  <div class="tooltipholder" :style="tooltipStyle" v-if="tooltip && !isMobile">
     <div class="hovertooltip">
       <template v-if="tooltip.type">
-        <ShipTooltipsImage
-          v-if="tooltip.type === 'image'"
-          :data="tooltip"
-        />
+        <ShipTooltipsImage v-if="tooltip.type === 'image'" :data="tooltip" />
         <ShipTooltipsContract
-          v-if="tooltip.type === 'contract'"
+          v-else-if="tooltip.type === 'contract'"
           :data="tooltip"
         />
         <ShipTooltipsPrice
-          v-if="tooltip.type === 'price'"
+          v-else-if="tooltip.type === 'price'"
           :data="tooltip"
         />
         <ShipTooltipsEngine
-          v-else-if="
-            tooltip.type === 'item' &&
-            tooltip.itemType === 'engine'
-          "
+          v-else-if="tooltip.type === 'item' && tooltip.itemType === 'engine'"
           :data="tooltip"
         />
         <ShipTooltipsCommunicator
           v-else-if="
-            tooltip.type === 'item' &&
-            tooltip.itemType === 'communicator'
+            tooltip.type === 'item' && tooltip.itemType === 'communicator'
           "
           :data="tooltip"
         />
         <ShipTooltipsScanner
-          v-else-if="
-            tooltip.type === 'item' &&
-            tooltip.itemType === 'scanner'
-          "
+          v-else-if="tooltip.type === 'item' && tooltip.itemType === 'scanner'"
           :data="tooltip"
         />
         <ShipTooltipsWeapon
-          v-else-if="
-            tooltip.type === 'item' &&
-            tooltip.itemType === 'weapon'
-          "
+          v-else-if="tooltip.type === 'item' && tooltip.itemType === 'weapon'"
           :data="tooltip"
         />
         <ShipTooltipsArmor
-          v-else-if="
-            tooltip.type === 'item' &&
-            tooltip.itemType === 'armor'
-          "
+          v-else-if="tooltip.type === 'item' && tooltip.itemType === 'armor'"
           :data="tooltip"
         />
-        <ShipTooltipsItem
-          v-else-if="tooltip.type === 'item'"
-          :data="tooltip"
-        />
+        <ShipTooltipsItem v-else-if="tooltip.type === 'item'" :data="tooltip" />
         <ShipTooltipsChassis
           v-else-if="tooltip.type === 'chassis'"
           :data="tooltip"
@@ -94,14 +71,8 @@
           v-else-if="tooltip.type === 'cargo'"
           :data="tooltip"
         />
-        <ShipTooltipsZone
-          v-else-if="tooltip.type === 'zone'"
-          :data="tooltip"
-        />
-        <ShipTooltipsRoom
-          v-else-if="tooltip.type === 'room'"
-          :data="tooltip"
-        />
+        <ShipTooltipsZone v-else-if="tooltip.type === 'zone'" :data="tooltip" />
+        <ShipTooltipsRoom v-else-if="tooltip.type === 'room'" :data="tooltip" />
         <ShipTooltipsSpecies
           v-else-if="tooltip.type === 'species'"
           :data="tooltip"
@@ -114,10 +85,7 @@
           v-else-if="tooltip.type === 'reaction'"
           :data="tooltip"
         />
-        <ShipTooltipsMass
-          v-else-if="tooltip.type === 'mass'"
-          :data="tooltip"
-        />
+        <ShipTooltipsMass v-else-if="tooltip.type === 'mass'" :data="tooltip" />
         <ShipTooltipsActive
           v-else-if="tooltip.type === 'active'"
           :data="tooltip"

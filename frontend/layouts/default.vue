@@ -80,10 +80,23 @@ export default Vue.extend({
   },
   methods: {
     resetWindowSize() {
+      const isMobile = !!detectMobile()
       this.$store.commit('set', {
         winSize: [window.innerWidth, window.innerHeight],
-        isMobile: !!detectMobile(),
+        isMobile,
       })
+
+      // default to no animations on mobile
+      if (
+        isMobile &&
+        Object.keys(this.$store.state.frontendSettings).length === 0
+      )
+        this.$store.commit('set', {
+          frontendSettings: {
+            disableAnimations: true,
+          },
+        })
+
       let vh = window.innerHeight * 0.01
       document.documentElement.style.setProperty('--vh', `${vh}px`)
       let vw = window.innerWidth * 0.01

@@ -9,29 +9,28 @@
     :radius="ship.gameSettings.arrivalThreshold"
     :width="222"
     label="vicinity"
+    :searchable="false"
   />
 </template>
 
 <script>
-import Vue from 'vue'
-import c from '../../../../common/dist'
-import { mapState } from 'vuex'
+import Vue from "vue";
+import c from "../../../../common/dist";
+import { mapState } from "vuex";
 
 export default Vue.extend({
   data() {
-    return { c }
+    return { c };
   },
   computed: {
-    ...mapState(['ship']),
+    ...mapState(["ship"]),
     show() {
       return (
-        this.ship &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('mapZoom'))
-      )
+        this.ship && (!this.ship.shownPanels || this.ship.shownPanels.includes("mapZoom"))
+      );
     },
   },
-})
+});
 </script>
 
 <style scoped lang="scss">

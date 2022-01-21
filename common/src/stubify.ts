@@ -1,5 +1,5 @@
 import c from './log'
-import { Profiler } from './Profiler'
+import massProfiler from './massProfiler'
 
 const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`]
 const alwaysReferencize = [
@@ -15,16 +15,15 @@ const alwaysReferencize = [
 ]
 
 export default function stubify<
-  BaseType,
+  BaseType extends Object,
   StubType extends BaseStub,
 >(
   baseObject: BaseType,
   keysToReferencize: string[] = [],
   allowRecursionDepth: number = 8,
 ): StubType {
+  const startTime = massProfiler.getTime()
   if (!baseObject) return undefined as any
-  const profiler = new Profiler(10, `stubify`, false, 0)
-  profiler.step(`apply getters`)
 
   let objectWithGetters: StubType
   if (
@@ -32,14 +31,10 @@ export default function stubify<
     typeof baseObject === `object` &&
     !(baseObject instanceof String)
   )
-    objectWithGetters = applyGettersToObject(
-      baseObject,
-      keysToReferencize,
-    )
+    objectWithGetters = applyGettersToObject(baseObject, keysToReferencize)
   else objectWithGetters = baseObject as any
   // c.log(`with getters`, Object.keys(gettersIncluded))
 
-  profiler.step(`stringify and parse`)
   const objectWithCircularReferencesRemoved: StubType =
     removeCircularReferences(
       objectWithGetters,
@@ -47,7 +42,13 @@ export default function stubify<
       allowRecursionDepth,
     )
 
-  profiler.end()
+  const time = massProfiler.getTime() - startTime
+  massProfiler.call(
+    `stubify`,
+    baseObject.constructor?.name || `(no constructor)`,
+    time,
+  )
+
   return objectWithCircularReferencesRemoved
 }
 
@@ -56,32 +57,16 @@ function applyGettersToObject<T>(
   baseObject: any,
   keysToReferencize: string[] = [],
 ): T {
-  const toReference = [
-    ...alwaysReferencize,
-    ...keysToReferencize,
-  ]
+  const toReference = [...alwaysReferencize, ...keysToReferencize]
   const gettersIncluded: any = { ...baseObject }
   const objectPrototype = Object.getPrototypeOf(baseObject)
-  const getKeyValue =
-    (key: string) => (obj: Record<string, any>) =>
-      obj[key]
+  const getKeyValue = (key: string) => (obj: Record<string, any>) => obj[key]
   // c.log(Object.getOwnPropertyNames(objectPrototype))
-  for (const key of Object.getOwnPropertyNames(
-    objectPrototype,
-  )) {
-    if (
-      toReference.includes(key) ||
-      neverInclude.includes(key)
-    )
-      continue
-    const descriptor = Object.getOwnPropertyDescriptor(
-      objectPrototype,
-      key,
-    )
-    const hasGetter =
-      descriptor && typeof descriptor.get === `function`
-    if (hasGetter)
-      gettersIncluded[key] = getKeyValue(key)(baseObject)
+  for (const key of Object.getOwnPropertyNames(objectPrototype)) {
+    if (toReference.includes(key) || neverInclude.includes(key)) continue
+    const descriptor = Object.getOwnPropertyDescriptor(objectPrototype, key)
+    const hasGetter = descriptor && typeof descriptor.get === `function`
+    if (hasGetter) gettersIncluded[key] = getKeyValue(key)(baseObject)
   }
   return gettersIncluded as T
 }
@@ -96,12 +81,7 @@ const recursivelyRemoveCircularReferencesInObject = (
 ) => {
   let newObj: any = {}
   if (remainingDepth <= 0) {
-    if (track)
-      c.log(
-        `reached depth limit`,
-        obj,
-        toRefOrUndefined(obj),
-      )
+    if (track) c.log(`reached depth limit`, obj, toRefOrUndefined(obj))
     return toRefOrUndefined(obj)
   }
 
@@ -127,8 +107,7 @@ const recursivelyRemoveCircularReferencesInObject = (
   }
 
   // string
-  else if (typeof obj === `string` || obj instanceof String)
-    newObj = obj
+  else if (typeof obj === `string` || obj instanceof String) newObj = obj
   // object
   else if (obj !== undefined && typeof obj === `object`) {
     for (const key of Object.keys(obj)) {
@@ -140,8 +119,7 @@ const recursivelyRemoveCircularReferencesInObject = (
       }
 
       // never include key => marker to not set value
-      else if (neverInclude.includes(key))
-        newObj[key] = doNotSetFlag
+      else if (neverInclude.includes(key)) newObj[key] = doNotSetFlag
       // disallowed key => stub
       else if (
         disallowedKeys.includes(key) &&
@@ -153,14 +131,13 @@ const recursivelyRemoveCircularReferencesInObject = (
 
       // nested object
       else if (typeof value === `object`) {
-        const res =
-          recursivelyRemoveCircularReferencesInObject(
-            value,
-            disallowedKeys,
-            remainingDepth - 1,
-            key,
-            track,
-          )
+        const res = recursivelyRemoveCircularReferencesInObject(
+          value,
+          disallowedKeys,
+          remainingDepth - 1,
+          key,
+          track,
+        )
         if (res !== doNotSetFlag) newObj[key] = res
       }
 
@@ -186,10 +163,7 @@ function removeCircularReferences<T>(
   keysToReferencize: string[] = [],
   allowRecursionDepth,
 ): T {
-  const toReference = [
-    ...alwaysReferencize,
-    ...keysToReferencize,
-  ]
+  const toReference = [...alwaysReferencize, ...keysToReferencize]
 
   return recursivelyRemoveCircularReferencesInObject(
     baseObject,
@@ -201,8 +175,7 @@ function removeCircularReferences<T>(
 const toRefOrUndefined = (obj: any) => {
   if (!obj) return null
 
-  if (typeof obj === `string` || obj instanceof String)
-    return obj
+  if (typeof obj === `string` || obj instanceof String) return obj
 
   if (typeof obj !== `object`) return obj
 

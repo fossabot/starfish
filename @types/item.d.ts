@@ -57,6 +57,9 @@ type WeaponId =
   | `blaster1`
   | `blaster2`
   | `blaster3`
+  | `slowing1`
+  | `slowing2`
+  | `slowing3`
 type ScannerId =
   | `tutorial1`
   | `starter1`
@@ -147,6 +150,7 @@ type LoadoutId =
   | `testManualEngine`
   | `testPassiveEngine`
   | `testMega`
+  | `testSlowingWeapon`
 type Loadout = {
   chassisId: ChassisId
   items: { itemType: ItemType; itemId: ItemId }[]
@@ -160,6 +164,7 @@ interface BaseWeaponData extends BaseItemData {
   chargeRequired: number
   cooldownRemaining?: number
   critChance?: number
+  slowingFactor?: number
 }
 
 interface BaseEngineData extends BaseItemData {
@@ -250,3 +255,4 @@ type UpgradableProperty =
   | `chargeRequired`
   | `mass`
   | `maxHp`
+  | `slowingFactor`

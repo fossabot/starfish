@@ -1,5 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+let axios;
+try {
+    axios = require(`axios`);
+}
+catch (e) { }
 const fillCharacter = `.`;
 let ignoreGray = false;
 let longest = 0;
@@ -14,6 +19,12 @@ const colors = {
     cyan: `\x1b[36m`,
     white: `\x1b[37m`,
 };
+const logLevelColors = {
+    red: `error`,
+    yellow: `warn`,
+    white: `info`,
+    grey: `debug`,
+};
 const dirColors = {
     red: `\x1b[31m`,
     green: `\x1b[32m`,
@@ -26,8 +37,6 @@ const mainDirs = [
 // 'common', 'discord', 'frontend', 'game'
 ];
 const log = (...args) => {
-    if (process.env.NODE_ENV !== `development`)
-        return;
     const regexResult = /log\.[jt]s[^\n]*\n([^\n\r]*\/([^/\n\r]+\/[^/\n\r]+\/[^/:\n\r]+))\.[^:\n\r]+:(\d+)/gi.exec(`${new Error().stack}`);
     const fullPath = regexResult?.[1] || ``;
     const lineNumber = regexResult?.[3] || ``;
@@ -35,9 +44,12 @@ const log = (...args) => {
     const pathName = regexResult?.[2]?.replace(/(dist\/|src\/)/gi, ``) || ``;
     if (ignoreGray && args[0] === `gray`)
         return;
+    let mainColor = `white`;
     for (let index = 0; index < args.length; index++) {
         const arg = args[index];
         if (arg in colors) {
+            if (index === 0)
+                mainColor = arg;
             if (!args[index + 1])
                 continue;
             if (typeof args[index + 1] === `object`) {
@@ -79,6 +91,26 @@ const log = (...args) => {
         prefix += fillCharacter;
     prefix += reset;
     console.log(prefix, ...args);
+    if (typeof window !== `undefined` ||
+        process.env.NODE_ENV !== `production` ||
+        !axios) {
+        return;
+    }
+    try {
+        const data = {
+            timestamp: Date.now(),
+            message: args.map((arg) => JSON.stringify(arg)).join(` `),
+            logtype: logLevelColors[mainColor] || `debug`,
+        };
+        const config = {
+            headers: {
+                'Content-Type': `application/json`,
+                // 'Api-Key': process.env.NEW_RELIC_API_KEY,
+            },
+        };
+        axios.post(`https://log-api.newrelic.com/log/v1?Api-Key=${process.env.NEW_RELIC_LICENSE_KEY}`, data, config);
+    }
+    catch (e) { }
 };
 function trace() {
     console.trace();

@@ -118,6 +118,7 @@ const species = {
         ],
         activeTree: [
             { id: `flatDamageReduction`, intensity: 0.19 },
+            { id: `attacksSlow`, intensity: 0.17 },
             {
                 id: `instantStamina`,
                 intensity: 0.15,
@@ -165,6 +166,11 @@ const species = {
                 data: { source: { speciesId: `dolphins` } },
                 intensity: 0.35,
             },
+            {
+                id: `boostMoraleGain`,
+                data: { source: { speciesId: `dolphins` } },
+                intensity: 0.2,
+            },
         ],
         activeTree: [
             { id: `broadcastRangeCargoPrices`, intensity: 1 },
@@ -202,6 +208,7 @@ const species = {
             },
             { id: `boostRepairSpeed`, intensity: 0.15 },
             { id: `boostWeaponChargeSpeed`, intensity: 0.17 },
+            { id: `attacksSlow`, intensity: 0.19 },
             { id: `boostShipSightRange`, intensity: 0.16 },
             { id: `fullCrewSkillBoost`, intensity: 0.17 },
         ],
@@ -306,7 +313,7 @@ const species = {
         activeTree: [
             {
                 id: `boostMorale`,
-                intensity: 0.21,
+                intensity: 0.18,
             },
             { id: `fullCrewSkillBoost`, intensity: 0.2 },
             {

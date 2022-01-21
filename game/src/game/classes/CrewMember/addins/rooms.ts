@@ -1,5 +1,4 @@
 import c from '../../../../../../common/dist'
-import type { Item } from '../../Ship/Item/Item'
 import type { MiningPlanet } from '../../Planet/MiningPlanet'
 import type { CrewMember } from '../CrewMember'
 
@@ -218,4 +217,32 @@ export function bunk(this: CrewMember): void {
   }
 
   this.toUpdate.stamina = this.stamina
+}
+
+export function lounge(this: CrewMember): void {
+  const passiveBoostMultiplier =
+    1 +
+    this.passives.reduce(
+      (total, p: CrewPassiveData) =>
+        p.id === `boostMoraleGain` ? total + (p.intensity || 0) : total,
+      0,
+    ) +
+    this.ship.passives.reduce(
+      (total, p: ShipPassiveEffect) =>
+        p.id === `boostMoraleGain` ? total + (p.intensity || 0) : total,
+      0,
+    )
+
+  const generalBoostMultiplier =
+    c.getGeneralMultiplierBasedOnCrewMemberProximity(
+      this,
+      this.ship.crewMembers,
+    )
+
+  this.changeMorale(
+    c.loungeMoraleGainBasisPerTick *
+      passiveBoostMultiplier *
+      generalBoostMultiplier *
+      this.ship.membersIn(`lounge`).length,
+  )
 }

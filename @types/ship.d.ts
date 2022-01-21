@@ -57,12 +57,7 @@ interface GameChannelReference {
 }
 type GameRoleType = `crew`
 
-type RadiusType =
-  | `sight`
-  | `attack`
-  | `scan`
-  | `broadcast`
-  | `gameSize`
+type RadiusType = `sight` | `attack` | `scan` | `broadcast` | `gameSize`
 
 type ShipPassiveEffectId =
   | `boostDropAmount`
@@ -97,6 +92,8 @@ type ShipPassiveEffectId =
   | `autoRepair`
   | `visibleCargoPrices`
   | `broadcastRangeCargoPrices`
+  | `boostMoraleGain`
+  | `attacksSlow`
 interface ShipPassiveEffect {
   id: ShipPassiveEffectId
   intensity?: number
@@ -213,15 +210,9 @@ interface ShipCosmetic {
 }
 
 interface AchievementCondition {
-  stat?:
-    | AchievementStatCondition
-    | AchievementStatCondition[]
-  prop?:
-    | AchievementPropCondition
-    | AchievementPropCondition[]
-  membersIn?:
-    | AchievementMembersInCondition
-    | AchievementMembersInCondition[]
+  stat?: AchievementStatCondition | AchievementStatCondition[]
+  prop?: AchievementPropCondition | AchievementPropCondition[]
+  membersIn?: AchievementMembersInCondition | AchievementMembersInCondition[]
 }
 
 interface AchievementStatCondition {

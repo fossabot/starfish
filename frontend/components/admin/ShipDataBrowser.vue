@@ -48,6 +48,25 @@
           <div
             class="button combo flexcenter"
             v-if="selectedShipId"
+            @click="
+              give(selectedShipId, [
+                { id: 'credits', amount: 100000 },
+                {
+                  id: 'shipCosmeticCurrency',
+                  amount: 100,
+                },
+                {
+                  id: 'crewCosmeticCurrency',
+                  amount: 100000,
+                },
+              ])
+            "
+          >
+            <div>Give Cash</div>
+          </div>
+          <div
+            class="button combo flexcenter"
+            v-if="selectedShipId"
             @click="stop(selectedShipId)"
           >
             <div>Stop</div>
@@ -265,6 +284,16 @@ export default Vue.extend({
         this.userId,
         this.adminPassword,
         shipId,
+      )
+    },
+
+    async give(shipId: string, cargo: Cargo[]) {
+      ;(this as any).$socket?.emit(
+        'admin:give',
+        this.userId,
+        this.adminPassword,
+        shipId,
+        cargo,
       )
     },
 

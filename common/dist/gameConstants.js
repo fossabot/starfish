@@ -11,7 +11,7 @@ const defaultGameSettings = {
     staminaBottomedOutResetPoint: 0.05,
     staminaBottomedOutChargeMultiplier: 1,
     newCrewMemberCredits: 1000,
-    enduranceXpGainPerSecond: 0.1,
+    enduranceXpGainPerSecond: 0.04,
     moraleLowThreshold: 0.2,
     moraleHighThreshold: 0.8,
     gravityMultiplier: 1.8,
@@ -51,6 +51,7 @@ const guildAllegianceFriendCutoff = 50;
 const maxCharismaVendorMultiplier = 0.1;
 const baseItemSellMultiplier = 0.6;
 const noEngineThrustMagnitude = 0.02;
+const loungeMoraleGainBasisPerTick = 0.00003;
 const planetContributeCostPerXp = 1;
 const planetContributeShipCosmeticCostPerXp = 0.00005;
 const planetContributeCrewCosmeticCostPerXp = 0.05;
@@ -132,6 +133,7 @@ exports.default = {
     itemMassMultiplier,
     weaponDamageMultiplier,
     displayHPMultiplier,
+    loungeMoraleGainBasisPerTick,
     attackRemnantExpireTime,
     cacheExpireTime,
     zoneExpireTime,

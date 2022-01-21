@@ -1,4 +1,8 @@
-const axios = require(`axios`)
+let axios
+try {
+  axios = require(`axios`)
+} catch (e) {}
+
 const fillCharacter = `.`
 
 let ignoreGray = false
@@ -109,7 +113,11 @@ const log = (...args: any[]): void => {
 
   console.log(prefix, ...args)
 
-  if (typeof window !== `undefined` || process.env.NODE_ENV !== `production`) {
+  if (
+    typeof window !== `undefined` ||
+    process.env.NODE_ENV !== `production` ||
+    !axios
+  ) {
     return
   }
   try {

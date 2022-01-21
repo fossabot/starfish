@@ -238,21 +238,12 @@ export class HumanShip extends CombatShip {
   addHeaderBackground = addHeaderBackground
   addTagline = addTagline
 
-  private tickProfiler = new c.Profiler(
-    4,
-    `human ship tick (${this.name})`,
-    false,
-    0,
-  )
-
   tick() {
-    this.tickProfiler.start()
     super.tick()
     if (this.dead) return
 
     if (this.tutorial) this.tutorial.tick()
 
-    this.tickProfiler.step(`move`)
     // ----- move -----
     this.passiveThrust()
     this.move()
@@ -261,7 +252,6 @@ export class HumanShip extends CombatShip {
     // ----- planet effects -----
     if (this.planet) this.planet.tickEffectsOnShip(this)
 
-    this.tickProfiler.step(`update visible`)
     // ----- scan -----
     const previousVisible = { ...this.visible }
     this.updateVisible()
@@ -269,7 +259,6 @@ export class HumanShip extends CombatShip {
     this.scanners.forEach((s) => s.use())
     this.generateVisiblePayload(previousVisible)
 
-    this.tickProfiler.step(`crew tick & stubify`)
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers
       .filter((cm) => Object.keys(cm.toUpdate || {}).length)
@@ -325,7 +314,6 @@ export class HumanShip extends CombatShip {
       )
     }
 
-    this.tickProfiler.step(`get caches`)
     // ----- get nearby caches -----
     // * this is on a random timeout so that the "first" ship doesn't always have priority on picking up caches if 2 or more ships could have gotten it
     setTimeout(() => {
@@ -338,19 +326,16 @@ export class HumanShip extends CombatShip {
         })
     }, Math.round((Math.random() * c.tickInterval) / 3))
 
-    this.tickProfiler.step(`auto attack`)
     // ----- auto-attacks -----
     if (!this.dead) this.autoAttack()
 
     // ----- zone effects -----
     if (!this.dead) this.applyZoneTickEffects()
 
-    this.tickProfiler.step(`frontend stubify`)
     // todo if no io watchers, skip this
     // ----- updates for frontend -----
     this.toUpdate.items = this.items.map((i) => i.stubify())
 
-    this.tickProfiler.step(`frontend send`)
     // ----- send update to listeners -----
     if (Object.keys(this.toUpdate).length) {
       this.game?.io?.to(`ship:${this.id}`).emit(`ship:update`, {
@@ -363,8 +348,6 @@ export class HumanShip extends CombatShip {
     this.checkContractTimeOuts()
     if ((this.game?.tickCount || 1) % 1000 === 0)
       this.updateActiveContractsLocations()
-
-    this.tickProfiler.end()
   }
 
   // ----- log -----
@@ -1234,11 +1217,6 @@ export class HumanShip extends CombatShip {
       return
     }
 
-    if (!this.canMove) {
-      this.hardStop()
-      return
-    }
-
     if (
       [undefined, null, NaN].includes(this.velocity[0]) ||
       [undefined, null, NaN].includes(this.velocity[1])
@@ -1384,13 +1362,6 @@ export class HumanShip extends CombatShip {
         )
       }
     }
-  }
-
-  hardStop() {
-    this.velocity = [0, 0]
-    this.speed = 0
-    this.toUpdate.velocity = this.velocity
-    this.toUpdate.speed = this.speed
   }
 
   updateVisible() {
@@ -1549,23 +1520,30 @@ export class HumanShip extends CombatShip {
       //     `${this.name} landed at ${this.planet.name}`,
       //   )
 
-      this.crewMembers.forEach((cm) =>
-        cm.changeMorale(((this.planet as BasicPlanet).level || 1) * 0.01),
-      )
-      if (this.planet.planetType === `comet`)
-        this.crewMembers.forEach((cm) => cm.changeMorale(0.3))
+      // don't take some actions on game load
+      if ((this.game?.tickCount || 0) > 1) {
+        this.crewMembers.forEach((cm) =>
+          cm.changeMorale(((this.planet as BasicPlanet).level || 1) * 0.01),
+        )
+        if (this.planet.planetType === `comet`)
+          this.crewMembers.forEach((cm) => cm.changeMorale(0.3))
 
-      this.hardStop()
+        this.planet.addStat(`shipsLanded`, 1)
+        this.hardStop()
+        this.checkAchievements(`land`)
+
+        this.membersIn(`cockpit`).forEach((cm) => {
+          cm.targetLocation = false
+          cm.toUpdate.targetLocation = false
+        })
+      }
+
+      for (let co of [...this.contracts]) {
+        this.checkTurnInContract(co)
+      }
+
       this.planet.rooms.forEach((r) => this.addRoom(r))
       this.planet.passives.forEach((p) => this.applyPassive(p))
-      this.planet.addStat(`shipsLanded`, 1)
-      this.checkAchievements(`land`)
-      for (let co of this.contracts) this.checkTurnInContract(co)
-
-      this.membersIn(`cockpit`).forEach((cm) => {
-        cm.targetLocation = false
-        cm.toUpdate.targetLocation = false
-      })
     } else if (previousPlanet) {
       // c.log(
       //   `gray`,
@@ -2048,11 +2026,10 @@ export class HumanShip extends CombatShip {
 
   resolveRooms() {
     this.rooms = {}
-    let roomsToAdd: Set<CrewLocation> = new Set()
+    const roomsToAdd: Set<CrewLocation> = new Set()
     if (this.tutorial)
       this.tutorial.currentStep?.shownRooms?.forEach((r) => roomsToAdd.add(r))
     else {
-      roomsToAdd = new Set()
       this.chassis.rooms?.forEach((r) => roomsToAdd.add(r))
       this.items.forEach((item) => {
         item.rooms.forEach((i) => roomsToAdd.add(i))
@@ -2131,6 +2108,7 @@ export class HumanShip extends CombatShip {
     this.crewMembers.push(cm)
     if (!this.captain) {
       this.captain = cm.id
+      cm.updateActives()
 
       if (
         [

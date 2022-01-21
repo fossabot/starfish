@@ -60,20 +60,17 @@ export class Tutorial {
   ship: HumanShip
   targetLocation?: TargetLocation
 
-  static async putCrewMemberInTutorial(
-    crewMember: CrewMember,
-  ) {
+  static async putCrewMemberInTutorial(crewMember: CrewMember) {
     // c.log(
     //   `gray`,
     //   `Spawning tutorial ship for crew member ${crewMember.id} on ${crewMember.ship.name}`,
     // )
-    const tutorialShip =
-      await crewMember.ship.game?.addHumanShip({
-        name: crewMember.ship.name,
-        tutorial: { step: -1 },
-        id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
-        guildId: crewMember.ship.guildId,
-      })
+    const tutorialShip = await crewMember.ship.game?.addHumanShip({
+      name: crewMember.ship.name,
+      tutorial: { step: -1 },
+      id: `tutorial-${crewMember.ship.id}-${crewMember.id}`,
+      guildId: crewMember.ship.guildId,
+    })
     if (!tutorialShip) return
     await tutorialShip.addCrewMember({
       name: crewMember.name,
@@ -82,12 +79,9 @@ export class Tutorial {
       speciesId: `angelfish`,
     })
     crewMember.tutorialShipId = tutorialShip.id
-    crewMember.toUpdate.tutorialShipId =
-      crewMember.tutorialShipId
+    crewMember.toUpdate.tutorialShipId = crewMember.tutorialShipId
 
-    await crewMember.ship.game?.db?.ship.addOrUpdateInDb(
-      crewMember.ship,
-    )
+    await crewMember.ship.game?.db?.ship.addOrUpdateInDb(crewMember.ship)
     return tutorialShip
   }
 
@@ -266,14 +260,7 @@ export class Tutorial {
         sightRange: 0.03,
         maxDistanceFromSpawn: 0.03,
         shownRooms: [`cockpit`],
-        shownPanels: [
-          `mapZoom`,
-          `map`,
-          `room`,
-          `inventory`,
-          `ship`,
-          `log`,
-        ],
+        shownPanels: [`mapZoom`, `map`, `room`, `inventory`, `ship`, `log`],
         highlightPanel: `inventory`,
         disableRepair: true,
         disableStamina: true,
@@ -282,9 +269,7 @@ export class Tutorial {
         script: [
           {
             message: `Awesome, we got it! <br /><br/>
-            There were some 💳${
-              c.baseCurrencyPlural
-            } inside! 💳${c.capitalize(
+            There were some 💳${c.baseCurrencyPlural} inside! 💳${c.capitalize(
               c.baseCurrencyPlural,
             )} are how you pay for cargo and equipment. Every crew member has their own stock of cargo and 💳${
               c.baseCurrencyPlural
@@ -299,14 +284,7 @@ export class Tutorial {
         sightRange: 0.03,
         maxDistanceFromSpawn: 0.03,
         shownRooms: [`cockpit`],
-        shownPanels: [
-          `mapZoom`,
-          `map`,
-          `room`,
-          `inventory`,
-          `ship`,
-          `log`,
-        ],
+        shownPanels: [`mapZoom`, `map`, `room`, `inventory`, `ship`, `log`],
         highlightPanel: `room`,
         disableRepair: true,
         disableStamina: true,
@@ -324,14 +302,7 @@ export class Tutorial {
         sightRange: 0.03,
         maxDistanceFromSpawn: 0.03,
         shownRooms: [`cockpit`],
-        shownPanels: [
-          `mapZoom`,
-          `map`,
-          `room`,
-          `inventory`,
-          `ship`,
-          `log`,
-        ],
+        shownPanels: [`mapZoom`, `map`, `room`, `inventory`, `ship`, `log`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`, `trail`],
@@ -353,14 +324,7 @@ export class Tutorial {
         maxDistanceFromSpawn: 0.03,
         resetView: true,
         shownRooms: [`cockpit`],
-        shownPanels: [
-          `mapZoom`,
-          `map`,
-          `room`,
-          `inventory`,
-          `ship`,
-          `log`,
-        ],
+        shownPanels: [`mapZoom`, `map`, `room`, `inventory`, `ship`, `log`],
         disableRepair: true,
         disableStamina: true,
         visibleTypes: [`planet`, `aiShip`, `trail`],
@@ -403,12 +367,7 @@ export class Tutorial {
         highlightPanel: `scanShip`,
         disableRepair: true,
         disableStamina: true,
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`],
         script: [
           {
             message: `Now we can see what we're dealing with.<br />
@@ -439,12 +398,7 @@ export class Tutorial {
         ],
         highlightPanel: `diagram`,
         disableRepair: true,
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`],
         script: [
           {
             message: `I've opened up your ship schematic.<br /><br />
@@ -472,12 +426,7 @@ export class Tutorial {
           `diagram`,
           `log`,
         ],
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`],
         script: [
           {
             message: `Your ship will automatically fire when the weapons are charged, your tactics are set, and a valid target is in range.<br /><br />
@@ -498,12 +447,7 @@ export class Tutorial {
         sightRange: 0.03,
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
-        shownRooms: [
-          `cockpit`,
-          `weapons`,
-          `bunk`,
-          `repair`,
-        ],
+        shownRooms: [`cockpit`, `weapons`, `bunk`, `repair`],
         shownPanels: [
           `mapZoom`,
           `map`,
@@ -516,13 +460,7 @@ export class Tutorial {
           `items`,
         ],
         highlightPanel: `diagram`,
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-          `cache`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`, `cache`],
         script: [
           {
             message: `Just like shooting fish in a barrel.`,
@@ -543,12 +481,7 @@ export class Tutorial {
         sightRange: 0.03,
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
-        shownRooms: [
-          `cockpit`,
-          `weapons`,
-          `bunk`,
-          `repair`,
-        ],
+        shownRooms: [`cockpit`, `weapons`, `bunk`, `repair`],
         shownPanels: [
           `mapZoom`,
           `map`,
@@ -561,13 +494,7 @@ export class Tutorial {
           `crewMember`,
           `items`,
         ],
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-          `cache`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`, `cache`],
         highlightPanel: `crewMember`,
         forceStamina: 0.95,
         script: [
@@ -594,12 +521,7 @@ export class Tutorial {
         maxDistanceFromSpawn: 0.03,
         forceCockpitCharge: 0.7,
         resetView: true,
-        shownRooms: [
-          `cockpit`,
-          `weapons`,
-          `bunk`,
-          `repair`,
-        ],
+        shownRooms: [`cockpit`, `weapons`, `bunk`, `repair`],
         shownPanels: [
           `mapZoom`,
           `map`,
@@ -612,13 +534,7 @@ export class Tutorial {
           `crewMember`,
           `items`,
         ],
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-          `cache`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`, `cache`],
         script: [
           {
             message: `Excellent. Once you're ready, let's head planetside to check out what's happening on the surface!`,
@@ -636,12 +552,7 @@ export class Tutorial {
         sightRange: 0.03,
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
-        shownRooms: [
-          `cockpit`,
-          `weapons`,
-          `bunk`,
-          `repair`,
-        ],
+        shownRooms: [`cockpit`, `weapons`, `bunk`, `repair`],
         shownPanels: [
           `mapZoom`,
           `map`,
@@ -656,13 +567,7 @@ export class Tutorial {
           `items`,
         ],
         highlightPanel: `planet`,
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-          `cache`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`, `cache`],
         script: [
           {
             message: `Wow, they've got a lot of things for sale!`,
@@ -686,12 +591,7 @@ export class Tutorial {
         scanRange: 0.02,
         maxDistanceFromSpawn: 0.03,
         forceCockpitCharge: 1,
-        shownRooms: [
-          `cockpit`,
-          `weapons`,
-          `bunk`,
-          `repair`,
-        ],
+        shownRooms: [`cockpit`, `weapons`, `bunk`, `repair`],
         shownPanels: [
           `mapZoom`,
           `map`,
@@ -705,13 +605,7 @@ export class Tutorial {
           `planet`,
           `items`,
         ],
-        visibleTypes: [
-          `planet`,
-          `aiShip`,
-          `attackRemnant`,
-          `trail`,
-          `cache`,
-        ],
+        visibleTypes: [`planet`, `aiShip`, `attackRemnant`, `trail`, `cache`],
         script: [
           {
             message: `There's a lot more to learn about — broadcasting, guilds, passives, mining, and more — but I think you're ready to start exploring!`,
@@ -739,12 +633,9 @@ export class Tutorial {
     this.baseLocation =
       data.baseLocation ||
       ([
-        ...(this.ship.game?.getHomeworld(this.ship.guildId)
-          ?.location ||
+        ...(this.ship.game?.getHomeworld(this.ship.guildId)?.location ||
           c.randomFromArray(
-            (this.ship.game?.planets || []).filter(
-              (p) => p.homeworld,
-            ),
+            (this.ship.game?.planets || []).filter((p) => p.homeworld),
           )?.location || [0, 0]),
       ].map(
         (l) => l,
@@ -758,24 +649,17 @@ export class Tutorial {
       // * timeout to give a chance to initialize the crew member in the ship and save it, THEN start
       setTimeout(async () => {
         let retries = 0
-        while (
-          this.ship.crewMembers.length === 0 &&
-          retries < 100
-        ) {
+        while (this.ship.crewMembers.length === 0 && retries < 100) {
           await c.sleep(100)
           retries++
         }
         this.advanceStep()
 
         // * clear any already seen planets, etc
-        while (this.ship.seenPlanets.length)
-          this.ship.seenPlanets.pop()
-        this.ship.toUpdate.seenPlanets =
-          this.ship.seenPlanets
-        while (this.ship.seenLandmarks.length)
-          this.ship.seenLandmarks.pop()
-        this.ship.toUpdate.seenLandmarks =
-          this.ship.seenLandmarks
+        while (this.ship.seenPlanets.length) this.ship.seenPlanets.pop()
+        this.ship.toUpdate.seenPlanets = this.ship.seenPlanets
+        while (this.ship.seenLandmarks.length) this.ship.seenLandmarks.pop()
+        this.ship.toUpdate.seenLandmarks = this.ship.seenLandmarks
         while (this.ship.log.length) this.ship.log.pop()
         this.ship.toUpdate.log = this.ship.log
       }, 1)
@@ -787,18 +671,14 @@ export class Tutorial {
     if (!this.currentStep) return
 
     // ----- advance step if all requirements have been met -----
-    if (this.currentStep.nextStepTrigger.awaitFrontend)
-      return
+    if (this.currentStep.nextStepTrigger.awaitFrontend) return
 
     let shouldAdvance = true
 
     if (this.targetLocation)
       shouldAdvance =
         shouldAdvance &&
-        c.distance(
-          this.ship.location,
-          this.targetLocation.location,
-        ) <=
+        c.distance(this.ship.location, this.targetLocation.location) <=
           (this.ship.game?.settings.arrivalThreshold ||
             c.defaultGameSettings.arrivalThreshold)
 
@@ -808,9 +688,7 @@ export class Tutorial {
         Boolean(
           this.ship.crewMembers.find(
             (cm) =>
-              cm.stamina >
-              this.currentStep.nextStepTrigger
-                .gainStaminaTo!,
+              cm.stamina > this.currentStep.nextStepTrigger.gainStaminaTo!,
           ),
         )
 
@@ -818,9 +696,7 @@ export class Tutorial {
       shouldAdvance =
         shouldAdvance &&
         !this.ship.game?.aiShips.find(
-          (s) =>
-            s.id ===
-            this.currentStep.nextStepTrigger.destroyShipId,
+          (s) => s.id === this.currentStep.nextStepTrigger.destroyShipId,
         )
 
     if (this.currentStep.nextStepTrigger.crewLocation)
@@ -829,9 +705,7 @@ export class Tutorial {
         Boolean(
           this.ship.crewMembers.find(
             (cm) =>
-              cm.location ===
-              this.currentStep.nextStepTrigger
-                .crewLocation!,
+              cm.location === this.currentStep.nextStepTrigger.crewLocation!,
           ),
         )
 
@@ -841,9 +715,7 @@ export class Tutorial {
         Boolean(
           this.ship.crewMembers.find(
             (cm) =>
-              cm.credits <=
-              this.currentStep.nextStepTrigger
-                .useCrewCreditsTo!,
+              cm.credits <= this.currentStep.nextStepTrigger.useCrewCreditsTo!,
           ),
         )
 
@@ -851,8 +723,7 @@ export class Tutorial {
       shouldAdvance =
         shouldAdvance &&
         this.ship.commonCredits <=
-          this.currentStep.nextStepTrigger
-            .useCommonCreditsTo
+          this.currentStep.nextStepTrigger.useCommonCreditsTo
 
     if (this.currentStep.nextStepTrigger.stopped)
       shouldAdvance =
@@ -875,27 +746,20 @@ export class Tutorial {
 
     // apply loadout
     if (this.currentStep.forceLoadout) {
-      this.ship.equipLoadout(
-        this.currentStep.forceLoadout,
-        true,
-      )
+      this.ship.equipLoadout(this.currentStep.forceLoadout, true)
     }
 
     this.ship.updateSightAndScanRadius()
 
     if (this.currentStep.resetView)
-      this.ship.game?.io
-        .to(`ship:${this.ship.id}`)
-        .emit(`ship:resetView`)
+      this.ship.game?.io.to(`ship:${this.ship.id}`).emit(`ship:resetView`)
 
     // move to step location
     if (this.currentStep.forceLocation) {
       this.ship.previousLocations = []
       this.ship.move([
-        this.baseLocation[0] +
-          this.currentStep.forceLocation[0],
-        this.baseLocation[1] +
-          this.currentStep.forceLocation[1],
+        this.baseLocation[0] + this.currentStep.forceLocation[0],
+        this.baseLocation[1] + this.currentStep.forceLocation[1],
       ])
     }
 
@@ -940,47 +804,39 @@ export class Tutorial {
     // crew stamina
     if (this.currentStep.forceStamina !== undefined)
       this.ship.crewMembers.forEach((cm) => {
-        cm.stamina = this.currentStep.forceStamina!
+        cm.stamina = cm.maxStamina * this.currentStep.forceStamina!
         cm.toUpdate.stamina = cm.stamina
       })
 
     // crew cockpit charge
     if (this.currentStep.forceCockpitCharge !== undefined)
       this.ship.crewMembers.forEach((cm) => {
-        cm.cockpitCharge =
-          this.currentStep.forceCockpitCharge!
+        cm.cockpitCharge = this.currentStep.forceCockpitCharge!
         cm.toUpdate.cockpitCharge = cm.cockpitCharge
       })
 
     // rooms
     if (this.currentStep.shownRooms)
-      for (let r of this.currentStep.shownRooms)
-        this.ship.addRoom(r)
+      for (let r of this.currentStep.shownRooms) this.ship.addRoom(r)
 
     // target locations
     if (this.currentStep.nextStepTrigger.location)
       this.targetLocation = {
         location: [
           this.baseLocation[0] +
-            this.currentStep.nextStepTrigger.location
-              .location[0],
+            this.currentStep.nextStepTrigger.location.location[0],
           this.baseLocation[1] +
-            this.currentStep.nextStepTrigger.location
-              .location[1],
+            this.currentStep.nextStepTrigger.location.location[1],
         ],
-        label:
-          this.currentStep.nextStepTrigger.location.label,
-        color:
-          this.currentStep.nextStepTrigger.location.color,
+        label: this.currentStep.nextStepTrigger.location.label,
+        color: this.currentStep.nextStepTrigger.location.color,
       }
     else this.targetLocation = undefined
 
     // set common credits
     if (this.currentStep.forceCommonCredits) {
-      this.ship.commonCredits =
-        this.currentStep.forceCommonCredits
-      this.ship.toUpdate.commonCredits =
-        this.ship.commonCredits
+      this.ship.commonCredits = this.currentStep.forceCommonCredits
+      this.ship.toUpdate.commonCredits = this.ship.commonCredits
     }
 
     // show panels on frontend
@@ -992,8 +848,7 @@ export class Tutorial {
     for (let m of this.currentStep.script)
       if (m.channel) {
         const mainShip = this.ship.game?.humanShips.find(
-          (s) =>
-            s.id === this.ship.crewMembers[0]?.mainShipId,
+          (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
         )
         // only send messages to the discord server if it's the ship's very first tutorial
         if (
@@ -1052,9 +907,7 @@ export class Tutorial {
             [
               {
                 text: ship.name,
-                color:
-                  ship.guildId &&
-                  c.guilds[ship.guildId].color,
+                color: ship.guildId && c.guilds[ship.guildId].color,
                 tooltipData: ship.toReference() as any,
               },
               `joined the game.`,
@@ -1086,8 +939,7 @@ export class Tutorial {
 
     mainShip.addStat(`tutorials`, 1)
 
-    if (mainShip.getStat(`tutorials`) === 1)
-      Tutorial.endMessages(mainShip)
+    if (mainShip.getStat(`tutorials`) === 1) Tutorial.endMessages(mainShip)
 
     this.cleanUp()
   }
@@ -1124,19 +976,13 @@ export class Tutorial {
       (s) => s.id === this.ship.crewMembers[0]?.mainShipId,
     )
     if (!mainShip) {
-      c.log(
-        `red`,
-        `Failed to find main ship for crew member exiting tutorial!`,
-      )
+      c.log(`red`, `Failed to find main ship for crew member exiting tutorial!`)
     } else {
       const mainCrewMember = mainShip.crewMembers.find(
         (cm) => cm.id === this.ship.crewMembers[0]?.id,
       )
       if (!mainCrewMember) {
-        c.log(
-          `red`,
-          `Failed to find main crew member exiting tutorial!`,
-        )
+        c.log(`red`, `Failed to find main crew member exiting tutorial!`)
       } else {
         mainCrewMember.tutorialShipId = undefined
         mainCrewMember.toUpdate.tutorialShipId = undefined

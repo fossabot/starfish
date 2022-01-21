@@ -25,6 +25,10 @@ export const rooms: {
     id: `lab`,
     description: `Research upgrades for the ship's equipment.`,
   },
+  lounge: {
+    id: `lounge`,
+    description: `Take a break and increase your morale.`,
+  },
 }
 
 export default rooms

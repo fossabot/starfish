@@ -176,6 +176,11 @@ interface IOClientEvents {
       >,
     ) => void,
   ) => void
+  [`game:planets`]: (
+    adminId: string,
+    password: string,
+    callback: (res: IOResponse<PlanetStub>) => void,
+  ) => void
   [`admin:move`]: (
     adminId: string,
     password: string,

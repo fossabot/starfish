@@ -10,53 +10,28 @@
     </template>
 
     <div class="panesection itemlist">
-      <ShipItem
-        v-for="i in armor"
-        :key="i.id"
-        :item="i"
-        :owner="ship"
-      />
-      <ShipItem
-        v-for="i in weapons"
-        :key="i.id"
-        :item="i"
-        :owner="ship"
-      />
-      <ShipItem
-        v-for="i in engines"
-        :key="i.id"
-        :item="i"
-        :owner="ship"
-      />
-      <ShipItem
-        v-for="i in scanners"
-        :key="i.id"
-        :item="i"
-        :owner="ship"
-      />
+      <ShipItem v-for="i in armor" :key="i.id" :item="i" :owner="ship" />
+      <ShipItem v-for="i in weapons" :key="i.id" :item="i" :owner="ship" />
+      <ShipItem v-for="i in engines" :key="i.id" :item="i" :owner="ship" />
+      <ShipItem v-for="i in scanners" :key="i.id" :item="i" :owner="ship" />
       <ShipItem
         v-for="i in communicators"
         :key="i.id"
         :item="i"
         :owner="ship"
       />
-      <ShipItem
-        v-for="i in other"
-        :key="i.id"
-        :item="i"
-        :owner="ship"
-      />
+      <ShipItem v-for="i in other" :key="i.id" :item="i" :owner="ship" />
     </div>
 
     <div class="panesection sub flexcenter">
       <div class="nowrap">
-        {{ ship.items.length }}/{{ ship.slots }} equipment
-        slots used
+        {{ ship.items.length }}/{{ ship.slots }} equipment slots used
       </div>
       <PillBar
         :micro="true"
         :value="ship.items.length"
         :max="ship.slots"
+        :dangerZone="-1"
         class="slots"
       />
     </div>
@@ -73,44 +48,29 @@ export default Vue.extend({
     return { c }
   },
   computed: {
-    ...mapState([
-      'userId',
-      'ship',
-      'crewMember',
-      'tooltip',
-    ]),
+    ...mapState(['userId', 'ship', 'crewMember', 'tooltip']),
     show() {
       return (
         this.ship &&
-        (!this.ship.shownPanels ||
-          this.ship.shownPanels.includes('items'))
+        (!this.ship.shownPanels || this.ship.shownPanels.includes('items'))
       )
     },
     highlight() {
-      return (
-        this.ship?.tutorial?.currentStep?.highlightPanel ===
-        'items'
-      )
+      return this.ship?.tutorial?.currentStep?.highlightPanel === 'items'
     },
     engines() {
       return (
-        this.ship.items.filter(
-          (i: ItemStub) => i.itemType === 'engine',
-        ) || []
+        this.ship.items.filter((i: ItemStub) => i.itemType === 'engine') || []
       )
     },
     weapons() {
       return (
-        this.ship.items.filter(
-          (i: ItemStub) => i.itemType === 'weapon',
-        ) || []
+        this.ship.items.filter((i: ItemStub) => i.itemType === 'weapon') || []
       )
     },
     scanners() {
       return (
-        this.ship.items.filter(
-          (i: ItemStub) => i.itemType === 'scanner',
-        ) || []
+        this.ship.items.filter((i: ItemStub) => i.itemType === 'scanner') || []
       )
     },
     communicators() {
@@ -122,9 +82,7 @@ export default Vue.extend({
     },
     armor() {
       return (
-        this.ship.items.filter(
-          (i: ItemStub) => i.itemType === 'armor',
-        ) || []
+        this.ship.items.filter((i: ItemStub) => i.itemType === 'armor') || []
       )
     },
     other() {

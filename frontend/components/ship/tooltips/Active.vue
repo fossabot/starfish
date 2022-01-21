@@ -12,11 +12,19 @@
       Unlocks at level {{ data.unlockLevel }}
     </div>
 
+    <div class="martopsmall"></div>
+    <div class="sub" v-if="data.usable && activeData.captain">
+      Captain-only ability.
+    </div>
     <div
-      class="sub martopsmall"
+      class="sub"
       v-if="
         !data.unlockLevel &&
-        !['seeTrailColors', 'broadcastRangeCargoPrices'].includes(data.id)
+        ![
+          'seeTrailColors',
+          'broadcastRangeCargoPrices',
+          'moveAllCrewMembersToRepair',
+        ].includes(data.id)
       "
     >
       Base amplification factor:
@@ -47,7 +55,7 @@
         </div>
       </div>
       <div v-if="cooldownRemaining" class="flexbetween">
-        <div class="sub">Cooldown remaining</div>
+        <div class="sub marrightsmall">Cooldown remaining</div>
         <div>{{ c.msToTimeString(cooldownRemaining) }}</div>
       </div>
     </template>

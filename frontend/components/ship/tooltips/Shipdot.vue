@@ -1,9 +1,6 @@
 <template>
   <div class="shipdataview">
-    <ShipTooltipsShipheader
-      :data="dataToUse"
-      :interactive="isSelf"
-    />
+    <ShipTooltipsShipheader :data="dataToUse" :interactive="isSelf" />
 
     <div
       v-if="
@@ -19,10 +16,7 @@
 
     <div
       class="panesection"
-      v-if="
-        dataToUse.planet &&
-        dataToUse.planet.planetType !== 'comet'
-      "
+      v-if="dataToUse.planet && dataToUse.planet.planetType !== 'comet'"
     >
       <div
         v-tooltip="{
@@ -38,10 +32,7 @@
     </div>
     <div
       class="panesection"
-      v-else-if="
-        dataToUse.planet &&
-        dataToUse.planet.planetType === 'comet'
-      "
+      v-else-if="dataToUse.planet && dataToUse.planet.planetType === 'comet'"
     >
       <div
         v-tooltip="{
@@ -56,19 +47,13 @@
       </div>
     </div>
 
-    <div
-      class="panesection"
-      v-if="dataToUse.speed !== undefined"
-    >
+    <div class="panesection" v-if="dataToUse.speed !== undefined">
       <div class="arrow" v-if="dataToUse.speed">
         <div>
           {{
             c.speedNumber(
               (dataToUse &&
-                dataToUse.speed *
-                  60 *
-                  60 *
-                  (c.tickInterval / 1000)) ||
+                dataToUse.speed * 60 * 60 * (c.tickInterval / 1000)) ||
                 0,
             )
           }}
@@ -80,9 +65,7 @@
         </div>
         <svg
           :style="{
-            transform: `rotate(${
-              dataToUse && dataToUse.direction * -1
-            }deg)`,
+            transform: `rotate(${dataToUse && dataToUse.direction * -1}deg)`,
           }"
           width="404"
           height="233"
@@ -134,8 +117,7 @@
       <ProgressBar
         class="marbottiny"
         v-if="
-          (dev &&
-            dataToUse.crewAverageMorale !== undefined) ||
+          (dev && dataToUse.crewAverageMorale !== undefined) ||
           (dataToUse.crewMembers &&
             dataToUse.crewMembers.length > 1 &&
             dataToUse.crewAverageMorale !== undefined)
@@ -148,27 +130,17 @@
             ? 'var(--success)'
             : 'rgba(255,255,255,.5)'
         "
-        :dangerZone="
-          ship && ship.gameSettings.moraleLowThreshold
-        "
-        v-tooltip="
-          `The average morale of crew members on the ship.`
-        "
+        :dangerZone="ship && ship.gameSettings.moraleLowThreshold"
+        v-tooltip="`The average morale of crew members on the ship.`"
       >
         <div class="flexcenter flexbetween fullwidth">
           <div class="small">Avg. Morale</div>
-          <div>
-            {{
-              c.r2(dataToUse.crewAverageMorale * 100, 0)
-            }}%
-          </div>
+          <div>{{ c.r2(dataToUse.crewAverageMorale * 100, 0) }}%</div>
         </div>
       </ProgressBar>
 
       <div
-        v-if="
-          dataToUse._hp === undefined && dataToUse._maxHp
-        "
+        v-if="dataToUse._hp === undefined && dataToUse._maxHp"
         class="flexbetween"
       >
         <div class="sub">Max HP</div>
@@ -199,20 +171,14 @@
         </div>
       </div>
 
-      <div
-        v-if="!isSelf && dataToUse.targetShip"
-        class="flexbetween"
-      >
+      <div v-if="!isSelf && dataToUse.targetShip" class="flexbetween">
         <div class="sub">Targeting</div>
         <div class="marleft textright">
           {{ dataToUse.targetShip.name }}
         </div>
       </div>
 
-      <div
-        v-if="!isSelf && dataToUse.rooms"
-        class="flexbetween"
-      >
+      <div v-if="!isSelf && dataToUse.rooms" class="flexbetween">
         <div class="sub">Rooms</div>
         <div class="marleft textright">
           {{
@@ -226,28 +192,21 @@
         </div>
       </div>
 
-      <div
-        v-if="!isSelf && dataToUse.radii"
-        class="flexbetween"
-      >
+      <div v-if="!isSelf && dataToUse.radii" class="flexbetween">
         <div class="sub">Radii</div>
         <div class="marleft textright">
           <div
             v-for="r in Object.keys(dataToUse.radii)
-              .filter(
-                (r) =>
-                  !['gameSize', 'safeZone'].includes(r),
-              )
+              .filter((r) => !['gameSize', 'safeZone'].includes(r))
               .map((r) =>
                 Array.isArray(dataToUse.radii[r])
-                  ? `${c.capitalize(r)}: ${dataToUse.radii[
-                      r
-                    ]
-                      .map((rad) => c.r2(rad) + 'AU')
+                  ? `${c.capitalize(r)}: ${dataToUse.radii[r]
+                      .map((rad) => `${c.speedNumber(rad, true)} KM`)
                       .join(', ')}`
-                  : `${c.capitalize(r)}: ${c.r2(
+                  : `${c.capitalize(r)}: ${c.speedNumber(
                       dataToUse.radii[r],
-                    )}AU`,
+                      true,
+                    )} KM`,
               )"
           >
             {{ r }}
@@ -266,11 +225,7 @@
       >
         <div class="sub">Mass</div>
         <div>
-          {{
-            c.numberWithCommas(
-              c.r2(dataToUse.mass / 1000, 2),
-            )
-          }}
+          {{ c.numberWithCommas(c.r2(dataToUse.mass / 1000, 2)) }}
           tons
         </div>
       </div>
@@ -307,10 +262,7 @@
         <div v-tooltip="captain">
           <span class="captainlabel flex" v-if="captain">
             <div class="captainicon">
-              <ShipCrewIcon
-                :crewMember="captain"
-                :showDiscordIcon="false"
-              />
+              <ShipCrewIcon :crewMember="captain" :showDiscordIcon="false" />
             </div>
             <div>{{ captain.name }}</div>
           </span>
@@ -321,11 +273,7 @@
 
     <div
       class="panesection"
-      v-if="
-        showItems &&
-        dataToUse.items &&
-        dataToUse.items.length
-      "
+      v-if="showItems && dataToUse.items && dataToUse.items.length"
     >
       <ShipItem
         v-for="(item, index) in dataToUse.items || []"
@@ -356,9 +304,8 @@ export default Vue.extend({
     },
     dataToUse() {
       return (
-        this.ship?.visible?.ships.find(
-          (p) => p.id === this.data.id,
-        ) || this.data
+        this.ship?.visible?.ships.find((p) => p.id === this.data.id) ||
+        this.data
       )
     },
     captain() {
@@ -379,9 +326,7 @@ export default Vue.extend({
   methods: {
     recalculateRemaining() {
       if (!this.dataToUse.until) this.timeRemaining = 0
-      else
-        this.timeRemaining =
-          this.dataToUse.until - Date.now()
+      else this.timeRemaining = this.dataToUse.until - Date.now()
     },
   },
 })
@@ -390,8 +335,7 @@ export default Vue.extend({
 <style scoped lang="scss">
 .shipdataview {
   min-width: 200px;
-  margin: calc(-1 * var(--tooltip-pad-tb))
-    calc(-1 * var(--tooltip-pad-lr));
+  margin: calc(-1 * var(--tooltip-pad-tb)) calc(-1 * var(--tooltip-pad-lr));
 }
 
 .arrow {

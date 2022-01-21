@@ -47,6 +47,13 @@ const loadouts: { [key in LoadoutId]: Loadout } = {
       { itemType: `engine`, itemId: `passive1` },
     ],
   },
+  testSlowingWeapon: {
+    chassisId: `starter1`,
+    items: [
+      { itemType: `weapon`, itemId: `slowing1` },
+      { itemType: `scanner`, itemId: `shipscanner3` },
+    ],
+  },
   testMega: {
     chassisId: `mega3`,
     items: [

@@ -39,7 +39,7 @@
     >
       <img :src="`/images/crewActives/${active.id}.svg`" />
     </div>
-    <div class="displaytimer" v-if="!active.unlockLevel && cooldownRemaining">
+    <div class="displaytimer" v-if="cooldownRemaining">
       {{ c.msToTimeString(cooldownRemaining, true) }}
     </div>
   </div>

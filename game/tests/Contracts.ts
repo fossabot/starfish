@@ -9,9 +9,7 @@ import { Game } from '../src/game/Game'
 import chai, { expect } from 'chai'
 import { describe, it } from 'mocha'
 
-import socketIoClient, {
-  Socket as ClientSocket,
-} from 'socket.io-client' // yes, we're making a CLIENT here.
+import socketIoClient, { Socket as ClientSocket } from 'socket.io-client' // yes, we're making a CLIENT here.
 import {
   awaitIOConnection,
   enemyAiShipData,
@@ -26,9 +24,7 @@ describe(`Contract basics`, () => {
   it(`should spawn contracts on planets`, async () => {
     const g = new Game()
     const ai = await g.addAIShip(enemyAiShipData())
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.maxContracts = 1
     p.refreshContracts()
 
@@ -38,9 +34,7 @@ describe(`Contract basics`, () => {
   it(`should not spawn contracts on allied ships`, async () => {
     const g = new Game()
     const ai = await g.addAIShip(enemyAiShipData())
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.incrementAllegiance(`fowl`, 100000)
     p.maxContracts = 1
     p.refreshContracts()
@@ -56,9 +50,7 @@ describe(`Contract basics`, () => {
     s.guildId = `explorer`
     s.commonCredits = 999999
     s.shipCosmeticCurrency = 999999
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.incrementAllegiance(`explorer`, 100000)
     p.maxContracts = 1
     p.refreshContracts()
@@ -67,12 +59,9 @@ describe(`Contract basics`, () => {
     s.updatePlanet()
     expect(s.planet).to.not.be.false
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
+    const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+      secure: true,
+    })
     await awaitIOConnection(client)
 
     expect(p.contracts.length).to.equal(1)
@@ -88,9 +77,7 @@ describe(`Contract basics`, () => {
           expect(res.error).to.be.undefined
           expect(s.contracts.length).to.equal(1)
           expect(p.contracts.length).to.equal(0)
-          expect(s.contracts[0].id).to.equal(
-            planetContract?.id,
-          )
+          expect(s.contracts[0].id).to.equal(planetContract?.id)
           r()
         },
       ),
@@ -105,9 +92,7 @@ describe(`Contract basics`, () => {
     s.guildId = `explorer`
     s.commonCredits = 999999
     s.shipCosmeticCurrency = 999999
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.incrementAllegiance(`explorer`, 100000)
     p.maxContracts = 1
     p.refreshContracts()
@@ -116,12 +101,9 @@ describe(`Contract basics`, () => {
     s.updatePlanet()
     expect(s.planet).to.not.be.false
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
+    const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+      secure: true,
+    })
     await awaitIOConnection(client)
 
     expect(p.contracts.length).to.equal(1)
@@ -149,9 +131,7 @@ describe(`Contract basics`, () => {
   it(`should time out contracts`, async () => {
     const g = new Game()
     const ai = await g.addAIShip(enemyAiShipData())
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.maxContracts = 1
     p.refreshContracts()
     expect(p.contracts.length).to.equal(1)
@@ -166,12 +146,9 @@ describe(`Contract basics`, () => {
     s.updatePlanet()
     expect(s.planet).to.not.be.false
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
+    const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+      secure: true,
+    })
     await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
@@ -195,17 +172,13 @@ describe(`Contract basics`, () => {
     const g = new Game()
     const ai = await g.addAIShip(enemyAiShipData())
 
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
     p.maxContracts = 1
     p.refreshContracts()
     expect(p.contracts.length).to.equal(1)
     const planetContract = p.contracts[0]
 
-    const s = await g.addHumanShip(
-      humanShipData(`testMega`),
-    )
+    const s = await g.addHumanShip(humanShipData(`testMega`))
     const cm = await s.addCrewMember(crewMemberData())
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
@@ -217,12 +190,9 @@ describe(`Contract basics`, () => {
     s.updatePlanet()
     expect(s.planet).to.not.be.false
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
+    const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+      secure: true,
+    })
     await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
@@ -237,10 +207,7 @@ describe(`Contract basics`, () => {
       ),
     )
 
-    s.move([
-      s.location[0] + g.settings.arrivalThreshold + 0.001,
-      s.location[1],
-    ])
+    s.move([s.location[0] + g.settings.arrivalThreshold + 0.001, s.location[1]])
     ai.move([...s.location])
     s.updatePlanet()
     s.recalculateCombatTactic()
@@ -260,30 +227,23 @@ describe(`Contract basics`, () => {
 
   it(`should complete done contracts on returning to a planet`, async () => {
     const g = new Game()
-    const ai = await g.addAIShip(enemyAiShipData())
+    await g.addAIShip(enemyAiShipData())
+    await g.addAIShip(enemyAiShipData())
 
-    const p = (await g.addBasicPlanet(
-      basicPlanetData(),
-    )) as BasicPlanet
-    p.maxContracts = 1
+    const p = (await g.addBasicPlanet(basicPlanetData())) as BasicPlanet
+    p.maxContracts = 2
     p.refreshContracts()
-    expect(p.contracts.length).to.equal(1)
-    const planetContract = p.contracts[0]
+    expect(p.contracts.length).to.equal(2)
 
-    const s = await g.addHumanShip(
-      humanShipData(`testMega`),
-    )
+    const s = await g.addHumanShip(humanShipData(`testMega`))
     const cm = await s.addCrewMember(crewMemberData())
     s.commonCredits = 999999
     s.shipCosmeticCurrency = 999999
     s.updatePlanet()
 
-    const client = socketIoClient(
-      `http://0.0.0.0:${g.ioPort}`,
-      {
-        secure: true,
-      },
-    )
+    const client = socketIoClient(`http://0.0.0.0:${g.ioPort}`, {
+      secure: true,
+    })
     await awaitIOConnection(client)
 
     await new Promise<void>((r) =>
@@ -291,25 +251,36 @@ describe(`Contract basics`, () => {
         `ship:acceptContract`,
         s.id,
         cm.id,
-        planetContract?.id,
+        p.contracts[0]?.id,
         (res) => {
           r()
         },
       ),
     )
+    await new Promise<void>((r) =>
+      client.emit(
+        `ship:acceptContract`,
+        s.id,
+        cm.id,
+        p.contracts[0]?.id,
+        (res) => {
+          r()
+        },
+      ),
+    )
+    expect(s.contracts.length).to.equal(2)
 
-    s.move([
-      s.location[0] + g.settings.arrivalThreshold + 0.001,
-      s.location[1],
-    ])
+    s.move([s.location[0] + g.settings.arrivalThreshold + 0.001, s.location[1]])
     s.updatePlanet()
     s.contracts[0].reward.shipCosmeticCurrency = 100
+    s.contracts[1].reward.shipCosmeticCurrency = 1
     const previous = s.shipCosmeticCurrency
     s.contracts[0].status = `done`
+    s.contracts[1].status = `done`
     s.move([...p.location])
     s.updatePlanet()
 
     expect(s.contracts.length).to.equal(0)
-    expect(s.shipCosmeticCurrency).to.equal(previous + 100)
+    expect(s.shipCosmeticCurrency).to.equal(previous + 101)
   })
 })

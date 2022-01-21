@@ -26,6 +26,10 @@ exports.rooms = {
         id: `lab`,
         description: `Research upgrades for the ship's equipment.`,
     },
+    lounge: {
+        id: `lounge`,
+        description: `Take a break and increase your morale.`,
+    },
 };
 exports.default = exports.rooms;
 //# sourceMappingURL=rooms.js.map

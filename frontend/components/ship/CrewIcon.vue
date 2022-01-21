@@ -2,19 +2,14 @@
   <div
     class="crewmembericon"
     v-if="crewMember"
-    v-tooltip="
-      hoverable && { type: 'crewMember', ...crewMember }
-    "
+    v-tooltip="hoverable && { type: 'crewMember', ...crewMember }"
   >
     <div class="cmielements">
       <div class="cmibg flexcenter">
         <img
           :src="`/images/headerBackgrounds/crew/${
             crewMember.background
-              ? crewMember.background.replace(
-                  '.jpg',
-                  '.webp',
-                )
+              ? crewMember.background.replace('.jpg', '.webp')
               : 'default.svg'
           }`"
         />
@@ -27,12 +22,7 @@
       <div class="cmilevel" v-if="showLevel">
         <svg viewBox="0 0 30 30">
           <circle cx="50%" cy="50%" r="15" />
-          <text
-            x="50%"
-            y="50%"
-            dominant-baseline="middle"
-            text-anchor="middle"
-          >
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
             {{ crewMember.level }}
           </text>
         </svg>
@@ -43,24 +33,15 @@
           lowmorale:
             crewMember.morale !== undefined &&
             crewMember.morale <
-              (ship
-                ? ship.gameSettings.moraleLowThreshold
-                : 0),
+              (ship ? ship.gameSettings.moraleLowThreshold : 0),
           highmorale:
             crewMember.morale !== undefined &&
             crewMember.morale >
-              (ship
-                ? ship.gameSettings.moraleHighThreshold
-                : 1),
+              (ship ? ship.gameSettings.moraleHighThreshold : 1),
         }"
       >
         <svg viewBox="0 0 24 24">
-          <text
-            x="50%"
-            y="57%"
-            dominant-baseline="middle"
-            text-anchor="middle"
-          >
+          <text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle">
             {{
               c.species[crewMember.speciesId]
                 ? c.species[crewMember.speciesId].icon
@@ -74,10 +55,7 @@
         class="discordicon"
         :src="crewMember.discordIcon"
       />
-      <div
-        class="cmitagline"
-        v-if="showTagline && crewMember.tagline"
-      >
+      <div class="cmitagline" v-if="showTagline && crewMember.tagline">
         <svg viewBox="0 0 160 15">
           <text x="80" y="12" text-anchor="middle">
             {{ crewMember.tagline }}
@@ -137,10 +115,10 @@ export default Vue.extend({
 
 .cmibg {
   position: absolute;
-  top: -5%;
-  left: -5%;
-  width: 110%;
-  height: 110%;
+  top: -2.5%;
+  left: -2.5%;
+  width: 105%;
+  height: 105%;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -186,12 +164,10 @@ export default Vue.extend({
   }
 
   &.lowmorale {
-    filter: contrast(0.8)
-      drop-shadow(0 0 0.3em var(--warning));
+    filter: contrast(0.8) drop-shadow(0 0 0.3em var(--warning));
   }
   &.highmorale {
-    filter: contrast(1.3)
-      drop-shadow(0 0 0.18em var(--success));
+    filter: contrast(1.3) drop-shadow(0 0 0.18em var(--success));
   }
 }
 .cmicaptain {
@@ -246,9 +222,10 @@ export default Vue.extend({
 
     text {
       fill: var(--text);
-      opacity: 0.8;
+      opacity: 0.85;
       filter: drop-shadow(0 1px 0.3rem #000);
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-weight: bold;
     }
   }
 }

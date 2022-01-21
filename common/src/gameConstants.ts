@@ -11,7 +11,7 @@ const defaultGameSettings: {
   staminaBottomedOutResetPoint: 0.05,
   staminaBottomedOutChargeMultiplier: 1,
   newCrewMemberCredits: 1000,
-  enduranceXpGainPerSecond: 0.1,
+  enduranceXpGainPerSecond: 0.04,
 
   moraleLowThreshold: 0.2,
   moraleHighThreshold: 0.8,
@@ -71,6 +71,8 @@ const baseItemSellMultiplier = 0.6
 
 const noEngineThrustMagnitude = 0.02
 
+const loungeMoraleGainBasisPerTick = 0.00003
+
 const planetContributeCostPerXp = 1
 const planetContributeShipCosmeticCostPerXp = 0.00005
 const planetContributeCrewCosmeticCostPerXp = 0.05
@@ -119,23 +121,22 @@ const baseShipScanProperties: {
   speciesId: true,
   chassis: [`displayName`],
 }
-const sameGuildShipScanProperties: Partial<ShipScanDataShape> =
-  {
-    _hp: true,
-    _maxHp: true,
-    items: [
-      `displayName`,
-      `maxHp`,
-      `repair`,
-      `cooldownRemaining`,
-      `chargeRequired`,
-      `id`,
-      `range`,
-      `itemId`,
-      `itemType`,
-      `description`,
-    ] as (keyof BaseItemData)[],
-  }
+const sameGuildShipScanProperties: Partial<ShipScanDataShape> = {
+  _hp: true,
+  _maxHp: true,
+  items: [
+    `displayName`,
+    `maxHp`,
+    `repair`,
+    `cooldownRemaining`,
+    `chargeRequired`,
+    `id`,
+    `range`,
+    `itemId`,
+    `itemType`,
+    `description`,
+  ] as (keyof BaseItemData)[],
+}
 
 const tactics: CombatTactic[] = [
   `aggressive`,
@@ -183,6 +184,8 @@ export default {
   weaponDamageMultiplier,
 
   displayHPMultiplier,
+
+  loungeMoraleGainBasisPerTick,
 
   attackRemnantExpireTime,
   cacheExpireTime,

@@ -56,6 +56,7 @@ declare const _default: {
     itemMassMultiplier: number;
     weaponDamageMultiplier: number;
     displayHPMultiplier: number;
+    loungeMoraleGainBasisPerTick: number;
     attackRemnantExpireTime: number;
     cacheExpireTime: number;
     zoneExpireTime: number;

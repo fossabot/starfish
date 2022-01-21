@@ -205,9 +205,7 @@ exports.chassis = {
         agility: 0.7,
         maxCargoSpace: 60,
         rarity: 4,
-        passives: [
-            { id: `boostPassiveThrust`, intensity: 0.05 },
-        ],
+        passives: [{ id: `boostPassiveThrust`, intensity: 0.05 }],
         rooms: [`bunk`, `cockpit`, `repair`, `lab`],
     },
     hauler2: {
@@ -234,7 +232,7 @@ exports.chassis = {
         type: `chassis`,
         chassisId: `hauler3`,
         displayName: `Long Hauler 13`,
-        description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range. Equipped with CV radio extender.`,
+        description: `Made to serve aquatic life with migratory instincts. A bit cumbersome in a firefight, but allows for superior cargo space compared to other models in its price range. Equipped with CV radio extender and a lounge for crew relaxation.`,
         mass: 9600 * gameConstants_1.default.itemMassMultiplier,
         basePrice: { credits: 520 * gameConstants_1.default.itemPriceMultiplier },
         slots: 7,
@@ -248,7 +246,7 @@ exports.chassis = {
                 intensity: 0.15,
             },
         ],
-        rooms: [`bunk`, `cockpit`, `repair`, `lab`],
+        rooms: [`bunk`, `cockpit`, `repair`, `lab`, `lounge`],
     },
     // sailer
     sailer1: {
@@ -318,7 +316,7 @@ exports.chassis = {
         maxCargoSpace: 300,
         rarity: 12,
         passives: [{ id: `boostBrake`, intensity: -0.2 }],
-        rooms: [`bunk`, `cockpit`, `repair`, `lab`],
+        rooms: [`bunk`, `cockpit`, `repair`, `lab`, `lounge`],
     },
     mega2: {
         type: `chassis`,
@@ -335,7 +333,7 @@ exports.chassis = {
             { id: `boostBrake`, intensity: -0.3 },
             { id: `boostDropAmount`, intensity: 0.03 },
         ],
-        rooms: [`bunk`, `cockpit`, `repair`, `lab`],
+        rooms: [`bunk`, `cockpit`, `repair`, `lab`, `lounge`],
     },
     mega3: {
         type: `chassis`,
@@ -352,7 +350,7 @@ exports.chassis = {
             { id: `boostBrake`, intensity: -0.4 },
             { id: `boostDropAmount`, intensity: 0.05 },
         ],
-        rooms: [`bunk`, `cockpit`, `repair`, `lab`],
+        rooms: [`bunk`, `cockpit`, `repair`, `lab`, `lounge`],
     },
 };
 //# sourceMappingURL=chassis.js.map

@@ -75,11 +75,7 @@ export default class Drawer {
   }) {
     if (!visible) return
 
-    if (
-      !this.element ||
-      !document.body.contains(this.element)
-    )
-      return
+    if (!this.element || !document.body.contains(this.element)) return
 
     const now = Date.now()
     this.ctx = this.element.getContext(`2d`)
@@ -88,15 +84,8 @@ export default class Drawer {
 
     this.drawCalls = 0
 
-    const profiler = new c.Profiler(
-      4,
-      `draw map frame`,
-      false,
-      0,
-    )
     if (!visible) visible = {}
 
-    profiler.step(`bounds`)
     // ----- determine map bounds etc -----
     const shipLocation: CoordinatePair | undefined = ship
       ? [
@@ -107,55 +96,36 @@ export default class Drawer {
     if (!center) center = shipLocation || [0, 0]
 
     this.targetCenter = [...center]
-    if (!this.previousCenter)
-      this.previousCenter = [...center]
+    if (!this.previousCenter) this.previousCenter = [...center]
     this.center = immediate
       ? this.targetCenter
       : [
-          c.lerp(
-            this.previousCenter[0],
-            this.targetCenter[0],
-            this.lerpSpeed,
-          ),
-          c.lerp(
-            this.previousCenter[1],
-            this.targetCenter[1],
-            this.lerpSpeed,
-          ),
+          c.lerp(this.previousCenter[0], this.targetCenter[0], this.lerpSpeed),
+          c.lerp(this.previousCenter[1], this.targetCenter[1], this.lerpSpeed),
         ]
 
     const sightRadius =
-      (ship?.radii?.sight ||
-        (visible as any).gameRadius ||
-        1) * this.flatScale
+      (ship?.radii?.sight || (visible as any).gameRadius || 1) * this.flatScale
 
     const buffer = 0.91
 
     const devicePixelRatio = window.devicePixelRatio
 
     if (!passedZoom)
-      this.targetZoom =
-        (this.elementScreenSize[0] / sightRadius / 2) *
-        buffer
+      this.targetZoom = (this.elementScreenSize[0] / sightRadius / 2) * buffer
     // perfect somehow
     else this.targetZoom = passedZoom
 
     if (this.previousZoom === null) this.previousZoom = 30 // this.targetZoom
     this.zoom = immediate
       ? this.targetZoom
-      : c.lerp(
-          this.previousZoom,
-          this.targetZoom,
-          this.lerpSpeed,
-        )
+      : c.lerp(this.previousZoom, this.targetZoom, this.lerpSpeed)
     this.width = this.elementScreenSize[0] / this.zoom
     this.height =
-      (this.elementScreenSize[1] ||
-        this.elementScreenSize[0]) / this.zoom
+      (this.elementScreenSize[1] || this.elementScreenSize[0]) / this.zoom
 
     // c.log(this.zoom, this.width, this.height)
 
-    profiler.step(`is in sight range`)
     // ----- planets -----
     const planetsToDraw: PlanetStub[] = (
       ship?.seenPlanets ||
@@ -165,28 +135,21 @@ export default class Drawer {
       .filter((p) => p)
       .filter(
         (p) =>
-          (visible as AdminVisibleData).showAll ||
-          this.isPointInSightRange(p),
+          (visible as AdminVisibleData).showAll || this.isPointInSightRange(p),
       )
 
     // ----- planets -----
-    const cometsToDraw: PlanetStub[] = (
-      (visible.comets as PlanetStub[]) || []
-    )
+    const cometsToDraw: PlanetStub[] = ((visible.comets as PlanetStub[]) || [])
       .filter((p) => p)
       .filter(
         (p) =>
-          (visible as AdminVisibleData).showAll ||
-          this.isPointInSightRange(p),
+          (visible as AdminVisibleData).showAll || this.isPointInSightRange(p),
       )
 
     // ----- ships -----
-    const shipsToDraw: ShipStub[] = (
-      visible?.ships || []
-    ).filter(
+    const shipsToDraw: ShipStub[] = (visible?.ships || []).filter(
       (p) =>
-        (visible as AdminVisibleData).showAll ||
-        this.isPointInSightRange(p),
+        (visible as AdminVisibleData).showAll || this.isPointInSightRange(p),
     )
 
     // ----- trails -----
@@ -196,9 +159,7 @@ export default class Drawer {
     }[] = ((visible as VisibleStub).trails || []).filter(
       (p) =>
         (visible as AdminVisibleData).showAll ||
-        this.isTrailInSightRange(
-          p.points.map((po) => po.location),
-        ),
+        this.isTrailInSightRange(p.points.map((po) => po.location)),
     )
 
     // ----- caches -----
@@ -206,37 +167,26 @@ export default class Drawer {
       [...(visible?.caches || [])] || []
     ).filter(
       (p) =>
-        (`location` in p &&
-          (visible as AdminVisibleData).showAll) ||
+        (`location` in p && (visible as AdminVisibleData).showAll) ||
         this.isPointInSightRange(p as HasLocation),
     )
 
     const zonesToDraw: Partial<ZoneStub>[] = [
       ...(visible?.zones || []),
-      ...(ship?.seenLandmarks?.filter(
-        (l) => l.type === `zone`,
-      ) || []),
+      ...(ship?.seenLandmarks?.filter((l) => l.type === `zone`) || []),
     ]
 
-    const attackRemnantsToDraw: Partial<AttackRemnantStub>[] =
-      [
-        ...(visible?.attackRemnants ||
-          ship?.visible?.attackRemnants ||
-          []),
-      ]
+    const attackRemnantsToDraw: Partial<AttackRemnantStub>[] = [
+      ...(visible?.attackRemnants || ship?.visible?.attackRemnants || []),
+    ]
 
     // ----- target points -----
-    const targetPointsToDraw: TargetLocation[] = [
-      ...targetPoints,
-    ]
+    const targetPointsToDraw: TargetLocation[] = [...targetPoints]
     if (ship?.tutorial?.targetLocation)
-      targetPointsToDraw.push(
-        ship?.tutorial?.targetLocation,
-      )
+      targetPointsToDraw.push(ship?.tutorial?.targetLocation)
 
     // ----- actually draw -----
 
-    profiler.step(`zoom and position`)
     // ----- zoom and position -----
     this.ctx.save()
     this.ctx.setTransform(1, 0, 0, 1, 0, 0)
@@ -246,11 +196,7 @@ export default class Drawer {
       this.height / 2 - this.center[1],
     )
     this.topLeft = this.getTopLeft()
-    this.ctx.clearRect(
-      ...this.topLeft,
-      this.width,
-      this.height,
-    )
+    this.ctx.clearRect(...this.topLeft, this.width, this.height)
 
     // ----- bg and outline -----
 
@@ -273,11 +219,7 @@ export default class Drawer {
         ) as CoordinatePair,
         labelTop: `vision`,
         labelBottom:
-          c.speedNumber(
-            sightRadius / this.flatScale,
-            true,
-            0,
-          ) + ` km`,
+          c.speedNumber(sightRadius / this.flatScale, true, 0) + ` km`,
         radius: sightRadius,
         color: `#bbbbbb`,
         outline: true,
@@ -285,16 +227,12 @@ export default class Drawer {
       })
     }
 
-    if (
-      ship?.radii?.gameSize ||
-      (visible as AdminVisibleData).gameRadius
-    )
+    if (ship?.radii?.gameSize || (visible as AdminVisibleData).gameRadius)
       this.drawPoint({
         location: [0, 0],
         labelTop: `known universe`,
         radius:
-          (ship?.radii?.gameSize ||
-            (visible as AdminVisibleData).gameRadius) *
+          (ship?.radii?.gameSize || (visible as AdminVisibleData).gameRadius) *
           this.flatScale,
         color: `#bbbbbb`,
         outline: true,
@@ -302,17 +240,13 @@ export default class Drawer {
         alwaysShowLabels: true,
       })
 
-    if (
-      ship?.radii?.safeZone ||
-      (visible as AdminVisibleData).safeZoneRadius
-    )
+    if (ship?.radii?.safeZone || (visible as AdminVisibleData).safeZoneRadius)
       this.drawPoint({
         location: [0, 0],
         labelTop: `protected zone`,
         radius:
           (ship?.radii?.safeZone ||
-            (visible as AdminVisibleData).safeZoneRadius) *
-          this.flatScale,
+            (visible as AdminVisibleData).safeZoneRadius) * this.flatScale,
         color: `#00bb00`,
         outline: true,
         opacity: 0.5,
@@ -327,10 +261,8 @@ export default class Drawer {
 
     let auBetweenLines = 1 / 10 ** 6
     const diameter = Math.max(this.width, this.height)
-    while (auBetweenLines / diameter < 0.02)
-      auBetweenLines *= 10
-    while (auBetweenLines / diameter < 0.15)
-      auBetweenLines *= 2
+    while (auBetweenLines / diameter < 0.02) auBetweenLines *= 10
+    while (auBetweenLines / diameter < 0.15) auBetweenLines *= 2
 
     for (let i = 1; i < 30; i++) {
       const radius = c.r2(auBetweenLines * i, 5)
@@ -338,9 +270,7 @@ export default class Drawer {
         location: [...(shipLocation || center)].map(
           (l) => l / this.flatScale,
         ) as CoordinatePair,
-        labelBottom:
-          c.speedNumber(radius / this.flatScale, true, 0) +
-          ` km`,
+        labelBottom: c.speedNumber(radius / this.flatScale, true, 0) + ` km`,
         labelTop: ship && this.radiusToTime(ship, radius),
         radius: radius,
         color: `#555555`,
@@ -359,8 +289,7 @@ export default class Drawer {
             (l) => l / this.flatScale,
           ) as CoordinatePair,
           labelTop: `scan`,
-          labelBottom:
-            c.speedNumber(ship.radii.scan, true, 0) + ` km`,
+          labelBottom: c.speedNumber(ship.radii.scan, true, 0) + ` km`,
           radius: ship.radii.scan * this.flatScale,
           color: `#26e0b0`,
           outline: true,
@@ -385,9 +314,7 @@ export default class Drawer {
             (l) => l / this.flatScale,
           ) as CoordinatePair,
           labelTop: `broadcast`,
-          labelBottom:
-            c.speedNumber(ship.radii.broadcast, true, 0) +
-            ` km`,
+          labelBottom: c.speedNumber(ship.radii.broadcast, true, 0) + ` km`,
           radius: ship.radii.broadcast * this.flatScale,
           color: `#a175ef`,
           outline: true,
@@ -398,14 +325,10 @@ export default class Drawer {
     }
 
     // ----- planets
-    profiler.step(`draw planets`)
     ;[...planetsToDraw].forEach((p) => {
       const sizeMod = Math.max(
         (p.radius / c.kmPerAu) * this.flatScale,
-        ((p.radius / c.kmPerAu) *
-          this.flatScale *
-          2 *
-          devicePixelRatio) /
+        ((p.radius / c.kmPerAu) * this.flatScale * 2 * devicePixelRatio) /
           this.zoom,
       )
       this.drawPoint({
@@ -434,9 +357,7 @@ export default class Drawer {
       if (p.defense)
         this.drawPoint({
           location: [p.location[0], p.location[1] * -1],
-          radius:
-            c.getPlanetDefenseRadius(p.defense) *
-            this.flatScale,
+          radius: c.getPlanetDefenseRadius(p.defense) * this.flatScale,
           color: `#ff5a5c`,
           outline: `dash`,
           opacity: 0.4,
@@ -466,13 +387,7 @@ export default class Drawer {
           color: `white`,
           width: 2,
           opacity:
-            (1 -
-              c.clamp(
-                0,
-                (now - prev.time) /
-                  c.previousLocationTimeout,
-                1,
-              )) *
+            (1 - c.clamp(0, (now - prev.time) / c.previousLocationTimeout, 1)) *
             0.2,
         })
       })
@@ -494,9 +409,7 @@ export default class Drawer {
             end: [...shipLocation],
             start: [
               crewMember.targetLocation[0] * this.flatScale,
-              crewMember.targetLocation[1] *
-                this.flatScale *
-                -1,
+              crewMember.targetLocation[1] * this.flatScale * -1,
             ],
             color: `white`,
             opacity: 0.8,
@@ -519,10 +432,7 @@ export default class Drawer {
             cm.targetLocation &&
             cm.location === `cockpit` &&
             cm.id !== crewMemberId &&
-            !(
-              cm?.targetObject &&
-              cm?.targetObject?.id === ship?.id
-            ),
+            !(cm?.targetObject && cm?.targetObject?.id === ship?.id),
         )
         crewMembers.forEach((cm) => {
           this.drawLine({
@@ -539,10 +449,7 @@ export default class Drawer {
           this.drawPoint({
             labelTop: cm.name,
             labelScale: 0.7,
-            location: [
-              cm.targetLocation[0],
-              cm.targetLocation[1] * -1,
-            ],
+            location: [cm.targetLocation[0], cm.targetLocation[1] * -1],
             radius: (1.5 / this.zoom) * devicePixelRatio,
             color: `white`,
             opacity: 0.2,
@@ -555,26 +462,12 @@ export default class Drawer {
         this.drawLine({
           start: [...shipLocation],
           end: [
-            shipLocation[0] +
-              ship.velocity[0] * 10000 * this.flatScale,
-            shipLocation[1] +
-              ship.velocity[1] *
-                10000 *
-                this.flatScale *
-                -1,
+            shipLocation[0] + ship.velocity[0] * 10000 * this.flatScale,
+            shipLocation[1] + ship.velocity[1] * 10000 * this.flatScale * -1,
           ],
           color: `rgba(0, 255, 70, 1)`,
-          opacity: Math.max(
-            0.4,
-            Math.min(ship.speed / 2, 0.7),
-          ),
-          dash: [
-            2,
-            Math.min(
-              Math.max(10, ship.speed * 50 * 1000),
-              100,
-            ),
-          ],
+          opacity: Math.max(0.4, Math.min(ship.speed / 2, 0.7)),
+          dash: [2, Math.min(Math.max(10, ship.speed * 50 * 1000), 100)],
         })
       }
 
@@ -582,13 +475,10 @@ export default class Drawer {
       if (ship?.targetShip) {
         let crewMember: any
         if (crewMemberId)
-          crewMember = ship?.crewMembers.find(
-            (cm) => cm.id === crewMemberId,
-          )
+          crewMember = ship?.crewMembers.find((cm) => cm.id === crewMemberId)
         if (
           !crewMember ||
-          (crewMember?.location === `weapons` &&
-            ship.targetShip)
+          (crewMember?.location === `weapons` && ship.targetShip)
         ) {
           const foundShip = ship.visible?.ships.find(
             (s) => s.id === ship.targetShip.id,
@@ -623,14 +513,10 @@ export default class Drawer {
         s.debugLocations?.forEach((loc) => {
           this.drawPoint({
             location: [loc.point[0], loc.point[1] * -1],
-            labelTop: loc.label
-              ? `${s.name}: ${loc.label}`
-              : `${s.name} debug`,
+            labelTop: loc.label ? `${s.name}: ${loc.label}` : `${s.name} debug`,
             labelScale: 0.5,
             radius: (1 / this.zoom) * devicePixelRatio,
-            color:
-              c.guilds[s.guildId]?.color ||
-              `rgb(0, 255, 100)`,
+            color: c.guilds[s.guildId]?.color || `rgb(0, 255, 100)`,
           })
         })
       })
@@ -670,8 +556,7 @@ export default class Drawer {
           color: z.color,
           opacity: 0.02,
         })
-        if (z.effects.find((e) => e.type === `current`))
-          return `hi`
+        if (z.effects.find((e) => e.type === `current`)) return `hi`
         // todo
       })
 
@@ -702,7 +587,6 @@ export default class Drawer {
       })
     })
 
-    profiler.step(`draw ships`)
     // ----- ships
     ;[...shipsToDraw].forEach((s) => {
       const angle = s.direction
@@ -710,22 +594,16 @@ export default class Drawer {
         : s.velocity && s.velocity.find((v) => v)
         ? c.vectorToDegrees(s.velocity)
         : c.angleFromAToB(
-            s.previousLocations[
-              s.previousLocations.length - 1
-            ]?.location,
+            s.previousLocations[s.previousLocations.length - 1]?.location,
             s.location,
           )
       const highlight = Boolean(
         ship?.contracts?.find(
-          (co) =>
-            co.status === `active` && s.id === co.targetId,
+          (co) => co.status === `active` && s.id === co.targetId,
         ),
       )
       const radius =
-        (c.items.chassis[s.chassis?.chassisId || `starter1`]
-          .slots +
-          5) /
-        3
+        (c.items.chassis[s.chassis?.chassisId || `starter1`].slots + 5) / 3
       const zoomRadius = Math.max(
         radius / this.zoom,
         ((radius * 600) / c.kmPerAu) * this.flatScale,
@@ -760,11 +638,7 @@ export default class Drawer {
       // player ship
 
       const radius =
-        (c.items.chassis[
-          ship.chassis?.chassisId || `starter1`
-        ].slots +
-          5) /
-        3
+        (c.items.chassis[ship.chassis?.chassisId || `starter1`].slots + 5) / 3
       const zoomRadius = Math.max(
         radius / this.zoom,
         ((radius * 600) / c.kmPerAu) * this.flatScale,
@@ -780,22 +654,19 @@ export default class Drawer {
           : ship.velocity && ship.velocity.find((v) => v)
           ? c.vectorToDegrees(ship.velocity)
           : c.angleFromAToB(
-              ship.previousLocations[
-                ship.previousLocations.length - 1
-              ]?.location,
+              ship.previousLocations[ship.previousLocations.length - 1]
+                ?.location,
               ship.location,
             ),
       })
     }
 
-    profiler.step(`draw caches`)
     // ----- caches
     ;[...cachesToDraw].forEach((k) => {
       this.drawPoint({
         location: [k.location[0], k.location[1] * -1],
         radius:
-          (ship?.gameSettings?.arrivalThreshold || 0.002) *
-          this.flatScale,
+          (ship?.gameSettings?.arrivalThreshold || 0.002) * this.flatScale,
         color: `#f9c74f`, // var(--cargo)
         outline: `dash`,
         opacity: 0.4,
@@ -814,37 +685,23 @@ export default class Drawer {
       ?.filter(
         (co) =>
           co.status === `active` &&
-          !ship.visible?.ships.find(
-            (s) => s.id === co.targetId,
-          ),
+          !ship.visible?.ships.find((s) => s.id === co.targetId),
       )
       .forEach((co) => {
         this.drawPoint({
-          location: [
-            co.lastSeenLocation[0],
-            co.lastSeenLocation[1] * -1,
-          ],
+          location: [co.lastSeenLocation[0], co.lastSeenLocation[1] * -1],
           labelCenter: co.targetName,
           radius:
-            (ship?.gameSettings.contractLocationRadius ||
-              0.2) * this.flatScale,
-          color: co.targetGuildId
-            ? c.guilds[co.targetGuildId].color
-            : `#bb0`,
+            (ship?.gameSettings.contractLocationRadius || 0.2) * this.flatScale,
+          color: co.targetGuildId ? c.guilds[co.targetGuildId].color : `#bb0`,
           opacity: 0.4,
           outline: true,
         })
         this.drawPoint({
-          location: [
-            co.lastSeenLocation[0],
-            co.lastSeenLocation[1] * -1,
-          ],
+          location: [co.lastSeenLocation[0], co.lastSeenLocation[1] * -1],
           radius:
-            (ship?.gameSettings.contractLocationRadius ||
-              0.2) * this.flatScale,
-          color: co.targetGuildId
-            ? c.guilds[co.targetGuildId].color
-            : `#bb0`,
+            (ship?.gameSettings.contractLocationRadius || 0.2) * this.flatScale,
+          color: co.targetGuildId ? c.guilds[co.targetGuildId].color : `#bb0`,
           opacity: 0.02,
         })
       })
@@ -852,38 +709,25 @@ export default class Drawer {
     // ----- clipped objects -----
 
     if (ship) {
-      profiler.step(`clip`)
       this.ctx.beginPath()
-      this.ctx.arc(
-        ...shipLocation,
-        sightRadius,
-        0,
-        Math.PI * 2,
-      )
+      this.ctx.arc(...shipLocation, sightRadius, 0, Math.PI * 2)
       this.ctx.clip()
     }
 
-    profiler.step(`draw trails`)
     // ----- trails
     visible.ships?.forEach((s) => {
       const pointsToDraw: PreviousLocation[] = [
-        ...(Array.isArray(s.previousLocations)
-          ? s.previousLocations
-          : []),
+        ...(Array.isArray(s.previousLocations) ? s.previousLocations : []),
         { time: now, location: s.location },
       ]
       pointsToDraw.forEach((pl, index) => {
         let prevShipLocationPoint: PreviousLocation
-        prevShipLocationPoint =
-          s.previousLocations[index - 1]
+        prevShipLocationPoint = s.previousLocations[index - 1]
         if (!prevShipLocationPoint) return
         this.drawLine({
           start: [
-            prevShipLocationPoint.location[0] *
-              this.flatScale,
-            prevShipLocationPoint.location[1] *
-              this.flatScale *
-              -1,
+            prevShipLocationPoint.location[0] * this.flatScale,
+            prevShipLocationPoint.location[1] * this.flatScale * -1,
           ],
           end: [
             pl.location[0] * this.flatScale,
@@ -894,8 +738,7 @@ export default class Drawer {
             (1 -
               c.clamp(
                 0,
-                (now - prevShipLocationPoint.time) /
-                  c.previousLocationTimeout,
+                (now - prevShipLocationPoint.time) / c.previousLocationTimeout,
                 1,
               )) *
             0.45,
@@ -914,17 +757,14 @@ export default class Drawer {
         this.drawLine({
           start: [
             prevLocationPoint.location[0] * this.flatScale,
-            prevLocationPoint.location[1] *
-              this.flatScale *
-              -1,
+            prevLocationPoint.location[1] * this.flatScale * -1,
           ],
           end: [
             pl.location[0] * this.flatScale,
             pl.location[1] * this.flatScale * -1,
           ],
           color: s.color || `#bbb`,
-          opacity:
-            (index / (pointsToDraw.length - 1)) * 0.45,
+          opacity: (index / (pointsToDraw.length - 1)) * 0.45,
         })
       })
     })
@@ -937,9 +777,7 @@ export default class Drawer {
         this.drawLine({
           start: [
             prevTrailPoint.location[0] * this.flatScale,
-            prevTrailPoint.location[1] *
-              this.flatScale *
-              -1,
+            prevTrailPoint.location[1] * this.flatScale * -1,
           ],
           end: [
             pl.location[0] * this.flatScale,
@@ -951,8 +789,7 @@ export default class Drawer {
             (1 -
               c.clamp(
                 0,
-                (now - prevTrailPoint.time) /
-                  c.previousLocationTimeout,
+                (now - prevTrailPoint.time) / c.previousLocationTimeout,
                 1,
               )) *
             (t.color ? 0.45 : 0.2),
@@ -961,42 +798,35 @@ export default class Drawer {
     })
 
     // ----- attack remnants
-    attackRemnantsToDraw.forEach(
-      (ar: AttackRemnantStub) => {
-        let grd = this.ctx.createLinearGradient(
+    attackRemnantsToDraw.forEach((ar: AttackRemnantStub) => {
+      let grd = this.ctx.createLinearGradient(
+        ar.start[0] * this.flatScale,
+        ar.start[1] * this.flatScale * -1,
+        ar.end[0] * this.flatScale,
+        ar.end[1] * this.flatScale * -1,
+      )
+      grd.addColorStop(0, `rgba(255, 130, 0, 1)`)
+      grd.addColorStop(
+        1,
+        ar.damageTaken.damageTaken
+          ? `rgba(255, 200, 0, .3)`
+          : `rgba(255, 200, 0, 0)`,
+      )
+
+      this.drawLine({
+        start: [
           ar.start[0] * this.flatScale,
           ar.start[1] * this.flatScale * -1,
-          ar.end[0] * this.flatScale,
-          ar.end[1] * this.flatScale * -1,
-        )
-        grd.addColorStop(0, `rgba(255, 130, 0, 1)`)
-        grd.addColorStop(
-          1,
-          ar.damageTaken.damageTaken
-            ? `rgba(255, 200, 0, .3)`
-            : `rgba(255, 200, 0, 0)`,
-        )
+        ],
+        end: [ar.end[0] * this.flatScale, ar.end[1] * this.flatScale * -1],
+        color: grd,
+        opacity:
+          (1 - (now - ar.time) / c.attackRemnantExpireTime) *
+          (ar.damageTaken.damageTaken > 0 ? 1 : 0.4),
+        width: ar.damageTaken.damageTaken > 0 ? 1 : 0.4,
+      })
+    })
 
-        this.drawLine({
-          start: [
-            ar.start[0] * this.flatScale,
-            ar.start[1] * this.flatScale * -1,
-          ],
-          end: [
-            ar.end[0] * this.flatScale,
-            ar.end[1] * this.flatScale * -1,
-          ],
-          color: grd,
-          opacity:
-            (1 -
-              (now - ar.time) / c.attackRemnantExpireTime) *
-            (ar.damageTaken.damageTaken > 0 ? 1 : 0.4),
-          width: ar.damageTaken.damageTaken > 0 ? 1 : 0.4,
-        })
-      },
-    )
-
-    profiler.step(`reset`)
     // ----- reset for next time -----
 
     this.ctx.restore()
@@ -1004,7 +834,6 @@ export default class Drawer {
     this.previousZoom = this.zoom
 
     // c.log(this.drawCalls, `draw calls`)
-    profiler.end()
   }
 
   drawPoint({
@@ -1068,24 +897,18 @@ export default class Drawer {
     if (
       (labelTop || labelBottom || labelCenter) &&
       (alwaysShowLabels ||
-        (this.zoom > 0.035 &&
-          (!outline || radius > this.width / 10)))
+        (this.zoom > 0.035 && (!outline || radius > this.width / 10)))
     ) {
-      this.ctx.globalAlpha = Math.max(
-        labelScale ? 0.15 : 0.35,
-        opacity * 0.5,
-      )
+      this.ctx.globalAlpha = Math.max(labelScale ? 0.15 : 0.35, opacity * 0.5)
 
       this.ctx.font = `bold ${
-        ((this.baseFontEm * labelScale) / this.zoom) *
-        window.devicePixelRatio
+        ((this.baseFontEm * labelScale) / this.zoom) * window.devicePixelRatio
       }em Prompt`
       const drawLabel = (
         label: string,
         position: `top` | `bottom` | `center`,
       ) => {
-        const labelInMotionRadius =
-          radius + this.width * 0.015
+        const labelInMotionRadius = radius + this.width * 0.015
         this.ctx.fillStyle = color
         this.ctx.textAlign = `center`
         this.ctx.textBaseline =
@@ -1097,55 +920,36 @@ export default class Drawer {
 
         let targetLocation: CoordinatePair =
           position === `center`
-            ? [
-                location[0] * this.flatScale,
-                location[1] * this.flatScale,
-              ]
+            ? [location[0] * this.flatScale, location[1] * this.flatScale]
             : position === `top`
             ? [
                 location[0] * this.flatScale,
-                location[1] * this.flatScale -
-                  radius -
-                  this.width * 0.003,
+                location[1] * this.flatScale - radius - this.width * 0.003,
               ]
             : [
                 location[0] * this.flatScale,
-                location[1] * this.flatScale +
-                  radius +
-                  this.width * 0.007,
+                location[1] * this.flatScale + radius + this.width * 0.007,
               ]
 
         if (outline) {
           let needToMoveDown =
-            this.topLeft[1] +
-            this.height * 0.03 -
-            targetLocation[1]
+            this.topLeft[1] + this.height * 0.03 - targetLocation[1]
 
           let needToMoveUp =
             targetLocation[1] -
-            (this.height +
-              this.topLeft[1] -
-              this.height * 0.02)
+            (this.height + this.topLeft[1] - this.height * 0.02)
 
-          const elementPositionInRelationToCenterAsPercent =
-            [
-              (this.center[0] -
-                location[0] * this.flatScale) /
-                this.width,
-              (this.center[1] -
-                location[1] * this.flatScale) /
-                this.height,
-            ]
+          const elementPositionInRelationToCenterAsPercent = [
+            (this.center[0] - location[0] * this.flatScale) / this.width,
+            (this.center[1] - location[1] * this.flatScale) / this.height,
+          ]
 
           const calculatePosition = () => {
             if (needToMoveDown > 0 || needToMoveUp > 0) {
               if (position !== `center`) {
                 // drawing outside the outline
 
-                if (
-                  elementPositionInRelationToCenterAsPercent[0] >=
-                  0
-                )
+                if (elementPositionInRelationToCenterAsPercent[0] >= 0)
                   this.ctx.textAlign = `left`
                 else this.ctx.textAlign = `right`
 
@@ -1155,8 +959,7 @@ export default class Drawer {
                   this.ctx.textBaseline = `middle`
 
                   const willMoveRight =
-                    elementPositionInRelationToCenterAsPercent[0] >=
-                    0
+                    elementPositionInRelationToCenterAsPercent[0] >= 0
                   let angle, y
 
                   let count = 0
@@ -1166,18 +969,14 @@ export default class Drawer {
                       (willMoveDown
                         ? y < this.topLeft[1]
                         : y >
-                          this.topLeft[1] +
-                            this.height -
-                            this.height * 0.1))
+                          this.topLeft[1] + this.height - this.height * 0.1))
                   ) {
                     count++
                     angle =
                       Math.PI / 2 -
                       Math.acos(
                         (labelInMotionRadius -
-                          (willMoveDown
-                            ? needToMoveDown
-                            : needToMoveUp)) /
+                          (willMoveDown ? needToMoveDown : needToMoveUp)) /
                           labelInMotionRadius,
                       ) +
                       Math.PI / 2
@@ -1223,35 +1022,23 @@ export default class Drawer {
           calculatePosition()
 
           let needToMoveRight =
-            this.topLeft[0] -
-            location[0] * this.flatScale +
-            this.width * 0.01
+            this.topLeft[0] - location[0] * this.flatScale + this.width * 0.01
 
           let needToMoveLeft =
             location[0] * this.flatScale -
-            (this.width +
-              this.topLeft[0] -
-              this.width * 0.01)
+            (this.width + this.topLeft[0] - this.width * 0.01)
 
           if (needToMoveRight > 0 || needToMoveLeft > 0) {
             let distanceToMoveUpOrDown =
               labelInMotionRadius -
               Math.sqrt(
                 labelInMotionRadius ** 2 -
-                  Math.max(
-                    needToMoveLeft,
-                    needToMoveRight,
-                  ) **
-                    2,
+                  Math.max(needToMoveLeft, needToMoveRight) ** 2,
               )
             if (distanceToMoveUpOrDown < 0)
               distanceToMoveUpOrDown =
-                labelInMotionRadius -
-                Math.abs(distanceToMoveUpOrDown)
-            if (
-              position === `top` &&
-              needToMoveDown < distanceToMoveUpOrDown
-            )
+                labelInMotionRadius - Math.abs(distanceToMoveUpOrDown)
+            if (position === `top` && needToMoveDown < distanceToMoveUpOrDown)
               needToMoveDown = distanceToMoveUpOrDown
             else if (
               position === `bottom` &&
@@ -1263,10 +1050,7 @@ export default class Drawer {
           }
         }
 
-        this.ctx.fillText(
-          label.toUpperCase(),
-          ...targetLocation,
-        )
+        this.ctx.fillText(label.toUpperCase(), ...targetLocation)
 
         // * tracking dot
         // this.ctx.fillStyle = `red`
@@ -1299,48 +1083,29 @@ export default class Drawer {
         location.map(
           (l, index) =>
             l * this.flatScale +
-            angleVector1[index] *
-              radius *
-              (index === 0 ? 1 : -1),
+            angleVector1[index] * radius * (index === 0 ? 1 : -1),
         ) as CoordinatePair,
       )
-      const angleVector2 = c.degreesToUnitVector(
-        (triangle + 135) % 360,
-      )
+      const angleVector2 = c.degreesToUnitVector((triangle + 135) % 360)
       trianglePoints.push(
         location.map(
           (l, index) =>
             l * this.flatScale +
-            angleVector2[index] *
-              radius *
-              (index === 0 ? 1 : -1),
+            angleVector2[index] * radius * (index === 0 ? 1 : -1),
         ) as CoordinatePair,
       )
-      const angleVector3 = c.degreesToUnitVector(
-        (triangle - 135 + 360) % 360,
-      )
+      const angleVector3 = c.degreesToUnitVector((triangle - 135 + 360) % 360)
       trianglePoints.push(
         location.map(
           (l, index) =>
             l * this.flatScale +
-            angleVector3[index] *
-              radius *
-              (index === 0 ? 1 : -1),
+            angleVector3[index] * radius * (index === 0 ? 1 : -1),
         ) as CoordinatePair,
       )
 
-      this.ctx.moveTo(
-        trianglePoints[0][0],
-        trianglePoints[0][1],
-      )
-      this.ctx.lineTo(
-        trianglePoints[1][0],
-        trianglePoints[1][1],
-      )
-      this.ctx.lineTo(
-        trianglePoints[2][0],
-        trianglePoints[2][1],
-      )
+      this.ctx.moveTo(trianglePoints[0][0], trianglePoints[0][1])
+      this.ctx.lineTo(trianglePoints[1][0], trianglePoints[1][1])
+      this.ctx.lineTo(trianglePoints[2][0], trianglePoints[2][1])
     }
     if (outline) {
       if (outline === `dash`)
@@ -1397,11 +1162,7 @@ export default class Drawer {
     if (dash)
       if (Array.isArray(dash))
         this.ctx.setLineDash(dash.map((d) => d / this.zoom))
-      else
-        this.ctx.setLineDash([
-          dash / this.zoom,
-          dash / this.zoom,
-        ])
+      else this.ctx.setLineDash([dash / this.zoom, dash / this.zoom])
     this.ctx.strokeStyle = color
     this.ctx.stroke()
     if (dash) this.ctx.setLineDash([])
@@ -1412,25 +1173,19 @@ export default class Drawer {
   isIdle() {
     // return false
     return (
-      Math.abs(this.targetZoom - (this.previousZoom || 0)) <
-        0.001 &&
+      Math.abs(this.targetZoom - (this.previousZoom || 0)) < 0.001 &&
       Math.abs(
-        (this.targetCenter?.[0] || 1) -
-          (this.previousCenter?.[0] || 1),
+        (this.targetCenter?.[0] || 1) - (this.previousCenter?.[0] || 1),
       ) < 0.001 &&
       Math.abs(
-        (this.targetCenter?.[1] || 1) -
-          (this.previousCenter?.[1] || 1),
+        (this.targetCenter?.[1] || 1) - (this.previousCenter?.[1] || 1),
       ) < 0.001
     )
   }
 
   getTopLeft(): CoordinatePair {
     if (!this.center) return [0, 0]
-    return [
-      this.center[0] - this.width / 2,
-      this.center[1] - this.height / 2,
-    ]
+    return [this.center[0] - this.width / 2, this.center[1] - this.height / 2]
   }
 
   isPointInSightRange(el: HasLocation): boolean {
@@ -1452,9 +1207,7 @@ export default class Drawer {
 
   radiusToTime(ship: ShipStub, r: number) {
     if (ship.speed === 0) return
-    const secondsToGetThere = Math.round(
-      r / this.flatScale / ship.speed,
-    )
+    const secondsToGetThere = Math.round(r / this.flatScale / ship.speed)
     if (secondsToGetThere > 100000000) return
 
     return c.msToTimeString(secondsToGetThere * 1000)

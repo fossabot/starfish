@@ -101,9 +101,14 @@ export class Game {
 
         const savedGameData = await this.db.game.get()
         if (savedGameData) {
-          c.log(`gray`, `Loaded game data.`)
+          c.log(`gray`, `Loaded game data`)
           for (let key of Object.keys(savedGameData))
             this[key] = savedGameData[key]
+
+          if (!savedGameData.gameInitializedAt)
+            this.db.game.addOrUpdateInDb({
+              gameInitializedAt: this.gameInitializedAt,
+            })
         }
 
         const savedGameSettings =
@@ -215,6 +220,8 @@ export class Game {
 
     const saveStartTime = Date.now()
 
+    c.massProfiler.print()
+
     const promises: (Promise<any> | undefined)[] = []
     promises.push(
       this.db?.game.addOrUpdateInDb({
@@ -299,7 +306,7 @@ export class Game {
       // todo put this back once we have tests in place
     }
 
-    this.announceCargoPrices()
+    // this.announceCargoPrices()
   }
 
   // ----- game loop -----
@@ -320,19 +327,34 @@ export class Game {
 
       // c.log(`tick`, Date.now() - this.lastTickTime)
 
-      const tickStartTime = Date.now()
+      c.massProfiler.resetForNextTick()
+      const tickStartTime = performance.now()
 
       this.tickCount++
       const times: any[] = []
 
-      this.planets.forEach((p) => p.tick())
-      this.comets.forEach((p) => p.tick())
+      this.planets.forEach((p) => {
+        const start = performance.now()
+        p.tick()
+        c.massProfiler.call(`Planet`, `tick`, performance.now() - start)
+      })
+      this.comets.forEach((p) => {
+        const start = performance.now()
+        p.tick()
+        c.massProfiler.call(`Planet`, `tick`, performance.now() - start)
+      })
 
-      this.ships.forEach((s) => {
-        const start = Date.now()
+      this.humanShips.forEach((s) => {
+        const start = performance.now()
         s.tick()
-        const time = Date.now() - start
-        times.push({ ship: s, time })
+        times.push({ ship: s, time: performance.now() - start })
+        c.massProfiler.call(`HumanShip`, `tick`, performance.now() - start)
+      })
+      this.aiShips.forEach((s) => {
+        const start = performance.now()
+        s.tick()
+        times.push({ ship: s, time: performance.now() - start })
+        c.massProfiler.call(`AiShip`, `tick`, performance.now() - start)
       })
       if (times.length)
         this.averageWorstShipTickLag = c.lerp(
@@ -342,16 +364,22 @@ export class Game {
         )
       // c.log(times.map((s) => s.ship.name + ` ` + s.time))
 
+      const startSpawn = performance.now()
       this.expireOldElements()
       this.spawnNewCaches()
       this.spawnNewAIs()
       await this.spawnNewPlanets()
       await this.spawnNewComets()
       await this.spawnNewZones()
+      c.massProfiler.call(
+        `Game`,
+        `spawn elements`,
+        performance.now() - startSpawn,
+      )
 
       // ----- timing
 
-      const tickDoneTime = Date.now()
+      const tickDoneTime = performance.now()
 
       c.deltaTime = tickDoneTime - this.lastTickTime
 
@@ -379,6 +407,8 @@ export class Game {
       //     c.log(`Tick took`, `red`, elapsedTimeInMs + ` ms`)
       // }
       this.averageTickTime = c.lerp(this.averageTickTime, elapsedTimeInMs, 0.1)
+
+      c.massProfiler.call(`Game`, `tick`, tickDoneTime - tickStartTime)
 
       resolve(elapsedTimeInMs)
     })
@@ -1238,6 +1268,7 @@ export class Game {
 
     // control
     const controlScores: GuildRankingScoreEntry[] = []
+    let topControlGuilds: GuildRankingTopEntry[] = []
     for (let guild of Object.values(c.guilds)) {
       if (guild.id === `fowl`) continue
       controlScores.push({
@@ -1254,6 +1285,14 @@ export class Game {
       })
     }
     // c.log(controlScores)
+    topControlGuilds = controlScores
+      .map((cs) => ({
+        name: c.capitalize(cs.guildId) + `s`,
+        color: c.guilds[cs.guildId].color,
+        score: cs.score,
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
 
     // members
     let topMembersShips: GuildRankingTopEntry[] = []
@@ -1308,6 +1347,7 @@ export class Game {
       {
         category: `control`,
         scores: controlScores.sort((a, b) => b.score - a.score),
+        top: topControlGuilds,
       },
       {
         category: `members`,

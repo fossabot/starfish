@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const log_1 = __importDefault(require("./log"));
-const Profiler_1 = require("./Profiler");
+const massProfiler_1 = __importDefault(require("./massProfiler"));
 const neverInclude = [`toUpdate`, `_stub`, `_id`, `game`];
 const alwaysReferencize = [
     `ship`,
@@ -18,10 +18,9 @@ const alwaysReferencize = [
     `species`,
 ];
 function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
+    const startTime = massProfiler_1.default.getTime();
     if (!baseObject)
         return undefined;
-    const profiler = new Profiler_1.Profiler(10, `stubify`, false, 0);
-    profiler.step(`apply getters`);
     let objectWithGetters;
     if (!Array.isArray(baseObject) &&
         typeof baseObject === `object` &&
@@ -30,25 +29,21 @@ function stubify(baseObject, keysToReferencize = [], allowRecursionDepth = 8) {
     else
         objectWithGetters = baseObject;
     // c.log(`with getters`, Object.keys(gettersIncluded))
-    profiler.step(`stringify and parse`);
     const objectWithCircularReferencesRemoved = removeCircularReferences(objectWithGetters, keysToReferencize, allowRecursionDepth);
-    profiler.end();
+    const time = massProfiler_1.default.getTime() - startTime;
+    massProfiler_1.default.call(`stubify`, baseObject.constructor?.name || `(no constructor)`, time);
     return objectWithCircularReferencesRemoved;
 }
 exports.default = stubify;
 // * getters aren't naturally included in functions like Object.keys(), so we apply their result now
 function applyGettersToObject(baseObject, keysToReferencize = []) {
-    const toReference = [
-        ...alwaysReferencize,
-        ...keysToReferencize,
-    ];
+    const toReference = [...alwaysReferencize, ...keysToReferencize];
     const gettersIncluded = { ...baseObject };
     const objectPrototype = Object.getPrototypeOf(baseObject);
     const getKeyValue = (key) => (obj) => obj[key];
     // c.log(Object.getOwnPropertyNames(objectPrototype))
     for (const key of Object.getOwnPropertyNames(objectPrototype)) {
-        if (toReference.includes(key) ||
-            neverInclude.includes(key))
+        if (toReference.includes(key) || neverInclude.includes(key))
             continue;
         const descriptor = Object.getOwnPropertyDescriptor(objectPrototype, key);
         const hasGetter = descriptor && typeof descriptor.get === `function`;
@@ -120,10 +115,7 @@ const recursivelyRemoveCircularReferencesInObject = (obj, disallowedKeys, remain
     return newObj;
 };
 function removeCircularReferences(baseObject, keysToReferencize = [], allowRecursionDepth) {
-    const toReference = [
-        ...alwaysReferencize,
-        ...keysToReferencize,
-    ];
+    const toReference = [...alwaysReferencize, ...keysToReferencize];
     return recursivelyRemoveCircularReferencesInObject(baseObject, toReference, allowRecursionDepth);
 }
 const toRefOrUndefined = (obj) => {
