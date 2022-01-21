@@ -12,6 +12,8 @@ export class AIShip extends CombatShip {
   static dropCacheValueMultiplier = 800
   static resetLastAttackedByIdTime = 1000 * 60 * 60 * 24
 
+  private tickCount = 0
+
   human: boolean = false
   id: string
   spawnPoint: CoordinatePair = [0, 0]
@@ -76,6 +78,7 @@ export class AIShip extends CombatShip {
 
   tick() {
     super.tick()
+    this.tickCount++
     if (this.dead) return
 
     if (this.until && Date.now() > this.until) {
@@ -84,7 +87,10 @@ export class AIShip extends CombatShip {
       return
     }
 
-    this.updateVisible()
+    if (this.tickCount === 0) {
+      this.updateVisible()
+    }
+    if (this.tickCount > 10 && Math.random() > 0.8) this.tickCount = 0
 
     // ----- move -----
     this.move()

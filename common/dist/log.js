@@ -76,11 +76,11 @@ const log = (...args) => {
             Object.values(dirColors).length];
     let prefix = String(reset +
         dim +
-        `[${new Date().toLocaleTimeString(undefined, {
+        `${new Date().toLocaleTimeString(undefined, {
             hour12: false,
             hour: `2-digit`,
             minute: `2-digit`,
-        })}]` +
+        })} ` +
         (mainDir
             ? reset + mainDirColor + mainDir + colors.white + dim + `:`
             : ``) +

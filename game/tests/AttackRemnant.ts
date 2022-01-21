@@ -43,6 +43,8 @@ describe(`Attack remnant data`, () => {
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addHumanShip(humanShipData())
 
+    g.chunkManager.resetCache() // happens on tick
+
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
@@ -50,10 +52,9 @@ describe(`Attack remnant data`, () => {
     cm.combatTactic = `aggressive`
     s.recalculateCombatTactic()
     const attackRes = s.autoAttack(999)
-    expect(attackRes).to.not.be.undefined
+    expect(attackRes?.length).to.equal(1)
     attackerId = s.id
 
-    // todo fails here often
     expect(g.attackRemnants.length).to.equal(1)
 
     await c.sleep(400)

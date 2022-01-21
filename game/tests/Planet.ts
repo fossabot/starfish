@@ -302,6 +302,7 @@ describe(`Planet orbital defense`, () => {
     const res = p.defend(true)
     expect(res).to.not.exist
 
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
@@ -323,6 +324,7 @@ describe(`Planet orbital defense`, () => {
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addAIShip(enemyAiShipData())
 
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     await s.addCrewMember(crewMemberData())
     const cm = s.crewMembers[0]
@@ -344,6 +346,7 @@ describe(`Planet orbital defense`, () => {
     const s = await g.addHumanShip(humanShipData())
     const s2 = await g.addAIShip(enemyAiShipData())
 
+    g.chunkManager.resetCache() // happens on tick
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])
 
@@ -362,6 +365,7 @@ describe(`Planet orbital defense`, () => {
     const s2 = await g.addHumanShip(humanShipData())
     s2.guildId = `explorer`
 
+    g.chunkManager.resetCache() // happens on tick
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])
 
@@ -380,6 +384,7 @@ describe(`Planet orbital defense`, () => {
     const s2 = await g.addHumanShip(humanShipData())
     s.guildId = `explorer`
 
+    g.chunkManager.resetCache() // happens on tick
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])
 
@@ -400,6 +405,7 @@ describe(`Planet orbital defense`, () => {
     s.guildId = `explorer`
     s2.guildId = `hunter`
 
+    g.chunkManager.resetCache() // happens on tick
     s2.updateVisible()
     s2.attack(s, s2.weapons[0])
 

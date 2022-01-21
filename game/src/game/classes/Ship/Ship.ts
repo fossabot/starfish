@@ -262,9 +262,8 @@ export class Ship extends Stubbable {
   tick() {
     this.debugLocations = []
     this._stub = null // invalidate stub
-    this.checkExpiredPassives()
-
     if (this.dead) return
+    this.checkExpiredPassives()
     if (this.obeysGravity) this.applyTickOfGravity()
     // c.log(`tick`, this.name)
   }
