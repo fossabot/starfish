@@ -13,10 +13,10 @@ import { basicPlanetData, crewMemberData, humanShipData } from './defaults'
 
 describe(`Ship vision`, () => {
   it(`should be able to see another ship within range`, async () => {
-    // created through game
-    let game = new Game()
-    let ship = await game.addHumanShip(humanShipData())
-    let ship2 = await game.addHumanShip(humanShipData())
+    let g = new Game()
+    let ship = await g.addHumanShip(humanShipData())
+    let ship2 = await g.addHumanShip(humanShipData())
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     ship2.updateVisible()
     expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
@@ -24,27 +24,29 @@ describe(`Ship vision`, () => {
   })
 
   it(`should be able to see a planet within range`, async () => {
-    // created through game
-    let game = new Game()
-    let ship = await game.addHumanShip(humanShipData())
-    let planet = await game.addBasicPlanet(basicPlanetData())
+    let g = new Game()
+    let ship = await g.addHumanShip(humanShipData())
+    let planet = await g.addBasicPlanet(basicPlanetData())
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.planets.map((s) => s.id)).to.include(planet.id)
   })
 
   it(`should not be able to see another ship outside of vision range`, async () => {
-    // created through game
-    let game = new Game()
-    let ship = await game.addHumanShip(humanShipData())
-    let ship2 = await game.addHumanShip(humanShipData())
+    let g = new Game()
+    let ship = await g.addHumanShip(humanShipData())
+    let ship2 = await g.addHumanShip(humanShipData())
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
 
     ship2.move([10 + ship.radii.sight - 0.00001, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.map((s) => s.id)).to.include(ship2.id)
 
     ship2.move([10 + ship.radii.sight + 0.00001, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(0)
   })

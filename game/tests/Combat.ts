@@ -68,6 +68,7 @@ describe(`Combat HumanShip target selection`, () => {
     ship2.move([10.0001, 0])
     ship3.move([10.0002, 0])
 
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
 
     const ships = ship.getEnemiesInAttackRange()
@@ -194,6 +195,7 @@ describe(`Combat HumanShip target selection`, () => {
     ship.move([10, 0])
     ship2.move([10.0001, 0])
     ship3.move([10.0002, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(2)
 
@@ -217,6 +219,7 @@ describe(`Combat HumanShip target selection`, () => {
     ship.move([10, 0])
     ship2.move([10.0001, 0])
     ship3.move([10.0002, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(2)
 
@@ -243,14 +246,17 @@ describe(`Combat HumanShip target selection`, () => {
 
     ship.move([10, 0])
     ship2.move([10.0001, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(1)
 
     expect(ship.planet).to.equal(false)
     await g.addBasicPlanet(basicPlanetData())
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     ship.updatePlanet()
     expect(ship.planet).to.not.equal(false)
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(0)
   })
@@ -267,22 +273,26 @@ describe(`Combat HumanShip target selection`, () => {
     ship.move([0, 0])
     ship2.move([0, 0])
 
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(0)
 
     ship.move([0 + g.settings.safeZoneRadius + 0.0001, 0])
     ship2.move([0 + g.settings.safeZoneRadius - 0.0001, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(0)
 
     ship.move([0 + g.settings.safeZoneRadius - 0.0001, 0])
     ship2.move([0 + g.settings.safeZoneRadius + 0.0001, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(0)
 
     const flamingo = await g.addAIShip(enemyAiShipData(3, `flamingos`))
     ship2.move([0, 0])
     flamingo.move([0, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship2.updateVisible()
     expect(ship2.getEnemiesInAttackRange().length).to.equal(1)
   })
@@ -302,11 +312,13 @@ describe(`Combat HumanShip target selection`, () => {
     cm.combatTactic = `aggressive`
     ship.recalculateCombatTactic()
 
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     ship.determineTargetShip()
     expect(ship.targetShip).to.equal(ship2)
 
     ship2.move([1000, 0])
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     ship.determineTargetShip()
     expect(ship.targetShip).to.equal(ship3)
@@ -321,6 +333,7 @@ describe(`Combat attacks`, () => {
 
     let prevHp = ship2._hp
 
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     await ship.addCrewMember(crewMemberData())
     const cm = ship.crewMembers[0]
@@ -340,6 +353,7 @@ describe(`Combat death`, () => {
 
     let prevHp = ship2._hp
 
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     await ship.addCrewMember(crewMemberData())
     const cm = ship.crewMembers[0]
@@ -357,6 +371,7 @@ describe(`Combat death`, () => {
     expect(ship2.dead).to.equal(true)
     expect(ship.targetShip).to.equal(null)
 
+    g.chunkManager.resetCache() // happens on tick
     ship.updateVisible()
     expect(ship.visible.ships.length).to.equal(0)
   })

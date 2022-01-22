@@ -54,6 +54,7 @@
         v-if="showDiscordIcon && crewMember.discordIcon"
         class="discordicon"
         :src="crewMember.discordIcon"
+        onerror="this.style.display='none'"
       />
       <div class="cmitagline" v-if="showTagline && crewMember.tagline">
         <svg viewBox="0 0 160 15">

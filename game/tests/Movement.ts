@@ -16,6 +16,7 @@ describe(`Human movement`, () => {
     const s = await g.addHumanShip(humanShipData())
     const p = await g.addComet(cometData())
     p.location = [10.001, 0]
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     const cm = await s.addCrewMember(crewMemberData(), true)
     cm.location = `cockpit`

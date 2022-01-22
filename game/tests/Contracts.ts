@@ -55,6 +55,7 @@ describe(`Contract basics`, () => {
     p.maxContracts = 1
     p.refreshContracts()
 
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     s.updatePlanet()
     expect(s.planet).to.not.be.false
@@ -97,6 +98,7 @@ describe(`Contract basics`, () => {
     p.maxContracts = 1
     p.refreshContracts()
 
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     s.updatePlanet()
     expect(s.planet).to.not.be.false
@@ -142,6 +144,7 @@ describe(`Contract basics`, () => {
     const cm = await s.addCrewMember(crewMemberData())
     s.commonCredits = 999999
     s.shipCosmeticCurrency = 999999
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     s.updatePlanet()
     expect(s.planet).to.not.be.false
@@ -182,6 +185,7 @@ describe(`Contract basics`, () => {
     const cm = await s.addCrewMember(crewMemberData())
     cm.goTo(`weapons`)
     cm.combatTactic = `aggressive`
+    g.chunkManager.resetCache() // happens on tick
     s.updateVisible()
     s.recalculateCombatTactic()
     s.guildId = `explorer`

@@ -242,15 +242,26 @@ export class HumanShip extends CombatShip {
     super.tick()
     if (this.dead) return
 
+    let time = performance.now()
+
     if (this.tutorial) this.tutorial.tick()
+
+    c.massProfiler.call(`HumanShip`, `tick/tutorial`, performance.now() - time)
+    time = performance.now()
 
     // ----- move -----
     this.passiveThrust()
     this.move()
     this.updatePlanet()
 
+    c.massProfiler.call(`HumanShip`, `tick/move`, performance.now() - time)
+    time = performance.now()
+
     // ----- planet effects -----
     if (this.planet) this.planet.tickEffectsOnShip(this)
+
+    c.massProfiler.call(`HumanShip`, `tick/planet`, performance.now() - time)
+    time = performance.now()
 
     // ----- scan -----
     const previousVisible = { ...this.visible }
@@ -259,6 +270,10 @@ export class HumanShip extends CombatShip {
     this.scanners.forEach((s) => s.use())
     this.generateVisiblePayload(previousVisible)
 
+    c.massProfiler.call(`HumanShip`, `tick/scan`, performance.now() - time)
+    time = performance.now()
+
+    // ----- crew members -----
     this.crewMembers.forEach((cm) => cm.tick())
     this.toUpdate.crewMembers = this.crewMembers
       .filter((cm) => Object.keys(cm.toUpdate || {}).length)
@@ -276,6 +291,13 @@ export class HumanShip extends CombatShip {
     //     Object.keys(cm.toUpdate),
     //   )} crew members on ${this.name}`,
     // )
+
+    c.massProfiler.call(
+      `HumanShip`,
+      `tick/crewMembers`,
+      performance.now() - time,
+    )
+    time = performance.now()
 
     // ----- auto-repair -----
     const autoRepairIntensity =
@@ -314,6 +336,13 @@ export class HumanShip extends CombatShip {
       )
     }
 
+    c.massProfiler.call(
+      `HumanShip`,
+      `tick/passivesAndSecondWind`,
+      performance.now() - time,
+    )
+    time = performance.now()
+
     // ----- get nearby caches -----
     // * this is on a random timeout so that the "first" ship doesn't always have priority on picking up caches if 2 or more ships could have gotten it
     setTimeout(() => {
@@ -326,28 +355,66 @@ export class HumanShip extends CombatShip {
         })
     }, Math.round((Math.random() * c.tickInterval) / 3))
 
+    c.massProfiler.call(`HumanShip`, `tick/caches`, performance.now() - time)
+    time = performance.now()
+
     // ----- auto-attacks -----
     if (!this.dead) this.autoAttack()
+
+    c.massProfiler.call(
+      `HumanShip`,
+      `tick/autoAttack`,
+      performance.now() - time,
+    )
+    time = performance.now()
 
     // ----- zone effects -----
     if (!this.dead) this.applyZoneTickEffects()
 
-    // todo if no io watchers, skip this
-    // ----- updates for frontend -----
-    this.toUpdate.items = this.items.map((i) => i.stubify())
+    c.massProfiler.call(
+      `HumanShip`,
+      `tick/zoneEffects`,
+      performance.now() - time,
+    )
+    time = performance.now()
 
-    // ----- send update to listeners -----
-    if (Object.keys(this.toUpdate).length) {
-      this.game?.io?.to(`ship:${this.id}`).emit(`ship:update`, {
-        id: this.id,
-        updates: this.toUpdate,
-      })
-      this.toUpdate = {}
-    }
-
+    // ----- contracts -----
     this.checkContractTimeOuts()
     if ((this.game?.tickCount || 1) % 1000 === 0)
       this.updateActiveContractsLocations()
+
+    c.massProfiler.call(`HumanShip`, `tick/contracts`, performance.now() - time)
+    time = performance.now()
+
+    // ----- updates for frontend -----
+    // * if there are no watchers, skips. however, it always runs on local dev for stress testing.
+    if (
+      process.env.NODE_ENV === `development` ||
+      this.game?.io?.sockets.adapter.rooms.get(`ship:${this.id}`)?.size
+    ) {
+      // ----- stubify -----
+      this.toUpdate.items = this.items.map((i) => i.stubify())
+      c.massProfiler.call(
+        `HumanShip`,
+        `tick/stubifyItems`,
+        performance.now() - time,
+      )
+
+      // ----- send update to listeners -----
+      if (Object.keys(this.toUpdate).length) {
+        this.game?.io?.to(`ship:${this.id}`).emit(`ship:update`, {
+          id: this.id,
+          updates: this.toUpdate,
+        })
+        this.toUpdate = {}
+      }
+
+      c.massProfiler.call(
+        `HumanShip`,
+        `tick/updateFrontend`,
+        performance.now() - time,
+      )
+    }
   }
 
   // ----- log -----
@@ -1239,7 +1306,7 @@ export class HumanShip extends CombatShip {
 
     this.addPreviousLocation(startingLocation, this.location)
 
-    this.updateZones(startingLocation)
+    this.updateZones(this.location)
 
     this.addStat(
       `distanceTraveled`,

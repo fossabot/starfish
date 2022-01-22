@@ -15,6 +15,9 @@ describe(`Zone effects`, () => {
     const g = new Game()
     const s = await g.addHumanShip(humanShipData())
     const z = await g.addZone(zoneData(`decelerate`))
+
+    g.chunkManager.resetCache() // happens on tick
+
     z.location = [10, 0]
     s.location = [10, 0]
     s.updateVisible()

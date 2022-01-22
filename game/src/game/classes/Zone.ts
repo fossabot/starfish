@@ -43,7 +43,7 @@ export class Zone extends Stubbable {
   }
 
   shipEnter(ship: CombatShip) {
-    c.log(`ship enter`, ship.name, this.name)
+    // c.log(`ship enter`, ship.name, this.name)
     for (let effect of this.effects) {
       // wormhole
       if (effect.type === `wormhole`) {

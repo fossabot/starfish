@@ -31,21 +31,47 @@ function getLocation(el: HasUsableLocation): CoordinatePair {
 export class ChunkManager {
   readonly chunkSize = 0.35
   readonly chunks: Chunk[][] = []
+  cache: any = {}
 
   getElementsWithinRadius(
     location: CoordinatePair,
     radius: number,
   ): (Ship | AttackRemnant | Cache | Planet | Zone)[] {
     const startTime = performance.now()
+
     const chunkX = Math.floor(location[0] / this.chunkSize)
     const chunkY = Math.floor(location[1] / this.chunkSize)
     const radiusInChunks = Math.ceil(radius / this.chunkSize)
-    const elements: Set<any> = new Set()
-    for (let x = chunkX - radiusInChunks; x <= chunkX + radiusInChunks; x++) {
-      for (let y = chunkY - radiusInChunks; y <= chunkY + radiusInChunks; y++) {
-        for (let el of this.chunks[x]?.[y]?.elements || []) elements.add(el)
-      }
+    let elements: Set<any> = new Set()
+
+    if (this.cache[`${chunkX}~${chunkY}~${radiusInChunks}`]) {
+      // * use cache if it exists
+      elements = this.cache[`${chunkX}~${chunkY}~${radiusInChunks}`]
+    } else {
+      // * get chunks within circular radius
+      const chunksToCheck: CoordinatePair[] = []
+      for (let x = -radiusInChunks; x <= radiusInChunks; ++x)
+        for (let y = -radiusInChunks; y <= radiusInChunks; ++y)
+          if (x * x + y * y <= radiusInChunks * radiusInChunks)
+            chunksToCheck.push([x + chunkX, y + chunkY])
+
+      // * get elements within those chunks
+      chunksToCheck.forEach((chunkToCheck) => {
+        const chunkEls =
+          this.chunks[chunkToCheck[0]]?.[chunkToCheck[1]]?.elements
+        if (chunkEls) chunkEls.forEach((cel) => elements.add(cel))
+      })
+
+      this.cache[`${chunkX}~${chunkY}~${radiusInChunks}`] = elements
     }
+    // c.massProfiler.call(
+    //   `ChunkManager`,
+    //   `getElementsWithinRadius/getAllNearbyElements`,
+    //   performance.now() - startTime,
+    // )
+    // const midTime = performance.now()
+
+    // * filter down to only elements within actual radius
     const finalElements = Array.from(elements).filter((el) =>
       isInRadius(
         el,
@@ -54,6 +80,12 @@ export class ChunkManager {
           (((el.radius || 0) < this.chunkSize * 100 ? el.radius : 0) || 0),
       ),
     )
+    // c.massProfiler.call(
+    //   `ChunkManager`,
+    //   `getElementsWithinRadius/calculateFinalResult`,
+    //   performance.now() - midTime,
+    // )
+
     // if (Math.random() > 0.999)
     //   c.log(
     //     `considered`,
@@ -68,6 +100,10 @@ export class ChunkManager {
       performance.now() - startTime,
     )
     return finalElements
+  }
+
+  resetCache() {
+    this.cache = {}
   }
 
   remove(element: HasUsableLocation, previousLocation?: CoordinatePair) {

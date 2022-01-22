@@ -31,6 +31,8 @@ import { generateZoneData } from './presets/zones'
 import type { Server } from 'socket.io'
 import generateBasicEnemyAI from './classes/Ship/AIShip/generate'
 
+c.massProfiler.enabled = false
+
 export class Game {
   static saveTimeInterval =
     (process.env.NODE_ENV !== `development` ? 10 : 1) * 60 * 1000
@@ -169,7 +171,8 @@ export class Game {
           `gray`,
           `Loaded ${this.attackRemnants.length} saved attack remnants from DB.`,
         )
-        savedAttackRemnants.forEach((ar) => this.addAttackRemnant(ar, false))
+        for (let ar of savedAttackRemnants)
+          await this.addAttackRemnant(ar, false)
 
         resolve(true)
       })
@@ -332,6 +335,8 @@ export class Game {
 
       this.tickCount++
       const times: any[] = []
+
+      this.chunkManager.resetCache()
 
       this.planets.forEach((p) => {
         const start = performance.now()
