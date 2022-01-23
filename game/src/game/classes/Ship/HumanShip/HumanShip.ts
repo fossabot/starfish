@@ -91,6 +91,8 @@ export class HumanShip extends CombatShip {
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
 
+  hasNotifiedAboutInactivity = false
+
   visible: {
     ships: ShipStub[]
     planets: Planet[]
@@ -133,6 +135,8 @@ export class HumanShip extends CombatShip {
 
     this.ai = false
     this.human = true
+
+    this.hasNotifiedAboutInactivity = Boolean(data.hasNotifiedAboutInactivity)
 
     this.seenCrewMembers = data.seenCrewMembers || []
 

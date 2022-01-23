@@ -22,9 +22,7 @@ export class SellCommand implements Command {
     const planet = context.ship.planet
     const vendor = planet.vendor
     if (!vendor) {
-      await context.reply(
-        `There is no vendor on this planet.`,
-      )
+      await context.reply(`There is no vendor on this planet.`)
       return
     }
 
@@ -48,20 +46,16 @@ export class SellCommand implements Command {
     const typesToSell: CargoId[] = []
     // if (typeToSell) typesToSell.push(typeToSell)
     // else
-    typesToSell.push(
-      ...context.crewMember.inventory.map((i) => i.id),
-    )
+    typesToSell.push(...context.crewMember.inventory.map((i) => i.id))
 
     const charismaLevel =
       context.crewMember.passives.reduce(
         (acc: number, p: CrewPassiveData) =>
-          acc +
-          (p.id === `boostCharisma` ? p.intensity || 0 : 0),
+          acc + (p.id === `boostCharisma` ? p.intensity || 0 : 0),
         0,
       ) +
-      (context.crewMember.skills.find(
-        (s) => s.skill === `charisma`,
-      )?.level || 1)
+      (context.crewMember.skills.find((s) => s.skill === `charisma`)?.level ||
+        1)
 
     const withPrices = context.crewMember.inventory
       .filter((i) => i.amount)
@@ -82,9 +76,7 @@ export class SellCommand implements Command {
       })
 
     if (withPrices.length === 0) {
-      await context.reply(
-        `You don't have any cargo that can be sold here.`,
-      )
+      await context.reply(`You don't have any cargo that can be sold here.`)
       return
     }
 
@@ -92,16 +84,14 @@ export class SellCommand implements Command {
       allowedUserId: context.author.id,
       content: `At ${planet.name}, ${context.crewMember.name} can sell:`,
       buttons: withPrices.map((p) => ({
-        label: `${p.amount} ton${
+        label: `${c.r2(p.amount)} ton${
           p.amount === 1 ? `` : `s`
         } of ${c.capitalize(c.camelCaseToWords(p.id))}:
 ${c.priceToString(p.price)}/ton`,
         style:
-          (p.price.credits || 0) <
-          (c.cargo[p.id].basePrice.credits || 0)
+          (p.price.credits || 0) < (c.cargo[p.id].basePrice.credits || 0)
             ? `DANGER`
-            : (p.price.credits || 0) >
-              (c.cargo[p.id].basePrice.credits || 0)
+            : (p.price.credits || 0) > (c.cargo[p.id].basePrice.credits || 0)
             ? `SUCCESS`
             : `SECONDARY`,
         customId: `sell` + p.id,
@@ -121,15 +111,11 @@ ${c.priceToString(p.price)}/ton`,
         )
         if (`data` in res)
           await context.reply(
-            `${context.crewMember!.name} sold ${
-              inv.amount
-            } ton${
+            `${context.crewMember!.name} sold ${c.r2(inv.amount)} ton${
               inv.amount === 1 ? `` : `s`
-            } of ${c.capitalize(
-              c.camelCaseToWords(inv.id),
-            )} to ${planet.name} for ${c.priceToString(
-              res.data.price,
-            )}`,
+            } of ${c.capitalize(c.camelCaseToWords(inv.id))} to ${
+              planet.name
+            } for ${c.priceToString(res.data.price)}`,
           )
         else await context.reply(res.error)
       },

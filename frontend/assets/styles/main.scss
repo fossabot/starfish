@@ -916,6 +916,9 @@ ul {
 .nopointer {
   pointer-events: none;
 }
+.selectable {
+  user-select: text;
+}
 .nowrap {
   white-space: nowrap;
   flex-wrap: nowrap;

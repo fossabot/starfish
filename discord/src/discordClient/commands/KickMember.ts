@@ -26,15 +26,23 @@ export class KickMemberCommand implements Command {
     }
     typedId = typedId.replace(/[<>@!]*/g, ``)
 
-    const crewMember = context.ship.crewMembers?.find(
-      (cm) => cm.id === typedId,
+    const crewMembers = context.ship.crewMembers?.filter(
+      (cm) =>
+        cm.id === typedId || cm.name.toLowerCase() === typedId.toLowerCase(),
     )
-    if (!crewMember) {
+    if (!crewMembers?.length) {
       await context.reply(
         `No ship crew member found for that server member. Are you sure they've joined the crew?`,
       )
       return
     }
+    if (crewMembers.length > 1) {
+      await context.reply(
+        `Multiple ship crew members found for that server member. Please use their ID instead.`,
+      )
+      return
+    }
+    const crewMember = crewMembers[0]
 
     const res = await ioInterface.ship.kickMember(
       context.ship.id,
@@ -51,14 +59,8 @@ export class KickMemberCommand implements Command {
     })
     try {
       if (memberRole && !(`error` in memberRole)) {
-        if (
-          context.guildMember?.roles.cache.find(
-            (r) => r === memberRole,
-          )
-        )
-          context.guildMember?.roles
-            .remove(memberRole)
-            .catch((e) => c.log(e))
+        if (context.guildMember?.roles.cache.find((r) => r === memberRole))
+          context.guildMember?.roles.remove(memberRole).catch((e) => c.log(e))
       }
     } catch (e) {
       c.log(e)

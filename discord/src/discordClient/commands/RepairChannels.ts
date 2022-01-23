@@ -21,10 +21,7 @@ export class RepairChannelsCommand implements Command {
 
     // first, check to see if we have the necessary permissions to make channels
     const permissionsCheck = await checkPermissions({
-      requiredPermissions: [
-        `MANAGE_CHANNELS`,
-        `MANAGE_ROLES`,
-      ],
+      requiredPermissions: [`MANAGE_CHANNELS`, `MANAGE_ROLES`],
       channel:
         context.initialMessage.channel.type === `GUILD_TEXT`
           ? context.initialMessage.channel
@@ -46,39 +43,23 @@ export class RepairChannelsCommand implements Command {
     // set roles appropriately
     try {
       if (memberRole && !(`error` in memberRole)) {
-        ;(await context.guild.members.fetch()).forEach(
-          (gm) => {
-            if (
-              (context.ship?.crewMembers || []).find(
-                (cm) => cm.id === gm.id,
-              )
-            ) {
-              c.log(
-                gm.nickname || gm.user.username,
-                `is a crew member!`,
-              )
-              if (
-                !gm.roles.cache.find(
-                  (r) => r === memberRole,
-                )
-              )
-                gm.roles
-                  .add(memberRole)
-                  .catch((e) => c.log(e))
-            } else {
-              c.log(
-                gm.nickname || gm.user.username,
-                `ain't no crew member.`,
-              )
-              if (
-                gm.roles.cache.find((r) => r === memberRole)
-              )
-                gm.roles
-                  .remove(memberRole)
-                  .catch((e) => c.log(e))
-            }
-          },
-        )
+        ;(await context.guild.members.fetch()).forEach((gm) => {
+          if ((context.ship?.crewMembers || []).find((cm) => cm.id === gm.id)) {
+            // c.log(
+            //   gm.nickname || gm.user.username,
+            //   `is a crew member!`,
+            // )
+            if (!gm.roles.cache.find((r) => r === memberRole))
+              gm.roles.add(memberRole).catch((e) => c.log(e))
+          } else {
+            // c.log(
+            //   gm.nickname || gm.user.username,
+            //   `ain't no crew member.`,
+            // )
+            if (gm.roles.cache.find((r) => r === memberRole))
+              gm.roles.remove(memberRole).catch((e) => c.log(e))
+          }
+        })
       }
     } catch (e) {
       c.log(e)

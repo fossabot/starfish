@@ -24,7 +24,7 @@ exports.crewActives = {
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 2,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
     },
@@ -36,7 +36,7 @@ exports.crewActives = {
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 4,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
     },
@@ -50,7 +50,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown * 2.5,
         duration: 1000 * 60 * 60 * 1,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
     },
@@ -64,7 +64,7 @@ exports.crewActives = {
         duration: 1000 * 60 * 60 * 1,
         notify: true,
         intensityAdapter: (i) => i * 10,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
                 gameConstants_1.default.displayHPMultiplier, 0);
         },
@@ -79,7 +79,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown * 12,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => 1 + Math.floor(i * 4),
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
     },
@@ -93,7 +93,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown * 11,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
     },
@@ -106,7 +106,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => Math.floor(i * 10) + 1,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
     },
@@ -119,7 +119,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => Math.floor(i * 10) + 1,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
     },
@@ -132,7 +132,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => Math.floor(i * 10) + 1,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
     },
@@ -145,7 +145,7 @@ exports.crewActives = {
         cooldown: exports.crewActiveBaseGlobalCooldown,
         duration: 1000 * 60 * 60 * 3,
         intensityAdapter: (i) => Math.floor(i * 10) + 1,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
     },
@@ -158,7 +158,7 @@ exports.crewActives = {
         notify: true,
         cooldown: exports.crewActiveBaseGlobalCooldown * 2,
         intensityAdapter: (i) => i * 0.25,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
     },
@@ -170,7 +170,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 6,
@@ -184,7 +184,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 5,
@@ -198,7 +198,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 7,
@@ -211,7 +211,7 @@ exports.crewActives = {
             return `Perform ${this.displayIntensity(a.intensity, level)}% better when alone in a room for ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`;
         },
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 3,
@@ -224,7 +224,7 @@ exports.crewActives = {
             return `Perform ${this.displayIntensity(a.intensity, level)}% better per crew member in the same room for ${text_1.default.msToTimeString(this.duration || 1000 * 60 * 60 * 24 * 1)}.`;
         },
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 2,
@@ -238,7 +238,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => Math.floor(i * 2) + 1,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level));
         },
         cooldown: exports.crewActiveBaseGlobalCooldown * 4,
@@ -252,7 +252,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i * 0.5,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
                 gameConstants_1.default.displayHPMultiplier, 0);
         },
@@ -267,7 +267,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i * 1.2,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -281,7 +281,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -295,7 +295,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i * 0.5,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: 5 * exports.crewActiveBaseGlobalCooldown,
@@ -309,7 +309,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -323,7 +323,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -337,7 +337,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -351,7 +351,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100, 0);
         },
         cooldown: Number(exports.crewActiveBaseGlobalCooldown),
@@ -365,7 +365,7 @@ exports.crewActives = {
         },
         notify: true,
         intensityAdapter: (i) => i,
-        displayIntensity: function (i, level = 0) {
+        displayIntensity: function (i, level = 1) {
             return math_1.default.r2(this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
                 gameConstants_1.default.displayHPMultiplier, 0);
         },

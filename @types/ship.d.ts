@@ -40,6 +40,7 @@ interface BaseHumanShipData extends BaseShipData {
   boughtHeaderBackgrounds?: ShipBackground[]
   boughtTaglines?: string[]
   contracts?: Contract[]
+  hasNotifiedAboutInactivity?: boolean
 }
 
 interface BaseAIShipData extends BaseShipData {

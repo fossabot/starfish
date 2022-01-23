@@ -30,7 +30,7 @@ export const crewActives: {
     },
     cooldown: crewActiveBaseGlobalCooldown * 2,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -49,7 +49,7 @@ export const crewActives: {
     },
     cooldown: crewActiveBaseGlobalCooldown * 4,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -70,7 +70,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown * 2.5,
     duration: 1000 * 60 * 60 * 1,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -93,7 +93,7 @@ export const crewActives: {
     duration: 1000 * 60 * 60 * 1,
     notify: true,
     intensityAdapter: (i) => i * 10,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
           constants.displayHPMultiplier,
@@ -117,7 +117,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown * 12,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => 1 + Math.floor(i * 4),
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
@@ -135,7 +135,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown * 11,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -155,7 +155,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
@@ -172,7 +172,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
@@ -189,7 +189,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
@@ -206,7 +206,7 @@ export const crewActives: {
     cooldown: crewActiveBaseGlobalCooldown,
     duration: 1000 * 60 * 60 * 3,
     intensityAdapter: (i) => Math.floor(i * 10) + 1,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
   },
@@ -223,7 +223,7 @@ export const crewActives: {
     notify: true,
     cooldown: crewActiveBaseGlobalCooldown * 2,
     intensityAdapter: (i) => i * 0.25,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -242,7 +242,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -263,7 +263,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -283,7 +283,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -304,7 +304,7 @@ export const crewActives: {
       )}.`
     },
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -325,7 +325,7 @@ export const crewActives: {
       )}.`
     },
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -345,7 +345,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => Math.floor(i * 2) + 1,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return this.intensityAdapter(getActiveIntensityScaledByLevel(i, level))
     },
     cooldown: crewActiveBaseGlobalCooldown * 4,
@@ -363,7 +363,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i * 0.5,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
           constants.displayHPMultiplier,
@@ -384,7 +384,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i * 1.2,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -403,7 +403,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -425,7 +425,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i * 0.5,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -445,7 +445,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -465,7 +465,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -485,7 +485,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -504,7 +504,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) * 100,
         0,
@@ -527,7 +527,7 @@ export const crewActives: {
     },
     notify: true,
     intensityAdapter: (i) => i,
-    displayIntensity: function (i, level = 0) {
+    displayIntensity: function (i, level = 1) {
       return math.r2(
         this.intensityAdapter(getActiveIntensityScaledByLevel(i, level)) *
           constants.displayHPMultiplier,

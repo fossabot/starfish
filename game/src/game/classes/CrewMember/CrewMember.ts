@@ -413,6 +413,7 @@ export class CrewMember extends Stubbable {
 
   active() {
     this.lastActive = Date.now()
+    this.ship.hasNotifiedAboutInactivity = false
     this.toUpdate.lastActive = this.lastActive
   }
 
