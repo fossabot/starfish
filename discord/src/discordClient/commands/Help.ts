@@ -1,26 +1,27 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import {
-  MessageEmbed,
-  MessageOptions,
-  ColorResolvable,
-} from 'discord.js'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
+import ioInterface from '../../ioInterface'
+import { ColorResolvable, MessageEmbed } from 'discord.js'
+import commandList from '../commandList'
 
-export class HelpCommand implements Command {
-  commandsToList: Command[] = []
-  commandNames = [`help`, `h`, `i`, `info`]
+const command: CommandStub = {
+  replyEphemerally: true,
 
-  constructor(commands: Command[]) {
-    this.commandsToList = [...commands]
-    this.commandsToList.push(this)
-  }
+  commandNames: [`help`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - See the game's Discord commands.`
-  }
+  getDescription(): string {
+    return `See the game's commands and links.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  async run(context: InteractionContext) {
+    function commandToString(command: CommandStub): string {
+      let commandString = `\`/${command.commandNames[0]}`
+      if (command.args)
+        commandString += command.args.map((arg) => ` [${arg.name}]`).join(``)
+      commandString += `\``
+      return `${commandString} - ${command.getDescription()}`
+    }
     await context.reply({
       embeds: [
         new MessageEmbed()
@@ -30,16 +31,14 @@ export class HelpCommand implements Command {
             `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
           )
           .setDescription(
-            this.commandsToList
+            commandList
               .filter(
                 (cm) =>
                   !cm.requiresCaptain &&
                   !cm.requiresCrewMember &&
                   !cm.requiresShip,
               )
-              .map((cm) =>
-                cm.getHelpMessage(context.commandPrefix),
-              )
+              .map((cm) => commandToString(cm))
               .filter((m) => m)
               .join(`\n`),
           ),
@@ -47,16 +46,13 @@ export class HelpCommand implements Command {
           .setTitle(`Crew commands`)
           .setColor(c.gameColor as ColorResolvable)
           .setDescription(
-            this.commandsToList
+            commandList
               .filter(
                 (cm) =>
-                  (cm.requiresShip ||
-                    cm.requiresCrewMember) &&
+                  (cm.requiresShip || cm.requiresCrewMember) &&
                   !cm.requiresCaptain,
               )
-              .map((cm) =>
-                cm.getHelpMessage(context.commandPrefix),
-              )
+              .map((cm) => commandToString(cm))
               .filter((m) => m)
               .join(`\n`),
           ),
@@ -64,11 +60,9 @@ export class HelpCommand implements Command {
           .setTitle(`Captain commands`)
           .setColor(c.gameColor as ColorResolvable)
           .setDescription(
-            this.commandsToList
+            commandList
               .filter((cm) => cm.requiresCaptain)
-              .map((cm) =>
-                cm.getHelpMessage(context.commandPrefix),
-              )
+              .map((cm) => commandToString(cm))
               .filter((m) => m)
               .join(`\n`),
           ),
@@ -83,5 +77,7 @@ export class HelpCommand implements Command {
           ),
       ],
     })
-  }
+  },
 }
+
+export default command

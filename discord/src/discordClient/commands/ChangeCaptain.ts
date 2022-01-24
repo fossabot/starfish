@@ -1,41 +1,42 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class ChangeCaptainCommand implements Command {
-  requiresShip = true
-  requiresCaptain = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCaptain: true,
 
-  commandNames = [
-    `changecaptain`,
-    `setcaptain`,
-    `captain`,
-    `cc`,
-  ]
+  commandNames: [`changecaptain`, `setcaptain`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <@newcaptain>\` - Change the ship's captain.`
-  }
+  getDescription(): string {
+    return `Change the ship's captain.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  args: [
+    {
+      type: `user`,
+      prompt: `Who would you like to make the captain?`,
+      name: `captain`,
+      required: true,
+    },
+  ],
+
+  async run(context: InteractionContext) {
     if (!context.ship) return
 
-    let typedId = context.args[0]
-    if (!typedId) {
-      await context.reply(
-        `Use this command in the format \`${context.commandPrefix}${this.commandNames[0]} <@newcaptain>\`.`,
-      )
+    let newCaptain = context.args.captain
+    if (!newCaptain) {
+      await context.reply(`Please tag the new captain.`)
       return
     }
-    typedId = typedId.replace(/[<>@!]*/g, ``)
 
     const crewMember = context.ship.crewMembers?.find(
-      (cm) => cm.id === typedId,
+      (cm) => cm.id === newCaptain.id,
     )
     if (!crewMember) {
       await context.reply(
-        `No ship crew member found for that server member. Are you sure they've \`${context.commandPrefix}join\`ed the crew?`,
+        `No ship crew member found for that server member. Are you sure they've \`/join\`ed the crew?`,
       )
       return
     }
@@ -46,6 +47,15 @@ export class ChangeCaptainCommand implements Command {
     )
     if (res) {
       await context.reply(res)
+      return
     }
-  }
+
+    await context.reply(
+      `Captain changed to ${
+        crewMember.speciesId ? c.species[crewMember.speciesId].icon : ``
+      }${crewMember.name}.`,
+    )
+  },
 }
+
+export default command

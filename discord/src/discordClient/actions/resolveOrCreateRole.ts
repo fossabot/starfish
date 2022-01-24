@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
-import type { CommandContext } from '../models/CommandContext'
+import type { InteractionContext } from '../models/getInteractionContext'
 
 export const roleData: {
   [key in GameRoleType]: {
@@ -22,16 +22,14 @@ export default async function resolveOrCreateRole({
 }:
   | {
       type: GameRoleType
-      context: CommandContext
+      context: InteractionContext
       guild?: Discord.Guild
     }
   | {
       type: GameRoleType
-      context?: CommandContext
+      context?: InteractionContext
       guild: Discord.Guild
-    }): Promise<
-  Discord.Role | null | GamePermissionsFailure
-> {
+    }): Promise<Discord.Role | null | GamePermissionsFailure> {
   if (!context && !guild) return null
   if (context && !guild) guild = context.guild || undefined
   if (!guild) return null
@@ -49,14 +47,10 @@ export default async function resolveOrCreateRole({
   }
   if (permissionsRes.message) c.log(permissionsRes.message)
 
-  const existingRoles = [
-    ...(await guild.roles.cache).values(),
-  ]
+  const existingRoles = [...(await guild.roles.cache).values()]
 
   // ----- get/make role -----
-  const existing = existingRoles.find(
-    (c) => c.name === name,
-  )
+  const existing = existingRoles.find((c) => c.name === name)
   if (existing) {
     // c.log(`found existing role...`)
     return existing

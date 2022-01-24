@@ -1,19 +1,19 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class LabCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  commandNames = [`lab`, `l`, `research`, `upgrade`]
+  commandNames: [`lab`, `research`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Move to the lab.`
-  }
+  getDescription(): string {
+    return `Move to the lab.`
+  },
 
-  async run(context: CommandContext) {
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
 
     if (!context.ship.rooms.lab) {
@@ -21,13 +21,11 @@ export class LabCommand implements Command {
       return
     }
 
-    ioInterface.crew.move(
-      context.ship.id,
-      context.crewMember.id,
-      `lab`,
-    )
+    ioInterface.crew.move(context.ship.id, context.crewMember.id, `lab`)
     context.reply(
-      `${context.nickname} moves to the lab and begins researching.`,
+      `${context.nickname} moves to the lab and begins researching the first available task.`,
     )
-  }
+  },
 }
+
+export default command

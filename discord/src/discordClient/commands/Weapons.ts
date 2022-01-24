@@ -1,19 +1,37 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class WeaponsCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+const tacticChoices = [
+  { name: `defensive`, value: `defensive` },
+  { name: `aggressive`, value: `aggressive` },
+  { name: `only non players`, value: `onlyNonPlayers` },
+  { name: `only players`, value: `onlyPlayers` },
+  { name: `pacifist`, value: `pacifist` },
+]
 
-  commandNames = [`weapons`, `weapon`, `w`]
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Move to the weapons bay.`
-  }
+  commandNames: [`weapons`],
 
-  async run(context: CommandContext) {
+  getDescription(): string {
+    return `Move to the weapons bay. If you supply a tactic, you will adopt that tactic.`
+  },
+
+  args: [
+    {
+      type: `string`,
+      prompt: `What tactic would you like to adopt?`,
+      name: `tactic`,
+      required: false,
+      choices: tacticChoices,
+    },
+  ],
+
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
 
     const res = await ioInterface.crew.move(
@@ -26,8 +44,20 @@ export class WeaponsCommand implements Command {
       return
     }
 
-    context.reply(
-      `${context.nickname} moves to the weapons bay.`,
-    )
-  }
+    let tacticRes: string = ``
+    if (context.args.tactic) {
+      await ioInterface.crew.tactic(
+        context.ship.id,
+        context.crewMember.id,
+        context.args.tactic as CombatTactic,
+      )
+      tacticRes = ` and adopts the \`${
+        tacticChoices.find((t) => t.value === context.args.tactic)?.name
+      }\` tactic`
+    }
+
+    context.reply(`${context.nickname} moves to the weapons bay${tacticRes}.`)
+  },
 }
+
+export default command

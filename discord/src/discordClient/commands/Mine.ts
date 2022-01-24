@@ -1,20 +1,21 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
+import waitForButtonChoiceWithCallback from '../actions/waitForButtonChoiceWithCallback'
 
-export class MineCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
-  requiresPlanet = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
+  requiresPlanet: true,
 
-  commandNames = [`mine`, `m`]
+  commandNames: [`mine`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <cargo type (optional)>\` - Move to the mining bay. If you supply a cargo type (or 'closest'), you will focus mining on that type.`
-  }
+  getDescription(): string {
+    return `Move to the mining bay.`
+  },
 
-  async run(context: CommandContext) {
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
     if (!context.ship.planet) return
     const planet = context.ship.planet
@@ -22,43 +23,7 @@ export class MineCommand implements Command {
       context.reply(`This planet doesn't have a mine.`)
       return
     }
-
-    let changedType: MinePriorityType | undefined
-    if (context.args.length) {
-      const enteredString = context.args[0]
-        .replace(/[<>'"]/g, ``)
-        .toLowerCase() as MinePriorityType
-
-      if (
-        enteredString !== `closest` &&
-        !planet.mine.find(
-          (m: PlanetMineEntry) => m.id === enteredString,
-        )
-      ) {
-        context.reply(
-          `Invalid cargo type. Valid types are: ${c.printList(
-            [
-              `closest`,
-              ...planet.mine.map(
-                (m: PlanetMineEntry) => m.id,
-              ),
-            ],
-          )}.`,
-        )
-        return
-      }
-
-      const res = await ioInterface.crew.mineType(
-        context.ship.id,
-        context.crewMember.id,
-        enteredString,
-      )
-      if (`error` in res) {
-        await context.reply(res.error)
-        return
-      }
-      changedType = res.data
-    }
+    const mine = context.ship.planet.mine!
 
     const res = await ioInterface.crew.move(
       context.ship.id,
@@ -69,17 +34,49 @@ export class MineCommand implements Command {
       context.reply(res.error)
       return
     }
+    await context.reply(`${context.nickname} moves to the mining bay.`)
 
-    await context.reply(
-      `${context.nickname} moves to the mining bay` +
-        (changedType
-          ? ` and focuses on mining ${
-              changedType === `closest`
-                ? `the type closest to completion`
-                : changedType
-            }`
-          : ``) +
-        `.`,
-    )
-  }
+    const currentFocus =
+      context.crewMember?.minePriority === `current`
+        ? `current`
+        : mine.find(
+            (m) =>
+              m.mineCurrent < m.mineRequirement &&
+              m.id === context.crewMember?.minePriority,
+          )?.id || `current`
+
+    waitForButtonChoiceWithCallback({
+      allowedUserId: context.author.id,
+      content: `${context.nickname} moves to the mining bay. They can mine:`,
+      buttons: [
+        ...mine.map((m) => (m.mineCurrent < m.mineRequirement ? m.id : null)),
+        `closest`,
+      ]
+        .filter((m) => m)
+        .map((p) => ({
+          label:
+            (p === `closest` ? `Closest to Done` : c.capitalize(p || ``)) +
+            (p === currentFocus ? ` (current)` : ``),
+          style: `SECONDARY`,
+          customId: `mine` + p,
+        })),
+      context: context,
+      callback: async (choice) => {
+        const res = await ioInterface.crew.mineType(
+          context.ship!.id,
+          context.crewMember!.id,
+          choice.replace(`mine`, ``) as MinePriorityType,
+        )
+        if (`data` in res) {
+          const type =
+            res.data === `closest` ? `the closest type to completion` : res.data
+          await context.reply(
+            `${context.nickname} moves to the mining bay and focuses their mining on ${type}.`,
+          )
+        } else await context.reply(res.error)
+      },
+    })
+  },
 }
+
+export default command

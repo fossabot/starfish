@@ -1,23 +1,23 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import { MessageEmbed } from 'discord.js'
-import { ShipLeaveGameCommand } from './ShipLeaveGame'
+import ShipLeaveGameCommand from './ShipLeaveGame'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
-export class CrewLeaveGameCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  commandNames = [`leave`, `leaveship`]
+  commandNames: [`leave`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Your crew member leaves the ship. This action is permanent.`
-  }
+  getDescription(): string {
+    return `Your crew member leaves the ship. This action is permanent.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  async run(context: InteractionContext) {
     if (!context.ship) return
     if (!context.crewMember) return
 
@@ -27,44 +27,39 @@ export class CrewLeaveGameCommand implements Command {
           new MessageEmbed({
             color: `RED`,
             title: `You're the only crew member left!`,
-            description: `Use \`${context.commandPrefix}${
-              new ShipLeaveGameCommand().commandNames[0]
-            }\` instead to remove your ship fully from the game.`,
+            description: `Use \`/${ShipLeaveGameCommand.commandNames[0]}\` instead to remove your ship fully from the game.`,
           }),
         ],
       })
       return
     }
 
-    const {
-      result: deleteChannelsConfirmResult,
-      sentMessage: pm,
-    } = await waitForSingleButtonChoice({
-      context,
-      content: [
-        new MessageEmbed({
-          color: `RED`,
-          title: `Wait, really?`,
-          description: `This will **permanently** delete your crew member from the ship.
+    const { result: deleteChannelsConfirmResult, sentMessage: pm } =
+      await waitForSingleButtonChoice({
+        context,
+        content: [
+          new MessageEmbed({
+            color: `RED`,
+            title: `Wait, really?`,
+            description: `This will **permanently** delete your crew member from the ship.
 
 Is that okay with you?`,
-        }),
-      ],
-      allowedUserId: context.initialMessage.author.id,
-      buttons: [
-        {
-          label: `Leave Game`,
-          style: `DANGER`,
-          customId: `leaveGameYes`,
-        },
-        {
-          label: `Don't Leave Game`,
-          style: `SECONDARY`,
-          customId: `leaveGameNo`,
-        },
-      ],
-    })
-    if (pm) pm.delete().catch((e) => {})
+          }),
+        ],
+        allowedUserId: context.author.id,
+        buttons: [
+          {
+            label: `Leave Game`,
+            style: `DANGER`,
+            customId: `leaveGameYes`,
+          },
+          {
+            label: `Don't Leave Game`,
+            style: `SECONDARY`,
+            customId: `leaveGameNo`,
+          },
+        ],
+      })
 
     if (
       !deleteChannelsConfirmResult ||
@@ -78,9 +73,7 @@ Is that okay with you?`,
       context.ship.id,
       context.crewMember.id,
     )
-    if (res) {
-      await context.reply(res)
-    }
+    await context.reply(res || `You have left the ship.`)
 
     // remove role
     const memberRole = await resolveOrCreateRole({
@@ -90,16 +83,25 @@ Is that okay with you?`,
     try {
       if (memberRole && !(`error` in memberRole)) {
         if (
-          context.guildMember?.roles.cache.find(
-            (r) => r === memberRole,
+          (
+            (`cache` in context.guildMember.roles
+              ? context.guildMember.roles.cache.map((r) => r.name)
+              : context.guildMember.roles) as string[]
+          ).find((r) => r === memberRole.name)
+        ) {
+          c.log(
+            `cache` in context.guildMember.roles
+              ? context.guildMember.roles.cache.map((r) => r.name)
+              : context.guildMember.roles,
           )
-        )
-          context.guildMember?.roles
-            .remove(memberRole)
-            .catch((e) => c.log(e))
+          const gm = await context.getUserInGuildFromId(context.author.id)
+          if (gm) gm.roles.remove(memberRole).catch((e) => c.log(e))
+        }
       }
     } catch (e) {
       c.log(e)
     }
-  }
+  },
 }
+
+export default command

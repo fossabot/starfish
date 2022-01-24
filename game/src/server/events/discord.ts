@@ -94,7 +94,7 @@ export default function (
     callback({ data: `ok` })
   })
 
-  socket.on(`ship:kickMember`, (shipId, crewId, callback) => {
+  socket.on(`ship:kickMember`, async (shipId, crewId, callback) => {
     if (!game) return
     if (typeof callback !== `function`) callback = () => {}
     const ship = game.ships.find((s) => s.id === shipId) as HumanShip
@@ -102,7 +102,8 @@ export default function (
     const crewMember = ship.crewMembers.find((cm) => cm.id === crewId)
     if (!crewMember) return callback({ error: `No crew member found.` })
 
-    ship.removeCrewMember(crewMember.id)
+    const error = await ship.removeCrewMember(crewMember.id)
+    if (error) return callback({ error })
     callback({ data: `ok` })
   })
 

@@ -1,19 +1,19 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class BrakeCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  commandNames = [`brake`, `stop`]
+  commandNames: [`brake`, `stop`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Apply the brakes with all of your current available charge.`
-  }
+  getDescription(): string {
+    return `Apply the brakes with all of your current available charge.`
+  },
 
-  async run(context: CommandContext) {
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
 
     if (context.crewMember.bottomedOutOnStamina) {
@@ -36,19 +36,15 @@ export class BrakeCommand implements Command {
 
     const hasPassiveEngines = context.ship.items?.find(
       (i) =>
-        i.itemType === `engine` &&
-        (i as EngineStub).passiveThrustMultiplier,
+        i.itemType === `engine` && (i as EngineStub).passiveThrustMultiplier,
     )
     const hasManualEngines = context.ship.items?.find(
       (i) =>
-        i.itemType === `engine` &&
-        (i as EngineStub).manualThrustMultiplier,
+        i.itemType === `engine` && (i as EngineStub).manualThrustMultiplier,
     )
 
     if (!hasPassiveEngines && context.ship.speed === 0) {
-      await context.reply(
-        `${context.ship.name} is already stopped.`,
-      )
+      await context.reply(`${context.ship.name} is already stopped.`)
       return
     }
 
@@ -57,50 +53,38 @@ export class BrakeCommand implements Command {
         c.noEngineThrustMagnitude,
         (
           context.ship?.items?.filter(
-            (e: ItemStub) =>
-              e.itemType === `engine` &&
-              (e.repair || 0) > 0,
+            (e: ItemStub) => e.itemType === `engine` && (e.repair || 0) > 0,
           ) || []
         ).reduce(
           (total: number, e: EngineStub) =>
-            total +
-            (e.manualThrustMultiplier || 0) *
-              (e.repair || 0),
+            total + (e.manualThrustMultiplier || 0) * (e.repair || 0),
           0,
-        ) *
-          (context.ship.gameSettings
-            ?.baseEngineThrustMultiplier || 1),
+        ) * (context.ship.gameSettings?.baseEngineThrustMultiplier || 1),
       )
 
       const pilotingSkill =
         context.crewMember.passives.reduce(
           (acc: number, p: CrewPassiveData) =>
-            acc +
-            (p.id === `boostDexterity`
-              ? p.intensity || 0
-              : 0),
+            acc + (p.id === `boostDexterity` ? p.intensity || 0 : 0),
           0,
         ) +
         (context.crewMember.skills.find(
           (s: XPData) => s && s.skill === `dexterity`,
         )?.level || 1)
 
-      const currentCockpitCharge =
-        context.crewMember?.cockpitCharge || 0
+      const currentCockpitCharge = context.crewMember?.cockpitCharge || 0
 
       const maxPossibleSpeedChangeWithBrake =
         currentCockpitCharge *
         (c.getThrustMagnitudeForSingleCrewMember(
           pilotingSkill,
           engineThrustAmplification,
-          context.ship.gameSettings
-            ?.baseEngineThrustMultiplier || 1,
+          context.ship.gameSettings?.baseEngineThrustMultiplier || 1,
         ) /
           (context.ship.mass || 10000)) *
         (context.ship.gameSettings?.brakeToThrustRatio || 1)
 
-      const intentionallyOverBrakeMultiplier =
-        1 + Math.random() * 0.2
+      const intentionallyOverBrakeMultiplier = 1 + Math.random() * 0.2
 
       const currentSpeed = context.ship.speed || 0
       const brakePercentNeeded = Math.min(
@@ -119,36 +103,29 @@ export class BrakeCommand implements Command {
         await context.refreshShip()
         context.reply(
           `${context.nickname} manually braked${
-            hasPassiveEngines
-              ? ` and set their auto-nav to brake`
-              : ``
+            hasPassiveEngines ? ` and set their auto-nav to brake` : ``
           }, slowing the ship by ${c.speedNumber(
             res.data,
           )} to a speed of ${c.speedNumber(
-            c.vectorToMagnitude(
-              context.ship.velocity || [0, 0],
-            ) *
-              60 *
-              60,
+            c.vectorToMagnitude(context.ship.velocity || [0, 0]) * 60 * 60,
           )}.`,
         )
       }
     }
 
     if (hasPassiveEngines) {
-      const res =
-        await ioInterface.crew.setTargetObjectOrLocation(
-          context.ship.id,
-          context.crewMember.id,
-          context.ship,
-        )
+      const res = await ioInterface.crew.setTargetObjectOrLocation(
+        context.ship.id,
+        context.crewMember.id,
+        context.ship,
+      )
 
       if (`error` in res) context.reply(res.error)
       else if (!hasManualEngines) {
-        context.reply(
-          `${context.nickname} began braking passively.`,
-        )
+        context.reply(`${context.nickname} began braking passively.`)
       }
     }
-  }
+  },
 }
+
+export default command

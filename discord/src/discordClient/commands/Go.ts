@@ -1,55 +1,57 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
-import { BunkCommand } from './Bunk'
-import { CockpitCommand } from './Cockpit'
-import { MineCommand } from './Mine'
-import { RepairCommand } from './Repair'
-import { WeaponsCommand } from './Weapons'
-import { LabCommand } from './Lab'
 
-export class GoCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+import BunkCommand from './Bunk'
+import CockpitCommand from './Cockpit'
+import MineCommand from './Mine'
+import RepairCommand from './Repair'
+import WeaponsCommand from './Weapons'
+import LabCommand from './Lab'
 
-  commandNames = [`go`, `room`, `move`, `moveto`]
+const locations: CrewLocation[] = [
+  `bunk`,
+  `cockpit`,
+  `weapons`,
+  `repair`,
+  `mine`,
+  `lab`,
+  `lounge`,
+]
 
-  getHelpMessage(
-    commandPrefix: string,
-    availableRooms?: string[],
-  ): string {
-    return `\`${commandPrefix}${
-      this.commandNames[0]
-    } <room name>\` - Move to a room in the ship.${
-      availableRooms
-        ? `\nAvailable rooms: ${availableRooms.join(`, `)}.`
-        : ``
-    }`
-  }
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  async run(context: CommandContext) {
+  commandNames: [`go`, `moveto`],
+
+  getDescription(rooms?: CrewLocation[]): string {
+    if (!rooms) return `Move to a room in the ship.`
+    return `Move to a room in the ship. Available rooms: ${c.printList(
+      rooms.map((r) => c.capitalize(r)),
+    )}`
+  },
+
+  args: [
+    {
+      name: `to`,
+      type: `string`,
+      prompt: `Where would you like to go?`,
+      choices: locations.map((l) => ({
+        name: c.capitalize(l),
+        value: l,
+      })),
+    },
+  ],
+
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
-    if (!context.args.length) {
-      context.reply(
-        this.getHelpMessage(
-          context.commandPrefix,
-          Object.keys(context.ship.rooms),
-        ),
-      )
-      return
-    }
 
-    let enteredString = context.args[0]
-      .replace(/[<>]/g, ``)
-      .toLowerCase()
+    let enteredString = context.args.to
 
-    if (
-      [`bunk`, `sleep`, `cabin`, `rest`, `b`].includes(
-        enteredString,
-      )
-    )
-      return new BunkCommand().run(context)
+    if ([`bunk`, `sleep`, `cabin`, `rest`, `b`].includes(enteredString))
+      return BunkCommand.run(context)
     if (
       [
         `cockpit`,
@@ -61,7 +63,7 @@ export class GoCommand implements Command {
         `c`,
       ].includes(enteredString)
     )
-      return new CockpitCommand().run(context)
+      return CockpitCommand.run(context)
     if (
       [
         `mine`,
@@ -73,7 +75,7 @@ export class GoCommand implements Command {
         `m`,
       ].includes(enteredString)
     )
-      return new MineCommand().run(context)
+      return MineCommand.run(context)
     if (
       [
         `repair`,
@@ -85,7 +87,7 @@ export class GoCommand implements Command {
         `rep`,
       ].includes(enteredString)
     )
-      return new RepairCommand().run(context)
+      return RepairCommand.run(context)
     if (
       [
         `weapon`,
@@ -99,23 +101,14 @@ export class GoCommand implements Command {
         `w`,
       ].includes(enteredString)
     )
-      return new WeaponsCommand().run(context)
+      return WeaponsCommand.run(context)
     if (
-      [
-        `lab`,
-        `l`,
-        `laboratory`,
-        `research`,
-        `upgrade`,
-      ].includes(enteredString)
+      [`lab`, `l`, `laboratory`, `research`, `upgrade`].includes(enteredString)
     )
-      return new LabCommand().run(context)
+      return LabCommand.run(context)
 
-    context.reply(
-      this.getHelpMessage(
-        context.commandPrefix,
-        Object.keys(context.ship.rooms),
-      ),
-    )
-  }
+    context.reply(this.getDescription(Object.keys(context.ship.rooms)))
+  },
 }
+
+export default command

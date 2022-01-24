@@ -5,23 +5,21 @@ export async function setCaptain(
   shipId: string,
   crewMemberId: string,
 ): Promise<string | null> {
-  const error: string | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:setCaptain`,
-        shipId,
-        crewMemberId,
-        ({ data, error }: IOResponseReceived<string>) => {
-          if (error) {
-            c.log(error)
-            resolve(error)
-            return
-          }
-          resolve(null)
-        },
-      )
-    },
-  )
+  const error: string | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:setCaptain`,
+      shipId,
+      crewMemberId,
+      ({ data, error }: IOResponseReceived<string>) => {
+        if (error) {
+          c.log(error)
+          resolve(error)
+          return
+        }
+        resolve(null)
+      },
+    )
+  })
   return error // null = ok
 }
 
@@ -29,47 +27,34 @@ export async function kickMember(
   shipId: string,
   crewMemberId: string,
 ): Promise<string | null> {
-  const error: string | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:kickMember`,
-        shipId,
-        crewMemberId,
-        ({ data, error }: IOResponseReceived<string>) => {
-          if (error) {
-            c.log(error)
-            resolve(error)
-            return
-          }
-          resolve(null)
-        },
-      )
-    },
-  )
-  return error // null = ok
-}
-
-export async function setGuildData(
-  shipId,
-  guildData,
-): Promise<boolean> {
-  return new Promise(async (resolve) => {
-    await io.emit(
-      `ship:guildData`,
+  const error: string | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:kickMember`,
       shipId,
-      guildData,
-      (res) => {
-        if (`error` in res) return resolve(false)
-        return resolve(true)
+      crewMemberId,
+      ({ data, error }: IOResponseReceived<string>) => {
+        if (error) {
+          c.log(error)
+          resolve(error)
+          return
+        }
+        resolve(null)
       },
     )
   })
+  return error // null = ok
 }
 
-export async function rename(
-  shipId: string,
-  newName: string,
-): Promise<string> {
+export async function setGuildData(shipId, guildData): Promise<boolean> {
+  return new Promise(async (resolve) => {
+    await io.emit(`ship:guildData`, shipId, guildData, (res) => {
+      if (`error` in res) return resolve(false)
+      return resolve(true)
+    })
+  })
+}
+
+export async function rename(shipId: string, newName: string): Promise<string> {
   return new Promise(async (resolve) => {
     await io.emit(`ship:rename`, shipId, newName, (res) => {
       if (`error` in res) return resolve(res.error)
@@ -83,26 +68,21 @@ export async function get(
   crewMemberId: string,
 ): Promise<ShipStub | null> {
   if (!(await connected())) return null
-  const shipStub: ShipStub | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:get`,
-        id,
-        crewMemberId,
-        ({
-          data: ship,
-          error,
-        }: IOResponseReceived<ShipStub>) => {
-          if (!ship || error) {
-            c.log(error)
-            resolve(null)
-            return
-          }
-          resolve(ship)
-        },
-      )
-    },
-  )
+  const shipStub: ShipStub | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:get`,
+      id,
+      crewMemberId,
+      ({ data: ship, error }: IOResponseReceived<ShipStub>) => {
+        if (!ship || error) {
+          c.log(error)
+          resolve(null)
+          return
+        }
+        resolve(ship)
+      },
+    )
+  })
   return shipStub
 }
 
@@ -111,75 +91,59 @@ export async function create(
 ): Promise<ShipStub | null> {
   if (!(await connected())) return null
 
-  const shipStub: ShipStub | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:create`,
-        data,
-        ({
-          data: ship,
-          error,
-        }: IOResponseReceived<ShipStub>) => {
-          if (!ship || error) {
-            c.log(error)
-            resolve(null)
-            return
-          }
-          resolve(ship)
-        },
-      )
-    },
-  )
+  const shipStub: ShipStub | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:create`,
+      data,
+      ({ data: ship, error }: IOResponseReceived<ShipStub>) => {
+        if (!ship || error) {
+          c.log(error)
+          resolve(null)
+          return
+        }
+        resolve(ship)
+      },
+    )
+  })
   return shipStub
 }
 
-export async function destroy(
-  id: string,
-): Promise<string | null> {
+export async function destroy(id: string): Promise<string | null> {
   if (!(await connected())) return null
-  const res: string | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:destroy`,
-        id,
-        ({ data, error }: IOResponseReceived<string>) => {
-          if (error) {
-            c.log(error)
-            resolve(error)
-            return
-          }
-          resolve(data || null)
-        },
-      )
-    },
-  )
+  const res: string | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:destroy`,
+      id,
+      ({ data, error }: IOResponseReceived<string>) => {
+        if (error) {
+          c.log(error)
+          resolve(error)
+          return
+        }
+        resolve(data || null)
+      },
+    )
+  })
   return res
 }
 
-export async function respawn(
-  id: string,
-): Promise<ShipStub | null> {
+export async function respawn(id: string): Promise<ShipStub | null> {
   if (!(await connected())) return null
 
-  const shipStub: ShipStub | null = await new Promise(
-    (resolve) => {
-      io.emit(
-        `ship:respawn`,
-        id,
-        ({
-          data: ship,
-          error,
-        }: IOResponseReceived<ShipStub>) => {
-          if (!ship || error) {
-            c.log(error)
-            resolve(null)
-            return
-          }
-          resolve(ship)
-        },
-      )
-    },
-  )
+  const shipStub: ShipStub | null = await new Promise((resolve) => {
+    io.emit(
+      `ship:respawn`,
+      id,
+      ({ data: ship, error }: IOResponseReceived<ShipStub>) => {
+        if (!ship || error) {
+          c.log(error)
+          resolve(null)
+          return
+        }
+        resolve(ship)
+      },
+    )
+  })
   return shipStub
 }
 
@@ -190,18 +154,17 @@ export async function broadcast(
 ): Promise<IOResponseReceived<number>> {
   if (!(await connected())) return { error: `` }
 
-  const result: IOResponseReceived<number> =
-    await new Promise((resolve) => {
-      io.emit(
-        `ship:broadcast`,
-        guildId,
-        crewMemberId,
-        message,
-        (res: IOResponseReceived<number>) => {
-          resolve(res)
-        },
-      )
-    })
+  const result: IOResponseReceived<number> = await new Promise((resolve) => {
+    io.emit(
+      `ship:broadcast`,
+      guildId,
+      crewMemberId,
+      message,
+      (res: IOResponseReceived<number>) => {
+        resolve(res)
+      },
+    )
+  })
   return result
 }
 
@@ -211,8 +174,8 @@ export async function alertLevel(
 ): Promise<IOResponseReceived<LogAlertLevel>> {
   if (!(await connected())) return { error: `` }
 
-  const result: IOResponseReceived<LogAlertLevel> =
-    await new Promise((resolve) => {
+  const result: IOResponseReceived<LogAlertLevel> = await new Promise(
+    (resolve) => {
       io.emit(
         `ship:alertLevel`,
         guildId,
@@ -221,6 +184,7 @@ export async function alertLevel(
           resolve(res)
         },
       )
-    })
+    },
+  )
   return result
 }

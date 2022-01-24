@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
-import type { CommandContext } from '../models/CommandContext'
+import { InteractionContext } from '../models/getInteractionContext'
 
 export default async function removeChannel({
   name,
@@ -10,16 +10,14 @@ export default async function removeChannel({
 }:
   | {
       name: GameChannelType
-      context: CommandContext
+      context: InteractionContext
       guild?: Discord.Guild
     }
   | {
       name: GameChannelType
-      context?: CommandContext
+      context?: InteractionContext
       guild: Discord.Guild
-    }): Promise<
-  true | GamePermissionsFailure | { error: string }
-> {
+    }): Promise<true | GamePermissionsFailure | { error: string }> {
   if (!context && !guild)
     return {
       error: `No context or guild provided to removeChannel`,
@@ -40,33 +38,26 @@ export default async function removeChannel({
     return permissionsRes
   }
 
-  const existingChannels = [
-    ...(await guild.channels.cache).values(),
-  ]
+  const existingChannels = [...(await guild.channels.cache).values()]
   let existingSubChannels: Discord.TextChannel[] = []
   let parentCategory: Discord.CategoryChannel | undefined
 
   // ----- get category and subchannels -----
   const existingCategory = existingChannels.find(
-    (ch) =>
-      ch instanceof Discord.CategoryChannel &&
-      ch.name === c.gameName,
+    (ch) => ch instanceof Discord.CategoryChannel && ch.name === c.gameName,
   ) as Discord.CategoryChannel
   if (existingCategory) {
     parentCategory = existingCategory
     existingSubChannels = existingChannels.filter(
       (c) =>
-        c instanceof Discord.TextChannel &&
-        c.parentId === existingCategory.id,
+        c instanceof Discord.TextChannel && c.parentId === existingCategory.id,
     ) as Discord.TextChannel[]
   }
 
-  const existingChannel = [
-    ...existingSubChannels,
-    parentCategory,
-  ].find((ch) => ch && ch.name === name)
-  if (!existingChannel)
-    return { error: `Channel not found` }
+  const existingChannel = [...existingSubChannels, parentCategory].find(
+    (ch) => ch && ch.name === name,
+  )
+  if (!existingChannel) return { error: `Channel not found` }
 
   try {
     await existingChannel.delete()

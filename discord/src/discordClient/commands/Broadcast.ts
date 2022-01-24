@@ -1,48 +1,44 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import { Message, TextChannel } from 'discord.js'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class BroadcastCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  commandNames = []
+  commandNames: [`broadcast`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return ``
-  }
+  getDescription(): string {
+    return `Broadcast a message within the ship's communications range.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
-    if (context.ship) {
-      const res = await ioInterface.ship.broadcast(
-        context.ship.id,
-        context.initialMessage.author.id,
-        context.initialMessage.content,
-      )
-      if (res.error)
-        context.sendToGuild(res.error, `broadcast`)
-      if (res.data !== undefined)
-        context.reactToInitialMessage(
-          c.numberToEmoji(res.data),
-        )
-    }
-  }
+  args: [
+    {
+      name: `text`,
+      type: `string`,
+      prompt: `What message would you like to broadcast?`,
+      required: true,
+    },
+  ],
 
-  ignorePrefixMatchTest(message: Message): boolean {
-    if (
-      message.channel instanceof TextChannel &&
-      message.channel.name === `📣comms-bay`
+  async run(context: InteractionContext) {
+    if (!context.ship) return
+    const res = await ioInterface.ship.broadcast(
+      context.ship.id,
+      context.author.id,
+      context.args.text,
     )
-      return true
-    return false
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (commandContext.matchedCommands.length > 1) return ``
-    return true
-  }
+    if (res.error) context.reply(res.error)
+    if (res.data !== undefined)
+      context.reply(
+        `${context.nickname} sends:
+\`\`\`${context.args.text}\`\`\`
+The broadcast was received by **${res.data}** ship${
+          res.data === 1 ? `` : `s`
+        }.`,
+      )
+  },
 }
+
+export default command

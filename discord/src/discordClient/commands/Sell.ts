@@ -1,21 +1,21 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 import waitForButtonChoiceWithCallback from '../actions/waitForButtonChoiceWithCallback'
 
-export class SellCommand implements Command {
-  requiresShip = true
-  requiresCrewMember = true
-  requiresPlanet = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
+  requiresPlanet: true,
 
-  commandNames = [`sell`, `sellall`]
+  commandNames: [`sell`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <cargo type (optional)>\` - See planet sell options, and sell your cargo.`
-  }
+  getDescription(): string {
+    return `See planet sell options, and sell your cargo.`
+  },
 
-  async run(context: CommandContext) {
+  async run(context: InteractionContext) {
     if (!context.ship || !context.crewMember) return
     if (!context.ship.planet) return
 
@@ -26,26 +26,7 @@ export class SellCommand implements Command {
       return
     }
 
-    // let typeToSell: CargoId | undefined
-    // if (context.args.length) {
-    //   typeToSell = context.args[0]
-    //     .replace(/[<>]/g, ``)
-    //     .toLowerCase() as CargoId
-
-    //   const foundCargo = context.crewMember.inventory.find(
-    //     (i) => i.id === typeToSell,
-    //   )
-    //   if (!foundCargo || foundCargo.amount === 0) {
-    //     await context.reply(
-    //       `You don't have any ${typeToSell} to sell.`,
-    //     )
-    //     return
-    //   }
-    // }
-
     const typesToSell: CargoId[] = []
-    // if (typeToSell) typesToSell.push(typeToSell)
-    // else
     typesToSell.push(...context.crewMember.inventory.map((i) => i.id))
 
     const charismaLevel =
@@ -120,5 +101,7 @@ ${c.priceToString(p.price)}/ton`,
         else await context.reply(res.error)
       },
     })
-  }
+  },
 }
+
+export default command
