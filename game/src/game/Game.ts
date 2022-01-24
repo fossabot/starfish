@@ -290,7 +290,6 @@ export class Game {
 
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
-    // todo notify a day before
     // remove inactive ships
     const inactiveCutoff = 4 * 7 * 24 * 60 * 60 * 1000 // 4 weeks
     const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
@@ -307,21 +306,21 @@ export class Game {
         )
       }, Infinity),
     }))
-    shipsByInactivity
-      .filter(
-        (s) =>
-          !s.isTutorial &&
-          !s.ship.hasNotifiedAboutInactivity &&
-          s.toDeletion < 1000 * 60 * 60 * 24,
-      )
-      .forEach((s) =>
-        s.ship.logEntry(
-          `Warning: Your ship will be removed from the game due to inactivity in 1 day unless a crew action is taken.`,
-          `critical`,
-          `alert`,
-          false,
-        ),
-      )
+    // shipsByInactivity
+    //   .filter(
+    //     (s) =>
+    //       !s.isTutorial &&
+    //       !s.ship.hasNotifiedAboutInactivity &&
+    //       s.toDeletion < 1000 * 60 * 60 * 24,
+    //   )
+    //   .forEach((s) =>
+    //     s.ship.logEntry(
+    //       `Warning: Your ship will be removed from the game due to inactivity in 1 day unless a crew action is taken.`,
+    //       `critical`,
+    //       `alert`,
+    //       false,
+    //     ),
+    //   )
 
     c.log(
       `gray`,
@@ -335,12 +334,12 @@ export class Game {
           )
           .join(`\n  `),
     )
-    for (let inactiveShip of shipsByInactivity.filter(
-      (s) => s.toDeletion <= 0,
-    )) {
-      c.log(`yellow`, `Removing inactive ship`, inactiveShip.ship.name)
-      this.removeShip(inactiveShip.ship, `Ship was inactive for too long.`)
-    }
+    // for (let inactiveShip of shipsByInactivity.filter(
+    //   (s) => s.toDeletion <= 0,
+    // )) {
+    //   c.log(`yellow`, `Removing inactive ship`, inactiveShip.ship.name)
+    //   this.removeShip(inactiveShip.ship, `Ship was inactive for too long`)
+    // }
 
     // this.announceCargoPrices()
   }
