@@ -199,10 +199,10 @@ export class CrewMember extends Stubbable {
     //   id: `seeTrailColors`,
     //   intensity: 0.2,
     // })
-    this.addActive({
-      id: `attacksSlow`,
-      intensity: 0.2,
-    })
+    // this.addActive({
+    //   id: `attacksSlow`,
+    //   intensity: 0.2,
+    // })
     // this.addActive({
     //   id: `boostDamageToEngines`,
     //   intensity: 0.2,

@@ -108,7 +108,9 @@ const log = (...args) => {
                 // 'Api-Key': process.env.NEW_RELIC_API_KEY,
             },
         };
-        axios.post(`https://log-api.newrelic.com/log/v1?Api-Key=${process.env.NEW_RELIC_LICENSE_KEY}`, data, config);
+        axios
+            .post(`https://log-api.newrelic.com/log/v1?Api-Key=${process.env.NEW_RELIC_LICENSE_KEY}`, data, config)
+            .catch((e) => { });
     }
     catch (e) { }
 };
