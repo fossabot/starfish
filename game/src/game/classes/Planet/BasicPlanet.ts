@@ -553,21 +553,36 @@ export class BasicPlanet extends Planet {
 
       const difficulty = (target as AIShip).level || 10
       const distance = c.distance(this.location, target.location) / scanRange // 0-1
-      this.contracts.push({
-        id: `contract` + `${Math.random()}`.slice(2),
-        reward: {
+      let reward: Price = {
+        credits: 0,
+        shipCosmeticCurrency: 0,
+        crewCosmeticCurrency: 0,
+      }
+      while (
+        (reward.credits || 0) +
+          (reward.shipCosmeticCurrency || 0) +
+          (reward.crewCosmeticCurrency || 0) ===
+        0
+      ) {
+        reward = {
           credits: c.lottery(1, 12)
             ? 0
             : Math.max(
                 0,
-                c.r2(2000 * difficulty * distance * (Math.random() + 0.1), 0),
+                c.r2(
+                  2000 * difficulty * (distance + 0.1) * (Math.random() + 0.1),
+                  0,
+                ),
               ),
           shipCosmeticCurrency: c.lottery(1, 4)
             ? 0
             : Math.max(
                 0,
                 c.r2(
-                  0.35 * (difficulty - 3) * distance * (Math.random() + 0.1),
+                  0.35 *
+                    (difficulty - 3) *
+                    (distance + 0.1) *
+                    (Math.random() + 0.1),
                   0,
                   true,
                 ),
@@ -577,12 +592,19 @@ export class BasicPlanet extends Planet {
             : Math.max(
                 0,
                 c.r2(
-                  400 * (difficulty - 3) * distance * (Math.random() + 0.1),
+                  400 *
+                    (difficulty - 3) *
+                    (distance + 0.1) *
+                    (Math.random() + 0.1),
                   0,
                   true,
                 ),
               ),
-        },
+        }
+      }
+      this.contracts.push({
+        id: `contract` + `${Math.random()}`.slice(2),
+        reward,
         timeAllowed: Math.round(
           c.tickInterval * 60 * 60 * 24 * 7 * (distance + 0.2),
         ),

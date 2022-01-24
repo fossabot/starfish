@@ -18,6 +18,9 @@ Sorry for the inconvenience!
 
 ### Other minor changes
 
+- Added "Lounge" room to certain chassis that will rapidly increase morale.
+- Added specific equipment types and counts to planet tooltips.
+- Added a search bar to the map.
 - Should now be able to remove crew members who are "stuck" on the ship after they leave the server.
 - **Heavily** optimized data transfer between the server and the frontend. Speedier = better.
 - Introduced ship deletion if no crew member has been active for 4 weeks. It will warn you one day before your ship is deleted.
