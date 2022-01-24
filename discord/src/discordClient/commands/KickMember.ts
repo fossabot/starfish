@@ -1,40 +1,49 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
-export class KickMemberCommand implements Command {
-  requiresShip = true
-  requiresCaptain = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCaptain: true,
 
-  commandNames = [`kickmember`, `kick`, `km`]
+  commandNames: [`kickmember`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <@member_to_kick>\` - Kick a crew member. This action is permanent.`
-  }
+  getDescription(): string {
+    return `Kick a crew member from the ship. This action is permanent.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  args: [
+    {
+      type: `string`,
+      prompt: `Who would you like to kick from the ship? (discord id or in-game name)`,
+      name: `member`,
+      required: true,
+    },
+  ],
+
+  async run(context: InteractionContext) {
     if (!context.ship) return
 
-    let typedId = context.args[0]
-    if (!typedId) {
-      await context.reply(
-        `Use this command in the format \`${context.commandPrefix}${this.commandNames[0]} <@member_to_kick>\`.`,
-      )
-      return
-    }
-    typedId = typedId.replace(/[<>@!]*/g, ``)
+    let typedId = context.args.member.replace(/[@<>]*/g, ``).toLowerCase()
 
-    const crewMember = context.ship.crewMembers?.find(
-      (cm) => cm.id === typedId,
+    const crewMembers = context.ship.crewMembers?.filter(
+      (cm) => cm.id === typedId || cm.name.toLowerCase() === typedId,
     )
-    if (!crewMember) {
+    if (!crewMembers?.length) {
       await context.reply(
         `No ship crew member found for that server member. Are you sure they've joined the crew?`,
       )
       return
     }
+    if (crewMembers.length > 1) {
+      await context.reply(
+        `Multiple ship crew members found for that server member. Please use their ID instead.`,
+      )
+      return
+    }
+    const crewMember = crewMembers[0]
 
     const res = await ioInterface.ship.kickMember(
       context.ship.id,
@@ -42,26 +51,25 @@ export class KickMemberCommand implements Command {
     )
     if (res) {
       await context.reply(res)
-    }
+    } else
+      await context.reply(`Crew member ${typedId} was kicked from the ship.`)
 
     // remove role
+    const gm = await context.getUserInGuildFromId(context.author.id)
+    if (!gm) return
     const memberRole = await resolveOrCreateRole({
       type: `crew`,
       context,
     })
     try {
       if (memberRole && !(`error` in memberRole)) {
-        if (
-          context.guildMember?.roles.cache.find(
-            (r) => r === memberRole,
-          )
-        )
-          context.guildMember?.roles
-            .remove(memberRole)
-            .catch((e) => c.log(e))
+        if (gm.roles.cache.find((r) => r === memberRole))
+          gm.roles.remove(memberRole).catch((e) => c.log(e))
       }
     } catch (e) {
       c.log(e)
     }
-  }
+  },
 }
+
+export default command

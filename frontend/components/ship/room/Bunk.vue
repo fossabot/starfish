@@ -28,12 +28,12 @@
       <b>{{ ship.gameSettings.staminaBottomedOutResetPoint * 100 }} stamina</b>.
       ({{ c.msToTimeString(msToBottomedOutResetPoint) }})
     </div>
-    <div class="panesection" v-if="msToRested">
+    <div class="panesection" v-if="msToRested && msToRested > 0">
       Fully rested in {{ timeToRested }}
     </div>
     <div class="panesection" v-if="crewMember.stamina === 1">Fully rested!</div>
 
-    <div class="panesection" v-if="msToRested">
+    <div class="panesection" v-if="msToRested && msToRested > 0">
       <div>
         <div class="panesubhead">When Fully Rested, Go To...</div>
       </div>

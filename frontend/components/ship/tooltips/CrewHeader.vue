@@ -5,6 +5,7 @@
         v-if="data.discordIcon"
         class="discordicon"
         :src="data.discordIcon"
+        onerror="this.style.display='none'"
       />
       {{ data.name }}
     </div>

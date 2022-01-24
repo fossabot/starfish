@@ -7,21 +7,19 @@ import {
   Role,
   MessageEmbed,
 } from 'discord.js'
-import type { CommandContext } from './models/CommandContext'
 import { GameChannel } from './models/GameChannel'
 import checkPermissions from './actions/checkPermissions'
 import resolveOrCreateChannel from './actions/resolveOrCreateChannel'
 import { roleData } from './actions/resolveOrCreateRole'
+import type { InteractionContext } from './models/getInteractionContext'
 
 const sendQueue: {
   [key: string]: {
     message: string | MessageOptions
     channel?: GameChannel
     channelType?: GameChannelType
-    context?: CommandContext
-    sent: Promise<
-      Message | GamePermissionsFailure | { error: string }
-    >
+    context?: InteractionContext
+    sent: Promise<Message | GamePermissionsFailure | { error: string }>
   }[]
 } = {}
 
@@ -37,7 +35,7 @@ export async function enQueue({
   message: string | MessageOptions
   channel?: GameChannel
   channelType?: GameChannelType
-  context?: CommandContext
+  context?: InteractionContext
   notify?: boolean
 }) {
   let queue = sendQueue[guild.id]
@@ -57,8 +55,8 @@ export async function enQueue({
     if (!channel && channelType) {
       // check if it's already known
       // todo this can't be true atm, save HERE instead and remove properly if it fails
-      if (context?.channels[channelType])
-        channel = context?.channels[channelType]
+      // if (context?.channels[channelType])
+      //   channel = context?.channels[channelType]
 
       // try to make or resolve a channel
       if (!channel && (context || guild)) {
@@ -68,8 +66,7 @@ export async function enQueue({
           context,
           guild,
         })
-        if (didCreate && !(`error` in didCreate))
-          channel = didCreate
+        if (didCreate && !(`error` in didCreate)) channel = didCreate
       }
     }
 
@@ -77,43 +74,30 @@ export async function enQueue({
     if (
       !channel &&
       context &&
-      !(
-        context.initialMessage.channel instanceof
-        NewsChannel
-      ) &&
-      !context.initialMessage.channel?.partial &&
-      context.initialMessage.channel?.type === `GUILD_TEXT`
+      !(context.channel instanceof NewsChannel) &&
+      !context.channel?.partial &&
+      context.channel?.type === `GUILD_TEXT`
     ) {
-      channel = new GameChannel(
-        null,
-        context.initialMessage.channel,
-      )
+      channel = new GameChannel(null, context.channel)
     }
 
     if (notify) {
       // find the Crew role to @mention
       const roleName = roleData.crew.name
-      const atRole = guild.roles.cache.find(
-        (r) => r.name === roleName,
-      )
+      const atRole = guild.roles.cache.find((r) => r.name === roleName)
       if (atRole) {
-        if (typeof message === `string`)
-          message = `<@&${atRole.id}> ${message}`
+        if (typeof message === `string`) message = `<@&${atRole.id}> ${message}`
         else if (message.embeds?.[0])
           message.embeds[0].description = `<@&${atRole.id}> ${message.embeds[0].description}`
       }
     }
 
-    let sendResult:
-      | Message
-      | GamePermissionsFailure
-      | { error: string }
+    let sendResult: Message | GamePermissionsFailure | { error: string }
 
     // * send (permissions checks handled on channel object)
     if (channel) {
       sendResult = await channel.send(message)
-      if (`error` in sendResult)
-        context?.contactGuildAdmin(sendResult)
+      if (`error` in sendResult) context?.contactGuildAdmin(sendResult)
     } else {
       sendResult = {
         error: `No channel found/created to send to.`,

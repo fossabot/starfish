@@ -1,20 +1,18 @@
 import c from '../../../common/dist'
-import Discord from 'discord.js'
+import Discord, { Client } from 'discord.js'
 import * as fs from 'fs'
-let discordToken
+export let discordToken
 try {
-  discordToken = fs.readFileSync(
-    `/run/secrets/discord_token`,
-    `utf-8`,
-  )
+  discordToken = fs.readFileSync(`/run/secrets/discord_token`, `utf-8`)
 } catch (e) {
   discordToken = process.env.DISCORD_TOKEN
 }
 discordToken = discordToken?.replace(/\n/g, ``)
 
-import { CommandHandler } from './CommandHandler'
+import commands from './commandList'
+import registerCommands from './registerCommands'
 
-export const client = new Discord.Client({
+export const client: Client = new Client({
   makeCache: Discord.Options.cacheWithLimits({
     MessageManager: 0,
     GuildMemberManager: Infinity, // guild.members
@@ -22,8 +20,7 @@ export const client = new Discord.Client({
     ThreadMemberManager: 0, // threadchannel.members
     UserManager: {
       maxSize: 0,
-      keepOverLimit: (value, key, collection) =>
-        value.id === client.user?.id,
+      keepOverLimit: (value, key, collection) => value.id === client.user?.id,
     }, // client.users
     ApplicationCommandManager: 0, // guild.commands
     BaseGuildEmojiManager: 0, // guild.emojis
@@ -43,8 +40,6 @@ export const client = new Discord.Client({
   ],
 })
 
-const commandHandler = new CommandHandler(`.`)
-
 export const rawWatchers: Function[] = []
 let didError: string | null = null
 
@@ -52,6 +47,7 @@ let didError: string | null = null
 import kickedFromGuild from './events/kickedFromGuild'
 import addedToGuild from './events/addedToGuild'
 import otherMemberLeaveServer from './events/otherMemberLeaveServer'
+import handleInteraction from './interactionHandler'
 
 export async function connected(): Promise<boolean> {
   return new Promise(async (resolve, reject) => {
@@ -79,9 +75,10 @@ client.on(`error`, (e) => {
   c.log(`red`, `Discord.js error:`, e.message)
   didError = e.message
 })
-client.on(`messageCreate`, async (msg) => {
-  if (!msg.author || msg.author.bot) return
-  commandHandler.handleMessage(msg)
+
+client.on(`interactionCreate`, async (interaction) => {
+  if (!interaction.isCommand()) return
+  handleInteraction(interaction)
 })
 
 // added to a server
@@ -105,12 +102,12 @@ ${guilds
   .slice(0, 100)
   .map((g) => g.name.substring(0, 50))
   .join(`, `)}${
-      guilds.length > 100
-        ? `\n(and ${guilds.length - 100} more guilds)`
-        : ``
+      guilds.length > 100 ? `\n(and ${guilds.length - 100} more guilds)` : ``
     }`,
   )
-  client.user?.setActivity(`.help`, { type: `LISTENING` })
+  client.user?.setActivity(`/help`, { type: `LISTENING` })
 })
 
 client.login(discordToken)
+
+registerCommands(commands)

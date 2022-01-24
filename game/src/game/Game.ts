@@ -31,7 +31,7 @@ import { generateZoneData } from './presets/zones'
 import type { Server } from 'socket.io'
 import generateBasicEnemyAI from './classes/Ship/AIShip/generate'
 
-c.massProfiler.enabled = false
+// c.massProfiler.enabled = false
 
 export class Game {
   static saveTimeInterval =
@@ -296,17 +296,50 @@ export class Game {
     const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
     const ic = Date.now() - inactiveCutoff,
       tic = Date.now() - tutorialInactiveCutoff
-    for (let inactiveShip of this.humanShips.filter(
-      (s) =>
-        !s.crewMembers.find((cm) => {
-          return (
-            cm.lastActive > (s.tutorial && s.tutorial.currentStep ? tic : ic)
+
+    const shipsByInactivity = this.humanShips.map((s) => ({
+      ship: s,
+      isTutorial: s.tutorial && s.tutorial.currentStep,
+      toDeletion: s.crewMembers.reduce((min, cm) => {
+        return Math.min(
+          min,
+          cm.lastActive - (s.tutorial && s.tutorial.currentStep ? tic : ic),
+        )
+      }, Infinity),
+    }))
+    shipsByInactivity
+      .filter(
+        (s) =>
+          !s.isTutorial &&
+          !s.ship.hasNotifiedAboutInactivity &&
+          s.toDeletion < 1000 * 60 * 60 * 24,
+      )
+      .forEach((s) =>
+        s.ship.logEntry(
+          `Warning: Your ship will be removed from the game due to inactivity in 1 day unless a crew action is taken.`,
+          `critical`,
+          `alert`,
+          false,
+        ),
+      )
+
+    c.log(
+      `gray`,
+      `Ship proximity to inactive deletion:\n  ` +
+        shipsByInactivity
+          .map(
+            (s) =>
+              `${s.ship.name}${
+                s.isTutorial ? ` (tutorial)` : ``
+              }: ${c.msToTimeString(s.toDeletion)}`,
           )
-        }),
+          .join(`\n  `),
+    )
+    for (let inactiveShip of shipsByInactivity.filter(
+      (s) => s.toDeletion <= 0,
     )) {
-      c.log(`Removing inactive ship`, inactiveShip.name)
-      // this.removeShip(inactiveShip)
-      // todo put this back once we have tests in place
+      c.log(`yellow`, `Removing inactive ship`, inactiveShip.ship.name)
+      this.removeShip(inactiveShip.ship, `Ship was inactive for too long.`)
     }
 
     // this.announceCargoPrices()
@@ -923,7 +956,7 @@ export class Game {
     return newShip
   }
 
-  async removeShip(ship: Ship | string) {
+  async removeShip(ship: Ship | string, context?: string) {
     if (typeof ship === `string`) {
       const foundShip = this.ships.find((s) => s.id === ship)
       if (!foundShip) {
@@ -971,6 +1004,14 @@ export class Game {
       })
 
     ship.tutorial?.cleanUp()
+
+    if (context)
+      ship.logEntry(
+        `${ship.name} was removed from the game: ${context}.`,
+        `critical`,
+        `alert`,
+        false,
+      )
 
     // c.log(
     //   this.humanShips.length,

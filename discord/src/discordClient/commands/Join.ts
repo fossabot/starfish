@@ -1,39 +1,36 @@
-import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import { add } from '../../ioInterface/crew'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
+
+import c from '../../../../common/dist'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class JoinCommand implements Command {
-  requiresShip = true
+const command: CommandStub = {
+  requiresShip: true,
 
-  commandNames = [`join`, `add`, `j`]
+  commandNames: [`join`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Join your server's ship.`
-  }
+  getDescription(): string {
+    return `Join your server's ship.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  async run(context: InteractionContext) {
     if (!context.ship || !context.guild) return
 
     // add crew member
-    const addedCrewMember = await add(context.ship.id, {
+    const addedCrewMember = await ioInterface.crew.add(context.ship.id, {
       name: context.nickname,
-      id: context.initialMessage.author.id,
+      id: context.author.id,
     })
 
     // fail state
-    if (
-      !addedCrewMember ||
-      typeof addedCrewMember === `string`
-    ) {
+    if (!addedCrewMember || typeof addedCrewMember === `string`) {
       await context.reply(
-        addedCrewMember ||
-          `Failed to add you as a member of the crew.`,
+        addedCrewMember || `Failed to add you as a member of the crew.`,
       )
       return
     }
+    await context.reply(`Added you as a member of the crew.`)
 
     // create crew chat channel on second member
     if (context.ship.crewMembers?.length === 1)
@@ -42,30 +39,29 @@ export class JoinCommand implements Command {
         `chat`,
       )
 
+    const gm = await context.getUserInGuildFromId(context.author.id)
+    if (!gm) return
     const crewRole = await resolveOrCreateRole({
       type: `crew`,
       context,
     })
     if (!crewRole || `error` in crewRole) {
-      await context.reply(
-        `Failed to add you to the \`Crew\` server role.`,
-      )
+      await context.reply(`Failed to add you to the \`Crew\` server role.`)
     } else {
-      context.guildMember?.roles
-        .add(crewRole)
-        .catch(() => {})
+      gm.roles.add(crewRole).catch(() => {})
     }
 
     if (context.guildMember) {
-      const guildMemberIcon =
-        context.guildMember.user.avatarURL({
-          size: 32,
-        })
+      const guildMemberIcon = gm.user.avatarURL({
+        size: 32,
+      })
       ioInterface.crew.setDiscordIcon(
         context.ship.id,
-        context.guildMember.user.id,
+        gm.user.id,
         guildMemberIcon || undefined,
       )
     }
-  }
+  },
 }
+
+export default command

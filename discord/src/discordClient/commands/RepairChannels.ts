@@ -1,34 +1,30 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
+import ioInterface from '../../ioInterface'
 import checkPermissions from '../actions/checkPermissions'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
+import resolveOrCreateChannel from '../actions/resolveOrCreateChannel'
 
-export class RepairChannelsCommand implements Command {
-  requiresShip = true
-  requiresCaptain = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCaptain: true,
 
-  commandNames = [`repairchannels`, `rcr`]
+  commandNames: [`repairchannels`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Attempt to repair the game's Discord channels/roles (should they become unlinked).`
-  }
+  getDescription(): string {
+    return `Attempt to repair the game's channels/roles (should they become unlinked)`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  async run(context: InteractionContext) {
     if (!context.guild) return
     if (!context.ship) return
 
     // first, check to see if we have the necessary permissions to make channels
     const permissionsCheck = await checkPermissions({
-      requiredPermissions: [
-        `MANAGE_CHANNELS`,
-        `MANAGE_ROLES`,
-      ],
+      requiredPermissions: [`MANAGE_CHANNELS`, `MANAGE_ROLES`],
       channel:
-        context.initialMessage.channel.type === `GUILD_TEXT`
-          ? context.initialMessage.channel
-          : undefined,
+        context.channel?.type === `GUILD_TEXT` ? context.channel : undefined,
       guild: context.guild,
     })
     if (`error` in permissionsCheck) {
@@ -46,39 +42,23 @@ export class RepairChannelsCommand implements Command {
     // set roles appropriately
     try {
       if (memberRole && !(`error` in memberRole)) {
-        ;(await context.guild.members.fetch()).forEach(
-          (gm) => {
-            if (
-              (context.ship?.crewMembers || []).find(
-                (cm) => cm.id === gm.id,
-              )
-            ) {
-              c.log(
-                gm.nickname || gm.user.username,
-                `is a crew member!`,
-              )
-              if (
-                !gm.roles.cache.find(
-                  (r) => r === memberRole,
-                )
-              )
-                gm.roles
-                  .add(memberRole)
-                  .catch((e) => c.log(e))
-            } else {
-              c.log(
-                gm.nickname || gm.user.username,
-                `ain't no crew member.`,
-              )
-              if (
-                gm.roles.cache.find((r) => r === memberRole)
-              )
-                gm.roles
-                  .remove(memberRole)
-                  .catch((e) => c.log(e))
-            }
-          },
-        )
+        ;(await context.guild.members.fetch()).forEach((gm) => {
+          if ((context.ship?.crewMembers || []).find((cm) => cm.id === gm.id)) {
+            // c.log(
+            //   gm.nickname || gm.user.username,
+            //   `is a crew member!`,
+            // )
+            if (!gm.roles.cache.find((r) => r === memberRole))
+              gm.roles.add(memberRole).catch((e) => c.log(e))
+          } else {
+            // c.log(
+            //   gm.nickname || gm.user.username,
+            //   `ain't no crew member.`,
+            // )
+            if (gm.roles.cache.find((r) => r === memberRole))
+              gm.roles.remove(memberRole).catch((e) => c.log(e))
+          }
+        })
       }
     } catch (e) {
       c.log(e)
@@ -98,6 +78,8 @@ export class RepairChannelsCommand implements Command {
       context,
     })
 
-    context.sendToGuild(`Channels repaired.`)
-  }
+    await context.reply(`Channels repaired.`)
+  },
 }
+
+export default command

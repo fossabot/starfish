@@ -2,10 +2,7 @@ import { Schema, model, Document, Types } from 'mongoose'
 import c from '../../../../common/dist'
 import type { Ship } from '../../game/classes/Ship/Ship'
 
-interface DBShipDoc
-  extends BaseShipData,
-    BaseHumanShipData,
-    Document {
+interface DBShipDoc extends BaseShipData, BaseHumanShipData, Document {
   id: string
 }
 
@@ -43,9 +40,7 @@ const shipSchemaFields: Record<
       ],
     },
   ],
-  previousLocations: [
-    { time: Number, location: [Number, Number] },
-  ],
+  previousLocations: [{ time: Number, location: [Number, Number] }],
 
   // ----- human
   log: [
@@ -60,6 +55,7 @@ const shipSchemaFields: Record<
   seenPlanets: [{ name: String, id: String }],
   seenLandmarks: [{ type: { type: String }, id: String }],
   seenCrewMembers: [String],
+  hasNotifiedAboutInactivity: { type: Boolean, default: false },
   tutorial: {
     step: Number,
     baseLocation: [Number, Number],
@@ -69,15 +65,11 @@ const shipSchemaFields: Record<
   boughtHeaderBackgrounds: [{ id: String, url: String }],
   boughtTaglines: [String],
   achievements: [String],
-  orderReactions: [
-    { id: { type: String }, reaction: String },
-  ],
+  orderReactions: [{ id: { type: String }, reaction: String }],
   captain: String,
   logAlertLevel: String,
   stats: [{ stat: String, amount: Number }],
-  banked: [
-    { id: String, amount: Number, timestamp: Number },
-  ],
+  banked: [{ id: String, amount: Number, timestamp: Number }],
   timedPassives: [
     {
       id: { required: true, type: String },
@@ -162,8 +154,7 @@ const shipSchemaFields: Record<
       targetitemType: String,
       minePriority: String,
       targetLocation: [Number, Number],
-      targetObject:
-        { id: String, type: { type: String } } || false,
+      targetObject: { id: String, type: { type: String } } || false,
       repairPriority: String,
       stats: [{ stat: String, amount: Number }],
       researchTargetId: String,
@@ -205,9 +196,7 @@ export async function addOrUpdateInDb(
 ): Promise<BaseShipData | null> {
   // * make sure we don't overwrite an update in progress
   if (alreadyUpdating.has(data.id)) {
-    const existing = (
-      await DBShip.findOne({ id: data.id })
-    )?.toObject() as any
+    const existing = (await DBShip.findOne({ id: data.id }))?.toObject() as any
     return existing
   }
   alreadyUpdating.add(data.id)
@@ -224,13 +213,16 @@ export async function addOrUpdateInDb(
   //   )
   const toSave = (new DBShip(stub) as any)._doc
   delete toSave._id
-  const dbObject: DBShipDoc | null =
-    await DBShip.findOneAndUpdate({ id: data.id }, toSave, {
+  const dbObject: DBShipDoc | null = await DBShip.findOneAndUpdate(
+    { id: data.id },
+    toSave,
+    {
       upsert: true,
       new: true,
       lean: true,
       setDefaultsOnInsert: true,
-    })
+    },
+  )
 
   alreadyUpdating.delete(data.id)
 
@@ -259,12 +251,8 @@ export async function wipeAI() {
   c.log(`Wiped AIs from ship DB`, res)
 }
 
-export async function getAllConstructible(): Promise<
-  BaseShipData[]
-> {
-  const docs: any = (await DBShip.find({})).map((d) =>
-    d.toObject(),
-  )
+export async function getAllConstructible(): Promise<BaseShipData[]> {
+  const docs: any = (await DBShip.find({})).map((d) => d.toObject())
   // clearExtraneousMongooseIdEntry(docs)
   return docs as BaseShipData[]
 }
@@ -276,7 +264,5 @@ function clearExtraneousMongooseIdEntry(obj: any) {
     obj.forEach(clearExtraneousMongooseIdEntry)
     return
   }
-  Object.keys(obj).forEach((key) =>
-    clearExtraneousMongooseIdEntry(obj[key]),
-  )
+  Object.keys(obj).forEach((key) => clearExtraneousMongooseIdEntry(obj[key]))
 }

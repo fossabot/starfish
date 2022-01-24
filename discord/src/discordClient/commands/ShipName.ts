@@ -1,38 +1,36 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 import ioInterface from '../../ioInterface'
 
-export class ChangeShipNameCommand implements Command {
-  requiresShip = true
-  requiresCaptain = true
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  commandNames = [
-    `shipname`,
-    `changeshipname`,
-    `rename`,
-    `renameship`,
-    `name`,
-    `changename`,
-    `sn`,
-  ]
+  commandNames: [`changeshipname`, `renameship`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]} <new name>\` - Change the ship's name.`
-  }
+  getDescription(): string {
+    return `Change the ship's name.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  args: [
+    {
+      name: `name`,
+      prompt: `The new name of the ship.`,
+      required: true,
+      type: `string`,
+    },
+  ],
+
+  async run(context: InteractionContext) {
     if (!context.ship) return
 
-    let typedName = context.rawArgs
-    if (!typedName) {
-      await context.reply(
-        `Use this command in the format \`${context.commandPrefix}${this.commandNames[0]} <new name>\`.`,
-      )
-      return
-    }
+    let typedName = context.args.name
     typedName = typedName.replace(/(^[\s<]+|[>\s]+$)*/g, ``)
 
     ioInterface.ship.rename(context.ship.id, typedName)
-  }
+    await context.reply(`Renamed the ship.`)
+  },
 }
+
+export default command

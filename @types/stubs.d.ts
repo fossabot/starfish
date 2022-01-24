@@ -107,6 +107,7 @@ interface CrewMemberStub extends BaseStub {
   repairPriority: RepairPriority
   bottomedOutOnStamina: boolean
   maxCargoSpace: number
+  minePriority: MinePriority | `closest`
   lastActive?: number
   tagline?: string | null
   background?: string | null

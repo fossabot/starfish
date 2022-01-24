@@ -1,8 +1,3 @@
-import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import ioInterface from '../../ioInterface'
-// import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 import {
   ColorResolvable,
   Message,
@@ -17,25 +12,30 @@ import waitForSingleButtonChoice from '../actions/waitForSingleButtonChoice'
 import checkPermissions from '../actions/checkPermissions'
 import resolveOrCreateRole from '../actions/resolveOrCreateRole'
 
-export class StartCommand implements Command {
-  requiresCaptain = true
+import c from '../../../../common/dist'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
+import ioInterface from '../../ioInterface'
 
-  commandNames = [`start`, `st`, `spawn`, `begin`, `init`]
+const command: CommandStub = {
+  commandNames: [`start`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Start your server off in the game.`
-  }
+  getDescription(): string {
+    return `Start your server off in the game.`
+  },
 
-  async run(context: CommandContext): Promise<void> {
+  async run(context: InteractionContext) {
     if (!context.guild) return
+    if (context.ship) {
+      await context.reply(`Your server already has a ship.`)
+      return
+    }
 
     // first, check to see if we have the necessary permissions to make channels
     const permissionsCheck = await checkPermissions({
       requiredPermissions: [`MANAGE_CHANNELS`],
       channel:
-        context.initialMessage.channel.type === `GUILD_TEXT`
-          ? context.initialMessage.channel
-          : undefined,
+        context.channel?.type === `GUILD_TEXT` ? context.channel : undefined,
       guild: context.guild,
     })
     if (`error` in permissionsCheck) {
@@ -45,48 +45,40 @@ export class StartCommand implements Command {
       return
     }
 
-    const sentMessages: Message[] = []
-
-    const {
-      result: permissionToCreateChannelsResult,
-      sentMessage: pm,
-    } = await waitForSingleButtonChoice({
-      context,
-      content: [
-        new MessageEmbed({
-          color: c.gameColor as ColorResolvable,
-          title: `Welcome to **${c.gameName}**!`,
-          description: `This is a game about exploring the universe in a ship crewed by your server members, going on adventures and overcoming challenges.
+    const { result: permissionToCreateChannelsResult, sentMessage: pm } =
+      await waitForSingleButtonChoice({
+        context,
+        content: [
+          new MessageEmbed({
+            color: c.gameColor as ColorResolvable,
+            title: `Welcome to **${c.gameName}**!`,
+            description: `This is a game about exploring the universe in a ship crewed by your server members, going on adventures and overcoming challenges.
               
           This bot will create several channels and a role for game communication. Is that okay with you?`,
-        }).setThumbnail(
-          `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
-        ),
-      ],
-      allowedUserId: context.initialMessage.author.id,
-      buttons: [
-        {
-          label: `Okay!`,
-          style: `PRIMARY`,
-          customId: `permissionToAddChannelsYes`,
-        },
-        {
-          label: `Nope.`,
-          style: `SECONDARY`,
-          customId: `permissionToAddChannelsNo`,
-        },
-      ],
-    })
-    if (pm) pm.delete().catch((e) => {})
+          }).setThumbnail(
+            `https://raw.githubusercontent.com/starfishgame/starfish/main/frontend/static/images/icons/bot_icon.png`,
+          ),
+        ],
+        allowedUserId: context.author.id,
+        buttons: [
+          {
+            label: `Okay!`,
+            style: `PRIMARY`,
+            customId: `permissionToAddChannelsYes`,
+          },
+          {
+            label: `Nope.`,
+            style: `SECONDARY`,
+            customId: `permissionToAddChannelsNo`,
+          },
+        ],
+      })
 
     if (
       !permissionToCreateChannelsResult ||
-      permissionToCreateChannelsResult ===
-        `permissionToAddChannelsNo`
+      permissionToCreateChannelsResult === `permissionToAddChannelsNo`
     ) {
-      await context.reply(
-        `Ah, okay. This game might not be for you, then.`,
-      )
+      await context.reply(`Ah, okay. This game might not be for you, then.`)
       return
     }
 
@@ -96,27 +88,22 @@ export class StartCommand implements Command {
       context,
     })
     if (!crewRole || `error` in crewRole) {
-      context.reply(
-        `Error creating role, ending start flow.`,
-      )
+      context.reply(`Error creating role, ending start flow.`)
       return
     }
     // add role to user
     try {
-      context.guildMember?.roles
-        .add(crewRole)
-        .catch(() => {})
+      const gm = await context.getUserInGuildFromId(context.author.id)
+      gm?.roles.add(crewRole).catch(() => {})
     } catch (e) {
       c.log(e)
     }
 
     const guildButtonData: MessageButtonOptions[] = []
     for (let s of c.shuffleArray(
-      Object.entries(c.guilds).filter(
-        (e: [string, BaseGuildData]) => {
-          return e[1].id !== `fowl`
-        },
-      ),
+      Object.entries(c.guilds).filter((e: [string, BaseGuildData]) => {
+        return e[1].id !== `fowl`
+      }),
     ))
       guildButtonData.push({
         label: c.capitalize(s[1].name),
@@ -150,11 +137,7 @@ The available guilds are:`,
                   name: g.name,
                   value:
                     g.passives
-                      .map((p) =>
-                        c.baseShipPassiveData[
-                          p.id
-                        ]?.description(p),
-                      )
+                      .map((p) => c.baseShipPassiveData[p.id]?.description(p))
                       .filter((p) => p)
                       .join(`\n`) || `(No passive effects)`,
                 })),
@@ -166,21 +149,18 @@ The available guilds are:`,
             ],
           }),
         ],
-        allowedUserId: context.initialMessage.author.id,
+        allowedUserId: context.author.id,
         buttons: guildButtonData,
       })
-    if (sm) sentMessages.push(sm)
 
-    // clean up messages
-    try {
-      for (let m of sentMessages)
-        if (m.deletable) m.delete().catch(c.log)
-    } catch (e) {}
+    // // clean up messages
+    // try {
+    //   for (let m of sentMessages)
+    //     if (m.deletable) m.delete().catch(c.log)
+    // } catch (e) {}
 
     if (!guildResult) {
-      await context.reply(
-        `You didn't pick a guild, try again!`,
-      )
+      await context.reply(`You didn't pick a guild, try again!`)
       return
     }
 
@@ -188,34 +168,24 @@ The available guilds are:`,
     const createdShip = await ioInterface.ship.create({
       id: context.guild.id,
       name: context.guild.name,
-      guildId:
-        guildResult === `none` ? undefined : guildResult,
+      guildId: guildResult === `none` ? undefined : guildResult,
       guildName:
-        c
-          .sanitize(context.guild.name)
-          .result.substring(0, c.maxNameLength) || `guild`,
-      guildIcon:
-        context.guild.iconURL({ size: 128 }) || undefined,
+        c.sanitize(context.guild.name).result.substring(0, c.maxNameLength) ||
+        `guild`,
+      guildIcon: context.guild.iconURL({ size: 128 }) || undefined,
     })
     if (!createdShip) {
-      await context.reply(
-        `Failed to start your server in the game.`,
-      )
+      await context.reply(`Failed to start your server in the game.`)
       return
     }
 
     // add crew member
-    const addedCrewMember = await ioInterface.crew.add(
-      createdShip.id,
-      {
-        name: context.nickname,
-        id: context.initialMessage.author.id,
-      },
-    )
+    const addedCrewMember = await ioInterface.crew.add(createdShip.id, {
+      name: context.nickname,
+      id: context.author.id,
+    })
     if (!addedCrewMember) {
-      await context.reply(
-        `Failed to add you as a member of the crew.`,
-      )
+      await context.reply(`Failed to add you as a member of the crew.`)
       return
     }
 
@@ -229,24 +199,18 @@ The available guilds are:`,
       ],
     })
 
-    if (context.guildMember) {
-      const guildMemberIcon =
-        context.guildMember.user.avatarURL({
-          size: 32,
-        })
-      ioInterface.crew.setDiscordIcon(
-        createdShip.id,
-        context.guildMember.user.id,
-        guildMemberIcon || undefined,
-      )
-    }
-  }
-
-  hasPermissionToRun(
-    commandContext: CommandContext,
-  ): string | true {
-    if (commandContext.ship)
-      return `Your server already has a ship.`
-    return true
-  }
+    // if (context.guildMember) {
+    //   const guildMemberIcon =
+    //     context.guildMember.user.avatarURL({
+    //       size: 32,
+    //     })
+    //   ioInterface.crew.setDiscordIcon(
+    //     createdShip.id,
+    //     context.guildMember.user.id,
+    //     guildMemberIcon || undefined,
+    //   )
+    // }
+  },
 }
+
+export default command

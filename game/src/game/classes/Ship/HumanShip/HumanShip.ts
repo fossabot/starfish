@@ -91,6 +91,8 @@ export class HumanShip extends CombatShip {
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
 
+  hasNotifiedAboutInactivity = false
+
   visible: {
     ships: ShipStub[]
     planets: Planet[]
@@ -133,6 +135,8 @@ export class HumanShip extends CombatShip {
 
     this.ai = false
     this.human = true
+
+    this.hasNotifiedAboutInactivity = Boolean(data.hasNotifiedAboutInactivity)
 
     this.seenCrewMembers = data.seenCrewMembers || []
 
@@ -2259,7 +2263,7 @@ export class HumanShip extends CombatShip {
         `red`,
         `Attempted to remove crew member that did not exist ${id} from ship ${this.id}`,
       )
-      return
+      return `Crew member ${id} does not not exist on the ship.`
     }
 
     if (this.captain === cm.id) {
@@ -2272,7 +2276,7 @@ export class HumanShip extends CombatShip {
         }
       } else {
         c.log(`red`, `Attempted to kick the captain from ship ${this.id}`)
-        return
+        return `You can't kick the captain.`
       }
     }
 
@@ -2293,6 +2297,7 @@ export class HumanShip extends CombatShip {
       c.log(`Removed last crew member from ${this.name}, deleting ship...`)
       await this.game?.removeShip(this)
     }
+    return null
   }
 
   membersIn = membersIn

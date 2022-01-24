@@ -1,16 +1,20 @@
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
+import ioInterface from '../../ioInterface'
 import { MessageEmbed, ColorResolvable } from 'discord.js'
 
-export class LinkCommand implements Command {
-  commandNames = [`link`, `links`, `url`, `invite`]
+const command: CommandStub = {
+  requiresShip: true,
+  requiresCrewMember: true,
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - Get some useful Starfish links.`
-  }
+  commandNames: [`link`, `invite`],
 
-  async run(context: CommandContext): Promise<void> {
+  getDescription(): string {
+    return `Get some useful ${c.gameName} links.`
+  },
+
+  async run(context: InteractionContext) {
     await context.reply({
       embeds: [
         new MessageEmbed()
@@ -24,5 +28,7 @@ export class LinkCommand implements Command {
           ),
       ],
     })
-  }
+  },
 }
+
+export default command

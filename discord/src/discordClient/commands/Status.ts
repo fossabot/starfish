@@ -1,36 +1,25 @@
+import { ColorResolvable, EmbedFieldData, MessageEmbed } from 'discord.js'
+
 import c from '../../../../common/dist'
-import { CommandContext } from '../models/CommandContext'
-import type { Command } from '../models/Command'
-import {
-  ColorResolvable,
-  EmbedFieldData,
-  MessageEmbed,
-} from 'discord.js'
+import type { InteractionContext } from '../models/getInteractionContext'
+import type { CommandStub } from '../models/Command'
 
-export class StatusCommand implements Command {
-  requiresShip = true
+const command: CommandStub = {
+  requiresShip: true,
 
-  commandNames = [
-    `status`,
-    `s`,
-    `vitals`,
-    `ship`,
-    `shipinfo`,
-    `report`,
-  ]
+  commandNames: [`status`, `s`],
 
-  getHelpMessage(commandPrefix: string): string {
-    return `\`${commandPrefix}${this.commandNames[0]}\` - See your and your ship's current status.`
-  }
+  getDescription(): string {
+    return `See your and your ship's current status.`
+  },
 
-  async run(context: CommandContext) {
+  async run(context: InteractionContext) {
     if (!context.ship) return
     const ship = context.ship
 
     const hasManualEngines = context.ship.items?.find(
       (i) =>
-        i.itemType === `engine` &&
-        (i as EngineStub).manualThrustMultiplier,
+        i.itemType === `engine` && (i as EngineStub).manualThrustMultiplier,
     )
 
     let color = c.gameColor
@@ -38,14 +27,9 @@ export class StatusCommand implements Command {
     if (hslColor) {
       try {
         const [unused, h, s, l] =
-          /hsl\((\d+),\s*(\d+[.]?\d*%)\s*,\s*(\d+[.]?\d*%)\)/g.exec(
-            hslColor,
-          ) || []
-        color = hslToHex(
-          parseInt(h),
-          parseInt(s),
-          parseInt(l),
-        )
+          /hsl\((\d+),\s*(\d+[.]?\d*%)\s*,\s*(\d+[.]?\d*%)\)/g.exec(hslColor) ||
+          []
+        color = hslToHex(parseInt(h), parseInt(s), parseInt(l))
       } catch (e) {}
     }
 
@@ -65,9 +49,8 @@ export class StatusCommand implements Command {
       )}
 🇨🇭 ${c.abbreviateNumber(
         (ship._hp || 0) * c.displayHPMultiplier,
-      )}/${c.abbreviateNumber(
-        (ship._maxHp || 0) * c.displayHPMultiplier,
-      )}`,
+        1,
+      )}/${c.abbreviateNumber((ship._maxHp || 0) * c.displayHPMultiplier)}`,
     })
 
     if (ship.items)
@@ -86,8 +69,7 @@ ${c.percentToTextBars(
               c.items[i.itemType][i.itemId].maxHp *
               c.displayHPMultiplier,
           )}/${c.abbreviateNumber(
-            c.items[i.itemType][i.itemId].maxHp *
-              c.displayHPMultiplier,
+            c.items[i.itemType][i.itemId].maxHp * c.displayHPMultiplier,
           )}`,
         })
       }
@@ -101,9 +83,10 @@ ${c.percentToTextBars(
           (ship.speed
             ? `${c.speedNumber(ship.speed * 60 * 60)} ${
                 ship.direction
-                  ? `at ${c.degreesToArrowEmoji(
+                  ? `at ${c.degreesToArrowEmoji(ship.direction)}${c.r2(
                       ship.direction,
-                    )}${c.r2(ship.direction, 2)}°`
+                      2,
+                    )}°`
                   : ``
               }`
             : `Stopped`) +
@@ -118,16 +101,12 @@ ${c.percentToTextBars(
         youFields.push({
           inline: true,
           name: `Location`,
-          value: `🚪 ${c.capitalize(
-            context.crewMember.location || `bunk`,
-          )}`,
+          value: `🚪 ${c.capitalize(context.crewMember.location || `bunk`)}`,
         })
         youFields.push({
           inline: true,
           name: `Stamina`,
-          value: `${c.percentToTextBars(
-            context.crewMember.stamina,
-          )}
+          value: `${c.percentToTextBars(context.crewMember.stamina)}
 🔋 ${c.r2(
             (context.crewMember.stamina /
               (context.crewMember.maxStamina || 1)) *
@@ -139,9 +118,7 @@ ${c.percentToTextBars(
           youFields.push({
             inline: true,
             name: `Cockpit Charge`,
-            value: `${c.percentToTextBars(
-              context.crewMember.cockpitCharge,
-            )}
+            value: `${c.percentToTextBars(context.crewMember.cockpitCharge)}
 🔥 ${c.r2(context.crewMember.cockpitCharge * 100, 0)}%`,
           })
         youFields.push({
@@ -182,17 +159,15 @@ ${c.percentToTextBars(
               context.crewMember.maxCargoSpace,
               ship.chassis?.maxCargoSpace || 0,
             )} tons` +
-            (context.crewMember.inventory.filter(
-              (i) => i.amount,
-            ).length === 0
+            (context.crewMember.inventory.filter((i) => i.amount).length === 0
               ? ``
               : `\n${context.crewMember.inventory
                   .filter((i) => i.amount)
                   .map(
                     (i) =>
-                      `${c.cargo[i.id].name} (${c.r2(
-                        i.amount,
-                      )} ton${i.amount === 1 ? `` : `s`})`,
+                      `${c.cargo[i.id].name} (${c.r2(i.amount)} ton${
+                        i.amount === 1 ? `` : `s`
+                      })`,
                   )
                   .join(`\n`)}`),
         })
@@ -202,8 +177,7 @@ ${c.percentToTextBars(
         new MessageEmbed({
           title: `${
             (context.crewMember.speciesId &&
-              c.species[context.crewMember.speciesId].icon +
-                ` `) ||
+              c.species[context.crewMember.speciesId].icon + ` `) ||
             ``
           }${context.crewMember.name}`,
           color: color as ColorResolvable,
@@ -215,16 +189,17 @@ ${c.percentToTextBars(
     context.reply({
       embeds,
     })
-  }
+  },
 }
+
+export default command
 
 function hslToHex(h, s, l) {
   l /= 100
   const a = (s * Math.min(l, 1 - l)) / 100
   const f = (n) => {
     const k = (n + h / 30) % 12
-    const color =
-      l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
     return Math.round(255 * color)
       .toString(16)
       .padStart(2, `0`) // convert to Hex and prefix "0" if needed

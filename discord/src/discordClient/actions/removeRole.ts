@@ -1,7 +1,7 @@
 import c from '../../../../common/dist'
 import * as Discord from 'discord.js'
 import checkPermissions from './checkPermissions'
-import type { CommandContext } from '../models/CommandContext'
+import { InteractionContext } from '../models/getInteractionContext'
 
 export default async function removeRole({
   name,
@@ -10,16 +10,14 @@ export default async function removeRole({
 }:
   | {
       name: GameRoleType
-      context: CommandContext
+      context: InteractionContext
       guild?: Discord.Guild
     }
   | {
       name: GameRoleType
-      context?: CommandContext
+      context?: InteractionContext
       guild: Discord.Guild
-    }): Promise<
-  true | GamePermissionsFailure | { error: string }
-> {
+    }): Promise<true | GamePermissionsFailure | { error: string }> {
   if (!context && !guild)
     return {
       error: `No context or guild provided to removeRole`,
@@ -40,13 +38,9 @@ export default async function removeRole({
     return permissionsRes
   }
 
-  const existingRoles = [
-    ...(await guild.roles.cache).values(),
-  ]
+  const existingRoles = [...(await guild.roles.cache).values()]
 
-  const existing = existingRoles.find(
-    (c) => c.name === name,
-  )
+  const existing = existingRoles.find((c) => c.name === name)
   if (existing) {
     try {
       existing.delete().catch(c.log)
