@@ -110,33 +110,47 @@ jobs:
       - name: Show open ports
         run: netstat -tulpn | grep LISTEN
 
-      - name: Verify frontend server is running
-        uses: wei/curl@master
-        id: curl2
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v2
         with:
-          args: https://localhost:443
-          fail-on-error: false
+          # Check the following URLs one by one sequentially
+          url: http://localhost:80|http://localhost:4200|http://localhost:4300
+          # Follow redirects, or just report success on 3xx status codes
+          follow-redirect: true # Optional, defaults to "false"
+          # Fail this action after this many failed attempts
+          max-attempts: 3 # Optional, defaults to 1
+          # Delay between retries
+          retry-delay: 5s # Optional, only applicable to max-attempts > 1
+          # Retry all errors, including 404. This option might trigger curl upgrade.
+          retry-all: false # Optional, defaults to "false"
 
-      - name: Verify frontend server is running
-        uses: wei/curl@master
-        id: curl3
-        with:
-          args: http://localhost:4200
-          fail-on-error: false
+      # - name: Verify frontend server is running
+      #   uses: wei/curl@master
+      #   id: curl2
+      #   with:
+      #     args: https://localhost:443
+      #     fail-on-error: false
 
-      - name: Verify frontend server is running
-        uses: wei/curl@master
-        id: curl4
-        with:
-          args: http://localhost:4300
-          fail-on-error: false
-        # run: |
-        #   curl --silent http://localhost:80 --output ./webserver_response1.log &
-        #   curl --silent https://localhost:443 --output ./webserver_response2.log &
-        #   curl --silent http://localhost:4200 --output ./webserver_response3.log &
-        #   curl --silent http://localhost:4300 --output ./webserver_response4.log &
-        #   sleep 5
-        #   exit 0
+      # - name: Verify frontend server is running
+      #   uses: wei/curl@master
+      #   id: curl3
+      #   with:
+      #     args: http://localhost:4200
+      #     fail-on-error: false
+
+      # - name: Verify frontend server is running
+      #   uses: wei/curl@master
+      #   id: curl4
+      #   with:
+      #     args: http://localhost:4300
+      #     fail-on-error: false
+      # run: |
+      #   curl --silent http://localhost:80 --output ./webserver_response1.log &
+      #   curl --silent https://localhost:443 --output ./webserver_response2.log &
+      #   curl --silent http://localhost:4200 --output ./webserver_response3.log &
+      #   curl --silent http://localhost:4300 --output ./webserver_response4.log &
+      #   sleep 5
+      #   exit 0
 
       - run: echo '${{ steps.curl2 }}'
 
