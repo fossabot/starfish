@@ -114,7 +114,7 @@ jobs:
         uses: jtalk/url-health-check-action@v2
         with:
           # Check the following URLs one by one sequentially
-          url: http://localhost:80|http://localhost:4200|http://localhost:4300
+          url: http://localhost:4200|http://localhost:4300
           # Follow redirects, or just report success on 3xx status codes
           follow-redirect: true # Optional, defaults to "false"
           # Fail this action after this many failed attempts
@@ -152,18 +152,18 @@ jobs:
       #   sleep 5
       #   exit 0
 
-      - run: echo '${{ steps.curl2 }}'
+      # - run: echo '${{ steps.curl2 }}'
 
-      - run: echo '${{ steps.curl3 }}'
+      # - run: echo '${{ steps.curl3 }}'
 
-      - run: echo '${{ steps.curl4 }}'
+      # - run: echo '${{ steps.curl4 }}'
 
-        # if grep -q "200" ./webserver_response.log; then
-        #   echo "Successfully deployed to CI"
-        # else
-        #   echo "Failed to deploy to CI"
-        #   exit 1
-        # fi
+      # if grep -q "200" ./webserver_response.log; then
+      #   echo "Successfully deployed to CI"
+      # else
+      #   echo "Failed to deploy to CI"
+      #   exit 1
+      # fi
 
   npm-test:
     # needs: [run-docker-compose]
