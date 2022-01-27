@@ -111,13 +111,13 @@ jobs:
         run: netstat -tulpn | grep LISTEN
 
       - name: Verify frontend server is running
-        with:
-          fail-on-error: false
         run: |
           curl --silent http://localhost:80 --output ./webserver_response.log
           curl --silent https://localhost:443 --output ./webserver_response2.log
           curl --silent http://localhost:4200 --output ./webserver_response3.log
           curl --silent http://localhost:4300 --output ./webserver_response4.log
+        with:
+          fail-on-error: false
 
       - uses: pCYSl5EDgo/cat@master
         with:
