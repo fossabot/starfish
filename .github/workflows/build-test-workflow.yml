@@ -112,9 +112,17 @@ jobs:
 
       - name: Verify frontend server is running
         run: |
-          curl --silent http://localhost:4300 > ./webserver_response.log
-
+          curl --silent http://localhost:80 > ./webserver_response.log
           cat ./webserver_response.log
+
+          curl --silent https://localhost:443 > ./webserver_response2.log
+          cat ./webserver_response2.log
+
+          curl --silent http://localhost:4200> ./webserver_response3.log
+          cat ./webserver_response3.log
+
+          curl --silent http://localhost:4300> ./webserver_response4.log
+          cat ./webserver_response4.log
 
           if grep -q "200" ./webserver_response.log; then
             echo "Successfully deployed to CI"
