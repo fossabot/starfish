@@ -112,7 +112,7 @@ jobs:
 
       - name: Verify frontend server is running
         run: |
-          curl --silent --request GET https://localhost:4300 > ./webserver_response.log
+          wget https://localhost:4300 > ./webserver_response.log
 
           cat ./webserver_response.log
 
