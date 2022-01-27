@@ -141,13 +141,13 @@ jobs:
         #   sleep 5
         #   exit 0
 
-      - echo: '{{ curl1 }}'
+      - run: echo '{{ curl1 }}'
 
-      - echo: '{{ curl2 }}'
+      - run: echo '{{ curl2 }}'
 
-      - echo: '{{ curl3 }}'
+      - run: echo '{{ curl3 }}'
 
-      - echo: '{{ curl4 }}'
+      - run: echo '{{ curl4 }}'
 
         # if grep -q "200" ./webserver_response.log; then
         #   echo "Successfully deployed to CI"
