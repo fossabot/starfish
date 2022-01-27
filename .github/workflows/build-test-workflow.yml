@@ -110,6 +110,23 @@ jobs:
       - name: Show open ports
         run: netstat -tulpn | grep LISTEN
 
+      - name: Verify frontend server is running
+        run: |
+          curl --write-out '%{http_code}' \
+          --silent \
+          --output ./webserver_response.log \
+          --request GET
+          --url 'https://localhost:4300`
+
+          cat ./webserver_response.log
+
+          if grep -q "200" ./webserver_response.log; then
+            echo "Successfully deployed to CI"
+          else
+            echo "Failed to deploy to CI"
+            exit 1
+          fi
+
   npm-test:
     # needs: [run-docker-compose]
     runs-on: ubuntu-latest
@@ -119,9 +136,6 @@ jobs:
           - folder: 'game'
 
     steps:
-      # - name: Show open ports BEFORE
-      #   run: netstat -tulpn | grep LISTEN
-
       - name: Check Out Repo
         uses: actions/checkout@v2
 
