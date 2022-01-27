@@ -112,10 +112,10 @@ jobs:
 
       - name: Verify frontend server is running
         run: |
-          curl --silent http://localhost:80 --output ./webserver_response.log
-          curl --silent https://localhost:443 --output ./webserver_response2.log
-          curl --silent http://localhost:4200 --output ./webserver_response3.log
-          curl --silent http://localhost:4300 --output ./webserver_response4.log
+          curl --silent http://localhost:80 --output ./webserver_response.log &
+          curl --silent https://localhost:443 --output ./webserver_response2.log & 
+          curl --silent http://localhost:4200 --output ./webserver_response3.log &
+          curl --silent http://localhost:4300 --output ./webserver_response4.log & 
           exit 0
 
       - uses: pCYSl5EDgo/cat@master
