@@ -96,3 +96,20 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
+
+      - name: Verify production deployment
+        run: |
+          curl --write-out '%{http_code}' \
+          --silent \
+          --output ./webserver_response.log \
+          --request GET
+          --url 'https://localhost:4300`
+
+          cat ./webserver_response.log
+
+          if grep -q "200" ./webserver_response.log; then
+            echo "Successfully deployed to production"
+          else
+            echo "Failed to deploy to production"
+            exit 1
+          fi
