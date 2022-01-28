@@ -112,69 +112,29 @@ jobs:
 
       - name: Check frontend and game ports with telnet
         run: |
-          {sleep 1} | telnet localhost 4200 > gameport.txt &
-          {sleep 1} | telnet localhost 4300 > frontendport.txt &
-          exit 0 # Don't fail the build if the telnets fail
+          {echo "Checking port 4200";} | telnet localhost 4200 > gameport.txt 
+          if [${grep -R "Connected to starfish.cool." gameport.txt}]; then
+            echo "Game port is open"
+          else
+            echo "Game port is not open"
+            game=false
+          fi
 
-      - name: Cat frontend and game ports' responses
-        run: |
-          cat frontendport.txt
-          cat gameport.txt
+          {echo "Checking port 4300";} | telnet localhost 4300 > frontendport.txt
+          if [${grep -R "Connected to starfish.cool." frontendport.txt}]; then
+            echo "Frontend port is open"
+          else
+            echo "Frontend port is not open"
+            frontend=false
+          fi
 
-      - name: Check the deployed service URL
-        uses: jtalk/url-health-check-action@v2
-        with:
-          # Check the following URLs one by one sequentially
-          url: http://127.0.0.1:4200, http://127.0.0.1:4300
-          # Follow redirects, or just report success on 3xx status codes
-          follow-redirect: true # Optional, defaults to "false"
-          # Fail this action after this many failed attempts
-          max-attempts: 3 # Optional, defaults to 1
-          # Delay between retries
-          retry-delay: 10s # Optional, only applicable to max-attempts > 1
-          # Retry all errors, including 404. This option might trigger curl upgrade.
-          retry-all: false # Optional, defaults to "false"
-
-      # - name: Verify frontend server is running
-      #   uses: wei/curl@master
-      #   id: curl2
-      #   with:
-      #     args: https://localhost:443
-      #     fail-on-error: false
-
-      # - name: Verify frontend server is running
-      #   uses: wei/curl@master
-      #   id: curl3
-      #   with:
-      #     args: http://localhost:4200
-      #     fail-on-error: false
-
-      # - name: Verify frontend server is running
-      #   uses: wei/curl@master
-      #   id: curl4
-      #   with:
-      #     args: http://localhost:4300
-      #     fail-on-error: false
-      # run: |
-      #   curl --silent http://localhost:80 --output ./webserver_response1.log &
-      #   curl --silent https://localhost:443 --output ./webserver_response2.log &
-      #   curl --silent http://localhost:4200 --output ./webserver_response3.log &
-      #   curl --silent http://localhost:4300 --output ./webserver_response4.log &
-      #   sleep 5
-      #   exit 0
-
-      # - run: echo '${{ steps.curl2 }}'
-
-      # - run: echo '${{ steps.curl3 }}'
-
-      # - run: echo '${{ steps.curl4 }}'
-
-      # if grep -q "200" ./webserver_response.log; then
-      #   echo "Successfully deployed to CI"
-      # else
-      #   echo "Failed to deploy to CI"
-      #   exit 1
-      # fi
+          if [ $frontend = false ] || [ $game = false ]; then
+            echo "Ports are not open"
+            exit 1
+          else
+            echo "Ports are open"
+            exit 0
+          fi
 
   npm-test:
     # needs: [run-docker-compose]
