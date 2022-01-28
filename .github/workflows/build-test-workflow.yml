@@ -112,6 +112,7 @@ jobs:
 
       - name: Check frontend and game ports with telnet
         run: |
+          sleep 5
           echo "Checking port 4200" | telnet localhost 4200 > gameport.txt 
           gameport_up=`grep -R "Connected" gameport.txt`
           if $gameport_up; then
