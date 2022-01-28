@@ -113,27 +113,25 @@ jobs:
       - name: Check frontend and game ports with telnet
         run: |
           {echo "Checking port 4200";} | telnet localhost 4200 > gameport.txt 
-          if [${grep -R "Connected to starfish.cool." gameport.txt}]; then
+          gameport_up=`grep -R "Connected to starfish.cool." gameport.txt`
+          if $gameport_up; then
             echo "Game port is open"
           else
             echo "Game port is not open"
-            game=false
           fi
 
           {echo "Checking port 4300";} | telnet localhost 4300 > frontendport.txt
-          if [${grep -R "Connected to starfish.cool." frontendport.txt}]; then
+          frontendport_up=`grep -R "Connected to starfish.cool." frontendport.txt`
+          if $frontendport_up; then
             echo "Frontend port is open"
           else
             echo "Frontend port is not open"
-            frontend=false
           fi
 
-          if [ $frontend = false ] || [ $game = false ]; then
-            echo "Ports are not open"
-            exit 1
-          else
-            echo "Ports are open"
+          if $frontendport_up && $gameport_up; then
             exit 0
+          else
+            exit 1
           fi
 
   npm-test:
