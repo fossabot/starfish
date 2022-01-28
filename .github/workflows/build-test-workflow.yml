@@ -115,6 +115,7 @@ jobs:
           sleep 5
           echo "Checking port 4200" | telnet localhost 4200 > gameport.txt 
           gameport_up=`grep -R "Connected" gameport.txt`
+          cat gameport.txt
           if $gameport_up; then
             echo "Game port is open"
           else
@@ -123,6 +124,7 @@ jobs:
 
           echo "Checking port 4300" | telnet localhost 4300 > frontendport.txt
           frontendport_up=`grep -R "Connected" frontendport.txt`
+          cat frontendport.txt
           if $frontendport_up; then
             echo "Frontend port is open"
           else
