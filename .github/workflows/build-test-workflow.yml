@@ -116,9 +116,9 @@ jobs:
           grep Connected gameport.txt
           gameport_up=$?
           if $gameport_up; then
-            echo "Game port is open"
-          else
             echo "Game port is not open"
+          else
+            echo "Game port is open"
           fi
           echo "============"
           echo "Checking port 4300" | telnet localhost 4300 > frontendport.txt
@@ -126,15 +126,15 @@ jobs:
           frontendport_up=$?
           cat frontendport.txt
           if $frontendport_up; then
-            echo "Frontend port is open"
-          else
             echo "Frontend port is not open"
+          else
+            echo "Frontend port is open"
           fi
 
-          if $frontendport_up && $gameport_up; then
-            exit 0
-          else
+          if $frontendport_up || $gameport_up; then
             exit 1
+          else
+            exit 0
           fi
         shell: bash {0}
 
