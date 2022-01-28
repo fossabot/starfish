@@ -133,6 +133,7 @@ jobs:
           else
             exit 1
           fi
+        shell: bash {0}
 
   npm-test:
     # needs: [run-docker-compose]
