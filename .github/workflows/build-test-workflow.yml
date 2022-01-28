@@ -107,11 +107,12 @@ jobs:
       - name: Show running containers
         run: docker ps
 
-      - name: Show open ports
-        run: netstat -tulpn | grep LISTEN
+      - name: Check for listening game/db/frontend ports
+        run: netstat -tulpn | grep -E "4200|27017|4300"
 
       - name: Check frontend and game ports with telnet
         run: |
+          sleep 10
           echo "Checking port 4200" | telnet localhost 4200 > gameport.txt 
           grep Connected gameport.txt
           gameport_up=$?
