@@ -112,8 +112,8 @@ jobs:
 
       - name: Run wget on frontend and game ports
         run: |
-          wget -qO- http://localhost:4200 > gameport.txt
-          wget -qO- http://localhost:4300 > frontendport.txt
+          wget -qO- http://localhost:4200 > gameport.txt &
+          wget -qO- http://localhost:4300 > frontendport.txt &
           exit 0 # Don't fail the build if the wget fails
 
       - name: Cat frontend and game ports' responses
