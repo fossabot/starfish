@@ -22,6 +22,7 @@ export class MiningPlanet extends Planet {
 
   daily() {
     super.daily()
+    let didChange = false
     this.mine.forEach((resource) => {
       // * add a drip feed of resources to all active mines
       if (resource.maxMineable === undefined) return
@@ -29,8 +30,9 @@ export class MiningPlanet extends Planet {
       if (resource.maxMineable * 3 >= boost) return
       const dailyAdd = boost / 40
       resource.maxMineable = Math.ceil(dailyAdd + resource.maxMineable)
-      c.log(resource, boost)
+      didChange = true
     })
+    if (didChange) this.updateFrontendForShipsAt()
   }
 
   getMineRequirement(resourceId: MineableResource): number {
@@ -341,9 +343,15 @@ export class MiningPlanet extends Planet {
 
     // todo add more passives
 
-    // * randomly selected for now, with a bias towards things that are already here
+    // * only low-level resources for closer planets
+    const mineableResources: CargoId[] = []
+    for (let cargo of Object.values(c.cargo))
+      if (cargo.rarity <= c.distance([0, 0], this.location))
+        mineableResources.push(cargo.id)
+
+    // * bias towards things that are already here
     const mineableResourceToAdd = c.randomFromArray([
-      ...Object.keys(c.cargo),
+      ...mineableResources,
       ...this.mine.map((m) => m.id),
       ...this.mine.map((m) => m.id),
       ...this.mine.map((m) => m.id),
