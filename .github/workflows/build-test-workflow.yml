@@ -106,10 +106,22 @@ jobs:
 
       - name: Show running containers
         run: docker ps
+      
+      - name: Show container logs
+        run: |
+        for image in game db frontend discord nginx; do
+          echo "$image" && docker logs $image && echo "------------"
+        done
 
       - name: Check for listening game/db/frontend ports
         run: netstat -tulpn | grep -E "4200|27017|4300"
-
+      
+      - name: Show container logs
+        run: |
+        for image in game db frontend discord nginx; do
+          echo "$image" && docker logs $image && echo "------------"
+        done
+        
       - name: Check frontend and game ports with telnet
         run: |
           sleep 10
