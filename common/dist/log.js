@@ -117,8 +117,11 @@ const log = (...args) => {
 function trace() {
     console.trace();
 }
+function error(...args) {
+    log(`red`, ...args);
+}
 function ignoreGrayLogs() {
     ignoreGray = true;
 }
-exports.default = { log, trace, ignoreGrayLogs };
+exports.default = { log, trace, error, ignoreGrayLogs };
 //# sourceMappingURL=log.js.map

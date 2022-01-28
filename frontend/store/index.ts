@@ -356,14 +356,16 @@ export const actions = {
   ) {
     if (alreadyLoggingIn) return
     alreadyLoggingIn = true
-    // c.log(`logIn start`, { userId, shipIds })
+    c.log(`logIn start`, { userId, shipIds })
     if (!userId || !shipIds || !shipIds?.length) {
       const tokenType = storage.get(`tokenType`)
       const accessToken = storage.get(`accessToken`)
       if (!tokenType || !accessToken) {
         alreadyLoggingIn = false
+        // c.log(`No tokens found`)
         return this.$router.push(`/login`)
       }
+      // c.log(`Found token/s`, { tokenType, accessToken })
 
       if (!userId) userId = state.userId
       if (!userId) {
@@ -377,6 +379,15 @@ export const actions = {
             type: `error`,
           })
           c.log(`login error:`, idRes.error)
+          alreadyLoggingIn = false
+          return
+        }
+        if (!idRes.data) {
+          dispatch(`notifications/notify`, {
+            text: `User id get error.`,
+            type: `error`,
+          })
+          c.log(`login error:`, `no user id`)
           alreadyLoggingIn = false
           return
         }
@@ -400,6 +411,7 @@ export const actions = {
             })
 
           if (guildsRes && `error` in guildsRes) {
+            c.log({ error: guildsRes.error })
             // todo double requesting this, resulting in "you are being rate limited"
             // dispatch(`notifications/notify`, {
             //   text: `Guild fetch error: ${guildsRes.error}`,

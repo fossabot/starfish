@@ -13,29 +13,32 @@ export default async function registerCommands(commands: Command[]) {
   const rest = new REST({ version: `9` }).setToken(discordToken)
 
   try {
-    await connected()
-
     c.log(`gray`, `Started refreshing application (/) commands.`)
-    if (!client?.application?.id)
-      return c.log(`red`, `No application id found.`)
+    while (!client?.application?.id) await connected()
 
     // * test bot
-    await rest.put(
-      Routes.applicationGuildCommands(
-        client.application.id,
-        `805015489632796692`,
-      ),
-      { body: commandArray },
-    )
+    await rest
+      .put(
+        Routes.applicationGuildCommands(
+          client.application.id,
+          `805015489632796692`,
+        ),
+        { body: commandArray },
+      )
+      .catch((e) =>
+        c.error(`Error refreshing single-server application commands:`, e),
+      )
     c.log(`gray`, `Registered test bot application (/) commands.`)
 
     // * all servers
-    await rest.put(Routes.applicationCommands(client.application.id), {
-      body: commandArray,
-    })
+    await rest
+      .put(Routes.applicationCommands(client.application.id), {
+        body: commandArray,
+      })
+      .catch((e) => c.error(`Error refreshing application commands:`, e))
 
     c.log(`gray`, `Successfully reloaded application (/) commands.`)
   } catch (error) {
-    c.log(`red`, error)
+    c.error(error)
   }
 }

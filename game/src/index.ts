@@ -1,5 +1,4 @@
-if (process.env.NODE_ENV === `production`)
-  require(`newrelic`)
+if (process.env.NODE_ENV === `production`) require(`newrelic`)
 
 import c from '../../common/dist'
 
@@ -10,9 +9,7 @@ lastCommit.getLastCommit((err, commit) => {
       `blue`,
       `Latest commit:`,
       commit?.subject,
-      `(${new Date(
-        parseInt(commit?.committedOn) * 1000,
-      ).toLocaleString()})`,
+      `(${new Date(parseInt(commit?.committedOn) * 1000).toLocaleString()})`,
     )
 })
 
@@ -24,3 +21,5 @@ async function startGame() {
   game.startGame()
 }
 startGame()
+
+import './game/gpt'

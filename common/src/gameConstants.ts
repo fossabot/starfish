@@ -15,6 +15,7 @@ const defaultGameSettings: {
 
   moraleLowThreshold: 0.2,
   moraleHighThreshold: 0.8,
+  maxCrewMembersPerShip: 500,
 
   gravityMultiplier: 1.8,
   gravityCurveSteepness: 10, // integers
