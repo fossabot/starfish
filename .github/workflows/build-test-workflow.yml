@@ -110,6 +110,16 @@ jobs:
       - name: Show open ports
         run: netstat -tulpn | grep LISTEN
 
+      - name: Run wget on frontend and game ports
+        run: |
+          wget -qO- http://localhost:4200 > gameport.txt
+          wget -qO- http://localhost:4300 > frontendport.txt
+
+      - name: Cat frontend and game ports' responses
+        run: |
+          cat frontendport.txt
+          cat gameport.txt
+
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v2
         with:
