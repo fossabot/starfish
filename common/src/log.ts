@@ -147,8 +147,12 @@ function trace() {
   console.trace()
 }
 
+function error(...args: any[]) {
+  log(`red`, ...args)
+}
+
 function ignoreGrayLogs() {
   ignoreGray = true
 }
 
-export default { log, trace, ignoreGrayLogs }
+export default { log, trace, error, ignoreGrayLogs }

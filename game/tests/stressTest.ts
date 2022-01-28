@@ -5,6 +5,7 @@ import { crewMemberData, enemyAiShipData, humanShipData } from './defaults'
 async function stressTest() {
   const log = console.log
   console.log = () => {}
+  c.massProfiler.enabled = false
 
   const output: {
     humanShips: number
@@ -17,9 +18,9 @@ async function stressTest() {
   }[] = []
 
   const tickCount = 20
-  const crewMemberCount = 10
+  const crewMemberCount = 1000
 
-  for (let humanCount of [1, 10, 100, 200, 500]) {
+  for (let humanCount of [1, 10, 100]) {
     log(`starting human:`, humanCount)
     const g = new Game()
     for (let i = 0; i < humanCount; i++) {

@@ -27,6 +27,7 @@ declare const _default: {
         cacheDensity: any;
         moraleLowThreshold: any;
         moraleHighThreshold: any;
+        maxCrewMembersPerShip: any;
     };
     previousLocationTimeout: number;
     baseCurrencySingular: string;

@@ -3,15 +3,15 @@
     <transition name="fade">
       <div v-if="show" class="textcolumn">
         <div>
-          If this page doesn't automatically advance to the
-          ship page, try turning off any privacy extensions
-          or adblockers. (<b>PrivacyBadger</b> has broken
-          this before.)
+          If this page doesn't automatically advance to the ship page, try
+          turning off any privacy extensions or adblockers. (<b
+            >PrivacyBadger</b
+          >
+          has broken this before.)
         </div>
         <div>
-          The error is likely logged in your browser's
-          console. If the issue persists, please share a bug
-          report.
+          The error is likely logged in your browser's console. If the issue
+          persists, please share a bug report.
         </div>
         <div>
           If you think you've fixed the problem,
@@ -41,10 +41,7 @@ export default Vue.extend({
   computed: {
     ...mapState(['userId']),
     loginUrl() {
-      const hostname = window.location.href.replace(
-        /\/(?:post)?login.*/g,
-        '',
-      )
+      const hostname = window.location.href.replace(/\/(?:post)?login.*/g, '')
       const postLoginPage = `${hostname}/postlogin`
       window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${
         process.env.BOT_ID
@@ -62,9 +59,8 @@ export default Vue.extend({
     setTimeout(() => {
       this.show = true
     }, 4000)
-    const fragment = new URLSearchParams(
-      window.location.hash.slice(1),
-    )
+
+    const fragment = new URLSearchParams(window.location.hash.slice(1))
     const [accessToken, tokenType] = [
       fragment.get('access_token'),
       fragment.get('token_type'),
@@ -72,8 +68,7 @@ export default Vue.extend({
 
     if (!accessToken || !tokenType) {
       c.log('Failed to log in through Discord.')
-      this.errorMessage =
-        'Failed to log in through Discord.'
+      this.errorMessage = 'Failed to log in through Discord.'
       return
     } else {
       storage.set('tokenType', tokenType)

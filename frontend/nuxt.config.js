@@ -18,6 +18,10 @@ export default {
         : `723017262369472603`), // j's test
   },
 
+  serverMiddleware: [
+    { path: `/api`, handler: `~/api/api.ts` }
+  ],
+
   vue: {
     config: {
       productionTip: false,

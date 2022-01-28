@@ -14,6 +14,7 @@ const defaultGameSettings = {
     enduranceXpGainPerSecond: 0.04,
     moraleLowThreshold: 0.2,
     moraleHighThreshold: 0.8,
+    maxCrewMembersPerShip: 500,
     gravityMultiplier: 1.8,
     gravityCurveSteepness: 10,
     gravityRadius: 0.5,

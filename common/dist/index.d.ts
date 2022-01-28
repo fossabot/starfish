@@ -275,6 +275,7 @@ declare const _default: {
         cacheDensity: any;
         moraleLowThreshold: any;
         moraleHighThreshold: any;
+        maxCrewMembersPerShip: any;
     };
     previousLocationTimeout: number;
     baseCurrencySingular: string;
@@ -381,6 +382,7 @@ declare const _default: {
     getPlanetDefenseDamage: (level: number) => number;
     log: (...args: any[]) => void;
     trace: () => void;
+    error: (...args: any[]) => void;
     ignoreGrayLogs: () => void;
     sleep: (ms: number) => Promise<void>;
     coinFlip: () => boolean;

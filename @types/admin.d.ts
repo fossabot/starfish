@@ -26,6 +26,7 @@ interface AdminGameSettings {
   cacheDensity: number
   moraleLowThreshold: number
   moraleHighThreshold: number
+  maxCrewMembersPerShip: number
 }
 
 interface AdminVisibleData {

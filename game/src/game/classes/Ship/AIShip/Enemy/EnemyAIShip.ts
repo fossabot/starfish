@@ -11,6 +11,7 @@ import type { Weapon } from '../../Item/Weapon'
 import type { HumanShip } from '../../HumanShip/HumanShip'
 
 import ais from './ais'
+import getGptResponse from '../../../../gpt'
 
 export class EnemyAIShip extends AIShip {
   scanTypes: ScanType[] = [`humanShip`]
@@ -204,13 +205,34 @@ export class EnemyAIShip extends AIShip {
     garbleAmount: number,
     recipients: Ship[],
   ) {
+    // todo gpt baby
+    // c.log(`ai ship ${this.name} received broadcast`)
+    // const context: string[] = [
+    //   `${this.name} is a ${
+    //     c.species[this.speciesId].singular
+    //   } piloting a spaceship.`,
+    //   `${this.name}, just like all birds, is the enemy of all fish.`,
+    //   `There are other spaceships in space, crewed by fish.`,
+    //   `There are also other spaceships nearby, crewed by allied birds.`,
+    //   `${this.name} loves to tell corny jokes.`,
+    //   `${this.name} loves to intimidate fish ships.`,
+    //   `${this.name} will attack, kill, and eat any fish ship it can.`,
+    //   `One day, ${this.name} received a local-area broadcast from a fish ship called "${from.name}". ${this.name} hates this ship and everyone in it. The communication said: "${message}".`,
+    // ]
+    // const gptRes = await getGptResponse(
+    //   context,
+    //   `In response, ${this.name} says:`,
+    // )
+    // c.log(gptRes)
+    // if (gptRes) from.receiveBroadcast(gptRes, this, garbleAmount, [from])
+    // return
+
     let oddsToIgnore = 0.99
     if (recipients.length === 1) oddsToIgnore *= 0.4
     if (message.toLowerCase().indexOf(this.name.toLowerCase()) > -1)
       oddsToIgnore = 0.1
     if (Math.random() < oddsToIgnore) return
 
-    // c.log(`ai ship ${this.name} received broadcast`)
     await c.sleep(Math.round(Math.random() * 1000 * 60))
 
     const textOptions = [
