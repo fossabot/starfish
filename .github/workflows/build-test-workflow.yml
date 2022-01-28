@@ -110,11 +110,11 @@ jobs:
       - name: Show open ports
         run: netstat -tulpn | grep LISTEN
 
-      - name: Run wget on frontend and game ports
+      - name: Check frontend and game ports with telnet
         run: |
-          wget -qO- http://localhost:4200 > gameport.txt &
-          wget -qO- http://localhost:4300 > frontendport.txt &
-          exit 0 # Don't fail the build if the wget fails
+          {sleep 1} | telnet localhost 4200 > gameport.txt &
+          {sleep 1} | telnet localhost 4300 > frontendport.txt &
+          exit 0 # Don't fail the build if the telnets fail
 
       - name: Cat frontend and game ports' responses
         run: |
