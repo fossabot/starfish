@@ -290,11 +290,14 @@ export class Game {
 
     c.log(`gray`, `----- Running Daily Tasks -----`)
 
+    this.planets.forEach((p) => p.daily())
+
     // remove inactive ships
     const inactiveCutoff = 4 * 7 * 24 * 60 * 60 * 1000 // 4 weeks
     const tutorialInactiveCutoff = 3 * 24 * 60 * 60 * 1000 // 3 days
     const ic = Date.now() - inactiveCutoff,
       tic = Date.now() - tutorialInactiveCutoff
+
 
     const shipsByInactivity = this.humanShips.map((s) => ({
       ship: s,

@@ -67,12 +67,8 @@ export class Planet extends Stubbable {
     this.color = color
     this.location = location
     this.radius = radius
-    this.mass =
-      mass ||
-      ((5.974e30 * this.radius) / 36000) *
-        Planet.massAdjuster
-    this.landingRadiusMultiplier =
-      landingRadiusMultiplier || 1
+    this.mass = mass || ((5.974e30 * this.radius) / 36000) * Planet.massAdjuster
+    this.landingRadiusMultiplier = landingRadiusMultiplier || 1
     this.passives = passives || []
     this.pacifist = pacifist || true
     this.creatures = creatures || []
@@ -88,33 +84,22 @@ export class Planet extends Stubbable {
 
       const levelsToApply = baseLevel - this.level
       if (!isNaN(levelsToApply))
-        for (let i = 0; i < levelsToApply; i++)
-          this.levelUp()
+        for (let i = 0; i < levelsToApply; i++) this.levelUp()
 
       if (
         this.xp <
-        c.levels[this.level - 1] *
-          c.planetLevelXpRequirementMultiplier
+        c.levels[this.level - 1] * c.planetLevelXpRequirementMultiplier
       )
         this.xp =
-          c.levels[this.level - 1] *
-            c.planetLevelXpRequirementMultiplier +
-          Math.floor(
-            Math.random() *
-              100 *
-              c.planetLevelXpRequirementMultiplier,
-          )
+          c.levels[this.level - 1] * c.planetLevelXpRequirementMultiplier +
+          Math.floor(Math.random() * 100 * c.planetLevelXpRequirementMultiplier)
 
       this.hitList = this.hitList.filter((h) => {
-        const found = this.game?.ships.find(
-          (s) => s.id === h,
-        )
+        const found = this.game?.ships.find((s) => s.id === h)
         if (!found) return false
         if (
           found.guildId &&
-          this.allegiances.find(
-            (g) => g.guildId === found.guildId,
-          )
+          this.allegiances.find((g) => g.guildId === found.guildId)
         )
           return false
         return true
@@ -124,9 +109,8 @@ export class Planet extends Stubbable {
 
   get shipsAt() {
     return (
-      this.game?.humanShips.filter(
-        (s) => !s.tutorial && s.planet === this,
-      ) || []
+      this.game?.humanShips.filter((s) => !s.tutorial && s.planet === this) ||
+      []
     )
   }
 
@@ -135,13 +119,12 @@ export class Planet extends Stubbable {
     this.defend()
   }
 
+  daily() {}
+
   tickEffectsOnShip(ship: HumanShip) {
     ship.addStat(`planetTime`, 1)
 
-    const distanceFromPlanet = c.distance(
-      this.location,
-      ship.location,
-    )
+    const distanceFromPlanet = c.distance(this.location, ship.location)
 
     // * if it's inside the drawn planet, don't swirl
     if (distanceFromPlanet < this.radius / c.kmPerAu) return
@@ -158,10 +141,7 @@ export class Planet extends Stubbable {
             c.defaultGameSettings.arrivalThreshold))) / // less effect farther out
       Math.max(1, ship.speed * 1000000) // less effect if you're in motion
 
-    const angleToShip = c.angleFromAToB(
-      this.location,
-      ship.location,
-    )
+    const angleToShip = c.angleFromAToB(this.location, ship.location)
     const targetAngle =
       ((swirlClockwise
         ? angleToShip - swirlIntensity
@@ -188,9 +168,7 @@ export class Planet extends Stubbable {
     this.xp = Math.floor(this.xp + amount)
     const previousLevel = this.level
     const newLevel = c.levels.findIndex(
-      (l) =>
-        (this.xp || 0) <
-        l * c.planetLevelXpRequirementMultiplier,
+      (l) => (this.xp || 0) < l * c.planetLevelXpRequirementMultiplier,
     )
     const levelDifference = newLevel - previousLevel
     // c.log({
@@ -217,32 +195,22 @@ export class Planet extends Stubbable {
     if (this.level > 100) this.level = 100 // todo it still adds bonuses past 100
     if (
       this.xp <
-      c.levels[this.level - 1] *
-        c.planetLevelXpRequirementMultiplier
+      c.levels[this.level - 1] * c.planetLevelXpRequirementMultiplier
     ) {
       // this will only happen when levelling up from 0: randomize a bit so it's not clear if NO one has ever been here before
       this.xp =
-        c.levels[this.level - 1] *
-          c.planetLevelXpRequirementMultiplier +
-        Math.floor(
-          Math.random() *
-            100 *
-            c.planetLevelXpRequirementMultiplier,
-        )
+        c.levels[this.level - 1] * c.planetLevelXpRequirementMultiplier +
+        Math.floor(Math.random() * 100 * c.planetLevelXpRequirementMultiplier)
       // c.log(`bumping`, this.xp)
     }
   }
 
   broadcastTo(ship: HumanShip): number | undefined {
     // baseline chance to say nothing
-    if (Math.random() > c.lerp(0.5, 0.2, this.level / 100))
-      return
+    if (Math.random() > c.lerp(0.5, 0.2, this.level / 100)) return
 
     const maxBroadcastRadius = this.level * 0.1
-    const distance = c.distance(
-      this.location,
-      ship.location,
-    )
+    const distance = c.distance(this.location, ship.location)
 
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
@@ -256,21 +224,14 @@ export class Planet extends Stubbable {
     // don't message ships that are currently at a planet
     if (ship.planet) return
 
-    const distanceAsPercentOfMaxBroadcastRadius =
-      distance / maxBroadcastRadius
+    const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius
 
     return distanceAsPercentOfMaxBroadcastRadius
   }
 
-  respondTo(
-    message: string,
-    ship: HumanShip,
-  ): number | undefined {
+  respondTo(message: string, ship: HumanShip): number | undefined {
     const maxBroadcastRadius = this.level * 0.1
-    const distance = c.distance(
-      this.location,
-      ship.location,
-    )
+    const distance = c.distance(this.location, ship.location)
 
     // don't message ships that are too far
     if (distance > maxBroadcastRadius) return
@@ -284,11 +245,9 @@ export class Planet extends Stubbable {
     // don't message ships that are currently at a planet
     if (ship.planet) return
     // passive chance to ignore
-    if (Math.random() > c.lerp(0.6, 1, this.level / 100))
-      return
+    if (Math.random() > c.lerp(0.6, 1, this.level / 100)) return
 
-    const distanceAsPercentOfMaxBroadcastRadius =
-      distance / maxBroadcastRadius
+    const distanceAsPercentOfMaxBroadcastRadius = distance / maxBroadcastRadius
 
     return distanceAsPercentOfMaxBroadcastRadius
   }
@@ -309,15 +268,12 @@ export class Planet extends Stubbable {
     const validTargetIds: string[] = Array.from(
       attackRemnantsInSight.reduce((ids, ar) => {
         if (ar.attacker?.id === this.id) return ids
-        const bothHuman =
-          !(ar.attacker as any)?.ai &&
-          !(ar.defender as any)?.ai
+        const bothHuman = !(ar.attacker as any)?.ai && !(ar.defender as any)?.ai
         if (bothHuman) {
           ids.add(ar.attacker?.id)
           ids.add(ar.defender?.id)
         } else {
-          if ((ar.attacker as any).ai)
-            ids.add(ar.attacker?.id)
+          if ((ar.attacker as any).ai) ids.add(ar.attacker?.id)
           else ids.add(ar.defender?.id)
         }
         return ids
@@ -326,9 +282,7 @@ export class Planet extends Stubbable {
     if (!validTargetIds.length) return
 
     // update hit list
-    this.hitList = Array.from(
-      new Set([...this.hitList, ...validTargetIds]),
-    )
+    this.hitList = Array.from(new Set([...this.hitList, ...validTargetIds]))
 
     const shipsInSight =
       this.game?.scanCircle(
@@ -338,40 +292,30 @@ export class Planet extends Stubbable {
         [`aiShip`, `humanShip`],
       )?.ships || []
 
-    const enemiesInRange: CombatShip[] =
-      shipsInSight.filter(
-        (s) =>
-          validTargetIds.includes(s.id) &&
-          s.attackable &&
-          !this.allegiances.find(
-            (a) =>
-              a.level >= c.guildAllegianceFriendCutoff &&
-              a.guildId === s.guildId,
-          ),
-      ) as CombatShip[]
+    const enemiesInRange: CombatShip[] = shipsInSight.filter(
+      (s) =>
+        validTargetIds.includes(s.id) &&
+        s.attackable &&
+        !this.allegiances.find(
+          (a) =>
+            a.level >= c.guildAllegianceFriendCutoff && a.guildId === s.guildId,
+        ),
+    ) as CombatShip[]
     if (enemiesInRange.length === 0) return
     const target = c.randomFromArray(enemiesInRange)
-    if (
-      !target ||
-      !target.attackable ||
-      target.planet ||
-      target.dead
-    )
-      return
+    if (!target || !target.attackable || target.planet || target.dead) return
 
     // ----- attack enemy -----
 
     const hitRoll = Math.random()
     const range = c.distance(this.location, target.location)
-    const distanceAsPercent =
-      range / c.getPlanetDefenseRadius(this.defense) // 1 = far away, 0 = close
+    const distanceAsPercent = range / c.getPlanetDefenseRadius(this.defense) // 1 = far away, 0 = close
     const minHitChance = 0.08
     // 1.0 agility is "normal", higher is better
     const enemyAgility =
       target.chassis.agility +
-      (target.passives.find(
-        (p) => p.id === `boostChassisAgility`,
-      )?.intensity || 0)
+      (target.passives.find((p) => p.id === `boostChassisAgility`)?.intensity ||
+        0)
 
     const toHit =
       c.lerp(minHitChance, 1, distanceAsPercent) *
@@ -422,10 +366,7 @@ export class Planet extends Stubbable {
         displayName: `Orbital Mortar`,
       },
     }
-    const attackResult = target.takeDamage(
-      this,
-      damageResult,
-    )
+    const attackResult = target.takeDamage(this, damageResult)
 
     this.game?.addAttackRemnant({
       attacker: this,
@@ -483,13 +424,10 @@ export class Planet extends Stubbable {
   }
 
   addPassive(passive: ShipPassiveEffect) {
-    const existing = this.passives.find(
-      (p) => p.id === passive.id,
-    )
+    const existing = this.passives.find((p) => p.id === passive.id)
     if (existing)
       existing.intensity = c.r2(
-        (existing.intensity || 0) +
-          (passive.intensity || 1),
+        (existing.intensity || 0) + (passive.intensity || 1),
         5,
       )
     else
@@ -508,9 +446,7 @@ export class Planet extends Stubbable {
 
   // ----- stats -----
   addStat(statname: PlanetStatKey, amount: number) {
-    const existing = this.stats.find(
-      (s) => s.stat === statname,
-    )
+    const existing = this.stats.find((s) => s.stat === statname)
     if (!existing)
       this.stats.push({
         stat: statname,
