@@ -19,10 +19,18 @@
         <div class="button combo" @click="unpause">
           <span>Unpause</span>
         </div>
+        <div class="button combo" @click="backUp">
+          <span>Back Up Db</span>
+        </div>
         <div class="button combo" @click="messageAll">
           <span>Message All Ships</span>
         </div>
       </div>
+
+      <details class="martop" v-if="stats">
+        <summary>Stats</summary>
+        <pre>{{ JSON.stringify(stats, null, 2) }}</pre>
+      </details>
 
       <details class="martop">
         <summary>Resetters</summary>
@@ -142,6 +150,7 @@ export default Vue.extend({
     return {
       c,
       show: false,
+      stats: false,
       initialSettings: {},
       inputSettings: {},
       backups: [],
@@ -188,6 +197,18 @@ export default Vue.extend({
             (res) => {
               if (res.data) {
                 this.backups = res.data
+              }
+            },
+          )
+
+          this.$socket.emit(
+            'game:adminStats',
+            this.userId,
+            this.adminPassword,
+            (res) => {
+              if (res.data) {
+                this.stats = res.data
+                c.log(res.data)
               }
             },
           )
@@ -239,6 +260,25 @@ export default Vue.extend({
         this.userId,
         this.adminPassword,
         message,
+      )
+    },
+    backUp() {
+      this.$socket.emit(
+        'game:makeBackup',
+        this.userId,
+        this.adminPassword,
+        (res) => {
+          if (res.error) {
+            this.$store.dispatch('notifications/notify', {
+              text: res.error,
+              type: 'error',
+            })
+          } else
+            this.$store.dispatch('notifications/notify', {
+              text: 'Backup created',
+              type: 'success',
+            })
+        },
       )
     },
     resetAllPlanets() {
@@ -320,6 +360,7 @@ export default Vue.extend({
         )
       )
         return
+      c.log('a')
       this.$socket.emit(
         'game:resetToBackup',
         this.userId,

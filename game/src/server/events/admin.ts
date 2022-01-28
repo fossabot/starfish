@@ -2,7 +2,7 @@ import c from '../../../../common/dist'
 import { Socket } from 'socket.io'
 import fs from 'fs'
 
-import { getBackups, resetDbToBackup } from '../../db'
+import { getBackups, resetDbToBackup, backUpDb } from '../../db'
 
 import type { Game } from '../../game/Game'
 import type { HumanShip } from '../../game/classes/Ship/HumanShip/HumanShip'
@@ -47,6 +47,11 @@ export default function (
   socket.on(`game:adminCheck`, (id, password, callback) => {
     if (!game) return
     return callback(isAdmin(id, password))
+  })
+
+  socket.on(`game:adminStats`, (id, password, callback) => {
+    if (!game) return
+    return callback({ data: game.adminStats() })
   })
 
   socket.on(`admin:map`, (id, password, callback) => {
@@ -167,16 +172,30 @@ export default function (
       return c.log(`Non-admin attempted to access game:backups`)
     callback({ data: getBackups() })
   })
+
+  socket.on(`game:makeBackup`, async (id, password, callback) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(`Non-admin attempted to access game:makeBackup`)
+    const res = await backUpDb(true)
+    if (res) callback({ data: true })
+    else callback({ error: `Backup failed.` })
+  })
+
   socket.on(`game:resetToBackup`, async (id, password, backupId, callback) => {
     if (!game) return
     if (!isAdmin(id, password))
       return c.log(`Non-admin attempted to access game:resetToBackup`)
     game.pause()
+    c.log(`Resetting database to backup ${backupId}`)
     const res = await resetDbToBackup(backupId)
     if (res !== true) {
       c.log(`red`, `Failed to reset to backup:`, res)
       callback({ error: res })
-    } else await game.restart()
+      game.unpause()
+      return
+    }
+    await game.restart()
     callback({ data: true })
   })
 

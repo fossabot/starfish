@@ -298,7 +298,6 @@ export class Game {
     const ic = Date.now() - inactiveCutoff,
       tic = Date.now() - tutorialInactiveCutoff
 
-
     const shipsByInactivity = this.humanShips.map((s) => ({
       ship: s,
       isTutorial: s.tutorial && s.tutorial.currentStep,
@@ -1471,6 +1470,12 @@ export class Game {
           )
           .join(`\n`),
     )
+  }
+
+  adminStats() {
+    return {
+      activePlayers: this.activePlayers
+    }
   }
 
   toAdminMapData(): AdminVisibleData {

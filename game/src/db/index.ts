@@ -53,10 +53,7 @@ try {
       : (process.env.MONGODB_ADMINPASSWORD as string)
 }
 
-databaseName =
-  process.env.NODE_ENV === `staging`
-    ? `starfish-test`
-    : `starfish`
+databaseName = process.env.NODE_ENV === `staging` ? `starfish-test` : `starfish`
 // c.log({ databaseName, mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
@@ -65,6 +62,7 @@ const defaultMongoOptions: GameDbOptions = {
   dbName: databaseName,
   username: mongoUsername,
   password: mongoPassword,
+  authDatabase: `starfish`,
 }
 
 let toRun: Function[] = []
@@ -95,10 +93,7 @@ export const init = ({
     if (mongoose.connection.readyState === 0) {
       const uri = `mongodb://${username}:${password}@${hostname}:${port}/${dbName}?poolSize=20&writeConcern=majority?connectTimeoutMS=5000`
       // c.log(uri)
-      c.log(
-        `gray`,
-        `No existing db connection, creating...`,
-      )
+      c.log(`gray`, `No existing db connection, creating...`)
       ;(
         mongoose.connect(uri, {
           useNewUrlParser: true,
@@ -107,9 +102,7 @@ export const init = ({
         } as any) as any
       ).catch(() => {})
 
-      mongoose.connection.on(`error`, (error) =>
-        c.log(`red`, error.message),
-      )
+      mongoose.connection.on(`error`, (error) => c.log(`red`, error.message))
       mongoose.connection.once(`open`, () => {
         onReady()
       })
@@ -136,83 +129,78 @@ const backupsFolderPath = path.resolve(
   `backups/`,
 )
 
-function backUpDb() {
-  try {
-    if (!fs.existsSync(backupsFolderPath))
-      fs.mkdirSync(backupsFolderPath)
-  } catch (e) {
-    return c.log(
-      `red`,
-      `Could not create backups folder:`,
-      backupsFolderPath,
-      e,
-    )
-  }
-
-  fs.readdir(backupsFolderPath, (err, backups) => {
-    if (err) return
-    const sortedBackups = backups
-      .filter((p) => p.indexOf(`.`) !== 0)
-      .sort((a, b) => {
-        const aDate = new Date(parseInt(a))
-        const bDate = new Date(parseInt(b))
-        return bDate.getTime() - aDate.getTime()
-      })
-    const mostRecentBackup = sortedBackups[0]
-
-    while (sortedBackups.length > maxBackups) {
-      const oldestBackup =
-        sortedBackups[sortedBackups.length - 1]
-      sortedBackups.splice(sortedBackups.length - 1, 1)
-      fs.rmSync(
-        path.resolve(backupsFolderPath, oldestBackup),
-        { recursive: true },
-      )
+export function backUpDb(force?: true): Promise<void | true> {
+  return new Promise(async (resolve) => {
+    try {
+      if (!fs.existsSync(backupsFolderPath)) fs.mkdirSync(backupsFolderPath)
+    } catch (e) {
+      c.log(`red`, `Could not create backups folder:`, backupsFolderPath, e)
+      resolve()
+      return
     }
 
-    if (
-      !mostRecentBackup ||
-      new Date(parseInt(mostRecentBackup)).getTime() <
-        Date.now() - minBackupInterval
-    ) {
-      c.log(`gray`, `Backing up db...`)
+    fs.readdir(backupsFolderPath, (err, backups) => {
+      if (err) {
+        resolve()
+        return
+      }
+      const sortedBackups = backups
+        .filter((p) => p.indexOf(`.`) !== 0)
+        .sort((a, b) => {
+          const aDate = new Date(parseInt(a))
+          const bDate = new Date(parseInt(b))
+          return bDate.getTime() - aDate.getTime()
+        })
+      const mostRecentBackup = sortedBackups[0]
 
-      const backupName = Date.now()
+      while (sortedBackups.length > maxBackups) {
+        const oldestBackup = sortedBackups[sortedBackups.length - 1]
+        sortedBackups.splice(sortedBackups.length - 1, 1)
+        fs.rmSync(path.resolve(backupsFolderPath, oldestBackup), {
+          recursive: true,
+        })
+      }
 
-      let cmd =
-        `mongodump --host ` +
-        defaultMongoOptions.hostname +
-        ` --port ` +
-        defaultMongoOptions.port +
-        ` --db ` +
-        defaultMongoOptions.dbName +
-        ` --username ` +
-        defaultMongoOptions.username +
-        ` --password ` +
-        defaultMongoOptions.password +
-        ` --out ` +
-        path.resolve(backupsFolderPath, `${backupName}`)
+      if (
+        force ||
+        !mostRecentBackup ||
+        new Date(parseInt(mostRecentBackup)).getTime() <
+          Date.now() - minBackupInterval
+      ) {
+        c.log(`gray`, `Backing up db...`)
 
-      exec(cmd, undefined, (error, stdout, stderr) => {
-        if (error) {
-          c.log({ error })
-        }
-      })
-    }
+        const backupName = Date.now()
+
+        let cmd =
+          `mongodump --host ` +
+          defaultMongoOptions.hostname +
+          ` --port ` +
+          defaultMongoOptions.port +
+          ` --db ` +
+          defaultMongoOptions.dbName +
+          ` --username ` +
+          defaultMongoOptions.username +
+          ` --password ` +
+          defaultMongoOptions.password +
+          ` --out ` +
+          path.resolve(backupsFolderPath, `${backupName}`)
+
+        exec(cmd, undefined, (error, stdout, stderr) => {
+          if (error) {
+            c.log({ error })
+            resolve()
+          } else resolve(true)
+        })
+      }
+    })
   })
 }
 
 export function getBackups() {
   try {
-    return fs
-      .readdirSync(backupsFolderPath)
-      .filter((p) => p.indexOf(`.`) !== 0)
+    return fs.readdirSync(backupsFolderPath).filter((p) => p.indexOf(`.`) !== 0)
   } catch (e) {
-    c.log(
-      `red`,
-      `Could not find backups folder:`,
-      backupsFolderPath,
-    )
+    c.log(`red`, `Could not find backups folder:`, backupsFolderPath)
     return []
   }
 }
@@ -222,13 +210,9 @@ export function resetDbToBackup(backupId: string) {
     try {
       if (
         !fs.existsSync(backupsFolderPath) ||
-        !fs.existsSync(
-          path.resolve(backupsFolderPath, backupId),
-        )
+        !fs.existsSync(path.resolve(backupsFolderPath, backupId))
       ) {
-        resolve(
-          `Attempted to reset db to nonexistent backup`,
-        )
+        resolve(`Attempted to reset db to nonexistent backup`)
         return
       }
     } catch (e) {
@@ -238,23 +222,26 @@ export function resetDbToBackup(backupId: string) {
 
     c.log(`yellow`, `Resetting db to backup`, backupId)
 
-    let cmd = `mongorestore --drop --verbose --uri="mongodb://${
-      defaultMongoOptions.username
-    }:${defaultMongoOptions.password}@${
-      defaultMongoOptions.hostname
-    }:${defaultMongoOptions.port}/${
-      defaultMongoOptions.dbName
-    }" ${path.resolve(
-      backupsFolderPath,
-      backupId,
-      `starfish`,
-    )}`
+    let cmd =
+      `mongorestore --drop --verbose --host="` +
+      defaultMongoOptions.hostname +
+      `" --port ` +
+      defaultMongoOptions.port +
+      ` --username ` +
+      defaultMongoOptions.username +
+      ` --password ` +
+      defaultMongoOptions.password +
+      ` --authenticationDatabase ` +
+      defaultMongoOptions.authDatabase +
+      ` ` +
+      path.resolve(backupsFolderPath, backupId)
 
     exec(cmd, undefined, (error, stdout, stderr) => {
       if (error) {
         resolve(error.message)
       }
 
+      c.log(stdout)
       c.log({ stderr })
       resolve(true)
     })
