@@ -15,7 +15,6 @@ COPY --from=npm_install /usr/app/frontend/node_modules /usr/app/frontend/node_mo
 ADD @types/ /usr/app/@types
 ADD common/ /usr/app/common
 WORKDIR /usr/app/common
-
 RUN npm install
 
 WORKDIR /usr/app/frontend
