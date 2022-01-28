@@ -67,7 +67,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           file: ${{ matrix.dockerfile }}
           push: true
-          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}, starfishgame/${{ matrix.image }}:staging-latest
+          tags: starfishgame/${{ matrix.image }}:pull-request-${{ github.event.number }}, starfishgame/${{ matrix.image }}:ci-latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
@@ -102,7 +102,7 @@ jobs:
           echo "PULL_REQUEST_NUMBER=${{ github.event.number }}" >> .env
 
       - name: Launch containers
-        run: docker-compose -f docker-compose-staging.yml --env-file .env up -d
+        run: docker-compose -f docker-compose-ci.yml --env-file .env up -d
 
       - name: Show running containers
         run: docker ps
@@ -179,7 +179,7 @@ jobs:
 
       - name: Start MongoDB
         run: |
-          docker build -t mongo-test -f db/Dockerfile-staging .
+          docker build -t mongo-test -f db/Dockerfile-ci .
           docker run -d -p 0.0.0.0:27017:27017 mongo-test
 
       - name: Use Node.js
@@ -196,7 +196,7 @@ jobs:
           working-directory: 'common'
 
       - name: Run test suite on ${{matrix.folder}}
-        run: npm run teststaging
+        run: npm run testci
         working-directory: ${{matrix.folder}}
 
       - uses: actions/upload-artifact@v2 # upload test results
