@@ -91,6 +91,7 @@ interface IOClientEvents {
   ) => void
 
   [`game:save`]: (adminId: string, password: string) => void
+  [`game:daily`]: (adminId: string, password: string) => void
   [`game:pause`]: (adminId: string, password: string) => void
   [`game:unpause`]: (adminId: string, password: string) => void
   [`game:backups`]: (

@@ -140,6 +140,12 @@ export default function (
       return c.log(`Non-admin attempted to access game:save`)
     game.save()
   })
+  socket.on(`game:daily`, (id, password) => {
+    if (!game) return
+    if (!isAdmin(id, password))
+      return c.log(`Non-admin attempted to access game:daily`)
+    game.daily()
+  })
 
   socket.on(`game:pause`, (id, password) => {
     if (!game) return

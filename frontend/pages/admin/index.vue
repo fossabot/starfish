@@ -10,6 +10,9 @@
         <div class="button combo" @click="save">
           <span>Save</span>
         </div>
+        <div class="button combo" @click="daily">
+          <span>Daily</span>
+        </div>
         <div class="button combo" @click="pause">
           <span>Pause</span>
         </div>
@@ -218,6 +221,9 @@ export default Vue.extend({
     },
     save() {
       this.$socket.emit('game:save', this.userId, this.adminPassword)
+    },
+    daily() {
+      this.$socket.emit('game:daily', this.userId, this.adminPassword)
     },
     pause() {
       this.$socket.emit('game:pause', this.userId, this.adminPassword)
