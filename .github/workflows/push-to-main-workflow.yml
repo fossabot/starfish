@@ -99,15 +99,11 @@ jobs:
 
       - name: Verify CI deployment
         run: |
-          curl --write-out '%{http_code}' \
-          --silent \
-          --output ./webserver_response.log \
-          --request GET
-          --url 'https://localhost:4300`
+          curl --silent --output ./webserver_response.log --request GET http://localhost:4300
 
           cat ./webserver_response.log
 
-          if [ grep -q "200" ./webserver_response.log ] && [ !grep -q "502" ./webserver_response.log ]; then
+          if [ grep -q "<title>Starfish</title>" ./webserver_response.log ] && [ !grep -q "502 Bad Gateway" ./webserver_response.log ]; then
             echo "Successfully deployed to production"
           else
             echo "Failed to deploy to production"
