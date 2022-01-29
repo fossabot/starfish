@@ -61,7 +61,7 @@ jobs:
 
       - uses: docker/build-push-action@v2
         if: steps.changes.outputs.src == 'true'
-        id: docker_build
+        id: dockerbuild
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -81,6 +81,14 @@ jobs:
     needs: [docker-build-publish]
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Cache for Docker images
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-dockercompose-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-dockercompose-
+
       - name: Check Out Repo
         uses: actions/checkout@v2
 
@@ -103,15 +111,18 @@ jobs:
 
       - name: Launch containers
         run: docker-compose -f docker-compose-ci.yml --env-file .env up -d
+        with:
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Move cache
+        if: steps.dockerbuild.outcome == 'success' && steps.changes.outputs.src == 'true'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Show running containers
         run: docker ps
-
-      - name: Show container logs
-        run: |
-          for image in game db frontend discord nginx; do
-            echo "$image" && docker logs $image && echo "------------"
-          done
 
       - name: Check for listening game/db/frontend ports
         run: netstat -tulpn | grep -E "4200|27017|4300"
@@ -129,7 +140,6 @@ jobs:
           grep Connected gameport.txt
           gameport_up=$?
 
-          cat gameport.txt
           if [ "$gameport_up" -eq "1" ]; then
             echo "Game port is not open"
           else
@@ -137,12 +147,10 @@ jobs:
           fi
           echo "============"
 
-
           echo "Checking port 4300" | telnet localhost 4300 > frontendport.txt
           grep Connected frontendport.txt
           frontendport_up=$?
 
-          cat frontendport.txt
           if [ "$frontendport_up" -eq "1" ]; then
             echo "Frontend port is not open"
           else
