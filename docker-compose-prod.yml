@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   mongodb:
+    container_name: db
     image: 'starfishgame/starfish-db:latest'
     restart: always
     volumes:
@@ -19,6 +20,7 @@ services:
       - mongodb_password
 
   game:
+    container_name: game
     image: 'starfishgame/starfish-game:latest'
     restart: always
     user: 'root'
@@ -45,6 +47,7 @@ services:
       - admin_keys
 
   frontend:
+    container_name: frontend
     image: 'starfishgame/starfish-frontend:latest'
     user: 'node'
     working_dir: /usr/app/frontend
@@ -60,6 +63,7 @@ services:
       - google_private_key
 
   discord:
+    container_name: discord
     image: 'starfishgame/starfish-discord:latest'
     user: 'node'
     working_dir: /usr/app/discord
@@ -72,6 +76,7 @@ services:
       - bot_id
 
   nginx:
+    container_name: nginx
     image: 'starfishgame/starfish-nginx:latest'
     ports:
       - '80:80'
