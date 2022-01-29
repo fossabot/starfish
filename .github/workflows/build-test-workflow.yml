@@ -114,9 +114,6 @@ jobs:
 
       - name: Launch containers
         run: docker-compose -f docker-compose-ci.yml --env-file .env up -d
-        with:
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: Move cache
         if: steps.dockerbuild.outcome == 'success' && steps.changes.outputs.src == 'true'
