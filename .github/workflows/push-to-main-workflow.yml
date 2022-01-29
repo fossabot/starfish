@@ -97,7 +97,7 @@ jobs:
           username: ${{ secrets.HOST_USERNAME}}
           privateKey: ${{ secrets.HOST_PRIVATE_KEY}}
 
-      - name: Verify production deployment
+      - name: Verify CI deployment
         run: |
           curl --write-out '%{http_code}' \
           --silent \
@@ -107,7 +107,7 @@ jobs:
 
           cat ./webserver_response.log
 
-          if grep -q "200" ./webserver_response.log; then
+          if [ grep -q "200" ./webserver_response.log ] && [ !grep -q "502" ./webserver_response.log ]; then
             echo "Successfully deployed to production"
           else
             echo "Failed to deploy to production"
