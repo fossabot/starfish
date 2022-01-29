@@ -157,7 +157,12 @@ jobs:
 
           cat ./webserver_response.log
 
-          if [[ `grep -q "<title>Starfish</title>" ./webserver_response.log` && `!grep -q "502 Bad Gateway" ./webserver_response.log` ]]; then
+          grep "<title>Starfish</title>" ./webserver_response.log
+          found_title=$?
+
+          grep "502 Bad Gateway" ./webserver_response.log
+          found_badgateway=$?
+          if [[ "$found_title" && "!$found_badgateway" ]]; then
             echo "Successfully deployed to CI."
           else
             echo "Failed to deploy to CI."
