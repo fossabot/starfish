@@ -38,7 +38,7 @@ try {
     .trim()
 } catch (e) {
   mongoUsername =
-    process.env.NODE_ENV === `ci`
+    process.env.NODE_ENV === `staging`
       ? `testuser`
       : (process.env.MONGODB_ADMINUSERNAME as string)
 }
@@ -48,12 +48,12 @@ try {
     .trim()
 } catch (e) {
   mongoPassword =
-    process.env.NODE_ENV === `ci`
+    process.env.NODE_ENV === `staging`
       ? `testpassword`
       : (process.env.MONGODB_ADMINPASSWORD as string)
 }
 
-databaseName = process.env.NODE_ENV === `ci` ? `starfish-test` : `starfish`
+databaseName = process.env.NODE_ENV === `staging` ? `starfish-test` : `starfish`
 // c.log({ databaseName, mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
@@ -129,35 +129,14 @@ const backupsFolderPath = path.resolve(
   `backups/`,
 )
 
-function backUpDb() {
-  try {
-    if (!fs.existsSync(backupsFolderPath)) fs.mkdirSync(backupsFolderPath)
-  } catch (e) {
-    return c.log(
-      `red`,
-      `Could not create backups folder:`,
-      backupsFolderPath,
-      e,
-    )
-  }
-
-  fs.readdir(backupsFolderPath, (err, backups) => {
-    if (err) return
-    const sortedBackups = backups
-      .filter((p) => p.indexOf(`.`) !== 0)
-      .sort((a, b) => {
-        const aDate = new Date(parseInt(a))
-        const bDate = new Date(parseInt(b))
-        return bDate.getTime() - aDate.getTime()
-      })
-    const mostRecentBackup = sortedBackups[0]
-
-    while (sortedBackups.length > maxBackups) {
-      const oldestBackup = sortedBackups[sortedBackups.length - 1]
-      sortedBackups.splice(sortedBackups.length - 1, 1)
-      fs.rmSync(path.resolve(backupsFolderPath, oldestBackup), {
-        recursive: true,
-      })
+export function backUpDb(force?: true): Promise<void | true> {
+  return new Promise(async (resolve) => {
+    try {
+      if (!fs.existsSync(backupsFolderPath)) fs.mkdirSync(backupsFolderPath)
+    } catch (e) {
+      c.log(`red`, `Could not create backups folder:`, backupsFolderPath, e)
+      resolve()
+      return
     }
 
     fs.readdir(backupsFolderPath, (err, backups) => {
@@ -243,15 +222,19 @@ export function resetDbToBackup(backupId: string) {
 
     c.log(`yellow`, `Resetting db to backup`, backupId)
 
-    let cmd = `mongorestore --drop --verbose --uri="mongodb://${
-      defaultMongoOptions.username
-    }:${defaultMongoOptions.password}@${defaultMongoOptions.hostname}:${
-      defaultMongoOptions.port
-    }/${defaultMongoOptions.dbName}" ${path.resolve(
-      backupsFolderPath,
-      backupId,
-      `starfish`,
-    )}`
+    let cmd =
+      `mongorestore --drop --verbose --host="` +
+      defaultMongoOptions.hostname +
+      `" --port ` +
+      defaultMongoOptions.port +
+      ` --username ` +
+      defaultMongoOptions.username +
+      ` --password ` +
+      defaultMongoOptions.password +
+      ` --authenticationDatabase ` +
+      defaultMongoOptions.authDatabase +
+      ` ` +
+      path.resolve(backupsFolderPath, backupId)
 
     exec(cmd, undefined, (error, stdout, stderr) => {
       if (error) {
