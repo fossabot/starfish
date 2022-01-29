@@ -153,11 +153,7 @@ jobs:
 
       - name: Verify frontend returns 200
         run: |
-          curl --write-out '%{http_code}' \
-          --silent \
-          --output ./webserver_response.log \
-          --request GET
-          --url 'https://localhost:4300`
+          curl --write-out '%{http_code}' --silent --output ./webserver_response.log --request GET https://localhost:4300
 
           cat ./webserver_response.log
 
