@@ -38,7 +38,7 @@ try {
     .trim()
 } catch (e) {
   mongoUsername =
-    process.env.NODE_ENV === `staging`
+    process.env.NODE_ENV === `ci`
       ? `testuser`
       : (process.env.MONGODB_ADMINUSERNAME as string)
 }
@@ -48,12 +48,12 @@ try {
     .trim()
 } catch (e) {
   mongoPassword =
-    process.env.NODE_ENV === `staging`
+    process.env.NODE_ENV === `ci`
       ? `testpassword`
       : (process.env.MONGODB_ADMINPASSWORD as string)
 }
 
-databaseName = process.env.NODE_ENV === `staging` ? `starfish-test` : `starfish`
+databaseName = process.env.NODE_ENV === `ci` ? `starfish-test` : `starfish`
 // c.log({ databaseName, mongoUsername, mongoPassword })
 
 const defaultMongoOptions: GameDbOptions = {
