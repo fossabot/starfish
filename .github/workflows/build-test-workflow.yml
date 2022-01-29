@@ -219,7 +219,7 @@ jobs:
           reporter: mocha-json
 
   # TODO: Add cypress tests
-
+  #
   # artillery:
   #   needs: [run-docker-compose]
   #   runs-on: ubuntu-latest
