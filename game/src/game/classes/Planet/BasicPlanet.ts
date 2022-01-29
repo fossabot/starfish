@@ -122,6 +122,11 @@ export class BasicPlanet extends Planet {
     super.tick()
   }
 
+  daily() {
+    super.daily()
+    this.recalculateContractPayouts()
+  }
+
   levelUp() {
     super.levelUp()
 
@@ -510,6 +515,23 @@ export class BasicPlanet extends Planet {
     return addable
   }
 
+  recalculateContractPayouts() {
+    for (let contract of [...this.contracts]) {
+      const target = this.game?.ships.find((s) => s.id === contract.targetId)
+      if (!target) {
+        this.contracts.splice(this.contracts.indexOf(contract), 1)
+        continue
+      }
+      const difficulty = (target as AIShip).level || 10
+      const distance = c.distance(this.location, target.location) // 0-1+
+      const reward = getContractReward(difficulty, distance)
+      const claimCost = getContractClaimCost(difficulty, distance)
+      contract.reward = reward
+      contract.claimCost = claimCost
+    }
+    this.updateFrontendForShipsAt()
+  }
+
   refreshContracts() {
     if (!this.maxContracts) return
     this.contracts = this.contracts.filter(
@@ -553,55 +575,8 @@ export class BasicPlanet extends Planet {
 
       const difficulty = (target as AIShip).level || 10
       const distance = c.distance(this.location, target.location) / scanRange // 0-1
-      let reward: Price = {
-        credits: 0,
-        shipCosmeticCurrency: 0,
-        crewCosmeticCurrency: 0,
-      }
-      while (
-        (reward.credits || 0) +
-          (reward.shipCosmeticCurrency || 0) +
-          (reward.crewCosmeticCurrency || 0) ===
-        0
-      ) {
-        reward = {
-          credits: c.lottery(1, 12)
-            ? 0
-            : Math.max(
-                0,
-                c.r2(
-                  2000 * difficulty * (distance + 0.1) * (Math.random() + 0.1),
-                  0,
-                ),
-              ),
-          shipCosmeticCurrency: c.lottery(1, 4)
-            ? 0
-            : Math.max(
-                0,
-                c.r2(
-                  0.35 *
-                    (difficulty - 3) *
-                    (distance + 0.1) *
-                    (Math.random() + 0.1),
-                  0,
-                  true,
-                ),
-              ),
-          crewCosmeticCurrency: c.lottery(1, 5)
-            ? 0
-            : Math.max(
-                0,
-                c.r2(
-                  400 *
-                    (difficulty - 3) *
-                    (distance + 0.1) *
-                    (Math.random() + 0.1),
-                  0,
-                  true,
-                ),
-              ),
-        }
-      }
+      const reward = getContractReward(difficulty, distance)
+      const claimCost = getContractClaimCost(difficulty, distance)
       this.contracts.push({
         id: `contract` + `${Math.random()}`.slice(2),
         reward,
@@ -612,11 +587,7 @@ export class BasicPlanet extends Planet {
         targetName: target.name,
         targetGuildId: target.guildId,
         difficulty,
-        claimCost: {
-          credits: c.lottery(1, 12)
-            ? 0
-            : Math.max(0, c.r2(300 * difficulty * distance * Math.random(), 0)),
-        },
+        claimCost,
         claimableExpiresAt: Date.now() + 1000 * 60 * 60 * 24,
       })
     }
@@ -859,6 +830,63 @@ function getRepairCostMultiplier() {
     3,
   )
   return repairCostMultiplier
+}
+
+function getContractClaimCost(difficulty: number, distance: number): Price {
+  return {
+    credits: c.lottery(1, 12)
+      ? 0
+      : Math.max(0, c.r2(300 * difficulty * distance * Math.random(), 0)),
+  }
+}
+function getContractReward(difficulty: number, distance: number): Price {
+  let reward: Price = {
+    credits: 0,
+    shipCosmeticCurrency: 0,
+    crewCosmeticCurrency: 0,
+  }
+  while (
+    (reward.credits || 0) +
+      (reward.shipCosmeticCurrency || 0) +
+      (reward.crewCosmeticCurrency || 0) ===
+    0
+  ) {
+    reward = {
+      credits: c.lottery(1, 12)
+        ? 0
+        : Math.max(
+            0,
+            c.r2(
+              2000 * difficulty * (distance + 0.1) * (Math.random() + 0.1),
+              0,
+            ),
+          ),
+      shipCosmeticCurrency: c.lottery(1, 4)
+        ? 0
+        : Math.max(
+            0,
+            c.r2(
+              0.35 *
+                (difficulty - 3) *
+                (distance + 0.1) *
+                (Math.random() + 0.1),
+              0,
+              true,
+            ),
+          ),
+      crewCosmeticCurrency: c.lottery(1, 5)
+        ? 0
+        : Math.max(
+            0,
+            c.r2(
+              400 * (difficulty - 3) * (distance + 0.1) * (Math.random() + 0.1),
+              0,
+              true,
+            ),
+          ),
+    }
+  }
+  return reward
 }
 
 /*

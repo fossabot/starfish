@@ -356,7 +356,7 @@ export const actions = {
   ) {
     if (alreadyLoggingIn) return
     alreadyLoggingIn = true
-    c.log(`logIn start`, { userId, shipIds })
+    // c.log(`logIn start`, { userId, shipIds })
     if (!userId || !shipIds || !shipIds?.length) {
       const tokenType = storage.get(`tokenType`)
       const accessToken = storage.get(`accessToken`)

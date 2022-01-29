@@ -91,12 +91,18 @@ interface IOClientEvents {
   ) => void
 
   [`game:save`]: (adminId: string, password: string) => void
+  [`game:daily`]: (adminId: string, password: string) => void
   [`game:pause`]: (adminId: string, password: string) => void
   [`game:unpause`]: (adminId: string, password: string) => void
   [`game:backups`]: (
     adminId: string,
     password: string,
     callback: (res: IOResponse<string[]>) => void,
+  ) => void
+  [`game:makeBackup`]: (
+    adminId: string,
+    password: string,
+    callback: (res: IOResponse<true>) => void,
   ) => void
   [`game:resetToBackup`]: (
     adminId: string,
@@ -108,6 +114,11 @@ interface IOClientEvents {
     adminId: string,
     password: string,
     message: LogContent,
+  ) => void
+  [`game:adminStats`]: (
+    adminId: string,
+    password: string,
+    callback: (res: IOResponse<any>) => void,
   ) => void
   [`game:resetAllPlanets`]: (
     adminId: string,

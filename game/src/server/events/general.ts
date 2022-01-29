@@ -14,10 +14,9 @@ export default function (
     if (callback) callback({ data: `hello` })
   })
 
-  socket.on(`disconnect`, () => {
-    if (!game) return
-    game.activePlayers--
-  })
+  // socket.on(`disconnect`, () => {
+  //   if (!game) return
+  // })
 
   socket.on(`frontend:unlistenAll`, () => {
     if (!game) return
@@ -27,28 +26,23 @@ export default function (
     })
   })
 
-  socket.on(
-    `ships:forUser:fromIdArray`,
-    (shipIds, userId, callback) => {
-      if (!game) return
-      // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
-      const foundShips = game.ships.filter(
-        (s) =>
-          s.human &&
-          !s.tutorial &&
-          shipIds.includes(s.id) &&
-          s.crewMembers.find((cm) => cm.id === userId),
-      )
-      if (foundShips.length) {
-        const shipsAsStubs = foundShips.map(
-          (s) => s.stubify() as ShipStub,
-        )
-        callback({
-          data: shipsAsStubs,
-        })
-      } else callback({ data: [] })
-    },
-  )
+  socket.on(`ships:forUser:fromIdArray`, (shipIds, userId, callback) => {
+    if (!game) return
+    // c.log(`ships:forUser:fromIdArray`, shipIds, userId)
+    const foundShips = game.ships.filter(
+      (s) =>
+        s.human &&
+        !s.tutorial &&
+        shipIds.includes(s.id) &&
+        s.crewMembers.find((cm) => cm.id === userId),
+    )
+    if (foundShips.length) {
+      const shipsAsStubs = foundShips.map((s) => s.stubify() as ShipStub)
+      callback({
+        data: shipsAsStubs,
+      })
+    } else callback({ data: [] })
+  })
 
   socket.on(`ship:get`, (id, crewMemberId, callback) => {
     if (!game) return
@@ -62,9 +56,7 @@ export default function (
       if (
         crewMember &&
         crewMember.tutorialShipId &&
-        game.ships.find(
-          (s) => s.id === crewMember.tutorialShipId,
-        )
+        game.ships.find((s) => s.id === crewMember.tutorialShipId)
       ) {
         // c.log(
         //   `returning tutorial ship ${crewMember.tutorialShipId} instead of requested ship`,
@@ -77,8 +69,7 @@ export default function (
     if (foundShip) {
       const stub: ShipStub = foundShip.stubify()
       callback({ data: stub })
-    } else
-      callback({ error: `No ship found by the ID ${id}.` })
+    } else callback({ error: `No ship found by the ID ${id}.` })
   })
 
   socket.on(`game:settings`, (callback) => {
@@ -90,9 +81,7 @@ export default function (
     if (!game) return
     callback({
       data: {
-        gameArea:
-          c.numberWithCommas(c.r2(game.gameSoftArea, 0)) +
-          `AU²`,
+        gameArea: c.numberWithCommas(c.r2(game.gameSoftArea, 0)) + `AU²`,
         ships: game.ships.length,
         planets: game.planets.length,
         zones: game.zones.length,

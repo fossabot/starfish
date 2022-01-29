@@ -21,7 +21,7 @@ import type { Tutorial } from './HumanShip/Tutorial'
 
 export class Ship extends Stubbable {
   static maxPreviousLocations: number = 300
-  static maxAIPreviousLocations: number = 100
+  static maxAIPreviousLocations: number = 50
   static notifyWhenHealthDropsToPercent: number = 0.15
 
   readonly type = `ship`

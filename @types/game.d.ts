@@ -20,6 +20,7 @@ interface GameDbOptions {
   dbName?: string
   username?: string
   password?: string
+  authDatabase?: string
 }
 
 interface Price {
