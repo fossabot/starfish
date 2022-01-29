@@ -16,11 +16,10 @@ export default {
       (process.env.IS_DOCKER
         ? `804439178636558396` // real starfish
         : `723017262369472603`), // j's test
+    stripePublishableKey: `pk_test_51KFoQXJcHCUKgymmmdQj9LxQghigBRCCN5rH4b7oYeVm1evqNTHMiABs77nhMNmLZEl3HfK6ntoLVGgw0kwRCkjQ00Cq9KGd6w`,
   },
 
-  serverMiddleware: [
-    { path: `/api`, handler: `~/api/api.ts` }
-  ],
+  serverMiddleware: [{ path: `/api`, handler: `~/api/index.ts` }],
 
   vue: {
     config: {
@@ -31,9 +30,7 @@ export default {
   head: {
     titleTemplate(titleChunk) {
       return (
-        (process.env.NODE_ENV === `development`
-          ? `DEV - `
-          : ``) +
+        (process.env.NODE_ENV === `development` ? `DEV - ` : ``) +
         (titleChunk ? titleChunk + ` | ` : ``) +
         process.env.GAME_NAME
       )

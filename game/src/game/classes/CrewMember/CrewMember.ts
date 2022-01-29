@@ -247,7 +247,7 @@ export class CrewMember extends Stubbable {
 
     this.recalculateAll()
 
-    this.toUpdate = this
+    if (this.ship.watched) this.toUpdate = this
   }
 
   addTagline = addTagline
@@ -477,7 +477,7 @@ export class CrewMember extends Stubbable {
       if (skill === `endurance`) this.recalculateMaxStamina()
     }
 
-    this.toUpdate.skills = this.skills
+    if (this.ship.watched) this.toUpdate.skills = this.skills
   }
 
   updateLevel() {
@@ -539,7 +539,7 @@ export class CrewMember extends Stubbable {
       this.setHighMorale()
     else this.clearMoralePassives()
 
-    this.toUpdate.morale = this.morale
+    if (this.ship.watched) this.toUpdate.morale = this.morale
     // if (Math.abs(amount) > 1) {
     //   c.log(this.ship.name, this.name, amount, this.morale)
     // }
@@ -819,7 +819,7 @@ export class CrewMember extends Stubbable {
         amount,
       })
     else existing.amount = (existing.amount || 0) + amount
-    this.toUpdate.stats = this.stats
+    if (this.ship.watched) this.toUpdate.stats = this.stats
   }
 
   get strength() {

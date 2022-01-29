@@ -18,7 +18,7 @@ export function getUserId({
   c.log(`Loading user ID from Discord`)
 
   return new Promise<IOResponse<string>>((resolve) => {
-    fetch(`/api/getDiscordUserId/${tokenType}/${accessToken}`)
+    fetch(`/api/discord/getUserId/${tokenType}/${accessToken}`)
       .then((result) => result.json())
       .then((response) => {
         if (!response.data) {
@@ -57,7 +57,7 @@ export async function loadUserGameGuilds({
   c.log(`Loading user ${userId}'s guilds...`)
 
   const allGuilds = await fetch(
-    `/api/loadUserGameGuilds/${tokenType}/${accessToken}`,
+    `/api/discord/loadUserGuilds/${tokenType}/${accessToken}`,
   )
     .then((result) => result.json())
     .then((guildRes) => {

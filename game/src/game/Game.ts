@@ -1473,8 +1473,10 @@ export class Game {
   }
 
   adminStats() {
+    c.log(c.massProfiler.print())
     return {
-      activePlayers: this.activePlayers
+      activePlayers: this.activePlayers,
+      profiler: c.massProfiler.print(),
     }
   }
 

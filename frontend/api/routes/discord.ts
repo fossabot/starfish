@@ -1,11 +1,10 @@
-import express from 'express'
+import { Router } from 'express'
+const router = Router()
+
 import axios from 'axios'
-import c from '../../common/dist'
+import c from '../../../common/dist'
 
-const app = express()
-app.use(express.json())
-
-app.get(`/getDiscordUserId/:tokenType/:accessToken`, async (req, res) => {
+router.get(`/getUserId/:tokenType/:accessToken`, async (req, res) => {
   const { tokenType, accessToken } = req.params
   if (!tokenType) return res.json({ error: `No tokenType` })
   if (!accessToken) return res.json({ error: `No accessToken` })
@@ -31,7 +30,7 @@ app.get(`/getDiscordUserId/:tokenType/:accessToken`, async (req, res) => {
     })
 })
 
-app.get(`/loadUserGameGuilds/:tokenType/:accessToken`, async (req, res) => {
+router.get(`/loadUserGuilds/:tokenType/:accessToken`, async (req, res) => {
   const { tokenType, accessToken } = req.params
   if (!tokenType) return res.json({ error: `No tokenType` })
   if (!accessToken) return res.json({ error: `No accessToken` })
@@ -57,4 +56,4 @@ app.get(`/loadUserGameGuilds/:tokenType/:accessToken`, async (req, res) => {
     })
 })
 
-module.exports = app
+export default router

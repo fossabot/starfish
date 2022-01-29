@@ -20,7 +20,7 @@ export declare class MassProfiler {
     fullReset(): void;
     getTime(): number;
     call(categoryName: string, subCategoryName: string, time: number): void;
-    print(): void;
+    print(count?: number): string | undefined;
     resetForNextTick(): void;
 }
 declare const massProfiler: MassProfiler;

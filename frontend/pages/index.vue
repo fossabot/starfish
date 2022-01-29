@@ -13,62 +13,32 @@
       </div>
     </Box>
 
-    <Box
-      style="width: 500px"
-      bgImage="/images/paneBackgrounds/20.webp"
-    >
-      <template #title>
-        <span class="sectionemoji">👋</span>Welcome
-      </template>
+    <Box style="width: 500px" bgImage="/images/paneBackgrounds/20.webp">
+      <template #title> <span class="sectionemoji">👋</span>Welcome </template>
 
       <div class="panesection textcolumn">
-        <div class="bold">
-          Welcome to the alpha test of {{ c.gameName }}!
+        <div class="bold">Welcome to the alpha test of {{ c.gameName }}!</div>
+        <div>
+          This is an early version of a new kind of game — one that happens in
+          real-time, spans across the web and Discord, and enables teamwork in a
+          whole new way.
         </div>
         <div>
-          This is an early version of a new kind of game —
-          one that happens in real-time, spans across the
-          web and Discord, and enables teamwork in a whole
-          new way.
-        </div>
-        <div v-if="!userId">
-          To play, you will need:
-          <ul>
-            <li>
-              Admin powers in a
-              <a href="https://discord.com/" target="_blank"
-                >Discord</a
-              >
-              server
-            </li>
-            <li>A web browser</li>
-            <li>
-              <b>Bonus:</b> Friends in your server who want
-              to join your ship!
-            </li>
-          </ul>
+          This is a game made by two people in our free time, so please be
+          patient as we work out the kinks.
         </div>
         <div>
-          This is a game made by two people in our free
-          time, so please be patient as we work out the
-          kinks.
-        </div>
-        <div>
-          During the alpha, I'm looking for feedback around
-          the gameplay, bug reports, and also I want to hear
-          your stories! What happened in-game that felt
-          memorable or epic? What left an impression, or
-          made you feel a strong emotion? Let me know on the
-          <a :href="c.supportServerLink" target="_blank"
-            >Discord Server</a
-          >!
+          During the alpha, I'm looking for feedback around the gameplay, bug
+          reports, and also I want to hear your stories! What happened in-game
+          that felt memorable or epic? What left an impression, or made you feel
+          a strong emotion? Let me know on the
+          <a :href="c.supportServerLink" target="_blank">Discord Server</a>!
         </div>
         <hr />
         <div>
-          Thank you so much for playing! Feel free to play
-          as much or as little as you like, with as many
-          ships as you like, with as many crew members as
-          you like.
+          Thank you so much for playing! Feel free to play as much or as little
+          as you like, with as many ships as you like, with as many crew members
+          as you like.
         </div>
       </div>
     </Box>
@@ -78,9 +48,7 @@
       :minimizable="false"
       bgImage="/images/paneBackgrounds/21.webp"
     >
-      <template #title>
-        <span class="sectionemoji">▶️</span>Play
-      </template>
+      <template #title> <span class="sectionemoji">▶️</span>Play </template>
 
       <div class="panesection">
         <nuxt-link
@@ -102,16 +70,10 @@
     </Box>
 
     <Box style="width: 700px" :overlayTitle="true">
-      <img
-        src="/images/home/intro.jpg"
-        style="width: 100%"
-      />
+      <img src="/images/home/intro.jpg" style="width: 100%" />
     </Box>
 
-    <Box
-      style="width: 250px"
-      bgImage="/images/paneBackgrounds/19.webp"
-    >
+    <Box style="width: 250px" bgImage="/images/paneBackgrounds/19.webp">
       <template #title>
         <span class="sectionemoji">📊</span>Game Stats
       </template>
@@ -135,10 +97,7 @@
       </div>
     </Box>
 
-    <Box
-      style="width: 200px"
-      bgImage="/images/paneBackgrounds/22.webp"
-    >
+    <Box style="width: 200px" bgImage="/images/paneBackgrounds/22.webp">
       <template #title>
         <span class="sectionemoji">ℹ️</span>Game Info
       </template>
@@ -151,14 +110,10 @@
           <nuxt-link to="/howtoplay">How To Play</nuxt-link>
         </div>
         <div>
-          <a :href="c.supportServerLink" target="_blank"
-            >Discord Server</a
-          >
+          <a :href="c.supportServerLink" target="_blank">Discord Server</a>
         </div>
         <div>
-          <nuxt-link to="/patchnotes"
-            >Patch Notes</nuxt-link
-          >
+          <nuxt-link to="/patchnotes">Patch Notes</nuxt-link>
         </div>
         <div>
           <nuxt-link to="/supportus">Support Us</nuxt-link>
