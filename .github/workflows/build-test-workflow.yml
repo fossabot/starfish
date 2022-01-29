@@ -109,6 +109,9 @@ jobs:
           echo "${{ secrets.TEST_ADMIN_KEYS }}" > game/secrets/admin_keys.txt
           echo "PULL_REQUEST_NUMBER=${{ github.event.number }}" >> .env
 
+      - name: Copy cache files?
+        run: cp -R /tmp/.buildx-cache /tmp/.buildx-cache-new
+
       - name: Launch containers
         run: docker-compose -f docker-compose-ci.yml --env-file .env up -d
         with:
