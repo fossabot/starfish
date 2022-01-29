@@ -91,6 +91,8 @@ export class HumanShip extends CombatShip {
   combatTactic: CombatTactic = `pacifist`
   idealTargetShip: CombatShip | null = null
 
+  watched = false
+
   hasNotifiedAboutInactivity = false
 
   visible: {
@@ -248,6 +250,12 @@ export class HumanShip extends CombatShip {
 
     let time = performance.now()
 
+    // * if there are no watchers, skips sending to frontend. however, it always runs on local dev for stress testing.
+    this.watched = Boolean(
+      process.env.NODE_ENV === `development` ||
+        this.game?.io?.sockets.adapter.rooms.get(`ship:${this.id}`)?.size,
+    )
+
     if (this.tutorial) this.tutorial.tick()
 
     c.massProfiler.call(`HumanShip`, `tick/tutorial`, performance.now() - time)
@@ -268,33 +276,33 @@ export class HumanShip extends CombatShip {
     time = performance.now()
 
     // ----- scan -----
-    const previousVisible = { ...this.visible }
     this.updateVisible()
-    this.takeActionOnVisibleChange(previousVisible, this.visible)
     this.scanners.forEach((s) => s.use())
-    this.generateVisiblePayload(previousVisible)
+    if (this.watched) this.generateVisiblePayloadForFrontend()
 
     c.massProfiler.call(`HumanShip`, `tick/scan`, performance.now() - time)
     time = performance.now()
 
     // ----- crew members -----
     this.crewMembers.forEach((cm) => cm.tick())
-    this.toUpdate.crewMembers = this.crewMembers
-      .filter((cm) => Object.keys(cm.toUpdate || {}).length)
-      .map((cm) => {
-        const updates = {
-          ...c.stubify(cm.toUpdate),
-          id: cm.id,
-        }
-        cm.toUpdate = {}
-        return updates as CrewMemberStub
-      })
-    if (!this.toUpdate.crewMembers?.length) delete this.toUpdate.crewMembers
-    // c.log(
-    //   `updated ${this.crewMembers.map((cm) =>
-    //     Object.keys(cm.toUpdate),
-    //   )} crew members on ${this.name}`,
-    // )
+    if (this.watched) {
+      this.toUpdate.crewMembers = this.crewMembers
+        .filter((cm) => Object.keys(cm.toUpdate || {}).length)
+        .map((cm) => {
+          const updates = {
+            ...c.stubify(cm.toUpdate),
+            id: cm.id,
+          }
+          cm.toUpdate = {}
+          return updates as CrewMemberStub
+        })
+      if (!this.toUpdate.crewMembers?.length) delete this.toUpdate.crewMembers
+      // c.log(
+      //   `updated ${this.crewMembers.map((cm) =>
+      //     Object.keys(cm.toUpdate),
+      //   )} crew members on ${this.name}`,
+      // )
+    }
 
     c.massProfiler.call(
       `HumanShip`,
@@ -391,11 +399,7 @@ export class HumanShip extends CombatShip {
     time = performance.now()
 
     // ----- updates for frontend -----
-    // * if there are no watchers, skips. however, it always runs on local dev for stress testing.
-    if (
-      process.env.NODE_ENV === `development` ||
-      this.game?.io?.sockets.adapter.rooms.get(`ship:${this.id}`)?.size
-    ) {
+    if (this.watched) {
       // ----- stubify -----
       this.toUpdate.items = this.items.map((i) => i.stubify())
       c.massProfiler.call(
@@ -440,7 +444,7 @@ export class HumanShip extends CombatShip {
     })
     while (this.log.length > HumanShip.maxLogLength) this.log.shift()
 
-    this.toUpdate.log = this.log
+    if (this.watched) this.toUpdate.log = this.log
 
     if (this.tutorial) return
 
@@ -481,7 +485,8 @@ export class HumanShip extends CombatShip {
 
   discoverPlanet(p: Planet) {
     this.seenPlanets.push(p)
-    this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.toVisibleStub())
+    if (this.watched)
+      this.toUpdate.seenPlanets = this.seenPlanets.map((p) => p.toVisibleStub())
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
@@ -505,9 +510,10 @@ export class HumanShip extends CombatShip {
 
   discoverLandmark(l: Zone) {
     this.seenLandmarks.push(l)
-    this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) =>
-      z.toVisibleStub(),
-    )
+    if (this.watched)
+      this.toUpdate.seenLandmarks = this.seenLandmarks.map((z) =>
+        z.toVisibleStub(),
+      )
     if (!this.onlyCrewMemberIsInTutorial)
       this.logEntry(
         [
@@ -788,10 +794,10 @@ export class HumanShip extends CombatShip {
       this.velocity[0] + (thrustVector[0] || 0),
       this.velocity[1] + (thrustVector[1] || 0),
     ]
-    this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
-    this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.velocity = this.velocity
+    this.toUpdate.speed = this.speed
     this.toUpdate.direction = this.direction
 
     // const thrustAngle = c.vectorToDegrees(thrustVector)
@@ -985,10 +991,10 @@ export class HumanShip extends CombatShip {
       // })
     }
 
-    this.toUpdate.velocity = this.velocity
     this.speed = c.vectorToMagnitude(this.velocity)
-    this.toUpdate.speed = this.speed
     this.direction = c.vectorToDegrees(this.velocity)
+    this.toUpdate.velocity = this.velocity
+    this.toUpdate.speed = this.speed
     this.toUpdate.direction = this.direction
 
     if (charge > 0.5)
@@ -1440,6 +1446,7 @@ export class HumanShip extends CombatShip {
     const alwaysShowTrailColors = this.passives.find(
       (p) => p.id === `alwaysSeeTrailColors`,
     )
+    const previousVisible = { ...this.visible }
     const visible = this.game?.scanCircle(
       this.location,
       this.radii.sight,
@@ -1474,52 +1481,10 @@ export class HumanShip extends CombatShip {
       (z) => !this.seenLandmarks.includes(z),
     )
     newLandmarks.forEach((p) => this.discoverLandmark(p))
-  }
 
-  generateVisiblePayload(previousVisible?: {
-    ships: ShipStub[]
-    planets: Planet[]
-    comets: Comet[]
-    caches: Cache[]
-    attackRemnants: (AttackRemnant | AttackRemnantStub)[]
-    trails?: {
-      color?: string
-      points: PreviousLocation[]
-    }[]
-    zones: Zone[]
-  }) {
-    let planetDataToSend: Partial<PlanetStub>[] = []
-    // send newly visible planets (only once)
-    if (previousVisible?.planets?.length)
-      planetDataToSend = this.visible.planets
-        .filter((p) => Object.keys(p.toUpdate).length)
-        .map((p) => ({
-          name: p.name,
-          ...(c.stubify(p.toUpdate) as Partial<PlanetStub>),
-        }))
-    else planetDataToSend = this.visible.planets.map((p) => p.toVisibleStub())
-    this.toUpdate.visible = {
-      ships: this.visible.ships,
-      trails: this.visible.trails || [],
-      comets: (this.visible.comets || []).map((p) => p.toVisibleStub()),
-      attackRemnants: this.visible.attackRemnants.map(
-        (ar) =>
-          (ar as AttackRemnant).toVisibleStub?.() ||
-          (ar as AttackRemnant).stubify?.() ||
-          ar,
-      ),
-      planets: planetDataToSend,
-      caches: this.visible.caches.map((c) => this.cacheToValidScanResult(c)),
-      zones: this.visible.zones.map((z) => z.stubify()),
-    }
-  }
-
-  takeActionOnVisibleChange(
-    previousVisible: HumanVisibleShape,
-    currentVisible: HumanVisibleShape,
-  ) {
+    // ----- broadcasts from newly visible planets -----
     if (!this.planet) {
-      const newlyVisiblePlanets = currentVisible.planets.filter(
+      const newlyVisiblePlanets = this.visible.planets.filter(
         (p) => !previousVisible.planets.includes(p),
       )
       newlyVisiblePlanets.forEach((p: Planet) => {
@@ -1554,6 +1519,34 @@ export class HumanShip extends CombatShip {
     }
   }
 
+  generateVisiblePayloadForFrontend() {
+    if (!this.watched) return
+    let planetDataToSend: Partial<PlanetStub>[] = []
+    // send newly visible planets (only once)
+    if (this.visible.planets?.length)
+      planetDataToSend = this.visible.planets
+        .filter((p) => Object.keys(p.toUpdate).length)
+        .map((p) => ({
+          name: p.name,
+          ...(c.stubify(p.toUpdate) as Partial<PlanetStub>),
+        }))
+    else planetDataToSend = this.visible.planets.map((p) => p.toVisibleStub())
+    this.toUpdate.visible = {
+      ships: this.visible.ships,
+      trails: this.visible.trails || [],
+      comets: (this.visible.comets || []).map((p) => p.toVisibleStub()),
+      attackRemnants: this.visible.attackRemnants.map(
+        (ar) =>
+          (ar as AttackRemnant).toVisibleStub?.() ||
+          (ar as AttackRemnant).stubify?.() ||
+          ar,
+      ),
+      planets: planetDataToSend,
+      caches: this.visible.caches.map((c) => this.cacheToValidScanResult(c)),
+      zones: this.visible.zones.map((z) => z.stubify()),
+    }
+  }
+
   private justLandedTimeout: NodeJS.Timeout | null = null
   private justTookOffTimeout: NodeJS.Timeout | null = null
   async updatePlanet(silent?: boolean) {
@@ -1574,7 +1567,8 @@ export class HumanShip extends CombatShip {
 
     if (previousPlanet == this.planet) return
 
-    this.toUpdate.planet = this.planet ? this.planet.stubify() : false
+    if (!this.watched)
+      this.toUpdate.planet = this.planet ? this.planet.stubify() : false
 
     // c.log(
     //   this.id,

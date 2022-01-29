@@ -66,7 +66,7 @@ export class MassProfiler {
     this.totalTime += time
   }
 
-  print() {
+  print(count: number = this.printLength) {
     if (!this.enabled) return
 
     const now = new Date()
@@ -90,7 +90,7 @@ export class MassProfiler {
       .sort((a, b) => {
         return b.averageTotalTime - a.averageTotalTime
       })
-      .slice(0, this.printLength)
+      .slice(0, count)
     for (const item of sortedByAvgTotalTime) {
       output.push(`${item.className}.${item.functionName}\n  `)
       output.push(
@@ -128,6 +128,7 @@ export class MassProfiler {
     //   }
     // }
     c.log(...output)
+    return output.join(``)
   }
 
   resetForNextTick() {

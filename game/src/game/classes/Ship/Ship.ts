@@ -1027,8 +1027,6 @@ export class Ship extends Stubbable {
 
   checkExpiredPassives() {}
 
-  takeActionOnVisibleChange(previousVisible, currentVisible) {}
-
   receiveBroadcast(
     message: string,
     from: Ship | Planet,

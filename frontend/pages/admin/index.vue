@@ -29,7 +29,14 @@
 
       <details class="martop" v-if="stats">
         <summary>Stats</summary>
-        <pre>{{ JSON.stringify(stats, null, 2) }}</pre>
+        <code
+          style="white-space: pre-wrap"
+          v-html="
+            JSON.stringify(stats, null, 2)
+              .replace(/\\n/g, '<br />')
+              .replace(/gray/g, '')
+          "
+        ></code>
       </details>
 
       <details class="martop">
@@ -208,7 +215,6 @@ export default Vue.extend({
             (res) => {
               if (res.data) {
                 this.stats = res.data
-                c.log(res.data)
               }
             },
           )

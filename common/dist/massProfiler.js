@@ -59,7 +59,7 @@ class MassProfiler {
         this.trackedNames[categoryName][subCategoryName].totalTime += time;
         this.totalTime += time;
     }
-    print() {
+    print(count = this.printLength) {
         if (!this.enabled)
             return;
         const now = new Date();
@@ -82,7 +82,7 @@ class MassProfiler {
             .sort((a, b) => {
             return b.averageTotalTime - a.averageTotalTime;
         })
-            .slice(0, this.printLength);
+            .slice(0, count);
         for (const item of sortedByAvgTotalTime) {
             output.push(`${item.className}.${item.functionName}\n  `);
             output.push(`gray`, `${math_1.default.r2(item.averageTotalTime, 4)}ms total/tick`.padEnd(35));
@@ -110,6 +110,7 @@ class MassProfiler {
         //   }
         // }
         log_1.default.log(...output);
+        return output.join(``);
     }
     resetForNextTick() {
         if (!this.enabled)

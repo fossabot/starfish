@@ -323,6 +323,31 @@ describe(`Combat HumanShip target selection`, () => {
     ship.determineTargetShip()
     expect(ship.targetShip).to.equal(ship3)
   })
+
+  it(`should target a ship that comes into attack range`, async () => {
+    const g = new Game()
+    let ship = await g.addHumanShip(humanShipData())
+    let ship2 = await g.addHumanShip(humanShipData())
+
+    ship.move([10, 0])
+    ship.updateAttackRadius()
+    ship2.move([10 + Math.max(...ship.radii.attack) + 0.1, 0])
+
+    await ship.addCrewMember(crewMemberData())
+    const cm = ship.crewMembers[0]
+    cm.goTo(`weapons`)
+    cm.combatTactic = `aggressive`
+    ship.recalculateCombatTactic()
+
+    g.chunkManager.resetCache() // happens on tick
+    ship.updateVisible()
+    expect(ship.targetShip).to.equal(null)
+
+    ship2.move([10 + Math.max(...ship.radii.attack) - 0.1, 0])
+    g.chunkManager.resetCache() // happens on tick
+    ship.updateVisible()
+    expect(ship.targetShip).to.equal(ship2)
+  })
 })
 
 describe(`Combat attacks`, () => {
