@@ -162,12 +162,13 @@ jobs:
 
           grep "502 Bad Gateway" ./webserver_response.log
           found_badgateway=$?
-          if [[ "$found_title" && "!$found_badgateway" ]]; then
+          if [[ $found_title -eq "0" && $found_badgateway -eq "1" ]]; then
             echo "Successfully deployed to CI."
           else
             echo "Failed to deploy to CI."
-            exit 1
+            # exit 1
           fi
+        shell: bash {0}
   npm-test:
     # needs: [run-docker-compose]
     runs-on: ubuntu-latest
